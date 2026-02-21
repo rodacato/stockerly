@@ -1,8 +1,193 @@
 <% content_for(:title, "Trend Explorer | TrendStocker") %>
 
-<section class="relative pt-16 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h1 class="text-5xl font-black text-slate-900 dark:text-white">Trend Explorer</h1>
-    <p class="mt-4 text-slate-600 dark:text-slate-400">Coming soon — full implementation</p>
+<%# ===== Dark Filter Bar ===== %>
+<nav class="px-6 py-2 flex flex-wrap items-center gap-4 text-white/90" style="background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);">
+  <% %w[Trend\ Type Price\ Range\ ($) %\ Change Exchange Industry].each do |filter| %>
+    <div class="flex items-center gap-1 cursor-pointer hover:bg-white/10 px-3 py-1.5 rounded transition-colors border border-white/5">
+      <span class="text-xs font-medium uppercase tracking-wider opacity-70"><%= filter %></span>
+      <span class="material-symbols-outlined text-sm">expand_more</span>
+    </div>
+  <% end %>
+  <div class="h-6 w-px bg-white/10 mx-2"></div>
+  <div class="flex items-center gap-2">
+    <div class="w-4 h-4 rounded border border-white/30 flex items-center justify-center bg-primary">
+      <span class="material-symbols-outlined text-[12px] text-white">check</span>
+    </div>
+    <span class="text-xs font-medium uppercase tracking-wider opacity-70">Duration: Ongoing</span>
   </div>
-</section>
+</nav>
+
+<div class="max-w-[1400px] mx-auto p-6 space-y-6">
+  <%# ===== Tabs & Search ===== %>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 dark:border-slate-800">
+    <div class="flex gap-8">
+      <button class="pb-4 border-b-2 border-primary text-primary font-bold text-sm">Top Upwards Trends</button>
+      <button class="pb-4 text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-slate-700 transition-colors">Top Downward Trends</button>
+      <button class="pb-4 text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-slate-700 transition-colors">Most Popular Trends</button>
+    </div>
+    <div class="pb-3 w-full md:w-auto">
+      <div class="relative group">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+        <input type="text" placeholder="Find stocks" autocomplete="off" class="w-full md:w-72 pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+      </div>
+    </div>
+  </div>
+
+  <%# ===== Stock Summary Header ===== %>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+    <div class="lg:col-span-3 space-y-1">
+      <div class="flex items-center gap-2">
+        <h2 class="text-3xl font-extrabold tracking-tight">OKE</h2>
+        <span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2 py-0.5 rounded text-xs font-bold uppercase">Strongest</span>
+      </div>
+      <p class="text-slate-500 dark:text-slate-400 font-medium">Oneok Inc.</p>
+    </div>
+    <div class="lg:col-span-2 flex flex-col">
+      <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Trend Direction</span>
+      <div class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+        <span class="material-symbols-outlined font-bold">trending_up</span>
+        <span class="font-bold">UPWARD</span>
+      </div>
+    </div>
+    <div class="lg:col-span-2 flex flex-col">
+      <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Price</span>
+      <span class="text-2xl font-bold text-slate-900 dark:text-white">$87.42</span>
+    </div>
+    <div class="lg:col-span-2 flex flex-col">
+      <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">% Change (1y)</span>
+      <span class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">+33.08%</span>
+    </div>
+    <div class="lg:col-span-3 flex justify-end gap-2">
+      <button class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 transition-colors">
+        <span class="material-symbols-outlined">star</span>
+      </button>
+      <%= link_to login_path, class: "px-4 py-2 bg-primary text-white rounded-lg font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors" do %>
+        <span class="material-symbols-outlined text-sm">add</span>
+        Analyze
+      <% end %>
+    </div>
+  </div>
+
+  <%# ===== Dashboard Grid ===== %>
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <%# Technical Metrics (Left Sidebar) %>
+    <div class="lg:col-span-1 space-y-4">
+      <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
+        <h3 class="font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-xl">query_stats</span>
+          Stock Metrics
+        </h3>
+        <div class="space-y-4">
+          <% [
+            ["Mkt Cap", "$51.2B"],
+            ["P/E Ratio", "14.82"],
+            ["Div Yield", "4.48%"],
+            ["Volume", "3.1M"],
+            ["Shares Out.", "585.6M"]
+          ].each_with_index do |(label, value), i| %>
+            <div class="flex justify-between items-center py-2 <%= i < 4 ? 'border-b border-slate-50 dark:border-slate-800' : '' %>">
+              <span class="text-sm text-slate-500"><%= label %></span>
+              <span class="text-sm font-bold"><%= value %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%# Trend Score %>
+      <div class="bg-primary/10 dark:bg-primary/5 rounded-xl p-5 border border-primary/20">
+        <h3 class="font-bold text-primary mb-2 flex items-center gap-2 text-sm uppercase tracking-wider">
+          Trend Score
+        </h3>
+        <div class="flex items-end gap-2">
+          <span class="text-4xl font-black text-primary">94</span>
+          <span class="text-primary/60 font-medium mb-1">/ 100</span>
+        </div>
+        <p class="text-xs text-primary/70 mt-3 leading-relaxed">
+          OKE is showing exceptionally strong momentum relative to the S&P 500 energy sector.
+        </p>
+      </div>
+    </div>
+
+    <%# Chart Section (Right) %>
+    <div class="lg:col-span-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
+      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          <span class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">Performance Trend</span>
+          <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+            <button class="px-3 py-1 text-[11px] font-bold bg-white dark:bg-slate-700 rounded shadow-sm">1Y</button>
+            <button class="px-3 py-1 text-[11px] font-bold text-slate-500">5Y</button>
+            <button class="px-3 py-1 text-[11px] font-bold text-slate-500">MAX</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-400">
+          <div class="w-2 h-2 rounded-full bg-primary"></div>
+          <span>OKE Price History</span>
+        </div>
+      </div>
+      <div class="flex-1 min-h-[400px] p-8 relative bg-slate-50/30" style="background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px); background-size: 40px 40px;">
+        <%# SVG Line Chart %>
+        <div class="absolute inset-0 flex items-end px-12 pb-16">
+          <svg class="w-full h-full drop-shadow-lg" viewBox="0 0 1000 400" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#004a99" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#004a99" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,350 Q100,320 200,340 T400,280 T600,220 T800,120 T1000,50 L1000,400 L0,400 Z" fill="url(#lineGradient)"/>
+            <path d="M0,350 Q100,320 200,340 T400,280 T600,220 T800,120 T1000,50" fill="none" stroke="#004a99" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="200" cy="340" r="6" fill="white" stroke="#004a99" stroke-width="3"/>
+            <circle cx="400" cy="280" r="6" fill="white" stroke="#004a99" stroke-width="3"/>
+            <circle cx="600" cy="220" r="6" fill="white" stroke="#004a99" stroke-width="3"/>
+            <circle cx="800" cy="120" r="6" fill="white" stroke="#004a99" stroke-width="3"/>
+            <circle cx="1000" cy="50" r="8" fill="white" stroke="#004a99" stroke-width="4"/>
+          </svg>
+          <%# Tooltip %>
+          <div class="absolute top-2 right-12 bg-white dark:bg-slate-800 border border-primary/30 p-3 rounded shadow-xl pointer-events-none">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Nov 2024</p>
+            <p class="text-sm font-bold text-primary">$87.42</p>
+          </div>
+        </div>
+        <%# Y-axis labels %>
+        <div class="absolute left-4 top-8 bottom-16 flex flex-col justify-between text-[10px] font-bold text-slate-400">
+          <span>100</span><span>80</span><span>60</span><span>40</span><span>20</span>
+        </div>
+        <%# X-axis labels %>
+        <div class="absolute bottom-6 left-12 right-12 flex justify-between text-[10px] font-bold text-slate-400">
+          <span>JAN</span><span>MAR</span><span>MAY</span><span>JUL</span><span>SEP</span><span>NOV</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# ===== Info Cards ===== %>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4">
+      <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg text-primary">
+        <span class="material-symbols-outlined">account_balance</span>
+      </div>
+      <div>
+        <p class="text-xs text-slate-400 font-bold uppercase">Exchange</p>
+        <p class="font-bold">NYSE (New York Stock Exchange)</p>
+      </div>
+    </div>
+    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4">
+      <div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg text-purple-600">
+        <span class="material-symbols-outlined">factory</span>
+      </div>
+      <div>
+        <p class="text-xs text-slate-400 font-bold uppercase">Industry</p>
+        <p class="font-bold">Oil & Gas Midstream</p>
+      </div>
+    </div>
+    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4">
+      <div class="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg text-orange-600">
+        <span class="material-symbols-outlined">calendar_today</span>
+      </div>
+      <div>
+        <p class="text-xs text-slate-400 font-bold uppercase">Next Earnings</p>
+        <p class="font-bold">Feb 24, 2025</p>
+      </div>
+    </div>
+  </div>
+</div>
