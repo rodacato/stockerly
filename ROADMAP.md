@@ -18,7 +18,7 @@
 | 3 | Zona Autenticada (6 paginas estaticas) | Completada | ~69 |
 | 4 | Panel Admin (3 paginas estaticas) | Completada | 85 |
 | **4.5** | **Auditoria de Consistencia + System Tests** | **Pendiente** | - |
-| **4.6** | **Componentes Compartidos (6 pantallas nuevas)** | **Pendiente** | - |
+| 4.6 | Componentes Compartidos (8 pantallas nuevas) | Completada | 94 |
 | **5** | **Modelos, Migraciones y Seeds** | **Pendiente** | - |
 | **6** | **Backend (Use Cases, Events, CRUD)** | **Pendiente** | - |
 | **7** | **Integraciones Externas** | **Pendiente** | - |
