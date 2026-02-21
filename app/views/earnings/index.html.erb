@@ -1,6 +1,67 @@
-<div class="mb-8">
-  <h1 class="text-3xl font-black text-slate-900 dark:text-white">Earnings Calendar</h1>
-  <p class="text-slate-500 dark:text-slate-400 mt-1">Monitor upcoming financial reports and quarterly results</p>
+<%# Earnings Calendar — monitor upcoming financial reports %>
+
+<%# Header & Filters %>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+  <div>
+    <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Earnings Calendar</h1>
+    <p class="text-slate-500 dark:text-slate-400 mt-1">Monitor upcoming financial reports and quarterly results.</p>
+  </div>
+  <div class="flex flex-wrap items-center gap-4">
+    <%# Toggle: My Watchlist / All Markets %>
+    <div class="bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 flex shadow-sm">
+      <button class="px-4 py-1.5 text-sm font-semibold rounded-md transition-colors bg-primary text-white">My Watchlist</button>
+      <button class="px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary">All Markets</button>
+    </div>
+
+    <%# Month Navigator %>
+    <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm"
+         data-controller="calendar-nav"
+         data-calendar-nav-months-value='["September 2023", "October 2023", "November 2023", "December 2023", "January 2024", "February 2024"]'>
+      <button class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500" data-action="click->calendar-nav#previous">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <span class="text-sm font-bold px-2 text-slate-700 dark:text-slate-300" data-calendar-nav-target="label">October 2023</span>
+      <button class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500" data-action="click->calendar-nav#next">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+
+    <button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md hover:bg-primary/90 transition-all">
+      <span class="material-symbols-outlined text-sm">add</span> Add Ticker
+    </button>
+  </div>
 </div>
 
-<p class="text-slate-500">Earnings content coming soon...</p>
+<%# Main Layout: Sidebar + Calendar %>
+<div class="flex flex-col lg:flex-row gap-8">
+  <%# Left Sidebar %>
+  <aside class="w-full lg:w-80 flex flex-col gap-6 shrink-0">
+    <%= render "earnings/watchlist_priority" %>
+    <%= render "earnings/pro_tips" %>
+  </aside>
+
+  <%# Calendar Grid %>
+  <section class="flex-grow">
+    <%= render "earnings/calendar_grid" %>
+
+    <%# Legend %>
+    <div class="mt-6 flex flex-wrap items-center gap-6 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+      <div class="flex items-center gap-2">
+        <div class="size-3 bg-primary rounded-full"></div>
+        <span class="text-xs font-medium text-slate-600 dark:text-slate-400">Watchlist Active</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="size-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full"></div>
+        <span class="text-xs font-medium text-slate-600 dark:text-slate-400">General Market</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm text-slate-400">wb_sunny</span>
+        <span class="text-xs font-medium text-slate-600 dark:text-slate-400">Before Market Open</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm text-slate-400">nights_stay</span>
+        <span class="text-xs font-medium text-slate-600 dark:text-slate-400">After Market Close</span>
+      </div>
+    </div>
+  </section>
+</div>

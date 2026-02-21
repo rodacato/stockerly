@@ -1,0 +1,37 @@
+<%# Create New Alert form %>
+<section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+  <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
+    <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
+      <span class="material-symbols-outlined text-primary">add_circle</span>
+      Create New Alert
+    </h3>
+  </div>
+  <div class="p-6">
+    <%= form_with url: alerts_path, method: :post, class: "grid grid-cols-1 md:grid-cols-4 gap-4 items-end" do |f| %>
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-slate-500 uppercase">Ticker</label>
+        <input type="text" name="ticker" placeholder="e.g. NVDA"
+               class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm uppercase font-bold" />
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-slate-500 uppercase">Condition</label>
+        <select name="condition" class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm">
+          <option>Price Crosses Above</option>
+          <option>Price Crosses Below</option>
+          <option>% Day Change &gt;</option>
+          <option>RSI Overbought (&gt;70)</option>
+          <option>RSI Oversold (&lt;30)</option>
+        </select>
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-slate-500 uppercase">Threshold Value</label>
+        <input type="number" name="threshold" placeholder="Value" step="0.01"
+               class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm" />
+      </div>
+      <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2 rounded-lg transition-all flex items-center justify-center gap-2 text-sm shadow-md shadow-primary/20">
+        <span class="material-symbols-outlined text-sm">notifications_active</span>
+        Set Alert
+      </button>
+    <% end %>
+  </div>
+</section>
