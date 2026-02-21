@@ -65,7 +65,7 @@
 | 20 | Onboarding Wizard | app | Primer login post-registro | [SPEC](../designs/shared/onboarding/SPEC.md) | H |
 | 21 | Empty States | transversal | Condicion: sin datos | [SPEC](../designs/shared/empty-states/SPEC.md) | H |
 | 22 | Notification Panel | app | Click en campana (navbar) | [SPEC](../designs/shared/notification-panel/SPEC.md) | H |
-| 23 | News Feed | app | `/news` (TBD) | [SPEC](../designs/shared/news-feed/SPEC.md) | D |
+| 23 | News Feed | app | `/news` | [SPEC](../designs/shared/news-feed/SPEC.md) | H |
 | 24 | Global Search | app | Click/Cmd+K en search bar | [SPEC](../designs/shared/global-search/SPEC.md) | H |
 | 25 | Error Pages | shared | 404 / 500 errors | [SPEC](../designs/shared/error-pages/SPEC.md) | H |
 
@@ -78,8 +78,8 @@
 | complete (OK) | 4 |
 | tested (T) | 0 |
 | backend-wired (B) | 0 |
-| static-html (H) | 20 |
-| design (D) | 1 |
+| static-html (H) | 21 |
+| design (D) | 0 |
 | **Total** | **25** |
 
 ---

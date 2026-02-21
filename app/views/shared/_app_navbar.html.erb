@@ -25,7 +25,8 @@
           ["Market", market_path, "monitoring"],
           ["Portfolio", portfolio_path, "account_balance_wallet"],
           ["Alerts", alerts_path, "notifications_active"],
-          ["Earnings", earnings_path, "event_note"]
+          ["Earnings", earnings_path, "event_note"],
+          ["News", news_path, "newspaper"]
         ].each do |label, path, icon| %>
           <%= link_to path, class: "flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors #{current_page?(path) ? 'text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800'}" do %>
             <span class="material-symbols-outlined text-lg"><%= icon %></span>
@@ -75,6 +76,7 @@
         ["Portfolio", portfolio_path, "account_balance_wallet"],
         ["Alerts", alerts_path, "notifications_active"],
         ["Earnings", earnings_path, "event_note"],
+        ["News", news_path, "newspaper"],
         ["Profile", profile_path, "person"]
       ].each do |label, path, icon| %>
         <%= link_to path, class: "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors #{current_page?(path) ? 'text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800'}" do %>

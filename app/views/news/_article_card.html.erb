@@ -1,0 +1,18 @@
+<%# News Article Card — expects locals: source, time_ago, title, summary, tickers (array), image_icon %>
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow group">
+  <div class="aspect-video relative overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600"><%= local_assigns[:image_icon] || "article" %></span>
+  </div>
+  <div class="p-4">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-[10px] font-bold text-slate-500 uppercase"><%= source %> &bull; <%= time_ago %></span>
+    </div>
+    <h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2"><%= title %></h3>
+    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2"><%= summary %></p>
+    <div class="flex gap-2">
+      <% tickers.each do |ticker| %>
+        <span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded"><%= ticker %></span>
+      <% end %>
+    </div>
+  </div>
+</div>
