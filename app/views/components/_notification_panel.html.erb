@@ -1,0 +1,124 @@
+<%# Notification Panel — dropdown with hardcoded notification items %>
+
+<div class="hidden absolute right-0 mt-3 w-[380px] bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col z-60"
+     data-notification-target="panel">
+  <%# Header %>
+  <div class="px-4 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg">Notifications</h3>
+      <span class="bg-primary px-2 py-0.5 rounded-full text-[11px] font-bold text-white uppercase tracking-wider" data-notification-target="badge">4 new</span>
+    </div>
+    <button class="text-primary text-sm font-semibold hover:underline" data-action="click->notification#markAllAsRead">Mark all read</button>
+  </div>
+
+  <%# Scrollable List %>
+  <div class="max-h-[480px] overflow-y-auto">
+    <%# Item 1 — Unread: Price Alert %>
+    <div class="flex gap-4 px-4 py-4 bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors border-b border-slate-50 dark:border-slate-800 cursor-pointer" data-notification-target="item">
+      <div class="shrink-0 flex items-center justify-center size-10 rounded-full bg-amber-100 text-amber-600">
+        <span class="material-symbols-outlined">bolt</span>
+      </div>
+      <div class="flex flex-col flex-1">
+        <div class="flex items-center justify-between">
+          <p class="text-slate-900 dark:text-slate-100 text-sm font-semibold leading-tight">AAPL Price Alert Triggered</p>
+          <span class="text-slate-400 text-[11px]">2m ago</span>
+        </div>
+        <p class="text-slate-600 dark:text-slate-400 text-sm mt-1 leading-normal">Apple Inc. crossed above $180.00</p>
+        <div class="mt-2 flex items-center gap-1">
+          <div class="size-2 rounded-full bg-primary"></div>
+          <span class="text-[10px] text-primary font-bold uppercase tracking-tight">Price Movement</span>
+        </div>
+      </div>
+    </div>
+
+    <%# Item 2 — Unread: Earnings Reminder %>
+    <div class="flex gap-4 px-4 py-4 bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors border-b border-slate-50 dark:border-slate-800 cursor-pointer" data-notification-target="item">
+      <div class="shrink-0 flex items-center justify-center size-10 rounded-full bg-blue-100 text-blue-600">
+        <span class="material-symbols-outlined">calendar_today</span>
+      </div>
+      <div class="flex flex-col flex-1">
+        <div class="flex items-center justify-between">
+          <p class="text-slate-900 dark:text-slate-100 text-sm font-semibold leading-tight">Earnings Reminder: NVDA</p>
+          <span class="text-slate-400 text-[11px]">1h ago</span>
+        </div>
+        <p class="text-slate-600 dark:text-slate-400 text-sm mt-1 leading-normal">NVIDIA reports earnings tomorrow (AMC)</p>
+        <div class="mt-2 flex items-center gap-1">
+          <div class="size-2 rounded-full bg-primary"></div>
+          <span class="text-[10px] text-primary font-bold uppercase tracking-tight">Calendar Event</span>
+        </div>
+      </div>
+    </div>
+
+    <%# Item 3 — Unread: Crypto Alert %>
+    <div class="flex gap-4 px-4 py-4 bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors border-b border-slate-50 dark:border-slate-800 cursor-pointer" data-notification-target="item">
+      <div class="shrink-0 flex items-center justify-center size-10 rounded-full bg-orange-100 text-orange-600">
+        <span class="material-symbols-outlined">bolt</span>
+      </div>
+      <div class="flex flex-col flex-1">
+        <div class="flex items-center justify-between">
+          <p class="text-slate-900 dark:text-slate-100 text-sm font-semibold leading-tight">BTC Volatility Alert</p>
+          <span class="text-slate-400 text-[11px]">3h ago</span>
+        </div>
+        <p class="text-slate-600 dark:text-slate-400 text-sm mt-1 leading-normal">Bitcoin 24h change exceeded 5%</p>
+        <div class="mt-2 flex items-center gap-1">
+          <div class="size-2 rounded-full bg-primary"></div>
+          <span class="text-[10px] text-primary font-bold uppercase tracking-tight">Crypto Alert</span>
+        </div>
+      </div>
+    </div>
+
+    <%# Item 4 — Unread: System Update %>
+    <div class="flex gap-4 px-4 py-4 bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors border-b border-slate-50 dark:border-slate-800 cursor-pointer" data-notification-target="item">
+      <div class="shrink-0 flex items-center justify-center size-10 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+        <span class="material-symbols-outlined">settings</span>
+      </div>
+      <div class="flex flex-col flex-1">
+        <div class="flex items-center justify-between">
+          <p class="text-slate-900 dark:text-slate-100 text-sm font-semibold leading-tight">Market Data Updated</p>
+          <span class="text-slate-400 text-[11px]">4h ago</span>
+        </div>
+        <p class="text-slate-600 dark:text-slate-400 text-sm mt-1 leading-normal">All watchlist prices refreshed</p>
+        <div class="mt-2 flex items-center gap-1">
+          <div class="size-2 rounded-full bg-primary"></div>
+          <span class="text-[10px] text-primary font-bold uppercase tracking-tight">System Update</span>
+        </div>
+      </div>
+    </div>
+
+    <%# Item 5 — Read: Earnings Results %>
+    <div class="flex gap-4 px-4 py-4 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-50 dark:border-slate-800 cursor-pointer">
+      <div class="shrink-0 flex items-center justify-center size-10 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500">
+        <span class="material-symbols-outlined">calendar_today</span>
+      </div>
+      <div class="flex flex-col flex-1">
+        <div class="flex items-center justify-between">
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-tight">Earnings: TSLA Results</p>
+          <span class="text-slate-400 text-[11px]">Yesterday</span>
+        </div>
+        <p class="text-slate-500 dark:text-slate-500 text-sm mt-1 leading-normal">Tesla beat EPS estimates ($1.85 vs $1.72)</p>
+      </div>
+    </div>
+
+    <%# Item 6 — Read: Price Alert %>
+    <div class="flex gap-4 px-4 py-4 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+      <div class="shrink-0 flex items-center justify-center size-10 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500">
+        <span class="material-symbols-outlined">bolt</span>
+      </div>
+      <div class="flex flex-col flex-1">
+        <div class="flex items-center justify-between">
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-tight">MSFT Price Alert</p>
+          <span class="text-slate-400 text-[11px]">2 days ago</span>
+        </div>
+        <p class="text-slate-500 dark:text-slate-500 text-sm mt-1 leading-normal">Microsoft crossed below $410.00</p>
+      </div>
+    </div>
+  </div>
+
+  <%# Footer %>
+  <div class="border-t border-slate-100 dark:border-slate-800 p-3 bg-slate-50/50 dark:bg-slate-900/50 flex justify-center">
+    <button class="text-primary text-sm font-bold hover:text-primary/80 transition-colors flex items-center gap-1">
+      View All Notifications
+      <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    </button>
+  </div>
+</div>

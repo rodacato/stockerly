@@ -34,10 +34,14 @@
       <%# Right Actions %>
       <div class="flex items-center gap-3 shrink-0">
         <%# Notifications %>
-        <button class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors">
-          <span class="material-symbols-outlined text-xl">notifications</span>
-          <span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500"></span>
-        </button>
+        <div class="relative" data-controller="notification">
+          <button class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors"
+                  data-action="click->notification#toggle">
+            <span class="material-symbols-outlined text-xl">notifications</span>
+            <span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500"></span>
+          </button>
+          <%= render "components/notification_panel" %>
+        </div>
 
         <%# Avatar / Profile %>
         <%= link_to profile_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do %>
