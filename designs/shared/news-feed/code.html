@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Market News | Stockerly</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#004a99",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1923",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<!-- Logo & Nav -->
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-3xl font-bold">trending_up</span>
+<span class="text-xl font-black tracking-tight text-slate-900 dark:text-white">Stockerly</span>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-semibold text-primary" href="#">Markets</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Portfolio</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Alerts</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Earnings</a>
+</nav>
+</div>
+<!-- Right Utilities -->
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-64" placeholder="Search markets..." type="text"/>
+</div>
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2.5 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden">
+<img alt="Profile" class="h-full w-full object-cover" data-alt="User profile avatar placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBioSDuzmN51h0-Zqp7wqRhuD1onElEmmiwKDM560AkUDulFig7zbYHOfn6d-ervE1W5waFKzrdUlqJVq-W5UekJn_vg6yoKB3WMe0EzyTKw30youSt_apCJb6nS_f1w-yR488_KXOPC7RgfzrQxadTbMKq0tzi3NdXcy902trv1bi1f6UT2sOJymGoEGoP6_XUHa8dIqA4pNHWeeZinKbQu63kNJvZtEKWuzxlhZyD0hz8ie6yOA-kUTNzn0C1JX_x6xKTSR6mpyv7"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<!-- Page Title -->
+<div class="mb-8">
+<h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Market News</h1>
+<p class="text-slate-600 dark:text-slate-400 mt-1">Stay informed about your watchlist and global trends.</p>
+</div>
+<!-- Filters Section -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-2">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2">Tickers:</span>
+<button class="px-3 py-1 rounded-full text-xs font-bold bg-primary text-white">AAPL</button>
+<button class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200">TSLA</button>
+<button class="px-3 py-1 rounded-full text-xs font-bold bg-primary text-white">NVDA</button>
+<button class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200">BTC</button>
+<button class="p-1 rounded-full border border-dashed border-slate-300 dark:border-slate-700 text-slate-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative group">
+<button class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300">
+                            Source: All
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+<div class="relative group">
+<button class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300">
+                            Time: Today
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left Content Area -->
+<div class="lg:col-span-2 space-y-8">
+<!-- Featured Article -->
+<article class="group relative overflow-hidden rounded-2xl bg-slate-900 h-[450px]">
+<img alt="NVIDIA Headquarters" class="absolute inset-0 h-full w-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" data-alt="High-tech semiconductor manufacturing clean room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1N00XSH1mT9CWz4F1ypnl2E2Rk_PR5ONT46rsZVZjlGXMcfkmnX_brAMzPOANm6KHqIOBYhL8EGBw-Xg5HFPAoE6HV4uYRkPwF3Y-Iw8Z02SY_QQFYT5DtTrOxzgt_Kphma1i_ypS7rZAtg4qi2L8CiQ9dA9BNvVxjmROulPxMFPEMqHbESHOTsw1kbxTY0ThgoDxcpz7--KxdWLH7x0alfkuTYPCXI6CE0yks1Jqt5BFFrGADU-ORIoiu7N-6yLrcV1gqnPQ3Ub-"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+<div class="absolute bottom-0 p-8 w-full">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-primary text-white text-[10px] font-black px-2 py-0.5 rounded tracking-widest uppercase">Bloomberg</span>
+<span class="text-slate-300 text-xs font-medium">2 hours ago</span>
+</div>
+<h2 class="text-3xl md:text-4xl font-black text-white leading-tight mb-4 max-w-2xl">NVIDIA Surpasses Expectations with Record Q4 Revenue</h2>
+<p class="text-slate-300 text-lg line-clamp-2 max-w-3xl mb-6">NVIDIA Corp. reported fourth-quarter results that beat analysts' estimates for revenue and earnings per share, fueled by strong demand for its AI chips across data centers globally.</p>
+<div class="flex items-center gap-2">
+<span class="bg-primary/30 backdrop-blur-md border border-primary/40 text-blue-200 text-xs font-bold px-3 py-1 rounded-md">NVDA</span>
+<span class="bg-slate-800/60 backdrop-blur-md border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-md">SOXX</span>
+<button class="ml-auto flex items-center gap-2 text-white font-bold group">
+                                Read Full Story
+                                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Grid of News Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Card 1 -->
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow group">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Apple Phone" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Modern smartphone and tablet on clean desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCC1KRUofY_uE6idbW00oFE8VMv09X6blAlD6mNrPMqK5Xi9-dYgM9KzPqhZGgnZ0cn531Ge3ReBaKdqGNPLBPMvnSqYiBnF7L28VN6Cez4OP87ZWfRKRn4Q5hmDctOsaESEoIh3Ca-4VnJPdQ_drnMEnzVgelf8YuxObP4_FNGdjjPvduUTux4OOuW_1b6UmtW3wVAH2Fu0CkKQazGB_Xz8MnUnoR3hia5Cyl0nw3shX3XALnlVHY56ezk78aaQxJaR3bz10bMwhVN"/>
+</div>
+<div class="p-4">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase">Reuters • 4h ago</span>
+</div>
+<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2">Apple Earnings Preview: Services Growth and iPhone 15 Demand in Focus</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">Wall Street analysts expect strong growth from Apple's services segment despite global supply headwinds.</p>
+<div class="flex gap-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">AAPL</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">QQQ</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow group">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Bitcoin Gold Coin" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Gold physical bitcoin coin on keyboard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8iZBc3cszrkcDbdxOFS6PY9hNTt9XuGpIWu3Qdrr5OhOSlCr5KEcjyvgM8vUhZksuuJLcaeHDslpclAC081m_jmU1zWGRljs4h8o8UqvtjlN_lVDKro5XFhJEqOei6uBgipv-UIc92E0B8gpYBlOb6JZ1tJcT8dFKVZh5ZKOvL4T_GpY15lrgrrwEYXBxJ-gsW6-dZ4J5IqZtWOA0P00QozVHUvcuu7WBuq9aCfkn-JXYqiwssFkdn6PLE31hWbXwh1ijnBjnGifQ"/>
+</div>
+<div class="p-4">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase">WSJ • 5h ago</span>
+</div>
+<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2">Bitcoin Rally Hits New Yearly High as ETF Optimism Surges</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">Institutional inflows continue to drive the crypto market higher ahead of the halving event later this year.</p>
+<div class="flex gap-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">BTC</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">MARA</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow group">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Federal Reserve Building" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Classical architecture of federal bank building" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFyt91dJ6nJ8-XGVqpfXGooU4dHuD0Jb9D6Eo4OLwGpuZf4iKTNtqwBT3RJZ_MHeuCk8R2UNZGhVAZVUOPB-mos70S8EQ3vCbqVu5hbHq8Vq2YGrS2Fi0IGQUKpN2FpgT_kaTm-jfsMYrISNfZy_YTDPz9H0izUXRwvzO3WutvdMQlJHV71HZIMELQb8fc8kJLuhSAEQLDVtlJSxKYOMVy9LcPJICydSL1GIDPqMXipGCXy5gP3Iiw1-afx3UcR-3AnSBitFsE1LFK"/>
+</div>
+<div class="p-4">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase">CNBC • 6h ago</span>
+</div>
+<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2">Fed Policy Shift Expected: Rate Cuts May Come Sooner Than Antipated</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">Recent CPI data suggests inflation is cooling, giving the central bank room to pivot by summer.</p>
+<div class="flex gap-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">SPY</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">DIA</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow group">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Electric Vehicle Charging" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Electric car charging station at night" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhWMN8bFOPy2zrY81Y2sGXjJZzsDCCd6tSfP9XZ81lHZVzb1rdc6bnGH063PqXLaBHD-NCnaP20ne130VatYk_G3l8wCmywppPPBMGrbWLaP9a1nnO2-9Eyr9JS1MPbvvO_FZXiVF9rKeOh_bEYOJve2pvcjvQIi78y8BwGf1XWOxYkRjQZP9u-Dvc8QnuWxh88v62acKY8hGIX5RdAx5xtWc8gN4TQmhiBDZUlO1LuNZZHj_ZEwBJPfOJ-35r_E-CNLDD9ksfNndo"/>
+</div>
+<div class="p-4">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase">Bloomberg • 8h ago</span>
+</div>
+<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2">Tesla Expands Gigafactory Production to Meet Growing Global EV Demand</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">Elon Musk announces plans for a new entry-level model aimed at emerging markets and European buyers.</p>
+<div class="flex gap-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">TSLA</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">RIVN</span>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow group">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Growth Charts" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Blue digital growth charts and data" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcU-ANb5uQrnyWssxqJfIpdufc7o3pyP1pIV6q65evX7XjSJcKrbXjslAQmcCPI9ZvyUPm4-t_LEJcZoRuV3vBe4G2zHdMJRZ0Qg5ITqVIBD1SNrDZ8VCFUzzmf7IHBTHMMNqAbFl1bS2eGc59WKfaPrgzBLFD5aT00SZv6AuLVPWmk1jVuYk9ByKJo5a69i0KZhsaGy8O6Zh-qLQX4PhZhyjzwQAISm78AvXmBHXOuh1POaJQawRotG-94uC_p0J0DxO7eY89h29a"/>
+</div>
+<div class="p-4">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase">Reuters • 10h ago</span>
+</div>
+<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2">AI Software Sector Sees 40% Increase in Venture Capital Inflows</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">Enterprise software startups are attracting record funding as AI integration becomes a corporate standard.</p>
+<div class="flex gap-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">MSFT</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">GOOGL</span>
+</div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow group">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Oil Rigs" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Offshore oil rig at sunset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6reCMNQhYjIF75tFl-bWBaJ2f4OugrdZ_sLeror4R0BfrnigceE12dBPGqkoVsfEDgLn_mn49vx_xL-86sBBeGkeNbXqzGMnaJaEAnW-7WKE_3eWnGar-s-M8tFB_d6RPr3RynkZsOQI2WjtBJcm-aOIx1uDk2VbNgT3VUOMu7EwXnDfp9PJ316oUlOahN_gsVrzUAN7Yg3sebjx9wubBpXTYmbZ9aEPTUZSADap1q2dTMpvsEEKnLckZXJ3eyRubtucQXw_XPvuw"/>
+</div>
+<div class="p-4">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase">CNBC • 12h ago</span>
+</div>
+<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2">Oil Prices Stabilize Amid Tighter Supply and Geopolitical Tensions</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">OPEC+ production cuts continue to support Brent crude prices above the $80 mark despite rising US output.</p>
+<div class="flex gap-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">XOM</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">CVX</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Load More -->
+<div class="flex justify-center py-4">
+<button class="px-8 py-3 rounded-lg border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+                        Load More News
+                        <span class="material-symbols-outlined text-sm">autorenew</span>
+</button>
+</div>
+</div>
+<!-- Right Sidebar -->
+<aside class="space-y-8">
+<!-- Trending Topics -->
+<section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<h2 class="text-lg font-black text-slate-900 dark:text-white mb-4">Trending Topics</h2>
+<div class="flex flex-wrap gap-2">
+<a class="px-3 py-1.5 bg-primary/5 hover:bg-primary/10 border border-primary/20 rounded-lg text-xs font-semibold text-primary" href="#">AI Stocks</a>
+<a class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-transparent rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400" href="#">Earnings Season</a>
+<a class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-transparent rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400" href="#">Crypto</a>
+<a class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-transparent rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400" href="#">Fed Policy</a>
+<a class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-transparent rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400" href="#">EV Market</a>
+<a class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-transparent rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400" href="#">Inflation</a>
+</div>
+</section>
+<!-- From Your Watchlist -->
+<section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-black text-slate-900 dark:text-white">From Your Watchlist</h2>
+<button class="text-primary text-xs font-bold hover:underline">View All</button>
+</div>
+<div class="space-y-5">
+<div class="group cursor-pointer">
+<h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-tight">Amazon announces major expansion of its delivery fleet</h4>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">AMZN • 15m ago</p>
+</div>
+<div class="group cursor-pointer">
+<h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-tight">Meta stock price target raised to $550 by top analyst</h4>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">META • 45m ago</p>
+</div>
+<div class="group cursor-pointer">
+<h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-tight">Microsoft integrates ChatGPT into entire product suite</h4>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">MSFT • 2h ago</p>
+</div>
+<div class="group cursor-pointer">
+<h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-tight">Coinbase sees record trading volume as market rallies</h4>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">COIN • 3h ago</p>
+</div>
+</div>
+</section>
+<!-- Newsletter Callout -->
+<section class="bg-primary p-6 rounded-xl shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="text-white font-black text-lg mb-2">Morning Market Brief</h3>
+<p class="text-blue-100 text-sm mb-4">The top stories moving the markets, delivered to your inbox every trading day.</p>
+<button class="w-full py-2 bg-white text-primary font-bold rounded-lg text-sm hover:bg-blue-50 transition-colors">Subscribe Now</button>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-7xl text-white/10 rotate-12 pointer-events-none">mail</span>
+</section>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-12 py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
+<div class="col-span-2">
+<div class="flex items-center gap-2 text-primary mb-6">
+<span class="material-symbols-outlined text-2xl font-bold">trending_up</span>
+<span class="text-xl font-black tracking-tight text-slate-900 dark:text-white">Stockerly</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm max-w-xs leading-relaxed">
+                        A modern fintech intelligence platform helping investors make informed decisions through real-time data and news.
+                    </p>
+</div>
+<div>
+<h5 class="text-slate-900 dark:text-white font-bold text-sm mb-4">Platform</h5>
+<ul class="space-y-2 text-sm text-slate-500 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Market Data</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Portfolio Tracker</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Strategy Builder</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Earnings Calendar</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-slate-900 dark:text-white font-bold text-sm mb-4">Company</h5>
+<ul class="space-y-2 text-sm text-slate-500 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Blog</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Press</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-slate-900 dark:text-white font-bold text-sm mb-4">Support</h5>
+<ul class="space-y-2 text-sm text-slate-500 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Help Center</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Security</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">API Docs</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-slate-900 dark:text-white font-bold text-sm mb-4">Legal</h5>
+<ul class="space-y-2 text-sm text-slate-500 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Cookie Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest font-bold">
+                    © 2024 Stockerly Inc. All rights reserved.
+                </p>
+<div class="flex items-center gap-6">
+<a class="text-slate-400 hover:text-primary" href="#"><span class="material-symbols-outlined text-xl">share</span></a>
+<a class="text-slate-400 hover:text-primary" href="#"><span class="material-symbols-outlined text-xl">account_balance</span></a>
+<a class="text-slate-400 hover:text-primary" href="#"><span class="material-symbols-outlined text-xl">public</span></a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

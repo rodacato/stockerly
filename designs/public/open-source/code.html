@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TrendStocker Community | Open Source Market Analysis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#004a99",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1923",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-2 group" href="#">
+<div class="text-primary">
+<svg class="w-8 h-8" fill="currentColor" viewbox="0 0 48 48">
+<path clip-rule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">TrendStocker</span>
+</a>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Product</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Pricing</a>
+<a class="text-sm font-medium text-primary underline underline-offset-4" href="#">Community</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Docs</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-1.5 border border-transparent focus-within:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 placeholder:text-slate-500" placeholder="Search documentation..." type="text"/>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-sm">Sign In</button>
+</div>
+</div>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-32">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="flex flex-col lg:flex-row items-center gap-12">
+<div class="flex-1 text-center lg:text-left">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-6">
+<span class="material-symbols-outlined text-base">favorite</span>
+                            100% Free &amp; Open Source
+                        </div>
+<h1 class="text-5xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-6">
+                            Built by the community, <span class="text-primary underline decoration-primary/30">for the community.</span>
+</h1>
+<p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed">
+                            TrendStocker is an open-source engine for financial market analysis. Join thousands of developers building a transparent future for trading tools.
+                        </p>
+<div class="flex flex-wrap justify-center lg:justify-start gap-4">
+<button class="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">terminal</span>
+                                View on GitHub
+                            </button>
+<button class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-8 py-4 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">menu_book</span>
+                                Read Docs
+                            </button>
+</div>
+<div class="mt-8 flex items-center justify-center lg:justify-start gap-4">
+<div class="flex -space-x-2">
+<img alt="Contributor avatar" class="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-900" data-alt="Portrait of a young male software developer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEyeo0U86X4UYrCWrwgg-YUKsa_DFMpVHeyMB1nhi0YkefV70OGhHo8K3wyccoxAe0KWpjNLOj-HoC9LNnt9lv9JFgVVEB_xnRYf_ledJPATb8vYiKx2aew3jMLzxhRYcahdwo7FgRNgMapUh8N2KlW-h4tpren619MFs-dOd7G36vq44PxOfF209nbezv2G7UXDEF5PP7O9vBznA5fJHoYomy1kJX2v40OkSqVM9FETU9N2FBSbAw6iyD4xfaOl5XtBjHXzzxWm9y"/>
+<img alt="Contributor avatar" class="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-900" data-alt="Portrait of a smiling female engineer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk9KMaobQJXdZTFEH1ZaAc_to8yo7LC4LM51Nayuuy8VldErx5YwRjJ9J1Qa8H6F8eGG-oO6_V_BuyY0RGZt6AQAB607qKxs1pzf_p9KojYVNxRGPrXwrzE04H_IxHkrAQfoMIdjRWaCkgMuWsADPkduZLhX3mS-KV77EOvG5ep4czT67d9ca-xgidPgPzbIvWWu4RMd3tvFteB8Ue-73SojWc5LXFNKE1JxuSv5ghxij022d_Cri5GQN41ZMD1b_7maF67vzUbN0M"/>
+<img alt="Contributor avatar" class="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-900" data-alt="Portrait of a developer with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6UjM0bn1yTJkt9W7tKbzY75ySxfI3QAauGAv6hD0Iinm5xTdInFTr2ons_8WzZaxqE58GibGaBnnysdmcxfEJdxXdNfp7dKoLToeiioS8XQoUPpc8Pa1Hue4Di2wwkSQqxDjmLBtJ4RgxJMEUwD6R9HgzRnj3Ec_ZNwWPYXAo6oPirD8u2s1G1_Ld-RAp9gK-IRjlkWrjcoc1zHLaSGHgfbYMWDXKHHTCYuZ5E5fmYOpeJea_FPoP7U2m2COuBM366leJ3KR9Qp2W"/>
+<div class="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-900 bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-500">+12k</div>
+</div>
+<p class="text-sm text-slate-500">Trusted by over 12,000+ contributors</p>
+</div>
+</div>
+<div class="flex-1 w-full max-w-xl">
+<div class="bg-slate-900 rounded-2xl p-4 shadow-2xl border border-slate-800">
+<div class="flex items-center gap-2 mb-4 border-b border-slate-800 pb-2 px-2">
+<div class="w-3 h-3 rounded-full bg-red-500"></div>
+<div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+<div class="w-3 h-3 rounded-full bg-green-500"></div>
+<div class="ml-4 text-xs font-mono text-slate-500">zsh — contributor-setup</div>
+</div>
+<div class="font-mono text-sm space-y-2 p-2 overflow-x-auto">
+<p class="text-green-400">$ git clone https://github.com/trendstocker/core.git</p>
+<p class="text-slate-300">Cloning into 'core'...</p>
+<p class="text-slate-300">Receiving objects: 100% (4521/4521), done.</p>
+<p class="text-green-400">$ cd core &amp;&amp; npm install</p>
+<p class="text-slate-300">Added 1242 packages from 842 contributors...</p>
+<p class="text-green-400">$ npm run dev</p>
+<p class="text-primary font-bold">TrendStocker Core v4.2.0 is running!</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Decoration -->
+<div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+</section>
+<!-- Why Open Source Section -->
+<section class="py-20 bg-white dark:bg-slate-900/50">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="mb-16">
+<h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">Why Open Source?</h2>
+<p class="text-slate-600 dark:text-slate-400 max-w-2xl">We believe financial tools should be as transparent as the markets themselves. Open source ensures security, accuracy, and longevity.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-background-light dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/40 transition-colors group">
+<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined text-3xl">visibility</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Total Transparency</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">Audit every calculation. We have nothing to hide—our algorithms are open for public verification and improvement.</p>
+</div>
+<div class="bg-background-light dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/40 transition-colors group">
+<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined text-3xl">groups</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Community Innovation</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">New technical indicators and chart types are added weekly by experts from around the world.</p>
+</div>
+<div class="bg-background-light dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/40 transition-colors group">
+<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined text-3xl">lock_open</span>
+</div>
+<h3 class="text-xl font-bold mb-3">No Vendor Lock-in</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">It's your data and your tool. Run TrendStocker on your own servers or customize it to fit your unique strategy.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- How to Contribute Section -->
+<section class="py-20">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="bg-primary rounded-[2rem] p-8 lg:p-16 text-white overflow-hidden relative shadow-2xl">
+<div class="relative z-10 flex flex-col lg:flex-row gap-12 items-center">
+<div class="flex-1">
+<h2 class="text-4xl font-black mb-6">Start Contributing in 5 Minutes</h2>
+<p class="text-primary-100/80 text-lg mb-10 leading-relaxed max-w-lg">Whether you're a seasoned developer or a documentation pro, we need your help to make TrendStocker better.</p>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold flex-shrink-0">1</div>
+<div>
+<h4 class="font-bold text-lg">Fork the Repository</h4>
+<p class="text-white/70">Create your own copy of the codebase on GitHub.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold flex-shrink-0">2</div>
+<div>
+<h4 class="font-bold text-lg">Claim an Issue</h4>
+<p class="text-white/70">Pick a bug or feature from our "good first issue" list.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold flex-shrink-0">3</div>
+<div>
+<h4 class="font-bold text-lg">Submit a Pull Request</h4>
+<p class="text-white/70">We'll review your code and merge it into the main project.</p>
+</div>
+</div>
+</div>
+<div class="mt-12">
+<button class="bg-white text-primary px-8 py-4 rounded-xl font-bold hover:bg-slate-100 transition-colors shadow-xl">
+                                    Browse Issues on GitHub
+                                </button>
+</div>
+</div>
+<div class="flex-1 w-full flex justify-center">
+<div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 w-full max-w-sm">
+<h4 class="font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-yellow-400">star</span>
+                                    Project Stats
+                                </h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center border-b border-white/10 pb-2">
+<span class="text-white/70">GitHub Stars</span>
+<span class="font-mono font-bold">14.2k</span>
+</div>
+<div class="flex justify-between items-center border-b border-white/10 pb-2">
+<span class="text-white/70">Active PRs</span>
+<span class="font-mono font-bold">24</span>
+</div>
+<div class="flex justify-between items-center border-b border-white/10 pb-2">
+<span class="text-white/70">Forks</span>
+<span class="font-mono font-bold">1,842</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-white/70">Contributors</span>
+<span class="font-mono font-bold">452</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative Svg -->
+<div class="absolute bottom-0 right-0 opacity-10 pointer-events-none">
+<svg fill="currentColor" height="400" viewbox="0 0 100 100" width="400">
+<circle cx="100" cy="100" r="100"></circle>
+</svg>
+</div>
+</div>
+</div>
+</section>
+<!-- Contributors Section -->
+<section class="py-20 bg-background-light dark:bg-background-dark">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">Our Hall of Fame</h2>
+<p class="text-slate-600 dark:text-slate-400">Deep gratitude to the individuals pushing TrendStocker forward every single day.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+<!-- Contributor Card -->
+<div class="flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-transform hover:-translate-y-1">
+<img alt="Contributor" class="w-16 h-16 rounded-full mb-3" data-alt="Portrait of a smiling male contributor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAx9Z3g_uUWGq51x6NA1OSpQDazqvMWyjCSCAluNOETt35cKOks7agXb5Vw560yblO-xE14keqfQMeqvm7gNXZo1BDXpl_wgz14zubIofvPYS3gSo3Ev16HvB9cH-V0T9g3sp2EnwzYzu7iaYpD879b3ZE_N1OW0onQFxNqaba3DGm5QnfP3ZLFr7sc95TTbsS5FEtzI-1wv2wb3K5qw5Agl2e43Kd_-L7m8jtNaOhxF59wCVaQqVx3hweBoTcr4ofEF4L8YYg4MBUV"/>
+<p class="font-bold text-sm">Alex Rivera</p>
+<p class="text-xs text-primary font-medium">124 commits</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-transform hover:-translate-y-1">
+<img alt="Contributor" class="w-16 h-16 rounded-full mb-3" data-alt="Portrait of a professional woman developer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDuweCLKHGzodkBvdDGMk52Id_73mWu14IUR_jUepfPWkRXgAoiH7zQvCFsot67eeF-PW1S1bWO3iPJ2oN4EGISruAQ8EgT_GRJfx-OEAD8BHX22LHCoVu6GFYCflDnwBqoyju43j2pH5a0WgM2EL6BFltE-Va4KhGtzbz2_kqWwmkHiwoopzG4aKFqWwMUzwF9SLv89zIBMw0xELHB4xTAokG3pwqtDdpFKLQJJauHIro3R0_VFjuavX6gf3e5PGYuxB7Qzle4miX"/>
+<p class="font-bold text-sm">Sarah Chen</p>
+<p class="text-xs text-primary font-medium">98 commits</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-transform hover:-translate-y-1">
+<img alt="Contributor" class="w-16 h-16 rounded-full mb-3" data-alt="Portrait of a senior software engineer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxcZesN3_j4cXAf1yqSazkrr0gD6NWyxxXy2--d1rkoN7wfj6R0SToKPo2e4o1ghQlpo-flCv_wrZkkG8V8LVEo3-UnI5Ble1RRl-_7SQixX2B9EsjMwihZi1xKQx5hg-VZoK6StirxddpPGDp_t9u0BMNhb7PoI42sV-kvvA2-fIWvXQHWtblYvPYTMhu4NKyN6fvIswnIh-cQkVp3jMs8AwhUvpKu_9CaJRBrcHuYMYXOCVZ91w0Snxb0BjBYYHFZujhc7OoOzmL"/>
+<p class="font-bold text-sm">Marcus Vogt</p>
+<p class="text-xs text-primary font-medium">85 commits</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-transform hover:-translate-y-1">
+<img alt="Contributor" class="w-16 h-16 rounded-full mb-3" data-alt="Portrait of a female frontend developer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEh1paxaPR_-h8yVp7EBNbS-x6vSeM9q_-GjDiqmirAsvdwJoHi4AwSAhZ4S4tLCY2WqWCLED3M6tD9KLFl48B8344NmW6W0XzkLAhNxaM_ecXp_3o8Jq0qxHA4iZW7svXc7BZkBWUTQoMOOGVxBznoYuHgNFGfifIH_e7DyxENo3CwaCjbuLcxUJS7nwlCxVzjr3oNKVPyLQLU6EamxmScTueWzOs3o-t7gg2V2-CejKa00Clof-5bq1O47tE87Qb7qjVB-SDKkOK"/>
+<p class="font-bold text-sm">Elena Petrova</p>
+<p class="text-xs text-primary font-medium">72 commits</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-transform hover:-translate-y-1">
+<img alt="Contributor" class="w-16 h-16 rounded-full mb-3" data-alt="Portrait of a male developer with a beard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4sDNfI63zBebxo7Svlk6ws-P3dihBtZB4T6DQ3xTFCqDDyRFHJ4XQz83Yu--ltlaQix24yZB52cCeNkCg8y94IbljYdnZs3iCU9RP9-AbF9xSQNM9DMypnYrJuog3h7SNfp27fqaGfZvADazN3_O5Ae5_lhsPahISfe4kZmuKc_W3j14M-7m9nffGTQqjn0fQtwRO7ydcjebACFm6SVtxVKsdtFMvuoOH8YGF1yLDj1OrrwZ_DYsmFCK8LUXToyuY_4jiYKrcaO2u"/>
+<p class="font-bold text-sm">David Kim</p>
+<p class="text-xs text-primary font-medium">64 commits</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-transform hover:-translate-y-1">
+<img alt="Contributor" class="w-16 h-16 rounded-full mb-3" data-alt="Portrait of a female software architect" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-rZWIZR6RCflWRyGNHpI8fv7R86uB8dolEg8H1aNNdRhxdmU1-knztUnLcgeTY9pL_UZzHUAmrV0Bps6scxkKVNykcn39akSOLvkpL-t2cAg69XsIgkZ9ZdwLgvXLQWAyuosFY-36cD8a7KFZG1S35OKQKk2iBQChvk37CuiFKOXUmnpqFXPUlAKsLlKKvlt-sZmQBTMbUn-s9bQM5xCxGUN4iS9ms9l1WV6hvmJzSk38AoCr-PZNb8q-QoW5JbC0Ip0HKp2U9YPX"/>
+<p class="font-bold text-sm">Maya Patel</p>
+<p class="text-xs text-primary font-medium">55 commits</p>
+</div>
+</div>
+<div class="mt-12 text-center">
+<a class="text-primary font-bold hover:underline flex items-center justify-center gap-1" href="#">
+                        View all contributors on GitHub
+                        <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- Final Call to Action -->
+<section class="py-20 border-t border-slate-200 dark:border-slate-800">
+<div class="max-w-4xl mx-auto px-4 text-center">
+<h2 class="text-4xl font-black mb-6">Ready to make an impact?</h2>
+<p class="text-lg text-slate-600 dark:text-slate-400 mb-10">Help us build the most powerful, free, and open-source financial analysis tool in the world.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-primary text-white px-10 py-4 rounded-xl font-bold shadow-xl shadow-primary/20 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">star</span>
+                        Star on GitHub
+                    </button>
+<button class="bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+                        Join Discord Community
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+<div class="col-span-2 lg:col-span-2">
+<a class="flex items-center gap-2 mb-4" href="#">
+<div class="text-primary">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 48 48">
+<path clip-rule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="text-lg font-bold tracking-tight">TrendStocker</span>
+</a>
+<p class="text-slate-500 text-sm max-w-xs leading-relaxed">
+                        Open source market analysis for the modern developer. Empowering everyone with institutional-grade tools.
+                    </p>
+</div>
+<div>
+<h5 class="font-bold text-sm uppercase tracking-wider mb-4">Project</h5>
+<ul class="space-y-2 text-sm text-slate-500">
+<li><a class="hover:text-primary transition-colors" href="#">Source Code</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Documentation</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Releases</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Issue Tracker</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold text-sm uppercase tracking-wider mb-4">Community</h5>
+<ul class="space-y-2 text-sm text-slate-500">
+<li><a class="hover:text-primary transition-colors" href="#">GitHub</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Discord</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Twitter</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Code of Conduct</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold text-sm uppercase tracking-wider mb-4">Legal</h5>
+<ul class="space-y-2 text-sm text-slate-500">
+<li><a class="hover:text-primary transition-colors" href="#">MIT License</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+</ul>
+</div>
+</div>
+<div class="pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-slate-400 text-xs">© 2024 TrendStocker Project. Built with love by contributors.</p>
+<div class="flex gap-6">
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">language</span></a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">rss_feed</span></a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

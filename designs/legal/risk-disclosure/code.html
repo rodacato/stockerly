@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Risk Disclosure Statement | TrendStocker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#004a99",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1923",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .sticky-sidebar { position: sticky; top: 5rem; max-height: calc(100vh - 6rem); overflow-y: auto; }
+        @media print {
+            .no-print { display: none; }
+            .print-only { display: block; }
+            .content-container { width: 100%; max-width: none; margin: 0; padding: 0; }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-200">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md no-print">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-2" href="#">
+<div class="text-primary size-8">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">TrendStocker</span>
+</a>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" href="#">Market</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" href="#">Portfolio</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" href="#">Academy</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" href="#">Support</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:block relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm w-64 focus:ring-2 focus:ring-primary" placeholder="Search documentation..." type="text"/>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all">Sign Up</button>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-8 no-print">
+<a class="hover:text-primary" href="#">Home</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<a class="hover:text-primary" href="#">Legal Documentation</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-slate-900 dark:text-slate-100 font-medium">Risk Disclosure Statement</span>
+</nav>
+<div class="flex flex-col lg:flex-row gap-12">
+<!-- Sidebar Navigation (Table of Contents) -->
+<aside class="w-full lg:w-64 flex-shrink-0 no-print">
+<div class="sticky-sidebar space-y-6">
+<div>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Table of Contents</h3>
+<nav class="space-y-1">
+<a class="group flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary font-semibold" href="#intro">
+<span class="material-symbols-outlined text-xl">info</span>
+<span class="text-sm">Introduction</span>
+</a>
+<a class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors" href="#market-risk">
+<span class="material-symbols-outlined text-xl">trending_down</span>
+<span class="text-sm">Market Volatility</span>
+</a>
+<a class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors" href="#leverage">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+<span class="text-sm">Leverage &amp; Margin</span>
+</a>
+<a class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors" href="#technical">
+<span class="material-symbols-outlined text-xl">monitor_heart</span>
+<span class="text-sm">Technical Risks</span>
+</a>
+<a class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors" href="#regulatory">
+<span class="material-symbols-outlined text-xl">gavel</span>
+<span class="text-sm">Regulatory Info</span>
+</a>
+<a class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors" href="#support">
+<span class="material-symbols-outlined text-xl">headset_mic</span>
+<span class="text-sm">Contact Support</span>
+</a>
+</nav>
+</div>
+<div class="p-4 bg-primary/5 rounded-xl border border-primary/10">
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-3 leading-relaxed">Need a physical copy for your records?</p>
+<button class="w-full flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-2 rounded-lg text-sm font-bold text-slate-900 dark:text-white hover:bg-slate-50 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">download</span>
+                            Download PDF
+                        </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<article class="flex-1 max-w-3xl">
+<header class="mb-12">
+<h1 class="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white leading-tight mb-4 tracking-tight">Risk Disclosure Statement</h1>
+<div class="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                            Last Updated: October 24, 2023
+                        </span>
+<span class="h-1 w-1 bg-slate-300 rounded-full"></span>
+<span>Document ID: TS-RD-2023-04</span>
+</div>
+</header>
+<section class="mb-12 prose prose-slate dark:prose-invert max-w-none" id="intro">
+<h2 class="text-2xl font-bold text-primary mb-4 flex items-center gap-2">
+                        1. Introduction &amp; General Risk
+                    </h2>
+<p class="text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-6">
+                        Trading in financial markets involves a high degree of risk and is not suitable for all investors. The risk of loss in trading can be substantial. You should therefore carefully consider whether such trading is suitable for you in light of your financial condition and resources.
+                    </p>
+<div class="bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-500 p-6 rounded-r-xl mb-8">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-amber-600">warning</span>
+<div>
+<h4 class="font-bold text-amber-900 dark:text-amber-200 mb-1 text-sm uppercase tracking-wide">Critical Warning</h4>
+<p class="text-amber-800 dark:text-amber-300 text-sm leading-relaxed">
+                                    You may lose all of your initial investment and, in some cases, may be required to deposit additional funds to maintain your positions. Only trade with "Risk Capital"—money that you can afford to lose without affecting your basic living needs.
+                                </p>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-12" id="market-risk">
+<h2 class="text-2xl font-bold text-primary mb-4">2. Market Risk &amp; Volatility</h2>
+<p class="text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
+                        The prices of securities, commodities, and other financial instruments can fluctuate rapidly. These movements are influenced by various factors, including but not limited to:
+                    </p>
+<ul class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+<li class="flex items-start gap-3 p-4 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary">public</span>
+<span class="text-sm text-slate-600 dark:text-slate-400">Global geopolitical events and government policies.</span>
+</li>
+<li class="flex items-start gap-3 p-4 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<span class="text-sm text-slate-600 dark:text-slate-400">Corporate earnings reports and economic data releases.</span>
+</li>
+<li class="flex items-start gap-3 p-4 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary">payments</span>
+<span class="text-sm text-slate-600 dark:text-slate-400">Changes in interest rates and currency valuations.</span>
+</li>
+<li class="flex items-start gap-3 p-4 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary">waves</span>
+<span class="text-sm text-slate-600 dark:text-slate-400">Market liquidity and "flash crash" scenarios.</span>
+</li>
+</ul>
+</section>
+<section class="mb-12" id="leverage">
+<h2 class="text-2xl font-bold text-primary mb-4">3. Leverage &amp; Margin Risks</h2>
+<p class="text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
+                        Using leverage (trading on margin) can multiply your gains, but it also multiplies your losses. Even a small movement in market price against your position can result in the total loss of your margin deposit.
+                    </p>
+<div class="bg-slate-100 dark:bg-slate-800/80 p-6 rounded-xl space-y-4">
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs italic">!</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white mb-1">Margin Calls</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    If the value of your account falls below the minimum margin requirements, TrendStocker may close some or all of your positions without prior notice to you.
+                                </p>
+</div>
+</div>
+<div class="flex gap-4 border-t border-slate-200 dark:border-slate-700 pt-4">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs italic">!</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white mb-1">Liquidation Risk</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    In extremely volatile markets, your positions may be liquidated at prices significantly worse than your stop-loss orders.
+                                </p>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-12" id="technical">
+<h2 class="text-2xl font-bold text-primary mb-4">4. Technical &amp; System Risks</h2>
+<p class="text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
+                        Trading through an electronic platform carries inherent technical risks. TrendStocker is not responsible for losses resulting from:
+                    </p>
+<ul class="list-disc pl-6 space-y-2 text-slate-700 dark:text-slate-300">
+<li>Failure of hardware, software, or internet connections at the user's end.</li>
+<li>Disruption of market data feeds or trade execution systems.</li>
+<li>Cyber-attacks, hacking, or unauthorized access to your account credentials.</li>
+<li>Latency issues that result in trade execution delays (slippage).</li>
+</ul>
+</section>
+<section class="mb-12" id="regulatory">
+<h2 class="text-2xl font-bold text-primary mb-4">5. Regulatory &amp; Legal Disclosure</h2>
+<p class="text-slate-700 dark:text-slate-300 mb-6 leading-relaxed">
+                        TrendStocker operates under the jurisdiction of the International Financial Services Commission (IFSC). Users are responsible for ensuring that their use of TrendStocker services complies with all laws and regulations in their respective jurisdictions.
+                    </p>
+<div class="p-5 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50">
+<p class="text-xs text-slate-500 dark:text-slate-500 uppercase font-bold tracking-widest mb-2">Legal Attribution</p>
+<p class="text-sm text-slate-600 dark:text-slate-400 italic">
+                            TrendStocker is a registered trademark of TS Global Markets Ltd. Any past performance mentioned is not indicative of future results. No part of this document constitutes financial advice.
+                        </p>
+</div>
+</section>
+<footer class="pt-12 border-t border-slate-200 dark:border-slate-800 mt-12 mb-20 no-print">
+<div class="flex flex-col sm:flex-row justify-between items-center gap-6">
+<p class="text-sm text-slate-500 dark:text-slate-400 text-center sm:text-left">
+                            By continuing to use TrendStocker, you acknowledge that you have read, understood, and agreed to this Risk Disclosure.
+                        </p>
+<div class="flex gap-4">
+<button class="px-6 py-2.5 bg-primary text-white font-bold rounded-lg text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+                                Accept Terms
+                            </button>
+<button class="px-6 py-2.5 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors">
+                                Decline
+                            </button>
+</div>
+</div>
+</footer>
+</article>
+</div>
+</main>
+<!-- Global Footer -->
+<footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12 no-print">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+<div class="col-span-2 md:col-span-1">
+<div class="flex items-center gap-2 mb-4">
+<div class="text-primary size-6">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="font-black tracking-tight text-slate-900 dark:text-white uppercase">TrendStocker</span>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Leading the future of digital asset and stock trading with security and transparency.
+                    </p>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white mb-4">Product</h4>
+<ul class="space-y-2 text-sm text-slate-500 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Trading View</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Market Analysis</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Fees &amp; Limits</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white mb-4">Legal</h4>
+<ul class="space-y-2 text-sm text-slate-500 dark:text-slate-400">
+<li><a class="text-primary font-medium" href="#">Risk Disclosure</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white mb-4">Connect</h4>
+<div class="flex gap-4">
+<a class="size-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-primary hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined text-lg">share</span>
+</a>
+<a class="size-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-primary hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined text-lg">mail</span>
+</a>
+</div>
+</div>
+</div>
+<div class="pt-8 border-t border-slate-200 dark:border-slate-800 text-center">
+<p class="text-xs text-slate-400 dark:text-slate-500">
+                    © 2023 TrendStocker Financial Ltd. All rights reserved. Registered Office: 124 Financial District, Zurich, Switzerland.
+                </p>
+</div>
+</div>
+</footer>
+<!-- Back to Top (Floating) -->
+<button class="fixed bottom-8 right-8 z-50 p-3 bg-primary text-white rounded-full shadow-xl hover:scale-110 active:scale-95 transition-all no-print hidden md:block" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+<span class="material-symbols-outlined">arrow_upward</span>
+</button>
+</body></html>
