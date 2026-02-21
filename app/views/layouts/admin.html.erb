@@ -1,0 +1,31 @@
+<% content_for(:body) do %>
+  <div class="flex min-h-screen bg-slate-100 dark:bg-background-dark">
+    <%# Fixed Sidebar %>
+    <%= render "shared/admin_sidebar" %>
+
+    <%# Main Content Area %>
+    <div class="flex-1 ml-64">
+      <%= render "shared/admin_header" %>
+      <%= render "shared/flash" %>
+      <main class="p-6 lg:p-8">
+        <%= yield %>
+      </main>
+
+      <%# Admin Footer %>
+      <footer class="border-t border-slate-200 dark:border-slate-800 px-8 py-4 flex items-center justify-between text-xs text-slate-400">
+        <span>&copy; <%= Date.current.year %> TrendStocker Admin &middot; v2.4.1-stable</span>
+        <div class="flex items-center gap-4">
+          <span class="flex items-center gap-1">
+            <span class="size-2 rounded-full bg-emerald-500"></span>
+            API Gateway: Operational
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="size-2 rounded-full bg-emerald-500"></span>
+            Database: Healthy
+          </span>
+        </div>
+      </footer>
+    </div>
+  </div>
+<% end %>
+<%= render template: "layouts/application" %>

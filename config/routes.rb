@@ -33,4 +33,11 @@ Rails.application.routes.draw do
   resources :alerts,    only: [:index, :create, :update, :destroy]
   resources :earnings,  only: [:index]
   resource  :profile,   only: [:show, :update]
+
+  # --- Admin Zone ---
+  namespace :admin do
+    resources :assets, only: [:index]
+    resources :logs,   only: [:index]
+    resources :users,  only: [:index]
+  end
 end
