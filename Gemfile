@@ -59,6 +59,9 @@ group :development, :test do
   # Testing framework [https://rspec.info/]
   gem "rspec-rails"
   gem "factory_bot_rails"
+
+  # System tests [https://github.com/teamcapybara/capybara]
+  gem "capybara"
 end
 
 group :development do
