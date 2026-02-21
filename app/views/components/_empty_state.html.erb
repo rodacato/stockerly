@@ -1,0 +1,13 @@
+<%# Empty State — reusable component for pages with no data %>
+<%# Parameters: icon (String), title (String), description (String), cta_text (String, optional), cta_path (String, optional) %>
+
+<div class="flex flex-col items-center justify-center py-16 px-4 text-center">
+  <span class="material-symbols-rounded text-6xl text-slate-300 dark:text-slate-600 mb-4"><%= icon %></span>
+  <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2"><%= title %></h3>
+  <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-[280px]"><%= description %></p>
+  <% if local_assigns[:cta_text] && local_assigns[:cta_path] %>
+    <%= link_to cta_path, class: "inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors" do %>
+      <%= cta_text %>
+    <% end %>
+  <% end %>
+</div>

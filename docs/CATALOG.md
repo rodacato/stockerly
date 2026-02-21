@@ -63,7 +63,7 @@
 | # | Componente | Zona | Trigger / Ruta | SPEC | Estado |
 |---|-----------|------|----------------|------|--------|
 | 20 | Onboarding Wizard | app | Primer login post-registro | [SPEC](../designs/shared/onboarding/SPEC.md) | D |
-| 21 | Empty States | transversal | Condicion: sin datos | [SPEC](../designs/shared/empty-states/SPEC.md) | D |
+| 21 | Empty States | transversal | Condicion: sin datos | [SPEC](../designs/shared/empty-states/SPEC.md) | H |
 | 22 | Notification Panel | app | Click en campana (navbar) | [SPEC](../designs/shared/notification-panel/SPEC.md) | D |
 | 23 | News Feed | app | `/news` (TBD) | [SPEC](../designs/shared/news-feed/SPEC.md) | D |
 | 24 | Global Search | app | Click/Cmd+K en search bar | [SPEC](../designs/shared/global-search/SPEC.md) | D |
@@ -78,8 +78,8 @@
 | complete (OK) | 4 |
 | tested (T) | 0 |
 | backend-wired (B) | 0 |
-| static-html (H) | 15 |
-| design (D) | 6 |
+| static-html (H) | 16 |
+| design (D) | 5 |
 | **Total** | **25** |
 
 ---

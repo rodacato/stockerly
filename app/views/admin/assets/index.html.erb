@@ -1,4 +1,7 @@
 <% content_for(:admin_page_title, "Assets") %>
+<%# Empty state (uncomment when wiring backend):
+    <%= render "components/empty_state", icon: "database", title: "No assets loaded", description: "Run the initial sync to import market instruments from the data provider.", cta_text: "Manual Sync", cta_path: admin_assets_path %>
+%>
 
 <div class="space-y-6">
   <%# Header %>

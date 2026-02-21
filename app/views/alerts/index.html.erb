@@ -1,4 +1,7 @@
 <%# Alerts — manage alert rules and view live feed %>
+<%# Empty state (uncomment when wiring backend):
+    <%= render "components/empty_state", icon: "notifications_none", title: "No alerts configured", description: "Set up price alerts to get notified when stocks hit your target prices.", cta_text: "Create Alert", cta_path: alerts_path %>
+%>
 
 <%# Header with stat badges %>
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
