@@ -1,0 +1,37 @@
+<%# Usage: render "components/donut_chart", segments: [{label: "Technology", pct: 45, color: "#004a99"}, ...], center_label: "Equities", center_value: "92.4%" %>
+<% segments ||= [] %>
+<% center_label ||= "" %>
+<% center_value ||= "" %>
+
+<%
+  gradient_stops = []
+  cumulative = 0
+  segments.each do |seg|
+    gradient_stops << "#{seg[:color]} #{cumulative}% #{cumulative + seg[:pct]}%"
+    cumulative += seg[:pct]
+  end
+%>
+
+<div class="flex flex-col items-center">
+  <%# Donut Chart %>
+  <div class="relative size-48">
+    <div class="size-48 rounded-full border-8 border-slate-50 dark:border-slate-800 shadow-inner"
+         style="background: conic-gradient(<%= gradient_stops.join(', ') %>);">
+    </div>
+    <div class="absolute inset-0 size-32 m-auto bg-white dark:bg-background-dark rounded-full flex flex-col items-center justify-center shadow-sm">
+      <p class="text-xs font-medium text-slate-500 dark:text-slate-400"><%= center_label %></p>
+      <p class="text-2xl font-black text-slate-900 dark:text-white"><%= center_value %></p>
+    </div>
+  </div>
+
+  <%# Legend %>
+  <div class="mt-6 grid grid-cols-2 gap-3 w-full">
+    <% segments.each do |seg| %>
+      <div class="flex items-center gap-2">
+        <span class="size-3 rounded-full shrink-0" style="background-color: <%= seg[:color] %>;"></span>
+        <span class="text-xs text-slate-600 dark:text-slate-400"><%= seg[:label] %></span>
+        <span class="text-xs font-bold text-slate-900 dark:text-white ml-auto"><%= seg[:pct] %>%</span>
+      </div>
+    <% end %>
+  </div>
+</div>

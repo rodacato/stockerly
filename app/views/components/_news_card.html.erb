@@ -1,0 +1,19 @@
+<%# Usage: render "components/news_card", ticker: "AAPL", source: "Bloomberg", time_ago: "2h ago", title: "Headline", excerpt: "Summary..." %>
+<% ticker ||= nil %>
+
+<div class="flex gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/30 transition-all group">
+  <%# Placeholder image %>
+  <div class="h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+    <span class="material-symbols-outlined text-3xl text-slate-400">article</span>
+  </div>
+  <div class="flex-1 min-w-0">
+    <div class="flex items-center gap-2 mb-1">
+      <% if ticker.present? %>
+        <span class="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px] font-bold"><%= ticker %></span>
+      <% end %>
+      <span class="text-[10px] text-slate-400"><%= source %> &bull; <%= time_ago %></span>
+    </div>
+    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1 line-clamp-1 group-hover:text-primary transition-colors"><%= title %></h4>
+    <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2"><%= excerpt %></p>
+  </div>
+</div>

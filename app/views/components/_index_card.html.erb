@@ -1,0 +1,14 @@
+<%# Usage: render "components/index_card", name: "S&P 500", value: "5,214.33", change_pct: "+0.42%", direction: :up %>
+<% direction ||= :up %>
+<% positive = direction.to_sym == :up %>
+
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+  <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1"><%= name %></p>
+  <p class="text-xl font-black text-slate-900 dark:text-white tracking-tight"><%= value %></p>
+  <div class="flex items-center gap-1 mt-1">
+    <span class="material-symbols-outlined text-sm <%= positive ? 'text-emerald-500' : 'text-rose-500' %>">
+      <%= positive ? 'trending_up' : 'trending_down' %>
+    </span>
+    <span class="text-xs font-bold <%= positive ? 'text-emerald-500' : 'text-rose-500' %>"><%= change_pct %></span>
+  </div>
+</div>

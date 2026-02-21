@@ -1,0 +1,26 @@
+<%# Usage: render "components/stat_card", title: "Total Balance", value: "$42,540.00", icon: "account_balance_wallet", change: "+1.2%", change_positive: true, subtitle: "vs yesterday" %>
+<% icon ||= nil %>
+<% change ||= nil %>
+<% change_positive ||= false %>
+<% subtitle ||= nil %>
+
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+  <div class="flex items-center justify-between mb-3">
+    <p class="text-sm font-medium text-slate-500 dark:text-slate-400"><%= title %></p>
+    <% if icon.present? %>
+      <span class="material-symbols-outlined text-xl text-slate-400"><%= icon %></span>
+    <% end %>
+  </div>
+  <div class="flex items-end gap-3">
+    <p class="text-2xl font-black tracking-tight text-slate-900 dark:text-white"><%= value %></p>
+    <% if change.present? %>
+      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= change_positive ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+        <span class="material-symbols-outlined text-sm"><%= change_positive ? 'trending_up' : 'trending_down' %></span>
+        <%= change %>
+      </span>
+    <% end %>
+  </div>
+  <% if subtitle.present? %>
+    <p class="text-xs text-slate-400 dark:text-slate-500 mt-2"><%= subtitle %></p>
+  <% end %>
+</div>

@@ -1,0 +1,18 @@
+<%# Usage: render "components/trending_ticker", ticker: "NVDA", name: "NVIDIA Corp", change_pct: "+5.42%", direction: :up %>
+<% direction ||= :up %>
+<% positive = direction.to_sym == :up %>
+
+<div class="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+  <div class="flex items-center gap-3">
+    <div class="size-8 rounded-lg flex items-center justify-center <%= positive ? 'bg-emerald-50 dark:bg-emerald-900/30' : 'bg-rose-50 dark:bg-rose-900/30' %>">
+      <span class="material-symbols-outlined text-sm <%= positive ? 'text-emerald-600' : 'text-rose-600' %>">
+        <%= positive ? 'trending_up' : 'trending_down' %>
+      </span>
+    </div>
+    <div>
+      <p class="text-sm font-bold text-slate-900 dark:text-white"><%= ticker %></p>
+      <p class="text-[10px] text-slate-400"><%= name %></p>
+    </div>
+  </div>
+  <span class="text-sm font-bold <%= positive ? 'text-emerald-600' : 'text-rose-600' %>"><%= change_pct %></span>
+</div>
