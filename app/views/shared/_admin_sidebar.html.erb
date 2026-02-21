@@ -28,22 +28,6 @@
         <% end %>
       </div>
     </div>
-
-    <%# System Section %>
-    <div>
-      <p class="px-3 mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">System</p>
-      <div class="space-y-1">
-        <% [
-          ["Settings", "#", "settings"],
-          ["Support", "#", "help"]
-        ].each do |label, path, icon| %>
-          <%= link_to path, class: "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" do %>
-            <span class="material-symbols-outlined text-xl"><%= icon %></span>
-            <%= label %>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
   </nav>
 
   <%# Admin User Card %>
