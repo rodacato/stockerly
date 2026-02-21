@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Provision a fresh Ubuntu VPS for Kamal deployment.
+# Usage: ssh root@YOUR_SERVER_IP < bin/provision-server
+set -euo pipefail
+
+echo "==> Updating system packages..."
+apt-get update && apt-get upgrade -y
+
+echo "==> Setting up 2GB swap..."
+if [ ! -f /swapfile ]; then
+  fallocate -l 2G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo "/swapfile none swap sw 0 0" >> /etc/fstab
+  echo "vm.swappiness=10" >> /etc/sysctl.conf
+  sysctl -p
+  echo "    Swap created."
+else
+  echo "    Swap already exists, skipping."
+fi
+
+echo "==> Configuring firewall (UFW)..."
+apt-get install -y ufw
+ufw default deny incoming
+ufw default allow outgoing
+ufw allow 22/tcp   # SSH
+ufw allow 80/tcp   # HTTP (Let's Encrypt + redirect)
+ufw allow 443/tcp  # HTTPS
+ufw --force enable
+echo "    Firewall enabled: 22, 80, 443 open."
+
+echo "==> Installing Docker..."
+if ! command -v docker &> /dev/null; then
+  curl -fsSL https://get.docker.com | sh
+  systemctl enable docker
+  systemctl start docker
+  echo "    Docker installed."
+else
+  echo "    Docker already installed, skipping."
+fi
+
+echo "==> Installing curl and git..."
+apt-get install -y curl git
+
+echo "==> Setting timezone to UTC..."
+timedatectl set-timezone UTC
+
+echo "==> Enabling automatic security updates..."
+apt-get install -y unattended-upgrades
+dpkg-reconfigure -f noninteractive unattended-upgrades
+
+echo ""
+echo "==> Server is ready for Kamal deployment!"
+echo "    Next step: run 'kamal setup' from your local machine."

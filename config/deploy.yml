@@ -1,18 +1,18 @@
 service: stockerly
-image: your-dockerhub-username/stockerly
+image: rodacato/stockerly
 
 registry:
-  username: your-dockerhub-username
+  username: rodacato
   password:
     - KAMAL_REGISTRY_PASSWORD
 
 servers:
   web:
     hosts:
-      - YOUR_HETZNER_IP
+      - 46.225.67.253
   job:
     hosts:
-      - YOUR_HETZNER_IP
+      - 46.225.67.253
     cmd: bundle exec rails solid_queue:start
 
 proxy:
@@ -44,12 +44,12 @@ builder:
   cache:
     type: registry
     options: mode=max
-    image: your-dockerhub-username/stockerly:build-cache
+    image: rodacato/stockerly:build-cache
 
 accessories:
   postgres:
     image: postgres:16
-    host: YOUR_HETZNER_IP
+    host: 46.225.67.253
     env:
       clear:
         POSTGRES_USER: stockerly
