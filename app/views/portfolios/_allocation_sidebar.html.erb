@@ -1,0 +1,14 @@
+<%# Portfolio allocation donut chart sidebar %>
+<% segments = [
+  { label: "Technology", pct: 45, color: "#004a99" },
+  { label: "Healthcare", pct: 25, color: "#38bdf8" },
+  { label: "Finance", pct: 15, color: "#10b981" },
+  { label: "Energy", pct: 15, color: "#fbbf24" }
+] %>
+
+<div class="lg:col-span-1">
+  <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6">Portfolio Allocation</h3>
+    <%= render "components/donut_chart", segments: segments, center_label: "Equities", center_value: "92.4%" %>
+  </section>
+</div>

@@ -1,6 +1,15 @@
-<div class="mb-8">
-  <h1 class="text-3xl font-black text-slate-900 dark:text-white">Market Explorer</h1>
-  <p class="text-slate-500 dark:text-slate-400 mt-1">Browse and analyze market trends across all asset classes</p>
+<%# Market Explorer — browse and filter market listings %>
+
+<%# Global Market Indices Strip %>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <%= render "components/index_card", name: "S&P 500", value: "5,214.33", change_pct: "+0.42%", direction: :up %>
+  <%= render "components/index_card", name: "NASDAQ 100", value: "18,322.40", change_pct: "+1.15%", direction: :up %>
+  <%= render "components/index_card", name: "DOW JONES", value: "39,127.14", change_pct: "-0.12%", direction: :down %>
+  <%= render "components/index_card", name: "FTSE 100", value: "7,935.09", change_pct: "+0.28%", direction: :up %>
 </div>
 
-<p class="text-slate-500">Market content coming soon...</p>
+<%# Search and Filters %>
+<%= render "market/filters" %>
+
+<%# Market Listings Table %>
+<%= render "market/listings_table" %>

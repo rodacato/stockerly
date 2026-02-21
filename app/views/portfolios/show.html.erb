@@ -1,6 +1,64 @@
-<div class="mb-8">
-  <h1 class="text-3xl font-black text-slate-900 dark:text-white">Investment Portfolio</h1>
-  <p class="text-slate-500 dark:text-slate-400 mt-1">Track and manage your equity positions in real-time</p>
+<%# Portfolio — investment portfolio overview with hardcoded data %>
+
+<%# Header with action buttons %>
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+  <div>
+    <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Investment Portfolio</h2>
+    <p class="mt-1 text-slate-500 dark:text-slate-400">Track and manage your equity positions in real-time</p>
+  </div>
+  <div class="flex gap-3">
+    <button class="px-4 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+      <span class="material-symbols-outlined text-sm align-middle mr-1">swap_horiz</span>
+      Buy / Sell
+    </button>
+    <button class="px-4 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm">
+      <span class="material-symbols-outlined text-sm align-middle mr-1">add</span>
+      Add Position
+    </button>
+  </div>
 </div>
 
-<p class="text-slate-500">Portfolio content coming soon...</p>
+<%# 3 Summary Stat Cards %>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Portfolio Value</p>
+    <div class="mt-2 flex items-baseline gap-2">
+      <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">$142,592.45</span>
+      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+        <span class="material-symbols-outlined text-sm">trending_up</span>
+        +2.4%
+      </span>
+    </div>
+    <p class="text-xs text-slate-400 mt-2">Domestic: $102,450 &bull; International: $40,142.45</p>
+  </div>
+
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Unrealized Gain/Loss</p>
+    <div class="mt-2 flex items-baseline gap-2">
+      <span class="text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">+$18,450.30</span>
+      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+        +14.2%
+      </span>
+    </div>
+    <p class="text-xs text-slate-400 mt-2">Since Jan 12, 2023</p>
+  </div>
+
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Available Buying Power</p>
+    <div class="mt-2 flex items-baseline gap-2">
+      <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">$8,240.15</span>
+    </div>
+    <p class="text-xs text-slate-400 mt-2">5.7% of portfolio</p>
+  </div>
+</div>
+
+<%# Portfolio Grid: Allocation (1/3) + Positions (2/3) %>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <%# Allocation Sidebar %>
+  <%= render "portfolios/allocation_sidebar" %>
+
+  <%# Positions Table %>
+  <div class="lg:col-span-2">
+    <%= render "portfolios/positions_table" %>
+  </div>
+</div>
