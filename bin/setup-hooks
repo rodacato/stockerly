@@ -1,0 +1,11 @@
+#!/bin/bash
+# Installs git hooks for the project
+set -e
+
+HOOK_DIR=$(git rev-parse --show-toplevel)/.git/hooks
+
+echo "Installing pre-commit hook..."
+cp bin/pre-commit "$HOOK_DIR/pre-commit"
+chmod +x "$HOOK_DIR/pre-commit"
+
+echo "Git hooks installed successfully."
