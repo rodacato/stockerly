@@ -1,8 +1,81 @@
 <% content_for(:title, "Login | TrendStocker") %>
 
-<section class="min-h-[80vh] flex items-center justify-center px-4">
-  <div class="text-center">
-    <h1 class="text-5xl font-black text-slate-900 dark:text-white">Login</h1>
-    <p class="mt-4 text-slate-600 dark:text-slate-400">Coming soon — full implementation</p>
+<main class="grow flex items-center justify-center p-4 py-12">
+  <div class="w-full max-w-4xl bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-xl flex flex-col md:flex-row min-h-[600px]">
+    <%# Left Side: Branding %>
+    <div class="hidden md:flex md:w-1/2 bg-primary relative overflow-hidden p-12 flex-col justify-between text-white">
+      <div class="relative z-10">
+        <div class="size-12 bg-white/20 rounded-lg flex items-center justify-center mb-8">
+          <span class="material-symbols-outlined text-white text-3xl">insights</span>
+        </div>
+        <h1 class="text-3xl font-bold leading-tight mb-4">Master the Markets with TrendStocker</h1>
+        <p class="text-blue-100 text-lg">Real-time insights and portfolio tracking with advanced analytics at your fingertips.</p>
+      </div>
+      <div class="relative z-10">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="flex -space-x-2">
+            <div class="h-8 w-8 rounded-full ring-2 ring-primary bg-white/20 flex items-center justify-center text-[10px] font-bold">JD</div>
+            <div class="h-8 w-8 rounded-full ring-2 ring-primary bg-white/30 flex items-center justify-center text-[10px] font-bold">SK</div>
+            <div class="h-8 w-8 rounded-full ring-2 ring-primary bg-white/40 flex items-center justify-center text-[10px] font-bold">MR</div>
+          </div>
+          <p class="text-sm text-blue-100">Join 50k+ traders today</p>
+        </div>
+        <div class="rounded-lg bg-white/10 p-4 border border-white/10 backdrop-blur-sm">
+          <p class="text-sm italic text-blue-50">"The portfolio tracking features have completely changed how I manage my investments. Highly recommended."</p>
+          <p class="text-xs font-bold mt-2">&mdash; Alex Rivers, Day Trader</p>
+        </div>
+      </div>
+      <%# Background pattern %>
+      <div class="absolute inset-0 opacity-10 pointer-events-none">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path d="M0 100 L20 80 L40 90 L60 50 L80 70 L100 20 V100 H0 Z" fill="white"/>
+        </svg>
+      </div>
+    </div>
+
+    <%# Right Side: Login Form %>
+    <div class="w-full md:w-1/2 p-8 lg:p-12 flex flex-col">
+      <%# Toggle Switch %>
+      <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg mb-8">
+        <div class="flex-1 py-2 text-sm font-semibold rounded-md bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white text-center">Login</div>
+        <%= link_to "Create Account", register_path, class: "flex-1 py-2 text-sm font-semibold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors text-center" %>
+      </div>
+
+      <div class="space-y-6">
+        <div class="text-center md:text-left">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Welcome back</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Please enter your details to access your account.</p>
+        </div>
+
+        <%# Login Form %>
+        <form class="space-y-4">
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          </div>
+          <div>
+            <div class="flex justify-between mb-1.5">
+              <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
+              <a href="#" class="text-xs font-semibold text-primary hover:underline">Forgot password?</a>
+            </div>
+            <input type="password" id="password" name="password" autocomplete="current-password" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="remember" name="remember" class="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary">
+            <label for="remember" class="ml-2 text-sm text-slate-600 dark:text-slate-400">Remember me for 30 days</label>
+          </div>
+          <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2">
+            <span>Sign In</span>
+            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+          </button>
+        </form>
+
+        <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">
+          By signing in, you agree to our
+          <%= link_to "Terms of Service", terms_path, class: "underline hover:text-slate-800 dark:hover:text-slate-200" %> and
+          <%= link_to "Privacy Policy", privacy_path, class: "underline hover:text-slate-800 dark:hover:text-slate-200" %>.
+        </p>
+      </div>
+    </div>
   </div>
-</section>
+</main>

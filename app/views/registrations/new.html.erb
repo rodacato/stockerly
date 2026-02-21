@@ -1,8 +1,88 @@
 <% content_for(:title, "Register | TrendStocker") %>
 
-<section class="min-h-[80vh] flex items-center justify-center px-4">
-  <div class="text-center">
-    <h1 class="text-5xl font-black text-slate-900 dark:text-white">Create Account</h1>
-    <p class="mt-4 text-slate-600 dark:text-slate-400">Coming soon — full implementation</p>
+<main class="grow flex items-center justify-center p-4 py-12">
+  <div class="w-full max-w-4xl bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-xl flex flex-col md:flex-row min-h-[600px]">
+    <%# Left Side: Branding %>
+    <div class="hidden md:flex md:w-1/2 bg-primary relative overflow-hidden p-12 flex-col justify-between text-white">
+      <div class="relative z-10">
+        <div class="size-12 bg-white/20 rounded-lg flex items-center justify-center mb-8">
+          <span class="material-symbols-outlined text-white text-3xl">rocket_launch</span>
+        </div>
+        <h1 class="text-3xl font-bold leading-tight mb-4">Start Your Trading Journey Today</h1>
+        <p class="text-blue-100 text-lg">Join thousands of traders using data-driven insights to make smarter investment decisions.</p>
+      </div>
+      <div class="relative z-10">
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-300">check_circle</span>
+            <span class="text-sm text-blue-100">Real-time market trend analysis</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-300">check_circle</span>
+            <span class="text-sm text-blue-100">Portfolio tracking & management</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-300">check_circle</span>
+            <span class="text-sm text-blue-100">Smart alerts & notifications</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-300">check_circle</span>
+            <span class="text-sm text-blue-100">100% free & open source</span>
+          </div>
+        </div>
+      </div>
+      <%# Background pattern %>
+      <div class="absolute inset-0 opacity-10 pointer-events-none">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path d="M0 100 L20 80 L40 90 L60 50 L80 70 L100 20 V100 H0 Z" fill="white"/>
+        </svg>
+      </div>
+    </div>
+
+    <%# Right Side: Register Form %>
+    <div class="w-full md:w-1/2 p-8 lg:p-12 flex flex-col">
+      <%# Toggle Switch %>
+      <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg mb-8">
+        <%= link_to "Login", login_path, class: "flex-1 py-2 text-sm font-semibold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors text-center" %>
+        <div class="flex-1 py-2 text-sm font-semibold rounded-md bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white text-center">Create Account</div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="text-center md:text-left">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Create your account</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Get started with TrendStocker in seconds.</p>
+        </div>
+
+        <%# Register Form %>
+        <form class="space-y-4">
+          <div>
+            <label for="full_name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Full Name</label>
+            <input type="text" id="full_name" name="full_name" autocomplete="name" placeholder="John Doe" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
+            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Min. 8 characters" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          </div>
+          <div>
+            <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Confirm Password</label>
+            <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Repeat your password" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          </div>
+          <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2">
+            <span>Create Account</span>
+            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+          </button>
+        </form>
+
+        <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">
+          By creating an account, you agree to our
+          <%= link_to "Terms of Service", terms_path, class: "underline hover:text-slate-800 dark:hover:text-slate-200" %> and
+          <%= link_to "Privacy Policy", privacy_path, class: "underline hover:text-slate-800 dark:hover:text-slate-200" %>.
+        </p>
+      </div>
+    </div>
   </div>
-</section>
+</main>
