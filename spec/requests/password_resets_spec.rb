@@ -38,7 +38,7 @@ RSpec.describe "PasswordResets", type: :request do
       token = user.password_reset_token
       get reset_password_path(token)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Reset your password")
+      expect(response.body).to include("Create new password")
     end
 
     it "redirects for invalid token" do
