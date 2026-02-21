@@ -31,6 +31,11 @@ RSpec.describe "PasswordResets", type: :request do
       post forgot_password_path, params: { email: "test@example.com" }
       expect(Rails.logger).to have_received(:info).with(/PASSWORD RESET.*reset-password/)
     end
+
+    it "handles missing email param gracefully" do
+      post forgot_password_path, params: {}
+      expect(response).to redirect_to(login_path)
+    end
   end
 
   describe "GET /reset-password/:token" do

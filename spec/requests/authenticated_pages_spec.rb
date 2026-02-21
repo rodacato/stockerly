@@ -43,6 +43,33 @@ RSpec.describe "Authenticated pages", type: :request do
     end
   end
 
+  describe "POST /alerts" do
+    it "creates an alert and redirects back (demo mode)" do
+      post alerts_path
+      expect(response).to redirect_to(alerts_path)
+      follow_redirect!
+      expect(response.body).to include("Alert created")
+    end
+  end
+
+  describe "PATCH /alerts/:id" do
+    it "updates an alert and redirects back (demo mode)" do
+      patch alert_path(1)
+      expect(response).to redirect_to(alerts_path)
+      follow_redirect!
+      expect(response.body).to include("Alert updated")
+    end
+  end
+
+  describe "DELETE /alerts/:id" do
+    it "deletes an alert and redirects back (demo mode)" do
+      delete alert_path(1)
+      expect(response).to redirect_to(alerts_path)
+      follow_redirect!
+      expect(response.body).to include("Alert deleted")
+    end
+  end
+
   describe "GET /earnings" do
     it "renders the earnings calendar" do
       get earnings_path
@@ -58,6 +85,15 @@ RSpec.describe "Authenticated pages", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(user.full_name)
       expect(response.body).to include("Personal Information")
+    end
+  end
+
+  describe "PATCH /profile" do
+    it "updates profile and redirects back (demo mode)" do
+      patch profile_path
+      expect(response).to redirect_to(profile_path)
+      follow_redirect!
+      expect(response.body).to include("Profile updated")
     end
   end
 end

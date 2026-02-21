@@ -60,6 +60,12 @@ RSpec.describe "Sessions", type: :request do
       post login_path, params: { email: "TEST@EXAMPLE.COM", password: "password123" }
       expect(response).to redirect_to(dashboard_path)
     end
+
+    it "rejects login with missing email param" do
+      post login_path, params: { password: "password123" }
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Invalid email or password")
+    end
   end
 
   describe "DELETE /logout" do
@@ -80,6 +86,20 @@ RSpec.describe "Sessions", type: :request do
       expect(RememberToken.count).to eq(1)
       delete logout_path
       expect(RememberToken.count).to eq(0)
+    end
+
+    it "handles logout gracefully when remember token was already deleted" do
+      post login_path, params: { email: user.email, password: "password123", remember: "1" }
+      RememberToken.destroy_all
+      delete logout_path
+      expect(response).to redirect_to(root_path)
+    end
+  end
+
+  describe "DELETE /logout without session" do
+    it "handles logout when not logged in" do
+      delete logout_path
+      expect(response).to redirect_to(root_path)
     end
   end
 end

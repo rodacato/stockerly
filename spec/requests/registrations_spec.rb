@@ -7,6 +7,13 @@ RSpec.describe "Registrations", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Create your account")
     end
+
+    it "redirects to dashboard if already logged in" do
+      user = create(:user, email: "existing@example.com", password: "password123")
+      post login_path, params: { email: user.email, password: "password123" }
+      get register_path
+      expect(response).to redirect_to(dashboard_path)
+    end
   end
 
   describe "POST /register" do
