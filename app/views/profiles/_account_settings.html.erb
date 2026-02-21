@@ -1,0 +1,50 @@
+<%# Account Settings with toggles, change password, and sign out %>
+<section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+  <h3 class="text-lg font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
+    <span class="material-symbols-outlined text-primary">settings</span>
+    Account Settings
+  </h3>
+  <div class="space-y-6">
+    <%# Email Notifications toggle %>
+    <div class="flex items-center justify-between" data-controller="toggle">
+      <div>
+        <p class="text-sm font-semibold text-slate-900 dark:text-white">Email Notifications</p>
+        <p class="text-xs text-slate-500">Receive weekly market digest</p>
+      </div>
+      <button type="button" data-action="click->toggle#toggle"
+              class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out">
+        <span data-toggle-target="track" class="pointer-events-none inline-block h-5 w-11 rounded-full transition-colors duration-200 ease-in-out bg-primary"></span>
+        <span data-toggle-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-5"></span>
+      </button>
+    </div>
+
+    <%# Privacy Mode toggle %>
+    <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4" data-controller="toggle">
+      <div>
+        <p class="text-sm font-semibold text-slate-900 dark:text-white">Privacy Mode</p>
+        <p class="text-xs text-slate-500">Make watchlist public</p>
+      </div>
+      <button type="button" data-action="click->toggle#toggle"
+              class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out">
+        <span data-toggle-target="track" class="pointer-events-none inline-block h-5 w-11 rounded-full transition-colors duration-200 ease-in-out bg-slate-200 dark:bg-slate-700"></span>
+        <span data-toggle-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-0"></span>
+      </button>
+    </div>
+
+    <%# Change Password %>
+    <div class="pt-2">
+      <%= link_to forgot_password_path, class: "text-sm font-semibold text-primary hover:underline flex items-center gap-1" do %>
+        <span class="material-symbols-outlined text-sm">lock</span>
+        Change Password
+      <% end %>
+    </div>
+
+    <%# Sign Out %>
+    <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
+      <%= button_to logout_path, method: :delete, class: "text-sm font-semibold text-red-500 hover:text-red-600 flex items-center gap-1" do %>
+        <span class="material-symbols-outlined text-sm">logout</span>
+        Sign Out
+      <% end %>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,37 @@
+<%# Profile header with avatar, name, badges, and action buttons %>
+<% initials = current_user.full_name.split.map(&:first).join.upcase %>
+
+<div class="flex flex-col md:flex-row items-center md:items-end gap-6 mb-10">
+  <%# Avatar with initials %>
+  <div class="relative group">
+    <div class="size-32 rounded-2xl bg-primary/10 border-4 border-white dark:border-background-dark shadow-xl flex items-center justify-center">
+      <span class="text-4xl font-black text-primary"><%= initials %></span>
+    </div>
+    <button class="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-lg shadow-lg hover:scale-105 transition-transform">
+      <span class="material-symbols-outlined text-sm">edit</span>
+    </button>
+  </div>
+
+  <%# Name & badges %>
+  <div class="flex-1 text-center md:text-left">
+    <h1 class="text-3xl font-bold text-slate-900 dark:text-white"><%= current_user.full_name %></h1>
+    <p class="text-slate-500 dark:text-slate-400 flex items-center justify-center md:justify-start gap-2 mt-1">
+      <span class="material-symbols-outlined text-sm">calendar_today</span>
+      Member since <%= current_user.created_at.strftime("%B %Y") %>
+    </p>
+    <div class="flex items-center justify-center md:justify-start gap-2 mt-3">
+      <span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">Active Investor</span>
+      <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold rounded-full uppercase tracking-wider">Verified</span>
+    </div>
+  </div>
+
+  <%# Action buttons %>
+  <div class="flex gap-3">
+    <button class="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700">
+      Share Profile
+    </button>
+    <button class="px-5 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
+      Edit Settings
+    </button>
+  </div>
+</div>

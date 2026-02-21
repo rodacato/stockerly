@@ -1,0 +1,22 @@
+<%# Personal Information form (pre-filled with current_user data) %>
+<section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+  <h3 class="text-lg font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
+    <span class="material-symbols-outlined text-primary">person</span>
+    Personal Information
+  </h3>
+  <%= form_with url: profile_path, method: :patch, class: "space-y-4" do |f| %>
+    <div>
+      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Name</label>
+      <input type="text" name="full_name" value="<%= current_user.full_name %>"
+             class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 text-sm" />
+    </div>
+    <div>
+      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Email Address</label>
+      <input type="email" name="email" value="<%= current_user.email %>"
+             class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 text-sm" />
+    </div>
+    <button type="submit" class="w-full mt-4 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all text-sm">
+      Save Changes
+    </button>
+  <% end %>
+</section>

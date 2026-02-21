@@ -1,0 +1,67 @@
+<%# My Watchlist table with hardcoded stocks and sparklines %>
+<% stocks = [
+  { ticker: "AAPL", name: "Apple Inc.", exchange: "NASDAQ", price: "$189.43", change: "+2.45%", positive: true },
+  { ticker: "TSLA", name: "Tesla, Inc.", exchange: "NASDAQ", price: "$176.54", change: "-1.12%", positive: false },
+  { ticker: "MSFT", name: "Microsoft Corp.", exchange: "NASDAQ", price: "$415.10", change: "+0.32%", positive: true },
+  { ticker: "NVDA", name: "NVIDIA Corp.", exchange: "NASDAQ", price: "$894.52", change: "+3.82%", positive: true },
+  { ticker: "GOOGL", name: "Alphabet Inc.", exchange: "NASDAQ", price: "$141.80", change: "-0.15%", positive: false },
+  { ticker: "AMZN", name: "Amazon.com", exchange: "NASDAQ", price: "$178.25", change: "+0.95%", positive: true }
+] %>
+
+<section class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+  <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+    <h3 class="text-lg font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+      <span class="material-symbols-outlined text-primary">visibility</span>
+      My Watchlist
+    </h3>
+    <button class="text-sm bg-primary/10 text-primary px-4 py-2 rounded-lg font-bold hover:bg-primary/20 transition-all flex items-center gap-1">
+      <span class="material-symbols-outlined text-sm">add</span>
+      Add Stock
+    </button>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left">
+      <thead class="bg-slate-50 dark:bg-slate-800/50">
+        <tr>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Asset</th>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Price</th>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Change (24h)</th>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Trend</th>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+        <% stocks.each do |stock| %>
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-[10px] text-slate-700 dark:text-slate-300"><%= stock[:ticker] %></div>
+                <div>
+                  <p class="font-bold text-sm text-slate-900 dark:text-white"><%= stock[:name] %></p>
+                  <p class="text-xs text-slate-500"><%= stock[:exchange] %></p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <p class="text-sm font-bold text-slate-900 dark:text-white"><%= stock[:price] %></p>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm font-bold <%= stock[:positive] ? 'text-emerald-500' : 'text-rose-500' %>"><%= stock[:change] %></span>
+            </td>
+            <td class="px-6 py-4">
+              <%= render "components/sparkline", direction: stock[:positive] ? :up : :down %>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <button class="text-slate-400 hover:text-red-500 transition-colors">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="p-4 bg-slate-50 dark:bg-slate-800/50 text-center">
+    <button class="text-sm font-bold text-primary hover:text-primary/80 transition-all">View Full Market Overview</button>
+  </div>
+</section>
