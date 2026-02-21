@@ -1,0 +1,89 @@
+<%# Onboarding Step 2 — Pick stocks to follow %>
+
+<main class="flex-1 flex flex-col items-center py-10 px-4">
+  <div class="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+    <%# Progress Header %>
+    <div class="p-6 border-b border-slate-100 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-semibold text-primary uppercase tracking-wider">Step 2 of 3</span>
+        <span class="text-sm font-bold text-slate-900 dark:text-white">66% Complete</span>
+      </div>
+      <div class="h-2 w-full bg-primary/10 rounded-full overflow-hidden">
+        <div class="h-full bg-primary w-2/3 rounded-full"></div>
+      </div>
+    </div>
+
+    <%# Step Title %>
+    <div class="px-8 pt-8 pb-4 text-center">
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Pick your first stocks to follow</h1>
+      <p class="text-slate-500 dark:text-slate-400">Add at least 3 to your watchlist to personalize your dashboard.</p>
+    </div>
+
+    <%# Stock List %>
+    <div class="px-4 pb-8">
+      <div class="space-y-1">
+        <% [
+          { ticker: "AAPL", name: "Apple Inc.", exchange: "NASDAQ", price: "$178.52", change: "+1.2%", up: true, selected: true },
+          { ticker: "TSLA", name: "Tesla, Inc.", exchange: "NASDAQ", price: "$245.30", change: "-0.8%", up: false, selected: false },
+          { ticker: "NVDA", name: "NVIDIA Corp", exchange: "NASDAQ", price: "$820.15", change: "+3.4%", up: true, selected: true },
+          { ticker: "MSFT", name: "Microsoft Corp", exchange: "NASDAQ", price: "$415.60", change: "+0.5%", up: true, selected: false },
+          { ticker: "GOOGL", name: "Alphabet Inc.", exchange: "NASDAQ", price: "$142.85", change: "+1.1%", up: true, selected: false },
+          { ticker: "BTC", name: "Bitcoin", exchange: "Crypto", price: "$67,250", change: "+2.3%", up: true, selected: true },
+        ].each do |stock| %>
+          <div class="flex items-center justify-between p-4 rounded-xl transition-colors border border-transparent
+                      <%= stock[:selected] ? 'bg-primary/5 border-primary/10' : 'hover:bg-primary/5' %>">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 flex items-center justify-center rounded-lg text-white font-bold text-xs uppercase tracking-tighter
+                          <%= stock[:selected] ? 'bg-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' %>
+                          <%= 'bg-amber-500' if stock[:ticker] == 'BTC' %>">
+                <%= stock[:ticker] %>
+              </div>
+              <div>
+                <h4 class="font-semibold text-slate-900 dark:text-white"><%= stock[:name] %></h4>
+                <p class="text-xs text-slate-500"><%= stock[:exchange] %></p>
+              </div>
+            </div>
+            <div class="flex items-center gap-8">
+              <div class="text-right">
+                <div class="font-bold text-slate-900 dark:text-white"><%= stock[:price] %></div>
+                <div class="text-xs font-medium <%= stock[:up] ? 'text-emerald-600' : 'text-rose-600' %> flex items-center justify-end">
+                  <span class="material-symbols-outlined text-xs"><%= stock[:up] ? 'arrow_drop_up' : 'arrow_drop_down' %></span><%= stock[:change] %>
+                </div>
+              </div>
+              <% if stock[:selected] %>
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-white shadow-md shadow-primary/20">
+                  <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">check</span>
+                </div>
+              <% else %>
+                <button class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all">
+                  <span class="material-symbols-outlined">add</span>
+                </button>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Footer Navigation %>
+    <div class="p-6 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">verified</span>
+          <span class="text-sm font-semibold text-slate-900 dark:text-white">3 of 3 minimum selected</span>
+        </div>
+        <%= link_to "Skip for now", onboarding_step3_path, class: "text-sm font-medium text-primary hover:underline" %>
+      </div>
+      <div class="flex items-center justify-between">
+        <%= link_to onboarding_step1_path, class: "flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-primary transition-colors" do %>
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+          Back
+        <% end %>
+        <%= link_to onboarding_step3_path, class: "bg-primary hover:bg-primary/90 text-white font-bold py-3 px-10 rounded-xl transition-all shadow-lg shadow-primary/25 flex items-center gap-2" do %>
+          Continue
+          <span class="material-symbols-outlined text-lg">arrow_forward</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</main>

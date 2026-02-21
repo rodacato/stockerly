@@ -26,6 +26,10 @@ Rails.application.routes.draw do
   patch "reset-password/:token", to: "password_resets#update"
 
   # --- Authenticated Zone ---
+  get "onboarding/step1", to: "onboarding#step1"
+  get "onboarding/step2", to: "onboarding#step2"
+  get "onboarding/step3", to: "onboarding#step3"
+
   get "dashboard", to: "dashboard#show"
   get "market",    to: "market#index"
 

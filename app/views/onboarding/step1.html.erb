@@ -1,0 +1,89 @@
+<%# Onboarding Step 1 — Market Interests %>
+
+<main class="flex-1 flex flex-col items-center justify-start py-12 px-6">
+  <div class="w-full max-w-2xl">
+    <%# Progress %>
+    <div class="mb-10">
+      <div class="flex justify-between items-end mb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-primary">Onboarding</span>
+          <h2 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Step 1 of 3</h2>
+        </div>
+        <span class="text-slate-400 text-xs font-semibold italic">Getting started...</span>
+      </div>
+      <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+        <div class="h-full bg-primary w-1/3 rounded-full"></div>
+      </div>
+    </div>
+
+    <%# Title %>
+    <div class="mb-8 text-center sm:text-left">
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-3">What markets interest you?</h1>
+      <p class="text-slate-500 dark:text-slate-400 text-lg">Choose the markets you want to follow. You can always change this later.</p>
+    </div>
+
+    <%# Selection Grid %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10" data-controller="selectable-card">
+      <%# Card: US Stocks (pre-selected) %>
+      <button type="button" class="relative flex flex-col items-start p-5 text-left bg-white dark:bg-slate-900 border-2 border-primary rounded-xl shadow-md transition-all ring-4 ring-primary/5"
+              data-selected="true" data-action="click->selectable-card#toggle">
+        <div class="absolute top-4 right-4 text-primary" data-selectable-card-target="icon">
+          <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">check_circle</span>
+        </div>
+        <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
+          <span class="material-symbols-outlined text-3xl">trending_up</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">US Stocks</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">High-growth tech and blue-chip companies.</p>
+      </button>
+
+      <%# Card: Cryptocurrency (pre-selected) %>
+      <button type="button" class="relative flex flex-col items-start p-5 text-left bg-white dark:bg-slate-900 border-2 border-primary rounded-xl shadow-md transition-all ring-4 ring-primary/5"
+              data-selected="true" data-action="click->selectable-card#toggle">
+        <div class="absolute top-4 right-4 text-primary" data-selectable-card-target="icon">
+          <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">check_circle</span>
+        </div>
+        <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
+          <span class="material-symbols-outlined text-3xl">currency_bitcoin</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Cryptocurrency</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Digital assets and blockchain technology.</p>
+      </button>
+
+      <%# Card: International Markets %>
+      <button type="button" class="relative flex flex-col items-start p-5 text-left bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-xl hover:border-primary/50 transition-all hover:shadow-sm"
+              data-selected="false" data-action="click->selectable-card#toggle">
+        <div class="absolute top-4 right-4 text-primary hidden" data-selectable-card-target="icon">
+          <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">check_circle</span>
+        </div>
+        <div class="size-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 mb-4">
+          <span class="material-symbols-outlined text-3xl">public</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">International Markets</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Access global exchanges worldwide.</p>
+      </button>
+
+      <%# Card: ETFs %>
+      <button type="button" class="relative flex flex-col items-start p-5 text-left bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-xl hover:border-primary/50 transition-all hover:shadow-sm"
+              data-selected="false" data-action="click->selectable-card#toggle">
+        <div class="absolute top-4 right-4 text-primary hidden" data-selectable-card-target="icon">
+          <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">check_circle</span>
+        </div>
+        <div class="size-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 mb-4">
+          <span class="material-symbols-outlined text-3xl">account_balance</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">ETFs</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Diversified funds to lower your risk.</p>
+      </button>
+    </div>
+
+    <%# Footer Navigation %>
+    <div class="flex flex-col items-center gap-4">
+      <%= link_to onboarding_step2_path, class: "w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 group" do %>
+        <span>Continue</span>
+        <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+      <% end %>
+      <%= link_to "Skip for now", dashboard_path, class: "text-slate-500 dark:text-slate-400 hover:text-primary text-sm font-semibold transition-colors py-2" %>
+    </div>
+  </div>
+</main>
