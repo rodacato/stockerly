@@ -1,8 +1,219 @@
 <% content_for(:title, "Open Source | TrendStocker") %>
 
-<section class="relative pt-16 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h1 class="text-5xl font-black text-slate-900 dark:text-white">Open Source</h1>
-    <p class="mt-4 text-slate-600 dark:text-slate-400">Coming soon — full implementation</p>
+<%# ===== Hero Section ===== %>
+<section class="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-32">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="flex flex-col lg:flex-row items-center gap-12">
+      <div class="flex-1 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-6">
+          <span class="material-symbols-outlined text-base">favorite</span>
+          100% Free & Open Source
+        </div>
+        <h1 class="text-5xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-6">
+          Built by the community, <span class="text-primary underline decoration-primary/30">for the community.</span>
+        </h1>
+        <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed">
+          TrendStocker is an open-source engine for financial market analysis. Join thousands of developers building a transparent future for trading tools.
+        </p>
+        <div class="flex flex-wrap justify-center lg:justify-start gap-4">
+          <a href="https://github.com/stockerly/stockerly" target="_blank" rel="noopener" class="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg shadow-primary/20">
+            <span class="material-symbols-outlined">terminal</span>
+            View on GitHub
+          </a>
+          <%= link_to trends_path, class: "flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-8 py-4 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" do %>
+            <span class="material-symbols-outlined">menu_book</span>
+            Explore Trends
+          <% end %>
+        </div>
+        <div class="mt-8 flex items-center justify-center lg:justify-start gap-4">
+          <div class="flex -space-x-2">
+            <div class="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-900 bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">AR</div>
+            <div class="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-900 bg-primary/30 flex items-center justify-center text-primary text-[10px] font-bold">SC</div>
+            <div class="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-900 bg-primary/40 flex items-center justify-center text-primary text-[10px] font-bold">MV</div>
+            <div class="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-900 bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-500">+12k</div>
+          </div>
+          <p class="text-sm text-slate-500">Trusted by over 12,000+ contributors</p>
+        </div>
+      </div>
+
+      <%# Terminal mockup %>
+      <div class="flex-1 w-full max-w-xl">
+        <div class="bg-slate-900 rounded-2xl p-4 shadow-2xl border border-slate-800">
+          <div class="flex items-center gap-2 mb-4 border-b border-slate-800 pb-2 px-2">
+            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            <div class="ml-4 text-xs font-mono text-slate-500">zsh — contributor-setup</div>
+          </div>
+          <div class="font-mono text-sm space-y-2 p-2 overflow-x-auto">
+            <p class="text-green-400">$ git clone https://github.com/stockerly/stockerly.git</p>
+            <p class="text-slate-300">Cloning into 'stockerly'...</p>
+            <p class="text-slate-300">Receiving objects: 100% (4521/4521), done.</p>
+            <p class="text-green-400">$ cd stockerly && bin/setup</p>
+            <p class="text-slate-300">Installing dependencies...</p>
+            <p class="text-green-400">$ bin/dev</p>
+            <p class="text-primary font-bold">TrendStocker is running on http://localhost:3000!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+</section>
+
+<%# ===== Why Open Source Section ===== %>
+<section class="py-20 bg-white dark:bg-slate-900/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-16">
+      <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">Why Open Source?</h2>
+      <p class="text-slate-600 dark:text-slate-400 max-w-2xl">We believe financial tools should be as transparent as the markets themselves. Open source ensures security, accuracy, and longevity.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-background-light dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/40 transition-colors group">
+        <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+          <span class="material-symbols-outlined text-3xl">visibility</span>
+        </div>
+        <h3 class="text-xl font-bold mb-3">Total Transparency</h3>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Audit every calculation. We have nothing to hide&mdash;our algorithms are open for public verification and improvement.</p>
+      </div>
+      <div class="bg-background-light dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/40 transition-colors group">
+        <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+          <span class="material-symbols-outlined text-3xl">groups</span>
+        </div>
+        <h3 class="text-xl font-bold mb-3">Community Innovation</h3>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">New technical indicators and chart types are added weekly by experts from around the world.</p>
+      </div>
+      <div class="bg-background-light dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/40 transition-colors group">
+        <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+          <span class="material-symbols-outlined text-3xl">lock_open</span>
+        </div>
+        <h3 class="text-xl font-bold mb-3">No Vendor Lock-in</h3>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">It's your data and your tool. Run TrendStocker on your own servers or customize it to fit your unique strategy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# ===== How to Contribute Section ===== %>
+<section class="py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-primary rounded-4xl p-8 lg:p-16 text-white overflow-hidden relative shadow-2xl">
+      <div class="relative z-10 flex flex-col lg:flex-row gap-12 items-center">
+        <div class="flex-1">
+          <h2 class="text-4xl font-black mb-6">Start Contributing in 5 Minutes</h2>
+          <p class="text-white/80 text-lg mb-10 leading-relaxed max-w-lg">Whether you're a seasoned developer or a documentation pro, we need your help to make TrendStocker better.</p>
+          <div class="space-y-6">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold shrink-0">1</div>
+              <div>
+                <h4 class="font-bold text-lg">Fork the Repository</h4>
+                <p class="text-white/70">Create your own copy of the codebase on GitHub.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold shrink-0">2</div>
+              <div>
+                <h4 class="font-bold text-lg">Claim an Issue</h4>
+                <p class="text-white/70">Pick a bug or feature from our "good first issue" list.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold shrink-0">3</div>
+              <div>
+                <h4 class="font-bold text-lg">Submit a Pull Request</h4>
+                <p class="text-white/70">We'll review your code and merge it into the main project.</p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-12">
+            <a href="https://github.com/stockerly/stockerly/issues" target="_blank" rel="noopener" class="inline-block bg-white text-primary px-8 py-4 rounded-xl font-bold hover:bg-slate-100 transition-colors shadow-xl">
+              Browse Issues on GitHub
+            </a>
+          </div>
+        </div>
+
+        <%# Project Stats %>
+        <div class="flex-1 w-full flex justify-center">
+          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 w-full max-w-sm">
+            <h4 class="font-bold mb-4 flex items-center gap-2">
+              <span class="material-symbols-outlined text-yellow-400">star</span>
+              Project Stats
+            </h4>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                <span class="text-white/70">GitHub Stars</span>
+                <span class="font-mono font-bold">14.2k</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                <span class="text-white/70">Active PRs</span>
+                <span class="font-mono font-bold">24</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                <span class="text-white/70">Forks</span>
+                <span class="font-mono font-bold">1,842</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-white/70">Contributors</span>
+                <span class="font-mono font-bold">452</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute bottom-0 right-0 opacity-10 pointer-events-none">
+        <svg fill="currentColor" height="400" viewBox="0 0 100 100" width="400"><circle cx="100" cy="100" r="100"></circle></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# ===== Hall of Fame Section ===== %>
+<section class="py-20 bg-background-light dark:bg-background-dark">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">Our Hall of Fame</h2>
+      <p class="text-slate-600 dark:text-slate-400">Deep gratitude to the individuals pushing TrendStocker forward every single day.</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+      <% [
+        { name: "Alex Rivera", commits: 124, initials: "AR" },
+        { name: "Sarah Chen", commits: 98, initials: "SC" },
+        { name: "Marcus Vogt", commits: 85, initials: "MV" },
+        { name: "Elena Petrova", commits: 72, initials: "EP" },
+        { name: "David Kim", commits: 64, initials: "DK" },
+        { name: "Maya Patel", commits: 55, initials: "MP" }
+      ].each do |contributor| %>
+        <div class="flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-transform hover:-translate-y-1">
+          <div class="w-16 h-16 rounded-full mb-3 bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+            <%= contributor[:initials] %>
+          </div>
+          <p class="font-bold text-sm"><%= contributor[:name] %></p>
+          <p class="text-xs text-primary font-medium"><%= contributor[:commits] %> commits</p>
+        </div>
+      <% end %>
+    </div>
+    <div class="mt-12 text-center">
+      <a href="https://github.com/stockerly/stockerly/graphs/contributors" target="_blank" rel="noopener" class="text-primary font-bold hover:underline inline-flex items-center gap-1">
+        View all contributors on GitHub
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<%# ===== Final CTA ===== %>
+<section class="py-20 border-t border-slate-200 dark:border-slate-800">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <h2 class="text-4xl font-black mb-6">Ready to make an impact?</h2>
+    <p class="text-lg text-slate-600 dark:text-slate-400 mb-10">Help us build the most powerful, free, and open-source financial analysis tool in the world.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="https://github.com/stockerly/stockerly" target="_blank" rel="noopener" class="bg-primary text-white px-10 py-4 rounded-xl font-bold shadow-xl shadow-primary/20 inline-flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined">star</span>
+        Star on GitHub
+      </a>
+      <%= link_to register_path, class: "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-center" do %>
+        Join TrendStocker
+      <% end %>
+    </div>
   </div>
 </section>
