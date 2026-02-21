@@ -1,0 +1,62 @@
+service: stockerly
+image: your-dockerhub-username/stockerly
+
+registry:
+  username: your-dockerhub-username
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+servers:
+  web:
+    hosts:
+      - YOUR_HETZNER_IP
+  job:
+    hosts:
+      - YOUR_HETZNER_IP
+    cmd: bundle exec rails solid_queue:start
+
+proxy:
+  ssl: true
+  host: stockerly.notdefined.dev
+  app_port: 3000
+  healthcheck:
+    interval: 3
+    path: /up
+    timeout: 3
+
+env:
+  clear:
+    RAILS_SERVE_STATIC_FILES: true
+    RAILS_LOG_TO_STDOUT: true
+    DB_HOST: stockerly-postgres
+    POSTGRES_USER: stockerly
+    POSTGRES_DB: stockerly_production
+    SOLID_QUEUE_IN_PUMA: false
+  secret:
+    - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD
+    - DATABASE_URL
+
+builder:
+  arch: amd64
+  args:
+    RAILS_ENV: production
+  cache:
+    type: registry
+    options: mode=max
+    image: your-dockerhub-username/stockerly:build-cache
+
+accessories:
+  postgres:
+    image: postgres:16
+    host: YOUR_HETZNER_IP
+    env:
+      clear:
+        POSTGRES_USER: stockerly
+        POSTGRES_DB: stockerly_production
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      - data:/var/lib/postgresql/data
+    options:
+      restart: unless-stopped
