@@ -1,22 +1,22 @@
 service: stockerly
-image: rodacato/stockerly
+image: <%= ENV["DOCKER_REGISTRY_USER"] %>/stockerly
 
 registry:
-  username: rodacato
+  username: <%= ENV["DOCKER_REGISTRY_USER"] %>
   password:
     - KAMAL_REGISTRY_PASSWORD
 
 servers:
   web:
     hosts:
-      - 46.225.67.253
+      - <%= ENV["SERVER_IP"] %>
   job:
     hosts:
-      - 46.225.67.253
+      - <%= ENV["SERVER_IP"] %>
     cmd: bundle exec rails solid_queue:start
 
 proxy:
-  ssl: true
+  ssl: false
   host: stockerly.notdefined.dev
   app_port: 3000
   healthcheck:
@@ -44,12 +44,12 @@ builder:
   cache:
     type: registry
     options: mode=max
-    image: rodacato/stockerly:build-cache
+    image: <%= ENV["DOCKER_REGISTRY_USER"] %>/stockerly:build-cache
 
 accessories:
   postgres:
     image: postgres:16
-    host: 46.225.67.253
+    host: <%= ENV["SERVER_IP"] %>
     env:
       clear:
         POSTGRES_USER: stockerly

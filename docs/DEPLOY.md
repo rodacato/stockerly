@@ -1,42 +1,68 @@
 # Deployment Guide
 
-Stockerly deploys to a Hetzner VPS using **Kamal 2** via a **GitHub Actions** workflow.
+Stockerly deploys to a Hetzner VPS using **Kamal 2** with **Cloudflare Tunnel** for traffic routing and SSL.
 
 ## Architecture
 
 ```
-GitHub (push to master)
-  |
-  v
-GitHub Actions (build Docker image + kamal deploy)
-  |
-  v
-Hetzner VPS (kamal-proxy + app container + PostgreSQL container)
+Internet → Cloudflare (SSL termination)
+              |
+              v
+         Cloudflare Tunnel (encrypted)
+              |
+              v
+         Hetzner VPS
+              |
+         cloudflared → localhost:80 (kamal-proxy) → app:3000
+                                                  → PostgreSQL (accessory)
 ```
+
+No inbound ports 80/443 needed on the server. Only SSH (22) is open for Kamal deployments.
 
 ## Prerequisites
 
-- Hetzner VPS (Ubuntu 22.04+ recommended, minimum 2GB RAM)
+- Hetzner VPS (Ubuntu 22.04+, minimum 2GB RAM)
 - Docker Hub account
-- Domain DNS pointing to the server IP
+- Cloudflare account with the domain added
 
 ## 1. Provision the Server
 
-SSH into your fresh server and run the provisioning script:
+```bash
+ssh root@YOUR_SERVER_IP < bin/provision-server
+```
+
+This installs:
+- Docker
+- cloudflared
+- UFW firewall (only port 22 open)
+- 2GB swap
+- Automatic security updates
+
+## 2. Create Cloudflare Tunnel
+
+1. Go to [Cloudflare Zero Trust](https://one.dash.cloudflare.com) > **Networks** > **Tunnels**
+2. Click **Create a tunnel** > select **Cloudflared**
+3. Name it `stockerly` and click **Save tunnel**
+4. Copy the **tunnel token** (starts with `eyJ...`)
+5. SSH into your server and install the tunnel:
 
 ```bash
-ssh root@46.225.67.253 < bin/provision-server
+ssh root@YOUR_SERVER_IP
+cloudflared service install <TUNNEL_TOKEN>
 ```
 
-This installs Docker, configures UFW firewall (ports 22/80/443), adds 2GB swap, and enables automatic security updates.
+6. Back in Cloudflare dashboard, add a **Public hostname**:
 
-## 2. Configure DNS
+| Field | Value |
+|---|---|
+| Subdomain | `stockerly` |
+| Domain | `notdefined.dev` |
+| Type | `HTTP` |
+| URL | `localhost:80` |
 
-Create an A record pointing your domain to the server:
+7. Go to **SSL/TLS** settings for `notdefined.dev` and set encryption mode to **Full**
 
-```
-stockerly.notdefined.dev → 46.225.67.253
-```
+The tunnel is now running as a systemd service and will auto-start on reboot.
 
 ## 3. Set Up GitHub Environment Secrets
 
@@ -48,73 +74,73 @@ Add these secrets:
 |---|---|
 | `KAMAL_REGISTRY_PASSWORD` | Docker Hub > Account Settings > Personal Access Tokens > Generate (Read & Write) |
 | `RAILS_MASTER_KEY` | Content of `config/master.key` in the project |
-| `POSTGRES_PASSWORD` | Generate a strong password (e.g., `openssl rand -hex 32`) |
-| `SSH_PRIVATE_KEY` | Private SSH key that matches the public key on the server |
+| `POSTGRES_PASSWORD` | Generate with `openssl rand -hex 32` |
+| `SSH_PRIVATE_KEY` | Private SSH key matching the public key on the server |
+| `DOCKER_REGISTRY_USER` | Your Docker Hub username (e.g., `rodacato`) |
+| `SERVER_IP` | Your Hetzner server IP |
 
 ## 4. First Deploy (kamal setup)
 
-The first deploy needs `kamal setup` instead of `kamal deploy` because it bootstraps kamal-proxy and accessories (PostgreSQL).
+The first deploy needs `kamal setup` to bootstrap kamal-proxy and accessories.
 
-Run it locally (requires SSH access and secrets exported):
+Run locally (requires SSH access and secrets exported):
 
 ```bash
-# Export secrets locally
 export KAMAL_REGISTRY_PASSWORD=your-docker-hub-token
+export DOCKER_REGISTRY_USER=rodacato
+export SERVER_IP=YOUR_SERVER_IP
 export RAILS_MASTER_KEY=$(cat config/master.key)
 export POSTGRES_PASSWORD=$(openssl rand -hex 32)
 
-# Bootstrap everything
 bin/kamal setup
 ```
 
 This will:
-- Install kamal-proxy on the server
+- Install kamal-proxy on the server (listens on port 80)
 - Start the PostgreSQL accessory container
 - Build and push the Docker image
 - Deploy the app
-- Provision SSL certificate via Let's Encrypt
+
+After this, verify at `https://stockerly.notdefined.dev`
 
 ## 5. Subsequent Deploys (automatic)
 
-After the first `kamal setup`, every push to `master` triggers the GitHub Actions workflow at `.github/workflows/deploy.yml` which runs `kamal deploy` automatically.
+Every push to `master` triggers `.github/workflows/deploy.yml` which runs `kamal deploy`.
 
-You can also deploy manually from the Actions tab using "Run workflow".
+You can also trigger manually from the GitHub Actions tab using "Run workflow".
 
 ## 6. Useful Kamal Commands
 
 ```bash
-# Check app status
-bin/kamal details
-
-# Tail logs
-bin/kamal logs
-
-# Open Rails console
-bin/kamal console
-
-# Open bash shell in container
-bin/kamal shell
-
-# Open database console
-bin/kamal dbc
-
-# Rollback to previous version
-bin/kamal rollback
-
-# Restart the app
-bin/kamal app restart
-
-# Restart accessories (PostgreSQL)
-bin/kamal accessory restart postgres
+bin/kamal details        # Check app status
+bin/kamal logs           # Tail logs
+bin/kamal console        # Open Rails console
+bin/kamal shell          # Open bash shell
+bin/kamal dbc            # Open database console
+bin/kamal rollback       # Rollback to previous version
+bin/kamal app restart    # Restart the app
+bin/kamal accessory restart postgres  # Restart PostgreSQL
 ```
 
 ## Troubleshooting
 
-**Deploy fails with SSL error:**
-Make sure DNS is pointing to the server and ports 80/443 are open. Let's Encrypt needs HTTP access.
+**Site not loading after deploy:**
+1. Check tunnel status: `systemctl status cloudflared`
+2. Check kamal-proxy: `bin/kamal details`
+3. Check app logs: `bin/kamal logs`
+
+**502 Bad Gateway from Cloudflare:**
+The app container probably isn't running or failed healthcheck. Check `bin/kamal logs`.
 
 **Container fails healthcheck:**
-Check logs with `bin/kamal logs`. Common issues: missing env vars, database not migrated.
+Common causes: missing env vars, database not migrated. Check `bin/kamal logs`.
 
 **Database connection refused:**
-Verify the PostgreSQL accessory is running: `bin/kamal accessory details postgres`.
+Verify PostgreSQL is running: `bin/kamal accessory details postgres`.
+
+**Tunnel not connecting:**
+```bash
+ssh root@YOUR_SERVER_IP
+systemctl status cloudflared
+journalctl -u cloudflared -f
+```

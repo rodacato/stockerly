@@ -18,6 +18,8 @@ jobs:
     env:
       DOCKER_BUILDKIT: 1
       KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+      DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
+      SERVER_IP: ${{ secrets.SERVER_IP }}
       RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 

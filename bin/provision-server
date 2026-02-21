@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Provision a fresh Ubuntu VPS for Kamal deployment.
+# Provision a fresh Ubuntu VPS for Kamal deployment with Cloudflare Tunnel.
 # Usage: ssh root@YOUR_SERVER_IP < bin/provision-server
 set -euo pipefail
 
@@ -24,11 +24,9 @@ echo "==> Configuring firewall (UFW)..."
 apt-get install -y ufw
 ufw default deny incoming
 ufw default allow outgoing
-ufw allow 22/tcp   # SSH
-ufw allow 80/tcp   # HTTP (Let's Encrypt + redirect)
-ufw allow 443/tcp  # HTTPS
+ufw allow 22/tcp   # SSH (for Kamal deployments)
 ufw --force enable
-echo "    Firewall enabled: 22, 80, 443 open."
+echo "    Firewall enabled: only SSH (22) open. HTTP/HTTPS handled by Cloudflare Tunnel."
 
 echo "==> Installing Docker..."
 if ! command -v docker &> /dev/null; then
@@ -38,6 +36,19 @@ if ! command -v docker &> /dev/null; then
   echo "    Docker installed."
 else
   echo "    Docker already installed, skipping."
+fi
+
+echo "==> Installing cloudflared..."
+if ! command -v cloudflared &> /dev/null; then
+  curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg \
+    | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+  echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared $(lsb_release -cs) main" \
+    | tee /etc/apt/sources.list.d/cloudflared.list
+  apt-get update
+  apt-get install -y cloudflared
+  echo "    cloudflared installed."
+else
+  echo "    cloudflared already installed, skipping."
 fi
 
 echo "==> Installing curl and git..."
@@ -51,5 +62,13 @@ apt-get install -y unattended-upgrades
 dpkg-reconfigure -f noninteractive unattended-upgrades
 
 echo ""
-echo "==> Server is ready for Kamal deployment!"
-echo "    Next step: run 'kamal setup' from your local machine."
+echo "============================================"
+echo "  Server provisioned!"
+echo "============================================"
+echo ""
+echo "Next steps:"
+echo "  1. Create a Cloudflare Tunnel in Zero Trust dashboard"
+echo "  2. Install the tunnel on this server:"
+echo "     cloudflared service install <TUNNEL_TOKEN>"
+echo "  3. Run 'kamal setup' from your local machine"
+echo ""
