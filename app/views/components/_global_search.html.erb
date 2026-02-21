@@ -1,0 +1,99 @@
+<%# Global Search — overlay dropdown with hardcoded results %>
+
+<%# Backdrop overlay %>
+<div class="hidden fixed inset-0 bg-slate-900/20 backdrop-blur-[2px] z-50" data-search-target="overlay" data-action="click->search#close"></div>
+
+<%# Search modal %>
+<div class="hidden fixed top-20 left-1/2 -translate-x-1/2 w-full max-w-lg z-50" data-search-target="modal">
+  <%# Search Input %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
+    <div class="relative">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+      <input type="text" placeholder="Search stocks, news, or actions..."
+             class="w-full pl-12 pr-16 py-4 border-none bg-transparent text-slate-900 dark:text-white focus:ring-0 focus:outline-none text-base"
+             data-search-target="input"
+             data-action="input->search#filter">
+      <div class="absolute right-4 top-1/2 -translate-y-1/2">
+        <kbd class="inline-flex items-center px-1.5 py-0.5 border border-slate-200 dark:border-slate-600 rounded text-xs font-medium text-slate-400 bg-slate-50 dark:bg-slate-800">esc</kbd>
+      </div>
+    </div>
+
+    <%# Results %>
+    <div class="border-t border-slate-100 dark:border-slate-800 max-h-[420px] overflow-y-auto" data-search-target="results">
+      <%# Section: Stocks & Assets %>
+      <div class="py-2" data-search-target="group">
+        <div class="px-4 py-2 flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+          <span class="material-symbols-outlined text-sm">trending_up</span>
+          Stocks & Assets
+        </div>
+        <div class="px-2 space-y-1">
+          <a href="/market" class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+                <span class="material-symbols-outlined">show_chart</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-900 dark:text-white text-sm">AAPL</span>
+                  <span class="text-xs text-slate-500 font-medium">Apple Inc.</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                  <span class="font-semibold text-slate-900 dark:text-white">$178.52</span>
+                  <span class="text-emerald-600 font-bold">+1.2%</span>
+                </div>
+              </div>
+            </div>
+          </a>
+          <a href="/market" class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+                <span class="material-symbols-outlined">show_chart</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-900 dark:text-white text-sm">NVDA</span>
+                  <span class="text-xs text-slate-500 font-medium">NVIDIA Corp.</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                  <span class="font-semibold text-slate-900 dark:text-white">$875.30</span>
+                  <span class="text-emerald-600 font-bold">+3.4%</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <%# Section: Pages %>
+      <div class="py-2 border-t border-slate-100 dark:border-slate-800" data-search-target="group">
+        <div class="px-4 py-2 flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+          <span class="material-symbols-outlined text-sm">bolt</span>
+          Quick Actions
+        </div>
+        <div class="px-2 space-y-1">
+          <a href="/dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors">
+            <span class="material-symbols-outlined text-slate-400 text-lg">dashboard</span>
+            Go to Dashboard
+          </a>
+          <a href="/portfolio" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors">
+            <span class="material-symbols-outlined text-slate-400 text-lg">account_balance_wallet</span>
+            View Portfolio
+          </a>
+          <a href="/alerts" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors">
+            <span class="material-symbols-outlined text-slate-400 text-lg">add_alert</span>
+            Create Price Alert
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <%# Footer %>
+    <div class="bg-slate-900 dark:bg-slate-950 text-slate-400 px-4 py-2.5 flex items-center justify-between text-[11px] font-medium">
+      <div class="flex gap-4">
+        <span class="flex items-center gap-1.5"><kbd class="bg-slate-700 text-slate-100 px-1 rounded">&#8593;&#8595;</kbd> Navigate</span>
+        <span class="flex items-center gap-1.5"><kbd class="bg-slate-700 text-slate-100 px-1 rounded">&#8629;</kbd> Select</span>
+      </div>
+      <span class="flex items-center gap-1.5"><kbd class="bg-slate-700 text-slate-100 px-1 rounded">esc</kbd> Close</span>
+    </div>
+  </div>
+</div>
