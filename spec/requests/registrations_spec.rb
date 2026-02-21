@@ -26,7 +26,7 @@ RSpec.describe "Registrations", type: :request do
 
       expect(response).to redirect_to(dashboard_path)
       follow_redirect!
-      expect(response.body).to include("Welcome to TrendStocker")
+      expect(response.body).to include("Welcome to Stockerly")
     end
 
     it "rejects mismatched passwords" do

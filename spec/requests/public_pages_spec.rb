@@ -5,7 +5,7 @@ RSpec.describe "Public pages", type: :request do
     it "renders successfully" do
       get root_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("TrendStocker")
+      expect(response.body).to include("Stockerly")
     end
   end
 

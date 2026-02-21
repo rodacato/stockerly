@@ -19,7 +19,7 @@ class LegalController < ApplicationController
 
   def terms
     @page_title = "Terms of Service"
-    @page_subtitle = "Please read these terms carefully before using TrendStocker."
+    @page_subtitle = "Please read these terms carefully before using Stockerly."
     @last_updated = "October 24, 2023"
     @breadcrumbs = ["Terms of Service"]
     @toc_sections = [
