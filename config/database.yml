@@ -1,0 +1,58 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
+  username: <%= ENV.fetch("DATABASE_USERNAME", "postgres") %>
+  password: <%= ENV.fetch("DATABASE_PASSWORD", "") %>
+
+development:
+  primary:
+    <<: *default
+    database: stockerly_development
+  cache:
+    <<: *default
+    database: stockerly_development_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: stockerly_development_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: stockerly_development_cable
+    migrations_paths: db/cable_migrate
+
+test:
+  primary:
+    <<: *default
+    database: stockerly_test
+  cache:
+    <<: *default
+    database: stockerly_test_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: stockerly_test_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: stockerly_test_cable
+    migrations_paths: db/cable_migrate
+
+production:
+  primary: &primary_production
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+  cache:
+    <<: *primary_production
+    database: stockerly_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: stockerly_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: stockerly_production_cable
+    migrations_paths: db/cable_migrate
