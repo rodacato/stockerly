@@ -24,7 +24,7 @@ RSpec.describe "Registrations", type: :request do
         post register_path, params: valid_params
       }.to change(User, :count).by(1)
 
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(dashboard_path)
       follow_redirect!
       expect(response.body).to include("Welcome to TrendStocker")
     end

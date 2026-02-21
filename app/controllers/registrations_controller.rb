@@ -12,7 +12,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       start_session(@user)
-      redirect_to root_path, notice: "Welcome to TrendStocker, #{@user.full_name}!"
+      redirect_to dashboard_path, notice: "Welcome to TrendStocker, #{@user.full_name}!"
     else
       render :new, status: :unprocessable_content
     end
@@ -25,6 +25,6 @@ class RegistrationsController < ApplicationController
   end
 
   def redirect_if_logged_in
-    redirect_to root_path if logged_in?
+    redirect_to dashboard_path if logged_in?
   end
 end

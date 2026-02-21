@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
 
       start_session(user)
       remember(user) if params[:remember] == "1"
-      redirect_to root_path, notice: "Welcome back, #{user.full_name}!"
+      redirect_to dashboard_path, notice: "Welcome back, #{user.full_name}!"
     else
       flash.now[:alert] = "Invalid email or password."
       render :new, status: :unprocessable_content
@@ -34,6 +34,6 @@ class SessionsController < ApplicationController
   private
 
   def redirect_if_logged_in
-    redirect_to root_path if logged_in?
+    redirect_to dashboard_path if logged_in?
   end
 end

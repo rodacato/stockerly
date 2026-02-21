@@ -10,17 +10,17 @@ RSpec.describe "Sessions", type: :request do
       expect(response.body).to include("Welcome back")
     end
 
-    it "redirects to root if already logged in" do
+    it "redirects to dashboard if already logged in" do
       post login_path, params: { email: user.email, password: "password123" }
       get login_path
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(dashboard_path)
     end
   end
 
   describe "POST /login" do
     it "logs in with valid credentials" do
       post login_path, params: { email: "test@example.com", password: "password123" }
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(dashboard_path)
       follow_redirect!
       expect(response.body).to include("Welcome back")
     end
@@ -58,7 +58,7 @@ RSpec.describe "Sessions", type: :request do
 
     it "handles case-insensitive email" do
       post login_path, params: { email: "TEST@EXAMPLE.COM", password: "password123" }
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(dashboard_path)
     end
   end
 

@@ -1,0 +1,11 @@
+<% content_for(:body) do %>
+  <div class="relative flex min-h-screen flex-col bg-slate-50 dark:bg-background-dark">
+    <%= render "shared/app_navbar" %>
+    <%= render "shared/flash" %>
+    <main class="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <%= yield %>
+    </main>
+    <%= render "shared/public_footer" %>
+  </div>
+<% end %>
+<%= render template: "layouts/application" %>

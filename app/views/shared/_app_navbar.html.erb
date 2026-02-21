@@ -1,0 +1,87 @@
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between gap-4">
+      <%# Logo %>
+      <%= link_to dashboard_path, class: "flex items-center gap-2 shrink-0" do %>
+        <span class="material-symbols-outlined text-3xl text-primary">query_stats</span>
+        <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">TrendStocker</span>
+      <% end %>
+
+      <%# Search Bar (hidden on mobile) %>
+      <div class="hidden md:flex flex-1 max-w-md mx-4">
+        <div class="relative w-full">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+          <input type="text" placeholder="Search stocks, crypto, indices..." class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white placeholder-slate-400">
+        </div>
+      </div>
+
+      <%# Desktop Nav %>
+      <nav class="hidden lg:flex items-center gap-1">
+        <% [
+          ["Dashboard", dashboard_path, "dashboard"],
+          ["Market", market_path, "monitoring"],
+          ["Portfolio", portfolio_path, "account_balance_wallet"],
+          ["Alerts", alerts_path, "notifications_active"],
+          ["Earnings", earnings_path, "event_note"]
+        ].each do |label, path, icon| %>
+          <%= link_to path, class: "flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors #{current_page?(path) ? 'text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800'}" do %>
+            <span class="material-symbols-outlined text-lg"><%= icon %></span>
+            <%= label %>
+          <% end %>
+        <% end %>
+      </nav>
+
+      <%# Right Actions %>
+      <div class="flex items-center gap-3 shrink-0">
+        <%# Notifications %>
+        <button class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors">
+          <span class="material-symbols-outlined text-xl">notifications</span>
+          <span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500"></span>
+        </button>
+
+        <%# Avatar / Profile %>
+        <%= link_to profile_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do %>
+          <div class="size-9 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center">
+            <span class="text-sm font-bold text-primary"><%= current_user.full_name.split.map(&:first).join.upcase[0..1] %></span>
+          </div>
+          <span class="hidden xl:block text-sm font-medium text-slate-700 dark:text-slate-300"><%= current_user.full_name %></span>
+        <% end %>
+
+        <%# Mobile Menu Toggle %>
+        <button class="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" data-controller="mobile-menu" data-action="click->mobile-menu#toggle">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <%# Mobile Nav %>
+    <nav class="hidden lg:hidden pb-4 space-y-1" data-mobile-menu-target="menu">
+      <%# Mobile Search %>
+      <div class="relative mb-3 md:hidden">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-slate-900 dark:text-white placeholder-slate-400">
+      </div>
+
+      <% [
+        ["Dashboard", dashboard_path, "dashboard"],
+        ["Market", market_path, "monitoring"],
+        ["Portfolio", portfolio_path, "account_balance_wallet"],
+        ["Alerts", alerts_path, "notifications_active"],
+        ["Earnings", earnings_path, "event_note"],
+        ["Profile", profile_path, "person"]
+      ].each do |label, path, icon| %>
+        <%= link_to path, class: "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors #{current_page?(path) ? 'text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800'}" do %>
+          <span class="material-symbols-outlined text-xl"><%= icon %></span>
+          <%= label %>
+        <% end %>
+      <% end %>
+
+      <div class="border-t border-slate-200 dark:border-slate-800 pt-2 mt-2">
+        <%= button_to logout_path, method: :delete, class: "flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors" do %>
+          <span class="material-symbols-outlined text-xl">logout</span>
+          Sign Out
+        <% end %>
+      </div>
+    </nav>
+  </div>
+</header>

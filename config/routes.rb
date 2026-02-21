@@ -24,4 +24,13 @@ Rails.application.routes.draw do
   post  "forgot-password",       to: "password_resets#create"
   get   "reset-password/:token", to: "password_resets#edit",   as: :reset_password
   patch "reset-password/:token", to: "password_resets#update"
+
+  # --- Authenticated Zone ---
+  get "dashboard", to: "dashboard#show"
+  get "market",    to: "market#index"
+
+  resource  :portfolio, only: [:show]
+  resources :alerts,    only: [:index, :create, :update, :destroy]
+  resources :earnings,  only: [:index]
+  resource  :profile,   only: [:show, :update]
 end
