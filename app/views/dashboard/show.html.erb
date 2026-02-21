@@ -1,6 +1,44 @@
+<%# Dashboard — authenticated home page with hardcoded data %>
+
+<%# Welcome Section %>
 <div class="mb-8">
-  <h1 class="text-3xl font-black text-slate-900 dark:text-white">Welcome back, <%= current_user.full_name %></h1>
-  <p class="text-slate-500 dark:text-slate-400 mt-1">Your portfolio is up <span class="text-emerald-600 font-semibold">+1.2%</span> today.</p>
+  <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Welcome back, <%= current_user.full_name %></h2>
+  <p class="mt-1 text-slate-500 dark:text-slate-400">Your portfolio is up <span class="text-emerald-600 font-semibold">+1.2%</span> today. Here's what you missed.</p>
 </div>
 
-<p class="text-slate-500">Dashboard content coming soon...</p>
+<%# Stats Overview — 4 cards %>
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+  <%= render "components/stat_card", title: "Total Balance", value: "$42,540.00", change: "+1.2%", change_positive: true, icon: "account_balance_wallet" %>
+  <%= render "components/stat_card", title: "Day Gain/Loss", value: "+$840.12", change: "+2.0%", change_positive: true, icon: "trending_up" %>
+  <%= render "components/stat_card", title: "Buying Power", value: "$5,200.00", icon: "savings" %>
+
+  <%# Market Sentiment — custom card with stacked progress bar %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Market Sentiment</p>
+      <span class="material-symbols-outlined text-xl text-slate-400">psychology</span>
+    </div>
+    <div class="mt-3 h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+      <div class="h-full bg-emerald-500" style="width: 65%"></div>
+      <div class="h-full bg-amber-400" style="width: 20%"></div>
+      <div class="h-full bg-rose-500" style="width: 15%"></div>
+    </div>
+    <p class="mt-2 text-xs font-medium text-slate-500 dark:text-slate-400">65% Bullish &bull; Strong Buy</p>
+  </div>
+</div>
+
+<%# Dashboard Grid — 8 + 4 columns %>
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+  <%# Main Content Column %>
+  <div class="lg:col-span-8 space-y-8">
+    <%= render "dashboard/watchlist_table" %>
+    <%= render "dashboard/news_feed" %>
+  </div>
+
+  <%# Sidebar Column %>
+  <div class="lg:col-span-4 space-y-8">
+    <%= render "dashboard/trending_today" %>
+    <%= render "dashboard/weekly_insight" %>
+    <%= render "dashboard/market_status" %>
+  </div>
+</div>
