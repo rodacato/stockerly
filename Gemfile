@@ -62,6 +62,9 @@ group :development, :test do
 
   # System tests [https://github.com/teamcapybara/capybara]
   gem "capybara"
+
+  # Code coverage [https://github.com/simplecov-ruby/simplecov]
+  gem "simplecov", require: false
 end
 
 group :development do
