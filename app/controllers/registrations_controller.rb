@@ -14,7 +14,7 @@ class RegistrationsController < ApplicationController
       start_session(@user)
       redirect_to root_path, notice: "Welcome to TrendStocker, #{@user.full_name}!"
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

@@ -12,28 +12,16 @@ class User < ApplicationRecord
                     format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, length: { minimum: 8 }, if: -> { new_record? || password_digest_changed? }
 
-  before_save :downcase_email
+  before_validation :downcase_email
 
-  def generate_password_reset_token!
-    raw_token = SecureRandom.urlsafe_base64(32)
-    update!(
-      password_reset_token: Digest::SHA256.hexdigest(raw_token),
-      password_reset_sent_at: Time.current
-    )
-    raw_token
-  end
-
-  def clear_password_reset_token!
-    update!(password_reset_token: nil, password_reset_sent_at: nil)
-  end
-
-  def password_reset_expired?
-    password_reset_sent_at.nil? || password_reset_sent_at < 2.hours.ago
+  # Override Rails 8 default (15 min) to 2 hours
+  generates_token_for :password_reset, expires_in: 2.hours do
+    password_salt&.last(10)
   end
 
   private
 
   def downcase_email
-    self.email = email.downcase.strip
+    self.email = email&.downcase&.strip
   end
 end

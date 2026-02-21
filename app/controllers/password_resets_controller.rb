@@ -11,8 +11,8 @@ class PasswordResetsController < ApplicationController
     user = User.find_by(email: params[:email]&.downcase&.strip)
 
     if user
-      raw_token = user.generate_password_reset_token!
-      reset_url = reset_password_url(raw_token)
+      token = user.password_reset_token
+      reset_url = reset_password_url(token)
       Rails.logger.info "[PASSWORD RESET] Reset URL for #{user.email}: #{reset_url}"
     end
 
@@ -22,21 +22,20 @@ class PasswordResetsController < ApplicationController
   def edit; end
 
   def update
-    if @user.update(password_params.merge(password_reset_token: nil, password_reset_sent_at: nil))
+    if @user.update(password_params)
       @user.remember_tokens.destroy_all
       redirect_to login_path, notice: "Password reset successfully. Please sign in."
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
   private
 
   def find_user_by_token
-    digest = Digest::SHA256.hexdigest(params[:token])
-    @user = User.find_by(password_reset_token: digest)
+    @user = User.find_by_password_reset_token(params[:token])
 
-    unless @user && !@user.password_reset_expired?
+    unless @user
       redirect_to forgot_password_path, alert: "Invalid or expired reset link."
     end
   end
