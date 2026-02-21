@@ -1,18 +1,19 @@
 service: stockerly
-image: <%= ENV["DOCKER_REGISTRY_USER"] %>/stockerly
+image: ghcr.io/<%= ENV["GITHUB_REPOSITORY"] %>
 
 registry:
-  username: <%= ENV["DOCKER_REGISTRY_USER"] %>
+  server: ghcr.io
+  username: <%= ENV["GITHUB_ACTOR"] %>
   password:
     - KAMAL_REGISTRY_PASSWORD
 
 servers:
   web:
     hosts:
-      - <%= ENV["SERVER_IP"] %>
+      - <%= ENV["HOST_IP"] %>
   job:
     hosts:
-      - <%= ENV["SERVER_IP"] %>
+      - <%= ENV["HOST_IP"] %>
     cmd: bundle exec rails solid_queue:start
 
 proxy:
@@ -44,12 +45,12 @@ builder:
   cache:
     type: registry
     options: mode=max
-    image: <%= ENV["DOCKER_REGISTRY_USER"] %>/stockerly:build-cache
+    image: ghcr.io/<%= ENV["GITHUB_REPOSITORY"] %>:build-cache
 
 accessories:
   postgres:
     image: postgres:16
-    host: <%= ENV["SERVER_IP"] %>
+    host: <%= ENV["HOST_IP"] %>
     env:
       clear:
         POSTGRES_USER: stockerly
@@ -58,5 +59,3 @@ accessories:
         - POSTGRES_PASSWORD
     directories:
       - data:/var/lib/postgresql/data
-    options:
-      restart: unless-stopped
