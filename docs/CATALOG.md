@@ -67,7 +67,7 @@
 | 22 | Notification Panel | app | Click en campana (navbar) | [SPEC](../designs/shared/notification-panel/SPEC.md) | D |
 | 23 | News Feed | app | `/news` (TBD) | [SPEC](../designs/shared/news-feed/SPEC.md) | D |
 | 24 | Global Search | app | Click/Cmd+K en search bar | [SPEC](../designs/shared/global-search/SPEC.md) | D |
-| 25 | Error Pages | shared | 404 / 500 errors | [SPEC](../designs/shared/error-pages/SPEC.md) | D |
+| 25 | Error Pages | shared | 404 / 500 errors | [SPEC](../designs/shared/error-pages/SPEC.md) | H |
 
 ---
 
@@ -78,8 +78,8 @@
 | complete (OK) | 4 |
 | tested (T) | 0 |
 | backend-wired (B) | 0 |
-| static-html (H) | 16 |
-| design (D) | 5 |
+| static-html (H) | 17 |
+| design (D) | 4 |
 | **Total** | **25** |
 
 ---
