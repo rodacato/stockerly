@@ -1,0 +1,47 @@
+{
+  "name": "stockerly-notdefined",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    },
+    "ghcr.io/rails/devcontainer/features/postgres-client": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+
+    "ghcr.io/devcontainers/features/sshd:1": {}
+  },
+
+  "forwardPorts": [3000, 5432],
+
+  "containerEnv": {
+    "DATABASE_HOST": "db",
+    "DATABASE_USERNAME": "postgres",
+    "DATABASE_PASSWORD": "postgres"
+  },
+
+  "postCreateCommand": ".devcontainer/post-create.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Shopify.ruby-lsp",
+        "bradlc.vscode-tailwindcss",
+        "dbaeumer.vscode-eslint",
+        "ms-azuretools.vscode-docker",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "anthropic.claude-code"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.formatOnSave": true,
+        "[ruby]": {
+          "editor.defaultFormatter": "Shopify.ruby-lsp"
+        }
+      }
+    }
+  }
+}
