@@ -1,0 +1,28 @@
+<%# Usage: render "components/admin_kpi_card", title: "Total Assets", value: "1,284", icon: "database", color: :blue, badge: "+12.5%" %>
+<% color ||= :blue %>
+<% badge ||= nil %>
+<%
+  color_map = {
+    blue:   { bg: "bg-blue-50 dark:bg-blue-900/20",   icon: "text-blue-600 dark:text-blue-400",   badge_bg: "text-blue-600" },
+    green:  { bg: "bg-emerald-50 dark:bg-emerald-900/20", icon: "text-emerald-600 dark:text-emerald-400", badge_bg: "text-emerald-600" },
+    amber:  { bg: "bg-amber-50 dark:bg-amber-900/20",  icon: "text-amber-600 dark:text-amber-400",  badge_bg: "text-amber-600" },
+    red:    { bg: "bg-rose-50 dark:bg-rose-900/20",    icon: "text-rose-600 dark:text-rose-400",    badge_bg: "text-rose-600" }
+  }
+  c = color_map[color.to_sym] || color_map[:blue]
+%>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+  <div class="flex items-start justify-between">
+    <div>
+      <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1"><%= title %></p>
+      <p class="text-3xl font-black tracking-tight text-slate-900 dark:text-white"><%= value %></p>
+    </div>
+    <div class="flex flex-col items-end gap-2">
+      <div class="size-10 rounded-lg <%= c[:bg] %> flex items-center justify-center">
+        <span class="material-symbols-outlined text-xl <%= c[:icon] %>"><%= icon %></span>
+      </div>
+      <% if badge.present? %>
+        <span class="text-xs font-bold <%= c[:badge_bg] %>"><%= badge %></span>
+      <% end %>
+    </div>
+  </div>
+</div>

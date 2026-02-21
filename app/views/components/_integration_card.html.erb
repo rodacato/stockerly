@@ -1,0 +1,53 @@
+<%# Usage: render "components/integration_card", name: "Polygon.io", category: "Stocks & Forex", status: :connected, last_sync: "2 mins ago", icon_color: "bg-indigo-600" %>
+<% icon_color ||= "bg-slate-500" %>
+<%
+  status_config = {
+    connected: { dot: "bg-emerald-500", label: "Connected", text: "text-emerald-600" },
+    syncing:   { dot: "bg-blue-500",    label: "Syncing",   text: "text-blue-600" },
+    inactive:  { dot: "bg-slate-300",   label: "Inactive",  text: "text-slate-400" }
+  }
+  s = status_config[status.to_sym] || status_config[:inactive]
+%>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+  <div class="flex items-start justify-between mb-4">
+    <div class="flex items-center gap-3">
+      <div class="size-10 rounded-lg <%= icon_color %> flex items-center justify-center">
+        <span class="material-symbols-outlined text-xl text-white">hub</span>
+      </div>
+      <div>
+        <p class="font-bold text-sm text-slate-900 dark:text-white"><%= name %></p>
+        <p class="text-xs text-slate-400 uppercase tracking-wider"><%= category %></p>
+      </div>
+    </div>
+    <span class="inline-flex items-center gap-1.5 text-xs font-bold <%= s[:text] %>">
+      <span class="size-2 rounded-full <%= s[:dot] %>"></span>
+      <%= s[:label] %>
+    </span>
+  </div>
+
+  <div class="text-xs text-slate-400 mb-4">
+    Last Sync &middot; <span class="text-slate-600 dark:text-slate-300"><%= last_sync %></span>
+  </div>
+
+  <div class="mb-4">
+    <p class="text-xs font-medium text-slate-500 mb-1.5">API Key</p>
+    <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded-lg px-3 py-2">
+      <span class="text-sm font-mono text-slate-400 flex-1 truncate">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
+      <button class="text-slate-400 hover:text-slate-600 transition-colors">
+        <span class="material-symbols-outlined text-sm">visibility</span>
+      </button>
+      <button class="text-slate-400 hover:text-slate-600 transition-colors">
+        <span class="material-symbols-outlined text-sm">content_copy</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <button class="flex-1 text-sm font-medium text-slate-600 dark:text-slate-300 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+      Settings
+    </button>
+    <button class="flex-1 text-sm font-bold text-white bg-primary px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+      Refresh Sync
+    </button>
+  </div>
+</div>

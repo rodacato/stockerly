@@ -1,0 +1,32 @@
+<%# Usage: render "components/user_row", name: "jdoe_investor", email: "john@example.com", joined: "Oct 24, 2023", role: "user", status: "active", avatar_color: "bg-blue-500" %>
+<% avatar_color ||= "bg-slate-500" %>
+<tr class="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+  <td class="px-6 py-4">
+    <div class="flex items-center gap-3">
+      <div class="size-9 rounded-full <%= avatar_color %> flex items-center justify-center">
+        <span class="text-white text-xs font-bold"><%= name[0..1].upcase %></span>
+      </div>
+      <div>
+        <p class="font-bold text-sm text-slate-900 dark:text-white"><%= name %></p>
+        <p class="text-xs text-slate-400"><%= email %></p>
+      </div>
+    </div>
+  </td>
+  <td class="px-6 py-4">
+    <span class="text-sm text-slate-500"><%= joined %></span>
+  </td>
+  <td class="px-6 py-4">
+    <% role_colors = { "admin" => "bg-primary text-white", "user" => "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300" } %>
+    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold <%= role_colors[role.to_s] || role_colors['user'] %>">
+      <%= role.to_s.capitalize %>
+    </span>
+  </td>
+  <td class="px-6 py-4">
+    <%= render "components/status_badge", status: status %>
+  </td>
+  <td class="px-6 py-4 text-right">
+    <button class="p-1.5 text-slate-400 hover:text-slate-600 transition-colors">
+      <span class="material-symbols-outlined text-lg">more_vert</span>
+    </button>
+  </td>
+</tr>
