@@ -1,0 +1,32 @@
+<%# Market Data Connectivity section %>
+<div>
+  <div class="mb-4">
+    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Market Data Connectivity</h2>
+    <p class="text-slate-500 mt-1">Manage API connections and synchronization health with financial data providers.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <%= render "components/integration_card",
+      name: "Polygon.io",
+      category: "Stocks & Forex",
+      status: :connected,
+      last_sync: "2 mins ago",
+      icon_color: "bg-indigo-600" %>
+
+    <%= render "components/integration_card",
+      name: "CoinGecko",
+      category: "Cryptocurrency",
+      status: :syncing,
+      last_sync: "1 hour ago",
+      icon_color: "bg-emerald-600" %>
+
+    <%# Add New Provider Card %>
+    <div class="bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center justify-center text-center hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+      <div class="size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-3">
+        <span class="material-symbols-outlined text-2xl text-slate-400">add</span>
+      </div>
+      <p class="font-bold text-sm text-slate-900 dark:text-white">Add New Provider</p>
+      <p class="text-xs text-slate-400 mt-1">Connect to IEX, AlphaVantage, or custom API</p>
+    </div>
+  </div>
+</div>

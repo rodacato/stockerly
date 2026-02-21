@@ -1,0 +1,27 @@
+<%# User management table with hardcoded data %>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left">
+      <thead class="bg-slate-50 dark:bg-slate-800/50">
+        <tr>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">User Profile</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Join Date</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Role</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render "components/user_row", name: "jdoe_investor",  email: "john.doe@example.com",     joined: "Oct 24, 2023", role: "user",  status: "active",    avatar_color: "bg-blue-500" %>
+        <%= render "components/user_row", name: "sarah_crypto",   email: "sarah.s@web3.io",          joined: "Nov 12, 2023", role: "user",  status: "active",    avatar_color: "bg-purple-500" %>
+        <%= render "components/user_row", name: "admin_mike",     email: "mike@trendstocker.com",    joined: "Jan 05, 2024", role: "admin", status: "active",    avatar_color: "bg-emerald-500" %>
+        <%= render "components/user_row", name: "hacker123",      email: "ghost@anon.net",           joined: "Dec 15, 2023", role: "user",  status: "suspended", avatar_color: "bg-rose-500" %>
+      </tbody>
+    </table>
+  </div>
+
+  <%# Pagination %>
+  <div class="px-6 pb-4">
+    <%= render "components/pagination", current_page: 1, total_pages: 249, total_count: 2481, per_page: 10 %>
+  </div>
+</div>

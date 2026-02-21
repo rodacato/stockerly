@@ -1,0 +1,30 @@
+<%# System logs table with hardcoded data %>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left">
+      <thead class="bg-slate-50 dark:bg-slate-800/50">
+        <tr>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Task / Execution</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Module</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Timestamp</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Duration</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render "components/log_row", severity: "success", task: "FX Rate Update",         module_name: "Finance",      timestamp: "2 mins ago",  duration: "1.2s" %>
+        <%= render "components/log_row", severity: "error",   task: "Shopify Price Sync",     module_name: "Marketplace",  timestamp: "15 mins ago", duration: "5.8s", action_label: "Investigate" %>
+        <%= render "components/log_row", severity: "warning", task: "Inventory Audit",        module_name: "Warehouse",    timestamp: "45 mins ago", duration: "12.3s" %>
+        <%= render "components/log_row", severity: "success", task: "Daily Backup",           module_name: "Core",         timestamp: "3 hours ago", duration: "45.0s" %>
+        <%= render "components/log_row", severity: "success", task: "User Session Clean-up",  module_name: "Auth",         timestamp: "4 hours ago", duration: "1.8s" %>
+        <%= render "components/log_row", severity: "info",    task: "Cache Invalidation",     module_name: "Core",         timestamp: "5 hours ago", duration: "0.3s" %>
+      </tbody>
+    </table>
+  </div>
+
+  <%# Pagination %>
+  <div class="px-6 pb-4">
+    <%= render "components/pagination", current_page: 1, total_pages: 208, total_count: 1248, per_page: 6 %>
+  </div>
+</div>

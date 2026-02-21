@@ -1,0 +1,27 @@
+<% content_for(:admin_page_title, "Users") %>
+
+<div class="space-y-8">
+  <%# Header %>
+  <div class="flex items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-white">User Management</h1>
+      <p class="text-slate-500 mt-1">Monitor and manage access for 2,481 active traders.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+        <input type="text" placeholder="Search users..." autocomplete="off" class="w-64 pl-10 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white placeholder-slate-400">
+      </div>
+      <button class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">
+        <span class="material-symbols-outlined text-lg">person_add</span>
+        Add User
+      </button>
+    </div>
+  </div>
+
+  <%# Users Table %>
+  <%= render "admin/users/users_table" %>
+
+  <%# Integrations Section %>
+  <%= render "admin/users/integrations" %>
+</div>
