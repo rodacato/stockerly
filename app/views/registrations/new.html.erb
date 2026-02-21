@@ -53,29 +53,44 @@
           <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Get started with TrendStocker in seconds.</p>
         </div>
 
+        <%# Error Messages %>
+        <% if @user&.errors&.any? %>
+          <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-sm text-rose-700 dark:text-rose-400">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="material-symbols-outlined text-lg">error</span>
+              <span class="font-medium">Please fix the following errors:</span>
+            </div>
+            <ul class="list-disc pl-9 space-y-0.5">
+              <% @user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
         <%# Register Form %>
-        <form class="space-y-4">
+        <%= form_with url: register_path, method: :post, class: "space-y-4" do |f| %>
           <div>
             <label for="full_name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Full Name</label>
-            <input type="text" id="full_name" name="full_name" autocomplete="name" placeholder="John Doe" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+            <input type="text" id="full_name" name="full_name" autocomplete="name" placeholder="John Doe" value="<%= @user&.full_name %>" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
           </div>
           <div>
             <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
-            <input type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" value="<%= @user&.email %>" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
           </div>
           <div>
             <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
-            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Min. 8 characters" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Min. 8 characters" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
           </div>
           <div>
             <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Confirm Password</label>
-            <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Repeat your password" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+            <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Repeat your password" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
           </div>
           <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2">
             <span>Create Account</span>
             <span class="material-symbols-outlined text-lg">arrow_forward</span>
           </button>
-        </form>
+        <% end %>
 
         <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">
           By creating an account, you agree to our

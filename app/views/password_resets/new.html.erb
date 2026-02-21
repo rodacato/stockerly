@@ -1,0 +1,69 @@
+<% content_for(:title, "Forgot Password | TrendStocker") %>
+
+<main class="grow flex items-center justify-center p-4 py-12">
+  <div class="w-full max-w-4xl bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-xl flex flex-col md:flex-row min-h-[600px]">
+    <%# Left Side: Branding %>
+    <div class="hidden md:flex md:w-1/2 bg-primary relative overflow-hidden p-12 flex-col justify-between text-white">
+      <div class="relative z-10">
+        <div class="size-12 bg-white/20 rounded-lg flex items-center justify-center mb-8">
+          <span class="material-symbols-outlined text-white text-3xl">lock_reset</span>
+        </div>
+        <h1 class="text-3xl font-bold leading-tight mb-4">Reset Your Password</h1>
+        <p class="text-blue-100 text-lg">Don't worry, it happens. We'll send you a link to reset your password securely.</p>
+      </div>
+      <div class="relative z-10">
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-300">shield</span>
+            <span class="text-sm text-blue-100">Secure token-based reset</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-300">timer</span>
+            <span class="text-sm text-blue-100">Link expires in 2 hours</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-300">lock</span>
+            <span class="text-sm text-blue-100">All sessions invalidated on reset</span>
+          </div>
+        </div>
+      </div>
+      <%# Background pattern %>
+      <div class="absolute inset-0 opacity-10 pointer-events-none">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path d="M0 100 L20 80 L40 90 L60 50 L80 70 L100 20 V100 H0 Z" fill="white"/>
+        </svg>
+      </div>
+    </div>
+
+    <%# Right Side: Forgot Password Form %>
+    <div class="w-full md:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
+      <div class="space-y-6">
+        <div class="text-center md:text-left">
+          <div class="size-14 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto md:mx-0">
+            <span class="material-symbols-outlined text-primary text-3xl">mail</span>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Forgot your password?</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Enter your email and we'll send you a reset link.</p>
+        </div>
+
+        <%= form_with url: forgot_password_path, method: :post, class: "space-y-4" do |f| %>
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          </div>
+          <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2">
+            <span>Send Reset Link</span>
+            <span class="material-symbols-outlined text-lg">send</span>
+          </button>
+        <% end %>
+
+        <div class="text-center pt-2">
+          <%= link_to login_path, class: "inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline" do %>
+            <span class="material-symbols-outlined text-lg">arrow_back</span>
+            Back to Login
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

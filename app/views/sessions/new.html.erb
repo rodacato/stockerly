@@ -47,28 +47,36 @@
           <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Please enter your details to access your account.</p>
         </div>
 
+        <%# Error Messages %>
+        <% if flash[:alert] && flash[:alert] != "Please sign in to continue." %>
+          <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-sm text-rose-700 dark:text-rose-400 flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">error</span>
+            <%= flash[:alert] %>
+          </div>
+        <% end %>
+
         <%# Login Form %>
-        <form class="space-y-4">
+        <%= form_with url: login_path, method: :post, class: "space-y-4" do |f| %>
           <div>
             <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
-            <input type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" value="<%= params[:email] %>" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
           </div>
           <div>
             <div class="flex justify-between mb-1.5">
               <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
-              <a href="#" class="text-xs font-semibold text-primary hover:underline">Forgot password?</a>
+              <%= link_to "Forgot password?", forgot_password_path, class: "text-xs font-semibold text-primary hover:underline" %>
             </div>
-            <input type="password" id="password" name="password" autocomplete="current-password" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+            <input type="password" id="password" name="password" autocomplete="current-password" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
           </div>
           <div class="flex items-center">
-            <input type="checkbox" id="remember" name="remember" class="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary">
+            <input type="checkbox" id="remember" name="remember" value="1" class="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary">
             <label for="remember" class="ml-2 text-sm text-slate-600 dark:text-slate-400">Remember me for 30 days</label>
           </div>
           <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2">
             <span>Sign In</span>
             <span class="material-symbols-outlined text-lg">arrow_forward</span>
           </button>
-        </form>
+        <% end %>
 
         <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">
           By signing in, you agree to our
