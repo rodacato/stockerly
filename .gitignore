@@ -31,6 +31,9 @@
 
 /public/assets
 
+# Ignore SimpleCov coverage output
+/coverage
+
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
