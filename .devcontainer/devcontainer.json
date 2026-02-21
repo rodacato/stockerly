@@ -11,7 +11,11 @@
     "ghcr.io/rails/devcontainer/features/postgres-client": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
 
-    "ghcr.io/devcontainers/features/sshd:1": {}
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/sshd:1": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "moby": false
+    }
   },
 
   "forwardPorts": [3000, 5432],
