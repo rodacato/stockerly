@@ -1,0 +1,41 @@
+<% content_for(:body) do %>
+  <%= render "shared/public_navbar" %>
+  <%= render "shared/flash" %>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <%# Hero / Breadcrumb area %>
+    <div class="mb-12 border-b border-primary/10 pb-8">
+      <%= render "shared/breadcrumbs", crumbs: @breadcrumbs %>
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <h1 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-2"><%= @page_title %></h1>
+          <p class="text-slate-500 dark:text-slate-400"><%= @page_subtitle %></p>
+        </div>
+        <div class="flex items-center gap-4 no-print">
+          <div class="flex flex-col items-end">
+            <span class="text-xs uppercase tracking-widest font-bold text-slate-400">Last Updated</span>
+            <span class="text-sm font-semibold text-primary"><%= @last_updated %></span>
+          </div>
+          <button class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors" onclick="window.print()">
+            <span class="material-symbols-outlined text-lg">print</span>
+            Print
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-12">
+      <%# Sidebar TOC %>
+      <aside class="lg:w-1/4 no-print">
+        <%= render "shared/legal_toc_sidebar", sections: @toc_sections %>
+      </aside>
+
+      <%# Content Area %>
+      <div class="lg:w-3/4 content-area space-y-12">
+        <%= yield %>
+      </div>
+    </div>
+  </main>
+  <%= render "shared/public_footer" %>
+  <%= render "components/back_to_top" %>
+<% end %>
+<%= render template: "layouts/application" %>

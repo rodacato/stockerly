@@ -1,0 +1,35 @@
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <%# Logo %>
+      <%= link_to root_path, class: "flex items-center gap-2" do %>
+        <span class="material-symbols-outlined text-3xl text-primary">query_stats</span>
+        <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">TrendStocker</span>
+      <% end %>
+
+      <%# Desktop Nav %>
+      <nav class="hidden md:flex items-center gap-8">
+        <%= link_to "Trends", trends_path, class: "text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" %>
+        <%= link_to "Open Source", open_source_path, class: "text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" %>
+      </nav>
+
+      <%# Auth Buttons %>
+      <div class="flex items-center gap-4">
+        <%= link_to "Login", login_path, class: "hidden sm:block px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all" %>
+        <%= link_to "Get Started", register_path, class: "bg-primary text-white px-5 py-2.5 text-sm font-bold rounded-lg hover:bg-primary/90 shadow-sm transition-all" %>
+
+        <%# Mobile Menu Toggle %>
+        <button class="md:hidden p-2 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" data-controller="mobile-menu" data-action="click->mobile-menu#toggle">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <%# Mobile Nav %>
+    <nav class="hidden md:hidden pb-4 space-y-2" data-mobile-menu-target="menu">
+      <%= link_to "Trends", trends_path, class: "block px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors" %>
+      <%= link_to "Open Source", open_source_path, class: "block px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors" %>
+      <%= link_to "Login", login_path, class: "block px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors sm:hidden" %>
+    </nav>
+  </div>
+</header>

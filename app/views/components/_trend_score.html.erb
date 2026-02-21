@@ -1,0 +1,20 @@
+<%# Usage: render "components/trend_score", score: 94 %>
+<%
+  score_value = local_assigns[:score] || 0
+  color = if score_value >= 70
+    "text-green-500"
+  elsif score_value >= 40
+    "text-yellow-500"
+  else
+    "text-red-500"
+  end
+  percentage = (score_value / 100.0 * 360).round
+%>
+<div class="relative inline-flex items-center justify-center">
+  <div class="w-28 h-28 rounded-full flex items-center justify-center"
+       style="background: conic-gradient(currentColor <%= percentage %>deg, #e2e8f0 <%= percentage %>deg);">
+    <div class="w-22 h-22 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center <%= color %>">
+      <span class="text-3xl font-black"><%= score_value %></span>
+    </div>
+  </div>
+</div>

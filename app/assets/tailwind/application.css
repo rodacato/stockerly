@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #004a99;
+  --color-background-light: #f5f7f8;
+  --color-background-dark: #0f1923;
+  --font-family-display: "Inter", sans-serif;
+}
+
+/* Smooth scroll for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Print utilities */
+@media print {
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+}

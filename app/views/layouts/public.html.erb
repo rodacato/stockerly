@@ -1,0 +1,9 @@
+<% content_for(:body) do %>
+  <%= render "shared/public_navbar" %>
+  <%= render "shared/flash" %>
+  <main>
+    <%= yield %>
+  </main>
+  <%= render "shared/public_footer" %>
+<% end %>
+<%= render template: "layouts/application" %>
