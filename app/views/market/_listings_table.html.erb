@@ -28,6 +28,7 @@
                when 25..49  then "Weakening"
                else "Weak"
              end %>
+          <%= turbo_stream_from "asset_#{asset.id}" %>
           <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
@@ -40,7 +41,10 @@
                 </div>
               </div>
             </td>
-            <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(asset.current_price) %></td>
+            <td id="asset_price_<%= asset.id %>" class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"
+                data-controller="price-flash" data-price-flash-value="<%= asset.current_price %>">
+              <%= number_to_currency(asset.current_price) %>
+            </td>
             <td class="px-6 py-4 text-right">
               <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold <%= positive ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
                 <%= positive ? '+' : '' %><%= number_with_precision(change, precision: 2) %>%

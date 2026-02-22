@@ -8,3 +8,22 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* Price flash animations for real-time Turbo Stream updates */
+@keyframes flash-green {
+  0%   { background-color: rgba(16, 185, 129, 0.3); }
+  100% { background-color: transparent; }
+}
+
+@keyframes flash-red {
+  0%   { background-color: rgba(244, 63, 94, 0.3); }
+  100% { background-color: transparent; }
+}
+
+.animate-flash-green {
+  animation: flash-green 1.5s ease-out;
+}
+
+.animate-flash-red {
+  animation: flash-red 1.5s ease-out;
+}

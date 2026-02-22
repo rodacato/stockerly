@@ -1,0 +1,10 @@
+<%# Lightweight partial for Turbo Stream broadcast_replace_to %>
+<%# Usage: render "components/asset_price", asset: asset %>
+<% change = asset.change_percent_24h || 0 %>
+<% positive = change >= 0 %>
+<td id="asset_price_<%= asset.id %>"
+    class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"
+    data-controller="price-flash"
+    data-price-flash-value="<%= asset.current_price %>">
+  <%= number_to_currency(asset.current_price) %>
+</td>
