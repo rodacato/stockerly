@@ -7,6 +7,8 @@ class RegistrationsController < ApplicationController
     @user = User.new
   end
 
+  # TODO: Replace with Identity::Register.call(name:, email:, password:, password_confirmation:)
+  #       -> Success(user) | Failure(:validation, errors)
   def create
     @user = User.new(registration_params)
 

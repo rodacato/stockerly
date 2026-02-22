@@ -7,6 +7,8 @@ class SessionsController < ApplicationController
 
   def new; end
 
+  # TODO: Replace with Identity::Login.call(email:, password:, remember_me:)
+  #       -> Success(user) | Failure(:invalid_credentials) | Failure(:suspended)
   def create
     user = User.find_by(email: params[:email]&.downcase&.strip)
 

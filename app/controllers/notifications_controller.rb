@@ -1,7 +1,10 @@
 class NotificationsController < AuthenticatedController
   def index
-    @notifications = current_user.notifications.recent
-    @unread_count  = current_user.notifications.unread.count
+    result = Notifications::ListRecent.call(user: current_user)
+    data = result.value!
+
+    @notifications = data[:notifications]
+    @unread_count  = data[:unread_count]
   end
 
   def mark_as_read

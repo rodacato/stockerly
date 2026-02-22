@@ -2,7 +2,8 @@ class OnboardingController < AuthenticatedController
   def step1; end
 
   def step2
-    @assets = Asset.where(asset_type: [:stock, :crypto]).order(:name).limit(20)
+    result = Onboarding::LoadAssetCatalog.call
+    @assets = result.value![:assets]
   end
 
   def complete
@@ -13,6 +14,7 @@ class OnboardingController < AuthenticatedController
   end
 
   def step3
-    @watchlist_count = current_user.watchlist_items.count
+    result = Onboarding::LoadProgress.call(user: current_user)
+    @watchlist_count = result.value![:watchlist_count]
   end
 end

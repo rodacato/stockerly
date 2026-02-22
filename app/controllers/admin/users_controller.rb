@@ -1,13 +1,11 @@
 module Admin
   class UsersController < BaseController
-    include Pagy::Backend
-
     def index
-      scope = User.all
-      scope = scope.where("full_name ILIKE :q OR email ILIKE :q", q: "%#{params[:search]}%") if params[:search].present?
-      scope = scope.order(created_at: :desc)
+      result = Admin::Users::ListUsers.call(params: filter_params)
+      data = result.value!
 
-      @pagy, @users = pagy(scope, limit: 20, page: params[:page] || 1)
+      @pagy  = data[:pagy]
+      @users = data[:users]
     end
 
     def suspend
@@ -18,6 +16,12 @@ module Admin
       else
         redirect_to admin_users_path, alert: result.failure.last
       end
+    end
+
+    private
+
+    def filter_params
+      params.permit(:search, :page).to_h.symbolize_keys
     end
   end
 end

@@ -1,6 +1,9 @@
 class ProfilesController < AuthenticatedController
   def show
-    @watchlist_items = current_user.watchlist_items.includes(:asset).order(created_at: :desc)
+    result = Profiles::LoadProfile.call(user: current_user)
+    data = result.value!
+
+    @watchlist_items = data[:watchlist_items]
   end
 
   def update

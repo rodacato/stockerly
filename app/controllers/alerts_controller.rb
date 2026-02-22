@@ -1,9 +1,12 @@
 class AlertsController < AuthenticatedController
   def index
-    @rules = current_user.alert_rules.order(created_at: :desc)
-    @events = current_user.alert_events.recent
-    @preference = current_user.alert_preference
-    @triggered_today = current_user.alert_events.where("triggered_at >= ?", Date.current.beginning_of_day).count
+    result = Alerts::LoadDashboard.call(user: current_user)
+    data = result.value!
+
+    @rules           = data[:rules]
+    @events          = data[:events]
+    @preference      = data[:preference]
+    @triggered_today = data[:triggered_today]
   end
 
   def create

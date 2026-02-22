@@ -7,6 +7,8 @@ class PasswordResetsController < ApplicationController
 
   def new; end
 
+  # TODO: Replace with Identity::RequestPasswordReset.call(email:)
+  #       -> Success(token_url) | Failure(:not_found)
   def create
     user = User.find_by(email: params[:email]&.downcase&.strip)
 
@@ -21,6 +23,8 @@ class PasswordResetsController < ApplicationController
 
   def edit; end
 
+  # TODO: Replace with Identity::ResetPassword.call(token:, password:, password_confirmation:)
+  #       -> Success(user) | Failure(:invalid_token) | Failure(:validation, errors)
   def update
     if @user.update(password_params)
       @user.remember_tokens.destroy_all

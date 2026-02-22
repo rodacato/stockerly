@@ -1,16 +1,13 @@
 module Admin
   class AssetsController < BaseController
-    include Pagy::Backend
-
     def index
-      scope = Asset.all
-      scope = scope.where(asset_type: params[:type]) if params[:type].present?
-      scope = scope.where("name ILIKE :q OR symbol ILIKE :q", q: "%#{params[:search]}%") if params[:search].present?
-      scope = scope.order(symbol: :asc)
+      result = Admin::Assets::ListAssets.call(params: filter_params)
+      data = result.value!
 
-      @pagy, @assets = pagy(scope, limit: 20, page: params[:page] || 1)
-      @total_count   = Asset.count
-      @syncing_count = Asset.syncing.count
+      @pagy          = data[:pagy]
+      @assets        = data[:assets]
+      @total_count   = data[:total_count]
+      @syncing_count = data[:syncing_count]
     end
 
     def toggle_status
@@ -21,6 +18,12 @@ module Admin
       else
         redirect_to admin_assets_path, alert: result.failure.last
       end
+    end
+
+    private
+
+    def filter_params
+      params.permit(:type, :search, :page).to_h.symbolize_keys
     end
   end
 end
