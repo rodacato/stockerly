@@ -28,6 +28,11 @@
             </td>
             <td class="px-6 py-4 text-right">
               <div class="flex items-center justify-end gap-2">
+                <%= button_to trigger_sync_admin_asset_path(asset), method: :post,
+                    class: "p-1.5 text-slate-400 hover:text-emerald-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
+                    title: "Sync now" do %>
+                  <span class="material-symbols-outlined text-lg">sync</span>
+                <% end %>
                 <%= button_to toggle_status_admin_asset_path(asset), method: :patch,
                     class: "p-1.5 text-slate-400 hover:text-primary transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" do %>
                   <span class="material-symbols-outlined text-lg"><%= asset.active? ? "pause" : "play_arrow" %></span>

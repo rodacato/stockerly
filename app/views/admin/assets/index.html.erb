@@ -7,6 +7,13 @@
       <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Asset Management</h1>
       <p class="text-slate-500 mt-1">Overview and configuration of global Stocks & Crypto instruments.</p>
     </div>
+    <div class="flex items-center gap-2">
+      <%= button_to trigger_sync_all_admin_assets_path, method: :post,
+          class: "inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors" do %>
+        <span class="material-symbols-outlined text-lg">sync</span>
+        Sync All Assets
+      <% end %>
+    </div>
   </div>
 
   <%# KPI Cards %>

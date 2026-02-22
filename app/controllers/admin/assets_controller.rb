@@ -1,5 +1,7 @@
 module Admin
   class AssetsController < BaseController
+    rate_limit to: 5, within: 1.minute, only: :trigger_sync
+
     def index
       result = Admin::Assets::ListAssets.call(params: filter_params)
       data = result.value!
@@ -8,6 +10,26 @@ module Admin
       @assets        = data[:assets]
       @total_count   = data[:total_count]
       @syncing_count = data[:syncing_count]
+    end
+
+    def trigger_sync
+      result = Admin::Assets::TriggerSync.call(asset_id: params[:id])
+
+      if result.success?
+        redirect_to admin_assets_path, notice: "Sync job enqueued."
+      else
+        redirect_to admin_assets_path, alert: result.failure.last
+      end
+    end
+
+    def trigger_sync_all
+      result = Admin::Assets::TriggerSync.call(asset_type: params[:type])
+
+      if result.success?
+        redirect_to admin_assets_path, notice: "Bulk sync enqueued."
+      else
+        redirect_to admin_assets_path, alert: "Failed to enqueue sync."
+      end
     end
 
     def toggle_status

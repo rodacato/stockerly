@@ -52,7 +52,14 @@ Rails.application.routes.draw do
   # --- Admin Zone ---
   namespace :admin do
     resources :assets, only: [:index] do
-      member { patch :toggle_status }
+      member do
+        patch :toggle_status
+        post  :trigger_sync
+      end
+      collection { post :trigger_sync_all }
+    end
+    resources :integrations, only: [] do
+      member { post :refresh_sync }
     end
     resources :logs,  only: [:index]
     resources :users, only: [:index] do
