@@ -22,7 +22,8 @@
 | 5 | Modelos, Migraciones y Seeds | Completada | 301 |
 | 6 | Backend (Use Cases, Events, CRUD) | Completada | 490 |
 | 6.5 | Auditoria de Consistencia e Integracion | Completada | 540 |
-| **7** | **Integraciones Externas** | **Pendiente** | - |
+| 7 | Integraciones Externas | Completada | 654 |
+| **8** | **Polish & Completeness** | **Completada** | 702 |
 
 ---
 
@@ -480,6 +481,45 @@ Conectar con APIs externas para datos de mercado en tiempo real. Implementar gat
 bundle exec rspec                    # Todos verdes (~250+ specs)
 rails server                         # Precios se actualizan en real-time
 # Verificar: Solid Queue dashboard, Turbo Stream updates, circuit breaker logging
+```
+
+---
+
+## Fase 8: Polish & Completeness
+
+### Objetivo
+Resolver los 16 TODOs pendientes en el codigo: extraer logica inline de auth controllers a Use Cases, conectar botones UI, y deshabilitar features post-launch. Dejar 0 deuda tecnica anotada.
+
+### Pasos Completados
+
+#### 8.1 — Identity Use Cases
+- 4 Use Cases nuevos: `Identity::Register`, `Identity::Login`, `Identity::RequestPasswordReset`, `Identity::ResetPassword`
+- 4 Contracts con validacion dry-validation
+- 3 auth controllers refactorizados para delegar al Use Case (session/cookie management queda en controller)
+
+#### 8.2 — Admin Log Tools
+- `Admin::Logs::ExportCsv` Use Case con generacion CSV y evento CsvExported
+- Filtros conectados via `form_with` (search, severity, module)
+- Botones Export CSV y Force Refresh conectados a endpoints reales
+
+#### 8.3 — UI Button Connections
+- Profile Email Notifications toggle conectado a `Alerts::UpdatePreferences` via PATCH
+- Edit Settings → anchor link a #account-settings
+- Buy/Sell y Add Position → link a Market page
+- Setup Alerts → link a alerts_path
+- `Admin::Integrations::ConnectProvider` Use Case con formulario inline
+- Privacy Mode toggle deshabilitado (sin campo en BD)
+
+#### 8.4 — Post-Launch Cleanup
+- Share Profile, View Full Report, Subscribe Now → disabled con "Coming soon"
+- 0 TODOs restantes en app/
+
+### Verificacion Final
+```bash
+grep -r "TODO" app/ --include="*.rb" --include="*.erb" | wc -l  # 0
+bundle exec rspec                    # 702 specs, 0 failures
+                                     # Line Coverage: 94.18%
+                                     # Branch Coverage: 75.48%
 ```
 
 ---
