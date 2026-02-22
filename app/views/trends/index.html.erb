@@ -8,13 +8,6 @@
       <span class="material-symbols-outlined text-sm">expand_more</span>
     </div>
   <% end %>
-  <div class="h-6 w-px bg-white/10 mx-2"></div>
-  <div class="flex items-center gap-2">
-    <div class="w-4 h-4 rounded border border-white/30 flex items-center justify-center bg-primary">
-      <span class="material-symbols-outlined text-[12px] text-white">check</span>
-    </div>
-    <span class="text-xs font-medium uppercase tracking-wider opacity-70">Duration: Ongoing</span>
-  </div>
 </nav>
 
 <div class="max-w-[1400px] mx-auto p-6 space-y-6">
@@ -26,168 +19,190 @@
       <button class="pb-4 text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-slate-700 transition-colors">Most Popular Trends</button>
     </div>
     <div class="pb-3 w-full md:w-auto">
-      <div class="relative group">
+      <%= form_tag trends_path, method: :get, class: "relative group" do %>
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
-        <input type="text" placeholder="Find stocks" autocomplete="off" class="w-full md:w-72 pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
-      </div>
-    </div>
-  </div>
-
-  <%# ===== Stock Summary Header ===== %>
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
-    <div class="lg:col-span-3 space-y-1">
-      <div class="flex items-center gap-2">
-        <h2 class="text-3xl font-extrabold tracking-tight">OKE</h2>
-        <span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2 py-0.5 rounded text-xs font-bold uppercase">Strongest</span>
-      </div>
-      <p class="text-slate-500 dark:text-slate-400 font-medium">Oneok Inc.</p>
-    </div>
-    <div class="lg:col-span-2 flex flex-col">
-      <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Trend Direction</span>
-      <div class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-        <span class="material-symbols-outlined font-bold">trending_up</span>
-        <span class="font-bold">UPWARD</span>
-      </div>
-    </div>
-    <div class="lg:col-span-2 flex flex-col">
-      <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Price</span>
-      <span class="text-2xl font-bold text-slate-900 dark:text-white">$87.42</span>
-    </div>
-    <div class="lg:col-span-2 flex flex-col">
-      <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">% Change (1y)</span>
-      <span class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">+33.08%</span>
-    </div>
-    <div class="lg:col-span-3 flex justify-end gap-2">
-      <button class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 transition-colors">
-        <span class="material-symbols-outlined">star</span>
-      </button>
-      <%= link_to login_path, class: "px-4 py-2 bg-primary text-white rounded-lg font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors" do %>
-        <span class="material-symbols-outlined text-sm">add</span>
-        Analyze
+        <%= text_field_tag :symbol, params[:symbol],
+            placeholder: "Find stocks",
+            autocomplete: "off",
+            class: "w-full md:w-72 pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" %>
       <% end %>
     </div>
   </div>
 
-  <%# ===== Dashboard Grid ===== %>
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-    <%# Technical Metrics (Left Sidebar) %>
-    <div class="lg:col-span-1 space-y-4">
-      <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
-        <h3 class="font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary text-xl">query_stats</span>
-          Stock Metrics
-        </h3>
-        <div class="space-y-4">
-          <% [
-            ["Mkt Cap", "$51.2B"],
-            ["P/E Ratio", "14.82"],
-            ["Div Yield", "4.48%"],
-            ["Volume", "3.1M"],
-            ["Shares Out.", "585.6M"]
-          ].each_with_index do |(label, value), i| %>
-            <div class="flex justify-between items-center py-2 <%= i < 4 ? 'border-b border-slate-50 dark:border-slate-800' : '' %>">
-              <span class="text-sm text-slate-500"><%= label %></span>
-              <span class="text-sm font-bold"><%= value %></span>
+  <% if @asset %>
+    <%# ===== Stock Summary Header ===== %>
+    <% change = @asset.change_percent_24h || 0 %>
+    <% positive = change >= 0 %>
+    <% score_value = @score&.score || 0 %>
+    <% strength_label = case score_value
+         when 90..100 then "Strongest"
+         when 70..89  then "Strong"
+         when 50..69  then "Moderate"
+         when 25..49  then "Weakening"
+         else "Weak"
+       end %>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+      <div class="lg:col-span-3 space-y-1">
+        <div class="flex items-center gap-2">
+          <h2 class="text-3xl font-extrabold tracking-tight"><%= @asset.symbol %></h2>
+          <span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2 py-0.5 rounded text-xs font-bold uppercase"><%= strength_label %></span>
+        </div>
+        <p class="text-slate-500 dark:text-slate-400 font-medium"><%= @asset.name %></p>
+      </div>
+      <div class="lg:col-span-2 flex flex-col">
+        <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Trend Direction</span>
+        <div class="flex items-center gap-1 <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
+          <span class="material-symbols-outlined font-bold"><%= positive ? 'trending_up' : 'trending_down' %></span>
+          <span class="font-bold"><%= positive ? 'UPWARD' : 'DOWNWARD' %></span>
+        </div>
+      </div>
+      <div class="lg:col-span-2 flex flex-col">
+        <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Price</span>
+        <span class="text-2xl font-bold text-slate-900 dark:text-white"><%= number_to_currency(@asset.current_price) %></span>
+      </div>
+      <div class="lg:col-span-2 flex flex-col">
+        <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">% Change (24h)</span>
+        <span class="text-2xl font-bold <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>"><%= positive ? '+' : '' %><%= number_with_precision(change, precision: 2) %>%</span>
+      </div>
+      <div class="lg:col-span-3 flex justify-end gap-2">
+        <button class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 transition-colors">
+          <span class="material-symbols-outlined">star</span>
+        </button>
+        <%= link_to login_path, class: "px-4 py-2 bg-primary text-white rounded-lg font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors" do %>
+          <span class="material-symbols-outlined text-sm">add</span>
+          Analyze
+        <% end %>
+      </div>
+    </div>
+
+    <%# ===== Dashboard Grid ===== %>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <%# Technical Metrics (Left Sidebar) %>
+      <div class="lg:col-span-1 space-y-4">
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-xl">query_stats</span>
+            Stock Metrics
+          </h3>
+          <div class="space-y-4">
+            <%
+              metrics = [
+                ["Mkt Cap", @asset.market_cap ? number_to_human(@asset.market_cap, precision: 1, units: { billion: "B", million: "M" }) : "N/A"],
+                ["P/E Ratio", @asset.pe_ratio ? number_with_precision(@asset.pe_ratio, precision: 2) : "N/A"],
+                ["Div Yield", @asset.div_yield ? "#{number_with_precision(@asset.div_yield, precision: 2)}%" : "N/A"],
+                ["Volume", @asset.volume ? number_to_human(@asset.volume, precision: 1) : "N/A"],
+                ["Shares Out.", @asset.shares_outstanding ? number_to_human(@asset.shares_outstanding, precision: 1) : "N/A"]
+              ]
+            %>
+            <% metrics.each_with_index do |(label, value), i| %>
+              <div class="flex justify-between items-center py-2 <%= i < 4 ? 'border-b border-slate-50 dark:border-slate-800' : '' %>">
+                <span class="text-sm text-slate-500"><%= label %></span>
+                <span class="text-sm font-bold"><%= value %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <%# Trend Score %>
+        <div class="bg-primary/10 dark:bg-primary/5 rounded-xl p-5 border border-primary/20">
+          <h3 class="font-bold text-primary mb-2 flex items-center gap-2 text-sm uppercase tracking-wider">
+            Trend Score
+          </h3>
+          <div class="flex items-end gap-2">
+            <span class="text-4xl font-black text-primary"><%= score_value %></span>
+            <span class="text-primary/60 font-medium mb-1">/ 100</span>
+          </div>
+          <p class="text-xs text-primary/70 mt-3 leading-relaxed">
+            <%= @asset.symbol %> is showing <%= strength_label.downcase %> momentum relative to the market.
+          </p>
+        </div>
+      </div>
+
+      <%# Chart Section (Right) %>
+      <div class="lg:col-span-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+          <div class="flex items-center gap-4">
+            <span class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">Performance Trend</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-400">
+            <div class="w-2 h-2 rounded-full bg-primary"></div>
+            <span><%= @asset.symbol %> Price History</span>
+          </div>
+        </div>
+        <div class="flex-1 min-h-[400px] p-8 relative bg-slate-50/30" style="background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px); background-size: 40px 40px;">
+          <% if @history.any? %>
+            <%# SVG Line Chart from real price history %>
+            <% prices = @history.map { |h| h.close.to_f } %>
+            <% min_price = prices.min %>
+            <% max_price = prices.max %>
+            <% range = max_price - min_price %>
+            <% range = 1 if range.zero? %>
+            <div class="absolute inset-0 flex items-end px-12 pb-16">
+              <svg class="w-full h-full drop-shadow-lg" viewBox="0 0 1000 400" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#004a99" stop-opacity="0.2"/>
+                    <stop offset="100%" stop-color="#004a99" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <%
+                  points = prices.each_with_index.map do |price, i|
+                    x = (i.to_f / [prices.size - 1, 1].max * 1000).round(1)
+                    y = (400 - ((price - min_price) / range * 350 + 25)).round(1)
+                    "#{x},#{y}"
+                  end
+                  line_path = points.join(" L")
+                  area_path = "M#{points.first} L#{line_path} L#{points.last.split(',')[0]},400 L0,400 Z"
+                %>
+                <path d="<%= area_path %>" fill="url(#lineGradient)"/>
+                <path d="M<%= line_path %>" fill="none" stroke="#004a99" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+          <% else %>
+            <div class="flex items-center justify-center h-full text-slate-400">
+              <p>No price history available</p>
             </div>
           <% end %>
         </div>
       </div>
-
-      <%# Trend Score %>
-      <div class="bg-primary/10 dark:bg-primary/5 rounded-xl p-5 border border-primary/20">
-        <h3 class="font-bold text-primary mb-2 flex items-center gap-2 text-sm uppercase tracking-wider">
-          Trend Score
-        </h3>
-        <div class="flex items-end gap-2">
-          <span class="text-4xl font-black text-primary">94</span>
-          <span class="text-primary/60 font-medium mb-1">/ 100</span>
-        </div>
-        <p class="text-xs text-primary/70 mt-3 leading-relaxed">
-          OKE is showing exceptionally strong momentum relative to the S&P 500 energy sector.
-        </p>
-      </div>
     </div>
 
-    <%# Chart Section (Right) %>
-    <div class="lg:col-span-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
-      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-        <div class="flex items-center gap-4">
-          <span class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">Performance Trend</span>
-          <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-            <button class="px-3 py-1 text-[11px] font-bold bg-white dark:bg-slate-700 rounded shadow-sm">1Y</button>
-            <button class="px-3 py-1 text-[11px] font-bold text-slate-500">5Y</button>
-            <button class="px-3 py-1 text-[11px] font-bold text-slate-500">MAX</button>
-          </div>
+    <%# ===== Info Cards ===== %>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4">
+        <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg text-primary">
+          <span class="material-symbols-outlined">account_balance</span>
         </div>
-        <div class="flex items-center gap-2 text-xs text-slate-400">
-          <div class="w-2 h-2 rounded-full bg-primary"></div>
-          <span>OKE Price History</span>
+        <div>
+          <p class="text-xs text-slate-400 font-bold uppercase">Exchange</p>
+          <p class="font-bold"><%= @asset.exchange || "N/A" %></p>
         </div>
       </div>
-      <div class="flex-1 min-h-[400px] p-8 relative bg-slate-50/30" style="background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px); background-size: 40px 40px;">
-        <%# SVG Line Chart %>
-        <div class="absolute inset-0 flex items-end px-12 pb-16">
-          <svg class="w-full h-full drop-shadow-lg" viewBox="0 0 1000 400" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#004a99" stop-opacity="0.2"/>
-                <stop offset="100%" stop-color="#004a99" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path d="M0,350 Q100,320 200,340 T400,280 T600,220 T800,120 T1000,50 L1000,400 L0,400 Z" fill="url(#lineGradient)"/>
-            <path d="M0,350 Q100,320 200,340 T400,280 T600,220 T800,120 T1000,50" fill="none" stroke="#004a99" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="200" cy="340" r="6" fill="white" stroke="#004a99" stroke-width="3"/>
-            <circle cx="400" cy="280" r="6" fill="white" stroke="#004a99" stroke-width="3"/>
-            <circle cx="600" cy="220" r="6" fill="white" stroke="#004a99" stroke-width="3"/>
-            <circle cx="800" cy="120" r="6" fill="white" stroke="#004a99" stroke-width="3"/>
-            <circle cx="1000" cy="50" r="8" fill="white" stroke="#004a99" stroke-width="4"/>
-          </svg>
-          <%# Tooltip %>
-          <div class="absolute top-2 right-12 bg-white dark:bg-slate-800 border border-primary/30 p-3 rounded shadow-xl pointer-events-none">
-            <p class="text-[10px] text-slate-400 font-bold uppercase">Nov 2024</p>
-            <p class="text-sm font-bold text-primary">$87.42</p>
-          </div>
+      <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4">
+        <div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg text-purple-600">
+          <span class="material-symbols-outlined">factory</span>
         </div>
-        <%# Y-axis labels %>
-        <div class="absolute left-4 top-8 bottom-16 flex flex-col justify-between text-[10px] font-bold text-slate-400">
-          <span>100</span><span>80</span><span>60</span><span>40</span><span>20</span>
+        <div>
+          <p class="text-xs text-slate-400 font-bold uppercase">Sector</p>
+          <p class="font-bold"><%= @asset.sector || "N/A" %></p>
         </div>
-        <%# X-axis labels %>
-        <div class="absolute bottom-6 left-12 right-12 flex justify-between text-[10px] font-bold text-slate-400">
-          <span>JAN</span><span>MAR</span><span>MAY</span><span>JUL</span><span>SEP</span><span>NOV</span>
+      </div>
+      <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4">
+        <div class="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg text-orange-600">
+          <span class="material-symbols-outlined">calendar_today</span>
+        </div>
+        <div>
+          <p class="text-xs text-slate-400 font-bold uppercase">Asset Type</p>
+          <p class="font-bold"><%= @asset.asset_type.humanize %></p>
         </div>
       </div>
     </div>
-  </div>
-
-  <%# ===== Info Cards ===== %>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4">
-      <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg text-primary">
-        <span class="material-symbols-outlined">account_balance</span>
-      </div>
-      <div>
-        <p class="text-xs text-slate-400 font-bold uppercase">Exchange</p>
-        <p class="font-bold">NYSE (New York Stock Exchange)</p>
-      </div>
+  <% else %>
+    <div class="text-center py-16">
+      <span class="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4">query_stats</span>
+      <h2 class="text-xl font-bold text-slate-700 dark:text-slate-300 mb-2">No asset found</h2>
+      <p class="text-slate-500">Search for a stock symbol above to explore its trend.</p>
     </div>
-    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4">
-      <div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg text-purple-600">
-        <span class="material-symbols-outlined">factory</span>
-      </div>
-      <div>
-        <p class="text-xs text-slate-400 font-bold uppercase">Industry</p>
-        <p class="font-bold">Oil & Gas Midstream</p>
-      </div>
-    </div>
-    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-4">
-      <div class="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg text-orange-600">
-        <span class="material-symbols-outlined">calendar_today</span>
-      </div>
-      <div>
-        <p class="text-xs text-slate-400 font-bold uppercase">Next Earnings</p>
-        <p class="font-bold">Feb 24, 2025</p>
-      </div>
-    </div>
-  </div>
+  <% end %>
 </div>

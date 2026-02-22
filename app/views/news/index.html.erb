@@ -7,159 +7,97 @@
     <p class="text-slate-600 dark:text-slate-400 mt-1">Stay informed about your watchlist and global trends.</p>
   </div>
 
-  <%# Filters Section %>
-  <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2">Tickers:</span>
-        <button class="px-3 py-1 rounded-full text-xs font-bold bg-primary text-white">AAPL</button>
-        <button class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200">TSLA</button>
-        <button class="px-3 py-1 rounded-full text-xs font-bold bg-primary text-white">NVDA</button>
-        <button class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200">BTC</button>
-        <button class="p-1 rounded-full border border-dashed border-slate-300 dark:border-slate-700 text-slate-400 flex items-center justify-center">
-          <span class="material-symbols-outlined text-sm">add</span>
-        </button>
-      </div>
-      <div class="flex items-center gap-3">
-        <button class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300">
-          Source: All
-          <span class="material-symbols-outlined text-sm">expand_more</span>
-        </button>
-        <button class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300">
-          Time: Today
-          <span class="material-symbols-outlined text-sm">expand_more</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <%# Left Content Area %>
-    <div class="lg:col-span-2 space-y-8">
-      <%# Featured Article %>
-      <article class="group relative overflow-hidden rounded-2xl bg-slate-900 h-[450px]">
-        <div class="absolute inset-0 h-full w-full bg-slate-800 flex items-center justify-center">
-          <span class="material-symbols-outlined text-8xl text-slate-600">newsmode</span>
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
-        <div class="absolute bottom-0 p-8 w-full">
-          <div class="flex items-center gap-3 mb-4">
-            <span class="bg-primary text-white text-[10px] font-black px-2 py-0.5 rounded tracking-widest uppercase">Bloomberg</span>
-            <span class="text-slate-300 text-xs font-medium">2 hours ago</span>
+  <% if @articles.any? %>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <%# Left Content Area %>
+      <div class="lg:col-span-2 space-y-8">
+        <%# Featured Article (first one) %>
+        <% featured = @articles.first %>
+        <article class="group relative overflow-hidden rounded-2xl bg-slate-900 h-[450px]">
+          <div class="absolute inset-0 h-full w-full bg-slate-800 flex items-center justify-center">
+            <span class="material-symbols-outlined text-8xl text-slate-600">newsmode</span>
           </div>
-          <h2 class="text-3xl md:text-4xl font-black text-white leading-tight mb-4 max-w-2xl">NVIDIA Surpasses Expectations with Record Q4 Revenue</h2>
-          <p class="text-slate-300 text-lg line-clamp-2 max-w-3xl mb-6">NVIDIA Corp. reported fourth-quarter results that beat analysts' estimates for revenue and earnings per share, fueled by strong demand for its AI chips across data centers globally.</p>
-          <div class="flex items-center gap-2">
-            <span class="bg-primary/30 backdrop-blur-md border border-primary/40 text-blue-200 text-xs font-bold px-3 py-1 rounded-md">NVDA</span>
-            <span class="bg-slate-800/60 backdrop-blur-md border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-md">SOXX</span>
-            <button class="ml-auto flex items-center gap-2 text-white font-bold group">
-              Read Full Story
-              <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <%# Grid of News Cards %>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <%= render "news/article_card",
-            source: "Reuters", time_ago: "4h ago",
-            title: "Apple Earnings Preview: Services Growth and iPhone 15 Demand in Focus",
-            summary: "Wall Street analysts expect strong growth from Apple's services segment despite global supply headwinds.",
-            tickers: %w[AAPL QQQ], image_icon: "phone_iphone" %>
-
-        <%= render "news/article_card",
-            source: "WSJ", time_ago: "5h ago",
-            title: "Bitcoin Rally Hits New Yearly High as ETF Optimism Surges",
-            summary: "Institutional inflows continue to drive the crypto market higher ahead of the halving event later this year.",
-            tickers: %w[BTC MARA], image_icon: "currency_bitcoin" %>
-
-        <%= render "news/article_card",
-            source: "CNBC", time_ago: "6h ago",
-            title: "Fed Policy Shift Expected: Rate Cuts May Come Sooner Than Anticipated",
-            summary: "Recent CPI data suggests inflation is cooling, giving the central bank room to pivot by summer.",
-            tickers: %w[SPY DIA], image_icon: "account_balance" %>
-
-        <%= render "news/article_card",
-            source: "Bloomberg", time_ago: "8h ago",
-            title: "Tesla Expands Gigafactory Production to Meet Growing Global EV Demand",
-            summary: "Elon Musk announces plans for a new entry-level model aimed at emerging markets and European buyers.",
-            tickers: %w[TSLA RIVN], image_icon: "electric_car" %>
-
-        <%= render "news/article_card",
-            source: "Reuters", time_ago: "10h ago",
-            title: "AI Software Sector Sees 40% Increase in Venture Capital Inflows",
-            summary: "Enterprise software startups are attracting record funding as AI integration becomes a corporate standard.",
-            tickers: %w[MSFT GOOGL], image_icon: "trending_up" %>
-
-        <%= render "news/article_card",
-            source: "CNBC", time_ago: "12h ago",
-            title: "Oil Prices Stabilize Amid Tighter Supply and Geopolitical Tensions",
-            summary: "OPEC+ production cuts continue to support Brent crude prices above the $80 mark despite rising US output.",
-            tickers: %w[XOM CVX], image_icon: "oil_barrel" %>
-      </div>
-
-      <%# Load More %>
-      <div class="flex justify-center py-4">
-        <button class="px-8 py-3 rounded-lg border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2">
-          Load More News
-          <span class="material-symbols-outlined text-sm">autorenew</span>
-        </button>
-      </div>
-    </div>
-
-    <%# Right Sidebar %>
-    <aside class="space-y-8">
-      <%# Trending Topics %>
-      <section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <h2 class="text-lg font-black text-slate-900 dark:text-white mb-4">Trending Topics</h2>
-        <div class="flex flex-wrap gap-2">
-          <% [
-            { label: "AI Stocks", active: true },
-            { label: "Earnings Season", active: false },
-            { label: "Crypto", active: false },
-            { label: "Fed Policy", active: false },
-            { label: "EV Market", active: false },
-            { label: "Inflation", active: false }
-          ].each do |topic| %>
-            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors
-                         <%= topic[:active] ? 'bg-primary/5 hover:bg-primary/10 border border-primary/20 text-primary' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-transparent text-slate-600 dark:text-slate-400' %>">
-              <%= topic[:label] %>
-            </span>
-          <% end %>
-        </div>
-      </section>
-
-      <%# From Your Watchlist %>
-      <section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-black text-slate-900 dark:text-white">From Your Watchlist</h2>
-          <button class="text-primary text-xs font-bold hover:underline">View All</button>
-        </div>
-        <div class="space-y-5">
-          <% [
-            { title: "Amazon announces major expansion of its delivery fleet", ticker: "AMZN", time: "15m ago" },
-            { title: "Meta stock price target raised to $550 by top analyst", ticker: "META", time: "45m ago" },
-            { title: "Microsoft integrates ChatGPT into entire product suite", ticker: "MSFT", time: "2h ago" },
-            { title: "Coinbase sees record trading volume as market rallies", ticker: "COIN", time: "3h ago" }
-          ].each do |item| %>
-            <div class="group cursor-pointer">
-              <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-tight"><%= item[:title] %></h4>
-              <p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold"><%= item[:ticker] %> &bull; <%= item[:time] %></p>
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+          <div class="absolute bottom-0 p-8 w-full">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="bg-primary text-white text-[10px] font-black px-2 py-0.5 rounded tracking-widest uppercase"><%= featured.source %></span>
+              <span class="text-slate-300 text-xs font-medium"><%= time_ago_in_words(featured.published_at) %> ago</span>
             </div>
-          <% end %>
-        </div>
-      </section>
+            <h2 class="text-3xl md:text-4xl font-black text-white leading-tight mb-4 max-w-2xl"><%= featured.title %></h2>
+            <% if featured.summary.present? %>
+              <p class="text-slate-300 text-lg line-clamp-2 max-w-3xl mb-6"><%= featured.summary %></p>
+            <% end %>
+            <div class="flex items-center gap-2">
+              <% if featured.related_ticker.present? %>
+                <span class="bg-primary/30 backdrop-blur-md border border-primary/40 text-blue-200 text-xs font-bold px-3 py-1 rounded-md"><%= featured.related_ticker %></span>
+              <% end %>
+            </div>
+          </div>
+        </article>
 
-      <%# Newsletter CTA %>
-      <section class="bg-primary p-6 rounded-xl shadow-lg relative overflow-hidden">
-        <div class="relative z-10">
-          <h3 class="text-white font-black text-lg mb-2">Morning Market Brief</h3>
-          <p class="text-blue-100 text-sm mb-4">The top stories moving the markets, delivered to your inbox every trading day.</p>
-          <button class="w-full py-2 bg-white text-primary font-bold rounded-lg text-sm hover:bg-blue-50 transition-colors">Subscribe Now</button>
-        </div>
-        <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-7xl text-white/10 rotate-12 pointer-events-none">mail</span>
-      </section>
-    </aside>
-  </div>
+        <%# Grid of News Cards (remaining articles) %>
+        <% remaining = @articles.to_a.drop(1) %>
+        <% if remaining.any? %>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <% remaining.each do |article| %>
+              <%= render "news/article_card",
+                  source: article.source,
+                  time_ago: "#{time_ago_in_words(article.published_at)} ago",
+                  title: article.title,
+                  summary: article.summary || "",
+                  tickers: [article.related_ticker].compact,
+                  image_icon: "article" %>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%# Pagination %>
+        <% if @pagy.pages > 1 %>
+          <div class="flex justify-center py-4">
+            <%== pagy_nav(@pagy) %>
+          </div>
+        <% end %>
+      </div>
+
+      <%# Right Sidebar %>
+      <aside class="space-y-8">
+        <%# Trending Topics %>
+        <section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h2 class="text-lg font-black text-slate-900 dark:text-white mb-4">Trending Topics</h2>
+          <div class="flex flex-wrap gap-2">
+            <% [
+              { label: "AI Stocks", active: true },
+              { label: "Earnings Season", active: false },
+              { label: "Crypto", active: false },
+              { label: "Fed Policy", active: false },
+              { label: "EV Market", active: false },
+              { label: "Inflation", active: false }
+            ].each do |topic| %>
+              <span class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors
+                           <%= topic[:active] ? 'bg-primary/5 hover:bg-primary/10 border border-primary/20 text-primary' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-transparent text-slate-600 dark:text-slate-400' %>">
+                <%= topic[:label] %>
+              </span>
+            <% end %>
+          </div>
+        </section>
+
+        <%# Newsletter CTA %>
+        <section class="bg-primary p-6 rounded-xl shadow-lg relative overflow-hidden">
+          <div class="relative z-10">
+            <h3 class="text-white font-black text-lg mb-2">Morning Market Brief</h3>
+            <p class="text-blue-100 text-sm mb-4">The top stories moving the markets, delivered to your inbox every trading day.</p>
+            <button class="w-full py-2 bg-white text-primary font-bold rounded-lg text-sm hover:bg-blue-50 transition-colors">Subscribe Now</button>
+          </div>
+          <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-7xl text-white/10 rotate-12 pointer-events-none">mail</span>
+        </section>
+      </aside>
+    </div>
+  <% else %>
+    <%= render "components/empty_state",
+        icon: "newspaper",
+        title: "No news articles yet",
+        description: "News articles will appear here once they are available.",
+        cta_text: "Go to Dashboard",
+        cta_path: dashboard_path %>
+  <% end %>
 </div>

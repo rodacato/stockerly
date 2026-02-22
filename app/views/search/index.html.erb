@@ -1,0 +1,84 @@
+<%# Search Results Page %>
+<div class="max-w-4xl mx-auto py-8">
+  <h1 class="text-2xl font-black text-slate-900 dark:text-white mb-2">Search Results</h1>
+  <% if @query.present? %>
+    <p class="text-slate-500 mb-8">Results for "<%= @query %>"</p>
+  <% end %>
+
+  <% if @query.blank? %>
+    <div class="text-center py-16">
+      <span class="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-600">search</span>
+      <p class="text-slate-500 mt-4">Enter a search term to find assets, alerts, and news.</p>
+    </div>
+  <% elsif @assets.blank? && @alerts.blank? && @news.blank? %>
+    <%= render "components/empty_state",
+        icon: "search_off",
+        title: "No results found",
+        description: "Try a different search term.",
+        cta_text: "Go to Market",
+        cta_path: market_path %>
+  <% else %>
+    <%# Assets %>
+    <% if @assets.any? %>
+      <section class="mb-8">
+        <h2 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">show_chart</span>
+          Assets (<%= @assets.size %>)
+        </h2>
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+          <% @assets.each do |asset| %>
+            <div class="flex items-center justify-between px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="flex h-8 w-8 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 font-bold text-[10px] text-slate-700 dark:text-slate-300"><%= asset.symbol %></div>
+                <div>
+                  <p class="text-sm font-bold text-slate-900 dark:text-white"><%= asset.name %></p>
+                  <p class="text-xs text-slate-500"><%= asset.sector || asset.asset_type.humanize %></p>
+                </div>
+              </div>
+              <span class="text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(asset.current_price) %></span>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <%# Alerts %>
+    <% if @alerts.present? && @alerts.any? %>
+      <section class="mb-8">
+        <h2 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">notifications</span>
+          Alerts (<%= @alerts.size %>)
+        </h2>
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+          <% @alerts.each do |rule| %>
+            <div class="flex items-center justify-between px-5 py-3">
+              <div>
+                <p class="text-sm font-bold text-slate-900 dark:text-white"><%= rule.asset_symbol %></p>
+                <p class="text-xs text-slate-500"><%= rule.condition.humanize %> — <%= rule.threshold_value %></p>
+              </div>
+              <span class="text-xs font-bold px-2 py-1 rounded <%= rule.active? ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500' %>"><%= rule.status.humanize %></span>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <%# News %>
+    <% if @news.any? %>
+      <section>
+        <h2 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">newspaper</span>
+          News (<%= @news.size %>)
+        </h2>
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+          <% @news.each do |article| %>
+            <div class="px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+              <p class="text-sm font-bold text-slate-900 dark:text-white"><%= article.title %></p>
+              <p class="text-xs text-slate-500 mt-1"><%= article.source %> &bull; <%= time_ago_in_words(article.published_at) %> ago</p>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+  <% end %>
+</div>

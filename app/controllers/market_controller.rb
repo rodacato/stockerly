@@ -1,3 +1,20 @@
 class MarketController < AuthenticatedController
-  def index; end
+  include Pagy::Backend
+
+  def index
+    result = Market::ExploreAssets.call(params: filter_params)
+
+    case result
+    in Dry::Monads::Success(data)
+      @pagy    = data[:pagy]
+      @assets  = data[:assets]
+      @indices = data[:indices]
+    end
+  end
+
+  private
+
+  def filter_params
+    params.permit(:type, :sector, :search, :page).to_h.symbolize_keys
+  end
 end

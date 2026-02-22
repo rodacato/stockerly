@@ -17,10 +17,10 @@ RSpec.describe "Authenticated pages", type: :request do
   end
 
   describe "GET /market" do
-    it "renders the market explorer with index cards" do
+    it "renders the market explorer with listings" do
+      create(:asset, name: "Apple Inc.", symbol: "AAPL")
       get market_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("S&amp;P 500")
       expect(response.body).to include("Market Listings")
     end
   end
@@ -82,6 +82,48 @@ RSpec.describe "Authenticated pages", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Earnings Calendar")
       expect(response.body).to include("Watchlist Priority")
+    end
+
+    it "filters by watchlist" do
+      get earnings_path(filter: "watchlist")
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "navigates months via date param" do
+      get earnings_path(date: "2024-10-15")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("October 2024")
+    end
+  end
+
+  describe "GET /news" do
+    it "renders the news page" do
+      create(:news_article, title: "Test Article", published_at: 1.hour.ago)
+      get news_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Market News")
+      expect(response.body).to include("Test Article")
+    end
+
+    it "renders empty state when no articles" do
+      get news_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("No news articles yet")
+    end
+  end
+
+  describe "GET /search" do
+    it "returns search results for a query" do
+      create(:asset, name: "Apple Inc.", symbol: "AAPL")
+      get search_path(q: "apple")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Apple Inc.")
+    end
+
+    it "shows empty state for no results" do
+      get search_path(q: "zzzzz")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("No results found")
     end
   end
 

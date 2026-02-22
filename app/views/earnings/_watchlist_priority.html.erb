@@ -1,38 +1,38 @@
 <%# Watchlist Priority sidebar with upcoming earnings events %>
-<% watchlist = [
-  { ticker: "TSLA", date: "OCT 18", timing: "After Close", timing_icon: "nights_stay", estimate: "Est. $0.73", highlighted: true },
-  { ticker: "NFLX", date: "OCT 18", timing: "After Close", timing_icon: "nights_stay", estimate: "Est. $3.48", highlighted: false },
-  { ticker: "MSFT", date: "OCT 24", timing: "Pre-Market", timing_icon: "wb_sunny", estimate: "Est. $2.65", highlighted: false },
-  { ticker: "GOOGL", date: "OCT 24", timing: "After Close", timing_icon: "nights_stay", estimate: "Est. $1.45", highlighted: false },
-  { ticker: "AMZN", date: "OCT 26", timing: "After Close", timing_icon: "nights_stay", estimate: "Est. $0.58", highlighted: false }
-] %>
-
 <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
   <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30">
     <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
       <span class="material-symbols-outlined text-primary text-lg">star</span>
       Watchlist Priority
     </h3>
-    <span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold"><%= watchlist.size %> EVENTS</span>
+    <span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold"><%= @watchlist_events.size %> EVENTS</span>
   </div>
-  <div class="p-2 flex flex-col gap-1 max-h-[600px] overflow-y-auto">
-    <% watchlist.each do |item| %>
-      <div class="p-3 rounded-lg cursor-pointer transition-colors <%= item[:highlighted] ? 'border border-primary/20 bg-primary/5 hover:bg-primary/10' : 'border border-transparent hover:border-slate-200 dark:hover:border-slate-700' %>">
-        <div class="flex justify-between items-start mb-2">
-          <span class="font-black <%= item[:highlighted] ? 'text-primary' : 'text-slate-900 dark:text-white' %>"><%= item[:ticker] %></span>
-          <span class="text-[10px] font-bold text-slate-400"><%= item[:date] %></span>
-        </div>
-        <div class="flex items-center justify-between text-xs">
-          <div class="flex items-center gap-1 text-slate-600 dark:text-slate-400">
-            <span class="material-symbols-outlined text-sm"><%= item[:timing_icon] %></span>
-            <span><%= item[:timing] %></span>
+  <% if @watchlist_events.any? %>
+    <div class="p-2 flex flex-col gap-1 max-h-[600px] overflow-y-auto">
+      <% @watchlist_events.each_with_index do |event, i| %>
+        <div class="p-3 rounded-lg cursor-pointer transition-colors <%= i == 0 ? 'border border-primary/20 bg-primary/5 hover:bg-primary/10' : 'border border-transparent hover:border-slate-200 dark:hover:border-slate-700' %>">
+          <div class="flex justify-between items-start mb-2">
+            <span class="font-black <%= i == 0 ? 'text-primary' : 'text-slate-900 dark:text-white' %>"><%= event.asset.symbol %></span>
+            <span class="text-[10px] font-bold text-slate-400"><%= event.report_date.strftime("%b %d").upcase %></span>
           </div>
-          <span class="font-medium text-slate-900 dark:text-slate-200"><%= item[:estimate] %></span>
+          <div class="flex items-center justify-between text-xs">
+            <div class="flex items-center gap-1 text-slate-600 dark:text-slate-400">
+              <span class="material-symbols-outlined text-sm"><%= event.before_market_open? ? "wb_sunny" : "nights_stay" %></span>
+              <span><%= event.before_market_open? ? "Pre-Market" : "After Close" %></span>
+            </div>
+            <% if event.estimated_eps %>
+              <span class="font-medium text-slate-900 dark:text-slate-200">Est. $<%= number_with_precision(event.estimated_eps, precision: 2) %></span>
+            <% end %>
+          </div>
         </div>
-      </div>
-    <% end %>
-  </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="p-6 text-center text-sm text-slate-500">
+      <p>No watchlist earnings this month.</p>
+    </div>
+  <% end %>
   <div class="p-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800">
-    <button class="w-full text-center text-xs font-bold text-primary hover:underline">View All Watchlist</button>
+    <%= link_to "View All Watchlist", earnings_path(filter: "watchlist"), class: "block w-full text-center text-xs font-bold text-primary hover:underline" %>
   </div>
 </div>

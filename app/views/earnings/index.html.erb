@@ -1,7 +1,4 @@
 <%# Earnings Calendar — monitor upcoming financial reports %>
-<%# Empty state (uncomment when wiring backend):
-    <%= render "components/empty_state", icon: "event_note", title: "No upcoming earnings", description: "Add stocks to your watchlist to see their upcoming earnings dates.", cta_text: "Add to Watchlist", cta_path: market_path %>
-%>
 
 <%# Header & Filters %>
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
@@ -12,26 +9,24 @@
   <div class="flex flex-wrap items-center gap-4">
     <%# Toggle: My Watchlist / All Markets %>
     <div class="bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 flex shadow-sm">
-      <button class="px-4 py-1.5 text-sm font-semibold rounded-md transition-colors bg-primary text-white">My Watchlist</button>
-      <button class="px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary">All Markets</button>
+      <%= link_to "My Watchlist", earnings_path(filter: "watchlist", date: @date),
+          class: "px-4 py-1.5 text-sm font-semibold rounded-md transition-colors #{params[:filter] == 'watchlist' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:text-primary'}" %>
+      <%= link_to "All Markets", earnings_path(date: @date),
+          class: "px-4 py-1.5 text-sm font-semibold rounded-md transition-colors #{params[:filter].blank? ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:text-primary'}" %>
     </div>
 
     <%# Month Navigator %>
-    <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm"
-         data-controller="calendar-nav"
-         data-calendar-nav-months-value='["September 2023", "October 2023", "November 2023", "December 2023", "January 2024", "February 2024"]'>
-      <button class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500" data-action="click->calendar-nav#previous">
+    <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
+      <%= link_to earnings_path(date: @date.prev_month, filter: params[:filter]),
+          class: "p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500" do %>
         <span class="material-symbols-outlined">chevron_left</span>
-      </button>
-      <span class="text-sm font-bold px-2 text-slate-700 dark:text-slate-300" data-calendar-nav-target="label">October 2023</span>
-      <button class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500" data-action="click->calendar-nav#next">
+      <% end %>
+      <span class="text-sm font-bold px-2 text-slate-700 dark:text-slate-300"><%= @date.strftime("%B %Y") %></span>
+      <%= link_to earnings_path(date: @date.next_month, filter: params[:filter]),
+          class: "p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500" do %>
         <span class="material-symbols-outlined">chevron_right</span>
-      </button>
+      <% end %>
     </div>
-
-    <button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md hover:bg-primary/90 transition-all">
-      <span class="material-symbols-outlined text-sm">add</span> Add Ticker
-    </button>
   </div>
 </div>
 

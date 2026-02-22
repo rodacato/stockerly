@@ -1,42 +1,14 @@
-<%# Earnings Calendar Grid — October 2023 hardcoded %>
+<%# Earnings Calendar Grid — real data from @events and @date %>
 <%
-  # Calendar data structure: day => { events: [...], outside: bool }
-  # Events: { ticker, timing, watchlist }
-  calendar = {
-    # Week 1 (Oct starts on Sunday)
-    1 => { outside: true }, 2 => { outside: true }, 3 => { outside: true },
-    4 => { events: [{ ticker: "PEP", timing: "BMO", watchlist: false }] },
-    5 => {},
-    6 => { events: [{ ticker: "JPM", timing: "BMO", watchlist: false }, { ticker: "UNH", timing: "BMO", watchlist: false }] },
-    7 => {},
-    # Week 2
-    8 => {}, 9 => {}, 10 => {}, 11 => {}, 12 => {}, 13 => {}, 14 => {},
-    # Week 3
-    15 => {}, 16 => {}, 17 => {},
-    18 => { events: [
-      { ticker: "TSLA", timing: "AMC", watchlist: true, starred: true },
-      { ticker: "NFLX", timing: "AMC", watchlist: true },
-      { ticker: "ASML", timing: "BMO", watchlist: false }
-    ]},
-    19 => {}, 20 => {}, 21 => {},
-    # Week 4
-    22 => {}, 23 => {},
-    24 => { events: [
-      { ticker: "MSFT", timing: "BMO", watchlist: true },
-      { ticker: "GOOGL", timing: "AMC", watchlist: true },
-      { ticker: "V", timing: "AMC", watchlist: false }
-    ]},
-    25 => { events: [{ ticker: "META", timing: "AMC", watchlist: false }, { ticker: "IBM", timing: "AMC", watchlist: false }] },
-    26 => { events: [
-      { ticker: "AMZN", timing: "AMC", watchlist: true },
-      { ticker: "INTC", timing: "AMC", watchlist: false }
-    ]},
-    27 => {}, 28 => {},
-    # Week 5
-    29 => {}, 30 => {}, 31 => {},
-    32 => { day: 1, outside: true }, 33 => { day: 2, outside: true },
-    34 => { day: 3, outside: true }, 35 => { day: 4, outside: true }
-  }
+  # Build lookup: day_number => [events]
+  events_by_day = @events.group_by { |e| e.report_date.day }
+  watchlist_asset_ids = @watchlist_events.map(&:asset_id)
+
+  # Calendar math
+  first_day = @date.beginning_of_month
+  last_day  = @date.end_of_month
+  start_date = first_day.beginning_of_week(:sunday)
+  end_date   = last_day.end_of_week(:sunday)
 %>
 
 <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
@@ -49,30 +21,26 @@
 
   <%# Calendar cells %>
   <div class="grid grid-cols-7">
-    <% calendar.each do |key, cell| %>
-      <% day_num = cell[:day] || key %>
-      <% outside = cell[:outside] %>
-      <% events = cell[:events] || [] %>
-      <% has_watchlist = events.any? { |e| e[:watchlist] } %>
+    <% (start_date..end_date).each do |cal_date| %>
+      <% outside = cal_date.month != @date.month %>
+      <% day_events = outside ? [] : (events_by_day[cal_date.day] || []) %>
+      <% has_watchlist = day_events.any? { |e| watchlist_asset_ids.include?(e.asset_id) } %>
 
       <div class="min-h-[120px] border-r border-b border-slate-200 dark:border-slate-800 p-2 <%= outside ? 'text-slate-400 bg-slate-50/30 dark:bg-slate-900/50' : (has_watchlist ? 'bg-primary/5' : '') %>">
-        <span class="text-sm font-bold <%= has_watchlist ? 'text-primary' : (outside ? 'text-slate-400' : 'text-slate-800 dark:text-slate-200') %>"><%= day_num %></span>
+        <span class="text-sm font-bold <%= has_watchlist ? 'text-primary' : (outside ? 'text-slate-400' : 'text-slate-800 dark:text-slate-200') %>"><%= cal_date.day %></span>
 
-        <% if events.any? %>
+        <% if day_events.any? %>
           <div class="mt-2 flex flex-col gap-1">
-            <% events.each do |event| %>
-              <% if event[:watchlist] && event[:starred] %>
-                <div class="flex items-center justify-between bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
-                  <span><%= event[:ticker] %></span>
-                  <span class="material-symbols-outlined text-[10px]">star</span>
-                </div>
-              <% elsif event[:watchlist] %>
+            <% day_events.each do |event| %>
+              <% in_watchlist = watchlist_asset_ids.include?(event.asset_id) %>
+              <% timing_label = event.before_market_open? ? "BMO" : "AMC" %>
+              <% if in_watchlist %>
                 <div class="flex items-center justify-between bg-primary/20 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded">
-                  <span><%= event[:ticker] %></span>
+                  <span><%= event.asset.symbol %></span>
                   <span class="material-symbols-outlined text-[10px]">star</span>
                 </div>
               <% else %>
-                <span class="text-[9px] font-bold bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-400"><%= event[:ticker] %> (<%= event[:timing] %>)</span>
+                <span class="text-[9px] font-bold bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-400"><%= event.asset.symbol %> (<%= timing_label %>)</span>
               <% end %>
             <% end %>
           </div>

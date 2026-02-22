@@ -1,21 +1,8 @@
-<%# Market Listings table with hardcoded data %>
-<% listings = [
-  { ticker: "AAPL", name: "Apple Inc.", sector: "Technology", price: "$185.92", change: "+1.45%", positive: true, strength: 88, strength_label: "Strong", direction: :up },
-  { ticker: "TSLA", name: "Tesla, Inc.", sector: "Automotive", price: "$175.22", change: "-2.10%", positive: false, strength: 42, strength_label: "Weakening", direction: :down },
-  { ticker: "NVDA", name: "NVIDIA Corp.", sector: "Semiconductors", price: "$894.52", change: "+3.82%", positive: true, strength: 96, strength_label: "Parabolic", direction: :up },
-  { ticker: "MSFT", name: "Microsoft Corp.", sector: "Software", price: "$415.10", change: "+0.32%", positive: true, strength: 72, strength_label: "Moderate", direction: :up },
-  { ticker: "AMZN", name: "Amazon.com Inc.", sector: "E-Commerce", price: "$178.25", change: "+0.95%", positive: true, strength: 67, strength_label: "Moderate", direction: :up },
-  { ticker: "GOOGL", name: "Alphabet Inc.", sector: "Technology", price: "$141.80", change: "-0.15%", positive: false, strength: 55, strength_label: "Moderate", direction: :down },
-  { ticker: "META", name: "Meta Platforms", sector: "Technology", price: "$505.75", change: "+2.18%", positive: true, strength: 81, strength_label: "Strong", direction: :up },
-  { ticker: "JPM", name: "JPMorgan Chase", sector: "Finance", price: "$198.40", change: "+0.44%", positive: true, strength: 63, strength_label: "Moderate", direction: :up },
-  { ticker: "JNJ", name: "Johnson & Johnson", sector: "Healthcare", price: "$156.80", change: "-0.65%", positive: false, strength: 35, strength_label: "Weak", direction: :down },
-  { ticker: "VIX", name: "Volatility Index", sector: "Index", price: "14.33", change: "-1.22%", positive: false, strength: 25, strength_label: "Sideways", direction: :down }
-] %>
-
+<%# Market Listings table with real data from @assets %>
 <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
   <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4">
     <h3 class="text-lg font-bold text-slate-900 dark:text-white">Market Listings</h3>
-    <p class="text-sm text-slate-500 dark:text-slate-400"><span class="font-bold text-slate-900 dark:text-white">4,821</span> assets found</p>
+    <p class="text-sm text-slate-500 dark:text-slate-400"><span class="font-bold text-slate-900 dark:text-white"><%= @pagy.count %></span> assets found</p>
   </div>
   <div class="overflow-x-auto">
     <table class="w-full text-left">
@@ -30,43 +17,53 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-        <% listings.each do |asset| %>
+        <% @assets.each do |asset| %>
+          <% change = asset.change_percent_24h || 0 %>
+          <% positive = change >= 0 %>
+          <% score = asset.latest_trend_score %>
+          <% strength = score&.score || 0 %>
+          <% strength_label = case strength
+               when 80..100 then strength >= 90 ? "Parabolic" : "Strong"
+               when 50..79  then "Moderate"
+               when 25..49  then "Weakening"
+               else "Weak"
+             end %>
           <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
                 <div class="flex h-8 w-8 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 font-bold text-[10px] text-slate-700 dark:text-slate-300">
-                  <%= asset[:ticker] %>
+                  <%= asset.symbol %>
                 </div>
                 <div>
-                  <p class="text-sm font-bold text-slate-900 dark:text-white"><%= asset[:name] %></p>
-                  <p class="text-xs text-slate-500"><%= asset[:sector] %></p>
+                  <p class="text-sm font-bold text-slate-900 dark:text-white"><%= asset.name %></p>
+                  <p class="text-xs text-slate-500"><%= asset.sector || asset.asset_type.humanize %></p>
                 </div>
               </div>
             </td>
-            <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= asset[:price] %></td>
+            <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(asset.current_price) %></td>
             <td class="px-6 py-4 text-right">
-              <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold <%= asset[:positive] ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
-                <%= asset[:change] %>
+              <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold <%= positive ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+                <%= positive ? '+' : '' %><%= number_with_precision(change, precision: 2) %>%
               </span>
             </td>
             <td class="px-6 py-4">
               <div class="flex flex-col items-center gap-1">
                 <div class="w-full max-w-[80px] h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                  <% bar_color = if asset[:strength] >= 80
+                  <% bar_color = if strength >= 80
                        'bg-emerald-500'
-                     elsif asset[:strength] >= 50
+                     elsif strength >= 50
                        'bg-amber-400'
                      else
                        'bg-rose-400'
                      end %>
-                  <div class="h-full rounded-full <%= bar_color %>" style="width: <%= asset[:strength] %>%"></div>
+                  <div class="h-full rounded-full <%= bar_color %>" style="width: <%= strength %>%"></div>
                 </div>
-                <span class="text-[10px] font-medium text-slate-500"><%= asset[:strength_label] %> (<%= asset[:strength] %>%)</span>
+                <span class="text-[10px] font-medium text-slate-500"><%= strength_label %> (<%= strength %>%)</span>
               </div>
             </td>
             <td class="px-6 py-4">
               <div class="flex justify-center">
-                <%= render "components/sparkline", direction: asset[:direction] %>
+                <%= render "components/sparkline", direction: positive ? :up : :down %>
               </div>
             </td>
             <td class="px-6 py-4 text-center">
@@ -82,6 +79,6 @@
 
   <%# Pagination %>
   <div class="border-t border-slate-100 dark:border-slate-800 px-6 py-4">
-    <%= render "components/pagination", current_page: 1, total_pages: 482, total_count: 4821, per_page: 10 %>
+    <%== pagy_nav(@pagy) %>
   </div>
 </section>

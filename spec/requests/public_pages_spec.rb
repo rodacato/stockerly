@@ -10,10 +10,24 @@ RSpec.describe "Public pages", type: :request do
   end
 
   describe "GET /trends" do
-    it "renders successfully" do
+    it "renders successfully with an asset" do
+      create(:asset, symbol: "AAPL", name: "Apple Inc.", asset_type: :stock)
       get trends_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Trend")
+    end
+
+    it "renders with symbol search" do
+      create(:asset, symbol: "AAPL", name: "Apple Inc.", asset_type: :stock)
+      get trends_path(symbol: "AAPL")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("AAPL")
+    end
+
+    it "renders gracefully when asset not found" do
+      get trends_path(symbol: "ZZZZ")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("No asset found")
     end
   end
 

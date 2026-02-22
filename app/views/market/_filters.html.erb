@@ -1,70 +1,34 @@
-<%# Search bar + filter dropdowns + trend strength slider %>
+<%# Search bar + filter dropdowns %>
 <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm mb-8">
-  <div class="flex flex-col lg:flex-row items-start lg:items-end gap-4">
+  <%= form_tag market_path, method: :get, class: "flex flex-col lg:flex-row items-start lg:items-end gap-4" do %>
     <%# Search %>
     <div class="flex-1 w-full lg:w-auto">
       <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Search Assets</label>
       <div class="relative">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-        <input type="text" placeholder="Search by ticker or company name..."
-               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+        <%= text_field_tag :search, params[:search],
+            placeholder: "Search by ticker or company name...",
+            class: "w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" %>
       </div>
     </div>
 
     <%# Sector filter %>
     <div class="w-full lg:w-40">
       <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sector</label>
-      <select class="w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
-        <option>All Sectors</option>
-        <option>Technology</option>
-        <option>Healthcare</option>
-        <option>Finance</option>
-        <option>Energy</option>
-        <option>Consumer</option>
-      </select>
+      <%= select_tag :sector,
+          options_for_select([["All Sectors", ""], "Technology", "Healthcare", "Finance", "Energy", "Consumer"], params[:sector]),
+          class: "w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" %>
     </div>
 
-    <%# Market Cap filter %>
+    <%# Type filter %>
     <div class="w-full lg:w-40">
-      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Market Cap</label>
-      <select class="w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
-        <option>Any Size</option>
-        <option>Large Cap (&gt;$10B)</option>
-        <option>Mid Cap ($2-10B)</option>
-        <option>Small Cap (&lt;$2B)</option>
-      </select>
-    </div>
-
-    <%# Volatility filter %>
-    <div class="w-full lg:w-40">
-      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Volatility</label>
-      <select class="w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
-        <option>Any</option>
-        <option>Low</option>
-        <option>Medium</option>
-        <option>High</option>
-      </select>
+      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Asset Type</label>
+      <%= select_tag :type,
+          options_for_select([["All Types", ""], ["Stocks", "stock"], ["Crypto", "crypto"], ["Index", "index"]], params[:type]),
+          class: "w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" %>
     </div>
 
     <%# Apply button %>
-    <button class="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm">
-      Apply
-    </button>
-  </div>
-
-  <%# Trend Strength Slider %>
-  <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
-    <div class="flex items-center justify-between mb-2">
-      <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Trend Strength</label>
-      <span class="text-xs font-bold text-primary">65%</span>
-    </div>
-    <input type="range" min="0" max="100" value="65"
-           class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-primary" />
-    <div class="flex justify-between mt-1 text-[10px] font-medium text-slate-400">
-      <span>Weak</span>
-      <span>Moderate</span>
-      <span>Strong</span>
-      <span>Parabolic</span>
-    </div>
-  </div>
+    <%= submit_tag "Apply", class: "px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm cursor-pointer" %>
+  <% end %>
 </div>

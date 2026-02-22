@@ -1,0 +1,35 @@
+require "rails_helper"
+
+RSpec.describe News::ListArticles do
+  let!(:nvidia_article) { create(:news_article, title: "NVIDIA Record Revenue", related_ticker: "NVDA", published_at: 1.hour.ago) }
+  let!(:apple_article) { create(:news_article, title: "Apple Earnings Preview", related_ticker: "AAPL", published_at: 2.hours.ago) }
+  let!(:bitcoin_article) { create(:news_article, title: "Bitcoin Rally", related_ticker: "BTC", published_at: 3.hours.ago) }
+
+  describe "#call" do
+    it "returns all articles ordered by published_at desc" do
+      result = described_class.call(params: {})
+      expect(result).to be_success
+      articles = result.value![:articles]
+      expect(articles.first).to eq(nvidia_article)
+    end
+
+    it "filters by ticker" do
+      result = described_class.call(params: { ticker: "AAPL" })
+      articles = result.value![:articles]
+      expect(articles).to include(apple_article)
+      expect(articles).not_to include(nvidia_article)
+    end
+
+    it "searches by title" do
+      result = described_class.call(params: { search: "bitcoin" })
+      articles = result.value![:articles]
+      expect(articles).to include(bitcoin_article)
+      expect(articles).not_to include(nvidia_article)
+    end
+
+    it "returns pagination data" do
+      result = described_class.call(params: {})
+      expect(result.value![:pagy]).to be_a(Pagy)
+    end
+  end
+end
