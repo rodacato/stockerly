@@ -56,6 +56,7 @@ class FxRatesGateway
   end
 
   def resolve_api_key
-    Rails.application.credentials.dig(:exchangerate, :api_key) || ""
+    Integration.find_by(provider_name: "ExchangeRate")&.api_key_encrypted ||
+      ENV.fetch("EXCHANGERATE_API_KEY", "")
   end
 end

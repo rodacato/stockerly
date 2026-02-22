@@ -89,7 +89,6 @@ class CoingeckoGateway < MarketDataGateway
 
   def resolve_api_key
     Integration.find_by(provider_name: "CoinGecko")&.api_key_encrypted ||
-      Rails.application.credentials.dig(:coingecko, :api_key) ||
-      ""
+      ENV.fetch("COINGECKO_API_KEY", "")
   end
 end
