@@ -7,21 +7,20 @@ class SessionsController < ApplicationController
 
   def new; end
 
-  # TODO: Replace with Identity::Login.call(email:, password:, remember_me:)
-  #       -> Success(user) | Failure(:invalid_credentials) | Failure(:suspended)
   def create
-    user = User.find_by(email: params[:email]&.downcase&.strip)
+    result = Identity::Login.call(params: { email: params[:email], password: params[:password] })
 
-    if user&.authenticate(params[:password])
-      if user.suspended?
-        redirect_to login_path, alert: "Your account has been suspended."
-        return
-      end
-
+    case result
+    in Dry::Monads::Success(user)
       start_session(user)
       remember(user) if params[:remember] == "1"
       redirect_to dashboard_path, notice: "Welcome back, #{user.full_name}!"
-    else
+    in Dry::Monads::Failure[:suspended, message]
+      redirect_to login_path, alert: message
+    in Dry::Monads::Failure[:invalid_credentials, message]
+      flash.now[:alert] = message
+      render :new, status: :unprocessable_content
+    in Dry::Monads::Failure[:validation, _]
       flash.now[:alert] = "Invalid email or password."
       render :new, status: :unprocessable_content
     end

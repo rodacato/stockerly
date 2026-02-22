@@ -39,13 +39,13 @@ RSpec.describe "Registrations", type: :request do
     it "rejects mismatched passwords" do
       post register_path, params: valid_params.merge(password_confirmation: "different")
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("doesn&#39;t match Password")
+      expect(response.body).to include("must match password")
     end
 
     it "rejects short password" do
       post register_path, params: valid_params.merge(password: "short", password_confirmation: "short")
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("too short")
+      expect(response.body).to include("size cannot be less than 8")
     end
 
     it "rejects duplicate email" do

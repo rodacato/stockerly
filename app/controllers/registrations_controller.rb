@@ -7,16 +7,16 @@ class RegistrationsController < ApplicationController
     @user = User.new
   end
 
-  # TODO: Replace with Identity::Register.call(name:, email:, password:, password_confirmation:)
-  #       -> Success(user) | Failure(:validation, errors)
   def create
-    @user = User.new(registration_params)
+    result = Identity::Register.call(params: registration_params.to_h)
 
-    if @user.save
-      EventBus.publish(UserRegistered.new(user_id: @user.id, email: @user.email))
-      start_session(@user)
-      redirect_to dashboard_path, notice: "Welcome to Stockerly, #{@user.full_name}!"
-    else
+    case result
+    in Dry::Monads::Success(user)
+      start_session(user)
+      redirect_to dashboard_path, notice: "Welcome to Stockerly, #{user.full_name}!"
+    in Dry::Monads::Failure[:validation, errors]
+      @user = User.new(registration_params)
+      errors.each { |field, msgs| msgs.each { |msg| @user.errors.add(field, msg) } }
       render :new, status: :unprocessable_content
     end
   end

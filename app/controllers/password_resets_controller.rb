@@ -3,33 +3,26 @@ class PasswordResetsController < ApplicationController
 
   rate_limit to: 3, within: 1.hour, only: :create
 
-  before_action :find_user_by_token, only: [:edit, :update]
+  before_action :find_user_by_token, only: [:edit]
 
   def new; end
 
-  # TODO: Replace with Identity::RequestPasswordReset.call(email:)
-  #       -> Success(token_url) | Failure(:not_found)
   def create
-    user = User.find_by(email: params[:email]&.downcase&.strip)
-
-    if user
-      token = user.password_reset_token
-      reset_url = reset_password_url(token)
-      Rails.logger.info "[PASSWORD RESET] Reset URL for #{user.email}: #{reset_url}"
-    end
-
+    Identity::RequestPasswordReset.call(params: { email: params[:email] })
     redirect_to login_path, notice: "If that email exists, you'll receive reset instructions shortly."
   end
 
   def edit; end
 
-  # TODO: Replace with Identity::ResetPassword.call(token:, password:, password_confirmation:)
-  #       -> Success(user) | Failure(:invalid_token) | Failure(:validation, errors)
   def update
-    if @user.update(password_params)
-      @user.remember_tokens.destroy_all
+    result = Identity::ResetPassword.call(token: params[:token], params: password_params.to_h)
+
+    case result
+    in Dry::Monads::Success
       redirect_to login_path, notice: "Password reset successfully. Please sign in."
-    else
+    in Dry::Monads::Failure[:invalid_token, message]
+      redirect_to forgot_password_path, alert: message
+    in Dry::Monads::Failure[:validation, _]
       render :edit, status: :unprocessable_content
     end
   end
