@@ -1,7 +1,7 @@
-<%# Portfolio — investment portfolio overview with hardcoded data %>
-<%# Empty state (uncomment when wiring backend):
-    <%= render "components/empty_state", icon: "account_balance_wallet", title: "No positions yet", description: "Add your first position to start tracking your portfolio performance.", cta_text: "Add Position", cta_path: portfolio_path %>
-%>
+<%# Portfolio — investment portfolio overview %>
+<% if @positions.blank? && @tab == "open" %>
+  <%= render "components/empty_state", icon: "account_balance_wallet", title: "No positions yet", description: "Add your first position to start tracking your portfolio performance.", cta_text: "Explore Markets", cta_path: market_path %>
+<% else %>
 
 <%# Header with action buttons %>
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
@@ -22,36 +22,39 @@
 </div>
 
 <%# 3 Summary Stat Cards %>
+<% ug = @summary.unrealized_gain %>
+<% dg = @summary.day_gain %>
+<% bp_pct = @summary.total_value.positive? ? (@summary.buying_power / @summary.total_value * 100) : 0 %>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
   <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
     <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Portfolio Value</p>
     <div class="mt-2 flex items-baseline gap-2">
-      <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">$142,592.45</span>
-      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-        <span class="material-symbols-outlined text-sm">trending_up</span>
-        +2.4%
+      <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white"><%= number_to_currency(@summary.total_value) %></span>
+      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= dg.positive? ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+        <span class="material-symbols-outlined text-sm"><%= dg.positive? ? 'trending_up' : 'trending_down' %></span>
+        <%= dg.positive? ? '+' : '' %><%= number_to_percentage(dg.percent, precision: 1) %>
       </span>
     </div>
-    <p class="text-xs text-slate-400 mt-2">Domestic: $102,450 &bull; International: $40,142.45</p>
+    <p class="text-xs text-slate-400 mt-2">Domestic: <%= number_to_currency(@summary.domestic_value) %> &bull; International: <%= number_to_currency(@summary.international_value) %></p>
   </div>
 
   <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
     <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Unrealized Gain/Loss</p>
     <div class="mt-2 flex items-baseline gap-2">
-      <span class="text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">+$18,450.30</span>
-      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-        +14.2%
+      <span class="text-2xl font-black tracking-tight <%= ug.positive? ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>"><%= ug.positive? ? '+' : '' %><%= number_to_currency(ug.absolute) %></span>
+      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= ug.positive? ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+        <%= ug.positive? ? '+' : '' %><%= number_to_percentage(ug.percent, precision: 1) %>
       </span>
     </div>
-    <p class="text-xs text-slate-400 mt-2">Since Jan 12, 2023</p>
+    <p class="text-xs text-slate-400 mt-2">Since <%= @portfolio.inception_date&.strftime("%b %d, %Y") %></p>
   </div>
 
   <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
     <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Available Buying Power</p>
     <div class="mt-2 flex items-baseline gap-2">
-      <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">$8,240.15</span>
+      <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white"><%= number_to_currency(@summary.buying_power) %></span>
     </div>
-    <p class="text-xs text-slate-400 mt-2">5.7% of portfolio</p>
+    <p class="text-xs text-slate-400 mt-2"><%= number_to_percentage(bp_pct, precision: 1) %> of portfolio</p>
   </div>
 </div>
 
@@ -65,3 +68,4 @@
     <%= render "portfolios/positions_table" %>
   </div>
 </div>
+<% end %>

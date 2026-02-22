@@ -27,6 +27,10 @@ RSpec.describe "Authenticated pages", type: :request do
 
   describe "GET /portfolio" do
     it "renders the portfolio with allocation and positions" do
+      portfolio = create(:portfolio, user: user)
+      asset = create(:asset)
+      create(:position, portfolio: portfolio, asset: asset, shares: 10, avg_cost: 100.0)
+
       get portfolio_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Investment Portfolio")

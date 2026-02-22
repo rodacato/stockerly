@@ -1,56 +1,56 @@
-<%# Watchlist Performance table with hardcoded stock data %>
-<% stocks = [
-  { ticker: "AAPL", name: "Apple Inc.", sector: "Technology", price: "$185.92", change: "+1.45%", positive: true },
-  { ticker: "TSLA", name: "Tesla, Inc.", sector: "Automotive", price: "$175.22", change: "-0.82%", positive: false },
-  { ticker: "MSFT", name: "Microsoft Corp.", sector: "Software", price: "$415.10", change: "+0.32%", positive: true },
-  { ticker: "NVDA", name: "NVIDIA Corp.", sector: "Semiconductors", price: "$894.52", change: "+3.82%", positive: true },
-  { ticker: "AMZN", name: "Amazon.com Inc.", sector: "E-Commerce", price: "$178.25", change: "+0.95%", positive: true },
-  { ticker: "GOOGL", name: "Alphabet Inc.", sector: "Technology", price: "$141.80", change: "-0.15%", positive: false }
-] %>
-
+<%# Watchlist Performance table — data from @watchlist_items %>
 <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
   <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4">
     <h3 class="text-lg font-bold text-slate-900 dark:text-white">Watchlist Performance</h3>
-    <button class="text-sm font-semibold text-primary hover:underline">View All</button>
+    <%= link_to "View All", market_path, class: "text-sm font-semibold text-primary hover:underline" %>
   </div>
-  <div class="overflow-x-auto">
-    <table class="w-full text-left">
-      <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
-        <tr>
-          <th class="px-6 py-3 font-semibold">Ticker</th>
-          <th class="px-6 py-3 font-semibold text-right">Price</th>
-          <th class="px-6 py-3 font-semibold text-right">Change %</th>
-          <th class="px-6 py-3 font-semibold text-center">Trend</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-        <% stocks.each do |stock| %>
-          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div class="flex h-8 w-8 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 font-bold text-[10px] text-slate-700 dark:text-slate-300">
-                  <%= stock[:ticker] %>
-                </div>
-                <div>
-                  <p class="text-sm font-bold text-slate-900 dark:text-white"><%= stock[:name] %></p>
-                  <p class="text-xs text-slate-500"><%= stock[:sector] %></p>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= stock[:price] %></td>
-            <td class="px-6 py-4 text-right">
-              <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold <%= stock[:positive] ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
-                <%= stock[:change] %>
-              </span>
-            </td>
-            <td class="px-6 py-4">
-              <div class="mx-auto flex justify-center">
-                <%= render "components/sparkline", direction: stock[:positive] ? :up : :down %>
-              </div>
-            </td>
+  <% if @watchlist_items.present? %>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
+          <tr>
+            <th class="px-6 py-3 font-semibold">Ticker</th>
+            <th class="px-6 py-3 font-semibold text-right">Price</th>
+            <th class="px-6 py-3 font-semibold text-right">Change %</th>
+            <th class="px-6 py-3 font-semibold text-center">Trend</th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+          <% @watchlist_items.each do |item| %>
+            <% asset = item.asset %>
+            <% change = asset.change_percent_24h || 0 %>
+            <% positive = change >= 0 %>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-8 w-8 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 font-bold text-[10px] text-slate-700 dark:text-slate-300">
+                    <%= asset.symbol %>
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold text-slate-900 dark:text-white"><%= asset.name %></p>
+                    <p class="text-xs text-slate-500"><%= asset.sector %></p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(asset.current_price) %></td>
+              <td class="px-6 py-4 text-right">
+                <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold <%= positive ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+                  <%= positive ? '+' : '' %><%= number_to_percentage(change, precision: 2) %>
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="mx-auto flex justify-center">
+                  <%= render "components/sparkline", direction: positive ? :up : :down %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="px-6 py-8 text-center text-sm text-slate-500">
+      No assets in your watchlist yet. <%= link_to "Explore Markets", market_path, class: "text-primary font-semibold hover:underline" %>
+    </div>
+  <% end %>
 </section>

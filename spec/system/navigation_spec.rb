@@ -80,6 +80,7 @@ RSpec.describe "Navigation", type: :system do
 
   describe "App zone" do
     let!(:user) { create(:user, email: "nav@test.com", password: "password123") }
+    let!(:portfolio) { create(:portfolio, user: user) }
 
     before do
       visit login_path

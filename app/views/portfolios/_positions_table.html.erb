@@ -1,91 +1,104 @@
-<%# Positions table with tabs (Open/Closed/Dividends) and hardcoded data %>
-<% positions = [
-  { ticker: "AAPL", name: "Apple Inc.", currency: "USD", shares: 50, avg_cost: "$150.20", market_price: "$185.92", market_value: "$9,296.00", gain: "+$1,786.00", gain_pct: "+23.78%", positive: true },
-  { ticker: "MSFT", name: "Microsoft Corp.", currency: "USD", shares: 30, avg_cost: "$280.15", market_price: "$415.10", market_value: "$12,453.00", gain: "+$4,048.50", gain_pct: "+48.17%", positive: true },
-  { ticker: "TSLA", name: "Tesla, Inc.", currency: "USD", shares: 20, avg_cost: "$242.50", market_price: "$175.22", market_value: "$3,504.40", gain: "-$1,345.60", gain_pct: "-27.74%", positive: false },
-  { ticker: "NVDA", name: "NVIDIA Corp.", currency: "USD", shares: 15, avg_cost: "$480.00", market_price: "$894.52", market_value: "$13,417.80", gain: "+$6,217.80", gain_pct: "+86.36%", positive: true },
-  { ticker: "GOOGL", name: "Alphabet Inc.", currency: "USD", shares: 40, avg_cost: "$125.00", market_price: "$141.80", market_value: "$5,672.00", gain: "+$672.00", gain_pct: "+13.44%", positive: true },
-  { ticker: "AMZN", name: "Amazon.com", currency: "USD", shares: 25, avg_cost: "$145.00", market_price: "$178.25", market_value: "$4,456.25", gain: "+$831.25", gain_pct: "+22.93%", positive: true },
-  { ticker: "JPM", name: "JPMorgan Chase", currency: "USD", shares: 35, avg_cost: "$155.00", market_price: "$198.40", market_value: "$6,944.00", gain: "+$1,519.00", gain_pct: "+28.00%", positive: true },
-  { ticker: "JNJ", name: "Johnson & Johnson", currency: "USD", shares: 20, avg_cost: "$165.00", market_price: "$156.80", market_value: "$3,136.00", gain: "-$164.00", gain_pct: "-4.97%", positive: false }
-] %>
-
-<section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm" data-controller="tabs">
-  <%# Tabs header %>
+<%# Positions table with tabs (Open/Closed/Dividends) %>
+<section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
+  <%# Tabs header — uses query params for Turbo Drive navigation %>
   <div class="flex items-center border-b border-slate-100 dark:border-slate-800">
-    <button class="px-6 py-4 text-sm font-bold border-b-2 border-primary text-primary" data-tabs-target="tab" data-action="click->tabs#switch">
-      Open Positions <span class="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">8</span>
-    </button>
-    <button class="px-6 py-4 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600" data-tabs-target="tab" data-action="click->tabs#switch">
+    <%= link_to portfolio_path(tab: "open"), class: "px-6 py-4 text-sm font-bold border-b-2 #{@tab == 'open' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+      Open Positions <span class="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full"><%= @portfolio.open_positions.size %></span>
+    <% end %>
+    <%= link_to portfolio_path(tab: "closed"), class: "px-6 py-4 text-sm font-medium border-b-2 #{@tab == 'closed' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
       Closed Positions
-    </button>
-    <button class="px-6 py-4 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600" data-tabs-target="tab" data-action="click->tabs#switch">
+    <% end %>
+    <%= link_to portfolio_path(tab: "dividends"), class: "px-6 py-4 text-sm font-medium border-b-2 #{@tab == 'dividends' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
       Dividend History
-    </button>
+    <% end %>
   </div>
 
-  <%# Panel 1: Open Positions %>
-  <div data-tabs-target="panel">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left">
-        <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
-          <tr>
-            <th class="px-6 py-3 font-semibold">Ticker</th>
-            <th class="px-6 py-3 font-semibold text-center">Shares</th>
-            <th class="px-6 py-3 font-semibold text-right">Avg Cost</th>
-            <th class="px-6 py-3 font-semibold text-right">Market Price</th>
-            <th class="px-6 py-3 font-semibold text-right">Market Value</th>
-            <th class="px-6 py-3 font-semibold text-right">Total Gain</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-          <% positions.each do |pos| %>
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-              <td class="px-6 py-4">
-                <div class="flex items-center gap-3">
-                  <div class="flex h-8 w-8 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 font-bold text-[10px] text-slate-700 dark:text-slate-300">
-                    <%= pos[:ticker] %>
-                  </div>
-                  <div>
-                    <p class="text-sm font-bold text-slate-900 dark:text-white"><%= pos[:name] %></p>
-                    <p class="text-xs text-slate-500"><%= pos[:currency] %></p>
-                  </div>
-                </div>
-              </td>
-              <td class="px-6 py-4 text-center text-sm font-medium text-slate-900 dark:text-white"><%= pos[:shares] %></td>
-              <td class="px-6 py-4 text-right text-sm text-slate-500"><%= pos[:avg_cost] %></td>
-              <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= pos[:market_price] %></td>
-              <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= pos[:market_value] %></td>
-              <td class="px-6 py-4 text-right">
-                <p class="text-sm font-bold <%= pos[:positive] ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
-                  <%= pos[:gain] %>
-                </p>
-                <p class="text-[10px] font-medium <%= pos[:positive] ? 'text-emerald-500' : 'text-rose-500' %>">
-                  <%= pos[:gain_pct] %>
-                </p>
-              </td>
+  <% if @tab == "dividends" %>
+    <%# Dividend History %>
+    <% if @positions.present? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
+            <tr>
+              <th class="px-6 py-3 font-semibold">Asset</th>
+              <th class="px-6 py-3 font-semibold text-center">Shares Held</th>
+              <th class="px-6 py-3 font-semibold text-right">Amount</th>
+              <th class="px-6 py-3 font-semibold text-right">Date</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <%# Panel 2: Closed Positions (placeholder) %>
-  <div class="hidden" data-tabs-target="panel">
-    <div class="flex flex-col items-center justify-center py-16 text-slate-400">
-      <span class="material-symbols-outlined text-4xl mb-3">lock</span>
-      <p class="text-sm font-medium">No closed positions yet</p>
-      <p class="text-xs mt-1">Positions will appear here after you sell</p>
-    </div>
-  </div>
-
-  <%# Panel 3: Dividend History (placeholder) %>
-  <div class="hidden" data-tabs-target="panel">
-    <div class="flex flex-col items-center justify-center py-16 text-slate-400">
-      <span class="material-symbols-outlined text-4xl mb-3">payments</span>
-      <p class="text-sm font-medium">No dividend history yet</p>
-      <p class="text-xs mt-1">Dividend payments will appear here</p>
-    </div>
-  </div>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+            <% @positions.each do |dp| %>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                <td class="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white"><%= dp.dividend.asset.symbol %></td>
+                <td class="px-6 py-4 text-center text-sm text-slate-900 dark:text-white"><%= dp.shares_held %></td>
+                <td class="px-6 py-4 text-right text-sm font-medium text-emerald-600"><%= number_to_currency(dp.total_amount) %></td>
+                <td class="px-6 py-4 text-right text-sm text-slate-500"><%= dp.created_at.strftime("%b %d, %Y") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="flex flex-col items-center justify-center py-16 text-slate-400">
+        <span class="material-symbols-outlined text-4xl mb-3">payments</span>
+        <p class="text-sm font-medium">No dividend history yet</p>
+        <p class="text-xs mt-1">Dividend payments will appear here</p>
+      </div>
+    <% end %>
+  <% else %>
+    <%# Open or Closed Positions %>
+    <% if @positions.present? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
+            <tr>
+              <th class="px-6 py-3 font-semibold">Ticker</th>
+              <th class="px-6 py-3 font-semibold text-center">Shares</th>
+              <th class="px-6 py-3 font-semibold text-right">Avg Cost</th>
+              <th class="px-6 py-3 font-semibold text-right">Market Price</th>
+              <th class="px-6 py-3 font-semibold text-right">Market Value</th>
+              <th class="px-6 py-3 font-semibold text-right">Total Gain</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+            <% @positions.each do |pos| %>
+              <% gain = pos.total_gain %>
+              <% positive = gain >= 0 %>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="flex h-8 w-8 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 font-bold text-[10px] text-slate-700 dark:text-slate-300">
+                      <%= pos.asset.symbol %>
+                    </div>
+                    <div>
+                      <p class="text-sm font-bold text-slate-900 dark:text-white"><%= pos.asset.name %></p>
+                      <p class="text-xs text-slate-500"><%= pos.currency %></p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900 dark:text-white"><%= pos.shares %></td>
+                <td class="px-6 py-4 text-right text-sm text-slate-500"><%= number_to_currency(pos.avg_cost) %></td>
+                <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(pos.asset.current_price) %></td>
+                <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(pos.market_value) %></td>
+                <td class="px-6 py-4 text-right">
+                  <p class="text-sm font-bold <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
+                    <%= positive ? '+' : '' %><%= number_to_currency(gain) %>
+                  </p>
+                  <p class="text-[10px] font-medium <%= positive ? 'text-emerald-500' : 'text-rose-500' %>">
+                    <%= positive ? '+' : '' %><%= number_to_percentage(pos.total_gain_percent, precision: 2) %>
+                  </p>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="flex flex-col items-center justify-center py-16 text-slate-400">
+        <span class="material-symbols-outlined text-4xl mb-3"><%= @tab == "closed" ? "lock" : "trending_up" %></span>
+        <p class="text-sm font-medium">No <%= @tab %> positions yet</p>
+        <p class="text-xs mt-1">Positions will appear here</p>
+      </div>
+    <% end %>
+  <% end %>
 </section>

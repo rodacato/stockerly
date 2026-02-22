@@ -1,41 +1,22 @@
-<%# Relevant News feed with hardcoded articles %>
-<% articles = [
-  {
-    ticker: "AAPL", source: "Bloomberg", time_ago: "2h ago",
-    title: "Apple's Vision Pro Sales Exceed Expectations in First Quarter",
-    excerpt: "New supply chain data suggests strong demand for the spatial computing headset across international markets..."
-  },
-  {
-    ticker: "MSFT", source: "Reuters", time_ago: "5h ago",
-    title: "Microsoft Announces Multi-Billion Dollar AI Infrastructure Plan",
-    excerpt: "The tech giant aims to double its data center capacity to support growing enterprise AI demands globally..."
-  },
-  {
-    ticker: "TSLA", source: "The Wall Street Journal", time_ago: "8h ago",
-    title: "Tesla Shifts Focus to Next-Gen Platform for Affordable EV",
-    excerpt: "The company is reallocating resources to accelerate the launch of its sub-$25,000 electric vehicle model..."
-  }
-] %>
-
+<%# Relevant News feed — data from @news %>
 <section>
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-bold text-slate-900 dark:text-white">Relevant News</h3>
     <div class="flex gap-2">
-      <button class="rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs font-bold shadow-sm text-slate-700 dark:text-slate-300">Latest</button>
-      <button class="rounded-lg bg-primary text-white px-3 py-1.5 text-xs font-bold shadow-sm">My Watchlist</button>
+      <%= link_to "View All", news_path, class: "rounded-lg bg-primary text-white px-3 py-1.5 text-xs font-bold shadow-sm" %>
     </div>
   </div>
   <div class="space-y-4">
-    <% articles.each do |article| %>
+    <% @news.each do |article| %>
       <%= render "components/news_card",
-        ticker: article[:ticker],
-        source: article[:source],
-        time_ago: article[:time_ago],
-        title: article[:title],
-        excerpt: article[:excerpt] %>
+        ticker: article.related_ticker,
+        source: article.source,
+        time_ago: time_ago_in_words(article.published_at) + " ago",
+        title: article.title,
+        excerpt: article.summary %>
     <% end %>
   </div>
-  <button class="mt-6 w-full rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800 py-3 text-sm font-bold text-slate-400 hover:border-primary/30 hover:text-primary transition-all">
-    Load More Headlines
-  </button>
+  <% if @news.empty? %>
+    <p class="text-sm text-slate-500 text-center py-4">No news articles available.</p>
+  <% end %>
 </section>

@@ -1,14 +1,19 @@
-<%# Portfolio allocation donut chart sidebar %>
-<% segments = [
-  { label: "Technology", pct: 45, color: "#004a99" },
-  { label: "Healthcare", pct: 25, color: "#38bdf8" },
-  { label: "Finance", pct: 15, color: "#10b981" },
-  { label: "Energy", pct: 15, color: "#fbbf24" }
-] %>
+<%# Portfolio allocation donut chart sidebar — data from @allocation %>
+<% colors = ["#004a99", "#38bdf8", "#10b981", "#fbbf24", "#f43f5e", "#8b5cf6", "#f97316", "#06b6d4"] %>
+<% total = @allocation.values.sum.to_f %>
+<% segments = @allocation.map.with_index do |(sector, value), i|
+  pct = total.positive? ? (value / total * 100).round : 0
+  { label: sector.presence || "Other", pct: pct, color: colors[i % colors.length] }
+end %>
 
 <div class="lg:col-span-1">
   <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6">Portfolio Allocation</h3>
-    <%= render "components/donut_chart", segments: segments, center_label: "Equities", center_value: "92.4%" %>
+    <% if segments.present? %>
+      <% equity_pct = @summary.total_value.positive? ? ((@summary.total_value - @summary.buying_power) / @summary.total_value * 100).round(1) : 0 %>
+      <%= render "components/donut_chart", segments: segments, center_label: "Equities", center_value: "#{equity_pct}%" %>
+    <% else %>
+      <p class="text-sm text-slate-500 text-center py-8">No allocation data yet.</p>
+    <% end %>
   </section>
 </div>

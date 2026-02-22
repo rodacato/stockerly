@@ -1,9 +1,9 @@
-<%# Market Status indicators %>
+<%# Market Status indicators — data from @indices %>
 <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
   <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Market Status</h3>
   <div class="space-y-4">
-    <%= render "components/market_status_indicator", name: "NYSE", status: :open %>
-    <%= render "components/market_status_indicator", name: "NASDAQ", status: :open %>
-    <%= render "components/market_status_indicator", name: "LSE", status: :closed %>
+    <% @indices.each do |idx| %>
+      <%= render "components/market_status_indicator", name: idx.exchange.presence || idx.symbol, status: idx.is_open ? :open : :closed %>
+    <% end %>
   </div>
 </section>
