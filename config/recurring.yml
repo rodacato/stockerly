@@ -10,6 +10,28 @@
 #     schedule: at 5am every day
 
 production:
+  sync_stock_prices:
+    class: SyncAllAssetsJob
+    args: [ "stock" ]
+    schedule: every 5 minutes
+
+  sync_crypto_prices:
+    class: SyncAllAssetsJob
+    args: [ "crypto" ]
+    schedule: every 3 minutes
+
+  refresh_fx_rates:
+    class: RefreshFxRatesJob
+    schedule: every hour at minute 30
+
+  take_daily_snapshots:
+    class: TakeSnapshotsJob
+    schedule: at 11pm every day
+
+  cleanup_old_logs:
+    command: "SystemLog.where('created_at < ?', 90.days.ago).delete_all"
+    schedule: at 2am every day
+
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
