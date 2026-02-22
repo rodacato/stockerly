@@ -21,13 +21,20 @@
       icon_color: "bg-emerald-600" %>
 
     <%# Add New Provider Card %>
-    <%# TODO: Link to Admin::Integrations::ConnectProvider — modal for new integration %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center justify-center text-center hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-      <div class="size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-3">
-        <span class="material-symbols-outlined text-2xl text-slate-400">add</span>
+    <%= form_with(model: [:admin, Integration.new], class: "bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-6 hover:border-primary transition-colors") do |f| %>
+      <div class="flex flex-col items-center gap-3">
+        <div class="size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+          <span class="material-symbols-outlined text-2xl text-slate-400">add</span>
+        </div>
+        <%= f.text_field :provider_name, placeholder: "Provider Name",
+            class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+        <%= f.select :provider_type,
+            options_for_select(["Stocks & Forex", "Cryptocurrency", "Custom API"]),
+            {}, class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary" %>
+        <%= f.text_field :api_key_encrypted, placeholder: "API Key (optional)",
+            class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+        <%= f.submit "Connect Provider", class: "w-full px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors cursor-pointer" %>
       </div>
-      <p class="font-bold text-sm text-slate-900 dark:text-white">Add New Provider</p>
-      <p class="text-xs text-slate-400 mt-1">Connect to IEX, AlphaVantage, or custom API</p>
-    </div>
+    <% end %>
   </div>
 </div>

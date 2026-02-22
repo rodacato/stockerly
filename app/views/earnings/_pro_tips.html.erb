@@ -5,10 +5,9 @@
     <p class="text-xs text-white/80 leading-relaxed mb-4">
       Historical data shows 70% of watchlist tickers beat expectations this season. Set your alerts now.
     </p>
-    <%# TODO: Link to alerts_path — pre-fill earnings alert type %>
-    <button class="bg-white/20 hover:bg-white/30 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg transition-colors">
+    <%= link_to alerts_path, class: "bg-white/20 hover:bg-white/30 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg transition-colors inline-block" do %>
       Setup Alerts
-    </button>
+    <% end %>
   </div>
   <div class="absolute -right-4 -bottom-4 opacity-10">
     <span class="material-symbols-outlined text-[80px]">analytics</span>

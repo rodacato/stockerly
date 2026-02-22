@@ -47,7 +47,8 @@ Rails.application.routes.draw do
     collection { patch :mark_all_read }
   end
   resource  :profile,   only: [:show, :update]
-  patch "profile/password", to: "profiles#change_password", as: :change_password
+  patch "profile/password",    to: "profiles#change_password",    as: :change_password
+  patch "profile/preferences", to: "profiles#update_preferences", as: :update_preferences
 
   # --- Admin Zone ---
   namespace :admin do
@@ -58,7 +59,7 @@ Rails.application.routes.draw do
       end
       collection { post :trigger_sync_all }
     end
-    resources :integrations, only: [] do
+    resources :integrations, only: [:create] do
       member { post :refresh_sync }
     end
     resources :logs, only: [:index] do

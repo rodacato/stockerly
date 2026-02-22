@@ -18,6 +18,19 @@ class ProfilesController < AuthenticatedController
     end
   end
 
+  def update_preferences
+    result = Alerts::UpdatePreferences.call(
+      user: current_user,
+      params: preference_params.to_h.symbolize_keys
+    )
+
+    if result.success?
+      head :ok
+    else
+      head :unprocessable_content
+    end
+  end
+
   def change_password
     result = Profiles::ChangePassword.call(user: current_user, params: password_params.to_h)
 
@@ -39,5 +52,9 @@ class ProfilesController < AuthenticatedController
 
   def password_params
     params.require(:password_change).permit(:current_password, :password, :password_confirmation)
+  end
+
+  def preference_params
+    params.permit(:email_digest, :browser_push, :sms_notifications)
   end
 end

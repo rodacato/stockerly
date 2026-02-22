@@ -1,34 +1,36 @@
 <%# Account Settings with toggles, change password, and sign out %>
-<section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+<section id="account-settings" class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
   <h3 class="text-lg font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
     <span class="material-symbols-outlined text-primary">settings</span>
     Account Settings
   </h3>
   <div class="space-y-6">
-    <%# TODO: Connect to Profiles::UpdatePreferences.call — persist toggle state via PATCH %>
-    <%# Email Notifications toggle %>
-    <div class="flex items-center justify-between" data-controller="toggle">
+    <%# Email Notifications toggle — persists via PATCH %>
+    <% email_pref = current_user.alert_preference&.email_digest != false %>
+    <div class="flex items-center justify-between" data-controller="toggle"
+         data-toggle-url-value="<%= update_preferences_path %>"
+         data-toggle-field-value="email_digest">
       <div>
         <p class="text-sm font-semibold text-slate-900 dark:text-white">Email Notifications</p>
         <p class="text-xs text-slate-500">Receive weekly market digest</p>
       </div>
       <button type="button" data-action="click->toggle#toggle"
               class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out">
-        <span data-toggle-target="track" class="pointer-events-none inline-block h-5 w-11 rounded-full transition-colors duration-200 ease-in-out bg-primary"></span>
-        <span data-toggle-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-5"></span>
+        <span data-toggle-target="track" class="pointer-events-none inline-block h-5 w-11 rounded-full transition-colors duration-200 ease-in-out <%= email_pref ? 'bg-primary' : 'bg-slate-200 dark:bg-slate-700' %>"></span>
+        <span data-toggle-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform duration-200 ease-in-out <%= email_pref ? 'translate-x-5' : 'translate-x-0' %>"></span>
       </button>
     </div>
 
-    <%# Privacy Mode toggle %>
-    <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4" data-controller="toggle">
+    <%# Privacy Mode toggle — visual only (no DB field) %>
+    <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
       <div>
         <p class="text-sm font-semibold text-slate-900 dark:text-white">Privacy Mode</p>
         <p class="text-xs text-slate-500">Make watchlist public</p>
       </div>
-      <button type="button" data-action="click->toggle#toggle"
-              class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out">
-        <span data-toggle-target="track" class="pointer-events-none inline-block h-5 w-11 rounded-full transition-colors duration-200 ease-in-out bg-slate-200 dark:bg-slate-700"></span>
-        <span data-toggle-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-0"></span>
+      <button type="button" disabled title="Coming soon"
+              class="relative inline-flex h-6 w-11 shrink-0 cursor-not-allowed rounded-full border-2 border-transparent opacity-50">
+        <span class="pointer-events-none inline-block h-5 w-11 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+        <span class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 translate-x-0"></span>
       </button>
     </div>
 
