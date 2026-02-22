@@ -19,46 +19,36 @@
       <p class="text-slate-500 dark:text-slate-400">Add at least 3 to your watchlist to personalize your dashboard.</p>
     </div>
 
-    <%# Stock List %>
+    <%# Stock List — from @assets loaded by Onboarding::LoadAssetCatalog %>
     <div class="px-4 pb-8">
       <div class="space-y-1">
-        <% [
-          { ticker: "AAPL", name: "Apple Inc.", exchange: "NASDAQ", price: "$185.92", change: "+1.45%", up: true, selected: true },
-          { ticker: "TSLA", name: "Tesla, Inc.", exchange: "NASDAQ", price: "$175.22", change: "-2.10%", up: false, selected: false },
-          { ticker: "NVDA", name: "NVIDIA Corp", exchange: "NASDAQ", price: "$894.52", change: "+3.82%", up: true, selected: true },
-          { ticker: "MSFT", name: "Microsoft Corp", exchange: "NASDAQ", price: "$415.10", change: "+0.32%", up: true, selected: false },
-          { ticker: "GOOGL", name: "Alphabet Inc.", exchange: "NASDAQ", price: "$141.80", change: "-0.15%", up: false, selected: false },
-          { ticker: "BTC", name: "Bitcoin", exchange: "Crypto", price: "$67,250", change: "+2.3%", up: true, selected: true },
-        ].each do |stock| %>
-          <div class="flex items-center justify-between p-4 rounded-xl transition-colors border border-transparent
-                      <%= stock[:selected] ? 'bg-primary/5 border-primary/10' : 'hover:bg-primary/5' %>">
+        <% @assets.each do |asset| %>
+          <% up = asset.change_percent_24h.to_f >= 0 %>
+          <div class="flex items-center justify-between p-4 rounded-xl transition-colors border border-transparent hover:bg-primary/5"
+               data-controller="onboarding-select"
+               data-onboarding-select-asset-id-value="<%= asset.id %>">
             <div class="flex items-center gap-4">
-              <div class="w-12 h-12 flex items-center justify-center rounded-lg text-white font-bold text-xs uppercase tracking-tighter
-                          <%= stock[:selected] ? 'bg-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' %>
-                          <%= 'bg-amber-500' if stock[:ticker] == 'BTC' %>">
-                <%= stock[:ticker] %>
+              <div class="w-12 h-12 flex items-center justify-center rounded-lg font-bold text-xs uppercase tracking-tighter
+                          bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white
+                          <%= 'bg-amber-500 text-white' if asset.asset_type_crypto? %>">
+                <%= asset.symbol %>
               </div>
               <div>
-                <h4 class="font-semibold text-slate-900 dark:text-white"><%= stock[:name] %></h4>
-                <p class="text-xs text-slate-500"><%= stock[:exchange] %></p>
+                <h4 class="font-semibold text-slate-900 dark:text-white"><%= asset.name %></h4>
+                <p class="text-xs text-slate-500"><%= asset.asset_type.humanize %></p>
               </div>
             </div>
             <div class="flex items-center gap-8">
               <div class="text-right">
-                <div class="font-bold text-slate-900 dark:text-white"><%= stock[:price] %></div>
-                <div class="text-xs font-medium <%= stock[:up] ? 'text-emerald-600' : 'text-rose-600' %> flex items-center justify-end">
-                  <span class="material-symbols-outlined text-xs"><%= stock[:up] ? 'arrow_drop_up' : 'arrow_drop_down' %></span><%= stock[:change] %>
+                <div class="font-bold text-slate-900 dark:text-white"><%= number_to_currency(asset.current_price || 0) %></div>
+                <div class="text-xs font-medium <%= up ? 'text-emerald-600' : 'text-rose-600' %> flex items-center justify-end">
+                  <span class="material-symbols-outlined text-xs"><%= up ? 'arrow_drop_up' : 'arrow_drop_down' %></span><%= "#{up ? '+' : ''}#{number_to_percentage(asset.change_percent_24h || 0, precision: 2)}" %>
                 </div>
               </div>
-              <% if stock[:selected] %>
-                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-white shadow-md shadow-primary/20">
-                  <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">check</span>
-                </div>
-              <% else %>
-                <button class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all">
-                  <span class="material-symbols-outlined">add</span>
-                </button>
-              <% end %>
+              <button class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all"
+                      data-action="click->onboarding-select#toggle">
+                <span class="material-symbols-outlined">add</span>
+              </button>
             </div>
           </div>
         <% end %>

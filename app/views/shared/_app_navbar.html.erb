@@ -42,7 +42,9 @@
           <button class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors"
                   data-action="click->notification#toggle">
             <span class="material-symbols-outlined text-xl">notifications</span>
-            <span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500"></span>
+            <% if @navbar_unread_count && @navbar_unread_count > 0 %>
+              <span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500"></span>
+            <% end %>
           </button>
           <%= render "components/notification_panel" %>
         </div>

@@ -23,12 +23,15 @@ RSpec.describe "Onboarding", type: :request do
   end
 
   describe "GET /onboarding/step2" do
+    let!(:aapl) { create(:asset, symbol: "AAPL", name: "Apple Inc.", asset_type: :stock) }
+    let!(:nvda) { create(:asset, symbol: "NVDA", name: "NVIDIA Corp", asset_type: :stock) }
+
     it "returns success" do
       get onboarding_step2_path
       expect(response).to have_http_status(:ok)
     end
 
-    it "displays stock picks" do
+    it "displays stock picks from database" do
       get onboarding_step2_path
       expect(response.body).to include("Pick your first stocks to follow")
       expect(response.body).to include("AAPL")

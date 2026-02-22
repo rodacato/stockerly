@@ -31,7 +31,7 @@
       </div>
       <div>
         <h3 class="font-bold text-lg text-slate-900 dark:text-white">Profile Summary</h3>
-        <p class="text-slate-600 dark:text-slate-400">You're following <span class="font-semibold text-slate-900 dark:text-white">2 markets</span> and <span class="font-semibold text-slate-900 dark:text-white">5 stocks</span>.</p>
+        <p class="text-slate-600 dark:text-slate-400">You're following <span class="font-semibold text-slate-900 dark:text-white"><%= pluralize(@watchlist_count, 'asset') %></span> in your watchlist.</p>
       </div>
     </div>
   </div>

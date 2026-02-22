@@ -1,4 +1,4 @@
-<%# Global Search — overlay dropdown with hardcoded results %>
+<%# Global Search — overlay dropdown connected to SearchController via Turbo Frame %>
 
 <%# Backdrop overlay %>
 <div class="hidden fixed inset-0 bg-slate-900/20 backdrop-blur-[2px] z-50" data-search-target="overlay" data-action="click->search#close"></div>
@@ -26,41 +26,8 @@
           <span class="material-symbols-outlined text-sm">trending_up</span>
           Stocks & Assets
         </div>
-        <div class="px-2 space-y-1">
-          <a href="/market" class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-            <div class="flex items-center gap-3">
-              <div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
-                <span class="material-symbols-outlined">show_chart</span>
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-900 dark:text-white text-sm">AAPL</span>
-                  <span class="text-xs text-slate-500 font-medium">Apple Inc.</span>
-                </div>
-                <div class="flex items-center gap-2 text-xs">
-                  <span class="font-semibold text-slate-900 dark:text-white">$178.52</span>
-                  <span class="text-emerald-600 font-bold">+1.2%</span>
-                </div>
-              </div>
-            </div>
-          </a>
-          <a href="/market" class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-            <div class="flex items-center gap-3">
-              <div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
-                <span class="material-symbols-outlined">show_chart</span>
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-900 dark:text-white text-sm">NVDA</span>
-                  <span class="text-xs text-slate-500 font-medium">NVIDIA Corp.</span>
-                </div>
-                <div class="flex items-center gap-2 text-xs">
-                  <span class="font-semibold text-slate-900 dark:text-white">$875.30</span>
-                  <span class="text-emerald-600 font-bold">+3.4%</span>
-                </div>
-              </div>
-            </div>
-          </a>
+        <div class="px-2 space-y-1" data-search-target="assetResults">
+          <p class="px-3 py-4 text-sm text-slate-400 text-center">Type to search stocks, crypto, indices...</p>
         </div>
       </div>
 
@@ -71,18 +38,18 @@
           Quick Actions
         </div>
         <div class="px-2 space-y-1">
-          <a href="/dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors">
+          <%= link_to dashboard_path, class: "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors" do %>
             <span class="material-symbols-outlined text-slate-400 text-lg">dashboard</span>
             Go to Dashboard
-          </a>
-          <a href="/portfolio" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors">
+          <% end %>
+          <%= link_to portfolio_path, class: "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors" do %>
             <span class="material-symbols-outlined text-slate-400 text-lg">account_balance_wallet</span>
             View Portfolio
-          </a>
-          <a href="/alerts" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors">
+          <% end %>
+          <%= link_to alerts_path, class: "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors" do %>
             <span class="material-symbols-outlined text-slate-400 text-lg">add_alert</span>
             Create Price Alert
-          </a>
+          <% end %>
         </div>
       </div>
     </div>
