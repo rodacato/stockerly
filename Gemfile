@@ -20,6 +20,18 @@ gem "tailwindcss-rails"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
+# DDD / Domain modeling [https://dry-rb.org/]
+gem "dry-types", "~> 1.7"
+gem "dry-struct", "~> 1.6"
+gem "dry-validation", "~> 1.10"
+gem "dry-monads", "~> 1.6"
+
+# Pagination [https://github.com/ddnexus/pagy]
+gem "pagy", "~> 9.0"
+
+# Currency formatting and conversion [https://github.com/RubyMoney/money-rails]
+gem "money-rails", "~> 1.15"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
