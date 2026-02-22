@@ -12,6 +12,8 @@ module Onboarding
       user.update!(onboarding_completed: true) if user.respond_to?(:onboarding_completed)
 
       Success(user)
+    rescue ActiveRecord::RecordInvalid => e
+      Failure([:validation, e.message])
     end
   end
 end

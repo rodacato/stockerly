@@ -5,6 +5,8 @@ module Alerts
       pref.update!(params.slice(:email_digest, :browser_push, :sms_notifications))
 
       Success(pref)
+    rescue ActiveRecord::RecordInvalid => e
+      Failure([:validation, e.message])
     end
   end
 end

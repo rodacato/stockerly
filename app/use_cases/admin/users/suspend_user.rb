@@ -9,7 +9,7 @@ module Admin
 
         target.update!(status: :suspended)
 
-        publish(UserSuspended.new(user_id: target.id, email: target.email, admin_id: admin.id))
+        yield publish(UserSuspended.new(user_id: target.id, email: target.email, admin_id: admin.id))
 
         Success(target)
       end
