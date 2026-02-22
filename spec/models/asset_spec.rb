@@ -1,0 +1,96 @@
+require "rails_helper"
+
+RSpec.describe Asset, type: :model do
+  subject(:asset) { build(:asset) }
+
+  describe "validations" do
+    it { is_expected.to be_valid }
+
+    it "requires name" do
+      asset.name = nil
+      expect(asset).not_to be_valid
+      expect(asset.errors[:name]).to include("can't be blank")
+    end
+
+    it "requires symbol" do
+      asset.symbol = nil
+      expect(asset).not_to be_valid
+      expect(asset.errors[:symbol]).to include("can't be blank")
+    end
+
+    it "requires unique symbol (case-insensitive)" do
+      create(:asset, symbol: "AAPL")
+      asset.symbol = "aapl"
+      expect(asset).not_to be_valid
+      expect(asset.errors[:symbol]).to include("has already been taken")
+    end
+  end
+
+  describe "enums" do
+    it "defines asset_type enum" do
+      expect(Asset.asset_types).to eq("stock" => 0, "crypto" => 1, "index" => 2)
+    end
+
+    it "defines sync_status enum" do
+      expect(Asset.sync_statuses).to eq("active" => 0, "disabled" => 1, "sync_issue" => 2)
+    end
+  end
+
+  describe "scopes" do
+    let!(:stock)  { create(:asset, asset_type: :stock, sector: "Technology") }
+    let!(:crypto) { create(:asset, :crypto) }
+
+    it ".stocks returns only stocks" do
+      expect(Asset.stocks).to contain_exactly(stock)
+    end
+
+    it ".cryptos returns only cryptos" do
+      expect(Asset.cryptos).to contain_exactly(crypto)
+    end
+
+    it ".syncing returns active sync_status" do
+      disabled = create(:asset, :disabled)
+      expect(Asset.syncing).to include(stock)
+      expect(Asset.syncing).not_to include(disabled)
+    end
+
+    it ".by_sector filters by sector" do
+      expect(Asset.by_sector("Technology")).to contain_exactly(stock)
+    end
+
+    it ".by_sector returns all when sector is blank" do
+      expect(Asset.by_sector(nil)).to include(stock, crypto)
+    end
+  end
+
+  describe "#latest_trend_score" do
+    let(:asset) { create(:asset) }
+
+    it "returns nil when no scores exist" do
+      expect(asset.latest_trend_score).to be_nil
+    end
+
+    it "returns the most recent trend score" do
+      old = create(:trend_score, asset: asset, calculated_at: 2.days.ago)
+      recent = create(:trend_score, asset: asset, calculated_at: 1.hour.ago)
+      expect(asset.latest_trend_score).to eq(recent)
+    end
+  end
+
+  describe "#price_stale?" do
+    it "returns true when price_updated_at is nil" do
+      asset.price_updated_at = nil
+      expect(asset.price_stale?).to be true
+    end
+
+    it "returns true when price is older than 15 minutes" do
+      asset.price_updated_at = 20.minutes.ago
+      expect(asset.price_stale?).to be true
+    end
+
+    it "returns false when price is recent" do
+      asset.price_updated_at = 5.minutes.ago
+      expect(asset.price_stale?).to be false
+    end
+  end
+end

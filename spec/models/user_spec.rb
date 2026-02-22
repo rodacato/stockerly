@@ -89,11 +89,54 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "scopes" do
+    let!(:admin)     { create(:user, :admin) }
+    let!(:trader)    { create(:user, role: :user) }
+    let!(:suspended) { create(:user, :suspended) }
+
+    it ".admins returns only admin users" do
+      expect(User.admins).to contain_exactly(admin)
+    end
+
+    it ".traders returns only user-role users" do
+      expect(User.traders).to contain_exactly(trader, suspended)
+    end
+
+    it ".not_suspended excludes suspended users" do
+      expect(User.not_suspended).to include(admin, trader)
+      expect(User.not_suspended).not_to include(suspended)
+    end
+  end
+
   describe "associations" do
     it "destroys remember_tokens on user destroy" do
       user = create(:user)
       create(:remember_token, user: user)
       expect { user.destroy }.to change(RememberToken, :count).by(-1)
+    end
+
+    it "destroys portfolio on user destroy" do
+      user = create(:user)
+      create(:portfolio, user: user)
+      expect { user.destroy }.to change(Portfolio, :count).by(-1)
+    end
+
+    it "destroys alert_preference on user destroy" do
+      user = create(:user)
+      create(:alert_preference, user: user)
+      expect { user.destroy }.to change(AlertPreference, :count).by(-1)
+    end
+
+    it "destroys alert_rules on user destroy" do
+      user = create(:user)
+      create(:alert_rule, user: user)
+      expect { user.destroy }.to change(AlertRule, :count).by(-1)
+    end
+
+    it "destroys notifications on user destroy" do
+      user = create(:user)
+      create(:notification, user: user)
+      expect { user.destroy }.to change(Notification, :count).by(-1)
     end
   end
 end
