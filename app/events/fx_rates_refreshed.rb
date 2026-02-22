@@ -1,0 +1,2 @@
+class FxRatesRefreshed < BaseEvent
+end
