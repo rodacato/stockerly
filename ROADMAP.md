@@ -20,7 +20,8 @@
 | 4.5 | Auditoria de Consistencia + System Tests | Completada | 106 |
 | 4.6 | Componentes Compartidos (8 pantallas nuevas) | Completada | 94 |
 | 5 | Modelos, Migraciones y Seeds | Completada | 301 |
-| **6** | **Backend (Use Cases, Events, CRUD)** | **Pendiente** | - |
+| 6 | Backend (Use Cases, Events, CRUD) | Completada | 490 |
+| 6.5 | Auditoria de Consistencia e Integracion | Completada | 540 |
 | **7** | **Integraciones Externas** | **Pendiente** | - |
 
 ---
@@ -367,6 +368,46 @@ Conectar las vistas estaticas al backend real. Reemplazar datos hardcodeados por
 bundle exec rspec                    # Todos verdes (~200+ specs)
 rails server                         # Vistas muestran datos de BD
 # Verificar manualmente: dashboard, market, portfolio, alerts, earnings, admin
+```
+
+---
+
+## Fase 6.5: Auditoria de Consistencia e Integracion
+
+### Objetivo
+Verificar que todo lo construido en fases 0-6 es consistente, bien integrado y testeable. Extraer logica inline de controllers a Use Cases, conectar vistas hardcodeadas a datos reales, documentar deuda tecnica con TODOs, y cerrar gaps de test coverage.
+
+### Pasos Completados
+
+#### 6.5.1 — Extraer logica inline de controllers a Use Cases
+- 7 Use Cases nuevos: `Alerts::LoadDashboard`, `Notifications::ListRecent`, `Profiles::LoadProfile`, `Onboarding::LoadAssetCatalog`, `Onboarding::LoadProgress`, `Admin::Assets::ListAssets`, `Admin::Users::ListUsers`
+- 4 auth controllers anotados con `# TODO:` definiendo la interfaz futura del Use Case
+
+#### 6.5.2 — Corregir bugs monadicos
+- `SuspendUser`: agregar `yield` antes de `publish()` para propagar fallos del EventBus
+- `CompleteWizard`: rescue `ActiveRecord::RecordInvalid` → `Failure(:validation)`
+- `UpdatePreferences`: rescue `ActiveRecord::RecordInvalid` → `Failure(:validation)`
+
+#### 6.5.3 — Conectar vistas hardcodeadas a datos reales
+- Notification panel conectado a modelo `Notification` con badge dinamico
+- Global search usa route helpers en vez de paths absolutos
+- Onboarding step2/step3 cargan assets y progreso desde BD
+
+#### 6.5.4 — Documentar botones sin funcionalidad
+- 12 botones/elementos anotados con `# TODO:` especificando el Use Case target
+
+#### 6.5.5 — Cerrar gaps de test coverage
+- 4 specs faltantes: `UpdateRule`, `UpdatePreferences`, `CreateContract`, `NotificationsController`
+- 7 specs para Use Cases nuevos del paso 6.5.1
+
+#### 6.5.6 — Tests de integracion E2E
+- 11 request specs verificando flujos refactorizados de punta a punta
+
+### Verificacion Final
+```bash
+bundle exec rspec                    # 540 specs, 0 failures
+                                     # Line Coverage: 96.88%
+                                     # Branch Coverage: 79.63%
 ```
 
 ---
