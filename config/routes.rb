@@ -61,7 +61,9 @@ Rails.application.routes.draw do
     resources :integrations, only: [] do
       member { post :refresh_sync }
     end
-    resources :logs,  only: [:index]
+    resources :logs, only: [:index] do
+      collection { get :export_csv }
+    end
     resources :users, only: [:index] do
       member { patch :suspend }
     end

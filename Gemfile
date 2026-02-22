@@ -20,6 +20,9 @@ gem "tailwindcss-rails"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
+# CSV generation (default gem until Ruby 3.4)
+gem "csv"
+
 # DDD / Domain modeling [https://dry-rb.org/]
 gem "dry-types", "~> 1.7"
 gem "dry-struct", "~> 1.6"

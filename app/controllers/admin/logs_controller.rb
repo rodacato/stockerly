@@ -12,6 +12,16 @@ module Admin
       end
     end
 
+    def export_csv
+      result = Admin::Logs::ExportCsv.call(admin: current_user, params: filter_params)
+
+      if result.success?
+        send_data result.value!, filename: "system_logs_#{Date.current}.csv", type: "text/csv"
+      else
+        redirect_to admin_logs_path, alert: "Export failed."
+      end
+    end
+
     private
 
     def filter_params

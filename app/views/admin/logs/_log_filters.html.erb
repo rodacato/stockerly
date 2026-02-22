@@ -1,37 +1,27 @@
 <%# Log filters bar %>
-<%# TODO: Wrap in form_with(url: admin_logs_path, method: :get) — connect filters to ListLogs params %>
-<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
-  <div class="flex flex-wrap items-center gap-3">
-    <%# Search %>
-    <div class="relative flex-1 min-w-[200px]">
-      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-      <input type="text" placeholder="Search logs by ID, task, or keyword..." class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white placeholder-slate-400">
+<%= form_with(url: admin_logs_path, method: :get, data: { turbo_action: "replace" }) do |f| %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+    <div class="flex flex-wrap items-center gap-3">
+      <%# Search %>
+      <div class="relative flex-1 min-w-[200px]">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+        <%= f.text_field :search, value: params[:search],
+            placeholder: "Search logs by ID, task, or keyword...",
+            class: "w-full pl-10 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white placeholder-slate-400" %>
+      </div>
+
+      <%# Severity %>
+      <%= f.select :severity,
+          options_for_select([["Severity: All", ""], %w[Success success], %w[Error error], %w[Warning warning]], params[:severity]),
+          {}, class: "px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-primary outline-none" %>
+
+      <%# Module %>
+      <%= f.select :module_name,
+          options_for_select([["Module: All", ""], "sync", "alerts", "auth", "admin"], params[:module_name]),
+          {}, class: "px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-primary outline-none" %>
+
+      <%# Submit %>
+      <%= f.submit "Filter", class: "px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors cursor-pointer" %>
     </div>
-
-    <%# Severity %>
-    <select class="px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-primary outline-none">
-      <option>Severity: All</option>
-      <option>Success</option>
-      <option>Error</option>
-      <option>Warning</option>
-      <option>Info</option>
-    </select>
-
-    <%# Module %>
-    <select class="px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-primary outline-none">
-      <option>Module: All</option>
-      <option>Finance</option>
-      <option>Marketplace</option>
-      <option>Auth</option>
-      <option>Core</option>
-    </select>
-
-    <%# Time range %>
-    <select class="px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-primary outline-none">
-      <option>Last 24 Hours</option>
-      <option>Last 7 Days</option>
-      <option>Last 30 Days</option>
-      <option>All Time</option>
-    </select>
   </div>
-</div>
+<% end %>
