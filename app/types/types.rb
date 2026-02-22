@@ -17,5 +17,5 @@ module Types
   LogSeverity      = Types::String.enum("success", "error", "warning")
   ConnectionStatus = Types::String.enum("connected", "syncing", "disconnected")
   NotificationType = Types::String.enum("alert_triggered", "earnings_reminder", "system")
-  Currency         = Types::String.default("USD")
+  Currency         = Types::String.default("USD".freeze)
 end
