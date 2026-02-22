@@ -19,7 +19,7 @@
 | 4 | Panel Admin (3 paginas estaticas) | Completada | 85 |
 | 4.5 | Auditoria de Consistencia + System Tests | Completada | 106 |
 | 4.6 | Componentes Compartidos (8 pantallas nuevas) | Completada | 94 |
-| **5** | **Modelos, Migraciones y Seeds** | **Pendiente** | - |
+| 5 | Modelos, Migraciones y Seeds | Completada | 301 |
 | **6** | **Backend (Use Cases, Events, CRUD)** | **Pendiente** | - |
 | **7** | **Integraciones Externas** | **Pendiente** | - |
 
