@@ -11,7 +11,7 @@
       <% end %>
     </div>
     <% if @navbar_unread_count && @navbar_unread_count > 0 %>
-      <%= button_to mark_all_read_notifications_path, method: :post, class: "text-primary text-sm font-semibold hover:underline", data: { action: "click->notification#markAllAsRead" } do %>
+      <%= button_to mark_all_read_notifications_path, method: :patch, class: "text-primary text-sm font-semibold hover:underline", data: { action: "click->notification#markAllAsRead" } do %>
         Mark all read
       <% end %>
     <% end %>
