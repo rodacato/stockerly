@@ -32,6 +32,10 @@ gem "pagy", "~> 9.0"
 # Currency formatting and conversion [https://github.com/RubyMoney/money-rails]
 gem "money-rails", "~> 1.15"
 
+# HTTP client for external API gateways [https://github.com/lostisland/faraday]
+gem "faraday", "~> 2.9"
+gem "faraday-retry"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
@@ -77,6 +81,9 @@ group :development, :test do
 
   # Code coverage [https://github.com/simplecov-ruby/simplecov]
   gem "simplecov", require: false
+
+  # Stub HTTP requests in tests [https://github.com/bblimke/webmock]
+  gem "webmock"
 end
 
 group :development do
