@@ -26,9 +26,10 @@ Rails.application.routes.draw do
   patch "reset-password/:token", to: "password_resets#update"
 
   # --- Authenticated Zone ---
-  get "onboarding/step1", to: "onboarding#step1"
-  get "onboarding/step2", to: "onboarding#step2"
-  get "onboarding/step3", to: "onboarding#step3"
+  get  "onboarding/step1", to: "onboarding#step1"
+  get  "onboarding/step2", to: "onboarding#step2"
+  post "onboarding/complete", to: "onboarding#complete", as: :complete_onboarding
+  get  "onboarding/step3", to: "onboarding#step3"
 
   get "news",      to: "news#index"
   get "dashboard", to: "dashboard#show"
@@ -37,6 +38,7 @@ Rails.application.routes.draw do
   resource  :portfolio, only: [:show]
   resources :alerts,    only: [:index, :create, :update, :destroy]
   resources :earnings,  only: [:index]
+  resources :watchlist_items, only: [:create, :destroy]
   resource  :profile,   only: [:show, :update]
   patch "profile/password", to: "profiles#change_password", as: :change_password
 

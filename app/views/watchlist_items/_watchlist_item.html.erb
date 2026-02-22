@@ -1,0 +1,28 @@
+<%# Single watchlist item row for Turbo Stream operations %>
+<% asset = item.asset %>
+<% change = asset.change_percent_24h || 0 %>
+<% positive = change >= 0 %>
+<%= tag.tr id: dom_id(item), class: "hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors" do %>
+  <td class="px-6 py-4">
+    <div class="flex items-center gap-3">
+      <div class="flex h-8 w-8 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 font-bold text-[10px] text-slate-700 dark:text-slate-300">
+        <%= asset.symbol %>
+      </div>
+      <div>
+        <p class="text-sm font-bold text-slate-900 dark:text-white"><%= asset.name %></p>
+        <p class="text-xs text-slate-500"><%= asset.exchange %></p>
+      </div>
+    </div>
+  </td>
+  <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(asset.current_price) %></td>
+  <td class="px-6 py-4 text-right">
+    <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold <%= positive ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+      <%= positive ? '+' : '' %><%= number_to_percentage(change, precision: 2) %>
+    </span>
+  </td>
+  <td class="px-6 py-4 text-right">
+    <%= button_to watchlist_item_path(item), method: :delete, class: "text-slate-400 hover:text-rose-500 transition-colors p-1", data: { turbo_method: :delete } do %>
+      <span class="material-symbols-outlined text-lg">delete</span>
+    <% end %>
+  </td>
+<% end %>
