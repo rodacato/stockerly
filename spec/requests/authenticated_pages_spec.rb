@@ -48,8 +48,8 @@ RSpec.describe "Authenticated pages", type: :request do
   end
 
   describe "POST /alerts" do
-    it "creates an alert and redirects back (demo mode)" do
-      post alerts_path
+    it "creates an alert and redirects back" do
+      post alerts_path, params: { alert: { asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200.0 } }
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
       expect(response.body).to include("Alert created")
@@ -57,8 +57,9 @@ RSpec.describe "Authenticated pages", type: :request do
   end
 
   describe "PATCH /alerts/:id" do
-    it "updates an alert and redirects back (demo mode)" do
-      patch alert_path(1)
+    it "updates an alert and redirects back" do
+      rule = create(:alert_rule, user: user)
+      patch alert_path(rule), params: { alert: { asset_symbol: "TSLA", condition: "price_crosses_below", threshold_value: 150.0 } }
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
       expect(response.body).to include("Alert updated")
@@ -66,8 +67,9 @@ RSpec.describe "Authenticated pages", type: :request do
   end
 
   describe "DELETE /alerts/:id" do
-    it "deletes an alert and redirects back (demo mode)" do
-      delete alert_path(1)
+    it "deletes an alert and redirects back" do
+      rule = create(:alert_rule, user: user)
+      delete alert_path(rule)
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
       expect(response.body).to include("Alert deleted")

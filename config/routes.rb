@@ -36,7 +36,9 @@ Rails.application.routes.draw do
   get "market",    to: "market#index"
 
   resource  :portfolio, only: [:show]
-  resources :alerts,    only: [:index, :create, :update, :destroy]
+  resources :alerts, only: [:index, :create, :update, :destroy] do
+    member { patch :toggle }
+  end
   resources :earnings,  only: [:index]
   resources :watchlist_items, only: [:create, :destroy]
   resource  :profile,   only: [:show, :update]

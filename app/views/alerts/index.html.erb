@@ -1,8 +1,4 @@
 <%# Alerts — manage alert rules and view live feed %>
-<%# Empty state (uncomment when wiring backend):
-    <%= render "components/empty_state", icon: "notifications_none", title: "No alerts configured", description: "Set up price alerts to get notified when stocks hit your target prices.", cta_text: "Create Alert", cta_path: alerts_path %>
-%>
-
 <%# Header with stat badges %>
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
   <div class="space-y-1">
@@ -13,15 +9,13 @@
     <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col min-w-[160px] shadow-sm">
       <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Triggered Today</span>
       <div class="flex items-center gap-2">
-        <span class="text-2xl font-bold text-slate-900 dark:text-white">14</span>
-        <span class="text-xs font-medium text-emerald-500 flex items-center bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded">+5%</span>
+        <span class="text-2xl font-bold text-slate-900 dark:text-white"><%= @triggered_today %></span>
       </div>
     </div>
     <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col min-w-[160px] shadow-sm">
       <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Rules</span>
       <div class="flex items-center gap-2">
-        <span class="text-2xl font-bold text-slate-900 dark:text-white">28</span>
-        <span class="text-xs font-medium text-slate-400 bg-slate-50 dark:bg-slate-800 px-1.5 py-0.5 rounded">Stable</span>
+        <span class="text-2xl font-bold text-slate-900 dark:text-white"><%= @rules.active.count %></span>
       </div>
     </div>
   </div>
