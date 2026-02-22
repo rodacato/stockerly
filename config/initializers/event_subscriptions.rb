@@ -1,7 +1,6 @@
 Rails.application.config.after_initialize do
-  # Event subscriptions are registered here.
-  # Format: EventBus.subscribe(EventClass, HandlerClass)
-  #
-  # Subscriptions will be added as event handlers are implemented
-  # in subsequent Phase 6 steps.
+  # Identity
+  EventBus.subscribe(UserRegistered, CreatePortfolioOnRegistration)
+  EventBus.subscribe(UserRegistered, CreateAlertPreferencesOnRegistration)
+  EventBus.subscribe(PasswordChanged, InvalidateSessionsOnPasswordChange)
 end

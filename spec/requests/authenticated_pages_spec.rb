@@ -89,11 +89,22 @@ RSpec.describe "Authenticated pages", type: :request do
   end
 
   describe "PATCH /profile" do
-    it "updates profile and redirects back (demo mode)" do
-      patch profile_path
+    it "updates profile and redirects back" do
+      patch profile_path, params: { profile: { full_name: user.full_name, email: user.email } }
       expect(response).to redirect_to(profile_path)
       follow_redirect!
       expect(response.body).to include("Profile updated")
+    end
+  end
+
+  describe "PATCH /profile/password" do
+    it "changes password and redirects back" do
+      patch change_password_path, params: {
+        password_change: { current_password: "password123", password: "newpassword456", password_confirmation: "newpassword456" }
+      }
+      expect(response).to redirect_to(profile_path)
+      follow_redirect!
+      expect(response.body).to include("Password changed")
     end
   end
 end

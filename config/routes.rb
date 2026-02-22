@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   resources :alerts,    only: [:index, :create, :update, :destroy]
   resources :earnings,  only: [:index]
   resource  :profile,   only: [:show, :update]
+  patch "profile/password", to: "profiles#change_password", as: :change_password
 
   # --- Admin Zone ---
   namespace :admin do

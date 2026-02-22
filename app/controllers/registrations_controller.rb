@@ -11,6 +11,7 @@ class RegistrationsController < ApplicationController
     @user = User.new(registration_params)
 
     if @user.save
+      EventBus.publish(UserRegistered.new(user_id: @user.id, email: @user.email))
       start_session(@user)
       redirect_to dashboard_path, notice: "Welcome to Stockerly, #{@user.full_name}!"
     else
