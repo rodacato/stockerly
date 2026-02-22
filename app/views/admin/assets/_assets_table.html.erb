@@ -1,53 +1,47 @@
-<%# Asset listing table with tabs %>
-<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden"
-     data-controller="tabs" data-tabs-default-tab-value="all">
-  <%# Tabs + Filter %>
-  <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800">
-    <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
-      <% ["All Assets", "Stocks", "Crypto"].each_with_index do |label, i| %>
-        <% tab_id = label.downcase.gsub(" ", "_") %>
-        <button class="px-4 py-1.5 text-sm font-medium rounded-md transition-colors"
-                data-tabs-target="tab"
-                data-action="click->tabs#select"
-                data-tabs-id-param="<%= tab_id %>"
-                data-tab-id="<%= tab_id %>">
-          <%= label %>
-        </button>
-      <% end %>
-    </div>
-    <button class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
-      <span class="material-symbols-outlined text-xl">filter_list</span>
-    </button>
+<%# Asset listing table with real data %>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left">
+      <thead class="bg-slate-50 dark:bg-slate-800/50">
+        <tr>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Asset Name</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Symbol</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Type</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @assets.each do |asset| %>
+          <tr class="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+            <td class="px-6 py-4">
+              <p class="font-bold text-sm text-slate-900 dark:text-white"><%= asset.name %></p>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm font-mono font-bold text-slate-600 dark:text-slate-300"><%= asset.symbol %></span>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm text-slate-500"><%= asset.asset_type.humanize %></span>
+            </td>
+            <td class="px-6 py-4">
+              <%= render "components/status_badge", status: asset.sync_status %>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <%= button_to toggle_status_admin_asset_path(asset), method: :patch,
+                    class: "p-1.5 text-slate-400 hover:text-primary transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" do %>
+                  <span class="material-symbols-outlined text-lg"><%= asset.active? ? "pause" : "play_arrow" %></span>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
-
-  <%# Table (same content for all tabs — hardcoded) %>
-  <% ["all_assets", "stocks", "crypto"].each do |tab_id| %>
-    <div data-tabs-target="panel" data-tab-id="<%= tab_id %>">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left">
-          <thead class="bg-slate-50 dark:bg-slate-800/50">
-            <tr>
-              <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Asset Name</th>
-              <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Symbol</th>
-              <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Source</th>
-              <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <%= render "components/asset_admin_row", name: "Bitcoin",      ticker: "BTC",  source: "CoinGecko API", status: "active",     icon_color: "bg-orange-500" %>
-            <%= render "components/asset_admin_row", name: "Apple Inc.",   ticker: "AAPL", source: "Polygon.io",    status: "active",     icon_color: "bg-slate-600" %>
-            <%= render "components/asset_admin_row", name: "Ethereum",    ticker: "ETH",  source: "CoinGecko API", status: "disabled",    icon_color: "bg-indigo-500" %>
-            <%= render "components/asset_admin_row", name: "NVIDIA Corp.", ticker: "NVDA", source: "Finnhub",       status: "active",     icon_color: "bg-emerald-600" %>
-            <%= render "components/asset_admin_row", name: "Solana",      ticker: "SOL",  source: "CoinGecko API", status: "sync_issue",  icon_color: "bg-purple-500" %>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  <% end %>
 
   <%# Pagination %>
   <div class="px-6 pb-4">
-    <%= render "components/pagination", current_page: 1, total_pages: 257, total_count: 1284, per_page: 5 %>
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>

@@ -1,4 +1,4 @@
-<%# System logs table with hardcoded data %>
+<%# System logs table with real data %>
 <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
   <div class="overflow-x-auto">
     <table class="w-full text-left">
@@ -9,22 +9,40 @@
           <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Module</th>
           <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Timestamp</th>
           <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Duration</th>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
         </tr>
       </thead>
       <tbody>
-        <%= render "components/log_row", severity: "success", task: "FX Rate Update",         module_name: "Finance",      timestamp: "2 mins ago",  duration: "1.2s" %>
-        <%= render "components/log_row", severity: "error",   task: "Shopify Price Sync",     module_name: "Marketplace",  timestamp: "15 mins ago", duration: "5.8s", action_label: "Investigate" %>
-        <%= render "components/log_row", severity: "warning", task: "Inventory Audit",        module_name: "Warehouse",    timestamp: "45 mins ago", duration: "12.3s" %>
-        <%= render "components/log_row", severity: "success", task: "Daily Backup",           module_name: "Core",         timestamp: "3 hours ago", duration: "45.0s" %>
-        <%= render "components/log_row", severity: "success", task: "User Session Clean-up",  module_name: "Auth",         timestamp: "4 hours ago", duration: "1.8s" %>
-        <%= render "components/log_row", severity: "info",    task: "Cache Invalidation",     module_name: "Core",         timestamp: "5 hours ago", duration: "0.3s" %>
+        <% if @logs.any? %>
+          <% @logs.each do |log| %>
+            <tr class="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+              <td class="px-6 py-4">
+                <%= render "components/log_severity_badge", severity: log.severity %>
+              </td>
+              <td class="px-6 py-4">
+                <p class="text-sm font-bold text-slate-900 dark:text-white"><%= log.task_name %></p>
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-sm text-slate-500"><%= log.module_name %></span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-sm text-slate-500"><%= time_ago_in_words(log.created_at) %> ago</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-sm font-mono text-slate-600 dark:text-slate-300"><%= log.duration_seconds ? "#{log.duration_seconds}s" : "—" %></span>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="5" class="px-6 py-8 text-center text-slate-500">No logs found matching your filters.</td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>
 
   <%# Pagination %>
   <div class="px-6 pb-4">
-    <%= render "components/pagination", current_page: 1, total_pages: 208, total_count: 1248, per_page: 6 %>
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>

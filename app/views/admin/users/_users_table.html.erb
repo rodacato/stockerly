@@ -1,4 +1,4 @@
-<%# User management table with hardcoded data %>
+<%# User management table with real data %>
 <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
   <div class="overflow-x-auto">
     <table class="w-full text-left">
@@ -12,16 +12,48 @@
         </tr>
       </thead>
       <tbody>
-        <%= render "components/user_row", name: "jdoe_investor",  email: "john.doe@example.com",     joined: "Oct 24, 2023", role: "user",  status: "active",    avatar_color: "bg-blue-500" %>
-        <%= render "components/user_row", name: "sarah_crypto",   email: "sarah.s@web3.io",          joined: "Nov 12, 2023", role: "user",  status: "active",    avatar_color: "bg-purple-500" %>
-        <%= render "components/user_row", name: "admin_mike",     email: "mike@stockerly.com",    joined: "Jan 05, 2024", role: "admin", status: "active",    avatar_color: "bg-emerald-500" %>
-        <%= render "components/user_row", name: "hacker123",      email: "ghost@anon.net",           joined: "Dec 15, 2023", role: "user",  status: "suspended", avatar_color: "bg-rose-500" %>
+        <% @users.each do |user| %>
+          <tr class="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="size-9 rounded-full bg-primary flex items-center justify-center">
+                  <span class="text-white text-xs font-bold"><%= user.full_name[0..1].upcase %></span>
+                </div>
+                <div>
+                  <p class="font-bold text-sm text-slate-900 dark:text-white"><%= user.full_name %></p>
+                  <p class="text-xs text-slate-400"><%= user.email %></p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm text-slate-500"><%= user.created_at.strftime("%b %d, %Y") %></span>
+            </td>
+            <td class="px-6 py-4">
+              <% role_colors = { "admin" => "bg-primary text-white", "user" => "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300" } %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold <%= role_colors[user.role] || role_colors['user'] %>">
+                <%= user.role.capitalize %>
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <%= render "components/status_badge", status: user.status %>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <% unless user.admin? || user.suspended? %>
+                <%= button_to suspend_admin_user_path(user), method: :patch,
+                    class: "p-1.5 text-slate-400 hover:text-rose-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
+                    data: { turbo_confirm: "Suspend #{user.full_name}?" } do %>
+                  <span class="material-symbols-outlined text-lg">block</span>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>
 
   <%# Pagination %>
   <div class="px-6 pb-4">
-    <%= render "components/pagination", current_page: 1, total_pages: 249, total_count: 2481, per_page: 10 %>
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>

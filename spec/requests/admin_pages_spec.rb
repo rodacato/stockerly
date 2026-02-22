@@ -60,6 +60,7 @@ RSpec.describe "Admin pages", type: :request do
     end
 
     it "renders the system logs page" do
+      create(:system_log, task_name: "FX Rate Update", module_name: "Finance")
       get admin_logs_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("System Logs")

@@ -42,13 +42,21 @@ Rails.application.routes.draw do
   end
   resources :earnings,  only: [:index]
   resources :watchlist_items, only: [:create, :destroy]
+  resources :notifications, only: [:index] do
+    member { patch :mark_as_read }
+    collection { patch :mark_all_read }
+  end
   resource  :profile,   only: [:show, :update]
   patch "profile/password", to: "profiles#change_password", as: :change_password
 
   # --- Admin Zone ---
   namespace :admin do
-    resources :assets, only: [:index]
-    resources :logs,   only: [:index]
-    resources :users,  only: [:index]
+    resources :assets, only: [:index] do
+      member { patch :toggle_status }
+    end
+    resources :logs,  only: [:index]
+    resources :users, only: [:index] do
+      member { patch :suspend }
+    end
   end
 end

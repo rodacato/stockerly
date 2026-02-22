@@ -1,7 +1,4 @@
 <% content_for(:admin_page_title, "Assets") %>
-<%# Empty state (uncomment when wiring backend):
-    <%= render "components/empty_state", icon: "database", title: "No assets loaded", description: "Run the initial sync to import market instruments from the data provider.", cta_text: "Manual Sync", cta_path: admin_assets_path %>
-%>
 
 <div class="space-y-6">
   <%# Header %>
@@ -10,23 +7,13 @@
       <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Asset Management</h1>
       <p class="text-slate-500 mt-1">Overview and configuration of global Stocks & Crypto instruments.</p>
     </div>
-    <div class="flex items-center gap-3">
-      <button class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-        <span class="material-symbols-outlined text-lg">sync</span>
-        Manual Sync
-      </button>
-      <button class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">
-        <span class="material-symbols-outlined text-lg">add</span>
-        Add Asset
-      </button>
-    </div>
   </div>
 
   <%# KPI Cards %>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <%= render "components/admin_kpi_card", title: "Total Assets", value: "1,284", icon: "database", color: :blue, badge: "+12.5%" %>
-    <%= render "components/admin_kpi_card", title: "Syncing Assets", value: "42", icon: "sync", color: :green, badge: "Stable" %>
-    <%= render "components/admin_kpi_card", title: "Alerts", value: "5", icon: "warning", color: :amber, badge: "Action Needed" %>
+    <%= render "components/admin_kpi_card", title: "Total Assets", value: number_with_delimiter(@total_count), icon: "database", color: :blue %>
+    <%= render "components/admin_kpi_card", title: "Syncing Assets", value: @syncing_count.to_s, icon: "sync", color: :green, badge: "Active" %>
+    <%= render "components/admin_kpi_card", title: "Listed", value: number_with_delimiter(@pagy.count), icon: "list", color: :amber %>
   </div>
 
   <%# Assets Table %>
