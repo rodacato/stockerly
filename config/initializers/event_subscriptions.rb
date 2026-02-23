@@ -40,6 +40,8 @@ Rails.application.config.after_initialize do
 
   # Fundamentals
   EventBus.subscribe(AssetFundamentalsUpdated, LogFundamentalsUpdate)
+  EventBus.subscribe(AssetFundamentalsUpdated, BroadcastFundamentalsUpdate)
+  EventBus.subscribe(FinancialStatementsSynced, RecalculateFundamentalsOnStatementsSynced)
 
   # Integrations
   EventBus.subscribe(IntegrationConnected, LogIntegrationConnected)
