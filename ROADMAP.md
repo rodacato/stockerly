@@ -524,6 +524,19 @@ bundle exec rspec                    # 702 specs, 0 failures
 
 ---
 
+## Pendientes de Seguridad e Infraestructura
+
+> Items identificados en la auditoria de seguridad (Feb 2026) que requieren configuracion externa o decisiones de infraestructura.
+
+| # | Item | Prioridad | Descripcion |
+|---|------|-----------|-------------|
+| S-1 | Kamal proxy SSL end-to-end | Alta | Habilitar `ssl: true` en `config/deploy.yml` proxy, o verificar que Cloudflare usa modo **Full (Strict)** / Tunnel para cifrar trafico entre Cloudflare y el servidor. Sin esto, el trafico viaja sin cifrar en el ultimo tramo. |
+| S-2 | PostgreSQL backups automatizados | Alta | Configurar `pg_dump` cron job diario en el servidor. El accessory de PostgreSQL en Kamal solo monta un volumen de datos pero no tiene backups. Considerar tambien health checks del contenedor y PgBouncer para connection pooling. |
+| S-3 | Email verification en registro | Media | Implementar verificacion de email post-registro usando `generates_token_for :email_verification`. Actualmente las cuentas se activan inmediatamente sin confirmar el email. |
+| S-4 | Docker image vulnerability scanning | Baja | Agregar paso de `trivy` o `grype` en el CI (deploy.yml) para escanear la imagen Docker antes del deploy. La imagen base `ruby:3.3.6-slim` podria tener CVEs en paquetes del sistema. |
+
+---
+
 ## Protocolo para Retomar Cualquier Fase
 
 Al iniciar o retomar una fase:
