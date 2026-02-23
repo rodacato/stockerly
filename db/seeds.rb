@@ -133,24 +133,73 @@ oke = Asset.find_or_create_by!(symbol: "OKE") do |a|
 end
 
 # New US stocks
-Asset.find_or_create_by!(symbol: "GOOGL") { |a| a.name = "Alphabet Inc.";     a.asset_type = :stock; a.sector = "Technology";       a.exchange = "NASDAQ"; a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "META")  { |a| a.name = "Meta Platforms";    a.asset_type = :stock; a.sector = "Technology";       a.exchange = "NASDAQ"; a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "AMZN")  { |a| a.name = "Amazon.com Inc.";   a.asset_type = :stock; a.sector = "Consumer Cyclical"; a.exchange = "NASDAQ"; a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "JPM")   { |a| a.name = "JPMorgan Chase";    a.asset_type = :stock; a.sector = "Finance";          a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "JNJ")   { |a| a.name = "Johnson & Johnson"; a.asset_type = :stock; a.sector = "Healthcare";       a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "KO")    { |a| a.name = "Coca-Cola Co.";     a.asset_type = :stock; a.sector = "Consumer";         a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "PG")    { |a| a.name = "Procter & Gamble";  a.asset_type = :stock; a.sector = "Consumer";         a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
+googl = Asset.find_or_create_by!(symbol: "GOOGL") do |a|
+  a.name = "Alphabet Inc."; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "NASDAQ"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 174.98; a.change_percent_24h = 1.05; a.market_cap = 2_180_000_000_000
+  a.pe_ratio = 25.10; a.volume = 28_400_000; a.price_updated_at = 2.minutes.ago
+end
+meta = Asset.find_or_create_by!(symbol: "META") do |a|
+  a.name = "Meta Platforms"; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "NASDAQ"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 502.30; a.change_percent_24h = -0.68; a.market_cap = 1_280_000_000_000
+  a.pe_ratio = 33.20; a.volume = 18_600_000; a.price_updated_at = 2.minutes.ago
+end
+amzn = Asset.find_or_create_by!(symbol: "AMZN") do |a|
+  a.name = "Amazon.com Inc."; a.asset_type = :stock; a.sector = "Consumer Cyclical"; a.exchange = "NASDAQ"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 186.49; a.change_percent_24h = 2.15; a.market_cap = 1_940_000_000_000
+  a.pe_ratio = 60.75; a.volume = 35_200_000; a.price_updated_at = 2.minutes.ago
+end
+jpm = Asset.find_or_create_by!(symbol: "JPM") do |a|
+  a.name = "JPMorgan Chase"; a.asset_type = :stock; a.sector = "Finance"; a.exchange = "NYSE"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 198.72; a.change_percent_24h = 0.54; a.market_cap = 571_000_000_000
+  a.pe_ratio = 11.80; a.div_yield = 2.32; a.volume = 9_800_000; a.price_updated_at = 2.minutes.ago
+end
+jnj = Asset.find_or_create_by!(symbol: "JNJ") do |a|
+  a.name = "Johnson & Johnson"; a.asset_type = :stock; a.sector = "Healthcare"; a.exchange = "NYSE"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 156.12; a.change_percent_24h = -0.22; a.market_cap = 375_000_000_000
+  a.pe_ratio = 22.40; a.div_yield = 3.05; a.volume = 7_100_000; a.price_updated_at = 2.minutes.ago
+end
+ko = Asset.find_or_create_by!(symbol: "KO") do |a|
+  a.name = "Coca-Cola Co."; a.asset_type = :stock; a.sector = "Consumer"; a.exchange = "NYSE"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 60.85; a.change_percent_24h = 0.33; a.market_cap = 263_000_000_000
+  a.pe_ratio = 24.90; a.div_yield = 3.10; a.volume = 12_500_000; a.price_updated_at = 2.minutes.ago
+end
+pg = Asset.find_or_create_by!(symbol: "PG") do |a|
+  a.name = "Procter & Gamble"; a.asset_type = :stock; a.sector = "Consumer"; a.exchange = "NYSE"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 162.40; a.change_percent_24h = 0.18; a.market_cap = 382_000_000_000
+  a.pe_ratio = 26.10; a.div_yield = 2.45; a.volume = 6_800_000; a.price_updated_at = 2.minutes.ago
+end
 
 # US ETFs
-Asset.find_or_create_by!(symbol: "QQQ")  { |a| a.name = "Invesco QQQ Trust";    a.asset_type = :etf; a.exchange = "NASDAQ"; a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "SPY")  { |a| a.name = "SPDR S&P 500 ETF";     a.asset_type = :etf; a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "VOO")  { |a| a.name = "Vanguard S&P 500";     a.asset_type = :etf; a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "VTI")  { |a| a.name = "Vanguard Total Stock";  a.asset_type = :etf; a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "ARKK") { |a| a.name = "ARK Innovation ETF";   a.asset_type = :etf; a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
+qqq = Asset.find_or_create_by!(symbol: "QQQ") do |a|
+  a.name = "Invesco QQQ Trust"; a.asset_type = :etf; a.exchange = "NASDAQ"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 438.20; a.change_percent_24h = 1.42; a.volume = 42_100_000; a.price_updated_at = 2.minutes.ago
+end
+spy = Asset.find_or_create_by!(symbol: "SPY") do |a|
+  a.name = "SPDR S&P 500 ETF"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 521.45; a.change_percent_24h = 0.58; a.volume = 65_300_000; a.price_updated_at = 2.minutes.ago
+end
+voo = Asset.find_or_create_by!(symbol: "VOO") do |a|
+  a.name = "Vanguard S&P 500"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 479.10; a.change_percent_24h = 0.55; a.volume = 4_200_000; a.price_updated_at = 2.minutes.ago
+end
+vti = Asset.find_or_create_by!(symbol: "VTI") do |a|
+  a.name = "Vanguard Total Stock"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 262.80; a.change_percent_24h = 0.48; a.volume = 3_500_000; a.price_updated_at = 2.minutes.ago
+end
+arkk = Asset.find_or_create_by!(symbol: "ARKK") do |a|
+  a.name = "ARK Innovation ETF"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"
+  a.data_source = "Polygon.io"; a.current_price = 49.25; a.change_percent_24h = -1.85; a.volume = 8_900_000; a.price_updated_at = 2.minutes.ago
+end
 
 # Mexico (BMV) — prices via Yahoo Finance
-genius = Asset.find_or_create_by!(symbol: "GENIUSSACV.MX") { |a| a.name = "Genius Sports SAB";   a.asset_type = :stock; a.sector = "Technology"; a.exchange = "BMV"; a.country = "MX"; a.data_source = "Yahoo Finance"; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "IVVPESO.MX")             { |a| a.name = "iShares S&P 500 MXN"; a.asset_type = :etf;                           a.exchange = "BMV"; a.country = "MX"; a.data_source = "Yahoo Finance"; a.price_updated_at = Time.current }
+genius = Asset.find_or_create_by!(symbol: "GENIUSSACV.MX") do |a|
+  a.name = "Genius Sports SAB"; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "BMV"; a.country = "MX"
+  a.data_source = "Yahoo Finance"; a.current_price = 32.50; a.change_percent_24h = 0.92; a.volume = 450_000; a.price_updated_at = 2.minutes.ago
+end
+ivvpeso = Asset.find_or_create_by!(symbol: "IVVPESO.MX") do |a|
+  a.name = "iShares S&P 500 MXN"; a.asset_type = :etf; a.exchange = "BMV"; a.country = "MX"
+  a.data_source = "Yahoo Finance"; a.current_price = 645.20; a.change_percent_24h = 0.75; a.volume = 1_200_000; a.price_updated_at = 2.minutes.ago
+end
 
 # Crypto
 btc = Asset.find_or_create_by!(symbol: "BTC") do |a|
@@ -197,30 +246,17 @@ end
 
 
 # --- Asset Logos (backfill — safe for re-runs) ---
+# Clearbit logo API is defunct. Only crypto logos (CoinGecko) are reliable.
+# Stock/ETF badges use the styled text fallback in _asset_badge.html.erb.
 {
-  "AAPL"  => "https://logo.clearbit.com/apple.com",
-  "TSLA"  => "https://logo.clearbit.com/tesla.com",
-  "MSFT"  => "https://logo.clearbit.com/microsoft.com",
-  "NVDA"  => "https://logo.clearbit.com/nvidia.com",
-  "GOOGL" => "https://logo.clearbit.com/google.com",
-  "META"  => "https://logo.clearbit.com/meta.com",
-  "AMZN"  => "https://logo.clearbit.com/amazon.com",
-  "JPM"   => "https://logo.clearbit.com/jpmorganchase.com",
-  "JNJ"   => "https://logo.clearbit.com/jnj.com",
-  "KO"    => "https://logo.clearbit.com/coca-cola.com",
-  "PG"    => "https://logo.clearbit.com/pg.com",
-  "OKE"   => "https://logo.clearbit.com/oneok.com",
   "BTC"   => "https://assets.coingecko.com/coins/images/1/small/bitcoin.png",
   "ETH"   => "https://assets.coingecko.com/coins/images/279/small/ethereum.png",
-  "SOL"   => "https://assets.coingecko.com/coins/images/4128/small/solana.png",
-  "QQQ"   => "https://logo.clearbit.com/invesco.com",
-  "SPY"   => "https://logo.clearbit.com/ssga.com",
-  "VOO"   => "https://logo.clearbit.com/vanguard.com",
-  "VTI"   => "https://logo.clearbit.com/vanguard.com",
-  "ARKK"  => "https://logo.clearbit.com/ark-invest.com"
+  "SOL"   => "https://assets.coingecko.com/coins/images/4128/small/solana.png"
 }.each do |symbol, url|
   Asset.find_by(symbol: symbol)&.update!(logo_url: url)
 end
+# Clear any stale Clearbit URLs
+Asset.where("logo_url LIKE ?", "%clearbit%").update_all(logo_url: nil)
 
 # --- Trades & Positions for Alex ---
 portfolio = alex.portfolio
