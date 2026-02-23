@@ -20,6 +20,17 @@ RSpec.describe NewsArticle, type: :model do
       article.published_at = nil
       expect(article).not_to be_valid
     end
+
+    it "enforces URL uniqueness" do
+      create(:news_article, url: "https://example.com/unique")
+      duplicate = build(:news_article, url: "https://example.com/unique")
+      expect(duplicate).not_to be_valid
+    end
+
+    it "allows blank URL" do
+      article.url = ""
+      expect(article).to be_valid
+    end
   end
 
   describe "scopes" do

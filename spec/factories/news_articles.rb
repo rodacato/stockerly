@@ -5,6 +5,6 @@ FactoryBot.define do
     published_at { 1.hour.ago }
     summary { "Article summary text" }
     related_ticker { "AAPL" }
-    url { "https://example.com/news" }
+    sequence(:url) { |n| "https://example.com/news-#{n}" }
   end
 end

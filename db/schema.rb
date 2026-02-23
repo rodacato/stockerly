@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_23_160335) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_23_182245) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -212,6 +212,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_160335) do
     t.string "url"
     t.index ["published_at"], name: "index_news_articles_on_published_at"
     t.index ["related_ticker"], name: "index_news_articles_on_related_ticker"
+    t.index ["url"], name: "index_news_articles_on_url", unique: true
   end
 
   create_table "notifications", force: :cascade do |t|
