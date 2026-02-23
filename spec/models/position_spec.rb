@@ -37,7 +37,7 @@ RSpec.describe Position, type: :model do
     let(:portfolio) { create(:portfolio) }
     let(:asset)     { create(:asset) }
     let!(:domestic) { create(:position, portfolio: portfolio, asset: asset, currency: "USD") }
-    let!(:international) { create(:position, portfolio: portfolio, asset: create(:asset), currency: "TWD") }
+    let!(:international) { create(:position, portfolio: portfolio, asset: create(:asset), currency: "MXN") }
 
     it ".domestic returns USD positions" do
       expect(Position.domestic).to contain_exactly(domestic)

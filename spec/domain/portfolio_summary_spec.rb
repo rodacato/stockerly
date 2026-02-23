@@ -4,11 +4,11 @@ RSpec.describe PortfolioSummary do
   let(:user) { create(:user) }
   let(:portfolio) { create(:portfolio, user: user, buying_power: 5000.0) }
   let(:asset_usd) { create(:asset, current_price: 150.0, sector: "Technology") }
-  let(:asset_intl) { create(:asset, symbol: "2330.TW", current_price: 80.0, sector: "Semiconductors") }
+  let(:asset_intl) { create(:asset, symbol: "GENIUSSACV.MX", current_price: 80.0, sector: "Technology") }
 
   before do
     create(:position, portfolio: portfolio, asset: asset_usd, shares: 10, avg_cost: 100.0, currency: "USD")
-    create(:position, portfolio: portfolio, asset: asset_intl, shares: 20, avg_cost: 60.0, currency: "TWD")
+    create(:position, portfolio: portfolio, asset: asset_intl, shares: 20, avg_cost: 60.0, currency: "MXN")
   end
 
   subject { PortfolioSummary.new(portfolio) }
@@ -29,7 +29,7 @@ RSpec.describe PortfolioSummary do
   describe "#unrealized_gain" do
     it "returns GainLoss with total unrealized gain" do
       result = subject.unrealized_gain
-      # USD: 10 * (150 - 100) = 500, TWD: 20 * (80 - 60) = 400 => 900
+      # USD: 10 * (150 - 100) = 500, MXN: 20 * (80 - 60) = 400 => 900
       expect(result).to be_a(GainLoss)
       expect(result.absolute).to eq(900.0)
       expect(result).to be_positive
@@ -67,7 +67,7 @@ RSpec.describe PortfolioSummary do
 
   describe "#total_invested" do
     it "sums cost basis of open positions" do
-      # USD: 10 * 100 = 1000, TWD: 20 * 60 = 1200 => 2200
+      # USD: 10 * 100 = 1000, MXN: 20 * 60 = 1200 => 2200
       expect(subject.total_invested).to eq(2200.0)
     end
   end
