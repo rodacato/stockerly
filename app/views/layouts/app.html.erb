@@ -2,7 +2,9 @@
   <%= turbo_stream_from "notifications_#{current_user.id}" if current_user %>
   <div class="relative flex min-h-screen flex-col bg-slate-50 dark:bg-background-dark">
     <%= render "shared/app_navbar" %>
-    <%= render "shared/flash" %>
+    <div id="flash_messages">
+      <%= render "shared/flash" %>
+    </div>
     <main class="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <%= yield %>
     </main>
