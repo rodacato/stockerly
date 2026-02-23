@@ -35,10 +35,11 @@ class MarketSentiment
 
     TrendScore
       .where(asset_id: asset_ids)
-      .group(:asset_id)
-      .select("asset_id, MAX(calculated_at) as max_calc")
-      .map { |ts| TrendScore.where(asset_id: ts.asset_id).order(calculated_at: :desc).first&.score }
-      .compact
+      .where(
+        "(asset_id, calculated_at) IN (SELECT asset_id, MAX(calculated_at) FROM trend_scores WHERE asset_id IN (?) GROUP BY asset_id)",
+        asset_ids
+      )
+      .pluck(:score)
   end
 
   private_class_method :watchlist_scores, :label_for

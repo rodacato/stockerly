@@ -30,15 +30,15 @@ class PortfolioSummary
   end
 
   def domestic_value
-    portfolio.open_positions.domestic.sum { |p| p.market_value }
+    portfolio.open_positions.domestic.joins(:asset).sum("positions.shares * COALESCE(assets.current_price, 0)")
   end
 
   def international_value
-    portfolio.open_positions.international.sum { |p| p.market_value }
+    portfolio.open_positions.international.joins(:asset).sum("positions.shares * COALESCE(assets.current_price, 0)")
   end
 
   def total_invested
-    portfolio.open_positions.sum { |p| p.shares * p.avg_cost }
+    portfolio.open_positions.sum("positions.shares * positions.avg_cost")
   end
 
   def to_h
