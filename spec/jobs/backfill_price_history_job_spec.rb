@@ -44,10 +44,13 @@ RSpec.describe BackfillPriceHistoryJob, type: :job do
       end
     end
 
-    context "when gateway fails" do
+    context "when all gateways fail" do
       let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock) }
 
-      before { stub_polygon_historical_empty("AAPL") }
+      before do
+        stub_polygon_historical_empty("AAPL")
+        stub_yahoo_finance_not_found("AAPL")
+      end
 
       it "logs failure" do
         described_class.perform_now(asset.id)
