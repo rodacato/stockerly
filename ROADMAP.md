@@ -1,565 +1,1187 @@
-# Stockerly — Roadmap de Implementacion
+# Stockerly — Roadmap de Implementacion (Phase 9+)
 
-> Estado actual del proyecto y fases restantes.
-> Cada fase es auto-contenida: incluye que documentos revisar, que construir, que testear y que commits crear.
+> Roadmap unificado que combina PLAN_SENTIMENT.md (Fear & Greed + DataSource Registry)
+> y PLAN_IMPROVEMENTS.md (Historico 7D, News Feed, Indices, CETES).
 >
-> **Catalogo de paginas:** [docs/CATALOG.md](docs/CATALOG.md) — indice maestro con estado de cada pantalla
-> **Workflow:** [docs/WORKFLOW.md](docs/WORKFLOW.md) — proceso para agregar nuevas pantallas
+> **Fecha:** 2026-02-23
+> **Estado actual:** 990 specs, 95.85% line coverage, ALL Phase 9 complete
+> **Fuente primaria:** PLAN_SENTIMENT.md (architecture-first)
+> **Fuente complementaria:** PLAN_IMPROVEMENTS.md (feature additions)
 
 ---
 
-## Estado de Fases
+## Estado de Fases (Completadas)
 
-| Fase | Nombre | Estado | Specs |
-|------|--------|--------|-------|
-| 0 | Setup Base | Completada | - |
-| 1 | Paginas Publicas | Completada | ~20 |
-| 2 | Autenticacion | Completada | ~57 |
-| 3 | Zona Autenticada (6 paginas estaticas) | Completada | ~69 |
-| 4 | Panel Admin (3 paginas estaticas) | Completada | 85 |
-| 4.5 | Auditoria de Consistencia + System Tests | Completada | 106 |
-| 4.6 | Componentes Compartidos (8 pantallas nuevas) | Completada | 94 |
-| 5 | Modelos, Migraciones y Seeds | Completada | 301 |
-| 6 | Backend (Use Cases, Events, CRUD) | Completada | 490 |
-| 6.5 | Auditoria de Consistencia e Integracion | Completada | 540 |
-| 7 | Integraciones Externas | Completada | 654 |
-| **8** | **Polish & Completeness** | **Completada** | 702 |
+| Fase    | Nombre                                  | Specs   |
+| ------- | --------------------------------------- | ------- |
+| 0-4     | Setup, Public, Auth, App, Admin         | 85      |
+| 4.5-4.6 | Auditorias + Componentes                | 200     |
+| 5       | Modelos, Migraciones, Seeds             | 301     |
+| 6-6.5   | Backend + Auditoria                     | 540     |
+| 7       | Integraciones Externas                  | 654     |
+| 8       | Polish & Completeness                   | 702     |
+| **9.0** | **DataSource Registry & SyncLogging**   | **887** |
+| **9.1** | **Fear & Greed Index**                  | **928** |
+| **9.2** | **Historical Prices & Real Sparklines** | **947** |
+| **9.3** | **News Feed with Polygon**              | **972** |
+| **9.4** | **Market Indices Sync + IPC + VIX**     | **988** |
+| **9.5** | **CETES Placeholder**                   | **990** |
 
 ---
 
-## Fase 4.5: Auditoria de Consistencia + System Tests
+## Fases — Resumen
 
-### Objetivo
-Antes de conectar el backend, verificar que todo el frontend estatico (16 paginas) es consistente, coherente y funcional. Detectar y corregir problemas de branding, datos, navegacion, dark mode y responsive. Agregar system specs con Capybara para garantizar que Stimulus controllers y flujos de navegacion funcionan.
+| Fase     | Nombre                              | Tipo           | Est. Specs | Acumulado |
+| -------- | ----------------------------------- | -------------- | ---------- | --------- |
+| **9.0**  | DataSource Registry & SyncLogging   | **Completada** | +14        | 887       |
+| **9.1**  | Fear & Greed Index                  | **Completada** | +41        | 928       |
+| **9.2**  | Historical Prices & Real Sparklines | **Completada** | +19        | 947       |
+| **9.3**  | News Feed with Polygon              | **Completada** | +25        | 972       |
+| **9.4**  | Market Indices Sync + IPC + VIX     | **Completada** | +16        | 988       |
+| **9.5**  | CETES Placeholder                   | **Completada** | +2         | 990       |
+|          | *Phase 9 Total*                     |                | *~117*     |           |
+| **10.0** | Foundation: Models + OVERVIEW Sync  | Pendiente      | ~30        | ~1020     |
+| **10.1** | Financial Statements + Calculator   | Pendiente      | ~25        | ~1045     |
+| **10.2** | UI: Asset Detail Page               | Pendiente      | ~20        | ~1065     |
+| **10.3** | Crypto Fundamentals                 | Pendiente      | ~10        | ~1075     |
+|          | *Phase 10 Total*                    |                | *~85*      |           |
+|          | **Grand Total new**                 |                | **~202**   |           |
 
-### Documentos a Revisar
-- `docs/spec/README.md` sec. 9 (Referencia Visual por Pagina — comparar contra implementacion)
-- `designs/{zona}/{pagina}/screen.png` — Comparar cada pagina renderizada contra el diseno original
-- `docs/CATALOG.md` — Estado de implementacion de cada pagina
-- `CLAUDE.md` — Branding oficial ("Stockerly" en el producto)
+---
 
-### Pasos
+## Expert Panel Analysis
 
-#### 4.5.1 — Auditoria de Branding
-- Revisar todas las vistas por inconsistencias "TrendStocker" vs "Stockerly"
-- El producto se llama **Stockerly** en toda la UI visible al usuario
-- Verificar: titles, navbars, sidebars, footers, meta tags
-- Corregir cualquier inconsistencia encontrada
-- **Commit:** `Fix branding consistency across all views`
+### Overlaps & Dependencies Between Plans
 
-#### 4.5.2 — Auditoria de Datos Hardcodeados
-- Verificar que los datos son coherentes entre paginas:
-  - Dashboard watchlist y Profile watchlist usan los mismos 6 stocks
-  - Market listings incluyen los stocks del watchlist
-  - Precios son consistentes (AAPL $189.43 en todos lados)
-  - Admin assets incluyen assets que aparecen en zona autenticada
-- Corregir discrepancias
-- **Commit:** `Harmonize hardcoded data across all views`
+The two plans share significant infrastructure:
 
-#### 4.5.3 — Auditoria de Links y Navegacion
-- Verificar que todos los enlaces de navegacion apuntan a rutas reales (no `#`)
-- Verificar que sidebar admin, navbar app, navbar publica son coherentes
-- Verificar que breadcrumbs son correctos en admin
-- Verificar que logo links van al lugar correcto (public→root, app→dashboard, admin→admin/assets)
-- **Commit:** `Fix navigation links and remove placeholder hrefs`
+| Area                    | PLAN_SENTIMENT                                   | PLAN_IMPROVEMENTS                                   | Resolution                                                          |
+| ----------------------- | ------------------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------- |
+| **SyncLogging**         | Proposes concern to DRY 9 log blocks             | Jobs in 7D/News/Indices need same logging           | Phase 9.0 builds it once, all phases use it                         |
+| **DataSourceRegistry**  | Central registry for 6+ sources                  | News, Indices, Backfill need gateway resolution     | Phase 9.0 builds it once, future sources auto-register              |
+| **Admin buttons**       | Dynamic panel replaces hardcoded buttons         | New sources (News, Indices) would need new buttons  | Registry-driven admin eliminates per-source button work             |
+| **Circuit breakers**    | Per-source config in registry                    | Backfill, News, Indices all need breakers           | Registry stores breaker config, `SyncSingleAssetJob` pattern reused |
+| **Integration model**   | `requires_api_key` boolean for keyless providers | News (Polygon, has key), Indices (Yahoo, no key)    | Phase 9.0 adds the field                                            |
+| **PolygonGateway**      | Not modified                                     | Gets `fetch_historical` + `fetch_news` methods      | Phases 9.2 and 9.3 extend it                                        |
+| **YahooFinanceGateway** | Not modified                                     | Gets `fetch_index_quotes` method                    | Phase 9.4 extends it                                                |
+| **Recurring schedule**  | Adds `refresh_fear_greed`                        | Adds backfill (event-driven), news sync, index sync | Each phase adds its entry to `recurring.yml`                        |
 
-#### 4.5.4 — Auditoria de Dark Mode
-- Revisar que todas las vistas tienen clases `dark:` en:
-  - Fondos (bg-white → dark:bg-slate-900)
-  - Textos (text-slate-900 → dark:text-white)
-  - Bordes (border-slate-200 → dark:border-slate-800)
-  - Inputs y selects
-- Verificar componentes compartidos (stat_card, status_badge, etc.)
-- **Commit:** `Ensure dark mode classes on all views and components` (si hay correcciones)
+### Expert Verdicts
 
-#### 4.5.5 — Setup Capybara + System Specs
-- Configurar Capybara en `spec/support/` si no existe
-- Verificar que Selenium/headless Chrome esta disponible
-- Agregar `spec/system/` con system specs:
+**Domain Architect:**
 
-**Flujos a cubrir:**
+> Phase 9.0 as pure refactor is the correct call. The DataSourceRegistry follows the same pattern as EventBus — in-memory, boot-time, zero-dependency. SyncLogging as a concern is Rails-native and eliminates 40+ lines of duplication across 5 jobs. Crucially, this must land BEFORE any new data source to avoid compounding the duplication.
 
-| Test | Que verifica |
-|------|-------------|
-| Navegacion publica | Landing → nav links → Trends, Open Source, Legal pages |
-| Flujo auth completo | Register → redirect a dashboard → Logout → Login → Dashboard |
-| Navegacion autenticada | Navbar links llevan a las 6 paginas, cada una carga ok |
-| Stimulus: tabs | Portfolio tabs (Open/Closed/Dividends) cambian de panel |
-| Stimulus: toggle | Profile toggles cambian estado visual |
-| Stimulus: calendar_nav | Earnings month nav actualiza texto del mes |
-| Admin sidebar | Sidebar links llevan a Assets, Logs, Users |
-| Admin tabs | Asset tabs (All/Stocks/Crypto) cambian de panel |
-| Guard: zona auth | Acceder a /dashboard sin login redirige a /login |
-| Guard: zona admin | User normal accede a /admin/assets → redirige a root |
+**Data Engineer:**
 
-- **Commit:** `Add system specs with Capybara for navigation and Stimulus controllers`
+> The dependency graph is clear: Registry → Fear & Greed → Historical → News → Indices. Each phase extends existing gateways rather than creating parallel infrastructure. The `BackfillPriceHistoryJob` (Phase 9.2) should be event-driven (triggered by `AssetCreated`), not scheduled — this avoids unnecessary API calls.
 
-#### 4.5.6 — Auditoria Visual (manual)
-- Levantar `rails server` y recorrer las 16 paginas
-- Comparar lado a lado contra `designs/{zona}/{pagina}/screen.png`
-- Documentar diferencias significativas como issues en un checklist
-- Corregir lo critico, anotar lo cosmetico para futuro
-- **Commit:** `Fix visual discrepancies found during manual audit` (si hay correcciones)
+**QA Engineer:**
 
-### Verificacion Final
+> Phase 9.0 being a pure refactor means existing 702 specs are the safety net — if any break, the refactor introduced a bug. Each subsequent phase adds its own specs in isolation. Shared examples for job behavior (`include_examples "sync logging"`) should be created in Phase 9.0 to eliminate test duplication too.
+
+**Product Strategist:**
+
+> Fear & Greed before 7D sparklines makes sense: F&G is a new visible feature on the dashboard (replaces the static sentiment card), while sparklines are an improvement to existing data. Both are high-impact, but F&G is net-new functionality.
+
+**Hotwire Engineer:**
+
+> The sparkline component already accepts `heights` as a parameter. Phase 9.2 only needs a helper to normalize `close` prices to relative heights (0-100%). No Stimulus changes needed. The Fear & Greed card (Phase 9.1) needs a new partial with color-coded progress bar.
+
+**Security Engineer:**
+
+> CNN's undocumented API (Phase 9.1) requires a `User-Agent` header. This is fine for server-side fetching but document it clearly. The TradingView widget (Phase 9.3) requires CSP update: `frame-src https://www.tradingview.com`. No other security concerns — all new data is public, no user PII involved.
+
+---
+
+## Phase 9.0 — DataSource Registry & SyncLogging Foundation
+
+> **Goal:** Establish the scalable pattern for all current and future data sources. Pure refactor — no new features, no new models.
+> **Safety net:** All 702 existing specs must pass after every commit.
+
+### Why First
+
+The current codebase has:
+
+- **9 duplicated `SystemLog.create!` blocks** across 5 job files
+- **`case/when` gateway resolution** in both `SyncSingleAssetJob#gateway_for` and `SyncIntegrationJob#gateway_for`
+- **Circuit breakers fragmented** in `SyncSingleAssetJob::CIRCUIT_BREAKERS` hash, accessed externally by `SyncBulkCryptoJob` and `SyncBulkBmvJob`
+- **Admin buttons hardcoded** — each new source would need a new route, controller action, and button
+
+All 4 problems get worse with every new data source. Fixing them now (before Fear & Greed, News, Indices, etc.) prevents the duplication from compounding.
+
+### Steps
+
+#### 9.0a — Integration Model Enhancement
+
+**Migration:** `add_requires_api_key_to_integrations`
+
+```ruby
+add_column :integrations, :requires_api_key, :boolean, default: true, null: false
+```
+
+**Modify:** `app/models/integration.rb`
+
+- Add conditional validation: `validates :api_key_encrypted, presence: true, if: :requires_api_key?`
+
+**Modify:** `db/seeds.rb`
+
+- Update Yahoo Finance integration: `requires_api_key: false`
+- Add 2 new integrations: "Alternative.me" (Sentiment, no key), "CNN" (Sentiment, no key)
+
+**Specs:** +2 (model validation for requires_api_key)
+
+**Commit:** `Add requires_api_key to Integration model`
+
+#### 9.0b — DataSource Registry
+
+**New file:** `app/domain/data_source_registry.rb`
+
+- `Data.define` struct for source metadata (key, name, icon, color, gateway_class, job_class, job_args, test_symbol, integration_name, circuit_breaker_config)
+- Class methods: `.register`, `.find`, `.all`, `.for_integration`, `.clear!`
+- Follows same pattern as `EventBus` (module with class methods, `@sources` hash)
+
+**New file:** `config/initializers/data_sources.rb`
+
+- Registers existing 4 providers: `:polygon_stocks`, `:coingecko_crypto`, `:yahoo_bmv`, `:fx_rates`
+- 2 new F&G sources added later in Phase 9.1
+
+**Specs:** +6 (register, find, all, for_integration, clear!, unknown key raises)
+
+**Commit:** `Add DataSourceRegistry with source metadata`
+
+#### 9.0c — SyncLogging Concern
+
+**New file:** `app/jobs/concerns/sync_logging.rb`
+
+- Methods: `log_sync_success(task_name, message:)`, `log_sync_failure(task_name, message)`, `log_sync_warning(task_name, message)`
+- All create `SystemLog` entries with standardized format
+
+**Specs:** +2 (shared example group for sync logging behavior)
+
+**Commit:** `Add SyncLogging concern for standardized job logging`
+
+#### 9.0d — Refactor Existing Jobs (Pure Refactor)
+
+**Modify 5 files:**
+
+- `app/jobs/sync_single_asset_job.rb` — `include SyncLogging`, remove `log_success`, `log_failure`
+- `app/jobs/sync_bulk_crypto_job.rb` — `include SyncLogging`, remove `log_batch_success`, `log_batch_failure`
+- `app/jobs/sync_bulk_bmv_job.rb` — `include SyncLogging`, remove `log_batch_success`, `log_batch_failure`
+- `app/jobs/refresh_fx_rates_job.rb` — `include SyncLogging`, remove `log_success`, `log_failure`
+- `app/jobs/sync_integration_job.rb` — Use `DataSourceRegistry.for_integration` instead of `case/when` for gateway resolution
+
+**All 702 existing specs must still pass.**
+
+**Commit:** `Refactor sync jobs to use SyncLogging and DataSourceRegistry`
+
+#### 9.0e — Admin: Dynamic Data Sources Panel
+
+**Modify:** `config/routes.rb`
+
+- Add: `post "trigger_data_source/:key", to: "dashboard#trigger_data_source", as: :trigger_data_source` inside admin namespace
+
+**Modify:** `app/controllers/admin/dashboard_controller.rb`
+
+- Add `@data_sources = DataSourceRegistry.all` to `show`
+- Add `trigger_data_source` action with rate limiting (5/min)
+
+**Modify:** `app/views/admin/dashboard/show.html.erb`
+
+- Replace hardcoded Quick Action buttons with registry-driven loop
+- Add "Data Sources Health" section showing per-source status (integration status + last sync + error count 24h)
+
+**Specs:** +0 (existing admin specs cover the view renders; may need minor adjustments)
+
+**Commit:** `Replace hardcoded admin buttons with registry-driven data sources panel`
+
+### Verification
+
 ```bash
-bundle exec rspec                    # Todos verdes (85 request + ~10 system)
-bundle exec rspec spec/system/       # System specs verdes
-rails server                         # Verificacion visual manual OK
+bundle exec rspec         # ~712 specs, 0 failures
+bin/rubocop               # 0 offenses
+bin/rails db:seed         # Seeds run with new integrations
+```
+
+### Files Summary
+
+| New Files (5)                                            | Modified Files (9)                              |
+| -------------------------------------------------------- | ----------------------------------------------- |
+| `db/migrate/..._add_requires_api_key_to_integrations.rb` | `app/models/integration.rb`                     |
+| `app/domain/data_source_registry.rb`                     | `app/jobs/sync_single_asset_job.rb`             |
+| `app/jobs/concerns/sync_logging.rb`                      | `app/jobs/sync_bulk_crypto_job.rb`              |
+| `config/initializers/data_sources.rb`                    | `app/jobs/sync_bulk_bmv_job.rb`                 |
+| `spec/domain/data_source_registry_spec.rb`               | `app/jobs/refresh_fx_rates_job.rb`              |
+|                                                          | `app/jobs/sync_integration_job.rb`              |
+|                                                          | `app/controllers/admin/dashboard_controller.rb` |
+|                                                          | `app/views/admin/dashboard/show.html.erb`       |
+|                                                          | `db/seeds.rb`                                   |
+
+---
+
+## Phase 9.1 — Fear & Greed Index
+
+> **Goal:** Replace the static Market Sentiment card on the dashboard with real Fear & Greed data from Alternative.me (crypto) and CNN (stocks).
+> **Depends on:** Phase 9.0 (Registry, SyncLogging, Integration model)
+
+### Data Sources
+
+| Market | Provider           | Endpoint                                                                    | Auth              | Frequency |
+| ------ | ------------------ | --------------------------------------------------------------------------- | ----------------- | --------- |
+| Crypto | Alternative.me     | `GET https://api.alternative.me/fng/?limit=1`                               | None              | Daily     |
+| Stocks | CNN (undocumented) | `GET https://production.dataviz.cnn.io/index/fearandgreed/graphdata/{date}` | User-Agent header | Daily     |
+
+### Steps
+
+#### 9.1a — FearGreedReading Model & Migration
+
+**Migration:** `create_fear_greed_readings`
+
+```ruby
+create_table :fear_greed_readings do |t|
+  t.string   :index_type,     null: false   # "crypto" | "stocks"
+  t.integer  :value,          null: false   # 0-100
+  t.string   :classification, null: false   # "Extreme Fear" .. "Extreme Greed"
+  t.string   :source,         null: false   # "alternative.me" | "cnn"
+  t.jsonb    :component_data, default: {}   # CNN sub-indicators
+  t.datetime :fetched_at,     null: false
+  t.timestamps
+end
+add_index :fear_greed_readings, [:index_type, :fetched_at]
+```
+
+**New file:** `app/models/fear_greed_reading.rb`
+
+- Validations: index_type in `%w[crypto stocks]`, value 0..100, presence on all
+- Scopes: `.crypto`, `.stocks`, `.recent`, `.latest_crypto`, `.latest_stocks`
+- Instance: `stale?` → `fetched_at < 25.hours.ago`
+- Class: `classify(value)` → 5 labels (Extreme Fear, Fear, Neutral, Greed, Extreme Greed)
+
+**New file:** `spec/factories/fear_greed_readings.rb` (traits: `:crypto`, `:stocks`)
+**New file:** `spec/models/fear_greed_reading_spec.rb`
+
+**Specs:** +8
+
+**Commit:** `Add FearGreedReading model and migration`
+
+#### 9.1b — Fear & Greed Gateways
+
+**New file:** `app/gateways/crypto_fear_greed_gateway.rb`
+
+- Faraday → `https://api.alternative.me`, 5s timeout, retry middleware
+- `fetch_index` → `Success({ value:, classification:, fetched_at:, component_data: })`
+- Handles: 429, 5xx, timeout
+
+**New file:** `app/gateways/stock_fear_greed_gateway.rb`
+
+- Faraday → `https://production.dataviz.cnn.io`, 10s timeout
+- Headers: `User-Agent: "Mozilla/5.0 (compatible; Stockerly/1.0)"`
+- `fetch_index` → same Success shape + `component_data` with 7 CNN sub-indicators
+
+**Specs:** +11 (WebMock stubs for success, 429, 500, timeout, malformed JSON)
+
+**Commit:** `Add crypto and stock Fear & Greed gateways`
+
+#### 9.1c — Job, Event & Handler
+
+**New file:** `app/events/fear_greed_updated.rb`
+**New file:** `app/event_handlers/log_fear_greed_update.rb`
+**New file:** `app/jobs/refresh_fear_greed_job.rb`
+
+- `include SyncLogging`
+- Calls both gateways independently (one failure doesn't block the other)
+- Each wrapped in its own `CircuitBreaker` (threshold: 3, timeout: 300s)
+- On success: creates `FearGreedReading`, `log_sync_success`, publishes `FearGreedUpdated`
+
+**Modify:** `config/initializers/event_subscriptions.rb` — subscribe `FearGreedUpdated` → `LogFearGreedUpdate`
+**Modify:** `config/initializers/data_sources.rb` — register `:crypto_fear_greed` and `:stock_fear_greed`
+**Modify:** `config/recurring.yml` — add `refresh_fear_greed` at 6am daily
+
+**Specs:** +10 (event, handler, job)
+
+**Commit:** `Add RefreshFearGreedJob with events and handler`
+
+#### 9.1d — Dashboard Integration
+
+**Modify:** `app/domain/market_sentiment.rb`
+
+- Add `MarketSentiment.fear_greed` → `{ crypto: { value:, label:, stale:, fetched_at:, component_data: }, stocks: { ... } }`
+- Falls back to `{ value: 50, label: "Neutral", stale: true }` when no data
+
+**Modify:** `app/use_cases/dashboard/assemble.rb`
+
+- Add `fear_greed: MarketSentiment.fear_greed` to Success result
+
+**Modify:** `app/controllers/dashboard_controller.rb`
+
+- Add `@fear_greed = data[:fear_greed]`
+
+**New file:** `app/views/components/_fear_greed_card.html.erb`
+
+- Accepts: `title`, `data`, `icon`
+- Color coding: red (0-24), orange (25-44), amber (45-55), lime (56-74), green (75-100)
+- Progress bar, value + classification label, "Updated X ago" or "Data may be outdated"
+
+**Modify:** `app/views/dashboard/show.html.erb`
+
+- Replace the single Market Sentiment card with 2 Fear & Greed cards (crypto + stocks)
+
+**Modify:** `db/seeds.rb` — add 2 seed FearGreedReading records
+
+**Specs:** +6 (market_sentiment +4, dashboard/assemble +2)
+
+**Commit:** `Display Fear & Greed indices on dashboard`
+
+### UI Design Needed
+
+The Fear & Greed card (`_fear_greed_card.html.erb`) needs a Stitch design:
+
+**Stitch prompt:**
+
+> Design a compact Fear & Greed index card for a financial dashboard. The card should show: (1) a title like "Crypto Fear & Greed" with a Material Symbol icon, (2) a large number (0-100) with the classification label below (e.g. "25 — Extreme Fear"), (3) a horizontal color-coded progress bar (red → orange → amber → lime → green), (4) a subtle "Updated 6h ago" timestamp. Use Tailwind CSS, dark mode support, bg-white/dark:bg-slate-900, rounded-xl border. Make it fit in a 4-column grid next to similar stat cards. Color scheme: red for 0-24, orange for 25-44, amber for 45-55, lime for 56-74, green for 75-100. Font: Inter. Icons: Material Symbols Rounded.
+
+### Verification
+
+```bash
+bundle exec rspec         # ~747 specs, 0 failures
+bin/dev                   # Visit /dashboard → see 2 Fear & Greed cards with seed data
 ```
 
 ---
 
-## Fase 4.6: Componentes Compartidos (6 pantallas nuevas)
+## Phase 9.2 — Historical Prices & Real Sparklines
 
-### Objetivo
-Implementar las 6 pantallas/componentes nuevos identificados por los expertos en `docs/spec/SUGGESTIONS.md`. Estas pantallas ya tienen diseno de referencia en `designs/shared/` y SPEC.md con metadatos completos.
+> **Goal:** Replace hardcoded sparkline bars with real 7-day price data. Add historical price backfill for new assets.
+> **Depends on:** Phase 9.0 (SyncLogging). Does NOT depend on 9.1.
 
-### Documentos a Revisar
-- `designs/shared/*/SPEC.md` — Spec de cada componente nuevo
-- `designs/shared/*/screen.png` — Diseno de referencia de Stitch
-- `docs/spec/SUGGESTIONS.md` sec. 2 (Product Strategist) y sec. 4 (UX Designer) — Justificacion y requisitos
-- `docs/CATALOG.md` — Pantallas #20-25 (estado actual: D)
+### Current State
 
-### Pantallas nuevas
+- `AssetPriceHistory` model exists with OHLCV columns and `.recent(7)` scope
+- `RecordPriceHistory` event handler accumulates daily data from `AssetPriceUpdated` events
+- `_sparkline.html.erb` component exists but uses hardcoded heights based on `:up`/`:down`
+- Trends page already uses real `AssetPriceHistory` data with SVG chart (30 days)
+- PolygonGateway only fetches previous-day close, not historical range
 
-| # | Componente | SPEC | Diseno | Prioridad |
-|---|-----------|------|--------|-----------|
-| 20 | Onboarding Wizard (3 pasos) | [SPEC](designs/shared/onboarding/SPEC.md) | 3 screens | Critica |
-| 21 | Empty States Collection | [SPEC](designs/shared/empty-states/SPEC.md) | 1 screen | Critica |
-| 22 | Notification Panel | [SPEC](designs/shared/notification-panel/SPEC.md) | 1 screen | Alta |
-| 23 | News Feed Page | [SPEC](designs/shared/news-feed/SPEC.md) | 1 screen | Media |
-| 24 | Global Search Dropdown | [SPEC](designs/shared/global-search/SPEC.md) | 1 screen | Media |
-| 25 | Error Pages (404/500) | [SPEC](designs/shared/error-pages/SPEC.md) | 2 screens | Baja |
+### Steps
 
-### Pasos
+#### 9.2a — Gateway Historical Methods
 
-#### 4.6.1 — Empty States (partial reutilizable)
-- Crear `app/views/components/_empty_state.html.erb` con params: icon, title, description, cta_text, cta_path
-- Integrar en las 6 vistas existentes: Dashboard (watchlist, news), Portfolio, Alerts (rules, feed), Earnings, Profile
-- Usar los textos y CTAs definidos en `designs/shared/empty-states/SPEC.md`
-- **Test:** Request specs verifican empty state cuando no hay datos
-- **Commit:** `Add reusable empty state component and integrate in all views`
-- **Actualizar:** CATALOG.md #21 → H
+**Modify:** `app/gateways/polygon_gateway.rb`
 
-#### 4.6.2 — Error Pages
-- Crear `public/404.html` y `public/500.html` basados en `designs/shared/error-pages/`
-- HTML standalone (inline CSS, sin asset pipeline)
-- Branding Stockerly, links a Dashboard y Home
-- **Commit:** `Add custom 404 and 500 error pages with Stockerly branding`
-- **Actualizar:** CATALOG.md #25 → H
+- Add `fetch_historical(symbol, from_date, to_date)` using `/v2/aggs/ticker/{symbol}/range/1/day/{from}/{to}`
+- Returns `Success([{ date:, open:, high:, low:, close:, volume: }, ...])`
 
-#### 4.6.3 — Forgot/Reset Password (actualizar vistas existentes)
-- Las vistas ya existen y funcionan (`password_resets/new.html.erb`, `password_resets/edit.html.erb`)
-- Actualizar estilos para coincidir con los nuevos disenos Stitch en `designs/public/forgot-password/` y `designs/public/reset-password/`
-- Agregar: password strength indicator, show/hide toggle, inline validation states
-- **Commit:** `Update forgot/reset password views to match Stitch designs`
+**Modify:** `app/gateways/coingecko_gateway.rb`
 
-#### 4.6.4 — Onboarding Wizard (3 pasos)
-- Crear `OnboardingController` con actions: `step1`, `step2`, `step3`, `complete`
-- Agregar rutas: `GET/POST /onboarding/step1`, `GET/POST /onboarding/step2`, `GET /onboarding/step3`
-- Crear 3 vistas basadas en `designs/shared/onboarding/screen-step{1,2,3}.png`
-- Paso 1: seleccion de mercados (grid de cards seleccionables)
-- Paso 2: seleccion de stocks populares (lista con boton +, min 3)
-- Paso 3: resumen y "Go to Dashboard"
-- Trigger: redirect post-registro cuando user no tiene watchlist items
-- Stimulus: `onboarding-controller` (selection tracking, validation)
-- **Test:** Request specs para flujo completo
-- **Commit:** `Add onboarding wizard with 3-step flow for new users`
-- **Actualizar:** CATALOG.md #20 → H
+- Add `fetch_historical(symbol, days)` using `/coins/{id}/market_chart?vs_currency=usd&days={days}`
+- Returns same Success shape
 
-#### 4.6.5 — Notification Panel (dropdown overlay)
-- Crear partial `app/views/shared/_notification_panel.html.erb`
-- Integrar en `_app_navbar.html.erb` (dropdown desde icono campana)
-- Datos hardcodeados: 6 notificaciones de ejemplo (4 unread, 2 read)
-- Badge con count en icono de campana
-- Stimulus: `notification-controller` (toggle dropdown, mark as read)
-- **Commit:** `Add notification panel dropdown in app navbar`
-- **Actualizar:** CATALOG.md #22 → H
+**Specs:** +6 (WebMock stubs for both gateways, success + error cases)
 
-#### 4.6.6 — Global Search (dropdown overlay)
-- Crear partial `app/views/shared/_global_search.html.erb`
-- Integrar en `_app_navbar.html.erb` (expandir search bar)
-- Datos hardcodeados: resultados de ejemplo agrupados (Stocks, News, Quick Actions)
-- Stimulus: `search-controller` (toggle, debounce, keyboard nav, Cmd+K)
-- **Commit:** `Add global search dropdown in app navbar`
-- **Actualizar:** CATALOG.md #24 → H
+**Commit:** `Add historical price fetch to Polygon and CoinGecko gateways`
 
-#### 4.6.7 — News Feed Page
-- Crear `NewsController#index` y ruta `GET /news`
-- Crear vista `app/views/news/index.html.erb` basada en `designs/shared/news-feed/screen.png`
-- Datos hardcodeados: articulos de ejemplo, filtros visuales
-- Layout `app` (requiere autenticacion)
-- Actualizar navbar app para incluir link a News (o accesible desde avatar dropdown)
-- **Commit:** `Add news feed page with static content`
-- **Actualizar:** CATALOG.md #23 → H
+#### 9.2b — BackfillPriceHistoryJob
 
-### Verificacion Final
+**New file:** `app/jobs/backfill_price_history_job.rb`
+
+- `include SyncLogging`
+- Receives `asset_id`, fetches 30 days of history via appropriate gateway
+- Upserts into `AssetPriceHistory` by `[asset_id, date]`
+- Registered in DataSourceRegistry as part of the asset creation flow
+
+**New file:** `app/event_handlers/backfill_history_on_asset_creation.rb`
+
+- Listens to `AssetCreated` event
+- Enqueues `BackfillPriceHistoryJob.perform_later(event.asset_id)`
+- `self.async? = true`
+
+**Modify:** `config/initializers/event_subscriptions.rb`
+
+- Subscribe `AssetCreated` → `BackfillHistoryOnAssetCreation`
+
+**Specs:** +5 (job spec + handler spec)
+
+**Commit:** `Add BackfillPriceHistoryJob triggered on asset creation`
+
+#### 9.2c — Sparkline Helper & Real Data Connection
+
+**New file:** `app/helpers/sparkline_helper.rb`
+
+- `price_sparkline_data(asset, days: 7)` → `{ heights: [30, 45, ...], direction: :up }`
+- Queries `asset.asset_price_histories.recent(days).pluck(:close)`
+- Normalizes to 0-100 relative heights
+- Falls back to hardcoded data if no history available
+
+**Modify:** `app/views/components/_sparkline.html.erb`
+
+- Accept optional `heights` parameter; use it when provided, otherwise fall back to direction-based
+
+**Modify views (3 files):**
+
+- `app/views/market/_listings_table.html.erb` — pass real sparkline data
+- `app/views/dashboard/_watchlist_table.html.erb` — pass real sparkline data
+- `app/views/profiles/show.html.erb` — pass real sparkline data (watchlist section)
+
+**Specs:** +7 (helper spec for normalization, edge cases, fallback)
+
+**Commit:** `Connect sparklines to real price history data`
+
+### Verification
+
 ```bash
-bundle exec rspec                    # Todos verdes (85 + nuevos)
-rails server                         # Verificar: onboarding flow, empty states, notifications, search, news, error pages
+bundle exec rspec         # ~765 specs, 0 failures
+bin/dev                   # Visit /market → sparklines show real history patterns
 ```
 
 ---
 
-## Fase 5: Modelos, Migraciones y Seeds
+## Phase 9.3 — News Feed with Polygon
 
-### Objetivo
-Crear toda la capa de datos: 21 migraciones nuevas (User y RememberToken ya existen), 21 modelos con validaciones/asociaciones/scopes, y seeds con datos realistas. Al finalizar, `rails db:migrate db:seed` corre sin errores y las vistas siguen funcionando.
+> **Goal:** Replace seed-only news articles with live data from Polygon.io's news API. Add infinite scroll and TradingView widget.
+> **Depends on:** Phase 9.0 (Registry, SyncLogging)
 
-### Documentos a Revisar
-- `docs/spec/README.md` sec. 7 (Propuesta de Modelado) y sec. 8 (Fases)
-- `docs/spec/DATABASE_SCHEMA.md` completo (23 migraciones, 23 modelos, seeds)
-- `docs/spec/COMMANDS.md` sec. 1-2 (arquitectura, estructura de carpetas)
-- `docs/spec/TECHNICAL_SPEC.md` sec. 1 (gems por agregar: dry-types, dry-struct, dry-validation, dry-monads, pagy, money-rails)
+### Current State
 
-### Pasos
+- `NewsArticle` model exists (title, summary, source, url, image_url, published_at, related_ticker)
+- `NewsController#index` exists with `News::ListArticles` use case + Pagy pagination
+- `/news` view exists (featured hero, 2-column grid, sidebar) — data from 3 seed articles
+- No gateway fetches news, no sync job
 
-#### 5.1 — Dependencias
-- Agregar gems al Gemfile: `dry-types`, `dry-struct`, `dry-validation`, `dry-monads`, `pagy`, `money-rails`
-- `bundle install`
-- Crear `app/types/types.rb` con dry-types compartidos
-- **Test:** `bundle exec rspec` — 85 specs siguen verdes
-- **Commit:** `Add dry-rb, pagy and money-rails gems with Types module`
+### Steps
 
-#### 5.2 — Migraciones (21 tablas nuevas)
-- Crear migraciones siguiendo DATABASE_SCHEMA.md sec. 2 exactamente:
-  - Assets, Portfolios, Positions, Trades, WatchlistItems
-  - AlertRules, AlertEvents, AlertPreferences
-  - EarningsEvents, NewsArticles, MarketIndices, TrendScores
-  - SystemLogs, Integrations
-  - PortfolioSnapshots, FxRates, AssetPriceHistories
-  - Notifications, AuditLogs, Dividends, DividendPayments
-- Actualizar migracion de Users existente si faltan columnas (`avatar_url`, `is_verified`, `preferred_currency`)
-- `rails db:migrate`
-- **Test:** `rails db:migrate:status` muestra todas up, `bundle exec rspec` sigue verde
-- **Commit:** `Add 21 database migrations for all domain models`
+#### 9.3a — Polygon News Gateway Method
 
-#### 5.3 — Modelos ActiveRecord (21 nuevos)
-- Crear cada modelo siguiendo DATABASE_SCHEMA.md sec. 3 exactamente:
-  - Enums, asociaciones, validaciones, scopes, metodos de instancia
-  - Actualizar `User` model con asociaciones faltantes (has_one :portfolio, has_many :watchlist_items, etc.)
-- **Tests unitarios:** Spec por cada modelo que verifique:
-  - Validaciones (presencia, unicidad, formato)
-  - Enums (valores correctos)
-  - Asociaciones (belongs_to, has_many)
-  - Scopes clave
-- **Commit:** `Add 21 ActiveRecord models with validations, associations and scopes`
+**Modify:** `app/gateways/polygon_gateway.rb`
 
-#### 5.4 — Seeds
-- Crear `db/seeds.rb` siguiendo DATABASE_SCHEMA.md sec. 4 exactamente
-- Incluir: 4 users, 10 assets, trades+positions para Alex, watchlist, alert rules/events, market indices, trend scores, earnings events, news articles, portfolio snapshots, FX rates, dividends, notifications, system logs, audit logs, integrations
-- `rails db:seed`
-- **Test:** `rails db:seed` corre sin errores, verificar conteos con `rails runner`
-- **Commit:** `Add comprehensive seed data with realistic financial records`
+- Add `fetch_news(ticker: nil, limit: 20, published_after: nil)`
+- Endpoint: `GET /v2/reference/news`
+- Maps response to `[{ title:, summary:, source:, url:, image_url:, published_at:, related_ticker: }]`
 
-#### 5.5 — Tests de Modelos
-- `spec/models/` con un spec por modelo (21 archivos)
-- Cubrir: factory validity, validaciones, enums, asociaciones, scopes, metodos clave
-- **Commit:** `Add model specs for all 21 new domain models`
+**Specs:** +4 (success, rate limit, error, empty)
 
-### Verificacion Final
+**Commit:** `Add fetch_news method to PolygonGateway`
+
+#### 9.3b — News Sync Use Case & Job
+
+**New file:** `app/use_cases/news/sync_articles.rb`
+
+- Calls `PolygonGateway#fetch_news`
+- Upserts by URL (avoids duplicates)
+- Publishes `NewsSynced` event with count
+
+**New file:** `app/events/news_synced.rb`
+**New file:** `app/event_handlers/log_news_sync.rb`
+**New file:** `app/jobs/sync_news_job.rb`
+
+- `include SyncLogging`
+- Calls `News::SyncArticles.call`
+
+**Modify:** `config/initializers/data_sources.rb` — register `:polygon_news`
+**Modify:** `config/initializers/event_subscriptions.rb` — subscribe `NewsSynced` → `LogNewsSync`
+**Modify:** `config/recurring.yml` — add `sync_news` every 30 minutes
+
+**Specs:** +8 (use case, event, handler, job)
+
+**Commit:** `Add SyncNewsJob with Polygon news integration`
+
+#### 9.3c — News View Enhancements
+
+**New file:** `app/javascript/controllers/infinite_scroll_controller.js`
+
+- Stimulus controller with `IntersectionObserver`
+- Fetches next page via Turbo Frame
+
+**Modify:** `app/views/news/index.html.erb`
+
+- Add Turbo Frame for paginated content
+- Add TradingView Top Stories widget in sidebar (iframe)
+- Add filter chips for source, time range
+
+**Modify:** `config/initializers/content_security_policy.rb`
+
+- Allow `frame-src https://www.tradingview.com` (if CSP is configured)
+
+**Optional migration:** Add `tickers` (jsonb array) to `news_articles` for multi-ticker support. Keep `related_ticker` for backwards compatibility.
+
+**Specs:** +8 (request specs for filters, pagination; use case specs)
+
+**Commit:** `Enhance news page with infinite scroll, filters, and TradingView widget`
+
+### UI Design Needed
+
+**Stitch prompt for news feed enhancements:**
+
+> Redesign the news feed page for a financial platform. The page has: (1) A filter bar at the top with pill-shaped chips for sources (Bloomberg, Reuters, WSJ, All), a time range dropdown (Today, This Week, This Month), and a search field. (2) A featured article hero card taking full width with large image, title, source badge, and time ago. (3) A 2-column grid of article cards below with thumbnail on the left (80x80), title, source tag, ticker tag (like "AAPL" in a blue pill), and "2h ago" timestamp. (4) A right sidebar with a TradingView widget placeholder (300px height, labeled "Market Headlines") and a "From Your Watchlist" section. (5) An infinite scroll trigger at the bottom (a subtle "Loading more..." with spinner). Use Tailwind CSS 4, dark mode, Inter font, Material Symbols. Primary color #004a99.
+
+### Verification
+
 ```bash
-bundle exec rspec          # Todos verdes (85 existentes + ~100 nuevos)
-rails db:migrate:status    # Todas las migraciones up
-rails db:seed              # Sin errores
+bundle exec rspec         # ~785 specs, 0 failures
+bin/dev                   # Visit /news → see live articles from Polygon
 ```
 
 ---
 
-## Fase 6: Backend (Use Cases, Events, CRUD)
+## Phase 9.4 — Market Indices Sync + IPC + VIX
 
-### Objetivo
-Conectar las vistas estaticas al backend real. Reemplazar datos hardcodeados por datos de BD. Implementar Use Cases con dry-monads, Domain Events, Contracts, y Turbo Streams para interactividad.
+> **Goal:** Make MarketIndex values live (no longer static seeds). Add IPC (Mexico), sync via Yahoo Finance, show VIX as volatility indicator.
+> **Depends on:** Phase 9.0 (Registry, SyncLogging)
 
-### Documentos a Revisar
-- `docs/spec/COMMANDS.md` completo (30+ Use Cases, Events, Contracts, Domain Services, Event Handlers, Gateways)
-- `docs/spec/TECHNICAL_SPEC.md` sec. 2-5 (arquitectura hexagonal, Hotwire, Stimulus)
-- `docs/spec/README.md` sec. 5 (Controllers y Vistas — contenido esperado por pagina)
-- `docs/spec/DATABASE_SCHEMA.md` sec. 3 (metodos de modelo que se usan en Use Cases)
+### Current State
 
-### Pasos
+- `MarketIndex` model exists with 4 seeded indices (SPX, NDX, DJI, UKX) — static, never updated
+- `VIX` exists as an `Asset` (type: index) but not as a `MarketIndex`
+- `YahooFinanceGateway` exists but only has `fetch_price` and `fetch_bulk_prices` (for BMV stocks)
+- Dashboard and Market page display indices from `MarketIndex.major` — always shows seed values
 
-#### 6.1 — Infraestructura DDD
-- Crear base classes: `ApplicationUseCase`, `ApplicationContract`, `BaseEvent`, `EventBus`
-- Crear `ProcessEventJob` para handlers async via Solid Queue
-- Crear initializer `config/initializers/event_subscriptions.rb`
-- **Test:** Specs para EventBus (subscribe, publish, async dispatch)
-- **Commit:** `Add DDD infrastructure: Use Case base, EventBus, Contracts`
+### Decision: Keep MarketIndex Model
 
-#### 6.2 — Domain Services y Value Objects
-- `app/domain/portfolio_summary.rb` — Calcula KPIs de portfolio
-- `app/domain/alert_evaluator.rb` — Evalua condiciones de alertas contra precios
-- `app/domain/market_sentiment.rb` — Sentimiento basado en trend scores
-- `app/domain/gain_loss.rb` — Value Object: absolute + percent
-- `app/domain/alert_condition.rb` — Value Object: condition + threshold
-- **Test:** Specs unitarios para cada domain service
-- **Commit:** `Add domain services: PortfolioSummary, AlertEvaluator, MarketSentiment`
+MarketIndex is kept as a separate model from Asset. Indices like S&P 500 are not tradeable assets in Stockerly — they're reference data displayed on the dashboard and market page. This avoids mixing concerns.
 
-#### 6.3 — Identity Use Cases (Auth ya existe, agregar profiles)
-- `Profiles::UpdateInfo` + `Profiles::ChangePassword`
-- Contracts: `Profiles::UpdateContract`, `Profiles::ChangePasswordContract`
-- Events: `ProfileUpdated`, `PasswordChanged`
-- Event Handlers: `InvalidateSessionsOnPasswordChange`
-- Conectar `ProfilesController#update` al Use Case
-- **Test:** Specs para Use Cases + request specs para profile update
-- **Commit:** `Add profile Use Cases: UpdateInfo, ChangePassword with events`
+### Steps
 
-#### 6.4 — Trading Use Cases (Dashboard, Portfolio, Watchlist)
-- `Dashboard::Assemble` — Carga todos los datos del dashboard
-- `Portfolio::LoadOverview` — Posiciones, allocation, dividendos
-- `Trades::ExecuteTrade` + `Positions::OpenPosition` + `Positions::ClosePosition`
-- `Watchlist::AddAsset` + `Watchlist::RemoveAsset`
-- `Snapshots::TakePortfolioSnapshot`
-- Events: `TradeExecuted`, `PositionOpened`, `PositionClosed`, `WatchlistItemAdded`, `PortfolioSnapshotTaken`
-- Handlers: `RecalculateAvgCostOnTrade`, `LogTradeActivity`
-- Conectar controllers: Dashboard, Portfolio, Watchlist (nuevo controller)
-- Reemplazar datos hardcodeados en vistas con datos de BD
-- **Test:** Specs para cada Use Case + request specs actualizados
-- **Commit:** `Add Trading Use Cases: Dashboard, Portfolio, Trades, Watchlist`
+#### 9.4a — YahooFinanceGateway: Index Quotes
 
-#### 6.5 — Alerts Use Cases
-- `Alerts::CreateRule`, `UpdateRule`, `ToggleRule`, `DestroyRule`
-- `Alerts::UpdatePreferences`, `EvaluateRules`
-- Contracts: `Alerts::CreateContract`, `UpdateContract`, `PreferencesContract`
-- Events: `AlertRuleCreated`, `AlertRuleTriggered`
-- Handlers: `CreateAlertEventOnTrigger`, `CreateNotificationOnAlert`
-- Conectar `AlertsController` CRUD con Turbo Streams
-- **Test:** Specs para Use Cases + request specs para CRUD
-- **Commit:** `Add Alerts Use Cases: CRUD rules, evaluate, preferences with Turbo Streams`
+**Modify:** `app/gateways/yahoo_finance_gateway.rb`
 
-#### 6.6 — Market Data Use Cases
-- `Market::ExploreAssets` + `Market::ExportCsv`
-- `Earnings::ListForMonth`
-- `Trends::LoadAssetTrend`
-- Contracts: `Market::ExploreContract`
-- Conectar controllers con filtros reales y paginacion (pagy)
-- **Test:** Specs para Use Cases + request specs
-- **Commit:** `Add Market Data Use Cases: ExploreAssets, Earnings, Trends with pagy`
+- Add `fetch_index_quotes(symbols)` method
+- Symbols: `['^GSPC', '^IXIC', '^DJI', '^FTSE', '^MXX', '^VIX']`
+- Returns `Success([{ symbol:, name:, value:, change_percent:, is_open: }])`
+- Maps Yahoo symbols to our symbols (^GSPC → SPX, ^IXIC → NDX, etc.)
 
-#### 6.7 — Notifications
-- `Notifications::CreateNotification` + `MarkAsRead`
-- Events: `NotificationCreated`
-- Handlers: `BroadcastNotification` (Turbo Streams)
-- Nuevo `NotificationsController` con dropdown Turbo Frame
-- **Test:** Specs para Use Cases
-- **Commit:** `Add Notifications Use Cases with Turbo Stream broadcasts`
+**Specs:** +4
 
-#### 6.8 — Admin Use Cases
-- `Admin::Assets::CreateAsset`, `ToggleStatus`, `TriggerSync`
-- `Admin::Users::SuspendUser`, `UpdateUser`
-- `Admin::Integrations::ConnectProvider`, `RefreshSync`, `DisconnectProvider`
-- `Admin::Logs::ListLogs`, `ExportCsv`
-- Events: `UserSuspended`, `IntegrationConnected`
-- Handlers: `SendSuspensionEmail`, `LogIntegrationConnected`, `CreateAuditLog`
-- Conectar admin controllers con datos reales + Turbo Streams
-- **Test:** Specs para Use Cases + request specs actualizados
-- **Commit:** `Add Admin Use Cases: assets, users, integrations, logs`
+**Commit:** `Add fetch_index_quotes to YahooFinanceGateway`
 
-#### 6.9 — Tests de Integracion
-- Request specs end-to-end para flujos criticos:
-  - Register → Dashboard con datos reales
-  - Create alert → Evaluate → Notification generada
-  - Execute trade → Position updated → Snapshot
-  - Admin suspend user → Event → Email
-- **Commit:** `Add end-to-end integration tests for critical flows`
+#### 9.4b — SyncMarketIndicesJob
 
-### Verificacion Final
+**New file:** `app/jobs/sync_market_indices_job.rb`
+
+- `include SyncLogging`
+- Calls `YahooFinanceGateway#fetch_index_quotes`
+- Upserts `MarketIndex` records by symbol
+- Publishes `MarketIndicesUpdated` event
+
+**New file:** `app/events/market_indices_updated.rb`
+**New file:** `app/event_handlers/log_market_indices_update.rb`
+
+**Modify:** `config/initializers/data_sources.rb` — register `:yahoo_indices`
+**Modify:** `config/initializers/event_subscriptions.rb`
+**Modify:** `config/recurring.yml` — add `sync_market_indices` every 10 minutes
+
+**Specs:** +6
+
+**Commit:** `Add SyncMarketIndicesJob with Yahoo Finance`
+
+#### 9.4c — IPC + VIX + Updated Views
+
+**Modify:** `db/seeds.rb`
+
+- Add IPC (^MXX) to MarketIndex seeds
+- Add VIX to MarketIndex seeds (separate from VIX Asset)
+
+**Modify:** `app/models/market_index.rb`
+
+- Update scope `.major` to include IPC: `%w[SPX NDX DJI UKX IPC]`
+- Add scope `.vix` → `find_by(symbol: 'VIX')`
+
+**Modify:** `app/views/market/index.html.erb`
+
+- Show 5 index cards + VIX indicator badge
+- Show market status (Open/Closed) from `MarketHours`
+
+**Modify:** `app/views/dashboard/_market_status.html.erb` (or equivalent)
+
+- Use live index values instead of seed values
+
+**Specs:** +5
+
+**Commit:** `Add IPC index, VIX indicator, and live index display`
+
+### UI Design Needed
+
+**Stitch prompt for market indices cards:**
+
+> Design a horizontal row of 5 market index cards for a financial dashboard. Each card shows: index name (e.g. "S&P 500"), current value in large text (e.g. "5,214.33"), change percent with color (green +0.42%, red -0.12%), and a small status indicator (green dot = Open, gray dot = Closed). Below the 5 cards, add a VIX indicator bar: "VIX 14.33" with a horizontal scale from "Low Volatility" to "High Volatility", color-coded (green < 20, amber 20-30, red > 30). The 5 indices are: S&P 500, NASDAQ, DOW JONES, FTSE 100, IPC Mexico. Use Tailwind CSS 4, dark mode, rounded-xl cards with border, Inter font, Material Symbols.
+
+### Verification
+
 ```bash
-bundle exec rspec                    # Todos verdes (~200+ specs)
-rails server                         # Vistas muestran datos de BD
-# Verificar manualmente: dashboard, market, portfolio, alerts, earnings, admin
+bundle exec rspec         # ~800 specs, 0 failures
+bin/dev                   # Visit /market → indices show live values
 ```
 
 ---
 
-## Fase 6.5: Auditoria de Consistencia e Integracion
+## Phase 9.5 — CETES Placeholder
 
-### Objetivo
-Verificar que todo lo construido en fases 0-6 es consistente, bien integrado y testeable. Extraer logica inline de controllers a Use Cases, conectar vistas hardcodeadas a datos reales, documentar deuda tecnica con TODOs, y cerrar gaps de test coverage.
+> **Goal:** Add `fixed_income` asset type and schema fields for future CETES/bond support. Minimal implementation — placeholder only.
+> **Depends on:** Nothing (independent)
 
-### Pasos Completados
+### Steps
 
-#### 6.5.1 — Extraer logica inline de controllers a Use Cases
-- 7 Use Cases nuevos: `Alerts::LoadDashboard`, `Notifications::ListRecent`, `Profiles::LoadProfile`, `Onboarding::LoadAssetCatalog`, `Onboarding::LoadProgress`, `Admin::Assets::ListAssets`, `Admin::Users::ListUsers`
-- 4 auth controllers anotados con `# TODO:` definiendo la interfaz futura del Use Case
+#### 9.5a — Migration & Model Update
 
-#### 6.5.2 — Corregir bugs monadicos
-- `SuspendUser`: agregar `yield` antes de `publish()` para propagar fallos del EventBus
-- `CompleteWizard`: rescue `ActiveRecord::RecordInvalid` → `Failure(:validation)`
-- `UpdatePreferences`: rescue `ActiveRecord::RecordInvalid` → `Failure(:validation)`
+**Migration:** `add_fixed_income_support_to_assets`
 
-#### 6.5.3 — Conectar vistas hardcodeadas a datos reales
-- Notification panel conectado a modelo `Notification` con badge dinamico
-- Global search usa route helpers en vez de paths absolutos
-- Onboarding step2/step3 cargan assets y progreso desde BD
+```ruby
+# Add fixed_income to enum (value: 4)
+# Note: enum change requires updating the Ruby enum definition, not a DB migration
+# for PostgreSQL integer enums
 
-#### 6.5.4 — Documentar botones sin funcionalidad
-- 12 botones/elementos anotados con `# TODO:` especificando el Use Case target
+add_column :assets, :yield_rate,     :decimal, precision: 8, scale: 4
+add_column :assets, :maturity_date,  :date
+add_column :assets, :face_value,     :decimal, precision: 15, scale: 2
+```
 
-#### 6.5.5 — Cerrar gaps de test coverage
-- 4 specs faltantes: `UpdateRule`, `UpdatePreferences`, `CreateContract`, `NotificationsController`
-- 7 specs para Use Cases nuevos del paso 6.5.1
+**Modify:** `app/models/asset.rb`
 
-#### 6.5.6 — Tests de integracion E2E
-- 11 request specs verificando flujos refactorizados de punta a punta
+- Add `fixed_income: 4` to `asset_type` enum
+- Add scope `.fixed_income` → `where(asset_type: :fixed_income)`
 
-### Verificacion Final
+**Modify:** `db/seeds.rb`
+
+- Add 2 CETES examples (28-day and 364-day)
+
+**Specs:** +3 (enum value, scope, validation)
+
+**Commit:** `Add fixed_income asset type with yield and maturity fields`
+
+#### 9.5b — UI Badge & Filter
+
+**Modify:** Market page filter to include "Fixed Income" option
+**Modify:** `_asset_type_badge` component (if exists) to handle `:fixed_income` with appropriate color
+
+**Specs:** +2
+
+**Commit:** `Add fixed income badge and filter in market UI`
+
+### Verification
+
 ```bash
-bundle exec rspec                    # 540 specs, 0 failures
-                                     # Line Coverage: 96.88%
-                                     # Branch Coverage: 79.63%
+bundle exec rspec         # ~805 specs, 0 failures
+bin/rails db:seed         # CETES examples appear in assets
 ```
 
 ---
 
-## Fase 7: Integraciones Externas
+## UI/UX Design Requirements Summary
 
-### Objetivo
-Conectar con APIs externas para datos de mercado en tiempo real. Implementar gateways, jobs recurrentes, circuit breakers y Turbo Streams para actualizaciones live.
+These are the new visual components that need Stitch designs before or during implementation:
 
-### Documentos a Revisar
-- `docs/spec/COMMANDS.md` sec. 8 (Gateways: Polygon, CoinGecko, FX Rates)
-- `docs/spec/TECHNICAL_SPEC.md` sec. 1 (Solid Queue, Solid Cable)
-- `docs/spec/DATABASE_SCHEMA.md` sec. 3.15 (Integration model con encrypted API keys)
-- `docs/spec/README.md` sec. 8 (Fase 7 checklist)
+| Phase | Component                                     | Priority | Stitch Prompt |
+| ----- | --------------------------------------------- | -------- | ------------- |
+| 9.0e  | Admin Data Sources Health Panel               | Medium   | See below     |
+| 9.1d  | Fear & Greed Card (x2)                        | High     | See Phase 9.1 |
+| 9.3c  | News Feed Enhanced (filters, infinite scroll) | High     | See Phase 9.3 |
+| 9.4c  | Market Index Cards Row + VIX Bar              | Medium   | See Phase 9.4 |
 
-### Pasos
+### Stitch Prompt: Admin Data Sources Health Panel
 
-#### 7.1 — Gateway Infrastructure
-- Crear `MarketDataGateway` (interface base)
-- Crear `PolygonGateway` (adapter: Faraday + Polygon.io REST API)
-- Crear `CoingeckoGateway` (adapter: CoinGecko REST API)
-- Crear `FxRatesGateway` (adapter: exchangerate-api.com)
-- Configurar credentials Rails para API keys
-- **Test:** Specs con WebMock/VCR para cada gateway
-- **Commit:** `Add market data gateways: Polygon.io, CoinGecko, FX Rates`
+> Design an admin dashboard section titled "Data Sources" for a financial platform admin panel. Show a grid of 6 data source cards in 2 rows of 3. Each card has: (1) a Material Symbol icon with color accent (indigo for stocks, emerald for crypto, amber for FX, purple for sentiment), (2) source name (e.g. "US Stocks — Polygon.io"), (3) status badge (Connected/green, Syncing/amber, Disconnected/red), (4) "Last sync: 2 min ago" text, (5) "Errors 24h: 0" counter, (6) a "Sync Now" button. The cards should be compact (not full-width). Below the grid, add a note: "Sources are auto-discovered from the DataSourceRegistry." Use Tailwind CSS 4, dark mode, Inter font, Material Symbols. Style: admin/professional, minimal.
 
-#### 7.2 — Background Jobs (Solid Queue)
-- `SyncAllAssetsJob` — Actualiza precios de todos los assets activos
-- `SyncSingleAssetJob` — Actualiza precio de un asset especifico
-- `SyncIntegrationJob` — Refresh de integracion especifica
-- `TakeSnapshotsJob` — Portfolio snapshots diarios
-- `RefreshFxRatesJob` — Tasas de cambio
-- `ProcessEventJob` — Procesar events async
-- Configurar Solid Queue recurring schedule
-- **Test:** Specs para cada job
-- **Commit:** `Add background jobs for price sync, snapshots and FX rates`
+---
 
-#### 7.3 — Real-time Updates (Turbo Streams + Solid Cable)
-- `AssetPriceUpdated` event → `BroadcastPriceUpdate` handler
-- Turbo Stream channels: `asset_{id}`, `notifications_{user_id}`
-- Partials para broadcast: `_asset_price`, `_notification`, `_notification_badge`
-- ActionCable subscription en vistas (Dashboard, Market, Portfolio)
-- **Test:** Specs para broadcast handlers
-- **Commit:** `Add real-time price updates via Turbo Streams and ActionCable`
+## Dependency Graph
 
-#### 7.4 — Circuit Breakers y Resilencia
-- Circuit breaker pattern para cada gateway (basado en errores consecutivos)
-- Retry logic con exponential backoff
-- Fallback a ultimo precio conocido cuando API falla
-- Rate limiting en API calls (respetar limites de Polygon/CoinGecko)
-- Logging de errores de gateway en SystemLog
-- **Test:** Specs para circuit breaker logic
-- **Commit:** `Add circuit breakers and resilience patterns for external APIs`
+```
+Phase 9.0 (Foundation)
+  ├── Phase 9.1 (Fear & Greed) ─── uses Registry, SyncLogging, Integration model
+  ├── Phase 9.2 (Historical 7D) ── uses SyncLogging
+  ├── Phase 9.3 (News Feed) ────── uses Registry, SyncLogging
+  └── Phase 9.4 (Indices) ──────── uses Registry, SyncLogging
 
-#### 7.5 — Admin: Gestion de Integraciones
-- Conectar UI de integraciones con gateways reales
-- Test de conectividad desde admin panel
-- Logs de sincronizacion en SystemLog
-- **Test:** Request specs para admin integration management
-- **Commit:** `Connect admin integration management to real gateways`
+Phase 9.5 (CETES) ─────────────── independent (schema only)
+```
 
-#### 7.6 — Tests de Integracion Final
-- Tests end-to-end con mocks de APIs externas
-- Verificar: sync → prices updated → alerts evaluated → notifications sent → UI updated
-- Performance: verificar N+1 queries con bullet gem
-- **Commit:** `Add integration tests for external API flows`
+Phases 9.1-9.4 all depend on 9.0 but are independent of each other. The chosen order (F&G → 7D → News → Indices) is by value/effort ratio, not by dependency.
 
-### Verificacion Final
+---
+
+## Risk Mitigation
+
+| Risk                              | Mitigation                                                                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------------ |
+| CNN API breaks/changes            | Circuit breaker (3 failures → open 5 min). Dashboard shows "Neutral 50" + "Data may be outdated" |
+| Alternative.me down               | Independent fetch per source. Crypto F&G failure doesn't block stocks F&G                        |
+| Polygon news rate limit           | 1 fetch/30 min well within Basic tier (5 req/min). Upsert avoids duplicates                      |
+| Yahoo Finance blocks requests     | User-Agent header, reasonable rate (1 req/10 min for indices). Fallback to seed values           |
+| Registry drift vs recurring.yml   | Smoke test verifies every `recurring.yml` entry has a registry entry                             |
+| Refactor breaks existing jobs     | Phase 9.0 is pure refactor — 702 specs are the safety net                                        |
+| Data growth                       | F&G: ~730 rows/year. News: ~14K/year (20 articles × 48 fetches/day). Indexed.                    |
+| Alpha Vantage 25 calls/day limit  | OVERVIEW-first (1 call = 50+ metrics). Budget tracker via SystemLog. Prioritized queue            |
+| Alpha Vantage rate limit quirk    | Inspect body for "Note"/"Information" keys — returns HTTP 200 (not 429)                          |
+| Financial statement JSONB bloat   | ~50KB/statement × 20 statements/asset × 200 assets = ~200MB. Well within PostgreSQL limits       |
+| Incorrect metric calculations     | Extensive unit tests for FundamentalCalculator. D/E uses total_debt (not total_liabilities)       |
+| Regulatory risk (investment advice)| Contextual guidance only, GAAP-only, disclaimer on all pages, no prescriptive language           |
+| API provider lock-in              | FundamentalsGateway base class enables provider swap (FMP, Polygon) without touching domain       |
+
+---
+
+## Phase 10 — Financial Fundamentals & Asset Detail
+
+> **Source:** `PLAN_METRICS.md` (reviewed by Domain Architect, Financial Expert, Data Engineer)
+> **Goal:** Add fundamental financial metrics (valuation, profitability, debt, growth, dividends) to Stockerly.
+> Replace price-only views with comprehensive asset analysis. Educational UX with help tooltips.
+> **Data source:** Alpha Vantage (free tier, 25 calls/day). OVERVIEW-first strategy.
+> **Designs:** `designs/detalle_de_asset_-_aapl/`, `designs/aapl_statements_tab_-_stockerly/`,
+> `designs/stockerly_-_adaptive_metrics/`, `designs/stockerly_-_tooltip_component_detail/`
+
+### Phase 10 Summary
+
+| Fase      | Nombre                                         | Tipo         | Est. Specs | Acumulado |
+| --------- | ---------------------------------------------- | ------------ | ---------- | --------- |
+| **10.0**  | Foundation: Models + OVERVIEW Sync             | Backend      | ~30        | ~1020     |
+| **10.1**  | Financial Statements + Calculator              | Backend      | ~25        | ~1045     |
+| **10.2**  | UI: Asset Detail Page                          | Frontend     | ~20        | ~1065     |
+| **10.3**  | Crypto Fundamentals                            | Cross-stack  | ~10        | ~1075     |
+|           | **Total Phase 10**                             |              | **~85**    |           |
+
+### Key Architecture Decisions (Expert-Reviewed)
+
+| Decision | Resolution | Expert |
+|----------|-----------|--------|
+| MetricDefinition storage | **Ruby module (Data.define)**, not DB table | Domain Architect |
+| Event chain | **Two events:** `FinancialStatementsSynced` → `AssetFundamentalsUpdated` | Domain Architect |
+| Price-dependent metrics | **FundamentalPresenter** computes live at render (not stored) | Domain Architect |
+| Debt-to-Equity formula | **total_debt / equity** (NOT total_liabilities) | Financial Expert |
+| Guidance language | **Contextual**, no prescriptive "buy/sell" advice | Financial Expert |
+| TTM calculation | **Sum of last 4 quarters**, not latest annual | Financial Expert |
+| GAAP vs Non-GAAP | **GAAP only**, noted visibly in UI | Financial Expert |
+| Job granularity | **1 job = 1 API call** (atomic, resilient) | Data Engineer |
+| API priority | **OVERVIEW first** (50+ metrics/1 call), Statements later | Data Engineer |
+| Rate limit detection | **Inspect body for "Note" key** (Alpha Vantage returns HTTP 200) | Data Engineer |
+
+---
+
+### Phase 10.0 — Foundation: Models + MetricDefinitions + OVERVIEW Sync
+
+> **Goal:** Immediate value — 50+ metrics per asset from a single API call/day.
+> **Depends on:** Phase 9.0 (DataSourceRegistry, SyncLogging, Integration model)
+
+#### 10.0a — Database Models (2 migrations + 1 column)
+
+**Migration 1:** `create_financial_statements`
+
+```ruby
+create_table :financial_statements do |t|
+  t.references :asset, null: false, foreign_key: true
+  t.string   :statement_type, null: false   # income_statement, balance_sheet, cash_flow
+  t.string   :period_type, null: false      # annual, quarterly
+  t.date     :fiscal_date_ending, null: false
+  t.integer  :fiscal_year
+  t.integer  :fiscal_quarter
+  t.string   :currency, default: "USD"
+  t.jsonb    :data, null: false, default: {}
+  t.string   :source
+  t.datetime :fetched_at
+  t.timestamps
+end
+add_index :financial_statements, [:asset_id, :statement_type, :period_type, :fiscal_date_ending],
+          unique: true, name: "idx_fin_stmts_unique"
+```
+
+**Migration 2:** `create_asset_fundamentals`
+
+```ruby
+create_table :asset_fundamentals do |t|
+  t.references :asset, null: false, foreign_key: true
+  t.string   :period_label, null: false   # "TTM", "OVERVIEW", "FY2025"
+  t.jsonb    :metrics, null: false, default: {}
+  t.string   :source                       # "calculated", "api_overview", "blended"
+  t.datetime :calculated_at
+  t.timestamps
+end
+add_index :asset_fundamentals, [:asset_id, :period_label], unique: true
+```
+
+**Migration 3:** `add_fundamentals_synced_at_to_assets`
+
+```ruby
+add_column :assets, :fundamentals_synced_at, :datetime
+```
+
+**Models:** `FinancialStatement` (enums, scopes, JSONB key validation), `AssetFundamental` (scopes)
+**Factories + Specs:** +10
+
+**Commit:** `Add FinancialStatement and AssetFundamental models`
+
+#### 10.0b — MetricDefinitions Module
+
+**New file:** `app/domain/metric_definitions.rb`
+
+- `Data.define` struct: key, category, display_name, short_desc, context_guidance, format_type, display_order, icon
+- 30+ definitions across 7 categories (valuation, profitability, health, growth, dividends, risk, identity)
+- Class methods: `.find(key)`, `.by_category(category)`, `.categories`
+- Follows same pattern as `DataSourceRegistry`
+
+**Specs:** +4 (all definitions present, valid categories, no duplicates, find/by_category)
+
+**Commit:** `Add MetricDefinitions module with 30+ metric definitions`
+
+#### 10.0c — Alpha Vantage Gateway
+
+**New file:** `app/gateways/fundamentals_gateway.rb` (base class)
+**New file:** `app/gateways/alpha_vantage_gateway.rb` (concrete implementation)
+
+- `fetch_overview(symbol)` — OVERVIEW endpoint (Phase A only)
+- **Critical:** Alpha Vantage returns HTTP 200 with `"Note"` key on rate limit (NOT 429)
+- Error types: `:rate_limited`, `:auth_error`, `:gateway_error`, `:not_found`, `:timeout`, `:parse_error`
+- Faraday with retry middleware, 10s timeout
+
+**Specs:** +6 (WebMock: success, rate_limit "Note", auth "Information", timeout, 500, parse error)
+
+**Commit:** `Add AlphaVantageGateway with OVERVIEW endpoint`
+
+#### 10.0d — FundamentalPresenter + Jobs + Events
+
+**New file:** `app/domain/fundamental_presenter.rb`
+
+- Computes price-dependent metrics at render time: P/E, P/B, P/S, EV/EBITDA, FCF Yield
+- Uses live `current_price` + stored `diluted_eps`, `total_revenue`, etc.
+
+**New file:** `app/jobs/sync_fundamental_job.rb` (1 asset, 1 function)
+**New file:** `app/jobs/sync_all_fundamentals_job.rb` (orchestrator with prioritization + budget)
+
+- Priority: portfolio assets > watchlist assets > rest
+- Budget tracking via SystemLog entries (25 calls/day)
+- Staggered enqueueing: `wait: index * 15.seconds` (20% headroom vs 5 calls/min limit)
+
+**New file:** `app/events/asset_fundamentals_updated.rb`
+**New file:** `app/event_handlers/log_fundamentals_update.rb`
+
+**Modify:** `config/initializers/data_sources.rb` — register `:alpha_vantage_fundamentals`
+**Modify:** `config/initializers/event_subscriptions.rb`
+**Modify:** `config/recurring.yml` — add `sync_fundamentals_overview` daily at 7am UTC
+**Modify:** `db/seeds.rb` — add "Alpha Vantage" integration + sample AssetFundamental
+
+**Specs:** +10 (presenter, jobs, event, handler)
+
+**Commit:** `Add OVERVIEW sync pipeline with FundamentalPresenter`
+
+#### Phase 10.0 Verification
+
 ```bash
-bundle exec rspec                    # Todos verdes (~250+ specs)
-rails server                         # Precios se actualizan en real-time
-# Verificar: Solid Queue dashboard, Turbo Stream updates, circuit breaker logging
+bundle exec rspec         # ~1020 specs, 0 failures
+bin/rubocop               # 0 offenses
+bin/rails db:seed         # Alpha Vantage integration + sample fundamentals
 ```
 
 ---
 
-## Fase 8: Polish & Completeness
+### Phase 10.1 — Financial Statements + Calculator
 
-### Objetivo
-Resolver los 16 TODOs pendientes en el codigo: extraer logica inline de auth controllers a Use Cases, conectar botones UI, y deshabilitar features post-launch. Dejar 0 deuda tecnica anotada.
+> **Goal:** Self-calculated metrics from raw statements, multi-year analysis.
+> **Depends on:** Phase 10.0
 
-### Pasos Completados
+#### 10.1a — Extend AlphaVantageGateway (3 statement methods)
 
-#### 8.1 — Identity Use Cases
-- 4 Use Cases nuevos: `Identity::Register`, `Identity::Login`, `Identity::RequestPasswordReset`, `Identity::ResetPassword`
-- 4 Contracts con validacion dry-validation
-- 3 auth controllers refactorizados para delegar al Use Case (session/cookie management queda en controller)
+**Modify:** `app/gateways/alpha_vantage_gateway.rb`
 
-#### 8.2 — Admin Log Tools
-- `Admin::Logs::ExportCsv` Use Case con generacion CSV y evento CsvExported
-- Filtros conectados via `form_with` (search, severity, module)
-- Botones Export CSV y Force Refresh conectados a endpoints reales
+- Add `fetch_income_statement(symbol)`, `fetch_balance_sheet(symbol)`, `fetch_cash_flow(symbol)`
+- Each returns `Success(body)` with annual + quarterly reports
 
-#### 8.3 — UI Button Connections
-- Profile Email Notifications toggle conectado a `Alerts::UpdatePreferences` via PATCH
-- Edit Settings → anchor link a #account-settings
-- Buy/Sell y Add Position → link a Market page
-- Setup Alerts → link a alerts_path
-- `Admin::Integrations::ConnectProvider` Use Case con formulario inline
-- Privacy Mode toggle deshabilitado (sin campo en BD)
+**Specs:** +4 (WebMock stubs per function)
 
-#### 8.4 — Post-Launch Cleanup
-- Share Profile, View Full Report, Subscribe Now → disabled con "Coming soon"
-- 0 TODOs restantes en app/
+**Commit:** `Add financial statement fetch methods to AlphaVantageGateway`
 
-### Verificacion Final
+#### 10.1b — FundamentalCalculator Domain Service
+
+**New file:** `app/domain/fundamental_calculator.rb`
+
+- Pure stateless calculator, receives data → returns metrics hash
+- **Debt-to-Equity:** `total_debt / equity` (short + long term, NOT total_liabilities)
+- **TTM:** Sum of last 4 quarterly reports (balance sheet uses latest snapshot)
+- **CAGR:** Guards against negative/zero values
+- **Interest Coverage:** Returns `nil` when interest_expense = 0
+- Covers: profitability, health, growth, dividend metrics
+
+**Specs:** +10 (every formula, edge cases: nil, zero, negative, "None" strings)
+
+**Commit:** `Add FundamentalCalculator with all metric formulas`
+
+#### 10.1c — Use Case + Events + Handlers
+
+**New file:** `app/use_cases/market/load_asset_detail.rb`
+**New file:** `app/events/financial_statements_synced.rb`
+**New file:** `app/event_handlers/recalculate_fundamentals_on_statements_sync.rb`
+**New file:** `app/event_handlers/broadcast_fundamentals_update.rb`
+
+**Reactive chain:**
+```
+SyncFundamentalJob → saves statements → publishes FinancialStatementsSynced
+  → RecalculateFundamentalsOnStatementsSynced → FundamentalCalculator → upserts AssetFundamental
+    → publishes AssetFundamentalsUpdated → BroadcastFundamentalsUpdate (Turbo Stream)
+```
+
+**Modify:** `config/initializers/event_subscriptions.rb` — wire both handlers
+**Modify:** `config/recurring.yml` — add `sync_fundamentals_statements` weekly at 8am UTC (Sunday)
+**Modify:** `app/jobs/sync_fundamental_job.rb` — extend `persist` for statement types
+
+**Specs:** +11 (use case, events, handlers)
+
+**Commit:** `Add statement sync pipeline with FundamentalCalculator`
+
+#### Phase 10.1 Verification
+
 ```bash
-grep -r "TODO" app/ --include="*.rb" --include="*.erb" | wc -l  # 0
-bundle exec rspec                    # 702 specs, 0 failures
-                                     # Line Coverage: 94.18%
-                                     # Branch Coverage: 75.48%
+bundle exec rspec         # ~1045 specs, 0 failures
+bin/rubocop               # 0 offenses
 ```
 
 ---
 
-## Pendientes de Seguridad e Infraestructura
+### Phase 10.2 — UI: Asset Detail Page
 
-> Items identificados en la auditoria de seguridad (Feb 2026) que requieren configuracion externa o decisiones de infraestructura.
+> **Goal:** User-facing metric cards with help tooltips, tabbed layout, statement tables.
+> **Depends on:** Phase 10.1
+> **Designs:** `designs/detalle_de_asset_-_aapl/screen.png`, `designs/aapl_statements_tab_-_stockerly/screen.png`, `designs/stockerly_-_tooltip_component_detail/screen.png`
 
-| # | Item | Prioridad | Descripcion |
-|---|------|-----------|-------------|
-| S-1 | Kamal proxy SSL end-to-end | Alta | Habilitar `ssl: true` en `config/deploy.yml` proxy, o verificar que Cloudflare usa modo **Full (Strict)** / Tunnel para cifrar trafico entre Cloudflare y el servidor. Sin esto, el trafico viaja sin cifrar en el ultimo tramo. |
-| S-2 | PostgreSQL backups automatizados | Alta | Configurar `pg_dump` cron job diario en el servidor. El accessory de PostgreSQL en Kamal solo monta un volumen de datos pero no tiene backups. Considerar tambien health checks del contenedor y PgBouncer para connection pooling. |
-| S-3 | Email verification en registro | Media | Implementar verificacion de email post-registro usando `generates_token_for :email_verification`. Actualmente las cuentas se activan inmediatamente sin confirmar el email. |
-| S-4 | Docker image vulnerability scanning | Baja | Agregar paso de `trivy` o `grype` en el CI (deploy.yml) para escanear la imagen Docker antes del deploy. La imagen base `ruby:3.3.6-slim` podria tener CVEs en paquetes del sistema. |
+#### 10.2a — Route + Controller + Summary Tab
+
+**Modify:** `config/routes.rb` — add `GET /market/:symbol` → `MarketController#show`
+
+**Modify:** `app/controllers/market_controller.rb`
+
+- Add `show` action: calls `Market::LoadAssetDetail`, passes fundamentals to `FundamentalPresenter`
+- Loads `MetricDefinitions` for help icons
+
+**New file:** `app/views/market/show.html.erb` — tabbed layout per design
+
+**New files (partials):**
+- `_metric_card.html.erb` — reusable card with value, label, help icon, context
+- `_metric_grid.html.erb` — responsive grid of metric cards
+- `_summary_tab.html.erb` — top 10 metrics (P/E, FCF, CAGR, D/E, ROE, etc.)
+- `_disclaimer.html.erb` — regulatory disclaimer footer
+
+**Specs:** +8 (request specs: show, not_found, missing fundamentals)
+
+**Commit:** `Add asset detail page with summary tab and metric cards`
+
+#### 10.2b — Category Tabs + Statements Tab
+
+**New files (partials):**
+- `_valuation_tab.html.erb`, `_profitability_tab.html.erb`, `_health_tab.html.erb`
+- `_growth_tab.html.erb`, `_dividends_tab.html.erb`
+- `_statements_tab.html.erb` — multi-year financial statement table per design
+- Income Statement / Balance Sheet / Cash Flow sub-tabs, Annual/Quarterly toggle
+
+**Modify:** Navigation links in market listing table + watchlist → link to `/market/:symbol`
+
+**Specs:** +6 (request specs for each tab, statement rendering)
+
+**Commit:** `Add category tabs, statements tab, and navigation links`
+
+#### 10.2c — Tooltip Stimulus Controller + Help Icons
+
+**New file:** `app/javascript/controllers/metric_tooltip_controller.js`
+
+- Opens popover/tooltip on help icon click (per tooltip design)
+- Renders: definition, context guidance, disclaimer note
+- Data from `MetricDefinitions` passed via `data-*` attributes
+
+**Specs:** +6 (system specs: tooltip display, content, dismiss)
+
+**Commit:** `Add metric tooltip controller with help icon popovers`
+
+#### Phase 10.2 Verification
+
+```bash
+bundle exec rspec         # ~1065 specs, 0 failures
+bin/dev                   # Visit /market/AAPL → see full asset detail with tabs and tooltips
+```
 
 ---
 
-## Protocolo para Retomar Cualquier Fase
+### Phase 10.3 — Crypto Fundamentals
 
-Al iniciar o retomar una fase:
+> **Goal:** Crypto-specific metrics from CoinGecko (no additional API cost).
+> **Depends on:** Phase 10.2
+> **Design:** `designs/stockerly_-_adaptive_metrics/screen.png`
 
-1. **Revisar este ROADMAP.md** — Identificar en que paso de que fase te encuentras
-2. **Leer los documentos indicados** en la seccion "Documentos a Revisar" de esa fase
-3. **Revisar disenos** de referencia visual (`designs/{zona}/{pagina}/screen.png`) y SPEC.md cuando aplique
-4. **Crear todo list** con los pasos de la fase para tracking de progreso
-5. **Ejecutar `bundle exec rspec`** antes de empezar — confirmar que todo esta verde
-6. **Implementar paso por paso** — un commit por paso, tests incluidos
-7. **Actualizar todo list** al completar cada paso
-8. **Ejecutar `bundle exec rspec`** despues de cada commit — mantener verde siempre
+#### 10.3a — Enrich CoinGecko Gateway
 
-### Convencion de Commits
-- Un commit por paso logico (no por archivo)
-- Incluir tests en el mismo commit que el codigo que testean
-- Mensaje descriptivo en ingles, cuerpo opcional en espanol
-- Co-authored-by con Claude
+**Modify:** `app/gateways/coingecko_gateway.rb`
 
-### Convencion de Tests
-- **Model specs:** `spec/models/` — validaciones, enums, asociaciones, scopes
-- **Use Case specs:** `spec/use_cases/` — happy path, validacion, edge cases
-- **Request specs:** `spec/requests/` — smoke tests, guards, flujos CRUD
-- **Helper specs:** `spec/helpers/` — helpers con logica
-- **Controller specs:** `spec/controllers/` — solo para before_actions complejos
-- **Domain specs:** `spec/domain/` — domain services y value objects
+- Replace `/simple/price` with `/coins/markets` for richer data
+- Extract: circulating_supply, total_supply, fully_diluted_valuation, ath, atl, ath_change_percentage, 24h_volume
+
+**Specs:** +3
+
+**Commit:** `Enrich CoinGecko gateway with extended market data`
+
+#### 10.3b — Crypto MetricDefinitions + Conditional Rendering
+
+**Modify:** `app/domain/metric_definitions.rb` — add crypto-specific definitions (supply, FDV, ATH/ATL, volume ratio)
+
+**Modify:** Asset detail view — conditional rendering by `asset.asset_type`:
+- Stocks: valuation, profitability, health, growth, dividends tabs
+- Crypto: market data, supply, on-chain tabs (per adaptive metrics design)
+
+**Modify:** `_summary_tab.html.erb` — swap metrics based on asset type
+
+**Specs:** +7 (crypto rendering, conditional logic, new definitions)
+
+**Commit:** `Add crypto-specific metrics with adaptive rendering`
+
+#### Phase 10.3 Verification
+
+```bash
+bundle exec rspec         # ~1075 specs, 0 failures
+bin/dev                   # Visit /market/BTC → see crypto-specific metrics
+```
+
+---
+
+### Phase 10 Dependency Graph
+
+```
+Phase 10.0 (Foundation: Models + OVERVIEW + Gateway)
+  └── Phase 10.1 (Statements + Calculator)
+        └── Phase 10.2 (UI: Asset Detail Page)
+              └── Phase 10.3 (Crypto Fundamentals)
+```
+
+All phases are sequential — each builds on the previous.
+
+### Design Corrections (Apply During Phase 10.2)
+
+The Stitch designs have elements that must be adjusted during implementation:
+
+1. **Remove** "Analyst Verdict" section from tooltip (prescriptive language — regulatory risk)
+2. **Remove** "View Full Report →" button from tooltip (implies premium product)
+3. **Remove** "Historical PE Trend" chart from tooltip (v2 feature)
+4. **Omit** sector averages ("Tech avg: 31.2") from metric cards (no data source in v1)
+5. **Fix** "TTM BASIS" label → "ANNUAL BASIS" in statements tab when showing fiscal years
+6. **Omit** "View Historical Charts" and "Adjust for Inflation" links (v2 features)
+7. **Use FY2024** (not FY2025) as most recent year in fixtures/implementation
+8. **Make GAAP label dynamic**: US → "US GAAP", international → "as reported"
+
+---
+
+### Phase 10 Files Summary
+
+| New Files (~25)                                     | Modified Files (~12)                              |
+| --------------------------------------------------- | ------------------------------------------------- |
+| `db/migrate/..._create_financial_statements.rb`     | `app/controllers/market_controller.rb`             |
+| `app/gateways/coingecko_gateway.rb`               |
+| `db/migrate/..._create_asset_fundamentals.rb`       | `config/routes.rb`                                |
+| `db/migrate/..._add_fundamentals_synced_at.rb`      | `config/initializers/data_sources.rb`             |
+| `app/models/financial_statement.rb`                 | `config/initializers/event_subscriptions.rb`      |
+| `app/models/asset_fundamental.rb`                   | `config/recurring.yml`                            |
+| `app/domain/metric_definitions.rb`                  | `db/seeds.rb`                                     |
+| `app/domain/fundamental_calculator.rb`              | `app/views/market/index.html.erb`                 |
+| `app/domain/fundamental_presenter.rb`               | `app/views/dashboard/_watchlist_table.html.erb`   |
+| `app/gateways/fundamentals_gateway.rb`              | `app/domain/metric_definitions.rb` (Phase 10.3)  |
+| `app/gateways/alpha_vantage_gateway.rb`             |                                                   |
+| `app/jobs/sync_fundamental_job.rb`                  |                                                   |
+| `app/jobs/sync_all_fundamentals_job.rb`             |                                                   |
+| `app/use_cases/market/load_asset_detail.rb`         |                                                   |
+| `app/events/asset_fundamentals_updated.rb`          |                                                   |
+| `app/events/financial_statements_synced.rb`          |                                                   |
+| `app/event_handlers/log_fundamentals_update.rb`     |                                                   |
+| `app/event_handlers/recalculate_fundamentals_*.rb`  |                                                   |
+| `app/event_handlers/broadcast_fundamentals_*.rb`    |                                                   |
+| `app/views/market/show.html.erb` + partials         |                                                   |
+| `app/javascript/controllers/metric_tooltip_*.js`    |                                                   |
+| `spec/` (12+ spec files)                            |                                                   |
+
+---
+
+## Post-Phase 10 Considerations (v2)
+
+These are explicitly out of scope but documented for future planning:
+
+- **CETES complete:** Banxico gateway, yield calculations, maturity calendar, PortfolioSummary branch
+- **News: Watchlist filter** — "From Your Watchlist" filter on /news page
+- **Historical F&G chart** — Sparkline/line chart of F&G over 30 days (data already stored)
+- **Sentiment-based alerts** — "Alert me when crypto F&G < 20"
+- **BulkAssetSync concern** — DRY `SyncBulkCryptoJob` / `SyncBulkBmvJob` into shared behavior
+- **TrendScore from real data** — Replace seed-only TrendScores with calculated values from price history
+- **Email verification** — Requires `generates_token_for :email_verification` (S-3 from security audit)
+- **FMP/Polygon provider swap** — Upgrade from Alpha Vantage when budget allows (FundamentalsGateway abstraction ready)
+- **Historical P/E chart** — Line chart of P/E over 5 years (data from FinancialStatement + historical prices)
+- **Sector comparison** — Compare asset fundamentals vs sector median (requires sector-level aggregation)
+
+---
+
+## Commit Sequence (All Phases)
+
+### Phase 9 (Completed)
+
+| #   | Phase | Commit Message                                                          | New Specs |
+| --- | ----- | ----------------------------------------------------------------------- | --------- |
+| 1   | 9.0a  | Add requires_api_key to Integration model                               | +2        |
+| 2   | 9.0b  | Add DataSourceRegistry with source metadata                             | +6        |
+| 3   | 9.0c  | Add SyncLogging concern for standardized job logging                    | +2        |
+| 4   | 9.0d  | Refactor sync jobs to use SyncLogging and DataSourceRegistry            | +0        |
+| 5   | 9.0e  | Replace hardcoded admin buttons with registry-driven data sources panel | +0        |
+| 6   | 9.1a  | Add FearGreedReading model and migration                                | +8        |
+| 7   | 9.1b  | Add crypto and stock Fear & Greed gateways                              | +11       |
+| 8   | 9.1c  | Add RefreshFearGreedJob with events and handler                         | +10       |
+| 9   | 9.1d  | Display Fear & Greed indices on dashboard                               | +6        |
+| 10  | 9.2a  | Add historical price fetch to Polygon and CoinGecko gateways            | +6        |
+| 11  | 9.2b  | Add BackfillPriceHistoryJob triggered on asset creation                 | +5        |
+| 12  | 9.2c  | Connect sparklines to real price history data                           | +7        |
+| 13  | 9.3a  | Add fetch_news method to PolygonGateway                                 | +4        |
+| 14  | 9.3b  | Add SyncNewsJob with Polygon news integration                           | +8        |
+| 15  | 9.3c  | Enhance news page with infinite scroll, filters, and TradingView widget | +8        |
+| 16  | 9.4a  | Add fetch_index_quotes to YahooFinanceGateway                           | +4        |
+| 17  | 9.4b  | Add SyncMarketIndicesJob with Yahoo Finance                             | +6        |
+| 18  | 9.4c  | Add IPC index, VIX indicator, and live index display                    | +5        |
+| 19  | 9.5a  | Add fixed_income asset type with yield and maturity fields              | +3        |
+| 20  | 9.5b  | Add fixed income badge and filter in market UI                          | +2        |
+|     |       | *Phase 9 Total*                                                         | *~103*    |
+
+### Phase 10 (Pending)
+
+| #   | Phase  | Commit Message                                                       | New Specs |
+| --- | ------ | -------------------------------------------------------------------- | --------- |
+| 21  | 10.0a  | Add FinancialStatement and AssetFundamental models                   | +10       |
+| 22  | 10.0b  | Add MetricDefinitions module with 30+ metric definitions             | +4        |
+| 23  | 10.0c  | Add AlphaVantageGateway with OVERVIEW endpoint                       | +6        |
+| 24  | 10.0d  | Add OVERVIEW sync pipeline with FundamentalPresenter                 | +10       |
+| 25  | 10.1a  | Add financial statement fetch methods to AlphaVantageGateway         | +4        |
+| 26  | 10.1b  | Add FundamentalCalculator with all metric formulas                   | +10       |
+| 27  | 10.1c  | Add statement sync pipeline with FundamentalCalculator               | +11       |
+| 28  | 10.2a  | Add asset detail page with summary tab and metric cards              | +8        |
+| 29  | 10.2b  | Add category tabs, statements tab, and navigation links              | +6        |
+| 30  | 10.2c  | Add metric tooltip controller with help icon popovers                | +6        |
+| 31  | 10.3a  | Enrich CoinGecko gateway with extended market data                   | +3        |
+| 32  | 10.3b  | Add crypto-specific metrics with adaptive rendering                  | +7        |
+|     |        | *Phase 10 Total*                                                     | *~85*     |
+|     |        | **Grand Total**                                                      | **~188**  |
+
+---
+
+## Pending: Security & Infrastructure (from Phase 0-8 audit)
+
+> Items identified during the security audit (Feb 2026) that require infrastructure decisions or external configuration. Carried forward from the original roadmap.
+
+| #   | Item                                | Priority | Description                                                                                                                                                                                                                 | Type           |
+| --- | ----------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| S-1 | Kamal proxy SSL end-to-end          | Alta     | Enable `ssl: true` in `config/deploy.yml` proxy, or verify Cloudflare uses **Full (Strict)** mode / Tunnel to encrypt traffic between Cloudflare and the server. Without this, traffic travels unencrypted on the last hop. | Infrastructure |
+| S-2 | PostgreSQL backups                  | Alta     | Configure `pg_dump` daily cron job on the server. The Kamal PostgreSQL accessory only mounts a data volume but has no backups. Consider also container health checks and PgBouncer for connection pooling.                  | Infrastructure |
+| S-3 | Email verification on registration  | Media    | Implement post-registration email verification using `generates_token_for :email_verification`. Currently accounts activate immediately without confirming email.                                                           | Code (v2)      |
+| S-4 | Docker image vulnerability scanning | Baja     | Add `trivy` or `grype` step in CI (`deploy.yml`) to scan the Docker image before deploy. The base image `ruby:3.3.6-slim` may have CVEs in system packages.                                                                 | CI/CD          |
+
+**Note:** S-1 and S-2 are deployment-time decisions (not application code). S-3 is deferred to v2 (listed in "Post-Phase 9 Considerations"). S-4 is a CI pipeline enhancement.
+
+---
+
+## Protocol for Starting Any Phase
+
+1. **Read this ROADMAP.md** — identify which phase and step you're on
+2. **Read the source plan** — `PLAN_SENTIMENT.md` (for 9.0-9.1), `PLAN_IMPROVEMENTS.md` (for 9.2-9.5), or `PLAN_METRICS.md` (for 10.0-10.3) for deeper context
+3. **Check designs/** — if the phase lists a Stitch prompt, ensure the design exists before implementing the view
+4. **Run `bundle exec rspec`** — confirm all specs pass before starting
+5. **Implement step by step** — one commit per step, tests included
+6. **Run `bundle exec rspec`** after each commit — keep green always
+7. **Run `bin/rubocop`** — no offenses
+
+### Commit Convention
+
+- Imperative mood ("Add feature" not "Added feature")
+- First line under 70 characters
+- One commit per logical step
+- Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>

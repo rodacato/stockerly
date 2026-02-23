@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Apple Inc. (AAPL) Financial Statements - Stockerly</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#004a99",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1923",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+<div class="max-w-[1280px] mx-auto px-4 md:px-8 flex items-center justify-between h-16">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-3xl font-bold">show_chart</span>
+<h2 class="text-xl font-bold tracking-tight">Stockerly</h2>
+</div>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium" href="#">Dashboard</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium" href="#">Markets</a>
+<a class="text-primary text-sm font-semibold" href="#">Stocks</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium" href="#">Portfolio</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium" href="#">News</a>
+</nav>
+</div>
+<div class="flex items-center gap-4 flex-1 justify-end">
+<div class="hidden md:flex relative max-w-xs w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+<input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Search ticker or company" type="text"/>
+</div>
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+<span class="material-symbols-outlined text-xl">person</span>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto px-4 md:px-8 py-6">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
+<a class="hover:text-primary" href="#">Stocks</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-slate-900 dark:text-slate-100 font-medium">AAPL</span>
+</nav>
+<!-- Stock Summary Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm">
+<img alt="Apple Inc. Logo" class="w-10 h-10" data-alt="Apple Inc. official corporate logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKTkU0lnS5X8n8n-qsaZ1Zoi9vX9A8ZMSb_oU-WN5HqSnFhky5-ipqiBca5yc_ZKtJPB-gRm7fq7DpydTPLBQ7QdAuxaIEHhypFwyWAXoHguHiDDlc80Wsep5RBMhpSfPomx3HEtHtmbXszEyQM5oPcV9eNEBscBHdeSdpA1ToBnCAtZmk0Q8m1HEd5baHo6bRchb72C6LbdHzDlyIXu3DG2t5n1V3HxbwRy-JmqRsn1mvqIUO6wGC7J7MwFyGCCAke3vK3we1F_CR"/>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Apple Inc.</h1>
+<span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold rounded">AAPL</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">NASDAQ · Technology · Consumer Electronics</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="text-right">
+<div class="text-3xl font-bold text-slate-900 dark:text-slate-100">$189.43</div>
+<div class="text-sm font-semibold text-emerald-600 flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-xs font-bold">trending_up</span>
+                        +$2.31 (1.23%)
+                    </div>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-sm transition-colors">
+                    + Watchlist
+                </button>
+</div>
+</div>
+<!-- Tabs Navigation -->
+<div class="border-b border-slate-200 dark:border-slate-800 mb-6 overflow-x-auto no-scrollbar">
+<div class="flex gap-8">
+<a class="pb-4 text-sm font-semibold text-slate-500 hover:text-primary whitespace-nowrap" href="#">Overview</a>
+<a class="pb-4 text-sm font-semibold text-slate-500 hover:text-primary whitespace-nowrap" href="#">Charts</a>
+<a class="pb-4 text-sm font-semibold text-primary border-b-2 border-primary whitespace-nowrap" href="#">Statements</a>
+<a class="pb-4 text-sm font-semibold text-slate-500 hover:text-primary whitespace-nowrap" href="#">Statistics</a>
+<a class="pb-4 text-sm font-semibold text-slate-500 hover:text-primary whitespace-nowrap" href="#">Analysis</a>
+<a class="pb-4 text-sm font-semibold text-slate-500 hover:text-primary whitespace-nowrap" href="#">News</a>
+</div>
+</div>
+<!-- Controls Bar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+<div class="flex bg-slate-200/50 dark:bg-slate-800 p-1 rounded-lg">
+<button class="px-4 py-1.5 text-sm font-bold rounded-md bg-white dark:bg-slate-700 text-primary shadow-sm">Income Statement</button>
+<button class="px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">Balance Sheet</button>
+<button class="px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">Cash Flow</button>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<div class="relative inline-block text-left w-full sm:w-40">
+<select class="w-full appearance-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2 text-sm font-medium focus:ring-primary focus:border-primary">
+<option>Annual</option>
+<option>Quarterly</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+</div>
+<button class="flex items-center justify-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 py-2 rounded-lg text-sm font-bold text-primary hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shrink-0">
+<span class="material-symbols-outlined text-lg">download</span>
+                    Export CSV
+                </button>
+</div>
+</div>
+<!-- Data Container Card -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50">
+<th class="sticky left-0 bg-slate-50 dark:bg-slate-800/50 text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800 min-w-[280px]">Line Item</th>
+<th class="py-4 px-6 text-right text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800 min-w-[120px]">FY2025</th>
+<th class="py-4 px-6 text-right text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800 min-w-[120px]">FY2024</th>
+<th class="py-4 px-6 text-right text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800 min-w-[120px]">FY2023</th>
+<th class="py-4 px-6 text-right text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800 min-w-[120px]">FY2022</th>
+<th class="py-4 px-6 text-right text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800 min-w-[120px]">FY2021</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Group: Revenue & Profitability -->
+<tr class="bg-slate-50/50 dark:bg-slate-800/30">
+<td class="py-3 px-6 text-sm font-bold text-slate-900 dark:text-slate-100" colspan="6">Revenue &amp; Profitability</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="sticky left-0 bg-white dark:bg-slate-900 py-3.5 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">Revenue</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$412.5B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$394.3B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$383.3B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$394.3B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$365.8B</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="sticky left-0 bg-white dark:bg-slate-900 py-3.5 px-6 text-sm font-medium text-slate-700 dark:text-slate-300 pl-10">Cost of Revenue</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$220.1B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$214.1B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$214.1B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$223.5B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$212.9B</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border-b-2 border-slate-200 dark:border-slate-800">
+<td class="sticky left-0 bg-white dark:bg-slate-900 py-4 px-6 text-sm font-bold text-slate-900 dark:text-slate-100">Gross Profit
+                                <div class="text-[10px] text-slate-400 font-normal mt-0.5">Gross Margin %</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$192.4B</div>
+<div class="text-xs text-slate-400">46.6%</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$180.2B</div>
+<div class="text-xs text-slate-400">45.7%</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$169.2B</div>
+<div class="text-xs text-slate-400">44.1%</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$170.8B</div>
+<div class="text-xs text-slate-400">43.3%</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$152.8B</div>
+<div class="text-xs text-slate-400">41.8%</div>
+</td>
+</tr>
+<!-- Group: Operating Performance -->
+<tr class="bg-slate-50/50 dark:bg-slate-800/30">
+<td class="py-3 px-6 text-sm font-bold text-slate-900 dark:text-slate-100" colspan="6">Operating Performance</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="sticky left-0 bg-white dark:bg-slate-900 py-3.5 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">Operating Expenses</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$60.4B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$57.1B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$54.8B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$51.3B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-600 dark:text-slate-400">$43.8B</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="sticky left-0 bg-white dark:bg-slate-900 py-3.5 px-6 text-sm font-medium text-slate-700 dark:text-slate-300 pl-10">R&amp;D Expenses</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-500 dark:text-slate-500">$32.1B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-500 dark:text-slate-500">$29.9B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-500 dark:text-slate-500">$29.9B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-500 dark:text-slate-500">$26.2B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm text-slate-500 dark:text-slate-500">$21.9B</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="sticky left-0 bg-white dark:bg-slate-900 py-3.5 px-6 text-sm font-bold text-slate-900 dark:text-slate-100">Operating Income
+                                <div class="text-[10px] text-slate-400 font-normal mt-0.5">Operating Margin %</div>
+</td>
+<td class="py-3.5 px-6 text-right tabular-nums">
+<div class="text-sm font-bold text-primary">$132.0B</div>
+<div class="text-xs text-slate-400">32.0%</div>
+</td>
+<td class="py-3.5 px-6 text-right tabular-nums">
+<div class="text-sm font-bold text-primary">$123.1B</div>
+<div class="text-xs text-slate-400">31.2%</div>
+</td>
+<td class="py-3.5 px-6 text-right tabular-nums">
+<div class="text-sm font-bold text-primary">$114.4B</div>
+<div class="text-xs text-slate-400">29.8%</div>
+</td>
+<td class="py-3.5 px-6 text-right tabular-nums">
+<div class="text-sm font-bold text-primary">$119.4B</div>
+<div class="text-xs text-slate-400">30.3%</div>
+</td>
+<td class="py-3.5 px-6 text-right tabular-nums">
+<div class="text-sm font-bold text-primary">$108.9B</div>
+<div class="text-xs text-slate-400">29.8%</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border-b-2 border-slate-200 dark:border-slate-800">
+<td class="sticky left-0 bg-white dark:bg-slate-900 py-3.5 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">EBITDA</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$143.2B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$134.5B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$125.8B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$130.5B</td>
+<td class="py-3.5 px-6 text-right tabular-nums text-sm font-semibold">$120.2B</td>
+</tr>
+<!-- Group: Bottom Line -->
+<tr class="bg-slate-50/50 dark:bg-slate-800/30">
+<td class="py-3 px-6 text-sm font-bold text-slate-900 dark:text-slate-100" colspan="6">Bottom Line</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="sticky left-0 bg-white dark:bg-slate-900 py-4 px-6 text-sm font-bold text-slate-900 dark:text-slate-100">Net Income
+                                <div class="text-[10px] text-slate-400 font-normal mt-0.5">Net Margin %</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$105.4B</div>
+<div class="text-xs text-slate-400">25.5%</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$97.0B</div>
+<div class="text-xs text-slate-400">24.6%</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$97.0B</div>
+<div class="text-xs text-slate-400">25.3%</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$99.8B</div>
+<div class="text-xs text-slate-400">25.3%</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">
+<div class="text-sm font-bold">$94.7B</div>
+<div class="text-xs text-slate-400">25.9%</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="sticky left-0 bg-white dark:bg-slate-900 py-4 px-6 text-sm font-bold text-slate-900 dark:text-slate-100">Diluted EPS</td>
+<td class="py-4 px-6 text-right tabular-nums text-sm font-bold">$6.72</td>
+<td class="py-4 px-6 text-right tabular-nums text-sm font-bold">$6.13</td>
+<td class="py-4 px-6 text-right tabular-nums text-sm font-bold">$6.13</td>
+<td class="py-4 px-6 text-right tabular-nums text-sm font-bold">$6.11</td>
+<td class="py-4 px-6 text-right tabular-nums text-sm font-bold">$5.61</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footer Meta -->
+<div class="bg-slate-50 dark:bg-slate-800/50 py-3 px-6 flex flex-col sm:flex-row justify-between items-center gap-2 border-t border-slate-200 dark:border-slate-800">
+<p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-medium">Source: Alpha Vantage · GAAP · USD · TTM Basis</p>
+<div class="flex items-center gap-4">
+<button class="text-[11px] text-primary font-bold hover:underline">View Historical Charts</button>
+<button class="text-[11px] text-primary font-bold hover:underline">Adjust for Inflation</button>
+</div>
+</div>
+</div>
+<!-- Footnote Info -->
+<div class="mt-6 flex flex-col md:flex-row gap-6">
+<div class="flex-1 p-4 bg-primary/5 dark:bg-primary/10 rounded-lg border border-primary/10">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-xl">info</span>
+<div>
+<h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1">Accounting Standards Note</h4>
+<p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Apple Inc.'s fiscal year ends on the last Saturday of September. All data is reported in according to Generally Accepted Accounting Principles (GAAP) in the United States.</p>
+</div>
+</div>
+</div>
+<div class="w-full md:w-72 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+<h4 class="text-xs font-bold text-slate-500 uppercase mb-3">Next Earnings</h4>
+<div class="flex items-end justify-between">
+<div>
+<div class="text-xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">May 2, 2024</div>
+<div class="text-xs text-slate-500">Confirmed · Post-Market</div>
+</div>
+<span class="material-symbols-outlined text-slate-400">calendar_month</span>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-20 border-t border-slate-200 dark:border-slate-800 py-12 bg-white dark:bg-slate-900">
+<div class="max-w-[1280px] mx-auto px-4 text-center">
+<div class="flex items-center justify-center gap-2 text-primary mb-4">
+<span class="material-symbols-outlined font-bold">show_chart</span>
+<h2 class="text-lg font-bold tracking-tight">Stockerly</h2>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Professional grade financial analysis and portfolio tracking for serious investors.</p>
+<div class="flex justify-center gap-8 text-xs font-medium text-slate-400 uppercase tracking-widest">
+<a class="hover:text-primary" href="#">Legal</a>
+<a class="hover:text-primary" href="#">Privacy</a>
+<a class="hover:text-primary" href="#">Contact</a>
+<a class="hover:text-primary" href="#">Support</a>
+</div>
+<p class="mt-8 text-[11px] text-slate-400">© 2024 Stockerly Inc. All rights reserved. Market data provided by Alpha Vantage and IEX Cloud.</p>
+</div>
+</footer>
+</body></html>

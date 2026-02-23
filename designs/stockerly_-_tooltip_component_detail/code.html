@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stockerly - Detailed Metric View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#004a99",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1923",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tooltip-arrow {
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid white;
+            filter: drop-shadow(0 4px 2px rgba(0,0,0,0.05));
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 md:px-10 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-slate-100">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined text-xl">finance_mode</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">Stockerly</h2>
+</div>
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-900 dark:text-slate-100 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Watchlist</a>
+<a class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Portfolio</a>
+<a class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Analysis</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-4 md:gap-8">
+<label class="hidden sm:flex flex-col min-w-40 h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-slate-400 flex border-none bg-slate-100 dark:bg-slate-800 items-center justify-center pl-4 rounded-l-lg">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-0 h-full placeholder:text-slate-400 px-4 rounded-r-lg text-sm font-normal" placeholder="Search ticker..." value=""/>
+</div>
+</label>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-primary/10 border border-primary/20 aspect-square rounded-full size-10 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User avatar placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvrGSNylNuL1A_QH3v2euQA0qcu0sc00y5_wHkbY4RnwEsCerZ5vHQ5AwWu9vfx5vkMMdwIH7D67dLjXNiEFAD3HP7iQxynMHA4eAtyRfRr0K0FAF9lkyxMofnJAkXjFOftdu4rNvSpU5WrdMK5UOT3NTKOGqHMR5Z6dNX_HuyoDbMCpDJ0h-q6yHa5GMxFqsp_BKGWd0z4blBbFHwHmwbSA1CofX-_RhkJrwh8hSU3YpeN-DSclvcz6Y2UtwuqbuLIFObkpnkgbCL"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-[1200px] mx-auto w-full p-6 md:p-10">
+<!-- Breadcrumbs & Title -->
+<div class="mb-10">
+<div class="flex items-center gap-2 text-slate-500 text-sm mb-2">
+<span>Markets</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span>Technology</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-primary font-medium">TCH Analysis</span>
+</div>
+<div class="flex flex-col gap-1">
+<h1 class="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-tight">Tech Corp (TCH)</h1>
+<p class="text-slate-500 dark:text-slate-400 text-base font-normal">Sector: Information Technology • Market Cap: $2.4T • Growth Profile: Stable</p>
+</div>
+</div>
+<!-- Metrics Container -->
+<div class="relative grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+<!-- Card 1: ROE -->
+<div class="relative flex flex-col gap-4 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
+<div class="flex justify-between items-start">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Return on Equity (ROE)</span>
+<button class="text-slate-300 dark:text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">info</span>
+</button>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-slate-900 dark:text-slate-100 text-4xl font-black leading-tight">157.0%</span>
+<span class="text-emerald-500 text-sm font-bold flex items-center">
+<span class="material-symbols-outlined text-sm">arrow_upward</span> 2.1%
+                        </span>
+</div>
+</div>
+<!-- Card 2: P/E Ratio (ACTIVE STATE) -->
+<div class="relative flex flex-col gap-4 rounded-xl p-8 bg-white dark:bg-slate-900 border-2 border-primary shadow-lg z-10">
+<div class="flex justify-between items-start">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">P/E Ratio</span>
+<button class="text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-xl font-bold">info</span>
+</button>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-slate-900 dark:text-slate-100 text-4xl font-black leading-tight">28.50</span>
+<span class="text-slate-400 text-sm font-medium">Sector: 22.1</span>
+</div>
+<!-- EDUCATIONAL TOOLTIP / POPOVER -->
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-6 w-[360px] md:w-[420px] bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in duration-200 origin-bottom">
+<!-- Tooltip Header -->
+<div class="flex items-center justify-between px-5 py-4 border-b border-slate-50">
+<h3 class="text-slate-900 font-bold text-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">school</span>
+                                P/E Ratio (Price-to-Earnings)
+                            </h3>
+<button class="text-slate-400 hover:text-slate-600 transition-colors">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+<!-- Tooltip Body -->
+<div class="p-6 space-y-5">
+<section>
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">What it measures</h4>
+<p class="text-slate-600 text-[14px] leading-relaxed">
+                                    Measures a company's current share price relative to its per-share earnings (EPS). It indicates how much investors are willing to pay for every $1 of earnings generated.
+                                </p>
+</section>
+<section>
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">How to interpret</h4>
+<p class="text-slate-600 text-[14px] leading-relaxed">
+                                    A high P/E could mean that a stock's price is high relative to earnings and possibly overvalued. Alternatively, it may reflect high growth expectations. 
+                                    <span class="block mt-2 font-medium text-slate-800">
+                                        Compare this to the sector median (22.1) and the 5-year historical average to identify deviation.
+                                    </span>
+</p>
+</section>
+</div>
+<!-- Tooltip Footer -->
+<div class="bg-slate-50 px-6 py-3 border-t border-slate-100">
+<p class="text-[11px] text-slate-400 text-center italic">
+                                Financial data is informational only. Historical performance does not guarantee future results.
+                            </p>
+</div>
+<!-- Arrow -->
+<div class="tooltip-arrow"></div>
+</div>
+</div>
+<!-- Card 3: Net Margin -->
+<div class="relative flex flex-col gap-4 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
+<div class="flex justify-between items-start">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Net Margin</span>
+<button class="text-slate-300 dark:text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">info</span>
+</button>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-slate-900 dark:text-slate-100 text-4xl font-black leading-tight">24.6%</span>
+<span class="text-slate-400 text-sm font-medium">Industry Avg: 18.2%</span>
+</div>
+</div>
+</div>
+<!-- Page Footer Content -->
+<div class="border-t border-slate-200 dark:border-slate-800 pt-10">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<div>
+<h4 class="text-slate-900 dark:text-slate-100 font-bold mb-4">Historical PE Trend</h4>
+<div class="h-48 w-full bg-slate-100 dark:bg-slate-800/50 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-700 text-6xl">show_chart</span>
+</div>
+</div>
+<div class="flex flex-col justify-center">
+<h4 class="text-slate-900 dark:text-slate-100 font-bold mb-2">Analyst Verdict</h4>
+<p class="text-slate-500 dark:text-slate-400 mb-4">Based on the current PE of 28.50, the company is trading at a premium compared to the sector median. However, ROE remains exceptionally high at 157%.</p>
+<button class="bg-primary text-white font-bold py-3 px-6 rounded-lg self-start flex items-center gap-2 hover:bg-primary/90 transition-all">
+                            View Full Report <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

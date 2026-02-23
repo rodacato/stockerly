@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Apple Inc. (AAPL) - Stockerly</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#004a99",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1923",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 md:px-10 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="account_balance_wallet">account_balance_wallet</span>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">Stockerly</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden">
+<div class="text-slate-500 bg-slate-100 dark:bg-slate-800 flex items-center justify-center pl-4 border-r-0">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-slate-100 dark:bg-slate-800 placeholder:text-slate-500 px-4 pl-2 text-sm font-normal" placeholder="Search ticker or name" value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<nav class="hidden lg:flex items-center gap-8">
+<a class="text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Markets</a>
+<a class="text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Portfolio</a>
+<a class="text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">News</a>
+<a class="text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Academy</a>
+</nav>
+<div class="h-8 w-px bg-slate-200 dark:bg-slate-700 hidden md:block"></div>
+<div class="bg-primary/10 rounded-full p-1">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8" data-alt="User profile avatar circle" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDMJ2OMiXqpaW2Eq5f7FW3DhRRYK_OEAQsRK_srV3SYvt_O5aba9b-nSuPosG_f0TZDeNEKE6g9EFtZCJcsR2lut3LbTKp8Mm3kPiqstoVDUsJMvaqMhsroYuZAuClM-XY8XuPSZ3V7gG-9L76AM2cKtI5-M8GYCB3W_FNmEcqiUFCLU6eZaeYsucgfZ6EaC-EXkYckyluDlc9FAR5dP3lMVI9-bODjA3ODmQG2Phnq11EsU9G79b7wPhsIURK2UXkNUdz1g8Oz2MHG");'></div>
+</div>
+</div>
+</header>
+<main class="flex flex-1 justify-center py-8 px-4 md:px-10">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+<!-- Asset Header -->
+<div class="flex flex-col @container mb-6">
+<div class="flex w-full flex-col gap-6 @[720px]:flex-row @[720px]:justify-between items-start @[720px]:items-center">
+<div class="flex gap-5 items-center">
+<div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+<div class="bg-center bg-no-repeat aspect-square bg-contain size-16" data-alt="Apple Inc corporate logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCHoEhETqY1A4-q6eMFFt9Ej7iIQIXJlqgrQTcehpjnXsZLtXLHWKJMpCxyQcKETnl9tbV5SObeknQ0KHvtQCOG4xezi3nQ84R2XRUkeR5MdbBa2BtpkIz6YPa6FDk8Kmu0GurthP7umiYVGtHyJVX2iL7K_E3y-VU1SI_gPu7iiAjJZmHa_NF8KltAKMLiKPrSzb2luEq6PXlhxTC5vM865DxqrCdILh3SYmRHymUMGbXYx245Y7-TX4ZYHWEzJG-Y32DtS4q0c_Jr");'></div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<h1 class="text-slate-900 dark:text-white text-3xl font-bold leading-tight">Apple Inc.</h1>
+<span class="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded text-xs font-bold uppercase tracking-wider">AAPL</span>
+</div>
+<div class="flex items-center gap-3 mt-1">
+<p class="text-slate-900 dark:text-white text-2xl font-semibold tracking-tight">$227.44</p>
+<p class="text-emerald-600 dark:text-emerald-400 text-lg font-medium">+0.54%</p>
+<span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-lg" data-icon="trending_up">trending_up</span>
+</div>
+<div class="flex flex-wrap gap-2 mt-3">
+<span class="flex items-center gap-1.5 px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined text-sm" data-icon="store">store</span> NASDAQ
+                                        </span>
+<span class="flex items-center gap-1.5 px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined text-sm" data-icon="memory">memory</span> Technology
+                                        </span>
+<span class="flex items-center gap-1.5 px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined text-sm" data-icon="public">public</span> USA
+                                        </span>
+</div>
+</div>
+</div>
+<div class="flex gap-3 w-full @[720px]:w-auto">
+<button class="flex-1 @[720px]:flex-none flex min-w-[160px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-sm font-bold leading-normal transition-all hover:bg-blue-800 shadow-md">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="truncate">Add to Watchlist</span>
+</button>
+<button class="flex size-12 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</div>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-normal mt-6 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="info">info</span>
+                            Based on GAAP financial statements · Source: Alpha Vantage
+                        </p>
+</div>
+<!-- Horizontal Tabs -->
+<div class="border-b border-slate-200 dark:border-slate-800 mb-8 overflow-x-auto">
+<div class="flex gap-8 min-w-max">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-primary text-primary pb-4 pt-2 group" href="#">
+<span class="text-sm font-bold tracking-wide">Summary</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 pb-4 pt-2 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Valuation</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 pb-4 pt-2 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Profitability</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 pb-4 pt-2 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Health</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 pb-4 pt-2 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Growth</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 pb-4 pt-2 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Dividends</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 pb-4 pt-2 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Statements</span>
+</a>
+</div>
+</div>
+<!-- Metric Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+<!-- 1. P/E Ratio with Active Tooltip -->
+<div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow ring-2 ring-primary/30">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+<span class="text-xs font-bold uppercase tracking-wider">P/E Ratio</span>
+<span class="material-symbols-outlined text-sm cursor-pointer text-primary" data-icon="info">info</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">28.50</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Tech avg: 31.2</p>
+</div>
+<!-- OPEN TOOLTIP -->
+<div class="absolute top-full left-0 mt-3 w-full z-20 bg-slate-900 dark:bg-slate-800 text-white p-4 rounded-lg shadow-xl border border-slate-700">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-blue-400" data-icon="lightbulb">lightbulb</span>
+<div class="flex flex-col gap-2 text-xs leading-relaxed">
+<p><strong class="text-blue-300">Definition:</strong> The Price-to-Earnings ratio measures a company's current share price relative to its earnings per-share (EPS).</p>
+<p><strong class="text-blue-300">Interpretation:</strong> At 28.50, AAPL is trading below the sector average (31.2), potentially suggesting it is undervalued relative to peers or has lower expected growth.</p>
+<p class="pt-2 border-t border-slate-700 text-[10px] text-slate-400 italic">This is not financial advice. Past performance does not guarantee future results.</p>
+</div>
+</div>
+<div class="absolute -top-2 left-10 w-4 h-4 bg-slate-900 dark:bg-slate-800 rotate-45 border-t border-l border-slate-700"></div>
+</div>
+</div>
+<!-- 2. EV/EBITDA -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 mb-4">
+<span class="text-xs font-bold uppercase tracking-wider">EV/EBITDA</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">22.10</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Enterprise Value Multiplier</p>
+</div>
+</div>
+<!-- 3. Market Cap -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 mb-4">
+<span class="text-xs font-bold uppercase tracking-wider">Market Cap</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">$3.23T</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total market value</p>
+</div>
+</div>
+<!-- 4. ROE -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 mb-4">
+<span class="text-xs font-bold uppercase tracking-wider">ROE</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">157.0%</p>
+<p class="text-amber-600 dark:text-amber-400 text-sm font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="warning">warning</span> High due to leverage
+                                </p>
+</div>
+</div>
+<!-- 5. Net Margin -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 mb-4">
+<span class="text-xs font-bold uppercase tracking-wider">Net Margin</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">24.6%</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Profit after all expenses</p>
+</div>
+</div>
+<!-- 6. Free Cash Flow -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 mb-4">
+<span class="text-xs font-bold uppercase tracking-wider">Free Cash Flow</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">$107.3B</p>
+<p class="text-emerald-600 dark:text-emerald-400 text-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="arrow_upward">arrow_upward</span> 8% YoY
+                                </p>
+</div>
+</div>
+<!-- 7. Revenue Growth -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 mb-4">
+<span class="text-xs font-bold uppercase tracking-wider">Revenue Growth</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">8.2%</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">3Y CAGR</p>
+</div>
+</div>
+<!-- 8. EPS Growth -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 mb-4">
+<span class="text-xs font-bold uppercase tracking-wider">EPS Growth</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">8.9%</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Year-over-Year Growth</p>
+</div>
+</div>
+<!-- 9. Debt-to-Equity -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 mb-4">
+<span class="text-xs font-bold uppercase tracking-wider">Debt-to-Equity</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">1.74</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Financial leverage ratio</p>
+</div>
+</div>
+<!-- 10. Beta -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 mb-4">
+<span class="text-xs font-bold uppercase tracking-wider">Beta</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">1.24</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Moderate market volatility</p>
+</div>
+</div>
+</div>
+<!-- Footer Disclaimer -->
+<footer class="mt-auto py-10 border-t border-slate-200 dark:border-slate-800">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2 text-primary/60">
+<span class="material-symbols-outlined text-lg" data-icon="shield">shield</span>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">
+                                    Financial data is for informational purposes only. It does not constitute investment advice.
+                                </p>
+</div>
+<div class="flex gap-6">
+<a class="text-slate-400 hover:text-primary transition-colors text-xs font-medium" href="#">Terms of Service</a>
+<a class="text-slate-400 hover:text-primary transition-colors text-xs font-medium" href="#">Privacy Policy</a>
+<a class="text-slate-400 hover:text-primary transition-colors text-xs font-medium" href="#">Help Center</a>
+</div>
+</div>
+</footer>
+</div>
+</main>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stockerly - Adaptive Fundamentals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#004a99",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1923",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-slate-100 font-display">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 lg:px-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined !text-2xl">monitoring</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">Stockerly</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-semibold text-primary" href="#">Markets</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Portfolio</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">News</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<label class="hidden sm:flex items-center relative min-w-40 md:min-w-64">
+<span class="absolute left-3 text-slate-400 material-symbols-outlined">search</span>
+<input class="w-full h-10 rounded-lg border-none bg-slate-100 dark:bg-slate-800 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Search stocks, crypto..." value=""/>
+</label>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary text-white hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto w-full px-4 py-8 lg:px-10">
+<!-- Hero Title Section -->
+<div class="mb-10 text-center max-w-3xl mx-auto">
+<h1 class="text-slate-900 dark:text-white text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-4">
+                    Adaptive Fundamentals — Metrics adapt based on asset type
+                </h1>
+<p class="text-slate-500 dark:text-slate-400 text-lg">
+                    Real-time comparison between equity and digital asset fundamental analysis frameworks. See how Stockerly reconfigures data visibility automatically.
+                </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Left Side: Stock (AAPL) -->
+<div class="flex flex-col gap-6">
+<!-- Stock Header Card -->
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">Equity</span>
+<span class="text-slate-400 material-symbols-outlined cursor-help">info</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-16 rounded-xl flex items-center justify-center bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+<img alt="Apple Inc Logo" class="size-10 object-contain" data-alt="Apple Inc corporate minimalist logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZbE5lKyscod4eFkJT52nLvnA_N7D9Ok9dyM2TDKgcxDYhkonSB1i6K4amQE8b1MHulIiNxW9EgO1RBeArjHFzFnS9IUCtwFS7Wnj-9KtlZ_05gP1j2DSSpeY0aSZwp5CADwC4Rlgf-YCbISvQaZggm8q0LwYVqZcSZ9geyGZGUL1lqeCv9cnBcghmIBEdyNH9xB0Ws4RTURf7U_x5RSnaOXj74vpHJpiBoK7ZZUc_CECTxEmjxfVZpKU5m1ZJNgwHCFVCqmX6Ebni"/>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">AAPL</h3>
+<span class="text-slate-500 dark:text-slate-400 font-medium">Apple Inc.</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-primary">$227.44</span>
+<span class="text-emerald-500 text-sm font-semibold flex items-center">
+<span class="material-symbols-outlined !text-sm">trending_up</span> 1.24% today
+                                    </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Stock Metrics Grid -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Metric Card 1 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">P/E Ratio</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">28.50</span>
+<span class="text-xs text-slate-400">Industry Avg: 24.2</span>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">ROE</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">157.0%</span>
+<span class="text-xs text-emerald-500 font-medium">Top 1% Tier</span>
+</div>
+<!-- Metric Card 3 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">Free Cash Flow</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">$107.3B</span>
+<span class="text-xs text-slate-400">TTM Basis</span>
+</div>
+<!-- Metric Card 4 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">Net Margin</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">24.6%</span>
+<span class="text-xs text-slate-400">Operating Stability</span>
+</div>
+<!-- Metric Card 5 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">Debt-to-Equity</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">1.74</span>
+<span class="text-xs text-slate-400">Leverage Ratio</span>
+</div>
+<!-- Metric Card 6 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">Dividend Yield</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">0.55%</span>
+<span class="text-xs text-slate-400">Next ex-date: Aug 09</span>
+</div>
+</div>
+</div>
+<!-- Right Side: Crypto (BTC) -->
+<div class="flex flex-col gap-6">
+<!-- Crypto Header Card -->
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-bold rounded-full uppercase tracking-wider">Digital Asset</span>
+<span class="text-slate-400 material-symbols-outlined cursor-help">info</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-16 rounded-xl flex items-center justify-center bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/20">
+<svg class="size-10 text-orange-500" fill="currentColor" viewbox="0 0 24 24">
+<path d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.05-1.244 15.525.362 9.105 1.962 2.67 8.471-1.24 14.9 0.352c6.437 1.587 10.348 8.11 8.738 14.552zM18.91 9.553c.255-1.705-1.043-2.622-2.82-3.233l.574-2.304-1.402-.351-.56 2.245c-.367-.092-.744-.178-1.122-.265l.564-2.26-1.401-.349-.574 2.303c-.304-.07-.604-.14-.894-.213l.002-.01-1.932-.482-.373 1.498s1.04.238 1.017.254c.568.141.67.517.653.815l-.654 2.625c.04.01.09.023.144.044l-.147-.037-.918 3.68c-.07.172-.244.43-.639.332.013.02-1.018-.254-1.018-.254l-.696 1.604 1.824.455c.34.085.672.174 1.001.258l-.58 2.33 1.402.35.574-2.303c.382.103.754.198 1.118.289l-.567 2.274 1.402.35.581-2.327c2.39.453 4.187.27 4.943-1.892.61-1.74-.03-2.744-1.29-3.402.917-.213 1.607-.818 1.792-2.073zM14.61 14.75c-.434 1.744-3.37.8-4.322.563l.77-3.093c.952.238 3.998.71 3.552 2.53zm.444-4.505c-.395 1.586-2.843.781-3.633.585l.7-2.808c.79.196 3.337.56 2.933 2.223z"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">BTC</h3>
+<span class="text-slate-500 dark:text-slate-400 font-medium">Bitcoin</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-primary">$67,250</span>
+<span class="text-rose-500 text-sm font-semibold flex items-center">
+<span class="material-symbols-outlined !text-sm">trending_down</span> 0.45% today
+                                    </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Crypto Metrics Grid -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Metric Card 1 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">Market Cap</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">$1.01T</span>
+<span class="text-xs text-slate-400">Rank #1 Global</span>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">Circulating Supply</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">19.6M <span class="text-sm font-normal text-slate-400">/ 21M</span></span>
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 93%"></div>
+</div>
+<span class="text-[10px] text-primary font-bold mt-1">93% ISSUED</span>
+</div>
+<!-- Metric Card 3 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">FDV</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">$1.08T</span>
+<span class="text-xs text-slate-400">Fully Diluted Valuation</span>
+</div>
+<!-- Metric Card 4 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">24h Volume</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">$28.4B</span>
+<span class="text-xs text-emerald-500">+12% vs avg</span>
+</div>
+<!-- Metric Card 5 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">All-Time High</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">$73,750</span>
+<span class="text-xs text-rose-500 font-medium">30% below ATH</span>
+</div>
+<!-- Metric Card 6 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+<span class="text-sm font-medium">Vol / Market Cap</span>
+<span class="material-symbols-outlined !text-base cursor-help opacity-60">info</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">2.8%</span>
+<span class="text-xs text-slate-400">Liquidity Score: High</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Note -->
+<div class="mt-12 p-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+<p class="text-sm text-slate-500 dark:text-slate-400">
+<span class="font-bold text-primary">Pro Tip:</span> Stockerly detects the asset type and swaps the analysis framework instantly. Traditional metrics like P/E are hidden for Crypto, replaced by on-chain and liquidity data.
+                </p>
+</div>
+</main>
+</div>
+</body></html>
