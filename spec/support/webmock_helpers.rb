@@ -63,9 +63,67 @@ module WebmockHelpers
       .to_return(status: 500, body: "Internal Server Error")
   end
 
+  # --- Yahoo Finance ---
+
+  def stub_yahoo_finance_price(symbol, price: 25.50, change_percent: 1.25, volume: 500_000)
+    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
+      .with(query: hash_including("symbols" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {
+          quoteResponse: {
+            result: [{
+              "symbol" => symbol,
+              "regularMarketPrice" => price,
+              "regularMarketChangePercent" => change_percent,
+              "regularMarketVolume" => volume
+            }],
+            error: nil
+          }
+        }.to_json
+      )
+  end
+
+  def stub_yahoo_finance_bulk(symbols_data)
+    results = symbols_data.map do |sym, data|
+      { "symbol" => sym, "regularMarketPrice" => data[:price],
+        "regularMarketChangePercent" => data[:change_percent] || 0,
+        "regularMarketVolume" => data[:volume] || 0 }
+    end
+
+    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
+      .with(query: hash_including("symbols"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { quoteResponse: { result: results, error: nil } }.to_json
+      )
+  end
+
+  def stub_yahoo_finance_not_found(symbol)
+    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
+      .with(query: hash_including("symbols" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { quoteResponse: { result: [], error: nil } }.to_json
+      )
+  end
+
+  def stub_yahoo_finance_rate_limited
+    stub_request(:get, %r{query1\.finance\.yahoo\.com/v8/finance/quote})
+      .to_return(status: 429, body: "Rate limit exceeded")
+  end
+
+  def stub_yahoo_finance_server_error
+    stub_request(:get, %r{query1\.finance\.yahoo\.com/v8/finance/quote})
+      .to_return(status: 500, body: "Internal Server Error")
+  end
+
   # --- ExchangeRate API ---
 
-  def stub_fx_rates(base: "USD", rates: { "EUR" => 0.92, "MXN" => 17.25, "GBP" => 0.79, "TWD" => 31.50 })
+  def stub_fx_rates(base: "USD", rates: { "EUR" => 0.92, "MXN" => 17.25, "GBP" => 0.79 })
     stub_request(:get, %r{v6\.exchangerate-api\.com/v6/.*/latest/#{base}})
       .to_return(
         status: 200,

@@ -26,11 +26,9 @@ namespace :stockerly do
       { symbol: "BTC",   name: "Bitcoin",    asset_type: :crypto, data_source: "CoinGecko API" },
       { symbol: "ETH",   name: "Ethereum",   asset_type: :crypto, data_source: "CoinGecko API" },
       { symbol: "SOL",   name: "Solana",     asset_type: :crypto, data_source: "CoinGecko API" },
-      # Mexico (BMV) — sync disabled until a Mexican data gateway is added
-      { symbol: "GENIUSSACV.MX", name: "Genius Sports SAB",   asset_type: :stock, sector: "Technology", exchange: "BMV", country: "MX", sync_status: :disabled },
-      { symbol: "IVVPESO.MX",    name: "iShares S&P 500 MXN", asset_type: :etf,                        exchange: "BMV", country: "MX", sync_status: :disabled },
-      # Taiwan
-      { symbol: "2330.TW", name: "TSMC", asset_type: :stock, sector: "Technology", exchange: "TWSE", country: "TW", data_source: "Polygon.io" },
+      # Mexico (BMV) — prices via Yahoo Finance
+      { symbol: "GENIUSSACV.MX", name: "Genius Sports SAB",   asset_type: :stock, sector: "Technology", exchange: "BMV", country: "MX", data_source: "Yahoo Finance" },
+      { symbol: "IVVPESO.MX",    name: "iShares S&P 500 MXN", asset_type: :etf,                        exchange: "BMV", country: "MX", data_source: "Yahoo Finance" },
       # Indices
       { symbol: "VIX", name: "CBOE Volatility Index", asset_type: :index, exchange: "CBOE", country: "US" },
     ]

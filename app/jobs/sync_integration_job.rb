@@ -28,8 +28,9 @@ class SyncIntegrationJob < ApplicationJob
 
     # Simple connectivity test: fetch a known symbol
     case integration.provider_name
-    when "Polygon.io" then gateway.fetch_price("AAPL")
-    when "CoinGecko"  then gateway.fetch_price("BTC")
+    when "Polygon.io"    then gateway.fetch_price("AAPL")
+    when "CoinGecko"     then gateway.fetch_price("BTC")
+    when "Yahoo Finance" then gateway.fetch_price("GENIUSSACV.MX")
     else
       Dry::Monads::Success(:ok)
     end
@@ -37,8 +38,9 @@ class SyncIntegrationJob < ApplicationJob
 
   def gateway_for(integration)
     case integration.provider_name
-    when "Polygon.io" then PolygonGateway.new
-    when "CoinGecko"  then CoingeckoGateway.new
+    when "Polygon.io"    then PolygonGateway.new
+    when "CoinGecko"     then CoingeckoGateway.new
+    when "Yahoo Finance" then YahooFinanceGateway.new
     else nil
     end
   end

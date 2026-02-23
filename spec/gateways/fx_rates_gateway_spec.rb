@@ -9,10 +9,10 @@ RSpec.describe FxRatesGateway do
 
       it "returns Success and upserts FxRate records" do
         expect {
-          result = gateway.refresh_rates(base: "USD", targets: %w[EUR MXN GBP TWD])
+          result = gateway.refresh_rates(base: "USD", targets: %w[EUR MXN GBP])
           expect(result).to be_success
           expect(result.value!).to eq(:rates_refreshed)
-        }.to change(FxRate, :count).by(4)
+        }.to change(FxRate, :count).by(3)
       end
 
       it "updates existing rates via upsert" do

@@ -8,7 +8,7 @@ RSpec.describe RefreshFxRatesJob, type: :job do
       it "creates FxRate records" do
         expect {
           described_class.perform_now
-        }.to change(FxRate, :count).by(4)
+        }.to change(FxRate, :count).by(3)
       end
 
       it "creates a success SystemLog entry" do

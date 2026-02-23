@@ -76,6 +76,42 @@ RSpec.describe SyncSingleAssetJob, type: :job do
       end
     end
 
+    context "with a Mexican (BMV) stock" do
+      let!(:asset) { create(:asset, :mexican, symbol: "GENIUSSACV.MX", asset_type: :stock, sync_status: :active, current_price: 20.00) }
+
+      before { stub_yahoo_finance_price("GENIUSSACV.MX", price: 25.50) }
+
+      it "updates the asset price from Yahoo Finance" do
+        described_class.perform_now(asset.id)
+
+        asset.reload
+        expect(asset.current_price.to_f).to eq(25.5)
+      end
+
+      it "creates a success SystemLog entry" do
+        expect {
+          described_class.perform_now(asset.id)
+        }.to change(SystemLog, :count).by(1)
+
+        log = SystemLog.last
+        expect(log.severity).to eq("success")
+        expect(log.task_name).to include("GENIUSSACV.MX")
+      end
+    end
+
+    context "with a Mexican ETF" do
+      let!(:asset) { create(:asset, :mexican, :etf, symbol: "IVVPESO.MX", sync_status: :active, current_price: 40.00) }
+
+      before { stub_yahoo_finance_price("IVVPESO.MX", price: 48.30) }
+
+      it "routes to YahooFinanceGateway, not PolygonGateway" do
+        described_class.perform_now(asset.id)
+
+        asset.reload
+        expect(asset.current_price.to_f).to eq(48.3)
+      end
+    end
+
     context "when asset does not exist" do
       it "does nothing" do
         expect {

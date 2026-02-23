@@ -26,27 +26,35 @@ class SyncSingleAssetJob < ApplicationJob
   private
 
   def fetch_price(asset)
-    breaker = self.class.circuit_breaker_for(asset.asset_type)
+    breaker = self.class.circuit_breaker_for(breaker_key(asset))
     breaker.call { gateway_for(asset).fetch_price(asset.symbol) }
   end
 
   CIRCUIT_BREAKERS = {}
 
-  def self.circuit_breaker_for(asset_type)
-    CIRCUIT_BREAKERS[asset_type] ||= CircuitBreaker.new(
-      name: "#{asset_type}_gateway",
+  def self.circuit_breaker_for(key)
+    CIRCUIT_BREAKERS[key] ||= CircuitBreaker.new(
+      name: "#{key}_gateway",
       threshold: 5,
       timeout: 60
     )
   end
 
   def gateway_for(asset)
+    return YahooFinanceGateway.new if asset.country == "MX"
+
     case asset.asset_type
     when "stock", "index", "etf" then PolygonGateway.new
-    when "crypto"         then CoingeckoGateway.new
+    when "crypto"                then CoingeckoGateway.new
     else
       raise ArgumentError, "Unknown asset type: #{asset.asset_type}"
     end
+  end
+
+  def breaker_key(asset)
+    return "bmv" if asset.country == "MX"
+
+    asset.asset_type
   end
 
   def update_asset(asset, data)

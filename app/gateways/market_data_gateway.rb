@@ -1,5 +1,5 @@
 # Interface (Output Port) for market data providers.
-# Concrete adapters: PolygonGateway (stocks), CoingeckoGateway (crypto).
+# Concrete adapters: PolygonGateway (stocks), CoingeckoGateway (crypto), YahooFinanceGateway (BMV).
 class MarketDataGateway
   def fetch_price(_symbol)
     raise NotImplementedError, "#{self.class}#fetch_price not implemented"

@@ -13,7 +13,7 @@ class FxRatesGateway
 
   # Refresh FX rates for given base → target currencies.
   # Upserts FxRate records and returns Success(:rates_refreshed).
-  def refresh_rates(base: "USD", targets: %w[EUR MXN GBP TWD JPY])
+  def refresh_rates(base: "USD", targets: %w[EUR MXN GBP JPY])
     response = connection.get("/v6/#{@api_key}/latest/#{base}")
 
     return Failure([:rate_limited, "ExchangeRate API rate limit exceeded"]) if response.status == 429

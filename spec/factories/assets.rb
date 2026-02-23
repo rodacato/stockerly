@@ -29,6 +29,12 @@ FactoryBot.define do
       data_source { "Polygon.io" }
     end
 
+    trait :mexican do
+      exchange { "BMV" }
+      country { "MX" }
+      data_source { "Yahoo Finance" }
+    end
+
     trait :disabled do
       sync_status { :disabled }
     end

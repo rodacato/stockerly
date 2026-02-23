@@ -148,9 +148,9 @@ Asset.find_or_create_by!(symbol: "VOO")  { |a| a.name = "Vanguard S&P 500";     
 Asset.find_or_create_by!(symbol: "VTI")  { |a| a.name = "Vanguard Total Stock";  a.asset_type = :etf; a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
 Asset.find_or_create_by!(symbol: "ARKK") { |a| a.name = "ARK Innovation ETF";   a.asset_type = :etf; a.exchange = "NYSE";   a.country = "US"; a.data_source = "Polygon.io"; a.price_updated_at = Time.current }
 
-# Mexico (BMV) — sync disabled until a Mexican data gateway is added
-Asset.find_or_create_by!(symbol: "GENIUSSACV.MX") { |a| a.name = "Genius Sports SAB";   a.asset_type = :stock; a.sector = "Technology"; a.exchange = "BMV"; a.country = "MX"; a.sync_status = :disabled; a.price_updated_at = Time.current }
-Asset.find_or_create_by!(symbol: "IVVPESO.MX")    { |a| a.name = "iShares S&P 500 MXN"; a.asset_type = :etf;                           a.exchange = "BMV"; a.country = "MX"; a.sync_status = :disabled; a.price_updated_at = Time.current }
+# Mexico (BMV) — prices via Yahoo Finance
+genius = Asset.find_or_create_by!(symbol: "GENIUSSACV.MX") { |a| a.name = "Genius Sports SAB";   a.asset_type = :stock; a.sector = "Technology"; a.exchange = "BMV"; a.country = "MX"; a.data_source = "Yahoo Finance"; a.price_updated_at = Time.current }
+Asset.find_or_create_by!(symbol: "IVVPESO.MX")             { |a| a.name = "iShares S&P 500 MXN"; a.asset_type = :etf;                           a.exchange = "BMV"; a.country = "MX"; a.data_source = "Yahoo Finance"; a.price_updated_at = Time.current }
 
 # Crypto
 btc = Asset.find_or_create_by!(symbol: "BTC") do |a|
@@ -195,18 +195,6 @@ vix = Asset.find_or_create_by!(symbol: "VIX") do |a|
   a.price_updated_at = 10.minutes.ago
 end
 
-# Taiwan
-tsmc = Asset.find_or_create_by!(symbol: "2330.TW") do |a|
-  a.name = "TSMC"
-  a.asset_type = :stock
-  a.sector = "Technology"
-  a.exchange = "TWSE"
-  a.country = "TW"
-  a.data_source = "Polygon.io"
-  a.current_price = 605.00
-  a.change_percent_24h = 0.50
-  a.price_updated_at = 15.minutes.ago
-end
 
 # --- Trades & Positions for Alex ---
 portfolio = alex.portfolio
@@ -218,7 +206,7 @@ unless Position.where(portfolio: portfolio).exists?
     { asset: msft, shares: 30,  price: 280.15, currency: "USD", date: 10.months.ago },
     { asset: tsla, shares: 20,  price: 242.50, currency: "USD", date: 8.months.ago },
     { asset: nvda, shares: 15,  price: 420.00, currency: "USD", date: 6.months.ago },
-    { asset: tsmc, shares: 100, price: 560.00, currency: "TWD", date: 3.months.ago },
+    { asset: genius, shares: 200, price: 25.50, currency: "MXN", date: 3.months.ago },
   ].each do |t|
     position = Position.create!(
       portfolio: portfolio, asset: t[:asset], shares: t[:shares],
@@ -353,10 +341,6 @@ FxRate.find_or_create_by!(base_currency: "USD", quote_currency: "GBP") do |r|
   r.rate = 0.79
   r.fetched_at = 1.hour.ago
 end
-FxRate.find_or_create_by!(base_currency: "USD", quote_currency: "TWD") do |r|
-  r.rate = 31.50
-  r.fetched_at = 1.hour.ago
-end
 
 # --- Dividends ---
 unless Dividend.exists?
@@ -391,6 +375,12 @@ Integration.find_or_create_by!(provider_name: "CoinGecko") do |i|
   i.api_key_encrypted = "cg_demo_key_456def"
   i.connection_status = :syncing
   i.last_sync_at = 1.hour.ago
+end
+Integration.find_or_create_by!(provider_name: "Yahoo Finance") do |i|
+  i.provider_type = "Mexican Stocks & ETFs"
+  i.api_key_encrypted = ""
+  i.connection_status = :connected
+  i.last_sync_at = Time.current
 end
 
 # --- Audit Logs ---

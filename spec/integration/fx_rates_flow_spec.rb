@@ -6,7 +6,7 @@ RSpec.describe "FX Rates Flow (E2E)", type: :model do
   it "refreshes FX rates → creates records → logs success" do
     expect {
       RefreshFxRatesJob.perform_now
-    }.to change(FxRate, :count).by(4)
+    }.to change(FxRate, :count).by(3)
       .and change(SystemLog, :count).by(1)
 
     log = SystemLog.last
