@@ -11,8 +11,8 @@ class RecordPriceHistory
     if existing
       existing.update!(
         close: new_price,
-        high: [existing.high, new_price].max,
-        low: [existing.low, new_price].min
+        high: [ existing.high, new_price ].max,
+        low: [ existing.low, new_price ].min
       )
     else
       AssetPriceHistory.create!(

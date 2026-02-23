@@ -27,7 +27,7 @@ class SyncPriorityAssetsJob < ApplicationJob
 
   def sync_equities(scope)
     bmv_assets = scope.where(country: "MX")
-    us_assets  = scope.where(country: [nil, ""]).or(scope.where.not(country: "MX"))
+    us_assets  = scope.where(country: [ nil, "" ]).or(scope.where.not(country: "MX"))
 
     if bmv_assets.exists? && MarketHours.bmv_market_open?
       SyncBulkBmvJob.perform_later(bmv_assets.pluck(:id))

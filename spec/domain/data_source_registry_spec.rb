@@ -11,7 +11,7 @@ RSpec.describe DataSourceRegistry do
       color: "blue",
       gateway_class: test_gateway,
       job_class: test_job,
-      job_args: ["foo"],
+      job_args: [ "foo" ],
       test_symbol: "TEST",
       integration_name: "Test Provider",
       circuit_breaker_key: "test"

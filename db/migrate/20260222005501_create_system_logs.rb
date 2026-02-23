@@ -14,6 +14,6 @@ class CreateSystemLogs < ActiveRecord::Migration[8.1]
     add_index :system_logs, :severity
     add_index :system_logs, :module_name
     add_index :system_logs, :created_at
-    add_index :system_logs, [:severity, :created_at]
+    add_index :system_logs, [ :severity, :created_at ]
   end
 end

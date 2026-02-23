@@ -10,7 +10,7 @@ class CreateAlertRules < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :alert_rules, [:user_id, :status]
+    add_index :alert_rules, [ :user_id, :status ]
     add_index :alert_rules, :asset_symbol
   end
 end

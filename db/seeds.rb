@@ -40,7 +40,7 @@ demo = User.find_or_create_by!(email: "demo@stockerly.com") do |u|
 end
 
 # --- Portfolios & AlertPreferences (created via event handlers in prod, manual in seeds) ---
-[admin, alex, sarah, jdoe, demo].each do |user|
+[ admin, alex, sarah, jdoe, demo ].each do |user|
   Portfolio.find_or_create_by!(user: user) do |p|
     p.inception_date = user.created_at.to_date
   end
@@ -232,7 +232,7 @@ unless Position.where(portfolio: portfolio).exists?
     { asset: msft, shares: 30,  price: 280.15, currency: "USD", date: 10.months.ago },
     { asset: tsla, shares: 20,  price: 242.50, currency: "USD", date: 8.months.ago },
     { asset: nvda, shares: 15,  price: 420.00, currency: "USD", date: 6.months.ago },
-    { asset: genius, shares: 200, price: 25.50, currency: "MXN", date: 3.months.ago },
+    { asset: genius, shares: 200, price: 25.50, currency: "MXN", date: 3.months.ago }
   ].each do |t|
     position = Position.create!(
       portfolio: portfolio, asset: t[:asset], shares: t[:shares],
@@ -248,7 +248,7 @@ unless Position.where(portfolio: portfolio).exists?
 end
 
 # --- Watchlist for Alex ---
-[aapl, tsla, btc, nvda, msft].each do |asset|
+[ aapl, tsla, btc, nvda, msft ].each do |asset|
   WatchlistItem.find_or_create_by!(user: alex, asset: asset) do |w|
     w.entry_price = asset.current_price
   end

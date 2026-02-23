@@ -28,7 +28,7 @@ class SyncIntegrationJob < ApplicationJob
     source = DataSourceRegistry.for_integration(integration.provider_name)
 
     unless source
-      return Dry::Monads::Failure([:not_found, "No gateway for #{integration.provider_name}"])
+      return Dry::Monads::Failure([ :not_found, "No gateway for #{integration.provider_name}" ])
     end
 
     gateway = source.gateway_class.new

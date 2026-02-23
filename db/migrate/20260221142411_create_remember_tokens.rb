@@ -12,6 +12,6 @@ class CreateRememberTokens < ActiveRecord::Migration[8.1]
     end
 
     add_index :remember_tokens, :token_digest, unique: true
-    add_index :remember_tokens, [:user_id, :expires_at]
+    add_index :remember_tokens, [ :user_id, :expires_at ]
   end
 end

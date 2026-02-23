@@ -22,9 +22,9 @@ class GatewayChain
 
       result = if breaker
                  breaker.call { gateway.fetch_price(symbol) }
-               else
+      else
                  gateway.fetch_price(symbol)
-               end
+      end
 
       if result.success?
         value = result.value!
@@ -35,6 +35,6 @@ class GatewayChain
       attempted << gateway.class.name
     end
 
-    Failure([:all_gateways_failed, "All gateways failed for #{symbol}", attempted])
+    Failure([ :all_gateways_failed, "All gateways failed for #{symbol}", attempted ])
   end
 end

@@ -3,7 +3,7 @@ class PasswordResetsController < ApplicationController
 
   rate_limit to: 3, within: 1.hour, only: :create
 
-  before_action :find_user_by_token, only: [:edit]
+  before_action :find_user_by_token, only: [ :edit ]
 
   def new; end
 
@@ -20,9 +20,9 @@ class PasswordResetsController < ApplicationController
     case result
     in Dry::Monads::Success
       redirect_to login_path, notice: "Password reset successfully. Please sign in."
-    in Dry::Monads::Failure[:invalid_token, message]
+    in Dry::Monads::Failure[ :invalid_token, message ]
       redirect_to forgot_password_path, alert: message
-    in Dry::Monads::Failure[:validation, _]
+    in Dry::Monads::Failure[ :validation, _ ]
       render :edit, status: :unprocessable_content
     end
   end

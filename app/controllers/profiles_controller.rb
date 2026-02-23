@@ -13,7 +13,7 @@ class ProfilesController < AuthenticatedController
     case result
     in Dry::Monads::Success
       redirect_to profile_path, notice: "Profile updated successfully."
-    in Dry::Monads::Failure[:validation, errors]
+    in Dry::Monads::Failure[ :validation, errors ]
       flash.now[:alert] = errors.values.flatten.first
       render :show, status: :unprocessable_content
     end
@@ -38,9 +38,9 @@ class ProfilesController < AuthenticatedController
     case result
     in Dry::Monads::Success
       redirect_to profile_path, notice: "Password changed successfully."
-    in Dry::Monads::Failure[:unauthorized, message]
+    in Dry::Monads::Failure[ :unauthorized, message ]
       redirect_to profile_path, alert: message
-    in Dry::Monads::Failure[:validation, errors]
+    in Dry::Monads::Failure[ :validation, errors ]
       redirect_to profile_path, alert: errors.values.flatten.first
     end
   end

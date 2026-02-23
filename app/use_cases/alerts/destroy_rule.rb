@@ -11,7 +11,7 @@ module Alerts
 
     def find_rule(user, id)
       rule = user.alert_rules.find_by(id: id)
-      rule ? Success(rule) : Failure([:not_found, "Alert rule not found"])
+      rule ? Success(rule) : Failure([ :not_found, "Alert rule not found" ])
     end
   end
 end

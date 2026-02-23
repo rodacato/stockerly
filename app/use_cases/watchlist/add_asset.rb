@@ -11,7 +11,7 @@ module Watchlist
 
     def find_asset(asset_id)
       asset = Asset.find_by(id: asset_id)
-      asset ? Success(asset) : Failure([:not_found, "Asset not found"])
+      asset ? Success(asset) : Failure([ :not_found, "Asset not found" ])
     end
 
     def create_item(user, asset)
@@ -19,7 +19,7 @@ module Watchlist
       if item.save
         Success(item)
       else
-        Failure([:validation, item.errors.to_hash])
+        Failure([ :validation, item.errors.to_hash ])
       end
     end
   end

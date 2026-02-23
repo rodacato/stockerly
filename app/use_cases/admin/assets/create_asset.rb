@@ -4,9 +4,9 @@ module Admin
       SYNTH_LOGO_URL = "https://logo.synthfinance.com/ticker/%s"
       COINGECKO_LOGO_URL = "https://assets.coingecko.com/coins/images/%s/small/%s.png"
       COINGECKO_IMAGE_IDS = {
-        "BTC" => [1, "bitcoin"], "ETH" => [279, "ethereum"], "SOL" => [4128, "solana"],
-        "ADA" => [975, "cardano"], "DOT" => [12171, "polkadot"], "DOGE" => [5, "dogecoin"],
-        "AVAX" => [12559, "avalanche-2"], "LINK" => [877, "chainlink"], "UNI" => [12504, "uniswap"]
+        "BTC" => [ 1, "bitcoin" ], "ETH" => [ 279, "ethereum" ], "SOL" => [ 4128, "solana" ],
+        "ADA" => [ 975, "cardano" ], "DOT" => [ 12171, "polkadot" ], "DOGE" => [ 5, "dogecoin" ],
+        "AVAX" => [ 12559, "avalanche-2" ], "LINK" => [ 877, "chainlink" ], "UNI" => [ 12504, "uniswap" ]
       }.freeze
 
       def call(admin:, params:)
@@ -29,12 +29,12 @@ module Admin
         return attrs if attrs[:logo_url].present?
 
         logo = case attrs[:asset_type]
-               when "crypto"
+        when "crypto"
                  ids = COINGECKO_IMAGE_IDS[attrs[:symbol].upcase]
                  ids ? format(COINGECKO_LOGO_URL, ids[0], ids[1]) : nil
-               else
+        else
                  format(SYNTH_LOGO_URL, attrs[:symbol])
-               end
+        end
 
         attrs.merge(logo_url: logo)
       end
@@ -42,18 +42,18 @@ module Admin
       def resolve_data_source(attrs)
         source = if attrs[:country] == "MX"
                    "Yahoo Finance"
-                 elsif attrs[:asset_type] == "crypto"
+        elsif attrs[:asset_type] == "crypto"
                    "CoinGecko API"
-                 else
+        else
                    "Polygon.io"
-                 end
+        end
 
         attrs.merge(data_source: source)
       end
 
       def persist(attrs)
         asset = Asset.new(attrs.merge(sync_status: :active))
-        asset.save ? Success(asset) : Failure([:validation, asset.errors.to_hash])
+        asset.save ? Success(asset) : Failure([ :validation, asset.errors.to_hash ])
       end
     end
   end

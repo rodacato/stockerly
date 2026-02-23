@@ -2,7 +2,7 @@ class RegistrationsController < ApplicationController
   layout "public"
 
   rate_limit to: 5, within: 1.minute, only: :create
-  before_action :redirect_if_logged_in, only: [:new, :create]
+  before_action :redirect_if_logged_in, only: [ :new, :create ]
 
   def new
     @user = User.new
@@ -15,7 +15,7 @@ class RegistrationsController < ApplicationController
     in Dry::Monads::Success(user)
       start_session(user)
       redirect_to dashboard_path, notice: "Welcome to Stockerly, #{user.full_name}!"
-    in Dry::Monads::Failure[:validation, errors]
+    in Dry::Monads::Failure[ :validation, errors ]
       @user = User.new(registration_params)
       errors.each { |field, msgs| msgs.each { |msg| @user.errors.add(field, msg) } }
       render :new, status: :unprocessable_content

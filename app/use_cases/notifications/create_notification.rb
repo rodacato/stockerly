@@ -2,7 +2,7 @@ module Notifications
   class CreateNotification < ApplicationUseCase
     def call(user_id:, title:, body: nil, notification_type: :system, notifiable: nil)
       user = User.find_by(id: user_id)
-      return Failure([:not_found, "User not found"]) unless user
+      return Failure([ :not_found, "User not found" ]) unless user
 
       notification = user.notifications.create!(
         title: title,
@@ -20,7 +20,7 @@ module Notifications
 
       Success(notification)
     rescue ActiveRecord::RecordInvalid => e
-      Failure([:validation, e.record.errors.to_hash])
+      Failure([ :validation, e.record.errors.to_hash ])
     end
   end
 end

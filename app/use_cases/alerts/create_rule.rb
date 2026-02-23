@@ -18,7 +18,7 @@ module Alerts
       )
       Success(rule)
     rescue ActiveRecord::RecordInvalid => e
-      Failure([:validation, e.record.errors.to_hash])
+      Failure([ :validation, e.record.errors.to_hash ])
     end
   end
 end

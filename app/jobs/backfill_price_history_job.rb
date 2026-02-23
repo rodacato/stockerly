@@ -30,7 +30,7 @@ class BackfillPriceHistoryJob < ApplicationJob
       to_date   = Date.current.to_s
       PolygonGateway.new.fetch_historical(asset.symbol, from_date, to_date)
     else
-      Dry::Monads::Failure([:not_supported, "Backfill not supported for #{asset.asset_type}"])
+      Dry::Monads::Failure([ :not_supported, "Backfill not supported for #{asset.asset_type}" ])
     end
   end
 

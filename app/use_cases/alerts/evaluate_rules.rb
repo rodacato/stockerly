@@ -2,7 +2,7 @@ module Alerts
   class EvaluateRules < ApplicationUseCase
     def call(asset_id:, new_price:, old_price: nil)
       asset = Asset.find_by(id: asset_id)
-      return Failure([:not_found, "Asset not found"]) unless asset
+      return Failure([ :not_found, "Asset not found" ]) unless asset
 
       # Use a proxy with old_price so AlertEvaluator sees the pre-update price
       evaluator_asset = old_price ? AssetPriceProxy.new(asset, BigDecimal(old_price)) : asset

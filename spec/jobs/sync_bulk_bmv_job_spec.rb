@@ -14,7 +14,7 @@ RSpec.describe SyncBulkBmvJob, type: :job do
       end
 
       it "updates all BMV asset prices in a single API call" do
-        described_class.perform_now([genius.id, ivv.id])
+        described_class.perform_now([ genius.id, ivv.id ])
 
         genius.reload
         ivv.reload
@@ -23,7 +23,7 @@ RSpec.describe SyncBulkBmvJob, type: :job do
       end
 
       it "updates price_updated_at for each asset" do
-        described_class.perform_now([genius.id, ivv.id])
+        described_class.perform_now([ genius.id, ivv.id ])
 
         genius.reload
         expect(genius.price_updated_at).to be_within(2.seconds).of(Time.current)
@@ -32,12 +32,12 @@ RSpec.describe SyncBulkBmvJob, type: :job do
       it "publishes AssetPriceUpdated events for changed prices" do
         expect(EventBus).to receive(:publish).with(an_instance_of(AssetPriceUpdated)).twice
 
-        described_class.perform_now([genius.id, ivv.id])
+        described_class.perform_now([ genius.id, ivv.id ])
       end
 
       it "creates a success SystemLog entry" do
         expect {
-          described_class.perform_now([genius.id, ivv.id])
+          described_class.perform_now([ genius.id, ivv.id ])
         }.to change(SystemLog, :count).by(1)
 
         log = SystemLog.last
@@ -50,7 +50,7 @@ RSpec.describe SyncBulkBmvJob, type: :job do
       before { stub_yahoo_finance_rate_limited }
 
       it "creates a warning SystemLog entry" do
-        described_class.perform_now([genius.id, ivv.id])
+        described_class.perform_now([ genius.id, ivv.id ])
 
         log = SystemLog.last
         expect(log.severity).to eq("warning")
@@ -62,7 +62,7 @@ RSpec.describe SyncBulkBmvJob, type: :job do
 
       it "does nothing" do
         expect {
-          described_class.perform_now([disabled.id])
+          described_class.perform_now([ disabled.id ])
         }.not_to change(SystemLog, :count)
       end
     end

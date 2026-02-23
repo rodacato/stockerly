@@ -17,15 +17,15 @@ RSpec.describe EventBus do
 
   describe ".subscribe" do
     it "registers a handler for an event class" do
-      handler = ->(e) {}
+      handler = ->(e) { }
       EventBus.subscribe(test_event_class, handler)
 
       expect(EventBus.handlers_for(test_event_class)).to include(handler)
     end
 
     it "allows multiple handlers for the same event" do
-      handler1 = ->(e) {}
-      handler2 = ->(e) {}
+      handler1 = ->(e) { }
+      handler2 = ->(e) { }
       EventBus.subscribe(test_event_class, handler1)
       EventBus.subscribe(test_event_class, handler2)
 
@@ -41,7 +41,7 @@ RSpec.describe EventBus do
 
       EventBus.publish(event)
 
-      expect(received).to eq([event])
+      expect(received).to eq([ event ])
     end
 
     it "calls multiple handlers in order" do
@@ -51,7 +51,7 @@ RSpec.describe EventBus do
 
       EventBus.publish(event)
 
-      expect(order).to eq([:first, :second])
+      expect(order).to eq([ :first, :second ])
     end
 
     it "does nothing when no handlers are registered" do
@@ -81,7 +81,7 @@ RSpec.describe EventBus do
 
   describe ".clear!" do
     it "removes all registered handlers" do
-      EventBus.subscribe(test_event_class, ->(e) {})
+      EventBus.subscribe(test_event_class, ->(e) { })
       EventBus.clear!
 
       expect(EventBus.handlers_for(test_event_class)).to be_empty
@@ -90,7 +90,7 @@ RSpec.describe EventBus do
 
   describe ".handlers_for" do
     it "returns a copy of handlers for an event class" do
-      handler = ->(e) {}
+      handler = ->(e) { }
       EventBus.subscribe(test_event_class, handler)
 
       handlers = EventBus.handlers_for(test_event_class)

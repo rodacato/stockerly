@@ -13,7 +13,7 @@ module Onboarding
 
       Success(user)
     rescue ActiveRecord::RecordInvalid => e
-      Failure([:validation, e.message])
+      Failure([ :validation, e.message ])
     end
   end
 end

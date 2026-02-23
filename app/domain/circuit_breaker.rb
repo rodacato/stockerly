@@ -30,7 +30,7 @@ class CircuitBreaker
         transition_to(:half_open)
         execute(block)
       else
-        Failure([:circuit_open, "Circuit breaker '#{@name}' is open"])
+        Failure([ :circuit_open, "Circuit breaker '#{@name}' is open" ])
       end
     when :half_open
       execute(block)
@@ -57,7 +57,7 @@ class CircuitBreaker
     result
   rescue StandardError => e
     record_failure
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   def record_failure

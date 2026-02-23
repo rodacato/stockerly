@@ -7,7 +7,7 @@ RSpec.describe Onboarding::CompleteWizard do
 
   describe ".call" do
     it "adds selected assets to watchlist" do
-      result = described_class.call(user: user, asset_ids: [asset1.id, asset2.id])
+      result = described_class.call(user: user, asset_ids: [ asset1.id, asset2.id ])
 
       expect(result).to be_success
       expect(user.watchlist_items.count).to eq(2)
@@ -16,7 +16,7 @@ RSpec.describe Onboarding::CompleteWizard do
     it "does not create duplicate watchlist items" do
       create(:watchlist_item, user: user, asset: asset1)
 
-      result = described_class.call(user: user, asset_ids: [asset1.id, asset2.id])
+      result = described_class.call(user: user, asset_ids: [ asset1.id, asset2.id ])
       expect(result).to be_success
       expect(user.watchlist_items.count).to eq(2)
     end
@@ -24,7 +24,7 @@ RSpec.describe Onboarding::CompleteWizard do
     it "sets onboarded_at timestamp" do
       expect(user.onboarded_at).to be_nil
 
-      described_class.call(user: user, asset_ids: [asset1.id])
+      described_class.call(user: user, asset_ids: [ asset1.id ])
 
       user.reload
       expect(user.onboarded_at).to be_present

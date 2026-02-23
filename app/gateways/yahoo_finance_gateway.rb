@@ -27,12 +27,12 @@ class YahooFinanceGateway < MarketDataGateway
       req.params["symbols"] = symbol
     end
 
-    return Failure([:rate_limited, "Yahoo Finance rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "Yahoo Finance returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
 
     parse_single(symbol, response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   # Fetch prices for multiple symbols in a single API call.
@@ -42,12 +42,12 @@ class YahooFinanceGateway < MarketDataGateway
       req.params["symbols"] = symbols.join(",")
     end
 
-    return Failure([:rate_limited, "Yahoo Finance rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "Yahoo Finance returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
 
     parse_bulk(response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   # Fetch quotes for market indices (S&P 500, NASDAQ, DOW, FTSE, IPC, VIX).
@@ -57,12 +57,12 @@ class YahooFinanceGateway < MarketDataGateway
       req.params["symbols"] = symbols.join(",")
     end
 
-    return Failure([:rate_limited, "Yahoo Finance rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "Yahoo Finance returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
 
     parse_index_quotes(response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   private
@@ -70,7 +70,7 @@ class YahooFinanceGateway < MarketDataGateway
   def connection
     @connection ||= Faraday.new(url: BASE_URL) do |f|
       f.request :retry, max: 2, interval: 0.5, backoff_factor: 2,
-                        retry_statuses: [500, 502, 503]
+                        retry_statuses: [ 500, 502, 503 ]
       f.response :json
       f.options.timeout = TIMEOUT
       f.options.open_timeout = TIMEOUT
@@ -79,7 +79,7 @@ class YahooFinanceGateway < MarketDataGateway
 
   def parse_single(symbol, body)
     result = body.dig("quoteResponse", "result", 0)
-    return Failure([:not_found, "No data for #{symbol}"]) unless result
+    return Failure([ :not_found, "No data for #{symbol}" ]) unless result
 
     Success({
       symbol: symbol,
@@ -91,7 +91,7 @@ class YahooFinanceGateway < MarketDataGateway
 
   def parse_index_quotes(body)
     results_array = body.dig("quoteResponse", "result") || []
-    return Failure([:not_found, "No index data returned"]) if results_array.empty?
+    return Failure([ :not_found, "No index data returned" ]) if results_array.empty?
 
     quotes = results_array.filter_map do |result|
       yahoo_sym = result["symbol"]

@@ -17,7 +17,7 @@ module Identity
         password: attrs[:password],
         password_confirmation: attrs[:password_confirmation]
       )
-      user.save ? Success(user) : Failure([:validation, user.errors.to_hash])
+      user.save ? Success(user) : Failure([ :validation, user.errors.to_hash ])
     end
   end
 end

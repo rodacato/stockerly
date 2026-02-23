@@ -11,7 +11,7 @@ class CreateAlertEvents < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :alert_events, [:user_id, :triggered_at]
+    add_index :alert_events, [ :user_id, :triggered_at ]
     add_index :alert_events, :event_status
   end
 end

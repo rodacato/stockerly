@@ -10,7 +10,7 @@ class CreateDividends < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :dividends, [:asset_id, :ex_date], unique: true
+    add_index :dividends, [ :asset_id, :ex_date ], unique: true
     add_index :dividends, :ex_date
   end
 end

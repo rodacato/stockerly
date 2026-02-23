@@ -7,7 +7,7 @@ RSpec.describe RememberToken, type: :model do
       active_token = create(:remember_token, user: user, expires_at: 1.day.from_now)
       create(:remember_token, :expired, user: user)
 
-      expect(RememberToken.active).to eq([active_token])
+      expect(RememberToken.active).to eq([ active_token ])
     end
   end
 

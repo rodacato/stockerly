@@ -2,18 +2,18 @@ module Portfolios
   class LoadOverview < ApplicationUseCase
     def call(user:, tab: "open")
       portfolio = user.portfolio
-      return Failure([:not_found, "Portfolio not found"]) unless portfolio
+      return Failure([ :not_found, "Portfolio not found" ]) unless portfolio
 
       summary = PortfolioSummary.new(portfolio)
 
       positions = case tab
-                  when "closed"
+      when "closed"
                     portfolio.closed_positions.includes(:asset)
-                  when "dividends"
+      when "dividends"
                     portfolio.dividend_payments.includes(dividend: :asset).recent
-                  else
+      else
                     portfolio.open_positions.includes(:asset)
-                  end
+      end
 
       allocation = portfolio.allocation_by_sector
 

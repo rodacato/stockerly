@@ -24,7 +24,7 @@ RSpec.describe News::SyncArticles do
   context "when gateway returns articles" do
     before do
       allow(gateway).to receive(:fetch_news)
-        .and_return(Dry::Monads::Success([article_data(1), article_data(2), article_data(3)]))
+        .and_return(Dry::Monads::Success([ article_data(1), article_data(2), article_data(3) ]))
     end
 
     it "creates news articles in the database" do
@@ -58,7 +58,7 @@ RSpec.describe News::SyncArticles do
         published_at: 1.day.ago
       )
       allow(gateway).to receive(:fetch_news)
-        .and_return(Dry::Monads::Success([article_data(1), article_data(2)]))
+        .and_return(Dry::Monads::Success([ article_data(1), article_data(2) ]))
     end
 
     it "only creates new articles" do
@@ -76,7 +76,7 @@ RSpec.describe News::SyncArticles do
     before do
       blank_url = article_data(1).merge(url: "")
       allow(gateway).to receive(:fetch_news)
-        .and_return(Dry::Monads::Success([blank_url, article_data(2)]))
+        .and_return(Dry::Monads::Success([ blank_url, article_data(2) ]))
     end
 
     it "skips articles with blank URLs" do
@@ -88,7 +88,7 @@ RSpec.describe News::SyncArticles do
   context "when gateway fails" do
     before do
       allow(gateway).to receive(:fetch_news)
-        .and_return(Dry::Monads::Failure([:gateway_error, "Connection timeout"]))
+        .and_return(Dry::Monads::Failure([ :gateway_error, "Connection timeout" ]))
     end
 
     it "returns Failure" do

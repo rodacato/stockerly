@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
 
   rate_limit to: 5, within: 1.minute, only: :create
 
-  before_action :redirect_if_logged_in, only: [:new, :create]
+  before_action :redirect_if_logged_in, only: [ :new, :create ]
 
   def new; end
 
@@ -15,12 +15,12 @@ class SessionsController < ApplicationController
       start_session(user)
       remember(user) if params[:remember] == "1"
       redirect_to dashboard_path, notice: "Welcome back, #{user.full_name}!"
-    in Dry::Monads::Failure[:suspended, message]
+    in Dry::Monads::Failure[ :suspended, message ]
       redirect_to login_path, alert: message
-    in Dry::Monads::Failure[:invalid_credentials, message]
+    in Dry::Monads::Failure[ :invalid_credentials, message ]
       flash.now[:alert] = message
       render :new, status: :unprocessable_content
-    in Dry::Monads::Failure[:validation, _]
+    in Dry::Monads::Failure[ :validation, _ ]
       flash.now[:alert] = "Invalid email or password."
       render :new, status: :unprocessable_content
     end

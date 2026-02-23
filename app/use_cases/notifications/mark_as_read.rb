@@ -3,7 +3,7 @@ module Notifications
     def call(user:, notification_id: nil)
       if notification_id
         notification = user.notifications.find_by(id: notification_id)
-        return Failure([:not_found, "Notification not found"]) unless notification
+        return Failure([ :not_found, "Notification not found" ]) unless notification
 
         notification.mark_as_read!
         Success(notification)

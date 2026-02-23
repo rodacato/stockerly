@@ -9,7 +9,7 @@ class ApplicationUseCase
 
   def validate(contract_class, params)
     result = contract_class.new.call(params)
-    result.success? ? Success(result.to_h) : Failure([:validation, result.errors.to_h])
+    result.success? ? Success(result.to_h) : Failure([ :validation, result.errors.to_h ])
   end
 
   def publish(event)

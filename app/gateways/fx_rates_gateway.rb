@@ -16,12 +16,12 @@ class FxRatesGateway
   def refresh_rates(base: "USD", targets: %w[EUR MXN GBP JPY])
     response = connection.get("/v6/#{@api_key}/latest/#{base}")
 
-    return Failure([:rate_limited, "ExchangeRate API rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "ExchangeRate API returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "ExchangeRate API rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "ExchangeRate API returned #{response.status}" ]) unless response.success?
 
     parse_and_upsert(base, targets, response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   private
@@ -29,7 +29,7 @@ class FxRatesGateway
   def connection
     @connection ||= Faraday.new(url: BASE_URL) do |f|
       f.request :retry, max: 2, interval: 1, backoff_factor: 2,
-                        retry_statuses: [500, 502, 503]
+                        retry_statuses: [ 500, 502, 503 ]
       f.response :json
       f.options.timeout = TIMEOUT
       f.options.open_timeout = TIMEOUT
@@ -38,7 +38,7 @@ class FxRatesGateway
 
   def parse_and_upsert(base, targets, body)
     rates = body.dig("conversion_rates")
-    return Failure([:gateway_error, "No conversion_rates in response"]) unless rates
+    return Failure([ :gateway_error, "No conversion_rates in response" ]) unless rates
 
     now = Time.current
     targets.each do |target|

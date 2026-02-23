@@ -31,7 +31,7 @@ RSpec.describe Trends::LoadAssetTrend do
     it "returns failure if asset not found" do
       result = described_class.call(symbol: "ZZZZ")
       expect(result).to be_failure
-      expect(result.failure).to eq([:not_found, "Asset not found"])
+      expect(result.failure).to eq([ :not_found, "Asset not found" ])
     end
 
     it "is case insensitive for symbol lookup" do

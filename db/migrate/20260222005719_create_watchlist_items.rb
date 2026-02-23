@@ -8,6 +8,6 @@ class CreateWatchlistItems < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :watchlist_items, [:user_id, :asset_id], unique: true
+    add_index :watchlist_items, [ :user_id, :asset_id ], unique: true
   end
 end

@@ -17,12 +17,12 @@ class PolygonGateway < MarketDataGateway
       req.params["apiKey"] = @api_key
     end
 
-    return Failure([:rate_limited, "Polygon.io rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "Polygon.io returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "Polygon.io rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
 
     parse_single(symbol, response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   # Fetch daily OHLCV for a date range.
@@ -34,12 +34,12 @@ class PolygonGateway < MarketDataGateway
       req.params["sort"] = "asc"
     end
 
-    return Failure([:rate_limited, "Polygon.io rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "Polygon.io returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "Polygon.io rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
 
     parse_historical(response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   # Fetch recent news articles.
@@ -53,12 +53,12 @@ class PolygonGateway < MarketDataGateway
       req.params["ticker"] = ticker if ticker.present?
     end
 
-    return Failure([:rate_limited, "Polygon.io rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "Polygon.io returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "Polygon.io rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
 
     parse_news(response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   # Fetch prices for multiple symbols via individual calls.
@@ -73,7 +73,7 @@ class PolygonGateway < MarketDataGateway
 
     Success(results)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   private
@@ -81,7 +81,7 @@ class PolygonGateway < MarketDataGateway
   def connection
     @connection ||= Faraday.new(url: BASE_URL) do |f|
       f.request :retry, max: 2, interval: 0.5, backoff_factor: 2,
-                        retry_statuses: [500, 502, 503]
+                        retry_statuses: [ 500, 502, 503 ]
       f.response :json
       f.options.timeout = TIMEOUT
       f.options.open_timeout = TIMEOUT
@@ -90,7 +90,7 @@ class PolygonGateway < MarketDataGateway
 
   def parse_single(symbol, body)
     result = body.dig("results", 0)
-    return Failure([:not_found, "No data for #{symbol}"]) unless result
+    return Failure([ :not_found, "No data for #{symbol}" ]) unless result
 
     Success({
       symbol: symbol,
@@ -102,7 +102,7 @@ class PolygonGateway < MarketDataGateway
 
   def parse_historical(body)
     results = body["results"]
-    return Failure([:not_found, "No historical data returned"]) if results.blank?
+    return Failure([ :not_found, "No historical data returned" ]) if results.blank?
 
     bars = results.map do |bar|
       {

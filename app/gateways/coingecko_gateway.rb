@@ -28,11 +28,11 @@ class CoingeckoGateway < MarketDataGateway
   # Returns Success({ symbol:, price:, change_percent:, market_cap: })
   def fetch_price(symbol)
     coin_id = SYMBOL_TO_ID[symbol.upcase]
-    return Failure([:not_found, "Unknown crypto symbol: #{symbol}"]) unless coin_id
+    return Failure([ :not_found, "Unknown crypto symbol: #{symbol}" ]) unless coin_id
 
-    fetch_bulk_prices([symbol]).bind do |results|
+    fetch_bulk_prices([ symbol ]).bind do |results|
       result = results.first
-      result ? Success(result) : Failure([:not_found, "No data for #{symbol}"])
+      result ? Success(result) : Failure([ :not_found, "No data for #{symbol}" ])
     end
   end
 
@@ -40,7 +40,7 @@ class CoingeckoGateway < MarketDataGateway
   # Returns Success([{ date:, open:, high:, low:, close:, volume: }, ...])
   def fetch_historical(symbol, days: 30)
     coin_id = SYMBOL_TO_ID[symbol.upcase]
-    return Failure([:not_found, "Unknown crypto symbol: #{symbol}"]) unless coin_id
+    return Failure([ :not_found, "Unknown crypto symbol: #{symbol}" ]) unless coin_id
 
     response = connection.get("/api/v3/coins/#{coin_id}/market_chart") do |req|
       req.params["vs_currency"] = "usd"
@@ -49,12 +49,12 @@ class CoingeckoGateway < MarketDataGateway
       req.headers["x-cg-demo-api-key"] = @api_key if @api_key.present?
     end
 
-    return Failure([:rate_limited, "CoinGecko rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "CoinGecko returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "CoinGecko rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "CoinGecko returned #{response.status}" ]) unless response.success?
 
     parse_historical(response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   # Fetch prices for multiple crypto symbols in a single API call.
@@ -71,12 +71,12 @@ class CoingeckoGateway < MarketDataGateway
       req.headers["x-cg-demo-api-key"] = @api_key if @api_key.present?
     end
 
-    return Failure([:rate_limited, "CoinGecko rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "CoinGecko returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "CoinGecko rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "CoinGecko returned #{response.status}" ]) unless response.success?
 
     parse_bulk(symbols, response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   private
@@ -84,7 +84,7 @@ class CoingeckoGateway < MarketDataGateway
   def connection
     @connection ||= Faraday.new(url: BASE_URL) do |f|
       f.request :retry, max: 2, interval: 1, backoff_factor: 2,
-                        retry_statuses: [500, 502, 503]
+                        retry_statuses: [ 500, 502, 503 ]
       f.response :json
       f.options.timeout = TIMEOUT
       f.options.open_timeout = TIMEOUT
@@ -110,7 +110,7 @@ class CoingeckoGateway < MarketDataGateway
 
   def parse_historical(body)
     prices = body["prices"]
-    return Failure([:parse_error, "No price data in CoinGecko response"]) if prices.blank?
+    return Failure([ :parse_error, "No price data in CoinGecko response" ]) if prices.blank?
 
     bars = prices.map do |timestamp_ms, price|
       {

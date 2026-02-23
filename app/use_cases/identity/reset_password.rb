@@ -14,14 +14,14 @@ module Identity
 
     def find_by_token(token)
       user = User.find_by_password_reset_token(token)
-      user ? Success(user) : Failure([:invalid_token, "Invalid or expired reset link."])
+      user ? Success(user) : Failure([ :invalid_token, "Invalid or expired reset link." ])
     end
 
     def update_password(user, attrs)
       if user.update(password: attrs[:password], password_confirmation: attrs[:password_confirmation])
         Success(user)
       else
-        Failure([:validation, user.errors.to_hash])
+        Failure([ :validation, user.errors.to_hash ])
       end
     end
   end

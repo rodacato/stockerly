@@ -21,7 +21,7 @@ module Admin
           api_key_encrypted: attrs[:api_key_encrypted],
           connection_status: :disconnected
         )
-        integration.save ? Success(integration) : Failure([:validation, integration.errors.to_hash])
+        integration.save ? Success(integration) : Failure([ :validation, integration.errors.to_hash ])
       end
     end
   end

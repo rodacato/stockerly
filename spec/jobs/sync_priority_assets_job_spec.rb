@@ -17,13 +17,13 @@ RSpec.describe SyncPriorityAssetsJob, type: :job do
       it "enqueues SyncBulkCryptoJob with high-priority asset IDs" do
         expect {
           described_class.perform_now("crypto", "high")
-        }.to have_enqueued_job(SyncBulkCryptoJob).with([btc.id])
+        }.to have_enqueued_job(SyncBulkCryptoJob).with([ btc.id ])
       end
 
       it "does not include low-priority crypto assets" do
         expect {
           described_class.perform_now("crypto", "high")
-        }.to have_enqueued_job(SyncBulkCryptoJob).with([btc.id])
+        }.to have_enqueued_job(SyncBulkCryptoJob).with([ btc.id ])
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe SyncPriorityAssetsJob, type: :job do
       it "enqueues SyncBulkCryptoJob with only low-priority asset IDs" do
         expect {
           described_class.perform_now("crypto", "low")
-        }.to have_enqueued_job(SyncBulkCryptoJob).with([eth.id])
+        }.to have_enqueued_job(SyncBulkCryptoJob).with([ eth.id ])
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe SyncPriorityAssetsJob, type: :job do
         travel_to Time.zone.parse("2025-01-15 12:00:00 CST") do
           expect {
             described_class.perform_now("stock", "high")
-          }.to have_enqueued_job(SyncBulkBmvJob).with([mx_stock.id])
+          }.to have_enqueued_job(SyncBulkBmvJob).with([ mx_stock.id ])
         end
       end
 

@@ -14,6 +14,6 @@ class CreatePositions < ActiveRecord::Migration[8.1]
     end
 
     add_index :positions, :status
-    add_index :positions, [:portfolio_id, :asset_id, :status]
+    add_index :positions, [ :portfolio_id, :asset_id, :status ]
   end
 end

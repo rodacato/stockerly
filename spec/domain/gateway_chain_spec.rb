@@ -13,7 +13,7 @@ RSpec.describe GatewayChain do
         allow(primary_gateway).to receive_messages(class: PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).with("AAPL").and_return(Success(success_data.dup))
 
-        chain = described_class.new(gateways: [primary_gateway, fallback_gateway])
+        chain = described_class.new(gateways: [ primary_gateway, fallback_gateway ])
         result = chain.fetch_price("AAPL")
 
         expect(result).to be_success
@@ -26,7 +26,7 @@ RSpec.describe GatewayChain do
         allow(primary_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
         allow(fallback_gateway).to receive_messages(class: YahooFinanceGateway)
 
-        chain = described_class.new(gateways: [primary_gateway, fallback_gateway])
+        chain = described_class.new(gateways: [ primary_gateway, fallback_gateway ])
         chain.fetch_price("AAPL")
 
         expect(fallback_gateway).not_to have_received(:fetch_price) if fallback_gateway.respond_to?(:fetch_price)
@@ -36,13 +36,13 @@ RSpec.describe GatewayChain do
     context "when primary gateway fails" do
       before do
         allow(primary_gateway).to receive_messages(class: PolygonGateway)
-        allow(primary_gateway).to receive(:fetch_price).and_return(Failure([:gateway_error, "Server error"]))
+        allow(primary_gateway).to receive(:fetch_price).and_return(Failure([ :gateway_error, "Server error" ]))
         allow(fallback_gateway).to receive_messages(class: YahooFinanceGateway)
         allow(fallback_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
       end
 
       it "falls back to the next gateway" do
-        chain = described_class.new(gateways: [primary_gateway, fallback_gateway])
+        chain = described_class.new(gateways: [ primary_gateway, fallback_gateway ])
         result = chain.fetch_price("AAPL")
 
         expect(result).to be_success
@@ -53,13 +53,13 @@ RSpec.describe GatewayChain do
     context "when all gateways fail" do
       before do
         allow(primary_gateway).to receive_messages(class: PolygonGateway)
-        allow(primary_gateway).to receive(:fetch_price).and_return(Failure([:gateway_error, "Error 1"]))
+        allow(primary_gateway).to receive(:fetch_price).and_return(Failure([ :gateway_error, "Error 1" ]))
         allow(fallback_gateway).to receive_messages(class: YahooFinanceGateway)
-        allow(fallback_gateway).to receive(:fetch_price).and_return(Failure([:gateway_error, "Error 2"]))
+        allow(fallback_gateway).to receive(:fetch_price).and_return(Failure([ :gateway_error, "Error 2" ]))
       end
 
       it "returns Failure with :all_gateways_failed" do
-        chain = described_class.new(gateways: [primary_gateway, fallback_gateway])
+        chain = described_class.new(gateways: [ primary_gateway, fallback_gateway ])
         result = chain.fetch_price("AAPL")
 
         expect(result).to be_failure
@@ -73,7 +73,7 @@ RSpec.describe GatewayChain do
 
       it "skips gateway with open circuit breaker" do
         # Open the breaker
-        breaker.call { Failure([:gateway_error, "fail"]) }
+        breaker.call { Failure([ :gateway_error, "fail" ]) }
         expect(breaker.state).to eq(:open)
 
         allow(fallback_gateway).to receive_messages(class: YahooFinanceGateway)
@@ -81,7 +81,7 @@ RSpec.describe GatewayChain do
         allow(primary_gateway).to receive_messages(class: PolygonGateway)
 
         chain = described_class.new(
-          gateways: [primary_gateway, fallback_gateway],
+          gateways: [ primary_gateway, fallback_gateway ],
           circuit_breakers: { "PolygonGateway" => breaker }
         )
 
@@ -97,7 +97,7 @@ RSpec.describe GatewayChain do
         allow(primary_gateway).to receive_messages(class: PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
 
-        chain = described_class.new(gateways: [primary_gateway])
+        chain = described_class.new(gateways: [ primary_gateway ])
         result = chain.fetch_price("AAPL")
 
         expect(result).to be_success

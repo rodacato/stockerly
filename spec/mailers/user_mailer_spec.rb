@@ -7,7 +7,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { described_class.welcome(user) }
 
     it "sends to the user's email" do
-      expect(mail.to).to eq(["test@example.com"])
+      expect(mail.to).to eq([ "test@example.com" ])
     end
 
     it "sets the correct subject" do
@@ -20,7 +20,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { described_class.password_reset(user, reset_url) }
 
     it "sends to the user's email" do
-      expect(mail.to).to eq(["test@example.com"])
+      expect(mail.to).to eq([ "test@example.com" ])
     end
 
     it "sets the correct subject" do
@@ -32,7 +32,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { described_class.account_suspended(user) }
 
     it "sends to the user's email" do
-      expect(mail.to).to eq(["test@example.com"])
+      expect(mail.to).to eq([ "test@example.com" ])
     end
 
     it "sets the correct subject" do

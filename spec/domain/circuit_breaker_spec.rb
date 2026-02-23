@@ -7,7 +7,7 @@ RSpec.describe CircuitBreaker do
   subject(:breaker) { described_class.new(name: "test", threshold: 3, timeout: 2) }
 
   let(:success_result) { Success({ price: 150.0 }) }
-  let(:failure_result) { Failure([:gateway_error, "Server error"]) }
+  let(:failure_result) { Failure([ :gateway_error, "Server error" ]) }
 
   describe "initial state" do
     it "starts closed" do

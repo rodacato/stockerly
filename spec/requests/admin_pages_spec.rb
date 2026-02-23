@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Admin pages", type: :request do
-  let(:admin_paths) { [admin_root_path, admin_assets_path, admin_logs_path, admin_users_path] }
+  let(:admin_paths) { [ admin_root_path, admin_assets_path, admin_logs_path, admin_users_path ] }
 
   describe "authentication guard" do
     it "redirects /admin to login when not authenticated" do

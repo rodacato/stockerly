@@ -11,12 +11,12 @@ class StockFearGreedGateway
     date = Time.current.strftime("%Y-%m-%d")
     response = connection.get("/index/fearandgreed/graphdata/#{date}")
 
-    return Failure([:rate_limited, "CNN API rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "CNN API returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "CNN API rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "CNN API returned #{response.status}" ]) unless response.success?
 
     parse(response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   private
@@ -34,7 +34,7 @@ class StockFearGreedGateway
 
   def parse(body)
     fg = body["fear_and_greed"]
-    return Failure([:parse_error, "No fear_and_greed in CNN response"]) unless fg
+    return Failure([ :parse_error, "No fear_and_greed in CNN response" ]) unless fg
 
     component_data = extract_components(body)
 
@@ -45,7 +45,7 @@ class StockFearGreedGateway
       component_data: component_data
     })
   rescue StandardError => e
-    Failure([:parse_error, "Failed to parse CNN response: #{e.message}"])
+    Failure([ :parse_error, "Failed to parse CNN response: #{e.message}" ])
   end
 
   def extract_components(body)

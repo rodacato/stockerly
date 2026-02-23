@@ -12,14 +12,14 @@ module Profiles
     private
 
     def verify_current_password(user, password)
-      user.authenticate(password) ? Success(true) : Failure([:unauthorized, "Current password is incorrect"])
+      user.authenticate(password) ? Success(true) : Failure([ :unauthorized, "Current password is incorrect" ])
     end
 
     def persist(user, new_password, confirmation)
       user.update!(password: new_password, password_confirmation: confirmation)
       Success(user)
     rescue ActiveRecord::RecordInvalid => e
-      Failure([:validation, e.record.errors.to_hash])
+      Failure([ :validation, e.record.errors.to_hash ])
     end
   end
 end

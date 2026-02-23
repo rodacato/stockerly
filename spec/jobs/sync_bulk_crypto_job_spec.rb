@@ -9,7 +9,7 @@ RSpec.describe SyncBulkCryptoJob, type: :job do
       before { stub_coingecko_prices }
 
       it "updates all crypto asset prices in a single API call" do
-        described_class.perform_now([btc.id, eth.id])
+        described_class.perform_now([ btc.id, eth.id ])
 
         btc.reload
         eth.reload
@@ -18,7 +18,7 @@ RSpec.describe SyncBulkCryptoJob, type: :job do
       end
 
       it "updates price_updated_at for each asset" do
-        described_class.perform_now([btc.id, eth.id])
+        described_class.perform_now([ btc.id, eth.id ])
 
         btc.reload
         expect(btc.price_updated_at).to be_within(2.seconds).of(Time.current)
@@ -27,12 +27,12 @@ RSpec.describe SyncBulkCryptoJob, type: :job do
       it "publishes AssetPriceUpdated events for changed prices" do
         expect(EventBus).to receive(:publish).with(an_instance_of(AssetPriceUpdated)).twice
 
-        described_class.perform_now([btc.id, eth.id])
+        described_class.perform_now([ btc.id, eth.id ])
       end
 
       it "creates a success SystemLog entry" do
         expect {
-          described_class.perform_now([btc.id, eth.id])
+          described_class.perform_now([ btc.id, eth.id ])
         }.to change(SystemLog, :count).by(1)
 
         log = SystemLog.last
@@ -46,14 +46,14 @@ RSpec.describe SyncBulkCryptoJob, type: :job do
       before { stub_coingecko_rate_limited }
 
       it "creates a warning SystemLog entry" do
-        described_class.perform_now([btc.id, eth.id])
+        described_class.perform_now([ btc.id, eth.id ])
 
         log = SystemLog.last
         expect(log.severity).to eq("warning")
       end
 
       it "does not update asset prices" do
-        described_class.perform_now([btc.id, eth.id])
+        described_class.perform_now([ btc.id, eth.id ])
 
         btc.reload
         expect(btc.current_price.to_f).to eq(60_000.0)
@@ -65,7 +65,7 @@ RSpec.describe SyncBulkCryptoJob, type: :job do
 
       it "does nothing" do
         expect {
-          described_class.perform_now([disabled.id])
+          described_class.perform_now([ disabled.id ])
         }.not_to change(SystemLog, :count)
       end
     end

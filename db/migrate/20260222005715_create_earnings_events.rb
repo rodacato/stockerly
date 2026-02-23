@@ -11,6 +11,6 @@ class CreateEarningsEvents < ActiveRecord::Migration[8.1]
     end
 
     add_index :earnings_events, :report_date
-    add_index :earnings_events, [:asset_id, :report_date], unique: true
+    add_index :earnings_events, [ :asset_id, :report_date ], unique: true
   end
 end

@@ -9,7 +9,7 @@ class CreateFxRates < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :fx_rates, [:base_currency, :quote_currency], unique: true
+    add_index :fx_rates, [ :base_currency, :quote_currency ], unique: true
     add_index :fx_rates, :fetched_at
   end
 end

@@ -37,17 +37,17 @@ Rails.application.routes.draw do
   get "market",    to: "market#index"
   get "search",    to: "search#index"
 
-  resource  :portfolio, only: [:show]
-  resources :alerts, only: [:index, :create, :update, :destroy] do
+  resource  :portfolio, only: [ :show ]
+  resources :alerts, only: [ :index, :create, :update, :destroy ] do
     member { patch :toggle }
   end
-  resources :earnings,  only: [:index]
-  resources :watchlist_items, only: [:create, :destroy]
-  resources :notifications, only: [:index] do
+  resources :earnings,  only: [ :index ]
+  resources :watchlist_items, only: [ :create, :destroy ]
+  resources :notifications, only: [ :index ] do
     member { patch :mark_as_read }
     collection { patch :mark_all_read }
   end
-  resource  :profile,   only: [:show, :update]
+  resource :profile,   only: [ :show, :update ]
   patch "profile/password",    to: "profiles#change_password",    as: :change_password
   patch "profile/preferences", to: "profiles#update_preferences", as: :update_preferences
 
@@ -57,20 +57,20 @@ Rails.application.routes.draw do
     post "refresh_fx_rates", to: "dashboard#refresh_fx_rates"
     post "trigger_data_source/:key", to: "dashboard#trigger_data_source", as: :trigger_data_source
 
-    resources :assets, only: [:index, :create] do
+    resources :assets, only: [ :index, :create ] do
       member do
         patch :toggle_status
         post  :trigger_sync
       end
       collection { post :trigger_sync_all }
     end
-    resources :integrations, only: [:create] do
+    resources :integrations, only: [ :create ] do
       member { post :refresh_sync }
     end
-    resources :logs, only: [:index] do
+    resources :logs, only: [ :index ] do
       collection { get :export_csv }
     end
-    resources :users, only: [:index] do
+    resources :users, only: [ :index ] do
       member { patch :suspend }
     end
   end

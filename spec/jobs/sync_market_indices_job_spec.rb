@@ -54,7 +54,7 @@ RSpec.describe SyncMarketIndicesJob do
     context "when gateway fails" do
       before do
         allow_any_instance_of(YahooFinanceGateway).to receive(:fetch_index_quotes)
-          .and_return(Dry::Monads::Failure([:gateway_error, "Connection timeout"]))
+          .and_return(Dry::Monads::Failure([ :gateway_error, "Connection timeout" ]))
       end
 
       it "logs failure" do

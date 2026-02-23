@@ -10,12 +10,12 @@ class CryptoFearGreedGateway
   def fetch_index
     response = connection.get("/fng/", limit: 1)
 
-    return Failure([:rate_limited, "Alternative.me rate limit exceeded"]) if response.status == 429
-    return Failure([:gateway_error, "Alternative.me returned #{response.status}"]) unless response.success?
+    return Failure([ :rate_limited, "Alternative.me rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Alternative.me returned #{response.status}" ]) unless response.success?
 
     parse(response.body)
   rescue Faraday::Error => e
-    Failure([:gateway_error, e.message])
+    Failure([ :gateway_error, e.message ])
   end
 
   private
@@ -32,7 +32,7 @@ class CryptoFearGreedGateway
 
   def parse(body)
     data = body["data"]&.first
-    return Failure([:parse_error, "No data in Alternative.me response"]) unless data
+    return Failure([ :parse_error, "No data in Alternative.me response" ]) unless data
 
     Success({
       value: data["value"].to_i,
@@ -41,6 +41,6 @@ class CryptoFearGreedGateway
       component_data: {}
     })
   rescue StandardError => e
-    Failure([:parse_error, "Failed to parse Alternative.me response: #{e.message}"])
+    Failure([ :parse_error, "Failed to parse Alternative.me response: #{e.message}" ])
   end
 end

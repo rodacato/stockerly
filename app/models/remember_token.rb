@@ -19,6 +19,6 @@ class RememberToken < ApplicationRecord
       ip_address: ip_address,
       user_agent: user_agent.to_s.first(255)
     )
-    [token, raw_token]
+    [ token, raw_token ]
   end
 end

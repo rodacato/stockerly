@@ -50,19 +50,19 @@ class SyncSingleAssetJob < ApplicationJob
   end
 
   def gateway_for(asset)
-    return GatewayChain.new(gateways: [YahooFinanceGateway.new]) if asset.country == "MX"
+    return GatewayChain.new(gateways: [ YahooFinanceGateway.new ]) if asset.country == "MX"
 
     case asset.asset_type
     when "stock", "index", "etf"
       GatewayChain.new(
-        gateways: [PolygonGateway.new, YahooFinanceGateway.new],
+        gateways: [ PolygonGateway.new, YahooFinanceGateway.new ],
         circuit_breakers: {
           "PolygonGateway" => self.class.circuit_breaker_for("stock"),
           "YahooFinanceGateway" => self.class.circuit_breaker_for("yahoo_us")
         }
       )
     when "crypto"
-      GatewayChain.new(gateways: [CoingeckoGateway.new])
+      GatewayChain.new(gateways: [ CoingeckoGateway.new ])
     else
       raise ArgumentError, "Unknown asset type: #{asset.asset_type}"
     end

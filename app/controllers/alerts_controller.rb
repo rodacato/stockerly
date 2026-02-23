@@ -18,7 +18,7 @@ class AlertsController < AuthenticatedController
         format.turbo_stream { render turbo_stream: turbo_stream.prepend("alert_rules", partial: "alerts/alert_rule", locals: { rule: rule }) }
         format.html { redirect_to alerts_path, notice: "Alert created successfully." }
       end
-    in Dry::Monads::Failure[:validation, errors]
+    in Dry::Monads::Failure[ :validation, errors ]
       redirect_to alerts_path, alert: errors.values.flatten.first
     end
   end
@@ -32,9 +32,9 @@ class AlertsController < AuthenticatedController
         format.turbo_stream { render turbo_stream: turbo_stream.replace(rule, partial: "alerts/alert_rule", locals: { rule: rule }) }
         format.html { redirect_to alerts_path, notice: "Alert updated successfully." }
       end
-    in Dry::Monads::Failure[:not_found, message]
+    in Dry::Monads::Failure[ :not_found, message ]
       redirect_to alerts_path, alert: message
-    in Dry::Monads::Failure[:validation, errors]
+    in Dry::Monads::Failure[ :validation, errors ]
       redirect_to alerts_path, alert: errors.values.flatten.first
     end
   end

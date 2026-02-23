@@ -7,7 +7,7 @@ class LegalController < ApplicationController
     @page_title = "Privacy Policy"
     @page_subtitle = "Ensuring your data is safe, transparently handled, and always yours."
     @last_updated = "October 24, 2023"
-    @breadcrumbs = ["Privacy Policy"]
+    @breadcrumbs = [ "Privacy Policy" ]
     @toc_sections = [
       { id: "introduction", icon: "info", title: "Introduction", active: true },
       { id: "collection", icon: "database", title: "Information Collection" },
@@ -23,7 +23,7 @@ class LegalController < ApplicationController
     @page_title = "Terms of Service"
     @page_subtitle = "Please read these terms carefully before using Stockerly."
     @last_updated = "October 24, 2023"
-    @breadcrumbs = ["Terms of Service"]
+    @breadcrumbs = [ "Terms of Service" ]
     @toc_sections = [
       { id: "acceptance", icon: "check_circle", title: "Acceptance of Terms", active: true },
       { id: "accounts", icon: "person", title: "User Accounts" },
@@ -39,7 +39,7 @@ class LegalController < ApplicationController
     @page_title = "Risk Disclosure"
     @page_subtitle = "Important information about the risks associated with trading and investing."
     @last_updated = "October 24, 2023"
-    @breadcrumbs = ["Risk Disclosure"]
+    @breadcrumbs = [ "Risk Disclosure" ]
     @toc_sections = [
       { id: "introduction", icon: "info", title: "Introduction", active: true },
       { id: "market-risk", icon: "trending_down", title: "Market Volatility" },

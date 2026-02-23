@@ -4,7 +4,7 @@ module Admin
       def call(asset_id: nil, asset_type: nil)
         if asset_id
           asset = Asset.find_by(id: asset_id)
-          return Failure([:not_found, "Asset not found"]) unless asset
+          return Failure([ :not_found, "Asset not found" ]) unless asset
 
           SyncSingleAssetJob.perform_later(asset.id)
           Success(:single_sync_enqueued)

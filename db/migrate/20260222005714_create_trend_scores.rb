@@ -10,7 +10,7 @@ class CreateTrendScores < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :trend_scores, [:asset_id, :calculated_at]
+    add_index :trend_scores, [ :asset_id, :calculated_at ]
     add_index :trend_scores, :score
   end
 end

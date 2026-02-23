@@ -46,7 +46,7 @@ RSpec.describe "Onboarding", type: :request do
 
     it "creates watchlist items and sets onboarded_at" do
       expect {
-        post complete_onboarding_path, params: { asset_ids: [aapl.id, nvda.id, tsla.id] }
+        post complete_onboarding_path, params: { asset_ids: [ aapl.id, nvda.id, tsla.id ] }
       }.to change { user.watchlist_items.count }.by(3)
 
       user.reload

@@ -10,6 +10,6 @@ class CreateFearGreedReadings < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :fear_greed_readings, [:index_type, :fetched_at]
+    add_index :fear_greed_readings, [ :index_type, :fetched_at ]
   end
 end

@@ -9,7 +9,7 @@ module WebmockHelpers
         status: 200,
         headers: { "Content-Type" => "application/json" },
         body: {
-          results: [{ "T" => symbol, "c" => close, "o" => open, "h" => close + 2, "l" => open - 1, "v" => volume }],
+          results: [ { "T" => symbol, "c" => close, "o" => open, "h" => close + 2, "l" => open - 1, "v" => volume } ],
           resultsCount: 1
         }.to_json
       )
@@ -66,7 +66,7 @@ module WebmockHelpers
         "article_url" => "https://example.com/article-#{i + 1}",
         "image_url" => "https://example.com/image-#{i + 1}.jpg",
         "published_utc" => (i + 1).hours.ago.utc.iso8601,
-        "tickers" => ["AAPL"]
+        "tickers" => [ "AAPL" ]
       }
     end
 
@@ -120,7 +120,7 @@ module WebmockHelpers
   def stub_coingecko_historical(coin_id: "bitcoin", days: 7)
     prices = days.times.map do |i|
       timestamp_ms = (days - i).days.ago.to_i * 1000
-      [timestamp_ms, 60_000.0 + (i * 500)]
+      [ timestamp_ms, 60_000.0 + (i * 500) ]
     end
 
     stub_request(:get, "https://api.coingecko.com/api/v3/coins/#{coin_id}/market_chart")
@@ -162,12 +162,12 @@ module WebmockHelpers
         headers: { "Content-Type" => "application/json" },
         body: {
           quoteResponse: {
-            result: [{
+            result: [ {
               "symbol" => symbol,
               "regularMarketPrice" => price,
               "regularMarketChangePercent" => change_percent,
               "regularMarketVolume" => volume
-            }],
+            } ],
             error: nil
           }
         }.to_json
@@ -249,11 +249,11 @@ module WebmockHelpers
         status: 200,
         headers: { "Content-Type" => "application/json" },
         body: {
-          data: [{
+          data: [ {
             "value" => value.to_s,
             "value_classification" => classification,
             "timestamp" => Time.current.to_i.to_s
-          }]
+          } ]
         }.to_json
       )
   end

@@ -18,7 +18,7 @@ RSpec.describe Onboarding::LoadAssetCatalog do
     end
 
     it "accepts custom types" do
-      result = described_class.call(types: [:stock])
+      result = described_class.call(types: [ :stock ])
       symbols = result.value![:assets].map(&:symbol)
       expect(symbols).to include("AAPL")
       expect(symbols).not_to include("BTC")

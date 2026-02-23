@@ -11,7 +11,7 @@ module Watchlist
 
     def find_item(user, id)
       item = user.watchlist_items.find_by(id: id)
-      item ? Success(item) : Failure([:not_found, "Watchlist item not found"])
+      item ? Success(item) : Failure([ :not_found, "Watchlist item not found" ])
     end
   end
 end

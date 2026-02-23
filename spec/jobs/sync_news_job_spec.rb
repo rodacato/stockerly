@@ -24,7 +24,7 @@ RSpec.describe SyncNewsJob do
     context "when sync fails" do
       before do
         allow(News::SyncArticles).to receive(:call)
-          .and_return(Dry::Monads::Failure([:gateway_error, "Connection timeout"]))
+          .and_return(Dry::Monads::Failure([ :gateway_error, "Connection timeout" ]))
       end
 
       it "logs failure with error message" do

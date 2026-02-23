@@ -25,6 +25,6 @@ class CreateAssets < ActiveRecord::Migration[8.1]
     add_index :assets, :sector
     add_index :assets, :exchange
     add_index :assets, :sync_status
-    add_index :assets, [:asset_type, :sector]
+    add_index :assets, [ :asset_type, :sector ]
   end
 end

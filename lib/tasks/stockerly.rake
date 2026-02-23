@@ -30,7 +30,7 @@ namespace :stockerly do
       { symbol: "GENIUSSACV.MX", name: "Genius Sports SAB",   asset_type: :stock, sector: "Technology", exchange: "BMV", country: "MX", data_source: "Yahoo Finance" },
       { symbol: "IVVPESO.MX",    name: "iShares S&P 500 MXN", asset_type: :etf,                        exchange: "BMV", country: "MX", data_source: "Yahoo Finance" },
       # Indices
-      { symbol: "VIX", name: "CBOE Volatility Index", asset_type: :index, exchange: "CBOE", country: "US" },
+      { symbol: "VIX", name: "CBOE Volatility Index", asset_type: :index, exchange: "CBOE", country: "US" }
     ]
 
     created = 0
@@ -57,7 +57,7 @@ namespace :stockerly do
   end
 
   desc "Promote a user to admin by email"
-  task :promote_admin, [:email] => :environment do |_t, args|
+  task :promote_admin, [ :email ] => :environment do |_t, args|
     email = args[:email]
     abort "Usage: rake stockerly:promote_admin[user@example.com]" if email.blank?
 

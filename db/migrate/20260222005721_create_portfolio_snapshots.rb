@@ -10,7 +10,7 @@ class CreatePortfolioSnapshots < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :portfolio_snapshots, [:portfolio_id, :date], unique: true
+    add_index :portfolio_snapshots, [ :portfolio_id, :date ], unique: true
     add_index :portfolio_snapshots, :date
   end
 end

@@ -12,7 +12,7 @@ class CreateAssetPriceHistories < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :asset_price_histories, [:asset_id, :date], unique: true
+    add_index :asset_price_histories, [ :asset_id, :date ], unique: true
     add_index :asset_price_histories, :date
   end
 end
