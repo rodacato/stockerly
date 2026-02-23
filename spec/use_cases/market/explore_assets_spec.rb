@@ -53,5 +53,29 @@ RSpec.describe Market::ExploreAssets do
       symbols = result.value![:assets].map(&:symbol)
       expect(symbols).to eq(symbols.sort)
     end
+
+    it "filters by country" do
+      apple.update!(country: "US")
+      tesla.update!(country: "US")
+      result = described_class.call(params: { country: "US" })
+      data = result.value!
+      expect(data[:assets]).to include(apple, tesla)
+      expect(data[:assets]).not_to include(bitcoin)
+    end
+
+    it "filters by exchange" do
+      tesla.update!(exchange: "NYSE")
+      result = described_class.call(params: { exchange: "NYSE" })
+      data = result.value!
+      expect(data[:assets]).to include(tesla)
+      expect(data[:assets]).not_to include(apple, bitcoin)
+    end
+
+    it "filters by ETF type" do
+      etf = create(:asset, :etf, symbol: "SPY", name: "SPDR S&P 500")
+      result = described_class.call(params: { type: "etf" })
+      data = result.value!
+      expect(data[:assets]).to contain_exactly(etf)
+    end
   end
 end

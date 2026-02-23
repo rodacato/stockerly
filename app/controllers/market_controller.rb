@@ -15,6 +15,6 @@ class MarketController < AuthenticatedController
   private
 
   def filter_params
-    params.permit(:type, :sector, :search, :page).to_h.symbolize_keys
+    params.permit(:type, :sector, :search, :page, :country, :exchange).to_h.symbolize_keys
   end
 end

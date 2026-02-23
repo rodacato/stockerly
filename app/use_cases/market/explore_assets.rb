@@ -7,6 +7,8 @@ module Market
 
       scope = scope.where(asset_type: params[:type]) if params[:type].present?
       scope = scope.by_sector(params[:sector])
+      scope = scope.by_country(params[:country])
+      scope = scope.where(exchange: params[:exchange]) if params[:exchange].present?
       scope = scope.where("name ILIKE :q OR symbol ILIKE :q", q: "%#{params[:search]}%") if params[:search].present?
       scope = scope.order(symbol: :asc)
 
