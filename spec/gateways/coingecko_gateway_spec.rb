@@ -88,4 +88,40 @@ RSpec.describe CoingeckoGateway do
       end
     end
   end
+
+  describe "#fetch_historical" do
+    context "when CoinGecko returns valid market chart" do
+      before { stub_coingecko_historical(coin_id: "bitcoin", days: 7) }
+
+      it "returns Success with daily price data" do
+        result = gateway.fetch_historical("BTC", days: 7)
+
+        expect(result).to be_success
+        bars = result.value!
+        expect(bars.size).to eq(7)
+        expect(bars.first).to include(:date, :close)
+        expect(bars.first[:close]).to be_a(BigDecimal)
+      end
+    end
+
+    context "when symbol is unknown" do
+      it "returns Failure with :not_found" do
+        result = gateway.fetch_historical("UNKNOWN_COIN")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:not_found)
+      end
+    end
+
+    context "when API returns empty data" do
+      before { stub_coingecko_historical_empty }
+
+      it "returns Failure with :parse_error" do
+        result = gateway.fetch_historical("BTC")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:parse_error)
+      end
+    end
+  end
 end

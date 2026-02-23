@@ -25,6 +25,23 @@ class PolygonGateway < MarketDataGateway
     Failure([:gateway_error, e.message])
   end
 
+  # Fetch daily OHLCV for a date range.
+  # Returns Success([{ date:, open:, high:, low:, close:, volume: }, ...])
+  def fetch_historical(symbol, from_date, to_date)
+    response = connection.get("/v2/aggs/ticker/#{symbol}/range/1/day/#{from_date}/#{to_date}") do |req|
+      req.params["apiKey"] = @api_key
+      req.params["adjusted"] = "true"
+      req.params["sort"] = "asc"
+    end
+
+    return Failure([:rate_limited, "Polygon.io rate limit exceeded"]) if response.status == 429
+    return Failure([:gateway_error, "Polygon.io returned #{response.status}"]) unless response.success?
+
+    parse_historical(response.body)
+  rescue Faraday::Error => e
+    Failure([:gateway_error, e.message])
+  end
+
   # Fetch prices for multiple symbols via individual calls.
   # Returns Success([{ symbol:, price:, ... }, ...])
   def fetch_bulk_prices(symbols)
@@ -62,6 +79,24 @@ class PolygonGateway < MarketDataGateway
       change_percent: calculate_change_percent(result["o"], result["c"]),
       volume: result["v"]&.to_i
     })
+  end
+
+  def parse_historical(body)
+    results = body["results"]
+    return Failure([:not_found, "No historical data returned"]) if results.blank?
+
+    bars = results.map do |bar|
+      {
+        date: Time.at(bar["t"] / 1000).to_date,
+        open: bar["o"].to_d,
+        high: bar["h"].to_d,
+        low: bar["l"].to_d,
+        close: bar["c"].to_d,
+        volume: bar["v"]&.to_i
+      }
+    end
+
+    Success(bars)
   end
 
   def calculate_change_percent(open, close)

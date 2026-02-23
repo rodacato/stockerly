@@ -81,4 +81,45 @@ RSpec.describe PolygonGateway do
       expect(result.value!.map { |d| d[:symbol] }).to contain_exactly("AAPL", "MSFT")
     end
   end
+
+  describe "#fetch_historical" do
+    context "when Polygon returns valid bars" do
+      before { stub_polygon_historical("AAPL", days: 7) }
+
+      it "returns Success with OHLCV data" do
+        result = gateway.fetch_historical("AAPL", "2026-02-16", "2026-02-23")
+
+        expect(result).to be_success
+        bars = result.value!
+        expect(bars.size).to eq(7)
+        expect(bars.first).to include(:date, :open, :high, :low, :close, :volume)
+        expect(bars.first[:close]).to be_a(BigDecimal)
+      end
+    end
+
+    context "when no data returned" do
+      before { stub_polygon_historical_empty("AAPL") }
+
+      it "returns Failure with :not_found" do
+        result = gateway.fetch_historical("AAPL", "2026-02-16", "2026-02-23")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:not_found)
+      end
+    end
+
+    context "when connection times out" do
+      before do
+        stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/.+/range/})
+          .to_timeout
+      end
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.fetch_historical("AAPL", "2026-02-16", "2026-02-23")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+  end
 end

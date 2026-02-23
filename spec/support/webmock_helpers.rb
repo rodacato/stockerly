@@ -25,6 +25,38 @@ module WebmockHelpers
       )
   end
 
+  def stub_polygon_historical(symbol, days: 7)
+    bars = days.times.map do |i|
+      date = (days - i).days.ago
+      {
+        "t" => (date.to_time.to_i * 1000),
+        "o" => 180.0 + i,
+        "h" => 185.0 + i,
+        "l" => 178.0 + i,
+        "c" => 183.0 + i,
+        "v" => 50_000_000 + (i * 1_000_000)
+      }
+    end
+
+    stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/#{symbol}/range/1/day/})
+      .with(query: hash_including("apiKey"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { results: bars, resultsCount: bars.size }.to_json
+      )
+  end
+
+  def stub_polygon_historical_empty(symbol)
+    stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/#{symbol}/range/1/day/})
+      .with(query: hash_including("apiKey"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { results: [], resultsCount: 0 }.to_json
+      )
+  end
+
   def stub_polygon_rate_limited
     stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/.+/prev})
       .to_return(status: 429, body: "Rate limit exceeded")
@@ -50,6 +82,31 @@ module WebmockHelpers
         status: 200,
         headers: { "Content-Type" => "application/json" },
         body: body.to_json
+      )
+  end
+
+  def stub_coingecko_historical(coin_id: "bitcoin", days: 7)
+    prices = days.times.map do |i|
+      timestamp_ms = (days - i).days.ago.to_i * 1000
+      [timestamp_ms, 60_000.0 + (i * 500)]
+    end
+
+    stub_request(:get, "https://api.coingecko.com/api/v3/coins/#{coin_id}/market_chart")
+      .with(query: hash_including("vs_currency" => "usd"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { prices: prices }.to_json
+      )
+  end
+
+  def stub_coingecko_historical_empty(coin_id: "bitcoin")
+    stub_request(:get, "https://api.coingecko.com/api/v3/coins/#{coin_id}/market_chart")
+      .with(query: hash_including("vs_currency" => "usd"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { prices: [] }.to_json
       )
   end
 

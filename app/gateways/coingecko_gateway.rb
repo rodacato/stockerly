@@ -36,6 +36,27 @@ class CoingeckoGateway < MarketDataGateway
     end
   end
 
+  # Fetch daily price history for a crypto symbol.
+  # Returns Success([{ date:, open:, high:, low:, close:, volume: }, ...])
+  def fetch_historical(symbol, days: 30)
+    coin_id = SYMBOL_TO_ID[symbol.upcase]
+    return Failure([:not_found, "Unknown crypto symbol: #{symbol}"]) unless coin_id
+
+    response = connection.get("/api/v3/coins/#{coin_id}/market_chart") do |req|
+      req.params["vs_currency"] = "usd"
+      req.params["days"] = days.to_s
+      req.params["interval"] = "daily"
+      req.headers["x-cg-demo-api-key"] = @api_key if @api_key.present?
+    end
+
+    return Failure([:rate_limited, "CoinGecko rate limit exceeded"]) if response.status == 429
+    return Failure([:gateway_error, "CoinGecko returned #{response.status}"]) unless response.success?
+
+    parse_historical(response.body)
+  rescue Faraday::Error => e
+    Failure([:gateway_error, e.message])
+  end
+
   # Fetch prices for multiple crypto symbols in a single API call.
   # Returns Success([{ symbol:, price:, ... }, ...])
   def fetch_bulk_prices(symbols)
@@ -85,6 +106,27 @@ class CoingeckoGateway < MarketDataGateway
     end
 
     Success(results)
+  end
+
+  def parse_historical(body)
+    prices = body["prices"]
+    return Failure([:parse_error, "No price data in CoinGecko response"]) if prices.blank?
+
+    bars = prices.map do |timestamp_ms, price|
+      {
+        date: Time.at(timestamp_ms / 1000).to_date,
+        open: price.to_d,
+        high: price.to_d,
+        low: price.to_d,
+        close: price.to_d,
+        volume: nil
+      }
+    end
+
+    # CoinGecko market_chart returns one extra data point; deduplicate by date
+    bars.uniq! { |b| b[:date] }
+
+    Success(bars)
   end
 
   def resolve_api_key
