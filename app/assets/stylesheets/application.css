@@ -27,3 +27,48 @@
 .animate-flash-red {
   animation: flash-red 1.5s ease-out;
 }
+
+/* Pagy pagination styling */
+.pagy.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.pagy.nav a,
+.pagy.nav [role="link"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #475569;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.pagy.nav a:hover {
+  background-color: #f1f5f9;
+  color: #004a99;
+}
+
+.pagy.nav a[aria-current="page"],
+.pagy.nav [role="link"][aria-current="page"] {
+  background-color: #004a99;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.pagy.nav [aria-disabled="true"] {
+  color: #cbd5e1;
+  pointer-events: none;
+}
+
+.pagy.nav .gap {
+  color: #94a3b8;
+}
