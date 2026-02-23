@@ -76,11 +76,52 @@ RSpec.describe "Admin pages", type: :request do
       expect(response.body).to include("Recent Logs")
     end
 
+    it "renders the admin dashboard with sync operations panel" do
+      create(:system_log, task_name: "Sync Error", module_name: "sync", severity: :error, error_message: "Timeout")
+      get admin_root_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Sync Operations")
+      expect(response.body).to include("Successful Syncs")
+      expect(response.body).to include("Failed Syncs")
+      expect(response.body).to include("Refresh FX Rates")
+    end
+
     it "renders the asset management page" do
       get admin_assets_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Asset Management")
       expect(response.body).to include("Total Assets")
+      expect(response.body).to include("Add New Asset")
+    end
+
+    it "creates a new asset from admin" do
+      expect {
+        post admin_assets_path, params: {
+          asset: { symbol: "NVDA", name: "NVIDIA Corporation", asset_type: "stock", country: "US" }
+        }
+      }.to change(Asset, :count).by(1)
+
+      expect(response).to redirect_to(admin_assets_path)
+      follow_redirect!
+      expect(response.body).to include("NVDA")
+    end
+
+    it "rejects invalid asset creation" do
+      post admin_assets_path, params: {
+        asset: { symbol: "", name: "", asset_type: "" }
+      }
+
+      expect(response).to redirect_to(admin_assets_path)
+      follow_redirect!
+      expect(response.body).to include("Asset Management")
+    end
+
+    it "enqueues RefreshFxRatesJob on refresh_fx_rates" do
+      expect {
+        post admin_refresh_fx_rates_path
+      }.to have_enqueued_job(RefreshFxRatesJob)
+
+      expect(response).to redirect_to(admin_root_path)
     end
 
     it "renders the system logs page" do

@@ -8,6 +8,7 @@ Rails.application.config.after_initialize do
   # Administration
   EventBus.subscribe(UserSuspended, CreateAuditLogOnSuspension)
   EventBus.subscribe(UserSuspended, SendSuspensionEmail)
+  EventBus.subscribe(AssetCreated, CreateAuditLogOnAssetCreation)
 
   # Market Data
   EventBus.subscribe(AssetPriceUpdated, EvaluateAlertsOnPriceUpdate)

@@ -54,8 +54,9 @@ Rails.application.routes.draw do
   # --- Admin Zone ---
   namespace :admin do
     root "dashboard#show"
+    post "refresh_fx_rates", to: "dashboard#refresh_fx_rates"
 
-    resources :assets, only: [:index] do
+    resources :assets, only: [:index, :create] do
       member do
         patch :toggle_status
         post  :trigger_sync
