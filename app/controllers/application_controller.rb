@@ -36,6 +36,7 @@ class ApplicationController < ActionController::Base
       value: "#{token_record.id}:#{raw_token}",
       expires: 30.days.from_now,
       httponly: true,
+      secure: Rails.env.production?,
       same_site: :lax
     }
   end

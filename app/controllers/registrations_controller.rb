@@ -1,6 +1,7 @@
 class RegistrationsController < ApplicationController
   layout "public"
 
+  rate_limit to: 5, within: 1.minute, only: :create
   before_action :redirect_if_logged_in, only: [:new, :create]
 
   def new
