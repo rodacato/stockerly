@@ -19,8 +19,8 @@ class SyncAllAssetsJob < ApplicationJob
   # CoinGecko: bulk endpoint used in SyncSingleAssetJob, so less critical
   def spacing_seconds(asset_type)
     case asset_type
-    when "stock"  then 12
-    when "crypto" then 2
+    when "stock", "etf" then 12
+    when "crypto"       then 2
     else 5
     end
   end

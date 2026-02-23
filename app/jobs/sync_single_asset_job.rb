@@ -42,7 +42,7 @@ class SyncSingleAssetJob < ApplicationJob
 
   def gateway_for(asset)
     case asset.asset_type
-    when "stock", "index" then PolygonGateway.new
+    when "stock", "index", "etf" then PolygonGateway.new
     when "crypto"         then CoingeckoGateway.new
     else
       raise ArgumentError, "Unknown asset type: #{asset.asset_type}"
