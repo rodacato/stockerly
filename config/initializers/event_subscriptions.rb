@@ -29,6 +29,9 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(TradeExecuted, RecalculateAvgCostOnTrade)
   EventBus.subscribe(TradeExecuted, LogTradeActivity)
 
+  # News
+  EventBus.subscribe(NewsSynced, LogNewsSync)
+
   # Sentiment
   EventBus.subscribe(FearGreedUpdated, LogFearGreedUpdate)
 

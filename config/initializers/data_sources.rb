@@ -63,6 +63,18 @@ Rails.application.config.after_initialize do
     circuit_breaker_key: "stock_fear_greed"
   )
 
+  DataSourceRegistry.register(:polygon_news,
+    name: "News — Polygon.io",
+    icon: "newspaper",
+    color: "slate",
+    gateway_class: "PolygonGateway",
+    job_class: "SyncNewsJob",
+    job_args: [],
+    test_symbol: nil,
+    integration_name: "Polygon.io",
+    circuit_breaker_key: "polygon_news"
+  )
+
   DataSourceRegistry.register(:fx_rates,
     name: "FX Rates",
     icon: "currency_exchange",
