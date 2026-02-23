@@ -421,6 +421,12 @@ Integration.find_or_create_by!(provider_name: "CNN") do |i|
   i.last_sync_at = 1.day.ago
 end
 
+# --- Fear & Greed Readings ---
+unless FearGreedReading.exists?
+  FearGreedReading.create!(index_type: "crypto", value: 25, classification: "Fear", source: "alternative.me", fetched_at: 6.hours.ago)
+  FearGreedReading.create!(index_type: "stocks", value: 62, classification: "Greed", source: "cnn", fetched_at: 6.hours.ago)
+end
+
 # --- Audit Logs ---
 unless AuditLog.exists?
   AuditLog.create!(user: admin, action: "admin.assets.create", auditable: aapl, changes_data: { after: { symbol: "AAPL" } }, ip_address: "127.0.0.1")

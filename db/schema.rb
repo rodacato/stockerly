@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_23_144846) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_23_150040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -147,6 +147,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_144846) do
     t.index ["asset_id", "report_date"], name: "index_earnings_events_on_asset_id_and_report_date", unique: true
     t.index ["asset_id"], name: "index_earnings_events_on_asset_id"
     t.index ["report_date"], name: "index_earnings_events_on_report_date"
+  end
+
+  create_table "fear_greed_readings", force: :cascade do |t|
+    t.string "classification", null: false
+    t.jsonb "component_data", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "fetched_at", null: false
+    t.string "index_type", null: false
+    t.string "source", null: false
+    t.datetime "updated_at", null: false
+    t.integer "value", null: false
+    t.index ["index_type", "fetched_at"], name: "index_fear_greed_readings_on_index_type_and_fetched_at"
   end
 
   create_table "fx_rates", force: :cascade do |t|
