@@ -136,9 +136,10 @@ class YahooFinanceGateway < MarketDataGateway
 
   def connection
     @connection ||= Faraday.new(url: BASE_URL) do |f|
-      f.request :retry, max: 2, interval: 0.5, backoff_factor: 2,
+      f.request :retry, max: 3, interval: 1, backoff_factor: 2,
                         retry_statuses: [ 500, 502, 503 ]
-      f.headers["User-Agent"] = "Mozilla/5.0"
+      f.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+      f.headers["Accept"] = "application/json"
       f.response :json
       f.options.timeout = TIMEOUT
       f.options.open_timeout = TIMEOUT

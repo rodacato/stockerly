@@ -3,7 +3,8 @@
 class CoingeckoGateway < MarketDataGateway
   include Dry::Monads[:result]
 
-  BASE_URL = "https://api.coingecko.com"
+  DEMO_URL = "https://api.coingecko.com"
+  PRO_URL  = "https://pro-api.coingecko.com"
   TIMEOUT  = 5
 
   # CoinGecko uses lowercase IDs, not ticker symbols.
@@ -20,8 +21,9 @@ class CoingeckoGateway < MarketDataGateway
     "UNI" => "uniswap"
   }.freeze
 
-  def initialize(api_key: nil)
+  def initialize(api_key: nil, pro: nil)
     @api_key = api_key || resolve_api_key
+    @pro = pro.nil? ? resolve_pro_tier : pro
   end
 
   # Fetch price for a single crypto symbol.
@@ -46,7 +48,7 @@ class CoingeckoGateway < MarketDataGateway
       req.params["vs_currency"] = "usd"
       req.params["days"] = days.to_s
       req.params["interval"] = "daily"
-      req.headers["x-cg-demo-api-key"] = @api_key if @api_key.present?
+      apply_auth(req)
     end
 
     return Failure([ :rate_limited, "CoinGecko rate limit exceeded" ]) if response.status == 429
@@ -68,7 +70,7 @@ class CoingeckoGateway < MarketDataGateway
       req.params["vs_currencies"] = "usd"
       req.params["include_24hr_change"] = "true"
       req.params["include_market_cap"] = "true"
-      req.headers["x-cg-demo-api-key"] = @api_key if @api_key.present?
+      apply_auth(req)
     end
 
     return Failure([ :rate_limited, "CoinGecko rate limit exceeded" ]) if response.status == 429
@@ -82,13 +84,21 @@ class CoingeckoGateway < MarketDataGateway
   private
 
   def connection
-    @connection ||= Faraday.new(url: BASE_URL) do |f|
+    base = @pro ? PRO_URL : DEMO_URL
+    @connection ||= Faraday.new(url: base) do |f|
       f.request :retry, max: 2, interval: 1, backoff_factor: 2,
                         retry_statuses: [ 500, 502, 503 ]
       f.response :json
       f.options.timeout = TIMEOUT
       f.options.open_timeout = TIMEOUT
     end
+  end
+
+  def apply_auth(req)
+    return unless @api_key.present?
+
+    header = @pro ? "x-cg-pro-api-key" : "x-cg-demo-api-key"
+    req.headers[header] = @api_key
   end
 
   def parse_bulk(symbols, body)
@@ -132,5 +142,9 @@ class CoingeckoGateway < MarketDataGateway
   def resolve_api_key
     Integration.find_by(provider_name: "CoinGecko")&.api_key_encrypted ||
       ENV.fetch("COINGECKO_API_KEY", "")
+  end
+
+  def resolve_pro_tier
+    ENV.fetch("COINGECKO_PRO", "false") == "true"
   end
 end
