@@ -1,0 +1,53 @@
+# Registers all known data sources at boot time.
+# New sources should be added here so they appear in admin and are
+# resolvable by SyncIntegrationJob.
+
+Rails.application.config.after_initialize do
+  DataSourceRegistry.register(:polygon_stocks,
+    name: "US Stocks — Polygon.io",
+    icon: "show_chart",
+    color: "indigo",
+    gateway_class: "PolygonGateway",
+    job_class: "SyncPriorityAssetsJob",
+    job_args: %w[stock high],
+    test_symbol: "AAPL",
+    integration_name: "Polygon.io",
+    circuit_breaker_key: "stock"
+  )
+
+  DataSourceRegistry.register(:coingecko_crypto,
+    name: "Crypto — CoinGecko",
+    icon: "currency_bitcoin",
+    color: "emerald",
+    gateway_class: "CoingeckoGateway",
+    job_class: "SyncPriorityAssetsJob",
+    job_args: %w[crypto high],
+    test_symbol: "BTC",
+    integration_name: "CoinGecko",
+    circuit_breaker_key: "crypto"
+  )
+
+  DataSourceRegistry.register(:yahoo_bmv,
+    name: "Mexican Stocks — Yahoo Finance",
+    icon: "language",
+    color: "sky",
+    gateway_class: "YahooFinanceGateway",
+    job_class: "SyncPriorityAssetsJob",
+    job_args: %w[stock high],
+    test_symbol: "GENIUSSACV.MX",
+    integration_name: "Yahoo Finance",
+    circuit_breaker_key: "bmv"
+  )
+
+  DataSourceRegistry.register(:fx_rates,
+    name: "FX Rates",
+    icon: "currency_exchange",
+    color: "amber",
+    gateway_class: "FxRatesGateway",
+    job_class: "RefreshFxRatesJob",
+    job_args: [],
+    test_symbol: nil,
+    integration_name: nil,
+    circuit_breaker_key: "fx"
+  )
+end
