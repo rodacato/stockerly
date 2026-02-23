@@ -16,8 +16,8 @@
   <% end %>
 </div>
 
-<%# Stats Overview — 4 cards %>
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+<%# Stats Overview — 3 portfolio cards %>
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-4">
   <% if @summary %>
     <%= render "components/stat_card", title: "Total Balance", value: number_to_currency(@summary.total_value), change: "#{@summary.day_gain.positive? ? '+' : ''}#{number_to_percentage(@summary.day_gain.percent, precision: 1)}", change_positive: @summary.day_gain.positive?, icon: "account_balance_wallet" %>
     <% dg = @summary.day_gain %>
@@ -28,21 +28,36 @@
     <%= render "components/stat_card", title: "Day Gain/Loss", value: "$0.00", icon: "trending_up" %>
     <%= render "components/stat_card", title: "Buying Power", value: "$0.00", icon: "savings" %>
   <% end %>
+</div>
 
-  <%# Market Sentiment — custom card with stacked progress bar %>
-  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+<%# Sentiment & Fear/Greed — 3 cards %>
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
+  <%# Market Sentiment — watchlist-based %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
     <div class="flex items-center justify-between mb-3">
-      <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Market Sentiment</p>
-      <span class="material-symbols-outlined text-xl text-slate-400">psychology</span>
+      <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+        <span class="material-symbols-rounded text-lg">monitoring</span>
+        <p class="text-sm font-semibold tracking-tight uppercase">Watchlist Sentiment</p>
+      </div>
     </div>
     <% sentiment_value = @sentiment[:value] %>
-    <div class="mt-3 h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+    <div class="flex flex-col items-center py-1 mb-4">
+      <span class="text-4xl font-bold text-slate-900 dark:text-white"><%= sentiment_value %></span>
+      <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400 mt-1"><%= @sentiment[:label] %></span>
+    </div>
+    <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
       <div class="h-full bg-emerald-500" style="width: <%= sentiment_value %>%"></div>
       <div class="h-full bg-amber-400" style="width: <%= [100 - sentiment_value, 20].min %>%"></div>
       <div class="h-full bg-rose-500" style="width: <%= [100 - sentiment_value - 20, 0].max %>%"></div>
     </div>
-    <p class="mt-2 text-xs font-medium text-slate-500 dark:text-slate-400"><%= sentiment_value %>% <%= @sentiment[:label] %></p>
+    <p class="mt-2 text-xs font-medium text-slate-400"><%= sentiment_value %>% — Based on your watchlist</p>
   </div>
+
+  <%# Crypto Fear & Greed %>
+  <%= render "dashboard/fear_greed_card", reading: @fear_greed[:crypto], label: "Crypto" %>
+
+  <%# Stocks Fear & Greed %>
+  <%= render "dashboard/fear_greed_card", reading: @fear_greed[:stocks], label: "Stocks" %>
 </div>
 
 <%# Dashboard Grid — 8 + 4 columns %>

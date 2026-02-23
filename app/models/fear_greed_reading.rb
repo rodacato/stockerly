@@ -16,8 +16,9 @@ class FearGreedReading < ApplicationRecord
   scope :crypto, -> { where(index_type: "crypto") }
   scope :stocks, -> { where(index_type: "stocks") }
   scope :recent, -> { order(fetched_at: :desc).limit(30) }
-  scope :latest_crypto, -> { crypto.order(fetched_at: :desc).first }
-  scope :latest_stocks, -> { stocks.order(fetched_at: :desc).first }
+
+  def self.latest_crypto = crypto.order(fetched_at: :desc).first
+  def self.latest_stocks = stocks.order(fetched_at: :desc).first
 
   def stale?
     fetched_at < 25.hours.ago

@@ -21,13 +21,19 @@ module Dashboard
 
       sentiment = MarketSentiment.for_user(user)
 
+      fear_greed = {
+        crypto: FearGreedReading.latest_crypto,
+        stocks: FearGreedReading.latest_stocks
+      }
+
       Success({
         summary: summary,
         watchlist_items: watchlist_items,
         news: news,
         trending: trending,
         indices: indices,
-        sentiment: sentiment
+        sentiment: sentiment,
+        fear_greed: fear_greed
       })
     end
   end

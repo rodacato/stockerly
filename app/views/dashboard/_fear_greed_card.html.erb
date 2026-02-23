@@ -1,0 +1,58 @@
+<%# Usage: render "dashboard/fear_greed_card", reading: @fear_greed[:crypto], label: "Crypto" %>
+<% reading ||= nil %>
+<% label ||= "Index" %>
+
+<article class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+  <header class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+      <span class="material-symbols-rounded text-lg">psychology</span>
+      <h3 class="text-sm font-semibold tracking-tight uppercase"><%= label %> Fear & Greed</h3>
+    </div>
+  </header>
+
+  <% if reading.present? %>
+    <%
+      val = reading.value
+      color = case val
+              when 0..24  then "red"
+              when 25..44 then "orange"
+              when 45..55 then "amber"
+              when 56..74 then "lime"
+              else "emerald"
+              end
+    %>
+    <div class="flex flex-col items-center py-1 mb-4">
+      <span class="text-4xl font-bold text-<%= color %>-500 dark:text-<%= color %>-400"><%= val %></span>
+      <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400 mt-1"><%= reading.classification %></span>
+    </div>
+
+    <%# Gauge %>
+    <div class="relative mb-4">
+      <div class="flex justify-between mb-1.5 px-0.5">
+        <span class="text-[10px] font-bold text-red-500 uppercase">Fear</span>
+        <span class="text-[10px] font-bold text-emerald-500 uppercase">Greed</span>
+      </div>
+      <div class="relative h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+        <div class="h-full w-full opacity-30" style="background: linear-gradient(90deg, #ef4444 0%, #f97316 25%, #f59e0b 50%, #84cc16 75%, #22c55e 100%)"></div>
+        <div class="absolute top-0 left-0 h-full bg-<%= color %>-500 rounded-full" style="width: <%= val %>%" role="progressbar" aria-valuenow="<%= val %>" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <div class="absolute -bottom-1.5 transform -translate-x-1/2 w-3 h-3 bg-white dark:bg-slate-900 border-2 border-<%= color %>-500 rounded-full shadow-sm z-10" style="left: <%= val %>%"></div>
+    </div>
+
+    <footer class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
+      <div class="flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-<%= color %>-500 animate-pulse"></span>
+        <span class="text-[10px] font-medium text-slate-400 uppercase"><%= reading.stale? ? "Stale" : "Live" %></span>
+      </div>
+      <time class="text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
+        <span class="material-symbols-rounded text-xs">schedule</span>
+        Updated <%= time_ago_in_words(reading.fetched_at) %> ago
+      </time>
+    </footer>
+  <% else %>
+    <div class="flex flex-col items-center py-6 text-slate-400 dark:text-slate-500">
+      <span class="material-symbols-rounded text-3xl mb-2">hourglass_empty</span>
+      <p class="text-xs font-medium">No data yet</p>
+    </div>
+  <% end %>
+</article>

@@ -16,6 +16,7 @@ RSpec.describe Dashboard::Assemble do
       expect(data).to have_key(:trending)
       expect(data).to have_key(:indices)
       expect(data).to have_key(:sentiment)
+      expect(data).to have_key(:fear_greed)
     end
 
     it "includes PortfolioSummary when portfolio exists" do
@@ -72,6 +73,23 @@ RSpec.describe Dashboard::Assemble do
       sentiment = result.value![:sentiment]
       expect(sentiment).to have_key(:value)
       expect(sentiment).to have_key(:label)
+    end
+
+    it "includes fear & greed readings" do
+      create(:fear_greed_reading, :crypto, fetched_at: 1.hour.ago)
+      create(:fear_greed_reading, :stocks, fetched_at: 2.hours.ago)
+
+      result = described_class.call(user: user)
+      fg = result.value![:fear_greed]
+      expect(fg[:crypto]).to be_a(FearGreedReading)
+      expect(fg[:stocks]).to be_a(FearGreedReading)
+    end
+
+    it "returns nil fear & greed when no readings exist" do
+      result = described_class.call(user: user)
+      fg = result.value![:fear_greed]
+      expect(fg[:crypto]).to be_nil
+      expect(fg[:stocks]).to be_nil
     end
   end
 end
