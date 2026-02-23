@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   get  "onboarding/step1", to: "onboarding#step1"
   get  "onboarding/step2", to: "onboarding#step2"
   post "onboarding/complete", to: "onboarding#complete", as: :complete_onboarding
+  post "onboarding/skip",     to: "onboarding#skip",     as: :skip_onboarding
   get  "onboarding/step3", to: "onboarding#step3"
 
   get "news",      to: "news#index"

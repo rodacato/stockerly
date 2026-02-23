@@ -9,7 +9,7 @@ module Onboarding
         end
       end
 
-      user.update!(onboarding_completed: true) if user.respond_to?(:onboarding_completed)
+      user.update!(onboarded_at: Time.current)
 
       Success(user)
     rescue ActiveRecord::RecordInvalid => e

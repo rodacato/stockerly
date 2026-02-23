@@ -83,7 +83,7 @@
         <span>Continue</span>
         <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
       <% end %>
-      <%= link_to "Skip for now", dashboard_path, class: "text-slate-500 dark:text-slate-400 hover:text-primary text-sm font-semibold transition-colors py-2" %>
+      <%= button_to "Skip for now", skip_onboarding_path, method: :post, class: "text-slate-500 dark:text-slate-400 hover:text-primary text-sm font-semibold transition-colors py-2" %>
     </div>
   </div>
 </main>

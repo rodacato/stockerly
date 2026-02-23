@@ -16,7 +16,7 @@ class AuthenticatedController < ApplicationController
   def redirect_to_onboarding
     return unless current_user
     return if is_a?(OnboardingController)
-    return if current_user.watchlist_items.exists?
+    return if current_user.onboarded?
 
     redirect_to onboarding_step1_path
   end

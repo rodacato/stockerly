@@ -13,6 +13,11 @@ class OnboardingController < AuthenticatedController
     redirect_to onboarding_step3_path, notice: "Watchlist created!"
   end
 
+  def skip
+    current_user.update!(onboarded_at: Time.current)
+    redirect_to dashboard_path, notice: "You can always add stocks from the Market page."
+  end
+
   def step3
     result = Onboarding::LoadProgress.call(user: current_user)
     @watchlist_count = result.value![:watchlist_count]

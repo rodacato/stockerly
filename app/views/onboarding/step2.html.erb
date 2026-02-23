@@ -63,7 +63,7 @@
           <span class="material-symbols-outlined text-slate-400" data-onboarding-form-target="counterIcon">radio_button_unchecked</span>
           <span class="text-sm font-semibold text-slate-900 dark:text-white" data-onboarding-form-target="counter">0 of 3 minimum selected</span>
         </div>
-        <%= link_to "Skip for now", onboarding_step3_path, class: "text-sm font-medium text-primary hover:underline" %>
+        <%= button_to "Skip for now", skip_onboarding_path, method: :post, class: "text-sm font-medium text-primary hover:underline" %>
       </div>
       <div class="flex items-center justify-between">
         <%= link_to onboarding_step1_path, class: "flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-primary transition-colors" do %>

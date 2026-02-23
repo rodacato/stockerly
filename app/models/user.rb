@@ -28,6 +28,10 @@ class User < ApplicationRecord
   scope :traders,       -> { where(role: :user) }
   scope :not_suspended, -> { where.not(status: :suspended) }
 
+  def onboarded?
+    onboarded_at.present?
+  end
+
   # --- Callbacks ---
   before_validation :downcase_email
 
