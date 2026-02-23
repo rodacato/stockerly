@@ -42,6 +42,13 @@ RSpec.describe Market::ExploreAssets do
       expect(data[:indices]).to include(index_spx)
     end
 
+    it "returns VIX data" do
+      vix = create(:market_index, symbol: "VIX", name: "CBOE Volatility", value: 14.33)
+      result = described_class.call(params: {})
+      data = result.value!
+      expect(data[:vix]).to eq(vix)
+    end
+
     it "paginates results" do
       result = described_class.call(params: { page: 1 })
       data = result.value!

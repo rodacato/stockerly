@@ -1,9 +1,13 @@
-<%# Usage: render "components/index_card", name: "S&P 500", value: "5,214.33", change_pct: "+0.42%", direction: :up %>
+<%# Usage: render "components/index_card", name: "S&P 500", value: "5,214.33", change_pct: "+0.42%", direction: :up, is_open: true %>
 <% direction ||= :up %>
 <% positive = direction.to_sym == :up %>
+<% is_open = local_assigns.fetch(:is_open, false) %>
 
 <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-  <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1"><%= name %></p>
+  <div class="flex items-center justify-between mb-1">
+    <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"><%= name %></p>
+    <span class="h-2 w-2 rounded-full <%= is_open ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300 dark:bg-slate-600' %>" title="<%= is_open ? 'Open' : 'Closed' %>"></span>
+  </div>
   <p class="text-xl font-black text-slate-900 dark:text-white tracking-tight"><%= value %></p>
   <div class="flex items-center gap-1 mt-1">
     <span class="material-symbols-outlined text-sm <%= positive ? 'text-emerald-500' : 'text-rose-500' %>">

@@ -15,8 +15,9 @@ module Market
       pagy, assets = pagy(scope, limit: 20, page: params[:page] || 1)
 
       indices = MarketIndex.major
+      vix = MarketIndex.vix
 
-      Success({ pagy: pagy, assets: assets, indices: indices })
+      Success({ pagy: pagy, assets: assets, indices: indices, vix: vix })
     end
   end
 end

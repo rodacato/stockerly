@@ -9,6 +9,7 @@ class MarketController < AuthenticatedController
       @pagy    = data[:pagy]
       @assets  = data[:assets]
       @indices = data[:indices]
+      @vix     = data[:vix]
       @market_status = build_market_status
     end
   end

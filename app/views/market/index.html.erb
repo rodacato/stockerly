@@ -2,16 +2,37 @@
 
 <% if @indices.any? %>
   <%# Global Market Indices Strip %>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
     <% @indices.each do |idx| %>
       <% change = idx.change_percent || 0 %>
       <%= render "components/index_card",
           name: idx.name,
           value: number_with_delimiter(idx.value.to_f, delimiter: ","),
           change_pct: "#{change >= 0 ? '+' : ''}#{number_with_precision(change, precision: 2)}%",
-          direction: change >= 0 ? :up : :down %>
+          direction: change >= 0 ? :up : :down,
+          is_open: idx.is_open %>
     <% end %>
   </div>
+
+  <%# VIX Volatility Indicator %>
+  <% if @vix %>
+    <% vix_val = @vix.value.to_f %>
+    <% vix_color = vix_val < 20 ? "emerald" : (vix_val < 30 ? "amber" : "rose") %>
+    <% vix_label = vix_val < 20 ? "Low Volatility" : (vix_val < 30 ? "Moderate" : "High Volatility") %>
+    <div class="flex items-center gap-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-5 py-3 mb-8 shadow-sm">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-lg text-<%= vix_color %>-500">speed</span>
+        <span class="text-sm font-black text-slate-900 dark:text-white">VIX</span>
+        <span class="text-sm font-bold text-<%= vix_color %>-600 dark:text-<%= vix_color %>-400"><%= number_with_precision(vix_val, precision: 2) %></span>
+      </div>
+      <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+        <div class="h-full rounded-full bg-linear-to-r from-emerald-400 via-amber-400 to-rose-500" style="width: <%= [vix_val, 80].min / 80.0 * 100 %>%"></div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="text-xs font-semibold text-<%= vix_color %>-600 dark:text-<%= vix_color %>-400 bg-<%= vix_color %>-50 dark:bg-<%= vix_color %>-900/30 px-2 py-0.5 rounded-md"><%= vix_label %></span>
+      </div>
+    </div>
+  <% end %>
 <% end %>
 
 <%# Search and Filters %>

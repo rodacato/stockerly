@@ -301,6 +301,20 @@ MarketIndex.find_or_create_by!(symbol: "UKX") do |i|
   i.exchange = "LSE"
   i.is_open = false
 end
+MarketIndex.find_or_create_by!(symbol: "IPC") do |i|
+  i.name = "IPC Mexico"
+  i.value = 52_180.50
+  i.change_percent = -0.30
+  i.exchange = "BMV"
+  i.is_open = false
+end
+MarketIndex.find_or_create_by!(symbol: "VIX") do |i|
+  i.name = "CBOE Volatility"
+  i.value = 14.33
+  i.change_percent = -2.15
+  i.exchange = "CBOE"
+  i.is_open = true
+end
 
 # --- Trend Scores ---
 unless TrendScore.exists?

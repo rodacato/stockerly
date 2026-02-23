@@ -24,11 +24,23 @@ RSpec.describe MarketIndex, type: :model do
   end
 
   describe "scopes" do
-    it ".major returns predefined major indices" do
+    it ".major returns predefined major indices including IPC" do
       spx = create(:market_index, symbol: "SPX", name: "S&P 500")
       ndx = create(:market_index, symbol: "NDX", name: "NASDAQ 100")
+      ipc = create(:market_index, symbol: "IPC", name: "IPC Mexico")
       other = create(:market_index, symbol: "NIKKEI", name: "Nikkei 225")
-      expect(MarketIndex.major).to contain_exactly(spx, ndx)
+      expect(MarketIndex.major).to contain_exactly(spx, ndx, ipc)
+    end
+  end
+
+  describe ".vix" do
+    it "returns the VIX index" do
+      vix = create(:market_index, symbol: "VIX", name: "CBOE Volatility")
+      expect(MarketIndex.vix).to eq(vix)
+    end
+
+    it "returns nil when VIX does not exist" do
+      expect(MarketIndex.vix).to be_nil
     end
   end
 
