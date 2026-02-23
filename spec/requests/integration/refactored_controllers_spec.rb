@@ -78,7 +78,7 @@ RSpec.describe "Refactored controller flows", type: :request do
       get onboarding_step3_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("2 assets")
+      expect(response.body).to include("1 asset")
     end
   end
 

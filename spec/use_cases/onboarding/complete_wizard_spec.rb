@@ -21,10 +21,19 @@ RSpec.describe Onboarding::CompleteWizard do
       expect(user.watchlist_items.count).to eq(2)
     end
 
+    it "sets onboarded_at timestamp" do
+      expect(user.onboarded_at).to be_nil
+
+      described_class.call(user: user, asset_ids: [asset1.id])
+
+      user.reload
+      expect(user.onboarded_at).to be_present
+    end
+
     it "handles empty asset_ids gracefully" do
       result = described_class.call(user: user, asset_ids: [])
       expect(result).to be_success
-      expect(user.watchlist_items.count).to eq(0)
+      expect(user.onboarded_at).to be_present
     end
   end
 end

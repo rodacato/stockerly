@@ -5,10 +5,9 @@ module RequestHelpers
   end
 
   def ensure_onboarded(user)
-    return if user.watchlist_items.exists?
+    return if user.onboarded?
 
-    asset = Asset.first || FactoryBot.create(:asset)
-    FactoryBot.create(:watchlist_item, user: user, asset: asset)
+    user.update!(onboarded_at: Time.current)
   end
 end
 

@@ -1,8 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Sessions", type: :request do
-  let!(:user) { create(:user, email: "test@example.com", password: "password123") }
-  let!(:watchlist_setup) { create(:watchlist_item, user: user, asset: create(:asset)) }
+  let!(:user) { create(:user, email: "test@example.com", password: "password123", onboarded_at: Time.current) }
 
   describe "GET /login" do
     it "renders the login page" do

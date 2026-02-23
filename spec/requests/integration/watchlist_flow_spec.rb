@@ -15,7 +15,7 @@ RSpec.describe "Watchlist flow", type: :request do
     post watchlist_items_path, params: { asset_id: apple.id }
     expect(response).to redirect_to(dashboard_path)
 
-    expect(user.watchlist_items.count).to eq(2)
+    expect(user.watchlist_items.count).to eq(1)
 
     # Verify it shows on dashboard
     get dashboard_path
@@ -28,6 +28,6 @@ RSpec.describe "Watchlist flow", type: :request do
 
     delete watchlist_item_path(item)
     expect(response).to redirect_to(profile_path)
-    expect(user.watchlist_items.count).to eq(1)
+    expect(user.watchlist_items.count).to eq(0)
   end
 end

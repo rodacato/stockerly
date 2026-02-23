@@ -39,6 +39,40 @@ RSpec.describe "Onboarding", type: :request do
     end
   end
 
+  describe "POST /onboarding/complete" do
+    let!(:aapl) { create(:asset, symbol: "AAPL", name: "Apple Inc.") }
+    let!(:nvda) { create(:asset, symbol: "NVDA", name: "NVIDIA Corp") }
+    let!(:tsla) { create(:asset, symbol: "TSLA", name: "Tesla Inc.") }
+
+    it "creates watchlist items and sets onboarded_at" do
+      expect {
+        post complete_onboarding_path, params: { asset_ids: [aapl.id, nvda.id, tsla.id] }
+      }.to change { user.watchlist_items.count }.by(3)
+
+      user.reload
+      expect(user.onboarded_at).to be_present
+      expect(response).to redirect_to(onboarding_step3_path)
+    end
+  end
+
+  describe "POST /onboarding/skip" do
+    it "sets onboarded_at and redirects to dashboard" do
+      expect(user.onboarded_at).to be_nil
+
+      post skip_onboarding_path
+
+      user.reload
+      expect(user.onboarded_at).to be_present
+      expect(response).to redirect_to(dashboard_path)
+    end
+
+    it "does not create any watchlist items" do
+      expect {
+        post skip_onboarding_path
+      }.not_to change { user.watchlist_items.count }
+    end
+  end
+
   describe "GET /onboarding/step3" do
     it "returns success" do
       get onboarding_step3_path
@@ -49,6 +83,19 @@ RSpec.describe "Onboarding", type: :request do
       get onboarding_step3_path
       expect(response.body).to include("You're all set!")
       expect(response.body).to include("Go to Dashboard")
+    end
+  end
+
+  describe "onboarding redirect guard" do
+    it "redirects non-onboarded user to onboarding" do
+      get dashboard_path
+      expect(response).to redirect_to(onboarding_step1_path)
+    end
+
+    it "allows onboarded user to access dashboard" do
+      user.update!(onboarded_at: Time.current)
+      get dashboard_path
+      expect(response).to have_http_status(:ok)
     end
   end
 end

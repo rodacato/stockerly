@@ -20,10 +20,9 @@ RSpec.describe Admin::BaseController, type: :controller do
     end
 
     context "when logged in as regular user" do
-      let(:user) { create(:user) }
+      let(:user) { create(:user, onboarded_at: Time.current) }
 
       before do
-        create(:watchlist_item, user: user, asset: create(:asset))
         session[:user_id] = user.id
       end
 
@@ -35,10 +34,9 @@ RSpec.describe Admin::BaseController, type: :controller do
     end
 
     context "when logged in as admin" do
-      let(:admin) { create(:user, :admin) }
+      let(:admin) { create(:user, :admin, onboarded_at: Time.current) }
 
       before do
-        create(:watchlist_item, user: admin, asset: create(:asset))
         session[:user_id] = admin.id
       end
 

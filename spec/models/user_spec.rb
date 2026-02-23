@@ -108,6 +108,16 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#onboarded?" do
+    it "returns false when onboarded_at is nil" do
+      expect(build(:user, onboarded_at: nil)).not_to be_onboarded
+    end
+
+    it "returns true when onboarded_at is set" do
+      expect(build(:user, onboarded_at: Time.current)).to be_onboarded
+    end
+  end
+
   describe "associations" do
     it "destroys remember_tokens on user destroy" do
       user = create(:user)

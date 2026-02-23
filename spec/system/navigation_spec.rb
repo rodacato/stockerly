@@ -53,8 +53,7 @@ RSpec.describe "Navigation", type: :system do
     end
 
     it "logs in and accesses dashboard" do
-      user = create(:user, email: "login@test.com", password: "password123")
-      create(:watchlist_item, user: user, asset: create(:asset))
+      user = create(:user, email: "login@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
       fill_in "Email", with: "login@test.com"
@@ -66,8 +65,7 @@ RSpec.describe "Navigation", type: :system do
     end
 
     it "logs out and returns to root" do
-      user = create(:user, email: "logout@test.com", password: "password123")
-      create(:watchlist_item, user: user, asset: create(:asset))
+      user = create(:user, email: "logout@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
       fill_in "Email", with: "logout@test.com"
@@ -81,9 +79,8 @@ RSpec.describe "Navigation", type: :system do
   end
 
   describe "App zone" do
-    let!(:user) { create(:user, email: "nav@test.com", password: "password123") }
+    let!(:user) { create(:user, email: "nav@test.com", password: "password123", onboarded_at: Time.current) }
     let!(:portfolio) { create(:portfolio, user: user) }
-    let!(:watchlist_item) { create(:watchlist_item, user: user, asset: create(:asset)) }
 
     before do
       visit login_path
@@ -120,8 +117,7 @@ RSpec.describe "Navigation", type: :system do
     end
 
     it "redirects non-admin users from admin zone" do
-      user = create(:user, email: "nonadmin@test.com", password: "password123")
-      create(:watchlist_item, user: user, asset: create(:asset))
+      user = create(:user, email: "nonadmin@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
       fill_in "Email", with: "nonadmin@test.com"
@@ -134,8 +130,7 @@ RSpec.describe "Navigation", type: :system do
   end
 
   describe "Admin zone" do
-    let!(:admin) { create(:user, :admin, email: "admin@test.com", password: "password123") }
-    let!(:admin_watchlist) { create(:watchlist_item, user: admin, asset: create(:asset)) }
+    let!(:admin) { create(:user, :admin, email: "admin@test.com", password: "password123", onboarded_at: Time.current) }
 
     before do
       visit login_path
