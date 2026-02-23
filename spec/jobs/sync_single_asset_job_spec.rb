@@ -1,8 +1,13 @@
 require "rails_helper"
 
 RSpec.describe SyncSingleAssetJob, type: :job do
+  before do
+    # Reset class-level circuit breakers between tests to avoid cross-test contamination
+    described_class::CIRCUIT_BREAKERS.each_value(&:reset!)
+  end
+
   describe "#perform" do
-    context "with a stock asset" do
+    context "with a stock asset (Polygon succeeds)" do
       let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 180.00, price_updated_at: 10.minutes.ago) }
 
       before { stub_polygon_price("AAPL", close: 189.43) }
@@ -13,6 +18,13 @@ RSpec.describe SyncSingleAssetJob, type: :job do
         asset.reload
         expect(asset.current_price.to_f).to eq(189.43)
         expect(asset.price_updated_at).to be_present
+      end
+
+      it "tracks data_source from the gateway chain" do
+        described_class.perform_now(asset.id)
+
+        asset.reload
+        expect(asset.data_source).to eq("PolygonGateway")
       end
 
       it "creates a success SystemLog entry" do
@@ -40,29 +52,67 @@ RSpec.describe SyncSingleAssetJob, type: :job do
       end
     end
 
-    context "when gateway returns rate_limited" do
-      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, price_updated_at: 10.minutes.ago) }
+    context "when primary gateway fails but fallback succeeds" do
+      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 180.00, price_updated_at: 10.minutes.ago) }
 
-      before { stub_polygon_rate_limited }
+      before do
+        stub_polygon_server_error
+        stub_yahoo_finance_price("AAPL", price: 190.00)
+      end
 
-      it "creates a warning SystemLog entry" do
+      it "falls back to Yahoo Finance and updates the price" do
         described_class.perform_now(asset.id)
 
-        log = SystemLog.last
-        expect(log.severity).to eq("warning")
+        asset.reload
+        expect(asset.current_price.to_f).to eq(190.0)
+        expect(asset.data_source).to eq("YahooFinanceGateway")
+      end
+
+      it "creates a success SystemLog entry" do
+        expect {
+          described_class.perform_now(asset.id)
+        }.to change(SystemLog, :count).by(1)
+
+        expect(SystemLog.last.severity).to eq("success")
       end
     end
 
-    context "when gateway returns server error" do
+    context "when all gateways fail for a stock" do
       let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, price_updated_at: 10.minutes.ago) }
 
-      before { stub_polygon_server_error }
+      before do
+        stub_polygon_server_error
+        stub_yahoo_finance_server_error
+      end
 
-      it "creates an error SystemLog entry" do
+      it "publishes AllGatewaysFailed event" do
         described_class.perform_now(asset.id)
 
         log = SystemLog.last
         expect(log.severity).to eq("error")
+      end
+
+      it "logs the failure" do
+        expect {
+          described_class.perform_now(asset.id)
+        }.to change(SystemLog, :count).by(1)
+      end
+    end
+
+    context "when primary gateway is rate limited but fallback succeeds" do
+      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 180.00, price_updated_at: 10.minutes.ago) }
+
+      before do
+        stub_polygon_rate_limited
+        stub_yahoo_finance_price("AAPL", price: 191.50)
+      end
+
+      it "falls back to Yahoo Finance" do
+        described_class.perform_now(asset.id)
+
+        asset.reload
+        expect(asset.current_price.to_f).to eq(191.5)
+        expect(asset.data_source).to eq("YahooFinanceGateway")
       end
     end
 

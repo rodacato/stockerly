@@ -1,5 +1,6 @@
-# Fetches the latest price for a single asset from the appropriate gateway,
-# updates the Asset record, and publishes AssetPriceUpdated if the price changed.
+# Fetches the latest price for a single asset from the appropriate gateway
+# (with fallback chain for US stocks), updates the Asset record, and
+# publishes AssetPriceUpdated if the price changed.
 class SyncSingleAssetJob < ApplicationJob
   queue_as :default
 
@@ -10,7 +11,7 @@ class SyncSingleAssetJob < ApplicationJob
     return unless asset&.active?
     return if recently_synced?(asset)
 
-    result = fetch_price(asset)
+    result = gateway_for(asset).fetch_price(asset.symbol)
 
     if result.success?
       update_asset(asset, result.value!)
@@ -19,6 +20,9 @@ class SyncSingleAssetJob < ApplicationJob
       log_failure(asset, result.failure[1], severity: :warning)
     elsif result.failure[0] == :circuit_open
       log_failure(asset, result.failure[1], severity: :warning)
+    elsif result.failure[0] == :all_gateways_failed
+      publish_all_gateways_failed(asset, result.failure[2])
+      log_failure(asset, result.failure[1])
     else
       log_failure(asset, result.failure[1])
     end
@@ -33,11 +37,6 @@ class SyncSingleAssetJob < ApplicationJob
     asset.price_updated_at > min_interval.ago
   end
 
-  def fetch_price(asset)
-    breaker = self.class.circuit_breaker_for(breaker_key(asset))
-    breaker.call { gateway_for(asset).fetch_price(asset.symbol) }
-  end
-
   CIRCUIT_BREAKERS = {}
 
   def self.circuit_breaker_for(key)
@@ -49,32 +48,37 @@ class SyncSingleAssetJob < ApplicationJob
   end
 
   def gateway_for(asset)
-    return YahooFinanceGateway.new if asset.country == "MX"
+    return GatewayChain.new(gateways: [YahooFinanceGateway.new]) if asset.country == "MX"
 
     case asset.asset_type
-    when "stock", "index", "etf" then PolygonGateway.new
-    when "crypto"                then CoingeckoGateway.new
+    when "stock", "index", "etf"
+      GatewayChain.new(
+        gateways: [PolygonGateway.new, YahooFinanceGateway.new],
+        circuit_breakers: {
+          "PolygonGateway" => self.class.circuit_breaker_for("stock"),
+          "YahooFinanceGateway" => self.class.circuit_breaker_for("yahoo_us")
+        }
+      )
+    when "crypto"
+      GatewayChain.new(gateways: [CoingeckoGateway.new])
     else
       raise ArgumentError, "Unknown asset type: #{asset.asset_type}"
     end
   end
 
-  def breaker_key(asset)
-    return "bmv" if asset.country == "MX"
-
-    asset.asset_type
-  end
-
   def update_asset(asset, data)
     old_price = asset.current_price
 
-    asset.update!(
+    update_attrs = {
       current_price: data[:price],
       change_percent_24h: data[:change_percent],
       volume: data[:volume] || asset.volume,
       market_cap: data[:market_cap] || asset.market_cap,
       price_updated_at: Time.current
-    )
+    }
+    update_attrs[:data_source] = data[:data_source] if data[:data_source]
+
+    asset.update!(update_attrs)
 
     publish_price_update(asset, old_price, data[:price]) if price_changed?(old_price, data[:price])
   end
@@ -89,6 +93,14 @@ class SyncSingleAssetJob < ApplicationJob
       symbol: asset.symbol,
       old_price: (old_price || 0).to_s,
       new_price: new_price.to_s
+    ))
+  end
+
+  def publish_all_gateways_failed(asset, attempted)
+    EventBus.publish(AllGatewaysFailed.new(
+      asset_id: asset.id,
+      symbol: asset.symbol,
+      attempted_gateways: Array(attempted)
     ))
   end
 
