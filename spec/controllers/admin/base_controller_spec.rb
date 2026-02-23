@@ -23,6 +23,7 @@ RSpec.describe Admin::BaseController, type: :controller do
       let(:user) { create(:user) }
 
       before do
+        create(:watchlist_item, user: user, asset: create(:asset))
         session[:user_id] = user.id
       end
 
@@ -37,6 +38,7 @@ RSpec.describe Admin::BaseController, type: :controller do
       let(:admin) { create(:user, :admin) }
 
       before do
+        create(:watchlist_item, user: admin, asset: create(:asset))
         session[:user_id] = admin.id
       end
 

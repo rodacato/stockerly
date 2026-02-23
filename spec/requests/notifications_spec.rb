@@ -4,7 +4,7 @@ RSpec.describe "Notifications", type: :request do
   let!(:user) { create(:user, email: "notify@example.com", password: "password123") }
 
   before do
-    post login_path, params: { email: user.email, password: "password123" }
+    login_as(user)
   end
 
   describe "GET /notifications" do

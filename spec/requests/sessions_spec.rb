@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Sessions", type: :request do
   let!(:user) { create(:user, email: "test@example.com", password: "password123") }
+  let!(:watchlist_setup) { create(:watchlist_item, user: user, asset: create(:asset)) }
 
   describe "GET /login" do
     it "renders the login page" do
@@ -70,7 +71,7 @@ RSpec.describe "Sessions", type: :request do
 
   describe "DELETE /logout" do
     before do
-      post login_path, params: { email: user.email, password: "password123" }
+      login_as(user)
     end
 
     it "logs out and redirects to root" do

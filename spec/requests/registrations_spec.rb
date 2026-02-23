@@ -10,7 +10,7 @@ RSpec.describe "Registrations", type: :request do
 
     it "redirects to dashboard if already logged in" do
       user = create(:user, email: "existing@example.com", password: "password123")
-      post login_path, params: { email: user.email, password: "password123" }
+      login_as(user)
       get register_path
       expect(response).to redirect_to(dashboard_path)
     end
@@ -26,14 +26,14 @@ RSpec.describe "Registrations", type: :request do
       }
     end
 
-    it "creates user and logs in" do
+    it "creates user and redirects to onboarding" do
       expect {
         post register_path, params: valid_params
       }.to change(User, :count).by(1)
 
       expect(response).to redirect_to(dashboard_path)
       follow_redirect!
-      expect(response.body).to include("Welcome to Stockerly")
+      expect(response).to redirect_to(onboarding_step1_path)
     end
 
     it "rejects mismatched passwords" do

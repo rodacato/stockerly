@@ -41,7 +41,7 @@ RSpec.describe "Navigation", type: :system do
   end
 
   describe "Auth flow" do
-    it "registers and redirects to dashboard" do
+    it "registers and redirects to onboarding" do
       visit register_path
       fill_in "Full Name", with: "New User"
       fill_in "Email", with: "newuser@test.com"
@@ -49,11 +49,12 @@ RSpec.describe "Navigation", type: :system do
       fill_in "Confirm Password", with: "password123"
       click_button "Create Account"
 
-      expect(page).to have_current_path(dashboard_path)
+      expect(page).to have_current_path(onboarding_step1_path)
     end
 
     it "logs in and accesses dashboard" do
       user = create(:user, email: "login@test.com", password: "password123")
+      create(:watchlist_item, user: user, asset: create(:asset))
 
       visit login_path
       fill_in "Email", with: "login@test.com"
@@ -66,6 +67,7 @@ RSpec.describe "Navigation", type: :system do
 
     it "logs out and returns to root" do
       user = create(:user, email: "logout@test.com", password: "password123")
+      create(:watchlist_item, user: user, asset: create(:asset))
 
       visit login_path
       fill_in "Email", with: "logout@test.com"
@@ -81,6 +83,7 @@ RSpec.describe "Navigation", type: :system do
   describe "App zone" do
     let!(:user) { create(:user, email: "nav@test.com", password: "password123") }
     let!(:portfolio) { create(:portfolio, user: user) }
+    let!(:watchlist_item) { create(:watchlist_item, user: user, asset: create(:asset)) }
 
     before do
       visit login_path
@@ -118,6 +121,7 @@ RSpec.describe "Navigation", type: :system do
 
     it "redirects non-admin users from admin zone" do
       user = create(:user, email: "nonadmin@test.com", password: "password123")
+      create(:watchlist_item, user: user, asset: create(:asset))
 
       visit login_path
       fill_in "Email", with: "nonadmin@test.com"
@@ -131,6 +135,7 @@ RSpec.describe "Navigation", type: :system do
 
   describe "Admin zone" do
     let!(:admin) { create(:user, :admin, email: "admin@test.com", password: "password123") }
+    let!(:admin_watchlist) { create(:watchlist_item, user: admin, asset: create(:asset)) }
 
     before do
       visit login_path

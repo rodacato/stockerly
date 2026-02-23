@@ -2,6 +2,7 @@ class AuthenticatedController < ApplicationController
   layout "app"
 
   before_action :require_authentication
+  before_action :redirect_to_onboarding
   before_action :load_navbar_notifications
 
   private
@@ -10,6 +11,14 @@ class AuthenticatedController < ApplicationController
     unless current_user
       redirect_to login_path, alert: "Please sign in to continue."
     end
+  end
+
+  def redirect_to_onboarding
+    return unless current_user
+    return if is_a?(OnboardingController)
+    return if current_user.watchlist_items.exists?
+
+    redirect_to onboarding_step1_path
   end
 
   def load_navbar_notifications

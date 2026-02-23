@@ -2,10 +2,11 @@ require "rails_helper"
 
 RSpec.describe "WatchlistItems", type: :request do
   let!(:user) { create(:user, email: "wl@example.com", password: "password123") }
+  let!(:onboarding_asset) { create(:asset) }
   let!(:asset) { create(:asset) }
 
   before do
-    post login_path, params: { email: user.email, password: "password123" }
+    login_as(user)
   end
 
   describe "POST /watchlist_items" do

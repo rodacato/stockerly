@@ -5,7 +5,7 @@ RSpec.describe "Profile update flow", type: :request do
 
   before do
     EventBus.subscribe(PasswordChanged, InvalidateSessionsOnPasswordChange)
-    post login_path, params: { email: user.email, password: "password123" }
+    login_as(user)
   end
 
   it "updates name and reflects on profile page" do

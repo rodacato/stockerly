@@ -32,7 +32,7 @@ RSpec.describe "Registration flow", type: :request do
     expect(response).to redirect_to(dashboard_path)
   end
 
-  it "allows access to dashboard after registration" do
+  it "new user is redirected to onboarding from dashboard" do
     post register_path, params: {
       full_name: "Jane Doe",
       email: "jane3@example.com",
@@ -40,7 +40,6 @@ RSpec.describe "Registration flow", type: :request do
       password_confirmation: "password123"
     }
     follow_redirect!
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Jane Doe")
+    expect(response).to redirect_to(onboarding_step1_path)
   end
 end

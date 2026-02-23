@@ -4,7 +4,7 @@ RSpec.describe "Refactored controller flows", type: :request do
   let!(:user) { create(:user, email: "test@example.com", password: "password123") }
 
   before do
-    post login_path, params: { email: user.email, password: "password123" }
+    login_as(user)
   end
 
   describe "Alerts dashboard via Use Case" do
@@ -78,7 +78,7 @@ RSpec.describe "Refactored controller flows", type: :request do
       get onboarding_step3_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("1 asset")
+      expect(response.body).to include("2 assets")
     end
   end
 
@@ -87,7 +87,7 @@ RSpec.describe "Refactored controller flows", type: :request do
 
     before do
       delete logout_path
-      post login_path, params: { email: admin.email, password: "password123" }
+      login_as(admin)
     end
 
     it "lists assets with filtering by type" do
@@ -120,7 +120,7 @@ RSpec.describe "Refactored controller flows", type: :request do
 
     before do
       delete logout_path
-      post login_path, params: { email: admin.email, password: "password123" }
+      login_as(admin)
     end
 
     it "lists users with search" do

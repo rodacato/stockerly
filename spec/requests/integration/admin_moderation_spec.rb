@@ -6,7 +6,7 @@ RSpec.describe "Admin moderation flow", type: :request do
 
   before do
     EventBus.subscribe(UserSuspended, CreateAuditLogOnSuspension)
-    post login_path, params: { email: admin.email, password: "password123" }
+    login_as(admin)
   end
 
   it "suspends a user and creates audit log" do

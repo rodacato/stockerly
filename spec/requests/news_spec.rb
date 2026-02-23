@@ -4,7 +4,7 @@ RSpec.describe "News", type: :request do
   let!(:user) { create(:user, email: "news@example.com", password: "password123") }
 
   before do
-    post login_path, params: { email: user.email, password: "password123" }
+    login_as(user)
   end
 
   describe "GET /news" do

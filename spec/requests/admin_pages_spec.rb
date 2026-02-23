@@ -24,7 +24,7 @@ RSpec.describe "Admin pages", type: :request do
     let!(:user) { create(:user, email: "regular@example.com", password: "password123") }
 
     before do
-      post login_path, params: { email: user.email, password: "password123" }
+      login_as(user)
     end
 
     it "redirects /admin/assets to root for non-admin users" do
@@ -49,7 +49,7 @@ RSpec.describe "Admin pages", type: :request do
     let!(:admin) { create(:user, :admin, email: "admin@example.com", password: "password123") }
 
     before do
-      post login_path, params: { email: admin.email, password: "password123" }
+      login_as(admin)
     end
 
     it "renders the asset management page" do

@@ -4,7 +4,7 @@ RSpec.describe "Pagination flow", type: :request do
   let!(:user) { create(:user, email: "pager@example.com", password: "password123") }
 
   before do
-    post login_path, params: { email: user.email, password: "password123" }
+    login_as(user)
   end
 
   it "paginates market assets across pages" do
@@ -34,7 +34,7 @@ RSpec.describe "Pagination flow", type: :request do
   it "paginates admin logs" do
     delete logout_path
     admin = create(:user, :admin, email: "admin_pag@example.com", password: "password123")
-    post login_path, params: { email: admin.email, password: "password123" }
+    login_as(admin)
 
     create_list(:system_log, 25)
 

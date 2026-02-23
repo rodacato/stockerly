@@ -4,7 +4,7 @@ RSpec.describe "Alert lifecycle", type: :request do
   let!(:user) { create(:user, email: "alerts@example.com", password: "password123") }
 
   before do
-    post login_path, params: { email: user.email, password: "password123" }
+    login_as(user)
   end
 
   it "creates, toggles, and destroys an alert rule" do

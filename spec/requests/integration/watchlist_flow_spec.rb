@@ -3,10 +3,11 @@ require "rails_helper"
 RSpec.describe "Watchlist flow", type: :request do
   let!(:user) { create(:user, email: "watchlist@example.com", password: "password123") }
   let!(:portfolio) { create(:portfolio, user: user) }
+  let!(:onboarding_asset) { create(:asset) }
   let!(:apple) { create(:asset, name: "Apple Inc.", symbol: "AAPL") }
 
   before do
-    post login_path, params: { email: user.email, password: "password123" }
+    login_as(user)
   end
 
   it "adds asset to watchlist and shows on dashboard" do
@@ -14,7 +15,7 @@ RSpec.describe "Watchlist flow", type: :request do
     post watchlist_items_path, params: { asset_id: apple.id }
     expect(response).to redirect_to(dashboard_path)
 
-    expect(user.watchlist_items.count).to eq(1)
+    expect(user.watchlist_items.count).to eq(2)
 
     # Verify it shows on dashboard
     get dashboard_path
@@ -27,6 +28,6 @@ RSpec.describe "Watchlist flow", type: :request do
 
     delete watchlist_item_path(item)
     expect(response).to redirect_to(profile_path)
-    expect(user.watchlist_items.count).to eq(0)
+    expect(user.watchlist_items.count).to eq(1)
   end
 end

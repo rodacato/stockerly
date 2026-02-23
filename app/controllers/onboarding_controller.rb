@@ -10,7 +10,7 @@ class OnboardingController < AuthenticatedController
     asset_ids = params[:asset_ids] || []
     Onboarding::CompleteWizard.call(user: current_user, asset_ids: asset_ids)
 
-    redirect_to "/onboarding/step3", notice: "Watchlist created!"
+    redirect_to onboarding_step3_path, notice: "Watchlist created!"
   end
 
   def step3
