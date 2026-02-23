@@ -147,5 +147,7 @@ class PolygonGateway < MarketDataGateway
   def resolve_api_key
     Integration.find_by(provider_name: "Polygon.io")&.api_key_encrypted ||
       ENV.fetch("POLYGON_API_KEY", "")
+  rescue ActiveRecord::Encryption::Errors::Decryption
+    ENV.fetch("POLYGON_API_KEY", "")
   end
 end

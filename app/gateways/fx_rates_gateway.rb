@@ -58,5 +58,7 @@ class FxRatesGateway
   def resolve_api_key
     Integration.find_by(provider_name: "ExchangeRate")&.api_key_encrypted ||
       ENV.fetch("EXCHANGERATE_API_KEY", "")
+  rescue ActiveRecord::Encryption::Errors::Decryption
+    ENV.fetch("EXCHANGERATE_API_KEY", "")
   end
 end

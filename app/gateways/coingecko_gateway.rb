@@ -142,6 +142,8 @@ class CoingeckoGateway < MarketDataGateway
   def resolve_api_key
     Integration.find_by(provider_name: "CoinGecko")&.api_key_encrypted ||
       ENV.fetch("COINGECKO_API_KEY", "")
+  rescue ActiveRecord::Encryption::Errors::Decryption
+    ENV.fetch("COINGECKO_API_KEY", "")
   end
 
   def resolve_pro_tier

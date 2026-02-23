@@ -229,7 +229,7 @@ sol = Asset.find_or_create_by!(symbol: "SOL") do |a|
   a.data_source = "CoinGecko API"
   a.current_price = 142.80
   a.change_percent_24h = 2.10
-  a.sync_status = :sync_issue
+  a.sync_status = :active
   a.price_updated_at = 30.minutes.ago
 end
 
@@ -466,13 +466,13 @@ end
 # --- Integrations ---
 Integration.find_or_create_by!(provider_name: "Polygon.io") do |i|
   i.provider_type = "Stocks & Forex"
-  i.api_key_encrypted = "pk_live_abc123xyz789"
+  i.api_key_encrypted = ENV.fetch("POLYGON_API_KEY", "pk_live_abc123xyz789")
   i.connection_status = :connected
   i.last_sync_at = 2.minutes.ago
 end
 Integration.find_or_create_by!(provider_name: "CoinGecko") do |i|
   i.provider_type = "Cryptocurrency"
-  i.api_key_encrypted = "cg_demo_key_456def"
+  i.api_key_encrypted = ENV.fetch("COINGECKO_API_KEY", "cg_demo_key_456def")
   i.connection_status = :syncing
   i.last_sync_at = 1.hour.ago
 end
