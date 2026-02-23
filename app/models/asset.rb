@@ -21,6 +21,20 @@ class Asset < ApplicationRecord
   scope :by_sector,   ->(sector) { where(sector: sector) if sector.present? }
   scope :by_country,  ->(country) { where(country: country) if country.present? }
 
+  scope :high_priority, -> {
+    watched = WatchlistItem.select(:asset_id)
+    held = Position.where(status: :open).select(:asset_id)
+    alerted_symbols = AlertRule.where(status: :active).select(:asset_symbol).distinct
+
+    where(id: watched)
+      .or(where(id: held))
+      .or(where(symbol: alerted_symbols))
+  }
+
+  scope :low_priority, -> {
+    where.not(id: high_priority.select(:id))
+  }
+
   def latest_trend_score
     trend_scores.order(calculated_at: :desc).first
   end

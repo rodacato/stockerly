@@ -78,6 +78,54 @@ RSpec.describe Asset, type: :model do
     end
   end
 
+  describe ".high_priority" do
+    let!(:watched_asset) { create(:asset, symbol: "AAPL") }
+    let!(:held_asset) { create(:asset, symbol: "MSFT") }
+    let!(:alerted_asset) { create(:asset, symbol: "GOOGL") }
+    let!(:ignored_asset) { create(:asset, symbol: "NFLX") }
+
+    before do
+      user = create(:user)
+      create(:watchlist_item, user: user, asset: watched_asset)
+
+      portfolio = create(:portfolio, user: user)
+      create(:position, portfolio: portfolio, asset: held_asset, status: :open)
+
+      create(:alert_rule, user: user, asset_symbol: "GOOGL", status: :active)
+    end
+
+    it "includes assets in watchlists" do
+      expect(Asset.high_priority).to include(watched_asset)
+    end
+
+    it "includes assets with open positions" do
+      expect(Asset.high_priority).to include(held_asset)
+    end
+
+    it "includes assets with active alert rules" do
+      expect(Asset.high_priority).to include(alerted_asset)
+    end
+
+    it "excludes assets nobody is watching, holding, or alerting on" do
+      expect(Asset.high_priority).not_to include(ignored_asset)
+    end
+  end
+
+  describe ".low_priority" do
+    let!(:watched_asset) { create(:asset, symbol: "AAPL") }
+    let!(:ignored_asset) { create(:asset, symbol: "NFLX") }
+
+    before do
+      user = create(:user)
+      create(:watchlist_item, user: user, asset: watched_asset)
+    end
+
+    it "includes only assets not in high_priority" do
+      expect(Asset.low_priority).to include(ignored_asset)
+      expect(Asset.low_priority).not_to include(watched_asset)
+    end
+  end
+
   describe "#latest_trend_score" do
     let(:asset) { create(:asset) }
 

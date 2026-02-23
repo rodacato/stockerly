@@ -10,15 +10,25 @@
 #     schedule: at 5am every day
 
 production:
-  sync_stock_prices:
-    class: SyncAllAssetsJob
-    args: [ "stock" ]
+  sync_high_priority_stocks:
+    class: SyncPriorityAssetsJob
+    args: [ "stock", "high" ]
     schedule: every 5 minutes
 
-  sync_crypto_prices:
-    class: SyncAllAssetsJob
-    args: [ "crypto" ]
+  sync_low_priority_stocks:
+    class: SyncPriorityAssetsJob
+    args: [ "stock", "low" ]
+    schedule: every 30 minutes
+
+  sync_high_priority_crypto:
+    class: SyncPriorityAssetsJob
+    args: [ "crypto", "high" ]
     schedule: every 3 minutes
+
+  sync_low_priority_crypto:
+    class: SyncPriorityAssetsJob
+    args: [ "crypto", "low" ]
+    schedule: every 15 minutes
 
   refresh_fx_rates:
     class: RefreshFxRatesJob
