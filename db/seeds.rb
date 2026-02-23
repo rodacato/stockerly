@@ -404,9 +404,21 @@ Integration.find_or_create_by!(provider_name: "CoinGecko") do |i|
 end
 Integration.find_or_create_by!(provider_name: "Yahoo Finance") do |i|
   i.provider_type = "Mexican Stocks & ETFs"
-  i.api_key_encrypted = ""
+  i.requires_api_key = false
   i.connection_status = :connected
   i.last_sync_at = Time.current
+end
+Integration.find_or_create_by!(provider_name: "Alternative.me") do |i|
+  i.provider_type = "Sentiment"
+  i.requires_api_key = false
+  i.connection_status = :connected
+  i.last_sync_at = 1.day.ago
+end
+Integration.find_or_create_by!(provider_name: "CNN") do |i|
+  i.provider_type = "Sentiment"
+  i.requires_api_key = false
+  i.connection_status = :connected
+  i.last_sync_at = 1.day.ago
 end
 
 # --- Audit Logs ---

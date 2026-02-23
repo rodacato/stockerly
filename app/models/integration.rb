@@ -3,6 +3,7 @@ class Integration < ApplicationRecord
 
   validates :provider_name, presence: true, uniqueness: true
   validates :provider_type, presence: true
+  validates :api_key_encrypted, presence: true, if: :requires_api_key?
 
   encrypts :api_key_encrypted
 

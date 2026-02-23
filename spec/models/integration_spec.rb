@@ -21,6 +21,18 @@ RSpec.describe Integration, type: :model do
       integration.provider_type = nil
       expect(integration).not_to be_valid
     end
+
+    it "requires api_key_encrypted when requires_api_key is true" do
+      integration.requires_api_key = true
+      integration.api_key_encrypted = nil
+      expect(integration).not_to be_valid
+    end
+
+    it "allows blank api_key_encrypted when requires_api_key is false" do
+      integration.requires_api_key = false
+      integration.api_key_encrypted = nil
+      expect(integration).to be_valid
+    end
   end
 
   describe "enums" do

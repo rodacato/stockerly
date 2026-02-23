@@ -5,7 +5,7 @@ RSpec.describe Admin::Integrations::ConnectProvider do
     let(:admin) { create(:user, :admin) }
 
     let(:valid_params) do
-      { provider_name: "AlphaVantage", provider_type: "Stocks & Forex" }
+      { provider_name: "AlphaVantage", provider_type: "Stocks & Forex", api_key_encrypted: "sk-test-key" }
     end
 
     it "creates integration and returns Success" do

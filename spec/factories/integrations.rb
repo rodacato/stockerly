@@ -9,6 +9,12 @@ FactoryBot.define do
     trait :disconnected do
       connection_status { :disconnected }
       api_key_encrypted { nil }
+      requires_api_key { false }
+    end
+
+    trait :keyless do
+      requires_api_key { false }
+      api_key_encrypted { nil }
     end
 
     trait :syncing do
