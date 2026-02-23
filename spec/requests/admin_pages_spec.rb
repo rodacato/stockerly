@@ -83,7 +83,7 @@ RSpec.describe "Admin pages", type: :request do
       expect(response.body).to include("Sync Operations")
       expect(response.body).to include("Successful Syncs")
       expect(response.body).to include("Failed Syncs")
-      expect(response.body).to include("Refresh FX Rates")
+      expect(response.body).to include("Sync FX Rates")
     end
 
     it "renders the asset management page" do
@@ -122,6 +122,24 @@ RSpec.describe "Admin pages", type: :request do
       }.to have_enqueued_job(RefreshFxRatesJob)
 
       expect(response).to redirect_to(admin_root_path)
+    end
+
+    it "triggers a data source sync via registry" do
+      expect {
+        post admin_trigger_data_source_path(key: "fx_rates")
+      }.to have_enqueued_job(RefreshFxRatesJob)
+
+      expect(response).to redirect_to(admin_root_path)
+      follow_redirect!
+      expect(response.body).to include("FX Rates sync enqueued")
+    end
+
+    it "returns alert for unknown data source" do
+      post admin_trigger_data_source_path(key: "nonexistent")
+
+      expect(response).to redirect_to(admin_root_path)
+      follow_redirect!
+      expect(response.body).to include("Unknown data source")
     end
 
     it "renders the system logs page" do

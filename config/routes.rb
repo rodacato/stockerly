@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root "dashboard#show"
     post "refresh_fx_rates", to: "dashboard#refresh_fx_rates"
+    post "trigger_data_source/:key", to: "dashboard#trigger_data_source", as: :trigger_data_source
 
     resources :assets, only: [:index, :create] do
       member do

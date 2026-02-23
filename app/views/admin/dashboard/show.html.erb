@@ -45,22 +45,14 @@
         </div>
       </div>
 
-      <%# Quick Actions %>
+      <%# Quick Actions — registry-driven %>
       <div class="flex flex-wrap gap-2 mb-5">
-        <%= button_to trigger_sync_all_admin_assets_path(type: "stock"), method: :post,
-            class: "inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 transition-colors" do %>
-          <span class="material-symbols-outlined text-sm">sync</span>
-          Sync All Stocks
-        <% end %>
-        <%= button_to trigger_sync_all_admin_assets_path(type: "crypto"), method: :post,
-            class: "inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white text-xs font-semibold rounded-lg hover:bg-emerald-700 transition-colors" do %>
-          <span class="material-symbols-outlined text-sm">sync</span>
-          Sync All Crypto
-        <% end %>
-        <%= button_to admin_refresh_fx_rates_path, method: :post,
-            class: "inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 text-white text-xs font-semibold rounded-lg hover:bg-amber-700 transition-colors" do %>
-          <span class="material-symbols-outlined text-sm">currency_exchange</span>
-          Refresh FX Rates
+        <% @data_sources.each do |source| %>
+          <%= button_to admin_trigger_data_source_path(key: source.key), method: :post,
+              class: "inline-flex items-center gap-1.5 px-3 py-1.5 bg-#{source.color}-600 text-white text-xs font-semibold rounded-lg hover:bg-#{source.color}-700 transition-colors" do %>
+            <span class="material-symbols-outlined text-sm"><%= source.icon %></span>
+            Sync <%= source.name.split(" — ").first %>
+          <% end %>
         <% end %>
       </div>
 
