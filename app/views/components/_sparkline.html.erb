@@ -1,6 +1,7 @@
 <%# Usage: render "components/sparkline", direction: :up %>
-<%# direction: :up (emerald), :down (rose), :flat (slate) %>
+<%# With real data: render "components/sparkline", heights: [10, 30, 50, 80], direction: :up %>
 <% direction ||= :up %>
+<% heights ||= nil %>
 <% color = case direction.to_sym
    when :up then "emerald"
    when :down then "rose"
@@ -8,13 +9,13 @@
    end %>
 
 <div class="flex items-end gap-px h-8 w-16">
-  <% heights = case direction.to_sym
+  <% bars = heights || case direction.to_sym
      when :up then [30, 45, 35, 55, 70, 85]
      when :down then [80, 65, 70, 50, 35, 25]
      else [40, 50, 45, 50, 45, 48]
      end %>
-  <% heights.each_with_index do |h, i| %>
-    <div class="w-1.5 rounded-t-sm bg-<%= color %>-<%= i == heights.length - 1 ? '500' : '400' %>"
-         style="height: <%= h %>%; opacity: <%= 0.3 + (i.to_f / heights.length * 0.7) %>"></div>
+  <% bars.each_with_index do |h, i| %>
+    <div class="w-1.5 rounded-t-sm bg-<%= color %>-<%= i == bars.length - 1 ? '500' : '400' %>"
+         style="height: <%= [h, 5].max %>%; opacity: <%= 0.3 + (i.to_f / bars.length * 0.7) %>"></div>
   <% end %>
 </div>

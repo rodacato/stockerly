@@ -44,7 +44,8 @@
                 <span class="text-sm font-bold <%= positive ? 'text-emerald-500' : 'text-rose-500' %>"><%= positive ? '+' : '' %><%= number_to_percentage(change, precision: 2) %></span>
               </td>
               <td class="px-6 py-4">
-                <%= render "components/sparkline", direction: positive ? :up : :down %>
+                <% real_heights = sparkline_heights(asset) %>
+                <%= render "components/sparkline", direction: positive ? :up : :down, heights: real_heights %>
               </td>
               <td class="px-6 py-4 text-right">
                 <%= button_to watchlist_item_path(item), method: :delete, class: "text-slate-400 hover:text-red-500 transition-colors", data: { turbo_method: :delete } do %>

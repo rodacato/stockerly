@@ -43,7 +43,8 @@
               </td>
               <td class="px-6 py-4">
                 <div class="mx-auto flex justify-center">
-                  <%= render "components/sparkline", direction: positive ? :up : :down %>
+                  <% real_heights = sparkline_heights(asset) %>
+                  <%= render "components/sparkline", direction: positive ? :up : :down, heights: real_heights %>
                 </div>
               </td>
             </tr>
