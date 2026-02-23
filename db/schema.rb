@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_23_013431) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_23_022416) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,6 +76,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_013431) do
     t.string "data_source"
     t.decimal "div_yield", precision: 8, scale: 4
     t.string "exchange"
+    t.string "logo_url"
     t.decimal "market_cap", precision: 20, scale: 2
     t.string "name", null: false
     t.decimal "pe_ratio", precision: 10, scale: 4

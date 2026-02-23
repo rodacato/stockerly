@@ -196,6 +196,32 @@ vix = Asset.find_or_create_by!(symbol: "VIX") do |a|
 end
 
 
+# --- Asset Logos (backfill — safe for re-runs) ---
+{
+  "AAPL"  => "https://logo.clearbit.com/apple.com",
+  "TSLA"  => "https://logo.clearbit.com/tesla.com",
+  "MSFT"  => "https://logo.clearbit.com/microsoft.com",
+  "NVDA"  => "https://logo.clearbit.com/nvidia.com",
+  "GOOGL" => "https://logo.clearbit.com/google.com",
+  "META"  => "https://logo.clearbit.com/meta.com",
+  "AMZN"  => "https://logo.clearbit.com/amazon.com",
+  "JPM"   => "https://logo.clearbit.com/jpmorganchase.com",
+  "JNJ"   => "https://logo.clearbit.com/jnj.com",
+  "KO"    => "https://logo.clearbit.com/coca-cola.com",
+  "PG"    => "https://logo.clearbit.com/pg.com",
+  "OKE"   => "https://logo.clearbit.com/oneok.com",
+  "BTC"   => "https://assets.coingecko.com/coins/images/1/small/bitcoin.png",
+  "ETH"   => "https://assets.coingecko.com/coins/images/279/small/ethereum.png",
+  "SOL"   => "https://assets.coingecko.com/coins/images/4128/small/solana.png",
+  "QQQ"   => "https://logo.clearbit.com/invesco.com",
+  "SPY"   => "https://logo.clearbit.com/ssga.com",
+  "VOO"   => "https://logo.clearbit.com/vanguard.com",
+  "VTI"   => "https://logo.clearbit.com/vanguard.com",
+  "ARKK"  => "https://logo.clearbit.com/ark-invest.com"
+}.each do |symbol, url|
+  Asset.find_by(symbol: symbol)&.update!(logo_url: url)
+end
+
 # --- Trades & Positions for Alex ---
 portfolio = alex.portfolio
 portfolio.update!(buying_power: 8_240.15, inception_date: Date.new(2023, 1, 12))

@@ -1,4 +1,4 @@
-<%# Asset ticker badge — displays symbol with type-appropriate styling
+<%# Asset ticker badge — displays logo when available, falls back to symbol with type-appropriate styling
      Locals: asset (required), size: "sm" (8x8) | "md" (10x10) | "lg" (12x12) %>
 <% size ||= "md" %>
 <% size_classes = case size
@@ -6,13 +6,18 @@
      when "md" then "h-10 w-10 text-[11px]"
      when "lg" then "h-12 w-12 text-xs"
    end %>
-<% bg_classes = if asset.asset_type_crypto?
-     "bg-amber-500 text-white"
-   elsif asset.asset_type_etf?
-     "bg-indigo-600 text-white"
-   else
-     "bg-slate-900 dark:bg-slate-700 text-white"
-   end %>
-<div class="flex items-center justify-center rounded-lg font-bold uppercase tracking-tighter <%= size_classes %> <%= bg_classes %>">
-  <%= asset.symbol %>
-</div>
+<% if asset.logo_url.present? %>
+  <%= image_tag asset.logo_url, alt: asset.symbol,
+      class: "rounded-lg object-cover #{size_classes}", loading: "lazy" %>
+<% else %>
+  <% bg_classes = if asset.asset_type_crypto?
+       "bg-amber-500 text-white"
+     elsif asset.asset_type_etf?
+       "bg-indigo-600 text-white"
+     else
+       "bg-slate-900 dark:bg-slate-700 text-white"
+     end %>
+  <div class="flex items-center justify-center rounded-lg font-bold uppercase tracking-tighter <%= size_classes %> <%= bg_classes %>">
+    <%= asset.symbol %>
+  </div>
+<% end %>

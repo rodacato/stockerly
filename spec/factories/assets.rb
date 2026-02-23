@@ -43,6 +43,10 @@ FactoryBot.define do
       sync_status { :sync_issue }
     end
 
+    trait :with_logo do
+      logo_url { "https://logo.clearbit.com/example.com" }
+    end
+
     trait :stale_price do
       price_updated_at { 1.hour.ago }
     end
