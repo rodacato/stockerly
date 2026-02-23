@@ -22,7 +22,7 @@ module Admin
 
     def trigger_data_source
       source = DataSourceRegistry.find(params[:key].to_sym)
-      source.job_class.constantize.perform_later(*source.job_args)
+      source.job_class.perform_later(*source.job_args)
       redirect_to admin_root_path, notice: "#{source.name} sync enqueued."
     rescue KeyError
       redirect_to admin_root_path, alert: "Unknown data source."

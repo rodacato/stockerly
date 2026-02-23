@@ -31,7 +31,7 @@ class SyncIntegrationJob < ApplicationJob
       return Dry::Monads::Failure([:not_found, "No gateway for #{integration.provider_name}"])
     end
 
-    gateway = source.gateway_class.constantize.new
+    gateway = source.gateway_class.new
     test_symbol = source.test_symbol
 
     return Dry::Monads::Success(:ok) unless test_symbol

@@ -1,13 +1,16 @@
 require "rails_helper"
 
 RSpec.describe DataSourceRegistry do
+  let(:test_gateway) { Class.new }
+  let(:test_job) { Class.new }
+
   let(:attrs) do
     {
       name: "Test Source",
       icon: "sync",
       color: "blue",
-      gateway_class: "TestGateway",
-      job_class: "TestJob",
+      gateway_class: test_gateway,
+      job_class: test_job,
       job_args: ["foo"],
       test_symbol: "TEST",
       integration_name: "Test Provider",
@@ -29,7 +32,7 @@ RSpec.describe DataSourceRegistry do
 
       expect(source.key).to eq(:test_source)
       expect(source.name).to eq("Test Source")
-      expect(source.gateway_class).to eq("TestGateway")
+      expect(source.gateway_class).to eq(test_gateway)
     end
   end
 
