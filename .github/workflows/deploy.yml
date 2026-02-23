@@ -35,7 +35,9 @@ jobs:
 
     env:
       RAILS_ENV: test
-      DATABASE_URL: postgresql://stockerly:test_password@localhost:5432/stockerly_test
+      DATABASE_HOST: localhost
+      DATABASE_USERNAME: stockerly
+      DATABASE_PASSWORD: test_password
 
     steps:
       - name: Checkout code
