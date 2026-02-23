@@ -175,12 +175,8 @@ Follow `CONTRIBUTING.md` conventions:
 | Technical Spec | `docs/spec/TECHNICAL_SPEC.md` |
 | Database Schema | `docs/spec/DATABASE_SCHEMA.md` |
 | Use Cases Catalog | `docs/spec/COMMANDS.md` |
-| Page Catalog | `docs/CATALOG.md` |
-| Implementation Roadmap | `ROADMAP.md` |
+| Expert Profiles | `docs/spec/EXPERTS.md` |
+| Deployment Guide | `docs/DEPLOY.md` |
 | AI Identity & Principles | `IDENTITY.md` |
 | Contributing Guide | `CONTRIBUTING.md` |
-| Workflow (new screens) | `docs/WORKFLOW.md` |
-| Implementation Map | `docs/spec/README.md` |
-| Expert Profiles | `docs/spec/EXPERTS.md` |
-| Visual Designs | `designs/{zone}/{page}/screen.png` |
-| Design Specs | `designs/{zone}/{page}/SPEC.md` |
+| Design Processing | `designs/wip/PROCESSING.md` |

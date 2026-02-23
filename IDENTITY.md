@@ -104,15 +104,10 @@ Al trabajar en este proyecto, siempre consulto:
 
 | Documento | Ubicacion | Contenido |
 |-----------|-----------|-----------|
-| Catalogo | `docs/CATALOG.md` | Todas las paginas, estado, ruta, zona |
-| Workflow | `docs/WORKFLOW.md` | Proceso para agregar nuevas pantallas |
-| Mapa de paginas | `docs/spec/README.md` | Layouts, partials, rutas, fases |
 | PRD | `docs/spec/PRD.md` | Funcionalidades, criterios de aceptacion |
 | Spec Tecnica | `docs/spec/TECHNICAL_SPEC.md` | Stack, arquitectura, Hotwire, Stimulus |
 | BD Schema | `docs/spec/DATABASE_SCHEMA.md` | Migraciones, modelos, seeds |
 | Use Cases | `docs/spec/COMMANDS.md` | Catalogo completo DDD, events, gateways |
 | Expertos | `docs/spec/EXPERTS.md` | Roles especializados para consultar |
-| Sugerencias | `docs/spec/SUGGESTIONS.md` | Evaluacion cruzada (APPLIED) |
-| Disenos | `designs/{zona}/{pagina}/screen.png` | Capturas visuales de cada pagina |
-| HTML ref | `designs/{zona}/{pagina}/code.html` | HTML de referencia de Stitch |
-| Spec pagina | `designs/{zona}/{pagina}/SPEC.md` | Metadatos: ruta, modelos, Stimulus, status |
+| Deployment | `docs/DEPLOY.md` | Guia de despliegue y configuracion |
+| Disenos | `designs/wip/PROCESSING.md` | Workflow para procesar exports de Stitch |
