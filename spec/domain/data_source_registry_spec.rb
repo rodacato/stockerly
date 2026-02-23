@@ -15,7 +15,12 @@ RSpec.describe DataSourceRegistry do
     }
   end
 
-  before { described_class.clear! }
+  around do |example|
+    saved = described_class.instance_variable_get(:@sources).dup
+    described_class.clear!
+    example.run
+    described_class.instance_variable_set(:@sources, saved)
+  end
 
   describe ".register and .find" do
     it "registers and retrieves a data source by key" do

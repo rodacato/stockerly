@@ -1,6 +1,8 @@
 # Fetches prices for multiple BMV (Mexican) assets in a single Yahoo Finance
 # API call, updates each Asset record, and publishes AssetPriceUpdated events.
 class SyncBulkBmvJob < ApplicationJob
+  include SyncLogging
+
   queue_as :default
 
   retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
@@ -13,11 +15,11 @@ class SyncBulkBmvJob < ApplicationJob
 
     if result.success?
       update_assets(assets, result.value!)
-      log_batch_success(assets.size)
+      log_sync_success("Bulk BMV Sync: #{assets.size} assets")
     elsif result.failure[0] == :rate_limited || result.failure[0] == :circuit_open
-      log_batch_failure(result.failure[1], severity: :warning)
+      log_sync_failure("Bulk BMV Sync", result.failure[1], severity: :warning)
     else
-      log_batch_failure(result.failure[1])
+      log_sync_failure("Bulk BMV Sync", result.failure[1])
     end
   end
 
@@ -54,23 +56,5 @@ class SyncBulkBmvJob < ApplicationJob
 
   def price_changed?(old_price, new_price)
     old_price.nil? || old_price.to_d != new_price.to_d
-  end
-
-  def log_batch_success(count)
-    SystemLog.create!(
-      task_name: "Bulk BMV Sync: #{count} assets",
-      module_name: "sync",
-      severity: :success,
-      duration_seconds: 0
-    )
-  end
-
-  def log_batch_failure(message, severity: :error)
-    SystemLog.create!(
-      task_name: "Bulk BMV Sync",
-      module_name: "sync",
-      severity: severity,
-      error_message: message
-    )
   end
 end

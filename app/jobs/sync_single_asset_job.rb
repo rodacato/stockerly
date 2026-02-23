@@ -2,6 +2,8 @@
 # (with fallback chain for US stocks), updates the Asset record, and
 # publishes AssetPriceUpdated if the price changed.
 class SyncSingleAssetJob < ApplicationJob
+  include SyncLogging
+
   queue_as :default
 
   retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
@@ -15,16 +17,16 @@ class SyncSingleAssetJob < ApplicationJob
 
     if result.success?
       update_asset(asset, result.value!)
-      log_success(asset)
+      log_sync_success("Price Sync: #{asset.symbol}")
     elsif result.failure[0] == :rate_limited
-      log_failure(asset, result.failure[1], severity: :warning)
+      log_sync_failure("Price Sync: #{asset.symbol}", result.failure[1], severity: :warning)
     elsif result.failure[0] == :circuit_open
-      log_failure(asset, result.failure[1], severity: :warning)
+      log_sync_failure("Price Sync: #{asset.symbol}", result.failure[1], severity: :warning)
     elsif result.failure[0] == :all_gateways_failed
       publish_all_gateways_failed(asset, result.failure[2])
-      log_failure(asset, result.failure[1])
+      log_sync_failure("Price Sync: #{asset.symbol}", result.failure[1])
     else
-      log_failure(asset, result.failure[1])
+      log_sync_failure("Price Sync: #{asset.symbol}", result.failure[1])
     end
   end
 
@@ -102,23 +104,5 @@ class SyncSingleAssetJob < ApplicationJob
       symbol: asset.symbol,
       attempted_gateways: Array(attempted)
     ))
-  end
-
-  def log_success(asset)
-    SystemLog.create!(
-      task_name: "Price Sync: #{asset.symbol}",
-      module_name: "sync",
-      severity: :success,
-      duration_seconds: 0
-    )
-  end
-
-  def log_failure(asset, message, severity: :error)
-    SystemLog.create!(
-      task_name: "Price Sync: #{asset.symbol}",
-      module_name: "sync",
-      severity: severity,
-      error_message: message
-    )
   end
 end
