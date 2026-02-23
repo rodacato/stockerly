@@ -1,6 +1,8 @@
 class LegalController < ApplicationController
   layout "legal"
 
+  before_action { expires_in 1.day, public: true }
+
   def privacy
     @page_title = "Privacy Policy"
     @page_subtitle = "Ensuring your data is safe, transparently handled, and always yours."
