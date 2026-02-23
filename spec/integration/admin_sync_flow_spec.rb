@@ -4,7 +4,7 @@ RSpec.describe "Admin Sync Flow (E2E)", type: :model do
   include ActiveJob::TestHelper
 
   describe "trigger single asset sync" do
-    let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 150.00) }
+    let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 150.00, price_updated_at: 10.minutes.ago) }
 
     before { stub_polygon_price("AAPL", close: 195.0) }
 

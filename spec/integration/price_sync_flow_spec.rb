@@ -4,7 +4,7 @@ RSpec.describe "Price Sync Flow (E2E)", type: :model do
   include ActiveJob::TestHelper
 
   let(:user)  { create(:user) }
-  let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 150.00) }
+  let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 150.00, price_updated_at: 10.minutes.ago) }
   let!(:rule) { create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above, threshold_value: 180, status: :active) }
 
   before { stub_polygon_price("AAPL", close: 189.43) }
