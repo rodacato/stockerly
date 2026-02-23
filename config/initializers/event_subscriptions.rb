@@ -32,6 +32,9 @@ Rails.application.config.after_initialize do
   # News
   EventBus.subscribe(NewsSynced, LogNewsSync)
 
+  # Market Indices
+  EventBus.subscribe(MarketIndicesUpdated, LogMarketIndicesUpdate)
+
   # Sentiment
   EventBus.subscribe(FearGreedUpdated, LogFearGreedUpdate)
 

@@ -75,6 +75,18 @@ Rails.application.config.after_initialize do
     circuit_breaker_key: "polygon_news"
   )
 
+  DataSourceRegistry.register(:yahoo_indices,
+    name: "Market Indices — Yahoo Finance",
+    icon: "monitoring",
+    color: "teal",
+    gateway_class: "YahooFinanceGateway",
+    job_class: "SyncMarketIndicesJob",
+    job_args: [],
+    test_symbol: nil,
+    integration_name: "Yahoo Finance",
+    circuit_breaker_key: "yahoo_indices"
+  )
+
   DataSourceRegistry.register(:fx_rates,
     name: "FX Rates",
     icon: "currency_exchange",

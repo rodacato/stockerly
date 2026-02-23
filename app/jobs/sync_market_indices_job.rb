@@ -1,0 +1,38 @@
+# Fetches latest market index quotes from Yahoo Finance and updates MarketIndex records.
+class SyncMarketIndicesJob < ApplicationJob
+  include SyncLogging
+
+  queue_as :default
+
+  def perform
+    result = YahooFinanceGateway.new.fetch_index_quotes
+
+    if result.success?
+      updated = upsert_indices(result.value!)
+      log_sync_success("Market Indices Sync", message: "#{updated} indices updated")
+      EventBus.publish(MarketIndicesUpdated.new(count: updated))
+    else
+      log_sync_failure("Market Indices Sync", result.failure[1])
+    end
+  end
+
+  private
+
+  def upsert_indices(quotes)
+    updated = 0
+
+    quotes.each do |quote|
+      index = MarketIndex.find_by(symbol: quote[:symbol])
+      next unless index
+
+      index.update!(
+        value: quote[:value],
+        change_percent: quote[:change_percent],
+        is_open: quote[:is_open]
+      )
+      updated += 1
+    end
+
+    updated
+  end
+end
