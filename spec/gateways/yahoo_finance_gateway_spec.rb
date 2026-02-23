@@ -54,7 +54,7 @@ RSpec.describe YahooFinanceGateway do
 
     context "when connection times out" do
       before do
-        stub_request(:get, %r{query1\.finance\.yahoo\.com/v8/finance/quote})
+        stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/})
           .to_timeout
       end
 
@@ -92,7 +92,7 @@ RSpec.describe YahooFinanceGateway do
 
         expect(spx[:name]).to eq("S&P 500")
         expect(spx[:value]).to eq(5214.33.to_d)
-        expect(spx[:change_percent]).to eq(0.42.to_d)
+        expect(spx[:change_percent]).to be_within(0.01).of(0.42)
         expect(spx[:is_open]).to be true
       end
     end
@@ -110,7 +110,7 @@ RSpec.describe YahooFinanceGateway do
 
     context "when connection times out" do
       before do
-        stub_request(:get, %r{query1\.finance\.yahoo\.com/v8/finance/quote})
+        stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/})
           .to_timeout
       end
 

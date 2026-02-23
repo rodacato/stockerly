@@ -9,6 +9,13 @@ RSpec.describe SyncMarketIndicesJob do
   describe "#perform" do
     context "when gateway returns quotes" do
       before do
+        # Catch-all for unstubbed index symbols (returns not found)
+        stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/})
+          .to_return(
+            status: 200,
+            headers: { "Content-Type" => "application/json" },
+            body: { chart: { result: nil, error: { code: "Not Found" } } }.to_json
+          )
         stub_yahoo_index_quotes({
           "^GSPC" => { name: "S&P 500", value: 5214.33, change_percent: 0.42, is_open: true },
           "^IXIC" => { name: "NASDAQ Composite", value: 18322.40, change_percent: 1.15, is_open: true }
@@ -20,7 +27,7 @@ RSpec.describe SyncMarketIndicesJob do
 
         spx.reload
         expect(spx.value).to eq(5214.33.to_d)
-        expect(spx.change_percent).to eq(0.42.to_d)
+        expect(spx.change_percent).to be_within(0.01).of(0.42)
         expect(spx.is_open).to be true
       end
 

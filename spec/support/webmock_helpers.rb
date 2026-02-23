@@ -152,91 +152,66 @@ module WebmockHelpers
       .to_return(status: 500, body: "Internal Server Error")
   end
 
-  # --- Yahoo Finance ---
+  # --- Yahoo Finance (v8/finance/chart on query2) ---
 
   def stub_yahoo_finance_price(symbol, price: 25.50, change_percent: 1.25, volume: 500_000)
-    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
-      .with(query: hash_including("symbols" => symbol))
-      .to_return(
-        status: 200,
-        headers: { "Content-Type" => "application/json" },
-        body: {
-          quoteResponse: {
-            result: [ {
-              "symbol" => symbol,
-              "regularMarketPrice" => price,
-              "regularMarketChangePercent" => change_percent,
-              "regularMarketVolume" => volume
-            } ],
-            error: nil
-          }
-        }.to_json
-      )
+    previous_close = (price / (1 + change_percent / 100.0)).round(2)
+    stub_yahoo_chart(symbol, price: price, previous_close: previous_close, volume: volume)
   end
 
   def stub_yahoo_finance_bulk(symbols_data)
-    results = symbols_data.map do |sym, data|
-      { "symbol" => sym, "regularMarketPrice" => data[:price],
-        "regularMarketChangePercent" => data[:change_percent] || 0,
-        "regularMarketVolume" => data[:volume] || 0 }
+    symbols_data.each do |sym, data|
+      change = data[:change_percent] || 0
+      previous_close = (data[:price] / (1 + change / 100.0)).round(2)
+      stub_yahoo_chart(sym, price: data[:price], previous_close: previous_close, volume: data[:volume] || 0)
     end
-
-    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
-      .with(query: hash_including("symbols"))
-      .to_return(
-        status: 200,
-        headers: { "Content-Type" => "application/json" },
-        body: { quoteResponse: { result: results, error: nil } }.to_json
-      )
   end
 
   def stub_yahoo_finance_not_found(symbol)
-    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
-      .with(query: hash_including("symbols" => symbol))
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/#{Regexp.escape(symbol)}})
       .to_return(
         status: 200,
         headers: { "Content-Type" => "application/json" },
-        body: { quoteResponse: { result: [], error: nil } }.to_json
+        body: { chart: { result: nil, error: { code: "Not Found" } } }.to_json
       )
   end
 
   def stub_yahoo_finance_rate_limited
-    stub_request(:get, %r{query1\.finance\.yahoo\.com/v8/finance/quote})
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/})
       .to_return(status: 429, body: "Rate limit exceeded")
   end
 
   def stub_yahoo_finance_server_error
-    stub_request(:get, %r{query1\.finance\.yahoo\.com/v8/finance/quote})
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/})
       .to_return(status: 500, body: "Internal Server Error")
   end
 
   def stub_yahoo_index_quotes(quotes_data)
-    results = quotes_data.map do |yahoo_sym, data|
-      {
-        "symbol" => yahoo_sym,
-        "shortName" => data[:name] || yahoo_sym,
-        "regularMarketPrice" => data[:value],
-        "regularMarketChangePercent" => data[:change_percent] || 0,
-        "marketState" => data[:is_open] ? "REGULAR" : "CLOSED"
-      }
-    end
+    quotes_data.each do |yahoo_sym, data|
+      value = data[:value]
+      change = data[:change_percent] || 0
+      previous_close = (value / (1 + change / 100.0)).round(2)
+      now = Time.current.to_i
 
-    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
-      .with(query: hash_including("symbols"))
-      .to_return(
-        status: 200,
-        headers: { "Content-Type" => "application/json" },
-        body: { quoteResponse: { result: results, error: nil } }.to_json
-      )
+      regular_start = data[:is_open] ? now - 3600 : now + 3600
+      regular_end   = data[:is_open] ? now + 3600 : now + 7200
+
+      stub_yahoo_chart(yahoo_sym,
+        price: value,
+        previous_close: previous_close,
+        volume: 0,
+        short_name: data[:name] || yahoo_sym,
+        regular_start: regular_start,
+        regular_end: regular_end)
+    end
   end
 
   def stub_yahoo_index_quotes_empty
-    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
-      .with(query: hash_including("symbols"))
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/})
       .to_return(
         status: 200,
         headers: { "Content-Type" => "application/json" },
-        body: { quoteResponse: { result: [], error: nil } }.to_json
+        body: { chart: { result: nil, error: { code: "Not Found" } } }.to_json
       )
   end
 
@@ -317,6 +292,39 @@ module WebmockHelpers
   def stub_fx_rates_server_error
     stub_request(:get, %r{v6\.exchangerate-api\.com/v6/.*/latest})
       .to_return(status: 500, body: "Internal Server Error")
+  end
+
+  private
+
+  def stub_yahoo_chart(symbol, price:, previous_close:, volume: 0, short_name: nil, regular_start: nil, regular_end: nil)
+    now = Time.current.to_i
+    meta = {
+      "symbol" => symbol,
+      "regularMarketPrice" => price,
+      "chartPreviousClose" => previous_close,
+      "regularMarketVolume" => volume,
+      "shortName" => short_name || symbol,
+      "longName" => short_name || symbol,
+      "currentTradingPeriod" => {
+        "regular" => {
+          "start" => regular_start || now - 3600,
+          "end" => regular_end || now + 3600
+        }
+      }
+    }
+
+    encoded = symbol.gsub("^", "%5E")
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/#{Regexp.escape(encoded)}})
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {
+          chart: {
+            result: [ { "meta" => meta, "timestamp" => [ now ], "indicators" => {} } ],
+            error: nil
+          }
+        }.to_json
+      )
   end
 end
 
