@@ -8,18 +8,17 @@
       <% end %>
 
       <%# Global Search (Cmd+K) %>
-      <div class="hidden md:flex flex-1 max-w-md mx-4" data-controller="search">
-        <button class="relative w-full flex items-center gap-2 px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
+      <div class="hidden md:block" data-controller="search">
+        <button class="flex items-center gap-2 px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
                 data-action="click->search#open">
           <span class="material-symbols-outlined text-xl">search</span>
-          <span class="flex-1 text-left">Search stocks, crypto, indices...</span>
-          <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 border border-slate-200 dark:border-slate-600 rounded text-xs font-medium text-slate-400 bg-white dark:bg-slate-700">&#8984;K</kbd>
+          <kbd class="inline-flex items-center px-1.5 py-0.5 border border-slate-200 dark:border-slate-600 rounded text-xs font-medium text-slate-400 bg-white dark:bg-slate-700">&#8984;K</kbd>
         </button>
         <%= render "components/global_search" %>
       </div>
 
       <%# Desktop Nav %>
-      <nav class="hidden lg:flex items-center gap-1">
+      <nav class="hidden lg:flex items-center gap-0.5">
         <% [
           ["Dashboard", dashboard_path, "dashboard"],
           ["Market", market_path, "monitoring"],
@@ -28,9 +27,9 @@
           ["Earnings", earnings_path, "event_note"],
           ["News", news_path, "newspaper"]
         ].each do |label, path, icon| %>
-          <%= link_to path, class: "flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors #{current_page?(path) ? 'text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800'}" do %>
-            <span class="material-symbols-outlined text-lg"><%= icon %></span>
-            <%= label %>
+          <%= link_to path, title: label, aria: { label: label, current: (current_page?(path) ? "page" : nil) }, class: "flex items-center gap-1.5 p-2 xl:px-3 xl:py-2 text-sm font-medium rounded-lg transition-colors #{current_page?(path) ? 'text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800'}" do %>
+            <span class="material-symbols-outlined text-xl"><%= icon %></span>
+            <span class="hidden xl:inline"><%= label %></span>
           <% end %>
         <% end %>
       </nav>
