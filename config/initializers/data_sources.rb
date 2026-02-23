@@ -39,6 +39,30 @@ Rails.application.config.after_initialize do
     circuit_breaker_key: "bmv"
   )
 
+  DataSourceRegistry.register(:crypto_fear_greed,
+    name: "Crypto F&G — Alternative.me",
+    icon: "psychology",
+    color: "purple",
+    gateway_class: "CryptoFearGreedGateway",
+    job_class: "RefreshFearGreedJob",
+    job_args: [],
+    test_symbol: nil,
+    integration_name: "Alternative.me",
+    circuit_breaker_key: "crypto_fear_greed"
+  )
+
+  DataSourceRegistry.register(:stock_fear_greed,
+    name: "Stock F&G — CNN",
+    icon: "psychology",
+    color: "rose",
+    gateway_class: "StockFearGreedGateway",
+    job_class: "RefreshFearGreedJob",
+    job_args: [],
+    test_symbol: nil,
+    integration_name: "CNN",
+    circuit_breaker_key: "stock_fear_greed"
+  )
+
   DataSourceRegistry.register(:fx_rates,
     name: "FX Rates",
     icon: "currency_exchange",
