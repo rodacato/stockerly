@@ -71,9 +71,15 @@
               </div>
             </td>
             <td class="px-6 py-4 text-center">
-              <button class="p-2 rounded-lg text-primary hover:bg-primary/10 transition-colors">
-                <span class="material-symbols-outlined text-lg">add_circle</span>
-              </button>
+              <% if @watchlisted_asset_ids.include?(asset.id) %>
+                <span class="inline-flex items-center gap-1 text-emerald-500 text-xs font-medium">
+                  <span class="material-symbols-outlined text-lg">check_circle</span>
+                </span>
+              <% else %>
+                <%= button_to watchlist_items_path, params: { asset_id: asset.id }, class: "p-2 rounded-lg text-primary hover:bg-primary/10 transition-colors" do %>
+                  <span class="material-symbols-outlined text-lg">add_circle</span>
+                <% end %>
+              <% end %>
             </td>
           </tr>
         <% end %>

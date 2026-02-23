@@ -11,6 +11,7 @@ class MarketController < AuthenticatedController
       @indices = data[:indices]
       @vix     = data[:vix]
       @market_status = build_market_status
+      @watchlisted_asset_ids = current_user.watchlist_items.pluck(:asset_id).to_set
     end
   end
 
