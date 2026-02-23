@@ -10,6 +10,7 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(UserSuspended, SendSuspensionEmail)
   EventBus.subscribe(AssetCreated, CreateAuditLogOnAssetCreation)
   EventBus.subscribe(AssetCreated, SyncAssetOnCreation)
+  EventBus.subscribe(AssetCreated, BackfillHistoryOnAssetCreation)
 
   # Market Data
   EventBus.subscribe(AssetPriceUpdated, EvaluateAlertsOnPriceUpdate)
