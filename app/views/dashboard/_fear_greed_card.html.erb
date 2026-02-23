@@ -5,7 +5,7 @@
 <article class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
   <header class="flex items-center justify-between mb-4">
     <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-      <span class="material-symbols-rounded text-lg">psychology</span>
+      <span class="material-symbols-outlined text-lg">psychology</span>
       <h3 class="text-sm font-semibold tracking-tight uppercase"><%= label %> Fear & Greed</h3>
     </div>
   </header>
@@ -45,13 +45,13 @@
         <span class="text-[10px] font-medium text-slate-400 uppercase"><%= reading.stale? ? "Stale" : "Live" %></span>
       </div>
       <time class="text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
-        <span class="material-symbols-rounded text-xs">schedule</span>
+        <span class="material-symbols-outlined text-xs">schedule</span>
         Updated <%= time_ago_in_words(reading.fetched_at) %> ago
       </time>
     </footer>
   <% else %>
     <div class="flex flex-col items-center py-6 text-slate-400 dark:text-slate-500">
-      <span class="material-symbols-rounded text-3xl mb-2">hourglass_empty</span>
+      <span class="material-symbols-outlined text-3xl mb-2">hourglass_empty</span>
       <p class="text-xs font-medium">No data yet</p>
     </div>
   <% end %>
