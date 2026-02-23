@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe SyncSingleAssetJob, type: :job do
   describe "#perform" do
     context "with a stock asset" do
-      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 180.00) }
+      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 180.00, price_updated_at: 10.minutes.ago) }
 
       before { stub_polygon_price("AAPL", close: 189.43) }
 
@@ -28,7 +28,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
     end
 
     context "with a crypto asset" do
-      let!(:asset) { create(:asset, symbol: "BTC", asset_type: :crypto, sync_status: :active, current_price: 60_000.00) }
+      let!(:asset) { create(:asset, symbol: "BTC", asset_type: :crypto, sync_status: :active, current_price: 60_000.00, price_updated_at: 10.minutes.ago) }
 
       before { stub_coingecko_prices }
 
@@ -41,7 +41,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
     end
 
     context "when gateway returns rate_limited" do
-      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active) }
+      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, price_updated_at: 10.minutes.ago) }
 
       before { stub_polygon_rate_limited }
 
@@ -54,7 +54,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
     end
 
     context "when gateway returns server error" do
-      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active) }
+      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, price_updated_at: 10.minutes.ago) }
 
       before { stub_polygon_server_error }
 
@@ -77,7 +77,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
     end
 
     context "with a Mexican (BMV) stock" do
-      let!(:asset) { create(:asset, :mexican, symbol: "GENIUSSACV.MX", asset_type: :stock, sync_status: :active, current_price: 20.00) }
+      let!(:asset) { create(:asset, :mexican, symbol: "GENIUSSACV.MX", asset_type: :stock, sync_status: :active, current_price: 20.00, price_updated_at: 10.minutes.ago) }
 
       before { stub_yahoo_finance_price("GENIUSSACV.MX", price: 25.50) }
 
@@ -100,7 +100,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
     end
 
     context "with a Mexican ETF" do
-      let!(:asset) { create(:asset, :mexican, :etf, symbol: "IVVPESO.MX", sync_status: :active, current_price: 40.00) }
+      let!(:asset) { create(:asset, :mexican, :etf, symbol: "IVVPESO.MX", sync_status: :active, current_price: 40.00, price_updated_at: 10.minutes.ago) }
 
       before { stub_yahoo_finance_price("IVVPESO.MX", price: 48.30) }
 
@@ -109,6 +109,38 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
         asset.reload
         expect(asset.current_price.to_f).to eq(48.3)
+      end
+    end
+
+    context "when asset was recently synced" do
+      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, price_updated_at: 1.minute.ago) }
+
+      it "skips sync for stocks updated within 4 minutes" do
+        expect {
+          described_class.perform_now(asset.id)
+        }.not_to change(SystemLog, :count)
+      end
+    end
+
+    context "when crypto asset was recently synced" do
+      let!(:asset) { create(:asset, symbol: "BTC", asset_type: :crypto, sync_status: :active, price_updated_at: 1.minute.ago) }
+
+      it "skips sync for crypto updated within 2 minutes" do
+        expect {
+          described_class.perform_now(asset.id)
+        }.not_to change(SystemLog, :count)
+      end
+    end
+
+    context "when asset has never been synced" do
+      let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, price_updated_at: nil, current_price: 180.00) }
+
+      before { stub_polygon_price("AAPL", close: 189.43) }
+
+      it "proceeds with sync" do
+        expect {
+          described_class.perform_now(asset.id)
+        }.to change(SystemLog, :count).by(1)
       end
     end
 

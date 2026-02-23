@@ -8,6 +8,7 @@ class SyncSingleAssetJob < ApplicationJob
   def perform(asset_id)
     asset = Asset.find_by(id: asset_id)
     return unless asset&.active?
+    return if recently_synced?(asset)
 
     result = fetch_price(asset)
 
@@ -24,6 +25,13 @@ class SyncSingleAssetJob < ApplicationJob
   end
 
   private
+
+  def recently_synced?(asset)
+    return false if asset.price_updated_at.nil?
+
+    min_interval = asset.asset_type_crypto? ? 2.minutes : 4.minutes
+    asset.price_updated_at > min_interval.ago
+  end
 
   def fetch_price(asset)
     breaker = self.class.circuit_breaker_for(breaker_key(asset))
