@@ -27,8 +27,13 @@ class FundamentalPresenter
   end
 
   def fcf_yield
-    # Requires cash flow statements (Phase 10.1)
-    nil
+    operating_cf = @metrics["operating_cashflow"]&.to_d
+    capex = @metrics["capital_expenditures"]&.to_d
+    market_cap = @metrics["market_cap"]&.to_d
+    return nil unless operating_cf && capex && market_cap&.nonzero?
+
+    fcf = operating_cf - capex.abs
+    (fcf / market_cap).round(4)
   end
 
   # Accessor for any stored metric by key

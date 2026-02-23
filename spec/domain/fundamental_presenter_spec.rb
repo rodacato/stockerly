@@ -58,7 +58,31 @@ RSpec.describe FundamentalPresenter do
   end
 
   describe "#fcf_yield" do
-    it "returns nil (Phase 10.1 feature)" do
+    let(:fundamental) do
+      build(:asset_fundamental, asset: asset, metrics: {
+        "eps" => "6.07",
+        "book_value" => "3.95",
+        "revenue_per_share" => "25.23",
+        "operating_cashflow" => "110543000000",
+        "capital_expenditures" => "11000000000",
+        "market_cap" => "2940000000000"
+      })
+    end
+
+    it "computes FCF yield from operating_cashflow, capex and market_cap" do
+      # FCF = 110543B - 11B = 99543B; yield = 99543B / 2940B ≈ 0.0339
+      expect(presenter.fcf_yield).to be_a(BigDecimal)
+      expect(presenter.fcf_yield).to be > 0.03
+      expect(presenter.fcf_yield).to be < 0.04
+    end
+
+    it "returns nil when operating_cashflow is missing" do
+      fundamental.metrics.delete("operating_cashflow")
+      expect(presenter.fcf_yield).to be_nil
+    end
+
+    it "returns nil when market_cap is zero" do
+      fundamental.metrics["market_cap"] = "0"
       expect(presenter.fcf_yield).to be_nil
     end
   end
