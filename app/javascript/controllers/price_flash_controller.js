@@ -7,6 +7,14 @@ export default class extends Controller {
 
   connect() {
     this.previousPrice = this.priceValue
+    this.flashTimer = null
+  }
+
+  disconnect() {
+    if (this.flashTimer) {
+      clearTimeout(this.flashTimer)
+      this.flashTimer = null
+    }
   }
 
   priceValueChanged() {
@@ -20,14 +28,20 @@ export default class extends Controller {
 
     if (oldPrice === newPrice) return
 
+    if (this.flashTimer) {
+      clearTimeout(this.flashTimer)
+      this.element.classList.remove("animate-flash-green", "animate-flash-red")
+    }
+
     const flashClass = newPrice > oldPrice
       ? "animate-flash-green"
       : "animate-flash-red"
 
     this.element.classList.add(flashClass)
 
-    setTimeout(() => {
+    this.flashTimer = setTimeout(() => {
       this.element.classList.remove(flashClass)
+      this.flashTimer = null
     }, 1500)
 
     this.previousPrice = this.priceValue
