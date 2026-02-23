@@ -28,7 +28,7 @@ RSpec.describe Asset, type: :model do
 
   describe "enums" do
     it "defines asset_type enum" do
-      expect(Asset.asset_types).to eq("stock" => 0, "crypto" => 1, "index" => 2)
+      expect(Asset.asset_types).to eq("stock" => 0, "crypto" => 1, "index" => 2, "etf" => 3)
     end
 
     it "defines sync_status enum" do
@@ -60,6 +60,21 @@ RSpec.describe Asset, type: :model do
 
     it ".by_sector returns all when sector is blank" do
       expect(Asset.by_sector(nil)).to include(stock, crypto)
+    end
+
+    it ".etfs returns only ETFs" do
+      etf = create(:asset, :etf)
+      expect(Asset.etfs).to contain_exactly(etf)
+    end
+
+    it ".by_country filters by country" do
+      stock.update!(country: "US")
+      crypto.update!(country: nil)
+      expect(Asset.by_country("US")).to contain_exactly(stock)
+    end
+
+    it ".by_country returns all when country is blank" do
+      expect(Asset.by_country(nil)).to include(stock, crypto)
     end
   end
 

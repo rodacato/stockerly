@@ -22,6 +22,13 @@ FactoryBot.define do
       sector { nil }
     end
 
+    trait :etf do
+      asset_type { :etf }
+      sector { nil }
+      exchange { "NASDAQ" }
+      data_source { "Polygon.io" }
+    end
+
     trait :disabled do
       sync_status { :disabled }
     end
