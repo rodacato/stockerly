@@ -67,6 +67,62 @@ RSpec.describe YahooFinanceGateway do
     end
   end
 
+  describe "#fetch_index_quotes" do
+    context "when Yahoo Finance returns valid index data" do
+      before do
+        stub_yahoo_index_quotes({
+          "^GSPC" => { name: "S&P 500", value: 5214.33, change_percent: 0.42, is_open: true },
+          "^IXIC" => { name: "NASDAQ Composite", value: 18322.40, change_percent: 1.15, is_open: true },
+          "^MXX"  => { name: "IPC Mexico", value: 52180.50, change_percent: -0.30, is_open: false }
+        })
+      end
+
+      it "returns Success with mapped index quotes" do
+        result = gateway.fetch_index_quotes(%w[^GSPC ^IXIC ^MXX])
+
+        expect(result).to be_success
+        quotes = result.value!
+        expect(quotes.size).to eq(3)
+        expect(quotes.map { |q| q[:symbol] }).to contain_exactly("SPX", "NDX", "IPC")
+      end
+
+      it "maps Yahoo symbols to internal symbols" do
+        result = gateway.fetch_index_quotes(%w[^GSPC ^IXIC ^MXX])
+        spx = result.value!.find { |q| q[:symbol] == "SPX" }
+
+        expect(spx[:name]).to eq("S&P 500")
+        expect(spx[:value]).to eq(5214.33.to_d)
+        expect(spx[:change_percent]).to eq(0.42.to_d)
+        expect(spx[:is_open]).to be true
+      end
+    end
+
+    context "when no data returned" do
+      before { stub_yahoo_index_quotes_empty }
+
+      it "returns Failure with :not_found" do
+        result = gateway.fetch_index_quotes(%w[^GSPC])
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:not_found)
+      end
+    end
+
+    context "when connection times out" do
+      before do
+        stub_request(:get, %r{query1\.finance\.yahoo\.com/v8/finance/quote})
+          .to_timeout
+      end
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.fetch_index_quotes(%w[^GSPC])
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+  end
+
   describe "#fetch_bulk_prices" do
     before do
       stub_yahoo_finance_bulk({

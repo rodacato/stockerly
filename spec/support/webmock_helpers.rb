@@ -210,6 +210,36 @@ module WebmockHelpers
       .to_return(status: 500, body: "Internal Server Error")
   end
 
+  def stub_yahoo_index_quotes(quotes_data)
+    results = quotes_data.map do |yahoo_sym, data|
+      {
+        "symbol" => yahoo_sym,
+        "shortName" => data[:name] || yahoo_sym,
+        "regularMarketPrice" => data[:value],
+        "regularMarketChangePercent" => data[:change_percent] || 0,
+        "marketState" => data[:is_open] ? "REGULAR" : "CLOSED"
+      }
+    end
+
+    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
+      .with(query: hash_including("symbols"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { quoteResponse: { result: results, error: nil } }.to_json
+      )
+  end
+
+  def stub_yahoo_index_quotes_empty
+    stub_request(:get, "https://query1.finance.yahoo.com/v8/finance/quote")
+      .with(query: hash_including("symbols"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { quoteResponse: { result: [], error: nil } }.to_json
+      )
+  end
+
   # --- Crypto Fear & Greed (Alternative.me) ---
 
   def stub_crypto_fear_greed(value: 25, classification: "Extreme Fear")
