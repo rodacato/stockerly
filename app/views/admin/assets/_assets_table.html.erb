@@ -7,6 +7,8 @@
           <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Asset Name</th>
           <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Symbol</th>
           <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Type</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Exchange</th>
+          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Country</th>
           <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
           <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
         </tr>
@@ -22,6 +24,12 @@
             </td>
             <td class="px-6 py-4">
               <span class="text-sm text-slate-500"><%= asset.asset_type.humanize %></span>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm font-mono text-slate-500"><%= asset.exchange || "—" %></span>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm font-mono text-slate-500"><%= asset.country || "—" %></span>
             </td>
             <td class="px-6 py-4">
               <%= render "components/status_badge", status: asset.sync_status %>

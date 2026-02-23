@@ -1,6 +1,6 @@
 module Onboarding
   class LoadAssetCatalog < ApplicationUseCase
-    def call(types: [:stock, :crypto], limit: 20)
+    def call(types: [:stock, :crypto, :etf], limit: 20)
       assets = Asset.where(asset_type: types)
                     .order(:name)
                     .limit(limit)
