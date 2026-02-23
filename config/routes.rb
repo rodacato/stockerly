@@ -57,7 +57,7 @@ Rails.application.routes.draw do
     post "refresh_fx_rates", to: "dashboard#refresh_fx_rates"
     post "trigger_data_source/:key", to: "dashboard#trigger_data_source", as: :trigger_data_source
 
-    resources :assets, only: [ :index, :create ] do
+    resources :assets, only: [ :index, :create, :destroy ] do
       member do
         patch :toggle_status
         post  :trigger_sync

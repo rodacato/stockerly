@@ -2,8 +2,8 @@ class Asset < ApplicationRecord
   enum :asset_type, { stock: 0, crypto: 1, index: 2, etf: 3, fixed_income: 4 }, prefix: true
   enum :sync_status, { active: 0, disabled: 1, sync_issue: 2 }
 
-  has_many :positions
-  has_many :trades
+  has_many :positions,              dependent: :destroy
+  has_many :trades,                 dependent: :destroy
   has_many :watchlist_items,       dependent: :destroy
   has_many :watching_users,        through: :watchlist_items, source: :user
   has_many :trend_scores,          dependent: :destroy

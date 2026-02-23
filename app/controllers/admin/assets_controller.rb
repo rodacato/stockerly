@@ -43,6 +43,16 @@ module Admin
       end
     end
 
+    def destroy
+      result = Admin::Assets::DeleteAsset.call(asset_id: params[:id], admin: current_user)
+
+      if result.success?
+        redirect_to admin_assets_path, notice: "Asset \"#{result.value!}\" deleted."
+      else
+        redirect_to admin_assets_path, alert: result.failure.last
+      end
+    end
+
     def toggle_status
       result = Admin::Assets::ToggleStatus.call(asset_id: params[:id])
 

@@ -42,8 +42,15 @@
                   <span class="material-symbols-outlined text-lg">sync</span>
                 <% end %>
                 <%= button_to toggle_status_admin_asset_path(asset), method: :patch,
-                    class: "p-1.5 text-slate-400 hover:text-primary transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" do %>
+                    class: "p-1.5 text-slate-400 hover:text-primary transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
+                    title: asset.active? ? "Pause sync" : "Resume sync" do %>
                   <span class="material-symbols-outlined text-lg"><%= asset.active? ? "pause" : "play_arrow" %></span>
+                <% end %>
+                <%= button_to admin_asset_path(asset), method: :delete,
+                    class: "p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
+                    title: "Delete asset",
+                    data: { turbo_confirm: "Delete #{asset.symbol}? This will remove all related data (watchlists, positions, trades, price history)." } do %>
+                  <span class="material-symbols-outlined text-lg">delete</span>
                 <% end %>
               </div>
             </td>

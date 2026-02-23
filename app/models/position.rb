@@ -1,7 +1,7 @@
 class Position < ApplicationRecord
   belongs_to :portfolio
   belongs_to :asset
-  has_many   :trades
+  has_many   :trades, dependent: :destroy
 
   enum :status, { open: 0, closed: 1 }
 

@@ -142,6 +142,18 @@ RSpec.describe "Admin pages", type: :request do
       expect(response.body).to include("Unknown data source")
     end
 
+    it "deletes an asset from admin" do
+      asset = create(:asset, symbol: "TEST")
+
+      expect {
+        delete admin_asset_path(asset)
+      }.to change(Asset, :count).by(-1)
+
+      expect(response).to redirect_to(admin_assets_path)
+      follow_redirect!
+      expect(response.body).to include("deleted")
+    end
+
     it "renders the system logs page" do
       create(:system_log, task_name: "FX Rate Update", module_name: "Finance")
       get admin_logs_path
