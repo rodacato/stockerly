@@ -1,0 +1,15 @@
+<%# Data freshness indicator — shows how current an asset's price data is.
+     Locals: asset (required), market_open (required), mode: "inline" | "badge" (default: "inline")
+     - inline: Subtle 10px text under price. Only shown when NOT "live" (silence = fresh).
+     - badge: Badge with dot + text. Always visible. %>
+<% mode ||= "inline" %>
+<% status = combined_data_status(asset, market_open) %>
+
+<% if mode == "badge" %>
+  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 dark:bg-slate-800 <%= status[:text_class] %>">
+    <span class="h-1.5 w-1.5 rounded-full <%= status[:dot_class] %>"></span>
+    <%= status[:label] %>
+  </span>
+<% elsif status[:state] != :live %>
+  <span class="text-[10px] leading-none <%= status[:text_class] %>"><%= status[:label] %></span>
+<% end %>

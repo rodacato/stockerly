@@ -24,16 +24,17 @@
             <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                  <%= render "components/asset_badge", asset: asset, size: "sm" %>
+                  <%= render "components/asset_badge", asset: asset, size: "sm", market_open: market_open_for(asset) %>
                   <div>
                     <p class="text-sm font-bold text-slate-900 dark:text-white"><%= asset.name %></p>
                     <p class="text-xs text-slate-500"><%= asset.sector %></p>
                   </div>
                 </div>
               </td>
-              <td id="asset_price_<%= asset.id %>" class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"
+              <td id="asset_price_<%= asset.id %>" class="px-6 py-4 text-right"
                   data-controller="price-flash" data-price-flash-value="<%= asset.current_price %>">
-                <%= number_to_currency(asset.current_price) %>
+                <span class="text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(asset.current_price) %></span>
+                <div class="mt-0.5"><%= render "components/data_status", asset: asset, market_open: market_open_for(asset) %></div>
               </td>
               <td class="px-6 py-4 text-right">
                 <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold <%= positive ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">

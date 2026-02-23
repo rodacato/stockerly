@@ -1,23 +1,31 @@
 <%# Asset ticker badge — displays logo when available, falls back to symbol with type-appropriate styling
-     Locals: asset (required), size: "sm" (8x8) | "md" (10x10) | "lg" (12x12) %>
+     Locals: asset (required), size: "sm" (8x8) | "md" (10x10) | "lg" (12x12),
+             market_open: nil (optional, shows market dot when provided) %>
 <% size ||= "md" %>
+<% market_open = local_assigns[:market_open] %>
 <% size_classes = case size
      when "sm" then "h-8 w-8 text-[10px]"
      when "md" then "h-10 w-10 text-[11px]"
      when "lg" then "h-12 w-12 text-xs"
    end %>
-<% if asset.logo_url.present? %>
-  <%= image_tag asset.logo_url, alt: asset.symbol,
-      class: "rounded-lg object-cover #{size_classes}", loading: "lazy" %>
-<% else %>
-  <% bg_classes = if asset.asset_type_crypto?
-       "bg-amber-500 text-white"
-     elsif asset.asset_type_etf?
-       "bg-indigo-600 text-white"
-     else
-       "bg-slate-900 dark:bg-slate-700 text-white"
-     end %>
-  <div class="flex items-center justify-center rounded-lg font-bold uppercase tracking-tighter <%= size_classes %> <%= bg_classes %>">
-    <%= asset.symbol %>
-  </div>
-<% end %>
+<div class="relative inline-flex shrink-0">
+  <% if asset.logo_url.present? %>
+    <%= image_tag asset.logo_url, alt: asset.symbol,
+        class: "rounded-lg object-cover #{size_classes}", loading: "lazy" %>
+  <% else %>
+    <% bg_classes = if asset.asset_type_crypto?
+         "bg-amber-500 text-white"
+       elsif asset.asset_type_etf?
+         "bg-indigo-600 text-white"
+       else
+         "bg-slate-900 dark:bg-slate-700 text-white"
+       end %>
+    <div class="flex items-center justify-center rounded-lg font-bold uppercase tracking-tighter <%= size_classes %> <%= bg_classes %>">
+      <%= asset.symbol %>
+    </div>
+  <% end %>
+  <% unless market_open.nil? %>
+    <span class="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-white dark:border-slate-900 <%= market_open ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600' %>"
+          title="<%= market_open ? 'Market open' : 'Market closed' %>"></span>
+  <% end %>
+</div>

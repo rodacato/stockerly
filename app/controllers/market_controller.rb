@@ -9,6 +9,7 @@ class MarketController < AuthenticatedController
       @pagy    = data[:pagy]
       @assets  = data[:assets]
       @indices = data[:indices]
+      @market_status = build_market_status
     end
   end
 
@@ -16,5 +17,9 @@ class MarketController < AuthenticatedController
 
   def filter_params
     params.permit(:type, :sector, :search, :page, :country, :exchange).to_h.symbolize_keys
+  end
+
+  def build_market_status
+    { us: MarketHours.us_market_open?, bmv: MarketHours.bmv_market_open?, crypto: true }
   end
 end

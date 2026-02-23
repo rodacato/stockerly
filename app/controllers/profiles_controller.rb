@@ -4,6 +4,7 @@ class ProfilesController < AuthenticatedController
     data = result.value!
 
     @watchlist_items = data[:watchlist_items]
+    @market_status   = { us: MarketHours.us_market_open?, bmv: MarketHours.bmv_market_open?, crypto: true }
   end
 
   def update

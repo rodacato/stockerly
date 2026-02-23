@@ -10,6 +10,7 @@ class DashboardController < AuthenticatedController
       @trending        = data[:trending]
       @indices         = data[:indices]
       @sentiment       = data[:sentiment]
+      @market_status   = { us: MarketHours.us_market_open?, bmv: MarketHours.bmv_market_open?, crypto: true }
     end
   end
 end

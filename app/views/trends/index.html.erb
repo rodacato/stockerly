@@ -60,6 +60,7 @@
       <div class="lg:col-span-2 flex flex-col">
         <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Price</span>
         <span class="text-2xl font-bold text-slate-900 dark:text-white"><%= number_to_currency(@asset.current_price) %></span>
+        <div class="mt-1"><%= render "components/data_status", asset: @asset, market_open: @market_open, mode: "badge" %></div>
       </div>
       <div class="lg:col-span-2 flex flex-col">
         <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">% Change (24h)</span>
