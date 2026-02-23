@@ -10,6 +10,8 @@ class Asset < ApplicationRecord
   has_many :earnings_events,       dependent: :destroy
   has_many :asset_price_histories, dependent: :destroy
   has_many :dividends,             dependent: :destroy
+  has_many :financial_statements,  dependent: :destroy
+  has_many :asset_fundamentals,    dependent: :destroy
 
   validates :name,   presence: true
   validates :symbol, presence: true, uniqueness: { case_sensitive: false }

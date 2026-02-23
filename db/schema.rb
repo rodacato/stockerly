@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_23_182245) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_23_213548) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_182245) do
     t.index ["user_id"], name: "index_alert_rules_on_user_id"
   end
 
+  create_table "asset_fundamentals", force: :cascade do |t|
+    t.bigint "asset_id", null: false
+    t.datetime "calculated_at"
+    t.datetime "created_at", null: false
+    t.jsonb "metrics", default: {}, null: false
+    t.string "period_label", null: false
+    t.string "source"
+    t.datetime "updated_at", null: false
+    t.index ["asset_id", "period_label"], name: "index_asset_fundamentals_on_asset_id_and_period_label", unique: true
+    t.index ["asset_id"], name: "index_asset_fundamentals_on_asset_id"
+  end
+
   create_table "asset_price_histories", force: :cascade do |t|
     t.bigint "asset_id", null: false
     t.decimal "close", precision: 15, scale: 4, null: false
@@ -77,6 +89,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_182245) do
     t.decimal "div_yield", precision: 8, scale: 4
     t.string "exchange"
     t.decimal "face_value", precision: 15, scale: 2
+    t.datetime "fundamentals_synced_at"
     t.string "logo_url"
     t.decimal "market_cap", precision: 20, scale: 2
     t.date "maturity_date"
@@ -162,6 +175,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_182245) do
     t.datetime "updated_at", null: false
     t.integer "value", null: false
     t.index ["index_type", "fetched_at"], name: "index_fear_greed_readings_on_index_type_and_fetched_at"
+  end
+
+  create_table "financial_statements", force: :cascade do |t|
+    t.bigint "asset_id", null: false
+    t.datetime "created_at", null: false
+    t.string "currency", default: "USD"
+    t.jsonb "data", default: {}, null: false
+    t.datetime "fetched_at"
+    t.date "fiscal_date_ending", null: false
+    t.integer "fiscal_quarter"
+    t.integer "fiscal_year"
+    t.string "period_type", null: false
+    t.string "source"
+    t.string "statement_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id", "statement_type", "period_type", "fiscal_date_ending"], name: "idx_fin_stmts_unique", unique: true
+    t.index ["asset_id"], name: "index_financial_statements_on_asset_id"
   end
 
   create_table "fx_rates", force: :cascade do |t|
@@ -361,12 +391,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_182245) do
   add_foreign_key "alert_events", "users"
   add_foreign_key "alert_preferences", "users"
   add_foreign_key "alert_rules", "users"
+  add_foreign_key "asset_fundamentals", "assets"
   add_foreign_key "asset_price_histories", "assets"
   add_foreign_key "audit_logs", "users"
   add_foreign_key "dividend_payments", "dividends"
   add_foreign_key "dividend_payments", "portfolios"
   add_foreign_key "dividends", "assets"
   add_foreign_key "earnings_events", "assets"
+  add_foreign_key "financial_statements", "assets"
   add_foreign_key "notifications", "users"
   add_foreign_key "portfolio_snapshots", "portfolios"
   add_foreign_key "portfolios", "users"
