@@ -65,6 +65,22 @@ class YahooFinanceGateway < MarketDataGateway
     Failure([ :gateway_error, e.message ])
   end
 
+  # Fetch daily price history for a single symbol.
+  # Returns Success([{ date:, open:, high:, low:, close:, volume: }, ...])
+  def fetch_historical(symbol, days: 30)
+    response = connection.get("/v8/finance/chart/#{ERB::Util.url_encode(symbol)}") do |req|
+      req.params["range"] = "#{days}d"
+      req.params["interval"] = "1d"
+    end
+
+    return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
+
+    parse_historical(response.body)
+  rescue Faraday::Error => e
+    Failure([ :gateway_error, e.message ])
+  end
+
   # Fetch quotes for market indices (S&P 500, NASDAQ, DOW, FTSE, IPC, VIX).
   # Returns Success([{ symbol:, name:, value:, change_percent:, is_open: }, ...])
   def fetch_index_quotes(symbols = INDEX_SYMBOL_MAP.keys)
@@ -143,5 +159,31 @@ class YahooFinanceGateway < MarketDataGateway
 
     now = Time.current.to_i
     now >= trading["start"].to_i && now <= trading["end"].to_i
+  end
+
+  def parse_historical(body)
+    result = body.dig("chart", "result", 0)
+    return Failure([ :not_found, "No chart data in Yahoo response" ]) unless result
+
+    timestamps = result["timestamp"]
+    indicators = result.dig("indicators", "quote", 0)
+    return Failure([ :parse_error, "Missing OHLCV data" ]) if timestamps.blank? || indicators.blank?
+
+    bars = timestamps.each_with_index.filter_map do |ts, i|
+      close = indicators.dig("close", i)
+      next unless close
+
+      {
+        date: Time.at(ts).to_date,
+        open:   (indicators.dig("open", i) || close).to_d,
+        high:   (indicators.dig("high", i) || close).to_d,
+        low:    (indicators.dig("low", i)  || close).to_d,
+        close:  close.to_d,
+        volume: indicators.dig("volume", i)&.to_i
+      }
+    end
+
+    bars.uniq! { |b| b[:date] }
+    Success(bars)
   end
 end

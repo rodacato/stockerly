@@ -26,12 +26,20 @@ class BackfillPriceHistoryJob < ApplicationJob
     when "crypto"
       CoingeckoGateway.new.fetch_historical(asset.symbol, days: 30)
     when "stock", "index", "etf"
-      from_date = 30.days.ago.to_date.to_s
-      to_date   = Date.current.to_s
-      PolygonGateway.new.fetch_historical(asset.symbol, from_date, to_date)
+      fetch_stock_history(asset.symbol)
     else
       Dry::Monads::Failure([ :not_supported, "Backfill not supported for #{asset.asset_type}" ])
     end
+  end
+
+  def fetch_stock_history(symbol)
+    from_date = 30.days.ago.to_date.to_s
+    to_date   = Date.current.to_s
+    result = PolygonGateway.new.fetch_historical(symbol, from_date, to_date)
+    return result if result.success?
+
+    # Fallback to Yahoo Finance when Polygon fails (e.g. no API key)
+    YahooFinanceGateway.new.fetch_historical(symbol, days: 30)
   end
 
   def upsert_bars(asset, bars)
