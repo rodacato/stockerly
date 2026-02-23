@@ -14,6 +14,6 @@ class NewsController < AuthenticatedController
   private
 
   def filter_params
-    params.permit(:ticker, :search, :page).to_h.symbolize_keys
+    params.permit(:ticker, :search, :source, :time_range, :page).to_h.symbolize_keys
   end
 end

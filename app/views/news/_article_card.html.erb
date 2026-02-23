@@ -1,18 +1,24 @@
-<%# News Article Card — expects locals: source, time_ago, title, summary, tickers (array), image_icon %>
-<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow group">
-  <div class="aspect-video relative overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600"><%= local_assigns[:image_icon] || "article" %></span>
-  </div>
-  <div class="p-4">
-    <div class="flex items-center justify-between mb-2">
-      <span class="text-[10px] font-bold text-slate-500 uppercase"><%= source %> &bull; <%= time_ago %></span>
+<%# News Article Card — expects local: article (NewsArticle) %>
+<a href="<%= article.url %>" target="_blank" rel="noopener noreferrer" class="block group">
+  <div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow h-full">
+    <div class="aspect-video relative overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+      <% if article.image_url.present? %>
+        <%= image_tag article.image_url, alt: "", class: "absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-300", loading: "lazy" %>
+      <% else %>
+        <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600">article</span>
+      <% end %>
     </div>
-    <h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2"><%= title %></h3>
-    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2"><%= summary %></p>
-    <div class="flex gap-2">
-      <% tickers.each do |ticker| %>
-        <span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded"><%= ticker %></span>
+    <div class="p-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[10px] font-bold text-slate-500 uppercase"><%= article.source %> &bull; <%= time_ago_in_words(article.published_at) %> ago</span>
+      </div>
+      <h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors"><%= article.title %></h3>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2"><%= article.summary %></p>
+      <% if article.related_ticker.present? %>
+        <div class="flex gap-2">
+          <span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded"><%= article.related_ticker %></span>
+        </div>
       <% end %>
     </div>
   </div>
-</div>
+</a>

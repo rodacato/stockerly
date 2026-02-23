@@ -27,6 +27,25 @@ RSpec.describe News::ListArticles do
       expect(articles).not_to include(nvidia_article)
     end
 
+    it "filters by source" do
+      nvidia_article.update!(source: "Bloomberg")
+      apple_article.update!(source: "Reuters")
+
+      result = described_class.call(params: { source: "Bloomberg" })
+      articles = result.value![:articles]
+      expect(articles).to include(nvidia_article)
+      expect(articles).not_to include(apple_article)
+    end
+
+    it "filters by time_range" do
+      old = create(:news_article, title: "Old News", published_at: 2.days.ago)
+
+      result = described_class.call(params: { time_range: "24h" })
+      articles = result.value![:articles]
+      expect(articles).to include(nvidia_article)
+      expect(articles).not_to include(old)
+    end
+
     it "returns pagination data" do
       result = described_class.call(params: {})
       expect(result.value![:pagy]).to be_a(Pagy)

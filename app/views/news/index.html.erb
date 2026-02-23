@@ -2,9 +2,45 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <%# Page Title %>
-  <div class="mb-8">
+  <div class="mb-6">
     <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Market News</h1>
     <p class="text-slate-600 dark:text-slate-400 mt-1">Stay informed about your watchlist and global trends.</p>
+  </div>
+
+  <%# Filter Bar %>
+  <div class="flex flex-wrap items-center gap-3 mb-8 pb-6 border-b border-slate-200 dark:border-slate-800">
+    <%# Source Filters %>
+    <div class="flex items-center gap-2">
+      <% sources = [
+        { label: "All News", value: nil },
+        { label: "Bloomberg", value: "Bloomberg" },
+        { label: "Reuters", value: "Reuters" },
+        { label: "WSJ", value: "WSJ" }
+      ] %>
+      <% sources.each do |src| %>
+        <% active = params[:source] == src[:value] || (src[:value].nil? && params[:source].blank?) %>
+        <%= link_to src[:label],
+            news_path(source: src[:value], time_range: params[:time_range], search: params[:search]),
+            class: "px-4 py-2 rounded-lg text-sm font-semibold transition-colors #{active ? 'bg-primary text-white shadow-sm' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'}" %>
+      <% end %>
+    </div>
+
+    <%# Time Range %>
+    <div class="ml-auto flex items-center gap-2">
+      <% time_ranges = [
+        { label: "All Time", value: nil },
+        { label: "Last Hour", value: "1h" },
+        { label: "Last 24h", value: "24h" },
+        { label: "Last 7 Days", value: "7d" },
+        { label: "Last 30 Days", value: "30d" }
+      ] %>
+      <% time_ranges.each do |tr| %>
+        <% active = params[:time_range] == tr[:value] || (tr[:value].nil? && params[:time_range].blank?) %>
+        <%= link_to tr[:label],
+            news_path(source: params[:source], time_range: tr[:value], search: params[:search]),
+            class: "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors #{active ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}" %>
+      <% end %>
+    </div>
   </div>
 
   <% if @articles.any? %>
@@ -13,40 +49,41 @@
       <div class="lg:col-span-2 space-y-8">
         <%# Featured Article (first one) %>
         <% featured = @articles.first %>
-        <article class="group relative overflow-hidden rounded-2xl bg-slate-900 h-[450px]">
-          <div class="absolute inset-0 h-full w-full bg-slate-800 flex items-center justify-center">
-            <span class="material-symbols-outlined text-8xl text-slate-600">newsmode</span>
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
-          <div class="absolute bottom-0 p-8 w-full">
-            <div class="flex items-center gap-3 mb-4">
-              <span class="bg-primary text-white text-[10px] font-black px-2 py-0.5 rounded tracking-widest uppercase"><%= featured.source %></span>
-              <span class="text-slate-300 text-xs font-medium"><%= time_ago_in_words(featured.published_at) %> ago</span>
-            </div>
-            <h2 class="text-3xl md:text-4xl font-black text-white leading-tight mb-4 max-w-2xl"><%= featured.title %></h2>
-            <% if featured.summary.present? %>
-              <p class="text-slate-300 text-lg line-clamp-2 max-w-3xl mb-6"><%= featured.summary %></p>
+        <a href="<%= featured.url %>" target="_blank" rel="noopener noreferrer" class="block group">
+          <article class="relative overflow-hidden rounded-2xl bg-slate-900 h-[450px]">
+            <% if featured.image_url.present? %>
+              <%= image_tag featured.image_url, alt: "", class: "absolute inset-0 h-full w-full object-cover opacity-60 group-hover:opacity-70 transition-opacity", loading: "lazy" %>
+            <% else %>
+              <div class="absolute inset-0 h-full w-full bg-slate-800 flex items-center justify-center">
+                <span class="material-symbols-outlined text-8xl text-slate-600">newsmode</span>
+              </div>
             <% end %>
-            <div class="flex items-center gap-2">
-              <% if featured.related_ticker.present? %>
-                <span class="bg-primary/30 backdrop-blur-md border border-primary/40 text-blue-200 text-xs font-bold px-3 py-1 rounded-md"><%= featured.related_ticker %></span>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+            <div class="absolute bottom-0 p-8 w-full">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="bg-primary text-white text-[10px] font-black px-2 py-0.5 rounded tracking-widest uppercase"><%= featured.source %></span>
+                <span class="text-slate-300 text-xs font-medium"><%= time_ago_in_words(featured.published_at) %> ago</span>
+              </div>
+              <h2 class="text-3xl md:text-4xl font-black text-white leading-tight mb-4 max-w-2xl group-hover:text-blue-200 transition-colors"><%= featured.title %></h2>
+              <% if featured.summary.present? %>
+                <p class="text-slate-300 text-lg line-clamp-2 max-w-3xl mb-6"><%= featured.summary %></p>
               <% end %>
+              <div class="flex items-center gap-3">
+                <% if featured.related_ticker.present? %>
+                  <span class="bg-primary/30 backdrop-blur-md border border-primary/40 text-blue-200 text-xs font-bold px-3 py-1 rounded-md"><%= featured.related_ticker %></span>
+                <% end %>
+                <span class="text-blue-200 text-xs font-semibold group-hover:underline">Read Full Article &rarr;</span>
+              </div>
             </div>
-          </div>
-        </article>
+          </article>
+        </a>
 
         <%# Grid of News Cards (remaining articles) %>
         <% remaining = @articles.to_a.drop(1) %>
         <% if remaining.any? %>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <% remaining.each do |article| %>
-              <%= render "news/article_card",
-                  source: article.source,
-                  time_ago: "#{time_ago_in_words(article.published_at)} ago",
-                  title: article.title,
-                  summary: article.summary || "",
-                  tickers: [article.related_ticker].compact,
-                  image_icon: "article" %>
+              <%= render "news/article_card", article: article %>
             <% end %>
           </div>
         <% end %>
@@ -61,22 +98,50 @@
 
       <%# Right Sidebar %>
       <aside class="space-y-8">
+        <%# From Your Watchlist %>
+        <% if current_user.watchlist_items.any? %>
+          <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+              <h2 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">From Your Watchlist</h2>
+              <%= link_to "View Full Watchlist", market_path, class: "text-xs font-semibold text-primary hover:underline" %>
+            </div>
+            <div class="divide-y divide-slate-100 dark:divide-slate-800">
+              <% current_user.watchlist_items.includes(:asset).limit(5).each do |item| %>
+                <% asset = item.asset %>
+                <% change = asset.change_percent_24h || 0 %>
+                <% positive = change >= 0 %>
+                <div class="flex items-center justify-between px-5 py-3">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold text-slate-900 dark:text-white"><%= asset.symbol %></span>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-semibold text-slate-900 dark:text-white"><%= number_to_currency(asset.current_price) %></p>
+                    <p class="text-xs font-bold <%= positive ? 'text-emerald-600' : 'text-rose-600' %>">
+                      <%= positive ? '+' : '' %><%= number_to_percentage(change, precision: 2) %>
+                    </p>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+
         <%# Trending Topics %>
         <section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-          <h2 class="text-lg font-black text-slate-900 dark:text-white mb-4">Trending Topics</h2>
+          <h2 class="text-sm font-black text-slate-900 dark:text-white mb-4 uppercase tracking-wider">Trending Topics</h2>
           <div class="flex flex-wrap gap-2">
             <% [
-              { label: "AI Stocks", active: true },
-              { label: "Earnings Season", active: false },
-              { label: "Crypto", active: false },
-              { label: "Fed Policy", active: false },
-              { label: "EV Market", active: false },
-              { label: "Inflation", active: false }
+              { label: "AI Stocks", search: "AI" },
+              { label: "Earnings Season", search: "earnings" },
+              { label: "Crypto", search: "crypto" },
+              { label: "Fed Policy", search: "federal reserve" },
+              { label: "EV Market", search: "electric vehicle" },
+              { label: "Inflation", search: "inflation" }
             ].each do |topic| %>
-              <span class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors
-                           <%= topic[:active] ? 'bg-primary/5 hover:bg-primary/10 border border-primary/20 text-primary' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-transparent text-slate-600 dark:text-slate-400' %>">
-                <%= topic[:label] %>
-              </span>
+              <% active = params[:search]&.downcase == topic[:search].downcase %>
+              <%= link_to topic[:label],
+                  news_path(search: active ? nil : topic[:search], source: params[:source], time_range: params[:time_range]),
+                  class: "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors #{active ? 'bg-primary/10 border border-primary/20 text-primary' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-transparent text-slate-600 dark:text-slate-400'}" %>
             <% end %>
           </div>
         </section>

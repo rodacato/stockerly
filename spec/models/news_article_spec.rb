@@ -38,5 +38,27 @@ RSpec.describe NewsArticle, type: :model do
       create(:news_article)
       expect(NewsArticle.for_ticker(nil).count).to eq(1)
     end
+
+    it ".for_source filters by source" do
+      bloomberg = create(:news_article, source: "Bloomberg")
+      reuters = create(:news_article, source: "Reuters")
+      expect(NewsArticle.for_source("Bloomberg")).to contain_exactly(bloomberg)
+    end
+
+    it ".for_source returns all when source is nil" do
+      create(:news_article)
+      expect(NewsArticle.for_source(nil).count).to eq(1)
+    end
+
+    it ".published_after filters by time" do
+      recent = create(:news_article, published_at: 30.minutes.ago)
+      old = create(:news_article, published_at: 2.hours.ago)
+      expect(NewsArticle.published_after(1.hour.ago)).to contain_exactly(recent)
+    end
+
+    it ".published_after returns all when time is nil" do
+      create(:news_article)
+      expect(NewsArticle.published_after(nil).count).to eq(1)
+    end
   end
 end
