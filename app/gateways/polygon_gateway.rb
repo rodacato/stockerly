@@ -42,6 +42,25 @@ class PolygonGateway < MarketDataGateway
     Failure([:gateway_error, e.message])
   end
 
+  # Fetch recent news articles.
+  # Returns Success([{ title:, summary:, source:, url:, image_url:, published_at:, related_ticker: }, ...])
+  def fetch_news(ticker: nil, limit: 20)
+    response = connection.get("/v2/reference/news") do |req|
+      req.params["apiKey"] = @api_key
+      req.params["limit"] = limit
+      req.params["order"] = "desc"
+      req.params["sort"] = "published_utc"
+      req.params["ticker"] = ticker if ticker.present?
+    end
+
+    return Failure([:rate_limited, "Polygon.io rate limit exceeded"]) if response.status == 429
+    return Failure([:gateway_error, "Polygon.io returned #{response.status}"]) unless response.success?
+
+    parse_news(response.body)
+  rescue Faraday::Error => e
+    Failure([:gateway_error, e.message])
+  end
+
   # Fetch prices for multiple symbols via individual calls.
   # Returns Success([{ symbol:, price:, ... }, ...])
   def fetch_bulk_prices(symbols)
@@ -97,6 +116,27 @@ class PolygonGateway < MarketDataGateway
     end
 
     Success(bars)
+  end
+
+  def parse_news(body)
+    results = body["results"]
+    return Success([]) if results.blank?
+
+    articles = results.filter_map do |item|
+      next unless item["title"].present?
+
+      {
+        title: item["title"],
+        summary: item["description"],
+        source: item.dig("publisher", "name") || "Polygon",
+        url: item["article_url"],
+        image_url: item["image_url"],
+        published_at: Time.zone.parse(item["published_utc"]),
+        related_ticker: item.dig("tickers", 0)
+      }
+    end
+
+    Success(articles)
   end
 
   def calculate_change_percent(open, close)

@@ -122,4 +122,47 @@ RSpec.describe PolygonGateway do
       end
     end
   end
+
+  describe "#fetch_news" do
+    context "when Polygon returns articles" do
+      before { stub_polygon_news(count: 3) }
+
+      it "returns Success with parsed articles" do
+        result = gateway.fetch_news
+
+        expect(result).to be_success
+        articles = result.value!
+        expect(articles.size).to eq(3)
+        expect(articles.first).to include(:title, :summary, :source, :url, :published_at, :related_ticker)
+        expect(articles.first[:title]).to eq("Article 1")
+        expect(articles.first[:source]).to eq("Bloomberg")
+        expect(articles.first[:related_ticker]).to eq("AAPL")
+      end
+    end
+
+    context "when no articles returned" do
+      before { stub_polygon_news_empty }
+
+      it "returns Success with empty array" do
+        result = gateway.fetch_news
+
+        expect(result).to be_success
+        expect(result.value!).to be_empty
+      end
+    end
+
+    context "when connection times out" do
+      before do
+        stub_request(:get, %r{api\.polygon\.io/v2/reference/news})
+          .to_timeout
+      end
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.fetch_news
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+  end
 end

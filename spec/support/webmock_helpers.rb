@@ -57,6 +57,38 @@ module WebmockHelpers
       )
   end
 
+  def stub_polygon_news(count: 3)
+    articles = count.times.map do |i|
+      {
+        "title" => "Article #{i + 1}",
+        "description" => "Summary for article #{i + 1}",
+        "publisher" => { "name" => "Bloomberg" },
+        "article_url" => "https://example.com/article-#{i + 1}",
+        "image_url" => "https://example.com/image-#{i + 1}.jpg",
+        "published_utc" => (i + 1).hours.ago.utc.iso8601,
+        "tickers" => ["AAPL"]
+      }
+    end
+
+    stub_request(:get, "https://api.polygon.io/v2/reference/news")
+      .with(query: hash_including("apiKey"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { results: articles, count: articles.size }.to_json
+      )
+  end
+
+  def stub_polygon_news_empty
+    stub_request(:get, "https://api.polygon.io/v2/reference/news")
+      .with(query: hash_including("apiKey"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { results: [], count: 0 }.to_json
+      )
+  end
+
   def stub_polygon_rate_limited
     stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/.+/prev})
       .to_return(status: 429, body: "Rate limit exceeded")
