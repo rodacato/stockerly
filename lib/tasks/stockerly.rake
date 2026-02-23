@@ -1,0 +1,73 @@
+namespace :stockerly do
+  desc "Idempotent asset seeding — safe for production (find_or_create_by symbol)"
+  task seed_assets: :environment do
+    assets = [
+      # US Tech (NASDAQ)
+      { symbol: "AAPL",  name: "Apple Inc.",        asset_type: :stock, sector: "Technology",       exchange: "NASDAQ", country: "US", data_source: "Polygon.io" },
+      { symbol: "MSFT",  name: "Microsoft Corp.",   asset_type: :stock, sector: "Technology",       exchange: "NASDAQ", country: "US", data_source: "Polygon.io" },
+      { symbol: "NVDA",  name: "NVIDIA Corp.",      asset_type: :stock, sector: "Technology",       exchange: "NASDAQ", country: "US", data_source: "Polygon.io" },
+      { symbol: "GOOGL", name: "Alphabet Inc.",     asset_type: :stock, sector: "Technology",       exchange: "NASDAQ", country: "US", data_source: "Polygon.io" },
+      { symbol: "META",  name: "Meta Platforms",    asset_type: :stock, sector: "Technology",       exchange: "NASDAQ", country: "US", data_source: "Polygon.io" },
+      { symbol: "AMZN",  name: "Amazon.com Inc.",   asset_type: :stock, sector: "Consumer Cyclical", exchange: "NASDAQ", country: "US", data_source: "Polygon.io" },
+      # US Other (NYSE / NASDAQ)
+      { symbol: "TSLA",  name: "Tesla, Inc.",       asset_type: :stock, sector: "Consumer Cyclical", exchange: "NASDAQ", country: "US", data_source: "Polygon.io" },
+      { symbol: "JPM",   name: "JPMorgan Chase",   asset_type: :stock, sector: "Finance",          exchange: "NYSE",   country: "US", data_source: "Polygon.io" },
+      { symbol: "JNJ",   name: "Johnson & Johnson", asset_type: :stock, sector: "Healthcare",       exchange: "NYSE",   country: "US", data_source: "Polygon.io" },
+      { symbol: "OKE",   name: "Oneok Inc.",        asset_type: :stock, sector: "Energy",           exchange: "NYSE",   country: "US", data_source: "Polygon.io" },
+      { symbol: "KO",    name: "Coca-Cola Co.",     asset_type: :stock, sector: "Consumer",         exchange: "NYSE",   country: "US", data_source: "Polygon.io" },
+      { symbol: "PG",    name: "Procter & Gamble",  asset_type: :stock, sector: "Consumer",         exchange: "NYSE",   country: "US", data_source: "Polygon.io" },
+      # US ETFs
+      { symbol: "QQQ",   name: "Invesco QQQ Trust",    asset_type: :etf, exchange: "NASDAQ", country: "US", data_source: "Polygon.io" },
+      { symbol: "SPY",   name: "SPDR S&P 500 ETF",     asset_type: :etf, exchange: "NYSE",   country: "US", data_source: "Polygon.io" },
+      { symbol: "VOO",   name: "Vanguard S&P 500",     asset_type: :etf, exchange: "NYSE",   country: "US", data_source: "Polygon.io" },
+      { symbol: "VTI",   name: "Vanguard Total Stock",  asset_type: :etf, exchange: "NYSE",   country: "US", data_source: "Polygon.io" },
+      { symbol: "ARKK",  name: "ARK Innovation ETF",   asset_type: :etf, exchange: "NYSE",   country: "US", data_source: "Polygon.io" },
+      # Crypto
+      { symbol: "BTC",   name: "Bitcoin",    asset_type: :crypto, data_source: "CoinGecko API" },
+      { symbol: "ETH",   name: "Ethereum",   asset_type: :crypto, data_source: "CoinGecko API" },
+      { symbol: "SOL",   name: "Solana",     asset_type: :crypto, data_source: "CoinGecko API" },
+      # Mexico (BMV) — sync disabled until a Mexican data gateway is added
+      { symbol: "GENIUSSACV.MX", name: "Genius Sports SAB",   asset_type: :stock, sector: "Technology", exchange: "BMV", country: "MX", sync_status: :disabled },
+      { symbol: "IVVPESO.MX",    name: "iShares S&P 500 MXN", asset_type: :etf,                        exchange: "BMV", country: "MX", sync_status: :disabled },
+      # Taiwan
+      { symbol: "2330.TW", name: "TSMC", asset_type: :stock, sector: "Technology", exchange: "TWSE", country: "TW", data_source: "Polygon.io" },
+      # Indices
+      { symbol: "VIX", name: "CBOE Volatility Index", asset_type: :index, exchange: "CBOE", country: "US" },
+    ]
+
+    created = 0
+    updated = 0
+
+    assets.each do |attrs|
+      symbol = attrs[:symbol]
+      asset = Asset.find_or_create_by!(symbol: symbol) do |a|
+        attrs.except(:symbol).each { |k, v| a.send(:"#{k}=", v) }
+        created += 1
+      end
+
+      # Backfill country on existing assets that lack it
+      if attrs[:country].present? && asset.country.blank?
+        asset.update!(country: attrs[:country])
+        updated += 1
+      end
+    end
+
+    puts "Assets: #{created} created, #{updated} backfilled, #{Asset.count} total"
+  end
+
+  desc "Promote a user to admin by email"
+  task :promote_admin, [:email] => :environment do |_t, args|
+    email = args[:email]
+    abort "Usage: rake stockerly:promote_admin[user@example.com]" if email.blank?
+
+    user = User.find_by(email: email.downcase.strip)
+    abort "User not found: #{email}" unless user
+
+    if user.admin?
+      puts "#{user.email} is already an admin."
+    else
+      user.update!(role: :admin)
+      puts "Promoted #{user.email} to admin."
+    end
+  end
+end
