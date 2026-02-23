@@ -344,9 +344,10 @@ module WebmockHelpers
       )
   end
 
-  def stub_alpha_vantage_rate_limited
+  def stub_alpha_vantage_rate_limited(function = nil)
+    query = function ? hash_including("function" => function) : hash_including("apikey")
     stub_request(:get, "https://www.alphavantage.co/query")
-      .with(query: hash_including("function" => "OVERVIEW"))
+      .with(query: query)
       .to_return(
         status: 200,
         headers: { "Content-Type" => "application/json" },
@@ -354,9 +355,10 @@ module WebmockHelpers
       )
   end
 
-  def stub_alpha_vantage_auth_error
+  def stub_alpha_vantage_auth_error(function = nil)
+    query = function ? hash_including("function" => function) : hash_including("apikey")
     stub_request(:get, "https://www.alphavantage.co/query")
-      .with(query: hash_including("function" => "OVERVIEW"))
+      .with(query: query)
       .to_return(
         status: 200,
         headers: { "Content-Type" => "application/json" },
@@ -374,16 +376,191 @@ module WebmockHelpers
       )
   end
 
-  def stub_alpha_vantage_server_error
+  def stub_alpha_vantage_server_error(function = nil)
+    query = function ? hash_including("function" => function) : hash_including("apikey")
     stub_request(:get, "https://www.alphavantage.co/query")
-      .with(query: hash_including("function" => "OVERVIEW"))
+      .with(query: query)
       .to_return(status: 500, body: "Internal Server Error")
   end
 
-  def stub_alpha_vantage_timeout
+  def stub_alpha_vantage_timeout(function = nil)
+    query = function ? hash_including("function" => function) : hash_including("apikey")
     stub_request(:get, "https://www.alphavantage.co/query")
-      .with(query: hash_including("function" => "OVERVIEW"))
+      .with(query: query)
       .to_timeout
+  end
+
+  # --- Alpha Vantage Financial Statements ---
+
+  def stub_alpha_vantage_income_statement(symbol, data = {})
+    default = {
+      "symbol" => symbol,
+      "annualReports" => [
+        {
+          "fiscalDateEnding" => "2023-09-30",
+          "reportedCurrency" => "USD",
+          "totalRevenue" => "383285000000",
+          "grossProfit" => "169148000000",
+          "operatingIncome" => "114301000000",
+          "netIncome" => "96995000000",
+          "ebitda" => "125820000000",
+          "interestExpense" => "3933000000",
+          "researchAndDevelopment" => "29915000000",
+          "costOfRevenue" => "214137000000",
+          "sellingGeneralAndAdministrative" => "24932000000"
+        },
+        {
+          "fiscalDateEnding" => "2022-09-30",
+          "reportedCurrency" => "USD",
+          "totalRevenue" => "394328000000",
+          "grossProfit" => "170782000000",
+          "operatingIncome" => "119437000000",
+          "netIncome" => "99803000000",
+          "ebitda" => "130541000000",
+          "interestExpense" => "2931000000",
+          "researchAndDevelopment" => "26251000000",
+          "costOfRevenue" => "223546000000",
+          "sellingGeneralAndAdministrative" => "25094000000"
+        }
+      ],
+      "quarterlyReports" => [
+        { "fiscalDateEnding" => "2023-09-30", "reportedCurrency" => "USD",
+          "totalRevenue" => "89498000000", "grossProfit" => "40427000000",
+          "operatingIncome" => "26969000000", "netIncome" => "22956000000",
+          "ebitda" => "30000000000", "interestExpense" => "1000000000" },
+        { "fiscalDateEnding" => "2023-06-30", "reportedCurrency" => "USD",
+          "totalRevenue" => "81797000000", "grossProfit" => "36413000000",
+          "operatingIncome" => "23210000000", "netIncome" => "19881000000",
+          "ebitda" => "27000000000", "interestExpense" => "998000000" },
+        { "fiscalDateEnding" => "2023-03-31", "reportedCurrency" => "USD",
+          "totalRevenue" => "94836000000", "grossProfit" => "42606000000",
+          "operatingIncome" => "28318000000", "netIncome" => "24160000000",
+          "ebitda" => "32000000000", "interestExpense" => "930000000" },
+        { "fiscalDateEnding" => "2022-12-31", "reportedCurrency" => "USD",
+          "totalRevenue" => "117154000000", "grossProfit" => "50702000000",
+          "operatingIncome" => "35804000000", "netIncome" => "29998000000",
+          "ebitda" => "39000000000", "interestExpense" => "1005000000" }
+      ]
+    }
+
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "INCOME_STATEMENT", "symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: default.merge(data).to_json
+      )
+  end
+
+  def stub_alpha_vantage_balance_sheet(symbol, data = {})
+    default = {
+      "symbol" => symbol,
+      "annualReports" => [
+        {
+          "fiscalDateEnding" => "2023-09-30",
+          "reportedCurrency" => "USD",
+          "totalAssets" => "352583000000",
+          "totalCurrentAssets" => "143566000000",
+          "totalNonCurrentAssets" => "209017000000",
+          "totalLiabilities" => "290437000000",
+          "totalCurrentLiabilities" => "145308000000",
+          "totalShareholderEquity" => "62146000000",
+          "longTermDebt" => "95281000000",
+          "shortTermDebt" => "15807000000",
+          "inventory" => "6331000000",
+          "cashAndShortTermInvestments" => "29965000000"
+        },
+        {
+          "fiscalDateEnding" => "2022-09-30",
+          "reportedCurrency" => "USD",
+          "totalAssets" => "352755000000",
+          "totalCurrentAssets" => "135405000000",
+          "totalNonCurrentAssets" => "217350000000",
+          "totalLiabilities" => "302083000000",
+          "totalCurrentLiabilities" => "153982000000",
+          "totalShareholderEquity" => "50672000000",
+          "longTermDebt" => "98959000000",
+          "shortTermDebt" => "11128000000",
+          "inventory" => "4946000000",
+          "cashAndShortTermInvestments" => "23646000000"
+        }
+      ],
+      "quarterlyReports" => [
+        { "fiscalDateEnding" => "2023-09-30", "reportedCurrency" => "USD",
+          "totalAssets" => "352583000000", "totalCurrentAssets" => "143566000000",
+          "totalCurrentLiabilities" => "145308000000", "totalShareholderEquity" => "62146000000",
+          "longTermDebt" => "95281000000", "shortTermDebt" => "15807000000",
+          "inventory" => "6331000000" }
+      ]
+    }
+
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "BALANCE_SHEET", "symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: default.merge(data).to_json
+      )
+  end
+
+  def stub_alpha_vantage_cash_flow(symbol, data = {})
+    default = {
+      "symbol" => symbol,
+      "annualReports" => [
+        {
+          "fiscalDateEnding" => "2023-09-30",
+          "reportedCurrency" => "USD",
+          "operatingCashflow" => "110543000000",
+          "capitalExpenditures" => "11000000000",
+          "dividendPayout" => "15025000000",
+          "netIncome" => "96995000000",
+          "depreciationDepletionAndAmortization" => "11519000000",
+          "changeInOperatingLiabilities" => "2000000000"
+        },
+        {
+          "fiscalDateEnding" => "2022-09-30",
+          "reportedCurrency" => "USD",
+          "operatingCashflow" => "122151000000",
+          "capitalExpenditures" => "10708000000",
+          "dividendPayout" => "14841000000",
+          "netIncome" => "99803000000",
+          "depreciationDepletionAndAmortization" => "11104000000",
+          "changeInOperatingLiabilities" => "5000000000"
+        }
+      ],
+      "quarterlyReports" => [
+        { "fiscalDateEnding" => "2023-09-30", "reportedCurrency" => "USD",
+          "operatingCashflow" => "26000000000", "capitalExpenditures" => "2800000000",
+          "dividendPayout" => "3800000000" },
+        { "fiscalDateEnding" => "2023-06-30", "reportedCurrency" => "USD",
+          "operatingCashflow" => "26400000000", "capitalExpenditures" => "2700000000",
+          "dividendPayout" => "3750000000" },
+        { "fiscalDateEnding" => "2023-03-31", "reportedCurrency" => "USD",
+          "operatingCashflow" => "34000000000", "capitalExpenditures" => "2900000000",
+          "dividendPayout" => "3750000000" },
+        { "fiscalDateEnding" => "2022-12-31", "reportedCurrency" => "USD",
+          "operatingCashflow" => "34143000000", "capitalExpenditures" => "3600000000",
+          "dividendPayout" => "3725000000" }
+      ]
+    }
+
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "CASH_FLOW", "symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: default.merge(data).to_json
+      )
+  end
+
+  def stub_alpha_vantage_empty_statement(symbol, function)
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => function, "symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {}.to_json
+      )
   end
 
   private

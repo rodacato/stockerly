@@ -34,7 +34,56 @@ class AlphaVantageGateway < FundamentalsGateway
     Failure([ :parse_error, "Invalid JSON response from Alpha Vantage" ])
   end
 
+  # Fetch income statement (annual + quarterly reports).
+  # Returns Success({ symbol:, annual_reports: [...], quarterly_reports: [...] })
+  def fetch_income_statement(symbol)
+    fetch_statement(symbol, "INCOME_STATEMENT")
+  end
+
+  # Fetch balance sheet (annual + quarterly reports).
+  def fetch_balance_sheet(symbol)
+    fetch_statement(symbol, "BALANCE_SHEET")
+  end
+
+  # Fetch cash flow statement (annual + quarterly reports).
+  def fetch_cash_flow(symbol)
+    fetch_statement(symbol, "CASH_FLOW")
+  end
+
   private
+
+  # Shared fetch + parse logic for all 3 statement types.
+  def fetch_statement(symbol, function)
+    response = connection.get("/query") do |req|
+      req.params["function"] = function
+      req.params["symbol"] = symbol
+      req.params["apikey"] = @api_key
+    end
+
+    return Failure([ :gateway_error, "Alpha Vantage returned #{response.status}" ]) unless response.success?
+
+    body = response.body
+    return Failure([ :rate_limited, body["Note"] ]) if body.key?("Note")
+    return Failure([ :auth_error, body["Information"] ]) if body.key?("Information")
+    return Failure([ :empty_data, "No data for #{symbol}" ]) if body["annualReports"].blank? && body["quarterlyReports"].blank?
+
+    Success({
+      symbol: body["symbol"] || symbol,
+      annual_reports: (body["annualReports"] || []).map { |r| normalize_keys(r) },
+      quarterly_reports: (body["quarterlyReports"] || []).map { |r| normalize_keys(r) }
+    })
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed
+    Failure([ :timeout, "Alpha Vantage request timed out" ])
+  rescue Faraday::Error => e
+    Failure([ :gateway_error, e.message ])
+  rescue JSON::ParserError
+    Failure([ :parse_error, "Invalid JSON response from Alpha Vantage" ])
+  end
+
+  # Converts Alpha Vantage PascalCase keys to snake_case for consistency.
+  def normalize_keys(report)
+    report.transform_keys { |k| k.underscore }
+  end
 
   def connection
     @connection ||= Faraday.new(url: BASE_URL) do |f|
