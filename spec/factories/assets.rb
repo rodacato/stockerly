@@ -29,6 +29,17 @@ FactoryBot.define do
       data_source { "Polygon.io" }
     end
 
+    trait :fixed_income do
+      asset_type { :fixed_income }
+      sector { nil }
+      exchange { "Banxico" }
+      country { "MX" }
+      yield_rate { 11.15 }
+      maturity_date { 28.days.from_now.to_date }
+      face_value { 10.0 }
+      sync_status { :disabled }
+    end
+
     trait :mexican do
       exchange { "BMV" }
       country { "MX" }

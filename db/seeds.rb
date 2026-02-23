@@ -333,6 +333,30 @@ unless EarningsEvent.exists?
   EarningsEvent.create!(asset: aapl, report_date: Date.new(2023, 10, 26), timing: :after_market_close, estimated_eps: 1.39)
 end
 
+# --- Fixed Income (CETES) ---
+Asset.find_or_create_by!(symbol: "CETE28D") do |a|
+  a.name = "CETES 28 Dias"
+  a.asset_type = :fixed_income
+  a.current_price = 10.0
+  a.yield_rate = 11.15
+  a.maturity_date = 28.days.from_now.to_date
+  a.face_value = 10.0
+  a.exchange = "Banxico"
+  a.country = "MX"
+  a.sync_status = :disabled
+end
+Asset.find_or_create_by!(symbol: "CETE364D") do |a|
+  a.name = "CETES 364 Dias"
+  a.asset_type = :fixed_income
+  a.current_price = 10.0
+  a.yield_rate = 10.50
+  a.maturity_date = 364.days.from_now.to_date
+  a.face_value = 10.0
+  a.exchange = "Banxico"
+  a.country = "MX"
+  a.sync_status = :disabled
+end
+
 # --- News Articles ---
 unless NewsArticle.exists?
   NewsArticle.create!(

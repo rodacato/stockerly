@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_23_150040) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_23_160335) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,8 +76,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_150040) do
     t.string "data_source"
     t.decimal "div_yield", precision: 8, scale: 4
     t.string "exchange"
+    t.decimal "face_value", precision: 15, scale: 2
     t.string "logo_url"
     t.decimal "market_cap", precision: 20, scale: 2
+    t.date "maturity_date"
     t.string "name", null: false
     t.decimal "pe_ratio", precision: 10, scale: 4
     t.datetime "price_updated_at"
@@ -87,6 +89,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_150040) do
     t.integer "sync_status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "volume"
+    t.decimal "yield_rate", precision: 8, scale: 4
     t.index ["asset_type", "sector"], name: "index_assets_on_asset_type_and_sector"
     t.index ["asset_type"], name: "index_assets_on_asset_type"
     t.index ["country", "asset_type"], name: "index_assets_on_country_and_asset_type"

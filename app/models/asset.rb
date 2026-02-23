@@ -1,5 +1,5 @@
 class Asset < ApplicationRecord
-  enum :asset_type, { stock: 0, crypto: 1, index: 2, etf: 3 }, prefix: true
+  enum :asset_type, { stock: 0, crypto: 1, index: 2, etf: 3, fixed_income: 4 }, prefix: true
   enum :sync_status, { active: 0, disabled: 1, sync_issue: 2 }
 
   has_many :positions
@@ -16,7 +16,8 @@ class Asset < ApplicationRecord
 
   scope :stocks,      -> { where(asset_type: :stock) }
   scope :cryptos,     -> { where(asset_type: :crypto) }
-  scope :etfs,        -> { where(asset_type: :etf) }
+  scope :etfs,          -> { where(asset_type: :etf) }
+  scope :fixed_incomes, -> { where(asset_type: :fixed_income) }
   scope :syncing,     -> { where(sync_status: :active) }
   scope :by_sector,   ->(sector) { where(sector: sector) if sector.present? }
   scope :by_country,  ->(country) { where(country: country) if country.present? }

@@ -27,8 +27,8 @@ RSpec.describe Asset, type: :model do
   end
 
   describe "enums" do
-    it "defines asset_type enum" do
-      expect(Asset.asset_types).to eq("stock" => 0, "crypto" => 1, "index" => 2, "etf" => 3)
+    it "defines asset_type enum including fixed_income" do
+      expect(Asset.asset_types).to eq("stock" => 0, "crypto" => 1, "index" => 2, "etf" => 3, "fixed_income" => 4)
     end
 
     it "defines sync_status enum" do
@@ -75,6 +75,23 @@ RSpec.describe Asset, type: :model do
 
     it ".by_country returns all when country is blank" do
       expect(Asset.by_country(nil)).to include(stock, crypto)
+    end
+
+    it ".fixed_incomes returns only fixed income assets" do
+      cete = create(:asset, :fixed_income, symbol: "CETE28D", name: "CETES 28 Dias")
+      expect(Asset.fixed_incomes).to contain_exactly(cete)
+    end
+  end
+
+  describe "fixed income fields" do
+    it "stores yield_rate, maturity_date, and face_value" do
+      cete = create(:asset, :fixed_income, symbol: "CETE28D", name: "CETES 28D",
+                    yield_rate: 11.15, maturity_date: Date.new(2026, 3, 23), face_value: 10.0)
+
+      cete.reload
+      expect(cete.yield_rate).to eq(11.15.to_d)
+      expect(cete.maturity_date).to eq(Date.new(2026, 3, 23))
+      expect(cete.face_value).to eq(10.0.to_d)
     end
   end
 

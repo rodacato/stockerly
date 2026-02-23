@@ -17,6 +17,8 @@
          "bg-amber-500 text-white"
        elsif asset.asset_type_etf?
          "bg-indigo-600 text-white"
+       elsif asset.asset_type_fixed_income?
+         "bg-teal-600 text-white"
        else
          "bg-slate-900 dark:bg-slate-700 text-white"
        end %>
