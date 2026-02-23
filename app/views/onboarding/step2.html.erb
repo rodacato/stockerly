@@ -1,7 +1,8 @@
 <%# Onboarding Step 2 — Pick stocks to follow %>
 
 <main class="flex-1 flex flex-col items-center py-10 px-4">
-  <div class="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+  <div class="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+       data-controller="onboarding-form">
     <%# Progress Header %>
     <div class="p-6 border-b border-slate-100 dark:border-slate-800">
       <div class="flex items-center justify-between mb-2">
@@ -26,16 +27,14 @@
           <% up = asset.change_percent_24h.to_f >= 0 %>
           <div class="flex items-center justify-between p-4 rounded-xl transition-colors border border-transparent hover:bg-primary/5"
                data-controller="onboarding-select"
-               data-onboarding-select-asset-id-value="<%= asset.id %>">
+               data-onboarding-select-onboarding-form-outlet="[data-controller='onboarding-form']"
+               data-onboarding-select-asset-id-value="<%= asset.id %>"
+               data-selected="false">
             <div class="flex items-center gap-4">
-              <div class="w-12 h-12 flex items-center justify-center rounded-lg font-bold text-xs uppercase tracking-tighter
-                          bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white
-                          <%= 'bg-amber-500 text-white' if asset.asset_type_crypto? %>">
-                <%= asset.symbol %>
-              </div>
+              <%= render "components/asset_badge", asset: asset, size: "lg" %>
               <div>
                 <h4 class="font-semibold text-slate-900 dark:text-white"><%= asset.name %></h4>
-                <p class="text-xs text-slate-500"><%= asset.asset_type.humanize %></p>
+                <p class="text-xs text-slate-500"><%= asset.exchange || asset.asset_type.humanize %></p>
               </div>
             </div>
             <div class="flex items-center gap-8">
@@ -45,7 +44,9 @@
                   <span class="material-symbols-outlined text-xs"><%= up ? 'arrow_drop_up' : 'arrow_drop_down' %></span><%= "#{up ? '+' : ''}#{number_to_percentage(asset.change_percent_24h || 0, precision: 2)}" %>
                 </div>
               </div>
-              <button class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all"
+              <button type="button"
+                      class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all"
+                      data-role="toggle-btn"
                       data-action="click->onboarding-select#toggle">
                 <span class="material-symbols-outlined">add</span>
               </button>
@@ -59,8 +60,8 @@
     <div class="p-6 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800">
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">verified</span>
-          <span class="text-sm font-semibold text-slate-900 dark:text-white">3 of 3 minimum selected</span>
+          <span class="material-symbols-outlined text-slate-400" data-onboarding-form-target="counterIcon">radio_button_unchecked</span>
+          <span class="text-sm font-semibold text-slate-900 dark:text-white" data-onboarding-form-target="counter">0 of 3 minimum selected</span>
         </div>
         <%= link_to "Skip for now", onboarding_step3_path, class: "text-sm font-medium text-primary hover:underline" %>
       </div>
@@ -69,10 +70,19 @@
           <span class="material-symbols-outlined text-sm">arrow_back</span>
           Back
         <% end %>
-        <%= link_to onboarding_step3_path, class: "bg-primary hover:bg-primary/90 text-white font-bold py-3 px-10 rounded-xl transition-all shadow-lg shadow-primary/25 flex items-center gap-2" do %>
-          Continue
-          <span class="material-symbols-outlined text-lg">arrow_forward</span>
-        <% end %>
+
+        <form action="<%= complete_onboarding_path %>" method="post">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <div data-onboarding-form-target="hiddenInputs"></div>
+          <button type="submit"
+                  class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-10 rounded-xl transition-all shadow-lg shadow-primary/25 flex items-center gap-2 opacity-50 cursor-not-allowed"
+                  data-onboarding-form-target="submitBtn"
+                  data-action="click->onboarding-form#submit"
+                  disabled>
+            Continue
+            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+          </button>
+        </form>
       </div>
     </div>
   </div>
