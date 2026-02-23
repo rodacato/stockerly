@@ -53,6 +53,8 @@ Rails.application.routes.draw do
 
   # --- Admin Zone ---
   namespace :admin do
+    root "dashboard#show"
+
     resources :assets, only: [:index] do
       member do
         patch :toggle_status

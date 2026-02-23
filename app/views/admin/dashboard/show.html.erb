@@ -1,0 +1,81 @@
+<% content_for(:admin_page_title, "Dashboard") %>
+
+<div class="space-y-6">
+  <%# Header %>
+  <div>
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Admin Dashboard</h1>
+    <p class="text-slate-500 mt-1">System overview and key metrics at a glance.</p>
+  </div>
+
+  <%# KPI Cards %>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <%= render "components/admin_kpi_card", title: "Total Assets",   value: number_with_delimiter(@total_assets),   icon: "database",      color: :blue %>
+    <%= render "components/admin_kpi_card", title: "Syncing Assets", value: @syncing_assets.to_s,                   icon: "sync",          color: :green, badge: "Active" %>
+    <%= render "components/admin_kpi_card", title: "Total Users",    value: number_with_delimiter(@total_users),     icon: "group",         color: :amber %>
+    <%= render "components/admin_kpi_card", title: "Errors (24h)",   value: @error_logs_24h.to_s,                   icon: "error_outline", color: :red %>
+  </div>
+
+  <%# Two-column panels %>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <%# Integrations Panel %>
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+      <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Data Integrations</h2>
+      <% if @integrations.any? %>
+        <div class="space-y-3">
+          <% @integrations.each do |integration| %>
+            <% status_map = { "connected" => "active", "syncing" => "warning", "disconnected" => "error" } %>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+              <div>
+                <p class="text-sm font-bold text-slate-900 dark:text-white"><%= integration.provider_name %></p>
+                <p class="text-xs text-slate-500"><%= integration.provider_type %></p>
+              </div>
+              <%= render "components/status_badge", status: status_map[integration.connection_status] || integration.connection_status %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-slate-400">No integrations configured.</p>
+      <% end %>
+    </div>
+
+    <%# Recent Logs Panel %>
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white">Recent Logs</h2>
+        <%= link_to "View All", admin_logs_path, class: "text-sm text-primary font-medium hover:underline" %>
+      </div>
+      <% if @recent_logs.any? %>
+        <div class="space-y-3">
+          <% @recent_logs.each do |log| %>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-slate-900 dark:text-white truncate"><%= log.task_name %></p>
+                <p class="text-xs text-slate-500"><%= time_ago_in_words(log.created_at) %> ago</p>
+              </div>
+              <%= render "components/status_badge", status: log.severity %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-slate-400">No logs recorded yet.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Quick Links %>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <% [
+      ["Manage Assets", admin_assets_path, "database", "View and sync all market instruments"],
+      ["System Logs",   admin_logs_path,   "receipt_long", "Monitor operations and errors"],
+      ["User Management", admin_users_path, "group", "View users and manage integrations"]
+    ].each do |label, path, icon, description| %>
+      <%= link_to path, class: "bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 hover:border-primary/50 transition-colors group" do %>
+        <div class="flex items-center gap-3 mb-2">
+          <span class="material-symbols-outlined text-xl text-primary"><%= icon %></span>
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors"><%= label %></h3>
+        </div>
+        <p class="text-xs text-slate-500"><%= description %></p>
+      <% end %>
+    <% end %>
+  </div>
+</div>

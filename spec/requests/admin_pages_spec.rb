@@ -1,9 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Admin pages", type: :request do
-  let(:admin_paths) { [admin_assets_path, admin_logs_path, admin_users_path] }
+  let(:admin_paths) { [admin_root_path, admin_assets_path, admin_logs_path, admin_users_path] }
 
   describe "authentication guard" do
+    it "redirects /admin to login when not authenticated" do
+      get admin_root_path
+      expect(response).to redirect_to(login_path)
+    end
+
     it "redirects /admin/assets to login when not authenticated" do
       get admin_assets_path
       expect(response).to redirect_to(login_path)
@@ -25,6 +30,13 @@ RSpec.describe "Admin pages", type: :request do
 
     before do
       login_as(user)
+    end
+
+    it "redirects /admin to root for non-admin users" do
+      get admin_root_path
+      expect(response).to redirect_to(root_path)
+      follow_redirect!
+      expect(response.body).to include("Not authorized")
     end
 
     it "redirects /admin/assets to root for non-admin users" do
@@ -50,6 +62,18 @@ RSpec.describe "Admin pages", type: :request do
 
     before do
       login_as(admin)
+    end
+
+    it "renders the admin dashboard page" do
+      create(:system_log, task_name: "Test Log", module_name: "sync")
+      create(:integration, provider_name: "Polygon.io", provider_type: "Stocks & Forex")
+      get admin_root_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Admin Dashboard")
+      expect(response.body).to include("Total Assets")
+      expect(response.body).to include("Total Users")
+      expect(response.body).to include("Data Integrations")
+      expect(response.body).to include("Recent Logs")
     end
 
     it "renders the asset management page" do

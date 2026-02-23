@@ -1,7 +1,7 @@
 <aside class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col z-40">
   <%# Logo %>
   <div class="h-16 flex items-center gap-2.5 px-6 border-b border-slate-200 dark:border-slate-800">
-    <%= link_to admin_assets_path, class: "flex items-center gap-2.5" do %>
+    <%= link_to admin_root_path, class: "flex items-center gap-2.5" do %>
       <span class="material-symbols-outlined text-3xl text-primary">query_stats</span>
       <div>
         <span class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Stockerly</span>
@@ -17,6 +17,7 @@
       <p class="px-3 mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Admin Menu</p>
       <div class="space-y-1">
         <% [
+          ["Dashboard", admin_root_path, "dashboard"],
           ["Assets", admin_assets_path, "database"],
           ["Logs", admin_logs_path, "receipt_long"],
           ["Users", admin_users_path, "group"]
