@@ -30,7 +30,7 @@
             <%= tag.tr id: dom_id(item), class: "hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors" do %>
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                  <div class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-[10px] text-slate-700 dark:text-slate-300"><%= asset.symbol %></div>
+                  <%= render "components/asset_badge", asset: asset, size: "sm" %>
                   <div>
                     <p class="font-bold text-sm text-slate-900 dark:text-white"><%= asset.name %></p>
                     <p class="text-xs text-slate-500"><%= asset.exchange %></p>
