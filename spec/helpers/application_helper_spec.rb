@@ -72,19 +72,41 @@ RSpec.describe ApplicationHelper, type: :helper do
     context "when market is open and data is stale (>15 min)" do
       let(:updated_at) { 20.minutes.ago }
 
-      it "returns :stale state" do
+      it "returns :stale state with relative age label" do
         status = helper.combined_data_status(asset, true)
         expect(status[:state]).to eq(:stale)
-        expect(status[:label]).to eq("Updating...")
+        expect(status[:label]).to eq("20min ago")
+        expect(status[:timestamp]).to be_within(1.second).of(updated_at)
+      end
+    end
+
+    context "when market is open and data is hours old" do
+      let(:updated_at) { 3.hours.ago }
+
+      it "returns stale state with hours label" do
+        status = helper.combined_data_status(asset, true)
+        expect(status[:state]).to eq(:stale)
+        expect(status[:label]).to eq("3h ago")
+      end
+    end
+
+    context "when market is open and data is days old" do
+      let(:updated_at) { 2.days.ago }
+
+      it "returns stale state with days label" do
+        status = helper.combined_data_status(asset, true)
+        expect(status[:state]).to eq(:stale)
+        expect(status[:label]).to eq("2d ago")
       end
     end
 
     context "when asset has never been synced" do
       let(:updated_at) { nil }
 
-      it "returns :stale state" do
+      it "returns :stale state with no data label" do
         status = helper.combined_data_status(asset, true)
         expect(status[:state]).to eq(:stale)
+        expect(status[:label]).to eq("No data")
       end
     end
   end

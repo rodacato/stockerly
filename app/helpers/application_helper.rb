@@ -43,9 +43,10 @@ module ApplicationHelper
     else
       {
         state: :stale,
-        label: "Updating...",
+        label: stale_age_label(age),
         dot_class: "bg-amber-500",
-        text_class: "text-amber-600 dark:text-amber-400"
+        text_class: "text-amber-600 dark:text-amber-400",
+        timestamp: asset.price_updated_at
       }
     end
   end
@@ -65,5 +66,19 @@ module ApplicationHelper
   def data_age_minutes(asset)
     return Float::INFINITY if asset.price_updated_at.nil?
     ((Time.current - asset.price_updated_at) / 60.0).round(1)
+  end
+
+  def stale_age_label(age_minutes)
+    return "No data" if age_minutes == Float::INFINITY
+
+    if age_minutes < 60
+      "#{age_minutes.round}min ago"
+    elsif age_minutes < 1440
+      hours = (age_minutes / 60).round
+      "#{hours}h ago"
+    else
+      days = (age_minutes / 1440).round
+      "#{days}d ago"
+    end
   end
 end

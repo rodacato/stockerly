@@ -11,5 +11,6 @@
     <%= status[:label] %>
   </span>
 <% elsif status[:state] != :live %>
-  <span class="text-[10px] leading-none <%= status[:text_class] %>"><%= status[:label] %></span>
+  <span class="text-[10px] leading-none <%= status[:text_class] %>"
+        <% if status[:timestamp] %>title="Last updated: <%= status[:timestamp].strftime('%b %d, %Y %H:%M %Z') %>"<% end %>><%= status[:label] %></span>
 <% end %>
