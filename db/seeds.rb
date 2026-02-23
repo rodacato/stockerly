@@ -495,6 +495,35 @@ Integration.find_or_create_by!(provider_name: "CNN") do |i|
   i.last_sync_at = 1.day.ago
 end
 
+Integration.find_or_create_by!(provider_name: "Alpha Vantage") do |i|
+  i.provider_type = "Fundamentals"
+  i.api_key_encrypted = ENV.fetch("ALPHA_VANTAGE_API_KEY", "av_demo_key_789")
+  i.connection_status = :connected
+  i.last_sync_at = 1.day.ago
+end
+
+# --- Asset Fundamentals (sample AAPL OVERVIEW) ---
+AssetFundamental.find_or_create_by!(asset: aapl, period_label: "OVERVIEW") do |f|
+  f.metrics = {
+    "symbol" => "AAPL", "name" => "Apple Inc.", "sector" => "Technology",
+    "exchange" => "NASDAQ", "currency" => "USD", "country" => "USA",
+    "eps" => "6.07", "book_value" => "3.95", "dividend_per_share" => "0.96",
+    "dividend_yield" => "0.0052", "profit_margin" => "0.2461",
+    "operating_margin" => "0.3031", "return_on_equity" => "1.5700",
+    "return_on_assets" => "0.2720", "revenue_ttm" => "391035000000",
+    "ebitda" => "131561000000", "beta" => "1.24",
+    "market_cap" => "2940000000000", "shares_outstanding" => "15500000000",
+    "pe_ratio" => "31.25", "price_to_book" => "47.96",
+    "price_to_sales" => "7.52", "ev_to_ebitda" => "23.45",
+    "revenue_per_share" => "25.23", "quarterly_earnings_growth" => "0.10",
+    "quarterly_revenue_growth" => "0.05", "fifty_two_week_high" => "199.62",
+    "fifty_two_week_low" => "164.08", "forward_pe" => "28.50",
+    "peg_ratio" => "2.15", "analyst_target_price" => "200.00"
+  }
+  f.source = "api_overview"
+  f.calculated_at = 1.day.ago
+end
+
 # --- Fear & Greed Readings ---
 unless FearGreedReading.exists?
   FearGreedReading.create!(index_type: "crypto", value: 25, classification: "Fear", source: "alternative.me", fetched_at: 6.hours.ago)

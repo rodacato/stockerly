@@ -38,6 +38,9 @@ Rails.application.config.after_initialize do
   # Sentiment
   EventBus.subscribe(FearGreedUpdated, LogFearGreedUpdate)
 
+  # Fundamentals
+  EventBus.subscribe(AssetFundamentalsUpdated, LogFundamentalsUpdate)
+
   # Integrations
   EventBus.subscribe(IntegrationConnected, LogIntegrationConnected)
 end

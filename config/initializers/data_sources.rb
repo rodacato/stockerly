@@ -87,6 +87,18 @@ Rails.application.config.after_initialize do
     circuit_breaker_key: "yahoo_indices"
   )
 
+  DataSourceRegistry.register(:alpha_vantage_fundamentals,
+    name: "Fundamentals — Alpha Vantage",
+    icon: "analytics",
+    color: "orange",
+    gateway_class: AlphaVantageGateway,
+    job_class: SyncAllFundamentalsJob,
+    job_args: [],
+    test_symbol: "AAPL",
+    integration_name: "Alpha Vantage",
+    circuit_breaker_key: "alpha_vantage"
+  )
+
   DataSourceRegistry.register(:fx_rates,
     name: "FX Rates",
     icon: "currency_exchange",
