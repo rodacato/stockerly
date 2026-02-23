@@ -294,6 +294,98 @@ module WebmockHelpers
       .to_return(status: 500, body: "Internal Server Error")
   end
 
+  # --- Alpha Vantage (Fundamentals) ---
+
+  def stub_alpha_vantage_overview(symbol, data = {})
+    default = {
+      "Symbol" => symbol,
+      "Name" => "#{symbol} Inc.",
+      "Description" => "Test company",
+      "Sector" => "Technology",
+      "Industry" => "Software",
+      "Exchange" => "NASDAQ",
+      "Currency" => "USD",
+      "Country" => "USA",
+      "MarketCapitalization" => "2940000000000",
+      "PERatio" => "31.25",
+      "ForwardPE" => "28.50",
+      "PEGRatio" => "2.15",
+      "BookValue" => "3.95",
+      "EPS" => "6.07",
+      "DividendPerShare" => "0.96",
+      "DividendYield" => "0.0052",
+      "ProfitMargin" => "0.2461",
+      "OperatingMarginTTM" => "0.3031",
+      "ReturnOnEquityTTM" => "1.5700",
+      "ReturnOnAssetsTTM" => "0.2720",
+      "RevenueTTM" => "391035000000",
+      "GrossProfitTTM" => "170782000000",
+      "EBITDA" => "131561000000",
+      "RevenuePerShareTTM" => "25.23",
+      "Beta" => "1.24",
+      "SharesOutstanding" => "15500000000",
+      "EVToRevenue" => "7.83",
+      "EVToEBITDA" => "23.45",
+      "PriceToSalesRatioTTM" => "7.52",
+      "PriceToBookRatio" => "47.96",
+      "52WeekHigh" => "199.62",
+      "52WeekLow" => "164.08",
+      "AnalystTargetPrice" => "200.00",
+      "QuarterlyEarningsGrowthYOY" => "0.10",
+      "QuarterlyRevenueGrowthYOY" => "0.05"
+    }
+
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "OVERVIEW", "symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: default.merge(data).to_json
+      )
+  end
+
+  def stub_alpha_vantage_rate_limited
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "OVERVIEW"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { "Note" => "Thank you for using Alpha Vantage! Our standard API rate limit is 25 requests per day." }.to_json
+      )
+  end
+
+  def stub_alpha_vantage_auth_error
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "OVERVIEW"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { "Information" => "The API key is invalid or inactive." }.to_json
+      )
+  end
+
+  def stub_alpha_vantage_not_found(symbol)
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "OVERVIEW", "symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {}.to_json
+      )
+  end
+
+  def stub_alpha_vantage_server_error
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "OVERVIEW"))
+      .to_return(status: 500, body: "Internal Server Error")
+  end
+
+  def stub_alpha_vantage_timeout
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "OVERVIEW"))
+      .to_timeout
+  end
+
   private
 
   def stub_yahoo_chart(symbol, price:, previous_close:, volume: 0, short_name: nil, regular_start: nil, regular_end: nil)
