@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_22_005724) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_23_002952) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,6 +70,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_005724) do
   create_table "assets", force: :cascade do |t|
     t.integer "asset_type", default: 0, null: false
     t.decimal "change_percent_24h", precision: 8, scale: 4
+    t.string "country", limit: 2
     t.datetime "created_at", null: false
     t.decimal "current_price", precision: 15, scale: 4
     t.string "data_source"
@@ -87,6 +88,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_005724) do
     t.bigint "volume"
     t.index ["asset_type", "sector"], name: "index_assets_on_asset_type_and_sector"
     t.index ["asset_type"], name: "index_assets_on_asset_type"
+    t.index ["country", "asset_type"], name: "index_assets_on_country_and_asset_type"
+    t.index ["country"], name: "index_assets_on_country"
     t.index ["exchange"], name: "index_assets_on_exchange"
     t.index ["sector"], name: "index_assets_on_sector"
     t.index ["symbol"], name: "index_assets_on_symbol", unique: true
