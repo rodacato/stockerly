@@ -227,4 +227,41 @@ class MetricDefinitions
     short_desc: "Total shares currently held by all shareholders",
     context_guidance: "Used to calculate market cap and per-share metrics. Changes may indicate buybacks or dilution.",
     format_type: :number, display_order: 3, icon: "confirmation_number"
+
+  # ── Crypto Market ────────────────────────────────────────
+  register :circulating_supply,
+    category: :crypto_market, display_name: "Circulating Supply",
+    short_desc: "Coins currently in circulation",
+    context_guidance: "The number of coins publicly available and circulating. Compare to max supply to understand scarcity.",
+    format_type: :number, display_order: 1, icon: "toll"
+
+  register :total_supply,
+    category: :crypto_market, display_name: "Total Supply",
+    short_desc: "Total coins that exist (including locked/reserved)",
+    context_guidance: "Includes all minted coins. Difference from circulating supply indicates locked, staked, or reserved tokens.",
+    format_type: :number, display_order: 2, icon: "database"
+
+  register :fully_diluted_valuation,
+    category: :crypto_market, display_name: "FDV",
+    short_desc: "Fully Diluted Valuation",
+    context_guidance: "Market cap if all possible tokens were in circulation. Large FDV vs market cap gap may indicate future dilution risk.",
+    format_type: :currency, display_order: 3, icon: "account_balance_wallet"
+
+  register :total_volume_24h,
+    category: :crypto_market, display_name: "24h Volume",
+    short_desc: "Total trading volume in the last 24 hours",
+    context_guidance: "High volume indicates active trading and liquidity. Low volume may result in larger price swings.",
+    format_type: :currency, display_order: 4, icon: "bar_chart"
+
+  register :ath_price,
+    category: :crypto_market, display_name: "All-Time High",
+    short_desc: "Highest price ever recorded",
+    context_guidance: "Reference point for historical peak. Distance from ATH can indicate recovery potential or overvaluation.",
+    format_type: :currency, display_order: 5, icon: "emoji_events"
+
+  register :volume_market_cap_ratio,
+    category: :crypto_market, display_name: "Vol / Market Cap",
+    short_desc: "24h volume relative to market cap",
+    context_guidance: "Liquidity indicator. Higher ratios suggest more active trading relative to asset size. Typical range: 1-10%.",
+    format_type: :percentage, display_order: 6, icon: "swap_horiz"
 end

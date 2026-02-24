@@ -1,12 +1,17 @@
 <%# Turbo Stream broadcast target for live fundamentals updates %>
 <%# Referenced by BroadcastFundamentalsUpdate event handler %>
 <div id="asset_fundamentals_<%= asset.id %>">
-  <% fundamental = asset.asset_fundamentals.where(period_label: "CALCULATED").order(calculated_at: :desc).first ||
-                    asset.asset_fundamentals.overview.order(calculated_at: :desc).first %>
+  <% if asset.asset_type_crypto? %>
+    <% fundamental = asset.asset_fundamentals.where(period_label: "CRYPTO_MARKET").order(calculated_at: :desc).first %>
+  <% else %>
+    <% fundamental = asset.asset_fundamentals.where(period_label: "CALCULATED").order(calculated_at: :desc).first ||
+                      asset.asset_fundamentals.overview.order(calculated_at: :desc).first %>
+  <% end %>
   <% if fundamental %>
     <% presenter = FundamentalPresenter.new(asset: asset, fundamental: fundamental) %>
+    <% metrics_list = asset.asset_type_crypto? ? FundamentalsHelper::CRYPTO_SUMMARY_METRICS : FundamentalsHelper::SUMMARY_METRICS %>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      <% FundamentalsHelper::SUMMARY_METRICS.first(6).each do |key| %>
+      <% metrics_list.first(6).each do |key| %>
         <% defn = MetricDefinitions.find(key) rescue nil %>
         <% next unless defn %>
         <% value = presenter.respond_to?(key) ? presenter.public_send(key) : presenter.metric(key.to_s) %>

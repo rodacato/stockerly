@@ -1,7 +1,7 @@
-<%# Summary tab: top 10 key metrics across categories %>
+<%# Summary tab: adaptive metrics based on asset type %>
 <% if @has_fundamentals %>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
-    <% FundamentalsHelper::SUMMARY_METRICS.each do |key| %>
+    <% summary_metrics_for(@asset).each do |key| %>
       <% defn = MetricDefinitions.find(key) rescue nil %>
       <% next unless defn %>
       <% value = resolve_metric_value(@presenter, key) %>

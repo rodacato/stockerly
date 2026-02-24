@@ -34,6 +34,15 @@ module FundamentalsHelper
     fcf_yield revenue_growth eps debt_to_equity beta
   ].freeze
 
+  CRYPTO_SUMMARY_METRICS = %i[
+    market_cap circulating_supply fully_diluted_valuation
+    total_volume_24h ath_price volume_market_cap_ratio
+  ].freeze
+
+  def summary_metrics_for(asset)
+    asset.asset_type_crypto? ? CRYPTO_SUMMARY_METRICS : SUMMARY_METRICS
+  end
+
   def resolve_metric_value(presenter, key)
     # Try computed methods first (pe_ratio, pb_ratio, etc.)
     if presenter.respond_to?(key)
