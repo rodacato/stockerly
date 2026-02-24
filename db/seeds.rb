@@ -357,12 +357,8 @@ end
 # Run: CalculateTrendScoresJob.perform_now after seeding to populate initial scores.
 
 # --- Earnings Events ---
-unless EarningsEvent.exists?
-  EarningsEvent.create!(asset: tsla, report_date: Date.new(2023, 10, 18), timing: :after_market_close, estimated_eps: 0.73)
-  EarningsEvent.create!(asset: msft, report_date: Date.new(2023, 10, 24), timing: :before_market_open, estimated_eps: 2.65)
-  EarningsEvent.create!(asset: nvda, report_date: Date.new(2023, 10, 25), timing: :after_market_close, estimated_eps: 3.36)
-  EarningsEvent.create!(asset: aapl, report_date: Date.new(2023, 10, 26), timing: :after_market_close, estimated_eps: 1.39)
-end
+# Earnings are synced weekly from Polygon.io via SyncEarningsJob.
+# Run: SyncEarningsJob.perform_now after seeding to populate initial data.
 
 # --- Fixed Income (CETES) ---
 Asset.find_or_create_by!(symbol: "CETE28D") do |a|

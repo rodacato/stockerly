@@ -99,6 +99,18 @@ Rails.application.config.after_initialize do
     circuit_breaker_key: "alpha_vantage"
   )
 
+  DataSourceRegistry.register(:polygon_earnings,
+    name: "Earnings — Polygon.io",
+    icon: "event_note",
+    color: "violet",
+    gateway_class: PolygonGateway,
+    job_class: SyncEarningsJob,
+    job_args: [],
+    test_symbol: "AAPL",
+    integration_name: "Polygon.io",
+    circuit_breaker_key: "polygon_earnings"
+  )
+
   DataSourceRegistry.register(:fx_rates,
     name: "FX Rates",
     icon: "currency_exchange",
