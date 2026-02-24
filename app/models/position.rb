@@ -5,7 +5,7 @@ class Position < ApplicationRecord
 
   enum :status, { open: 0, closed: 1 }
 
-  validates :shares,   presence: true, numericality: { greater_than: 0 }
+  validates :shares,   presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :avg_cost, presence: true, numericality: { greater_than: 0 }
 
   scope :domestic,      -> { where(currency: "USD") }
