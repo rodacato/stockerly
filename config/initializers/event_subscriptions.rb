@@ -16,6 +16,7 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(AssetPriceUpdated, EvaluateAlertsOnPriceUpdate)
   EventBus.subscribe(AssetPriceUpdated, BroadcastPriceUpdate)
   EventBus.subscribe(AssetPriceUpdated, RecordPriceHistory)
+  EventBus.subscribe(AssetPriceUpdated, RecalculateTrendScoreOnPriceUpdate)
   EventBus.subscribe(AllGatewaysFailed, LogAllGatewaysFailure)
 
   # Alerts
