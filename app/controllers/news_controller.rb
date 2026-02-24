@@ -2,7 +2,7 @@ class NewsController < AuthenticatedController
   include Pagy::Backend
 
   def index
-    result = News::ListArticles.call(params: filter_params)
+    result = News::ListArticles.call(user: current_user, params: filter_params)
 
     case result
     in Dry::Monads::Success(data)
@@ -14,6 +14,6 @@ class NewsController < AuthenticatedController
   private
 
   def filter_params
-    params.permit(:ticker, :search, :source, :time_range, :page).to_h.symbolize_keys
+    params.permit(:ticker, :search, :source, :time_range, :page, :filter).to_h.symbolize_keys
   end
 end

@@ -2,8 +2,14 @@ module News
   class ListArticles < ApplicationUseCase
     include Pagy::Backend
 
-    def call(params: {})
+    def call(user: nil, params: {})
       scope = NewsArticle.order(published_at: :desc)
+
+      if params[:filter] == "watchlist" && user
+        symbols = user.watchlist_items.joins(:asset).pluck("assets.symbol")
+        scope = symbols.any? ? scope.for_tickers(symbols) : scope.none
+      end
+
       scope = scope.for_ticker(params[:ticker]) if params[:ticker].present?
       scope = scope.for_source(params[:source]) if params[:source].present?
       scope = scope.published_after(time_boundary(params[:time_range])) if params[:time_range].present?

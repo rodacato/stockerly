@@ -50,5 +50,35 @@ RSpec.describe News::ListArticles do
       result = described_class.call(params: {})
       expect(result.value![:pagy]).to be_a(Pagy)
     end
+
+    context "watchlist filter" do
+      let(:user) { create(:user) }
+      let(:apple_asset) { create(:asset, symbol: "AAPL") }
+
+      before do
+        create(:watchlist_item, user: user, asset: apple_asset)
+      end
+
+      it "filters articles by watchlist symbols" do
+        result = described_class.call(user: user, params: { filter: "watchlist" })
+        articles = result.value![:articles]
+        expect(articles).to include(apple_article)
+        expect(articles).not_to include(nvidia_article)
+        expect(articles).not_to include(bitcoin_article)
+      end
+
+      it "returns all articles when no filter" do
+        result = described_class.call(user: user, params: {})
+        articles = result.value![:articles]
+        expect(articles).to include(nvidia_article, apple_article, bitcoin_article)
+      end
+
+      it "returns no articles when watchlist is empty and filter active" do
+        empty_user = create(:user, email: "empty@test.com")
+        result = described_class.call(user: empty_user, params: { filter: "watchlist" })
+        articles = result.value![:articles]
+        expect(articles).to be_empty
+      end
+    end
   end
 end
