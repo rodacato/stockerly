@@ -3,6 +3,10 @@ class RecalculateAvgCostOnTrade
     position_id = event.is_a?(Hash) ? event[:position_id] : event.position_id
 
     position = Position.find_by(id: position_id)
-    position&.recalculate_avg_cost!
+    return unless position
+
+    position.with_lock do
+      position.recalculate_avg_cost!
+    end
   end
 end
