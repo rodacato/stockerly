@@ -124,4 +124,50 @@ RSpec.describe CoingeckoGateway do
       end
     end
   end
+
+  describe "#fetch_market_data" do
+    context "when CoinGecko returns valid market data" do
+      before { stub_coingecko_markets }
+
+      it "returns Success with extended market fields" do
+        result = gateway.fetch_market_data(%w[BTC])
+
+        expect(result).to be_success
+        data = result.value!
+        expect(data.size).to eq(1)
+
+        btc = data.first
+        expect(btc[:symbol]).to eq("BTC")
+        expect(btc[:price]).to eq(67_250.0.to_d)
+        expect(btc[:circulating_supply]).to eq(19_600_000.to_d)
+        expect(btc[:total_supply]).to eq(21_000_000.to_d)
+        expect(btc[:max_supply]).to eq(21_000_000.to_d)
+        expect(btc[:fully_diluted_valuation]).to eq(1_080_000_000_000.to_d)
+        expect(btc[:total_volume]).to eq(28_400_000_000.to_d)
+        expect(btc[:ath]).to eq(73_750.0.to_d)
+        expect(btc[:ath_change_percentage]).to eq(-8.81.to_d)
+        expect(btc[:atl]).to eq(67.81.to_d)
+      end
+    end
+
+    context "when no symbols are recognized" do
+      it "returns Success with empty array" do
+        result = gateway.fetch_market_data(%w[FAKE1 FAKE2])
+
+        expect(result).to be_success
+        expect(result.value!).to be_empty
+      end
+    end
+
+    context "when rate limited (429)" do
+      before { stub_coingecko_markets_rate_limited }
+
+      it "returns Failure with :rate_limited" do
+        result = gateway.fetch_market_data(%w[BTC])
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:rate_limited)
+      end
+    end
+  end
 end

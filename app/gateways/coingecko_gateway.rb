@@ -1,5 +1,6 @@
-# Driven adapter: CoinGecko REST API for cryptocurrency prices.
+# Driven adapter: CoinGecko REST API for cryptocurrency prices and market data.
 # Docs: https://docs.coingecko.com/reference/simple-price
+# Docs: https://docs.coingecko.com/reference/coins-markets
 class CoingeckoGateway < MarketDataGateway
   include Dry::Monads[:result]
 
@@ -81,6 +82,28 @@ class CoingeckoGateway < MarketDataGateway
     Failure([ :gateway_error, e.message ])
   end
 
+  # Fetch extended market data via /coins/markets endpoint.
+  # Returns richer data including supply, FDV, ATH/ATL, and volume.
+  def fetch_market_data(symbols)
+    ids = symbols.filter_map { |s| SYMBOL_TO_ID[s.upcase] }
+    return Success([]) if ids.empty?
+
+    response = connection.get("/api/v3/coins/markets") do |req|
+      req.params["vs_currency"] = "usd"
+      req.params["ids"] = ids.join(",")
+      req.params["order"] = "market_cap_desc"
+      req.params["sparkline"] = "false"
+      apply_auth(req)
+    end
+
+    return Failure([ :rate_limited, "CoinGecko rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "CoinGecko returned #{response.status}" ]) unless response.success?
+
+    parse_market_data(symbols, response.body)
+  rescue Faraday::Error => e
+    Failure([ :gateway_error, e.message ])
+  end
+
   private
 
   def connection
@@ -137,6 +160,34 @@ class CoingeckoGateway < MarketDataGateway
     bars.uniq! { |b| b[:date] }
 
     Success(bars)
+  end
+
+  def parse_market_data(symbols, body)
+    return Success([]) unless body.is_a?(Array)
+
+    id_to_symbol = SYMBOL_TO_ID.invert
+    results = body.filter_map do |coin|
+      symbol = id_to_symbol[coin["id"]]&.upcase
+      next unless symbol && symbols.map(&:upcase).include?(symbol)
+
+      {
+        symbol: symbol,
+        price: coin["current_price"]&.to_d,
+        change_percent: coin["price_change_percentage_24h"]&.to_d&.round(4) || 0,
+        market_cap: coin["market_cap"]&.to_d,
+        circulating_supply: coin["circulating_supply"]&.to_d,
+        total_supply: coin["total_supply"]&.to_d,
+        max_supply: coin["max_supply"]&.to_d,
+        fully_diluted_valuation: coin["fully_diluted_valuation"]&.to_d,
+        total_volume: coin["total_volume"]&.to_d,
+        ath: coin["ath"]&.to_d,
+        ath_change_percentage: coin["ath_change_percentage"]&.to_d,
+        atl: coin["atl"]&.to_d,
+        atl_change_percentage: coin["atl_change_percentage"]&.to_d
+      }
+    end
+
+    Success(results)
   end
 
   def resolve_api_key

@@ -152,6 +152,34 @@ module WebmockHelpers
       .to_return(status: 500, body: "Internal Server Error")
   end
 
+  def stub_coingecko_markets(data = nil)
+    default = [
+      {
+        "id" => "bitcoin", "symbol" => "btc", "current_price" => 67_250.0,
+        "market_cap" => 1_310_000_000_000, "total_volume" => 28_400_000_000,
+        "circulating_supply" => 19_600_000, "total_supply" => 21_000_000,
+        "max_supply" => 21_000_000, "fully_diluted_valuation" => 1_080_000_000_000,
+        "ath" => 73_750.0, "ath_change_percentage" => -8.81,
+        "atl" => 67.81, "atl_change_percentage" => 99_089.0,
+        "price_change_percentage_24h" => -0.45
+      }
+    ]
+    body = data || default
+
+    stub_request(:get, "https://api.coingecko.com/api/v3/coins/markets")
+      .with(query: hash_including("vs_currency" => "usd"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: body.to_json
+      )
+  end
+
+  def stub_coingecko_markets_rate_limited
+    stub_request(:get, %r{api\.coingecko\.com/api/v3/coins/markets})
+      .to_return(status: 429, body: "Rate limit exceeded")
+  end
+
   # --- Yahoo Finance (v8/finance/chart on query2) ---
 
   def stub_yahoo_finance_price(symbol, price: 25.50, change_percent: 1.25, volume: 500_000)
