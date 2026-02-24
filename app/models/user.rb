@@ -24,12 +24,18 @@ class User < ApplicationRecord
   validates :password, length: { minimum: 8 }, if: -> { new_record? || password_digest_changed? }
 
   # --- Scopes ---
-  scope :admins,        -> { where(role: :admin) }
-  scope :traders,       -> { where(role: :user) }
-  scope :not_suspended, -> { where.not(status: :suspended) }
+  scope :admins,           -> { where(role: :admin) }
+  scope :traders,          -> { where(role: :user) }
+  scope :not_suspended,    -> { where.not(status: :suspended) }
+  scope :email_verified,   -> { where.not(email_verified_at: nil) }
+  scope :email_unverified, -> { where(email_verified_at: nil) }
 
   def onboarded?
     onboarded_at.present?
+  end
+
+  def email_verified?
+    email_verified_at.present?
   end
 
   # --- Callbacks ---
@@ -38,6 +44,10 @@ class User < ApplicationRecord
   # Override Rails 8 default (15 min) to 2 hours
   generates_token_for :password_reset, expires_in: 2.hours do
     password_salt&.last(10)
+  end
+
+  generates_token_for :email_verification, expires_in: 24.hours do
+    email
   end
 
   private

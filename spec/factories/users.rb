@@ -18,5 +18,9 @@ FactoryBot.define do
     trait :verified do
       is_verified { true }
     end
+
+    trait :email_verified do
+      email_verified_at { Time.current }
+    end
   end
 end

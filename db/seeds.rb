@@ -7,6 +7,7 @@ admin = User.find_or_create_by!(email: "admin@stockerly.com") do |u|
   u.password_confirmation = "password123"
   u.role = :admin
   u.is_verified = true
+  u.email_verified_at = Time.current
 end
 
 alex = User.find_or_create_by!(email: "alex.thompson@example.com") do |u|
@@ -15,6 +16,7 @@ alex = User.find_or_create_by!(email: "alex.thompson@example.com") do |u|
   u.password_confirmation = "password123"
   u.role = :user
   u.is_verified = true
+  u.email_verified_at = Time.current
 end
 
 sarah = User.find_or_create_by!(email: "sarah.s@web3.io") do |u|
@@ -37,6 +39,7 @@ demo = User.find_or_create_by!(email: "demo@stockerly.com") do |u|
   u.password_confirmation = "password123"
   u.role = :user
   u.is_verified = true
+  u.email_verified_at = Time.current
 end
 
 # --- Portfolios & AlertPreferences (created via event handlers in prod, manual in seeds) ---

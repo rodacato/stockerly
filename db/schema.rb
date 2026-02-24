@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_23_213548) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_24_230645) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -365,6 +365,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_23_213548) do
     t.string "avatar_url"
     t.datetime "created_at", null: false
     t.string "email", null: false
+    t.datetime "email_verified_at"
     t.string "full_name", null: false
     t.boolean "is_verified", default: false, null: false
     t.datetime "onboarded_at"
