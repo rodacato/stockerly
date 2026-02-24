@@ -1,0 +1,5 @@
+<h1>Verify your email address</h1>
+<p>Hi <%= @user.full_name %>,</p>
+<p>Thank you for signing up for Stockerly. Please verify your email address by clicking the link below:</p>
+<p><%= link_to "Verify my email", @verification_url %></p>
+<p>This link will expire in 24 hours. If you didn't create a Stockerly account, you can safely ignore this email.</p>

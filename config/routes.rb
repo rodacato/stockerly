@@ -25,6 +25,10 @@ Rails.application.routes.draw do
   get   "reset-password/:token", to: "password_resets#edit",   as: :reset_password
   patch "reset-password/:token", to: "password_resets#update"
 
+  # --- Email Verification ---
+  get  "verify-email/:token", to: "email_verifications#show",  as: :verify_email
+  post "resend-verification", to: "email_verifications#create", as: :resend_verification
+
   # --- Authenticated Zone ---
   get  "onboarding/step1", to: "onboarding#step1"
   get  "onboarding/step2", to: "onboarding#step2"

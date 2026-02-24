@@ -3,6 +3,7 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(UserRegistered, CreatePortfolioOnRegistration)
   EventBus.subscribe(UserRegistered, CreateAlertPreferencesOnRegistration)
   EventBus.subscribe(UserRegistered, SendWelcomeEmailOnRegistration)
+  EventBus.subscribe(UserRegistered, SendVerificationEmailOnRegistration)
   EventBus.subscribe(PasswordChanged, InvalidateSessionsOnPasswordChange)
 
   # Administration
