@@ -1,0 +1,42 @@
+<%# Trade History — list of all executed trades %>
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+  <div>
+    <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Trade History</h2>
+    <p class="mt-1 text-slate-500 dark:text-slate-400">View all your executed trades</p>
+  </div>
+  <%= link_to portfolio_path, class: "px-4 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm" do %>
+    <span class="material-symbols-outlined text-sm align-middle mr-1">arrow_back</span>
+    Back to Portfolio
+  <% end %>
+</div>
+
+<section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
+  <% if @trades.present? %>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
+          <tr>
+            <th class="px-6 py-3 font-semibold">Date</th>
+            <th class="px-6 py-3 font-semibold">Asset</th>
+            <th class="px-6 py-3 font-semibold text-center">Side</th>
+            <th class="px-6 py-3 font-semibold text-right">Shares</th>
+            <th class="px-6 py-3 font-semibold text-right">Price</th>
+            <th class="px-6 py-3 font-semibold text-right">Total</th>
+            <th class="px-6 py-3 font-semibold text-right">Fee</th>
+          </tr>
+        </thead>
+        <tbody id="trade_history" class="divide-y divide-slate-100 dark:divide-slate-800">
+          <% @trades.each do |trade| %>
+            <%= render "trades/trade_row", trade: trade %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center justify-center py-16 text-slate-400">
+      <span class="material-symbols-outlined text-4xl mb-3">swap_horiz</span>
+      <p class="text-sm font-medium">No trades yet</p>
+      <p class="text-xs mt-1">Your trade history will appear here</p>
+    </div>
+  <% end %>
+</section>
