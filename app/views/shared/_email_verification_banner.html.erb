@@ -1,0 +1,17 @@
+<% if current_user && !current_user.email_verified? %>
+  <div class="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">mail</span>
+          <p class="text-sm font-medium text-amber-800 dark:text-amber-200">
+            Please verify your email address.
+            We sent a verification link to <strong><%= current_user.email %></strong>.
+          </p>
+        </div>
+        <%= button_to "Resend email", resend_verification_path, method: :post,
+            class: "text-sm font-semibold text-amber-700 dark:text-amber-300 hover:text-amber-900 dark:hover:text-amber-100 underline whitespace-nowrap" %>
+      </div>
+    </div>
+  </div>
+<% end %>
