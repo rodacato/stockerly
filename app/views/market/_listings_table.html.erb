@@ -31,10 +31,10 @@
           <%= turbo_stream_from "asset_#{asset.id}" %>
           <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
             <td class="px-6 py-4">
-              <div class="flex items-center gap-3">
+              <%= link_to market_asset_path(asset.symbol), class: "flex items-center gap-3 group" do %>
                 <%= render "components/asset_badge", asset: asset, size: "sm", market_open: market_open_for(asset) %>
                 <div>
-                  <p class="text-sm font-bold text-slate-900 dark:text-white">
+                  <p class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                     <% if asset.exchange.present? %>
                       <span class="text-slate-400 dark:text-slate-500 font-medium"><%= asset.exchange %></span>
                       <span class="text-slate-300 dark:text-slate-600 font-normal mx-0.5">:</span>
@@ -43,7 +43,7 @@
                   </p>
                   <p class="text-xs text-slate-500"><%= asset.name %></p>
                 </div>
-              </div>
+              <% end %>
             </td>
             <td id="asset_price_<%= asset.id %>" class="px-6 py-4 text-right"
                 data-controller="price-flash" data-price-flash-value="<%= asset.current_price %>">
