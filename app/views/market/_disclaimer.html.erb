@@ -1,0 +1,15 @@
+<%# Regulatory disclaimer footer %>
+<footer class="mt-auto py-10 border-t border-slate-200 dark:border-slate-800">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="flex items-center gap-2 text-primary/60">
+      <span class="material-symbols-outlined text-lg">shield</span>
+      <p class="text-slate-500 dark:text-slate-400 text-xs font-medium">
+        Financial data is for informational purposes only. It does not constitute investment advice.
+      </p>
+    </div>
+    <div class="flex gap-6">
+      <%= link_to "Terms of Service", terms_path, class: "text-slate-400 hover:text-primary transition-colors text-xs font-medium" %>
+      <%= link_to "Privacy Policy", privacy_path, class: "text-slate-400 hover:text-primary transition-colors text-xs font-medium" %>
+    </div>
+  </div>
+</footer>

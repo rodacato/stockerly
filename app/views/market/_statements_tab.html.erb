@@ -1,0 +1,59 @@
+<%# Financial Statements tab with sub-tabs for statement type and period toggle %>
+<% has_statements = @asset.financial_statements.exists? %>
+
+<% if has_statements %>
+  <div data-controller="tabs">
+    <%# Sub-tab controls: Income Statement | Balance Sheet | Cash Flow %>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div class="flex bg-slate-200/50 dark:bg-slate-800 p-1 rounded-lg">
+        <% [ ["Income Statement", :income_statement], ["Balance Sheet", :balance_sheet], ["Cash Flow", :cash_flow] ].each do |label, type| %>
+          <button data-tabs-target="tab" data-action="tabs#switch"
+                  class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
+            <%= label %>
+          </button>
+        <% end %>
+      </div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-medium">
+        Source: Alpha Vantage · <%= gaap_label(@asset) %> · USD · Annual Basis
+      </p>
+    </div>
+
+    <%# Income Statement panel %>
+    <div data-tabs-target="panel">
+      <% stmts = @asset.financial_statements.where(statement_type: :income_statement, period_type: :annual).order(fiscal_date_ending: :desc).limit(5) %>
+      <% if stmts.any? %>
+        <%= render "market/statement_table", statements: stmts, asset: @asset, statement_type: :income_statement %>
+      <% else %>
+        <p class="text-sm text-slate-500 py-8 text-center">No income statement data available.</p>
+      <% end %>
+    </div>
+
+    <%# Balance Sheet panel %>
+    <div data-tabs-target="panel" class="hidden">
+      <% stmts = @asset.financial_statements.where(statement_type: :balance_sheet, period_type: :annual).order(fiscal_date_ending: :desc).limit(5) %>
+      <% if stmts.any? %>
+        <%= render "market/statement_table", statements: stmts, asset: @asset, statement_type: :balance_sheet %>
+      <% else %>
+        <p class="text-sm text-slate-500 py-8 text-center">No balance sheet data available.</p>
+      <% end %>
+    </div>
+
+    <%# Cash Flow panel %>
+    <div data-tabs-target="panel" class="hidden">
+      <% stmts = @asset.financial_statements.where(statement_type: :cash_flow, period_type: :annual).order(fiscal_date_ending: :desc).limit(5) %>
+      <% if stmts.any? %>
+        <%= render "market/statement_table", statements: stmts, asset: @asset, statement_type: :cash_flow %>
+      <% else %>
+        <p class="text-sm text-slate-500 py-8 text-center">No cash flow data available.</p>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <div class="flex flex-col items-center justify-center py-16 text-center">
+    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">description</span>
+    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">No financial statements</h3>
+    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">
+      Financial statement data is not yet available for this asset. Statements sync weekly.
+    </p>
+  </div>
+<% end %>

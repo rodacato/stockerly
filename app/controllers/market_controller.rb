@@ -15,6 +15,20 @@ class MarketController < AuthenticatedController
     end
   end
 
+  def show
+    result = Market::LoadAssetDetail.call(symbol: params[:symbol])
+
+    case result
+    in Dry::Monads::Success(data)
+      @asset = data[:asset]
+      @presenter = data[:presenter]
+      @has_fundamentals = data[:has_fundamentals]
+      @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
+    in Dry::Monads::Failure[ :not_found, _ ]
+      redirect_to market_path, alert: "Asset not found"
+    end
+  end
+
   private
 
   def filter_params

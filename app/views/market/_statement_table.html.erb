@@ -1,0 +1,58 @@
+<%# Statement table — renders financial data in a multi-year table using structured line items %>
+<% line_items = line_items_for(statement_type) %>
+
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-slate-50 dark:bg-slate-800/50">
+          <th class="sticky left-0 bg-slate-50 dark:bg-slate-800/50 text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800 min-w-[280px]">
+            Line Item
+          </th>
+          <% statements.each do |stmt| %>
+            <th class="py-4 px-6 text-right text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800 min-w-[120px]">
+              FY<%= stmt.fiscal_year || stmt.fiscal_date_ending&.year %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+        <% line_items.each do |item| %>
+          <% if item[:section] %>
+            <%# Section header row %>
+            <tr class="bg-slate-50/50 dark:bg-slate-800/30">
+              <td class="py-3 px-6 text-sm font-bold text-slate-900 dark:text-slate-100" colspan="<%= statements.size + 1 %>">
+                <%= item[:section] %>
+              </td>
+            </tr>
+          <% else %>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors <%= 'border-b-2 border-slate-200 dark:border-slate-800' if item[:bold] && item[:margin_key] %>">
+              <td class="sticky left-0 bg-white dark:bg-slate-900 py-3.5 px-6 text-sm <%= item[:bold] ? 'font-bold text-slate-900 dark:text-slate-100' : 'font-medium text-slate-700 dark:text-slate-300' %> <%= 'pl-10' if item[:indent] %>">
+                <%= item[:label] %>
+                <% if item[:margin_key] %>
+                  <div class="text-[10px] text-slate-400 font-normal mt-0.5">Margin %</div>
+                <% end %>
+              </td>
+              <% statements.each do |stmt| %>
+                <% raw_value = stmt.data[item[:key]] %>
+                <td class="py-3.5 px-6 text-right tabular-nums">
+                  <% if item[:bold] && item[:accent] %>
+                    <div class="text-sm font-bold text-primary"><%= format_statement_value(raw_value) %></div>
+                  <% elsif item[:bold] %>
+                    <div class="text-sm font-bold"><%= format_statement_value(raw_value) %></div>
+                  <% else %>
+                    <span class="text-sm text-slate-600 dark:text-slate-400"><%= format_statement_value(raw_value) %></span>
+                  <% end %>
+                  <% if item[:margin_key] && stmt.data["totalRevenue"]&.to_f&.nonzero? %>
+                    <% margin = (raw_value.to_f / stmt.data["totalRevenue"].to_f * 100).round(1) %>
+                    <div class="text-xs text-slate-400"><%= margin %>%</div>
+                  <% end %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

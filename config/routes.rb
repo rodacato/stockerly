@@ -34,7 +34,8 @@ Rails.application.routes.draw do
 
   get "news",      to: "news#index"
   get "dashboard", to: "dashboard#show"
-  get "market",    to: "market#index"
+  get "market",          to: "market#index"
+  get "market/:symbol",  to: "market#show", as: :market_asset
   get "search",    to: "search#index"
 
   resource  :portfolio, only: [ :show ]

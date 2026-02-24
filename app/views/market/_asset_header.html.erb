@@ -1,0 +1,76 @@
+<%# Asset detail header: logo placeholder, name, symbol, price, pills, watchlist button %>
+<div class="flex flex-col gap-6 mb-6">
+  <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
+    <%# Left: asset info %>
+    <div class="flex gap-5 items-center">
+      <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="flex items-center justify-center size-16 text-slate-400 dark:text-slate-500">
+          <span class="material-symbols-outlined text-4xl"><%= asset.asset_type_crypto? ? "currency_bitcoin" : "show_chart" %></span>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2">
+          <h1 class="text-slate-900 dark:text-white text-3xl font-bold leading-tight"><%= asset.name %></h1>
+          <span class="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded text-xs font-bold uppercase tracking-wider"><%= asset.symbol %></span>
+        </div>
+
+        <div class="flex items-center gap-3 mt-1">
+          <% if asset.current_price %>
+            <p class="text-slate-900 dark:text-white text-2xl font-semibold tracking-tight"><%= number_to_currency(asset.current_price) %></p>
+            <% change = asset.change_percent_24h || 0 %>
+            <% positive = change >= 0 %>
+            <p class="<%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %> text-lg font-medium">
+              <%= positive ? '+' : '' %><%= number_with_precision(change, precision: 2) %>%
+            </p>
+            <span class="material-symbols-outlined text-lg <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
+              <%= positive ? 'trending_up' : 'trending_down' %>
+            </span>
+          <% end %>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-3">
+          <% if asset.exchange.present? %>
+            <span class="flex items-center gap-1.5 px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium border border-slate-200 dark:border-slate-700">
+              <span class="material-symbols-outlined text-sm">store</span> <%= asset.exchange %>
+            </span>
+          <% end %>
+          <% if asset.sector.present? %>
+            <span class="flex items-center gap-1.5 px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium border border-slate-200 dark:border-slate-700">
+              <span class="material-symbols-outlined text-sm">memory</span> <%= asset.sector %>
+            </span>
+          <% end %>
+          <% if asset.country.present? %>
+            <span class="flex items-center gap-1.5 px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium border border-slate-200 dark:border-slate-700">
+              <span class="material-symbols-outlined text-sm">public</span> <%= asset.country %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <%# Right: actions %>
+    <div class="flex gap-3">
+      <%= turbo_frame_tag "watchlist_button_#{asset.id}" do %>
+        <% if is_watchlisted %>
+          <%= button_to watchlist_item_path(asset.watchlist_items.find_by(user: current_user)),
+                method: :delete,
+                class: "flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-sm font-bold border border-emerald-200 dark:border-emerald-800" do %>
+            <span class="material-symbols-outlined">check_circle</span>
+            <span>Watching</span>
+          <% end %>
+        <% else %>
+          <%= button_to watchlist_items_path, params: { asset_id: asset.id },
+                class: "flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-sm font-bold shadow-md hover:bg-blue-800 transition-all" do %>
+            <span class="material-symbols-outlined">add_circle</span>
+            <span>Add to Watchlist</span>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <p class="text-slate-500 dark:text-slate-400 text-xs font-normal flex items-center gap-1.5">
+    <span class="material-symbols-outlined text-sm">info</span>
+    Based on <%= gaap_label(asset) %> financial statements · Source: Alpha Vantage
+  </p>
+</div>
