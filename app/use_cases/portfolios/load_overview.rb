@@ -11,6 +11,8 @@ module Portfolios
                     portfolio.closed_positions.includes(:asset)
       when "dividends"
                     portfolio.dividend_payments.includes(dividend: :asset).recent
+      when "trades"
+                    portfolio.trades.recent.includes(:asset).limit(50)
       else
                     portfolio.open_positions.includes(:asset)
       end

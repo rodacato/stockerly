@@ -1,0 +1,73 @@
+<%# Inline trade form — toggled by reveal_controller %>
+<div data-controller="reveal" class="mb-8">
+  <button data-action="reveal#toggle"
+      class="w-full bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-4 hover:border-primary transition-colors flex items-center justify-center gap-2 text-slate-500 hover:text-primary cursor-pointer">
+    <span class="material-symbols-outlined text-xl">swap_horiz</span>
+    <span class="text-sm font-semibold">Log a Trade</span>
+  </button>
+
+  <div data-reveal-target="content" class="hidden mt-4">
+    <%= form_with(url: trades_path, scope: :trade, method: :post,
+        class: "bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm") do |f| %>
+
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Execute Trade</h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <%# Asset Symbol %>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Asset Symbol</label>
+          <%= f.text_field :asset_symbol, placeholder: "e.g. AAPL",
+              class: "w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary",
+              required: true %>
+        </div>
+
+        <%# Side %>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Side</label>
+          <%= f.select :side, [["Buy", "buy"], ["Sell", "sell"]],
+              {},
+              class: "w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary" %>
+        </div>
+
+        <%# Shares %>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Shares</label>
+          <%= f.number_field :shares, step: "any", min: "0.000001", placeholder: "0",
+              class: "w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary",
+              required: true %>
+        </div>
+
+        <%# Price Per Share %>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Price Per Share</label>
+          <%= f.number_field :price_per_share, step: "any", min: "0.0001", placeholder: "0.00",
+              class: "w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary",
+              required: true %>
+        </div>
+
+        <%# Fee (optional) %>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Fee <span class="text-slate-300">(optional)</span></label>
+          <%= f.number_field :fee, step: "any", min: "0", placeholder: "0.00",
+              class: "w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary" %>
+        </div>
+
+        <%# Executed At (optional, defaults to now) %>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Date <span class="text-slate-300">(optional)</span></label>
+          <%= f.datetime_local_field :executed_at,
+              class: "w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary" %>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-3">
+        <button type="button" data-action="reveal#toggle"
+            class="px-4 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          Cancel
+        </button>
+        <%= f.submit "Execute Trade",
+            class: "px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>

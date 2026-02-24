@@ -11,9 +11,42 @@
     <%= link_to portfolio_path(tab: "dividends"), class: "px-6 py-4 text-sm font-medium border-b-2 #{@tab == 'dividends' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
       Dividend History
     <% end %>
+    <%= link_to portfolio_path(tab: "trades"), class: "px-6 py-4 text-sm font-medium border-b-2 #{@tab == 'trades' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+      Trade Log
+    <% end %>
   </div>
 
-  <% if @tab == "dividends" %>
+  <% if @tab == "trades" %>
+    <%# Trade Log %>
+    <% if @positions.present? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
+            <tr>
+              <th class="px-6 py-3 font-semibold">Date</th>
+              <th class="px-6 py-3 font-semibold">Asset</th>
+              <th class="px-6 py-3 font-semibold text-center">Side</th>
+              <th class="px-6 py-3 font-semibold text-right">Shares</th>
+              <th class="px-6 py-3 font-semibold text-right">Price</th>
+              <th class="px-6 py-3 font-semibold text-right">Total</th>
+              <th class="px-6 py-3 font-semibold text-right">Fee</th>
+            </tr>
+          </thead>
+          <tbody id="trade_history" class="divide-y divide-slate-100 dark:divide-slate-800">
+            <% @positions.each do |trade| %>
+              <%= render "trades/trade_row", trade: trade %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="flex flex-col items-center justify-center py-16 text-slate-400">
+        <span class="material-symbols-outlined text-4xl mb-3">swap_horiz</span>
+        <p class="text-sm font-medium">No trades yet</p>
+        <p class="text-xs mt-1">Use the form above to log your first trade</p>
+      </div>
+    <% end %>
+  <% elsif @tab == "dividends" %>
     <%# Dividend History %>
     <% if @positions.present? %>
       <div class="overflow-x-auto">

@@ -11,8 +11,13 @@ RSpec.describe Position, type: :model do
       expect(position).not_to be_valid
     end
 
-    it "requires shares greater than 0" do
+    it "allows shares of 0 (for closed positions)" do
       position.shares = 0
+      expect(position).to be_valid
+    end
+
+    it "rejects negative shares" do
+      position.shares = -1
       expect(position).not_to be_valid
     end
 
