@@ -353,13 +353,8 @@ MarketIndex.find_or_create_by!(symbol: "VIX") do |i|
 end
 
 # --- Trend Scores ---
-unless TrendScore.exists?
-  TrendScore.create!(asset: aapl, score: 88, label: :strong,    direction: :upward,   calculated_at: Time.current)
-  TrendScore.create!(asset: tsla, score: 42, label: :weakening, direction: :downward, calculated_at: Time.current)
-  TrendScore.create!(asset: nvda, score: 96, label: :parabolic, direction: :upward,   calculated_at: Time.current)
-  TrendScore.create!(asset: vix,  score: 25, label: :sideways,  direction: :downward, calculated_at: Time.current)
-  TrendScore.create!(asset: oke,  score: 94, label: :strong,    direction: :upward,   calculated_at: Time.current)
-end
+# Computed by CalculateTrendScoresJob from real price history.
+# Run: CalculateTrendScoresJob.perform_now after seeding to populate initial scores.
 
 # --- Earnings Events ---
 unless EarningsEvent.exists?
