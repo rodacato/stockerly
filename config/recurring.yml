@@ -38,6 +38,10 @@ production:
     class: TakeSnapshotsJob
     schedule: at 11pm every day
 
+  calculate_trend_scores:
+    class: CalculateTrendScoresJob
+    schedule: at 11:30pm every day
+
   cleanup_old_logs:
     command: "SystemLog.where('created_at < ?', 90.days.ago).delete_all"
     schedule: at 2am every day
