@@ -89,6 +89,42 @@ module WebmockHelpers
       )
   end
 
+  def stub_polygon_earnings(ticker, count: 2)
+    events = count.times.map do |i|
+      {
+        "end_date" => (Date.current + (i + 1).months).to_s,
+        "fiscal_quarter" => "Q#{i + 1}",
+        "fiscal_year" => Date.current.year.to_s,
+        "eps" => { "estimated" => (1.5 + i * 0.1).round(2), "actual" => nil },
+        "timeframe" => i.even? ? "pre" : "post"
+      }
+    end
+
+    stub_request(:get, "https://api.polygon.io/vX/reference/tickers/#{ticker}/earnings")
+      .with(query: hash_including("apiKey"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { results: events, count: events.size }.to_json
+      )
+  end
+
+  def stub_polygon_earnings_empty(ticker)
+    stub_request(:get, "https://api.polygon.io/vX/reference/tickers/#{ticker}/earnings")
+      .with(query: hash_including("apiKey"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { results: [], count: 0 }.to_json
+      )
+  end
+
+  def stub_polygon_earnings_rate_limited(ticker)
+    stub_request(:get, "https://api.polygon.io/vX/reference/tickers/#{ticker}/earnings")
+      .with(query: hash_including("apiKey"))
+      .to_return(status: 429, body: "Rate limit exceeded")
+  end
+
   def stub_polygon_rate_limited
     stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/.+/prev})
       .to_return(status: 429, body: "Rate limit exceeded")

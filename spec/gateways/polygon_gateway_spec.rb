@@ -165,4 +165,57 @@ RSpec.describe PolygonGateway do
       end
     end
   end
+
+  describe "#fetch_earnings" do
+    context "when Polygon returns earnings data" do
+      before { stub_polygon_earnings("AAPL") }
+
+      it "returns Success with parsed earnings" do
+        result = gateway.fetch_earnings("AAPL")
+
+        expect(result).to be_success
+        events = result.value!
+        expect(events.size).to eq(2)
+        expect(events.first).to include(:report_date, :fiscal_quarter, :fiscal_year, :estimated_eps, :timing)
+        expect(events.first[:fiscal_quarter]).to eq("Q1")
+        expect(events.first[:estimated_eps]).to be_a(BigDecimal)
+      end
+    end
+
+    context "when no earnings data returned" do
+      before { stub_polygon_earnings_empty("AAPL") }
+
+      it "returns Success with empty array" do
+        result = gateway.fetch_earnings("AAPL")
+
+        expect(result).to be_success
+        expect(result.value!).to be_empty
+      end
+    end
+
+    context "when rate limited (429)" do
+      before { stub_polygon_earnings_rate_limited("AAPL") }
+
+      it "returns Failure with :rate_limited" do
+        result = gateway.fetch_earnings("AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:rate_limited)
+      end
+    end
+
+    context "when connection times out" do
+      before do
+        stub_request(:get, %r{api\.polygon\.io/vX/reference/tickers/.+/earnings})
+          .to_timeout
+      end
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.fetch_earnings("AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+  end
 end

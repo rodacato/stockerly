@@ -61,6 +61,21 @@ class PolygonGateway < MarketDataGateway
     Failure([ :gateway_error, e.message ])
   end
 
+  # Fetch earnings for a ticker.
+  # Returns Success([{ report_date:, fiscal_quarter:, fiscal_year:, estimated_eps:, actual_eps: }, ...])
+  def fetch_earnings(ticker)
+    response = connection.get("/vX/reference/tickers/#{ticker}/earnings") do |req|
+      req.params["apiKey"] = @api_key
+    end
+
+    return Failure([ :rate_limited, "Polygon.io rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
+
+    parse_earnings(response.body)
+  rescue Faraday::Error => e
+    Failure([ :gateway_error, e.message ])
+  end
+
   # Fetch prices for multiple symbols via individual calls.
   # Returns Success([{ symbol:, price:, ... }, ...])
   def fetch_bulk_prices(symbols)
@@ -137,6 +152,26 @@ class PolygonGateway < MarketDataGateway
     end
 
     Success(articles)
+  end
+
+  def parse_earnings(body)
+    results = body["results"]
+    return Success([]) if results.blank?
+
+    events = results.filter_map do |item|
+      next unless item["end_date"].present?
+
+      {
+        report_date: Date.parse(item["end_date"]),
+        fiscal_quarter: item["fiscal_quarter"],
+        fiscal_year: item["fiscal_year"],
+        estimated_eps: item.dig("eps", "estimated")&.to_d,
+        actual_eps: item.dig("eps", "actual")&.to_d,
+        timing: item["timeframe"] == "pre" ? :before_market_open : :after_market_close
+      }
+    end
+
+    Success(events)
   end
 
   def calculate_change_percent(open, close)
