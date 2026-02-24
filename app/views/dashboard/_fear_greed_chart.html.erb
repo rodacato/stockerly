@@ -1,0 +1,60 @@
+<%# Historical Fear & Greed chart — SVG polyline %>
+<% crypto_history ||= [] %>
+<% stocks_history ||= [] %>
+
+<% if crypto_history.size >= 2 || stocks_history.size >= 2 %>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+  <% [
+    { data: crypto_history, label: "Crypto Fear & Greed — 30 Day" },
+    { data: stocks_history, label: "Stocks Fear & Greed — 30 Day" }
+  ].each do |chart| %>
+    <% next if chart[:data].size < 2 %>
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+      <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3"><%= chart[:label] %></h4>
+      <%
+        points = chart[:data]
+        width = 300
+        height = 100
+        step_x = width.to_f / (points.size - 1)
+        polyline_pts = points.each_with_index.map { |(_, val), i|
+          y = height - val
+          "#{(i * step_x).round(1)},#{y.round(1)}"
+        }.join(" ")
+        last_val = points.last&.last || 0
+        line_color = case last_val
+                     when 0..24  then "#ef4444"
+                     when 25..44 then "#f97316"
+                     when 45..55 then "#f59e0b"
+                     when 56..74 then "#84cc16"
+                     else "#22c55e"
+                     end
+      %>
+      <svg viewBox="0 0 <%= width %> <%= height %>" class="w-full h-24" preserveAspectRatio="none">
+        <%# Background bands %>
+        <rect x="0" y="0"  width="<%= width %>" height="25" fill="#22c55e" opacity="0.08"/>
+        <rect x="0" y="25" width="<%= width %>" height="20" fill="#84cc16" opacity="0.08"/>
+        <rect x="0" y="45" width="<%= width %>" height="10" fill="#f59e0b" opacity="0.08"/>
+        <rect x="0" y="55" width="<%= width %>" height="20" fill="#f97316" opacity="0.08"/>
+        <rect x="0" y="75" width="<%= width %>" height="25" fill="#ef4444" opacity="0.08"/>
+
+        <%# Grid lines %>
+        <line x1="0" y1="25" x2="<%= width %>" y2="25" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+        <line x1="0" y1="50" x2="<%= width %>" y2="50" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+        <line x1="0" y1="75" x2="<%= width %>" y2="75" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+        <%# Data line %>
+        <polyline points="<%= polyline_pts %>"
+                  fill="none" stroke="<%= line_color %>" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="flex justify-between mt-2 text-[10px] font-medium text-slate-400">
+        <span><%= points.first.first.strftime("%b %d") %></span>
+        <div class="flex gap-3">
+          <span class="text-emerald-500">Greed</span>
+          <span class="text-red-500">Fear</span>
+        </div>
+        <span><%= points.last.first.strftime("%b %d") %></span>
+      </div>
+    </div>
+  <% end %>
+</div>
+<% end %>

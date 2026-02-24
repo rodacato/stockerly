@@ -91,5 +91,22 @@ RSpec.describe Dashboard::Assemble do
       expect(fg[:crypto]).to be_nil
       expect(fg[:stocks]).to be_nil
     end
+
+    it "includes fear & greed history as [fetched_at, value] pairs" do
+      create(:fear_greed_reading, :crypto, value: 30, fetched_at: 2.days.ago)
+      create(:fear_greed_reading, :crypto, value: 45, fetched_at: 1.day.ago)
+
+      result = described_class.call(user: user)
+      fg = result.value![:fear_greed]
+      expect(fg[:crypto_history].size).to eq(2)
+      expect(fg[:crypto_history].first.last).to eq(30)
+      expect(fg[:crypto_history].last.last).to eq(45)
+    end
+
+    it "returns empty history when no readings exist" do
+      result = described_class.call(user: user)
+      fg = result.value![:fear_greed]
+      expect(fg[:stocks_history]).to be_empty
+    end
   end
 end

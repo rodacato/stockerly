@@ -23,7 +23,9 @@ module Dashboard
 
       fear_greed = {
         crypto: FearGreedReading.latest_crypto,
-        stocks: FearGreedReading.latest_stocks
+        stocks: FearGreedReading.latest_stocks,
+        crypto_history: FearGreedReading.crypto.recent.reorder(fetched_at: :asc).pluck(:fetched_at, :value),
+        stocks_history: FearGreedReading.stocks.recent.reorder(fetched_at: :asc).pluck(:fetched_at, :value)
       }
 
       Success({

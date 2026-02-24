@@ -60,6 +60,11 @@
   <%= render "dashboard/fear_greed_card", reading: @fear_greed[:stocks], label: "Stocks" %>
 </div>
 
+<%# Historical F&G Charts %>
+<%= render "dashboard/fear_greed_chart",
+    crypto_history: @fear_greed[:crypto_history],
+    stocks_history: @fear_greed[:stocks_history] %>
+
 <%# Dashboard Grid — 8 + 4 columns %>
 <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
   <%# Main Content Column %>
