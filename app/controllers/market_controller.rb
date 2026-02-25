@@ -27,6 +27,8 @@ class MarketController < AuthenticatedController
       @price_histories = data[:price_histories] || []
       @pe_history = data[:pe_history]
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
+
+      trigger_fundamental_sync(@asset) unless @has_fundamentals
     in Dry::Monads::Failure[ :not_found, _ ]
       redirect_to market_path, alert: "Asset not found"
     end
@@ -40,5 +42,12 @@ class MarketController < AuthenticatedController
 
   def build_market_status
     { us: MarketHours.us_market_open?, bmv: MarketHours.bmv_market_open?, crypto: true }
+  end
+
+  def trigger_fundamental_sync(asset)
+    return unless asset.asset_type_stock? || asset.asset_type_etf?
+    return if asset.fundamentals_synced_at.present? && asset.fundamentals_synced_at > 10.minutes.ago
+
+    SyncFundamentalJob.perform_later(asset.id)
   end
 end
