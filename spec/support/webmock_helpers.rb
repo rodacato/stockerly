@@ -244,11 +244,28 @@ module WebmockHelpers
   end
 
   def stub_yahoo_finance_bulk(symbols_data)
+    # Stub batch endpoint with all symbols
+    batch_results = symbols_data.map do |sym, data|
+      { symbol: sym, regularMarketPrice: data[:price], regularMarketChangePercent: data[:change_percent] || 0, regularMarketVolume: data[:volume] || 0 }
+    end
+    stub_request(:get, %r{query1\.finance\.yahoo\.com/v7/finance/quote})
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { quoteResponse: { result: batch_results } }.to_json
+      )
+
+    # Also stub individual chart calls for fallback
     symbols_data.each do |sym, data|
       change = data[:change_percent] || 0
       previous_close = (data[:price] / (1 + change / 100.0)).round(2)
       stub_yahoo_chart(sym, price: data[:price], previous_close: previous_close, volume: data[:volume] || 0)
     end
+  end
+
+  def stub_yahoo_batch_not_available
+    stub_request(:get, %r{query1\.finance\.yahoo\.com/v7/finance/quote})
+      .to_return(status: 404, body: "Not Found")
   end
 
   def stub_yahoo_finance_not_found(symbol)
@@ -261,11 +278,15 @@ module WebmockHelpers
   end
 
   def stub_yahoo_finance_rate_limited
+    stub_request(:get, %r{query1\.finance\.yahoo\.com/v7/finance/quote})
+      .to_return(status: 429, body: "Rate limit exceeded")
     stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/})
       .to_return(status: 429, body: "Rate limit exceeded")
   end
 
   def stub_yahoo_finance_server_error
+    stub_request(:get, %r{query1\.finance\.yahoo\.com/v7/finance/quote})
+      .to_return(status: 500, body: "Internal Server Error")
     stub_request(:get, %r{query2\.finance\.yahoo\.com/v8/finance/chart/})
       .to_return(status: 500, body: "Internal Server Error")
   end

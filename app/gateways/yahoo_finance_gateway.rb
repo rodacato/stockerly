@@ -35,34 +35,29 @@ class YahooFinanceGateway < MarketDataGateway
     })
   end
 
+  # Batch fetch quotes for multiple symbols in a single HTTP request.
+  # Uses /v7/finance/quote endpoint. Falls back to individual chart calls on failure.
+  # Returns Success([{ symbol:, price:, change_percent:, volume: }, ...])
+  def fetch_batch_quotes(symbols)
+    response = batch_connection.get("/v7/finance/quote") do |req|
+      req.params["symbols"] = symbols.join(",")
+    end
+
+    return fallback_bulk_prices(symbols) if response.status == 429
+    return fallback_bulk_prices(symbols) unless response.success?
+
+    results = parse_batch_quotes(response.body, symbols)
+    return fallback_bulk_prices(symbols) if results.empty?
+
+    Success(results)
+  rescue Faraday::Error
+    fallback_bulk_prices(symbols)
+  end
+
   # Fetch prices for multiple symbols (one chart call per symbol).
   # Returns Success([{ symbol:, price:, ... }, ...])
   def fetch_bulk_prices(symbols)
-    results = []
-    last_error = nil
-
-    symbols.each do |symbol|
-      result = fetch_chart(symbol)
-
-      if result.failure?
-        last_error = result
-        next
-      end
-
-      meta = result.value!
-      results << {
-        symbol: symbol,
-        price: meta["regularMarketPrice"].to_d,
-        change_percent: compute_change_percent(meta),
-        volume: meta["regularMarketVolume"]&.to_i
-      }
-    end
-
-    return last_error if results.empty? && last_error
-
-    Success(results)
-  rescue Faraday::Error => e
-    Failure([ :gateway_error, e.message ])
+    fetch_batch_quotes(symbols)
   end
 
   # Fetch daily price history for a single symbol.
@@ -160,6 +155,62 @@ class YahooFinanceGateway < MarketDataGateway
 
     now = Time.current.to_i
     now >= trading["start"].to_i && now <= trading["end"].to_i
+  end
+
+  def batch_connection
+    @batch_connection ||= Faraday.new(url: "https://query1.finance.yahoo.com") do |f|
+      f.request :retry, max: 2, interval: 0.5, backoff_factor: 2,
+                        retry_statuses: [ 500, 502, 503 ]
+      f.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+      f.headers["Accept"] = "application/json"
+      f.response :json
+      f.options.timeout = TIMEOUT
+      f.options.open_timeout = TIMEOUT
+    end
+  end
+
+  def parse_batch_quotes(body, symbols)
+    results = body.dig("quoteResponse", "result") || []
+    results.filter_map do |quote|
+      symbol = quote["symbol"]
+      price = quote["regularMarketPrice"]
+      next unless symbol && price
+
+      {
+        symbol: symbol,
+        price: price.to_d,
+        change_percent: quote["regularMarketChangePercent"]&.round(4) || BigDecimal("0"),
+        volume: quote["regularMarketVolume"]&.to_i
+      }
+    end
+  end
+
+  def fallback_bulk_prices(symbols)
+    results = []
+    last_error = nil
+
+    symbols.each do |symbol|
+      result = fetch_chart(symbol)
+
+      if result.failure?
+        last_error = result
+        next
+      end
+
+      meta = result.value!
+      results << {
+        symbol: symbol,
+        price: meta["regularMarketPrice"].to_d,
+        change_percent: compute_change_percent(meta),
+        volume: meta["regularMarketVolume"]&.to_i
+      }
+    end
+
+    return last_error if results.empty? && last_error
+
+    Success(results)
+  rescue Faraday::Error => e
+    Failure([ :gateway_error, e.message ])
   end
 
   def parse_historical(body)
