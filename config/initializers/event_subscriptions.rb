@@ -42,6 +42,7 @@ Rails.application.config.after_initialize do
 
   # Sentiment
   EventBus.subscribe(FearGreedUpdated, LogFearGreedUpdate)
+  EventBus.subscribe(FearGreedUpdated, EvaluateSentimentAlerts)
 
   # Fundamentals
   EventBus.subscribe(AssetFundamentalsUpdated, LogFundamentalsUpdate)
