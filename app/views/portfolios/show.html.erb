@@ -1,9 +1,6 @@
 <%# Portfolio — investment portfolio overview %>
-<% if @positions.blank? && @tab == "open" %>
-  <%= render "components/empty_state", icon: "account_balance_wallet", title: "No positions yet", description: "Add your first position to start tracking your portfolio performance.", cta_text: "Explore Markets", cta_path: market_path %>
-<% else %>
 
-<%# Header with action buttons %>
+<%# Header with action buttons — always visible %>
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
   <div>
     <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Investment Portfolio</h2>
@@ -21,7 +18,7 @@
   </div>
 </div>
 
-<%# 3 Summary Stat Cards %>
+<%# 3 Summary Stat Cards — always visible %>
 <% ug = @summary.unrealized_gain %>
 <% dg = @summary.day_gain %>
 <% bp_pct = @summary.total_value.positive? ? (@summary.buying_power / @summary.total_value * 100) : 0 %>
@@ -58,7 +55,7 @@
   </div>
 </div>
 
-<%# Trade Form %>
+<%# Trade Form — always visible %>
 <%= render "trades/trade_form" %>
 
 <%# Portfolio Grid: Allocation (1/3) + Positions (2/3) %>
@@ -71,4 +68,3 @@
     <%= render "portfolios/positions_table" %>
   </div>
 </div>
-<% end %>
