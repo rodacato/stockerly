@@ -6,10 +6,13 @@ class SyncPriorityAssetsJob < ApplicationJob
   queue_as :default
 
   # @param asset_type [String] "stock", "crypto", "etf", or "index"
-  # @param priority [String] "high" or "low"
+  # @param priority [String] "high", "low", or "all"
   def perform(asset_type, priority)
     scope = Asset.syncing.where(asset_type: asset_type)
-    scope = priority == "high" ? scope.high_priority : scope.low_priority
+
+    unless priority == "all"
+      scope = priority == "high" ? scope.high_priority : scope.low_priority
+    end
 
     if asset_type == "crypto"
       sync_crypto(scope)

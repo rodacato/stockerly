@@ -90,6 +90,40 @@ RSpec.describe SyncPriorityAssetsJob, type: :job do
       end
     end
 
+    context "with unified crypto sync (priority 'all')" do
+      let!(:btc) { create(:asset, :crypto, symbol: "BTC") }
+      let!(:eth) { create(:asset, :crypto, symbol: "ETH") }
+      let!(:sol) { create(:asset, :crypto, symbol: "SOL") }
+
+      before { create(:watchlist_item, user: user, asset: btc) }
+
+      it "includes all active crypto assets regardless of priority" do
+        expect {
+          described_class.perform_now("crypto", "all")
+        }.to have_enqueued_job(SyncBulkCryptoJob).with(
+          a_collection_containing_exactly(btc.id, eth.id, sol.id)
+        )
+      end
+
+      it "skips disabled assets" do
+        sol.update!(sync_status: :disabled)
+
+        expect {
+          described_class.perform_now("crypto", "all")
+        }.to have_enqueued_job(SyncBulkCryptoJob).with(
+          a_collection_containing_exactly(btc.id, eth.id)
+        )
+      end
+
+      it "does not enqueue when no active crypto exists" do
+        Asset.where(asset_type: :crypto).update_all(sync_status: :disabled)
+
+        expect {
+          described_class.perform_now("crypto", "all")
+        }.not_to have_enqueued_job(SyncBulkCryptoJob)
+      end
+    end
+
     context "with no matching assets" do
       it "does nothing" do
         expect {
