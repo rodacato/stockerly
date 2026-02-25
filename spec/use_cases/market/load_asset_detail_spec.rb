@@ -46,6 +46,31 @@ RSpec.describe Market::LoadAssetDetail do
       end
     end
 
+    context "when asset is fixed income" do
+      let!(:cetes) do
+        create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28 Days",
+               yield_rate: 11.15, face_value: 10.0, maturity_date: 20.days.from_now.to_date)
+      end
+
+      it "returns asset with yield_data" do
+        result = described_class.call(symbol: "CETES_28D")
+
+        expect(result).to be_success
+        data = result.value!
+        expect(data[:asset]).to eq(cetes)
+        expect(data[:yield_data]).to be_a(Hash)
+        expect(data[:yield_data][:days_to_maturity]).to eq(20)
+        expect(data[:yield_data][:discount_price]).to be_present
+        expect(data[:yield_data][:total_return_100]).to be_present
+      end
+
+      it "sets has_fundamentals to false" do
+        result = described_class.call(symbol: "CETES_28D")
+
+        expect(result.value![:has_fundamentals]).to be(false)
+      end
+    end
+
     context "when asset does not exist" do
       it "returns Failure with :not_found" do
         result = described_class.call(symbol: "INVALID")

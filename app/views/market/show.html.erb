@@ -3,52 +3,56 @@
 
 <%= render "market/asset_header", asset: @asset, presenter: @presenter, is_watchlisted: @is_watchlisted %>
 
-<div data-controller="tabs">
-  <%# Horizontal tab bar %>
-  <div class="border-b border-slate-200 dark:border-slate-800 mb-8 overflow-x-auto">
-    <div class="flex gap-8 min-w-max">
-      <% if @asset.asset_type_crypto? %>
-        <% tab_names = ["Summary", "Market Data"] %>
-      <% else %>
-        <% tab_names = %w[Summary Valuation Profitability Health Growth Dividends Statements] %>
-      <% end %>
-      <% tab_names.each do |tab_name| %>
-        <button data-tabs-target="tab" data-action="tabs#switch"
-                class="pb-4 pt-2 text-sm font-bold tracking-wide border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors">
-          <%= tab_name %>
-        </button>
-      <% end %>
+<% if @asset.asset_type_fixed_income? %>
+  <%= render "market/fixed_income_detail", asset: @asset, yield_data: @yield_data %>
+<% else %>
+  <div data-controller="tabs">
+    <%# Horizontal tab bar %>
+    <div class="border-b border-slate-200 dark:border-slate-800 mb-8 overflow-x-auto">
+      <div class="flex gap-8 min-w-max">
+        <% if @asset.asset_type_crypto? %>
+          <% tab_names = ["Summary", "Market Data"] %>
+        <% else %>
+          <% tab_names = %w[Summary Valuation Profitability Health Growth Dividends Statements] %>
+        <% end %>
+        <% tab_names.each do |tab_name| %>
+          <button data-tabs-target="tab" data-action="tabs#switch"
+                  class="pb-4 pt-2 text-sm font-bold tracking-wide border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors">
+            <%= tab_name %>
+          </button>
+        <% end %>
+      </div>
     </div>
-  </div>
 
-  <%# Tab panels — adaptive by asset type %>
-  <div data-tabs-target="panel">
-    <%= render "market/summary_tab" %>
+    <%# Tab panels — adaptive by asset type %>
+    <div data-tabs-target="panel">
+      <%= render "market/summary_tab" %>
+    </div>
+    <% if @asset.asset_type_crypto? %>
+      <div data-tabs-target="panel" class="hidden">
+        <%= render "market/category_tab", category: :crypto_market %>
+      </div>
+    <% else %>
+      <div data-tabs-target="panel" class="hidden">
+        <%= render "market/category_tab", category: :valuation %>
+      </div>
+      <div data-tabs-target="panel" class="hidden">
+        <%= render "market/category_tab", category: :profitability %>
+      </div>
+      <div data-tabs-target="panel" class="hidden">
+        <%= render "market/category_tab", category: :health %>
+      </div>
+      <div data-tabs-target="panel" class="hidden">
+        <%= render "market/category_tab", category: :growth %>
+      </div>
+      <div data-tabs-target="panel" class="hidden">
+        <%= render "market/category_tab", category: :dividends %>
+      </div>
+      <div data-tabs-target="panel" class="hidden">
+        <%= render "market/statements_tab" %>
+      </div>
+    <% end %>
   </div>
-  <% if @asset.asset_type_crypto? %>
-    <div data-tabs-target="panel" class="hidden">
-      <%= render "market/category_tab", category: :crypto_market %>
-    </div>
-  <% else %>
-    <div data-tabs-target="panel" class="hidden">
-      <%= render "market/category_tab", category: :valuation %>
-    </div>
-    <div data-tabs-target="panel" class="hidden">
-      <%= render "market/category_tab", category: :profitability %>
-    </div>
-    <div data-tabs-target="panel" class="hidden">
-      <%= render "market/category_tab", category: :health %>
-    </div>
-    <div data-tabs-target="panel" class="hidden">
-      <%= render "market/category_tab", category: :growth %>
-    </div>
-    <div data-tabs-target="panel" class="hidden">
-      <%= render "market/category_tab", category: :dividends %>
-    </div>
-    <div data-tabs-target="panel" class="hidden">
-      <%= render "market/statements_tab" %>
-    </div>
-  <% end %>
-</div>
+<% end %>
 
 <%= render "market/disclaimer" %>

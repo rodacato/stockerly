@@ -1,0 +1,104 @@
+<%# Fixed income detail: yield info, maturity progress, investment calculator %>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <%# Yield Information Card %>
+  <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+      <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
+        <span class="material-symbols-outlined text-primary">percent</span>
+        Yield Information
+      </h3>
+    </div>
+    <div class="p-5 space-y-4">
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-slate-500 dark:text-slate-400">Annual Yield Rate</span>
+        <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400"><%= number_with_precision(asset.yield_rate, precision: 2) %>%</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-slate-500 dark:text-slate-400">Face Value</span>
+        <span class="font-semibold text-slate-900 dark:text-white">$<%= number_with_precision(asset.face_value, precision: 2) %> MXN</span>
+      </div>
+      <% if yield_data[:discount_price] %>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-slate-500 dark:text-slate-400">Discount Price</span>
+          <span class="font-semibold text-slate-900 dark:text-white">$<%= number_with_precision(yield_data[:discount_price], precision: 4) %> MXN</span>
+        </div>
+      <% end %>
+      <% if asset.maturity_date %>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-slate-500 dark:text-slate-400">Maturity Date</span>
+          <span class="font-semibold text-slate-900 dark:text-white"><%= asset.maturity_date.strftime("%B %d, %Y") %></span>
+        </div>
+      <% end %>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-slate-500 dark:text-slate-400">Days to Maturity</span>
+        <span class="font-semibold text-slate-900 dark:text-white"><%= yield_data[:days_to_maturity] %> days</span>
+      </div>
+    </div>
+  </section>
+
+  <%# Maturity Progress Card %>
+  <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+      <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
+        <span class="material-symbols-outlined text-primary">calendar_today</span>
+        Maturity Progress
+      </h3>
+    </div>
+    <div class="p-5 space-y-4">
+      <% if asset.maturity_date %>
+        <% term_match = asset.symbol.match(/CETES_(\d+)D/) %>
+        <% total_days = term_match ? term_match[1].to_i : yield_data[:days_to_maturity] %>
+        <% days_elapsed = total_days - yield_data[:days_to_maturity] %>
+        <% progress = total_days > 0 ? (days_elapsed.to_f / total_days * 100).clamp(0, 100) : 0 %>
+
+        <div class="flex justify-between text-sm mb-2">
+          <span class="text-slate-500 dark:text-slate-400">Issue</span>
+          <span class="text-slate-500 dark:text-slate-400">Maturity</span>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
+          <div class="bg-primary rounded-full h-3 transition-all" style="width: <%= number_with_precision(progress, precision: 1) %>%"></div>
+        </div>
+        <div class="flex justify-between text-xs mt-1">
+          <span class="text-slate-400"><%= days_elapsed %> days elapsed</span>
+          <span class="font-medium text-primary"><%= yield_data[:days_to_maturity] %> days remaining</span>
+        </div>
+      <% else %>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Maturity date not available.</p>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+<%# Investment Calculator Card %>
+<section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-8">
+  <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+    <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
+      <span class="material-symbols-outlined text-primary">calculate</span>
+      Investment Calculator
+    </h3>
+  </div>
+  <div class="p-5">
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Example investment: 100 CETES units</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 text-center">
+        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-1">Investment Cost</p>
+        <p class="text-xl font-bold text-slate-900 dark:text-white">$<%= number_with_precision(yield_data[:investment_cost_100], precision: 2) %></p>
+      </div>
+      <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 text-center">
+        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-1">Value at Maturity</p>
+        <p class="text-xl font-bold text-slate-900 dark:text-white">$<%= number_with_precision(yield_data[:face_value_100], precision: 2) %></p>
+      </div>
+      <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 text-center">
+        <p class="text-xs text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider mb-1">Total Return</p>
+        <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400">+$<%= number_with_precision(yield_data[:total_return_100], precision: 2) %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+  <p class="text-xs text-amber-700 dark:text-amber-400 flex items-center gap-2">
+    <span class="material-symbols-outlined text-sm">info</span>
+    CETES data from Banxico. Past yields do not guarantee future returns.
+  </p>
+</div>

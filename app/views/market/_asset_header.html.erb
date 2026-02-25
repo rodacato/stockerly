@@ -5,13 +5,15 @@
     <div class="flex gap-5 items-center">
       <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
         <div class="flex items-center justify-center size-16 text-slate-400 dark:text-slate-500">
-          <span class="material-symbols-outlined text-4xl"><%= asset.asset_type_crypto? ? "currency_bitcoin" : "show_chart" %></span>
+          <span class="material-symbols-outlined text-4xl"><%= asset.asset_type_crypto? ? "currency_bitcoin" : (asset.asset_type_fixed_income? ? "account_balance" : "show_chart") %></span>
         </div>
       </div>
       <div class="flex flex-col">
         <div class="flex items-center gap-2 mb-1">
           <% if asset.asset_type_crypto? %>
             <span class="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-bold rounded-full uppercase tracking-wider">Digital Asset</span>
+          <% elsif asset.asset_type_fixed_income? %>
+            <span class="px-3 py-1 bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-400 text-xs font-bold rounded-full uppercase tracking-wider">Fixed Income</span>
           <% else %>
             <span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">Equity</span>
           <% end %>
@@ -80,6 +82,8 @@
     <span class="material-symbols-outlined text-sm">info</span>
     <% if asset.asset_type_crypto? %>
       Source: CoinGecko · USD
+    <% elsif asset.asset_type_fixed_income? %>
+      Source: Banxico · MXN
     <% else %>
       Based on <%= gaap_label(asset) %> financial statements · Source: Alpha Vantage
     <% end %>
