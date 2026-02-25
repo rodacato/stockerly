@@ -16,10 +16,17 @@ module Market
       fundamental = resolve_fundamental(asset)
       presenter = FundamentalPresenter.new(asset: asset, fundamental: fundamental)
 
+      pe_history = if asset.asset_type_stock?
+                     eps = fundamental&.metrics&.dig("eps")&.to_d
+                     histories = asset.asset_price_histories.where("date >= ?", 90.days.ago.to_date).order(:date)
+                     PeHistoryCalculator.calculate(price_histories: histories, eps: eps)
+      end
+
       Success({
         asset: asset,
         presenter: presenter,
-        has_fundamentals: fundamental.present?
+        has_fundamentals: fundamental.present?,
+        pe_history: pe_history
       })
     end
 

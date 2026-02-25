@@ -73,6 +73,19 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("US GAAP")
     end
 
+    it "renders P/E chart section when price history and EPS exist" do
+      create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
+             metrics: { "eps" => "6.07" })
+      3.times do |i|
+        create(:asset_price_history, asset: asset, date: (i + 1).days.ago.to_date, close: 200 + i)
+      end
+
+      get market_asset_path(asset.symbol)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Historical P/E Ratio")
+    end
+
     it "renders fixed income detail for CETES assets" do
       cetes = create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28 Days",
                      yield_rate: 11.15, face_value: 10.0, maturity_date: 20.days.from_now.to_date)

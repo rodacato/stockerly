@@ -1,0 +1,81 @@
+<%# Historical P/E Ratio chart — SVG polyline (90 days) %>
+<% if @pe_history.present? && @pe_history.size >= 2 %>
+  <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-8">
+    <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+      <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
+        <span class="material-symbols-outlined text-primary">analytics</span>
+        Historical P/E Ratio (90 days)
+      </h3>
+    </div>
+    <div class="p-5">
+      <%
+        points = @pe_history
+        pe_values = points.map { |p| p[:pe_ratio].to_f }
+        min_pe = pe_values.min
+        max_pe = pe_values.max
+        pe_range = max_pe - min_pe
+        pe_range = 1.0 if pe_range.zero?
+
+        width = 400
+        height = 120
+        padding_y = 5
+        usable_height = height - (padding_y * 2)
+        step_x = width.to_f / (points.size - 1)
+
+        polyline_pts = points.each_with_index.map { |point, i|
+          normalized = (point[:pe_ratio].to_f - min_pe) / pe_range
+          y = height - padding_y - (normalized * usable_height)
+          "#{(i * step_x).round(1)},#{y.round(1)}"
+        }.join(" ")
+
+        last_pe = pe_values.last
+        line_color = if last_pe < 15
+                       "#22c55e"
+                     elsif last_pe <= 25
+                       "#f59e0b"
+                     else
+                       "#ef4444"
+                     end
+
+        # Color band boundaries normalized to chart coordinates
+        band_15_y = height - padding_y - (([15 - min_pe, 0].max / pe_range) * usable_height)
+        band_25_y = height - padding_y - (([25 - min_pe, 0].max / pe_range) * usable_height)
+      %>
+      <svg viewBox="0 0 <%= width %> <%= height %>" class="w-full h-32" preserveAspectRatio="none">
+        <%# Color bands (value / neutral / expensive) %>
+        <% if min_pe < 25 && max_pe > 15 %>
+          <% green_bottom = [band_15_y, height - padding_y].min %>
+          <% if 15 > min_pe %>
+            <rect x="0" y="<%= green_bottom.round(1) %>" width="<%= width %>" height="<%= (height - padding_y - green_bottom).round(1) %>" fill="#22c55e" opacity="0.06"/>
+          <% end %>
+          <% neutral_top = [band_25_y, padding_y].max %>
+          <% neutral_bottom = [band_15_y, height - padding_y].min %>
+          <rect x="0" y="<%= neutral_top.round(1) %>" width="<%= width %>" height="<%= (neutral_bottom - neutral_top).abs.round(1) %>" fill="#f59e0b" opacity="0.06"/>
+          <% if 25 < max_pe %>
+            <rect x="0" y="<%= padding_y %>" width="<%= width %>" height="<%= (neutral_top - padding_y).round(1) %>" fill="#ef4444" opacity="0.06"/>
+          <% end %>
+        <% end %>
+
+        <%# Grid lines %>
+        <line x1="0" y1="<%= (height / 3.0).round(1) %>" x2="<%= width %>" y2="<%= (height / 3.0).round(1) %>"
+              stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+        <line x1="0" y1="<%= (height * 2 / 3.0).round(1) %>" x2="<%= width %>" y2="<%= (height * 2 / 3.0).round(1) %>"
+              stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+        <%# Data line %>
+        <polyline points="<%= polyline_pts %>"
+                  fill="none" stroke="<%= line_color %>" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="flex justify-between mt-2 text-[10px] font-medium text-slate-400">
+        <span><%= points.first[:date].strftime("%b %d") %></span>
+        <div class="flex gap-3">
+          <span class="text-emerald-500">Value (&lt;15)</span>
+          <span class="text-amber-500">Neutral</span>
+          <span class="text-red-500">Expensive (&gt;25)</span>
+        </div>
+        <span><%= points.last[:date].strftime("%b %d") %></span>
+      </div>
+      <p class="mt-2 text-xs text-slate-400">Current P/E: <span class="font-bold text-slate-600 dark:text-slate-300"><%= last_pe.round(2) %></span></p>
+    </div>
+  </section>
+<% end %>

@@ -46,6 +46,25 @@ RSpec.describe Market::LoadAssetDetail do
       end
     end
 
+    context "when asset is a stock with price history" do
+      let!(:fundamental) do
+        create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
+               metrics: { "eps" => "6.07" })
+      end
+
+      it "includes pe_history for stock assets" do
+        create(:asset_price_history, asset: asset, date: 5.days.ago.to_date, close: 200.0)
+        create(:asset_price_history, asset: asset, date: 3.days.ago.to_date, close: 210.0)
+
+        result = described_class.call(symbol: "AAPL")
+        data = result.value!
+
+        expect(data[:pe_history]).to be_an(Array)
+        expect(data[:pe_history].size).to eq(2)
+        expect(data[:pe_history].first[:pe_ratio]).to be_present
+      end
+    end
+
     context "when asset is fixed income" do
       let!(:cetes) do
         create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28 Days",

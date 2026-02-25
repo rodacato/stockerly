@@ -53,6 +53,8 @@
       </div>
     <% end %>
   </div>
+
+  <%= render "market/pe_chart" if @asset.asset_type_stock? %>
 <% end %>
 
 <%= render "market/disclaimer" %>
