@@ -1,17 +1,23 @@
 # Fetches latest market index quotes from Yahoo Finance and updates MarketIndex records.
 class SyncMarketIndicesJob < ApplicationJob
   include SyncLogging
+  include AdaptiveScheduling
 
   queue_as :default
 
   def perform
-    result = YahooFinanceGateway.new.fetch_index_quotes
+    chain = GatewayChain.new(
+      gateways: [ YahooFinanceGateway.new, PolygonGateway.new ]
+    )
+    result = chain.fetch_index_quotes
 
     if result.success?
       updated = upsert_indices(result.value!)
       log_sync_success("Market Indices Sync", message: "#{updated} indices updated")
       EventBus.publish(MarketIndicesUpdated.new(count: updated))
+      adaptive_reset("market_indices")
     else
+      adaptive_backoff("market_indices")
       log_sync_failure("Market Indices Sync", result.failure[1])
     end
   end
