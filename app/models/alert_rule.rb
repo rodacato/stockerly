@@ -7,7 +7,9 @@ class AlertRule < ApplicationRecord
     price_crosses_below: 1,
     day_change_percent:  2,
     rsi_overbought:      3,
-    rsi_oversold:        4
+    rsi_oversold:        4,
+    sentiment_above:     5,
+    sentiment_below:     6
   }
   enum :status, { active: 0, paused: 1 }
 
