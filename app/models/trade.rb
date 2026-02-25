@@ -15,6 +15,16 @@ class Trade < ApplicationRecord
   scope :buys,  -> { where(side: :buy) }
   scope :sells, -> { where(side: :sell) }
   scope :recent, -> { order(executed_at: :desc) }
+  scope :kept, -> { where(discarded_at: nil) }
+  scope :discarded, -> { where.not(discarded_at: nil) }
+
+  def discarded?
+    discarded_at.present?
+  end
+
+  def discard!
+    update!(discarded_at: Time.current)
+  end
 
   private
 

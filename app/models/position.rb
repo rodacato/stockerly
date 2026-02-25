@@ -25,7 +25,7 @@ class Position < ApplicationRecord
   end
 
   def recalculate_avg_cost!
-    buy_trades = trades.where(side: :buy)
+    buy_trades = trades.kept.where(side: :buy)
     return if buy_trades.empty?
 
     total_shares = buy_trades.sum(:shares)

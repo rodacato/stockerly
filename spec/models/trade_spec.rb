@@ -62,6 +62,34 @@ RSpec.describe Trade, type: :model do
       recent = create(:trade, portfolio: portfolio, asset: asset, executed_at: 1.hour.ago)
       expect(Trade.recent.first).to eq(recent)
     end
+
+    it ".kept excludes discarded trades" do
+      kept = create(:trade, portfolio: portfolio, asset: asset)
+      discarded = create(:trade, portfolio: portfolio, asset: asset, discarded_at: Time.current)
+      expect(Trade.kept).to contain_exactly(kept)
+    end
+
+    it ".discarded returns only discarded trades" do
+      kept = create(:trade, portfolio: portfolio, asset: asset)
+      discarded = create(:trade, portfolio: portfolio, asset: asset, discarded_at: Time.current)
+      expect(Trade.discarded).to contain_exactly(discarded)
+    end
+  end
+
+  describe "soft delete" do
+    it "#discarded? returns false for active trades" do
+      expect(build(:trade).discarded?).to be false
+    end
+
+    it "#discarded? returns true when discarded_at is set" do
+      expect(build(:trade, discarded_at: Time.current).discarded?).to be true
+    end
+
+    it "#discard! sets discarded_at" do
+      trade = create(:trade)
+      trade.discard!
+      expect(trade.discarded_at).to be_within(5.seconds).of(Time.current)
+    end
   end
 
   describe "associations" do
