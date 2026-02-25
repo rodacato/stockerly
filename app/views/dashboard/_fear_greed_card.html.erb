@@ -1,6 +1,7 @@
-<%# Usage: render "dashboard/fear_greed_card", reading: @fear_greed[:crypto], label: "Crypto" %>
+<%# Usage: render "dashboard/fear_greed_card", reading: @fear_greed[:crypto], label: "Crypto", history: @fear_greed[:crypto_history] %>
 <% reading ||= nil %>
 <% label ||= "Index" %>
+<% history ||= [] %>
 
 <article class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
   <header class="flex items-center justify-between mb-4">
@@ -21,9 +22,35 @@
               else "emerald"
               end
     %>
-    <div class="flex flex-col items-center py-1 mb-4">
-      <span class="text-4xl font-bold text-<%= color %>-500 dark:text-<%= color %>-400"><%= val %></span>
-      <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400 mt-1"><%= reading.classification %></span>
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex flex-col items-start">
+        <span class="text-4xl font-bold text-<%= color %>-500 dark:text-<%= color %>-400"><%= val %></span>
+        <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400 mt-1"><%= reading.classification %></span>
+      </div>
+
+      <%# Inline sparkline — 30-day history %>
+      <% if history.size >= 2 %>
+        <%
+          spark_w = 80
+          spark_h = 28
+          step_x = spark_w.to_f / (history.size - 1)
+          spark_pts = history.each_with_index.map { |(_, v), i|
+            y = spark_h - (v.to_f / 100 * spark_h)
+            "#{(i * step_x).round(1)},#{y.round(1)}"
+          }.join(" ")
+          spark_color = case val
+                        when 0..24  then "#ef4444"
+                        when 25..44 then "#f97316"
+                        when 45..55 then "#f59e0b"
+                        when 56..74 then "#84cc16"
+                        else "#22c55e"
+                        end
+        %>
+        <svg viewBox="0 0 <%= spark_w %> <%= spark_h %>" class="w-20 h-7 flex-shrink-0" preserveAspectRatio="none" aria-label="<%= label %> Fear & Greed 30-day trend">
+          <polyline points="<%= spark_pts %>"
+                    fill="none" stroke="<%= spark_color %>" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+      <% end %>
     </div>
 
     <%# Gauge %>
