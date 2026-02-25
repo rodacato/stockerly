@@ -10,4 +10,8 @@ class EarningsController < AuthenticatedController
       @watchlist_events = data[:watchlist_events]
     end
   end
+
+  def show
+    @event = EarningsEvent.includes(:asset).find(params[:id])
+  end
 end

@@ -35,10 +35,26 @@
               <% in_watchlist = watchlist_asset_ids.include?(event.asset_id) %>
               <% timing_label = event.before_market_open? ? "BMO" : "AMC" %>
               <% beat_miss = event.beat_miss %>
-              <% if in_watchlist %>
-                <div class="flex items-center justify-between bg-primary/20 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded">
-                  <span><%= event.asset.symbol %></span>
-                  <div class="flex items-center gap-0.5">
+              <%= link_to earning_path(event), class: "block hover:opacity-80 transition-opacity" do %>
+                <% if in_watchlist %>
+                  <div class="flex items-center justify-between bg-primary/20 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded">
+                    <span><%= event.asset.symbol %></span>
+                    <div class="flex items-center gap-0.5">
+                      <% if beat_miss == :beat %>
+                        <span class="text-emerald-600 dark:text-emerald-400" title="Beat <%= event.eps_surprise_percent %>%">
+                          <span class="material-symbols-outlined text-[10px]">trending_up</span>
+                        </span>
+                      <% elsif beat_miss == :miss %>
+                        <span class="text-rose-600 dark:text-rose-400" title="Miss <%= event.eps_surprise_percent %>%">
+                          <span class="material-symbols-outlined text-[10px]">trending_down</span>
+                        </span>
+                      <% end %>
+                      <span class="material-symbols-outlined text-[10px]">star</span>
+                    </div>
+                  </div>
+                <% else %>
+                  <div class="flex items-center justify-between text-[9px] font-bold bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-400">
+                    <span><%= event.asset.symbol %> (<%= timing_label %>)</span>
                     <% if beat_miss == :beat %>
                       <span class="text-emerald-600 dark:text-emerald-400" title="Beat <%= event.eps_surprise_percent %>%">
                         <span class="material-symbols-outlined text-[10px]">trending_up</span>
@@ -48,22 +64,8 @@
                         <span class="material-symbols-outlined text-[10px]">trending_down</span>
                       </span>
                     <% end %>
-                    <span class="material-symbols-outlined text-[10px]">star</span>
                   </div>
-                </div>
-              <% else %>
-                <div class="flex items-center justify-between text-[9px] font-bold bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-400">
-                  <span><%= event.asset.symbol %> (<%= timing_label %>)</span>
-                  <% if beat_miss == :beat %>
-                    <span class="text-emerald-600 dark:text-emerald-400" title="Beat <%= event.eps_surprise_percent %>%">
-                      <span class="material-symbols-outlined text-[10px]">trending_up</span>
-                    </span>
-                  <% elsif beat_miss == :miss %>
-                    <span class="text-rose-600 dark:text-rose-400" title="Miss <%= event.eps_surprise_percent %>%">
-                      <span class="material-symbols-outlined text-[10px]">trending_down</span>
-                    </span>
-                  <% end %>
-                </div>
+                <% end %>
               <% end %>
             <% end %>
           </div>

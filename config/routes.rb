@@ -47,7 +47,7 @@ Rails.application.routes.draw do
     member { patch :toggle }
   end
   resources :trades,    only: [ :index, :create ]
-  resources :earnings,  only: [ :index ]
+  resources :earnings,  only: [ :index, :show ]
   resources :watchlist_items, only: [ :create, :destroy ]
   resources :notifications, only: [ :index ] do
     member { patch :mark_as_read }

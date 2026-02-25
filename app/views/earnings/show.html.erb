@@ -1,0 +1,77 @@
+<%# Earnings Event Detail %>
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <%= link_to earnings_path(date: @event.report_date), class: "inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-primary transition-colors" do %>
+      <span class="material-symbols-outlined text-lg">arrow_back</span>
+      Back to Calendar
+    <% end %>
+  </div>
+
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+    <%# Header %>
+    <div class="p-6 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <%= render "components/asset_badge", asset: @event.asset, size: "lg" %>
+          <div>
+            <h1 class="text-2xl font-black text-slate-900 dark:text-white"><%= @event.asset.name %></h1>
+            <p class="text-sm text-slate-500 mt-0.5"><%= @event.asset.symbol %> &bull; <%= @event.asset.exchange %></p>
+          </div>
+        </div>
+        <% if @event.beat_miss %>
+          <% beat = @event.beat_miss == :beat %>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold
+                       <%= beat ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+            <span class="material-symbols-outlined text-lg"><%= beat ? 'trending_up' : 'trending_down' %></span>
+            <%= beat ? 'Beat' : 'Miss' %> <%= @event.eps_surprise_percent %>%
+          </span>
+        <% else %>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-500">
+            <span class="material-symbols-outlined text-lg">schedule</span>
+            Pending
+          </span>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Details Grid %>
+    <div class="grid grid-cols-2 gap-px bg-slate-200 dark:bg-slate-800">
+      <div class="bg-white dark:bg-slate-900 p-5">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Report Date</p>
+        <p class="text-lg font-bold text-slate-900 dark:text-white"><%= @event.report_date.strftime("%B %d, %Y") %></p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 p-5">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Timing</p>
+        <p class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-lg text-slate-400"><%= @event.before_market_open? ? 'wb_sunny' : 'nights_stay' %></span>
+          <%= @event.before_market_open? ? 'Before Market Open' : 'After Market Close' %>
+        </p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 p-5">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Estimated EPS</p>
+        <p class="text-lg font-bold text-slate-900 dark:text-white">
+          <%= @event.estimated_eps ? number_to_currency(@event.estimated_eps) : '—' %>
+        </p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 p-5">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Actual EPS</p>
+        <% if @event.actual_eps %>
+          <p class="text-lg font-bold <%= @event.beat_miss == :beat ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
+            <%= number_to_currency(@event.actual_eps) %>
+          </p>
+        <% else %>
+          <p class="text-lg font-bold text-slate-400">Pending</p>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Footer: link to asset detail %>
+    <div class="p-5 border-t border-slate-200 dark:border-slate-800">
+      <%= link_to market_asset_path(@event.asset.symbol), class: "inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primary/80 transition-colors" do %>
+        <span class="material-symbols-outlined text-lg">show_chart</span>
+        View <%= @event.asset.symbol %> Details
+        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+      <% end %>
+    </div>
+  </div>
+</div>
