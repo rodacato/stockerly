@@ -1,6 +1,7 @@
 <%# Single trade row — used by index and Turbo Stream prepend %>
 <% is_buy = trade.buy? %>
-<tr id="<%= dom_id(trade) %>" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<% can_modify = trade.executed_at >= 30.days.ago %>
+<tr id="<%= dom_id(trade) %>" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
   <td class="px-6 py-4 text-sm text-slate-500"><%= trade.executed_at.strftime("%b %d, %Y %H:%M") %></td>
   <td class="px-6 py-4">
     <div class="flex items-center gap-2">
@@ -17,4 +18,21 @@
   <td class="px-6 py-4 text-right text-sm text-slate-500"><%= number_to_currency(trade.price_per_share) %></td>
   <td class="px-6 py-4 text-right text-sm font-bold text-slate-900 dark:text-white"><%= number_to_currency(trade.total_amount) %></td>
   <td class="px-6 py-4 text-right text-sm text-slate-400"><%= trade.fee.positive? ? number_to_currency(trade.fee) : "—" %></td>
+  <td class="px-6 py-4 text-right">
+    <% if can_modify %>
+      <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <%= link_to edit_trade_path(trade), data: { turbo_method: :get, turbo_stream: true },
+            class: "p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-primary transition-colors",
+            title: "Edit trade" do %>
+          <span class="material-symbols-outlined text-[18px]">edit</span>
+        <% end %>
+        <%= button_to trade_path(trade), method: :delete,
+            class: "p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer",
+            title: "Delete trade",
+            data: { turbo_confirm: "Delete this trade? This action cannot be undone." } do %>
+          <span class="material-symbols-outlined text-[18px]">delete</span>
+        <% end %>
+      </div>
+    <% end %>
+  </td>
 </tr>

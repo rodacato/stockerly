@@ -82,4 +82,97 @@ RSpec.describe "Trades", type: :request do
       end
     end
   end
+
+  describe "GET /trades/:id/edit" do
+    before { login_as(user) }
+
+    let!(:trade) do
+      create(:trade, portfolio: portfolio, asset: asset, side: :buy,
+             shares: 10.0, price_per_share: 150.0, total_amount: 1500.0, executed_at: 2.days.ago)
+    end
+
+    it "returns turbo_stream with edit form" do
+      get edit_trade_path(trade), as: :turbo_stream
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include("Save")
+      expect(response.body).to include("Cancel")
+    end
+
+    it "redirects when trade not found" do
+      get edit_trade_path(id: 999999)
+      expect(response).to redirect_to(trades_path)
+    end
+  end
+
+  describe "PATCH /trades/:id" do
+    before { login_as(user) }
+
+    let!(:position) { create(:position, portfolio: portfolio, asset: asset, shares: 10.0, avg_cost: 150.0, status: :open) }
+    let!(:trade) do
+      create(:trade, portfolio: portfolio, asset: asset, position: position,
+             side: :buy, shares: 10.0, price_per_share: 150.0, total_amount: 1500.0, executed_at: 2.days.ago)
+    end
+
+    it "updates trade and redirects with notice" do
+      patch trade_path(trade), params: { trade: { shares: "15" } }
+
+      expect(response).to redirect_to(trades_path)
+      follow_redirect!
+      expect(response.body).to include("Trade updated successfully")
+      expect(trade.reload.shares).to eq(15.0)
+    end
+
+    it "returns turbo_stream on success" do
+      patch trade_path(trade), params: { trade: { shares: "15" } }, as: :turbo_stream
+
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include("Trade updated successfully")
+    end
+
+    it "rejects update on old trade" do
+      trade.update_column(:executed_at, 31.days.ago)
+
+      patch trade_path(trade), params: { trade: { shares: "15" } }
+
+      expect(response).to redirect_to(trades_path)
+      follow_redirect!
+      expect(response.body).to include("Cannot edit trades older than 30 days")
+    end
+  end
+
+  describe "DELETE /trades/:id" do
+    before { login_as(user) }
+
+    let!(:position) { create(:position, portfolio: portfolio, asset: asset, shares: 10.0, avg_cost: 150.0, status: :open) }
+    let!(:trade) do
+      create(:trade, portfolio: portfolio, asset: asset, position: position,
+             side: :buy, shares: 10.0, price_per_share: 150.0, total_amount: 1500.0, executed_at: 2.days.ago)
+    end
+
+    it "soft-deletes the trade and redirects" do
+      delete trade_path(trade)
+
+      expect(response).to redirect_to(trades_path)
+      follow_redirect!
+      expect(response.body).to include("Trade deleted")
+      expect(trade.reload.discarded?).to be true
+    end
+
+    it "returns turbo_stream removing the row" do
+      delete trade_path(trade), as: :turbo_stream
+
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include("remove")
+    end
+
+    it "rejects deletion of old trade" do
+      trade.update_column(:executed_at, 31.days.ago)
+
+      delete trade_path(trade)
+
+      expect(response).to redirect_to(trades_path)
+      follow_redirect!
+      expect(response.body).to include("Cannot delete trades older than 30 days")
+    end
+  end
 end
