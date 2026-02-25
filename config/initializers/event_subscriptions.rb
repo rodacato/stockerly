@@ -44,6 +44,9 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(FearGreedUpdated, LogFearGreedUpdate)
   EventBus.subscribe(FearGreedUpdated, EvaluateSentimentAlerts)
 
+  # CETES
+  EventBus.subscribe(CetesSynced, LogCetesSync)
+
   # Fundamentals
   EventBus.subscribe(AssetFundamentalsUpdated, LogFundamentalsUpdate)
   EventBus.subscribe(AssetFundamentalsUpdated, BroadcastFundamentalsUpdate)

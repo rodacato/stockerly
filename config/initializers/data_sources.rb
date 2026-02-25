@@ -122,4 +122,16 @@ Rails.application.config.after_initialize do
     integration_name: nil,
     circuit_breaker_key: "fx"
   )
+
+  DataSourceRegistry.register(:banxico_cetes,
+    name: "CETES — Banxico",
+    icon: "account_balance",
+    color: "lime",
+    gateway_class: BanxicoGateway,
+    job_class: SyncCetesJob,
+    job_args: [],
+    test_symbol: nil,
+    integration_name: "Banxico",
+    circuit_breaker_key: "banxico"
+  )
 end
