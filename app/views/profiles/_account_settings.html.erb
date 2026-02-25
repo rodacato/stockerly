@@ -21,19 +21,6 @@
       </button>
     </div>
 
-    <%# Privacy Mode toggle — visual only (no DB field) %>
-    <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
-      <div>
-        <p class="text-sm font-semibold text-slate-900 dark:text-white">Privacy Mode</p>
-        <p class="text-xs text-slate-500">Make watchlist public</p>
-      </div>
-      <button type="button" disabled title="Coming soon"
-              class="relative inline-flex h-6 w-11 shrink-0 cursor-not-allowed rounded-full border-2 border-transparent opacity-50">
-        <span class="pointer-events-none inline-block h-5 w-11 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-        <span class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 translate-x-0"></span>
-      </button>
-    </div>
-
     <%# Change Password %>
     <div class="pt-2">
       <%= link_to forgot_password_path, class: "text-sm font-semibold text-primary hover:underline flex items-center gap-1" do %>
