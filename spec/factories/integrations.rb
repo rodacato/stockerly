@@ -3,7 +3,7 @@ FactoryBot.define do
     sequence(:provider_name) { |n| "Provider #{n}" }
     provider_type { "Stocks & Forex" }
     connection_status { :connected }
-    api_key_encrypted { "sk_test_abc123xyz789" }
+    api_key_encrypted { "test_key_abc123xyz789" }
     last_sync_at { 1.hour.ago }
 
     trait :disconnected do

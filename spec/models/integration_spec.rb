@@ -45,7 +45,7 @@ RSpec.describe Integration, type: :model do
 
   describe "#masked_api_key" do
     it "returns masked key when present" do
-      integration.api_key_encrypted = "sk_test_abc123xyz789"
+      integration.api_key_encrypted = "test_key_abc123xyz789"
       result = integration.masked_api_key
       expect(result).to start_with("••••••••••••")
       expect(result).to end_with("z789")
