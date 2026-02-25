@@ -64,15 +64,15 @@ production:
 
   sync_fundamentals_statements:
     class: SyncAllStatementsJob
-    schedule: at 8am on Sunday
+    schedule: "0 8 * * 0"
 
   sync_earnings:
     class: SyncEarningsJob
-    schedule: at 9am on Sunday
+    schedule: "0 9 * * 0"
 
   sync_cetes:
     class: SyncCetesJob
-    schedule: at 10am on Sunday
+    schedule: "0 10 * * 0"
 
   notify_earnings:
     class: NotifyEarningsJob
