@@ -9,5 +9,9 @@ class SearchController < AuthenticatedController
       @news   = data[:news]
       @query  = params[:q]
     end
+
+    if params[:format] == "modal"
+      render partial: "search/modal_results", layout: false
+    end
   end
 end

@@ -1,0 +1,37 @@
+<%# Search modal results — rendered inline in the Cmd+K modal %>
+<% if @assets.blank? && @news.blank? %>
+  <p class="px-3 py-4 text-sm text-slate-400 text-center">No results found for "<%= @query %>"</p>
+<% else %>
+  <% @assets.each do |asset| %>
+    <%= link_to market_asset_path(asset.symbol),
+        class: "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm transition-colors",
+        data: { search_result: true } do %>
+      <%= render "components/asset_badge", asset: asset, size: "sm" %>
+      <div class="flex-1 min-w-0">
+        <span class="font-bold text-slate-900 dark:text-white"><%= asset.symbol %></span>
+        <span class="text-slate-500 ml-1 truncate"><%= asset.name %></span>
+      </div>
+      <span class="text-xs font-medium text-slate-500 shrink-0"><%= asset.asset_type.humanize %></span>
+      <% if asset.current_price %>
+        <span class="text-sm font-bold text-slate-900 dark:text-white shrink-0"><%= number_to_currency(asset.current_price) %></span>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if @news.any? %>
+    <div class="border-t border-slate-100 dark:border-slate-800 mt-1 pt-1">
+      <% @news.first(3).each do |article| %>
+        <% article_path = article.related_ticker.present? ? market_asset_path(article.related_ticker) : news_path %>
+        <%= link_to article_path,
+            class: "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm transition-colors",
+            data: { search_result: true } do %>
+          <span class="material-symbols-outlined text-slate-400 text-lg shrink-0">newspaper</span>
+          <div class="flex-1 min-w-0">
+            <span class="text-slate-700 dark:text-slate-300 truncate block"><%= truncate(article.title, length: 60) %></span>
+          </div>
+          <span class="text-xs text-slate-400 shrink-0"><%= time_ago_in_words(article.published_at) %></span>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
