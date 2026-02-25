@@ -60,5 +60,35 @@ RSpec.describe SparklineHelper do
         expect(heights.size).to eq(5)
       end
     end
+
+    context "with preloaded association" do
+      before do
+        7.times do |i|
+          create(:asset_price_history, asset: asset, date: (7 - i).days.ago.to_date, close: 100 + (i * 10))
+        end
+      end
+
+      it "uses preloaded data without extra queries" do
+        preloaded_asset = Asset.includes(:asset_price_histories).find(asset.id)
+
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload| queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          helper.sparkline_heights(preloaded_asset)
+        end
+
+        expect(queries.none? { |q| q.include?("asset_price_histories") }).to be true
+      end
+
+      it "returns correct heights from preloaded data" do
+        preloaded_asset = Asset.includes(:asset_price_histories).find(asset.id)
+        heights = helper.sparkline_heights(preloaded_asset)
+
+        expect(heights).to be_an(Array)
+        expect(heights.size).to eq(7)
+        expect(heights.first).to eq(0)
+        expect(heights.last).to eq(100)
+      end
+    end
   end
 end

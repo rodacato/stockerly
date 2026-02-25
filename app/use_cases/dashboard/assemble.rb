@@ -5,7 +5,7 @@ module Dashboard
       summary = portfolio ? PortfolioSummary.new(portfolio) : nil
 
       watchlist_items = user.watchlist_items
-                            .includes(asset: :trend_scores)
+                            .includes(asset: [ :trend_scores, :asset_price_histories ])
                             .order(created_at: :desc)
                             .limit(10)
 
@@ -14,6 +14,7 @@ module Dashboard
       trending = Asset.where(asset_type: :stock)
                       .where.not(current_price: nil)
                       .where.not(change_percent_24h: nil)
+                      .includes(:trend_scores)
                       .order(Arel.sql("ABS(change_percent_24h) DESC"))
                       .limit(5)
 

@@ -140,5 +140,26 @@ RSpec.describe Dashboard::Assemble do
       insight = result.value![:weekly_insight]
       expect(insight[:has_data]).to be false
     end
+
+    it "preloads asset_price_histories on watchlist items" do
+      asset = create(:asset, symbol: "PRE1")
+      create(:watchlist_item, user: user, asset: asset)
+      create(:asset_price_history, asset: asset, date: Date.current, close: 100)
+
+      result = described_class.call(user: user)
+      watchlist_asset = result.value![:watchlist_items].first.asset
+
+      expect(watchlist_asset.association(:asset_price_histories)).to be_loaded
+    end
+
+    it "preloads trend_scores on trending assets" do
+      asset = create(:asset, symbol: "TRN", asset_type: :stock, current_price: 50.0, change_percent_24h: 8.0)
+      create(:trend_score, asset: asset)
+
+      result = described_class.call(user: user)
+      trending_asset = result.value![:trending].find { |a| a.symbol == "TRN" }
+
+      expect(trending_asset.association(:trend_scores)).to be_loaded
+    end
   end
 end

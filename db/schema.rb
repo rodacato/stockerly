@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_24_230645) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_25_132750) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -241,6 +241,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_24_230645) do
     t.datetime "updated_at", null: false
     t.string "url"
     t.index ["published_at"], name: "index_news_articles_on_published_at"
+    t.index ["related_ticker", "published_at"], name: "index_news_articles_on_ticker_and_published"
     t.index ["related_ticker"], name: "index_news_articles_on_related_ticker"
     t.index ["url"], name: "index_news_articles_on_url", unique: true
   end
@@ -343,6 +344,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_24_230645) do
     t.index ["asset_id"], name: "index_trades_on_asset_id"
     t.index ["executed_at"], name: "index_trades_on_executed_at"
     t.index ["portfolio_id", "asset_id"], name: "index_trades_on_portfolio_id_and_asset_id"
+    t.index ["portfolio_id", "executed_at"], name: "index_trades_on_portfolio_and_executed"
     t.index ["portfolio_id"], name: "index_trades_on_portfolio_id"
     t.index ["position_id"], name: "index_trades_on_position_id"
     t.index ["side"], name: "index_trades_on_side"
