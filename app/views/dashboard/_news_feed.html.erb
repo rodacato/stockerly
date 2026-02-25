@@ -6,14 +6,13 @@
       <%= link_to "View All", news_path, class: "rounded-lg bg-primary text-white px-3 py-1.5 text-xs font-bold shadow-sm" %>
     </div>
   </div>
-  <div class="space-y-4">
+  <div class="space-y-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-2 shadow-sm">
     <% @news.each do |article| %>
       <%= render "components/news_card",
         ticker: article.related_ticker,
         source: article.source,
         time_ago: time_ago_in_words(article.published_at) + " ago",
-        title: article.title,
-        excerpt: article.summary %>
+        title: article.title %>
     <% end %>
   </div>
   <% if @news.empty? %>
