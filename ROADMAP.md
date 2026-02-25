@@ -1,12 +1,12 @@
 # Stockerly — Roadmap
 
 > **Fecha:** 2026-02-25
-> **Estado actual:** 1525 specs, 95.44% line coverage, Phase 14 complete
+> **Estado actual:** 1627 specs, 93.6% line coverage, Phase 15 complete
 > **Siguiente:** v2 features (see Explicitly Deferred)
 
 ---
 
-## Completed Phases (0-14) — 1525 specs
+## Completed Phases (0-15) — 1627 specs
 
 | Fase     | Nombre                              | Specs | Commits |
 | -------- | ----------------------------------- | ----- | ------- |
@@ -41,6 +41,12 @@
 | **14.2** | Earnings Completion                 | 1458  | 81-83   |
 | **14.3** | Trade Management (Edit/Delete)      | 1505  | 84-86   |
 | **14.4** | Portfolio Analytics + Alerts         | 1525  | 87-89   |
+| **15.0** | Admin & Resilience Foundation       | 1555  | 90-93   |
+| **15.1** | Dashboard UX Improvements           | 1565  | 94-96   |
+| **15.2** | Sync Resilience & Data Pipeline     | 1578  | 97-99   |
+| **15.3** | API Efficiency & Batching           | 1596  | 100-103 |
+| **15.4** | Data Completeness & Quality         | 1617  | 104-107 |
+| **15.5** | Scaling Strategy & UX Enhancements  | 1627  | 108-109 |
 
 ### Phase 9 Summary (990 specs, 20 commits)
 
@@ -66,7 +72,11 @@
 
 **UX Critical Fixes:** Portfolio empty state restructured (always-visible trade form), search modal connected to backend with async fetch + 300ms debounce + keyboard navigation, market listing rows made clickable with Stimulus `row_link_controller`, 30-day SVG area price chart on asset detail page. **Earnings Completion:** Actual EPS sync from Polygon, `beat_miss`/`eps_surprise_percent` methods, beat/miss icons on calendar, full earnings detail page (`/earnings/:id`) with beat status and asset links. **Trade Management:** `Trading::UpdateTrade` use case (30-day edit guard, authorization, position recalculation), `Trading::DeleteTrade` with soft delete (`discarded_at` column), `TradeUpdated`/`TradeDeleted` events with audit log handlers, inline edit form via Turbo Stream, delete with confirmation. **Portfolio Analytics:** `PeriodReturnsCalculator` (8 periods: 1D/1W/1M/3M/6M/1Y/YTD/ALL using snapshots), SVG performance chart on portfolio page with period return pills, `Earnings::NotifyApproaching` use case (3-day lookahead, watchlist + positions, idempotent), `NotifyEarningsJob` daily at 7am.
 
-### Key Architecture Decisions (Phases 9-14)
+### Phase 15 Summary (1627 specs, 20 commits)
+
+**Admin & Resilience:** Expandable error details in admin logs (reuse `reveal_controller`), `sync_issue_since` tracking with `RetryFailedAssetsJob` (nightly, auto-disable after 7 days), `daily_api_calls` budget enforcement per Integration with atomic counters, backfill rake tasks with staggered enqueueing. **Dashboard UX:** F&G cards consolidated with inline SVG sparklines (eliminate chart row), `chart_tooltip_controller` Stimulus controller for interactive mousemove tooltips, compact news feed (ticker badge + title + source on single line). **Sync Resilience:** `AdaptiveScheduling` concern (cache-backed 2x backoff, cap 4x), Polygon fallback for market indices via `GatewayChain`, on-demand fundamental sync from asset detail page (10-minute guard). **API Efficiency:** Yahoo batch quotes via `/v7/finance/quote` (-69% calls), unified crypto sync to 5-min interval (-40% CoinGecko), `SyncBulkStocksJob` via Polygon grouped endpoint (-75% stock calls), Alpha Vantage bi-weekly Tue/Fri (-56%). Total API reduction: 2,557→947/day (63%). **Data Completeness:** Daily earnings sync with 90-day `days_ahead` window, `BackfillMissingHistoriesJob` (weekly, assets with <7 histories), integration tests for backfill/recovery/budget flows, `/health` JSON endpoint (ok/degraded/critical, 503 on critical for Kamal). **Scaling:** `ApiKeyPool` model with `KeyRotation` domain service (least-used strategy), TradingView Advanced Chart widget (lazy-loaded via IntersectionObserver, replaces SVG for stocks/ETF/crypto).
+
+### Key Architecture Decisions (Phases 9-15)
 
 | Decision | Resolution |
 |----------|-----------|
@@ -93,12 +103,21 @@
 | Portfolio chart default | 3M — balances recency with perspective |
 | Snapshots timing | Midnight UTC — simpler, no timezone complexity |
 | Earnings alerts advance | 3 days before report_date |
+| sync_issue recovery | `RetryFailedAssetsJob` nightly, auto-disable after 7 days |
+| API budget enforcement | Atomic `update_counters` per Integration, daily reset |
+| Yahoo batch endpoint | `/v7/finance/quote?symbols=X,Y,Z` — single call for all symbols |
+| Crypto sync frequency | Unified 5-min interval (288 calls/day, within CoinGecko free tier) |
+| Alpha Vantage frequency | Bi-weekly Tue/Fri, 15s stagger between jobs |
+| Adaptive scheduling | Cache-backed backoff (2x per rate_limit, cap 4x, reset on success) |
+| Health endpoint | `/health` JSON, 503 on critical — Kamal compatible |
+| API key rotation | Least-used strategy via `KeyRotation` domain service |
+| TradingView widget | Advanced Chart, lazy IntersectionObserver, `EXCHANGE:SYMBOL` mapping |
 
 ---
 
 ## All Phases Complete
 
-All planned phases (0-14) are complete. 1525 specs, 95.44% line coverage.
+All planned phases (0-15) are complete. 1627 specs, 93.6% line coverage.
 See "Explicitly Deferred" section below for v2+ features.
 
 ---
@@ -205,6 +224,33 @@ See "Explicitly Deferred" section below for v2+ features.
 | 89  | 14.4c  | Add earnings approaching alerts with daily notification job             | +8    |
 |     |        | *Phase 14 Total*                                                        | *+110* |
 |     |        | **Grand Total (Phases 9-14)**                                           | **~523** |
+
+### Phase 15 (Completed — 20 commits)
+
+| #   | Phase  | Commit Message                                                          | Specs |
+| --- | ------ | ----------------------------------------------------------------------- | ----- |
+| 90  | 15.0a  | Add expandable error details to admin logs table                        | +4    |
+| 91  | 15.0b  | Add sync_issue_since field and RetryFailedAssetsJob with auto-recovery  | +10   |
+| 92  | 15.0c  | Add backfill rake tasks for prices, earnings, and fundamentals          | +6    |
+| 93  | 15.0d  | Add daily API call budget tracking per Integration                      | +5    |
+| 94  | 15.1a  | Consolidate F&G cards with inline sparklines, remove chart row          | +4    |
+| 95  | 15.1b  | Add interactive tooltips to F&G and price charts                        | +4    |
+| 96  | 15.1c  | Redesign news cards as compact feed lines                               | +3    |
+| 97  | 15.2a  | Add adaptive sync scheduling with backoff on rate limits                | +6    |
+| 98  | 15.2b  | Add gateway fallback chain for market indices                           | +4    |
+| 99  | 15.2c  | Add on-demand fundamental sync from asset detail page                   | +5    |
+| 100 | 15.3a  | Batch Yahoo Finance index queries via quote endpoint                    | +5    |
+| 101 | 15.3b  | Unify crypto sync jobs and increase interval to 5 minutes               | +3    |
+| 102 | 15.3c  | Add bulk stock price sync via Polygon grouped endpoint                  | +6    |
+| 103 | 15.3d  | Reduce Alpha Vantage frequency to bi-weekly overview                    | +3    |
+| 104 | 15.4a  | Increase earnings sync to daily with 90-day window                      | +4    |
+| 105 | 15.4b  | Add BackfillMissingHistoriesJob as weekly recurring job                  | +4    |
+| 106 | 15.4c  | Add integration tests for full backfill flows                           | +6    |
+| 107 | 15.4d  | Add /health endpoint with sync freshness and admin status dashboard     | +5    |
+| 108 | 15.5a  | Add API key rotation pool for providers                                 | +5    |
+| 109 | 15.5b  | Add TradingView Advanced Chart widget to asset detail page              | +4    |
+|     |        | *Phase 15 Total*                                                        | *+96* |
+|     |        | **Grand Total (Phases 9-15)**                                           | **~619** |
 
 ---
 
