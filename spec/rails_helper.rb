@@ -79,6 +79,16 @@ RSpec.configure do |config|
 
   config.before(:each) { EventBus.clear! }
 
+  # Bullet N+1 detection — enabled after Rails boot to avoid frozen autoload_paths
+  Bullet.enable = true
+  Bullet.raise = true
+  Bullet.unused_eager_loading_enable = false # Avoid false positives with minimal test data
+  config.before(:each) { Bullet.start_request }
+  config.after(:each) do
+    Bullet.perform_out_of_channel_notifications if Bullet.notification?
+    Bullet.end_request
+  end
+
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
