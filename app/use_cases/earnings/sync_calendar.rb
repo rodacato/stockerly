@@ -25,7 +25,8 @@ module Earnings
       event = asset.earnings_events.find_or_initialize_by(report_date: data[:report_date])
       event.update!(
         timing: data[:timing] || :after_market_close,
-        estimated_eps: data[:estimated_eps]
+        estimated_eps: data[:estimated_eps],
+        actual_eps: data[:actual_eps]
       )
     rescue ActiveRecord::RecordInvalid
       nil

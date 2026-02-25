@@ -39,6 +39,16 @@ RSpec.describe Earnings::SyncCalendar do
       expect(EventBus).to have_received(:publish).with(an_instance_of(EarningsSynced))
     end
 
+    it "syncs actual_eps when available from gateway" do
+      stub_polygon_earnings_with_actuals("AAPL", count: 1)
+
+      described_class.call
+
+      event = EarningsEvent.find_by(asset: apple)
+      expect(event.actual_eps).to be_present
+      expect(event.actual_eps.to_f).to eq(1.7)
+    end
+
     it "returns 0 when no stock assets exist" do
       apple.update!(asset_type: :crypto)
 

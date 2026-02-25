@@ -109,6 +109,26 @@ module WebmockHelpers
       )
   end
 
+  def stub_polygon_earnings_with_actuals(ticker, count: 2)
+    events = count.times.map do |i|
+      {
+        "end_date" => (Date.current - (i + 1).months).to_s,
+        "fiscal_quarter" => "Q#{i + 1}",
+        "fiscal_year" => Date.current.year.to_s,
+        "eps" => { "estimated" => (1.5 + i * 0.1).round(2), "actual" => (1.7 + i * 0.1).round(2) },
+        "timeframe" => i.even? ? "pre" : "post"
+      }
+    end
+
+    stub_request(:get, "https://api.polygon.io/vX/reference/tickers/#{ticker}/earnings")
+      .with(query: hash_including("apiKey"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { results: events, count: events.size }.to_json
+      )
+  end
+
   def stub_polygon_earnings_empty(ticker)
     stub_request(:get, "https://api.polygon.io/vX/reference/tickers/#{ticker}/earnings")
       .with(query: hash_including("apiKey"))
