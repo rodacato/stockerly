@@ -90,6 +90,41 @@ RSpec.describe AlertEvaluator do
         expect(triggered).to include(rule)
       end
     end
+
+    context "volume_spike" do
+      it "triggers when volume exceeds threshold × average volume" do
+        asset_vol = create(:asset, symbol: "VOL", current_price: 100.0, volume: 500_000)
+        5.times do |i|
+          create(:asset_price_history, asset: asset_vol, date: (i + 1).days.ago.to_date, close: 100, volume: 100_000)
+        end
+        rule = create(:alert_rule, user: user, asset_symbol: "VOL", condition: :volume_spike, threshold_value: 3.0)
+
+        triggered = AlertEvaluator.evaluate([ rule ], asset_vol, 100.0)
+        expect(triggered).to include(rule)
+      end
+
+      it "does not trigger when volume is below threshold × average" do
+        asset_vol = create(:asset, symbol: "VOL2", current_price: 100.0, volume: 150_000)
+        5.times do |i|
+          create(:asset_price_history, asset: asset_vol, date: (i + 1).days.ago.to_date, close: 100, volume: 100_000)
+        end
+        rule = create(:alert_rule, user: user, asset_symbol: "VOL2", condition: :volume_spike, threshold_value: 3.0)
+
+        triggered = AlertEvaluator.evaluate([ rule ], asset_vol, 100.0)
+        expect(triggered).to be_empty
+      end
+    end
+
+    context "cooldown filtering" do
+      it "skips rules within cooldown period" do
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol,
+                       condition: :price_crosses_above, threshold_value: 155.0,
+                       last_triggered_at: 10.minutes.ago, cooldown_minutes: 60)
+
+        triggered = AlertEvaluator.evaluate([ rule ], asset, 160.0)
+        expect(triggered).to be_empty
+      end
+    end
   end
 
   describe ".evaluate_sentiment" do

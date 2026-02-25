@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_25_132750) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_25_133703) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,7 +42,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_132750) do
   create_table "alert_rules", force: :cascade do |t|
     t.string "asset_symbol", null: false
     t.integer "condition", null: false
+    t.integer "cooldown_minutes", default: 60
     t.datetime "created_at", null: false
+    t.datetime "last_triggered_at"
     t.integer "status", default: 0, null: false
     t.decimal "threshold_value", precision: 15, scale: 4, null: false
     t.datetime "updated_at", null: false

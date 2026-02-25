@@ -1,7 +1,7 @@
 class AlertEvaluator
   def self.evaluate(rules, asset, new_price)
     rules.select do |rule|
-      triggered?(rule, asset, new_price)
+      rule.cooled_down? && triggered?(rule, asset, new_price)
     end
   end
 
@@ -23,6 +23,10 @@ class AlertEvaluator
     when "rsi_oversold"
       score = asset.latest_trend_score&.score || 0
       score <= rule.threshold_value
+    when "volume_spike"
+      avg = average_volume(asset)
+      return false if avg.zero?
+      (asset.volume || 0) >= rule.threshold_value * avg
     else
       false
     end
@@ -43,5 +47,9 @@ class AlertEvaluator
     end
   end
 
-  private_class_method :triggered?, :sentiment_triggered?
+  def self.average_volume(asset, days: 5)
+    asset.asset_price_histories.where("date >= ?", days.days.ago.to_date).average(:volume)&.to_i || 0
+  end
+
+  private_class_method :triggered?, :sentiment_triggered?, :average_volume
 end

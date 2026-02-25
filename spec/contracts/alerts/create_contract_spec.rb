@@ -29,7 +29,7 @@ RSpec.describe Alerts::CreateContract do
       expect(result.errors[:threshold_value]).to be_present
     end
 
-    %w[price_crosses_above price_crosses_below day_change_percent rsi_overbought rsi_oversold sentiment_above sentiment_below].each do |condition|
+    %w[price_crosses_above price_crosses_below day_change_percent rsi_overbought rsi_oversold sentiment_above sentiment_below volume_spike].each do |condition|
       it "accepts condition '#{condition}'" do
         result = subject.call(valid_params.merge(condition: condition))
         expect(result).to be_success
