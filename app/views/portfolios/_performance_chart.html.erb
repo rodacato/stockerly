@@ -1,0 +1,52 @@
+<%# Portfolio Performance Chart — SVG area chart with period return pills %>
+<% chart = portfolio_chart_data(@chart_data) %>
+<section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm mb-8">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Portfolio Performance</h3>
+    <% if @period_returns.present? %>
+      <div class="flex flex-wrap gap-2">
+        <% @period_returns.each do |label, gain_loss| %>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold
+            <%= gain_loss.positive? ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+            <span class="text-slate-500 dark:text-slate-400"><%= label %></span>
+            <%= gain_loss.positive? ? '+' : '' %><%= number_to_percentage(gain_loss.percent, precision: 1) %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if chart %>
+    <div class="relative">
+      <svg viewBox="0 0 500 160" class="w-full h-40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <%# Grid lines %>
+        <% 5.times do |i| %>
+          <line x1="0" y1="<%= 4 + i * 38 %>" x2="500" y2="<%= 4 + i * 38 %>"
+                stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4"/>
+        <% end %>
+
+        <%# Area fill %>
+        <polygon points="<%= chart[:area] %>"
+                 fill="<%= chart[:color] %>" fill-opacity="0.08"/>
+
+        <%# Line %>
+        <polyline points="<%= chart[:points] %>"
+                  fill="none" stroke="<%= chart[:color] %>" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      <%# Date and value labels %>
+      <div class="flex justify-between mt-2 text-[10px] text-slate-400">
+        <span><%= chart[:first_date]&.strftime("%b %d") %></span>
+        <span><%= number_to_currency(chart[:min_value]) %> &mdash; <%= number_to_currency(chart[:max_value]) %></span>
+        <span><%= chart[:last_date]&.strftime("%b %d") %></span>
+      </div>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center justify-center py-12 text-slate-400">
+      <span class="material-symbols-outlined text-3xl mb-2">show_chart</span>
+      <p class="text-sm font-medium">Not enough data yet</p>
+      <p class="text-xs mt-1">Chart will appear after a few days of snapshots</p>
+    </div>
+  <% end %>
+</section>

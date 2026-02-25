@@ -54,5 +54,14 @@ RSpec.describe Portfolios::LoadOverview do
       allocation = result.value![:allocation]
       expect(allocation).to be_a(Hash)
     end
+
+    it "includes period returns and chart data" do
+      result = described_class.call(user: user)
+      data = result.value!
+
+      expect(data[:period_returns]).to be_a(Hash)
+      expect(data[:period_returns].keys).to include("1M", "ALL")
+      expect(data[:chart_data]).to be_an(Array)
+    end
   end
 end

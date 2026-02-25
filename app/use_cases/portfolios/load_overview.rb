@@ -18,13 +18,16 @@ module Portfolios
       end
 
       allocation = portfolio.allocation_by_sector
+      returns_calculator = PeriodReturnsCalculator.new(portfolio)
 
       Success({
         portfolio: portfolio,
         positions: positions,
         summary: summary,
         allocation: allocation,
-        tab: tab
+        tab: tab,
+        period_returns: returns_calculator.calculate,
+        chart_data: returns_calculator.chart_data(period: "1M")
       })
     end
   end
