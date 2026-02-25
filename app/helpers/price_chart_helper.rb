@@ -36,6 +36,10 @@ module PriceChartHelper
     line_color = trend_up ? "#10b981" : "#ef4444"
     fill_color = trend_up ? "#10b981" : "#ef4444"
 
+    data_points = coords.each_with_index.map do |coord, i|
+      { cx: coord[0], cy: coord[1], date: dates[i], value: closes[i] }
+    end
+
     {
       points: polyline_pts,
       area: area_pts,
@@ -44,7 +48,8 @@ module PriceChartHelper
       min_price: min_price,
       max_price: max_price,
       first_date: dates.first,
-      last_date: dates.last
+      last_date: dates.last,
+      data_points: data_points
     }
   end
 end

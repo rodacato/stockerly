@@ -12,21 +12,35 @@
       </div>
     </div>
 
-    <svg viewBox="0 0 500 160" class="w-full h-40" preserveAspectRatio="none">
-      <%# Grid lines %>
-      <line x1="0" y1="40"  x2="500" y2="40"  stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
-      <line x1="0" y1="80"  x2="500" y2="80"  stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
-      <line x1="0" y1="120" x2="500" y2="120" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+    <div class="relative" data-controller="chart-tooltip">
+      <svg viewBox="0 0 500 160" class="w-full h-40" preserveAspectRatio="none" data-chart-tooltip-target="svg">
+        <%# Grid lines %>
+        <line x1="0" y1="40"  x2="500" y2="40"  stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+        <line x1="0" y1="80"  x2="500" y2="80"  stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+        <line x1="0" y1="120" x2="500" y2="120" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
 
-      <%# Area fill %>
-      <polygon points="<%= chart[:area] %>"
-               fill="<%= chart[:fill_color] %>" opacity="0.1"/>
+        <%# Area fill %>
+        <polygon points="<%= chart[:area] %>"
+                 fill="<%= chart[:fill_color] %>" opacity="0.1"/>
 
-      <%# Data line %>
-      <polyline points="<%= chart[:points] %>"
-                fill="none" stroke="<%= chart[:color] %>" stroke-width="2"
-                stroke-linejoin="round" stroke-linecap="round"/>
-    </svg>
+        <%# Data line %>
+        <polyline points="<%= chart[:points] %>"
+                  fill="none" stroke="<%= chart[:color] %>" stroke-width="2"
+                  stroke-linejoin="round" stroke-linecap="round"/>
+
+        <%# Interactive data points %>
+        <% chart[:data_points].each do |dp| %>
+          <circle cx="<%= dp[:cx] %>" cy="<%= dp[:cy] %>" r="0"
+                  fill="<%= chart[:color] %>" stroke="white" stroke-width="1.5"
+                  data-date="<%= dp[:date].strftime('%b %d') %>"
+                  data-value="<%= number_to_currency(dp[:value]) %>"/>
+        <% end %>
+      </svg>
+
+      <%# Tooltip %>
+      <div data-chart-tooltip-target="tooltip"
+           class="hidden absolute -top-8 text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 shadow-sm pointer-events-none whitespace-nowrap"></div>
+    </div>
 
     <div class="flex justify-between mt-2 text-[10px] font-medium text-slate-400">
       <span><%= chart[:first_date].strftime("%b %d") %></span>

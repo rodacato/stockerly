@@ -26,6 +26,10 @@ module PortfolioChartHelper
     trend_up = values.last >= values.first
     line_color = trend_up ? "#10b981" : "#ef4444"
 
+    data_points = coords.each_with_index.map do |coord, i|
+      { cx: coord[0], cy: coord[1], date: dates[i], value: values[i] }
+    end
+
     {
       points: polyline_pts,
       area: area_pts,
@@ -33,7 +37,8 @@ module PortfolioChartHelper
       min_value: min_val,
       max_value: max_val,
       first_date: dates.first,
-      last_date: dates.last
+      last_date: dates.last,
+      data_points: data_points
     }
   end
 end
