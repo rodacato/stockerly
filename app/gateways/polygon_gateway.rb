@@ -76,6 +76,70 @@ class PolygonGateway < MarketDataGateway
     Failure([ :gateway_error, e.message ])
   end
 
+  # Polygon index symbol → internal MarketIndex symbol
+  INDEX_SYMBOL_MAP = {
+    "I:SPX"  => "SPX",
+    "I:COMP" => "NDX",
+    "I:DJI"  => "DJI",
+    "I:VIX"  => "VIX"
+  }.freeze
+
+  # Fetch index quotes via previous-day close for known indices.
+  # Returns Success([{ symbol:, name:, value:, change_percent:, is_open: }, ...])
+  def fetch_index_quotes(symbols = INDEX_SYMBOL_MAP.keys)
+    results = symbols.filter_map do |polygon_symbol|
+      response = connection.get("/v2/aggs/ticker/#{polygon_symbol}/prev") do |req|
+        req.params["apiKey"] = @api_key
+      end
+      next unless response.success?
+
+      result = response.body.dig("results", 0)
+      next unless result
+
+      internal_symbol = INDEX_SYMBOL_MAP[polygon_symbol] || polygon_symbol
+      {
+        symbol: internal_symbol,
+        name: internal_symbol,
+        value: result["c"].to_d,
+        change_percent: calculate_change_percent(result["o"], result["c"]),
+        is_open: true
+      }
+    end
+
+    return Failure([ :gateway_error, "No index data from Polygon.io" ]) if results.empty?
+
+    Success(results)
+  rescue Faraday::Error => e
+    Failure([ :gateway_error, e.message ])
+  end
+
+  # Fetch grouped daily bars for all US stocks in a single API call.
+  # Returns Success([{ symbol:, price:, change_percent:, volume: }, ...])
+  def fetch_grouped_daily(date: Date.yesterday)
+    response = connection.get("/v2/aggs/grouped/locale/us/market/stocks/#{date}") do |req|
+      req.params["apiKey"] = @api_key
+      req.params["adjusted"] = "true"
+    end
+
+    return Failure([ :rate_limited, "Polygon.io rate limit exceeded" ]) if response.status == 429
+    return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
+
+    results = (response.body["results"] || []).map do |bar|
+      {
+        symbol: bar["T"],
+        price: bar["c"].to_d,
+        change_percent: calculate_change_percent(bar["o"], bar["c"]),
+        volume: bar["v"]&.to_i
+      }
+    end
+
+    return Failure([ :not_found, "No grouped data from Polygon.io" ]) if results.empty?
+
+    Success(results)
+  rescue Faraday::Error => e
+    Failure([ :gateway_error, e.message ])
+  end
+
   # Fetch prices for multiple symbols via individual calls.
   # Returns Success([{ symbol:, price:, ... }, ...])
   def fetch_bulk_prices(symbols)

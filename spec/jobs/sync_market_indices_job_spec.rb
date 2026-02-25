@@ -58,10 +58,49 @@ RSpec.describe SyncMarketIndicesJob do
       end
     end
 
-    context "when gateway fails" do
+    context "when Yahoo fails but Polygon succeeds (fallback)" do
       before do
         allow_any_instance_of(YahooFinanceGateway).to receive(:fetch_index_quotes)
           .and_return(Dry::Monads::Failure([ :gateway_error, "Connection timeout" ]))
+
+        stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/I:SPX/prev})
+          .to_return(
+            status: 200,
+            headers: { "Content-Type" => "application/json" },
+            body: { results: [ { "o" => 5100.0, "c" => 5200.0, "h" => 5250.0, "l" => 5050.0, "v" => 1000 } ], resultsCount: 1 }.to_json
+          )
+        stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/I:COMP/prev})
+          .to_return(
+            status: 200,
+            headers: { "Content-Type" => "application/json" },
+            body: { results: [ { "o" => 18000.0, "c" => 18500.0, "h" => 18600.0, "l" => 17900.0, "v" => 2000 } ], resultsCount: 1 }.to_json
+          )
+        stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/I:(DJI|VIX)/prev})
+          .to_return(status: 404, body: "Not Found")
+      end
+
+      it "updates indices from Polygon fallback" do
+        described_class.perform_now
+
+        spx.reload
+        expect(spx.value).to eq(5200.0.to_d)
+      end
+
+      it "logs success even via fallback" do
+        expect { described_class.perform_now }
+          .to change(SystemLog, :count).by(1)
+
+        log = SystemLog.last
+        expect(log.severity).to eq("success")
+      end
+    end
+
+    context "when all gateways fail" do
+      before do
+        allow_any_instance_of(YahooFinanceGateway).to receive(:fetch_index_quotes)
+          .and_return(Dry::Monads::Failure([ :gateway_error, "Yahoo timeout" ]))
+        allow_any_instance_of(PolygonGateway).to receive(:fetch_index_quotes)
+          .and_return(Dry::Monads::Failure([ :gateway_error, "Polygon timeout" ]))
       end
 
       it "logs failure" do
@@ -71,7 +110,6 @@ RSpec.describe SyncMarketIndicesJob do
         log = SystemLog.last
         expect(log.task_name).to eq("Market Indices Sync")
         expect(log.severity).to eq("error")
-        expect(log.error_message).to include("Connection timeout")
       end
 
       it "does not update indices" do

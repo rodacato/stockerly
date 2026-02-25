@@ -37,4 +37,15 @@ class GatewayChain
 
     Failure([ :all_gateways_failed, "All gateways failed for #{symbol}", attempted ])
   end
+
+  def fetch_index_quotes
+    @gateways.each do |gateway|
+      next unless gateway.respond_to?(:fetch_index_quotes)
+
+      result = gateway.fetch_index_quotes
+      return result if result.success?
+    end
+
+    Failure([ :all_gateways_failed, "All gateways failed for index quotes" ])
+  end
 end
