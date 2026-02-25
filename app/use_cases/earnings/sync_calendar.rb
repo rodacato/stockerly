@@ -1,7 +1,10 @@
 module Earnings
   class SyncCalendar < ApplicationUseCase
-    def call
-      assets = Asset.syncing.where(asset_type: :stock)
+    DEFAULT_DAYS_AHEAD = 90
+
+    def call(days_ahead: DEFAULT_DAYS_AHEAD)
+      assets = Asset.where(asset_type: :stock, sync_status: [ :active, :sync_issue ])
+      cutoff_date = Date.current + days_ahead.days
       synced = 0
 
       assets.find_each do |asset|
@@ -9,6 +12,8 @@ module Earnings
         next if result.failure?
 
         result.value!.each do |data|
+          next if data[:report_date].present? && data[:report_date] > cutoff_date
+
           upsert_event(asset, data)
           synced += 1
         end
