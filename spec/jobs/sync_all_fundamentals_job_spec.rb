@@ -52,6 +52,28 @@ RSpec.describe SyncAllFundamentalsJob, type: :job do
         .not_to have_enqueued_job(SyncFundamentalJob)
     end
 
+    it "staggers enqueued jobs with #{SyncAllFundamentalsJob::STAGGER_SECONDS}-second intervals" do
+      expect(SyncFundamentalJob).to receive(:set).with(wait: 0.seconds).ordered.and_call_original
+      expect(SyncFundamentalJob).to receive(:set).with(wait: 15.seconds).ordered.and_call_original
+      expect(SyncFundamentalJob).to receive(:set).with(wait: 30.seconds).ordered.and_call_original
+
+      described_class.perform_now
+    end
+
+    it "includes sync_issue assets in scope" do
+      stuck = create(:asset, symbol: "STUCK", asset_type: :stock, sync_status: :sync_issue)
+
+      expect { described_class.perform_now }
+        .to have_enqueued_job(SyncFundamentalJob).with(stuck.id)
+    end
+
+    it "is scheduled bi-weekly (Tuesday and Friday)" do
+      config = YAML.load_file(Rails.root.join("config/recurring.yml"))
+      schedule = config.dig("production", "sync_fundamentals_overview", "schedule")
+
+      expect(schedule).to eq("0 7 * * 2,5")
+    end
+
     context "prioritization" do
       let(:user) { create(:user) }
 

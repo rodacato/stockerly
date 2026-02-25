@@ -32,7 +32,7 @@ class SyncAllFundamentalsJob < ApplicationJob
   private
 
   def prioritized_assets
-    Asset.where(asset_type: [ :stock, :etf ], sync_status: :active)
+    Asset.where(asset_type: [ :stock, :etf ], sync_status: [ :active, :sync_issue ])
          .where("fundamentals_synced_at IS NULL OR fundamentals_synced_at < ?", 24.hours.ago)
          .order(
            Arel.sql(<<~SQL.squish)
