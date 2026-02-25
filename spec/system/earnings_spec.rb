@@ -45,4 +45,41 @@ RSpec.describe "Earnings calendar", type: :system do
     visit earnings_path(date: next_month)
     expect(page).to have_content(next_month.strftime("%B %Y"))
   end
+
+  it "displays beat badge for earnings that beat estimates" do
+    create(:earnings_event, asset: aapl,
+           report_date: Date.current.beginning_of_month + 10.days,
+           estimated_eps: 2.00, actual_eps: 2.30)
+
+    visit earnings_path
+    expect(page).to have_css("span[title*='Beat']")
+  end
+
+  it "displays miss badge for earnings that missed estimates" do
+    create(:earnings_event, asset: aapl,
+           report_date: Date.current.beginning_of_month + 10.days,
+           estimated_eps: 2.00, actual_eps: 1.70)
+
+    visit earnings_path
+    expect(page).to have_css("span[title*='Miss']")
+  end
+
+  it "shows no badge for pending earnings without actual EPS" do
+    create(:earnings_event, asset: aapl,
+           report_date: Date.current.beginning_of_month + 10.days,
+           estimated_eps: 2.00, actual_eps: nil)
+
+    visit earnings_path
+    expect(page).not_to have_css("span[title*='Beat']")
+    expect(page).not_to have_css("span[title*='Miss']")
+  end
+
+  it "shows beat/miss surprise percentage in title attribute" do
+    create(:earnings_event, asset: aapl,
+           report_date: Date.current.beginning_of_month + 10.days,
+           estimated_eps: 2.00, actual_eps: 2.30)
+
+    visit earnings_path
+    expect(page).to have_css("span[title='Beat 15.0%']")
+  end
 end
