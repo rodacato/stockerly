@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_25_143528) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_25_202244) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_143528) do
     t.index ["asset_symbol"], name: "index_alert_rules_on_asset_symbol"
     t.index ["user_id", "status"], name: "index_alert_rules_on_user_id_and_status"
     t.index ["user_id"], name: "index_alert_rules_on_user_id"
+  end
+
+  create_table "api_key_pools", force: :cascade do |t|
+    t.string "api_key_encrypted", null: false
+    t.datetime "created_at", null: false
+    t.integer "daily_calls", default: 0, null: false
+    t.boolean "enabled", default: true, null: false
+    t.bigint "integration_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["integration_id"], name: "index_api_key_pools_on_integration_id"
   end
 
   create_table "asset_fundamentals", force: :cascade do |t|
@@ -101,6 +111,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_143528) do
     t.string "sector"
     t.bigint "shares_outstanding"
     t.string "symbol", null: false
+    t.datetime "sync_issue_since"
     t.integer "sync_status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "volume"
@@ -209,8 +220,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_143528) do
 
   create_table "integrations", force: :cascade do |t|
     t.string "api_key_encrypted"
+    t.datetime "calls_reset_at"
     t.integer "connection_status", default: 0, null: false
     t.datetime "created_at", null: false
+    t.integer "daily_api_calls", default: 0, null: false
+    t.integer "daily_call_limit", default: 500, null: false
     t.datetime "last_sync_at"
     t.string "provider_name", null: false
     t.string "provider_type", null: false
@@ -398,6 +412,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_143528) do
   add_foreign_key "alert_events", "users"
   add_foreign_key "alert_preferences", "users"
   add_foreign_key "alert_rules", "users"
+  add_foreign_key "api_key_pools", "integrations"
   add_foreign_key "asset_fundamentals", "assets"
   add_foreign_key "asset_price_histories", "assets"
   add_foreign_key "audit_logs", "users"

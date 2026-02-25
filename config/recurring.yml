@@ -20,15 +20,10 @@ production:
     args: [ "stock", "low" ]
     schedule: every 30 minutes
 
-  sync_high_priority_crypto:
+  sync_all_crypto:
     class: SyncPriorityAssetsJob
-    args: [ "crypto", "high" ]
-    schedule: every 3 minutes
-
-  sync_low_priority_crypto:
-    class: SyncPriorityAssetsJob
-    args: [ "crypto", "low" ]
-    schedule: every 15 minutes
+    args: [ "crypto", "all" ]
+    schedule: every 5 minutes
 
   refresh_fx_rates:
     class: RefreshFxRatesJob
@@ -42,9 +37,13 @@ production:
     class: CalculateTrendScoresJob
     schedule: at 11:30pm every day
 
+  retry_failed_assets:
+    class: RetryFailedAssetsJob
+    schedule: at 2am every day
+
   cleanup_old_logs:
     command: "SystemLog.where('created_at < ?', 90.days.ago).delete_all"
-    schedule: at 2am every day
+    schedule: at 2:15am every day
 
   refresh_fear_greed:
     class: RefreshFearGreedJob
@@ -60,7 +59,7 @@ production:
 
   sync_fundamentals_overview:
     class: SyncAllFundamentalsJob
-    schedule: at 7am every day
+    schedule: "0 7 * * 2,5"
 
   sync_fundamentals_statements:
     class: SyncAllStatementsJob
@@ -68,7 +67,11 @@ production:
 
   sync_earnings:
     class: SyncEarningsJob
-    schedule: "0 9 * * 0"
+    schedule: at 9am every day
+
+  backfill_missing_histories:
+    class: BackfillMissingHistoriesJob
+    schedule: "0 3 * * 0"
 
   sync_cetes:
     class: SyncCetesJob

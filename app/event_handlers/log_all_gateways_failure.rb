@@ -27,7 +27,13 @@ class LogAllGatewaysFailure
 
     return unless recent_failures >= CONSECUTIVE_FAILURE_THRESHOLD
 
-    Asset.find_by(id: asset_id)&.update!(sync_status: :sync_issue)
+    asset = Asset.find_by(id: asset_id)
+    return unless asset
+
+    asset.update!(
+      sync_status: :sync_issue,
+      sync_issue_since: asset.sync_issue_since || Time.current
+    )
   end
   private_class_method :mark_sync_issue
 end
