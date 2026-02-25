@@ -29,7 +29,9 @@
                else "Weak"
              end %>
           <%= turbo_stream_from "asset_#{asset.id}" %>
-          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
+              data-controller="row-link" data-row-link-url-value="<%= market_asset_path(asset.symbol) %>"
+              data-action="click->row-link#visit">
             <td class="px-6 py-4">
               <%= link_to market_asset_path(asset.symbol), class: "flex items-center gap-3 group" do %>
                 <%= render "components/asset_badge", asset: asset, size: "sm", market_open: market_open_for(asset) %>
@@ -76,18 +78,21 @@
                 <%= render "components/sparkline", direction: positive ? :up : :down, heights: real_heights %>
               </div>
             </td>
-            <td class="px-6 py-4 text-center">
-              <%= turbo_frame_tag "watchlist_button_#{asset.id}" do %>
-                <% if @watchlisted_asset_ids.include?(asset.id) %>
-                  <span class="inline-flex items-center gap-1 text-emerald-500 text-xs font-medium">
-                    <span class="material-symbols-outlined text-lg">check_circle</span>
-                  </span>
-                <% else %>
-                  <%= button_to watchlist_items_path, params: { asset_id: asset.id }, class: "p-2 rounded-lg text-primary hover:bg-primary/10 transition-colors" do %>
-                    <span class="material-symbols-outlined text-lg">add_circle</span>
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-center gap-2">
+                <%= turbo_frame_tag "watchlist_button_#{asset.id}" do %>
+                  <% if @watchlisted_asset_ids.include?(asset.id) %>
+                    <span class="inline-flex items-center gap-1 text-emerald-500 text-xs font-medium">
+                      <span class="material-symbols-outlined text-lg">check_circle</span>
+                    </span>
+                  <% else %>
+                    <%= button_to watchlist_items_path, params: { asset_id: asset.id }, class: "p-2 rounded-lg text-primary hover:bg-primary/10 transition-colors" do %>
+                      <span class="material-symbols-outlined text-lg">add_circle</span>
+                    <% end %>
                   <% end %>
                 <% end %>
-              <% end %>
+                <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-lg">chevron_right</span>
+              </div>
             </td>
           </tr>
         <% end %>
