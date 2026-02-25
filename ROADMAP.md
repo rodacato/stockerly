@@ -1,12 +1,12 @@
 # Stockerly — Roadmap
 
 > **Fecha:** 2026-02-25
-> **Estado actual:** 1415 specs, 95.4% line coverage, Phase 13 complete
-> **Siguiente:** Phase 14 (TBD)
+> **Estado actual:** 1525 specs, 95.44% line coverage, Phase 14 complete
+> **Siguiente:** v2 features (see Explicitly Deferred)
 
 ---
 
-## Completed Phases (0-10) — 1216 specs
+## Completed Phases (0-14) — 1525 specs
 
 | Fase     | Nombre                              | Specs | Commits |
 | -------- | ----------------------------------- | ----- | ------- |
@@ -26,6 +26,21 @@
 | **10.1** | Financial Statements + Calculator   | 1115  | 25-27   |
 | **10.2** | UI: Asset Detail Page               | 1203  | 28-30   |
 | **10.3** | Crypto Fundamentals                 | 1216  | 31-32   |
+| **11.0** | TrendScore Real Data                | 1238  | 33-36   |
+| **11.1** | Trade Entry UI                      | 1281  | 37-42   |
+| **11.2** | Quick Wins (F&G Chart, Filters)     | 1295  | 43-45   |
+| **11.3** | Earnings External API               | 1306  | 46-48   |
+| **12.0** | Email Verification                  | 1318  | 49-53   |
+| **12.1** | System Test Expansion               | 1348  | 54-59   |
+| **12.2** | Weekly Insight + CI Hardening       | 1363  | 60-63   |
+| **13.0** | Sentiment-based Alerts              | 1378  | 64-67   |
+| **13.1** | CETES Complete                      | 1393  | 68-72   |
+| **13.2** | Performance + Advanced Alerts       | 1415  | 73-76   |
+| **14.0** | UX Critical Fixes                   | 1436  | 77-80   |
+| **14.1** | Data Integrity (already done 11.1e) | —     | —       |
+| **14.2** | Earnings Completion                 | 1458  | 81-83   |
+| **14.3** | Trade Management (Edit/Delete)      | 1505  | 84-86   |
+| **14.4** | Portfolio Analytics + Alerts         | 1525  | 87-89   |
 
 ### Phase 9 Summary (990 specs, 20 commits)
 
@@ -35,7 +50,23 @@
 
 **Models:** `FinancialStatement` (JSONB), `AssetFundamental` (JSONB metrics), 33 `MetricDefinitions` (Data.define). **Gateways:** `AlphaVantageGateway` (OVERVIEW + 3 statement endpoints, "Note" key rate limit detection), `CoingeckoGateway#fetch_market_data` (extended crypto data). **Domain:** `FundamentalCalculator` (D/E, TTM, CAGR, all formulas), `FundamentalPresenter` (live P/E, P/B, P/S at render). **UI:** Asset detail page (`/market/:symbol`) with 7 stock tabs + 2 crypto tabs, adaptive rendering, educational tooltips, regulatory disclaimer. **Events:** `FinancialStatementsSynced` → recalculate → `AssetFundamentalsUpdated` → Turbo broadcast.
 
-### Key Architecture Decisions (from Phase 9-10)
+### Phase 11 Summary (1306 specs, 16 commits)
+
+**TrendScore:** `TrendScoreCalculator` (RSI-14 + 7-day momentum, score blending 60/40), `RecalculateTrendScoreOnPriceUpdate` async handler, `CalculateTrendScoresJob` bulk backfill, removed hardcoded seeds. **Trade Entry:** `ExecuteTradeContract` (dry-validation), `ExecuteTrade` use case with position handling (buy creates/extends, sell closes), `TradesController` (new, create, index), inline Turbo Frame trade form, position locking with `with_lock`, full system test. **Quick Wins:** Historical F&G SVG chart on dashboard, news watchlist filter, earnings watchlist filter. **Earnings API:** `PolygonGateway#fetch_earnings`, `Earnings::SyncCalendar` use case, `SyncEarningsJob` with DataSourceRegistry + recurring schedule.
+
+### Phase 12 Summary (1363 specs, 15 commits)
+
+**Email Verification:** `email_verified_at` migration, `Identity::VerifyEmail` use case, `SendVerificationEmailOnRegistration` handler, `EmailVerificationsController`, persistent banner for unverified users (soft block). **System Tests:** 6 new system specs covering alert management, watchlist management, portfolio tabs, earnings calendar, admin management, password reset flow. **Weekly Insight:** `WeeklyInsightCalculator` domain service (observational language only, no prescriptive advice), "View Full Report" enabled with real portfolio data. **CI Hardening:** Trivy Docker scanning, Bullet gem for N+1 detection, disabled UI button cleanup.
+
+### Phase 13 Summary (1415 specs, 13 commits)
+
+**Sentiment Alerts:** `sentiment_above`/`sentiment_below` conditions in AlertRule enum, `AlertEvaluator` extended with sentiment logic, `EvaluateSentimentAlerts` handler on `FearGreedUpdated`, sentiment options in alert form. **CETES Complete:** `BanxicoGateway` (Banxico SIE API, circuit breaker), `YieldCalculator` (discount rate → yield to maturity), `SyncCetesJob` + events, fixed income detail view with maturity calendar, system test. **Performance:** Composite indexes on `news_articles(related_ticker, published_at)` and `trades(portfolio_id, executed_at)`, N+1 fix via preloaded associations in `Dashboard::Assemble`, Russian doll fragment caching for watchlist table, fragment caching for trending/insight/market_status. **Advanced Alerts:** `volume_spike` condition (threshold × 5-day avg volume), `cooldown_minutes` + `last_triggered_at` on AlertRule, P/E history chart (inline SVG polyline).
+
+### Phase 14 Summary (1525 specs, 13 commits)
+
+**UX Critical Fixes:** Portfolio empty state restructured (always-visible trade form), search modal connected to backend with async fetch + 300ms debounce + keyboard navigation, market listing rows made clickable with Stimulus `row_link_controller`, 30-day SVG area price chart on asset detail page. **Earnings Completion:** Actual EPS sync from Polygon, `beat_miss`/`eps_surprise_percent` methods, beat/miss icons on calendar, full earnings detail page (`/earnings/:id`) with beat status and asset links. **Trade Management:** `Trading::UpdateTrade` use case (30-day edit guard, authorization, position recalculation), `Trading::DeleteTrade` with soft delete (`discarded_at` column), `TradeUpdated`/`TradeDeleted` events with audit log handlers, inline edit form via Turbo Stream, delete with confirmation. **Portfolio Analytics:** `PeriodReturnsCalculator` (8 periods: 1D/1W/1M/3M/6M/1Y/YTD/ALL using snapshots), SVG performance chart on portfolio page with period return pills, `Earnings::NotifyApproaching` use case (3-day lookahead, watchlist + positions, idempotent), `NotifyEarningsJob` daily at 7am.
+
+### Key Architecture Decisions (Phases 9-14)
 
 | Decision | Resolution |
 |----------|-----------|
@@ -48,242 +79,33 @@
 | Alpha Vantage rate limit | Inspect body for "Note" key (returns HTTP 200, not 429) |
 | Crypto adaptive rendering | Stocks: 7 tabs, Crypto: 2 tabs (Summary + Market Data) |
 | Crypto fundamentals storage | `period_label: "CRYPTO_MARKET"` in AssetFundamental |
-
-### Source Plans (for historical reference)
-
-- `PLAN_SENTIMENT.md` — Phase 9.0-9.1 architecture
-- `PLAN_IMPROVEMENTS.md` — Phase 9.2-9.5 features
-- `PLAN_METRICS.md` — Phase 10.0-10.3 fundamentals
-
----
-
-## Pending Phases — Summary
-
-| Fase     | Nombre                          | Tipo      | Est. Specs | Acumulado |
-| -------- | ------------------------------- | --------- | ---------- | --------- |
-| **11.0** | TrendScore Real Data            | Pendiente | ~20        | ~1236     |
-| **11.1** | Trade Entry UI                  | Pendiente | ~40        | ~1276     |
-| **11.2** | Quick Wins (F&G Chart, Filters) | Pendiente | ~15        | ~1291     |
-| **11.3** | Earnings External API           | Pendiente | ~15        | ~1306     |
-|          | *Phase 11 Total*                |           | *~90*      |           |
-| **12.0** | Email Verification              | Pendiente | ~20        | ~1326     |
-| **12.1** | System Test Expansion           | Pendiente | ~30        | ~1356     |
-| **12.2** | Weekly Insight + CI Hardening   | Pendiente | ~15        | ~1371     |
-|          | *Phase 12 Total*                |           | *~65*      |           |
-| **13.0** | Sentiment-based Alerts          | Pendiente | ~15        | ~1386     |
-| **13.1** | CETES Complete                  | Pendiente | ~25        | ~1411     |
-| **13.2** | Performance + Advanced Alerts   | Pendiente | ~20        | ~1431     |
-|          | *Phase 13 Total*                |           | *~60*      |           |
-|          | **Grand Total New**             |           | **~215**   | **~1431** |
+| TrendScore formula | 60% normalized RSI-14 + 40% normalized 7-day momentum |
+| Email verification | Soft block (banner), not hard redirect |
+| Weekly insight language | Strictly observational, disclaimer footer reused |
+| CETES yield calculation | Discount rate → yield to maturity (Mexican convention) |
+| Fragment caching | Russian doll for watchlist rows, time-based for static sections |
+| Volume spike detection | Current volume ≥ threshold × 5-day average |
+| Alert cooldown | `cooldown_minutes` (default 60) + `last_triggered_at` |
+| P/E chart | Inline SVG polyline (same pattern as F&G), no external JS |
+| Trade soft delete | `discarded_at` column — audit trail critical for fintech |
+| Trade edit limit | 30 days, admin override possible |
+| Beat/miss threshold | Straight comparison: `actual >= estimated` = beat |
+| Portfolio chart default | 3M — balances recency with perspective |
+| Snapshots timing | Midnight UTC — simpler, no timezone complexity |
+| Earnings alerts advance | 3 days before report_date |
 
 ---
 
-## Expert Panel Consensus
+## All Phases Complete
 
-> **Panel:** 10 expert profiles from `docs/spec/EXPERTS.md`
-> **Method:** Each expert proposed top 3 priorities → debate → consensus ranking
-
-### Expert Vote Summary
-
-| Feature | Votes (of 10) | Phase |
-|---------|---------------|-------|
-| Trade Entry UI | 8 | 11.1 |
-| TrendScore Real Data | 6 | 11.0 |
-| SSL + Backups | 5 | Pre-11 |
-| Email Verification | 4 | 12.0 |
-| Historical F&G Chart | 4 | 11.2 |
-| System Test Expansion | 3 | 12.1 |
-| Earnings External API | 3 | 11.3 |
-| CETES Complete | 2 | 13.1 |
-| Sentiment Alerts | 2 | 13.0 |
-| Performance Audit | 2 | 13.2 |
-
-### Key Debates (Resolved)
-
-1. **TrendScore vs Trade Entry first?** → TrendScore first (11.0): smaller scope, highest data integrity impact, no UI changes. Trade Entry follows (11.1).
-2. **SSL/Backups timing?** → Pre-Phase 11 infrastructure (parallel). Existential for fintech.
-3. **Email Verification priority?** → Phase 12 (soft block with banner, not hard redirect).
-4. **Quick wins grouping?** → F&G Chart + Watchlist Filters bundled in 11.2 (low effort, high visibility).
-5. **CETES timing?** → Phase 13. Requires new gateway (Banxico) + yield calculations.
-
----
-
-## Pre-Phase 11 — Infrastructure Hardening
-
-> **Type:** Infrastructure only (no application code, 0 specs)
-> **Can be done in parallel with Phase 11**
-
-| # | Item | Description | Owner |
-|---|------|-------------|-------|
-| S-1 | **SSL End-to-End** | Kamal proxy SSL + Cloudflare Full Strict or Tunnel | DevOps |
-| S-2 | **PostgreSQL Backups** | pg_dump daily to S3, WAL archiving, monitoring | DevOps |
-
----
-
-## Phase 11 — Core Loop Completion + Data Integrity (~90 specs)
-
-> **Goal:** Complete the primary user loop (view portfolio → log trade → see updated P&L) and replace all fabricated data with real computed values.
-> **Depends on:** Phase 10 complete
-> **Estimated accumulated specs:** ~1306
-
-### Phase 11.0 — TrendScore Real Data (~20 specs)
-
-**Why first:** Smallest scope, highest data integrity impact, no UI changes needed.
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 11.0a | `TrendScoreCalculator` domain service — RSI-14 + 7-day momentum from `AssetPriceHistory` | New: `app/domain/trend_score_calculator.rb` | +8 |
-| 11.0b | `RecalculateTrendScoreOnPriceUpdate` event handler (async, triggered by `AssetPriceUpdated`) | New handler, Modify: `config/initializers/event_subscriptions.rb` | +4 |
-| 11.0c | `CalculateTrendScoresJob` for bulk backfill | New: `app/jobs/calculate_trend_scores_job.rb`, Modify: `config/recurring.yml` | +4 |
-| 11.0d | Remove hardcoded trend score seeds, update `MarketSentiment` fallbacks | Modify: `db/seeds.rb`, `app/domain/market_sentiment.rb` | +4 |
-
-**Key architecture decisions:**
-- `TrendScoreCalculator` is a pure domain service (like `FundamentalCalculator`) — no DB reads, receives array of closes, returns `{ score:, label:, direction: }`
-- RSI-14 formula: `100 - (100 / (1 + avg_gain / avg_loss))` over 14 periods
-- Momentum: `(current_close - close_7d_ago) / close_7d_ago * 100`
-- Score blending: `0.6 * normalized_rsi + 0.4 * normalized_momentum`
-- Event handler is `async? = true` to avoid blocking price sync pipeline
-
-### Phase 11.1 — Trade Entry UI (~40 specs)
-
-**Why second:** Core user loop — the most impactful user-facing feature (8/10 expert votes).
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 11.1a | `Trades::ExecuteTradeContract` (dry-validation) | New: `app/contracts/trades/execute_trade_contract.rb` | +6 |
-| 11.1b | `Trades::ExecuteTrade` use case with position handling | New: `app/use_cases/trades/execute_trade.rb` | +10 |
-| 11.1c | `TradesController` (new, create, index) | New: `app/controllers/trades_controller.rb`, Modify: `config/routes.rb` | +8 |
-| 11.1d | Trade form view (Turbo Frame modal) + trade history tab | New: `app/views/trades/`, Modify: `app/views/portfolios/_positions_table.html.erb` | +6 |
-| 11.1e | Position locking + edge cases (sell all = close, new buy = create position) | Modify: `app/event_handlers/recalculate_avg_cost_on_trade.rb` | +6 |
-| 11.1f | System test: full trade flow (buy, verify position updated, sell, verify closed) | New: `spec/system/trade_flow_spec.rb` | +4 |
-
-**Key architecture decisions:**
-- Use case creates `Trade`, then publishes `TradeExecuted` (existing event)
-- Handler `RecalculateAvgCostOnTrade` already exists — add `with_lock` for concurrency safety
-- If user buys an asset with no open position, use case creates a new `Position` (status: open)
-- If user sells all shares, use case closes the position (status: closed)
-- Contract validates: `shares > 0`, `price_per_share > 0`, `side in %w[buy sell]`, `asset_symbol present`
-- The `executed_at` field defaults to `Time.current` but can be set to past dates for manual entry
-
-### Phase 11.2 — Quick Wins: F&G Chart + News Watchlist Filter (~15 specs)
-
-**Why third:** Low effort, high visibility. Ships in same phase as the bigger features.
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 11.2a | Historical F&G Chart — SVG line chart below F&G cards on dashboard | New: `app/views/dashboard/_fear_greed_chart.html.erb`, Modify: `app/views/dashboard/show.html.erb`, `app/use_cases/dashboard/assemble.rb` | +5 |
-| 11.2b | News Watchlist Filter — filter pill + query scope | Modify: `app/use_cases/news/list_articles.rb`, `app/views/news/index.html.erb` | +5 |
-| 11.2c | Earnings Watchlist Filter — `Watchlist Only` filter on earnings calendar | Modify: `app/use_cases/earnings/list_for_month.rb`, `app/views/earnings/index.html.erb` | +5 |
-
-**Key architecture decisions:**
-- F&G chart uses pure SVG `<polyline>` with color-banded background rectangles (no JS library)
-- Data from `FearGreedReading.crypto.recent` (already scoped to last 30 records)
-- News watchlist filter adds `.where(related_ticker: symbols)` to existing query chain
-- No new models, no new jobs, no new events
-
-### Phase 11.3 — Earnings External API (~15 specs)
-
-**Why fourth:** Replaces the last major set of seeded data.
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 11.3a | `PolygonGateway#fetch_earnings(ticker)` method | Modify: `app/gateways/polygon_gateway.rb` | +4 |
-| 11.3b | `Earnings::SyncCalendar` use case + `SyncEarningsJob` | New: use case, job, event, handler | +8 |
-| 11.3c | Register in DataSourceRegistry + recurring schedule | Modify: `config/initializers/data_sources.rb`, `config/recurring.yml` | +3 |
-
-**Key architecture decisions:**
-- Polygon endpoint: `GET /vX/reference/tickers/{ticker}/earnings`
-- Upserts by `[asset_id, report_date]` (unique constraint already exists on `EarningsEvent`)
-- Syncs weekly (Sundays 9am) for all watchlisted/portfolio assets
-- Publishes `EarningsSynced` event for logging
-
----
-
-## Phase 12 — Security, Quality, and Polish (~65 specs)
-
-> **Goal:** Harden security, expand test coverage, enable disabled UI buttons.
-> **Depends on:** Phase 11 complete
-> **Estimated accumulated specs:** ~1371
-
-### Phase 12.0 — Email Verification (~20 specs)
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 12.0a | Migration: `add_email_verified_at_to_users` | New migration, Modify: `app/models/user.rb` | +3 |
-| 12.0b | `Identity::VerifyEmail` use case + contract | New: use case + contract | +6 |
-| 12.0c | `SendVerificationEmailOnRegistration` event handler + `UserMailer#verify_email` | New handler, Modify: `app/mailers/user_mailer.rb` | +4 |
-| 12.0d | `EmailVerificationsController` + verification page | New controller + views | +4 |
-| 12.0e | Persistent banner for unverified users in app layout | Modify: `app/views/layouts/app.html.erb` | +3 |
-
-**Key decisions:** Soft block (banner, not redirect). Unverified users can use the platform but see a persistent "Verify your email" banner. This avoids breaking the onboarding flow.
-
-### Phase 12.1 — System Test Expansion (~30 specs)
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 12.1a | Alert management flow (create, edit, toggle, delete) | New: `spec/system/alerts_spec.rb` | +6 |
-| 12.1b | Watchlist management (add from market, remove from profile) | New: `spec/system/watchlist_spec.rb` | +5 |
-| 12.1c | Portfolio tabs (open, closed, dividends, trade log) | New: `spec/system/portfolio_spec.rb` | +5 |
-| 12.1d | Earnings calendar navigation | New: `spec/system/earnings_spec.rb` | +4 |
-| 12.1e | Admin asset management + sync | New: `spec/system/admin_spec.rb` | +5 |
-| 12.1f | Password reset flow | New: `spec/system/password_reset_spec.rb` | +5 |
-
-### Phase 12.2 — Weekly Insight (Real Data) + CI Hardening (~15 specs)
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 12.2a | `WeeklyInsightCalculator` domain service | New: `app/domain/weekly_insight_calculator.rb` | +6 |
-| 12.2b | Enable "View Full Report" button, render real insights | Modify: dashboard views + `app/use_cases/dashboard/assemble.rb` | +4 |
-| 12.2c | Docker image scanning (Trivy) in CI + remove disabled button states | Modify: `.github/workflows/ci.yml`, affected views | +3 |
-| 12.2d | Performance audit: Bullet gem, index verification, N+1 fixes | Modify: `Gemfile`, affected queries | +2 |
-
-**Key decisions for Weekly Insight:**
-- Language is strictly observational: "Your portfolio was up X% this week. Top performer: AAPL (+Y%)."
-- No imperative advice. No "Consider diversifying" or "You should buy".
-- Disclaimer footer from Phase 10.2 is reused.
-- Data source: `PortfolioSnapshot` (7-day window), open positions with price changes.
-
----
-
-## Phase 13 — Market Expansion + Advanced Features (~60 specs)
-
-> **Goal:** Niche differentiators and advanced user features.
-> **Depends on:** Phase 12 complete
-> **Estimated accumulated specs:** ~1431
-
-### Phase 13.0 — Sentiment-based Alerts (~15 specs)
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 13.0a | Add `sentiment_above` and `sentiment_below` to `AlertRule.condition` enum | Modify: `app/models/alert_rule.rb` | +2 |
-| 13.0b | Extend `AlertEvaluator` with sentiment conditions | Modify: `app/domain/alert_evaluator.rb` | +6 |
-| 13.0c | `EvaluateSentimentAlerts` handler on `FearGreedUpdated` | New handler, Modify: event subscriptions | +4 |
-| 13.0d | Update alert form with sentiment condition options | Modify: alert views | +3 |
-
-### Phase 13.1 — CETES Complete (~25 specs)
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 13.1a | `BanxicoGateway` — fetch CETES auction results | New: `app/gateways/banxico_gateway.rb` | +6 |
-| 13.1b | `YieldCalculator` domain service (discount rate, yield to maturity) | New: `app/domain/yield_calculator.rb` | +6 |
-| 13.1c | `SyncCetesJob` + events + handler | New job + event + handler | +5 |
-| 13.1d | Fixed income detail view + maturity calendar | New views in `/market/` | +5 |
-| 13.1e | System test: CETES detail page | New: `spec/system/cetes_spec.rb` | +3 |
-
-### Phase 13.2 — Performance + Advanced Alerts (~20 specs)
-
-| Step | Description | Files | Specs |
-|------|-------------|-------|-------|
-| 13.2a | Performance audit results: add missing indexes, fix N+1 queries | Migrations + model modifications | +4 |
-| 13.2b | Caching strategy: fragment caching for dashboard, Russian doll for tables | Modify: views + controllers | +6 |
-| 13.2c | Volume alerts + cooldown period on AlertRule | Migration + `AlertEvaluator` extension | +6 |
-| 13.2d | Historical P/E chart (requires charting library decision) | New: chart component | +4 |
+All planned phases (0-14) are complete. 1525 specs, 95.44% line coverage.
+See "Explicitly Deferred" section below for v2+ features.
 
 ---
 
 ## Commit Sequence
 
-### Phases 9-10 (Completed — 32 commits)
+### Phases 9-13 (Completed — 76 commits)
 
 | #   | Phase  | Commit Message                                                          | Specs |
 | --- | ------ | ----------------------------------------------------------------------- | ----- |
@@ -319,11 +141,6 @@
 | 30  | 10.2c  | Add metric tooltip controller with help icon popovers                   | +6    |
 | 31  | 10.3a  | Enrich CoinGecko gateway with extended market data                      | +3    |
 | 32  | 10.3b  | Add crypto-specific metrics with adaptive rendering                     | +7    |
-
-### Phase 11 (Pending)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
 | 33  | 11.0a  | Add TrendScoreCalculator domain service with RSI-14                     | +8    |
 | 34  | 11.0b  | Add RecalculateTrendScoreOnPriceUpdate event handler                    | +4    |
 | 35  | 11.0c  | Add CalculateTrendScoresJob for bulk backfill                           | +4    |
@@ -338,14 +155,8 @@
 | 44  | 11.2b  | Add news watchlist filter                                               | +5    |
 | 45  | 11.2c  | Add earnings watchlist filter                                           | +5    |
 | 46  | 11.3a  | Add fetch_earnings method to PolygonGateway                             | +4    |
-| 47  | 11.3b  | Add SyncEarningsJob with Polygon earnings integration                   | +8    |
-| 48  | 11.3c  | Register earnings sync in DataSourceRegistry                            | +3    |
-|     |        | *Phase 11 Total*                                                        | *~90* |
-
-### Phase 12 (Pending)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
+| 47  | 11.3b  | Add earnings sync pipeline with SyncCalendar use case                   | +8    |
+| 48  | 11.3c  | Register earnings sync in DataSourceRegistry and recurring schedule     | +3    |
 | 49  | 12.0a  | Add email_verified_at to users                                          | +3    |
 | 50  | 12.0b  | Add VerifyEmail use case and contract                                   | +6    |
 | 51  | 12.0c  | Add verification email handler and mailer method                        | +4    |
@@ -361,12 +172,6 @@
 | 61  | 12.2b  | Enable weekly insight with real portfolio data                          | +4    |
 | 62  | 12.2c  | Add Trivy scanning to CI, remove disabled button states                 | +3    |
 | 63  | 12.2d  | Add Bullet gem, fix N+1 queries                                        | +2    |
-|     |        | *Phase 12 Total*                                                        | *~65* |
-
-### Phase 13 (Complete — 1415 specs)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
 | 64  | 13.0a  | Add sentiment conditions to AlertRule enum                              | +2    |
 | 65  | 13.0b  | Extend AlertEvaluator with sentiment conditions                         | +6    |
 | 66  | 13.0c  | Add EvaluateSentimentAlerts handler on FearGreedUpdated                  | +4    |
@@ -380,32 +185,26 @@
 | 74  | 13.2b  | Add fragment caching and Russian doll caching                           | +6    |
 | 75  | 13.2c  | Add volume alerts with cooldown period                                  | +6    |
 | 76  | 13.2d  | Add historical P/E chart component                                      | +4    |
-|     |        | *Phase 13 Total*                                                        | *~60* |
-|     |        | **Grand Total (Phases 9-13)**                                           | **~403** |
 
----
+### Phase 14 (Completed — 13 commits)
 
-## Dependency Graph
-
-```
-Pre-Phase 11 (Infrastructure) ──── parallel with everything
-
-Phase 11 (Core Loop + Data Integrity)
-  ├── 11.0 TrendScore ────────── independent
-  ├── 11.1 Trade Entry ───────── independent
-  ├── 11.2 Quick Wins ────────── independent (F&G chart needs dashboard data)
-  └── 11.3 Earnings API ──────── independent (uses PolygonGateway)
-
-Phase 12 (Security + Quality) ── depends on Phase 11
-  ├── 12.0 Email Verification ── independent
-  ├── 12.1 System Tests ──────── depends on 11.1 (needs Trade flow to test)
-  └── 12.2 Weekly Insight + CI ─ independent
-
-Phase 13 (Expansion) ─────────── depends on Phase 12
-  ├── 13.0 Sentiment Alerts ──── depends on F&G data (Phase 9.1, done)
-  ├── 13.1 CETES ──────────────── depends on fixed_income schema (Phase 9.5, done)
-  └── 13.2 Performance + Adv ─── depends on Bullet audit (12.2d)
-```
+| #   | Phase  | Commit Message                                                          | Specs |
+| --- | ------ | ----------------------------------------------------------------------- | ----- |
+| 77  | 14.0a  | Fix portfolio empty state with always-visible trade form                | +4    |
+| 78  | 14.0b+e | Connect search to backend with keyboard navigation                     | +8    |
+| 79  | 14.0c  | Make market listing rows fully clickable with hover UX                  | +3    |
+| 80  | 14.0d  | Add asset detail price chart (SVG area chart)                           | +6    |
+| 81  | 14.2a  | Extend earnings sync with actual_eps and beat/miss calculation          | +9    |
+| 82  | 14.2b  | Add beat/miss badges to earnings calendar                               | +4    |
+| 83  | 14.2c+d | Add earnings detail page with show route and system test               | +9    |
+| 84  | 14.3a  | Add UpdateTrade use case with 30-day edit guard                         | +20   |
+| 85  | 14.3b  | Add DeleteTrade use case with soft delete via discarded_at              | +15   |
+| 86  | 14.3c  | Add trade edit/delete UI with inline editing and soft delete            | +12   |
+| 87  | 14.4a  | Add PeriodReturnsCalculator for portfolio time-based returns            | +7    |
+| 88  | 14.4b  | Add portfolio performance chart with period return pills               | +5    |
+| 89  | 14.4c  | Add earnings approaching alerts with daily notification job             | +8    |
+|     |        | *Phase 14 Total*                                                        | *+110* |
+|     |        | **Grand Total (Phases 9-14)**                                           | **~523** |
 
 ---
 
@@ -419,33 +218,14 @@ Phase 13 (Expansion) ─────────── depends on Phase 12
 | **FMP/Polygon Provider Swap** | Upgrade from Alpha Vantage when budget allows (abstraction ready) | Data Engineer |
 | **Advanced Composite Alerts** | Requires predicate composition engine refactor | Domain Architect |
 | **BulkAssetSync Concern** | DRY refactor of bulk sync jobs — low urgency, already working | Rails Backend |
-
----
-
-## Risk Mitigation
-
-| Risk | Mitigation |
-|------|-----------|
-| Trade race conditions | `Position.with_lock` in avg_cost recalculation handler |
-| TrendScore calculation drift | Compare against known RSI-14 values for AAPL/BTC in test fixtures |
-| Prescriptive language in Weekly Insight | Financial Expert reviews all text templates — no imperative verbs |
-| Polygon earnings rate limit | Schedule sync weekly (Sunday 9am), stagger requests with `wait:` |
-| Banxico API instability | Circuit breaker (threshold: 3, timeout: 300s), fallback to last known yield |
-| System test flakiness | Use `driven_by :rack_test` (no browser), assert on content not layout |
-| Performance audit reveals deep issues | Time-box Phase 12.2d to 2 days; create backlog items for larger fixes |
-| Alpha Vantage 25 calls/day limit | Budget tracker via SystemLog, prioritized queue (portfolio > watchlist > rest) |
-
----
-
-## Critical Reference Files
-
-| File | Relevance |
-|------|-----------|
-| `app/models/trade.rb` | Core model for Trade Entry (11.1) — already has schema |
-| `app/domain/alert_evaluator.rb` | Must extend for sentiment (13.0) and volume alerts (13.2) |
-| `app/helpers/sparkline_helper.rb` | Pattern for F&G chart normalization (11.2a) |
-| `app/domain/fundamental_calculator.rb` | Architecture pattern for TrendScoreCalculator (11.0) and YieldCalculator (13.1) |
-| `app/event_handlers/recalculate_avg_cost_on_trade.rb` | Must add `with_lock` before Trade Entry (11.1e) |
+| **Bulk CSV Import** | Input sanitization critical (formula injection vector), max 500 rows | Security Engineer |
+| **Trade Export (CSV/PDF)** | Low reach, nice-to-have | Product Strategist |
+| **Position Notes/Labels** | Low impact, low effort — backlog filler | UX Designer |
+| **Dividend Sync (External)** | Polygon charges for corporate actions data | Financial Expert |
+| **Tax Lot Tracking (FIFO/LIFO)** | Complex, low demand for retail audience | Financial Expert |
+| **Performance Attribution by Sector** | Needs sector-level aggregation | Data Engineer |
+| **SSL End-to-End** | Kamal proxy SSL + Cloudflare Full Strict or Tunnel | DevOps |
+| **PostgreSQL Backups** | pg_dump daily to S3, WAL archiving, monitoring | DevOps |
 
 ---
 
