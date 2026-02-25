@@ -3,6 +3,8 @@
 
 <%= render "market/asset_header", asset: @asset, presenter: @presenter, is_watchlisted: @is_watchlisted %>
 
+<%= render "market/price_chart" %>
+
 <% if @asset.asset_type_fixed_income? %>
   <%= render "market/fixed_income_detail", asset: @asset, yield_data: @yield_data %>
 <% else %>

@@ -1,0 +1,36 @@
+<%# Asset price chart — SVG area chart using AssetPriceHistory data (30d) %>
+<% chart = price_chart_data(@price_histories) %>
+
+<% if chart %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm mb-6">
+    <div class="flex items-center justify-between mb-3">
+      <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Price History — 30 Day</h4>
+      <div class="flex items-baseline gap-2">
+        <span class="text-sm font-medium text-slate-500"><%= number_to_currency(chart[:min_price]) %></span>
+        <span class="text-slate-300 dark:text-slate-600">—</span>
+        <span class="text-sm font-medium text-slate-500"><%= number_to_currency(chart[:max_price]) %></span>
+      </div>
+    </div>
+
+    <svg viewBox="0 0 500 160" class="w-full h-40" preserveAspectRatio="none">
+      <%# Grid lines %>
+      <line x1="0" y1="40"  x2="500" y2="40"  stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+      <line x1="0" y1="80"  x2="500" y2="80"  stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+      <line x1="0" y1="120" x2="500" y2="120" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+      <%# Area fill %>
+      <polygon points="<%= chart[:area] %>"
+               fill="<%= chart[:fill_color] %>" opacity="0.1"/>
+
+      <%# Data line %>
+      <polyline points="<%= chart[:points] %>"
+                fill="none" stroke="<%= chart[:color] %>" stroke-width="2"
+                stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+
+    <div class="flex justify-between mt-2 text-[10px] font-medium text-slate-400">
+      <span><%= chart[:first_date].strftime("%b %d") %></span>
+      <span><%= chart[:last_date].strftime("%b %d") %></span>
+    </div>
+  </div>
+<% end %>

@@ -24,6 +24,7 @@ class MarketController < AuthenticatedController
       @presenter = data[:presenter]
       @has_fundamentals = data[:has_fundamentals]
       @yield_data = data[:yield_data]
+      @price_histories = data[:price_histories] || []
       @pe_history = data[:pe_history]
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
     in Dry::Monads::Failure[ :not_found, _ ]
