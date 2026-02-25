@@ -28,6 +28,8 @@ module Dashboard
         stocks_history: FearGreedReading.stocks.recent.reorder(fetched_at: :asc).pluck(:fetched_at, :value)
       }
 
+      weekly_insight = compute_weekly_insight(portfolio)
+
       Success({
         summary: summary,
         watchlist_items: watchlist_items,
@@ -35,8 +37,19 @@ module Dashboard
         trending: trending,
         indices: indices,
         sentiment: sentiment,
-        fear_greed: fear_greed
+        fear_greed: fear_greed,
+        weekly_insight: weekly_insight
       })
+    end
+
+    private
+
+    def compute_weekly_insight(portfolio)
+      return { has_data: false } unless portfolio
+
+      snapshots = portfolio.snapshots.where(date: 7.days.ago.to_date..Date.current).order(:date)
+      positions = portfolio.open_positions.includes(:asset)
+      WeeklyInsightCalculator.calculate(snapshots: snapshots, positions: positions)
     end
   end
 end

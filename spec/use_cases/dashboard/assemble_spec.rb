@@ -17,6 +17,7 @@ RSpec.describe Dashboard::Assemble do
       expect(data).to have_key(:indices)
       expect(data).to have_key(:sentiment)
       expect(data).to have_key(:fear_greed)
+      expect(data).to have_key(:weekly_insight)
     end
 
     it "includes PortfolioSummary when portfolio exists" do
@@ -107,6 +108,37 @@ RSpec.describe Dashboard::Assemble do
       result = described_class.call(user: user)
       fg = result.value![:fear_greed]
       expect(fg[:stocks_history]).to be_empty
+    end
+
+    it "includes weekly_insight key in result" do
+      result = described_class.call(user: user)
+      expect(result.value!).to have_key(:weekly_insight)
+    end
+
+    it "returns weekly insight with data when snapshots exist" do
+      asset = create(:asset, symbol: "AAPL", change_percent_24h: 3.5)
+      create(:position, portfolio: portfolio, asset: asset, status: :open)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 5.days.ago.to_date, total_value: 10_000)
+      create(:portfolio_snapshot, portfolio: portfolio, date: Date.current, total_value: 10_500)
+
+      result = described_class.call(user: user)
+      insight = result.value![:weekly_insight]
+      expect(insight[:has_data]).to be true
+      expect(insight[:weekly_change]).to eq(5.0)
+      expect(insight[:top_performer][:symbol]).to eq("AAPL")
+    end
+
+    it "returns weekly insight without data when no snapshots" do
+      result = described_class.call(user: user)
+      insight = result.value![:weekly_insight]
+      expect(insight[:has_data]).to be false
+    end
+
+    it "returns weekly insight without data when no portfolio" do
+      portfolio.destroy
+      result = described_class.call(user: user.reload)
+      insight = result.value![:weekly_insight]
+      expect(insight[:has_data]).to be false
     end
   end
 end
