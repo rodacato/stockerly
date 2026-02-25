@@ -627,6 +627,48 @@ module WebmockHelpers
       )
   end
 
+  # --- Banxico SIE API (CETES) ---
+
+  def stub_banxico_auctions(term: "28", yield_rate: 11.15, date: "25/02/2026")
+    series_id = BanxicoGateway::CETES_SERIES[term.to_s]
+    stub_request(:get, "#{BanxicoGateway::BASE_URL}series/#{series_id}/datos/oportuno")
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {
+          bmx: {
+            series: [ {
+              "idSerie" => series_id,
+              "titulo" => "CETES #{term}D",
+              "datos" => [ { "fecha" => date, "dato" => yield_rate.to_s } ]
+            } ]
+          }
+        }.to_json
+      )
+  end
+
+  def stub_banxico_not_found(term: "28")
+    series_id = BanxicoGateway::CETES_SERIES[term.to_s]
+    stub_request(:get, "#{BanxicoGateway::BASE_URL}series/#{series_id}/datos/oportuno")
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {
+          bmx: { series: [ { "idSerie" => series_id, "datos" => [] } ] }
+        }.to_json
+      )
+  end
+
+  def stub_banxico_rate_limited
+    stub_request(:get, %r{banxico\.org\.mx/SieAPIRest/service/v1/series/.*/datos/oportuno})
+      .to_return(status: 429, body: "Rate limit exceeded")
+  end
+
+  def stub_banxico_server_error
+    stub_request(:get, %r{banxico\.org\.mx/SieAPIRest/service/v1/series/.*/datos/oportuno})
+      .to_return(status: 500, body: "Internal Server Error")
+  end
+
   private
 
   def stub_yahoo_chart(symbol, price:, previous_close:, volume: 0, short_name: nil, regular_start: nil, regular_end: nil)
