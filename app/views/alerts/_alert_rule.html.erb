@@ -1,7 +1,7 @@
 <%# Single alert rule row for Turbo Stream operations %>
 <% is_active = rule.active? %>
 <%= tag.tr id: dom_id(rule), class: "hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group" do %>
-  <td class="px-6 py-4 font-black text-slate-900 dark:text-white"><%= rule.asset_symbol %></td>
+  <td class="px-6 py-4 font-black text-slate-900 dark:text-white"><%= rule.asset_symbol.start_with?("FG_") ? rule.asset_symbol.sub("FG_", "F&G ") : rule.asset_symbol %></td>
   <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"><%= rule.condition.humanize %></td>
   <td class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-white"><%= rule.threshold_value %></td>
   <td class="px-6 py-4">

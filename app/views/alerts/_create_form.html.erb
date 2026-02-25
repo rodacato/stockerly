@@ -10,17 +10,25 @@
     <%= form_with url: alerts_path, method: :post, class: "grid grid-cols-1 md:grid-cols-4 gap-4 items-end" do |f| %>
       <div class="space-y-2">
         <label class="text-xs font-bold text-slate-500 uppercase">Ticker</label>
-        <input type="text" name="alert[asset_symbol]" placeholder="e.g. NVDA"
+        <input type="text" name="alert[asset_symbol]" id="ticker_input" placeholder="e.g. NVDA"
                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm uppercase font-bold" />
+        <select name="alert[asset_symbol]" id="sentiment_index_select" disabled
+                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm hidden">
+          <option value="FG_CRYPTO">Crypto F&amp;G</option>
+          <option value="FG_STOCKS">Stocks F&amp;G</option>
+        </select>
       </div>
       <div class="space-y-2">
         <label class="text-xs font-bold text-slate-500 uppercase">Condition</label>
-        <select name="alert[condition]" class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm">
+        <select name="alert[condition]" id="alert_condition" onchange="toggleSentimentFields(this)"
+                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm">
           <option value="price_crosses_above">Price Crosses Above</option>
           <option value="price_crosses_below">Price Crosses Below</option>
           <option value="day_change_percent">% Day Change &gt;</option>
           <option value="rsi_overbought">RSI Overbought (&gt;70)</option>
           <option value="rsi_oversold">RSI Oversold (&lt;30)</option>
+          <option value="sentiment_above">Sentiment Above (F&amp;G)</option>
+          <option value="sentiment_below">Sentiment Below (F&amp;G)</option>
         </select>
       </div>
       <div class="space-y-2">
@@ -35,3 +43,23 @@
     <% end %>
   </div>
 </section>
+
+<script>
+  function toggleSentimentFields(select) {
+    var isSentiment = select.value.indexOf("sentiment_") === 0;
+    var tickerInput = document.getElementById("ticker_input");
+    var sentimentSelect = document.getElementById("sentiment_index_select");
+
+    if (isSentiment) {
+      tickerInput.classList.add("hidden");
+      tickerInput.disabled = true;
+      sentimentSelect.classList.remove("hidden");
+      sentimentSelect.disabled = false;
+    } else {
+      tickerInput.classList.remove("hidden");
+      tickerInput.disabled = false;
+      sentimentSelect.classList.add("hidden");
+      sentimentSelect.disabled = true;
+    }
+  }
+</script>
