@@ -80,6 +80,8 @@ jobs:
       POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
       COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
       EXCHANGERATE_API_KEY: ${{ secrets.EXCHANGERATE_API_KEY }}
+      ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+      BANXICO_API_TOKEN: ${{ secrets.BANXICO_API_TOKEN }}
 
     steps:
       - name: Checkout code

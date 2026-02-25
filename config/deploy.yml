@@ -45,6 +45,8 @@ env:
     - POLYGON_API_KEY
     - COINGECKO_API_KEY
     - EXCHANGERATE_API_KEY
+    - ALPHA_VANTAGE_API_KEY
+    - BANXICO_API_TOKEN
 
 builder:
   arch: amd64
