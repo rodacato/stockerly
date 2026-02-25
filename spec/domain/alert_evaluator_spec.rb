@@ -91,4 +91,46 @@ RSpec.describe AlertEvaluator do
       end
     end
   end
+
+  describe ".evaluate_sentiment" do
+    context "sentiment_above" do
+      it "triggers when F&G value equals threshold" do
+        rule = create(:alert_rule, user: user, asset_symbol: "FG_CRYPTO", condition: :sentiment_above, threshold_value: 70.0)
+        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 70)
+        expect(triggered).to include(rule)
+      end
+
+      it "triggers when F&G value exceeds threshold" do
+        rule = create(:alert_rule, user: user, asset_symbol: "FG_CRYPTO", condition: :sentiment_above, threshold_value: 70.0)
+        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 85)
+        expect(triggered).to include(rule)
+      end
+
+      it "does not trigger when F&G value is below threshold" do
+        rule = create(:alert_rule, user: user, asset_symbol: "FG_CRYPTO", condition: :sentiment_above, threshold_value: 70.0)
+        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 60)
+        expect(triggered).to be_empty
+      end
+    end
+
+    context "sentiment_below" do
+      it "triggers when F&G value equals threshold" do
+        rule = create(:alert_rule, user: user, asset_symbol: "FG_STOCKS", condition: :sentiment_below, threshold_value: 30.0)
+        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 30)
+        expect(triggered).to include(rule)
+      end
+
+      it "triggers when F&G value is below threshold" do
+        rule = create(:alert_rule, user: user, asset_symbol: "FG_STOCKS", condition: :sentiment_below, threshold_value: 30.0)
+        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 15)
+        expect(triggered).to include(rule)
+      end
+
+      it "does not trigger when F&G value is above threshold" do
+        rule = create(:alert_rule, user: user, asset_symbol: "FG_STOCKS", condition: :sentiment_below, threshold_value: 30.0)
+        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 45)
+        expect(triggered).to be_empty
+      end
+    end
+  end
 end

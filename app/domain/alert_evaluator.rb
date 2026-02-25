@@ -28,5 +28,20 @@ class AlertEvaluator
     end
   end
 
-  private_class_method :triggered?
+  def self.evaluate_sentiment(rules, fg_value)
+    rules.select { |rule| sentiment_triggered?(rule, fg_value) }
+  end
+
+  def self.sentiment_triggered?(rule, fg_value)
+    case rule.condition
+    when "sentiment_above"
+      fg_value >= rule.threshold_value
+    when "sentiment_below"
+      fg_value <= rule.threshold_value
+    else
+      false
+    end
+  end
+
+  private_class_method :triggered?, :sentiment_triggered?
 end
