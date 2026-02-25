@@ -1,14 +1,37 @@
 class Integration < ApplicationRecord
   enum :connection_status, { connected: 0, syncing: 1, disconnected: 2 }
 
+  has_many :api_key_pools, dependent: :destroy
+
   validates :provider_name, presence: true, uniqueness: true
   validates :provider_type, presence: true
   validates :api_key_encrypted, presence: true, if: :requires_api_key?
 
   encrypts :api_key_encrypted
 
+  def increment_api_calls!
+    reset_daily_counter! if calls_reset_at.nil? || calls_reset_at < Time.current.beginning_of_day
+    return false if daily_api_calls >= daily_call_limit
+
+    self.class.update_counters(id, daily_api_calls: 1)
+    reload
+    true
+  end
+
+  def budget_exhausted?
+    return false if calls_reset_at.nil? || calls_reset_at < Time.current.beginning_of_day
+
+    daily_api_calls >= daily_call_limit
+  end
+
   def masked_api_key
     return nil unless api_key_encrypted.present?
     "••••••••••••#{api_key_encrypted.last(4)}"
+  end
+
+  private
+
+  def reset_daily_counter!
+    update!(daily_api_calls: 0, calls_reset_at: Time.current)
   end
 end

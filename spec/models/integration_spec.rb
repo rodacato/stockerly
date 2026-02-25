@@ -57,6 +57,51 @@ RSpec.describe Integration, type: :model do
     end
   end
 
+  describe "#increment_api_calls!" do
+    let(:integration) { create(:integration, daily_api_calls: 0, daily_call_limit: 500, calls_reset_at: Time.current) }
+
+    it "increments the daily_api_calls counter atomically" do
+      expect { integration.increment_api_calls! }.to change { integration.reload.daily_api_calls }.from(0).to(1)
+    end
+
+    it "returns true when under budget" do
+      expect(integration.increment_api_calls!).to be true
+    end
+
+    it "returns false when budget is exhausted" do
+      integration.update!(daily_api_calls: 500)
+
+      expect(integration.increment_api_calls!).to be false
+      expect(integration.reload.daily_api_calls).to eq(500)
+    end
+
+    it "resets counter when calls_reset_at is from a previous day" do
+      integration.update!(daily_api_calls: 450, calls_reset_at: 1.day.ago)
+
+      expect(integration.increment_api_calls!).to be true
+      expect(integration.reload.daily_api_calls).to eq(1)
+    end
+  end
+
+  describe "#budget_exhausted?" do
+    let(:integration) { create(:integration, daily_call_limit: 500, calls_reset_at: Time.current) }
+
+    it "returns false when under limit" do
+      integration.update!(daily_api_calls: 499)
+      expect(integration.budget_exhausted?).to be false
+    end
+
+    it "returns true when at limit" do
+      integration.update!(daily_api_calls: 500)
+      expect(integration.budget_exhausted?).to be true
+    end
+
+    it "returns false when reset is stale (previous day)" do
+      integration.update!(daily_api_calls: 500, calls_reset_at: 1.day.ago)
+      expect(integration.budget_exhausted?).to be false
+    end
+  end
+
   describe "encryption" do
     it "encrypts the api_key_encrypted field" do
       integration = create(:integration, api_key_encrypted: "secret_key_123")
