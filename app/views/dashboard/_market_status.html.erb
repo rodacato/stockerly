@@ -1,9 +1,11 @@
 <%# Market Status indicators — data from @indices %>
-<section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
-  <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Market Status</h3>
-  <div class="space-y-4">
-    <% @indices.each do |idx| %>
-      <%= render "components/market_status_indicator", name: idx.exchange.presence || idx.symbol, status: idx.is_open ? :open : :closed %>
-    <% end %>
-  </div>
-</section>
+<% cache "market_status", expires_in: 15.minutes do %>
+  <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Market Status</h3>
+    <div class="space-y-4">
+      <% @indices.each do |idx| %>
+        <%= render "components/market_status_indicator", name: idx.exchange.presence || idx.symbol, status: idx.is_open ? :open : :closed %>
+      <% end %>
+    </div>
+  </section>
+<% end %>

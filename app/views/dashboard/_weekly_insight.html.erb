@@ -1,15 +1,17 @@
 <%# Weekly Insight — primary gradient card %>
-<section class="rounded-xl bg-primary p-6 text-white shadow-lg relative overflow-hidden">
-  <div class="relative z-10">
-    <h3 class="text-lg font-bold">Weekly Insight</h3>
-    <p class="mt-2 text-sm text-white/80 leading-relaxed">
-      <% if @weekly_insight && @weekly_insight[:has_data] %>
-        <%= @weekly_insight[:summary_text] %>
-      <% else %>
-        Add positions to see your weekly insight.
-      <% end %>
-    </p>
-    <%= link_to "View Full Report", portfolio_path, class: "mt-4 inline-block rounded-lg bg-white/20 backdrop-blur-md px-4 py-2 text-xs font-bold text-white hover:bg-white/30 transition-colors" %>
-  </div>
-  <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-white/10 text-[120px]">insights</span>
-</section>
+<% cache ["weekly_insight", current_user.id, Date.current], expires_in: 1.day do %>
+  <section class="rounded-xl bg-primary p-6 text-white shadow-lg relative overflow-hidden">
+    <div class="relative z-10">
+      <h3 class="text-lg font-bold">Weekly Insight</h3>
+      <p class="mt-2 text-sm text-white/80 leading-relaxed">
+        <% if @weekly_insight && @weekly_insight[:has_data] %>
+          <%= @weekly_insight[:summary_text] %>
+        <% else %>
+          Add positions to see your weekly insight.
+        <% end %>
+      </p>
+      <%= link_to "View Full Report", portfolio_path, class: "mt-4 inline-block rounded-lg bg-white/20 backdrop-blur-md px-4 py-2 text-xs font-bold text-white hover:bg-white/30 transition-colors" %>
+    </div>
+    <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-white/10 text-[120px]">insights</span>
+  </section>
+<% end %>
