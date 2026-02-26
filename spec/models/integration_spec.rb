@@ -102,6 +102,44 @@ RSpec.describe Integration, type: :model do
     end
   end
 
+  describe "#minute_budget_exhausted?" do
+    let(:integration) { create(:integration, max_requests_per_minute: 5, minute_reset_at: Time.current) }
+
+    it "returns false when max_requests_per_minute is nil" do
+      integration.update!(max_requests_per_minute: nil)
+      expect(integration.minute_budget_exhausted?).to be false
+    end
+
+    it "returns false when under limit" do
+      integration.update!(minute_calls: 4)
+      expect(integration.minute_budget_exhausted?).to be false
+    end
+
+    it "returns true when at limit" do
+      integration.update!(minute_calls: 5)
+      expect(integration.minute_budget_exhausted?).to be true
+    end
+
+    it "returns false when minute window has expired" do
+      integration.update!(minute_calls: 5, minute_reset_at: 2.minutes.ago)
+      expect(integration.minute_budget_exhausted?).to be false
+    end
+  end
+
+  describe "#increment_minute_calls!" do
+    let(:integration) { create(:integration, max_requests_per_minute: 5, minute_calls: 0, minute_reset_at: Time.current) }
+
+    it "increments the minute_calls counter" do
+      expect { integration.increment_minute_calls! }.to change { integration.reload.minute_calls }.by(1)
+    end
+
+    it "resets counter when minute window has expired" do
+      integration.update!(minute_calls: 4, minute_reset_at: 2.minutes.ago)
+      integration.increment_minute_calls!
+      expect(integration.reload.minute_calls).to eq(1)
+    end
+  end
+
   describe "encryption" do
     it "encrypts the api_key_encrypted field" do
       integration = create(:integration, api_key_encrypted: "secret_key_123")

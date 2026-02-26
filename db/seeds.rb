@@ -463,30 +463,37 @@ Integration.find_or_create_by!(provider_name: "Polygon.io") do |i|
   i.api_key_encrypted = ENV.fetch("POLYGON_API_KEY", "pk_live_abc123xyz789")
   i.connection_status = :connected
   i.last_sync_at = 2.minutes.ago
+  i.max_requests_per_minute = 5
+  i.daily_call_limit = 500
 end
 Integration.find_or_create_by!(provider_name: "CoinGecko") do |i|
   i.provider_type = "Cryptocurrency"
   i.api_key_encrypted = ENV.fetch("COINGECKO_API_KEY", "cg_demo_key_456def")
   i.connection_status = :syncing
   i.last_sync_at = 1.hour.ago
+  i.max_requests_per_minute = 30
+  i.daily_call_limit = 10_000
 end
 Integration.find_or_create_by!(provider_name: "Yahoo Finance") do |i|
   i.provider_type = "Mexican Stocks & ETFs"
   i.requires_api_key = false
   i.connection_status = :connected
   i.last_sync_at = Time.current
+  i.daily_call_limit = 2_000
 end
 Integration.find_or_create_by!(provider_name: "Alternative.me") do |i|
   i.provider_type = "Sentiment"
   i.requires_api_key = false
   i.connection_status = :connected
   i.last_sync_at = 1.day.ago
+  i.daily_call_limit = 100
 end
 Integration.find_or_create_by!(provider_name: "CNN") do |i|
   i.provider_type = "Sentiment"
   i.requires_api_key = false
   i.connection_status = :connected
   i.last_sync_at = 1.day.ago
+  i.daily_call_limit = 100
 end
 
 Integration.find_or_create_by!(provider_name: "Alpha Vantage") do |i|
@@ -494,6 +501,8 @@ Integration.find_or_create_by!(provider_name: "Alpha Vantage") do |i|
   i.api_key_encrypted = ENV.fetch("ALPHA_VANTAGE_API_KEY", "av_demo_key_789")
   i.connection_status = :connected
   i.last_sync_at = 1.day.ago
+  i.max_requests_per_minute = 5
+  i.daily_call_limit = 25
 end
 
 # --- Asset Fundamentals (sample AAPL OVERVIEW) ---
