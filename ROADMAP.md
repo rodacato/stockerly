@@ -1,8 +1,8 @@
 # Stockerly — Roadmap
 
-> **Fecha:** 2026-02-25
+> **Fecha:** 2026-02-26
 > **Estado actual:** 1627 specs, 93.6% line coverage, Phase 15 complete
-> **Siguiente:** v2 features (see Explicitly Deferred)
+> **Siguiente:** Phase 15.6 — API Key Management & Provider Rate Limits
 
 ---
 
@@ -47,6 +47,12 @@
 | **15.3** | API Efficiency & Batching           | 1596  | 100-103 |
 | **15.4** | Data Completeness & Quality         | 1617  | 104-107 |
 | **15.5** | Scaling Strategy & UX Enhancements  | 1627  | 108-109 |
+
+## Next Phase
+
+| Fase     | Nombre                                  | Specs | Commits |
+| -------- | --------------------------------------- | ----- | ------- |
+| **15.6** | API Key Management & Provider Rate Limits | —   | 110-116 |
 
 ### Phase 9 Summary (990 specs, 20 commits)
 
@@ -113,12 +119,27 @@
 | API key rotation | Least-used strategy via `KeyRotation` domain service |
 | TradingView widget | Advanced Chart, lazy IntersectionObserver, `EXCHANGE:SYMBOL` mapping |
 
+### Key Architecture Decisions (Phase 15.6 — Planned)
+
+| Decision | Resolution |
+|----------|-----------|
+| RateLimiter vs CircuitBreaker | Separate domain services — RateLimiter prevents quota overuse (proactive), CircuitBreaker handles failures (reactive) |
+| Rate limit granularity | Per-minute + per-day on Integration (two most common intervals across providers) |
+| Rate limit storage | PostgreSQL counters with atomic `update_counters` — no Redis needed at current scale |
+| Proactive rate limiting | `RateLimiter.check!` before HTTP call, 429 detection kept as fallback |
+| ApiKeyPool naming | `name` field for human-readable identification without revealing key values |
+| Pool key deletion | Hard delete (pool keys are operational, not financial audit trail) |
+| Integration deletion | Allowed from admin — cascades `dependent: :destroy` to pool keys |
+| Monthly rate limits | Modeled as daily ÷ 30 (ExchangeRate API: 1,500/month ≈ 50/day) |
+
 ---
 
-## All Phases Complete
+## Phase 15.6 — API Key Management & Provider Rate Limits
 
-All planned phases (0-15) are complete. 1627 specs, 93.6% line coverage.
-See "Explicitly Deferred" section below for v2+ features.
+> **Plan:** [REQUEST_LIMITS_PLAN.md](REQUEST_LIMITS_PLAN.md)
+> **Status:** Planned — 7 commits, ~50-60 new specs
+
+**Rate Limiting:** `RateLimiter` domain service with proactive per-minute and per-day checks before HTTP calls, provider-specific limits stored on Integration (`max_requests_per_minute`, reuse `daily_call_limit`), atomic PostgreSQL counters with auto-reset. **Admin CRUD:** `UpdateProvider` (edit limits + key), `DeleteProvider`, `AddPoolKey`, `TogglePoolKey`, `RemovePoolKey` use cases with full event audit trail (`IntegrationUpdated`, `IntegrationDeleted`, `PoolKeyAdded`, `PoolKeyToggled`, `PoolKeyRemoved`). **UI:** Redesigned integration cards with rate limit usage bars, expandable API Key Pool section per provider (name, masked key, daily calls, enable/disable toggle), add key form. **Gateway Integration:** `RateLimiter.check!` → `KeyRotation.next_key_for` → HTTP request → 429 fallback.
 
 ---
 
@@ -251,6 +272,18 @@ See "Explicitly Deferred" section below for v2+ features.
 | 109 | 15.5b  | Add TradingView Advanced Chart widget to asset detail page              | +4    |
 |     |        | *Phase 15 Total*                                                        | *+96* |
 |     |        | **Grand Total (Phases 9-15)**                                           | **~619** |
+
+### Phase 15.6 (Planned — 7 commits)
+
+| #   | Phase  | Commit Message                                                          | Specs |
+| --- | ------ | ----------------------------------------------------------------------- | ----- |
+| 110 | 15.6a  | Add name to ApiKeyPool and rate limit fields to Integration             | —     |
+| 111 | 15.6b  | Add RateLimiter domain service with per-minute and per-day checks       | —     |
+| 112 | 15.6c  | Integrate RateLimiter into gateways                                     | —     |
+| 113 | 15.6d  | Add UpdateProvider and DeleteProvider use cases                          | —     |
+| 114 | 15.6e  | Add AddPoolKey, TogglePoolKey, and RemovePoolKey use cases              | —     |
+| 115 | 15.6f  | Add admin API key pool controller and routes                            | —     |
+| 116 | 15.6g  | Redesign admin integrations UI with pool management                     | —     |
 
 ---
 
