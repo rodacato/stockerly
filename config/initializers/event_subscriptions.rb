@@ -56,4 +56,6 @@ Rails.application.config.after_initialize do
 
   # Integrations
   EventBus.subscribe(IntegrationConnected, LogIntegrationConnected)
+  EventBus.subscribe(IntegrationUpdated, LogIntegrationUpdated)
+  EventBus.subscribe(IntegrationDeleted, LogIntegrationDeleted)
 end
