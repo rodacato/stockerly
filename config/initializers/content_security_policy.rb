@@ -10,9 +10,10 @@ Rails.application.configure do
     policy.font_src    :self, "https://fonts.gstatic.com"
     policy.img_src     :self, :data, :https
     policy.object_src  :none
-    policy.script_src  :self
+    policy.script_src  :self, "https://s3.tradingview.com"
     policy.style_src   :self, "https://fonts.googleapis.com", :unsafe_inline
     policy.connect_src :self
+    policy.frame_src   "https://s3.tradingview.com"
     policy.frame_ancestors :none
   end
 
