@@ -166,6 +166,11 @@ RSpec.describe "Admin pages", type: :request do
       get admin_users_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("User Management")
+    end
+
+    it "renders the integrations page" do
+      get admin_integrations_path
+      expect(response).to have_http_status(:ok)
       expect(response.body).to include("Market Data Connectivity")
     end
   end

@@ -7,9 +7,9 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_users_path, notice: "API key added to pool."
+        redirect_to admin_integrations_path, notice: "API key added to pool."
       else
-        redirect_to admin_users_path, alert: result.failure.last
+        redirect_to admin_integrations_path, alert: result.failure.last
       end
     end
 
@@ -21,9 +21,9 @@ module Admin
 
       if result.success?
         status = result.value!.enabled ? "enabled" : "disabled"
-        redirect_to admin_users_path, notice: "API key #{status}."
+        redirect_to admin_integrations_path, notice: "API key #{status}."
       else
-        redirect_to admin_users_path, alert: result.failure.last
+        redirect_to admin_integrations_path, alert: result.failure.last
       end
     end
 
@@ -34,9 +34,9 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_users_path, notice: "API key removed from pool."
+        redirect_to admin_integrations_path, notice: "API key removed from pool."
       else
-        redirect_to admin_users_path, alert: result.failure.last
+        redirect_to admin_integrations_path, alert: result.failure.last
       end
     end
 

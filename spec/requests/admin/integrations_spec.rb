@@ -13,7 +13,7 @@ RSpec.describe "Admin Integrations", type: :request do
         integration: { daily_call_limit: 1000, max_requests_per_minute: 10 }
       }
 
-      expect(response).to redirect_to(admin_users_path)
+      expect(response).to redirect_to(admin_integrations_path)
       expect(integration.reload.daily_call_limit).to eq(1000)
       expect(integration.reload.max_requests_per_minute).to eq(10)
     end
@@ -27,7 +27,7 @@ RSpec.describe "Admin Integrations", type: :request do
         delete admin_integration_path(integration)
       }.to change(Integration, :count).by(-1)
 
-      expect(response).to redirect_to(admin_users_path)
+      expect(response).to redirect_to(admin_integrations_path)
     end
   end
 end

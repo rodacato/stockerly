@@ -71,7 +71,7 @@ Rails.application.routes.draw do
       end
       collection { post :trigger_sync_all }
     end
-    resources :integrations, only: [ :create, :update, :destroy ] do
+    resources :integrations, only: [ :index, :create, :update, :destroy ] do
       member { post :refresh_sync }
       resources :pool_keys, only: [ :create, :destroy ], controller: "pool_keys" do
         member { patch :toggle }

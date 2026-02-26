@@ -2,6 +2,10 @@ module Admin
   class IntegrationsController < BaseController
     rate_limit to: 5, within: 1.minute, only: :refresh_sync
 
+    def index
+      @integrations = Integration.includes(:api_key_pools).order(:provider_name)
+    end
+
     def create
       result = Admin::Integrations::ConnectProvider.call(
         admin: current_user,
@@ -9,9 +13,9 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_users_path, notice: "Provider connected successfully."
+        redirect_to admin_integrations_path, notice: "Provider connected successfully."
       else
-        redirect_to admin_users_path, alert: result.failure.last
+        redirect_to admin_integrations_path, alert: result.failure.last
       end
     end
 
@@ -22,9 +26,9 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_users_path, notice: "Provider updated successfully."
+        redirect_to admin_integrations_path, notice: "Provider updated successfully."
       else
-        redirect_to admin_users_path, alert: result.failure.last
+        redirect_to admin_integrations_path, alert: result.failure.last
       end
     end
 
@@ -35,9 +39,9 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_users_path, notice: "Provider deleted."
+        redirect_to admin_integrations_path, notice: "Provider deleted."
       else
-        redirect_to admin_users_path, alert: result.failure.last
+        redirect_to admin_integrations_path, alert: result.failure.last
       end
     end
 

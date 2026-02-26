@@ -14,7 +14,7 @@ RSpec.describe "Admin Pool Keys", type: :request do
         }
       }.to change(ApiKeyPool, :count).by(1)
 
-      expect(response).to redirect_to(admin_users_path)
+      expect(response).to redirect_to(admin_integrations_path)
       expect(ApiKeyPool.last.name).to eq("Production")
     end
 
@@ -23,7 +23,7 @@ RSpec.describe "Admin Pool Keys", type: :request do
         api_key_pool: { name: "Empty", api_key_encrypted: "" }
       }
 
-      expect(response).to redirect_to(admin_users_path)
+      expect(response).to redirect_to(admin_integrations_path)
       expect(flash[:alert]).to be_present
     end
   end
@@ -33,7 +33,7 @@ RSpec.describe "Admin Pool Keys", type: :request do
 
     it "toggles the pool key" do
       patch toggle_admin_integration_pool_key_path(integration, pool_key)
-      expect(response).to redirect_to(admin_users_path)
+      expect(response).to redirect_to(admin_integrations_path)
       expect(pool_key.reload.enabled).to be false
     end
   end
@@ -46,7 +46,7 @@ RSpec.describe "Admin Pool Keys", type: :request do
         delete admin_integration_pool_key_path(integration, pool_key)
       }.to change(ApiKeyPool, :count).by(-1)
 
-      expect(response).to redirect_to(admin_users_path)
+      expect(response).to redirect_to(admin_integrations_path)
     end
   end
 end

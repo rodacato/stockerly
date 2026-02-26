@@ -1,12 +1,16 @@
-<%# Market Data Connectivity section — renders all integrations from DB %>
-<div>
-  <div class="mb-4">
-    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Market Data Connectivity</h2>
-    <p class="text-slate-500 mt-1">Manage API connections, rate limits, and key rotation pools.</p>
+<% content_for(:admin_page_title, "Integrations") %>
+
+<div class="space-y-8">
+  <%# Header %>
+  <div class="flex items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Market Data Connectivity</h1>
+      <p class="text-slate-500 mt-1">Manage API connections, rate limits, and key rotation pools.</p>
+    </div>
   </div>
 
   <div class="grid grid-cols-1 gap-4">
-    <% Integration.order(:provider_name).each do |integration| %>
+    <% @integrations.each do |integration| %>
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
         <%# Header: name, type, status %>
         <div class="flex items-start justify-between mb-4">
