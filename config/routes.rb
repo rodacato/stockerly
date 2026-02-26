@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  # --- Health Check ---
-  get "up" => "rails/health#show", as: :rails_health_check
-  get "health", to: "health#show"
+  # --- Health Checks ---
+  get "up", to: "rails/health#show", as: :rails_health_check  # Kamal deploy probe (always 200 if Rails boots)
+  get "health", to: "health#show"                              # Detailed sync-freshness monitor
 
   # --- Public Pages ---
   root "pages#landing"
@@ -71,8 +71,11 @@ Rails.application.routes.draw do
       end
       collection { post :trigger_sync_all }
     end
-    resources :integrations, only: [ :create ] do
+    resources :integrations, only: [ :create, :update, :destroy ] do
       member { post :refresh_sync }
+      resources :pool_keys, only: [ :create, :destroy ], controller: "pool_keys" do
+        member { patch :toggle }
+      end
     end
     resources :logs, only: [ :index ] do
       collection { get :export_csv }
