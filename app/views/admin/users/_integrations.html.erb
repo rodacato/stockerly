@@ -1,24 +1,147 @@
-<%# Market Data Connectivity section %>
+<%# Market Data Connectivity section — renders all integrations from DB %>
 <div>
   <div class="mb-4">
     <h2 class="text-xl font-bold text-slate-900 dark:text-white">Market Data Connectivity</h2>
-    <p class="text-slate-500 mt-1">Manage API connections and synchronization health with financial data providers.</p>
+    <p class="text-slate-500 mt-1">Manage API connections, rate limits, and key rotation pools.</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <%= render "components/integration_card",
-      name: "Polygon.io",
-      category: "Stocks & Forex",
-      status: :connected,
-      last_sync: "2 mins ago",
-      icon_color: "bg-indigo-600" %>
+  <div class="grid grid-cols-1 gap-4">
+    <% Integration.order(:provider_name).each do |integration| %>
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+        <%# Header: name, type, status %>
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="size-10 rounded-lg bg-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl text-white">hub</span>
+            </div>
+            <div>
+              <p class="font-bold text-sm text-slate-900 dark:text-white"><%= integration.provider_name %></p>
+              <p class="text-xs text-slate-400 uppercase tracking-wider"><%= integration.provider_type %></p>
+            </div>
+          </div>
+          <% status_styles = { "connected" => "text-emerald-600", "syncing" => "text-blue-600", "disconnected" => "text-slate-400" } %>
+          <% dot_styles = { "connected" => "bg-emerald-500", "syncing" => "bg-blue-500", "disconnected" => "bg-slate-300" } %>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold <%= status_styles[integration.connection_status] %>">
+            <span class="size-2 rounded-full <%= dot_styles[integration.connection_status] %>"></span>
+            <%= integration.connection_status.capitalize %>
+          </span>
+        </div>
 
-    <%= render "components/integration_card",
-      name: "CoinGecko",
-      category: "Cryptocurrency",
-      status: :syncing,
-      last_sync: "1 hour ago",
-      icon_color: "bg-emerald-600" %>
+        <%# Rate limit bars %>
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <% if integration.max_requests_per_minute.present? %>
+            <div>
+              <p class="text-xs text-slate-500 mb-1">Per Minute</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <% pct = integration.max_requests_per_minute > 0 ? [(integration.minute_calls.to_f / integration.max_requests_per_minute * 100), 100].min : 0 %>
+                  <div class="h-full rounded-full transition-all <%= pct >= 90 ? 'bg-red-500' : pct >= 70 ? 'bg-amber-500' : 'bg-emerald-500' %>" style="width: <%= pct %>%"></div>
+                </div>
+                <span class="text-xs font-mono text-slate-500"><%= integration.minute_calls %>/<%= integration.max_requests_per_minute %></span>
+              </div>
+            </div>
+          <% end %>
+          <div>
+            <p class="text-xs text-slate-500 mb-1">Per Day</p>
+            <div class="flex items-center gap-2">
+              <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <% daily_pct = integration.daily_call_limit > 0 ? [(integration.daily_api_calls.to_f / integration.daily_call_limit * 100), 100].min : 0 %>
+                <div class="h-full rounded-full transition-all <%= daily_pct >= 90 ? 'bg-red-500' : daily_pct >= 70 ? 'bg-amber-500' : 'bg-emerald-500' %>" style="width: <%= daily_pct %>%"></div>
+              </div>
+              <span class="text-xs font-mono text-slate-500"><%= integration.daily_api_calls %>/<%= integration.daily_call_limit %></span>
+            </div>
+          </div>
+        </div>
+
+        <%# Last sync + API key %>
+        <div class="flex items-center gap-4 text-xs text-slate-400 mb-4">
+          <span>Last Sync &middot; <span class="text-slate-600 dark:text-slate-300"><%= integration.last_sync_at ? time_ago_in_words(integration.last_sync_at) + " ago" : "Never" %></span></span>
+          <% if integration.masked_api_key %>
+            <span>Key &middot; <span class="font-mono text-slate-500"><%= integration.masked_api_key %></span></span>
+          <% end %>
+        </div>
+
+        <%# API Key Pool — expandable %>
+        <div data-controller="reveal" class="mb-4">
+          <button data-action="reveal#toggle" class="flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
+            <span class="material-symbols-outlined text-sm" data-reveal-target="icon">expand_more</span>
+            API Keys (<%= integration.api_key_pools.count %>)
+          </button>
+
+          <div data-reveal-target="content" class="hidden mt-3 space-y-2">
+            <% integration.api_key_pools.order(:name).each do |pool_key| %>
+              <div class="flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <% if pool_key.enabled? %>
+                    <span class="size-2 rounded-full bg-emerald-500"></span>
+                  <% else %>
+                    <span class="size-2 rounded-full bg-slate-300"></span>
+                  <% end %>
+                  <span class="text-sm font-medium text-slate-700 dark:text-slate-200"><%= pool_key.name %></span>
+                  <span class="text-xs font-mono text-slate-400"><%= pool_key.masked_api_key %></span>
+                  <span class="text-xs text-slate-400"><%= pool_key.daily_calls %> calls today</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <%= button_to toggle_admin_integration_pool_key_path(integration, pool_key),
+                      method: :patch,
+                      class: "p-1 text-slate-400 hover:text-primary transition-colors",
+                      title: pool_key.enabled? ? "Disable" : "Enable" do %>
+                    <span class="material-symbols-outlined text-sm"><%= pool_key.enabled? ? "toggle_on" : "toggle_off" %></span>
+                  <% end %>
+                  <%= button_to admin_integration_pool_key_path(integration, pool_key),
+                      method: :delete,
+                      class: "p-1 text-slate-400 hover:text-red-500 transition-colors",
+                      title: "Remove",
+                      data: { turbo_confirm: "Remove this API key?" } do %>
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            <%# Add key form %>
+            <%= form_with url: admin_integration_pool_keys_path(integration),
+                method: :post,
+                class: "flex items-center gap-2 mt-2" do |f| %>
+              <%= f.text_field :name, name: "api_key_pool[name]", placeholder: "Key Name",
+                  class: "flex-1 px-3 py-1.5 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+              <%= f.text_field :api_key_encrypted, name: "api_key_pool[api_key_encrypted]", placeholder: "API Key",
+                  class: "flex-2 px-3 py-1.5 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+              <%= f.submit "+ Add", class: "px-3 py-1.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors cursor-pointer" %>
+            <% end %>
+          </div>
+        </div>
+
+        <%# Action buttons %>
+        <div class="flex items-center gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
+          <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex items-center gap-2" do |f| %>
+            <%= f.number_field :daily_call_limit, name: "integration[daily_call_limit]",
+                value: integration.daily_call_limit,
+                class: "w-20 px-2 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary",
+                title: "Daily limit" %>
+            <%= f.number_field :max_requests_per_minute, name: "integration[max_requests_per_minute]",
+                value: integration.max_requests_per_minute,
+                placeholder: "req/min",
+                class: "w-20 px-2 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary",
+                title: "Per-minute limit" %>
+            <%= f.submit "Update Limits", class: "px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer" %>
+          <% end %>
+
+          <%= button_to refresh_sync_admin_integration_path(integration),
+              method: :post,
+              class: "px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors" do %>
+            Refresh Sync
+          <% end %>
+
+          <%= button_to admin_integration_path(integration),
+              method: :delete,
+              class: "px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors",
+              data: { turbo_confirm: "Delete #{integration.provider_name}? This removes all pool keys." } do %>
+            Delete
+          <% end %>
+        </div>
+      </div>
+    <% end %>
 
     <%# Add New Provider Card %>
     <%= form_with(model: [:admin, Integration.new], class: "bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-6 hover:border-primary transition-colors") do |f| %>
@@ -29,7 +152,7 @@
         <%= f.text_field :provider_name, placeholder: "Provider Name",
             class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
         <%= f.select :provider_type,
-            options_for_select(["Stocks & Forex", "Cryptocurrency", "Custom API"]),
+            options_for_select(["Stocks & Forex", "Cryptocurrency", "Fundamentals", "Sentiment", "Custom API"]),
             {}, class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary" %>
         <%= f.text_field :api_key_encrypted, placeholder: "API Key (optional)",
             class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
