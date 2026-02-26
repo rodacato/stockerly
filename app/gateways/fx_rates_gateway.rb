@@ -5,6 +5,7 @@ class FxRatesGateway
   include Dry::Monads[:result]
 
   BASE_URL = "https://v6.exchangerate-api.com"
+  PROVIDER = "ExchangeRate"
   TIMEOUT  = 5
 
   def initialize(api_key: nil)
@@ -14,6 +15,9 @@ class FxRatesGateway
   # Refresh FX rates for given base → target currencies.
   # Upserts FxRate records and returns Success(:rates_refreshed).
   def refresh_rates(base: "USD", targets: %w[EUR MXN GBP JPY])
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     response = connection.get("/v6/#{@api_key}/latest/#{base}")
 
     return Failure([ :rate_limited, "ExchangeRate API rate limit exceeded" ]) if response.status == 429

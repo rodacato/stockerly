@@ -6,6 +6,7 @@ class CoingeckoGateway < MarketDataGateway
 
   DEMO_URL = "https://api.coingecko.com"
   PRO_URL  = "https://pro-api.coingecko.com"
+  PROVIDER = "CoinGecko"
   TIMEOUT  = 5
 
   # CoinGecko uses lowercase IDs, not ticker symbols.
@@ -45,6 +46,9 @@ class CoingeckoGateway < MarketDataGateway
     coin_id = SYMBOL_TO_ID[symbol.upcase]
     return Failure([ :not_found, "Unknown crypto symbol: #{symbol}" ]) unless coin_id
 
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     response = connection.get("/api/v3/coins/#{coin_id}/market_chart") do |req|
       req.params["vs_currency"] = "usd"
       req.params["days"] = days.to_s
@@ -65,6 +69,9 @@ class CoingeckoGateway < MarketDataGateway
   def fetch_bulk_prices(symbols)
     ids = symbols.filter_map { |s| SYMBOL_TO_ID[s.upcase] }
     return Success([]) if ids.empty?
+
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
 
     response = connection.get("/api/v3/simple/price") do |req|
       req.params["ids"] = ids.join(",")
@@ -87,6 +94,9 @@ class CoingeckoGateway < MarketDataGateway
   def fetch_market_data(symbols)
     ids = symbols.filter_map { |s| SYMBOL_TO_ID[s.upcase] }
     return Success([]) if ids.empty?
+
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
 
     response = connection.get("/api/v3/coins/markets") do |req|
       req.params["vs_currency"] = "usd"

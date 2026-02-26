@@ -3,6 +3,7 @@
 # CRITICAL: Rate limits return HTTP 200 with "Note" key (NOT 429).
 class AlphaVantageGateway < FundamentalsGateway
   BASE_URL = "https://www.alphavantage.co"
+  PROVIDER = "Alpha Vantage"
   TIMEOUT  = 10
 
   def initialize(api_key: nil)
@@ -12,6 +13,9 @@ class AlphaVantageGateway < FundamentalsGateway
   # Fetch company overview (50+ metrics in one call).
   # Returns Success({ symbol:, eps:, book_value:, ... })
   def fetch_overview(symbol)
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     response = connection.get("/query") do |req|
       req.params["function"] = "OVERVIEW"
       req.params["symbol"] = symbol
@@ -54,6 +58,9 @@ class AlphaVantageGateway < FundamentalsGateway
 
   # Shared fetch + parse logic for all 3 statement types.
   def fetch_statement(symbol, function)
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     response = connection.get("/query") do |req|
       req.params["function"] = function
       req.params["symbol"] = symbol

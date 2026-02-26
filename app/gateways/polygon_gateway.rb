@@ -4,6 +4,7 @@ class PolygonGateway < MarketDataGateway
   include Dry::Monads[:result]
 
   BASE_URL = "https://api.polygon.io"
+  PROVIDER = "Polygon.io"
   TIMEOUT  = 5
 
   def initialize(api_key: nil)
@@ -13,6 +14,9 @@ class PolygonGateway < MarketDataGateway
   # Fetch previous-day close for a single symbol.
   # Returns Success({ symbol:, price:, change_percent:, volume: })
   def fetch_price(symbol)
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     response = connection.get("/v2/aggs/ticker/#{symbol}/prev") do |req|
       req.params["apiKey"] = @api_key
     end
@@ -28,6 +32,9 @@ class PolygonGateway < MarketDataGateway
   # Fetch daily OHLCV for a date range.
   # Returns Success([{ date:, open:, high:, low:, close:, volume: }, ...])
   def fetch_historical(symbol, from_date, to_date)
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     response = connection.get("/v2/aggs/ticker/#{symbol}/range/1/day/#{from_date}/#{to_date}") do |req|
       req.params["apiKey"] = @api_key
       req.params["adjusted"] = "true"
@@ -45,6 +52,9 @@ class PolygonGateway < MarketDataGateway
   # Fetch recent news articles.
   # Returns Success([{ title:, summary:, source:, url:, image_url:, published_at:, related_ticker: }, ...])
   def fetch_news(ticker: nil, limit: 20)
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     response = connection.get("/v2/reference/news") do |req|
       req.params["apiKey"] = @api_key
       req.params["limit"] = limit
@@ -64,6 +74,9 @@ class PolygonGateway < MarketDataGateway
   # Fetch earnings for a ticker.
   # Returns Success([{ report_date:, fiscal_quarter:, fiscal_year:, estimated_eps:, actual_eps: }, ...])
   def fetch_earnings(ticker)
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     response = connection.get("/vX/reference/tickers/#{ticker}/earnings") do |req|
       req.params["apiKey"] = @api_key
     end
@@ -87,6 +100,9 @@ class PolygonGateway < MarketDataGateway
   # Fetch index quotes via previous-day close for known indices.
   # Returns Success([{ symbol:, name:, value:, change_percent:, is_open: }, ...])
   def fetch_index_quotes(symbols = INDEX_SYMBOL_MAP.keys)
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     results = symbols.filter_map do |polygon_symbol|
       response = connection.get("/v2/aggs/ticker/#{polygon_symbol}/prev") do |req|
         req.params["apiKey"] = @api_key
@@ -116,6 +132,9 @@ class PolygonGateway < MarketDataGateway
   # Fetch grouped daily bars for all US stocks in a single API call.
   # Returns Success([{ symbol:, price:, change_percent:, volume: }, ...])
   def fetch_grouped_daily(date: Date.yesterday)
+    check = RateLimiter.check!(PROVIDER)
+    return check if check.failure?
+
     response = connection.get("/v2/aggs/grouped/locale/us/market/stocks/#{date}") do |req|
       req.params["apiKey"] = @api_key
       req.params["adjusted"] = "true"
