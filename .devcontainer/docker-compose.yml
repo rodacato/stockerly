@@ -9,7 +9,7 @@ services:
       - ../..:/workspaces:cached
       - bundle_cache:/usr/local/bundle
     ports:
-      - "3000:3000"
+      - "4100:4100"
     environment:
       DATABASE_HOST: db
       DATABASE_USERNAME: postgres
@@ -25,7 +25,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "6543:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
