@@ -29,6 +29,7 @@ env:
   clear:
     RAILS_SERVE_STATIC_FILES: true
     RAILS_LOG_TO_STDOUT: true
+    RAILS_LOG_LEVEL: warn
     DB_HOST: stockerly-postgres
     POSTGRES_USER: stockerly
     POSTGRES_DB: stockerly_production
@@ -56,6 +57,12 @@ builder:
     type: registry
     options: mode=max
     image: ghcr.io/<%= ENV["GITHUB_REPOSITORY"] %>:build-cache
+
+logging:
+  driver: json-file
+  options:
+    max-size: 50m
+    max-file: "3"
 
 accessories:
   postgres:
