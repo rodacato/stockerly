@@ -1,12 +1,12 @@
 # Stockerly — Roadmap
 
-> **Fecha:** 2026-02-26
-> **Estado actual:** 1627 specs, 93.6% line coverage, Phase 15 complete
-> **Siguiente:** Phase 15.6 — API Key Management & Provider Rate Limits
+> **Fecha:** 2026-03-01
+> **Estado actual:** ~1697 specs, Phase 15.6 complete
+> **Siguiente:** Phase 16 — Production Hardening & Security
 
 ---
 
-## Completed Phases (0-15) — 1627 specs
+## Completed Phases (0-15.6) — ~1697 specs
 
 | Fase     | Nombre                              | Specs | Commits |
 | -------- | ----------------------------------- | ----- | ------- |
@@ -47,12 +47,7 @@
 | **15.3** | API Efficiency & Batching           | 1596  | 100-103 |
 | **15.4** | Data Completeness & Quality         | 1617  | 104-107 |
 | **15.5** | Scaling Strategy & UX Enhancements  | 1627  | 108-109 |
-
-## Next Phase
-
-| Fase     | Nombre                                  | Specs | Commits |
-| -------- | --------------------------------------- | ----- | ------- |
-| **15.6** | API Key Management & Provider Rate Limits | —   | 110-116 |
+| **15.6** | API Key Management & Rate Limits    | 1697  | 110-116 |
 
 ### Phase 9 Summary (990 specs, 20 commits)
 
@@ -81,6 +76,10 @@
 ### Phase 15 Summary (1627 specs, 20 commits)
 
 **Admin & Resilience:** Expandable error details in admin logs (reuse `reveal_controller`), `sync_issue_since` tracking with `RetryFailedAssetsJob` (nightly, auto-disable after 7 days), `daily_api_calls` budget enforcement per Integration with atomic counters, backfill rake tasks with staggered enqueueing. **Dashboard UX:** F&G cards consolidated with inline SVG sparklines (eliminate chart row), `chart_tooltip_controller` Stimulus controller for interactive mousemove tooltips, compact news feed (ticker badge + title + source on single line). **Sync Resilience:** `AdaptiveScheduling` concern (cache-backed 2x backoff, cap 4x), Polygon fallback for market indices via `GatewayChain`, on-demand fundamental sync from asset detail page (10-minute guard). **API Efficiency:** Yahoo batch quotes via `/v7/finance/quote` (-69% calls), unified crypto sync to 5-min interval (-40% CoinGecko), `SyncBulkStocksJob` via Polygon grouped endpoint (-75% stock calls), Alpha Vantage bi-weekly Tue/Fri (-56%). Total API reduction: 2,557→947/day (63%). **Data Completeness:** Daily earnings sync with 90-day `days_ahead` window, `BackfillMissingHistoriesJob` (weekly, assets with <7 histories), integration tests for backfill/recovery/budget flows, `/health` JSON endpoint (ok/degraded/critical, 503 on critical for Kamal). **Scaling:** `ApiKeyPool` model with `KeyRotation` domain service (least-used strategy), TradingView Advanced Chart widget (lazy-loaded via IntersectionObserver, replaces SVG for stocks/ETF/crypto).
+
+### Phase 15.6 Summary (~1697 specs, 7 commits)
+
+**Rate Limiting:** `RateLimiter` domain service with proactive per-minute and per-day checks before HTTP calls, provider-specific limits on Integration (`max_requests_per_minute`, `minute_calls`, `minute_reset_at`), atomic PostgreSQL counters with auto-reset. **Admin CRUD:** `UpdateProvider`, `DeleteProvider`, `AddPoolKey`, `TogglePoolKey`, `RemovePoolKey` use cases with full event audit trail (`IntegrationUpdated`, `IntegrationDeleted`, `PoolKeyAdded`, `PoolKeyToggled`, `PoolKeyRemoved`). **UI:** Redesigned integration cards with rate limit usage bars, expandable API Key Pool section per provider (name, masked key, daily calls, enable/disable toggle), add key form. **Gateway Integration:** `RateLimiter.check!` integrated into all gateways (Polygon, CoinGecko, Alpha Vantage, FxRates) before HTTP calls, 429 detection kept as fallback.
 
 ### Key Architecture Decisions (Phases 9-15)
 
@@ -119,10 +118,6 @@
 | API key rotation | Least-used strategy via `KeyRotation` domain service |
 | TradingView widget | Advanced Chart, lazy IntersectionObserver, `EXCHANGE:SYMBOL` mapping |
 
-### Key Architecture Decisions (Phase 15.6 — Planned)
-
-| Decision | Resolution |
-|----------|-----------|
 | RateLimiter vs CircuitBreaker | Separate domain services — RateLimiter prevents quota overuse (proactive), CircuitBreaker handles failures (reactive) |
 | Rate limit granularity | Per-minute + per-day on Integration (two most common intervals across providers) |
 | Rate limit storage | PostgreSQL counters with atomic `update_counters` — no Redis needed at current scale |
@@ -131,15 +126,22 @@
 | Pool key deletion | Hard delete (pool keys are operational, not financial audit trail) |
 | Integration deletion | Allowed from admin — cascades `dependent: :destroy` to pool keys |
 | Monthly rate limits | Modeled as daily ÷ 30 (ExchangeRate API: 1,500/month ≈ 50/day) |
-
----
-
-## Phase 15.6 — API Key Management & Provider Rate Limits
-
-> **Plan:** [REQUEST_LIMITS_PLAN.md](REQUEST_LIMITS_PLAN.md)
-> **Status:** Planned — 7 commits, ~50-60 new specs
-
-**Rate Limiting:** `RateLimiter` domain service with proactive per-minute and per-day checks before HTTP calls, provider-specific limits stored on Integration (`max_requests_per_minute`, reuse `daily_call_limit`), atomic PostgreSQL counters with auto-reset. **Admin CRUD:** `UpdateProvider` (edit limits + key), `DeleteProvider`, `AddPoolKey`, `TogglePoolKey`, `RemovePoolKey` use cases with full event audit trail (`IntegrationUpdated`, `IntegrationDeleted`, `PoolKeyAdded`, `PoolKeyToggled`, `PoolKeyRemoved`). **UI:** Redesigned integration cards with rate limit usage bars, expandable API Key Pool section per provider (name, masked key, daily calls, enable/disable toggle), add key form. **Gateway Integration:** `RateLimiter.check!` → `KeyRotation.next_key_for` → HTTP request → 429 fallback.
+| Backup storage | S3-compatible (Backblaze B2) — cost-effective, Kamal-compatible |
+| Session timeout | 30-min inactivity + 12-hour absolute — standard fintech practice |
+| Rate limiting layer | Rack::Attack for HTTP + RateLimiter for provider — separate concerns |
+| TWR vs MWR | TWR first (industry standard, eliminates cash flow noise) — MWR in v3 |
+| Dividend data source | FMP free tier (250/day) — replaces Polygon for corporate actions |
+| Split handling | Retroactive cost basis adjustment via domain service on `SplitDetected` event |
+| CSV sanitization | Strip `=`, `+`, `-`, `@` prefixes — prevent formula injection |
+| Dark mode toggle | `localStorage` + Stimulus controller — no server roundtrip |
+| i18n scope | Critical strings only (nav, buttons, labels, errors) — not full views |
+| Risk metrics | Volatility + Sharpe + Max Drawdown — calculable from existing snapshots |
+| Composite alerts | JSONB conditions array with AND/OR — no full expression tree |
+| Sector comparison | GROUP BY existing `asset.sector` — no new data source needed |
+| LLM integration | CLI Bridge microservice (separate repo), NOT direct API/SDK |
+| LLM provider routing | CLI subprocess per provider — `claude -p`, `gemini -p`, `codex exec` |
+| LLM data anonymization | Only tickers, percentages, relative changes — never PII |
+| LLM output validation | `LlmResponseContract` (Dry::Validation) before data enters domain |
 
 ---
 
@@ -271,40 +273,366 @@
 | 108 | 15.5a  | Add API key rotation pool for providers                                 | +5    |
 | 109 | 15.5b  | Add TradingView Advanced Chart widget to asset detail page              | +4    |
 |     |        | *Phase 15 Total*                                                        | *+96* |
-|     |        | **Grand Total (Phases 9-15)**                                           | **~619** |
 
-### Phase 15.6 (Planned — 7 commits)
+### Phase 15.6 (Completed — 7 commits)
 
 | #   | Phase  | Commit Message                                                          | Specs |
 | --- | ------ | ----------------------------------------------------------------------- | ----- |
-| 110 | 15.6a  | Add name to ApiKeyPool and rate limit fields to Integration             | —     |
-| 111 | 15.6b  | Add RateLimiter domain service with per-minute and per-day checks       | —     |
-| 112 | 15.6c  | Integrate RateLimiter into gateways                                     | —     |
-| 113 | 15.6d  | Add UpdateProvider and DeleteProvider use cases                          | —     |
-| 114 | 15.6e  | Add AddPoolKey, TogglePoolKey, and RemovePoolKey use cases              | —     |
-| 115 | 15.6f  | Add admin API key pool controller and routes                            | —     |
-| 116 | 15.6g  | Redesign admin integrations UI with pool management                     | —     |
+| 110 | 15.6a  | Add name to ApiKeyPool and rate limit fields to Integration             | +8    |
+| 111 | 15.6b  | Add RateLimiter domain service with per-minute and per-day checks       | +10   |
+| 112 | 15.6c  | Integrate RateLimiter into gateways                                     | +8    |
+| 113 | 15.6d  | Add UpdateProvider and DeleteProvider use cases                          | +14   |
+| 114 | 15.6e  | Add AddPoolKey, TogglePoolKey, and RemovePoolKey use cases              | +12   |
+| 115 | 15.6f  | Add admin API key pool controller and routes                            | +10   |
+| 116 | 15.6g  | Redesign admin integrations UI with pool management                     | +8    |
+|     |        | *Phase 15.6 Total*                                                      | *+70* |
+|     |        | **Grand Total (Phases 9-15.6)**                                         | **~689** |
 
 ---
 
-## Explicitly Deferred (v2+)
+## Upcoming Phases (16-21)
 
-| Feature | Reason for Deferral | Expert |
-|---------|-------------------|--------|
-| **Profile Sharing / Privacy Mode** | Requires new authorization model, no community features yet | Domain Architect |
-| **Portfolio Benchmarking (TWR)** | Requires `MarketIndexHistory` model + TWR calculation (non-trivial) | Financial Expert |
-| **Sector Comparison** | Needs sector-level aggregation data source | Data Engineer |
-| **FMP/Polygon Provider Swap** | Upgrade from Alpha Vantage when budget allows (abstraction ready) | Data Engineer |
-| **Advanced Composite Alerts** | Requires predicate composition engine refactor | Domain Architect |
+> **Objetivo:** Production hardening, financial domain depth, UX maturity
+> **Note:** Phase 17 from the original v2 plan was completed early as Phase 15.6 (Rate Limits & Admin). Phases renumbered accordingly.
+
+---
+
+## Phase 16 — Production Hardening & Security
+
+> **Theme:** "Make it safe before making it bigger"
+> **Owner:** DevOps Engineer + Security Engineer
+> **Estimated specs:** ~38
+
+### 16.0 — Critical Security Fixes
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 117 | Remove `.env.production` from repo, add to `.gitignore` | Security — rotate all exposed keys | +0 |
+| 118 | Add session timeout (30-min inactivity, 12-hour absolute) | Security — `config/initializers/session_store.rb` | +4 |
+| 119 | Add Rack::Attack for endpoint rate limiting | Security — login (5/min), register (3/min), password reset (3/min) | +8 |
+
+**Security Engineer rationale:**
+> `.env.production` contains live `SECRET_KEY_BASE`, `DATABASE_URL`, 6 API keys, and host IP — all must be rotated immediately. Session timeout is table-stakes for fintech: an unattended session is a liability. Rack::Attack prevents brute-force at the HTTP layer (separate from the provider-level `RateLimiter` in Phase 15.6).
+
+### 16.1 — PostgreSQL Backups
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 120 | Add pg_dump backup rake task with S3 upload | `lib/tasks/backup.rake`, env config | +4 |
+| 121 | Add Kamal backup accessory with daily cron | `config/deploy.yml`, restore documentation | +2 |
+
+**DevOps Engineer rationale:**
+> Financial data without backups = existential risk. pg_dump daily to S3-compatible storage (Backblaze B2 is $5/mo for 1TB). WAL archiving is overkill for current scale — daily logical backups suffice. Restore procedure must be documented and tested.
+
+### 16.2 — Audit & Observability
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 122 | Add audit logging for login attempts and password changes | Event handlers, AuditLog expansion | +6 |
+| 123 | Add IDOR controller-level tests for watchlist, alerts, notifications | Test-only commit — no app changes | +12 |
+| 124 | Add structured JSON logging for production | `config/environments/production.rb`, log formatter | +2 |
+
+**QA Engineer rationale:**
+> Authorization is enforced at the Use Case layer (good), but no tests verify this at the controller layer. We need explicit specs: "User A cannot access User B's alerts/watchlist/notifications." Also, failed login tracking enables brute-force detection and compliance audit trails.
+
+**Phase 16 Total: ~38 specs, ~8 commits**
+
+---
+
+## Phase 17 — Financial Domain Depth
+
+> **Theme:** "Make the numbers trustworthy"
+> **Owner:** Financial Expert + Domain Architect + Rails Engineer
+> **Estimated specs:** ~70
+
+### 17.0 — Trade Export (CSV/PDF)
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 125 | Add Trading::ExportTrades use case with CSV generation | Use case, contract, CSV builder | +8 |
+| 126 | Add PDF trade report with Prawn | `Prawn` gem, PDF template, download action | +4 |
+| 127 | Add export UI on portfolio page with format selection | Views, controller action, system test | +4 |
+
+**Product Strategist rationale:**
+> In Mexico, SAT annual tax declaration requires trade history. Every user who files taxes needs this. April is tax season — shipping this before then = high retention. CSV is trivial, PDF with Prawn adds polish.
+
+### 17.1 — Portfolio Benchmarking (TWR)
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 128 | Add MarketIndexHistory model with daily close prices | Migration, model, backfill job | +6 |
+| 129 | Add TimeWeightedReturn domain service (TWR calculator) | Domain service — pure math, no AR | +10 |
+| 130 | Add benchmark selection to portfolio and comparison UI | Controller, views, Stimulus chart | +6 |
+| 131 | Add benchmark sync job for S&P 500 via Yahoo Finance | Job, gateway extension, schedule | +4 |
+
+**Financial Expert rationale:**
+> TWR is the industry standard for measuring portfolio manager skill because it eliminates the effect of cash flows (deposits/withdrawals). Formula: TWR = ∏(1 + R_i) - 1, where R_i = (V_end - V_start - CF) / V_start per sub-period. We already have `PortfolioSnapshot` — TWR can use these directly.
+
+**Domain Architect rationale:**
+> `TimeWeightedReturn` lives in `app/domain/` as a pure Domain Service. Input: array of snapshots + cash flow events. Output: `GainLoss` value object. No ActiveRecord dependency — fully testable with synthetic data.
+
+### 17.2 — Dividend Sync & Tracking
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 132 | Add FmpGateway for dividend and split data | New gateway, circuit breaker, specs | +6 |
+| 133 | Add SyncDividendsJob with event pipeline | Job, events, handlers | +6 |
+| 134 | Add upcoming dividends view on portfolio page | Views, presenter, system test | +4 |
+| 135 | Add stock split handling with cost basis adjustment | Domain service, position recalculation | +8 |
+
+**Data Engineer rationale:**
+> FMP (Financial Modeling Prep) free tier: 250 calls/day, includes dividends and splits. The Gateway abstraction makes adding a new provider clean. Splits are critical: without split-adjusted cost basis, P&L becomes nonsensical after a 2:1 split.
+
+### 17.3 — Position Notes & Labels (Quick Win)
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 136 | Add notes and labels to positions | Migration, model, form field, display | +4 |
+
+**Phase 17 Total: ~70 specs, ~12 commits**
+
+---
+
+## Phase 18 — UX Maturity
+
+> **Theme:** "Look and feel like a real product"
+> **Owner:** UX Designer + Hotwire Engineer
+> **Estimated specs:** ~42
+
+### 18.0 — Accessibility (WCAG 2.1 AA)
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 137 | Add skip-to-content link and ARIA landmarks to layouts | Layouts, semantic HTML | +3 |
+| 138 | Add aria-describedby to form error messages and aria-live to dynamic regions | Forms, Turbo Streams | +4 |
+| 139 | Add keyboard navigation to modals and focus trapping | Stimulus controllers | +4 |
+
+### 18.1 — Loading States & Skeleton Screens
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 140 | Add skeleton loader component and Turbo Frame loading states | Component partial, CSS animations | +3 |
+| 141 | Add loading states to dashboard, market, and portfolio pages | Views, `busy` attribute on frames | +4 |
+
+### 18.2 — Dark Mode Toggle
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 142 | Add dark mode toggle to navbar with localStorage persistence | Stimulus controller, layout, CSS | +3 |
+
+### 18.3 — Internationalization Foundation (i18n)
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 143 | Add Spanish locale file and extract critical UI strings | `config/locales/es.yml`, nav, buttons, labels | +4 |
+| 144 | Add language switcher to profile settings | Controller, session locale, middleware | +3 |
+
+### 18.4 — Bulk CSV Import
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 145 | Add Trading::ImportTrades use case with CSV parsing and sanitization | Use case, contract, sanitizer | +10 |
+| 146 | Add CSV import UI on portfolio page with drag-and-drop | Views, Stimulus controller, system test | +4 |
+
+**Security Engineer rationale:**
+> CSV formula injection is real: cells starting with `=`, `+`, `-`, `@` can execute arbitrary commands when opened in Excel. The sanitizer must strip these prefixes. Max 500 rows per import, with dry-run preview before committing.
+
+**Phase 18 Total: ~42 specs, ~10 commits**
+
+---
+
+## Phase 19 — Advanced Analytics & Risk
+
+> **Theme:** "From tracking to insights"
+> **Owner:** Financial Expert + Domain Architect
+> **Estimated specs:** ~48
+
+### 19.0 — Risk Metrics
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 147 | Add PortfolioRiskCalculator domain service (volatility, Sharpe, max drawdown) | Domain service — pure math | +10 |
+| 148 | Add risk metrics display on portfolio page | Views, presenter, Turbo Frame | +4 |
+
+**Financial Expert rationale:**
+> Returns without risk context are meaningless. Three metrics cover 80% of the need:
+> - **Volatility (σ):** Standard deviation of daily returns
+> - **Sharpe Ratio:** (Return - Risk-Free Rate) / σ
+> - **Max Drawdown:** Largest peak-to-trough decline
+>
+> All calculable from existing `PortfolioSnapshot` data. No new data sources needed.
+
+### 19.1 — Concentration Alerts
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 149 | Add concentration_risk condition to AlertRule | Migration, AlertEvaluator extension | +6 |
+| 150 | Add portfolio concentration warnings on dashboard | Views, domain service | +4 |
+
+### 19.2 — Advanced Composite Alerts
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 151 | Add AND/OR predicate composition to AlertRule | Migration, evaluator refactor | +8 |
+| 152 | Add composite alert builder UI | Views, Stimulus, system test | +6 |
+
+### 19.3 — Sector Comparison
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 153 | Add sector aggregation to portfolio analytics | Domain service, presenter | +6 |
+| 154 | Add sector breakdown chart on portfolio page | Views, donut chart extension | +4 |
+
+**Phase 19 Total: ~48 specs, ~8 commits**
+
+---
+
+## Phase 20 — Provider Upgrade & Data Quality
+
+> **Theme:** "Better data, fewer limits"
+> **Owner:** Data Engineer + DevOps Engineer
+> **Estimated specs:** ~22
+
+### 20.0 — FMP Provider Integration
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 155 | Add FmpGateway with company profile and fundamentals | Gateway, circuit breaker, specs | +6 |
+| 156 | Add FMP as fallback in GatewayChain for fundamentals | Chain config, adaptive scheduling | +4 |
+
+### 20.1 — PWA Support
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 157 | Add PWA manifest and service worker for installability | `public/manifest.json`, service worker, icons | +3 |
+| 158 | Add offline fallback page and cache strategy | Service worker cache, offline view | +3 |
+
+### 20.2 — Error Tracking & Monitoring
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 159 | Add Sentry integration for error tracking | Gem, initializer, production config | +2 |
+| 160 | Add health dashboard improvements (job queue depth, cache hit rate) | Admin view, domain service | +4 |
+
+**Phase 20 Total: ~22 specs, ~6 commits**
+
+---
+
+## Phase 21 — LLM-Powered Intelligence Layer
+
+> **Theme:** "Delegate research and analysis to AI you already pay for"
+> **Owner:** Domain Architect + Data Engineer + Rails Engineer
+> **Estimated specs:** ~65
+> **External dependency:** SheLLM service (separate repo — see `SHELLM_PLAN.md`)
+
+### Architecture
+
+Stockerly does NOT call LLM APIs directly. Instead, it communicates with an independent **SheLLM** microservice that wraps CLI tools (claude, gemini, codex) via existing subscriptions. No API keys needed.
+
+```
+Stockerly                     SheLLM (separate repo)          CLI Subscriptions
+                              (Node.js + Express)
+LlmGateway ──► POST ──►  /completions ──► subprocess ──► claude -p "..."
+(Faraday)      JSON        route by           spawn        gemini -p "..."
+             ◄── JSON ◄──  provider  ◄── parse stdout ◄── codex exec "..."
+```
+
+### 21.0 — Stockerly LLM Gateway
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 161 | Add LlmGateway with Faraday client to SheLLM | Gateway, CircuitBreaker, RateLimiter integration | +8 |
+| 162 | Add SheLLM Integration seed and admin health indicator | Seeds, admin view, health check | +4 |
+| 163 | Add LlmResponseContract for output validation | Contract, Dry::Validation, JSON schema enforcement | +6 |
+
+### 21.1 — Portfolio Insight Generator
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 164 | Add InsightGenerator domain service with analysis prompt | Domain service, system prompt template, anonymizer | +8 |
+| 165 | Add GeneratePortfolioInsightsJob as daily recurring job | Job (11:15pm after snapshots), events, handlers | +6 |
+| 166 | Add AI insight card to dashboard with attribution label | Views, Turbo Frame, opt-out toggle, "AI-generated" label | +4 |
+
+### 21.2 — News Sentiment Analysis
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 167 | Add NewsSentimentAnalyzer domain service with batch processing | Domain service, batch prompt (10 articles per call) | +8 |
+| 168 | Add AnalyzeNewsSentimentJob triggered after news sync | Job, event handler, migration (sentiment columns on news_articles) | +6 |
+| 169 | Add sentiment badges and filter to news feed | Views, filter, Turbo Frame update | +4 |
+
+### 21.3 — Fundamental Health Checks
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 170 | Add FundamentalHealthCheck domain service | Domain service, prompt template, 7-day cache | +6 |
+| 171 | Add AI health check section to asset detail page | Views, Turbo Frame, cache integration | +4 |
+
+### 21.4 — Earnings Narrative
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 172 | Add EarningsNarrativeGenerator for earnings detail page | Domain service, views, cache | +5 |
+
+**Phase 21 Total: ~65 specs, ~12 commits**
+
+---
+
+## Summary & Sequencing
+
+### Phase Dependency Graph
+
+```
+Phase 16 (Security) ──────────────────► Production-ready
+    │
+Phase 17 (Financial Domain) ─────────► User value (export, benchmarking, dividends)
+    │
+Phase 18 (UX Maturity) ──────────────► Polish (a11y, i18n, loading states, CSV import)
+    │
+Phase 19 (Advanced Analytics) ───────► Differentiation (risk metrics, composite alerts)
+    │
+Phase 20 (Provider Upgrade) ─────────► Scale (FMP, PWA, monitoring)
+    │
+Phase 21 (LLM Intelligence) ─────────► AI insights (requires SheLLM deployed)
+    ▲
+    │ External dependency: SheLLM (separate repo)
+    │ See SHELLM_PLAN.md
+```
+
+### Totals
+
+| Phase | Theme | Commits | Estimated Specs | Running Total |
+|-------|-------|---------|-----------------|---------------|
+| 16 | Production Hardening | 8 | ~38 | ~1735 |
+| 17 | Financial Domain | 12 | ~70 | ~1805 |
+| 18 | UX Maturity | 10 | ~42 | ~1847 |
+| 19 | Advanced Analytics | 8 | ~48 | ~1895 |
+| 20 | Provider Upgrade | 6 | ~22 | ~1917 |
+| 21 | LLM Intelligence | 12 | ~65 | ~1982 |
+| | **Total Upcoming** | **~56** | **~285** | **~1982** |
+
+### External Dependencies
+
+| Dependency | Repository | Status | Required By |
+|---|---|---|---|
+| **SheLLM** | `shellm` | Plan ready (`SHELLM_PLAN.md`) | Phase 21 |
+
+---
+
+## Deferred to v3+
+
+| Feature | Reason | Expert |
+|---------|--------|--------|
+| **Tax Lot Tracking (FIFO/LIFO)** | Complex, requires cost lot model + tax regime selection. Do after trade export validates demand. | Financial Expert |
+| **Profile Sharing / Privacy Mode** | No community features yet. Zero demand signal. | Domain Architect |
+| **Full i18n (all views)** | v2 does critical strings only. Full extraction is mechanical but large. | Hotwire Engineer |
+| **Performance Attribution by Position** | Requires position-level snapshots (expensive storage). After TWR proves value. | Financial Expert |
+| **Wash Sale Detection** | US-specific tax rule. Not relevant for Mexican market. | Financial Expert |
+| **Options/Warrants Tracking** | Entirely different asset class with Greeks, chains, expiry. Separate product. | Domain Architect |
+| **Real-time WebSocket Prices** | Polygon WebSocket is paid tier. Current polling is sufficient for 5-min updates. | Data Engineer |
+| **Multi-tenancy / Team Portfolios** | Authorization model overhaul. No demand. | Domain Architect |
 | **BulkAssetSync Concern** | DRY refactor of bulk sync jobs — low urgency, already working | Rails Backend |
-| **Bulk CSV Import** | Input sanitization critical (formula injection vector), max 500 rows | Security Engineer |
-| **Trade Export (CSV/PDF)** | Low reach, nice-to-have | Product Strategist |
-| **Position Notes/Labels** | Low impact, low effort — backlog filler | UX Designer |
-| **Dividend Sync (External)** | Polygon charges for corporate actions data | Financial Expert |
-| **Tax Lot Tracking (FIFO/LIFO)** | Complex, low demand for retail audience | Financial Expert |
-| **Performance Attribution by Sector** | Needs sector-level aggregation | Data Engineer |
 | **SSL End-to-End** | Kamal proxy SSL + Cloudflare Full Strict or Tunnel | DevOps |
-| **PostgreSQL Backups** | pg_dump daily to S3, WAL archiving, monitoring | DevOps |
 
 ---
 
