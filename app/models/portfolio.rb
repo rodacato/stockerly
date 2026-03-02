@@ -29,6 +29,13 @@ class Portfolio < ApplicationRecord
       .sum("positions.shares * assets.current_price")
   end
 
+  def allocation_by_asset_type
+    open_positions
+      .joins(:asset)
+      .group("assets.asset_type")
+      .sum("positions.shares * assets.current_price")
+  end
+
   def yesterday_snapshot
     snapshots.where(date: Date.yesterday).first
   end

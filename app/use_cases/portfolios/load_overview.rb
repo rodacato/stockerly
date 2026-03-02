@@ -21,6 +21,7 @@ module Portfolios
       end
 
       allocation = portfolio.allocation_by_sector
+      allocation_by_type = portfolio.allocation_by_asset_type
       returns_calculator = PeriodReturnsCalculator.new(portfolio)
 
       risk_metrics = compute_risk_metrics(portfolio)
@@ -35,7 +36,8 @@ module Portfolios
         chart_data: returns_calculator.chart_data(period: "1M"),
         benchmark_data: nil,
         upcoming_dividends: tab == "dividends" ? UpcomingDividendsPresenter.new(portfolio).upcoming : [],
-        risk_metrics: risk_metrics
+        risk_metrics: risk_metrics,
+        allocation_by_type: allocation_by_type
       }
 
       if benchmark.present? && BENCHMARK_INDICES.include?(benchmark)

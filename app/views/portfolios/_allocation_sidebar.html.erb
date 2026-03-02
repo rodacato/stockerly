@@ -1,19 +1,77 @@
-<%# Portfolio allocation donut chart sidebar — data from @allocation %>
+<%# Portfolio allocation donut chart sidebar — tabbed: By Sector + By Type %>
 <% colors = ["#004a99", "#38bdf8", "#10b981", "#fbbf24", "#f43f5e", "#8b5cf6", "#f97316", "#06b6d4"] %>
-<% total = @allocation.values.sum.to_f %>
-<% segments = @allocation.map.with_index do |(sector, value), i|
-  pct = total.positive? ? (value / total * 100).round : 0
-  { label: sector.presence || "Other", pct: pct, color: colors[i % colors.length] }
+
+<%# Build sector segments %>
+<% total_sector = @allocation.values.sum.to_f %>
+<% sector_segments = @allocation.map.with_index do |(sector, value), i|
+  pct = total_sector.positive? ? (value / total_sector * 100).round : 0
+  { label: sector.presence || "Other", pct: pct, color: colors[i % colors.length], value: value }
+end %>
+
+<%# Build asset type segments %>
+<% type_labels = { "stock" => "Stocks", "crypto" => "Crypto", "index" => "Index", "etf" => "ETFs", "fixed_income" => "Fixed Income" } %>
+<% total_type = @allocation_by_type.values.sum.to_f %>
+<% type_segments = @allocation_by_type.map.with_index do |(asset_type, value), i|
+  pct = total_type.positive? ? (value / total_type * 100).round : 0
+  { label: type_labels[asset_type.to_s] || asset_type.to_s.titleize, pct: pct, color: colors[i % colors.length], value: value }
 end %>
 
 <div class="lg:col-span-1">
-  <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
-    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6">Portfolio Allocation</h3>
-    <% if segments.present? %>
-      <% equity_pct = @summary.total_value.positive? ? ((@summary.total_value - @summary.buying_power) / @summary.total_value * 100).round(1) : 0 %>
-      <%= render "components/donut_chart", segments: segments, center_label: "Equities", center_value: "#{equity_pct}%" %>
-    <% else %>
-      <p class="text-sm text-slate-500 text-center py-8">No allocation data yet.</p>
-    <% end %>
+  <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm" data-controller="tabs">
+    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Portfolio Allocation</h3>
+
+    <%# Tab buttons %>
+    <div class="flex gap-1 mb-6 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+      <button data-tabs-target="tab" data-action="tabs#switch"
+              class="flex-1 text-xs font-bold py-1.5 px-3 rounded-md transition-colors">
+        By Sector
+      </button>
+      <button data-tabs-target="tab" data-action="tabs#switch"
+              class="flex-1 text-xs font-bold py-1.5 px-3 rounded-md transition-colors">
+        By Type
+      </button>
+    </div>
+
+    <%# Sector panel %>
+    <div data-tabs-target="panel">
+      <% if sector_segments.present? %>
+        <% equity_pct = @summary.total_value.positive? ? ((@summary.total_value - @summary.buying_power) / @summary.total_value * 100).round(1) : 0 %>
+        <%= render "components/donut_chart", segments: sector_segments, center_label: "Equities", center_value: "#{equity_pct}%" %>
+        <div class="mt-4 space-y-2">
+          <% sector_segments.each do |seg| %>
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background: <%= seg[:color] %>"></span>
+                <span class="text-slate-600 dark:text-slate-400"><%= seg[:label] %></span>
+              </div>
+              <span class="font-bold text-slate-900 dark:text-white"><%= seg[:pct] %>%</span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-slate-500 text-center py-8">No allocation data yet.</p>
+      <% end %>
+    </div>
+
+    <%# Type panel %>
+    <div data-tabs-target="panel" class="hidden">
+      <% if type_segments.present? %>
+        <% equity_pct = @summary.total_value.positive? ? ((@summary.total_value - @summary.buying_power) / @summary.total_value * 100).round(1) : 0 %>
+        <%= render "components/donut_chart", segments: type_segments, center_label: "Invested", center_value: "#{equity_pct}%" %>
+        <div class="mt-4 space-y-2">
+          <% type_segments.each do |seg| %>
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background: <%= seg[:color] %>"></span>
+                <span class="text-slate-600 dark:text-slate-400"><%= seg[:label] %></span>
+              </div>
+              <span class="font-bold text-slate-900 dark:text-white"><%= seg[:pct] %>%</span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-slate-500 text-center py-8">No allocation data yet.</p>
+      <% end %>
+    </div>
   </section>
 </div>
