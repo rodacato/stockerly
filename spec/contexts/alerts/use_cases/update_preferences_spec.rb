@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Alerts::UpdatePreferences do
+RSpec.describe Alerts::UseCases::UpdatePreferences do
   let(:user) { create(:user) }
 
   describe ".call" do

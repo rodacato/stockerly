@@ -17,15 +17,15 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(MarketData::AssetCreated, MarketData::BackfillHistoryOnAssetCreation)
 
   # Market Data
-  EventBus.subscribe(MarketData::AssetPriceUpdated, Alerts::EvaluateAlertsOnPriceUpdate)
+  EventBus.subscribe(MarketData::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
   EventBus.subscribe(MarketData::AssetPriceUpdated, MarketData::BroadcastPriceUpdate)
   EventBus.subscribe(MarketData::AssetPriceUpdated, MarketData::RecordPriceHistory)
   EventBus.subscribe(MarketData::AssetPriceUpdated, MarketData::RecalculateTrendScoreOnPriceUpdate)
   EventBus.subscribe(MarketData::AllGatewaysFailed, MarketData::LogAllGatewaysFailure)
 
   # Alerts
-  EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateAlertEventOnTrigger)
-  EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateNotificationOnAlert)
+  EventBus.subscribe(Alerts::Events::AlertRuleTriggered, Alerts::Handlers::CreateAlertEventOnTrigger)
+  EventBus.subscribe(Alerts::Events::AlertRuleTriggered, Alerts::Handlers::CreateNotificationOnAlert)
 
   # Notifications
   EventBus.subscribe(Notifications::Events::NotificationCreated, Notifications::Handlers::BroadcastNotification)
@@ -47,7 +47,7 @@ Rails.application.config.after_initialize do
 
   # Sentiment
   EventBus.subscribe(MarketData::FearGreedUpdated, MarketData::LogFearGreedUpdate)
-  EventBus.subscribe(MarketData::FearGreedUpdated, Alerts::EvaluateSentimentAlerts)
+  EventBus.subscribe(MarketData::FearGreedUpdated, Alerts::Handlers::EvaluateSentimentAlerts)
 
   # Dividends
   EventBus.subscribe(MarketData::DividendsSynced, MarketData::LogDividendsSync)

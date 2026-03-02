@@ -1,6 +1,6 @@
 class AlertsController < AuthenticatedController
   def index
-    result = Alerts::LoadDashboard.call(user: current_user)
+    result = Alerts::UseCases::LoadDashboard.call(user: current_user)
     data = result.value!
 
     @rules           = data[:rules]
@@ -10,7 +10,7 @@ class AlertsController < AuthenticatedController
   end
 
   def create
-    result = Alerts::CreateRule.call(user: current_user, params: alert_params.to_h)
+    result = Alerts::UseCases::CreateRule.call(user: current_user, params: alert_params.to_h)
 
     case result
     in Dry::Monads::Success(rule)
@@ -24,7 +24,7 @@ class AlertsController < AuthenticatedController
   end
 
   def update
-    result = Alerts::UpdateRule.call(user: current_user, rule_id: params[:id], params: alert_params.to_h)
+    result = Alerts::UseCases::UpdateRule.call(user: current_user, rule_id: params[:id], params: alert_params.to_h)
 
     case result
     in Dry::Monads::Success(rule)
@@ -40,7 +40,7 @@ class AlertsController < AuthenticatedController
   end
 
   def toggle
-    result = Alerts::ToggleRule.call(user: current_user, rule_id: params[:id])
+    result = Alerts::UseCases::ToggleRule.call(user: current_user, rule_id: params[:id])
 
     case result
     in Dry::Monads::Success(rule)
@@ -54,7 +54,7 @@ class AlertsController < AuthenticatedController
   end
 
   def destroy
-    result = Alerts::DestroyRule.call(user: current_user, rule_id: params[:id])
+    result = Alerts::UseCases::DestroyRule.call(user: current_user, rule_id: params[:id])
 
     case result
     in Dry::Monads::Success(rule)

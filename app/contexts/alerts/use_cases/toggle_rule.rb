@@ -1,17 +1,19 @@
 module Alerts
-  class ToggleRule < ApplicationUseCase
-    def call(user:, rule_id:)
-      rule = yield find_rule(user, rule_id)
-      rule.update!(status: rule.active? ? :paused : :active)
+  module UseCases
+    class ToggleRule < ApplicationUseCase
+      def call(user:, rule_id:)
+        rule = yield find_rule(user, rule_id)
+        rule.update!(status: rule.active? ? :paused : :active)
 
-      Success(rule)
-    end
+        Success(rule)
+      end
 
-    private
+      private
 
-    def find_rule(user, id)
-      rule = user.alert_rules.find_by(id: id)
-      rule ? Success(rule) : Failure([ :not_found, "Alert rule not found" ])
+      def find_rule(user, id)
+        rule = user.alert_rules.find_by(id: id)
+        rule ? Success(rule) : Failure([ :not_found, "Alert rule not found" ])
+      end
     end
   end
 end

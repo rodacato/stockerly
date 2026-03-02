@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Alerts::UpdateRule do
+RSpec.describe Alerts::UseCases::UpdateRule do
   let(:user) { create(:user) }
   let!(:rule) { create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 150.0) }
   let(:valid_params) { { asset_symbol: "MSFT", condition: "price_crosses_below", threshold_value: 400.0 } }

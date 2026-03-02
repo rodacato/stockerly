@@ -20,7 +20,7 @@ class ProfilesController < AuthenticatedController
   end
 
   def update_preferences
-    result = Alerts::UpdatePreferences.call(
+    result = Alerts::UseCases::UpdatePreferences.call(
       user: current_user,
       params: preference_params.to_h.symbolize_keys
     )

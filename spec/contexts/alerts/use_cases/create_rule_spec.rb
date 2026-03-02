@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Alerts::CreateRule do
+RSpec.describe Alerts::UseCases::CreateRule do
   let(:user) { create(:user) }
 
   describe ".call" do

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Alerts::DestroyRule do
+RSpec.describe Alerts::UseCases::DestroyRule do
   let(:user) { create(:user) }
 
   describe ".call" do

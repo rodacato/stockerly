@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Alerts::CreateContract do
+RSpec.describe Alerts::Contracts::CreateContract do
   subject { described_class.new }
 
   let(:valid_params) { { asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200.0 } }

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Alerts::ToggleRule do
+RSpec.describe Alerts::UseCases::ToggleRule do
   let(:user) { create(:user) }
 
   describe ".call" do

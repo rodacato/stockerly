@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Alerts::LoadDashboard do
+RSpec.describe Alerts::UseCases::LoadDashboard do
   let(:user) { create(:user) }
 
   describe ".call" do

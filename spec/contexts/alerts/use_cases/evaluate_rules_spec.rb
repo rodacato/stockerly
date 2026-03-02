@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Alerts::EvaluateRules do
+RSpec.describe Alerts::UseCases::EvaluateRules do
   subject(:use_case) { described_class.new }
 
   let(:user) { create(:user) }
@@ -41,13 +41,13 @@ RSpec.describe Alerts::EvaluateRules do
         expect(result.value!).to include(rule)
       end
 
-      it "publishes Alerts::AlertRuleTriggered event" do
+      it "publishes Alerts::Events::AlertRuleTriggered event" do
         allow(EventBus).to receive(:publish)
 
         use_case.call(asset_id: asset.id, new_price: "160.0")
 
         expect(EventBus).to have_received(:publish).with(
-          an_instance_of(Alerts::AlertRuleTriggered)
+          an_instance_of(Alerts::Events::AlertRuleTriggered)
         )
       end
     end
