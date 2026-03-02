@@ -504,6 +504,15 @@ Integration.find_or_create_by!(provider_name: "Alpha Vantage") do |i|
   i.max_requests_per_minute = 5
   i.daily_call_limit = 25
 end
+Integration.find_or_create_by!(provider_name: "FMP") do |i|
+  i.provider_type = "Dividends & Splits"
+  i.api_key_encrypted = ENV.fetch("FMP_API_KEY", "fmp_demo_key_123")
+  i.requires_api_key = true
+  i.connection_status = :connected
+  i.last_sync_at = 1.week.ago
+  i.max_requests_per_minute = 10
+  i.daily_call_limit = 250
+end
 
 # --- Asset Fundamentals (sample AAPL OVERVIEW) ---
 AssetFundamental.find_or_create_by!(asset: aapl, period_label: "OVERVIEW") do |f|
