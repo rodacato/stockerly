@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_26_100001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_003901) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -238,6 +238,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_26_100001) do
     t.index ["provider_name"], name: "index_integrations_on_provider_name", unique: true
   end
 
+  create_table "market_index_histories", force: :cascade do |t|
+    t.decimal "close_value", precision: 15, scale: 4, null: false
+    t.datetime "created_at", null: false
+    t.date "date", null: false
+    t.bigint "market_index_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["market_index_id", "date"], name: "index_market_index_histories_on_market_index_id_and_date", unique: true
+    t.index ["market_index_id"], name: "index_market_index_histories_on_market_index_id"
+  end
+
   create_table "market_indices", force: :cascade do |t|
     t.decimal "change_percent", precision: 8, scale: 4
     t.datetime "created_at", null: false
@@ -425,6 +435,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_26_100001) do
   add_foreign_key "dividends", "assets"
   add_foreign_key "earnings_events", "assets"
   add_foreign_key "financial_statements", "assets"
+  add_foreign_key "market_index_histories", "market_indices"
   add_foreign_key "notifications", "users"
   add_foreign_key "portfolio_snapshots", "portfolios"
   add_foreign_key "portfolios", "users"
