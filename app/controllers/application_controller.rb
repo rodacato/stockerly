@@ -24,6 +24,31 @@ class ApplicationController < ActionController::Base
   def start_session(user)
     reset_session
     session[:user_id] = user.id
+    session[:session_started_at] = Time.current.to_i
+    session[:last_activity_at] = Time.current.to_i
+  end
+
+  INACTIVITY_TIMEOUT = 30.minutes.to_i
+  ABSOLUTE_TIMEOUT = 12.hours.to_i
+
+  def check_session_timeout
+    return unless session[:user_id]
+
+    now = Time.current.to_i
+
+    if session[:session_started_at] && (now - session[:session_started_at]) > ABSOLUTE_TIMEOUT
+      expire_session("Your session has expired. Please sign in again.")
+    elsif session[:last_activity_at] && (now - session[:last_activity_at]) > INACTIVITY_TIMEOUT
+      expire_session("You were signed out due to inactivity.")
+    else
+      session[:last_activity_at] = now
+    end
+  end
+
+  def expire_session(message)
+    forget(current_user) if current_user
+    reset_session
+    redirect_to login_path, alert: message
   end
 
   def remember(user)

@@ -1,6 +1,7 @@
 class AuthenticatedController < ApplicationController
   layout "app"
 
+  before_action :check_session_timeout
   before_action :require_authentication
   before_action :redirect_to_onboarding
   before_action :load_navbar_notifications
