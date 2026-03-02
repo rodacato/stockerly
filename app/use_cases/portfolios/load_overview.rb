@@ -31,7 +31,8 @@ module Portfolios
         tab: tab,
         period_returns: returns_calculator.calculate,
         chart_data: returns_calculator.chart_data(period: "1M"),
-        benchmark_data: nil
+        benchmark_data: nil,
+        upcoming_dividends: tab == "dividends" ? UpcomingDividendsPresenter.new(portfolio).upcoming : []
       }
 
       if benchmark.present? && BENCHMARK_INDICES.include?(benchmark)

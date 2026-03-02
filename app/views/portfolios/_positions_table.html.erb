@@ -47,6 +47,44 @@
       </div>
     <% end %>
   <% elsif @tab == "dividends" %>
+    <%# Upcoming Dividends %>
+    <% if @upcoming_dividends.present? %>
+      <div class="border-b border-slate-100 dark:border-slate-800">
+        <div class="px-6 py-4 bg-emerald-50 dark:bg-emerald-900/20">
+          <h3 class="text-sm font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">event_upcoming</span>
+            Upcoming Dividends
+          </h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
+              <tr>
+                <th class="px-6 py-3 font-semibold">Asset</th>
+                <th class="px-6 py-3 font-semibold text-center">Ex-Date</th>
+                <th class="px-6 py-3 font-semibold text-center">Pay Date</th>
+                <th class="px-6 py-3 font-semibold text-right">$/Share</th>
+                <th class="px-6 py-3 font-semibold text-right">Shares</th>
+                <th class="px-6 py-3 font-semibold text-right">Expected Payout</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+              <% @upcoming_dividends.each do |ud| %>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                  <td class="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white"><%= ud.asset.symbol %></td>
+                  <td class="px-6 py-4 text-center text-sm text-slate-500"><%= ud.ex_date.strftime("%b %d, %Y") %></td>
+                  <td class="px-6 py-4 text-center text-sm text-slate-500"><%= ud.pay_date&.strftime("%b %d, %Y") || "—" %></td>
+                  <td class="px-6 py-4 text-right text-sm text-slate-900 dark:text-white"><%= number_to_currency(ud.amount_per_share, precision: 4) %></td>
+                  <td class="px-6 py-4 text-right text-sm text-slate-900 dark:text-white"><%= ud.shares %></td>
+                  <td class="px-6 py-4 text-right text-sm font-medium text-emerald-600"><%= number_to_currency(ud.expected_total) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
     <%# Dividend History %>
     <% if @positions.present? %>
       <div class="overflow-x-auto">

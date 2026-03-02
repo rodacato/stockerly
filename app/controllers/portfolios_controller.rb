@@ -15,8 +15,9 @@ class PortfoliosController < AuthenticatedController
       @tab             = data[:tab]
       @period_returns  = data[:period_returns]
       @chart_data      = data[:chart_data]
-      @benchmark_data  = data[:benchmark_data]
-      @benchmark       = params[:benchmark]
+      @benchmark_data       = data[:benchmark_data]
+      @benchmark            = params[:benchmark]
+      @upcoming_dividends   = data[:upcoming_dividends]
     else
       redirect_to dashboard_path, alert: "Portfolio not found."
     end
