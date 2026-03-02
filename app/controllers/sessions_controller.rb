@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
     in Dry::Monads::Success(user)
       start_session(user)
       remember(user) if params[:remember] == "1"
-      EventBus.publish(UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
+      EventBus.publish(Identity::UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
       redirect_to dashboard_path, notice: "Welcome back, #{user.full_name}!"
     in Dry::Monads::Failure[ :suspended, message ]
       publish_login_failed
@@ -44,6 +44,6 @@ class SessionsController < ApplicationController
   def publish_login_failed
     return unless params[:email].present?
 
-    EventBus.publish(UserLoginFailed.new(email: params[:email].to_s, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
+    EventBus.publish(Identity::UserLoginFailed.new(email: params[:email].to_s, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
   end
 end

@@ -28,12 +28,13 @@ module Stockerly
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    # Hexagonal Architecture: each bounded context is a root namespace
-    config.autoload_paths += Dir[Rails.root.join("app/contexts/*")]
+    # Hexagonal Architecture: contexts/ is a root — subdirs become namespaces
+    # e.g. app/contexts/identity/events/user_registered.rb → Identity::UserRegistered
+    config.autoload_paths << Rails.root.join("app/contexts")
     config.autoload_paths << Rails.root.join("app/shared")
 
-    # Zeitwerk collapse: folders organize for humans, Ruby sees flat namespaces
-    # e.g. app/contexts/alerts/domain/alert_evaluator.rb → Alerts::AlertEvaluator
+    # Zeitwerk collapse: organizational folders are transparent to the autoloader
+    # e.g. app/contexts/identity/events/user_registered.rb → Identity::UserRegistered
     initializer "stockerly.zeitwerk_collapse", before: "zeitwerk.eager_load" do
       Rails.autoloaders.main.collapse(
         *Dir[Rails.root.join("app/contexts/*/contracts")],

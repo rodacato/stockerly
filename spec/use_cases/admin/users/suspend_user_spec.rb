@@ -31,13 +31,13 @@ RSpec.describe Admin::Users::SuspendUser do
       expect(result.failure.first).to eq(:already_suspended)
     end
 
-    it "publishes UserSuspended event" do
+    it "publishes Identity::UserSuspended event" do
       handler = double("handler")
       allow(handler).to receive(:call)
-      EventBus.subscribe(UserSuspended, handler)
+      EventBus.subscribe(Identity::UserSuspended, handler)
 
       described_class.call(user_id: regular_user.id, admin: admin)
-      expect(handler).to have_received(:call).with(an_instance_of(UserSuspended))
+      expect(handler).to have_received(:call).with(an_instance_of(Identity::UserSuspended))
     end
   end
 end

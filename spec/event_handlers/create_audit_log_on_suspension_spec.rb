@@ -5,7 +5,7 @@ RSpec.describe CreateAuditLogOnSuspension do
   let(:user) { create(:user) }
 
   it "creates an audit log entry" do
-    event = UserSuspended.new(user_id: user.id, email: user.email, admin_id: admin.id)
+    event = Identity::UserSuspended.new(user_id: user.id, email: user.email, admin_id: admin.id)
 
     expect {
       described_class.call(event)

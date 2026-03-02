@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe "Registration flow", type: :request do
   before do
     # Re-subscribe event handlers needed for registration flow
-    EventBus.subscribe(UserRegistered, CreatePortfolioOnRegistration)
-    EventBus.subscribe(UserRegistered, CreateAlertPreferencesOnRegistration)
+    EventBus.subscribe(Identity::UserRegistered, Identity::CreatePortfolioOnRegistration)
+    EventBus.subscribe(Identity::UserRegistered, Identity::CreateAlertPreferencesOnRegistration)
   end
 
   it "creates portfolio and alert preferences on registration" do

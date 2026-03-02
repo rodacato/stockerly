@@ -1,6 +1,6 @@
 class ProfilesController < AuthenticatedController
   def show
-    result = Profiles::LoadProfile.call(user: current_user)
+    result = Identity::LoadProfile.call(user: current_user)
     data = result.value!
 
     @watchlist_items = data[:watchlist_items]
@@ -8,7 +8,7 @@ class ProfilesController < AuthenticatedController
   end
 
   def update
-    result = Profiles::UpdateInfo.call(user: current_user, params: profile_params.to_h)
+    result = Identity::UpdateInfo.call(user: current_user, params: profile_params.to_h)
 
     case result
     in Dry::Monads::Success
@@ -33,7 +33,7 @@ class ProfilesController < AuthenticatedController
   end
 
   def change_password
-    result = Profiles::ChangePassword.call(user: current_user, params: password_params.to_h)
+    result = Identity::ChangePassword.call(user: current_user, params: password_params.to_h)
 
     case result
     in Dry::Monads::Success

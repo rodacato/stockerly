@@ -39,19 +39,19 @@ RSpec.describe "Event Subscription Wiring" do
     end
   end
 
-  describe "UserRegistered" do
+  describe "Identity::UserRegistered" do
     it "has portfolio, alert prefs, and welcome email handlers" do
-      handlers = EventBus.handlers_for(UserRegistered)
+      handlers = EventBus.handlers_for(Identity::UserRegistered)
 
-      expect(handlers).to include(CreatePortfolioOnRegistration)
-      expect(handlers).to include(CreateAlertPreferencesOnRegistration)
-      expect(handlers).to include(SendWelcomeEmailOnRegistration)
+      expect(handlers).to include(Identity::CreatePortfolioOnRegistration)
+      expect(handlers).to include(Identity::CreateAlertPreferencesOnRegistration)
+      expect(handlers).to include(Identity::SendWelcomeEmailOnRegistration)
     end
   end
 
-  describe "UserSuspended" do
+  describe "Identity::UserSuspended" do
     it "has audit log and suspension email handlers" do
-      handlers = EventBus.handlers_for(UserSuspended)
+      handlers = EventBus.handlers_for(Identity::UserSuspended)
 
       expect(handlers).to include(CreateAuditLogOnSuspension)
       expect(handlers).to include(SendSuspensionEmail)

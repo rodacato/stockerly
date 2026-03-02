@@ -1,17 +1,17 @@
 Rails.application.config.after_initialize do
   # Identity
-  EventBus.subscribe(UserRegistered, CreatePortfolioOnRegistration)
-  EventBus.subscribe(UserRegistered, CreateAlertPreferencesOnRegistration)
-  EventBus.subscribe(UserRegistered, SendWelcomeEmailOnRegistration)
-  EventBus.subscribe(UserRegistered, SendVerificationEmailOnRegistration)
-  EventBus.subscribe(PasswordChanged, InvalidateSessionsOnPasswordChange)
-  EventBus.subscribe(PasswordChanged, CreateAuditLogOnPasswordChange)
-  EventBus.subscribe(UserLoggedIn, CreateAuditLogOnLogin)
-  EventBus.subscribe(UserLoginFailed, CreateAuditLogOnLoginFailure)
+  EventBus.subscribe(Identity::UserRegistered, Identity::CreatePortfolioOnRegistration)
+  EventBus.subscribe(Identity::UserRegistered, Identity::CreateAlertPreferencesOnRegistration)
+  EventBus.subscribe(Identity::UserRegistered, Identity::SendWelcomeEmailOnRegistration)
+  EventBus.subscribe(Identity::UserRegistered, Identity::SendVerificationEmailOnRegistration)
+  EventBus.subscribe(Identity::PasswordChanged, Identity::InvalidateSessionsOnPasswordChange)
+  EventBus.subscribe(Identity::PasswordChanged, Identity::CreateAuditLogOnPasswordChange)
+  EventBus.subscribe(Identity::UserLoggedIn, Identity::CreateAuditLogOnLogin)
+  EventBus.subscribe(Identity::UserLoginFailed, Identity::CreateAuditLogOnLoginFailure)
 
   # Administration
-  EventBus.subscribe(UserSuspended, CreateAuditLogOnSuspension)
-  EventBus.subscribe(UserSuspended, SendSuspensionEmail)
+  EventBus.subscribe(Identity::UserSuspended, CreateAuditLogOnSuspension)
+  EventBus.subscribe(Identity::UserSuspended, SendSuspensionEmail)
   EventBus.subscribe(AssetCreated, CreateAuditLogOnAssetCreation)
   EventBus.subscribe(AssetCreated, SyncAssetOnCreation)
   EventBus.subscribe(AssetCreated, BackfillHistoryOnAssetCreation)

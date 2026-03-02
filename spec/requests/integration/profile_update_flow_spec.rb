@@ -4,7 +4,7 @@ RSpec.describe "Profile update flow", type: :request do
   let!(:user) { create(:user, full_name: "John Doe", email: "john@example.com", password: "password123") }
 
   before do
-    EventBus.subscribe(PasswordChanged, InvalidateSessionsOnPasswordChange)
+    EventBus.subscribe(Identity::PasswordChanged, Identity::InvalidateSessionsOnPasswordChange)
     login_as(user)
   end
 
