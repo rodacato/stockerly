@@ -1,0 +1,92 @@
+<%# Portfolio Risk Metrics — volatility, Sharpe ratio, max drawdown %>
+<section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm mb-8">
+  <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+    <span class="material-symbols-outlined text-xl text-primary">shield</span>
+    Risk Metrics
+  </h3>
+
+  <% if @risk_metrics.has_sufficient_data %>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <%# Volatility %>
+      <%
+        vol_pct = (@risk_metrics.volatility * 100).round(1)
+        vol_color = if @risk_metrics.high_volatility?
+                      "text-rose-600 dark:text-rose-400"
+                    elsif @risk_metrics.low_volatility?
+                      "text-emerald-600 dark:text-emerald-400"
+                    else
+                      "text-amber-600 dark:text-amber-400"
+                    end
+        vol_label = if @risk_metrics.high_volatility?
+                      "High"
+                    elsif @risk_metrics.low_volatility?
+                      "Low"
+                    else
+                      "Moderate"
+                    end
+      %>
+      <div>
+        <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Annualized Volatility</p>
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-black tracking-tight <%= vol_color %>"><%= vol_pct %>%</span>
+          <span class="text-xs font-bold uppercase tracking-wide <%= vol_color %>"><%= vol_label %></span>
+        </div>
+        <p class="text-xs text-slate-400 mt-1">Standard deviation of daily returns</p>
+      </div>
+
+      <%# Sharpe Ratio %>
+      <%
+        sharpe_val = @risk_metrics.sharpe_ratio.round(2)
+        sharpe_color = case @risk_metrics.sharpe_label
+                       when "Good" then "text-emerald-600 dark:text-emerald-400"
+                       when "Acceptable" then "text-amber-600 dark:text-amber-400"
+                       when "Low" then "text-orange-600 dark:text-orange-400"
+                       else "text-rose-600 dark:text-rose-400"
+                       end
+      %>
+      <div>
+        <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Sharpe Ratio</p>
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-black tracking-tight <%= sharpe_color %>"><%= sharpe_val %></span>
+          <span class="text-xs font-bold uppercase tracking-wide <%= sharpe_color %>"><%= @risk_metrics.sharpe_label %></span>
+        </div>
+        <p class="text-xs text-slate-400 mt-1">Risk-adjusted return (vs CETES)</p>
+      </div>
+
+      <%# Max Drawdown %>
+      <%
+        dd_pct = (@risk_metrics.max_drawdown * 100).round(1)
+        dd_color = if dd_pct > 20
+                     "text-rose-600 dark:text-rose-400"
+                   elsif dd_pct > 10
+                     "text-amber-600 dark:text-amber-400"
+                   else
+                     "text-emerald-600 dark:text-emerald-400"
+                   end
+        dd_bar_color = if dd_pct > 20
+                         "bg-rose-500"
+                       elsif dd_pct > 10
+                         "bg-amber-500"
+                       else
+                         "bg-emerald-500"
+                       end
+      %>
+      <div>
+        <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Max Drawdown</p>
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-black tracking-tight <%= dd_color %>">-<%= dd_pct %>%</span>
+        </div>
+        <div class="mt-2 h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div class="h-full rounded-full <%= dd_bar_color %>" style="width: <%= [dd_pct, 100].min %>%"></div>
+        </div>
+        <p class="text-xs text-slate-400 mt-1">Largest peak-to-trough decline</p>
+      </div>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center py-6 text-slate-400 dark:text-slate-500">
+      <span class="material-symbols-outlined text-3xl mb-2">hourglass_empty</span>
+      <p class="text-sm font-medium">Not enough data</p>
+      <p class="text-xs mt-1">Risk metrics require at least 31 days of portfolio history.</p>
+    </div>
+  <% end %>
+</section>

@@ -23,6 +23,8 @@ module Portfolios
       allocation = portfolio.allocation_by_sector
       returns_calculator = PeriodReturnsCalculator.new(portfolio)
 
+      risk_metrics = compute_risk_metrics(portfolio)
+
       result = {
         portfolio: portfolio,
         positions: positions,
@@ -32,7 +34,8 @@ module Portfolios
         period_returns: returns_calculator.calculate,
         chart_data: returns_calculator.chart_data(period: "1M"),
         benchmark_data: nil,
-        upcoming_dividends: tab == "dividends" ? UpcomingDividendsPresenter.new(portfolio).upcoming : []
+        upcoming_dividends: tab == "dividends" ? UpcomingDividendsPresenter.new(portfolio).upcoming : [],
+        risk_metrics: risk_metrics
       }
 
       if benchmark.present? && BENCHMARK_INDICES.include?(benchmark)
@@ -43,6 +46,11 @@ module Portfolios
     end
 
     private
+
+    def compute_risk_metrics(portfolio)
+      snapshots = portfolio.snapshots.order(:date)
+      PortfolioRiskCalculator.new(snapshots: snapshots).calculate
+    end
 
     def compute_benchmark(portfolio, benchmark_symbol)
       index = MarketIndex.find_by(symbol: benchmark_symbol)

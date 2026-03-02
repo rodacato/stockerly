@@ -18,6 +18,7 @@ class PortfoliosController < AuthenticatedController
       @benchmark_data       = data[:benchmark_data]
       @benchmark            = params[:benchmark]
       @upcoming_dividends   = data[:upcoming_dividends]
+      @risk_metrics         = data[:risk_metrics]
     else
       redirect_to dashboard_path, alert: "Portfolio not found."
     end
