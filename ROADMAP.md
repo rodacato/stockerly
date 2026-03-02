@@ -1,12 +1,12 @@
 # Stockerly — Roadmap
 
 > **Fecha:** 2026-03-02
-> **Estado actual:** ~1796 specs, Phase 17 complete
-> **Siguiente:** Phase 18 — UX Maturity
+> **Estado actual:** ~1841 specs, Phase 18 complete
+> **Siguiente:** Phase 19 — Advanced Analytics & Risk
 
 ---
 
-## Completed Phases (0-17) — ~1796 specs
+## Completed Phases (0-18) — ~1841 specs
 
 | Fase     | Nombre                              | Specs | Commits |
 | -------- | ----------------------------------- | ----- | ------- |
@@ -50,6 +50,7 @@
 | **15.6** | API Key Management & Rate Limits    | 1697  | 110-116 |
 | **16**   | Production Hardening & Security      | 1721  | 117-120 |
 | **17**   | Financial Domain Depth               | 1796  | 121-129 |
+| **18**   | Analytics Depth & Market Intelligence | 1841  | 130-138 |
 
 ### Phase 9 Summary (990 specs, 20 commits)
 
@@ -91,7 +92,11 @@
 
 **Portfolio Benchmarking:** `MarketIndexHistory` model for daily index close prices, `TimeWeightedReturn` domain service (TWR = ∏(1 + R_i) - 1), benchmark comparison overlay on portfolio chart with S&P 500, NASDAQ, Dow Jones selection, `SyncIndexHistoryJob` via Yahoo Finance (daily 11:15pm). **Dividend Tracking:** `FmpGateway` for Financial Modeling Prep API (dividends + splits), `SyncDividendsJob` with `DividendsSynced` event pipeline (weekly Monday 8am), `UpcomingDividendsPresenter` showing expected payouts on portfolio dividends tab. **Stock Splits:** `StockSplit` model, `SplitAdjuster` domain service adjusts positions (shares × ratio, avg_cost ÷ ratio) and pre-split trades, `SyncSplitsJob` (weekly Monday 9am), `SplitDetected` → async `AdjustPositionsOnSplit` handler. **Position Annotations:** `notes` (text) and `labels` (text[] array, max 10) on positions, `PositionsController#update` scoped to current user, label pills and notes icon tooltip on position rows. Trade export (CSV/PDF) deferred to nice-to-have phase.
 
-### Key Architecture Decisions (Phases 9-17)
+### Phase 18 Summary (~1841 specs, 9 commits)
+
+**Risk Metrics:** `PortfolioRiskCalculator` domain service (annualized volatility σ×√252, Sharpe ratio vs CETES 28D yield, max drawdown peak-to-trough), `RiskMetrics` Dry::Struct, 31-snapshot minimum guard with "Not enough data" empty state, 3-column display on portfolio page. **Allocation Enrichment:** `allocation_by_asset_type` method on Portfolio model, tabbed sidebar view (By Sector / By Type) reusing `_donut_chart.html.erb`. **Asset Detail Enrichment:** Earnings tab with EPS bar chart and beat/miss badges (last 8 quarters), analyst target price card with upside/downside % and 52-week range bar, volume bars on SVG price chart (30% height, semi-transparent). **Market Intelligence:** Market indices card showing symbol, value, change% (color-coded), mini sparklines from last 5 history points (replaces simple open/closed status), Fear & Greed sub-indicators collapsible section (7 CNN components with progress bars), dividend payment history table with annual summary cards. **Zero new migrations** — all data already existed in the schema.
+
+### Key Architecture Decisions (Phases 9-18)
 
 | Decision | Resolution |
 |----------|-----------|
@@ -142,9 +147,6 @@
 | TWR vs MWR | TWR first (industry standard, eliminates cash flow noise) — MWR in v3 |
 | Dividend data source | FMP free tier (250/day) — replaces Polygon for corporate actions |
 | Split handling | Retroactive cost basis adjustment via domain service on `SplitDetected` event |
-| CSV sanitization | Strip `=`, `+`, `-`, `@` prefixes — prevent formula injection |
-| Dark mode toggle | `localStorage` + Stimulus controller — no server roundtrip |
-| i18n scope | Critical strings only (nav, buttons, labels, errors) — not full views |
 | Risk metrics | Volatility + Sharpe + Max Drawdown — calculable from existing snapshots |
 | Composite alerts | JSONB conditions array with AND/OR — no full expression tree |
 | Sector comparison | GROUP BY existing `asset.sector` — no new data source needed |
@@ -152,6 +154,15 @@
 | LLM provider routing | CLI subprocess per provider — `claude -p`, `gemini -p`, `codex exec` |
 | LLM data anonymization | Only tickers, percentages, relative changes — never PII |
 | LLM output validation | `LlmResponseContract` (Dry::Validation) before data enters domain |
+| Risk-free rate source | CETES 28D yield from DB (no new gateway calls) |
+| Risk minimum data | 31 snapshots (30 daily returns) for meaningful volatility |
+| Volatility formula | Annualized σ = daily σ × √252 (standard financial convention) |
+| Sharpe formula | (annualized TWR - risk_free_rate) / annualized_volatility |
+| Allocation by type | New method on Portfolio, same pattern as existing `allocation_by_sector` |
+| Earnings display | Last 8 quarters — typical analyst view window |
+| Volume bars scaling | Relative (% of max volume) — keeps SVG proportional |
+| Index sparklines | Last 5 data points from `market_index_histories` — lightweight |
+| F&G sub-indicators | 7 CNN components already stored — pure view work |
 
 ---
 
@@ -324,60 +335,28 @@
 |     |        | *Phase 17 Total*                                                        | *+75* |
 |     |        | **Grand Total (Phases 9-17)**                                           | **~788** |
 
+### Phase 18 (Completed — 9 commits)
+
+| #   | Phase  | Commit Message                                                          | Specs |
+| --- | ------ | ----------------------------------------------------------------------- | ----- |
+| 130 | 18a    | Add PortfolioRiskCalculator domain service                              | +15   |
+| 131 | 18b    | Display risk metrics on portfolio page                                  | +3    |
+| 132 | 18c    | Enrich allocation sidebar with asset-type breakdown                     | +7    |
+| 133 | 18d    | Add Earnings tab to asset detail page                                   | +4    |
+| 134 | 18e    | Display analyst target price on asset summary                           | +3    |
+| 135 | 18f    | Add volume bars to asset price chart                                    | +3    |
+| 136 | 18g    | Upgrade market status to show index values and sparklines               | +4    |
+| 137 | 18h    | Display Fear and Greed sub-indicators breakdown                         | +3    |
+| 138 | 18i    | Add dividend history to asset detail page                               | +3    |
+|     |        | *Phase 18 Total*                                                        | *+45* |
+|     |        | **Grand Total (Phases 9-18)**                                           | **~833** |
+
 ---
 
-## Upcoming Phases (18-21)
+## Upcoming Phases (19-21)
 
-> **Objetivo:** UX maturity, advanced analytics, provider upgrades, AI intelligence
-> **Note:** Phase 17 from the original v2 plan was completed early as Phase 15.6 (Rate Limits & Admin). Phases renumbered accordingly. Phase 17 completed 2026-03-02.
-
----
-
-## Phase 18 — UX Maturity
-
-> **Theme:** "Look and feel like a real product"
-> **Owner:** UX Designer + Hotwire Engineer
-> **Estimated specs:** ~42
-
-### 18.0 — Accessibility (WCAG 2.1 AA)
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 137 | Add skip-to-content link and ARIA landmarks to layouts | Layouts, semantic HTML | +3 |
-| 138 | Add aria-describedby to form error messages and aria-live to dynamic regions | Forms, Turbo Streams | +4 |
-| 139 | Add keyboard navigation to modals and focus trapping | Stimulus controllers | +4 |
-
-### 18.1 — Loading States & Skeleton Screens
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 140 | Add skeleton loader component and Turbo Frame loading states | Component partial, CSS animations | +3 |
-| 141 | Add loading states to dashboard, market, and portfolio pages | Views, `busy` attribute on frames | +4 |
-
-### 18.2 — Dark Mode Toggle
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 142 | Add dark mode toggle to navbar with localStorage persistence | Stimulus controller, layout, CSS | +3 |
-
-### 18.3 — Internationalization Foundation (i18n)
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 143 | Add Spanish locale file and extract critical UI strings | `config/locales/es.yml`, nav, buttons, labels | +4 |
-| 144 | Add language switcher to profile settings | Controller, session locale, middleware | +3 |
-
-### 18.4 — Bulk CSV Import
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 145 | Add Trading::ImportTrades use case with CSV parsing and sanitization | Use case, contract, sanitizer | +10 |
-| 146 | Add CSV import UI on portfolio page with drag-and-drop | Views, Stimulus controller, system test | +4 |
-
-**Security Engineer rationale:**
-> CSV formula injection is real: cells starting with `=`, `+`, `-`, `@` can execute arbitrary commands when opened in Excel. The sanitizer must strip these prefixes. Max 500 rows per import, with dry-run preview before committing.
-
-**Phase 18 Total: ~42 specs, ~10 commits**
+> **Objetivo:** Advanced analytics, provider upgrades, AI intelligence
+> **Note:** Phase 18 completed 2026-03-02 (Analytics Depth & Market Intelligence). Risk metrics, sector breakdown, and asset enrichment moved from original Phase 19 into Phase 18.
 
 ---
 
@@ -385,45 +364,24 @@
 
 > **Theme:** "From tracking to insights"
 > **Owner:** Financial Expert + Domain Architect
-> **Estimated specs:** ~48
+> **Estimated specs:** ~24
+> **Note:** Risk Metrics (volatility, Sharpe, drawdown) and Sector Comparison completed in Phase 18.
 
-### 19.0 — Risk Metrics
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 147 | Add PortfolioRiskCalculator domain service (volatility, Sharpe, max drawdown) | Domain service — pure math | +10 |
-| 148 | Add risk metrics display on portfolio page | Views, presenter, Turbo Frame | +4 |
-
-**Financial Expert rationale:**
-> Returns without risk context are meaningless. Three metrics cover 80% of the need:
-> - **Volatility (σ):** Standard deviation of daily returns
-> - **Sharpe Ratio:** (Return - Risk-Free Rate) / σ
-> - **Max Drawdown:** Largest peak-to-trough decline
->
-> All calculable from existing `PortfolioSnapshot` data. No new data sources needed.
-
-### 19.1 — Concentration Alerts
+### 19.0 — Concentration Alerts
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 149 | Add concentration_risk condition to AlertRule | Migration, AlertEvaluator extension | +6 |
-| 150 | Add portfolio concentration warnings on dashboard | Views, domain service | +4 |
+| 139 | Add concentration_risk condition to AlertRule | Migration, AlertEvaluator extension | +6 |
+| 140 | Add portfolio concentration warnings on dashboard | Views, domain service | +4 |
 
-### 19.2 — Advanced Composite Alerts
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 151 | Add AND/OR predicate composition to AlertRule | Migration, evaluator refactor | +8 |
-| 152 | Add composite alert builder UI | Views, Stimulus, system test | +6 |
-
-### 19.3 — Sector Comparison
+### 19.1 — Advanced Composite Alerts
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 153 | Add sector aggregation to portfolio analytics | Domain service, presenter | +6 |
-| 154 | Add sector breakdown chart on portfolio page | Views, donut chart extension | +4 |
+| 141 | Add AND/OR predicate composition to AlertRule | Migration, evaluator refactor | +8 |
+| 142 | Add composite alert builder UI | Views, Stimulus, system test | +6 |
 
-**Phase 19 Total: ~48 specs, ~8 commits**
+**Phase 19 Total: ~24 specs, ~4 commits**
 
 ---
 
@@ -437,22 +395,22 @@
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 155 | Add FmpGateway with company profile and fundamentals | Gateway, circuit breaker, specs | +6 |
-| 156 | Add FMP as fallback in GatewayChain for fundamentals | Chain config, adaptive scheduling | +4 |
+| 143 | Add FmpGateway with company profile and fundamentals | Gateway, circuit breaker, specs | +6 |
+| 144 | Add FMP as fallback in GatewayChain for fundamentals | Chain config, adaptive scheduling | +4 |
 
 ### 20.1 — PWA Support
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 157 | Add PWA manifest and service worker for installability | `public/manifest.json`, service worker, icons | +3 |
-| 158 | Add offline fallback page and cache strategy | Service worker cache, offline view | +3 |
+| 145 | Add PWA manifest and service worker for installability | `public/manifest.json`, service worker, icons | +3 |
+| 146 | Add offline fallback page and cache strategy | Service worker cache, offline view | +3 |
 
 ### 20.2 — Error Tracking & Monitoring
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 159 | Add Sentry integration for error tracking | Gem, initializer, production config | +2 |
-| 160 | Add health dashboard improvements (job queue depth, cache hit rate) | Admin view, domain service | +4 |
+| 147 | Add Sentry integration for error tracking | Gem, initializer, production config | +2 |
+| 148 | Add health dashboard improvements (job queue depth, cache hit rate) | Admin view, domain service | +4 |
 
 **Phase 20 Total: ~22 specs, ~6 commits**
 
@@ -481,38 +439,38 @@ LlmGateway ──► POST ──►  /completions ──► subprocess ──►
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 161 | Add LlmGateway with Faraday client to SheLLM | Gateway, CircuitBreaker, RateLimiter integration | +8 |
-| 162 | Add SheLLM Integration seed and admin health indicator | Seeds, admin view, health check | +4 |
-| 163 | Add LlmResponseContract for output validation | Contract, Dry::Validation, JSON schema enforcement | +6 |
+| 149 | Add LlmGateway with Faraday client to SheLLM | Gateway, CircuitBreaker, RateLimiter integration | +8 |
+| 150 | Add SheLLM Integration seed and admin health indicator | Seeds, admin view, health check | +4 |
+| 151 | Add LlmResponseContract for output validation | Contract, Dry::Validation, JSON schema enforcement | +6 |
 
 ### 21.1 — Portfolio Insight Generator
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 164 | Add InsightGenerator domain service with analysis prompt | Domain service, system prompt template, anonymizer | +8 |
-| 165 | Add GeneratePortfolioInsightsJob as daily recurring job | Job (11:15pm after snapshots), events, handlers | +6 |
-| 166 | Add AI insight card to dashboard with attribution label | Views, Turbo Frame, opt-out toggle, "AI-generated" label | +4 |
+| 152 | Add InsightGenerator domain service with analysis prompt | Domain service, system prompt template, anonymizer | +8 |
+| 153 | Add GeneratePortfolioInsightsJob as daily recurring job | Job (11:15pm after snapshots), events, handlers | +6 |
+| 154 | Add AI insight card to dashboard with attribution label | Views, Turbo Frame, opt-out toggle, "AI-generated" label | +4 |
 
 ### 21.2 — News Sentiment Analysis
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 167 | Add NewsSentimentAnalyzer domain service with batch processing | Domain service, batch prompt (10 articles per call) | +8 |
-| 168 | Add AnalyzeNewsSentimentJob triggered after news sync | Job, event handler, migration (sentiment columns on news_articles) | +6 |
-| 169 | Add sentiment badges and filter to news feed | Views, filter, Turbo Frame update | +4 |
+| 155 | Add NewsSentimentAnalyzer domain service with batch processing | Domain service, batch prompt (10 articles per call) | +8 |
+| 156 | Add AnalyzeNewsSentimentJob triggered after news sync | Job, event handler, migration (sentiment columns on news_articles) | +6 |
+| 157 | Add sentiment badges and filter to news feed | Views, filter, Turbo Frame update | +4 |
 
 ### 21.3 — Fundamental Health Checks
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 170 | Add FundamentalHealthCheck domain service | Domain service, prompt template, 7-day cache | +6 |
-| 171 | Add AI health check section to asset detail page | Views, Turbo Frame, cache integration | +4 |
+| 158 | Add FundamentalHealthCheck domain service | Domain service, prompt template, 7-day cache | +6 |
+| 159 | Add AI health check section to asset detail page | Views, Turbo Frame, cache integration | +4 |
 
 ### 21.4 — Earnings Narrative
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 172 | Add EarningsNarrativeGenerator for earnings detail page | Domain service, views, cache | +5 |
+| 160 | Add EarningsNarrativeGenerator for earnings detail page | Domain service, views, cache | +5 |
 
 **Phase 21 Total: ~65 specs, ~12 commits**
 
@@ -527,9 +485,9 @@ Phase 16 (Security) ──────────────────► Pr
     │
 Phase 17 (Financial Domain) ─────────► User value (benchmarking, dividends, splits) ✅
     │
-Phase 18 (UX Maturity) ──────────────► Polish (a11y, i18n, loading states, CSV import) ← NEXT
+Phase 18 (Analytics Depth) ──────────► Data depth (risk, earnings, volume, indices) ✅
     │
-Phase 19 (Advanced Analytics) ───────► Differentiation (risk metrics, composite alerts)
+Phase 19 (Advanced Analytics) ───────► Differentiation (concentration, composite alerts) ← NEXT
     │
 Phase 20 (Provider Upgrade) ─────────► Scale (FMP, PWA, monitoring)
     │
@@ -545,11 +503,11 @@ Phase 21 (LLM Intelligence) ─────────► AI insights (requires
 |-------|-------|---------|-----------------|---------------|
 | ~~16~~ | ~~Production Hardening~~ | ~~4~~ | ~~24~~ | ~~1721~~ |
 | ~~17~~ | ~~Financial Domain~~ | ~~9~~ | ~~75~~ | ~~1796~~ |
-| 18 | UX Maturity | 10 | ~42 | ~1838 |
-| 19 | Advanced Analytics | 8 | ~48 | ~1886 |
-| 20 | Provider Upgrade | 6 | ~22 | ~1908 |
-| 21 | LLM Intelligence | 12 | ~65 | ~1973 |
-| | **Total Remaining** | **~36** | **~177** | **~1973** |
+| ~~18~~ | ~~Analytics Depth~~ | ~~9~~ | ~~45~~ | ~~1841~~ |
+| 19 | Advanced Analytics | 4 | ~24 | ~1865 |
+| 20 | Provider Upgrade | 6 | ~22 | ~1887 |
+| 21 | LLM Intelligence | 12 | ~65 | ~1952 |
+| | **Total Remaining** | **~22** | **~111** | **~1952** |
 
 ### External Dependencies
 
@@ -563,9 +521,11 @@ Phase 21 (LLM Intelligence) ─────────► AI insights (requires
 
 | Feature | Reason | Expert |
 |---------|--------|--------|
+| **Enhanced TrendScore** | Weighted scoring with momentum, fundamentals, sentiment. Richer than current RSI+momentum. | Financial Expert |
+| **Portfolio Beta** | Correlation vs benchmark index. Requires position-level daily returns. | Financial Expert |
+| **Weekly Insight Improvement** | Fix `change_percent_24h` bug, add 7-day return calculation. | Domain Architect |
 | **Tax Lot Tracking (FIFO/LIFO)** | Complex, requires cost lot model + tax regime selection. Do after trade export validates demand. | Financial Expert |
 | **Profile Sharing / Privacy Mode** | No community features yet. Zero demand signal. | Domain Architect |
-| **Full i18n (all views)** | v2 does critical strings only. Full extraction is mechanical but large. | Hotwire Engineer |
 | **Performance Attribution by Position** | Requires position-level snapshots (expensive storage). After TWR proves value. | Financial Expert |
 | **Wash Sale Detection** | US-specific tax rule. Not relevant for Mexican market. | Financial Expert |
 | **Options/Warrants Tracking** | Entirely different asset class with Greeks, chains, expiry. Separate product. | Domain Architect |
@@ -590,4 +550,3 @@ Phase 21 (LLM Intelligence) ─────────► AI insights (requires
 - Imperative mood ("Add feature" not "Added feature")
 - First line under 70 characters
 - One commit per logical step
-- Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
