@@ -28,13 +28,26 @@ module Stockerly
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
+    # Hexagonal Architecture: each bounded context is a root namespace
+    config.autoload_paths += Dir[Rails.root.join("app/contexts/*")]
+    config.autoload_paths << Rails.root.join("app/shared")
+
+    # Zeitwerk collapse: folders organize for humans, Ruby sees flat namespaces
+    # e.g. app/contexts/alerts/domain/alert_evaluator.rb → Alerts::AlertEvaluator
+    initializer "stockerly.zeitwerk_collapse", before: "zeitwerk.eager_load" do
+      Rails.autoloaders.main.collapse(
+        *Dir[Rails.root.join("app/contexts/*/contracts")],
+        *Dir[Rails.root.join("app/contexts/*/domain")],
+        *Dir[Rails.root.join("app/contexts/*/events")],
+        *Dir[Rails.root.join("app/contexts/*/handlers")],
+        *Dir[Rails.root.join("app/contexts/*/gateways")],
+        *Dir[Rails.root.join("app/contexts/*/use_cases")],
+        Rails.root.join("app/shared/base"),
+        Rails.root.join("app/shared/domain"),
+        Rails.root.join("app/shared/events"),
+        Rails.root.join("app/shared/types")
+      )
+    end
 
     # Don't generate system test files.
     config.generators.system_tests = nil
