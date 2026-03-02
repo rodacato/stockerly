@@ -66,6 +66,48 @@
       <div class="absolute -bottom-1.5 transform -translate-x-1/2 w-3 h-3 bg-white dark:bg-slate-900 border-2 border-<%= color %>-500 rounded-full shadow-sm z-10" style="left: <%= val %>%"></div>
     </div>
 
+    <%# Sub-indicators (stocks only — CNN F&G components) %>
+    <% if reading.component_data.present? %>
+      <%
+        indicator_labels = {
+          "market_momentum_sp500" => "Market Momentum",
+          "stock_price_strength" => "Price Strength",
+          "stock_price_breadth" => "Price Breadth",
+          "put_call_options" => "Put/Call Options",
+          "market_volatility_vix" => "Market Volatility",
+          "junk_bond_demand" => "Junk Bond Demand",
+          "safe_haven_demand" => "Safe Haven Demand"
+        }
+      %>
+      <div data-controller="reveal" class="mb-3">
+        <button data-action="reveal#toggle" class="w-full flex items-center justify-center gap-1 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+          <span class="material-symbols-outlined text-xs">expand_more</span>
+          Sub-Indicators
+        </button>
+        <div data-reveal-target="content" class="hidden space-y-2 mt-2">
+          <% reading.component_data.each do |key, data| %>
+            <%
+              score = data["score"]&.to_f || 0
+              ind_color = case score.round
+                          when 0..24  then "bg-red-500"
+                          when 25..44 then "bg-orange-500"
+                          when 45..55 then "bg-amber-500"
+                          when 56..74 then "bg-lime-500"
+                          else "bg-emerald-500"
+                          end
+            %>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 w-28 truncate"><%= indicator_labels[key] || key.titleize %></span>
+              <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full rounded-full <%= ind_color %>" style="width: <%= score.clamp(0, 100).round %>%"></div>
+              </div>
+              <span class="text-[10px] font-bold text-slate-600 dark:text-slate-300 w-8 text-right"><%= score.round %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
     <footer class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
       <div class="flex items-center gap-1">
         <span class="w-1.5 h-1.5 rounded-full bg-<%= color %>-500 animate-pulse"></span>
