@@ -22,11 +22,11 @@ RSpec.describe "Event Subscription Wiring" do
     end
   end
 
-  describe "NotificationCreated" do
-    it "has BroadcastNotification handler" do
-      handlers = EventBus.handlers_for(NotificationCreated)
+  describe "Notifications::NotificationCreated" do
+    it "has Notifications::BroadcastNotification handler" do
+      handlers = EventBus.handlers_for(Notifications::NotificationCreated)
 
-      expect(handlers).to include(BroadcastNotification)
+      expect(handlers).to include(Notifications::BroadcastNotification)
     end
   end
 
@@ -53,16 +53,16 @@ RSpec.describe "Event Subscription Wiring" do
     it "has audit log and suspension email handlers" do
       handlers = EventBus.handlers_for(Identity::UserSuspended)
 
-      expect(handlers).to include(CreateAuditLogOnSuspension)
-      expect(handlers).to include(SendSuspensionEmail)
+      expect(handlers).to include(Administration::CreateAuditLogOnSuspension)
+      expect(handlers).to include(Administration::SendSuspensionEmail)
     end
   end
 
-  describe "IntegrationConnected" do
-    it "has LogIntegrationConnected handler" do
-      handlers = EventBus.handlers_for(IntegrationConnected)
+  describe "Administration::IntegrationConnected" do
+    it "has Administration::LogIntegrationConnected handler" do
+      handlers = EventBus.handlers_for(Administration::IntegrationConnected)
 
-      expect(handlers).to include(LogIntegrationConnected)
+      expect(handlers).to include(Administration::LogIntegrationConnected)
     end
   end
 end

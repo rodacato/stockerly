@@ -10,7 +10,7 @@ RSpec.describe "Admin Sync Flow (E2E)", type: :model do
 
     it "enqueues job and updates price when performed" do
       # Use case enqueues the job
-      result = Admin::Assets::TriggerSync.call(asset_id: asset.id)
+      result = Administration::Assets::TriggerSync.call(asset_id: asset.id)
       expect(result).to be_success
 
       # Perform the enqueued job
@@ -27,7 +27,7 @@ RSpec.describe "Admin Sync Flow (E2E)", type: :model do
     let!(:crypto) { create(:asset, asset_type: :crypto, sync_status: :active) }
 
     it "enqueues SyncAllAssetsJob which fans out to SyncSingleAssetJob" do
-      result = Admin::Assets::TriggerSync.call(asset_type: "stock")
+      result = Administration::Assets::TriggerSync.call(asset_type: "stock")
       expect(result).to be_success
 
       expect(SyncAllAssetsJob).to have_been_enqueued.with("stock")
@@ -40,7 +40,7 @@ RSpec.describe "Admin Sync Flow (E2E)", type: :model do
     before { stub_polygon_price("AAPL") }
 
     it "enqueues job and updates connection status when performed" do
-      result = Admin::Integrations::RefreshSync.call(integration_id: integration.id)
+      result = Administration::Integrations::RefreshSync.call(integration_id: integration.id)
       expect(result).to be_success
 
       perform_enqueued_jobs

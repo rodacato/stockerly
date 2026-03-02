@@ -1,5 +1,5 @@
 # Tests connectivity for an integration and updates its connection status.
-# Used by Admin::Integrations::RefreshSync.
+# Used by Administration::Integrations::RefreshSync.
 class SyncIntegrationJob < ApplicationJob
   include SyncLogging
 

@@ -1,7 +1,7 @@
 module Admin
   class PoolKeysController < BaseController
     def create
-      result = Admin::Integrations::AddPoolKey.call(
+      result = Administration::Integrations::AddPoolKey.call(
         admin: current_user,
         params: pool_key_params.to_h.merge(integration_id: params[:integration_id].to_i)
       )
@@ -14,7 +14,7 @@ module Admin
     end
 
     def toggle
-      result = Admin::Integrations::TogglePoolKey.call(
+      result = Administration::Integrations::TogglePoolKey.call(
         admin: current_user,
         params: { id: params[:id].to_i }
       )
@@ -28,7 +28,7 @@ module Admin
     end
 
     def destroy
-      result = Admin::Integrations::RemovePoolKey.call(
+      result = Administration::Integrations::RemovePoolKey.call(
         admin: current_user,
         params: { id: params[:id].to_i }
       )

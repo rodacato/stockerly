@@ -10,9 +10,9 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(Identity::UserLoginFailed, Identity::CreateAuditLogOnLoginFailure)
 
   # Administration
-  EventBus.subscribe(Identity::UserSuspended, CreateAuditLogOnSuspension)
-  EventBus.subscribe(Identity::UserSuspended, SendSuspensionEmail)
-  EventBus.subscribe(MarketData::AssetCreated, CreateAuditLogOnAssetCreation)
+  EventBus.subscribe(Identity::UserSuspended, Administration::CreateAuditLogOnSuspension)
+  EventBus.subscribe(Identity::UserSuspended, Administration::SendSuspensionEmail)
+  EventBus.subscribe(MarketData::AssetCreated, Administration::CreateAuditLogOnAssetCreation)
   EventBus.subscribe(MarketData::AssetCreated, MarketData::SyncAssetOnCreation)
   EventBus.subscribe(MarketData::AssetCreated, MarketData::BackfillHistoryOnAssetCreation)
 
@@ -28,7 +28,7 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateNotificationOnAlert)
 
   # Notifications
-  EventBus.subscribe(NotificationCreated, BroadcastNotification)
+  EventBus.subscribe(Notifications::NotificationCreated, Notifications::BroadcastNotification)
 
   # Trading
   EventBus.subscribe(Trading::TradeExecuted, Trading::RecalculateAvgCostOnTrade)
@@ -64,10 +64,10 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(MarketData::FinancialStatementsSynced, MarketData::RecalculateFundamentalsOnStatementsSynced)
 
   # Integrations
-  EventBus.subscribe(IntegrationConnected, LogIntegrationConnected)
-  EventBus.subscribe(IntegrationUpdated, LogIntegrationUpdated)
-  EventBus.subscribe(IntegrationDeleted, LogIntegrationDeleted)
-  EventBus.subscribe(PoolKeyAdded, LogPoolKeyChange)
-  EventBus.subscribe(PoolKeyToggled, LogPoolKeyChange)
-  EventBus.subscribe(PoolKeyRemoved, LogPoolKeyChange)
+  EventBus.subscribe(Administration::IntegrationConnected, Administration::LogIntegrationConnected)
+  EventBus.subscribe(Administration::IntegrationUpdated, Administration::LogIntegrationUpdated)
+  EventBus.subscribe(Administration::IntegrationDeleted, Administration::LogIntegrationDeleted)
+  EventBus.subscribe(Administration::PoolKeyAdded, Administration::LogPoolKeyChange)
+  EventBus.subscribe(Administration::PoolKeyToggled, Administration::LogPoolKeyChange)
+  EventBus.subscribe(Administration::PoolKeyRemoved, Administration::LogPoolKeyChange)
 end

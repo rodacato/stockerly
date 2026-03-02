@@ -55,7 +55,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe WatchlistItemAdded do
+  describe Trading::WatchlistItemAdded do
     it "has required attributes" do
       event = described_class.new(watchlist_item_id: 1, user_id: 2, asset_symbol: "AAPL")
 
@@ -71,7 +71,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe NotificationCreated do
+  describe Notifications::NotificationCreated do
     it "has required attributes" do
       event = described_class.new(notification_id: 1, user_id: 2, title: "Test")
 
@@ -87,7 +87,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe CsvExported do
+  describe Administration::CsvExported do
     it "has required attributes" do
       event = described_class.new(user_id: 1, export_type: "trades")
 
@@ -95,7 +95,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe IntegrationConnected do
+  describe Administration::IntegrationConnected do
     it "has required attributes" do
       event = described_class.new(integration_id: 1, provider_name: "Polygon.io")
 
