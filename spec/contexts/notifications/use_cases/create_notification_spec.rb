@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::CreateNotification do
+RSpec.describe Notifications::UseCases::CreateNotification do
   subject(:use_case) { described_class.new }
 
   let(:user) { create(:user) }
@@ -31,7 +31,7 @@ RSpec.describe Notifications::CreateNotification do
         use_case.call(user_id: user.id, title: "Test")
 
         expect(EventBus).to have_received(:publish).with(
-          an_instance_of(Notifications::NotificationCreated)
+          an_instance_of(Notifications::Events::NotificationCreated)
         )
       end
     end

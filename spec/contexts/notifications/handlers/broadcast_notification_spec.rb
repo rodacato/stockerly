@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::BroadcastNotification do
+RSpec.describe Notifications::Handlers::BroadcastNotification do
   describe ".call" do
     let(:user) { create(:user) }
     let!(:notification) { create(:notification, user: user, title: "Test", read: false) }

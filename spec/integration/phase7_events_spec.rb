@@ -71,7 +71,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe Notifications::NotificationCreated do
+  describe Notifications::Events::NotificationCreated do
     it "has required attributes" do
       event = described_class.new(notification_id: 1, user_id: 2, title: "Test")
 

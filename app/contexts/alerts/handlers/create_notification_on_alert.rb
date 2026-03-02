@@ -10,7 +10,7 @@ module Alerts
 
       rule = AlertRule.find_by(id: rule_id)
 
-      Notifications::CreateNotification.new.call(
+      Notifications::UseCases::CreateNotification.new.call(
         user_id: user_id,
         title: "Alert: #{symbol} at $#{price}",
         body: "Your alert for #{symbol} was triggered at $#{price}",

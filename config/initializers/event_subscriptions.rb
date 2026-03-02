@@ -28,7 +28,7 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateNotificationOnAlert)
 
   # Notifications
-  EventBus.subscribe(Notifications::NotificationCreated, Notifications::BroadcastNotification)
+  EventBus.subscribe(Notifications::Events::NotificationCreated, Notifications::Handlers::BroadcastNotification)
 
   # Trading
   EventBus.subscribe(Trading::TradeExecuted, Trading::RecalculateAvgCostOnTrade)

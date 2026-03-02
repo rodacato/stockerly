@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::MarkAsRead do
+RSpec.describe Notifications::UseCases::MarkAsRead do
   let(:user) { create(:user) }
 
   describe "#call" do

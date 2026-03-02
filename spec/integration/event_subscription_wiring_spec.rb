@@ -22,11 +22,11 @@ RSpec.describe "Event Subscription Wiring" do
     end
   end
 
-  describe "Notifications::NotificationCreated" do
-    it "has Notifications::BroadcastNotification handler" do
-      handlers = EventBus.handlers_for(Notifications::NotificationCreated)
+  describe "Notifications::Events::NotificationCreated" do
+    it "has Notifications::Handlers::BroadcastNotification handler" do
+      handlers = EventBus.handlers_for(Notifications::Events::NotificationCreated)
 
-      expect(handlers).to include(Notifications::BroadcastNotification)
+      expect(handlers).to include(Notifications::Handlers::BroadcastNotification)
     end
   end
 

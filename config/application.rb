@@ -29,20 +29,26 @@ module Stockerly
     config.autoload_lib(ignore: %w[assets tasks])
 
     # Hexagonal Architecture: contexts/ is a root — subdirs become namespaces
-    # e.g. app/contexts/identity/events/user_registered.rb → Identity::UserRegistered
+    # e.g. app/contexts/identity/events/user_registered.rb → Identity::Events::UserRegistered
     config.autoload_paths << Rails.root.join("app/contexts")
     config.autoload_paths << Rails.root.join("app/shared")
 
-    # Zeitwerk collapse: organizational folders are transparent to the autoloader
-    # e.g. app/contexts/identity/events/user_registered.rb → Identity::UserRegistered
+    # Zeitwerk collapse: organizational folders within contexts being migrated
+    # retain collapse temporarily; shared infrastructure always collapsed.
+    # Contexts are removed from this list as they adopt explicit submodules.
+    COLLAPSED_CONTEXTS = %w[identity alerts trading market_data administration].freeze
+
     initializer "stockerly.zeitwerk_collapse", before: "zeitwerk.eager_load" do
+      COLLAPSED_CONTEXTS.each do |ctx|
+        base = Rails.root.join("app/contexts/#{ctx}")
+        %w[contracts domain events gateways handlers use_cases].each do |layer|
+          dir = base.join(layer)
+          Rails.autoloaders.main.collapse(dir) if dir.exist?
+        end
+      end
+
+      # Shared infrastructure: no namespace prefix (CircuitBreaker, EventBus, etc.)
       Rails.autoloaders.main.collapse(
-        *Dir[Rails.root.join("app/contexts/*/contracts")],
-        *Dir[Rails.root.join("app/contexts/*/domain")],
-        *Dir[Rails.root.join("app/contexts/*/events")],
-        *Dir[Rails.root.join("app/contexts/*/handlers")],
-        *Dir[Rails.root.join("app/contexts/*/gateways")],
-        *Dir[Rails.root.join("app/contexts/*/use_cases")],
         Rails.root.join("app/shared/base"),
         Rails.root.join("app/shared/domain"),
         Rails.root.join("app/shared/events"),

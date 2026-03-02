@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::ListRecent do
+RSpec.describe Notifications::UseCases::ListRecent do
   let(:user) { create(:user) }
 
   describe ".call" do
