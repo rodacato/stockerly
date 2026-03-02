@@ -1,5 +1,5 @@
 # Syncs stock split data from FMP for assets with open positions.
-# Publishes SplitDetected for new splits to trigger position adjustment.
+# Publishes Trading::SplitDetected for new splits to trigger position adjustment.
 # Runs weekly to conserve FMP API budget.
 class SyncSplitsJob < ApplicationJob
   include SyncLogging
@@ -25,7 +25,7 @@ class SyncSplitsJob < ApplicationJob
 
         next unless split.save
 
-        EventBus.publish(SplitDetected.new(
+        EventBus.publish(Trading::SplitDetected.new(
           asset_id: asset.id,
           stock_split_id: split.id,
           ratio_from: split.ratio_from,

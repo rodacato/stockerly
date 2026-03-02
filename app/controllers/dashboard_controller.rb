@@ -1,6 +1,6 @@
 class DashboardController < AuthenticatedController
   def show
-    result = Dashboard::Assemble.call(user: current_user)
+    result = Trading::AssembleDashboard.call(user: current_user)
 
     if result.success?
       data = result.value!

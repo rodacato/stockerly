@@ -31,10 +31,10 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(NotificationCreated, BroadcastNotification)
 
   # Trading
-  EventBus.subscribe(TradeExecuted, RecalculateAvgCostOnTrade)
-  EventBus.subscribe(TradeExecuted, LogTradeActivity)
-  EventBus.subscribe(TradeUpdated, LogTradeUpdate)
-  EventBus.subscribe(TradeDeleted, LogTradeDelete)
+  EventBus.subscribe(Trading::TradeExecuted, Trading::RecalculateAvgCostOnTrade)
+  EventBus.subscribe(Trading::TradeExecuted, Trading::LogTradeActivity)
+  EventBus.subscribe(Trading::TradeUpdated, Trading::LogTradeUpdate)
+  EventBus.subscribe(Trading::TradeDeleted, Trading::LogTradeDelete)
 
   # News
   EventBus.subscribe(NewsSynced, LogNewsSync)
@@ -53,7 +53,7 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(DividendsSynced, LogDividendsSync)
 
   # Stock Splits
-  EventBus.subscribe(SplitDetected, AdjustPositionsOnSplit)
+  EventBus.subscribe(Trading::SplitDetected, Trading::AdjustPositionsOnSplit)
 
   # CETES
   EventBus.subscribe(CetesSynced, LogCetesSync)

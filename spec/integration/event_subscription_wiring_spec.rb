@@ -30,12 +30,12 @@ RSpec.describe "Event Subscription Wiring" do
     end
   end
 
-  describe "TradeExecuted" do
-    it "has RecalculateAvgCostOnTrade and LogTradeActivity handlers" do
-      handlers = EventBus.handlers_for(TradeExecuted)
+  describe "Trading::TradeExecuted" do
+    it "has Trading::RecalculateAvgCostOnTrade and Trading::LogTradeActivity handlers" do
+      handlers = EventBus.handlers_for(Trading::TradeExecuted)
 
-      expect(handlers).to include(RecalculateAvgCostOnTrade)
-      expect(handlers).to include(LogTradeActivity)
+      expect(handlers).to include(Trading::RecalculateAvgCostOnTrade)
+      expect(handlers).to include(Trading::LogTradeActivity)
     end
   end
 

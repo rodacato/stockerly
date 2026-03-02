@@ -20,19 +20,19 @@ RSpec.describe SyncSplitsJob, type: :job do
     expect { described_class.perform_now }.to change(StockSplit, :count).by(1)
   end
 
-  it "publishes SplitDetected for new splits" do
+  it "publishes Trading::SplitDetected for new splits" do
     split_data = [
       { date: Date.new(2026, 2, 20), numerator: 2, denominator: 1 }
     ]
     allow(gateway).to receive(:fetch_splits)
       .and_return(Dry::Monads::Success(split_data))
 
-    handler = class_double(AdjustPositionsOnSplit, call: nil)
-    EventBus.subscribe(SplitDetected, handler)
+    handler = class_double(Trading::AdjustPositionsOnSplit, call: nil)
+    EventBus.subscribe(Trading::SplitDetected, handler)
 
     described_class.perform_now
 
-    expect(handler).to have_received(:call).with(an_instance_of(SplitDetected))
+    expect(handler).to have_received(:call).with(an_instance_of(Trading::SplitDetected))
   end
 
   it "skips already-known splits" do
