@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::Register do
+RSpec.describe Identity::UseCases::Register do
   describe ".call" do
     let(:valid_params) do
       { full_name: "John Doe", email: "john@example.com", password: "password123", password_confirmation: "password123" }
@@ -18,7 +18,7 @@ RSpec.describe Identity::Register do
     end
 
     it "publishes UserRegistered event" do
-      expect(EventBus).to receive(:publish).with(an_instance_of(Identity::UserRegistered))
+      expect(EventBus).to receive(:publish).with(an_instance_of(Identity::Events::UserRegistered))
 
       described_class.call(params: valid_params)
     end

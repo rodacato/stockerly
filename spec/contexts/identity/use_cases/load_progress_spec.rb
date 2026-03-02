@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::LoadProgress do
+RSpec.describe Identity::UseCases::LoadProgress do
   let(:user) { create(:user) }
 
   describe ".call" do

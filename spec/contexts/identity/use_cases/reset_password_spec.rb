@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::ResetPassword do
+RSpec.describe Identity::UseCases::ResetPassword do
   describe ".call" do
     let(:user) { create(:user, password: "oldpassword123", password_confirmation: "oldpassword123") }
     let(:token) { user.password_reset_token }

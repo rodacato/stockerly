@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::UserLoginFailed do
+RSpec.describe Identity::Events::UserLoginFailed do
   it "creates event with required attributes" do
     event = described_class.new(email: "test@example.com", ip_address: "127.0.0.1", user_agent: "Mozilla/5.0")
 

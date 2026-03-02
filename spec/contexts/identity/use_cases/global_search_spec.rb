@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::GlobalSearch do
+RSpec.describe Identity::UseCases::GlobalSearch do
   let(:user) { create(:user) }
   let!(:apple) { create(:asset, name: "Apple Inc.", symbol: "AAPL") }
   let!(:tesla) { create(:asset, name: "Tesla Inc.", symbol: "TSLA") }

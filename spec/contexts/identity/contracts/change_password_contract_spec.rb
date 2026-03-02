@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::ChangePasswordContract do
+RSpec.describe Identity::Contracts::ChangePasswordContract do
   subject(:contract) { described_class.new }
 
   it "succeeds with valid params" do

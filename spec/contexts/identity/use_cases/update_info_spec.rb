@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::UpdateInfo do
+RSpec.describe Identity::UseCases::UpdateInfo do
   let(:user) { create(:user, full_name: "Alex Trader", email: "alex@example.com") }
 
   describe ".call" do
@@ -15,7 +15,7 @@ RSpec.describe Identity::UpdateInfo do
 
     it "publishes ProfileUpdated event" do
       received = []
-      EventBus.subscribe(Identity::ProfileUpdated, ->(e) { received << e })
+      EventBus.subscribe(Identity::Events::ProfileUpdated, ->(e) { received << e })
 
       described_class.call(user: user, params: { full_name: "Alex Updated", email: "newemail@example.com" })
 

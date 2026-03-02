@@ -8,13 +8,13 @@ class SessionsController < ApplicationController
   def new; end
 
   def create
-    result = Identity::Login.call(params: { email: params[:email], password: params[:password] })
+    result = Identity::UseCases::Login.call(params: { email: params[:email], password: params[:password] })
 
     case result
     in Dry::Monads::Success(user)
       start_session(user)
       remember(user) if params[:remember] == "1"
-      EventBus.publish(Identity::UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
+      EventBus.publish(Identity::Events::UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
       redirect_to dashboard_path, notice: "Welcome back, #{user.full_name}!"
     in Dry::Monads::Failure[ :suspended, message ]
       publish_login_failed
@@ -44,6 +44,6 @@ class SessionsController < ApplicationController
   def publish_login_failed
     return unless params[:email].present?
 
-    EventBus.publish(Identity::UserLoginFailed.new(email: params[:email].to_s, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
+    EventBus.publish(Identity::Events::UserLoginFailed.new(email: params[:email].to_s, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
   end
 end

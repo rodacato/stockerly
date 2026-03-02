@@ -1,17 +1,17 @@
 Rails.application.config.after_initialize do
   # Identity
-  EventBus.subscribe(Identity::UserRegistered, Identity::CreatePortfolioOnRegistration)
-  EventBus.subscribe(Identity::UserRegistered, Identity::CreateAlertPreferencesOnRegistration)
-  EventBus.subscribe(Identity::UserRegistered, Identity::SendWelcomeEmailOnRegistration)
-  EventBus.subscribe(Identity::UserRegistered, Identity::SendVerificationEmailOnRegistration)
-  EventBus.subscribe(Identity::PasswordChanged, Identity::InvalidateSessionsOnPasswordChange)
-  EventBus.subscribe(Identity::PasswordChanged, Identity::CreateAuditLogOnPasswordChange)
-  EventBus.subscribe(Identity::UserLoggedIn, Identity::CreateAuditLogOnLogin)
-  EventBus.subscribe(Identity::UserLoginFailed, Identity::CreateAuditLogOnLoginFailure)
+  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::CreatePortfolioOnRegistration)
+  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::CreateAlertPreferencesOnRegistration)
+  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::SendWelcomeEmailOnRegistration)
+  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::SendVerificationEmailOnRegistration)
+  EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::InvalidateSessionsOnPasswordChange)
+  EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::CreateAuditLogOnPasswordChange)
+  EventBus.subscribe(Identity::Events::UserLoggedIn, Identity::Handlers::CreateAuditLogOnLogin)
+  EventBus.subscribe(Identity::Events::UserLoginFailed, Identity::Handlers::CreateAuditLogOnLoginFailure)
 
   # Administration
-  EventBus.subscribe(Identity::UserSuspended, Administration::CreateAuditLogOnSuspension)
-  EventBus.subscribe(Identity::UserSuspended, Administration::SendSuspensionEmail)
+  EventBus.subscribe(Identity::Events::UserSuspended, Administration::CreateAuditLogOnSuspension)
+  EventBus.subscribe(Identity::Events::UserSuspended, Administration::SendSuspensionEmail)
   EventBus.subscribe(MarketData::AssetCreated, Administration::CreateAuditLogOnAssetCreation)
   EventBus.subscribe(MarketData::AssetCreated, MarketData::SyncAssetOnCreation)
   EventBus.subscribe(MarketData::AssetCreated, MarketData::BackfillHistoryOnAssetCreation)

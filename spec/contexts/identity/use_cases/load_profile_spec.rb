@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::LoadProfile do
+RSpec.describe Identity::UseCases::LoadProfile do
   let(:user) { create(:user) }
 
   describe ".call" do

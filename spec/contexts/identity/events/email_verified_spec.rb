@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::EmailVerified do
+RSpec.describe Identity::Events::EmailVerified do
   it "creates an event with required attributes" do
     event = described_class.new(user_id: 1, email: "user@example.com")
 

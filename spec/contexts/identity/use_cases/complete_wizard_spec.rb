@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::CompleteWizard do
+RSpec.describe Identity::UseCases::CompleteWizard do
   let(:user) { create(:user) }
   let(:asset1) { create(:asset, symbol: "AAPL") }
   let(:asset2) { create(:asset, symbol: "TSLA") }

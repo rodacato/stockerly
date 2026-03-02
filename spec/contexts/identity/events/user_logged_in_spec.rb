@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::UserLoggedIn do
+RSpec.describe Identity::Events::UserLoggedIn do
   it "creates event with required attributes" do
     event = described_class.new(user_id: 1, ip_address: "127.0.0.1", user_agent: "Mozilla/5.0")
 

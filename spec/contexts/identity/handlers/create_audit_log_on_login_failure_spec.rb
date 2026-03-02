@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe Identity::CreateAuditLogOnLoginFailure do
+RSpec.describe Identity::Handlers::CreateAuditLogOnLoginFailure do
   let!(:user) { create(:user, email: "target@example.com") }
 
   it "creates an audit log when user exists" do
-    event = Identity::UserLoginFailed.new(email: "target@example.com", ip_address: "10.0.0.1", user_agent: "curl/7.0")
+    event = Identity::Events::UserLoginFailed.new(email: "target@example.com", ip_address: "10.0.0.1", user_agent: "curl/7.0")
 
     expect { described_class.call(event) }.to change(AuditLog, :count).by(1)
 
@@ -16,7 +16,7 @@ RSpec.describe Identity::CreateAuditLogOnLoginFailure do
   end
 
   it "does not create an audit log when user does not exist" do
-    event = Identity::UserLoginFailed.new(email: "nobody@example.com", ip_address: "10.0.0.1", user_agent: "curl/7.0")
+    event = Identity::Events::UserLoginFailed.new(email: "nobody@example.com", ip_address: "10.0.0.1", user_agent: "curl/7.0")
 
     expect { described_class.call(event) }.not_to change(AuditLog, :count)
   end

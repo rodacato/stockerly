@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::RequestPasswordReset do
+RSpec.describe Identity::UseCases::RequestPasswordReset do
   describe ".call" do
     it "returns Success and logs URL for existing user" do
       user = create(:user, email: "alex@example.com")

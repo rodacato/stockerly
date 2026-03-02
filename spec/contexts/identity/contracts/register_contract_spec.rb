@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::RegisterContract do
+RSpec.describe Identity::Contracts::RegisterContract do
   subject(:contract) { described_class.new }
 
   let(:valid_params) do

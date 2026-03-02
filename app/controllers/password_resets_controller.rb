@@ -8,14 +8,14 @@ class PasswordResetsController < ApplicationController
   def new; end
 
   def create
-    Identity::RequestPasswordReset.call(params: { email: params[:email] })
+    Identity::UseCases::RequestPasswordReset.call(params: { email: params[:email] })
     redirect_to login_path, notice: "If that email exists, you'll receive reset instructions shortly."
   end
 
   def edit; end
 
   def update
-    result = Identity::ResetPassword.call(token: params[:token], params: password_params.to_h)
+    result = Identity::UseCases::ResetPassword.call(token: params[:token], params: password_params.to_h)
 
     case result
     in Dry::Monads::Success

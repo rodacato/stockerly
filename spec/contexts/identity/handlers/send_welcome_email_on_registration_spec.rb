@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::SendWelcomeEmailOnRegistration do
+RSpec.describe Identity::Handlers::SendWelcomeEmailOnRegistration do
   describe ".async?" do
     it { expect(described_class.async?).to be true }
   end

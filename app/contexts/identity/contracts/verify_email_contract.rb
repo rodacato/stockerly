@@ -1,7 +1,9 @@
 module Identity
-  class VerifyEmailContract < ApplicationContract
-    params do
-      required(:token).filled(:string)
+  module Contracts
+    class VerifyEmailContract < ApplicationContract
+      params do
+        required(:token).filled(:string)
+      end
     end
   end
 end

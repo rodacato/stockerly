@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe Identity::CreateAuditLogOnLogin do
+RSpec.describe Identity::Handlers::CreateAuditLogOnLogin do
   let!(:user) { create(:user) }
 
   it "creates an audit log for successful login" do
-    event = Identity::UserLoggedIn.new(user_id: user.id, ip_address: "192.168.1.1", user_agent: "Mozilla/5.0")
+    event = Identity::Events::UserLoggedIn.new(user_id: user.id, ip_address: "192.168.1.1", user_agent: "Mozilla/5.0")
 
     expect { described_class.call(event) }.to change(AuditLog, :count).by(1)
 

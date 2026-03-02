@@ -5,7 +5,7 @@ RSpec.describe "Admin moderation flow", type: :request do
   let!(:regular_user) { create(:user, email: "user@example.com", password: "password123") }
 
   before do
-    EventBus.subscribe(Identity::UserSuspended, Administration::CreateAuditLogOnSuspension)
+    EventBus.subscribe(Identity::Events::UserSuspended, Administration::CreateAuditLogOnSuspension)
     login_as(admin)
   end
 

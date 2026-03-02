@@ -1,5 +1,7 @@
 module Identity
-  class PasswordChanged < BaseEvent
-    attribute :user_id, Types::Integer
+  module Events
+    class PasswordChanged < BaseEvent
+      attribute :user_id, Types::Integer
+    end
   end
 end

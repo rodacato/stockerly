@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::LoginContract do
+RSpec.describe Identity::Contracts::LoginContract do
   subject(:contract) { described_class.new }
 
   it "passes with valid params" do

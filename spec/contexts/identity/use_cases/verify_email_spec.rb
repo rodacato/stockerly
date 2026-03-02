@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::VerifyEmail do
+RSpec.describe Identity::UseCases::VerifyEmail do
   include ActiveSupport::Testing::TimeHelpers
 
   describe ".call" do
@@ -16,7 +16,7 @@ RSpec.describe Identity::VerifyEmail do
     end
 
     it "publishes EmailVerified event" do
-      expect(EventBus).to receive(:publish).with(an_instance_of(Identity::EmailVerified))
+      expect(EventBus).to receive(:publish).with(an_instance_of(Identity::Events::EmailVerified))
 
       described_class.call(params: { token: token })
     end

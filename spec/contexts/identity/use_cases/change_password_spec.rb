@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::ChangePassword do
+RSpec.describe Identity::UseCases::ChangePassword do
   let(:user) { create(:user, password: "OldPassword123", password_confirmation: "OldPassword123") }
 
   describe ".call" do
@@ -17,7 +17,7 @@ RSpec.describe Identity::ChangePassword do
 
     it "publishes PasswordChanged event" do
       received = []
-      EventBus.subscribe(Identity::PasswordChanged, ->(e) { received << e })
+      EventBus.subscribe(Identity::Events::PasswordChanged, ->(e) { received << e })
 
       described_class.call(user: user, params: valid_params)
 

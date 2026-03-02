@@ -9,7 +9,7 @@ class RegistrationsController < ApplicationController
   end
 
   def create
-    result = Identity::Register.call(params: registration_params.to_h)
+    result = Identity::UseCases::Register.call(params: registration_params.to_h)
 
     case result
     in Dry::Monads::Success(user)

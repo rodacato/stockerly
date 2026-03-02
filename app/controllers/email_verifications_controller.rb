@@ -3,7 +3,7 @@ class EmailVerificationsController < ApplicationController
   rate_limit to: 3, within: 1.hour, only: :create
 
   def show
-    result = Identity::VerifyEmail.call(params: { token: params[:token] })
+    result = Identity::UseCases::VerifyEmail.call(params: { token: params[:token] })
 
     case result
     in Dry::Monads::Success

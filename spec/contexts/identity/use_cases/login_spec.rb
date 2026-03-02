@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::Login do
+RSpec.describe Identity::UseCases::Login do
   describe ".call" do
     let(:user) { create(:user, email: "alex@example.com", password: "password123") }
 

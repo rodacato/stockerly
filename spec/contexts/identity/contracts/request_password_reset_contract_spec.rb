@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::RequestPasswordResetContract do
+RSpec.describe Identity::Contracts::RequestPasswordResetContract do
   subject(:contract) { described_class.new }
 
   it "passes with valid email" do

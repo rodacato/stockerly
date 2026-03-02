@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::VerifyEmailContract do
+RSpec.describe Identity::Contracts::VerifyEmailContract do
   subject(:contract) { described_class.new }
 
   it "passes with valid token" do

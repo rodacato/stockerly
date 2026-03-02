@@ -2,13 +2,13 @@ class OnboardingController < AuthenticatedController
   def step1; end
 
   def step2
-    result = Identity::LoadAssetCatalog.call
+    result = Identity::UseCases::LoadAssetCatalog.call
     @assets = result.value![:assets]
   end
 
   def complete
     asset_ids = params[:asset_ids] || []
-    Identity::CompleteWizard.call(user: current_user, asset_ids: asset_ids)
+    Identity::UseCases::CompleteWizard.call(user: current_user, asset_ids: asset_ids)
 
     redirect_to onboarding_step3_path, notice: "Watchlist created!"
   end
@@ -19,7 +19,7 @@ class OnboardingController < AuthenticatedController
   end
 
   def step3
-    result = Identity::LoadProgress.call(user: current_user)
+    result = Identity::UseCases::LoadProgress.call(user: current_user)
     @watchlist_count = result.value![:watchlist_count]
   end
 end

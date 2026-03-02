@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::UpdateProfileContract do
+RSpec.describe Identity::Contracts::UpdateProfileContract do
   subject(:contract) { described_class.new }
 
   it "succeeds with valid params" do

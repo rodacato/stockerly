@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity::LoadAssetCatalog do
+RSpec.describe Identity::UseCases::LoadAssetCatalog do
   describe ".call" do
     before do
       create(:asset, symbol: "AAPL", name: "Apple Inc.", asset_type: :stock)

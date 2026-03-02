@@ -1,6 +1,6 @@
 class SearchController < AuthenticatedController
   def index
-    result = Identity::GlobalSearch.call(query: params[:q], user: current_user)
+    result = Identity::UseCases::GlobalSearch.call(query: params[:q], user: current_user)
 
     case result
     in Dry::Monads::Success(data)

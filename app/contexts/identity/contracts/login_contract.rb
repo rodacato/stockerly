@@ -1,8 +1,10 @@
 module Identity
-  class LoginContract < ApplicationContract
-    params do
-      required(:email).filled(:string)
-      required(:password).filled(:string)
+  module Contracts
+    class LoginContract < ApplicationContract
+      params do
+        required(:email).filled(:string)
+        required(:password).filled(:string)
+      end
     end
   end
 end
