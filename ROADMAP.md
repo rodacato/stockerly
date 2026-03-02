@@ -1,12 +1,12 @@
 # Stockerly — Roadmap
 
-> **Fecha:** 2026-03-01
-> **Estado actual:** ~1697 specs, Phase 15.6 complete
-> **Siguiente:** Phase 16 — Production Hardening & Security
+> **Fecha:** 2026-03-02
+> **Estado actual:** ~1721 specs, Phase 16 complete
+> **Siguiente:** Phase 17 — Financial Domain Depth
 
 ---
 
-## Completed Phases (0-15.6) — ~1697 specs
+## Completed Phases (0-16) — ~1721 specs
 
 | Fase     | Nombre                              | Specs | Commits |
 | -------- | ----------------------------------- | ----- | ------- |
@@ -48,6 +48,7 @@
 | **15.4** | Data Completeness & Quality         | 1617  | 104-107 |
 | **15.5** | Scaling Strategy & UX Enhancements  | 1627  | 108-109 |
 | **15.6** | API Key Management & Rate Limits    | 1697  | 110-116 |
+| **16**   | Production Hardening & Security      | 1721  | 117-120 |
 
 ### Phase 9 Summary (990 specs, 20 commits)
 
@@ -81,7 +82,11 @@
 
 **Rate Limiting:** `RateLimiter` domain service with proactive per-minute and per-day checks before HTTP calls, provider-specific limits on Integration (`max_requests_per_minute`, `minute_calls`, `minute_reset_at`), atomic PostgreSQL counters with auto-reset. **Admin CRUD:** `UpdateProvider`, `DeleteProvider`, `AddPoolKey`, `TogglePoolKey`, `RemovePoolKey` use cases with full event audit trail (`IntegrationUpdated`, `IntegrationDeleted`, `PoolKeyAdded`, `PoolKeyToggled`, `PoolKeyRemoved`). **UI:** Redesigned integration cards with rate limit usage bars, expandable API Key Pool section per provider (name, masked key, daily calls, enable/disable toggle), add key form. **Gateway Integration:** `RateLimiter.check!` integrated into all gateways (Polygon, CoinGecko, Alpha Vantage, FxRates) before HTTP calls, 429 detection kept as fallback.
 
-### Key Architecture Decisions (Phases 9-15)
+### Phase 16 Summary (~1721 specs, 4 commits)
+
+**Session Security:** Cookie-based session with 12-hour absolute expiry, 30-minute inactivity timeout with `check_session_timeout` before_action, session timestamp tracking via `last_activity_at` and `session_started_at`. **Audit Logging:** `UserLoggedIn` and `UserLoginFailed` events with IP/user agent tracking, `CreateAuditLogOnLogin`, `CreateAuditLogOnLoginFailure` (only logs when user exists), and `CreateAuditLogOnPasswordChange` handlers wired to EventBus. **IDOR Tests:** 8 controller-level authorization specs verifying user A cannot access user B's watchlist items, alert rules, notifications, or trades. **Structured Logging:** `lograge` gem with JSON formatter for production, `append_info_to_payload` injecting `user_id` and client IP into every request log. Skipped: `.env.production` removal (never committed), Rack::Attack (Rails 8.1 native `rate_limit` already on all sensitive endpoints), PostgreSQL backups (infrastructure task).
+
+### Key Architecture Decisions (Phases 9-16)
 
 | Decision | Resolution |
 |----------|-----------|
@@ -128,7 +133,7 @@
 | Monthly rate limits | Modeled as daily ÷ 30 (ExchangeRate API: 1,500/month ≈ 50/day) |
 | Backup storage | S3-compatible (Backblaze B2) — cost-effective, Kamal-compatible |
 | Session timeout | 30-min inactivity + 12-hour absolute — standard fintech practice |
-| Rate limiting layer | Rack::Attack for HTTP + RateLimiter for provider — separate concerns |
+| Rate limiting layer | Rails 8.1 native `rate_limit` on controllers + RateLimiter for providers — Rack::Attack unnecessary |
 | TWR vs MWR | TWR first (industry standard, eliminates cash flow noise) — MWR in v3 |
 | Dividend data source | FMP free tier (250/day) — replaces Polygon for corporate actions |
 | Split handling | Retroactive cost basis adjustment via domain service on `SplitDetected` event |
@@ -286,56 +291,24 @@
 | 115 | 15.6f  | Add admin API key pool controller and routes                            | +10   |
 | 116 | 15.6g  | Redesign admin integrations UI with pool management                     | +8    |
 |     |        | *Phase 15.6 Total*                                                      | *+70* |
-|     |        | **Grand Total (Phases 9-15.6)**                                         | **~689** |
+
+### Phase 16 (Completed — 4 commits)
+
+| #   | Phase  | Commit Message                                                          | Specs |
+| --- | ------ | ----------------------------------------------------------------------- | ----- |
+| 117 | 16a    | Add session timeout (30-min inactivity, 12-hour absolute)               | +5    |
+| 118 | 16b    | Add audit logging for login attempts and password changes               | +8    |
+| 119 | 16c    | Add IDOR controller-level tests for user-owned resources                | +8    |
+| 120 | 16d    | Add structured JSON logging for production                              | +3    |
+|     |        | *Phase 16 Total*                                                        | *+24* |
+|     |        | **Grand Total (Phases 9-16)**                                           | **~713** |
 
 ---
 
-## Upcoming Phases (16-21)
+## Upcoming Phases (17-21)
 
-> **Objetivo:** Production hardening, financial domain depth, UX maturity
-> **Note:** Phase 17 from the original v2 plan was completed early as Phase 15.6 (Rate Limits & Admin). Phases renumbered accordingly.
-
----
-
-## Phase 16 — Production Hardening & Security
-
-> **Theme:** "Make it safe before making it bigger"
-> **Owner:** DevOps Engineer + Security Engineer
-> **Estimated specs:** ~38
-
-### 16.0 — Critical Security Fixes
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 117 | Remove `.env.production` from repo, add to `.gitignore` | Security — rotate all exposed keys | +0 |
-| 118 | Add session timeout (30-min inactivity, 12-hour absolute) | Security — `config/initializers/session_store.rb` | +4 |
-| 119 | Add Rack::Attack for endpoint rate limiting | Security — login (5/min), register (3/min), password reset (3/min) | +8 |
-
-**Security Engineer rationale:**
-> `.env.production` contains live `SECRET_KEY_BASE`, `DATABASE_URL`, 6 API keys, and host IP — all must be rotated immediately. Session timeout is table-stakes for fintech: an unattended session is a liability. Rack::Attack prevents brute-force at the HTTP layer (separate from the provider-level `RateLimiter` in Phase 15.6).
-
-### 16.1 — PostgreSQL Backups
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 120 | Add pg_dump backup rake task with S3 upload | `lib/tasks/backup.rake`, env config | +4 |
-| 121 | Add Kamal backup accessory with daily cron | `config/deploy.yml`, restore documentation | +2 |
-
-**DevOps Engineer rationale:**
-> Financial data without backups = existential risk. pg_dump daily to S3-compatible storage (Backblaze B2 is $5/mo for 1TB). WAL archiving is overkill for current scale — daily logical backups suffice. Restore procedure must be documented and tested.
-
-### 16.2 — Audit & Observability
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 122 | Add audit logging for login attempts and password changes | Event handlers, AuditLog expansion | +6 |
-| 123 | Add IDOR controller-level tests for watchlist, alerts, notifications | Test-only commit — no app changes | +12 |
-| 124 | Add structured JSON logging for production | `config/environments/production.rb`, log formatter | +2 |
-
-**QA Engineer rationale:**
-> Authorization is enforced at the Use Case layer (good), but no tests verify this at the controller layer. We need explicit specs: "User A cannot access User B's alerts/watchlist/notifications." Also, failed login tracking enables brute-force detection and compliance audit trails.
-
-**Phase 16 Total: ~38 specs, ~8 commits**
+> **Objetivo:** Financial domain depth, UX maturity, advanced analytics, AI intelligence
+> **Note:** Phase 17 from the original v2 plan was completed early as Phase 15.6 (Rate Limits & Admin). Phases renumbered accordingly. Phase 16 completed 2026-03-02.
 
 ---
 
@@ -583,9 +556,9 @@ LlmGateway ──► POST ──►  /completions ──► subprocess ──►
 ### Phase Dependency Graph
 
 ```
-Phase 16 (Security) ──────────────────► Production-ready
+Phase 16 (Security) ──────────────────► Production-ready ✅
     │
-Phase 17 (Financial Domain) ─────────► User value (export, benchmarking, dividends)
+Phase 17 (Financial Domain) ─────────► User value (export, benchmarking, dividends) ← NEXT
     │
 Phase 18 (UX Maturity) ──────────────► Polish (a11y, i18n, loading states, CSV import)
     │
@@ -603,13 +576,13 @@ Phase 21 (LLM Intelligence) ─────────► AI insights (requires
 
 | Phase | Theme | Commits | Estimated Specs | Running Total |
 |-------|-------|---------|-----------------|---------------|
-| 16 | Production Hardening | 8 | ~38 | ~1735 |
-| 17 | Financial Domain | 12 | ~70 | ~1805 |
-| 18 | UX Maturity | 10 | ~42 | ~1847 |
-| 19 | Advanced Analytics | 8 | ~48 | ~1895 |
-| 20 | Provider Upgrade | 6 | ~22 | ~1917 |
-| 21 | LLM Intelligence | 12 | ~65 | ~1982 |
-| | **Total Upcoming** | **~56** | **~285** | **~1982** |
+| ~~16~~ | ~~Production Hardening~~ | ~~4~~ | ~~24~~ | ~~1721~~ |
+| 17 | Financial Domain | 12 | ~70 | ~1791 |
+| 18 | UX Maturity | 10 | ~42 | ~1833 |
+| 19 | Advanced Analytics | 8 | ~48 | ~1881 |
+| 20 | Provider Upgrade | 6 | ~22 | ~1903 |
+| 21 | LLM Intelligence | 12 | ~65 | ~1968 |
+| | **Total Remaining** | **~48** | **~247** | **~1968** |
 
 ### External Dependencies
 
