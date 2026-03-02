@@ -24,12 +24,15 @@ module Market
                      PeHistoryCalculator.calculate(price_histories: pe_histories, eps: eps)
       end
 
+      earnings_events = asset.asset_type_stock? ? asset.earnings_events.order(report_date: :desc).limit(8) : []
+
       Success({
         asset: asset,
         presenter: presenter,
         has_fundamentals: fundamental.present?,
         price_histories: price_histories,
-        pe_history: pe_history
+        pe_history: pe_history,
+        earnings_events: earnings_events
       })
     end
 

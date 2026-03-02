@@ -1,0 +1,107 @@
+<%# Earnings tab: historical EPS results with beat/miss indicators %>
+<% if @earnings_events.present? %>
+  <%# EPS Bar Chart — actual vs estimated %>
+  <% reported = @earnings_events.select { |e| e.actual_eps.present? }.reverse %>
+  <% if reported.size >= 2 %>
+    <div class="mb-8">
+      <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-4">EPS History</h4>
+      <div class="flex items-end gap-3 h-40">
+        <% max_eps = reported.map { |e| [ e.actual_eps.to_f.abs, e.estimated_eps.to_f.abs ].max }.max %>
+        <% max_eps = 1.0 if max_eps.zero? %>
+        <% reported.each do |event| %>
+          <div class="flex-1 flex flex-col items-center gap-1">
+            <div class="w-full flex gap-0.5 items-end h-28">
+              <%# Estimated bar %>
+              <% est_h = max_eps.positive? ? (event.estimated_eps.to_f.abs / max_eps * 100).round : 0 %>
+              <div class="flex-1 bg-slate-200 dark:bg-slate-700 rounded-t" style="height: <%= est_h %>%" title="Est: $<%= event.estimated_eps %>"></div>
+              <%# Actual bar %>
+              <% act_h = max_eps.positive? ? (event.actual_eps.to_f.abs / max_eps * 100).round : 0 %>
+              <% beat = event.beat_miss == :beat %>
+              <div class="flex-1 rounded-t <%= beat ? 'bg-emerald-500' : 'bg-rose-500' %>" style="height: <%= act_h %>%" title="Act: $<%= event.actual_eps %>"></div>
+            </div>
+            <span class="text-[10px] text-slate-400"><%= event.report_date.strftime("%b %y") %></span>
+          </div>
+        <% end %>
+      </div>
+      <div class="flex items-center gap-4 mt-3">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-sm bg-slate-200 dark:bg-slate-700"></span>
+          <span class="text-[10px] font-medium text-slate-400">Estimated</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span>
+          <span class="text-[10px] font-medium text-slate-400">Beat</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-sm bg-rose-500"></span>
+          <span class="text-[10px] font-medium text-slate-400">Miss</span>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Earnings Table %>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-200 dark:border-slate-800">
+          <th class="text-left py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">Report Date</th>
+          <th class="text-right py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">EPS Est.</th>
+          <th class="text-right py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">EPS Actual</th>
+          <th class="text-right py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">Surprise</th>
+          <th class="text-center py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @earnings_events.each do |event| %>
+          <tr class="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+            <td class="py-3 px-4 text-slate-900 dark:text-white font-medium">
+              <%= event.report_date.strftime("%b %d, %Y") %>
+              <span class="text-[10px] text-slate-400 ml-1"><%= event.before_market_open? ? "BMO" : "AMC" %></span>
+            </td>
+            <td class="py-3 px-4 text-right text-slate-600 dark:text-slate-300">
+              <%= event.estimated_eps ? number_to_currency(event.estimated_eps) : "—" %>
+            </td>
+            <td class="py-3 px-4 text-right font-bold text-slate-900 dark:text-white">
+              <%= event.actual_eps ? number_to_currency(event.actual_eps) : "Pending" %>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <% if event.eps_surprise_percent %>
+                <% positive = event.eps_surprise_percent >= 0 %>
+                <span class="<%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %> font-bold">
+                  <%= positive ? "+" : "" %><%= event.eps_surprise_percent %>%
+                </span>
+              <% else %>
+                <span class="text-slate-400">—</span>
+              <% end %>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <% case event.beat_miss %>
+              <% when :beat %>
+                <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                  <span class="material-symbols-outlined text-xs">trending_up</span> Beat
+                </span>
+              <% when :miss %>
+                <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
+                  <span class="material-symbols-outlined text-xs">trending_down</span> Miss
+                </span>
+              <% else %>
+                <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+                  <span class="material-symbols-outlined text-xs">schedule</span> Pending
+                </span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="flex flex-col items-center justify-center py-16 text-center">
+    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">event_note</span>
+    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">No earnings data available</h3>
+    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">
+      Earnings data is not yet available for this asset. Data syncs periodically — check back soon.
+    </p>
+  </div>
+<% end %>

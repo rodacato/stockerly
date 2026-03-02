@@ -19,7 +19,7 @@
         <% if @asset.asset_type_crypto? %>
           <% tab_names = ["Summary", "Market Data"] %>
         <% else %>
-          <% tab_names = %w[Summary Valuation Profitability Health Growth Dividends Statements] %>
+          <% tab_names = %w[Summary Valuation Profitability Health Growth Dividends Earnings Statements] %>
         <% end %>
         <% tab_names.each do |tab_name| %>
           <button data-tabs-target="tab" data-action="tabs#switch"
@@ -53,6 +53,9 @@
       </div>
       <div data-tabs-target="panel" class="hidden">
         <%= render "market/category_tab", category: :dividends %>
+      </div>
+      <div data-tabs-target="panel" class="hidden">
+        <%= render "market/earnings_tab" %>
       </div>
       <div data-tabs-target="panel" class="hidden">
         <%= render "market/statements_tab" %>
