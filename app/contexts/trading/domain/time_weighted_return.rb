@@ -1,6 +1,6 @@
 module Trading
   class TimeWeightedReturn
-    # Calculates Time-Weighted Return (TWR) from a series of snapshots.
+  # Calculates Time-Weighted Return (TWR) from a series of snapshots.
   # TWR = Product(1 + R_i) - 1, where R_i is the return for each sub-period.
   # Cash flows are detected from changes in invested_value between snapshots.
   #

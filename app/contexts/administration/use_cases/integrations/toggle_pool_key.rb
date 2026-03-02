@@ -17,7 +17,7 @@ module Administration
 
       def find(id)
         pool_key = ApiKeyPool.find_by(id: id)
-        pool_key ? Success(pool_key) : Failure([:not_found, "Pool key not found"])
+        pool_key ? Success(pool_key) : Failure([ :not_found, "Pool key not found" ])
       end
 
       def toggle(pool_key)

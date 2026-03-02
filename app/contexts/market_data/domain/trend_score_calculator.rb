@@ -58,6 +58,6 @@ module MarketData
       when 91..100 then :parabolic
       end
     end
-  end
+    end
   end
 end

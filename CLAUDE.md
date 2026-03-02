@@ -50,25 +50,71 @@ rm -rf tmp/cache
 
 ## Architecture
 
-### Request Flow
+### Hexagonal Architecture + DDD + Event-Driven
+
+Code is organized by **bounded context**, not by technical layer. Each context owns its contracts, domain services, events, handlers, and use cases together.
 
 ```
 Controller → UseCase.call(params) → Contract (validate) → Domain Logic → EventBus.publish(event)
      ↑                                                                           ↓
-Turbo Stream / HTML response                                           EventHandlers (sync/async)
+Turbo Stream / HTML response                                           Handlers (sync/async)
 ```
 
-### Key Layers (under `app/`)
+### Bounded Contexts (`app/contexts/`)
 
-| Layer | Path | Pattern |
-|-------|------|---------|
-| Use Cases | `app/use_cases/{context}/` | `Dry::Monads` do-notation, returns `Success`/`Failure` |
-| Contracts | `app/contracts/{context}/` | `Dry::Validation::Contract` for input validation |
-| Events | `app/events/` | `Dry::Struct` immutable records (e.g., `UserRegistered`, `AssetPriceUpdated`) |
-| Event Handlers | `app/event_handlers/` | Flat files, static `call(event)`. `async? = true` → enqueued via `ProcessEventJob` |
-| Domain Services | `app/domain/` | Pure logic: `AlertEvaluator`, `PortfolioSummary`, `CircuitBreaker`, `GainLoss` |
-| Gateways | `app/gateways/` | Faraday adapters: `PolygonGateway`, `CoingeckoGateway`, `FxRatesGateway` |
-| Types | `app/types/types.rb` | Shared `Dry::Types` definitions |
+| Context | Namespace | Intent |
+|---------|-----------|--------|
+| **Identity** | `Identity::` | User lifecycle: registration, auth, profiles, onboarding, search |
+| **Trading** | `Trading::` | Trade execution, portfolio management, watchlists, dashboard, trends |
+| **Alerts** | `Alerts::` | Alert rule management, evaluation, triggering |
+| **Market Data** | `MarketData::` | External data: prices, fundamentals, news, earnings, indices, gateways |
+| **Administration** | `Administration::` | Admin ops: asset CRUD, integrations, logs, user management |
+| **Notifications** | `Notifications::` | Notification creation and delivery |
+
+Each context has this structure:
+```
+app/contexts/{context_name}/
+├── contracts/     # Dry::Validation input validation
+├── domain/        # Pure business logic (calculators, evaluators, presenters)
+├── events/        # Dry::Struct immutable domain events
+├── gateways/      # Faraday HTTP adapters (Market Data only)
+├── handlers/      # Event reaction logic (static .call, optional async?)
+└── use_cases/     # Dry::Monads orchestration (Success/Failure)
+```
+
+### Shared Infrastructure (`app/shared/`)
+
+Cross-cutting code with **no namespace change** — available everywhere:
+
+| Path | Contents |
+|------|----------|
+| `app/shared/base/` | `ApplicationUseCase`, `ApplicationContract` |
+| `app/shared/domain/` | `CircuitBreaker`, `RateLimiter`, `GatewayChain`, `KeyRotation`, `DataSourceRegistry`, `MarketHours`, `GainLoss`, `RiskMetrics` |
+| `app/shared/events/` | `BaseEvent`, `EventBus` |
+| `app/shared/types/` | `Types` (Dry::Types definitions) |
+
+### Autoloading (Zeitwerk Collapse)
+
+Configured in `config/application.rb`. Organizational folders (domain/, events/, handlers/, etc.) are collapsed — they organize for humans but don't add namespace depth:
+
+- `app/contexts/alerts/domain/alert_evaluator.rb` → `Alerts::AlertEvaluator`
+- `app/contexts/market_data/gateways/polygon_gateway.rb` → `MarketData::PolygonGateway`
+- `app/shared/domain/circuit_breaker.rb` → `CircuitBreaker` (no prefix)
+
+### Cross-Context Communication
+
+Contexts communicate **only via domain events**. No direct imports across contexts.
+
+```ruby
+# Market Data publishes → Alerts subscribes
+EventBus.subscribe(MarketData::AssetPriceUpdated, Alerts::EvaluateAlertsOnPriceUpdate)
+```
+
+Key cross-context flows:
+- `MarketData::AssetPriceUpdated` → `Alerts::EvaluateAlertsOnPriceUpdate`
+- `MarketData::FearGreedUpdated` → `Alerts::EvaluateSentimentAlerts`
+- `Trading::SplitDetected` → `Trading::AdjustPositionsOnSplit`
+- `Identity::UserRegistered` → `Identity::CreatePortfolioOnRegistration`
 
 ### ApplicationUseCase Base Class
 
@@ -80,7 +126,7 @@ All Use Cases inherit from `ApplicationUseCase` which provides:
 
 ### EventBus
 
-- Singleton at `app/events/event_bus.rb` with `subscribe(event_class, handler)` / `publish(event)`
+- Singleton at `app/shared/events/event_bus.rb` with `subscribe(event_class, handler)` / `publish(event)`
 - Subscriptions wired at boot in `config/initializers/event_subscriptions.rb`
 - Handlers with `self.async? = true` are enqueued via `ProcessEventJob` (Solid Queue)
 - **Tests must call `EventBus.clear!` before each spec** (configured in `rails_helper.rb`)
@@ -123,15 +169,17 @@ All Use Cases inherit from `ApplicationUseCase` which provides:
 
 ```
 spec/
+├── contexts/         # Mirrors app/contexts/ — organized by bounded context
+│   ├── identity/     # contracts/, events/, handlers/, use_cases/
+│   ├── trading/      # contracts/, domain/, events/, handlers/, use_cases/
+│   ├── alerts/       # contracts/, domain/, events/, handlers/, use_cases/
+│   ├── market_data/  # domain/, events/, gateways/, handlers/, use_cases/
+│   ├── administration/ # contracts/, events/, handlers/, use_cases/
+│   └── notifications/  # handlers/, use_cases/
+├── shared/           # Mirrors app/shared/ — base classes, domain, events
 ├── models/           # Validations, enums, associations, scopes
-├── use_cases/        # Happy path, validation failures, edge cases
-├── contracts/        # Input validation rules
 ├── requests/         # HTTP smoke tests, guards, CRUD flows
-├── events/           # Event struct specs
-├── event_handlers/   # Reaction logic
-├── gateways/         # WebMock-stubbed external API calls
 ├── jobs/             # Background job behavior
-├── domain/           # Domain services (CircuitBreaker, AlertEvaluator)
 ├── system/           # Capybara end-to-end browser tests
 ├── integration/      # Multi-layer flow tests
 └── factories/        # FactoryBot definitions

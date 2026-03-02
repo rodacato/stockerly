@@ -18,7 +18,7 @@ module Administration
 
       def find(id)
         integration = Integration.find_by(id: id)
-        integration ? Success(integration) : Failure([:not_found, "Integration not found"])
+        integration ? Success(integration) : Failure([ :not_found, "Integration not found" ])
       end
 
       def update(integration, attrs)
