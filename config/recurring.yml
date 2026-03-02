@@ -81,6 +81,10 @@ production:
     class: SyncDividendsJob
     schedule: "0 8 * * 1"
 
+  sync_splits:
+    class: SyncSplitsJob
+    schedule: "0 9 * * 1"
+
   sync_cetes:
     class: SyncCetesJob
     schedule: "0 10 * * 0"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_003901) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_010001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -343,6 +343,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_003901) do
     t.index ["user_id"], name: "index_remember_tokens_on_user_id"
   end
 
+  create_table "stock_splits", force: :cascade do |t|
+    t.bigint "asset_id", null: false
+    t.datetime "created_at", null: false
+    t.date "ex_date", null: false
+    t.integer "ratio_from", null: false
+    t.integer "ratio_to", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id", "ex_date"], name: "index_stock_splits_on_asset_id_and_ex_date", unique: true
+    t.index ["asset_id"], name: "index_stock_splits_on_asset_id"
+  end
+
   create_table "system_logs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.decimal "duration_seconds", precision: 10, scale: 3
@@ -442,6 +453,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_003901) do
   add_foreign_key "positions", "assets"
   add_foreign_key "positions", "portfolios"
   add_foreign_key "remember_tokens", "users"
+  add_foreign_key "stock_splits", "assets"
   add_foreign_key "trades", "assets"
   add_foreign_key "trades", "portfolios"
   add_foreign_key "trades", "positions"

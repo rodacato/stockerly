@@ -52,6 +52,9 @@ Rails.application.config.after_initialize do
   # Dividends
   EventBus.subscribe(DividendsSynced, LogDividendsSync)
 
+  # Stock Splits
+  EventBus.subscribe(SplitDetected, AdjustPositionsOnSplit)
+
   # CETES
   EventBus.subscribe(CetesSynced, LogCetesSync)
 
