@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   resources :alerts, only: [ :index, :create, :update, :destroy ] do
     member { patch :toggle }
   end
+  resources :positions, only: [ :update ]
   resources :trades,    only: [ :index, :create, :edit, :update, :destroy ]
   resources :earnings,  only: [ :index, :show ]
   resources :watchlist_items, only: [ :create, :destroy ]

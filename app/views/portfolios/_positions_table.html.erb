@@ -140,8 +140,18 @@
                   <div class="flex items-center gap-3">
                     <%= render "components/asset_badge", asset: pos.asset, size: "sm" %>
                     <div>
-                      <p class="text-sm font-bold text-slate-900 dark:text-white"><%= pos.asset.name %></p>
-                      <p class="text-xs text-slate-500"><%= pos.currency %></p>
+                      <div class="flex items-center gap-1.5">
+                        <p class="text-sm font-bold text-slate-900 dark:text-white"><%= pos.asset.name %></p>
+                        <% if pos.notes.present? %>
+                          <span class="material-symbols-outlined text-sm text-slate-400" title="<%= pos.notes %>">sticky_note_2</span>
+                        <% end %>
+                      </div>
+                      <div class="flex items-center gap-1 flex-wrap">
+                        <p class="text-xs text-slate-500"><%= pos.currency %></p>
+                        <% pos.labels.each do |label| %>
+                          <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium"><%= label %></span>
+                        <% end %>
+                      </div>
                     </div>
                   </div>
                 </td>
