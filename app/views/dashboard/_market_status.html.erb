@@ -1,11 +1,61 @@
-<%# Market Status indicators — data from @indices %>
-<% cache "market_status", expires_in: 15.minutes do %>
-  <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
-    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Market Status</h3>
-    <div class="space-y-4">
-      <% @indices.each do |idx| %>
-        <%= render "components/market_status_indicator", name: idx.exchange.presence || idx.symbol, status: idx.is_open ? :open : :closed %>
-      <% end %>
-    </div>
-  </section>
-<% end %>
+<%# Market Indices — values, changes, and sparklines from @indices %>
+<section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+  <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Market Indices</h3>
+  <div class="space-y-3">
+    <% @indices.each do |idx| %>
+      <%
+        val = idx.value&.to_f
+        chg = idx.change_percent&.to_f || 0
+        positive = chg >= 0
+        is_open = idx.is_open
+        recent_points = idx.market_index_histories.sort_by(&:date).last(5)
+      %>
+      <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800/50 last:border-b-0">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="h-1.5 w-1.5 rounded-full <%= is_open ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400' %>"></span>
+            <span class="text-sm font-bold text-slate-900 dark:text-white truncate"><%= idx.symbol %></span>
+          </div>
+          <p class="text-[10px] text-slate-400 ml-3.5 truncate"><%= idx.name %></p>
+        </div>
+
+        <%# Sparkline — last 5 points %>
+        <% if recent_points.size >= 2 %>
+          <%
+            spark_w = 48
+            spark_h = 20
+            vals = recent_points.map { |h| h.close_value.to_f }
+            spark_min = vals.min
+            spark_range = vals.max - spark_min
+            spark_range = 1.0 if spark_range.zero?
+            step = spark_w.to_f / (vals.size - 1)
+            spark_pts = vals.each_with_index.map { |v, i|
+              x = (i * step).round(1)
+              y = (spark_h - ((v - spark_min) / spark_range * spark_h)).round(1)
+              "#{x},#{y}"
+            }.join(" ")
+            spark_color = positive ? "#10b981" : "#ef4444"
+          %>
+          <svg viewBox="0 0 <%= spark_w %> <%= spark_h %>" class="w-12 h-5 shrink-0 mx-2" preserveAspectRatio="none">
+            <polyline points="<%= spark_pts %>"
+                      fill="none" stroke="<%= spark_color %>" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+          </svg>
+        <% end %>
+
+        <div class="text-right shrink-0 ml-2">
+          <% if val && val.positive? %>
+            <span class="text-sm font-bold text-slate-900 dark:text-white"><%= number_with_delimiter(val.round(1)) %></span>
+          <% end %>
+          <div class="flex items-center justify-end gap-0.5">
+            <span class="material-symbols-outlined text-xs <%= positive ? 'text-emerald-500' : 'text-rose-500' %>">
+              <%= positive ? 'trending_up' : 'trending_down' %>
+            </span>
+            <span class="text-xs font-bold <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
+              <%= positive ? '+' : '' %><%= number_to_percentage(chg, precision: 2) %>
+            </span>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>

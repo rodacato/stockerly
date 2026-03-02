@@ -57,7 +57,7 @@ RSpec.describe "Dashboard caching", type: :system do
 
     visit dashboard_path
 
-    expect(page).to have_content("Market Status")
+    expect(page).to have_content("Market Indices")
   end
 
   it "busts watchlist row cache when asset price changes" do

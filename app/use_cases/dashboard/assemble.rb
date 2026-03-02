@@ -18,7 +18,7 @@ module Dashboard
                       .order(Arel.sql("ABS(change_percent_24h) DESC"))
                       .limit(5)
 
-      indices = MarketIndex.major
+      indices = MarketIndex.major.includes(:market_index_histories)
 
       sentiment = MarketSentiment.for_user(user)
 
