@@ -2,7 +2,7 @@
 
 > **Fecha:** 2026-03-02
 > **Estado actual:** ~1841 specs, Phase 18 complete
-> **Siguiente:** Phase 19 — Advanced Analytics & Risk
+> **Siguiente:** Phase 19 — Loading States & UX Polish
 
 ---
 
@@ -166,257 +166,106 @@
 
 ---
 
-## Commit Sequence
+## Upcoming Phases (19-22)
 
-### Phases 9-13 (Completed — 76 commits)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
-| 1   | 9.0a   | Add requires_api_key to Integration model                               | +2    |
-| 2   | 9.0b   | Add DataSourceRegistry with source metadata                             | +6    |
-| 3   | 9.0c   | Add SyncLogging concern for standardized job logging                    | +2    |
-| 4   | 9.0d   | Refactor sync jobs to use SyncLogging and DataSourceRegistry            | +0    |
-| 5   | 9.0e   | Replace hardcoded admin buttons with registry-driven data sources panel | +0    |
-| 6   | 9.1a   | Add FearGreedReading model and migration                                | +8    |
-| 7   | 9.1b   | Add crypto and stock Fear & Greed gateways                              | +11   |
-| 8   | 9.1c   | Add RefreshFearGreedJob with events and handler                         | +10   |
-| 9   | 9.1d   | Display Fear & Greed indices on dashboard                               | +6    |
-| 10  | 9.2a   | Add historical price fetch to Polygon and CoinGecko gateways            | +6    |
-| 11  | 9.2b   | Add BackfillPriceHistoryJob triggered on asset creation                 | +5    |
-| 12  | 9.2c   | Connect sparklines to real price history data                           | +7    |
-| 13  | 9.3a   | Add fetch_news method to PolygonGateway                                 | +4    |
-| 14  | 9.3b   | Add SyncNewsJob with Polygon news integration                           | +8    |
-| 15  | 9.3c   | Enhance news page with infinite scroll, filters, and TradingView widget | +8    |
-| 16  | 9.4a   | Add fetch_index_quotes to YahooFinanceGateway                           | +4    |
-| 17  | 9.4b   | Add SyncMarketIndicesJob with Yahoo Finance                             | +6    |
-| 18  | 9.4c   | Add IPC index, VIX indicator, and live index display                    | +5    |
-| 19  | 9.5a   | Add fixed_income asset type with yield and maturity fields              | +3    |
-| 20  | 9.5b   | Add fixed income badge and filter in market UI                          | +2    |
-| 21  | 10.0a  | Add FinancialStatement and AssetFundamental models                      | +10   |
-| 22  | 10.0b  | Add MetricDefinitions module with 30+ metric definitions                | +4    |
-| 23  | 10.0c  | Add AlphaVantageGateway with OVERVIEW endpoint                          | +6    |
-| 24  | 10.0d  | Add OVERVIEW sync pipeline with FundamentalPresenter                    | +10   |
-| 25  | 10.1a  | Add financial statement fetch methods to AlphaVantageGateway            | +4    |
-| 26  | 10.1b  | Add FundamentalCalculator with all metric formulas                      | +10   |
-| 27  | 10.1c  | Add statement sync pipeline with FundamentalCalculator                  | +11   |
-| 28  | 10.2a  | Add asset detail page with summary tab and metric cards                 | +8    |
-| 29  | 10.2b  | Add category tabs, statements tab, and navigation links                 | +6    |
-| 30  | 10.2c  | Add metric tooltip controller with help icon popovers                   | +6    |
-| 31  | 10.3a  | Enrich CoinGecko gateway with extended market data                      | +3    |
-| 32  | 10.3b  | Add crypto-specific metrics with adaptive rendering                     | +7    |
-| 33  | 11.0a  | Add TrendScoreCalculator domain service with RSI-14                     | +8    |
-| 34  | 11.0b  | Add RecalculateTrendScoreOnPriceUpdate event handler                    | +4    |
-| 35  | 11.0c  | Add CalculateTrendScoresJob for bulk backfill                           | +4    |
-| 36  | 11.0d  | Remove hardcoded trend scores, update MarketSentiment fallbacks         | +4    |
-| 37  | 11.1a  | Add ExecuteTradeContract with dry-validation                            | +6    |
-| 38  | 11.1b  | Add ExecuteTrade use case with position handling                        | +10   |
-| 39  | 11.1c  | Add TradesController with new, create, index actions                    | +8    |
-| 40  | 11.1d  | Add trade form view with Turbo Frame modal                              | +6    |
-| 41  | 11.1e  | Add position locking and edge case handling                             | +6    |
-| 42  | 11.1f  | Add system test for full trade flow                                     | +4    |
-| 43  | 11.2a  | Add historical Fear & Greed SVG chart on dashboard                      | +5    |
-| 44  | 11.2b  | Add news watchlist filter                                               | +5    |
-| 45  | 11.2c  | Add earnings watchlist filter                                           | +5    |
-| 46  | 11.3a  | Add fetch_earnings method to PolygonGateway                             | +4    |
-| 47  | 11.3b  | Add earnings sync pipeline with SyncCalendar use case                   | +8    |
-| 48  | 11.3c  | Register earnings sync in DataSourceRegistry and recurring schedule     | +3    |
-| 49  | 12.0a  | Add email_verified_at to users                                          | +3    |
-| 50  | 12.0b  | Add VerifyEmail use case and contract                                   | +6    |
-| 51  | 12.0c  | Add verification email handler and mailer method                        | +4    |
-| 52  | 12.0d  | Add EmailVerificationsController and verification page                  | +4    |
-| 53  | 12.0e  | Add unverified email banner in app layout                               | +3    |
-| 54  | 12.1a  | Add alert management system test                                        | +6    |
-| 55  | 12.1b  | Add watchlist management system test                                    | +5    |
-| 56  | 12.1c  | Add portfolio tabs system test                                          | +5    |
-| 57  | 12.1d  | Add earnings calendar system test                                       | +4    |
-| 58  | 12.1e  | Add admin management system test                                        | +5    |
-| 59  | 12.1f  | Add password reset flow system test                                     | +5    |
-| 60  | 12.2a  | Add WeeklyInsightCalculator domain service                              | +6    |
-| 61  | 12.2b  | Enable weekly insight with real portfolio data                          | +4    |
-| 62  | 12.2c  | Add Trivy scanning to CI, remove disabled button states                 | +3    |
-| 63  | 12.2d  | Add Bullet gem, fix N+1 queries                                        | +2    |
-| 64  | 13.0a  | Add sentiment conditions to AlertRule enum                              | +2    |
-| 65  | 13.0b  | Extend AlertEvaluator with sentiment conditions                         | +6    |
-| 66  | 13.0c  | Add EvaluateSentimentAlerts handler on FearGreedUpdated                  | +4    |
-| 67  | 13.0d  | Add sentiment options to alert form                                     | +3    |
-| 68  | 13.1a  | Add BanxicoGateway for CETES auction results                           | +6    |
-| 69  | 13.1b  | Add YieldCalculator domain service                                      | +6    |
-| 70  | 13.1c  | Add SyncCetesJob with events and handler                                | +5    |
-| 71  | 13.1d  | Add fixed income detail view and maturity calendar                      | +5    |
-| 72  | 13.1e  | Add CETES detail page system test                                       | +3    |
-| 73  | 13.2a  | Add missing database indexes, fix N+1 queries                           | +4    |
-| 74  | 13.2b  | Add fragment caching and Russian doll caching                           | +6    |
-| 75  | 13.2c  | Add volume alerts with cooldown period                                  | +6    |
-| 76  | 13.2d  | Add historical P/E chart component                                      | +4    |
-
-### Phase 14 (Completed — 13 commits)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
-| 77  | 14.0a  | Fix portfolio empty state with always-visible trade form                | +4    |
-| 78  | 14.0b+e | Connect search to backend with keyboard navigation                     | +8    |
-| 79  | 14.0c  | Make market listing rows fully clickable with hover UX                  | +3    |
-| 80  | 14.0d  | Add asset detail price chart (SVG area chart)                           | +6    |
-| 81  | 14.2a  | Extend earnings sync with actual_eps and beat/miss calculation          | +9    |
-| 82  | 14.2b  | Add beat/miss badges to earnings calendar                               | +4    |
-| 83  | 14.2c+d | Add earnings detail page with show route and system test               | +9    |
-| 84  | 14.3a  | Add UpdateTrade use case with 30-day edit guard                         | +20   |
-| 85  | 14.3b  | Add DeleteTrade use case with soft delete via discarded_at              | +15   |
-| 86  | 14.3c  | Add trade edit/delete UI with inline editing and soft delete            | +12   |
-| 87  | 14.4a  | Add PeriodReturnsCalculator for portfolio time-based returns            | +7    |
-| 88  | 14.4b  | Add portfolio performance chart with period return pills               | +5    |
-| 89  | 14.4c  | Add earnings approaching alerts with daily notification job             | +8    |
-|     |        | *Phase 14 Total*                                                        | *+110* |
-|     |        | **Grand Total (Phases 9-14)**                                           | **~523** |
-
-### Phase 15 (Completed — 20 commits)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
-| 90  | 15.0a  | Add expandable error details to admin logs table                        | +4    |
-| 91  | 15.0b  | Add sync_issue_since field and RetryFailedAssetsJob with auto-recovery  | +10   |
-| 92  | 15.0c  | Add backfill rake tasks for prices, earnings, and fundamentals          | +6    |
-| 93  | 15.0d  | Add daily API call budget tracking per Integration                      | +5    |
-| 94  | 15.1a  | Consolidate F&G cards with inline sparklines, remove chart row          | +4    |
-| 95  | 15.1b  | Add interactive tooltips to F&G and price charts                        | +4    |
-| 96  | 15.1c  | Redesign news cards as compact feed lines                               | +3    |
-| 97  | 15.2a  | Add adaptive sync scheduling with backoff on rate limits                | +6    |
-| 98  | 15.2b  | Add gateway fallback chain for market indices                           | +4    |
-| 99  | 15.2c  | Add on-demand fundamental sync from asset detail page                   | +5    |
-| 100 | 15.3a  | Batch Yahoo Finance index queries via quote endpoint                    | +5    |
-| 101 | 15.3b  | Unify crypto sync jobs and increase interval to 5 minutes               | +3    |
-| 102 | 15.3c  | Add bulk stock price sync via Polygon grouped endpoint                  | +6    |
-| 103 | 15.3d  | Reduce Alpha Vantage frequency to bi-weekly overview                    | +3    |
-| 104 | 15.4a  | Increase earnings sync to daily with 90-day window                      | +4    |
-| 105 | 15.4b  | Add BackfillMissingHistoriesJob as weekly recurring job                  | +4    |
-| 106 | 15.4c  | Add integration tests for full backfill flows                           | +6    |
-| 107 | 15.4d  | Add /health endpoint with sync freshness and admin status dashboard     | +5    |
-| 108 | 15.5a  | Add API key rotation pool for providers                                 | +5    |
-| 109 | 15.5b  | Add TradingView Advanced Chart widget to asset detail page              | +4    |
-|     |        | *Phase 15 Total*                                                        | *+96* |
-
-### Phase 15.6 (Completed — 7 commits)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
-| 110 | 15.6a  | Add name to ApiKeyPool and rate limit fields to Integration             | +8    |
-| 111 | 15.6b  | Add RateLimiter domain service with per-minute and per-day checks       | +10   |
-| 112 | 15.6c  | Integrate RateLimiter into gateways                                     | +8    |
-| 113 | 15.6d  | Add UpdateProvider and DeleteProvider use cases                          | +14   |
-| 114 | 15.6e  | Add AddPoolKey, TogglePoolKey, and RemovePoolKey use cases              | +12   |
-| 115 | 15.6f  | Add admin API key pool controller and routes                            | +10   |
-| 116 | 15.6g  | Redesign admin integrations UI with pool management                     | +8    |
-|     |        | *Phase 15.6 Total*                                                      | *+70* |
-
-### Phase 16 (Completed — 4 commits)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
-| 117 | 16a    | Add session timeout (30-min inactivity, 12-hour absolute)               | +5    |
-| 118 | 16b    | Add audit logging for login attempts and password changes               | +8    |
-| 119 | 16c    | Add IDOR controller-level tests for user-owned resources                | +8    |
-| 120 | 16d    | Add structured JSON logging for production                              | +3    |
-|     |        | *Phase 16 Total*                                                        | *+24* |
-|     |        | **Grand Total (Phases 9-16)**                                           | **~713** |
-
-### Phase 17 (Completed — 9 commits)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
-| 121 | 17.1a  | Add MarketIndexHistory model with daily close prices                    | +8    |
-| 122 | 17.1b  | Add TimeWeightedReturn domain service                                  | +12   |
-| 123 | 17.1c  | Add benchmark comparison to portfolio UI                               | +6    |
-| 124 | 17.1d  | Add benchmark sync job for indices via Yahoo Finance                   | +4    |
-| 125 | 17.2a  | Add FmpGateway for dividend and split data                             | +6    |
-| 126 | 17.2b  | Add SyncDividendsJob with event pipeline                               | +8    |
-| 127 | 17.2c  | Add upcoming dividends section on portfolio page                       | +4    |
-| 128 | 17.2d  | Add stock split handling with cost basis adjustment                    | +23   |
-| 129 | 17.3   | Add notes and labels to positions                                       | +4    |
-|     |        | *Phase 17 Total*                                                        | *+75* |
-|     |        | **Grand Total (Phases 9-17)**                                           | **~788** |
-
-### Phase 18 (Completed — 9 commits)
-
-| #   | Phase  | Commit Message                                                          | Specs |
-| --- | ------ | ----------------------------------------------------------------------- | ----- |
-| 130 | 18a    | Add PortfolioRiskCalculator domain service                              | +15   |
-| 131 | 18b    | Display risk metrics on portfolio page                                  | +3    |
-| 132 | 18c    | Enrich allocation sidebar with asset-type breakdown                     | +7    |
-| 133 | 18d    | Add Earnings tab to asset detail page                                   | +4    |
-| 134 | 18e    | Display analyst target price on asset summary                           | +3    |
-| 135 | 18f    | Add volume bars to asset price chart                                    | +3    |
-| 136 | 18g    | Upgrade market status to show index values and sparklines               | +4    |
-| 137 | 18h    | Display Fear and Greed sub-indicators breakdown                         | +3    |
-| 138 | 18i    | Add dividend history to asset detail page                               | +3    |
-|     |        | *Phase 18 Total*                                                        | *+45* |
-|     |        | **Grand Total (Phases 9-18)**                                           | **~833** |
+> **Objetivo:** UX polish, production readiness, analytics depth, AI intelligence
+> **Note:** Phase 18 completed 2026-03-02 (Analytics Depth & Market Intelligence). Phases reorganized per expert panel recommendation: UX polish → production readiness → analytics → LLM.
 
 ---
 
-## Upcoming Phases (19-21)
+## Phase 19 — Loading States & UX Polish
 
-> **Objetivo:** Advanced analytics, provider upgrades, AI intelligence
-> **Note:** Phase 18 completed 2026-03-02 (Analytics Depth & Market Intelligence). Risk metrics, sector breakdown, and asset enrichment moved from original Phase 19 into Phase 18.
+> **Theme:** "Feel like a fast, polished product"
+> **Owner:** Hotwire Engineer + UX Designer
+> **Estimated specs:** ~15
+> **Rationale:** All data loads server-side in one blocking request (dashboard, market detail, portfolio). No skeleton screens, no loading indicators, no lazy-loaded tabs. Turbo Frames exist but none use `loading="lazy"`. Empty states mix component-based and inline text — inconsistent.
 
----
-
-## Phase 19 — Advanced Analytics & Risk
-
-> **Theme:** "From tracking to insights"
-> **Owner:** Financial Expert + Domain Architect
-> **Estimated specs:** ~24
-> **Note:** Risk Metrics (volatility, Sharpe, drawdown) and Sector Comparison completed in Phase 18.
-
-### 19.0 — Concentration Alerts
+### 19.0 — Skeleton Loader Component
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 139 | Add concentration_risk condition to AlertRule | Migration, AlertEvaluator extension | +6 |
-| 140 | Add portfolio concentration warnings on dashboard | Views, domain service | +4 |
+| 139 | Add skeleton loader component and page transition indicator | `_skeleton.html.erb` partial, Turbo `turbo:before-fetch` Stimulus controller for top progress bar | +4 |
 
-### 19.1 — Advanced Composite Alerts
+### 19.1 — Lazy-Loaded Asset Detail Tabs
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 141 | Add AND/OR predicate composition to AlertRule | Migration, evaluator refactor | +8 |
-| 142 | Add composite alert builder UI | Views, Stimulus, system test | +6 |
+| 140 | Add Turbo Frame lazy loading for Earnings and Statements tabs | `loading="lazy"` on non-critical tab frames, skeleton placeholder while loading, new controller endpoint for tab content | +4 |
 
-**Phase 19 Total: ~24 specs, ~4 commits**
+### 19.2 — Empty State Consistency
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 141 | Standardize all empty states to use component partial | Replace inline "No X yet" messages with `_empty_state.html.erb` component across portfolio, alerts, earnings views | +3 |
+
+### 19.3 — Dashboard Section Loading
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 142 | Add Turbo Frame deferred loading for news feed and trending sidebar | Separate dashboard sections into independently-loadable Turbo Frames with skeleton placeholders | +4 |
+
+**Phase 19 Total: ~15 specs, ~4 commits**
 
 ---
 
-## Phase 20 — Provider Upgrade & Data Quality
+## Phase 20 — Provider Upgrade & Production Readiness
 
-> **Theme:** "Better data, fewer limits"
+> **Theme:** "Better data, fewer limits, production-ready"
 > **Owner:** Data Engineer + DevOps Engineer
 > **Estimated specs:** ~22
+> **Rationale:** FMP gateway already exists (Phase 17) — only needs wiring as fallback. Sentry is critical for production debugging. PWA enables mobile installation.
 
-### 20.0 — FMP Provider Integration
+### 20.0 — FMP as Fundamentals Fallback
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 143 | Add FmpGateway with company profile and fundamentals | Gateway, circuit breaker, specs | +6 |
-| 144 | Add FMP as fallback in GatewayChain for fundamentals | Chain config, adaptive scheduling | +4 |
+| 143 | Extend FmpGateway with company profile and fundamentals | Add `fetch_profile`, `fetch_fundamentals` to existing gateway | +6 |
+| 144 | Add FMP as fallback in GatewayChain for fundamentals | Chain config, adaptive scheduling, event on fallback trigger | +4 |
 
 ### 20.1 — PWA Support
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 145 | Add PWA manifest and service worker for installability | `public/manifest.json`, service worker, icons | +3 |
-| 146 | Add offline fallback page and cache strategy | Service worker cache, offline view | +3 |
+| 145 | Add PWA manifest and service worker for installability | `public/manifest.json`, service worker registration, icons | +3 |
+| 146 | Add offline fallback page and cache strategy | Service worker cache, offline view, app shell caching | +3 |
 
 ### 20.2 — Error Tracking & Monitoring
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 147 | Add Sentry integration for error tracking | Gem, initializer, production config | +2 |
-| 148 | Add health dashboard improvements (job queue depth, cache hit rate) | Admin view, domain service | +4 |
+| 147 | Add Sentry integration for error tracking | Gem, initializer, production config, user context | +2 |
+| 148 | Add health dashboard improvements (job queue depth, cache hit rate) | Admin view, domain service, Solid Queue metrics | +4 |
 
 **Phase 20 Total: ~22 specs, ~6 commits**
 
 ---
 
-## Phase 21 — LLM-Powered Intelligence Layer
+## Phase 21 — Concentration Alerts & Enhanced TrendScore
+
+> **Theme:** "Smarter scoring, risk-aware alerts"
+> **Owner:** Financial Expert + Domain Architect
+> **Estimated specs:** ~20
+> **Rationale:** Concentration risk data already available via `allocation_by_sector` and `allocation_by_asset_type`. TrendScore currently uses only RSI-14 + 7-day momentum (2 factors) — adding MACD, volume, and fundamentals weight creates a meaningful scoring upgrade.
+
+### 21.0 — Concentration Alerts
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 149 | Add ConcentrationAnalyzer domain service | HHI index, single-position %, sector % thresholds, risk levels | +6 |
+| 150 | Add concentration_risk condition to AlertRule with dashboard warnings | Migration, AlertEvaluator extension, portfolio sidebar badges | +6 |
+
+### 21.1 — Enhanced TrendScore
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 151 | Enhance TrendScoreCalculator with MACD, volume, and EMA factors | Add 3 new factors (MACD signal, volume trend, EMA crossover), reweight to 5-factor blend | +5 |
+| 152 | Add TrendScore breakdown tooltip on market listings | Show per-factor scores in metric tooltip, color-coded contribution bars | +3 |
+
+**Phase 21 Total: ~20 specs, ~4 commits**
+
+---
+
+## Phase 22 — LLM-Powered Intelligence Layer
 
 > **Theme:** "Delegate research and analysis to AI you already pay for"
 > **Owner:** Domain Architect + Data Engineer + Rails Engineer
@@ -435,44 +284,44 @@ LlmGateway ──► POST ──►  /completions ──► subprocess ──►
              ◄── JSON ◄──  provider  ◄── parse stdout ◄── codex exec "..."
 ```
 
-### 21.0 — Stockerly LLM Gateway
+### 22.0 — Stockerly LLM Gateway
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 149 | Add LlmGateway with Faraday client to SheLLM | Gateway, CircuitBreaker, RateLimiter integration | +8 |
-| 150 | Add SheLLM Integration seed and admin health indicator | Seeds, admin view, health check | +4 |
-| 151 | Add LlmResponseContract for output validation | Contract, Dry::Validation, JSON schema enforcement | +6 |
+| 153 | Add LlmGateway with Faraday client to SheLLM | Gateway, CircuitBreaker, RateLimiter integration | +8 |
+| 154 | Add SheLLM Integration seed and admin health indicator | Seeds, admin view, health check | +4 |
+| 155 | Add LlmResponseContract for output validation | Contract, Dry::Validation, JSON schema enforcement | +6 |
 
-### 21.1 — Portfolio Insight Generator
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 152 | Add InsightGenerator domain service with analysis prompt | Domain service, system prompt template, anonymizer | +8 |
-| 153 | Add GeneratePortfolioInsightsJob as daily recurring job | Job (11:15pm after snapshots), events, handlers | +6 |
-| 154 | Add AI insight card to dashboard with attribution label | Views, Turbo Frame, opt-out toggle, "AI-generated" label | +4 |
-
-### 21.2 — News Sentiment Analysis
+### 22.1 — Portfolio Insight Generator
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 155 | Add NewsSentimentAnalyzer domain service with batch processing | Domain service, batch prompt (10 articles per call) | +8 |
-| 156 | Add AnalyzeNewsSentimentJob triggered after news sync | Job, event handler, migration (sentiment columns on news_articles) | +6 |
-| 157 | Add sentiment badges and filter to news feed | Views, filter, Turbo Frame update | +4 |
+| 156 | Add InsightGenerator domain service with analysis prompt | Domain service, system prompt template, anonymizer | +8 |
+| 157 | Add GeneratePortfolioInsightsJob as daily recurring job | Job (11:15pm after snapshots), events, handlers | +6 |
+| 158 | Add AI insight card to dashboard with attribution label | Views, Turbo Frame, opt-out toggle, "AI-generated" label | +4 |
 
-### 21.3 — Fundamental Health Checks
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 158 | Add FundamentalHealthCheck domain service | Domain service, prompt template, 7-day cache | +6 |
-| 159 | Add AI health check section to asset detail page | Views, Turbo Frame, cache integration | +4 |
-
-### 21.4 — Earnings Narrative
+### 22.2 — News Sentiment Analysis
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 160 | Add EarningsNarrativeGenerator for earnings detail page | Domain service, views, cache | +5 |
+| 159 | Add NewsSentimentAnalyzer domain service with batch processing | Domain service, batch prompt (10 articles per call) | +8 |
+| 160 | Add AnalyzeNewsSentimentJob triggered after news sync | Job, event handler, migration (sentiment columns on news_articles) | +6 |
+| 161 | Add sentiment badges and filter to news feed | Views, filter, Turbo Frame update | +4 |
 
-**Phase 21 Total: ~65 specs, ~12 commits**
+### 22.3 — Fundamental Health Checks
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 162 | Add FundamentalHealthCheck domain service | Domain service, prompt template, 7-day cache | +6 |
+| 163 | Add AI health check section to asset detail page | Views, Turbo Frame, cache integration | +4 |
+
+### 22.4 — Earnings Narrative
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| 164 | Add EarningsNarrativeGenerator for earnings detail page | Domain service, views, cache | +5 |
+
+**Phase 22 Total: ~65 specs, ~12 commits**
 
 ---
 
@@ -487,11 +336,13 @@ Phase 17 (Financial Domain) ─────────► User value (benchmark
     │
 Phase 18 (Analytics Depth) ──────────► Data depth (risk, earnings, volume, indices) ✅
     │
-Phase 19 (Advanced Analytics) ───────► Differentiation (concentration, composite alerts) ← NEXT
+Phase 19 (UX Polish) ───────────────► Loading states, lazy tabs, empty state consistency ← NEXT
     │
-Phase 20 (Provider Upgrade) ─────────► Scale (FMP, PWA, monitoring)
+Phase 20 (Production Readiness) ────► FMP fallback, PWA, Sentry, health dashboard
     │
-Phase 21 (LLM Intelligence) ─────────► AI insights (requires SheLLM deployed)
+Phase 21 (Smart Analytics) ─────────► Concentration alerts, enhanced TrendScore
+    │
+Phase 22 (LLM Intelligence) ────────► AI insights (requires SheLLM deployed)
     ▲
     │ External dependency: SheLLM (separate repo)
     │ See SHELLM_PLAN.md
@@ -504,16 +355,17 @@ Phase 21 (LLM Intelligence) ─────────► AI insights (requires
 | ~~16~~ | ~~Production Hardening~~ | ~~4~~ | ~~24~~ | ~~1721~~ |
 | ~~17~~ | ~~Financial Domain~~ | ~~9~~ | ~~75~~ | ~~1796~~ |
 | ~~18~~ | ~~Analytics Depth~~ | ~~9~~ | ~~45~~ | ~~1841~~ |
-| 19 | Advanced Analytics | 4 | ~24 | ~1865 |
-| 20 | Provider Upgrade | 6 | ~22 | ~1887 |
-| 21 | LLM Intelligence | 12 | ~65 | ~1952 |
-| | **Total Remaining** | **~22** | **~111** | **~1952** |
+| 19 | UX Polish | 4 | ~15 | ~1856 |
+| 20 | Production Readiness | 6 | ~22 | ~1878 |
+| 21 | Smart Analytics | 4 | ~20 | ~1898 |
+| 22 | LLM Intelligence | 12 | ~65 | ~1963 |
+| | **Total Remaining** | **~26** | **~122** | **~1963** |
 
 ### External Dependencies
 
 | Dependency | Repository | Status | Required By |
 |---|---|---|---|
-| **SheLLM** | `shellm` | Plan ready (`SHELLM_PLAN.md`) | Phase 21 |
+| **SheLLM** | `shellm` | Plan ready (`SHELLM_PLAN.md`) | Phase 22 |
 
 ---
 
@@ -521,7 +373,7 @@ Phase 21 (LLM Intelligence) ─────────► AI insights (requires
 
 | Feature | Reason | Expert |
 |---------|--------|--------|
-| **Enhanced TrendScore** | Weighted scoring with momentum, fundamentals, sentiment. Richer than current RSI+momentum. | Financial Expert |
+| **Composite Alerts (AND/OR)** | JSONB conditions refactor adds schema complexity and input validation risk. Concentration alerts cover 80% of the need. | Security Engineer + Domain Architect |
 | **Portfolio Beta** | Correlation vs benchmark index. Requires position-level daily returns. | Financial Expert |
 | **Weekly Insight Improvement** | Fix `change_percent_24h` bug, add 7-day return calculation. | Domain Architect |
 | **Tax Lot Tracking (FIFO/LIFO)** | Complex, requires cost lot model + tax regime selection. Do after trade export validates demand. | Financial Expert |
