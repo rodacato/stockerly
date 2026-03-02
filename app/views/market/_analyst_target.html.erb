@@ -1,0 +1,60 @@
+<%# Analyst target price card with upside/downside indicator %>
+<%
+  target = @presenter&.metric("analyst_target_price")&.to_f
+  current = @asset.current_price&.to_f
+  high_52w = @presenter&.metric("fifty_two_week_high")&.to_f
+  low_52w = @presenter&.metric("fifty_two_week_low")&.to_f
+%>
+
+<% if target&.positive? && current&.positive? %>
+  <%
+    diff_pct = ((target - current) / current * 100).round(1)
+    upside = diff_pct >= 0
+    range = high_52w - low_52w
+    position_pct = range.positive? ? ((current - low_52w) / range * 100).clamp(0, 100).round : 50
+    target_pct = range.positive? ? ((target - low_52w) / range * 100).clamp(0, 100).round : 50
+  %>
+  <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm mb-8">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="material-symbols-outlined text-lg text-primary">target</span>
+      <h4 class="text-sm font-bold text-slate-900 dark:text-white">Analyst Price Target</h4>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+      <div>
+        <p class="text-xs font-medium text-slate-400 mb-1">Current Price</p>
+        <span class="text-xl font-black text-slate-900 dark:text-white"><%= number_to_currency(current) %></span>
+      </div>
+      <div>
+        <p class="text-xs font-medium text-slate-400 mb-1">Analyst Target</p>
+        <span class="text-xl font-black text-primary"><%= number_to_currency(target) %></span>
+      </div>
+      <div>
+        <p class="text-xs font-medium text-slate-400 mb-1"><%= upside ? "Upside" : "Downside" %></p>
+        <span class="text-xl font-black <%= upside ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
+          <%= upside ? "+" : "" %><%= diff_pct %>%
+        </span>
+      </div>
+    </div>
+
+    <% if high_52w.positive? && low_52w.positive? && range.positive? %>
+      <div class="mb-2">
+        <div class="flex justify-between text-[10px] font-medium text-slate-400 mb-2">
+          <span>52W Low: <%= number_to_currency(low_52w) %></span>
+          <span>52W High: <%= number_to_currency(high_52w) %></span>
+        </div>
+        <div class="relative h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full">
+          <%# Current price marker %>
+          <div class="absolute top-0 h-full bg-primary/30 rounded-full" style="width: <%= position_pct %>%"></div>
+          <div class="absolute -top-1 w-3 h-4 bg-primary rounded-sm transform -translate-x-1/2" style="left: <%= position_pct %>%" title="Current: <%= number_to_currency(current) %>"></div>
+          <%# Target marker %>
+          <div class="absolute -top-1 w-0.5 h-4 transform -translate-x-1/2 <%= upside ? 'bg-emerald-500' : 'bg-rose-500' %>" style="left: <%= target_pct %>%" title="Target: <%= number_to_currency(target) %>"></div>
+        </div>
+        <div class="flex justify-between mt-2">
+          <span class="text-[10px] font-bold text-primary">Current</span>
+          <span class="text-[10px] font-bold <%= upside ? 'text-emerald-600' : 'text-rose-600' %>">Target</span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
