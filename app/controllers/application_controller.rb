@@ -7,6 +7,12 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :logged_in?
 
+  def append_info_to_payload(payload)
+    super
+    payload[:user_id] = current_user&.id
+    payload[:ip] = request.remote_ip
+  end
+
   private
 
   def current_user

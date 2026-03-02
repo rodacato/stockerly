@@ -39,6 +39,9 @@ gem "money-rails", "~> 1.15"
 gem "faraday", "~> 2.9"
 gem "faraday-retry"
 
+# Structured JSON logging for production [https://github.com/roidrage/lograge]
+gem "lograge"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
