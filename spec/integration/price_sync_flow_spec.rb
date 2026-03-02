@@ -11,9 +11,9 @@ RSpec.describe "Price Sync Flow (E2E)", type: :model do
 
   it "syncs price → evaluates alerts → creates notification" do
     # Wire up event subscriptions for this test
-    EventBus.subscribe(AssetPriceUpdated, EvaluateAlertsOnPriceUpdate)
-    EventBus.subscribe(AlertRuleTriggered, CreateAlertEventOnTrigger)
-    EventBus.subscribe(AlertRuleTriggered, CreateNotificationOnAlert)
+    EventBus.subscribe(AssetPriceUpdated, Alerts::EvaluateAlertsOnPriceUpdate)
+    EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateAlertEventOnTrigger)
+    EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateNotificationOnAlert)
 
     # Execute the sync job and all async handlers inline
     perform_enqueued_jobs do

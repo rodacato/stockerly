@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe CreateNotificationOnAlert do
+RSpec.describe Alerts::CreateNotificationOnAlert do
   describe ".async?" do
     it { expect(described_class.async?).to be true }
   end

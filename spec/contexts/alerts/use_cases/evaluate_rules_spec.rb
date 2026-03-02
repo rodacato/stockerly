@@ -41,13 +41,13 @@ RSpec.describe Alerts::EvaluateRules do
         expect(result.value!).to include(rule)
       end
 
-      it "publishes AlertRuleTriggered event" do
+      it "publishes Alerts::AlertRuleTriggered event" do
         allow(EventBus).to receive(:publish)
 
         use_case.call(asset_id: asset.id, new_price: "160.0")
 
         expect(EventBus).to have_received(:publish).with(
-          an_instance_of(AlertRuleTriggered)
+          an_instance_of(Alerts::AlertRuleTriggered)
         )
       end
     end

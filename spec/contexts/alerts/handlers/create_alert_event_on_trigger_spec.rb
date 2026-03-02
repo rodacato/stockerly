@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe CreateAlertEventOnTrigger do
+RSpec.describe Alerts::CreateAlertEventOnTrigger do
   describe ".call" do
     let(:user) { create(:user) }
     let(:rule) { create(:alert_rule, user: user, asset_symbol: "AAPL") }

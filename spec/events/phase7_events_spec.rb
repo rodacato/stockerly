@@ -13,7 +13,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe AlertRuleCreated do
+  describe Alerts::AlertRuleCreated do
     it "has required attributes" do
       event = described_class.new(alert_rule_id: 1, user_id: 2, asset_symbol: "AAPL", condition: "price_crosses_above")
 
@@ -22,7 +22,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe AlertRuleTriggered do
+  describe Alerts::AlertRuleTriggered do
     it "has required attributes" do
       event = described_class.new(alert_rule_id: 1, user_id: 2, asset_symbol: "AAPL", triggered_price: "200.0")
 

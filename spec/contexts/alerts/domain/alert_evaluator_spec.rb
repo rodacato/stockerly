@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AlertEvaluator do
+RSpec.describe Alerts::AlertEvaluator do
   let(:user) { create(:user) }
   let(:asset) { create(:asset, current_price: 150.0) }
 
@@ -8,7 +8,7 @@ RSpec.describe AlertEvaluator do
     it "returns empty array when no rules are triggered" do
       rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :price_crosses_above, threshold_value: 200.0)
 
-      triggered = AlertEvaluator.evaluate([ rule ], asset, 160.0)
+      triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset, 160.0)
       expect(triggered).to be_empty
     end
 
@@ -16,7 +16,7 @@ RSpec.describe AlertEvaluator do
       rule1 = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :price_crosses_above, threshold_value: 155.0)
       rule2 = create(:alert_rule, user: user, asset_symbol: "OTHER", condition: :price_crosses_above, threshold_value: 200.0)
 
-      triggered = AlertEvaluator.evaluate([ rule1, rule2 ], asset, 160.0)
+      triggered = Alerts::AlertEvaluator.evaluate([ rule1, rule2 ], asset, 160.0)
       expect(triggered).to eq([ rule1 ])
     end
 
@@ -24,14 +24,14 @@ RSpec.describe AlertEvaluator do
       it "triggers when price crosses above threshold" do
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :price_crosses_above, threshold_value: 155.0)
 
-        triggered = AlertEvaluator.evaluate([ rule ], asset, 160.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset, 160.0)
         expect(triggered).to include(rule)
       end
 
       it "does not trigger when price stays below threshold" do
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :price_crosses_above, threshold_value: 200.0)
 
-        triggered = AlertEvaluator.evaluate([ rule ], asset, 160.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset, 160.0)
         expect(triggered).to be_empty
       end
     end
@@ -40,7 +40,7 @@ RSpec.describe AlertEvaluator do
       it "triggers when price crosses below threshold" do
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :price_crosses_below, threshold_value: 145.0)
 
-        triggered = AlertEvaluator.evaluate([ rule ], asset, 140.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset, 140.0)
         expect(triggered).to include(rule)
       end
     end
@@ -50,7 +50,7 @@ RSpec.describe AlertEvaluator do
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 5.0)
 
         # 150 -> 160 = 6.67% change
-        triggered = AlertEvaluator.evaluate([ rule ], asset, 160.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset, 160.0)
         expect(triggered).to include(rule)
       end
 
@@ -58,7 +58,7 @@ RSpec.describe AlertEvaluator do
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 10.0)
 
         # 150 -> 155 = 3.33% change
-        triggered = AlertEvaluator.evaluate([ rule ], asset, 155.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset, 155.0)
         expect(triggered).to be_empty
       end
 
@@ -66,7 +66,7 @@ RSpec.describe AlertEvaluator do
         asset_zero = create(:asset, symbol: "ZERO", current_price: 0)
         rule = create(:alert_rule, user: user, asset_symbol: "ZERO", condition: :day_change_percent, threshold_value: 5.0)
 
-        triggered = AlertEvaluator.evaluate([ rule ], asset_zero, 10.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset_zero, 10.0)
         expect(triggered).to be_empty
       end
     end
@@ -76,7 +76,7 @@ RSpec.describe AlertEvaluator do
         create(:trend_score, asset: asset, score: 80, calculated_at: Time.current)
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :rsi_overbought, threshold_value: 70.0)
 
-        triggered = AlertEvaluator.evaluate([ rule ], asset, 160.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset, 160.0)
         expect(triggered).to include(rule)
       end
     end
@@ -86,7 +86,7 @@ RSpec.describe AlertEvaluator do
         create(:trend_score, asset: asset, score: 20, calculated_at: Time.current)
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :rsi_oversold, threshold_value: 30.0)
 
-        triggered = AlertEvaluator.evaluate([ rule ], asset, 140.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset, 140.0)
         expect(triggered).to include(rule)
       end
     end
@@ -99,7 +99,7 @@ RSpec.describe AlertEvaluator do
         end
         rule = create(:alert_rule, user: user, asset_symbol: "VOL", condition: :volume_spike, threshold_value: 3.0)
 
-        triggered = AlertEvaluator.evaluate([ rule ], asset_vol, 100.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset_vol, 100.0)
         expect(triggered).to include(rule)
       end
 
@@ -110,7 +110,7 @@ RSpec.describe AlertEvaluator do
         end
         rule = create(:alert_rule, user: user, asset_symbol: "VOL2", condition: :volume_spike, threshold_value: 3.0)
 
-        triggered = AlertEvaluator.evaluate([ rule ], asset_vol, 100.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset_vol, 100.0)
         expect(triggered).to be_empty
       end
     end
@@ -121,7 +121,7 @@ RSpec.describe AlertEvaluator do
                        condition: :price_crosses_above, threshold_value: 155.0,
                        last_triggered_at: 10.minutes.ago, cooldown_minutes: 60)
 
-        triggered = AlertEvaluator.evaluate([ rule ], asset, 160.0)
+        triggered = Alerts::AlertEvaluator.evaluate([ rule ], asset, 160.0)
         expect(triggered).to be_empty
       end
     end
@@ -131,19 +131,19 @@ RSpec.describe AlertEvaluator do
     context "sentiment_above" do
       it "triggers when F&G value equals threshold" do
         rule = create(:alert_rule, user: user, asset_symbol: "FG_CRYPTO", condition: :sentiment_above, threshold_value: 70.0)
-        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 70)
+        triggered = Alerts::AlertEvaluator.evaluate_sentiment([ rule ], 70)
         expect(triggered).to include(rule)
       end
 
       it "triggers when F&G value exceeds threshold" do
         rule = create(:alert_rule, user: user, asset_symbol: "FG_CRYPTO", condition: :sentiment_above, threshold_value: 70.0)
-        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 85)
+        triggered = Alerts::AlertEvaluator.evaluate_sentiment([ rule ], 85)
         expect(triggered).to include(rule)
       end
 
       it "does not trigger when F&G value is below threshold" do
         rule = create(:alert_rule, user: user, asset_symbol: "FG_CRYPTO", condition: :sentiment_above, threshold_value: 70.0)
-        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 60)
+        triggered = Alerts::AlertEvaluator.evaluate_sentiment([ rule ], 60)
         expect(triggered).to be_empty
       end
     end
@@ -151,19 +151,19 @@ RSpec.describe AlertEvaluator do
     context "sentiment_below" do
       it "triggers when F&G value equals threshold" do
         rule = create(:alert_rule, user: user, asset_symbol: "FG_STOCKS", condition: :sentiment_below, threshold_value: 30.0)
-        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 30)
+        triggered = Alerts::AlertEvaluator.evaluate_sentiment([ rule ], 30)
         expect(triggered).to include(rule)
       end
 
       it "triggers when F&G value is below threshold" do
         rule = create(:alert_rule, user: user, asset_symbol: "FG_STOCKS", condition: :sentiment_below, threshold_value: 30.0)
-        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 15)
+        triggered = Alerts::AlertEvaluator.evaluate_sentiment([ rule ], 15)
         expect(triggered).to include(rule)
       end
 
       it "does not trigger when F&G value is above threshold" do
         rule = create(:alert_rule, user: user, asset_symbol: "FG_STOCKS", condition: :sentiment_below, threshold_value: 30.0)
-        triggered = AlertEvaluator.evaluate_sentiment([ rule ], 45)
+        triggered = Alerts::AlertEvaluator.evaluate_sentiment([ rule ], 45)
         expect(triggered).to be_empty
       end
     end

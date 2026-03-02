@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe EvaluateAlertsOnPriceUpdate do
+RSpec.describe Alerts::EvaluateAlertsOnPriceUpdate do
   describe ".async?" do
     it { expect(described_class.async?).to be true }
   end

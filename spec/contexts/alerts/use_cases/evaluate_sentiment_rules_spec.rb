@@ -6,7 +6,7 @@ RSpec.describe Alerts::EvaluateSentimentRules do
   let(:user) { create(:user) }
 
   describe "#call" do
-    it "returns triggered rules and publishes AlertRuleTriggered" do
+    it "returns triggered rules and publishes Alerts::AlertRuleTriggered" do
       rule = create(:alert_rule, user: user, asset_symbol: "FG_CRYPTO",
                     condition: :sentiment_above, threshold_value: 70.0, status: :active)
       allow(EventBus).to receive(:publish)
@@ -15,7 +15,7 @@ RSpec.describe Alerts::EvaluateSentimentRules do
 
       expect(result).to be_success
       expect(result.value!).to include(rule)
-      expect(EventBus).to have_received(:publish).with(an_instance_of(AlertRuleTriggered))
+      expect(EventBus).to have_received(:publish).with(an_instance_of(Alerts::AlertRuleTriggered))
       expect(rule.reload.status).to eq("paused")
     end
 

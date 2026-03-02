@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe EvaluateSentimentAlerts do
+RSpec.describe Alerts::EvaluateSentimentAlerts do
   describe ".async?" do
     it "returns true" do
       expect(described_class.async?).to be true

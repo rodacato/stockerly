@@ -5,20 +5,20 @@ RSpec.describe "Event Subscription Wiring" do
   before { load Rails.root.join("config/initializers/event_subscriptions.rb") }
 
   describe "AssetPriceUpdated" do
-    it "has EvaluateAlertsOnPriceUpdate and BroadcastPriceUpdate handlers" do
+    it "has Alerts::EvaluateAlertsOnPriceUpdate and BroadcastPriceUpdate handlers" do
       handlers = EventBus.handlers_for(AssetPriceUpdated)
 
-      expect(handlers).to include(EvaluateAlertsOnPriceUpdate)
+      expect(handlers).to include(Alerts::EvaluateAlertsOnPriceUpdate)
       expect(handlers).to include(BroadcastPriceUpdate)
     end
   end
 
-  describe "AlertRuleTriggered" do
-    it "has CreateAlertEventOnTrigger and CreateNotificationOnAlert handlers" do
-      handlers = EventBus.handlers_for(AlertRuleTriggered)
+  describe "Alerts::AlertRuleTriggered" do
+    it "has Alerts::CreateAlertEventOnTrigger and Alerts::CreateNotificationOnAlert handlers" do
+      handlers = EventBus.handlers_for(Alerts::AlertRuleTriggered)
 
-      expect(handlers).to include(CreateAlertEventOnTrigger)
-      expect(handlers).to include(CreateNotificationOnAlert)
+      expect(handlers).to include(Alerts::CreateAlertEventOnTrigger)
+      expect(handlers).to include(Alerts::CreateNotificationOnAlert)
     end
   end
 

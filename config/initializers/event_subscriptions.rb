@@ -17,15 +17,15 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(AssetCreated, BackfillHistoryOnAssetCreation)
 
   # Market Data
-  EventBus.subscribe(AssetPriceUpdated, EvaluateAlertsOnPriceUpdate)
+  EventBus.subscribe(AssetPriceUpdated, Alerts::EvaluateAlertsOnPriceUpdate)
   EventBus.subscribe(AssetPriceUpdated, BroadcastPriceUpdate)
   EventBus.subscribe(AssetPriceUpdated, RecordPriceHistory)
   EventBus.subscribe(AssetPriceUpdated, RecalculateTrendScoreOnPriceUpdate)
   EventBus.subscribe(AllGatewaysFailed, LogAllGatewaysFailure)
 
   # Alerts
-  EventBus.subscribe(AlertRuleTriggered, CreateAlertEventOnTrigger)
-  EventBus.subscribe(AlertRuleTriggered, CreateNotificationOnAlert)
+  EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateAlertEventOnTrigger)
+  EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateNotificationOnAlert)
 
   # Notifications
   EventBus.subscribe(NotificationCreated, BroadcastNotification)
@@ -47,7 +47,7 @@ Rails.application.config.after_initialize do
 
   # Sentiment
   EventBus.subscribe(FearGreedUpdated, LogFearGreedUpdate)
-  EventBus.subscribe(FearGreedUpdated, EvaluateSentimentAlerts)
+  EventBus.subscribe(FearGreedUpdated, Alerts::EvaluateSentimentAlerts)
 
   # Dividends
   EventBus.subscribe(DividendsSynced, LogDividendsSync)
