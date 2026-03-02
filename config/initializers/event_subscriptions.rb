@@ -5,6 +5,9 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(UserRegistered, SendWelcomeEmailOnRegistration)
   EventBus.subscribe(UserRegistered, SendVerificationEmailOnRegistration)
   EventBus.subscribe(PasswordChanged, InvalidateSessionsOnPasswordChange)
+  EventBus.subscribe(PasswordChanged, CreateAuditLogOnPasswordChange)
+  EventBus.subscribe(UserLoggedIn, CreateAuditLogOnLogin)
+  EventBus.subscribe(UserLoginFailed, CreateAuditLogOnLoginFailure)
 
   # Administration
   EventBus.subscribe(UserSuspended, CreateAuditLogOnSuspension)

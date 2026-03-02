@@ -14,10 +14,13 @@ class SessionsController < ApplicationController
     in Dry::Monads::Success(user)
       start_session(user)
       remember(user) if params[:remember] == "1"
+      EventBus.publish(UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
       redirect_to dashboard_path, notice: "Welcome back, #{user.full_name}!"
     in Dry::Monads::Failure[ :suspended, message ]
+      publish_login_failed
       redirect_to login_path, alert: message
     in Dry::Monads::Failure[ :invalid_credentials, message ]
+      publish_login_failed
       flash.now[:alert] = message
       render :new, status: :unprocessable_content
     in Dry::Monads::Failure[ :validation, _ ]
@@ -36,5 +39,11 @@ class SessionsController < ApplicationController
 
   def redirect_if_logged_in
     redirect_to dashboard_path if logged_in?
+  end
+
+  def publish_login_failed
+    return unless params[:email].present?
+
+    EventBus.publish(UserLoginFailed.new(email: params[:email].to_s, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
   end
 end
