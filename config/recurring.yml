@@ -33,6 +33,10 @@ production:
     class: TakeSnapshotsJob
     schedule: at 11pm every day
 
+  sync_index_history:
+    class: SyncIndexHistoryJob
+    schedule: "15 23 * * *"
+
   calculate_trend_scores:
     class: CalculateTrendScoresJob
     schedule: at 11:30pm every day
