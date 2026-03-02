@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::TimeWeightedReturn do
+RSpec.describe Trading::Domain::TimeWeightedReturn do
   # Helper to create snapshot-like objects
   TwrSnapshot = Data.define(:date, :total_value, :invested_value)
 

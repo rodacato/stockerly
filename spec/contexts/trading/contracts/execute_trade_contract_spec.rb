@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::ExecuteTradeContract do
+RSpec.describe Trading::Contracts::ExecuteTradeContract do
   subject(:contract) { described_class.new }
 
   let!(:asset) { create(:asset, symbol: "AAPL") }

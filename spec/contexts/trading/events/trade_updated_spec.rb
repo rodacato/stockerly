@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::TradeUpdated do
+RSpec.describe Trading::Events::TradeUpdated do
   it "creates event with all attributes" do
     event = described_class.new(
       trade_id: 1,

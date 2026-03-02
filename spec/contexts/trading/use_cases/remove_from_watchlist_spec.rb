@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::RemoveFromWatchlist do
+RSpec.describe Trading::UseCases::RemoveFromWatchlist do
   let(:user) { create(:user) }
   let(:asset) { create(:asset) }
 

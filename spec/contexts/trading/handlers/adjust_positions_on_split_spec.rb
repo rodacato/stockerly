@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::AdjustPositionsOnSplit do
+RSpec.describe Trading::Handlers::AdjustPositionsOnSplit do
   describe ".async?" do
     it "returns true" do
       expect(described_class.async?).to be true
@@ -8,10 +8,10 @@ RSpec.describe Trading::AdjustPositionsOnSplit do
   end
 
   describe ".call" do
-    it "invokes Trading::SplitAdjuster for the split" do
+    it "invokes Trading::Domain::SplitAdjuster for the split" do
       split = create(:stock_split)
-      adjuster = instance_double(Trading::SplitAdjuster, adjust!: nil)
-      allow(Trading::SplitAdjuster).to receive(:new).with(split).and_return(adjuster)
+      adjuster = instance_double(Trading::Domain::SplitAdjuster, adjust!: nil)
+      allow(Trading::Domain::SplitAdjuster).to receive(:new).with(split).and_return(adjuster)
 
       described_class.call(stock_split_id: split.id)
 

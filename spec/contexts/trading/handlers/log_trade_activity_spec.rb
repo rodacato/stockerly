@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::LogTradeActivity do
+RSpec.describe Trading::Handlers::LogTradeActivity do
   describe ".call" do
     let(:user) { create(:user) }
     let(:portfolio) { user.portfolio || create(:portfolio, user: user) }

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::AddToWatchlist do
+RSpec.describe Trading::UseCases::AddToWatchlist do
   let(:user) { create(:user) }
   let(:asset) { create(:asset) }
 

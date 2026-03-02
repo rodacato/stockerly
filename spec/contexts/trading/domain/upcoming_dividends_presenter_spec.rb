@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::UpcomingDividendsPresenter do
+RSpec.describe Trading::Domain::UpcomingDividendsPresenter do
   let(:portfolio) { create(:portfolio) }
   let(:asset) { create(:asset, :stock) }
   let!(:position) { create(:position, portfolio: portfolio, asset: asset, status: :open, shares: 100) }

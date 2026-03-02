@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::SplitAdjuster do
+RSpec.describe Trading::Domain::SplitAdjuster do
   let(:asset) { create(:asset, :stock) }
   let(:portfolio) { create(:portfolio) }
   let!(:position) { create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 200.0, status: :open) }

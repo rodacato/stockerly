@@ -1,6 +1,6 @@
 class WatchlistItemsController < AuthenticatedController
   def create
-    result = Trading::AddToWatchlist.call(user: current_user, asset_id: params[:asset_id])
+    result = Trading::UseCases::AddToWatchlist.call(user: current_user, asset_id: params[:asset_id])
 
     case result
     in Dry::Monads::Success(item)
@@ -40,7 +40,7 @@ class WatchlistItemsController < AuthenticatedController
   end
 
   def destroy
-    result = Trading::RemoveFromWatchlist.call(user: current_user, watchlist_item_id: params[:id])
+    result = Trading::UseCases::RemoveFromWatchlist.call(user: current_user, watchlist_item_id: params[:id])
 
     case result
     in Dry::Monads::Success(item)

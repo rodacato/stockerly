@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::AssembleDashboard do
+RSpec.describe Trading::UseCases::AssembleDashboard do
   let(:user) { create(:user) }
   let!(:portfolio) { create(:portfolio, user: user, buying_power: 5000.0) }
 
@@ -22,7 +22,7 @@ RSpec.describe Trading::AssembleDashboard do
 
     it "includes PortfolioSummary when portfolio exists" do
       result = described_class.call(user: user)
-      expect(result.value![:summary]).to be_a(Trading::PortfolioSummary)
+      expect(result.value![:summary]).to be_a(Trading::Domain::PortfolioSummary)
     end
 
     it "returns nil summary when no portfolio" do

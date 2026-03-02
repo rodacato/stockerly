@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::LogTradeUpdate do
+RSpec.describe Trading::Handlers::LogTradeUpdate do
   let(:user) { create(:user) }
   let!(:portfolio) { create(:portfolio, user: user) }
   let!(:asset) { create(:asset, symbol: "AAPL") }
@@ -11,7 +11,7 @@ RSpec.describe Trading::LogTradeUpdate do
   end
 
   it "creates an audit log entry for the trade update" do
-    event = Trading::TradeUpdated.new(
+    event = Trading::Events::TradeUpdated.new(
       trade_id: trade.id,
       user_id: user.id,
       position_id: 0,

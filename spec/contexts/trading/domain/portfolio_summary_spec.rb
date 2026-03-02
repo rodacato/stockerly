@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::PortfolioSummary do
+RSpec.describe Trading::Domain::PortfolioSummary do
   let(:user) { create(:user) }
   let(:portfolio) { create(:portfolio, user: user, buying_power: 5000.0) }
   let(:asset_usd) { create(:asset, current_price: 150.0, sector: "Technology") }
@@ -11,7 +11,7 @@ RSpec.describe Trading::PortfolioSummary do
     create(:position, portfolio: portfolio, asset: asset_intl, shares: 20, avg_cost: 60.0, currency: "MXN")
   end
 
-  subject { Trading::PortfolioSummary.new(portfolio) }
+  subject { Trading::Domain::PortfolioSummary.new(portfolio) }
 
   describe "#total_value" do
     it "returns sum of open positions market value plus buying power" do

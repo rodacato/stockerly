@@ -2,7 +2,7 @@ class TrendsController < ApplicationController
   layout "public"
 
   def index
-    result = Trading::LoadAssetTrend.call(symbol: params[:symbol])
+    result = Trading::UseCases::LoadAssetTrend.call(symbol: params[:symbol])
 
     if result.success?
       data     = result.value!

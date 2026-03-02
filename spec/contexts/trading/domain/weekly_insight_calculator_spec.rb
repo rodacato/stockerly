@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::WeeklyInsightCalculator do
+RSpec.describe Trading::Domain::WeeklyInsightCalculator do
   # Lightweight structs to avoid DB dependency (pure domain service)
   Snapshot = Struct.new(:total_value, keyword_init: true)
   PositionAsset = Struct.new(:symbol, :change_percent_24h, keyword_init: true)

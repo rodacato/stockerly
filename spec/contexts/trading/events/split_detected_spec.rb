@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::SplitDetected do
+RSpec.describe Trading::Events::SplitDetected do
   subject(:event) do
     described_class.new(asset_id: 1, stock_split_id: 5, ratio_from: 1, ratio_to: 4)
   end

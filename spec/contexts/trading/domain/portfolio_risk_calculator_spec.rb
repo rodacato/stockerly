@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::PortfolioRiskCalculator do
+RSpec.describe Trading::Domain::PortfolioRiskCalculator do
   RiskSnapshot = Data.define(:date, :total_value, :invested_value)
 
   def build_snapshots(count:, start_date: Date.new(2026, 1, 1), daily_return: 0.001, start_value: 10_000)

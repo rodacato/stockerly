@@ -1,6 +1,6 @@
 class PortfoliosController < AuthenticatedController
   def show
-    result = Trading::LoadPortfolio.call(
+    result = Trading::UseCases::LoadPortfolio.call(
       user: current_user,
       tab: params[:tab] || "open",
       benchmark: params[:benchmark]

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::LoadPortfolio do
+RSpec.describe Trading::UseCases::LoadPortfolio do
   let(:user) { create(:user) }
   let!(:portfolio) { create(:portfolio, user: user, buying_power: 5000.0) }
   let(:asset) { create(:asset, current_price: 150.0, sector: "Technology") }
@@ -12,7 +12,7 @@ RSpec.describe Trading::LoadPortfolio do
       expect(result).to be_success
       data = result.value!
       expect(data[:portfolio]).to eq(portfolio)
-      expect(data[:summary]).to be_a(Trading::PortfolioSummary)
+      expect(data[:summary]).to be_a(Trading::Domain::PortfolioSummary)
       expect(data[:tab]).to eq("open")
     end
 

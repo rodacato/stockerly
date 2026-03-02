@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::UpdateTrade do
+RSpec.describe Trading::UseCases::UpdateTrade do
   let(:user) { create(:user) }
   let!(:portfolio) { create(:portfolio, user: user) }
   let!(:asset) { create(:asset, :stock, symbol: "AAPL") }
@@ -92,13 +92,13 @@ RSpec.describe Trading::UpdateTrade do
 
   describe "event publishing" do
     it "publishes TradeUpdated event" do
-      handler = class_double(Trading::LogTradeUpdate, call: nil).as_stubbed_const
-      EventBus.subscribe(Trading::TradeUpdated, handler)
+      handler = class_double(Trading::Handlers::LogTradeUpdate, call: nil).as_stubbed_const
+      EventBus.subscribe(Trading::Events::TradeUpdated, handler)
 
       result = described_class.call(user: user, params: { trade_id: trade.id, shares: 15.0 })
 
       expect(result).to be_success
-      expect(handler).to have_received(:call).with(an_instance_of(Trading::TradeUpdated))
+      expect(handler).to have_received(:call).with(an_instance_of(Trading::Events::TradeUpdated))
     end
   end
 

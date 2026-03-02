@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::LoadAssetTrend do
+RSpec.describe Trading::UseCases::LoadAssetTrend do
   let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock) }
   let!(:score) { create(:trend_score, asset: asset, score: 85) }
 

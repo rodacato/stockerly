@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::LogTradeDelete do
+RSpec.describe Trading::Handlers::LogTradeDelete do
   let(:user) { create(:user) }
   let!(:portfolio) { create(:portfolio, user: user) }
   let!(:asset) { create(:asset, symbol: "AAPL") }
@@ -11,7 +11,7 @@ RSpec.describe Trading::LogTradeDelete do
   end
 
   it "creates an audit log entry for the trade deletion" do
-    event = Trading::TradeDeleted.new(
+    event = Trading::Events::TradeDeleted.new(
       trade_id: trade.id,
       user_id: user.id,
       position_id: 0

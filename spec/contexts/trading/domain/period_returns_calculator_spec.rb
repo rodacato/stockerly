@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::PeriodReturnsCalculator do
+RSpec.describe Trading::Domain::PeriodReturnsCalculator do
   let(:user) { create(:user) }
   let!(:portfolio) { create(:portfolio, user: user) }
   let(:calculator) { described_class.new(portfolio) }

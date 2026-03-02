@@ -4,7 +4,7 @@ class TradesController < AuthenticatedController
   end
 
   def create
-    result = Trading::ExecuteTrade.call(user: current_user, params: trade_params.to_h)
+    result = Trading::UseCases::ExecuteTrade.call(user: current_user, params: trade_params.to_h)
 
     case result
     in Dry::Monads::Success(trade)
@@ -55,7 +55,7 @@ class TradesController < AuthenticatedController
   end
 
   def update
-    result = Trading::UpdateTrade.call(
+    result = Trading::UseCases::UpdateTrade.call(
       user: current_user,
       params: update_trade_params.to_h.merge(trade_id: params[:id].to_i)
     )
@@ -93,7 +93,7 @@ class TradesController < AuthenticatedController
   end
 
   def destroy
-    result = Trading::DeleteTrade.call(user: current_user, trade_id: params[:id].to_i)
+    result = Trading::UseCases::DeleteTrade.call(user: current_user, trade_id: params[:id].to_i)
 
     case result
     in Dry::Monads::Success(trade)

@@ -30,7 +30,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe Trading::TradeExecuted do
+  describe Trading::Events::TradeExecuted do
     it "has required attributes" do
       event = described_class.new(trade_id: 1, user_id: 2, position_id: 3, side: "buy", shares: "10")
 
@@ -39,7 +39,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe Trading::PositionOpened do
+  describe Trading::Events::PositionOpened do
     it "has required attributes" do
       event = described_class.new(position_id: 1, portfolio_id: 2, asset_symbol: "AAPL")
 
@@ -47,7 +47,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe Trading::PositionClosed do
+  describe Trading::Events::PositionClosed do
     it "has required attributes" do
       event = described_class.new(position_id: 1, portfolio_id: 2, asset_symbol: "AAPL")
 
@@ -55,7 +55,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe Trading::WatchlistItemAdded do
+  describe Trading::Events::WatchlistItemAdded do
     it "has required attributes" do
       event = described_class.new(watchlist_item_id: 1, user_id: 2, asset_symbol: "AAPL")
 
@@ -63,7 +63,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe Trading::PortfolioSnapshotTaken do
+  describe Trading::Events::PortfolioSnapshotTaken do
     it "has required attributes" do
       event = described_class.new(snapshot_id: 1, portfolio_id: 2, total_value: "10000.0")
 
