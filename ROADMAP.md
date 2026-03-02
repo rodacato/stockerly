@@ -1,12 +1,12 @@
 # Stockerly — Roadmap
 
 > **Fecha:** 2026-03-02
-> **Estado actual:** ~1721 specs, Phase 16 complete
-> **Siguiente:** Phase 17 — Financial Domain Depth
+> **Estado actual:** ~1796 specs, Phase 17 complete
+> **Siguiente:** Phase 18 — UX Maturity
 
 ---
 
-## Completed Phases (0-16) — ~1721 specs
+## Completed Phases (0-17) — ~1796 specs
 
 | Fase     | Nombre                              | Specs | Commits |
 | -------- | ----------------------------------- | ----- | ------- |
@@ -49,6 +49,7 @@
 | **15.5** | Scaling Strategy & UX Enhancements  | 1627  | 108-109 |
 | **15.6** | API Key Management & Rate Limits    | 1697  | 110-116 |
 | **16**   | Production Hardening & Security      | 1721  | 117-120 |
+| **17**   | Financial Domain Depth               | 1796  | 121-129 |
 
 ### Phase 9 Summary (990 specs, 20 commits)
 
@@ -86,7 +87,11 @@
 
 **Session Security:** Cookie-based session with 12-hour absolute expiry, 30-minute inactivity timeout with `check_session_timeout` before_action, session timestamp tracking via `last_activity_at` and `session_started_at`. **Audit Logging:** `UserLoggedIn` and `UserLoginFailed` events with IP/user agent tracking, `CreateAuditLogOnLogin`, `CreateAuditLogOnLoginFailure` (only logs when user exists), and `CreateAuditLogOnPasswordChange` handlers wired to EventBus. **IDOR Tests:** 8 controller-level authorization specs verifying user A cannot access user B's watchlist items, alert rules, notifications, or trades. **Structured Logging:** `lograge` gem with JSON formatter for production, `append_info_to_payload` injecting `user_id` and client IP into every request log. Skipped: `.env.production` removal (never committed), Rack::Attack (Rails 8.1 native `rate_limit` already on all sensitive endpoints), PostgreSQL backups (infrastructure task).
 
-### Key Architecture Decisions (Phases 9-16)
+### Phase 17 Summary (~1796 specs, 9 commits)
+
+**Portfolio Benchmarking:** `MarketIndexHistory` model for daily index close prices, `TimeWeightedReturn` domain service (TWR = ∏(1 + R_i) - 1), benchmark comparison overlay on portfolio chart with S&P 500, NASDAQ, Dow Jones selection, `SyncIndexHistoryJob` via Yahoo Finance (daily 11:15pm). **Dividend Tracking:** `FmpGateway` for Financial Modeling Prep API (dividends + splits), `SyncDividendsJob` with `DividendsSynced` event pipeline (weekly Monday 8am), `UpcomingDividendsPresenter` showing expected payouts on portfolio dividends tab. **Stock Splits:** `StockSplit` model, `SplitAdjuster` domain service adjusts positions (shares × ratio, avg_cost ÷ ratio) and pre-split trades, `SyncSplitsJob` (weekly Monday 9am), `SplitDetected` → async `AdjustPositionsOnSplit` handler. **Position Annotations:** `notes` (text) and `labels` (text[] array, max 10) on positions, `PositionsController#update` scoped to current user, label pills and notes icon tooltip on position rows. Trade export (CSV/PDF) deferred to nice-to-have phase.
+
+### Key Architecture Decisions (Phases 9-17)
 
 | Decision | Resolution |
 |----------|-----------|
@@ -303,66 +308,28 @@
 |     |        | *Phase 16 Total*                                                        | *+24* |
 |     |        | **Grand Total (Phases 9-16)**                                           | **~713** |
 
+### Phase 17 (Completed — 9 commits)
+
+| #   | Phase  | Commit Message                                                          | Specs |
+| --- | ------ | ----------------------------------------------------------------------- | ----- |
+| 121 | 17.1a  | Add MarketIndexHistory model with daily close prices                    | +8    |
+| 122 | 17.1b  | Add TimeWeightedReturn domain service                                  | +12   |
+| 123 | 17.1c  | Add benchmark comparison to portfolio UI                               | +6    |
+| 124 | 17.1d  | Add benchmark sync job for indices via Yahoo Finance                   | +4    |
+| 125 | 17.2a  | Add FmpGateway for dividend and split data                             | +6    |
+| 126 | 17.2b  | Add SyncDividendsJob with event pipeline                               | +8    |
+| 127 | 17.2c  | Add upcoming dividends section on portfolio page                       | +4    |
+| 128 | 17.2d  | Add stock split handling with cost basis adjustment                    | +23   |
+| 129 | 17.3   | Add notes and labels to positions                                       | +4    |
+|     |        | *Phase 17 Total*                                                        | *+75* |
+|     |        | **Grand Total (Phases 9-17)**                                           | **~788** |
+
 ---
 
-## Upcoming Phases (17-21)
+## Upcoming Phases (18-21)
 
-> **Objetivo:** Financial domain depth, UX maturity, advanced analytics, AI intelligence
-> **Note:** Phase 17 from the original v2 plan was completed early as Phase 15.6 (Rate Limits & Admin). Phases renumbered accordingly. Phase 16 completed 2026-03-02.
-
----
-
-## Phase 17 — Financial Domain Depth
-
-> **Theme:** "Make the numbers trustworthy"
-> **Owner:** Financial Expert + Domain Architect + Rails Engineer
-> **Estimated specs:** ~70
-
-### 17.0 — Trade Export (CSV/PDF)
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 125 | Add Trading::ExportTrades use case with CSV generation | Use case, contract, CSV builder | +8 |
-| 126 | Add PDF trade report with Prawn | `Prawn` gem, PDF template, download action | +4 |
-| 127 | Add export UI on portfolio page with format selection | Views, controller action, system test | +4 |
-
-**Product Strategist rationale:**
-> In Mexico, SAT annual tax declaration requires trade history. Every user who files taxes needs this. April is tax season — shipping this before then = high retention. CSV is trivial, PDF with Prawn adds polish.
-
-### 17.1 — Portfolio Benchmarking (TWR)
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 128 | Add MarketIndexHistory model with daily close prices | Migration, model, backfill job | +6 |
-| 129 | Add TimeWeightedReturn domain service (TWR calculator) | Domain service — pure math, no AR | +10 |
-| 130 | Add benchmark selection to portfolio and comparison UI | Controller, views, Stimulus chart | +6 |
-| 131 | Add benchmark sync job for S&P 500 via Yahoo Finance | Job, gateway extension, schedule | +4 |
-
-**Financial Expert rationale:**
-> TWR is the industry standard for measuring portfolio manager skill because it eliminates the effect of cash flows (deposits/withdrawals). Formula: TWR = ∏(1 + R_i) - 1, where R_i = (V_end - V_start - CF) / V_start per sub-period. We already have `PortfolioSnapshot` — TWR can use these directly.
-
-**Domain Architect rationale:**
-> `TimeWeightedReturn` lives in `app/domain/` as a pure Domain Service. Input: array of snapshots + cash flow events. Output: `GainLoss` value object. No ActiveRecord dependency — fully testable with synthetic data.
-
-### 17.2 — Dividend Sync & Tracking
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 132 | Add FmpGateway for dividend and split data | New gateway, circuit breaker, specs | +6 |
-| 133 | Add SyncDividendsJob with event pipeline | Job, events, handlers | +6 |
-| 134 | Add upcoming dividends view on portfolio page | Views, presenter, system test | +4 |
-| 135 | Add stock split handling with cost basis adjustment | Domain service, position recalculation | +8 |
-
-**Data Engineer rationale:**
-> FMP (Financial Modeling Prep) free tier: 250 calls/day, includes dividends and splits. The Gateway abstraction makes adding a new provider clean. Splits are critical: without split-adjusted cost basis, P&L becomes nonsensical after a 2:1 split.
-
-### 17.3 — Position Notes & Labels (Quick Win)
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 136 | Add notes and labels to positions | Migration, model, form field, display | +4 |
-
-**Phase 17 Total: ~70 specs, ~12 commits**
+> **Objetivo:** UX maturity, advanced analytics, provider upgrades, AI intelligence
+> **Note:** Phase 17 from the original v2 plan was completed early as Phase 15.6 (Rate Limits & Admin). Phases renumbered accordingly. Phase 17 completed 2026-03-02.
 
 ---
 
@@ -558,9 +525,9 @@ LlmGateway ──► POST ──►  /completions ──► subprocess ──►
 ```
 Phase 16 (Security) ──────────────────► Production-ready ✅
     │
-Phase 17 (Financial Domain) ─────────► User value (export, benchmarking, dividends) ← NEXT
+Phase 17 (Financial Domain) ─────────► User value (benchmarking, dividends, splits) ✅
     │
-Phase 18 (UX Maturity) ──────────────► Polish (a11y, i18n, loading states, CSV import)
+Phase 18 (UX Maturity) ──────────────► Polish (a11y, i18n, loading states, CSV import) ← NEXT
     │
 Phase 19 (Advanced Analytics) ───────► Differentiation (risk metrics, composite alerts)
     │
@@ -577,12 +544,12 @@ Phase 21 (LLM Intelligence) ─────────► AI insights (requires
 | Phase | Theme | Commits | Estimated Specs | Running Total |
 |-------|-------|---------|-----------------|---------------|
 | ~~16~~ | ~~Production Hardening~~ | ~~4~~ | ~~24~~ | ~~1721~~ |
-| 17 | Financial Domain | 12 | ~70 | ~1791 |
-| 18 | UX Maturity | 10 | ~42 | ~1833 |
-| 19 | Advanced Analytics | 8 | ~48 | ~1881 |
-| 20 | Provider Upgrade | 6 | ~22 | ~1903 |
-| 21 | LLM Intelligence | 12 | ~65 | ~1968 |
-| | **Total Remaining** | **~48** | **~247** | **~1968** |
+| ~~17~~ | ~~Financial Domain~~ | ~~9~~ | ~~75~~ | ~~1796~~ |
+| 18 | UX Maturity | 10 | ~42 | ~1838 |
+| 19 | Advanced Analytics | 8 | ~48 | ~1886 |
+| 20 | Provider Upgrade | 6 | ~22 | ~1908 |
+| 21 | LLM Intelligence | 12 | ~65 | ~1973 |
+| | **Total Remaining** | **~36** | **~177** | **~1973** |
 
 ### External Dependencies
 
@@ -602,6 +569,7 @@ Phase 21 (LLM Intelligence) ─────────► AI insights (requires
 | **Performance Attribution by Position** | Requires position-level snapshots (expensive storage). After TWR proves value. | Financial Expert |
 | **Wash Sale Detection** | US-specific tax rule. Not relevant for Mexican market. | Financial Expert |
 | **Options/Warrants Tracking** | Entirely different asset class with Greeks, chains, expiry. Separate product. | Domain Architect |
+| **Trade Export (CSV/PDF)** | Deferred from Phase 17 to nice-to-have. Not urgent for current user needs. | Product Strategist |
 | **Real-time WebSocket Prices** | Polygon WebSocket is paid tier. Current polling is sufficient for 5-min updates. | Data Engineer |
 | **Multi-tenancy / Team Portfolios** | Authorization model overhaul. No demand. | Domain Architect |
 | **BulkAssetSync Concern** | DRY refactor of bulk sync jobs — low urgency, already working | Rails Backend |
