@@ -10,7 +10,7 @@ class SyncFundamentalJob < ApplicationJob
     return unless asset&.active?
     return unless asset.asset_type_stock? || asset.asset_type_etf?
 
-    result = breaker.call { AlphaVantageGateway.new.fetch_overview(asset.symbol) }
+    result = breaker.call { MarketData::AlphaVantageGateway.new.fetch_overview(asset.symbol) }
 
     if result.success?
       persist(asset, result.value!)
@@ -36,7 +36,7 @@ class SyncFundamentalJob < ApplicationJob
 
     log_sync_success("Fundamentals: #{asset.symbol}")
 
-    EventBus.publish(AssetFundamentalsUpdated.new(
+    EventBus.publish(MarketData::AssetFundamentalsUpdated.new(
       asset_id: asset.id,
       symbol: asset.symbol,
       source: "alpha_vantage_overview"

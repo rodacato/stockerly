@@ -4,7 +4,7 @@ class SyncCetesJob < ApplicationJob
   queue_as :default
 
   def perform
-    result = Cetes::SyncAuctions.call
+    result = MarketData::SyncCetes.call
 
     if result.success?
       log_sync_success("CETES Sync", message: "#{result.value!} terms synced")

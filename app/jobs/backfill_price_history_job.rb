@@ -24,7 +24,7 @@ class BackfillPriceHistoryJob < ApplicationJob
   def fetch_history(asset)
     case asset.asset_type
     when "crypto"
-      CoingeckoGateway.new.fetch_historical(asset.symbol, days: 30)
+      MarketData::CoingeckoGateway.new.fetch_historical(asset.symbol, days: 30)
     when "stock", "index", "etf"
       fetch_stock_history(asset.symbol)
     else
@@ -35,11 +35,11 @@ class BackfillPriceHistoryJob < ApplicationJob
   def fetch_stock_history(symbol)
     from_date = 30.days.ago.to_date.to_s
     to_date   = Date.current.to_s
-    result = PolygonGateway.new.fetch_historical(symbol, from_date, to_date)
+    result = MarketData::PolygonGateway.new.fetch_historical(symbol, from_date, to_date)
     return result if result.success?
 
     # Fallback to Yahoo Finance when Polygon fails (e.g. no API key)
-    YahooFinanceGateway.new.fetch_historical(symbol, days: 30)
+    MarketData::YahooFinanceGateway.new.fetch_historical(symbol, days: 30)
   end
 
   def upsert_bars(asset, bars)

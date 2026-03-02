@@ -5,7 +5,7 @@ class SyncNewsJob < ApplicationJob
   queue_as :default
 
   def perform
-    result = News::SyncArticles.call
+    result = MarketData::SyncArticles.call
 
     if result.success?
       log_sync_success("News Sync", message: "#{result.value!} new articles")

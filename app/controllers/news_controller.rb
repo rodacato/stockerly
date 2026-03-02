@@ -2,7 +2,7 @@ class NewsController < AuthenticatedController
   include Pagy::Backend
 
   def index
-    result = News::ListArticles.call(user: current_user, params: filter_params)
+    result = MarketData::ListArticles.call(user: current_user, params: filter_params)
 
     case result
     in Dry::Monads::Success(data)

@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe SyncSplitsJob, type: :job do
-  let(:gateway) { instance_double(FmpGateway) }
+  let(:gateway) { instance_double(MarketData::FmpGateway) }
   let(:asset) { create(:asset, :stock) }
   let(:portfolio) { create(:portfolio) }
   let!(:position) { create(:position, portfolio: portfolio, asset: asset, status: :open) }
 
   before do
-    allow(FmpGateway).to receive(:new).and_return(gateway)
+    allow(MarketData::FmpGateway).to receive(:new).and_return(gateway)
   end
 
   it "creates stock splits from FMP data" do

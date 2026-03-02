@@ -19,7 +19,7 @@ RSpec.describe Admin::Assets::DeleteAsset do
 
       described_class.call(asset_id: asset.id, admin: admin)
 
-      expect(EventBus).to have_received(:publish).with(an_instance_of(AssetDeleted))
+      expect(EventBus).to have_received(:publish).with(an_instance_of(MarketData::AssetDeleted))
     end
 
     it "cascades deletion to watchlist items" do

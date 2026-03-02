@@ -4,13 +4,13 @@ RSpec.describe GatewayChain do
   include Dry::Monads[:result]
 
   let(:success_data) { { symbol: "AAPL", price: 189.43.to_d, change_percent: 2.4, volume: 58_000_000 } }
-  let(:primary_gateway) { instance_double(PolygonGateway) }
-  let(:fallback_gateway) { instance_double(YahooFinanceGateway) }
+  let(:primary_gateway) { instance_double(MarketData::PolygonGateway) }
+  let(:fallback_gateway) { instance_double(MarketData::YahooFinanceGateway) }
 
   describe "#fetch_price" do
     context "when primary gateway succeeds" do
       it "returns the primary result with data_source" do
-        allow(primary_gateway).to receive_messages(class: PolygonGateway)
+        allow(primary_gateway).to receive_messages(class: MarketData::PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).with("AAPL").and_return(Success(success_data.dup))
 
         chain = described_class.new(gateways: [ primary_gateway, fallback_gateway ])
@@ -18,13 +18,13 @@ RSpec.describe GatewayChain do
 
         expect(result).to be_success
         expect(result.value![:price]).to eq(189.43.to_d)
-        expect(result.value![:data_source]).to eq("PolygonGateway")
+        expect(result.value![:data_source]).to eq("MarketData::PolygonGateway")
       end
 
       it "does not call the fallback gateway" do
-        allow(primary_gateway).to receive_messages(class: PolygonGateway)
+        allow(primary_gateway).to receive_messages(class: MarketData::PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
-        allow(fallback_gateway).to receive_messages(class: YahooFinanceGateway)
+        allow(fallback_gateway).to receive_messages(class: MarketData::YahooFinanceGateway)
 
         chain = described_class.new(gateways: [ primary_gateway, fallback_gateway ])
         chain.fetch_price("AAPL")
@@ -35,9 +35,9 @@ RSpec.describe GatewayChain do
 
     context "when primary gateway fails" do
       before do
-        allow(primary_gateway).to receive_messages(class: PolygonGateway)
+        allow(primary_gateway).to receive_messages(class: MarketData::PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).and_return(Failure([ :gateway_error, "Server error" ]))
-        allow(fallback_gateway).to receive_messages(class: YahooFinanceGateway)
+        allow(fallback_gateway).to receive_messages(class: MarketData::YahooFinanceGateway)
         allow(fallback_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
       end
 
@@ -46,15 +46,15 @@ RSpec.describe GatewayChain do
         result = chain.fetch_price("AAPL")
 
         expect(result).to be_success
-        expect(result.value![:data_source]).to eq("YahooFinanceGateway")
+        expect(result.value![:data_source]).to eq("MarketData::YahooFinanceGateway")
       end
     end
 
     context "when all gateways fail" do
       before do
-        allow(primary_gateway).to receive_messages(class: PolygonGateway)
+        allow(primary_gateway).to receive_messages(class: MarketData::PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).and_return(Failure([ :gateway_error, "Error 1" ]))
-        allow(fallback_gateway).to receive_messages(class: YahooFinanceGateway)
+        allow(fallback_gateway).to receive_messages(class: MarketData::YahooFinanceGateway)
         allow(fallback_gateway).to receive(:fetch_price).and_return(Failure([ :gateway_error, "Error 2" ]))
       end
 
@@ -64,7 +64,7 @@ RSpec.describe GatewayChain do
 
         expect(result).to be_failure
         expect(result.failure[0]).to eq(:all_gateways_failed)
-        expect(result.failure[2]).to contain_exactly("PolygonGateway", "YahooFinanceGateway")
+        expect(result.failure[2]).to contain_exactly("MarketData::PolygonGateway", "MarketData::YahooFinanceGateway")
       end
     end
 
@@ -76,25 +76,25 @@ RSpec.describe GatewayChain do
         breaker.call { Failure([ :gateway_error, "fail" ]) }
         expect(breaker.state).to eq(:open)
 
-        allow(fallback_gateway).to receive_messages(class: YahooFinanceGateway)
+        allow(fallback_gateway).to receive_messages(class: MarketData::YahooFinanceGateway)
         allow(fallback_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
-        allow(primary_gateway).to receive_messages(class: PolygonGateway)
+        allow(primary_gateway).to receive_messages(class: MarketData::PolygonGateway)
 
         chain = described_class.new(
           gateways: [ primary_gateway, fallback_gateway ],
-          circuit_breakers: { "PolygonGateway" => breaker }
+          circuit_breakers: { "MarketData::PolygonGateway" => breaker }
         )
 
         result = chain.fetch_price("AAPL")
 
         expect(result).to be_success
-        expect(result.value![:data_source]).to eq("YahooFinanceGateway")
+        expect(result.value![:data_source]).to eq("MarketData::YahooFinanceGateway")
       end
     end
 
     context "with a single gateway" do
       it "returns the result directly" do
-        allow(primary_gateway).to receive_messages(class: PolygonGateway)
+        allow(primary_gateway).to receive_messages(class: MarketData::PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
 
         chain = described_class.new(gateways: [ primary_gateway ])

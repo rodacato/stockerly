@@ -1,6 +1,6 @@
 # Fetches the latest price for a single asset from the appropriate gateway
 # (with fallback chain for US stocks), updates the Asset record, and
-# publishes AssetPriceUpdated if the price changed.
+# publishes MarketData::AssetPriceUpdated if the price changed.
 class SyncSingleAssetJob < ApplicationJob
   include SyncLogging
   include AdaptiveScheduling
@@ -53,19 +53,19 @@ class SyncSingleAssetJob < ApplicationJob
   end
 
   def gateway_for(asset)
-    return GatewayChain.new(gateways: [ YahooFinanceGateway.new ]) if asset.country == "MX"
+    return GatewayChain.new(gateways: [ MarketData::YahooFinanceGateway.new ]) if asset.country == "MX"
 
     case asset.asset_type
     when "stock", "index", "etf"
       GatewayChain.new(
-        gateways: [ PolygonGateway.new, YahooFinanceGateway.new ],
+        gateways: [ MarketData::PolygonGateway.new, MarketData::YahooFinanceGateway.new ],
         circuit_breakers: {
-          "PolygonGateway" => self.class.circuit_breaker_for("stock"),
-          "YahooFinanceGateway" => self.class.circuit_breaker_for("yahoo_us")
+          "MarketData::PolygonGateway" => self.class.circuit_breaker_for("stock"),
+          "MarketData::YahooFinanceGateway" => self.class.circuit_breaker_for("yahoo_us")
         }
       )
     when "crypto"
-      GatewayChain.new(gateways: [ CoingeckoGateway.new ])
+      GatewayChain.new(gateways: [ MarketData::CoingeckoGateway.new ])
     else
       raise ArgumentError, "Unknown asset type: #{asset.asset_type}"
     end
@@ -93,7 +93,7 @@ class SyncSingleAssetJob < ApplicationJob
   end
 
   def publish_price_update(asset, old_price, new_price)
-    EventBus.publish(AssetPriceUpdated.new(
+    EventBus.publish(MarketData::AssetPriceUpdated.new(
       asset_id: asset.id,
       symbol: asset.symbol,
       old_price: (old_price || 0).to_s,
@@ -102,7 +102,7 @@ class SyncSingleAssetJob < ApplicationJob
   end
 
   def publish_all_gateways_failed(asset, attempted)
-    EventBus.publish(AllGatewaysFailed.new(
+    EventBus.publish(MarketData::AllGatewaysFailed.new(
       asset_id: asset.id,
       symbol: asset.symbol,
       attempted_gateways: Array(attempted)

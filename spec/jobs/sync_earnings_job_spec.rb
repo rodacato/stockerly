@@ -6,7 +6,7 @@ RSpec.describe SyncEarningsJob do
   describe "#perform" do
     context "when sync succeeds" do
       before do
-        allow(Earnings::SyncCalendar).to receive(:call)
+        allow(MarketData::SyncEarnings).to receive(:call)
           .and_return(Dry::Monads::Success(5))
       end
 
@@ -23,7 +23,7 @@ RSpec.describe SyncEarningsJob do
 
     context "when sync fails" do
       before do
-        allow(Earnings::SyncCalendar).to receive(:call)
+        allow(MarketData::SyncEarnings).to receive(:call)
           .and_return(Dry::Monads::Failure([ :gateway_error, "Connection timeout" ]))
       end
 

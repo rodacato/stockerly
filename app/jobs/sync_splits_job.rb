@@ -7,7 +7,7 @@ class SyncSplitsJob < ApplicationJob
   queue_as :default
 
   def perform
-    gateway = FmpGateway.new
+    gateway = MarketData::FmpGateway.new
     detected = 0
 
     assets_with_open_positions.each do |asset|

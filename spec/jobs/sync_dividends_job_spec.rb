@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe SyncDividendsJob, type: :job do
-  let(:gateway) { instance_double(FmpGateway) }
+  let(:gateway) { instance_double(MarketData::FmpGateway) }
   let(:asset) { create(:asset, :stock) }
   let(:portfolio) { create(:portfolio) }
   let!(:position) { create(:position, portfolio: portfolio, asset: asset, status: :open) }
 
   before do
-    allow(FmpGateway).to receive(:new).and_return(gateway)
+    allow(MarketData::FmpGateway).to receive(:new).and_return(gateway)
   end
 
   it "syncs dividends for assets with open positions" do
@@ -37,12 +37,12 @@ RSpec.describe SyncDividendsJob, type: :job do
     allow(gateway).to receive(:fetch_dividends)
       .and_return(Dry::Monads::Success(dividend_data))
 
-    handler = class_double(LogDividendsSync, call: nil)
-    EventBus.subscribe(DividendsSynced, handler)
+    handler = class_double(MarketData::LogDividendsSync, call: nil)
+    EventBus.subscribe(MarketData::DividendsSynced, handler)
 
     described_class.perform_now
 
-    expect(handler).to have_received(:call).with(an_instance_of(DividendsSynced))
+    expect(handler).to have_received(:call).with(an_instance_of(MarketData::DividendsSynced))
   end
 
   it "does not duplicate existing dividends" do

@@ -1,7 +1,7 @@
-<%# Generic category tab: renders metric cards for a given MetricDefinitions category %>
+<%# Generic category tab: renders metric cards for a given MarketData::MetricDefinitions category %>
 <% if @has_fundamentals %>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
-    <% MetricDefinitions.by_category(category).each do |defn| %>
+    <% MarketData::MetricDefinitions.by_category(category).each do |defn| %>
       <% value = resolve_metric_value(@presenter, defn.key) %>
       <%= render "market/metric_card", definition: defn, value: value %>
     <% end %>

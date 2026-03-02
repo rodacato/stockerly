@@ -14,7 +14,7 @@ module Admin
         attrs = resolve_logo_url(attrs)
         attrs = resolve_data_source(attrs)
         asset = yield persist(attrs)
-        _     = yield publish(AssetCreated.new(
+        _     = yield publish(MarketData::AssetCreated.new(
           asset_id: asset.id,
           symbol: asset.symbol,
           admin_id: admin.id

@@ -1,7 +1,7 @@
 class EarningsController < AuthenticatedController
   def index
     date = params[:date].present? ? Date.parse(params[:date]) : Date.current
-    result = Earnings::ListForMonth.call(user: current_user, date: date, filter: params[:filter])
+    result = MarketData::ListEarnings.call(user: current_user, date: date, filter: params[:filter])
 
     case result
     in Dry::Monads::Success(data)

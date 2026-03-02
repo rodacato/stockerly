@@ -27,12 +27,12 @@ RSpec.describe SyncStatementsJob, type: :job do
     end
 
     it "publishes FinancialStatementsSynced event" do
-      handler = class_double(RecalculateFundamentalsOnStatementsSynced, call: nil)
-      EventBus.subscribe(FinancialStatementsSynced, handler)
+      handler = class_double(MarketData::RecalculateFundamentalsOnStatementsSynced, call: nil)
+      EventBus.subscribe(MarketData::FinancialStatementsSynced, handler)
 
       described_class.perform_now(asset.id)
 
-      expect(handler).to have_received(:call).with(an_instance_of(FinancialStatementsSynced))
+      expect(handler).to have_received(:call).with(an_instance_of(MarketData::FinancialStatementsSynced))
     end
 
     it "stores correct statement data" do
@@ -78,8 +78,8 @@ RSpec.describe SyncStatementsJob, type: :job do
       end
 
       it "stops fetching after rate limit and publishes partial sync" do
-        handler = class_double(RecalculateFundamentalsOnStatementsSynced, call: nil)
-        EventBus.subscribe(FinancialStatementsSynced, handler)
+        handler = class_double(MarketData::RecalculateFundamentalsOnStatementsSynced, call: nil)
+        EventBus.subscribe(MarketData::FinancialStatementsSynced, handler)
 
         described_class.perform_now(asset.id)
 

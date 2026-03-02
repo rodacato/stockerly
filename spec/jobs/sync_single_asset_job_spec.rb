@@ -24,7 +24,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
         described_class.perform_now(asset.id)
 
         asset.reload
-        expect(asset.data_source).to eq("PolygonGateway")
+        expect(asset.data_source).to eq("MarketData::PolygonGateway")
       end
 
       it "creates a success SystemLog entry" do
@@ -65,7 +65,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
         asset.reload
         expect(asset.current_price.to_f).to eq(190.0)
-        expect(asset.data_source).to eq("YahooFinanceGateway")
+        expect(asset.data_source).to eq("MarketData::YahooFinanceGateway")
       end
 
       it "creates a success SystemLog entry" do
@@ -112,7 +112,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
         asset.reload
         expect(asset.current_price.to_f).to eq(191.5)
-        expect(asset.data_source).to eq("YahooFinanceGateway")
+        expect(asset.data_source).to eq("MarketData::YahooFinanceGateway")
       end
     end
 

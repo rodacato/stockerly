@@ -1,5 +1,5 @@
 # Fetches prices for multiple BMV (Mexican) assets in a single Yahoo Finance
-# API call, updates each Asset record, and publishes AssetPriceUpdated events.
+# API call, updates each Asset record, and publishes MarketData::AssetPriceUpdated events.
 class SyncBulkBmvJob < ApplicationJob
   include SyncLogging
 
@@ -11,7 +11,7 @@ class SyncBulkBmvJob < ApplicationJob
     assets = Asset.where(id: asset_ids, sync_status: :active).index_by(&:symbol)
     return if assets.empty?
 
-    result = breaker.call { YahooFinanceGateway.new.fetch_bulk_prices(assets.keys) }
+    result = breaker.call { MarketData::YahooFinanceGateway.new.fetch_bulk_prices(assets.keys) }
 
     if result.success?
       update_assets(assets, result.value!)
@@ -45,7 +45,7 @@ class SyncBulkBmvJob < ApplicationJob
 
       next unless price_changed?(old_price, data[:price])
 
-      EventBus.publish(AssetPriceUpdated.new(
+      EventBus.publish(MarketData::AssetPriceUpdated.new(
         asset_id: asset.id,
         symbol: asset.symbol,
         old_price: (old_price || 0).to_s,

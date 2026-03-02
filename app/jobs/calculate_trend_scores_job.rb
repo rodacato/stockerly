@@ -8,7 +8,7 @@ class CalculateTrendScoresJob < ApplicationJob
 
     Asset.syncing.find_each do |asset|
       closes = asset.asset_price_histories.recent(30).pluck(:close).map(&:to_f)
-      result = TrendScoreCalculator.calculate(closes: closes)
+      result = MarketData::TrendScoreCalculator.calculate(closes: closes)
       next unless result
 
       asset.trend_scores.create!(

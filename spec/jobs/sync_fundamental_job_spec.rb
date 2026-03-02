@@ -26,12 +26,12 @@ RSpec.describe SyncFundamentalJob, type: :job do
     end
 
     it "publishes AssetFundamentalsUpdated event" do
-      handler = class_double(LogFundamentalsUpdate, call: nil)
-      EventBus.subscribe(AssetFundamentalsUpdated, handler)
+      handler = class_double(MarketData::LogFundamentalsUpdate, call: nil)
+      EventBus.subscribe(MarketData::AssetFundamentalsUpdated, handler)
 
       described_class.perform_now(asset.id)
 
-      expect(handler).to have_received(:call).with(an_instance_of(AssetFundamentalsUpdated))
+      expect(handler).to have_received(:call).with(an_instance_of(MarketData::AssetFundamentalsUpdated))
     end
 
     it "creates a success SystemLog" do

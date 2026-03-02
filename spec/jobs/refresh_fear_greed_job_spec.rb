@@ -30,7 +30,7 @@ RSpec.describe RefreshFearGreedJob, type: :job do
 
       it "publishes FearGreedUpdated events" do
         events = []
-        EventBus.subscribe(FearGreedUpdated, ->(event) { events << event })
+        EventBus.subscribe(MarketData::FearGreedUpdated, ->(event) { events << event })
 
         described_class.perform_now
 

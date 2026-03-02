@@ -6,7 +6,7 @@ RSpec.describe SyncNewsJob do
   describe "#perform" do
     context "when sync succeeds" do
       before do
-        allow(News::SyncArticles).to receive(:call)
+        allow(MarketData::SyncArticles).to receive(:call)
           .and_return(Dry::Monads::Success(3))
       end
 
@@ -23,7 +23,7 @@ RSpec.describe SyncNewsJob do
 
     context "when sync fails" do
       before do
-        allow(News::SyncArticles).to receive(:call)
+        allow(MarketData::SyncArticles).to receive(:call)
           .and_return(Dry::Monads::Failure([ :gateway_error, "Connection timeout" ]))
       end
 

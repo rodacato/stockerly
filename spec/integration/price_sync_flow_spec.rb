@@ -11,7 +11,7 @@ RSpec.describe "Price Sync Flow (E2E)", type: :model do
 
   it "syncs price → evaluates alerts → creates notification" do
     # Wire up event subscriptions for this test
-    EventBus.subscribe(AssetPriceUpdated, Alerts::EvaluateAlertsOnPriceUpdate)
+    EventBus.subscribe(MarketData::AssetPriceUpdated, Alerts::EvaluateAlertsOnPriceUpdate)
     EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateAlertEventOnTrigger)
     EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateNotificationOnAlert)
 

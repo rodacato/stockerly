@@ -5,7 +5,7 @@ RSpec.describe CreateAuditLogOnAssetCreation do
   let(:asset) { create(:asset, symbol: "NVDA") }
 
   it "creates an audit log entry" do
-    event = AssetCreated.new(asset_id: asset.id, symbol: asset.symbol, admin_id: admin.id)
+    event = MarketData::AssetCreated.new(asset_id: asset.id, symbol: asset.symbol, admin_id: admin.id)
 
     expect {
       described_class.call(event)
@@ -19,7 +19,7 @@ RSpec.describe CreateAuditLogOnAssetCreation do
   end
 
   it "does nothing when asset not found" do
-    event = AssetCreated.new(asset_id: -1, symbol: "GONE", admin_id: admin.id)
+    event = MarketData::AssetCreated.new(asset_id: -1, symbol: "GONE", admin_id: admin.id)
 
     expect {
       described_class.call(event)

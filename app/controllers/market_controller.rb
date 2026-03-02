@@ -2,7 +2,7 @@ class MarketController < AuthenticatedController
   include Pagy::Backend
 
   def index
-    result = Market::ExploreAssets.call(params: filter_params)
+    result = MarketData::ExploreAssets.call(params: filter_params)
 
     case result
     in Dry::Monads::Success(data)
@@ -16,7 +16,7 @@ class MarketController < AuthenticatedController
   end
 
   def show
-    result = Market::LoadAssetDetail.call(symbol: params[:symbol])
+    result = MarketData::LoadAssetDetail.call(symbol: params[:symbol])
 
     case result
     in Dry::Monads::Success(data)

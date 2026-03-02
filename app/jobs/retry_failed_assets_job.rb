@@ -66,12 +66,12 @@ class RetryFailedAssetsJob < ApplicationJob
     case asset.asset_type
     when "stock", "index", "etf"
       GatewayChain.new(
-        gateways: [ PolygonGateway.new, YahooFinanceGateway.new ]
+        gateways: [ MarketData::PolygonGateway.new, MarketData::YahooFinanceGateway.new ]
       )
     when "crypto"
-      GatewayChain.new(gateways: [ CoingeckoGateway.new ])
+      GatewayChain.new(gateways: [ MarketData::CoingeckoGateway.new ])
     else
-      GatewayChain.new(gateways: [ YahooFinanceGateway.new ])
+      GatewayChain.new(gateways: [ MarketData::YahooFinanceGateway.new ])
     end
   end
 end

@@ -2,7 +2,7 @@
 <% if @has_fundamentals %>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
     <% summary_metrics_for(@asset).each do |key| %>
-      <% defn = MetricDefinitions.find(key) rescue nil %>
+      <% defn = MarketData::MetricDefinitions.find(key) rescue nil %>
       <% next unless defn %>
       <% value = resolve_metric_value(@presenter, key) %>
       <%= render "market/metric_card", definition: defn, value: value %>

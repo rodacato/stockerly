@@ -17,7 +17,7 @@ class SyncStatementsJob < ApplicationJob
     return unless asset&.active?
     return unless asset.asset_type_stock? || asset.asset_type_etf?
 
-    gateway = AlphaVantageGateway.new
+    gateway = MarketData::AlphaVantageGateway.new
     synced_types = []
 
     STATEMENT_TYPES.each do |function|
@@ -37,7 +37,7 @@ class SyncStatementsJob < ApplicationJob
 
     return if synced_types.empty?
 
-    EventBus.publish(FinancialStatementsSynced.new(
+    EventBus.publish(MarketData::FinancialStatementsSynced.new(
       asset_id: asset.id,
       symbol: asset.symbol,
       statement_types: synced_types

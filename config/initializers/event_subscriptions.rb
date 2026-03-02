@@ -12,16 +12,16 @@ Rails.application.config.after_initialize do
   # Administration
   EventBus.subscribe(Identity::UserSuspended, CreateAuditLogOnSuspension)
   EventBus.subscribe(Identity::UserSuspended, SendSuspensionEmail)
-  EventBus.subscribe(AssetCreated, CreateAuditLogOnAssetCreation)
-  EventBus.subscribe(AssetCreated, SyncAssetOnCreation)
-  EventBus.subscribe(AssetCreated, BackfillHistoryOnAssetCreation)
+  EventBus.subscribe(MarketData::AssetCreated, CreateAuditLogOnAssetCreation)
+  EventBus.subscribe(MarketData::AssetCreated, MarketData::SyncAssetOnCreation)
+  EventBus.subscribe(MarketData::AssetCreated, MarketData::BackfillHistoryOnAssetCreation)
 
   # Market Data
-  EventBus.subscribe(AssetPriceUpdated, Alerts::EvaluateAlertsOnPriceUpdate)
-  EventBus.subscribe(AssetPriceUpdated, BroadcastPriceUpdate)
-  EventBus.subscribe(AssetPriceUpdated, RecordPriceHistory)
-  EventBus.subscribe(AssetPriceUpdated, RecalculateTrendScoreOnPriceUpdate)
-  EventBus.subscribe(AllGatewaysFailed, LogAllGatewaysFailure)
+  EventBus.subscribe(MarketData::AssetPriceUpdated, Alerts::EvaluateAlertsOnPriceUpdate)
+  EventBus.subscribe(MarketData::AssetPriceUpdated, MarketData::BroadcastPriceUpdate)
+  EventBus.subscribe(MarketData::AssetPriceUpdated, MarketData::RecordPriceHistory)
+  EventBus.subscribe(MarketData::AssetPriceUpdated, MarketData::RecalculateTrendScoreOnPriceUpdate)
+  EventBus.subscribe(MarketData::AllGatewaysFailed, MarketData::LogAllGatewaysFailure)
 
   # Alerts
   EventBus.subscribe(Alerts::AlertRuleTriggered, Alerts::CreateAlertEventOnTrigger)
@@ -37,31 +37,31 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(Trading::TradeDeleted, Trading::LogTradeDelete)
 
   # News
-  EventBus.subscribe(NewsSynced, LogNewsSync)
+  EventBus.subscribe(MarketData::NewsSynced, MarketData::LogNewsSync)
 
   # Earnings
-  EventBus.subscribe(EarningsSynced, LogEarningsSync)
+  EventBus.subscribe(MarketData::EarningsSynced, MarketData::LogEarningsSync)
 
   # Market Indices
-  EventBus.subscribe(MarketIndicesUpdated, LogMarketIndicesUpdate)
+  EventBus.subscribe(MarketData::MarketIndicesUpdated, MarketData::LogMarketIndicesUpdate)
 
   # Sentiment
-  EventBus.subscribe(FearGreedUpdated, LogFearGreedUpdate)
-  EventBus.subscribe(FearGreedUpdated, Alerts::EvaluateSentimentAlerts)
+  EventBus.subscribe(MarketData::FearGreedUpdated, MarketData::LogFearGreedUpdate)
+  EventBus.subscribe(MarketData::FearGreedUpdated, Alerts::EvaluateSentimentAlerts)
 
   # Dividends
-  EventBus.subscribe(DividendsSynced, LogDividendsSync)
+  EventBus.subscribe(MarketData::DividendsSynced, MarketData::LogDividendsSync)
 
   # Stock Splits
   EventBus.subscribe(Trading::SplitDetected, Trading::AdjustPositionsOnSplit)
 
   # CETES
-  EventBus.subscribe(CetesSynced, LogCetesSync)
+  EventBus.subscribe(MarketData::CetesSynced, MarketData::LogCetesSync)
 
   # Fundamentals
-  EventBus.subscribe(AssetFundamentalsUpdated, LogFundamentalsUpdate)
-  EventBus.subscribe(AssetFundamentalsUpdated, BroadcastFundamentalsUpdate)
-  EventBus.subscribe(FinancialStatementsSynced, RecalculateFundamentalsOnStatementsSynced)
+  EventBus.subscribe(MarketData::AssetFundamentalsUpdated, MarketData::LogFundamentalsUpdate)
+  EventBus.subscribe(MarketData::AssetFundamentalsUpdated, MarketData::BroadcastFundamentalsUpdate)
+  EventBus.subscribe(MarketData::FinancialStatementsSynced, MarketData::RecalculateFundamentalsOnStatementsSynced)
 
   # Integrations
   EventBus.subscribe(IntegrationConnected, LogIntegrationConnected)
