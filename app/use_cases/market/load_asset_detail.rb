@@ -25,6 +25,7 @@ module Market
       end
 
       earnings_events = asset.asset_type_stock? ? asset.earnings_events.order(report_date: :desc).limit(8) : []
+      dividends = asset.asset_type_stock? || asset.asset_type_etf? ? asset.dividends.order(ex_date: :desc).limit(12) : []
 
       Success({
         asset: asset,
@@ -32,7 +33,8 @@ module Market
         has_fundamentals: fundamental.present?,
         price_histories: price_histories,
         pe_history: pe_history,
-        earnings_events: earnings_events
+        earnings_events: earnings_events,
+        dividends: dividends
       })
     end
 
