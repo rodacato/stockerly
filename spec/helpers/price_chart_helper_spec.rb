@@ -55,5 +55,37 @@ RSpec.describe PriceChartHelper do
       expect(result).to be_a(Hash)
       expect(result[:points]).to be_present
     end
+
+    it "includes volume_bars when volume data exists" do
+      histories = [
+        build(:asset_price_history, asset: asset, date: 1.day.ago.to_date, close: 100.0, volume: 1_000_000),
+        build(:asset_price_history, asset: asset, date: Date.current, close: 105.0, volume: 2_000_000)
+      ]
+      result = price_chart_data(histories)
+
+      expect(result[:volume_bars]).to be_an(Array)
+      expect(result[:volume_bars].size).to eq(2)
+      expect(result[:volume_bars].last[:height]).to be > result[:volume_bars].first[:height]
+    end
+
+    it "returns empty volume_bars when all volumes are zero" do
+      histories = [
+        build(:asset_price_history, asset: asset, date: 1.day.ago.to_date, close: 100.0, volume: 0),
+        build(:asset_price_history, asset: asset, date: Date.current, close: 105.0, volume: 0)
+      ]
+      result = price_chart_data(histories)
+
+      expect(result[:volume_bars]).to be_empty
+    end
+
+    it "returns empty volume_bars when volume is nil" do
+      histories = [
+        build(:asset_price_history, asset: asset, date: 1.day.ago.to_date, close: 100.0, volume: nil),
+        build(:asset_price_history, asset: asset, date: Date.current, close: 105.0, volume: nil)
+      ]
+      result = price_chart_data(histories)
+
+      expect(result[:volume_bars]).to be_empty
+    end
   end
 end

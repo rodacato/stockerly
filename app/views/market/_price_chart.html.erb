@@ -19,6 +19,14 @@
         <line x1="0" y1="80"  x2="500" y2="80"  stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
         <line x1="0" y1="120" x2="500" y2="120" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
 
+        <%# Volume bars — rendered first so they appear behind the price line %>
+        <% if chart[:volume_bars].present? %>
+          <% chart[:volume_bars].each do |bar| %>
+            <rect x="<%= bar[:x] %>" y="<%= bar[:y] %>" width="<%= bar[:width] %>" height="<%= bar[:height] %>"
+                  fill="<%= chart[:color] %>" opacity="0.15" rx="0.5"/>
+          <% end %>
+        <% end %>
+
         <%# Area fill %>
         <polygon points="<%= chart[:area] %>"
                  fill="<%= chart[:fill_color] %>" opacity="0.1"/>
