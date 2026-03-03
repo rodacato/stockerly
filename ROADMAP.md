@@ -1,8 +1,8 @@
 # Stockerly — Roadmap
 
 > **Fecha:** 2026-03-03
-> **Estado actual:** ~1882 specs, Phase 19 complete
-> **Siguiente:** Phase 20 — Provider Upgrade & Production Readiness
+> **Estado actual:** ~1898 specs, Phase 20.1 complete
+> **Siguiente:** Phase 20.2 — Monitoring Enhancements
 
 ---
 
@@ -52,6 +52,8 @@
 | **17**   | Financial Domain Depth               | 1796  | 121-129 |
 | **18**   | Analytics Depth & Market Intelligence | 1841  | 130-138 |
 | **19**   | Loading States & UX Polish             | 1882  | 139-142 |
+| **20.0** | FMP as Fundamentals Fallback           | 1892  | 143-144 |
+| **20.1** | PWA Support                            | 1898  | 145-146 |
 
 ### Phase 9 Summary (990 specs, 20 commits)
 
@@ -101,7 +103,15 @@
 
 **Skeleton Loader:** Reusable `_skeleton.html.erb` component (text, card, stat_card, table_row variants) with CSS shimmer animation, `progress_bar_controller.js` Stimulus controller for Turbo page transitions. **Lazy Tabs:** Turbo Frame `loading="lazy"` on Earnings and Statements tabs in asset detail page, separate controller endpoints rendering without layout. **Empty States:** Standardized all empty states across portfolio, alerts, earnings, market views to reusable `_empty_state.html.erb` component (icon, title, description, optional CTA). **Dashboard Lazy Loading:** News feed and trending sidebar extracted to independent Turbo Frame endpoints (`/dashboard/news_feed`, `/dashboard/trending`) with skeleton placeholders, reducing initial dashboard payload.
 
-### Key Architecture Decisions (Phases 9-19)
+### Phase 20.0 Summary (~1892 specs, 2 commits)
+
+**FMP Fundamentals Fallback:** `FmpGateway#fetch_overview` maps `/api/v3/profile/{symbol}` to Alpha Vantage schema (`companyName`→`name`, `mktCap`→`market_cap`, `pe`→`pe_ratio`, `lastDiv`→`dividend_per_share`, `range`→52-week high/low, `dcf`→`analyst_target_price`). `GatewayChain#fetch_overview` iterates gateways with circuit breaker support (same pattern as `fetch_price`). `SyncFundamentalJob` refactored to use chain: Alpha Vantage primary (25/day) → FMP fallback (250/day). 10x budget increase for fundamentals sync.
+
+### Phase 20.1 Summary (~1898 specs, 2 commits)
+
+**PWA Support:** `manifest.json` (standalone display, `#004a99` theme, SVG + PNG icons), service worker with network-first navigation (offline fallback page), cache-first Google Fonts, stale-while-revalidate for static assets (CSS/JS/images). Pre-caches offline page and icons on install. Old cache cleanup on activate. Service worker registration in `application.js`. Layout updated with `<link rel="manifest">`, `<meta name="theme-color">`, and `apple-mobile-web-app-status-bar-style`.
+
+### Key Architecture Decisions (Phases 9-20)
 
 | Decision | Resolution |
 |----------|-----------|
@@ -171,13 +181,18 @@
 | Turbo Frame lazy loading | `loading="lazy"` with skeleton placeholders — IntersectionObserver defers fetch |
 | Dashboard lazy sections | News feed + trending as separate endpoints, reduces initial payload |
 | Error tracking | Honeybadger (Rails-first, 15-day retention on free tier) over Sentry/Bugsnag |
+| FMP overview mapping | Map FMP camelCase to Alpha Vantage schema — GatewayChain transparent fallback |
+| Fundamentals chain | Alpha Vantage primary → FMP fallback via GatewayChain (same pattern as fetch_price) |
+| PWA display mode | `standalone` — feels like native app, no browser chrome |
+| Service worker strategy | Network-first navigation (offline fallback), stale-while-revalidate for assets, cache-first for fonts |
+| PWA icons | SVG (any size) + PNG 192×512 — covers all platforms |
 
 ---
 
-## Upcoming Phases (20-22)
+## Upcoming Phases (20.2-22)
 
 > **Objetivo:** Production readiness, analytics depth, AI intelligence
-> **Note:** Phase 19 completed 2026-03-03 (Loading States & UX Polish). Honeybadger error tracking added ahead of schedule (originally Phase 20.2).
+> **Note:** Phase 20.0 (FMP Fundamentals Fallback) and 20.1 (PWA Support) completed 2026-03-03. Honeybadger error tracking added ahead of schedule.
 
 ---
 
@@ -186,21 +201,20 @@
 > **Theme:** "Better data, fewer limits, production-ready"
 > **Owner:** Data Engineer + DevOps Engineer
 > **Estimated specs:** ~22
-> **Rationale:** FMP gateway already exists (Phase 17) — only needs wiring as fallback. Sentry is critical for production debugging. PWA enables mobile installation.
 
-### 20.0 — FMP as Fundamentals Fallback
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 143 | Extend FmpGateway with company profile and fundamentals | Add `fetch_profile`, `fetch_fundamentals` to existing gateway | +6 |
-| 144 | Add FMP as fallback in GatewayChain for fundamentals | Chain config, adaptive scheduling, event on fallback trigger | +4 |
-
-### 20.1 — PWA Support
+### ~~20.0 — FMP as Fundamentals Fallback~~ (Done)
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 145 | Add PWA manifest and service worker for installability | `public/manifest.json`, service worker registration, icons | +3 |
-| 146 | Add offline fallback page and cache strategy | Service worker cache, offline view, app shell caching | +3 |
+| ~~143~~ | ~~Extend FmpGateway with company profile and fundamentals~~ | ~~Add `fetch_overview` to existing gateway~~ | ~~+10~~ |
+| ~~144~~ | ~~Add FMP as fallback in GatewayChain for fundamentals~~ | ~~Chain config, circuit breakers, event source tracking~~ | ~~+0~~ |
+
+### ~~20.1 — PWA Support~~ (Done)
+
+| # | Commit | Scope | Specs |
+|---|--------|-------|-------|
+| ~~145~~ | ~~Add PWA manifest, service worker, and offline page~~ | ~~manifest.json, service worker, icons, offline.html~~ | ~~+4~~ |
+| ~~146~~ | ~~Add cache strategy for fonts and stale-while-revalidate~~ | ~~Google Fonts cache, stale-while-revalidate for assets~~ | ~~+2~~ |
 
 ### 20.2 — Monitoring Enhancements
 
@@ -330,10 +344,12 @@ Phase 22 (LLM Intelligence) ────────► AI insights (requires Sh
 | ~~17~~ | ~~Financial Domain~~ | ~~9~~ | ~~75~~ | ~~1796~~ |
 | ~~18~~ | ~~Analytics Depth~~ | ~~9~~ | ~~45~~ | ~~1841~~ |
 | ~~19~~ | ~~UX Polish~~ | ~~4~~ | ~~41~~ | ~~1882~~ |
-| 20 | Production Readiness | 5 | ~17 | ~1899 |
-| 21 | Smart Analytics | 4 | ~20 | ~1919 |
-| 22 | LLM Intelligence | 12 | ~65 | ~1984 |
-| | **Total Remaining** | **~21** | **~102** | **~1984** |
+| ~~20.0~~ | ~~FMP Fundamentals Fallback~~ | ~~2~~ | ~~10~~ | ~~1892~~ |
+| ~~20.1~~ | ~~PWA Support~~ | ~~2~~ | ~~6~~ | ~~1898~~ |
+| 20.2 | Monitoring Enhancements | 1 | ~4 | ~1902 |
+| 21 | Smart Analytics | 4 | ~20 | ~1922 |
+| 22 | LLM Intelligence | 12 | ~65 | ~1987 |
+| | **Total Remaining** | **~17** | **~89** | **~1987** |
 
 ### External Dependencies
 
