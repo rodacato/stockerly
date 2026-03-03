@@ -26,7 +26,6 @@ class MarketController < AuthenticatedController
       @yield_data = data[:yield_data]
       @price_histories = data[:price_histories] || []
       @pe_history = data[:pe_history]
-      @earnings_events = data[:earnings_events] || []
       @dividends = data[:dividends] || []
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
 
@@ -34,6 +33,17 @@ class MarketController < AuthenticatedController
     in Dry::Monads::Failure[ :not_found, _ ]
       redirect_to market_path, alert: "Asset not found"
     end
+  end
+
+  def earnings_tab
+    @asset = Asset.find_by!(symbol: params[:symbol].upcase)
+    @earnings_events = @asset.earnings_events.order(report_date: :desc).limit(8)
+    render layout: false
+  end
+
+  def statements_tab
+    @asset = Asset.find_by!(symbol: params[:symbol].upcase)
+    render layout: false
   end
 
   private

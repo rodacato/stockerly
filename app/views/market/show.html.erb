@@ -56,10 +56,14 @@
         <%= render "market/dividend_history" %>
       </div>
       <div data-tabs-target="panel" class="hidden">
-        <%= render "market/earnings_tab" %>
+        <%= turbo_frame_tag "asset_earnings_tab", src: market_asset_earnings_tab_path(@asset.symbol), loading: "lazy" do %>
+          <%= render "components/skeleton", type: "text", count: 2 %>
+        <% end %>
       </div>
       <div data-tabs-target="panel" class="hidden">
-        <%= render "market/statements_tab" %>
+        <%= turbo_frame_tag "asset_statements_tab", src: market_asset_statements_tab_path(@asset.symbol), loading: "lazy" do %>
+          <%= render "components/skeleton", type: "table_row", count: 5 %>
+        <% end %>
       </div>
     <% end %>
   </div>

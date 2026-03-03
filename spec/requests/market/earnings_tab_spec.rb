@@ -22,8 +22,8 @@ RSpec.describe "Market asset earnings tab", type: :request do
         expect(response.body).to include("Earnings")
       end
 
-      it "shows earnings table with beat/miss badges" do
-        get market_asset_path(asset.symbol)
+      it "shows earnings table with beat/miss badges via lazy tab" do
+        get market_asset_earnings_tab_path(asset.symbol)
 
         expect(response.body).to include("EPS Est.")
         expect(response.body).to include("EPS Actual")
@@ -33,8 +33,8 @@ RSpec.describe "Market asset earnings tab", type: :request do
     end
 
     context "without earnings data" do
-      it "shows empty state message" do
-        get market_asset_path(asset.symbol)
+      it "shows empty state message via lazy tab" do
+        get market_asset_earnings_tab_path(asset.symbol)
 
         expect(response.body).to include("No earnings data available")
       end

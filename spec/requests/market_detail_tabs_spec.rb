@@ -39,14 +39,14 @@ RSpec.describe "Market Asset Detail Tabs", type: :request do
     end
   end
 
-  describe "statements tab" do
-    it "renders financial statement data when available" do
+  describe "statements tab (lazy-loaded)" do
+    it "renders financial statement data via lazy tab endpoint" do
       create(:financial_statement, asset: asset,
         statement_type: :income_statement, period_type: :annual,
         fiscal_date_ending: Date.new(2024, 9, 28), fiscal_year: 2024,
         data: { "totalRevenue" => "394328000000", "netIncome" => "97000000000" })
 
-      get market_asset_path(asset.symbol)
+      get market_asset_statements_tab_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Income Statement")
@@ -56,9 +56,7 @@ RSpec.describe "Market Asset Detail Tabs", type: :request do
     end
 
     it "shows empty state when no statements exist" do
-      create(:asset_fundamental, asset: asset)
-
-      get market_asset_path(asset.symbol)
+      get market_asset_statements_tab_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("No financial statements")
