@@ -1,12 +1,12 @@
 # Stockerly — Roadmap
 
-> **Fecha:** 2026-03-02
-> **Estado actual:** ~1841 specs, Phase 18 complete
-> **Siguiente:** Phase 19 — Loading States & UX Polish
+> **Fecha:** 2026-03-03
+> **Estado actual:** ~1882 specs, Phase 19 complete
+> **Siguiente:** Phase 20 — Provider Upgrade & Production Readiness
 
 ---
 
-## Completed Phases (0-18) — ~1841 specs
+## Completed Phases (0-19) — ~1882 specs
 
 | Fase     | Nombre                              | Specs | Commits |
 | -------- | ----------------------------------- | ----- | ------- |
@@ -51,6 +51,7 @@
 | **16**   | Production Hardening & Security      | 1721  | 117-120 |
 | **17**   | Financial Domain Depth               | 1796  | 121-129 |
 | **18**   | Analytics Depth & Market Intelligence | 1841  | 130-138 |
+| **19**   | Loading States & UX Polish             | 1882  | 139-142 |
 
 ### Phase 9 Summary (990 specs, 20 commits)
 
@@ -96,7 +97,11 @@
 
 **Risk Metrics:** `PortfolioRiskCalculator` domain service (annualized volatility σ×√252, Sharpe ratio vs CETES 28D yield, max drawdown peak-to-trough), `RiskMetrics` Dry::Struct, 31-snapshot minimum guard with "Not enough data" empty state, 3-column display on portfolio page. **Allocation Enrichment:** `allocation_by_asset_type` method on Portfolio model, tabbed sidebar view (By Sector / By Type) reusing `_donut_chart.html.erb`. **Asset Detail Enrichment:** Earnings tab with EPS bar chart and beat/miss badges (last 8 quarters), analyst target price card with upside/downside % and 52-week range bar, volume bars on SVG price chart (30% height, semi-transparent). **Market Intelligence:** Market indices card showing symbol, value, change% (color-coded), mini sparklines from last 5 history points (replaces simple open/closed status), Fear & Greed sub-indicators collapsible section (7 CNN components with progress bars), dividend payment history table with annual summary cards. **Zero new migrations** — all data already existed in the schema.
 
-### Key Architecture Decisions (Phases 9-18)
+### Phase 19 Summary (~1882 specs, 4 commits)
+
+**Skeleton Loader:** Reusable `_skeleton.html.erb` component (text, card, stat_card, table_row variants) with CSS shimmer animation, `progress_bar_controller.js` Stimulus controller for Turbo page transitions. **Lazy Tabs:** Turbo Frame `loading="lazy"` on Earnings and Statements tabs in asset detail page, separate controller endpoints rendering without layout. **Empty States:** Standardized all empty states across portfolio, alerts, earnings, market views to reusable `_empty_state.html.erb` component (icon, title, description, optional CTA). **Dashboard Lazy Loading:** News feed and trending sidebar extracted to independent Turbo Frame endpoints (`/dashboard/news_feed`, `/dashboard/trending`) with skeleton placeholders, reducing initial dashboard payload.
+
+### Key Architecture Decisions (Phases 9-19)
 
 | Decision | Resolution |
 |----------|-----------|
@@ -163,48 +168,16 @@
 | Volume bars scaling | Relative (% of max volume) — keeps SVG proportional |
 | Index sparklines | Last 5 data points from `market_index_histories` — lightweight |
 | F&G sub-indicators | 7 CNN components already stored — pure view work |
+| Turbo Frame lazy loading | `loading="lazy"` with skeleton placeholders — IntersectionObserver defers fetch |
+| Dashboard lazy sections | News feed + trending as separate endpoints, reduces initial payload |
+| Error tracking | Honeybadger (Rails-first, 15-day retention on free tier) over Sentry/Bugsnag |
 
 ---
 
-## Upcoming Phases (19-22)
+## Upcoming Phases (20-22)
 
-> **Objetivo:** UX polish, production readiness, analytics depth, AI intelligence
-> **Note:** Phase 18 completed 2026-03-02 (Analytics Depth & Market Intelligence). Phases reorganized per expert panel recommendation: UX polish → production readiness → analytics → LLM.
-
----
-
-## Phase 19 — Loading States & UX Polish
-
-> **Theme:** "Feel like a fast, polished product"
-> **Owner:** Hotwire Engineer + UX Designer
-> **Estimated specs:** ~15
-> **Rationale:** All data loads server-side in one blocking request (dashboard, market detail, portfolio). No skeleton screens, no loading indicators, no lazy-loaded tabs. Turbo Frames exist but none use `loading="lazy"`. Empty states mix component-based and inline text — inconsistent.
-
-### 19.0 — Skeleton Loader Component
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 139 | Add skeleton loader component and page transition indicator | `_skeleton.html.erb` partial, Turbo `turbo:before-fetch` Stimulus controller for top progress bar | +4 |
-
-### 19.1 — Lazy-Loaded Asset Detail Tabs
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 140 | Add Turbo Frame lazy loading for Earnings and Statements tabs | `loading="lazy"` on non-critical tab frames, skeleton placeholder while loading, new controller endpoint for tab content | +4 |
-
-### 19.2 — Empty State Consistency
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 141 | Standardize all empty states to use component partial | Replace inline "No X yet" messages with `_empty_state.html.erb` component across portfolio, alerts, earnings views | +3 |
-
-### 19.3 — Dashboard Section Loading
-
-| # | Commit | Scope | Specs |
-|---|--------|-------|-------|
-| 142 | Add Turbo Frame deferred loading for news feed and trending sidebar | Separate dashboard sections into independently-loadable Turbo Frames with skeleton placeholders | +4 |
-
-**Phase 19 Total: ~15 specs, ~4 commits**
+> **Objetivo:** Production readiness, analytics depth, AI intelligence
+> **Note:** Phase 19 completed 2026-03-03 (Loading States & UX Polish). Honeybadger error tracking added ahead of schedule (originally Phase 20.2).
 
 ---
 
@@ -229,14 +202,15 @@
 | 145 | Add PWA manifest and service worker for installability | `public/manifest.json`, service worker registration, icons | +3 |
 | 146 | Add offline fallback page and cache strategy | Service worker cache, offline view, app shell caching | +3 |
 
-### 20.2 — Error Tracking & Monitoring
+### 20.2 — Monitoring Enhancements
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 147 | Add Sentry integration for error tracking | Gem, initializer, production config, user context | +2 |
-| 148 | Add health dashboard improvements (job queue depth, cache hit rate) | Admin view, domain service, Solid Queue metrics | +4 |
+| 147 | Add health dashboard improvements (job queue depth, cache hit rate) | Admin view, domain service, Solid Queue metrics | +4 |
 
-**Phase 20 Total: ~22 specs, ~6 commits**
+> **Note:** Error tracking (Honeybadger) already integrated ahead of Phase 20. See commit `364a161`.
+
+**Phase 20 Total: ~17 specs, ~5 commits**
 
 ---
 
@@ -336,9 +310,9 @@ Phase 17 (Financial Domain) ─────────► User value (benchmark
     │
 Phase 18 (Analytics Depth) ──────────► Data depth (risk, earnings, volume, indices) ✅
     │
-Phase 19 (UX Polish) ───────────────► Loading states, lazy tabs, empty state consistency ← NEXT
+Phase 19 (UX Polish) ───────────────► Loading states, lazy tabs, empty state consistency ✅
     │
-Phase 20 (Production Readiness) ────► FMP fallback, PWA, Sentry, health dashboard
+Phase 20 (Production Readiness) ────► FMP fallback, PWA, health dashboard ← NEXT
     │
 Phase 21 (Smart Analytics) ─────────► Concentration alerts, enhanced TrendScore
     │
@@ -355,11 +329,11 @@ Phase 22 (LLM Intelligence) ────────► AI insights (requires Sh
 | ~~16~~ | ~~Production Hardening~~ | ~~4~~ | ~~24~~ | ~~1721~~ |
 | ~~17~~ | ~~Financial Domain~~ | ~~9~~ | ~~75~~ | ~~1796~~ |
 | ~~18~~ | ~~Analytics Depth~~ | ~~9~~ | ~~45~~ | ~~1841~~ |
-| 19 | UX Polish | 4 | ~15 | ~1856 |
-| 20 | Production Readiness | 6 | ~22 | ~1878 |
-| 21 | Smart Analytics | 4 | ~20 | ~1898 |
-| 22 | LLM Intelligence | 12 | ~65 | ~1963 |
-| | **Total Remaining** | **~26** | **~122** | **~1963** |
+| ~~19~~ | ~~UX Polish~~ | ~~4~~ | ~~41~~ | ~~1882~~ |
+| 20 | Production Readiness | 5 | ~17 | ~1899 |
+| 21 | Smart Analytics | 4 | ~20 | ~1919 |
+| 22 | LLM Intelligence | 12 | ~65 | ~1984 |
+| | **Total Remaining** | **~21** | **~102** | **~1984** |
 
 ### External Dependencies
 
