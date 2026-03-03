@@ -38,6 +38,37 @@ class GatewayChain
     Failure([ :all_gateways_failed, "All gateways failed for #{symbol}", attempted ])
   end
 
+  def fetch_overview(symbol)
+    attempted = []
+
+    @gateways.each do |gateway|
+      next unless gateway.respond_to?(:fetch_overview)
+
+      breaker = @circuit_breakers[gateway.class.name]
+
+      if breaker && breaker.state == :open
+        attempted << gateway.class.name
+        next
+      end
+
+      result = if breaker
+                 breaker.call { gateway.fetch_overview(symbol) }
+      else
+                 gateway.fetch_overview(symbol)
+      end
+
+      if result.success?
+        value = result.value!
+        value[:data_source] = gateway.class.name
+        return Success(value)
+      end
+
+      attempted << gateway.class.name
+    end
+
+    Failure([ :all_gateways_failed, "All gateways failed for #{symbol}", attempted ])
+  end
+
   def fetch_index_quotes
     @gateways.each do |gateway|
       next unless gateway.respond_to?(:fetch_index_quotes)

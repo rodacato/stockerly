@@ -15,8 +15,14 @@ RSpec.describe SyncFundamentalJob, type: :job do
       fundamental = AssetFundamental.last
       expect(fundamental.asset).to eq(asset)
       expect(fundamental.period_label).to eq("OVERVIEW")
-      expect(fundamental.source).to eq("api_overview")
       expect(fundamental.metrics["eps"]).to be_present
+    end
+
+    it "stores data_source from the gateway that succeeded" do
+      described_class.perform_now(asset.id)
+
+      fundamental = AssetFundamental.last
+      expect(fundamental.source).to include("AlphaVantageGateway")
     end
 
     it "updates asset fundamentals_synced_at" do
@@ -64,14 +70,43 @@ RSpec.describe SyncFundamentalJob, type: :job do
       end
     end
 
-    context "when API returns rate limit" do
-      before { stub_alpha_vantage_rate_limited }
-
-      it "logs warning without creating fundamental" do
-        # Need to clear the previous stub first
+    context "when Alpha Vantage is rate limited" do
+      before do
         WebMock.reset!
         stub_alpha_vantage_rate_limited
+      end
 
+      it "falls back to FMP when available" do
+        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/AAPL})
+          .to_return(
+            status: 200,
+            headers: { "Content-Type" => "application/json" },
+            body: [ {
+              symbol: "AAPL", companyName: "Apple Inc.", sector: "Technology",
+              industry: "Consumer Electronics", exchangeShortName: "NASDAQ",
+              currency: "USD", country: "US", mktCap: 3_100_000_000_000,
+              pe: 31.5, eps: 6.42, beta: 1.24, lastDiv: 1.0,
+              range: "164.08-237.49", price: 202.25, dcf: 158.32
+            } ].to_json
+          )
+
+        expect { described_class.perform_now(asset.id) }
+          .to change(AssetFundamental, :count).by(1)
+
+        fundamental = AssetFundamental.last
+        expect(fundamental.source).to include("FmpGateway")
+      end
+    end
+
+    context "when all gateways fail" do
+      before do
+        WebMock.reset!
+        stub_alpha_vantage_rate_limited
+        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/})
+          .to_return(status: 429, body: "Rate limit exceeded")
+      end
+
+      it "logs failure without creating fundamental" do
         expect { described_class.perform_now(asset.id) }
           .not_to change(AssetFundamental, :count)
       end

@@ -9,7 +9,7 @@ RSpec.describe MarketData::Gateways::FmpGateway do
 
   describe "#fetch_overview" do
     let(:profile_response) do
-      [{
+      [ {
         "symbol" => "AAPL",
         "companyName" => "Apple Inc.",
         "description" => "Apple Inc. designs, manufactures...",
@@ -26,7 +26,7 @@ RSpec.describe MarketData::Gateways::FmpGateway do
         "range" => "164.08-237.49",
         "price" => 202.25,
         "dcf" => 158.32
-      }]
+      } ]
     end
 
     context "when FMP returns valid profile data" do

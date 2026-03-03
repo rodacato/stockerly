@@ -1,4 +1,4 @@
-# Syncs fundamental data for a single asset via Alpha Vantage OVERVIEW.
+# Syncs fundamental data for a single asset via GatewayChain (Alpha Vantage → FMP fallback).
 # 1 job = 1 API call (atomic, resilient). Triggered by SyncAllFundamentalsJob.
 class SyncFundamentalJob < ApplicationJob
   include SyncLogging
@@ -10,7 +10,7 @@ class SyncFundamentalJob < ApplicationJob
     return unless asset&.active?
     return unless asset.asset_type_stock? || asset.asset_type_etf?
 
-    result = breaker.call { MarketData::Gateways::AlphaVantageGateway.new.fetch_overview(asset.symbol) }
+    result = fundamentals_chain.fetch_overview(asset.symbol)
 
     if result.success?
       persist(asset, result.value!)
@@ -23,12 +23,14 @@ class SyncFundamentalJob < ApplicationJob
   private
 
   def persist(asset, data)
+    source = data.delete(:data_source) || "unknown"
+
     fundamental = AssetFundamental.find_or_initialize_by(
       asset: asset, period_label: "OVERVIEW"
     )
     fundamental.update!(
       metrics: data,
-      source: "api_overview",
+      source: source,
       calculated_at: Time.current
     )
 
@@ -39,11 +41,20 @@ class SyncFundamentalJob < ApplicationJob
     EventBus.publish(MarketData::Events::AssetFundamentalsUpdated.new(
       asset_id: asset.id,
       symbol: asset.symbol,
-      source: "alpha_vantage_overview"
+      source: source
     ))
   end
 
-  def breaker
-    SyncSingleAssetJob.circuit_breaker_for("alpha_vantage")
+  def fundamentals_chain
+    GatewayChain.new(
+      gateways: [
+        MarketData::Gateways::AlphaVantageGateway.new,
+        MarketData::Gateways::FmpGateway.new
+      ],
+      circuit_breakers: {
+        "MarketData::Gateways::AlphaVantageGateway" => SyncSingleAssetJob.circuit_breaker_for("alpha_vantage"),
+        "MarketData::Gateways::FmpGateway" => SyncSingleAssetJob.circuit_breaker_for("fmp")
+      }
+    )
   end
 end
