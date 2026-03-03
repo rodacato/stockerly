@@ -1,6 +1,7 @@
 <% content_for(:body) do %>
   <%= turbo_stream_from "notifications_#{current_user.id}" if current_user %>
-  <div class="relative flex min-h-screen flex-col bg-slate-50 dark:bg-background-dark">
+  <div data-controller="progress-bar" class="relative flex min-h-screen flex-col bg-slate-50 dark:bg-background-dark">
+    <div data-progress-bar-target="bar" class="progress-bar fixed top-0 left-0 h-[3px] bg-primary z-[60] opacity-0 w-0"></div>
     <%= render "shared/app_navbar" %>
     <%= render "shared/email_verification_banner" %>
     <div id="flash_messages">

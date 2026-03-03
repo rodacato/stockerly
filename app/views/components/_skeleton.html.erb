@@ -1,0 +1,54 @@
+<%# Skeleton Loader — reusable loading placeholder component %>
+<%# Parameters: type (String: "text"|"card"|"stat_card"|"table_row"), count (Integer, default 1) %>
+<% type = local_assigns.fetch(:type, "text") %>
+<% count = local_assigns.fetch(:count, 1) %>
+
+<div aria-hidden="true">
+  <% case type %>
+  <% when "text" %>
+    <% count.times do %>
+      <div class="animate-pulse space-y-3">
+        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full skeleton-shimmer"></div>
+        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-4/5 skeleton-shimmer"></div>
+        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/5 skeleton-shimmer"></div>
+      </div>
+    <% end %>
+
+  <% when "card" %>
+    <% count.times do %>
+      <div class="animate-pulse bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-24 skeleton-shimmer"></div>
+          <div class="h-5 w-5 bg-slate-200 dark:bg-slate-700 rounded skeleton-shimmer"></div>
+        </div>
+        <div class="h-7 bg-slate-200 dark:bg-slate-700 rounded w-32 skeleton-shimmer"></div>
+      </div>
+    <% end %>
+
+  <% when "stat_card" %>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <% 3.times do %>
+        <div class="animate-pulse bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-24 skeleton-shimmer"></div>
+            <div class="h-5 w-5 bg-slate-200 dark:bg-slate-700 rounded skeleton-shimmer"></div>
+          </div>
+          <div class="h-7 bg-slate-200 dark:bg-slate-700 rounded w-32 skeleton-shimmer"></div>
+        </div>
+      <% end %>
+    </div>
+
+  <% when "table_row" %>
+    <% count.times do |i| %>
+      <div class="animate-pulse flex items-center gap-4 py-3 <%= 'border-t border-slate-100 dark:border-slate-800' unless i == 0 %>">
+        <div class="h-8 w-8 bg-slate-200 dark:bg-slate-700 rounded-lg skeleton-shimmer shrink-0"></div>
+        <div class="flex-1 space-y-2">
+          <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-28 skeleton-shimmer"></div>
+          <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-16 skeleton-shimmer"></div>
+        </div>
+        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-20 skeleton-shimmer"></div>
+        <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-16 skeleton-shimmer"></div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
