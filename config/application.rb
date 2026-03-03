@@ -33,21 +33,11 @@ module Stockerly
     config.autoload_paths << Rails.root.join("app/contexts")
     config.autoload_paths << Rails.root.join("app/shared")
 
-    # Zeitwerk collapse: organizational folders within contexts being migrated
-    # retain collapse temporarily; shared infrastructure always collapsed.
-    # Contexts are removed from this list as they adopt explicit submodules.
-    COLLAPSED_CONTEXTS = %w[].freeze
-
+    # Zeitwerk collapse for shared infrastructure only.
+    # Shared classes keep no namespace prefix (CircuitBreaker, EventBus, etc.)
+    # Context subfolders (Events::, Handlers::, Domain::, etc.) are NOT collapsed —
+    # they map to explicit Ruby modules.
     initializer "stockerly.zeitwerk_collapse", before: "zeitwerk.eager_load" do
-      COLLAPSED_CONTEXTS.each do |ctx|
-        base = Rails.root.join("app/contexts/#{ctx}")
-        %w[contracts domain events gateways handlers use_cases].each do |layer|
-          dir = base.join(layer)
-          Rails.autoloaders.main.collapse(dir) if dir.exist?
-        end
-      end
-
-      # Shared infrastructure: no namespace prefix (CircuitBreaker, EventBus, etc.)
       Rails.autoloaders.main.collapse(
         Rails.root.join("app/shared/base"),
         Rails.root.join("app/shared/domain"),

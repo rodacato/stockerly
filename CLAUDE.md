@@ -18,12 +18,12 @@ Read `IDENTITY.md` at the project root — it defines the AI assistant's role as
 # Development server (Rails + Tailwind CSS watch)
 bin/dev
 
-# Run all tests (702 specs)
+# Run all tests (1841 specs)
 bundle exec rspec
 
 # Run single file or line
-bundle exec rspec spec/use_cases/alerts/create_rule_spec.rb
-bundle exec rspec spec/use_cases/alerts/create_rule_spec.rb:15
+bundle exec rspec spec/contexts/alerts/use_cases/create_rule_spec.rb
+bundle exec rspec spec/contexts/alerts/use_cases/create_rule_spec.rb:15
 
 # Linting
 bin/rubocop
@@ -93,12 +93,15 @@ Cross-cutting code with **no namespace change** — available everywhere:
 | `app/shared/events/` | `BaseEvent`, `EventBus` |
 | `app/shared/types/` | `Types` (Dry::Types definitions) |
 
-### Autoloading (Zeitwerk Collapse)
+### Autoloading (Zeitwerk)
 
-Configured in `config/application.rb`. Organizational folders (domain/, events/, handlers/, etc.) are collapsed — they organize for humans but don't add namespace depth:
+Configured in `config/application.rb`. Context subdirectories map to explicit Ruby modules:
 
-- `app/contexts/alerts/domain/alert_evaluator.rb` → `Alerts::AlertEvaluator`
-- `app/contexts/market_data/gateways/polygon_gateway.rb` → `MarketData::PolygonGateway`
+- `app/contexts/alerts/domain/alert_evaluator.rb` → `Alerts::Domain::AlertEvaluator`
+- `app/contexts/market_data/gateways/polygon_gateway.rb` → `MarketData::Gateways::PolygonGateway`
+- `app/contexts/identity/events/user_registered.rb` → `Identity::Events::UserRegistered`
+
+Shared infrastructure uses Zeitwerk collapse — no namespace prefix:
 - `app/shared/domain/circuit_breaker.rb` → `CircuitBreaker` (no prefix)
 
 ### Cross-Context Communication
@@ -107,14 +110,14 @@ Contexts communicate **only via domain events**. No direct imports across contex
 
 ```ruby
 # Market Data publishes → Alerts subscribes
-EventBus.subscribe(MarketData::AssetPriceUpdated, Alerts::EvaluateAlertsOnPriceUpdate)
+EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
 ```
 
 Key cross-context flows:
-- `MarketData::AssetPriceUpdated` → `Alerts::EvaluateAlertsOnPriceUpdate`
-- `MarketData::FearGreedUpdated` → `Alerts::EvaluateSentimentAlerts`
-- `Trading::SplitDetected` → `Trading::AdjustPositionsOnSplit`
-- `Identity::UserRegistered` → `Identity::CreatePortfolioOnRegistration`
+- `MarketData::Events::AssetPriceUpdated` → `Alerts::Handlers::EvaluateAlertsOnPriceUpdate`
+- `MarketData::Events::FearGreedUpdated` → `Alerts::Handlers::EvaluateSentimentAlerts`
+- `Trading::Events::SplitDetected` → `Trading::Handlers::AdjustPositionsOnSplit`
+- `Identity::Events::UserRegistered` → `Identity::Handlers::CreatePortfolioOnRegistration`
 
 ### ApplicationUseCase Base Class
 

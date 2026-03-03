@@ -53,10 +53,10 @@
 
 **Hexagonal / Ports & Adapters:**
 - **Driving Adapters (entrada):** Controllers, Background Jobs, Rake Tasks
-- **Input Ports:** Use Cases (`app/use_cases/`) — orquestan la logica de negocio
-- **Domain Core:** Entities (models), Value Objects (`app/domain/`), Domain Events (`app/events/`), Types
-- **Output Ports:** Gateways (`app/gateways/`), Notifiers (`app/notifiers/`)
-- **Driven Adapters (salida):** ActiveRecord, API Clients (Polygon, CoinGecko), ActionMailer, ActionCable
+- **Input Ports:** Use Cases (`app/contexts/{context}/use_cases/`) — orquestan la logica de negocio
+- **Domain Core:** Entities (models), Domain Services (`app/contexts/{context}/domain/`), Domain Events (`app/contexts/{context}/events/`), Types
+- **Output Ports:** Gateways (`app/contexts/market_data/gateways/`)
+- **Driven Adapters (salida):** ActiveRecord, API Clients (Polygon, CoinGecko, Alpha Vantage, FMP, Yahoo Finance), ActionMailer, ActionCable
 
 > **Nota sobre Repository pattern:** En v1 los Use Cases interactuan con ActiveRecord directamente (driven adapter). El patron Repository se introduce solo si se necesita cambiar de ORM.
 
@@ -68,247 +68,83 @@
 **Principios de implementacion:**
 1. **Controllers delgados** — Solo parsean HTTP, llaman un Use Case y renderizan Turbo response
 2. **Models delgados** — Solo asociaciones, scopes, enums y validaciones de BD (driven adapters)
-3. **Logica en Use Cases** — Toda logica de negocio vive en `app/use_cases/` (input ports)
-4. **Validacion en Contracts** — Toda validacion de input vive en `app/contracts/`
+3. **Logica en Use Cases** — Toda logica de negocio vive en `app/contexts/{context}/use_cases/` (input ports)
+4. **Validacion en Contracts** — Toda validacion de input vive en `app/contexts/{context}/contracts/`
 5. **Domain Events para side effects** — Eventos publicados al final de Use Cases, handlers asincronos
-6. **Types centralizados** — Tipos reutilizables en `app/types/`
+6. **Types centralizados** — Tipos reutilizables en `app/shared/types/`
 7. **Railway-oriented** — Use Cases retornan `Success(value)` o `Failure([:type, error])` (dry-monads)
 8. **Hotwire-first** — Toda interaccion usa Turbo Drive/Frames/Streams + Stimulus
 9. **Dependencias hacia adentro** — Adapters dependen de Ports, nunca al reves
 
 > Ver [COMMANDS.md](COMMANDS.md) para el catalogo completo de Use Cases, Events y Bounded Contexts.
 
-### 2.2 Estructura de Carpetas (Hexagonal)
+### 2.2 Estructura de Carpetas (Hexagonal por Bounded Context)
 
 ```
 app/
-├── use_cases/                      # INPUT PORTS — Logica de negocio
-│   ├── application_use_case.rb     # Base: dry-monads, validate helper, publish helper
-│   ├── sessions/                   # Bounded Context: Identity
-│   │   ├── authenticate.rb
-│   │   └── logout.rb
-│   ├── registrations/
-│   │   └── register_user.rb
-│   ├── dashboard/                  # Bounded Context: Trading
-│   │   └── assemble.rb
-│   ├── portfolio/
-│   │   └── load_overview.rb
-│   ├── positions/
-│   │   ├── open_position.rb
-│   │   └── close_position.rb
-│   ├── watchlist/                  # Bounded Context: Trading (Watchlist)
-│   │   ├── add_asset.rb
-│   │   └── remove_asset.rb
-│   ├── alerts/                     # Bounded Context: Alerts
-│   │   ├── create_rule.rb
-│   │   ├── update_rule.rb
-│   │   ├── toggle_rule.rb
-│   │   ├── destroy_rule.rb
-│   │   └── update_preferences.rb
-│   ├── market/                     # Bounded Context: Market Intelligence
-│   │   ├── explore_assets.rb
-│   │   └── export_csv.rb
-│   ├── earnings/
-│   │   └── list_for_month.rb
-│   ├── trends/
-│   │   └── load_asset_trend.rb
-│   ├── profiles/
-│   │   ├── update_info.rb
-│   │   └── change_password.rb
-│   └── admin/                      # Bounded Context: Administration
-│       ├── assets/
-│       │   ├── create_asset.rb
-│       │   ├── toggle_status.rb
-│       │   └── trigger_sync.rb
-│       ├── users/
-│       │   ├── update_user.rb
-│       │   └── suspend_user.rb
-│       ├── integrations/
-│       │   ├── connect_provider.rb
-│       │   ├── refresh_sync.rb
-│       │   └── disconnect_provider.rb
-│       └── logs/
-│           ├── list_logs.rb
-│           └── export_csv.rb
+├── contexts/                          # BOUNDED CONTEXTS — Logica de negocio por dominio
+│   ├── identity/                      # BC: Identity (auth, profiles, onboarding)
+│   │   ├── contracts/                 # Identity::Contracts::*
+│   │   ├── events/                    # Identity::Events::*
+│   │   ├── handlers/                  # Identity::Handlers::*
+│   │   └── use_cases/                 # Identity::UseCases::*
+│   │
+│   ├── trading/                       # BC: Trading (portfolio, trades, watchlist, dashboard)
+│   │   ├── contracts/                 # Trading::Contracts::*
+│   │   ├── domain/                    # Trading::Domain::* (PortfolioSummary, SplitAdjuster, etc.)
+│   │   ├── events/                    # Trading::Events::*
+│   │   ├── handlers/                  # Trading::Handlers::*
+│   │   └── use_cases/                 # Trading::UseCases::*
+│   │
+│   ├── alerts/                        # BC: Alerts (rules, evaluation, triggering)
+│   │   ├── contracts/                 # Alerts::Contracts::*
+│   │   ├── domain/                    # Alerts::Domain::* (AlertEvaluator)
+│   │   ├── events/                    # Alerts::Events::*
+│   │   ├── handlers/                  # Alerts::Handlers::*
+│   │   └── use_cases/                 # Alerts::UseCases::*
+│   │
+│   ├── market_data/                   # BC: Market Data (prices, gateways, fundamentals, news)
+│   │   ├── domain/                    # MarketData::Domain::* (MarketSentiment, TrendScoreCalculator, etc.)
+│   │   ├── events/                    # MarketData::Events::*
+│   │   ├── gateways/                  # MarketData::Gateways::* (Polygon, CoinGecko, Alpha Vantage, etc.)
+│   │   ├── handlers/                  # MarketData::Handlers::*
+│   │   └── use_cases/                 # MarketData::UseCases::*
+│   │
+│   ├── administration/                # BC: Administration (admin ops, integrations, logs)
+│   │   ├── contracts/                 # Administration::Contracts::*
+│   │   ├── events/                    # Administration::Events::*
+│   │   ├── handlers/                  # Administration::Handlers::*
+│   │   └── use_cases/                 # Administration::UseCases::* (nested: Assets::, Users::, etc.)
+│   │
+│   └── notifications/                 # BC: Notifications (creation, delivery)
+│       ├── events/                    # Notifications::Events::*
+│       ├── handlers/                  # Notifications::Handlers::*
+│       └── use_cases/                 # Notifications::UseCases::*
 │
-├── contracts/                      # INPUT VALIDATION — dry-validation
-│   ├── application_contract.rb
-│   ├── sessions/
-│   ├── registrations/
-│   ├── alerts/
-│   ├── positions/
-│   ├── profiles/
-│   ├── market/
-│   └── admin/
+├── shared/                            # CROSS-CUTTING — Shared infrastructure (no namespace prefix)
+│   ├── base/                          # ApplicationUseCase, ApplicationContract
+│   ├── domain/                        # CircuitBreaker, RateLimiter, GatewayChain, etc.
+│   ├── events/                        # BaseEvent, EventBus
+│   └── types/                         # Types (Dry::Types)
 │
-├── domain/                         # DOMAIN CORE — Value Objects y Services
-│   ├── gain_loss.rb                # Value Object: absolute + percent
-│   ├── alert_condition.rb          # Value Object: condition + threshold
-│   ├── trend_direction.rb          # Value Object: upward/downward
-│   ├── portfolio_summary.rb        # Domain Service: calcula KPIs
-│   └── fx_converter.rb             # Domain Service: conversion de divisas
-│
-├── events/                         # DOMAIN EVENTS
-│   ├── base_event.rb               # Base con dry-struct + occurred_at
-│   ├── event_bus.rb                # Publicador/suscriptor sincronico
-│   ├── user_registered.rb
-│   ├── password_changed.rb
-│   ├── profile_updated.rb
-│   ├── alert_rule_created.rb
-│   ├── alert_rule_triggered.rb
-│   ├── position_opened.rb
-│   ├── position_closed.rb
-│   ├── trade_executed.rb
-│   ├── watchlist_item_added.rb
-│   ├── asset_synced.rb
-│   ├── asset_price_updated.rb
-│   ├── portfolio_snapshot_taken.rb
-│   ├── notification_created.rb
-│   ├── fx_rates_refreshed.rb
-│   ├── csv_exported.rb
-│   ├── user_suspended.rb
-│   └── integration_connected.rb
-│
-├── event_handlers/                 # SIDE EFFECTS — Reaccionan a Domain Events (flat naming)
-│   ├── create_portfolio_on_registration.rb
-│   ├── create_alert_preferences_on_registration.rb
-│   ├── send_welcome_email_on_registration.rb
-│   ├── create_alert_event_on_trigger.rb
-│   ├── create_notification_on_alert.rb
-│   ├── broadcast_notification.rb
-│   ├── evaluate_alerts_on_price_update.rb
-│   ├── broadcast_price_update.rb
-│   ├── recalculate_avg_cost_on_trade.rb
-│   ├── log_trade_activity.rb
-│   ├── invalidate_sessions_on_password_change.rb
-│   ├── send_suspension_email.rb
-│   ├── create_audit_log.rb
-│   └── log_integration_connected.rb
-│
-├── gateways/                       # OUTPUT PORTS — APIs externas
-│   ├── market_data_gateway.rb      # Interface base
-│   ├── polygon_gateway.rb          # Adapter: Polygon.io
-│   ├── coingecko_gateway.rb        # Adapter: CoinGecko
-│   └── fx_rates_gateway.rb         # Adapter: tasas de cambio
-│
-├── notifiers/                      # OUTPUT PORTS — Notificaciones
-│   ├── alert_notifier.rb           # Interface base
-│   ├── email_notifier.rb           # Adapter: ActionMailer
-│   ├── browser_push_notifier.rb    # Adapter: Web Push
-│   └── turbo_stream_notifier.rb    # Adapter: Turbo broadcast
-│
-├── types/                          # DOMAIN CORE — dry-types
-│   └── types.rb
-│
-├── controllers/                    # DRIVING ADAPTERS — HTTP
+├── controllers/                       # DRIVING ADAPTERS — HTTP
 │   ├── application_controller.rb
 │   ├── authenticated_controller.rb
 │   ├── admin/
-│   │   ├── base_controller.rb
-│   │   ├── assets_controller.rb
-│   │   ├── logs_controller.rb
-│   │   └── users_controller.rb
-│   ├── pages_controller.rb
-│   ├── legal_controller.rb
-│   ├── trends_controller.rb
-│   ├── sessions_controller.rb
-│   ├── registrations_controller.rb
-│   ├── password_resets_controller.rb
-│   ├── dashboard_controller.rb
-│   ├── market_controller.rb
-│   ├── portfolio_controller.rb
-│   ├── alerts_controller.rb
-│   ├── earnings_controller.rb
-│   ├── notifications_controller.rb
-│   ├── watchlist_controller.rb
-│   ├── profile_controller.rb
-│   ├── news_controller.rb
-│   ├── onboarding_controller.rb
-│   └── search_controller.rb
+│   │   └── base_controller.rb
+│   └── ...                            # Feature controllers
 │
-├── models/                         # DRIVEN ADAPTERS — ActiveRecord (PostgreSQL)
-│   ├── application_record.rb
-│   ├── user.rb
-│   ├── asset.rb                   # Incluye price_updated_at para tracking de frescura
-│   ├── portfolio.rb
-│   ├── position.rb
-│   ├── trade.rb
-│   ├── portfolio_snapshot.rb
-│   ├── watchlist_item.rb
-│   ├── alert_rule.rb
-│   ├── alert_event.rb
-│   ├── alert_preference.rb
-│   ├── earnings_event.rb
-│   ├── news_article.rb
-│   ├── market_index.rb
-│   ├── trend_score.rb
-│   ├── fx_rate.rb
-│   ├── asset_price_history.rb
-│   ├── notification.rb
-│   ├── audit_log.rb
-│   ├── dividend.rb
-│   ├── dividend_payment.rb
-│   ├── remember_token.rb
-│   ├── system_log.rb
-│   └── integration.rb
-│
-├── views/
-│   ├── layouts/
-│   │   ├── application.html.erb
-│   │   ├── public.html.erb
-│   │   ├── app.html.erb
-│   │   ├── admin.html.erb
-│   │   └── legal.html.erb
-│   ├── shared/
-│   ├── components/
-│   ├── pages/
-│   ├── legal/
-│   ├── trends/
-│   ├── sessions/
-│   ├── registrations/
-│   ├── dashboard/
-│   ├── market/
-│   ├── portfolio/
-│   ├── alerts/
-│   ├── earnings/
-│   ├── profile/
-│   ├── news/
-│   ├── onboarding/
-│   ├── search/
-│   ├── notifications/
-│   └── admin/
-│
-├── javascript/controllers/         # Stimulus controllers
-│   ├── flash_controller.js
-│   ├── dropdown_controller.js
-│   ├── tabs_controller.js
-│   ├── modal_controller.js
-│   ├── toggle_controller.js
-│   ├── search_controller.js
-│   ├── slider_controller.js
-│   ├── scroll_to_controller.js
-│   ├── back_to_top_controller.js
-│   ├── clipboard_controller.js
-│   ├── auto_refresh_controller.js
-│   ├── currency_selector_controller.js
-│   ├── calendar_controller.js
-│   ├── chart_controller.js
-│   ├── notification_controller.js  # Dropdown + badge count de notificaciones
-│   ├── onboarding_controller.js   # Wizard step navigation
-│   ├── global_search_controller.js # Cmd+K shortcut, debounce, keyboard nav
-│   └── infinite_scroll_controller.js # Scroll-to-load-more para news feed
-│
-├── jobs/                           # DRIVING ADAPTERS — Background
-│   ├── sync_assets_job.rb
-│   ├── check_alerts_job.rb
-│   ├── cleanup_logs_job.rb
-│   ├── refresh_fx_rates_job.rb
-│   ├── snapshot_portfolios_job.rb
-│   └── sync_integration_job.rb
-│
+├── models/                            # DRIVEN ADAPTERS — ActiveRecord (PostgreSQL)
+├── views/                             # Presentacion (ERB + Turbo)
+├── javascript/controllers/            # Stimulus controllers
+├── jobs/                              # DRIVING ADAPTERS — Background (Solid Queue)
 └── assets/stylesheets/
     └── application.tailwind.css
 ```
+
+> **Naming convention:** Organizational folders within each context map to Ruby modules.
+> Example: `app/contexts/identity/events/user_registered.rb` → `Identity::Events::UserRegistered`
+> Shared infrastructure folders are collapsed (no namespace): `app/shared/domain/circuit_breaker.rb` → `CircuitBreaker`
 
 ---
 
@@ -319,7 +155,7 @@ app/
 ### 3.1 Base Use Case
 
 ```ruby
-# app/use_cases/application_use_case.rb
+# app/shared/base/application_use_case.rb
 class ApplicationUseCase
   include Dry::Monads[:result, :do]
 
@@ -344,7 +180,7 @@ end
 ### 3.2 Base Contract
 
 ```ruby
-# app/contracts/application_contract.rb
+# app/shared/base/application_contract.rb
 class ApplicationContract < Dry::Validation::Contract
   config.messages.backend = :i18n
 end
@@ -353,7 +189,7 @@ end
 ### 3.3 Types Module
 
 ```ruby
-# app/types/types.rb
+# app/shared/types/types.rb
 module Types
   include Dry.Types()
 
@@ -386,48 +222,56 @@ end
 
 ```ruby
 # 1. Contract (validacion de input)
-# app/contracts/alerts/create_contract.rb
+# app/contexts/alerts/contracts/create_contract.rb
 module Alerts
-  class CreateContract < ApplicationContract
-    params do
-      required(:asset_symbol).filled(:string)
-      required(:condition).filled(:string, included_in?: %w[
-        price_crosses_above price_crosses_below
-        day_change_percent rsi_overbought rsi_oversold
-      ])
-      required(:threshold_value).filled(:decimal)
-    end
+  module Contracts
+    class CreateContract < ApplicationContract
+      params do
+        required(:asset_symbol).filled(:string)
+        required(:condition).filled(:string, included_in?: %w[
+          price_crosses_above price_crosses_below
+          day_change_percent rsi_overbought rsi_oversold
+        ])
+        required(:threshold_value).filled(:decimal)
+      end
 
-    rule(:asset_symbol) do
-      key.failure("must be a valid ticker") unless /\A[A-Z0-9\/\.]{1,12}\z/.match?(value)
+      rule(:asset_symbol) do
+        key.failure("must be a valid ticker") unless /\A[A-Z0-9\/\.]{1,12}\z/.match?(value)
+      end
     end
   end
 end
 
 # 2. Domain Event
-# app/events/alert_rule_created.rb
-class AlertRuleCreated < BaseEvent
-  attribute :user_id, Types::Integer
-  attribute :rule_id, Types::Integer
+# app/contexts/alerts/events/alert_rule_created.rb
+module Alerts
+  module Events
+    class AlertRuleCreated < BaseEvent
+      attribute :user_id, Types::Integer
+      attribute :rule_id, Types::Integer
+    end
+  end
 end
 
 # 3. Use Case (input port — logica de negocio)
-# app/use_cases/alerts/create_rule.rb
+# app/contexts/alerts/use_cases/create_rule.rb
 module Alerts
-  class CreateRule < ApplicationUseCase
-    def call(user:, params:)
-      attrs = yield validate(Alerts::CreateContract, params)
-      rule  = yield persist(user, attrs)
-      _     = yield publish(AlertRuleCreated.new(user_id: user.id, rule_id: rule.id))
+  module UseCases
+    class CreateRule < ApplicationUseCase
+      def call(user:, params:)
+        attrs = yield validate(Alerts::Contracts::CreateContract, params)
+        rule  = yield persist(user, attrs)
+        _     = yield publish(Events::AlertRuleCreated.new(user_id: user.id, rule_id: rule.id))
 
-      Success(rule)
-    end
+        Success(rule)
+      end
 
-    private
+      private
 
-    def persist(user, attrs)
-      rule = user.alert_rules.build(attrs)
-      rule.save ? Success(rule) : Failure([:persistence, rule.errors.full_messages])
+      def persist(user, attrs)
+        rule = user.alert_rules.build(attrs)
+        rule.save ? Success(rule) : Failure([:persistence, rule.errors.full_messages])
+      end
     end
   end
 end
@@ -436,7 +280,7 @@ end
 # app/controllers/alerts_controller.rb
 class AlertsController < AuthenticatedController
   def create
-    case Alerts::CreateRule.call(user: current_user, params: alert_params)
+    case Alerts::UseCases::CreateRule.call(user: current_user, params: alert_params)
     in Success(alert)
       respond_to do |format|
         format.turbo_stream {
@@ -491,7 +335,7 @@ class SessionsController < ApplicationController
   def new; end
 
   def create
-    case Sessions::Authenticate.call(params: session_params)
+    case Identity::UseCases::Login.call(params: session_params)
     in Success(user)
       start_session(user)
       redirect_to dashboard_path, notice: "Welcome back, #{user.full_name}!"
@@ -726,7 +570,7 @@ class MarketController < AuthenticatedController
   include Pagy::Backend
 
   def index
-    case Market::ExploreAssets.call(params: filter_params)
+    case MarketData::UseCases::ExploreAssets.call(params: filter_params)
     in Success(result)
       @pagy, @assets = pagy(result[:assets], items: 10)
       @indices = result[:indices]
@@ -776,27 +620,20 @@ Jobs que se ejecutaran via Solid Queue (ya configurado):
 
 ```
 spec/
-├── use_cases/           # Unit tests para cada Use Case (input ports)
-│   ├── sessions/
-│   ├── registrations/
-│   ├── dashboard/
-│   ├── market/
-│   ├── portfolio/
-│   ├── positions/
-│   ├── watchlist/
-│   ├── alerts/
-│   ├── earnings/
-│   ├── trends/
-│   ├── profiles/
-│   └── admin/
-├── contracts/           # Tests de validacion (contratos de input)
-├── domain/              # Tests de Value Objects y Domain Services
-├── events/              # Tests de Domain Events y Event Handlers
-├── gateways/            # Tests de Gateways (mocked API responses)
-├── models/              # Tests de asociaciones, scopes, enums
-├── requests/            # Integration tests (HTTP + Turbo response)
-├── system/              # E2E tests con Capybara (flujos Turbo)
-└── factories/           # FactoryBot definitions
+├── contexts/             # Mirrors app/contexts/ — organized by bounded context
+│   ├── identity/         # contracts/, events/, handlers/, use_cases/
+│   ├── trading/          # contracts/, domain/, events/, handlers/, use_cases/
+│   ├── alerts/           # contracts/, domain/, events/, handlers/, use_cases/
+│   ├── market_data/      # domain/, events/, gateways/, handlers/, use_cases/
+│   ├── administration/   # contracts/, events/, handlers/, use_cases/
+│   └── notifications/    # handlers/, use_cases/
+├── shared/               # Mirrors app/shared/ — base classes, domain, events
+├── models/               # Validations, enums, associations, scopes
+├── requests/             # HTTP smoke tests, guards, CRUD flows
+├── jobs/                 # Background job behavior
+├── system/               # Capybara end-to-end browser tests
+├── integration/          # Multi-layer flow tests + event subscription wiring
+└── factories/            # FactoryBot definitions
 ```
 
 **Prioridad de testing:**

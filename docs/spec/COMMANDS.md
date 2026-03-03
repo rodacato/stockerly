@@ -80,158 +80,64 @@ HTTP Request
 
 ---
 
-## 2. Estructura de Carpetas
+## 2. Estructura de Carpetas (Hexagonal por Bounded Context)
 
 ```
 app/
-├── contracts/                      # dry-validation: validacion de input
-│   ├── application_contract.rb
-│   ├── sessions/
-│   ├── registrations/
-│   ├── password_resets/
-│   ├── alerts/
-│   ├── positions/
-│   ├── trades/
-│   ├── profiles/
-│   ├── watchlist/
-│   ├── market/
-│   ├── earnings/
-│   ├── news/
-│   ├── search/
-│   ├── onboarding/
-│   └── admin/
+├── contexts/                          # BOUNDED CONTEXTS — Logica de negocio
+│   ├── identity/                      # BC: Identity (auth, profiles, onboarding)
+│   │   ├── contracts/                 # Identity::Contracts::* (LoginContract, RegisterContract, etc.)
+│   │   ├── events/                    # Identity::Events::* (UserRegistered, PasswordChanged, etc.)
+│   │   ├── handlers/                  # Identity::Handlers::* (CreatePortfolioOnRegistration, etc.)
+│   │   └── use_cases/                 # Identity::UseCases::* (Login, Register, ChangePassword, etc.)
+│   │
+│   ├── trading/                       # BC: Trading (portfolio, trades, watchlist, dashboard)
+│   │   ├── contracts/                 # Trading::Contracts::* (ExecuteTradeContract, etc.)
+│   │   ├── domain/                    # Trading::Domain::* (PortfolioSummary, SplitAdjuster, etc.)
+│   │   ├── events/                    # Trading::Events::* (TradeExecuted, SplitDetected, etc.)
+│   │   ├── handlers/                  # Trading::Handlers::* (RecalculateAvgCostOnTrade, etc.)
+│   │   └── use_cases/                 # Trading::UseCases::* (AssembleDashboard, ExecuteTrade, etc.)
+│   │
+│   ├── alerts/                        # BC: Alerts (rules, evaluation, triggering)
+│   │   ├── contracts/                 # Alerts::Contracts::* (CreateContract)
+│   │   ├── domain/                    # Alerts::Domain::* (AlertEvaluator)
+│   │   ├── events/                    # Alerts::Events::* (AlertRuleCreated, AlertRuleTriggered)
+│   │   ├── handlers/                  # Alerts::Handlers::* (EvaluateAlertsOnPriceUpdate, etc.)
+│   │   └── use_cases/                 # Alerts::UseCases::* (CreateRule, EvaluateRules, etc.)
+│   │
+│   ├── market_data/                   # BC: Market Data (prices, gateways, fundamentals, news)
+│   │   ├── domain/                    # MarketData::Domain::* (MarketSentiment, TrendScoreCalculator)
+│   │   ├── events/                    # MarketData::Events::* (AssetPriceUpdated, NewsSynced, etc.)
+│   │   ├── gateways/                  # MarketData::Gateways::* (PolygonGateway, CoinGeckoGateway, etc.)
+│   │   ├── handlers/                  # MarketData::Handlers::* (BroadcastPriceUpdate, etc.)
+│   │   └── use_cases/                 # MarketData::UseCases::* (ExploreAssets, ListEarnings, etc.)
+│   │
+│   ├── administration/                # BC: Administration (admin ops, integrations, logs)
+│   │   ├── contracts/                 # Administration::Contracts::* (nested: Assets::, Integrations::)
+│   │   ├── events/                    # Administration::Events::* (IntegrationConnected, CsvExported)
+│   │   ├── handlers/                  # Administration::Handlers::* (LogIntegrationConnected, etc.)
+│   │   └── use_cases/                 # Administration::UseCases::* (nested: Assets::, Users::, etc.)
+│   │
+│   └── notifications/                 # BC: Notifications (creation, delivery)
+│       ├── events/                    # Notifications::Events::* (NotificationCreated)
+│       ├── handlers/                  # Notifications::Handlers::* (BroadcastNotification)
+│       └── use_cases/                 # Notifications::UseCases::* (CreateNotification, MarkAsRead)
 │
-├── use_cases/                      # Acciones de negocio (input ports)
-│   ├── application_use_case.rb     # Base class con dry-monads
-│   ├── sessions/
-│   │   ├── authenticate.rb
-│   │   └── logout.rb
-│   ├── registrations/
-│   │   └── register_user.rb
-│   ├── password_resets/
-│   │   ├── request_reset.rb
-│   │   └── execute_reset.rb
-│   ├── dashboard/
-│   │   └── assemble.rb
-│   ├── market/
-│   │   ├── explore_assets.rb
-│   │   └── export_csv.rb
-│   ├── portfolio/
-│   │   └── load_overview.rb
-│   ├── positions/
-│   │   ├── open_position.rb
-│   │   └── close_position.rb
-│   ├── trades/
-│   │   └── execute_trade.rb
-│   ├── watchlist/                  # Parte del BC Trading (no BC separado)
-│   │   ├── add_asset.rb
-│   │   └── remove_asset.rb
-│   ├── alerts/
-│   │   ├── create_rule.rb
-│   │   ├── update_rule.rb
-│   │   ├── toggle_rule.rb
-│   │   ├── destroy_rule.rb
-│   │   ├── update_preferences.rb
-│   │   └── evaluate_rules.rb
-│   ├── notifications/
-│   │   ├── create_notification.rb
-│   │   └── mark_as_read.rb
-│   ├── news/
-│   │   └── list_articles.rb
-│   ├── search/
-│   │   └── global_search.rb
-│   ├── onboarding/
-│   │   └── complete_wizard.rb
-│   ├── earnings/
-│   │   └── list_for_month.rb
-│   ├── trends/
-│   │   └── load_asset_trend.rb
-│   ├── profiles/
-│   │   ├── update_info.rb
-│   │   └── change_password.rb
-│   ├── snapshots/
-│   │   └── take_portfolio_snapshot.rb
-│   └── admin/
-│       ├── assets/
-│       │   ├── create_asset.rb
-│       │   ├── update_asset.rb
-│       │   ├── toggle_status.rb
-│       │   └── trigger_sync.rb
-│       ├── users/
-│       │   ├── update_user.rb
-│       │   └── suspend_user.rb
-│       ├── integrations/
-│       │   ├── connect_provider.rb
-│       │   ├── refresh_sync.rb
-│       │   └── disconnect_provider.rb
-│       └── logs/
-│           ├── list_logs.rb
-│           └── export_csv.rb
+├── shared/                            # CROSS-CUTTING — No namespace prefix
+│   ├── base/                          # ApplicationUseCase, ApplicationContract
+│   ├── domain/                        # CircuitBreaker, RateLimiter, GatewayChain, etc.
+│   ├── events/                        # BaseEvent, EventBus
+│   └── types/                         # Types (Dry::Types)
 │
-├── domain/                         # Value Objects y Domain Services
-│   ├── gain_loss.rb                # Value Object: absolute + percent
-│   ├── alert_condition.rb          # Value Object: condition + threshold
-│   ├── trend_direction.rb          # Value Object: upward/downward
-│   ├── portfolio_summary.rb        # Domain Service: calcula KPIs
-│   ├── alert_evaluator.rb          # Domain Service: evalua condiciones de alertas
-│   └── market_sentiment.rb         # Domain Service: calcula sentimiento desde trend scores
-│
-├── events/                         # Domain Events
-│   ├── base_event.rb
-│   ├── event_bus.rb
-│   ├── user_registered.rb
-│   ├── password_changed.rb
-│   ├── profile_updated.rb
-│   ├── alert_rule_created.rb
-│   ├── alert_rule_triggered.rb
-│   ├── position_opened.rb
-│   ├── position_closed.rb
-│   ├── trade_executed.rb
-│   ├── watchlist_item_added.rb
-│   ├── asset_price_updated.rb
-│   ├── portfolio_snapshot_taken.rb
-│   ├── notification_created.rb
-│   ├── fx_rates_refreshed.rb
-│   ├── csv_exported.rb
-│   ├── user_suspended.rb
-│   └── integration_connected.rb
-│
-├── event_handlers/                 # Reaccionan a Domain Events (side effects)
-│   ├── create_portfolio_on_registration.rb
-│   ├── create_alert_preferences_on_registration.rb
-│   ├── send_welcome_email_on_registration.rb
-│   ├── create_alert_event_on_trigger.rb
-│   ├── create_notification_on_alert.rb
-│   ├── broadcast_notification.rb
-│   ├── evaluate_alerts_on_price_update.rb
-│   ├── broadcast_price_update.rb
-│   ├── recalculate_avg_cost_on_trade.rb
-│   ├── log_trade_activity.rb
-│   ├── invalidate_sessions_on_password_change.rb
-│   ├── send_suspension_email.rb
-│   ├── create_audit_log.rb
-│   └── log_integration_connected.rb
-│
-├── gateways/                       # Output Ports para servicios externos
-│   ├── market_data_gateway.rb      # Interface
-│   ├── polygon_gateway.rb          # Adapter: Polygon.io
-│   ├── coingecko_gateway.rb        # Adapter: CoinGecko
-│   └── fx_rates_gateway.rb         # Adapter: tasas de cambio
-│
-├── notifiers/                      # Output Ports para notificaciones
-│   ├── alert_notifier.rb           # Interface base
-│   ├── email_notifier.rb           # Adapter: ActionMailer
-│   ├── browser_push_notifier.rb    # Adapter: Web Push
-│   └── turbo_stream_notifier.rb    # Adapter: Turbo Stream broadcast
-│
-├── types/
-│   └── types.rb                    # dry-types compartidos
-│
-├── models/                         # ActiveRecord Entities (driven adapter)
-├── controllers/                    # Driving Adapters (HTTP)
-├── views/                          # Presentacion
-└── javascript/controllers/         # Stimulus
+├── models/                            # ActiveRecord Entities (driven adapter)
+├── controllers/                       # Driving Adapters (HTTP)
+├── views/                             # Presentacion
+└── javascript/controllers/            # Stimulus
 ```
+
+> **Naming:** Organizational folders map to Ruby modules.
+> `app/contexts/alerts/use_cases/create_rule.rb` → `Alerts::UseCases::CreateRule`
+> Shared folders are collapsed: `app/shared/domain/circuit_breaker.rb` → `CircuitBreaker`
 
 ---
 
@@ -240,7 +146,7 @@ app/
 ### 3.1 Application Use Case
 
 ```ruby
-# app/use_cases/application_use_case.rb
+# app/shared/base/application_use_case.rb
 class ApplicationUseCase
   include Dry::Monads[:result, :do]
 
@@ -265,7 +171,7 @@ end
 ### 3.2 Application Contract
 
 ```ruby
-# app/contracts/application_contract.rb
+# app/shared/base/application_contract.rb
 class ApplicationContract < Dry::Validation::Contract
   config.messages.backend = :i18n
 end
@@ -274,7 +180,7 @@ end
 ### 3.3 Base Event
 
 ```ruby
-# app/events/base_event.rb
+# app/shared/events/base_event.rb
 class BaseEvent
   include Dry::Struct
 
@@ -289,7 +195,7 @@ end
 ### 3.4 Event Bus (con soporte async)
 
 ```ruby
-# app/events/event_bus.rb
+# app/shared/events/event_bus.rb
 class EventBus
   @handlers = Hash.new { |h, k| h[k] = [] }
 
@@ -318,7 +224,7 @@ end
 ### 3.5 Types Module
 
 ```ruby
-# app/types/types.rb
+# app/shared/types/types.rb
 module Types
   include Dry.Types()
 
@@ -357,13 +263,14 @@ end
 
 ### 4.1 Bounded Context: Identity (Autenticacion y Usuarios)
 
-#### `Sessions::Authenticate`
+#### `Identity::UseCases::Login`
 ```ruby
-# app/use_cases/sessions/authenticate.rb
-module Sessions
-  class Authenticate < ApplicationUseCase
-    def call(params:)
-      attrs = yield validate(Sessions::AuthenticateContract, params)
+# app/contexts/identity/use_cases/login.rb
+module Identity
+  module UseCases
+    class Login < ApplicationUseCase
+      def call(params:)
+        attrs = yield validate(Identity::Contracts::LoginContract, params)
       user  = yield find_user(attrs[:email])
       _     = yield verify_password(user, attrs[:password])
       _     = yield check_not_suspended(user)
@@ -382,8 +289,9 @@ module Sessions
       user.authenticate(password) ? Success(true) : Failure([:unauthorized, "Invalid email or password"])
     end
 
-    def check_not_suspended(user)
-      user.suspended? ? Failure([:forbidden, "Account suspended"]) : Success(true)
+      def check_not_suspended(user)
+        user.suspended? ? Failure([:forbidden, "Account suspended"]) : Success(true)
+      end
     end
   end
 end
@@ -391,12 +299,14 @@ end
 
 **Contract:**
 ```ruby
-# app/contracts/sessions/authenticate_contract.rb
-module Sessions
-  class AuthenticateContract < ApplicationContract
+# app/contexts/identity/contracts/login_contract.rb
+module Identity
+  module Contracts
+    class LoginContract < ApplicationContract
     params do
       required(:email).filled(:string)
-      required(:password).filled(:string)
+        required(:password).filled(:string)
+      end
     end
   end
 end
@@ -404,24 +314,26 @@ end
 
 ---
 
-#### `Registrations::RegisterUser`
+#### `Identity::UseCases::Register`
 ```ruby
-# app/use_cases/registrations/register_user.rb
-module Registrations
-  class RegisterUser < ApplicationUseCase
-    def call(params:)
-      attrs = yield validate(Registrations::CreateContract, params)
-      user  = yield persist(attrs)
-      _     = yield publish(UserRegistered.new(user_id: user.id, email: user.email))
+# app/contexts/identity/use_cases/register.rb
+module Identity
+  module UseCases
+    class Register < ApplicationUseCase
+      def call(params:)
+        attrs = yield validate(Identity::Contracts::RegisterContract, params)
+        user  = yield persist(attrs)
+        _     = yield publish(Events::UserRegistered.new(user_id: user.id, email: user.email))
 
       Success(user)
     end
 
     private
 
-    def persist(attrs)
-      user = User.new(attrs.merge(role: :user))
-      user.save ? Success(user) : Failure([:persistence, user.errors.full_messages])
+      def persist(attrs)
+        user = User.new(attrs.merge(role: :user))
+        user.save ? Success(user) : Failure([:persistence, user.errors.full_messages])
+      end
     end
   end
 end
@@ -429,9 +341,10 @@ end
 
 **Contract:**
 ```ruby
-# app/contracts/registrations/create_contract.rb
-module Registrations
-  class CreateContract < ApplicationContract
+# app/contexts/identity/contracts/register_contract.rb
+module Identity
+  module Contracts
+    class RegisterContract < ApplicationContract
     params do
       required(:full_name).filled(:string, min_size?: 2)
       required(:email).filled(:string, format?: URI::MailTo::EMAIL_REGEXP)
@@ -443,8 +356,9 @@ module Registrations
       key.failure("must match password") if values[:password] != values[:password_confirmation]
     end
 
-    rule(:email) do
-      key.failure("already taken") if User.exists?(email: values[:email].downcase)
+      rule(:email) do
+        key.failure("already taken") if User.exists?(email: values[:email].downcase)
+      end
     end
   end
 end
@@ -452,50 +366,67 @@ end
 
 **Event:**
 ```ruby
-# app/events/user_registered.rb
-class UserRegistered < BaseEvent
-  attribute :user_id, Types::Integer
-  attribute :email,   Types::String
+# app/contexts/identity/events/user_registered.rb
+module Identity
+  module Events
+    class UserRegistered < BaseEvent
+      attribute :user_id, Types::Integer
+      attribute :email,   Types::String
+    end
+  end
 end
 ```
 
 **Event Handlers:**
 ```ruby
-# app/event_handlers/create_portfolio_on_registration.rb
-class CreatePortfolioOnRegistration
-  def self.call(event)
+# app/contexts/identity/handlers/create_portfolio_on_registration.rb
+module Identity
+  module Handlers
+    class CreatePortfolioOnRegistration
+      def self.call(event)
     user = User.find(event.user_id)
-    user.create_portfolio!(inception_date: Date.current)
+        user.create_portfolio!(inception_date: Date.current)
+      end
+    end
   end
 end
 
-# app/event_handlers/create_alert_preferences_on_registration.rb
-class CreateAlertPreferencesOnRegistration
-  def self.call(event)
-    user = User.find(event.user_id)
-    user.create_alert_preference!
+# app/contexts/identity/handlers/create_alert_preferences_on_registration.rb
+module Identity
+  module Handlers
+    class CreateAlertPreferencesOnRegistration
+      def self.call(event)
+        user = User.find(event.user_id)
+        user.create_alert_preference!
+      end
+    end
   end
 end
 
-# app/event_handlers/send_welcome_email_on_registration.rb
-class SendWelcomeEmailOnRegistration
-  def self.async? = true
+# app/contexts/identity/handlers/send_welcome_email_on_registration.rb
+module Identity
+  module Handlers
+    class SendWelcomeEmailOnRegistration
+      def self.async? = true
 
-  def self.call(event)
-    UserMailer.welcome(event.user_id).deliver_later
+      def self.call(event)
+        UserMailer.welcome(event.user_id).deliver_later
+      end
+    end
   end
 end
 ```
 
 ---
 
-#### `PasswordResets::RequestReset`
+#### `Identity::UseCases::RequestPasswordReset`
 ```ruby
-# app/use_cases/password_resets/request_reset.rb
-module PasswordResets
-  class RequestReset < ApplicationUseCase
-    def call(params:)
-      attrs = yield validate(PasswordResets::RequestContract, params)
+# app/contexts/identity/use_cases/request_password_reset.rb
+module Identity
+  module UseCases
+    class RequestPasswordReset < ApplicationUseCase
+      def call(params:)
+        attrs = yield validate(Identity::Contracts::RequestPasswordResetContract, params)
       user  = yield find_user(attrs[:email])
       token = yield generate_token(user)
 
@@ -511,31 +442,33 @@ module PasswordResets
       user ? Success(user) : Success(nil)
     end
 
-    def generate_token(user)
-      return Success(nil) unless user
+      def generate_token(user)
+        return Success(nil) unless user
 
-      token = SecureRandom.urlsafe_base64(32)
-      user.update!(
-        password_reset_token: Digest::SHA256.hexdigest(token),
-        password_reset_sent_at: Time.current
-      )
-      Success(token)
+        token = SecureRandom.urlsafe_base64(32)
+        user.update!(
+          password_reset_token: Digest::SHA256.hexdigest(token),
+          password_reset_sent_at: Time.current
+        )
+        Success(token)
+      end
     end
   end
 end
 ```
 
-#### `PasswordResets::ExecuteReset`
+#### `Identity::UseCases::ResetPassword`
 ```ruby
-# app/use_cases/password_resets/execute_reset.rb
-module PasswordResets
-  class ExecuteReset < ApplicationUseCase
-    def call(token:, params:)
-      attrs = yield validate(PasswordResets::ResetContract, params)
-      user  = yield find_by_token(token)
-      _     = yield check_expiry(user)
-      _     = yield update_password(user, attrs[:password])
-      _     = yield publish(PasswordChanged.new(user_id: user.id))
+# app/contexts/identity/use_cases/reset_password.rb
+module Identity
+  module UseCases
+    class ResetPassword < ApplicationUseCase
+      def call(token:, params:)
+        attrs = yield validate(Identity::Contracts::ResetPasswordContract, params)
+        user  = yield find_by_token(token)
+        _     = yield check_expiry(user)
+        _     = yield update_password(user, attrs[:password])
+        _     = yield publish(Events::PasswordChanged.new(user_id: user.id))
 
       Success(user)
     end
@@ -556,12 +489,13 @@ module PasswordResets
       end
     end
 
-    def update_password(user, new_password)
-      user.update(
-        password: new_password,
-        password_reset_token: nil,
-        password_reset_sent_at: nil
-      ) ? Success(user) : Failure([:persistence, user.errors.full_messages])
+      def update_password(user, new_password)
+        user.update(
+          password: new_password,
+          password_reset_token: nil,
+          password_reset_sent_at: nil
+        ) ? Success(user) : Failure([:persistence, user.errors.full_messages])
+      end
     end
   end
 end
@@ -569,67 +503,81 @@ end
 
 **Events:**
 ```ruby
-# app/events/password_changed.rb
-class PasswordChanged < BaseEvent
-  attribute :user_id, Types::Integer
+# app/contexts/identity/events/password_changed.rb
+module Identity
+  module Events
+    class PasswordChanged < BaseEvent
+      attribute :user_id, Types::Integer
+    end
+  end
 end
 ```
 
 **Handler:**
 ```ruby
-# app/event_handlers/invalidate_sessions_on_password_change.rb
-class InvalidateSessionsOnPasswordChange
-  def self.call(event)
-    user = User.find(event.user_id)
-    user.remember_tokens.destroy_all
+# app/contexts/identity/handlers/invalidate_sessions_on_password_change.rb
+module Identity
+  module Handlers
+    class InvalidateSessionsOnPasswordChange
+      def self.call(event)
+        user = User.find(event.user_id)
+        user.remember_tokens.destroy_all
+      end
+    end
   end
 end
 ```
 
 ---
 
-#### `Profiles::UpdateInfo`
+#### `Identity::UseCases::UpdateInfo`
 ```ruby
-module Profiles
-  class UpdateInfo < ApplicationUseCase
-    def call(user:, params:)
-      attrs = yield validate(Profiles::UpdateContract, params)
-      _     = yield persist(user, attrs)
-      _     = yield publish(ProfileUpdated.new(user_id: user.id))
+# app/contexts/identity/use_cases/update_info.rb
+module Identity
+  module UseCases
+    class UpdateInfo < ApplicationUseCase
+      def call(user:, params:)
+        attrs = yield validate(Identity::Contracts::UpdateProfileContract, params)
+        _     = yield persist(user, attrs)
+        _     = yield publish(Events::ProfileUpdated.new(user_id: user.id))
 
       Success(user.reload)
     end
 
     private
 
-    def persist(user, attrs)
-      user.update(attrs) ? Success(user) : Failure([:persistence, user.errors.full_messages])
+      def persist(user, attrs)
+        user.update(attrs) ? Success(user) : Failure([:persistence, user.errors.full_messages])
+      end
     end
   end
 end
 ```
 
-#### `Profiles::ChangePassword`
+#### `Identity::UseCases::ChangePassword`
 ```ruby
-module Profiles
-  class ChangePassword < ApplicationUseCase
-    def call(user:, params:)
-      attrs = yield validate(Profiles::ChangePasswordContract, params)
+# app/contexts/identity/use_cases/change_password.rb
+module Identity
+  module UseCases
+    class ChangePassword < ApplicationUseCase
+      def call(user:, params:)
+        attrs = yield validate(Identity::Contracts::ChangePasswordContract, params)
       _     = yield verify_current(user, attrs[:current_password])
       _     = yield persist(user, attrs[:password])
-      _     = yield publish(PasswordChanged.new(user_id: user.id))
+        _     = yield publish(Events::PasswordChanged.new(user_id: user.id))
 
-      Success(user)
-    end
+        Success(user)
+      end
 
-    private
+      private
 
-    def verify_current(user, current_password)
-      user.authenticate(current_password) ? Success(true) : Failure([:unauthorized, "Current password is incorrect"])
-    end
+      def verify_current(user, current_password)
+        user.authenticate(current_password) ? Success(true) : Failure([:unauthorized, "Current password is incorrect"])
+      end
 
-    def persist(user, new_password)
-      user.update(password: new_password) ? Success(user) : Failure([:persistence, user.errors.full_messages])
+      def persist(user, new_password)
+        user.update(password: new_password) ? Success(user) : Failure([:persistence, user.errors.full_messages])
+      end
     end
   end
 end
@@ -641,11 +589,12 @@ end
 
 > Watchlist se fusiono en este BC — es parte de la experiencia de trading del usuario.
 
-#### `Dashboard::Assemble`
+#### `Trading::UseCases::AssembleDashboard`
 ```ruby
-# app/use_cases/dashboard/assemble.rb
-module Dashboard
-  class Assemble < ApplicationUseCase
+# app/contexts/trading/use_cases/assemble_dashboard.rb
+module Trading
+  module UseCases
+    class AssembleDashboard < ApplicationUseCase
     def call(user:, currency: "USD")
       portfolio  = yield load_portfolio(user)
       summary    = yield build_summary(portfolio, currency)
@@ -667,35 +616,36 @@ module Dashboard
       user.portfolio ? Success(user.portfolio) : Failure([:not_found, "Portfolio not found"])
     end
 
-    def build_summary(portfolio, currency)
-      Success(PortfolioSummary.new(portfolio, currency:).to_h)
-    end
+      def build_summary(portfolio, currency)
+        Success(Domain::PortfolioSummary.new(portfolio, currency:).to_h)
+      end
 
-    def load_watchlist(user)
-      items = user.watchlist_items.includes(asset: :trend_scores).limit(10)
-      Success(items)
-    end
+      def load_watchlist(user)
+        items = user.watchlist_items.includes(asset: :trend_scores).limit(10)
+        Success(items)
+      end
 
-    def load_news(user)
-      tickers = user.watchlist_items.joins(:asset).pluck("assets.symbol")
-      articles = if tickers.any?
-                   NewsArticle.where(related_ticker: tickers).or(NewsArticle.recent).distinct.limit(5)
-                 else
-                   NewsArticle.recent
-                 end
-      Success(articles)
-    end
+      def load_news(user)
+        tickers = user.watchlist_items.joins(:asset).pluck("assets.symbol")
+        articles = if tickers.any?
+                     NewsArticle.where(related_ticker: tickers).or(NewsArticle.recent).distinct.limit(5)
+                   else
+                     NewsArticle.recent
+                   end
+        Success(articles)
+      end
 
-    def load_trending
-      Success(Asset.order(change_percent_24h: :desc).limit(5))
-    end
+      def load_trending
+        Success(Asset.order(change_percent_24h: :desc).limit(5))
+      end
 
-    def load_market_status
-      Success(MarketIndex.major)
-    end
+      def load_market_status
+        Success(MarketIndex.major)
+      end
 
-    def calculate_sentiment(user)
-      Success(MarketSentiment.for_user(user))
+      def calculate_sentiment(user)
+        Success(MarketData::Domain::MarketSentiment.for_user(user))
+      end
     end
   end
 end
@@ -703,10 +653,12 @@ end
 
 ---
 
-#### `Portfolio::LoadOverview`
+#### `Trading::UseCases::LoadPortfolio`
 ```ruby
-module Portfolio
-  class LoadOverview < ApplicationUseCase
+# app/contexts/trading/use_cases/load_portfolio.rb
+module Trading
+  module UseCases
+    class LoadPortfolio < ApplicationUseCase
     def call(user:, currency: "USD", tab: "open")
       portfolio  = yield load_portfolio(user)
       positions  = yield load_positions(portfolio, tab)
@@ -734,16 +686,17 @@ module Portfolio
       Success(scope.includes(:asset))
     end
 
-    def build_summary(portfolio, currency)
-      Success(PortfolioSummary.new(portfolio, currency:).to_h)
-    end
+      def build_summary(portfolio, currency)
+        Success(Domain::PortfolioSummary.new(portfolio, currency:).to_h)
+      end
 
-    def build_allocation(portfolio)
-      Success(portfolio.allocation_by_sector)
-    end
+      def build_allocation(portfolio)
+        Success(portfolio.allocation_by_sector)
+      end
 
-    def load_dividends(portfolio)
-      Success(portfolio.dividend_payments.includes(dividend: :asset).order(created_at: :desc))
+      def load_dividends(portfolio)
+        Success(portfolio.dividend_payments.includes(dividend: :asset).order(created_at: :desc))
+      end
     end
   end
 end
@@ -751,18 +704,19 @@ end
 
 ---
 
-#### `Trades::ExecuteTrade`
+#### `Trading::UseCases::ExecuteTrade`
 ```ruby
-# app/use_cases/trades/execute_trade.rb
-module Trades
-  class ExecuteTrade < ApplicationUseCase
-    def call(user:, params:)
-      attrs     = yield validate(Trades::CreateContract, params)
+# app/contexts/trading/use_cases/execute_trade.rb
+module Trading
+  module UseCases
+    class ExecuteTrade < ApplicationUseCase
+      def call(user:, params:)
+        attrs     = yield validate(Trading::Contracts::ExecuteTradeContract, params)
       portfolio = yield load_portfolio(user)
       asset     = yield find_asset(attrs[:asset_symbol])
       trade     = yield persist_trade(portfolio, asset, attrs)
       position  = yield update_position(portfolio, asset, trade, attrs)
-      _         = yield publish(TradeExecuted.new(
+        _         = yield publish(Events::TradeExecuted.new(
                     user_id: user.id, trade_id: trade.id,
                     asset_symbol: asset.symbol, side: attrs[:side]
                   ))
@@ -824,16 +778,18 @@ end
 
 **Contract:**
 ```ruby
-# app/contracts/trades/create_contract.rb
-module Trades
-  class CreateContract < ApplicationContract
+# app/contexts/trading/contracts/execute_trade_contract.rb
+module Trading
+  module Contracts
+    class ExecuteTradeContract < ApplicationContract
     params do
       required(:asset_symbol).filled(:string)
       required(:side).filled(:string, included_in?: %w[buy sell])
       required(:shares).filled(:decimal, gt?: 0)
       required(:price_per_share).filled(:decimal, gt?: 0)
       optional(:fee).filled(:decimal, gteq?: 0)
-      optional(:currency).filled(:string)
+        optional(:currency).filled(:string)
+      end
     end
   end
 end
@@ -841,33 +797,45 @@ end
 
 **Event:**
 ```ruby
-# app/events/trade_executed.rb
-class TradeExecuted < BaseEvent
+# app/contexts/trading/events/trade_executed.rb
+module Trading
+  module Events
+    class TradeExecuted < BaseEvent
   attribute :user_id,      Types::Integer
   attribute :trade_id,     Types::Integer
-  attribute :asset_symbol, Types::String
-  attribute :side,         Types::String
+      attribute :asset_symbol, Types::String
+      attribute :side,         Types::String
+    end
+  end
 end
 ```
 
 **Handlers:**
 ```ruby
-# app/event_handlers/recalculate_avg_cost_on_trade.rb
-class RecalculateAvgCostOnTrade
-  def self.call(event)
-    trade = Trade.find(event.trade_id)
-    trade.position&.recalculate_avg_cost!
+# app/contexts/trading/handlers/recalculate_avg_cost_on_trade.rb
+module Trading
+  module Handlers
+    class RecalculateAvgCostOnTrade
+      def self.call(event)
+        trade = Trade.find(event.trade_id)
+        trade.position&.recalculate_avg_cost!
+      end
+    end
   end
 end
 
-# app/event_handlers/log_trade_activity.rb
-class LogTradeActivity
-  def self.call(event)
-    AuditLog.create!(
-      user_id: event.user_id,
-      action: "trading.#{event.side}",
-      changes: { asset: event.asset_symbol, trade_id: event.trade_id }
-    )
+# app/contexts/trading/handlers/log_trade_activity.rb
+module Trading
+  module Handlers
+    class LogTradeActivity
+      def self.call(event)
+        AuditLog.create!(
+          user_id: event.user_id,
+          action: "trading.#{event.side}",
+          changes: { asset: event.asset_symbol, trade_id: event.trade_id }
+        )
+      end
+    end
   end
 end
 ```
@@ -918,14 +886,16 @@ end
 
 ---
 
-#### `Watchlist::AddAsset`
+#### `Trading::UseCases::AddToWatchlist`
 ```ruby
-module Watchlist
-  class AddAsset < ApplicationUseCase
-    def call(user:, asset_id:)
-      asset = yield find_asset(asset_id)
-      item  = yield persist(user, asset)
-      _     = yield publish(WatchlistItemAdded.new(user_id: user.id, asset_id: asset.id))
+# app/contexts/trading/use_cases/add_to_watchlist.rb
+module Trading
+  module UseCases
+    class AddToWatchlist < ApplicationUseCase
+      def call(user:, asset_id:)
+        asset = yield find_asset(asset_id)
+        item  = yield persist(user, asset)
+        _     = yield publish(Events::WatchlistItemAdded.new(user_id: user.id, asset_id: asset.id))
 
       Success(item)
     end
@@ -945,10 +915,12 @@ module Watchlist
 end
 ```
 
-#### `Watchlist::RemoveAsset`
+#### `Trading::UseCases::RemoveFromWatchlist`
 ```ruby
-module Watchlist
-  class RemoveAsset < ApplicationUseCase
+# app/contexts/trading/use_cases/remove_from_watchlist.rb
+module Trading
+  module UseCases
+    class RemoveFromWatchlist < ApplicationUseCase
     def call(user:, asset_id:)
       item = yield find_item(user, asset_id)
       _    = yield destroy(item)
@@ -1004,14 +976,16 @@ end
 
 ### 4.3 Bounded Context: Alerts
 
-#### `Alerts::CreateRule`
+#### `Alerts::UseCases::CreateRule`
 ```ruby
+# app/contexts/alerts/use_cases/create_rule.rb
 module Alerts
-  class CreateRule < ApplicationUseCase
-    def call(user:, params:)
-      attrs = yield validate(Alerts::CreateContract, params)
-      rule  = yield persist(user, attrs)
-      _     = yield publish(AlertRuleCreated.new(user_id: user.id, rule_id: rule.id))
+  module UseCases
+    class CreateRule < ApplicationUseCase
+      def call(user:, params:)
+        attrs = yield validate(Alerts::Contracts::CreateContract, params)
+        rule  = yield persist(user, attrs)
+        _     = yield publish(Events::AlertRuleCreated.new(user_id: user.id, rule_id: rule.id))
 
       Success(rule)
     end
@@ -1028,8 +1002,10 @@ end
 
 **Contract:**
 ```ruby
+# app/contexts/alerts/contracts/create_contract.rb
 module Alerts
-  class CreateContract < ApplicationContract
+  module Contracts
+    class CreateContract < ApplicationContract
     params do
       required(:asset_symbol).filled(:string)
       required(:condition).filled(:string, included_in?: %w[
@@ -1046,12 +1022,14 @@ module Alerts
 end
 ```
 
-#### `Alerts::UpdateRule`
+#### `Alerts::UseCases::UpdateRule`
 ```ruby
+# app/contexts/alerts/use_cases/update_rule.rb
 module Alerts
-  class UpdateRule < ApplicationUseCase
-    def call(user:, rule_id:, params:)
-      attrs = yield validate(Alerts::UpdateContract, params)
+  module UseCases
+    class UpdateRule < ApplicationUseCase
+      def call(user:, rule_id:, params:)
+        attrs = yield validate(Alerts::Contracts::CreateContract, params)
       rule  = yield find_rule(user, rule_id)
       _     = yield persist(rule, attrs)
 
@@ -1072,10 +1050,12 @@ module Alerts
 end
 ```
 
-#### `Alerts::ToggleRule`
+#### `Alerts::UseCases::ToggleRule`
 ```ruby
+# app/contexts/alerts/use_cases/toggle_rule.rb
 module Alerts
-  class ToggleRule < ApplicationUseCase
+  module UseCases
+    class ToggleRule < ApplicationUseCase
     def call(user:, rule_id:)
       rule = yield find_rule(user, rule_id)
       _    = yield toggle(rule)
@@ -1098,10 +1078,12 @@ module Alerts
 end
 ```
 
-#### `Alerts::DestroyRule`
+#### `Alerts::UseCases::DestroyRule`
 ```ruby
+# app/contexts/alerts/use_cases/destroy_rule.rb
 module Alerts
-  class DestroyRule < ApplicationUseCase
+  module UseCases
+    class DestroyRule < ApplicationUseCase
     def call(user:, rule_id:)
       rule = yield find_rule(user, rule_id)
       _    = yield destroy(rule)
@@ -1123,12 +1105,13 @@ module Alerts
 end
 ```
 
-#### `Alerts::UpdatePreferences`
+#### `Alerts::UseCases::UpdatePreferences`
 ```ruby
+# app/contexts/alerts/use_cases/update_preferences.rb
 module Alerts
-  class UpdatePreferences < ApplicationUseCase
-    def call(user:, params:)
-      attrs = yield validate(Alerts::PreferencesContract, params)
+  module UseCases
+    class UpdatePreferences < ApplicationUseCase
+      def call(user:, params:)
       pref  = yield load_preferences(user)
       _     = yield persist(pref, attrs)
 
@@ -1149,17 +1132,18 @@ module Alerts
 end
 ```
 
-#### `Alerts::EvaluateRules`
+#### `Alerts::UseCases::EvaluateRules`
 ```ruby
-# app/use_cases/alerts/evaluate_rules.rb
+# app/contexts/alerts/use_cases/evaluate_rules.rb
 module Alerts
-  class EvaluateRules < ApplicationUseCase
+  module UseCases
+    class EvaluateRules < ApplicationUseCase
     def call(asset:, new_price:)
       rules     = yield load_active_rules(asset.symbol)
       triggered = yield evaluate(rules, asset, new_price)
 
       triggered.each do |rule|
-        publish(AlertRuleTriggered.new(
+        publish(Events::AlertRuleTriggered.new(
           rule_id: rule.id, user_id: rule.user_id,
           asset_symbol: asset.symbol, price: new_price.to_s
         ))
@@ -1186,12 +1170,13 @@ end
 
 ### 4.4 Bounded Context: Market Data
 
-#### `Market::ExploreAssets`
+#### `MarketData::UseCases::ExploreAssets`
 ```ruby
-module Market
-  class ExploreAssets < ApplicationUseCase
-    def call(params: {})
-      filters  = yield validate(Market::ExploreContract, params)
+# app/contexts/market_data/use_cases/explore_assets.rb
+module MarketData
+  module UseCases
+    class ExploreAssets < ApplicationUseCase
+      def call(params: {})
       assets   = yield query(filters)
       indices  = yield load_indices
 
@@ -1226,14 +1211,16 @@ module Market
 end
 ```
 
-#### `Market::ExportCsv`
+#### `MarketData::UseCases::ExportCsv`
 ```ruby
-module Market
-  class ExportCsv < ApplicationUseCase
-    def call(user:, params: {})
-      result = yield ExploreAssets.call(params:)
-      csv    = yield generate(result[:assets])
-      _      = yield publish(CsvExported.new(user_id: user.id, export_type: "market_assets"))
+# app/contexts/market_data/use_cases/export_csv.rb (if applicable — currently in Administration)
+module MarketData
+  module UseCases
+    class ExportCsv < ApplicationUseCase
+      def call(user:, params: {})
+        result = yield ExploreAssets.call(params:)
+        csv    = yield generate(result[:assets])
+        _      = yield publish(Administration::Events::CsvExported.new(user_id: user.id, export_type: "market_assets"))
 
       Success(csv)
     end
@@ -1255,10 +1242,12 @@ end
 
 ---
 
-#### `Earnings::ListForMonth`
+#### `MarketData::UseCases::ListEarnings`
 ```ruby
-module Earnings
-  class ListForMonth < ApplicationUseCase
+# app/contexts/market_data/use_cases/list_earnings.rb
+module MarketData
+  module UseCases
+    class ListEarnings < ApplicationUseCase
     def call(user:, date:, filter: "all")
       events    = yield load_events(date)
       events    = yield apply_filter(user, events, filter)
@@ -1289,10 +1278,12 @@ end
 
 ---
 
-#### `Trends::LoadAssetTrend`
+#### `Trading::UseCases::LoadAssetTrend`
 ```ruby
-module Trends
-  class LoadAssetTrend < ApplicationUseCase
+# app/contexts/trading/use_cases/load_asset_trend.rb
+module Trading
+  module UseCases
+    class LoadAssetTrend < ApplicationUseCase
     def call(params: {})
       asset    = yield find_asset(params[:symbol])
       score    = yield load_trend_score(asset)
@@ -1335,13 +1326,15 @@ end
 
 ### 4.5 Bounded Context: Administration
 
-#### `Admin::Assets::CreateAsset`
+#### `Administration::UseCases::Assets::CreateAsset`
 ```ruby
-module Admin
-  module Assets
-    class CreateAsset < ApplicationUseCase
-      def call(admin:, params:)
-        attrs = yield validate(Admin::Assets::CreateContract, params)
+# app/contexts/administration/use_cases/assets/create_asset.rb
+module Administration
+  module UseCases
+    module Assets
+      class CreateAsset < ApplicationUseCase
+        def call(admin:, params:)
+          attrs = yield validate(Administration::Contracts::Assets::CreateContract, params)
         asset = yield persist(attrs)
         _     = yield audit(admin, asset)
 
@@ -1364,11 +1357,13 @@ module Admin
 end
 ```
 
-#### `Admin::Assets::ToggleStatus`
+#### `Administration::UseCases::Assets::ToggleStatus`
 ```ruby
-module Admin
-  module Assets
-    class ToggleStatus < ApplicationUseCase
+# app/contexts/administration/use_cases/assets/toggle_status.rb
+module Administration
+  module UseCases
+    module Assets
+      class ToggleStatus < ApplicationUseCase
       def call(admin:, asset_id:)
         asset      = yield find_asset(asset_id)
         old_status = asset.sync_status
@@ -1402,11 +1397,13 @@ module Admin
 end
 ```
 
-#### `Admin::Assets::TriggerSync`
+#### `Administration::UseCases::Assets::TriggerSync`
 ```ruby
-module Admin
-  module Assets
-    class TriggerSync < ApplicationUseCase
+# app/contexts/administration/use_cases/assets/trigger_sync.rb
+module Administration
+  module UseCases
+    module Assets
+      class TriggerSync < ApplicationUseCase
       def call(asset_id: nil)
         if asset_id
           asset = yield find_asset(asset_id)
@@ -1429,17 +1426,19 @@ module Admin
 end
 ```
 
-#### `Admin::Users::SuspendUser`
+#### `Administration::UseCases::Users::SuspendUser`
 ```ruby
-module Admin
-  module Users
-    class SuspendUser < ApplicationUseCase
+# app/contexts/administration/use_cases/users/suspend_user.rb
+module Administration
+  module UseCases
+    module Users
+      class SuspendUser < ApplicationUseCase
       def call(admin:, user_id:)
         user = yield find_user(user_id)
         _    = yield check_not_admin(user)
         _    = yield suspend(user)
         _    = yield audit(admin, user)
-        _    = yield publish(UserSuspended.new(user_id: user.id, email: user.email))
+          _    = yield publish(Identity::Events::UserSuspended.new(user_id: user.id, email: user.email))
 
         Success(user)
       end
@@ -1471,16 +1470,18 @@ module Admin
 end
 ```
 
-#### `Admin::Integrations::ConnectProvider`
+#### `Administration::UseCases::Integrations::ConnectProvider`
 ```ruby
-module Admin
-  module Integrations
-    class ConnectProvider < ApplicationUseCase
-      def call(admin:, params:)
-        attrs       = yield validate(Admin::Integrations::CreateContract, params)
+# app/contexts/administration/use_cases/integrations/connect_provider.rb
+module Administration
+  module UseCases
+    module Integrations
+      class ConnectProvider < ApplicationUseCase
+        def call(admin:, params:)
+          attrs       = yield validate(Administration::Contracts::Integrations::ConnectContract, params)
         integration = yield persist(attrs)
         _           = yield audit(admin, integration)
-        _           = yield publish(IntegrationConnected.new(provider: integration.provider_name))
+          _           = yield publish(Events::IntegrationConnected.new(provider: integration.provider_name))
 
         Success(integration)
       end
@@ -1501,11 +1502,13 @@ module Admin
 end
 ```
 
-#### `Admin::Integrations::RefreshSync`
+#### `Administration::UseCases::Integrations::RefreshSync`
 ```ruby
-module Admin
-  module Integrations
-    class RefreshSync < ApplicationUseCase
+# app/contexts/administration/use_cases/integrations/refresh_sync.rb
+module Administration
+  module UseCases
+    module Integrations
+      class RefreshSync < ApplicationUseCase
       def call(integration_id:)
         integration = yield find(integration_id)
         _           = yield mark_syncing(integration)
@@ -1529,11 +1532,13 @@ module Admin
 end
 ```
 
-#### `Admin::Logs::ListLogs`
+#### `Administration::UseCases::Logs::ListLogs`
 ```ruby
-module Admin
-  module Logs
-    class ListLogs < ApplicationUseCase
+# app/contexts/administration/use_cases/logs/list_logs.rb
+module Administration
+  module UseCases
+    module Logs
+      class ListLogs < ApplicationUseCase
       def call(params: {})
         scope = SystemLog.recent
         scope = scope.where(severity: params[:severity])    if params[:severity].present?
@@ -1564,13 +1569,15 @@ end
 
 ### 4.6 Notifications (cross-cutting)
 
-#### `Notifications::CreateNotification`
+#### `Notifications::UseCases::CreateNotification`
 ```ruby
+# app/contexts/notifications/use_cases/create_notification.rb
 module Notifications
-  class CreateNotification < ApplicationUseCase
-    def call(user:, title:, body: nil, notification_type: :system, notifiable: nil)
-      notification = yield persist(user, title, body, notification_type, notifiable)
-      _            = yield publish(NotificationCreated.new(user_id: user.id, notification_id: notification.id))
+  module UseCases
+    class CreateNotification < ApplicationUseCase
+      def call(user_id:, title:, body: nil, notification_type: :system, notifiable: nil)
+        notification = yield persist(user_id, title, body, notification_type, notifiable)
+        _            = yield publish(Events::NotificationCreated.new(user_id: user_id, notification_id: notification.id))
 
       Success(notification)
     end
@@ -1585,10 +1592,12 @@ module Notifications
 end
 ```
 
-#### `Notifications::MarkAsRead`
+#### `Notifications::UseCases::MarkAsRead`
 ```ruby
+# app/contexts/notifications/use_cases/mark_as_read.rb
 module Notifications
-  class MarkAsRead < ApplicationUseCase
+  module UseCases
+    class MarkAsRead < ApplicationUseCase
     def call(user:, notification_id: nil)
       if notification_id
         notification = yield find(user, notification_id)
@@ -1612,11 +1621,12 @@ end
 
 ### 4.7 News Feed
 
-#### `News::ListArticles`
+#### `MarketData::UseCases::ListArticles`
 ```ruby
-# app/use_cases/news/list_articles.rb
-module News
-  class ListArticles < ApplicationUseCase
+# app/contexts/market_data/use_cases/list_articles.rb
+module MarketData
+  module UseCases
+    class ListArticles < ApplicationUseCase
     def call(user:, params: {})
       articles = yield query(user, params)
 
@@ -1643,11 +1653,12 @@ end
 
 ### 4.8 Global Search
 
-#### `Search::GlobalSearch`
+#### `Identity::UseCases::GlobalSearch`
 ```ruby
-# app/use_cases/search/global_search.rb
-module Search
-  class GlobalSearch < ApplicationUseCase
+# app/contexts/identity/use_cases/global_search.rb
+module Identity
+  module UseCases
+    class GlobalSearch < ApplicationUseCase
     def call(user:, query:)
       return Success({ assets: [], alerts: [], news: [] }) if query.blank?
 
@@ -1683,11 +1694,12 @@ end
 
 ### 4.9 Onboarding
 
-#### `Onboarding::CompleteWizard`
+#### `Identity::UseCases::CompleteWizard`
 ```ruby
-# app/use_cases/onboarding/complete_wizard.rb
-module Onboarding
-  class CompleteWizard < ApplicationUseCase
+# app/contexts/identity/use_cases/complete_wizard.rb
+module Identity
+  module UseCases
+    class CompleteWizard < ApplicationUseCase
     def call(user:, asset_ids:)
       assets = yield validate_assets(asset_ids)
       _      = yield add_to_watchlist(user, assets)
@@ -1725,8 +1737,10 @@ end
 ### 5.1 AlertEvaluator
 
 ```ruby
-# app/domain/alert_evaluator.rb
-class AlertEvaluator
+# app/contexts/alerts/domain/alert_evaluator.rb
+module Alerts
+  module Domain
+    class AlertEvaluator
   # Evalua una lista de reglas contra un asset con nuevo precio.
   # Retorna las reglas que se dispararon (puro, sin side effects).
   def self.evaluate(rules, asset, new_price)
@@ -1743,19 +1757,23 @@ class AlertEvaluator
         false
       when "rsi_oversold"
         false
-      else
-        false
+        else
+          false
+        end
       end
     end
   end
+end
 end
 ```
 
 ### 5.2 MarketSentiment
 
 ```ruby
-# app/domain/market_sentiment.rb
-class MarketSentiment
+# app/contexts/market_data/domain/market_sentiment.rb
+module MarketData
+  module Domain
+    class MarketSentiment
   # Calcula sentimiento basado en trend scores del watchlist del usuario
   def self.for_user(user)
     scores = user.watched_assets
@@ -1774,16 +1792,20 @@ class MarketSentiment
             else "Bullish"
             end
 
-    { value: avg.round, label: }
+      { value: avg.round, label: }
+    end
   end
+end
 end
 ```
 
 ### 5.3 PortfolioSummary
 
 ```ruby
-# app/domain/portfolio_summary.rb
-class PortfolioSummary
+# app/contexts/trading/domain/portfolio_summary.rb
+module Trading
+  module Domain
+    class PortfolioSummary
   def initialize(portfolio, currency: "USD")
     @portfolio = portfolio
     @currency = currency
@@ -1838,63 +1860,81 @@ end
 ```ruby
 # config/initializers/event_subscriptions.rb
 Rails.application.config.after_initialize do
-  # --- User Registered ---
-  EventBus.subscribe(UserRegistered, CreatePortfolioOnRegistration)
-  EventBus.subscribe(UserRegistered, CreateAlertPreferencesOnRegistration)
-  EventBus.subscribe(UserRegistered, SendWelcomeEmailOnRegistration)
+  # Identity
+  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::CreatePortfolioOnRegistration)
+  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::CreateAlertPreferencesOnRegistration)
+  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::SendWelcomeEmailOnRegistration)
+  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::SendVerificationEmailOnRegistration)
+  EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::InvalidateSessionsOnPasswordChange)
+  EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::CreateAuditLogOnPasswordChange)
+  EventBus.subscribe(Identity::Events::UserLoggedIn, Identity::Handlers::CreateAuditLogOnLogin)
+  EventBus.subscribe(Identity::Events::UserLoginFailed, Identity::Handlers::CreateAuditLogOnLoginFailure)
 
-  # --- Password Changed ---
-  EventBus.subscribe(PasswordChanged, InvalidateSessionsOnPasswordChange)
+  # Administration
+  EventBus.subscribe(Identity::Events::UserSuspended, Administration::Handlers::CreateAuditLogOnSuspension)
+  EventBus.subscribe(Identity::Events::UserSuspended, Administration::Handlers::SendSuspensionEmail)
+  EventBus.subscribe(MarketData::Events::AssetCreated, Administration::Handlers::CreateAuditLogOnAssetCreation)
+  EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::SyncAssetOnCreation)
+  EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::BackfillHistoryOnAssetCreation)
 
-  # --- Trade Executed ---
-  EventBus.subscribe(TradeExecuted, RecalculateAvgCostOnTrade)
-  EventBus.subscribe(TradeExecuted, LogTradeActivity)
+  # Market Data
+  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
+  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::BroadcastPriceUpdate)
+  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::RecordPriceHistory)
+  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::RecalculateTrendScoreOnPriceUpdate)
+  EventBus.subscribe(MarketData::Events::AllGatewaysFailed, MarketData::Handlers::LogAllGatewaysFailure)
+  EventBus.subscribe(MarketData::Events::FearGreedUpdated, Alerts::Handlers::EvaluateSentimentAlerts)
 
-  # --- Asset Price Updated (el heartbeat del sistema) ---
-  EventBus.subscribe(AssetPriceUpdated, EvaluateAlertsOnPriceUpdate)
-  EventBus.subscribe(AssetPriceUpdated, BroadcastPriceUpdate)
+  # Alerts
+  EventBus.subscribe(Alerts::Events::AlertRuleTriggered, Alerts::Handlers::CreateAlertEventOnTrigger)
+  EventBus.subscribe(Alerts::Events::AlertRuleTriggered, Alerts::Handlers::CreateNotificationOnAlert)
 
-  # --- Alert Rule Triggered ---
-  EventBus.subscribe(AlertRuleTriggered, CreateAlertEventOnTrigger)
-  EventBus.subscribe(AlertRuleTriggered, CreateNotificationOnAlert)
+  # Notifications
+  EventBus.subscribe(Notifications::Events::NotificationCreated, Notifications::Handlers::BroadcastNotification)
 
-  # --- Notification Created ---
-  EventBus.subscribe(NotificationCreated, BroadcastNotification)
+  # Trading
+  EventBus.subscribe(Trading::Events::TradeExecuted, Trading::Handlers::RecalculateAvgCostOnTrade)
+  EventBus.subscribe(Trading::Events::TradeExecuted, Trading::Handlers::LogTradeActivity)
+  EventBus.subscribe(Trading::Events::SplitDetected, Trading::Handlers::AdjustPositionsOnSplit)
 
-  # --- User Suspended ---
-  EventBus.subscribe(UserSuspended, SendSuspensionEmail)
-
-  # --- Integration Connected ---
-  EventBus.subscribe(IntegrationConnected, LogIntegrationConnected)
-
-  # --- CSV Exported ---
-  EventBus.subscribe(CsvExported, CreateAuditLog)
+  # ... plus additional logging handlers for News, Earnings, Indices, Dividends, CETES,
+  #     Fundamentals, Integrations, and Pool Keys (see full file for details)
 end
 ```
 
 ### Event: AssetPriceUpdated (el mas importante del sistema)
 
 ```ruby
-# app/events/asset_price_updated.rb
-class AssetPriceUpdated < BaseEvent
-  attribute :asset_id,  Types::Integer
-  attribute :symbol,    Types::String
-  attribute :old_price, Types::String
-  attribute :new_price, Types::String
-end
-
-# app/event_handlers/evaluate_alerts_on_price_update.rb
-class EvaluateAlertsOnPriceUpdate
-  def self.async? = true
-
-  def self.call(event)
-    asset = Asset.find(event.asset_id)
-    Alerts::EvaluateRules.call(asset: asset, new_price: BigDecimal(event.new_price))
+# app/contexts/market_data/events/asset_price_updated.rb
+module MarketData
+  module Events
+    class AssetPriceUpdated < BaseEvent
+      attribute :asset_id,  Types::Integer
+      attribute :symbol,    Types::String
+      attribute :old_price, Types::String
+      attribute :new_price, Types::String
+    end
   end
 end
 
-# app/event_handlers/broadcast_price_update.rb
-class BroadcastPriceUpdate
+# app/contexts/alerts/handlers/evaluate_alerts_on_price_update.rb
+module Alerts
+  module Handlers
+    class EvaluateAlertsOnPriceUpdate
+      def self.async? = true
+
+      def self.call(event)
+        asset = Asset.find(event.asset_id)
+        Alerts::UseCases::EvaluateRules.call(asset: asset, new_price: BigDecimal(event.new_price))
+      end
+    end
+  end
+end
+
+# app/contexts/market_data/handlers/broadcast_price_update.rb
+module MarketData
+  module Handlers
+    class BroadcastPriceUpdate
   def self.call(event)
     Turbo::StreamsChannel.broadcast_replace_to(
       "asset_#{event.asset_id}",
@@ -1909,44 +1949,58 @@ end
 ### Event: AlertRuleTriggered
 
 ```ruby
-# app/events/alert_rule_triggered.rb
-class AlertRuleTriggered < BaseEvent
+# app/contexts/alerts/events/alert_rule_triggered.rb
+module Alerts
+  module Events
+    class AlertRuleTriggered < BaseEvent
   attribute :rule_id,      Types::Integer
   attribute :user_id,      Types::Integer
   attribute :asset_symbol, Types::String
-  attribute :price,        Types::String
+      attribute :price,        Types::String
+    end
+  end
 end
 
-# app/event_handlers/create_alert_event_on_trigger.rb
-class CreateAlertEventOnTrigger
+# app/contexts/alerts/handlers/create_alert_event_on_trigger.rb
+module Alerts
+  module Handlers
+    class CreateAlertEventOnTrigger
   def self.call(event)
     rule = AlertRule.find(event.rule_id)
     AlertEvent.create!(
       alert_rule: rule, user_id: event.user_id,
       asset_symbol: event.asset_symbol,
       message: "#{rule.condition.humanize}: #{event.asset_symbol} at $#{event.price}",
-      event_status: :triggered, triggered_at: Time.current
-    )
+        event_status: :triggered, triggered_at: Time.current
+      )
+    end
   end
 end
+end
 
-# app/event_handlers/create_notification_on_alert.rb
-class CreateNotificationOnAlert
-  def self.async? = true
+# app/contexts/alerts/handlers/create_notification_on_alert.rb
+module Alerts
+  module Handlers
+    class CreateNotificationOnAlert
+      def self.async? = true
 
-  def self.call(event)
-    user = User.find(event.user_id)
-    Notifications::CreateNotification.call(
+      def self.call(event)
+        user = User.find(event.user_id)
+        Notifications::UseCases::CreateNotification.new.call(
       user: user,
       title: "#{event.asset_symbol} alert triggered",
       body: "Price reached $#{event.price}",
-      notification_type: :alert_triggered
-    )
+          notification_type: :alert_triggered
+        )
+      end
+    end
   end
 end
 
-# app/event_handlers/broadcast_notification.rb
-class BroadcastNotification
+# app/contexts/notifications/handlers/broadcast_notification.rb
+module Notifications
+  module Handlers
+    class BroadcastNotification
   def self.call(event)
     user = User.find(event.user_id)
     Turbo::StreamsChannel.broadcast_prepend_to(
@@ -1972,54 +2026,64 @@ end
 
 | Controller | Action | Use Case | Turbo Response |
 |------------|--------|----------|----------------|
-| `SessionsController` | `create` | `Sessions::Authenticate` | Redirect → dashboard |
+| `SessionsController` | `create` | `Identity::UseCases::Login` | Redirect → dashboard |
 | `SessionsController` | `destroy` | (inline logout) | Redirect → root |
-| `RegistrationsController` | `create` | `Registrations::RegisterUser` | Redirect → dashboard |
-| `PasswordResetsController` | `create` | `PasswordResets::RequestReset` | Flash + redirect |
-| `PasswordResetsController` | `update` | `PasswordResets::ExecuteReset` | Redirect → login |
-| `DashboardController` | `show` | `Dashboard::Assemble` | Full page |
-| `MarketController` | `index` | `Market::ExploreAssets` | Turbo Frame `market_listings` |
-| `MarketController` | `export` | `Market::ExportCsv` | CSV download |
-| `PortfolioController` | `show` | `Portfolio::LoadOverview` | Turbo Frame `positions_tab` |
-| `AlertsController` | `index` | (load data) | Full page |
-| `AlertsController` | `create` | `Alerts::CreateRule` | Turbo Stream prepend |
-| `AlertsController` | `update` | `Alerts::UpdateRule` | Turbo Stream replace |
-| `AlertsController` | `toggle` | `Alerts::ToggleRule` | Turbo Stream replace |
-| `AlertsController` | `destroy` | `Alerts::DestroyRule` | Turbo Stream remove |
-| `EarningsController` | `index` | `Earnings::ListForMonth` | Turbo Frame `calendar_grid` |
-| `ProfileController` | `show` | (load user) | Full page |
-| `ProfileController` | `update` | `Profiles::UpdateInfo` | Turbo Stream replace |
-| `WatchlistController` | `create` | `Watchlist::AddAsset` | Turbo Stream append |
-| `WatchlistController` | `destroy` | `Watchlist::RemoveAsset` | Turbo Stream remove |
-| `TrendsController` | `index` | `Trends::LoadAssetTrend` | Turbo Frame |
-| `NotificationsController` | `index` | (load notifications) | Turbo Frame dropdown |
-| `NotificationsController` | `update` | `Notifications::MarkAsRead` | Turbo Stream replace |
-| `Admin::AssetsController` | `index` | (load scope) | Full page |
-| `Admin::AssetsController` | `create` | `Admin::Assets::CreateAsset` | Turbo Stream prepend |
-| `Admin::AssetsController` | `toggle` | `Admin::Assets::ToggleStatus` | Turbo Stream replace |
-| `Admin::AssetsController` | `sync` | `Admin::Assets::TriggerSync` | Flash notice |
-| `Admin::UsersController` | `index` | (load scope) | Full page |
-| `Admin::UsersController` | `suspend` | `Admin::Users::SuspendUser` | Turbo Stream replace |
-| `Admin::LogsController` | `index` | `Admin::Logs::ListLogs` | Turbo Frame `logs_table` |
+| `RegistrationsController` | `create` | `Identity::UseCases::Register` | Redirect → dashboard |
+| `PasswordResetsController` | `create` | `Identity::UseCases::RequestPasswordReset` | Flash + redirect |
+| `PasswordResetsController` | `update` | `Identity::UseCases::ResetPassword` | Redirect → login |
+| `DashboardController` | `show` | `Trading::UseCases::AssembleDashboard` | Full page |
+| `MarketController` | `index` | `MarketData::UseCases::ExploreAssets` | Turbo Frame `market_listings` |
+| `PortfolioController` | `show` | `Trading::UseCases::LoadPortfolio` | Turbo Frame `positions_tab` |
+| `AlertsController` | `index` | `Alerts::UseCases::LoadDashboard` | Full page |
+| `AlertsController` | `create` | `Alerts::UseCases::CreateRule` | Turbo Stream prepend |
+| `AlertsController` | `update` | `Alerts::UseCases::UpdateRule` | Turbo Stream replace |
+| `AlertsController` | `toggle` | `Alerts::UseCases::ToggleRule` | Turbo Stream replace |
+| `AlertsController` | `destroy` | `Alerts::UseCases::DestroyRule` | Turbo Stream remove |
+| `EarningsController` | `index` | `MarketData::UseCases::ListEarnings` | Turbo Frame `calendar_grid` |
+| `ProfileController` | `show` | `Identity::UseCases::LoadProfile` | Full page |
+| `ProfileController` | `update` | `Identity::UseCases::UpdateInfo` | Turbo Stream replace |
+| `WatchlistItemsController` | `create` | `Trading::UseCases::AddToWatchlist` | Turbo Stream append |
+| `WatchlistItemsController` | `destroy` | `Trading::UseCases::RemoveFromWatchlist` | Turbo Stream remove |
+| `TrendsController` | `index` | `Trading::UseCases::LoadAssetTrend` | Turbo Frame |
+| `NotificationsController` | `index` | `Notifications::UseCases::ListRecent` | Turbo Frame dropdown |
+| `NotificationsController` | `update` | `Notifications::UseCases::MarkAsRead` | Turbo Stream replace |
+| `NewsController` | `index` | `MarketData::UseCases::ListArticles` | Turbo Frame |
+| `SearchController` | `index` | `Identity::UseCases::GlobalSearch` | Turbo Frame |
+| `OnboardingController` | `update` | `Identity::UseCases::CompleteWizard` | Redirect → dashboard |
+| `Admin::AssetsController` | `index` | `Administration::UseCases::Assets::ListAssets` | Full page |
+| `Admin::AssetsController` | `create` | `Administration::UseCases::Assets::CreateAsset` | Turbo Stream prepend |
+| `Admin::AssetsController` | `toggle` | `Administration::UseCases::Assets::ToggleStatus` | Turbo Stream replace |
+| `Admin::AssetsController` | `sync` | `Administration::UseCases::Assets::TriggerSync` | Flash notice |
+| `Admin::UsersController` | `index` | `Administration::UseCases::Users::ListUsers` | Full page |
+| `Admin::UsersController` | `suspend` | `Administration::UseCases::Users::SuspendUser` | Turbo Stream replace |
+| `Admin::LogsController` | `index` | `Administration::UseCases::Logs::ListLogs` | Turbo Frame `logs_table` |
+| `Admin::IntegrationsController` | `create` | `Administration::UseCases::Integrations::ConnectProvider` | Redirect |
+| `Admin::DashboardController` | `show` | `Administration::UseCases::Dashboard::LoadSyncOverview` | Full page |
 
 ---
 
 ## 8. Gateways (Output Ports para APIs externas)
 
 ```ruby
-# app/gateways/market_data_gateway.rb (Interface / Port)
-class MarketDataGateway
+# app/contexts/market_data/gateways/market_data_gateway.rb (Interface / Port)
+module MarketData
+  module Gateways
+    class MarketDataGateway
   def fetch_price(symbol)
     raise NotImplementedError
   end
 
-  def fetch_bulk_prices(symbols)
-    raise NotImplementedError
+      def fetch_bulk_prices(symbols)
+        raise NotImplementedError
+      end
+    end
   end
 end
 
-# app/gateways/polygon_gateway.rb (Adapter)
-class PolygonGateway < MarketDataGateway
+# app/contexts/market_data/gateways/polygon_gateway.rb (Adapter)
+module MarketData
+  module Gateways
+    class PolygonGateway < MarketDataGateway
   BASE_URL = "https://api.polygon.io/v2"
   TIMEOUT = 5  # segundos
 
@@ -2039,22 +2103,30 @@ class PolygonGateway < MarketDataGateway
     symbols.map { |s| fetch_price(s) }
   end
 
-  include Dry::Monads[:result]
+      include Dry::Monads[:result]
+    end
+  end
 end
 
-# app/gateways/coingecko_gateway.rb (Adapter)
-class CoingeckoGateway < MarketDataGateway
+# app/contexts/market_data/gateways/coingecko_gateway.rb (Adapter)
+module MarketData
+  module Gateways
+    class CoingeckoGateway < MarketDataGateway
   def fetch_price(symbol)
     Success({ symbol:, price: 64231.00, change: 0.85 })
   rescue => e
     Failure([:gateway_error, e.message])
   end
 
-  include Dry::Monads[:result]
+      include Dry::Monads[:result]
+    end
+  end
 end
 
-# app/gateways/fx_rates_gateway.rb (Adapter)
-class FxRatesGateway
+# app/contexts/market_data/gateways/fx_rates_gateway.rb (Adapter)
+module MarketData
+  module Gateways
+    class FxRatesGateway
   include Dry::Monads[:result]
 
   def refresh_rates(base: "USD", targets: %w[EUR MXN GBP TWD])
@@ -2083,8 +2155,9 @@ end
 
 | Bounded Context | Use Cases | Events | Entities |
 |-----------------|-----------|--------|----------|
-| **Identity** | Authenticate, RegisterUser, RequestReset, ExecuteReset, UpdateInfo, ChangePassword | UserRegistered, PasswordChanged, ProfileUpdated | User, AlertPreference, RememberToken |
-| **Trading** | Assemble Dashboard, LoadOverview, OpenPosition, ClosePosition, ExecuteTrade, AddAsset, RemoveAsset, TakePortfolioSnapshot, CompleteWizard (Onboarding) | PositionOpened, PositionClosed, TradeExecuted, WatchlistItemAdded, PortfolioSnapshotTaken | Portfolio, Position, Trade, WatchlistItem, PortfolioSnapshot, DividendPayment |
-| **Alerts** | CreateRule, UpdateRule, ToggleRule, DestroyRule, UpdatePreferences, EvaluateRules, CreateNotification, MarkAsRead | AlertRuleCreated, AlertRuleTriggered, NotificationCreated | AlertRule, AlertEvent, Notification |
-| **Market Data** | ExploreAssets, ExportCsv, ListForMonth, LoadAssetTrend, ListArticles, GlobalSearch | AssetPriceUpdated, FxRatesRefreshed, CsvExported | Asset, TrendScore, EarningsEvent, MarketIndex, NewsArticle, AssetPriceHistory, FxRate, Dividend |
-| **Administration** | CreateAsset, ToggleStatus, TriggerSync, SuspendUser, ConnectProvider, RefreshSync, ListLogs, ExportCsv | UserSuspended, IntegrationConnected | SystemLog, Integration, AuditLog |
+| **Identity** | `Login`, `Register`, `RequestPasswordReset`, `ResetPassword`, `UpdateInfo`, `ChangePassword`, `VerifyEmail`, `CompleteWizard`, `GlobalSearch`, `LoadProfile`, `LoadProgress`, `LoadAssetCatalog` | `UserRegistered`, `PasswordChanged`, `ProfileUpdated`, `EmailVerified`, `UserLoggedIn`, `UserLoginFailed`, `UserSuspended` | User, AlertPreference, RememberToken |
+| **Trading** | `AssembleDashboard`, `LoadPortfolio`, `ExecuteTrade`, `UpdateTrade`, `DeleteTrade`, `AddToWatchlist`, `RemoveFromWatchlist`, `LoadAssetTrend` | `TradeExecuted`, `TradeUpdated`, `TradeDeleted`, `PositionOpened`, `PositionClosed`, `WatchlistItemAdded`, `PortfolioSnapshotTaken`, `SplitDetected` | Portfolio, Position, Trade, WatchlistItem, PortfolioSnapshot, DividendPayment |
+| **Alerts** | `CreateRule`, `UpdateRule`, `ToggleRule`, `DestroyRule`, `UpdatePreferences`, `EvaluateRules`, `EvaluateSentimentRules`, `LoadDashboard` | `AlertRuleCreated`, `AlertRuleTriggered` | AlertRule, AlertEvent |
+| **Market Data** | `ExploreAssets`, `ListEarnings`, `ListArticles`, `LoadAssetDetail`, `SyncArticles`, `SyncEarnings`, `SyncCetes`, `SyncCryptoFundamentals`, `NotifyApproachingEarnings` | `AssetPriceUpdated`, `AssetCreated`, `AssetDeleted`, `NewsSynced`, `EarningsSynced`, `FearGreedUpdated`, `MarketIndicesUpdated`, `DividendsSynced`, `CetesSynced`, `AssetFundamentalsUpdated`, `FinancialStatementsSynced`, `FxRatesRefreshed`, `AllGatewaysFailed` | Asset, TrendScore, EarningsEvent, MarketIndex, NewsArticle, AssetPriceHistory, FxRate, Dividend |
+| **Administration** | `Assets::CreateAsset`, `Assets::DeleteAsset`, `Assets::ListAssets`, `Assets::ToggleStatus`, `Assets::TriggerSync`, `Users::SuspendUser`, `Users::ListUsers`, `Integrations::ConnectProvider`, `Integrations::UpdateProvider`, `Integrations::DeleteProvider`, `Integrations::RefreshSync`, `Integrations::AddPoolKey`, `Integrations::TogglePoolKey`, `Integrations::RemovePoolKey`, `Logs::ListLogs`, `Logs::ExportCsv`, `Dashboard::LoadSyncOverview` | `CsvExported`, `IntegrationConnected`, `IntegrationUpdated`, `IntegrationDeleted`, `PoolKeyAdded`, `PoolKeyToggled`, `PoolKeyRemoved` | SystemLog, Integration, AuditLog |
+| **Notifications** | `CreateNotification`, `ListRecent`, `MarkAsRead` | `NotificationCreated` | Notification |
