@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::SendSuspensionEmail do
+RSpec.describe Administration::Handlers::SendSuspensionEmail do
   describe ".async?" do
     it { expect(described_class.async?).to be true }
   end

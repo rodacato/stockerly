@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Users::SuspendUser do
+RSpec.describe Administration::UseCases::Users::SuspendUser do
   let(:admin) { create(:user, role: :admin) }
   let(:regular_user) { create(:user) }
 

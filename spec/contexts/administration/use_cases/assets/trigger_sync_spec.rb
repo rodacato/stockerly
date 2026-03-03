@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Assets::TriggerSync do
+RSpec.describe Administration::UseCases::Assets::TriggerSync do
   describe "#call" do
     context "with specific asset_id" do
       let(:asset) { create(:asset) }

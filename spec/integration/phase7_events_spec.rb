@@ -87,7 +87,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe Administration::CsvExported do
+  describe Administration::Events::CsvExported do
     it "has required attributes" do
       event = described_class.new(user_id: 1, export_type: "trades")
 
@@ -95,7 +95,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe Administration::IntegrationConnected do
+  describe Administration::Events::IntegrationConnected do
     it "has required attributes" do
       event = described_class.new(integration_id: 1, provider_name: "Polygon.io")
 

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::CreateAuditLogOnAssetCreation do
+RSpec.describe Administration::Handlers::CreateAuditLogOnAssetCreation do
   let(:admin) { create(:user, :admin) }
   let(:asset) { create(:asset, symbol: "NVDA") }
 

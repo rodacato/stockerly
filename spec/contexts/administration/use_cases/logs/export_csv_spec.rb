@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Logs::ExportCsv do
+RSpec.describe Administration::UseCases::Logs::ExportCsv do
   describe ".call" do
     let(:admin) { create(:user, :admin) }
 
@@ -35,7 +35,7 @@ RSpec.describe Administration::Logs::ExportCsv do
     end
 
     it "publishes CsvExported event" do
-      expect(EventBus).to receive(:publish).with(an_instance_of(Administration::CsvExported))
+      expect(EventBus).to receive(:publish).with(an_instance_of(Administration::Events::CsvExported))
 
       described_class.call(admin: admin)
     end

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Assets::DeleteAsset do
+RSpec.describe Administration::UseCases::Assets::DeleteAsset do
   let(:admin) { create(:user, :admin) }
 
   describe "#call" do

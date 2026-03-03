@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Logs::ListLogs do
+RSpec.describe Administration::UseCases::Logs::ListLogs do
   let!(:success_log) { create(:system_log, severity: :success, task_name: "FX Rate Update", module_name: "Finance") }
   let!(:error_log) { create(:system_log, severity: :error, task_name: "Price Sync", module_name: "Market") }
   let!(:warning_log) { create(:system_log, severity: :warning, task_name: "Inventory Audit", module_name: "Finance") }

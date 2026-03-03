@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Integrations::DeleteProvider do
+RSpec.describe Administration::UseCases::Integrations::DeleteProvider do
   let(:admin) { create(:user, :admin) }
   let!(:integration) { create(:integration, provider_name: "Test Provider") }
 
@@ -19,7 +19,7 @@ RSpec.describe Administration::Integrations::DeleteProvider do
       end
 
       it "publishes IntegrationDeleted event" do
-        expect(EventBus).to receive(:publish).with(instance_of(Administration::IntegrationDeleted))
+        expect(EventBus).to receive(:publish).with(instance_of(Administration::Events::IntegrationDeleted))
         described_class.call(admin: admin, params: { id: integration.id })
       end
 

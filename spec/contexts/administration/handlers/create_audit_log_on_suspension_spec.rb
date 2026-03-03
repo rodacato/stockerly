@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::CreateAuditLogOnSuspension do
+RSpec.describe Administration::Handlers::CreateAuditLogOnSuspension do
   let(:admin) { create(:user, role: :admin) }
   let(:user) { create(:user) }
 

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Assets::CreateAsset do
+RSpec.describe Administration::UseCases::Assets::CreateAsset do
   describe ".call" do
     let(:admin) { create(:user, :admin) }
 

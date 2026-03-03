@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Integrations::ConnectContract do
+RSpec.describe Administration::Contracts::Integrations::ConnectContract do
   subject(:contract) { described_class.new }
 
   it "passes with valid params" do

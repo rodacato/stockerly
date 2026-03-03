@@ -4,7 +4,7 @@ module Admin
     rate_limit to: 10, within: 1.minute, only: :create
 
     def index
-      result = Administration::Assets::ListAssets.call(params: filter_params)
+      result = Administration::UseCases::Assets::ListAssets.call(params: filter_params)
       data = result.value!
 
       @pagy          = data[:pagy]
@@ -14,7 +14,7 @@ module Admin
     end
 
     def trigger_sync
-      result = Administration::Assets::TriggerSync.call(asset_id: params[:id])
+      result = Administration::UseCases::Assets::TriggerSync.call(asset_id: params[:id])
 
       if result.success?
         redirect_to admin_assets_path, notice: "Sync job enqueued."
@@ -24,7 +24,7 @@ module Admin
     end
 
     def trigger_sync_all
-      result = Administration::Assets::TriggerSync.call(asset_type: params[:type])
+      result = Administration::UseCases::Assets::TriggerSync.call(asset_type: params[:type])
 
       if result.success?
         redirect_to admin_assets_path, notice: "Bulk sync enqueued."
@@ -34,7 +34,7 @@ module Admin
     end
 
     def create
-      result = Administration::Assets::CreateAsset.call(admin: current_user, params: asset_params.to_h)
+      result = Administration::UseCases::Assets::CreateAsset.call(admin: current_user, params: asset_params.to_h)
 
       if result.success?
         redirect_to admin_assets_path, notice: "Asset \"#{result.value!.symbol}\" created successfully."
@@ -44,7 +44,7 @@ module Admin
     end
 
     def destroy
-      result = Administration::Assets::DeleteAsset.call(asset_id: params[:id], admin: current_user)
+      result = Administration::UseCases::Assets::DeleteAsset.call(asset_id: params[:id], admin: current_user)
 
       if result.success?
         redirect_to admin_assets_path, notice: "Asset \"#{result.value!}\" deleted."
@@ -54,7 +54,7 @@ module Admin
     end
 
     def toggle_status
-      result = Administration::Assets::ToggleStatus.call(asset_id: params[:id])
+      result = Administration::UseCases::Assets::ToggleStatus.call(asset_id: params[:id])
 
       if result.success?
         redirect_to admin_assets_path, notice: "Asset status updated."

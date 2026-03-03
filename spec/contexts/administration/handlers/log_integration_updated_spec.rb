@@ -1,8 +1,8 @@
 require "rails_helper"
 
-RSpec.describe Administration::LogIntegrationUpdated do
+RSpec.describe Administration::Handlers::LogIntegrationUpdated do
   describe ".call" do
-    let(:event) { Administration::IntegrationUpdated.new(integration_id: 1, provider_name: "Polygon.io", changes: { "daily_call_limit" => { from: 500, to: 1000 } }) }
+    let(:event) { Administration::Events::IntegrationUpdated.new(integration_id: 1, provider_name: "Polygon.io", changes: { "daily_call_limit" => { from: 500, to: 1000 } }) }
 
     it "creates a system log entry" do
       expect { described_class.call(event) }.to change(SystemLog, :count).by(1)

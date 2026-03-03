@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Assets::ToggleStatus do
+RSpec.describe Administration::UseCases::Assets::ToggleStatus do
   describe "#call" do
     it "disables an active asset" do
       asset = create(:asset, sync_status: :active)

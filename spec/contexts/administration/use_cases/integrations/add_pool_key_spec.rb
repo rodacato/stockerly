@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Integrations::AddPoolKey do
+RSpec.describe Administration::UseCases::Integrations::AddPoolKey do
   let(:admin) { create(:user, :admin) }
   let!(:integration) { create(:integration, provider_name: "Polygon.io") }
 
@@ -24,7 +24,7 @@ RSpec.describe Administration::Integrations::AddPoolKey do
       end
 
       it "publishes PoolKeyAdded event" do
-        expect(EventBus).to receive(:publish).with(instance_of(Administration::PoolKeyAdded))
+        expect(EventBus).to receive(:publish).with(instance_of(Administration::Events::PoolKeyAdded))
         described_class.call(admin: admin, params: params)
       end
     end

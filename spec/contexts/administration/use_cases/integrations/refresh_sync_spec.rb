@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Integrations::RefreshSync do
+RSpec.describe Administration::UseCases::Integrations::RefreshSync do
   describe "#call" do
     let!(:integration) { create(:integration, provider_name: "Polygon.io") }
 

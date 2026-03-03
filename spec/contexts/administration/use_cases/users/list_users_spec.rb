@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Users::ListUsers do
+RSpec.describe Administration::UseCases::Users::ListUsers do
   describe ".call" do
     let!(:user1) { create(:user, full_name: "Alice Investor", email: "alice@example.com") }
     let!(:user2) { create(:user, full_name: "Bob Trader", email: "bob@example.com") }

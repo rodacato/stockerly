@@ -1,8 +1,8 @@
 require "rails_helper"
 
-RSpec.describe Administration::LogIntegrationDeleted do
+RSpec.describe Administration::Handlers::LogIntegrationDeleted do
   describe ".call" do
-    let(:event) { Administration::IntegrationDeleted.new(integration_id: 1, provider_name: "Old Provider") }
+    let(:event) { Administration::Events::IntegrationDeleted.new(integration_id: 1, provider_name: "Old Provider") }
 
     it "creates a system log entry" do
       expect { described_class.call(event) }.to change(SystemLog, :count).by(1)

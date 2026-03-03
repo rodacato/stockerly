@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Integrations::TogglePoolKey do
+RSpec.describe Administration::UseCases::Integrations::TogglePoolKey do
   let(:admin) { create(:user, :admin) }
   let!(:pool_key) { create(:api_key_pool, name: "Production", enabled: true) }
 
@@ -19,7 +19,7 @@ RSpec.describe Administration::Integrations::TogglePoolKey do
     end
 
     it "publishes PoolKeyToggled event" do
-      expect(EventBus).to receive(:publish).with(instance_of(Administration::PoolKeyToggled))
+      expect(EventBus).to receive(:publish).with(instance_of(Administration::Events::PoolKeyToggled))
       described_class.call(admin: admin, params: { id: pool_key.id })
     end
 

@@ -3,7 +3,7 @@ module Admin
     include Pagy::Backend
 
     def index
-      result = Administration::Logs::ListLogs.call(params: filter_params)
+      result = Administration::UseCases::Logs::ListLogs.call(params: filter_params)
 
       if result.success?
         data  = result.value!
@@ -13,7 +13,7 @@ module Admin
     end
 
     def export_csv
-      result = Administration::Logs::ExportCsv.call(admin: current_user, params: filter_params)
+      result = Administration::UseCases::Logs::ExportCsv.call(admin: current_user, params: filter_params)
 
       if result.success?
         send_data result.value!, filename: "system_logs_#{Date.current}.csv", type: "text/csv"

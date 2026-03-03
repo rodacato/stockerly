@@ -7,7 +7,7 @@ module Admin
     end
 
     def create
-      result = Administration::Integrations::ConnectProvider.call(
+      result = Administration::UseCases::Integrations::ConnectProvider.call(
         admin: current_user,
         params: integration_params.to_h
       )
@@ -20,7 +20,7 @@ module Admin
     end
 
     def update
-      result = Administration::Integrations::UpdateProvider.call(
+      result = Administration::UseCases::Integrations::UpdateProvider.call(
         admin: current_user,
         params: update_params.to_h.merge(id: params[:id].to_i)
       )
@@ -33,7 +33,7 @@ module Admin
     end
 
     def destroy
-      result = Administration::Integrations::DeleteProvider.call(
+      result = Administration::UseCases::Integrations::DeleteProvider.call(
         admin: current_user,
         params: { id: params[:id].to_i }
       )
@@ -46,7 +46,7 @@ module Admin
     end
 
     def refresh_sync
-      result = Administration::Integrations::RefreshSync.call(integration_id: params[:id])
+      result = Administration::UseCases::Integrations::RefreshSync.call(integration_id: params[:id])
 
       if result.success?
         redirect_back fallback_location: admin_assets_path, notice: "Integration sync enqueued."

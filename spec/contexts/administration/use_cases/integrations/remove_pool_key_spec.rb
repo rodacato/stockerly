@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Integrations::RemovePoolKey do
+RSpec.describe Administration::UseCases::Integrations::RemovePoolKey do
   let(:admin) { create(:user, :admin) }
   let!(:pool_key) { create(:api_key_pool, name: "Retired Key") }
 
@@ -18,7 +18,7 @@ RSpec.describe Administration::Integrations::RemovePoolKey do
     end
 
     it "publishes PoolKeyRemoved event" do
-      expect(EventBus).to receive(:publish).with(instance_of(Administration::PoolKeyRemoved))
+      expect(EventBus).to receive(:publish).with(instance_of(Administration::Events::PoolKeyRemoved))
       described_class.call(admin: admin, params: { id: pool_key.id })
     end
 

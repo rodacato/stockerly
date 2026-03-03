@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Dashboard::LoadSyncOverview do
+RSpec.describe Administration::UseCases::Dashboard::LoadSyncOverview do
   describe ".call" do
     it "returns Success with sync overview data" do
       result = described_class.call

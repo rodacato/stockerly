@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Integrations::ConnectProvider do
+RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
   describe ".call" do
     let(:admin) { create(:user, :admin) }
 
@@ -19,7 +19,7 @@ RSpec.describe Administration::Integrations::ConnectProvider do
     end
 
     it "publishes IntegrationConnected event" do
-      expect(EventBus).to receive(:publish).with(an_instance_of(Administration::IntegrationConnected))
+      expect(EventBus).to receive(:publish).with(an_instance_of(Administration::Events::IntegrationConnected))
 
       described_class.call(admin: admin, params: valid_params)
     end

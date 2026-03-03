@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::LogIntegrationConnected do
+RSpec.describe Administration::Handlers::LogIntegrationConnected do
   describe ".call" do
     it "creates a SystemLog entry" do
       expect {

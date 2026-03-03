@@ -11,7 +11,7 @@ module Admin
       @integrations   = Integration.all
       @data_sources   = DataSourceRegistry.all
 
-      result = Administration::Dashboard::LoadSyncOverview.call
+      result = Administration::UseCases::Dashboard::LoadSyncOverview.call
       @sync_overview = result.value! if result.success?
     end
 

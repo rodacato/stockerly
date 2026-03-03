@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Assets::CreateContract do
+RSpec.describe Administration::Contracts::Assets::CreateContract do
   subject(:contract) { described_class.new }
 
   let(:valid_params) do

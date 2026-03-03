@@ -53,16 +53,16 @@ RSpec.describe "Event Subscription Wiring" do
     it "has audit log and suspension email handlers" do
       handlers = EventBus.handlers_for(Identity::Events::UserSuspended)
 
-      expect(handlers).to include(Administration::CreateAuditLogOnSuspension)
-      expect(handlers).to include(Administration::SendSuspensionEmail)
+      expect(handlers).to include(Administration::Handlers::CreateAuditLogOnSuspension)
+      expect(handlers).to include(Administration::Handlers::SendSuspensionEmail)
     end
   end
 
-  describe "Administration::IntegrationConnected" do
-    it "has Administration::LogIntegrationConnected handler" do
-      handlers = EventBus.handlers_for(Administration::IntegrationConnected)
+  describe "Administration::Events::IntegrationConnected" do
+    it "has Administration::Handlers::LogIntegrationConnected handler" do
+      handlers = EventBus.handlers_for(Administration::Events::IntegrationConnected)
 
-      expect(handlers).to include(Administration::LogIntegrationConnected)
+      expect(handlers).to include(Administration::Handlers::LogIntegrationConnected)
     end
   end
 end

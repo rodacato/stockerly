@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Integrations::UpdateProvider do
+RSpec.describe Administration::UseCases::Integrations::UpdateProvider do
   let(:admin) { create(:user, :admin) }
   let!(:integration) { create(:integration, provider_name: "Polygon.io", daily_call_limit: 500) }
 
@@ -27,7 +27,7 @@ RSpec.describe Administration::Integrations::UpdateProvider do
       end
 
       it "publishes IntegrationUpdated event" do
-        expect(EventBus).to receive(:publish).with(instance_of(Administration::IntegrationUpdated))
+        expect(EventBus).to receive(:publish).with(instance_of(Administration::Events::IntegrationUpdated))
 
         described_class.call(
           admin: admin,

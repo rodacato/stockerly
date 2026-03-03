@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administration::Assets::ListAssets do
+RSpec.describe Administration::UseCases::Assets::ListAssets do
   describe ".call" do
     before do
       create(:asset, symbol: "AAPL", name: "Apple Inc.", asset_type: :stock, sync_status: :active)
