@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :logged_in?
 
+  before_action :set_honeybadger_context
+
   def append_info_to_payload(payload)
     super
     payload[:user_id] = current_user&.id
@@ -14,6 +16,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def set_honeybadger_context
+    Honeybadger.context(user_id: current_user&.id, user_email: current_user&.email)
+  end
 
   def current_user
     @current_user ||= if session[:user_id]

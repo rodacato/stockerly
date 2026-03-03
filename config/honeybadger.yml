@@ -1,0 +1,24 @@
+---
+api_key: '<%= ENV["HONEYBADGER_API_KEY"] %>'
+report_data: <%= !Rails.env.local? %>
+
+params_filters:
+  - passw
+  - email
+  - secret
+  - token
+  - _key
+  - crypt
+  - salt
+  - certificate
+  - otp
+  - ssn
+  - cvv
+  - cvc
+
+breadcrumbs:
+  enabled: true
+
+logging:
+  path: "STDOUT"
+  level: "WARN"

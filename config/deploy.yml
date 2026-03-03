@@ -48,6 +48,7 @@ env:
     - EXCHANGERATE_API_KEY
     - ALPHA_VANTAGE_API_KEY
     - BANXICO_API_TOKEN
+    - HONEYBADGER_API_KEY
 
 builder:
   arch: amd64
