@@ -40,11 +40,7 @@
         </table>
       </div>
     <% else %>
-      <div class="flex flex-col items-center justify-center py-16 text-slate-400">
-        <span class="material-symbols-outlined text-4xl mb-3">swap_horiz</span>
-        <p class="text-sm font-medium">No trades yet</p>
-        <p class="text-xs mt-1">Use the form above to log your first trade</p>
-      </div>
+      <%= render "components/empty_state", icon: "swap_horiz", title: "No trades yet", description: "Use the form above to log your first trade." %>
     <% end %>
   <% elsif @tab == "dividends" %>
     <%# Upcoming Dividends %>
@@ -110,11 +106,7 @@
         </table>
       </div>
     <% else %>
-      <div class="flex flex-col items-center justify-center py-16 text-slate-400">
-        <span class="material-symbols-outlined text-4xl mb-3">payments</span>
-        <p class="text-sm font-medium">No dividend history yet</p>
-        <p class="text-xs mt-1">Dividend payments will appear here</p>
-      </div>
+      <%= render "components/empty_state", icon: "payments", title: "No dividend history yet", description: "Dividend payments will appear here." %>
     <% end %>
   <% else %>
     <%# Open or Closed Positions %>
@@ -173,11 +165,7 @@
         </table>
       </div>
     <% else %>
-      <div class="flex flex-col items-center justify-center py-16 text-slate-400">
-        <span class="material-symbols-outlined text-4xl mb-3"><%= @tab == "closed" ? "lock" : "trending_up" %></span>
-        <p class="text-sm font-medium">No <%= @tab %> positions yet</p>
-        <p class="text-xs mt-1">Positions will appear here</p>
-      </div>
+      <%= render "components/empty_state", icon: (@tab == "closed" ? "lock" : "trending_up"), title: "No #{@tab} positions yet", description: "Positions will appear here." %>
     <% end %>
   <% end %>
 </section>

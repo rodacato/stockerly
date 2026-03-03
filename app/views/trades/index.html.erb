@@ -34,10 +34,6 @@
       </table>
     </div>
   <% else %>
-    <div class="flex flex-col items-center justify-center py-16 text-slate-400">
-      <span class="material-symbols-outlined text-4xl mb-3">swap_horiz</span>
-      <p class="text-sm font-medium">No trades yet</p>
-      <p class="text-xs mt-1">Your trade history will appear here</p>
-    </div>
+    <%= render "components/empty_state", icon: "swap_horiz", title: "No trades yet", description: "Your trade history will appear here." %>
   <% end %>
 </section>

@@ -49,11 +49,5 @@
     </div>
   </div>
 <% else %>
-  <div class="flex flex-col items-center justify-center py-16 text-center">
-    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">description</span>
-    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">No financial statements</h3>
-    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">
-      Financial statement data is not yet available for this asset. Statements sync weekly.
-    </p>
-  </div>
+  <%= render "components/empty_state", icon: "description", title: "No financial statements", description: "Financial statement data is not yet available for this asset. Statements sync weekly." %>
 <% end %>

@@ -7,11 +7,5 @@
     <% end %>
   </div>
 <% else %>
-  <div class="flex flex-col items-center justify-center py-16 text-center">
-    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">analytics</span>
-    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">No data available</h3>
-    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">
-      Fundamental data has not been synced for this asset yet.
-    </p>
-  </div>
+  <%= render "components/empty_state", icon: "analytics", title: "No data available", description: "Fundamental data has not been synced for this asset yet." %>
 <% end %>

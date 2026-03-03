@@ -23,8 +23,6 @@
       </table>
     </div>
   <% else %>
-    <div class="px-6 py-8 text-center text-sm text-slate-500">
-      No alert rules configured. Use the form above to create your first alert.
-    </div>
+    <%= render "components/empty_state", icon: "notifications_none", title: "No alert rules configured", description: "Use the form above to create your first alert." %>
   <% end %>
 </section>

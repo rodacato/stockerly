@@ -26,7 +26,7 @@
         </div>
       <% end %>
     <% else %>
-      <p class="text-sm text-slate-500 text-center py-8">No recent alert events.</p>
+      <%= render "components/empty_state", icon: "notifications_active", title: "No recent alert events", description: "Triggered alerts will appear here in real time." %>
     <% end %>
   </div>
 </section>
