@@ -1,6 +1,7 @@
 // Stockerly Service Worker — cache-first for static assets, network-first for pages
 const CACHE_VERSION = "v1";
 const STATIC_CACHE = `stockerly-static-${CACHE_VERSION}`;
+const FONT_CACHE = `stockerly-fonts-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 
 // Assets to pre-cache on install
@@ -21,11 +22,12 @@ self.addEventListener("install", (event) => {
 
 // Activate: clean up old caches
 self.addEventListener("activate", (event) => {
+  const currentCaches = [STATIC_CACHE, FONT_CACHE];
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
         keys
-          .filter((key) => key.startsWith("stockerly-") && key !== STATIC_CACHE)
+          .filter((key) => key.startsWith("stockerly-") && !currentCaches.includes(key))
           .map((key) => caches.delete(key))
       )
     )
@@ -51,18 +53,35 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets (CSS, JS, images, fonts): cache-first
-  if (isStaticAsset(request.url)) {
+  // Google Fonts: cache-first (fonts rarely change)
+  if (isGoogleFont(request.url)) {
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached;
         return fetch(request).then((response) => {
           if (response.ok) {
             const clone = response.clone();
+            caches.open(FONT_CACHE).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // Static assets (CSS, JS, images, fonts): stale-while-revalidate
+  if (isStaticAsset(request.url)) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        const fetchPromise = fetch(request).then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
             caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone));
           }
           return response;
         });
+        return cached || fetchPromise;
       })
     );
     return;
@@ -71,4 +90,8 @@ self.addEventListener("fetch", (event) => {
 
 function isStaticAsset(url) {
   return /\.(css|js|png|jpg|jpeg|svg|ico|woff2?|ttf|eot)(\?.*)?$/.test(url);
+}
+
+function isGoogleFont(url) {
+  return url.startsWith("https://fonts.googleapis.com") || url.startsWith("https://fonts.gstatic.com");
 }

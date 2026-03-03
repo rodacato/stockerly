@@ -23,6 +23,21 @@ RSpec.describe "PWA", type: :request do
       expect(response.body).to include("CACHE_VERSION")
       expect(response.body).to include("stockerly-static")
     end
+
+    it "includes font cache for Google Fonts" do
+      get "/service-worker.js"
+
+      expect(response.body).to include("stockerly-fonts")
+      expect(response.body).to include("fonts.googleapis.com")
+    end
+
+    it "pre-caches offline page and icons" do
+      get "/service-worker.js"
+
+      expect(response.body).to include("/offline.html")
+      expect(response.body).to include("/icon-192.png")
+      expect(response.body).to include("/icon-512.png")
+    end
   end
 
   describe "offline.html" do
