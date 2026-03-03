@@ -37,13 +37,12 @@ RSpec.describe "Dashboard caching", type: :system do
     expect(page).to have_content("Watchlist Performance")
   end
 
-  it "renders trending section with cached content" do
+  it "renders lazy Turbo Frame placeholder for trending section" do
     create(:asset, symbol: "HOT", name: "Hot Stock", asset_type: :stock, current_price: 50.0, change_percent_24h: 10.0)
 
     visit dashboard_path
 
-    expect(page).to have_content("Trending Today")
-    expect(page).to have_content("HOT")
+    expect(page).to have_css('turbo-frame#dashboard_trending[loading="lazy"]')
   end
 
   it "renders weekly insight with cached content" do

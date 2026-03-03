@@ -38,7 +38,9 @@ Rails.application.routes.draw do
   get  "onboarding/step3", to: "onboarding#step3"
 
   get "news",      to: "news#index"
-  get "dashboard", to: "dashboard#show"
+  get "dashboard",           to: "dashboard#show"
+  get "dashboard/news_feed", to: "dashboard#news_feed", as: :dashboard_news_feed
+  get "dashboard/trending",  to: "dashboard#trending",  as: :dashboard_trending
   get "market",                        to: "market#index"
   get "market/:symbol",                to: "market#show",           as: :market_asset
   get "market/:symbol/earnings_tab",   to: "market#earnings_tab",   as: :market_asset_earnings_tab

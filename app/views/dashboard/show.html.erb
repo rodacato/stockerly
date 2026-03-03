@@ -65,12 +65,16 @@
   <%# Main Content Column %>
   <div class="lg:col-span-8 space-y-8">
     <%= render "dashboard/watchlist_table" %>
-    <%= render "dashboard/news_feed" %>
+    <%= turbo_frame_tag "dashboard_news_feed", src: dashboard_news_feed_path, loading: "lazy" do %>
+      <%= render "components/skeleton", type: "card", count: 3 %>
+    <% end %>
   </div>
 
   <%# Sidebar Column %>
   <div class="lg:col-span-4 space-y-8">
-    <%= render "dashboard/trending_today" %>
+    <%= turbo_frame_tag "dashboard_trending", src: dashboard_trending_path, loading: "lazy" do %>
+      <%= render "components/skeleton", type: "card", count: 1 %>
+    <% end %>
     <%= render "dashboard/weekly_insight" %>
     <%= render "dashboard/market_status" %>
   </div>

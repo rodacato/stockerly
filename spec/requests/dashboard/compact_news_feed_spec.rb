@@ -10,12 +10,23 @@ RSpec.describe "Dashboard compact news feed", type: :request do
   end
 
   describe "GET /dashboard" do
-    it "renders news cards in compact single-line format" do
-      create(:news_article, title: "Apple beats earnings", related_ticker: "AAPL", source: "Bloomberg", published_at: 1.hour.ago)
-
+    it "renders a lazy Turbo Frame placeholder for news feed" do
       get dashboard_path
 
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include('id="dashboard_news_feed"')
+      expect(response.body).to include('loading="lazy"')
+    end
+  end
+
+  describe "GET /dashboard/news_feed" do
+    it "renders news cards in compact single-line format" do
+      create(:news_article, title: "Apple beats earnings", related_ticker: "AAPL", source: "Bloomberg", published_at: 1.hour.ago)
+
+      get dashboard_news_feed_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("dashboard_news_feed")
       expect(response.body).to include("Apple beats earnings")
       expect(response.body).to include("AAPL")
       expect(response.body).to include("Bloomberg")
@@ -24,9 +35,8 @@ RSpec.describe "Dashboard compact news feed", type: :request do
     it "does not render image placeholders in compact news cards" do
       create(:news_article, title: "Test article", published_at: 1.hour.ago)
 
-      get dashboard_path
+      get dashboard_news_feed_path
 
-      # The old design had a 'h-24 w-32' image placeholder div
       expect(response.body).not_to include("h-24 w-32")
     end
 
@@ -34,7 +44,7 @@ RSpec.describe "Dashboard compact news feed", type: :request do
       create(:news_article, title: "Article 1", published_at: 1.hour.ago)
       create(:news_article, title: "Article 2", published_at: 2.hours.ago)
 
-      get dashboard_path
+      get dashboard_news_feed_path
 
       expect(response.body).to include("space-y-1")
     end
