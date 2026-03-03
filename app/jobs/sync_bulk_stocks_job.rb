@@ -1,5 +1,5 @@
 # Fetches prices for multiple US stock assets using Polygon's grouped daily endpoint,
-# updates each Asset record, and publishes MarketData::AssetPriceUpdated events.
+# updates each Asset record, and publishes MarketData::Events::AssetPriceUpdated events.
 # Similar pattern to SyncBulkCryptoJob but uses Polygon's grouped endpoint
 # for a single API call covering all US stocks.
 class SyncBulkStocksJob < ApplicationJob
@@ -13,7 +13,7 @@ class SyncBulkStocksJob < ApplicationJob
     assets = Asset.where(id: asset_ids, sync_status: :active).index_by(&:symbol)
     return if assets.empty?
 
-    result = breaker.call { MarketData::PolygonGateway.new.fetch_grouped_daily }
+    result = breaker.call { MarketData::Gateways::PolygonGateway.new.fetch_grouped_daily }
 
     if result.success?
       updated = update_assets(assets, result.value!)
@@ -51,7 +51,7 @@ class SyncBulkStocksJob < ApplicationJob
 
       next unless price_changed?(old_price, data[:price])
 
-      EventBus.publish(MarketData::AssetPriceUpdated.new(
+      EventBus.publish(MarketData::Events::AssetPriceUpdated.new(
         asset_id: asset.id,
         symbol: asset.symbol,
         old_price: (old_price || 0).to_s,

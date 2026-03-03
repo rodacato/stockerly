@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::FearGreedUpdated do
+RSpec.describe MarketData::Events::FearGreedUpdated do
   it "has required attributes" do
     event = described_class.new(index_type: "crypto", value: 25, classification: "Extreme Fear")
 

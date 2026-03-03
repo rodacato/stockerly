@@ -1,6 +1,8 @@
 module MarketData
-  class AssetDeleted < BaseEvent
-    attribute :asset_symbol, Types::String
-    attribute :admin_id, Types::Integer
+  module Events
+    class AssetDeleted < BaseEvent
+      attribute :asset_symbol, Types::String
+      attribute :admin_id, Types::Integer
+    end
   end
 end

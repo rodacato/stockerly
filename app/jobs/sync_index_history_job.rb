@@ -1,5 +1,5 @@
 # Syncs daily close prices for major market indices into MarketIndexHistory.
-# Uses MarketData::YahooFinanceGateway#fetch_historical for OHLCV data.
+# Uses MarketData::Gateways::YahooFinanceGateway#fetch_historical for OHLCV data.
 # Idempotent: skips existing records via unique index on [market_index_id, date].
 class SyncIndexHistoryJob < ApplicationJob
   include SyncLogging
@@ -9,11 +9,11 @@ class SyncIndexHistoryJob < ApplicationJob
   YAHOO_INDICES = %w[^GSPC ^IXIC ^DJI].freeze
 
   def perform(days: 5)
-    gateway = MarketData::YahooFinanceGateway.new
+    gateway = MarketData::Gateways::YahooFinanceGateway.new
     synced = 0
 
     YAHOO_INDICES.each do |yahoo_sym|
-      internal_sym = MarketData::YahooFinanceGateway::INDEX_SYMBOL_MAP[yahoo_sym]
+      internal_sym = MarketData::Gateways::YahooFinanceGateway::INDEX_SYMBOL_MAP[yahoo_sym]
       index = MarketIndex.find_by(symbol: internal_sym)
       next unless index
 

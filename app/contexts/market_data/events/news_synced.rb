@@ -1,5 +1,7 @@
 module MarketData
-  class NewsSynced < BaseEvent
-    attribute :count, Types::Integer
+  module Events
+    class NewsSynced < BaseEvent
+      attribute :count, Types::Integer
+    end
   end
 end

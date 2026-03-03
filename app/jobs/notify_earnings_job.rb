@@ -4,7 +4,7 @@ class NotifyEarningsJob < ApplicationJob
   queue_as :default
 
   def perform
-    result = MarketData::NotifyApproachingEarnings.call
+    result = MarketData::UseCases::NotifyApproachingEarnings.call
 
     if result.success?
       log_sync_success("Earnings Notifications", message: "#{result.value!} notifications sent")

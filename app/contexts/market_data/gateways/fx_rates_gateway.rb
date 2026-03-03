@@ -1,8 +1,9 @@
 module MarketData
-  # Driven adapter: exchangerate-api.com for foreign exchange rates.
-  # Separate output port — does NOT inherit from MarketDataGateway
-  # because the contract is fundamentally different (FX pairs, not asset prices).
-  class FxRatesGateway
+  module Gateways
+    # Driven adapter: exchangerate-api.com for foreign exchange rates.
+    # Separate output port — does NOT inherit from MarketDataGateway
+    # because the contract is fundamentally different (FX pairs, not asset prices).
+    class FxRatesGateway
     include Dry::Monads[:result]
 
     BASE_URL = "https://v6.exchangerate-api.com"
@@ -65,6 +66,7 @@ module MarketData
         ENV.fetch("EXCHANGERATE_API_KEY", "")
     rescue ActiveRecord::Encryption::Errors::Decryption
       ENV.fetch("EXCHANGERATE_API_KEY", "")
+    end
     end
   end
 end

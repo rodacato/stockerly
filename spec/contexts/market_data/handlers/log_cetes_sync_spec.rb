@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe MarketData::LogCetesSync do
+RSpec.describe MarketData::Handlers::LogCetesSync do
   describe ".call" do
     it "creates a SystemLog entry with sync count" do
-      event = MarketData::CetesSynced.new(count: 4)
+      event = MarketData::Events::CetesSynced.new(count: 4)
 
       expect { described_class.call(event) }.to change(SystemLog, :count).by(1)
 

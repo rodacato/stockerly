@@ -1,7 +1,8 @@
 module MarketData
-  # Driven adapter: Polygon.io REST API for stock/index prices.
-  # Docs: https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__prev
-  class PolygonGateway < MarketDataGateway
+  module Gateways
+    # Driven adapter: Polygon.io REST API for stock/index prices.
+    # Docs: https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__prev
+    class PolygonGateway < MarketDataGateway
     include Dry::Monads[:result]
 
     BASE_URL = "https://api.polygon.io"
@@ -268,6 +269,7 @@ module MarketData
         ENV.fetch("POLYGON_API_KEY", "")
     rescue ActiveRecord::Encryption::Errors::Decryption
       ENV.fetch("POLYGON_API_KEY", "")
+    end
     end
   end
 end

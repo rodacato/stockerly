@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.describe MarketData::SyncArticles do
+RSpec.describe MarketData::UseCases::SyncArticles do
   include ActiveJob::TestHelper
 
-  let(:gateway) { instance_double(MarketData::PolygonGateway) }
+  let(:gateway) { instance_double(MarketData::Gateways::PolygonGateway) }
 
   before do
-    allow(MarketData::PolygonGateway).to receive(:new).and_return(gateway)
+    allow(MarketData::Gateways::PolygonGateway).to receive(:new).and_return(gateway)
   end
 
   DISTINCT_TITLES = [
@@ -45,8 +45,8 @@ RSpec.describe MarketData::SyncArticles do
     end
 
     it "publishes NewsSynced event" do
-      handler = class_double(MarketData::LogNewsSync, call: nil)
-      EventBus.subscribe(MarketData::NewsSynced, handler)
+      handler = class_double(MarketData::Handlers::LogNewsSync, call: nil)
+      EventBus.subscribe(MarketData::Events::NewsSynced, handler)
 
       described_class.call
 

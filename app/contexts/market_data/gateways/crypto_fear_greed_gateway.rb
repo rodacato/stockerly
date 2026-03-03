@@ -1,8 +1,9 @@
 module MarketData
-  # Fetches the Crypto Fear & Greed Index from Alternative.me.
-  # Free, no auth required. Rate limit: ~50 req/day.
-  # Docs: https://alternative.me/crypto/fear-and-greed-index/
-  class CryptoFearGreedGateway
+  module Gateways
+    # Fetches the Crypto Fear & Greed Index from Alternative.me.
+    # Free, no auth required. Rate limit: ~50 req/day.
+    # Docs: https://alternative.me/crypto/fear-and-greed-index/
+    class CryptoFearGreedGateway
     include Dry::Monads[:result]
 
     BASE_URL = "https://api.alternative.me"
@@ -43,6 +44,7 @@ module MarketData
       })
     rescue StandardError => e
       Failure([ :parse_error, "Failed to parse Alternative.me response: #{e.message}" ])
+    end
     end
   end
 end

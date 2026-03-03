@@ -1,5 +1,5 @@
 # Fetches prices for multiple crypto assets in a single CoinGecko API call,
-# updates each Asset record, and publishes MarketData::AssetPriceUpdated events.
+# updates each Asset record, and publishes MarketData::Events::AssetPriceUpdated events.
 class SyncBulkCryptoJob < ApplicationJob
   include SyncLogging
 
@@ -11,7 +11,7 @@ class SyncBulkCryptoJob < ApplicationJob
     assets = Asset.where(id: asset_ids, sync_status: :active).index_by(&:symbol)
     return if assets.empty?
 
-    result = breaker.call { MarketData::CoingeckoGateway.new.fetch_bulk_prices(assets.keys) }
+    result = breaker.call { MarketData::Gateways::CoingeckoGateway.new.fetch_bulk_prices(assets.keys) }
 
     if result.success?
       update_assets(assets, result.value!)
@@ -45,7 +45,7 @@ class SyncBulkCryptoJob < ApplicationJob
 
       next unless price_changed?(old_price, data[:price])
 
-      EventBus.publish(MarketData::AssetPriceUpdated.new(
+      EventBus.publish(MarketData::Events::AssetPriceUpdated.new(
         asset_id: asset.id,
         symbol: asset.symbol,
         old_price: (old_price || 0).to_s,

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::NewsSynced do
+RSpec.describe MarketData::Events::NewsSynced do
   subject(:event) { described_class.new(count: 5) }
 
   it "stores count" do

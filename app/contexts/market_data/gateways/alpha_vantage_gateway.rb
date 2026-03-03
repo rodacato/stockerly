@@ -1,8 +1,9 @@
 module MarketData
-  # Driven adapter: Alpha Vantage REST API for fundamental financial data.
-  # Docs: https://www.alphavantage.co/documentation/
-  # CRITICAL: Rate limits return HTTP 200 with "Note" key (NOT 429).
-  class AlphaVantageGateway < FundamentalsGateway
+  module Gateways
+    # Driven adapter: Alpha Vantage REST API for fundamental financial data.
+    # Docs: https://www.alphavantage.co/documentation/
+    # CRITICAL: Rate limits return HTTP 200 with "Note" key (NOT 429).
+    class AlphaVantageGateway < FundamentalsGateway
     BASE_URL = "https://www.alphavantage.co"
     PROVIDER = "Alpha Vantage"
     TIMEOUT  = 10
@@ -155,6 +156,7 @@ module MarketData
         ENV.fetch("ALPHA_VANTAGE_API_KEY", "")
     rescue ActiveRecord::Encryption::Errors::Decryption
       ENV.fetch("ALPHA_VANTAGE_API_KEY", "")
+    end
     end
   end
 end

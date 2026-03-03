@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::LoadAssetDetail do
+RSpec.describe MarketData::UseCases::LoadAssetDetail do
   let!(:asset) { create(:asset, symbol: "AAPL", name: "Apple Inc.", current_price: 227.44) }
 
   describe ".call" do
@@ -13,7 +13,7 @@ RSpec.describe MarketData::LoadAssetDetail do
         expect(result).to be_success
         data = result.value!
         expect(data[:asset]).to eq(asset)
-        expect(data[:presenter]).to be_a(MarketData::FundamentalPresenter)
+        expect(data[:presenter]).to be_a(MarketData::Domain::FundamentalPresenter)
         expect(data[:has_fundamentals]).to be(true)
       end
 

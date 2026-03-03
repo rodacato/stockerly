@@ -1,8 +1,9 @@
 module MarketData
-  # Computes price-dependent metrics at render time using live current_price
-  # and stored fundamental data from AssetFundamental#metrics.
-  # This ensures P/E, P/B, P/S always reflect the latest market price.
-  class FundamentalPresenter
+  module Domain
+    # Computes price-dependent metrics at render time using live current_price
+    # and stored fundamental data from AssetFundamental#metrics.
+    # This ensures P/E, P/B, P/S always reflect the latest market price.
+    class FundamentalPresenter
     attr_reader :asset, :fundamental
 
     def initialize(asset:, fundamental:)
@@ -65,6 +66,7 @@ module MarketData
 
     def revenue_per_share
       @metrics["revenue_per_share"]&.to_d
+    end
     end
   end
 end

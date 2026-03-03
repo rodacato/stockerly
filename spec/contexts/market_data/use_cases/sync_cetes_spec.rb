@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::SyncCetes do
+RSpec.describe MarketData::UseCases::SyncCetes do
   subject(:use_case) { described_class.new }
 
   describe "#call" do
@@ -17,7 +17,7 @@ RSpec.describe MarketData::SyncCetes do
       expect(result.value!).to eq(4)
       expect(Asset.fixed_incomes.count).to eq(4)
       expect(Asset.find_by(symbol: "CETES_28D").yield_rate.to_f).to eq(11.15)
-      expect(EventBus).to have_received(:publish).with(an_instance_of(MarketData::CetesSynced))
+      expect(EventBus).to have_received(:publish).with(an_instance_of(MarketData::Events::CetesSynced))
     end
 
     it "skips terms when gateway returns failure" do

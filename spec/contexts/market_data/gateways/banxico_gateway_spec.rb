@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::BanxicoGateway do
+RSpec.describe MarketData::Gateways::BanxicoGateway do
   subject(:gateway) { described_class.new(api_token: "test_token") }
 
   describe "#fetch_auctions" do

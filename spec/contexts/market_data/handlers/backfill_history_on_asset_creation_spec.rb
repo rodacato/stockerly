@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::BackfillHistoryOnAssetCreation do
+RSpec.describe MarketData::Handlers::BackfillHistoryOnAssetCreation do
   describe ".call" do
     it "enqueues BackfillPriceHistoryJob" do
       expect {

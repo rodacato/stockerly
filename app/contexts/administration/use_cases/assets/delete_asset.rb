@@ -8,7 +8,7 @@ module Administration
         symbol = asset.symbol
         asset.destroy!
 
-        publish(MarketData::AssetDeleted.new(asset_symbol: symbol, admin_id: admin.id))
+        publish(MarketData::Events::AssetDeleted.new(asset_symbol: symbol, admin_id: admin.id))
 
         Success(symbol)
       end

@@ -4,7 +4,7 @@ class SyncEarningsJob < ApplicationJob
   queue_as :default
 
   def perform
-    result = MarketData::SyncEarnings.call
+    result = MarketData::UseCases::SyncEarnings.call
 
     if result.success?
       log_sync_success("Earnings Sync", message: "#{result.value!} events synced")

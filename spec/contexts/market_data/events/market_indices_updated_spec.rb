@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::MarketIndicesUpdated do
+RSpec.describe MarketData::Events::MarketIndicesUpdated do
   subject(:event) { described_class.new(count: 4) }
 
   it "stores count" do

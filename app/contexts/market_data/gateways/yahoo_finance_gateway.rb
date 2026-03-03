@@ -1,7 +1,8 @@
 module MarketData
-  # Driven adapter: Yahoo Finance API for BMV (Mexican) stock/ETF prices and market indices.
-  # Uses the v8/finance/chart endpoint on query2 (the v8/finance/quote endpoint is deprecated).
-  class YahooFinanceGateway < MarketDataGateway
+  module Gateways
+    # Driven adapter: Yahoo Finance API for BMV (Mexican) stock/ETF prices and market indices.
+    # Uses the v8/finance/chart endpoint on query2 (the v8/finance/quote endpoint is deprecated).
+    class YahooFinanceGateway < MarketDataGateway
     include Dry::Monads[:result]
 
     BASE_URL = "https://query2.finance.yahoo.com"
@@ -238,6 +239,7 @@ module MarketData
 
       bars.uniq! { |b| b[:date] }
       Success(bars)
+    end
     end
   end
 end

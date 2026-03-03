@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::PolygonGateway do
+RSpec.describe MarketData::Gateways::PolygonGateway do
   subject(:gateway) { described_class.new(api_key: "test_key") }
 
   describe "#fetch_price" do

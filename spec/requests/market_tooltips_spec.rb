@@ -39,7 +39,7 @@ RSpec.describe "Market Asset Metric Tooltips", type: :request do
     end
 
     it "renders metric definition context guidance" do
-      pe_def = MarketData::MetricDefinitions.find(:pe_ratio)
+      pe_def = MarketData::Domain::MetricDefinitions.find(:pe_ratio)
       expect(response.body).to include(pe_def.context_guidance)
     end
 

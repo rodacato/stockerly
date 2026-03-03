@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Gateway RateLimiter integration" do
-  describe "MarketData::PolygonGateway" do
-    subject(:gateway) { MarketData::PolygonGateway.new(api_key: "test_key") }
+  describe "MarketData::Gateways::PolygonGateway" do
+    subject(:gateway) { MarketData::Gateways::PolygonGateway.new(api_key: "test_key") }
 
     let!(:integration) do
       create(:integration,
@@ -35,8 +35,8 @@ RSpec.describe "Gateway RateLimiter integration" do
     end
   end
 
-  describe "MarketData::CoingeckoGateway" do
-    subject(:gateway) { MarketData::CoingeckoGateway.new(api_key: "test_key") }
+  describe "MarketData::Gateways::CoingeckoGateway" do
+    subject(:gateway) { MarketData::Gateways::CoingeckoGateway.new(api_key: "test_key") }
 
     let!(:integration) do
       create(:integration,
@@ -62,8 +62,8 @@ RSpec.describe "Gateway RateLimiter integration" do
     end
   end
 
-  describe "MarketData::AlphaVantageGateway" do
-    subject(:gateway) { MarketData::AlphaVantageGateway.new(api_key: "test_key") }
+  describe "MarketData::Gateways::AlphaVantageGateway" do
+    subject(:gateway) { MarketData::Gateways::AlphaVantageGateway.new(api_key: "test_key") }
 
     let!(:integration) do
       create(:integration,
@@ -88,8 +88,8 @@ RSpec.describe "Gateway RateLimiter integration" do
     end
   end
 
-  describe "MarketData::FxRatesGateway" do
-    subject(:gateway) { MarketData::FxRatesGateway.new(api_key: "test_key") }
+  describe "MarketData::Gateways::FxRatesGateway" do
+    subject(:gateway) { MarketData::Gateways::FxRatesGateway.new(api_key: "test_key") }
 
     let!(:integration) do
       create(:integration,

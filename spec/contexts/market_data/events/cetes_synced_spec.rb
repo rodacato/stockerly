@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe MarketData::CetesSynced do
+RSpec.describe MarketData::Events::CetesSynced do
   it "stores count attribute" do
     event = described_class.new(count: 4)
 
     expect(event.count).to eq(4)
-    expect(event.event_name).to eq("market_data.cetes_synced")
+    expect(event.event_name).to eq("market_data.events.cetes_synced")
   end
 end

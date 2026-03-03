@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::RecalculateTrendScoreOnPriceUpdate do
+RSpec.describe MarketData::Handlers::RecalculateTrendScoreOnPriceUpdate do
   describe ".async?" do
     it "is async" do
       expect(described_class.async?).to be true
@@ -18,7 +18,7 @@ RSpec.describe MarketData::RecalculateTrendScoreOnPriceUpdate do
       end
 
       it "creates a TrendScore record" do
-        event = MarketData::AssetPriceUpdated.new(asset_id: asset.id, symbol: asset.symbol, new_price: "120.0", old_price: "119.0")
+        event = MarketData::Events::AssetPriceUpdated.new(asset_id: asset.id, symbol: asset.symbol, new_price: "120.0", old_price: "119.0")
 
         expect { described_class.call(event) }.to change { asset.trend_scores.count }.by(1)
 
@@ -38,7 +38,7 @@ RSpec.describe MarketData::RecalculateTrendScoreOnPriceUpdate do
       end
 
       it "does not create a TrendScore record" do
-        event = MarketData::AssetPriceUpdated.new(asset_id: asset.id, symbol: asset.symbol, new_price: "105.0", old_price: "104.0")
+        event = MarketData::Events::AssetPriceUpdated.new(asset_id: asset.id, symbol: asset.symbol, new_price: "105.0", old_price: "104.0")
 
         expect { described_class.call(event) }.not_to change(TrendScore, :count)
       end
@@ -46,7 +46,7 @@ RSpec.describe MarketData::RecalculateTrendScoreOnPriceUpdate do
 
     context "when asset is not found" do
       it "does nothing" do
-        event = MarketData::AssetPriceUpdated.new(asset_id: -1, symbol: "FAKE", new_price: "100.0", old_price: "99.0")
+        event = MarketData::Events::AssetPriceUpdated.new(asset_id: -1, symbol: "FAKE", new_price: "100.0", old_price: "99.0")
 
         expect { described_class.call(event) }.not_to change(TrendScore, :count)
       end

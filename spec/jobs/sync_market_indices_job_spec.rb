@@ -41,8 +41,8 @@ RSpec.describe SyncMarketIndicesJob do
       end
 
       it "publishes MarketIndicesUpdated event" do
-        handler = class_double(MarketData::LogMarketIndicesUpdate, call: nil)
-        EventBus.subscribe(MarketData::MarketIndicesUpdated, handler)
+        handler = class_double(MarketData::Handlers::LogMarketIndicesUpdate, call: nil)
+        EventBus.subscribe(MarketData::Events::MarketIndicesUpdated, handler)
 
         described_class.perform_now
 
@@ -60,7 +60,7 @@ RSpec.describe SyncMarketIndicesJob do
 
     context "when Yahoo fails but Polygon succeeds (fallback)" do
       before do
-        allow_any_instance_of(MarketData::YahooFinanceGateway).to receive(:fetch_index_quotes)
+        allow_any_instance_of(MarketData::Gateways::YahooFinanceGateway).to receive(:fetch_index_quotes)
           .and_return(Dry::Monads::Failure([ :gateway_error, "Connection timeout" ]))
 
         stub_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/I:SPX/prev})
@@ -97,9 +97,9 @@ RSpec.describe SyncMarketIndicesJob do
 
     context "when all gateways fail" do
       before do
-        allow_any_instance_of(MarketData::YahooFinanceGateway).to receive(:fetch_index_quotes)
+        allow_any_instance_of(MarketData::Gateways::YahooFinanceGateway).to receive(:fetch_index_quotes)
           .and_return(Dry::Monads::Failure([ :gateway_error, "Yahoo timeout" ]))
-        allow_any_instance_of(MarketData::PolygonGateway).to receive(:fetch_index_quotes)
+        allow_any_instance_of(MarketData::Gateways::PolygonGateway).to receive(:fetch_index_quotes)
           .and_return(Dry::Monads::Failure([ :gateway_error, "Polygon timeout" ]))
       end
 

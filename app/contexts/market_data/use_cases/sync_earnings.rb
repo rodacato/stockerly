@@ -1,40 +1,42 @@
 module MarketData
-  class SyncEarnings < ApplicationUseCase
-    DEFAULT_DAYS_AHEAD = 90
+  module UseCases
+    class SyncEarnings < ApplicationUseCase
+      DEFAULT_DAYS_AHEAD = 90
 
-    def call(days_ahead: DEFAULT_DAYS_AHEAD)
-      assets = Asset.where(asset_type: :stock, sync_status: [ :active, :sync_issue ])
-      cutoff_date = Date.current + days_ahead.days
-      synced = 0
+      def call(days_ahead: DEFAULT_DAYS_AHEAD)
+        assets = Asset.where(asset_type: :stock, sync_status: [ :active, :sync_issue ])
+        cutoff_date = Date.current + days_ahead.days
+        synced = 0
 
-      assets.find_each do |asset|
-        result = PolygonGateway.new.fetch_earnings(asset.symbol)
-        next if result.failure?
+        assets.find_each do |asset|
+          result = Gateways::PolygonGateway.new.fetch_earnings(asset.symbol)
+          next if result.failure?
 
-        result.value!.each do |data|
-          next if data[:report_date].present? && data[:report_date] > cutoff_date
+          result.value!.each do |data|
+            next if data[:report_date].present? && data[:report_date] > cutoff_date
 
-          upsert_event(asset, data)
-          synced += 1
+            upsert_event(asset, data)
+            synced += 1
+          end
         end
+
+        publish(Events::EarningsSynced.new(count: synced))
+
+        Success(synced)
       end
 
-      publish(EarningsSynced.new(count: synced))
+      private
 
-      Success(synced)
-    end
-
-    private
-
-    def upsert_event(asset, data)
-      event = asset.earnings_events.find_or_initialize_by(report_date: data[:report_date])
-      event.update!(
-        timing: data[:timing] || :after_market_close,
-        estimated_eps: data[:estimated_eps],
-        actual_eps: data[:actual_eps]
-      )
-    rescue ActiveRecord::RecordInvalid
-      nil
+      def upsert_event(asset, data)
+        event = asset.earnings_events.find_or_initialize_by(report_date: data[:report_date])
+        event.update!(
+          timing: data[:timing] || :after_market_close,
+          estimated_eps: data[:estimated_eps],
+          actual_eps: data[:actual_eps]
+        )
+      rescue ActiveRecord::RecordInvalid
+        nil
+      end
     end
   end
 end

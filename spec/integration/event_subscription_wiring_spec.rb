@@ -6,10 +6,10 @@ RSpec.describe "Event Subscription Wiring" do
 
   describe "AssetPriceUpdated" do
     it "has Alerts::Handlers::EvaluateAlertsOnPriceUpdate and BroadcastPriceUpdate handlers" do
-      handlers = EventBus.handlers_for(MarketData::AssetPriceUpdated)
+      handlers = EventBus.handlers_for(MarketData::Events::AssetPriceUpdated)
 
       expect(handlers).to include(Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
-      expect(handlers).to include(MarketData::BroadcastPriceUpdate)
+      expect(handlers).to include(MarketData::Handlers::BroadcastPriceUpdate)
     end
   end
 

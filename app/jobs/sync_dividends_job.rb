@@ -7,7 +7,7 @@ class SyncDividendsJob < ApplicationJob
   queue_as :default
 
   def perform
-    gateway = MarketData::FmpGateway.new
+    gateway = MarketData::Gateways::FmpGateway.new
     asset_count = 0
     dividend_count = 0
 
@@ -22,7 +22,7 @@ class SyncDividendsJob < ApplicationJob
       end
     end
 
-    EventBus.publish(MarketData::DividendsSynced.new(
+    EventBus.publish(MarketData::Events::DividendsSynced.new(
       asset_count: asset_count,
       dividend_count: dividend_count
     ))

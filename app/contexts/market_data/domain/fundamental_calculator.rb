@@ -1,8 +1,9 @@
 module MarketData
-  # Pure stateless calculator for derived financial metrics.
-  # Receives raw statement data hashes, returns metrics hash.
-  # No DB reads, no I/O, no side effects.
-  class FundamentalCalculator
+  module Domain
+    # Pure stateless calculator for derived financial metrics.
+    # Receives raw statement data hashes, returns metrics hash.
+    # No DB reads, no I/O, no side effects.
+    class FundamentalCalculator
     class << self
       # Main entry point: latest annual statements → calculated metrics hash.
       def calculate(income_data:, balance_data:, cash_flow_data:, overview_metrics: {})
@@ -158,6 +159,7 @@ module MarketData
       rescue ArgumentError
         nil
       end
+    end
     end
   end
 end

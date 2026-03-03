@@ -36,7 +36,7 @@ module Stockerly
     # Zeitwerk collapse: organizational folders within contexts being migrated
     # retain collapse temporarily; shared infrastructure always collapsed.
     # Contexts are removed from this list as they adopt explicit submodules.
-    COLLAPSED_CONTEXTS = %w[market_data administration].freeze
+    COLLAPSED_CONTEXTS = %w[administration].freeze
 
     initializer "stockerly.zeitwerk_collapse", before: "zeitwerk.eager_load" do
       COLLAPSED_CONTEXTS.each do |ctx|

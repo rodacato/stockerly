@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::YahooFinanceGateway, "#fetch_batch_quotes" do
+RSpec.describe MarketData::Gateways::YahooFinanceGateway, "#fetch_batch_quotes" do
   subject(:gateway) { described_class.new }
 
   let(:batch_response) do

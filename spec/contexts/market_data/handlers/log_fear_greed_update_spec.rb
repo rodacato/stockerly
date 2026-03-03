@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::LogFearGreedUpdate do
+RSpec.describe MarketData::Handlers::LogFearGreedUpdate do
   describe ".call" do
     it "creates a SystemLog entry" do
       expect {

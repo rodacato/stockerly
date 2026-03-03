@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::AssetCreated do
+RSpec.describe MarketData::Events::AssetCreated do
   it "creates an event with required attributes" do
     event = described_class.new(asset_id: 1, symbol: "AAPL", admin_id: 2)
 

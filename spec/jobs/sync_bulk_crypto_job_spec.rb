@@ -25,7 +25,7 @@ RSpec.describe SyncBulkCryptoJob, type: :job do
       end
 
       it "publishes AssetPriceUpdated events for changed prices" do
-        expect(EventBus).to receive(:publish).with(an_instance_of(MarketData::AssetPriceUpdated)).twice
+        expect(EventBus).to receive(:publish).with(an_instance_of(MarketData::Events::AssetPriceUpdated)).twice
 
         described_class.perform_now([ btc.id, eth.id ])
       end

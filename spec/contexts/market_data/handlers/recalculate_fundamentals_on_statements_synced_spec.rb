@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe MarketData::RecalculateFundamentalsOnStatementsSynced do
+RSpec.describe MarketData::Handlers::RecalculateFundamentalsOnStatementsSynced do
   let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 189.43) }
   let(:event) do
-    MarketData::FinancialStatementsSynced.new(
+    MarketData::Events::FinancialStatementsSynced.new(
       asset_id: asset.id,
       symbol: asset.symbol,
       statement_types: %w[income_statement balance_sheet cash_flow]
@@ -46,16 +46,16 @@ RSpec.describe MarketData::RecalculateFundamentalsOnStatementsSynced do
   end
 
   it "publishes AssetFundamentalsUpdated event" do
-    handler = class_double(MarketData::LogFundamentalsUpdate, call: nil)
-    EventBus.subscribe(MarketData::AssetFundamentalsUpdated, handler)
+    handler = class_double(MarketData::Handlers::LogFundamentalsUpdate, call: nil)
+    EventBus.subscribe(MarketData::Events::AssetFundamentalsUpdated, handler)
 
     described_class.call(event)
 
-    expect(handler).to have_received(:call).with(an_instance_of(MarketData::AssetFundamentalsUpdated))
+    expect(handler).to have_received(:call).with(an_instance_of(MarketData::Events::AssetFundamentalsUpdated))
   end
 
   it "skips when asset not found" do
-    bad_event = MarketData::FinancialStatementsSynced.new(asset_id: -1, symbol: "FAKE", statement_types: [])
+    bad_event = MarketData::Events::FinancialStatementsSynced.new(asset_id: -1, symbol: "FAKE", statement_types: [])
 
     expect { described_class.call(bad_event) }
       .not_to change(AssetFundamental, :count)

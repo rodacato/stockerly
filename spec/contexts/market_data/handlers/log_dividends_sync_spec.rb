@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::LogDividendsSync do
+RSpec.describe MarketData::Handlers::LogDividendsSync do
   describe ".call" do
     it "creates a SystemLog entry with sync counts" do
       expect {

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::DividendsSynced do
+RSpec.describe MarketData::Events::DividendsSynced do
   subject(:event) { described_class.new(asset_count: 3, dividend_count: 12) }
 
   it "stores asset_count" do

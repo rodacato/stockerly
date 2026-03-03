@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::FundamentalCalculator do
+RSpec.describe MarketData::Domain::FundamentalCalculator do
   let(:income_data) do
     {
       "total_revenue" => "383285000000",

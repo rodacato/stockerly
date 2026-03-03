@@ -1,7 +1,8 @@
 module MarketData
-  # Pure domain service for CETES yield calculations.
-  # Uses Mexican convention: 360-day year for discount rate math.
-  class YieldCalculator
+  module Domain
+    # Pure domain service for CETES yield calculations.
+    # Uses Mexican convention: 360-day year for discount rate math.
+    class YieldCalculator
     class << self
       # Discount price of a CETES bond given face value, annual yield, and days to maturity.
       # Formula: P = FV / (1 + r/100 * d/360)
@@ -29,6 +30,7 @@ module MarketData
       def investment_value(face_value:, quantity:)
         (face_value.to_d * quantity.to_d).round(2)
       end
+    end
     end
   end
 end

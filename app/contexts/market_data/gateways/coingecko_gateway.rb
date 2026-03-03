@@ -1,8 +1,9 @@
 module MarketData
-  # Driven adapter: CoinGecko REST API for cryptocurrency prices and market data.
-  # Docs: https://docs.coingecko.com/reference/simple-price
-  # Docs: https://docs.coingecko.com/reference/coins-markets
-  class CoingeckoGateway < MarketDataGateway
+  module Gateways
+    # Driven adapter: CoinGecko REST API for cryptocurrency prices and market data.
+    # Docs: https://docs.coingecko.com/reference/simple-price
+    # Docs: https://docs.coingecko.com/reference/coins-markets
+    class CoingeckoGateway < MarketDataGateway
     include Dry::Monads[:result]
 
     DEMO_URL = "https://api.coingecko.com"
@@ -210,6 +211,7 @@ module MarketData
 
     def resolve_pro_tier
       ENV.fetch("COINGECKO_PRO", "false") == "true"
+    end
     end
   end
 end

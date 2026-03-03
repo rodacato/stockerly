@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe MarketData::MarketSentiment do
+RSpec.describe MarketData::Domain::MarketSentiment do
   describe ".for_user" do
     let(:user) { create(:user) }
 
     it "returns Neutral when user has no watchlist items" do
-      result = MarketData::MarketSentiment.for_user(user)
+      result = MarketData::Domain::MarketSentiment.for_user(user)
       expect(result[:value]).to eq(50)
       expect(result[:label]).to eq("Neutral")
     end
@@ -18,7 +18,7 @@ RSpec.describe MarketData::MarketSentiment do
       create(:trend_score, asset: asset1, score: 80, calculated_at: Time.current)
       create(:trend_score, asset: asset2, score: 90, calculated_at: Time.current)
 
-      result = MarketData::MarketSentiment.for_user(user)
+      result = MarketData::Domain::MarketSentiment.for_user(user)
       expect(result[:value]).to eq(85)
       expect(result[:label]).to eq("Very Bullish")
     end
@@ -29,7 +29,7 @@ RSpec.describe MarketData::MarketSentiment do
       create(:trend_score, asset: asset, score: 30, calculated_at: 1.day.ago)
       create(:trend_score, asset: asset, score: 75, calculated_at: Time.current)
 
-      result = MarketData::MarketSentiment.for_user(user)
+      result = MarketData::Domain::MarketSentiment.for_user(user)
       expect(result[:value]).to eq(75)
       expect(result[:label]).to eq("Bullish")
     end
@@ -37,7 +37,7 @@ RSpec.describe MarketData::MarketSentiment do
 
   describe ".global" do
     it "returns Neutral when no trend scores exist" do
-      result = MarketData::MarketSentiment.global
+      result = MarketData::Domain::MarketSentiment.global
       expect(result[:value]).to eq(50)
       expect(result[:label]).to eq("Neutral")
     end
@@ -46,7 +46,7 @@ RSpec.describe MarketData::MarketSentiment do
       asset = create(:asset, symbol: "GLB")
       create(:trend_score, asset: asset, score: 15, calculated_at: Time.current)
 
-      result = MarketData::MarketSentiment.global
+      result = MarketData::Domain::MarketSentiment.global
       expect(result[:value]).to eq(15)
       expect(result[:label]).to eq("Very Bearish")
     end
@@ -66,7 +66,7 @@ RSpec.describe MarketData::MarketSentiment do
         create(:watchlist_item, user: user, asset: asset)
         create(:trend_score, asset: asset, score: score, calculated_at: Time.current)
 
-        result = MarketData::MarketSentiment.for_user(user)
+        result = MarketData::Domain::MarketSentiment.for_user(user)
         expect(result[:label]).to eq(expected_label)
       end
     end

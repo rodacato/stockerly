@@ -13,7 +13,7 @@ class RefreshFearGreedJob < ApplicationJob
   private
 
   def fetch_crypto
-    result = crypto_breaker.call { MarketData::CryptoFearGreedGateway.new.fetch_index }
+    result = crypto_breaker.call { MarketData::Gateways::CryptoFearGreedGateway.new.fetch_index }
 
     if result.success?
       save_reading("crypto", "alternative.me", result.value!)
@@ -23,7 +23,7 @@ class RefreshFearGreedJob < ApplicationJob
   end
 
   def fetch_stocks
-    result = stocks_breaker.call { MarketData::StockFearGreedGateway.new.fetch_index }
+    result = stocks_breaker.call { MarketData::Gateways::StockFearGreedGateway.new.fetch_index }
 
     if result.success?
       save_reading("stocks", "cnn", result.value!)
@@ -44,7 +44,7 @@ class RefreshFearGreedJob < ApplicationJob
 
     log_sync_success("Fear & Greed: #{index_type}")
 
-    EventBus.publish(MarketData::FearGreedUpdated.new(
+    EventBus.publish(MarketData::Events::FearGreedUpdated.new(
       index_type: index_type,
       value: reading.value,
       classification: reading.classification

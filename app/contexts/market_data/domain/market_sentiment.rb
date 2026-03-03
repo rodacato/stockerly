@@ -1,5 +1,6 @@
 module MarketData
-  class MarketSentiment
+  module Domain
+    class MarketSentiment
     LABELS = {
       (0..20) => "Very Bearish",
       (21..40) => "Bearish",
@@ -44,5 +45,6 @@ module MarketData
     end
 
     private_class_method :watchlist_scores, :label_for
+    end
   end
 end

@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe MarketData::MetricDefinitions do
+RSpec.describe MarketData::Domain::MetricDefinitions do
   describe ".all" do
     it "returns all registered definitions" do
       expect(described_class.all).not_to be_empty
-      expect(described_class.all.first).to be_a(MarketData::MetricDefinitions::Definition)
+      expect(described_class.all.first).to be_a(MarketData::Domain::MetricDefinitions::Definition)
     end
 
     it "has at least 30 definitions" do

@@ -1,7 +1,8 @@
 module MarketData
-  # Driven adapter: Banxico SIE API for CETES auction results.
-  # Docs: https://www.banxico.org.mx/SieAPIRest/service/v1/doc/catalogoSeries
-  class BanxicoGateway
+  module Gateways
+    # Driven adapter: Banxico SIE API for CETES auction results.
+    # Docs: https://www.banxico.org.mx/SieAPIRest/service/v1/doc/catalogoSeries
+    class BanxicoGateway
     include Dry::Monads[:result]
 
     BASE_URL = "https://www.banxico.org.mx/SieAPIRest/service/v1/"
@@ -93,6 +94,7 @@ module MarketData
       Date.strptime(fecha_str, "%d/%m/%Y")
     rescue Date::Error
       Date.current
+    end
     end
   end
 end

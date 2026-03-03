@@ -12,16 +12,16 @@ Rails.application.config.after_initialize do
   # Administration
   EventBus.subscribe(Identity::Events::UserSuspended, Administration::CreateAuditLogOnSuspension)
   EventBus.subscribe(Identity::Events::UserSuspended, Administration::SendSuspensionEmail)
-  EventBus.subscribe(MarketData::AssetCreated, Administration::CreateAuditLogOnAssetCreation)
-  EventBus.subscribe(MarketData::AssetCreated, MarketData::SyncAssetOnCreation)
-  EventBus.subscribe(MarketData::AssetCreated, MarketData::BackfillHistoryOnAssetCreation)
+  EventBus.subscribe(MarketData::Events::AssetCreated, Administration::CreateAuditLogOnAssetCreation)
+  EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::SyncAssetOnCreation)
+  EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::BackfillHistoryOnAssetCreation)
 
   # Market Data
-  EventBus.subscribe(MarketData::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
-  EventBus.subscribe(MarketData::AssetPriceUpdated, MarketData::BroadcastPriceUpdate)
-  EventBus.subscribe(MarketData::AssetPriceUpdated, MarketData::RecordPriceHistory)
-  EventBus.subscribe(MarketData::AssetPriceUpdated, MarketData::RecalculateTrendScoreOnPriceUpdate)
-  EventBus.subscribe(MarketData::AllGatewaysFailed, MarketData::LogAllGatewaysFailure)
+  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
+  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::BroadcastPriceUpdate)
+  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::RecordPriceHistory)
+  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::RecalculateTrendScoreOnPriceUpdate)
+  EventBus.subscribe(MarketData::Events::AllGatewaysFailed, MarketData::Handlers::LogAllGatewaysFailure)
 
   # Alerts
   EventBus.subscribe(Alerts::Events::AlertRuleTriggered, Alerts::Handlers::CreateAlertEventOnTrigger)
@@ -37,31 +37,31 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(Trading::Events::TradeDeleted, Trading::Handlers::LogTradeDelete)
 
   # News
-  EventBus.subscribe(MarketData::NewsSynced, MarketData::LogNewsSync)
+  EventBus.subscribe(MarketData::Events::NewsSynced, MarketData::Handlers::LogNewsSync)
 
   # Earnings
-  EventBus.subscribe(MarketData::EarningsSynced, MarketData::LogEarningsSync)
+  EventBus.subscribe(MarketData::Events::EarningsSynced, MarketData::Handlers::LogEarningsSync)
 
   # Market Indices
-  EventBus.subscribe(MarketData::MarketIndicesUpdated, MarketData::LogMarketIndicesUpdate)
+  EventBus.subscribe(MarketData::Events::MarketIndicesUpdated, MarketData::Handlers::LogMarketIndicesUpdate)
 
   # Sentiment
-  EventBus.subscribe(MarketData::FearGreedUpdated, MarketData::LogFearGreedUpdate)
-  EventBus.subscribe(MarketData::FearGreedUpdated, Alerts::Handlers::EvaluateSentimentAlerts)
+  EventBus.subscribe(MarketData::Events::FearGreedUpdated, MarketData::Handlers::LogFearGreedUpdate)
+  EventBus.subscribe(MarketData::Events::FearGreedUpdated, Alerts::Handlers::EvaluateSentimentAlerts)
 
   # Dividends
-  EventBus.subscribe(MarketData::DividendsSynced, MarketData::LogDividendsSync)
+  EventBus.subscribe(MarketData::Events::DividendsSynced, MarketData::Handlers::LogDividendsSync)
 
   # Stock Splits
   EventBus.subscribe(Trading::Events::SplitDetected, Trading::Handlers::AdjustPositionsOnSplit)
 
   # CETES
-  EventBus.subscribe(MarketData::CetesSynced, MarketData::LogCetesSync)
+  EventBus.subscribe(MarketData::Events::CetesSynced, MarketData::Handlers::LogCetesSync)
 
   # Fundamentals
-  EventBus.subscribe(MarketData::AssetFundamentalsUpdated, MarketData::LogFundamentalsUpdate)
-  EventBus.subscribe(MarketData::AssetFundamentalsUpdated, MarketData::BroadcastFundamentalsUpdate)
-  EventBus.subscribe(MarketData::FinancialStatementsSynced, MarketData::RecalculateFundamentalsOnStatementsSynced)
+  EventBus.subscribe(MarketData::Events::AssetFundamentalsUpdated, MarketData::Handlers::LogFundamentalsUpdate)
+  EventBus.subscribe(MarketData::Events::AssetFundamentalsUpdated, MarketData::Handlers::BroadcastFundamentalsUpdate)
+  EventBus.subscribe(MarketData::Events::FinancialStatementsSynced, MarketData::Handlers::RecalculateFundamentalsOnStatementsSynced)
 
   # Integrations
   EventBus.subscribe(Administration::IntegrationConnected, Administration::LogIntegrationConnected)

@@ -21,7 +21,7 @@ module Trading
 
         indices = MarketIndex.major.includes(:market_index_histories)
 
-        sentiment = MarketData::MarketSentiment.for_user(user)
+        sentiment = MarketData::Domain::MarketSentiment.for_user(user)
 
         fear_greed = {
           crypto: FearGreedReading.latest_crypto,

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::YahooFinanceGateway do
+RSpec.describe MarketData::Gateways::YahooFinanceGateway do
   subject(:gateway) { described_class.new }
 
   describe "#fetch_price" do

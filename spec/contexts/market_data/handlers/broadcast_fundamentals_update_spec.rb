@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe MarketData::BroadcastFundamentalsUpdate do
+RSpec.describe MarketData::Handlers::BroadcastFundamentalsUpdate do
   let(:asset) { create(:asset, symbol: "AAPL") }
   let(:event) do
-    MarketData::AssetFundamentalsUpdated.new(
+    MarketData::Events::AssetFundamentalsUpdated.new(
       asset_id: asset.id,
       symbol: asset.symbol,
       source: "calculated_from_statements"
@@ -21,7 +21,7 @@ RSpec.describe MarketData::BroadcastFundamentalsUpdate do
   end
 
   it "skips when asset not found" do
-    bad_event = MarketData::AssetFundamentalsUpdated.new(asset_id: -1, symbol: "FAKE", source: "test")
+    bad_event = MarketData::Events::AssetFundamentalsUpdated.new(asset_id: -1, symbol: "FAKE", source: "test")
 
     expect(Turbo::StreamsChannel).not_to receive(:broadcast_replace_to)
 

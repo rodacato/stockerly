@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::FundamentalPresenter do
+RSpec.describe MarketData::Domain::FundamentalPresenter do
   let(:asset) { build(:asset, current_price: 189.43) }
   let(:fundamental) do
     build(:asset_fundamental, asset: asset, metrics: {

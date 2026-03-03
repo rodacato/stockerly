@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::SyncEarnings do
+RSpec.describe MarketData::UseCases::SyncEarnings do
   describe ".call" do
     let!(:apple) { create(:asset, symbol: "AAPL", asset_type: :stock) }
 
@@ -36,7 +36,7 @@ RSpec.describe MarketData::SyncEarnings do
 
       described_class.call
 
-      expect(EventBus).to have_received(:publish).with(an_instance_of(MarketData::EarningsSynced))
+      expect(EventBus).to have_received(:publish).with(an_instance_of(MarketData::Events::EarningsSynced))
     end
 
     it "syncs actual_eps when available from gateway" do
@@ -77,7 +77,7 @@ RSpec.describe MarketData::SyncEarnings do
     end
 
     it "defaults to 90 days_ahead window" do
-      expect(MarketData::SyncEarnings::DEFAULT_DAYS_AHEAD).to eq(90)
+      expect(MarketData::UseCases::SyncEarnings::DEFAULT_DAYS_AHEAD).to eq(90)
     end
 
     it "is scheduled daily at 9am" do

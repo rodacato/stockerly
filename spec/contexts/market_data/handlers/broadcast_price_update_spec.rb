@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::BroadcastPriceUpdate do
+RSpec.describe MarketData::Handlers::BroadcastPriceUpdate do
   describe ".call" do
     let(:asset) { create(:asset, symbol: "AAPL", current_price: 150) }
 

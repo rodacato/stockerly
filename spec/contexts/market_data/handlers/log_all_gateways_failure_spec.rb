@@ -1,14 +1,14 @@
 require "rails_helper"
 
-RSpec.describe MarketData::LogAllGatewaysFailure do
+RSpec.describe MarketData::Handlers::LogAllGatewaysFailure do
   let(:asset) { create(:asset, symbol: "AAPL", sync_status: :active) }
 
   describe ".call" do
     it "creates an error SystemLog entry" do
-      event = MarketData::AllGatewaysFailed.new(
+      event = MarketData::Events::AllGatewaysFailed.new(
         asset_id: asset.id,
         symbol: "AAPL",
-        attempted_gateways: %w[MarketData::PolygonGateway MarketData::YahooFinanceGateway]
+        attempted_gateways: %w[MarketData::Gateways::PolygonGateway MarketData::Gateways::YahooFinanceGateway]
       )
 
       expect {
@@ -18,8 +18,8 @@ RSpec.describe MarketData::LogAllGatewaysFailure do
       log = SystemLog.last
       expect(log.severity).to eq("error")
       expect(log.task_name).to eq("All Gateways Failed: AAPL")
-      expect(log.error_message).to include("MarketData::PolygonGateway")
-      expect(log.error_message).to include("MarketData::YahooFinanceGateway")
+      expect(log.error_message).to include("MarketData::Gateways::PolygonGateway")
+      expect(log.error_message).to include("MarketData::Gateways::YahooFinanceGateway")
     end
 
     it "marks asset as sync_issue after threshold consecutive failures" do
@@ -27,7 +27,7 @@ RSpec.describe MarketData::LogAllGatewaysFailure do
         described_class.call(
           asset_id: asset.id,
           symbol: "AAPL",
-          attempted_gateways: %w[MarketData::PolygonGateway]
+          attempted_gateways: %w[MarketData::Gateways::PolygonGateway]
         )
       end
 
@@ -40,7 +40,7 @@ RSpec.describe MarketData::LogAllGatewaysFailure do
         described_class.call(
           asset_id: asset.id,
           symbol: "AAPL",
-          attempted_gateways: %w[MarketData::PolygonGateway]
+          attempted_gateways: %w[MarketData::Gateways::PolygonGateway]
         )
       end
 
@@ -59,7 +59,7 @@ RSpec.describe MarketData::LogAllGatewaysFailure do
         described_class.call(
           asset_id: asset.id,
           symbol: "AAPL",
-          attempted_gateways: %w[MarketData::PolygonGateway]
+          attempted_gateways: %w[MarketData::Gateways::PolygonGateway]
         )
       end
 
@@ -72,7 +72,7 @@ RSpec.describe MarketData::LogAllGatewaysFailure do
         described_class.call(
           asset_id: asset.id,
           symbol: "AAPL",
-          attempted_gateways: %w[MarketData::PolygonGateway]
+          attempted_gateways: %w[MarketData::Gateways::PolygonGateway]
         )
       end
 
@@ -84,7 +84,7 @@ RSpec.describe MarketData::LogAllGatewaysFailure do
       event = {
         asset_id: asset.id,
         symbol: "AAPL",
-        attempted_gateways: %w[MarketData::PolygonGateway]
+        attempted_gateways: %w[MarketData::Gateways::PolygonGateway]
       }
 
       expect {

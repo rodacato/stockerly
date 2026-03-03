@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::TrendScoreCalculator do
+RSpec.describe MarketData::Domain::TrendScoreCalculator do
   describe ".calculate" do
     it "returns nil when closes array is empty" do
       expect(described_class.calculate(closes: [])).to be_nil

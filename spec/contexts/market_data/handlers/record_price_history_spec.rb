@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.describe MarketData::RecordPriceHistory do
+RSpec.describe MarketData::Handlers::RecordPriceHistory do
   let(:asset) { create(:asset, symbol: "AAPL") }
 
   describe ".call" do
     context "when no history exists for today" do
       it "creates a new AssetPriceHistory record" do
-        event = MarketData::AssetPriceUpdated.new(
+        event = MarketData::Events::AssetPriceUpdated.new(
           asset_id: asset.id, symbol: "AAPL", old_price: "180.0", new_price: "189.43"
         )
 
@@ -32,7 +32,7 @@ RSpec.describe MarketData::RecordPriceHistory do
       end
 
       it "updates close price" do
-        event = MarketData::AssetPriceUpdated.new(
+        event = MarketData::Events::AssetPriceUpdated.new(
           asset_id: asset.id, symbol: "AAPL", old_price: "185.0", new_price: "189.43"
         )
 
@@ -43,7 +43,7 @@ RSpec.describe MarketData::RecordPriceHistory do
       end
 
       it "updates high if new price is higher" do
-        event = MarketData::AssetPriceUpdated.new(
+        event = MarketData::Events::AssetPriceUpdated.new(
           asset_id: asset.id, symbol: "AAPL", old_price: "185.0", new_price: "195.0"
         )
 
@@ -54,7 +54,7 @@ RSpec.describe MarketData::RecordPriceHistory do
       end
 
       it "updates low if new price is lower" do
-        event = MarketData::AssetPriceUpdated.new(
+        event = MarketData::Events::AssetPriceUpdated.new(
           asset_id: asset.id, symbol: "AAPL", old_price: "185.0", new_price: "175.0"
         )
 
@@ -65,7 +65,7 @@ RSpec.describe MarketData::RecordPriceHistory do
       end
 
       it "preserves open price" do
-        event = MarketData::AssetPriceUpdated.new(
+        event = MarketData::Events::AssetPriceUpdated.new(
           asset_id: asset.id, symbol: "AAPL", old_price: "185.0", new_price: "189.43"
         )
 
@@ -76,7 +76,7 @@ RSpec.describe MarketData::RecordPriceHistory do
       end
 
       it "does not create a new record" do
-        event = MarketData::AssetPriceUpdated.new(
+        event = MarketData::Events::AssetPriceUpdated.new(
           asset_id: asset.id, symbol: "AAPL", old_price: "185.0", new_price: "189.43"
         )
 

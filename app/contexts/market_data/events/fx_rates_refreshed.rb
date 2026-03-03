@@ -1,4 +1,6 @@
 module MarketData
-  class FxRatesRefreshed < BaseEvent
+  module Events
+    class FxRatesRefreshed < BaseEvent
+    end
   end
 end

@@ -1,8 +1,9 @@
 module MarketData
-  # Fetches the CNN Fear & Greed Index for stocks.
-  # Undocumented API — requires User-Agent header.
-  # Returns a composite score (0-100) with 7 sub-indicators.
-  class StockFearGreedGateway
+  module Gateways
+    # Fetches the CNN Fear & Greed Index for stocks.
+    # Undocumented API — requires User-Agent header.
+    # Returns a composite score (0-100) with 7 sub-indicators.
+    class StockFearGreedGateway
     include Dry::Monads[:result]
 
     BASE_URL = "https://production.dataviz.cnn.io"
@@ -64,6 +65,7 @@ module MarketData
           }
         end
       end
+    end
     end
   end
 end

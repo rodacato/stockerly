@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::PeHistoryCalculator do
+RSpec.describe MarketData::Domain::PeHistoryCalculator do
   describe ".calculate" do
     let(:asset) { create(:asset, symbol: "AAPL", current_price: 200.0) }
 

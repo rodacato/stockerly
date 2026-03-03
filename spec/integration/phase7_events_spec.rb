@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Phase 7 Domain Events" do
-  describe MarketData::AssetPriceUpdated do
+  describe MarketData::Events::AssetPriceUpdated do
     it "has required attributes" do
       event = described_class.new(asset_id: 1, symbol: "AAPL", old_price: "150.0", new_price: "155.0")
 
@@ -79,7 +79,7 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe MarketData::FxRatesRefreshed do
+  describe MarketData::Events::FxRatesRefreshed do
     it "can be instantiated with no attributes" do
       event = described_class.new
 

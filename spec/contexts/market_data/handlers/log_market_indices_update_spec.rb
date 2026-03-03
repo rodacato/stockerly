@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::LogMarketIndicesUpdate do
+RSpec.describe MarketData::Handlers::LogMarketIndicesUpdate do
   describe ".call" do
     it "creates a SystemLog entry with index count" do
       expect {

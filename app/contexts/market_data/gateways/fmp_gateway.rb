@@ -1,7 +1,8 @@
 module MarketData
-  # Driven adapter: Financial Modeling Prep API for dividend and split data.
-  # Free tier: 250 calls/day. Docs: https://financialmodelingprep.com/developer/docs
-  class FmpGateway < MarketDataGateway
+  module Gateways
+    # Driven adapter: Financial Modeling Prep API for dividend and split data.
+    # Free tier: 250 calls/day. Docs: https://financialmodelingprep.com/developer/docs
+    class FmpGateway < MarketDataGateway
     include Dry::Monads[:result]
 
     BASE_URL = "https://financialmodelingprep.com"
@@ -104,6 +105,7 @@ module MarketData
         ENV.fetch("FMP_API_KEY", "")
     rescue ActiveRecord::Encryption::Errors::Decryption
       ENV.fetch("FMP_API_KEY", "")
+    end
     end
   end
 end

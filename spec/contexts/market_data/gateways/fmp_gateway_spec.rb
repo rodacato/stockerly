@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::FmpGateway do
+RSpec.describe MarketData::Gateways::FmpGateway do
   subject(:gateway) { described_class.new(api_key: "test_key") }
 
   before do

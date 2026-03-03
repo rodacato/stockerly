@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::CryptoFearGreedGateway do
+RSpec.describe MarketData::Gateways::CryptoFearGreedGateway do
   subject(:gateway) { described_class.new }
 
   describe "#fetch_index" do

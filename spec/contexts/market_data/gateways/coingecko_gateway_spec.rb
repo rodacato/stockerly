@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::CoingeckoGateway do
+RSpec.describe MarketData::Gateways::CoingeckoGateway do
   subject(:gateway) { described_class.new(api_key: "test_key") }
 
   describe "#fetch_price" do

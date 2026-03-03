@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe MarketData::LogFundamentalsUpdate do
+RSpec.describe MarketData::Handlers::LogFundamentalsUpdate do
   describe ".call" do
     let(:event) do
-      MarketData::AssetFundamentalsUpdated.new(
+      MarketData::Events::AssetFundamentalsUpdated.new(
         asset_id: 1,
         symbol: "AAPL",
         source: "alpha_vantage_overview"

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::YieldCalculator do
+RSpec.describe MarketData::Domain::YieldCalculator do
   describe ".discount_price" do
     it "calculates correctly for 28-day CETES at 11.15% yield" do
       price = described_class.discount_price(face_value: 10.0, annual_yield: 11.15, days: 28)

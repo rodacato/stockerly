@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::SyncCryptoFundamentals do
+RSpec.describe MarketData::UseCases::SyncCryptoFundamentals do
   let!(:crypto_asset) { create(:asset, symbol: "BTC", name: "Bitcoin", asset_type: :crypto, current_price: 67_250) }
   let!(:stock_asset) { create(:asset, symbol: "AAPL", name: "Apple", asset_type: :stock, current_price: 227) }
 

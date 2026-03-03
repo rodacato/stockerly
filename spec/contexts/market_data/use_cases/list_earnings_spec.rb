@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::ListEarnings do
+RSpec.describe MarketData::UseCases::ListEarnings do
   let(:user) { create(:user) }
   let(:apple) { create(:asset, symbol: "AAPL") }
   let(:tesla) { create(:asset, symbol: "TSLA") }

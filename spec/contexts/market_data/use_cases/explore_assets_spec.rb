@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::ExploreAssets do
+RSpec.describe MarketData::UseCases::ExploreAssets do
   let!(:apple) { create(:asset, name: "Apple Inc.", symbol: "AAPL", asset_type: :stock, sector: "Technology") }
   let!(:tesla) { create(:asset, name: "Tesla Inc.", symbol: "TSLA", asset_type: :stock, sector: "Automotive") }
   let!(:bitcoin) { create(:asset, name: "Bitcoin", symbol: "BTC", asset_type: :crypto) }

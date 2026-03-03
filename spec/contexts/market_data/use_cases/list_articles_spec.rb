@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::ListArticles do
+RSpec.describe MarketData::UseCases::ListArticles do
   let!(:nvidia_article) { create(:news_article, title: "NVIDIA Record Revenue", related_ticker: "NVDA", published_at: 1.hour.ago) }
   let!(:apple_article) { create(:news_article, title: "Apple Earnings Preview", related_ticker: "AAPL", published_at: 2.hours.ago) }
   let!(:bitcoin_article) { create(:news_article, title: "Bitcoin Rally", related_ticker: "BTC", published_at: 3.hours.ago) }

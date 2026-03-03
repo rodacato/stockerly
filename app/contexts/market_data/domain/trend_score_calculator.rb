@@ -1,8 +1,9 @@
 module MarketData
-  # Pure stateless calculator for trend scores.
-  # Receives array of closing prices (oldest→newest, min 15 elements), returns score hash.
-  # No DB reads, no I/O, no side effects.
-  class TrendScoreCalculator
+  module Domain
+    # Pure stateless calculator for trend scores.
+    # Receives array of closing prices (oldest→newest, min 15 elements), returns score hash.
+    # No DB reads, no I/O, no side effects.
+    class TrendScoreCalculator
     class << self
     # Main entry point: array of closing prices → { score:, label:, direction: }
     # Returns nil if insufficient data (< 15 closes).
@@ -57,6 +58,7 @@ module MarketData
       when 81..90  then :strong
       when 91..100 then :parabolic
       end
+    end
     end
     end
   end

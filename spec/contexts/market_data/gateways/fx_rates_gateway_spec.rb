@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::FxRatesGateway do
+RSpec.describe MarketData::Gateways::FxRatesGateway do
   subject(:gateway) { described_class.new(api_key: "test_key") }
 
   describe "#refresh_rates" do

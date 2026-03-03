@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::LogNewsSync do
+RSpec.describe MarketData::Handlers::LogNewsSync do
   describe ".call" do
     it "creates a SystemLog entry with article count" do
       expect {

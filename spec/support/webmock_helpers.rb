@@ -671,8 +671,8 @@ module WebmockHelpers
   # --- Banxico SIE API (CETES) ---
 
   def stub_banxico_auctions(term: "28", yield_rate: 11.15, date: "25/02/2026")
-    series_id = MarketData::BanxicoGateway::CETES_SERIES[term.to_s]
-    stub_request(:get, "#{MarketData::BanxicoGateway::BASE_URL}series/#{series_id}/datos/oportuno")
+    series_id = MarketData::Gateways::BanxicoGateway::CETES_SERIES[term.to_s]
+    stub_request(:get, "#{MarketData::Gateways::BanxicoGateway::BASE_URL}series/#{series_id}/datos/oportuno")
       .to_return(
         status: 200,
         headers: { "Content-Type" => "application/json" },
@@ -689,8 +689,8 @@ module WebmockHelpers
   end
 
   def stub_banxico_not_found(term: "28")
-    series_id = MarketData::BanxicoGateway::CETES_SERIES[term.to_s]
-    stub_request(:get, "#{MarketData::BanxicoGateway::BASE_URL}series/#{series_id}/datos/oportuno")
+    series_id = MarketData::Gateways::BanxicoGateway::CETES_SERIES[term.to_s]
+    stub_request(:get, "#{MarketData::Gateways::BanxicoGateway::BASE_URL}series/#{series_id}/datos/oportuno")
       .to_return(
         status: 200,
         headers: { "Content-Type" => "application/json" },

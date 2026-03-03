@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::SyncAssetOnCreation do
+RSpec.describe MarketData::Handlers::SyncAssetOnCreation do
   describe ".async?" do
     it "returns true" do
       expect(described_class.async?).to be true
@@ -11,7 +11,7 @@ RSpec.describe MarketData::SyncAssetOnCreation do
     let(:asset) { create(:asset, symbol: "MSFT") }
 
     it "enqueues SyncSingleAssetJob for the asset" do
-      event = MarketData::AssetCreated.new(asset_id: asset.id, symbol: "MSFT", admin_id: 1)
+      event = MarketData::Events::AssetCreated.new(asset_id: asset.id, symbol: "MSFT", admin_id: 1)
 
       expect {
         described_class.call(event)

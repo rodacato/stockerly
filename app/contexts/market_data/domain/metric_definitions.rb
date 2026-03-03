@@ -1,8 +1,9 @@
 module MarketData
-  # In-memory registry for financial metric definitions.
-  # Follows the same pattern as DataSourceRegistry — boot-time registration,
-  # class-level accessor, and clear! for tests.
-  class MetricDefinitions
+  module Domain
+    # In-memory registry for financial metric definitions.
+    # Follows the same pattern as DataSourceRegistry — boot-time registration,
+    # class-level accessor, and clear! for tests.
+    class MetricDefinitions
     Definition = Data.define(
       :key,              # Symbol, e.g. :pe_ratio
       :category,         # Symbol: :valuation, :profitability, :health, :growth, :dividends, :risk, :identity
@@ -265,5 +266,6 @@ module MarketData
       short_desc: "24h volume relative to market cap",
       context_guidance: "Liquidity indicator. Higher ratios suggest more active trading relative to asset size. Typical range: 1-10%.",
       format_type: :percentage, display_order: 6, icon: "swap_horiz"
+    end
   end
 end

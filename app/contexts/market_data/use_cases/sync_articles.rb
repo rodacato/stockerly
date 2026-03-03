@@ -1,19 +1,20 @@
 module MarketData
-  class SyncArticles < ApplicationUseCase
-    TITLE_SIMILARITY_THRESHOLD = 0.65
+  module UseCases
+    class SyncArticles < ApplicationUseCase
+      TITLE_SIMILARITY_THRESHOLD = 0.65
 
-    def call
-      result = PolygonGateway.new.fetch_news(limit: 20)
+      def call
+        result = Gateways::PolygonGateway.new.fetch_news(limit: 20)
 
-      return result if result.failure?
+        return result if result.failure?
 
-      articles = result.value!
-      created = upsert_articles(articles)
+        articles = result.value!
+        created = upsert_articles(articles)
 
-      publish(NewsSynced.new(count: created))
+        publish(Events::NewsSynced.new(count: created))
 
-      Success(created)
-    end
+        Success(created)
+      end
 
     private
 
@@ -66,6 +67,7 @@ module MarketData
 
       intersection = (bigrams_a & bigrams_b).size
       (2.0 * intersection) / (bigrams_a.size + bigrams_b.size)
+    end
     end
   end
 end
