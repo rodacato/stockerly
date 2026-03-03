@@ -7,6 +7,116 @@ RSpec.describe MarketData::Gateways::FmpGateway do
     allow(RateLimiter).to receive(:check!).and_return(Dry::Monads::Success())
   end
 
+  describe "#fetch_overview" do
+    let(:profile_response) do
+      [{
+        "symbol" => "AAPL",
+        "companyName" => "Apple Inc.",
+        "description" => "Apple Inc. designs, manufactures...",
+        "sector" => "Technology",
+        "industry" => "Consumer Electronics",
+        "exchangeShortName" => "NASDAQ",
+        "currency" => "USD",
+        "country" => "US",
+        "mktCap" => 3_100_000_000_000,
+        "pe" => 31.5,
+        "eps" => 6.42,
+        "beta" => 1.24,
+        "lastDiv" => 1.0,
+        "range" => "164.08-237.49",
+        "price" => 202.25,
+        "dcf" => 158.32
+      }]
+    end
+
+    context "when FMP returns valid profile data" do
+      before do
+        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/AAPL})
+          .to_return(status: 200, headers: { "Content-Type" => "application/json" }, body: profile_response.to_json)
+      end
+
+      it "returns Success with parsed overview data" do
+        result = gateway.fetch_overview("AAPL")
+
+        expect(result).to be_success
+        data = result.value!
+        expect(data[:symbol]).to eq("AAPL")
+        expect(data[:name]).to eq("Apple Inc.")
+        expect(data[:sector]).to eq("Technology")
+        expect(data[:industry]).to eq("Consumer Electronics")
+        expect(data[:exchange]).to eq("NASDAQ")
+        expect(data[:currency]).to eq("USD")
+        expect(data[:country]).to eq("US")
+      end
+
+      it "maps financial metrics to match Alpha Vantage schema" do
+        result = gateway.fetch_overview("AAPL")
+        data = result.value!
+
+        expect(data[:market_cap]).to eq(BigDecimal("3100000000000"))
+        expect(data[:pe_ratio]).to eq(BigDecimal("31.5"))
+        expect(data[:eps]).to eq(BigDecimal("6.42"))
+        expect(data[:beta]).to eq(BigDecimal("1.24"))
+        expect(data[:dividend_per_share]).to eq(BigDecimal("1.0"))
+        expect(data[:fifty_two_week_low]).to eq(BigDecimal("164.08"))
+        expect(data[:fifty_two_week_high]).to eq(BigDecimal("237.49"))
+        expect(data[:analyst_target_price]).to eq(BigDecimal("158.32"))
+      end
+    end
+
+    context "when FMP returns empty response" do
+      before do
+        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/INVALID})
+          .to_return(status: 200, headers: { "Content-Type" => "application/json" }, body: "[]")
+      end
+
+      it "returns Failure with :not_found" do
+        result = gateway.fetch_overview("INVALID")
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:not_found)
+      end
+    end
+
+    context "when FMP returns 429" do
+      before do
+        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/})
+          .to_return(status: 429, body: "Rate limit exceeded")
+      end
+
+      it "returns Failure with :rate_limited" do
+        result = gateway.fetch_overview("AAPL")
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:rate_limited)
+      end
+    end
+
+    context "when FMP returns server error" do
+      before do
+        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/})
+          .to_return(status: 500, body: "Internal Server Error")
+      end
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.fetch_overview("AAPL")
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+
+    context "when RateLimiter returns Failure" do
+      before do
+        allow(RateLimiter).to receive(:check!)
+          .and_return(Dry::Monads::Failure([ :rate_limited, "FMP daily limit reached" ]))
+      end
+
+      it "returns Failure without making HTTP request" do
+        result = gateway.fetch_overview("AAPL")
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:rate_limited)
+      end
+    end
+  end
+
   describe "#fetch_dividends" do
     context "when FMP returns valid dividend data" do
       before do
