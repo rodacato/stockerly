@@ -58,11 +58,11 @@ module Admin
     private
 
     def integration_params
-      params.require(:integration).permit(:provider_name, :provider_type, :api_key_encrypted)
+      params.require(:integration).permit(:provider_name, :provider_type)
     end
 
     def update_params
-      params.require(:integration).permit(:api_key_encrypted, :daily_call_limit, :max_requests_per_minute)
+      params.require(:integration).permit(:daily_call_limit, :max_requests_per_minute)
     end
   end
 end

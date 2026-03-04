@@ -4,7 +4,7 @@ RSpec.describe "Backfill Flows (E2E)", type: :model do
   include ActiveJob::TestHelper
 
   before do
-    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Polygon.io", pool_key_value: "test_key")
   end
 
   describe "first boot scenario" do

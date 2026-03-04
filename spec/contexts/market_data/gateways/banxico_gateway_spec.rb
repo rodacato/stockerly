@@ -71,8 +71,7 @@ RSpec.describe MarketData::Gateways::BanxicoGateway do
   describe "API key resolution" do
     context "when Integration record exists with valid key" do
       before do
-        integration = create(:integration, provider_name: "Banxico", api_key_encrypted: "db_key")
-        create(:api_key_pool, :default, integration: integration, api_key_encrypted: "db_key")
+        create(:integration, provider_name: "Banxico", pool_key_value: "db_key")
       end
 
       it "uses the database key" do

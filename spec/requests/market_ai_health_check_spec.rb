@@ -11,7 +11,7 @@ RSpec.describe "Market AI Health Check", type: :request do
   let!(:integration) do
     create(:integration,
       provider_name: "AI Intelligence", provider_type: "AI / LLM",
-      api_key_encrypted: "test-key", connection_status: :connected,
+      pool_key_value: "test-key", connection_status: :connected,
       max_requests_per_minute: 10, daily_call_limit: 200,
       settings: { "provider" => "anthropic" })
   end

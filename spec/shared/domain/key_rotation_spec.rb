@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe KeyRotation do
-  let!(:integration) { create(:integration, provider_name: "Polygon.io", api_key_encrypted: "primary_key") }
+  let!(:integration) { create(:integration, provider_name: "Polygon.io", pool_key_value: nil) }
 
   describe ".next_key_for" do
     context "with pool keys" do

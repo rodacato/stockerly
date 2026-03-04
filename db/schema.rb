@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_04_195326) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_04_202913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -222,7 +222,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_04_195326) do
   end
 
   create_table "integrations", force: :cascade do |t|
-    t.string "api_key_encrypted"
     t.datetime "calls_reset_at"
     t.integer "connection_status", default: 0, null: false
     t.datetime "created_at", null: false

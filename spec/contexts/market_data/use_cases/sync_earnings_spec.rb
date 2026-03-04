@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe MarketData::UseCases::SyncEarnings do
   before do
-    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Polygon.io", pool_key_value: "test_key")
   end
 
   describe ".call" do

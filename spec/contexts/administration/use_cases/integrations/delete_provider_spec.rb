@@ -29,7 +29,7 @@ RSpec.describe Administration::UseCases::Integrations::DeleteProvider do
 
         expect {
           described_class.call(admin: admin, params: { id: integration.id })
-        }.to change(ApiKeyPool, :count).by(-2)
+        }.to change(ApiKeyPool, :count).by(-3)
       end
     end
 

@@ -24,7 +24,7 @@ RSpec.describe ApiKeyPool, type: :model do
   end
 
   describe "scopes" do
-    let(:integration) { create(:integration) }
+    let(:integration) { create(:integration, pool_key_value: nil) }
 
     describe ".enabled" do
       it "returns only enabled keys" do
@@ -56,7 +56,7 @@ RSpec.describe ApiKeyPool, type: :model do
 
   describe "is_default validation" do
     it "allows one default per integration" do
-      integration = create(:integration)
+      integration = create(:integration, pool_key_value: nil)
       create(:api_key_pool, :default, integration: integration)
 
       duplicate = build(:api_key_pool, :default, integration: integration)
@@ -65,8 +65,8 @@ RSpec.describe ApiKeyPool, type: :model do
     end
 
     it "allows defaults on different integrations" do
-      int_a = create(:integration, provider_name: "Provider A")
-      int_b = create(:integration, provider_name: "Provider B")
+      int_a = create(:integration, provider_name: "Provider A", pool_key_value: nil)
+      int_b = create(:integration, provider_name: "Provider B", pool_key_value: nil)
       create(:api_key_pool, :default, integration: int_a)
 
       second_default = build(:api_key_pool, :default, integration: int_b)

@@ -24,7 +24,7 @@ RSpec.describe Administration::UseCases::Integrations::RefreshSync do
     end
 
     context "when integration requires API key but has none" do
-      let!(:unconfigured) { create(:integration, provider_name: "Alpha Vantage", requires_api_key: true, api_key_encrypted: nil) }
+      let!(:unconfigured) { create(:integration, provider_name: "Alpha Vantage", requires_api_key: true, pool_key_value: nil) }
 
       it "returns missing_api_key failure" do
         result = described_class.call(integration_id: unconfigured.id)

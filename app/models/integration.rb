@@ -5,7 +5,6 @@ class Integration < ApplicationRecord
 
   validates :provider_name, presence: true, uniqueness: true
   validates :provider_type, presence: true
-  encrypts :api_key_encrypted
 
   def increment_api_calls!
     reset_daily_counter! if calls_reset_at.nil? || calls_reset_at < Time.current.beginning_of_day
@@ -44,11 +43,11 @@ class Integration < ApplicationRecord
 
   def active_api_key
     pool = api_key_pools.enabled.default_key.first || api_key_pools.enabled.least_used.first
-    pool&.api_key_encrypted || api_key_encrypted
+    pool&.api_key_encrypted
   end
 
   def api_key_configured?
-    api_key_pools.enabled.exists? || api_key_encrypted.present?
+    api_key_pools.enabled.exists?
   end
 
   def masked_api_key

@@ -4,8 +4,8 @@ RSpec.describe SyncFundamentalJob, type: :job do
   let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 189.43) }
 
   before do
-    create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "test_key")
-    create(:integration, provider_name: "FMP", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Alpha Vantage", pool_key_value: "test_key")
+    create(:integration, provider_name: "FMP", pool_key_value: "test_key")
     stub_alpha_vantage_overview("AAPL")
   end
 

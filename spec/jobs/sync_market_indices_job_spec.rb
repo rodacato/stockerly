@@ -4,7 +4,7 @@ RSpec.describe SyncMarketIndicesJob do
   include ActiveJob::TestHelper
 
   before do
-    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Polygon.io", pool_key_value: "test_key")
   end
 
   let!(:spx) { create(:market_index, symbol: "SPX", name: "S&P 500", value: 5000.0) }

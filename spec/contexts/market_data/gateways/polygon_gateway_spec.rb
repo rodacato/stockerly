@@ -222,8 +222,7 @@ RSpec.describe MarketData::Gateways::PolygonGateway do
   describe "API key resolution" do
     context "when Integration record exists with valid key" do
       before do
-        integration = create(:integration, provider_name: "Polygon.io", api_key_encrypted: "db_key")
-        create(:api_key_pool, :default, integration: integration, api_key_encrypted: "db_key")
+        create(:integration, provider_name: "Polygon.io", pool_key_value: "db_key")
       end
 
       it "uses the database key" do

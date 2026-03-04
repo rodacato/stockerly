@@ -4,7 +4,7 @@ RSpec.describe MarketData::UseCases::SyncCetes do
   subject(:use_case) { described_class.new }
 
   before do
-    create(:integration, provider_name: "Banxico", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Banxico", pool_key_value: "test_key")
   end
 
   describe "#call" do

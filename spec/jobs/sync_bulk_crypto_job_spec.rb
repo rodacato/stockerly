@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SyncBulkCryptoJob, type: :job do
   before do
-    create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "CoinGecko", pool_key_value: "test_key")
   end
 
   describe "#perform" do

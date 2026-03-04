@@ -5,7 +5,7 @@ RSpec.describe MarketData::UseCases::SyncCryptoFundamentals do
   let!(:stock_asset) { create(:asset, symbol: "AAPL", name: "Apple", asset_type: :stock, current_price: 227) }
 
   before do
-    create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "CoinGecko", pool_key_value: "test_key")
   end
 
   describe "#call" do
