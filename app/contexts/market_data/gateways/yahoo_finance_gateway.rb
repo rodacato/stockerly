@@ -78,6 +78,27 @@ module MarketData
       Failure([ :gateway_error, e.message ])
     end
 
+    # Search tickers by name or symbol via Yahoo Finance search API.
+    # Returns Success([{ symbol:, name:, quote_type:, exchange:, exchange_display: }, ...])
+    def search_tickers(query)
+      response = connection.get("/v1/finance/search") do |req|
+        req.params["q"] = query
+        req.params["quotesCount"] = 8
+        req.params["newsCount"] = 0
+        req.params["enableFuzzyQuery"] = true
+      end
+
+      return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+      return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
+
+      quotes = response.body["quotes"] || []
+      results = quotes.filter_map { |q| parse_search_result(q) }
+
+      Success(results)
+    rescue Faraday::Error => e
+      Failure([ :gateway_error, e.message ])
+    end
+
     # Fetch quotes for market indices (S&P 500, NASDAQ, DOW, FTSE, IPC, VIX).
     # Returns Success([{ symbol:, name:, value:, change_percent:, is_open: }, ...])
     def fetch_index_quotes(symbols = INDEX_SYMBOL_MAP.keys)
@@ -169,6 +190,18 @@ module MarketData
         f.options.timeout = TIMEOUT
         f.options.open_timeout = TIMEOUT
       end
+    end
+
+    def parse_search_result(quote)
+      return nil unless quote["symbol"].present?
+
+      {
+        symbol: quote["symbol"],
+        name: quote["longname"] || quote["shortname"] || quote["symbol"],
+        quote_type: quote["quoteType"],
+        exchange: quote["exchange"],
+        exchange_display: quote["exchDisp"]
+      }
     end
 
     def parse_batch_quotes(body, symbols)

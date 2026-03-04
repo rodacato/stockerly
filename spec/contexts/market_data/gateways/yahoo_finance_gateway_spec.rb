@@ -123,6 +123,78 @@ RSpec.describe MarketData::Gateways::YahooFinanceGateway do
     end
   end
 
+  describe "#search_tickers" do
+    context "when Yahoo returns results" do
+      before do
+        stub_yahoo_ticker_search("AAPL", results: [
+          { "symbol" => "AAPL", "longname" => "Apple Inc.", "quoteType" => "EQUITY",
+            "exchange" => "NMS", "exchDisp" => "NASDAQ" },
+          { "symbol" => "AAPL.MX", "longname" => "Apple Inc.", "quoteType" => "EQUITY",
+            "exchange" => "MEX", "exchDisp" => "Mexico" }
+        ])
+      end
+
+      it "returns Success with parsed results" do
+        result = gateway.search_tickers("AAPL")
+
+        expect(result).to be_success
+        expect(result.value!.size).to eq(2)
+        expect(result.value!.first[:symbol]).to eq("AAPL")
+        expect(result.value!.first[:name]).to eq("Apple Inc.")
+        expect(result.value!.first[:quote_type]).to eq("EQUITY")
+        expect(result.value!.first[:exchange]).to eq("NMS")
+        expect(result.value!.first[:exchange_display]).to eq("NASDAQ")
+      end
+    end
+
+    context "when no results found" do
+      before { stub_yahoo_ticker_search("ZZZZZ", results: []) }
+
+      it "returns Success with empty array" do
+        result = gateway.search_tickers("ZZZZZ")
+
+        expect(result).to be_success
+        expect(result.value!).to eq([])
+      end
+    end
+
+    context "when rate limited (429)" do
+      before { stub_yahoo_ticker_search_error(status: 429) }
+
+      it "returns Failure with :rate_limited" do
+        result = gateway.search_tickers("AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:rate_limited)
+      end
+    end
+
+    context "when server error (500)" do
+      before { stub_yahoo_ticker_search_error(status: 500) }
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.search_tickers("AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+
+    context "when connection times out" do
+      before do
+        stub_request(:get, %r{query2\.finance\.yahoo\.com/v1/finance/search})
+          .to_timeout
+      end
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.search_tickers("AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+  end
+
   describe "#fetch_bulk_prices" do
     before do
       stub_yahoo_finance_bulk({

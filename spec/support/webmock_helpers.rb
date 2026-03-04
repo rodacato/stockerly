@@ -320,6 +320,21 @@ module WebmockHelpers
       )
   end
 
+  def stub_yahoo_ticker_search(query, results: [])
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v1/finance/search})
+      .with(query: hash_including("q" => query))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { quotes: results }.to_json
+      )
+  end
+
+  def stub_yahoo_ticker_search_error(status: 500)
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v1/finance/search})
+      .to_return(status: status, body: "Error")
+  end
+
   # --- Crypto Fear & Greed (Alternative.me) ---
 
   def stub_crypto_fear_greed(value: 25, classification: "Extreme Fear")
