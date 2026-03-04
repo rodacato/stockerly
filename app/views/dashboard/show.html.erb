@@ -76,6 +76,7 @@
       <%= render "components/skeleton", type: "card", count: 1 %>
     <% end %>
     <%= render "dashboard/weekly_insight" %>
+    <%= render "dashboard/ai_insight" if @ai_insight %>
     <%= render "dashboard/market_status" %>
   </div>
 </div>

@@ -1,0 +1,39 @@
+<%# AI Portfolio Insight — only rendered when @ai_insight is present %>
+<section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-lg text-violet-600 dark:text-violet-400">psychology</span>
+      <h3 class="text-sm font-bold text-slate-900 dark:text-white">AI Insight</h3>
+    </div>
+    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">AI-generated</span>
+  </div>
+
+  <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-3"><%= @ai_insight.summary %></p>
+
+  <% if @ai_insight.observations.present? %>
+    <ul class="space-y-1 mb-3">
+      <% @ai_insight.observations.each do |observation| %>
+        <li class="flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+          <span class="material-symbols-outlined text-xs text-violet-500 mt-0.5">arrow_right</span>
+          <span><%= observation %></span>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <% if @ai_insight.risk_factors.present? %>
+    <div class="border-t border-slate-100 dark:border-slate-800 pt-2 mb-3">
+      <% @ai_insight.risk_factors.each do |risk| %>
+        <p class="flex items-start gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+          <span class="material-symbols-outlined text-xs mt-0.5">warning</span>
+          <span><%= risk %></span>
+        </p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="flex items-center justify-between text-[10px] text-slate-400">
+    <span>Generated <%= time_ago_in_words(@ai_insight.generated_at) %> ago</span>
+    <span>This is AI-generated analysis, not financial advice.</span>
+  </div>
+</section>

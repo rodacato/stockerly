@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_many :alert_events,      dependent: :destroy
   has_many :notifications,     dependent: :destroy
   has_many :audit_logs
+  has_many :portfolio_insights, dependent: :destroy
 
   # --- Validations ---
   validates :full_name, presence: true, length: { minimum: 2 }
