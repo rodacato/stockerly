@@ -58,7 +58,9 @@
               </span>
             </td>
             <td class="px-6 py-4">
-              <div class="flex flex-col items-center gap-1">
+              <div class="flex flex-col items-center gap-1 relative"
+                   data-controller="trend-breakdown"
+                   data-action="mouseenter->trend-breakdown#show mouseleave->trend-breakdown#hide">
                 <div class="w-full max-w-[80px] h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <% bar_color = if strength >= 80
                        'bg-emerald-500'
@@ -70,6 +72,24 @@
                   <div class="h-full rounded-full <%= bar_color %>" style="width: <%= strength %>%"></div>
                 </div>
                 <span class="text-[10px] font-medium text-slate-500"><%= strength_label %> (<%= strength %>%)</span>
+                <% if score&.factor_breakdown.present? %>
+                  <div data-trend-breakdown-target="popover"
+                       class="hidden absolute z-30 top-full mt-2 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg p-3 w-48">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase mb-2">Factor Breakdown</p>
+                    <% breakdown = score.factor_breakdown %>
+                    <% [ ["RSI", breakdown[:rsi]], ["Momentum", breakdown[:momentum]], ["MACD", breakdown[:macd]], ["Volume", breakdown[:volume_trend]], ["EMA Cross", breakdown[:ema_crossover]] ].each do |name, value| %>
+                      <% next unless value %>
+                      <div class="flex items-center gap-2 mb-1.5">
+                        <span class="text-[10px] text-slate-500 w-16 truncate"><%= name %></span>
+                        <div class="flex-1 h-1 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                          <% fcolor = value >= 60 ? 'bg-emerald-500' : value >= 40 ? 'bg-amber-400' : 'bg-rose-400' %>
+                          <div class="h-full rounded-full <%= fcolor %>" style="width: <%= value.clamp(0, 100) %>%"></div>
+                        </div>
+                        <span class="text-[10px] font-medium text-slate-500 w-7 text-right"><%= value.round.to_i %></span>
+                      </div>
+                    <% end %>
+                  </div>
+                <% end %>
               </div>
             </td>
             <td class="px-6 py-4">
