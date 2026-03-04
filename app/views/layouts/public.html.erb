@@ -1,6 +1,8 @@
 <% content_for(:body) do %>
   <%= render "shared/public_navbar" %>
-  <%= render "shared/flash" %>
+  <div id="flash_messages" class="fixed top-20 right-4 z-50 flex flex-col gap-3 max-w-sm" style="pointer-events: none;">
+    <%= render "shared/flash" %>
+  </div>
   <main>
     <%= yield %>
   </main>

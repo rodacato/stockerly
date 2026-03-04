@@ -4,7 +4,7 @@
     <div data-progress-bar-target="bar" class="progress-bar fixed top-0 left-0 h-[3px] bg-primary z-[60] opacity-0 w-0"></div>
     <%= render "shared/app_navbar" %>
     <%= render "shared/email_verification_banner" %>
-    <div id="flash_messages">
+    <div id="flash_messages" class="fixed top-20 right-4 z-50 flex flex-col gap-3 max-w-sm" style="pointer-events: none;">
       <%= render "shared/flash" %>
     </div>
     <main class="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
