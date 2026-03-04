@@ -44,6 +44,14 @@ export default class extends Controller {
       locale: "en",
       hide_side_toolbar: false,
       allow_symbol_change: false,
+      withdateranges: true,
+      details: true,
+      calendar: false,
+      studies: [
+        "STD;SMA",
+        "STD;RSI",
+        "STD;MACD"
+      ],
       support_host: "https://www.tradingview.com"
     })
 
