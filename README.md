@@ -1,24 +1,63 @@
-# README
+# Stockerly
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Open-source fintech platform for market trends, portfolios, alerts, and earnings. Built with Rails 8, PostgreSQL, Hotwire, and Tailwind CSS 4.
 
-Things you may want to cover:
+## Getting Started
 
-* Ruby version
+### Prerequisites
 
-* System dependencies
+- Ruby 3.3+
+- PostgreSQL 16
+- Node.js (for Tailwind CSS)
 
-* Configuration
+### First-Time Setup
 
-* Database creation
+1. Clone the repo and install dependencies:
+   ```bash
+   git clone https://github.com/your-org/stockerly.git
+   cd stockerly
+   bundle install
+   ```
 
-* Database initialization
+2. Create and migrate the database:
+   ```bash
+   bin/rails db:create db:migrate
+   ```
 
-* How to run the test suite
+3. Start the server:
+   ```bash
+   bin/dev
+   ```
 
-* Services (job queues, cache servers, search engines, etc.)
+4. Visit `http://localhost:3000` — you'll be redirected to the **Setup Wizard**
+5. Create your admin account
+6. Follow the 3-step onboarding:
+   - **Step 1:** Configure API keys for market data providers (Polygon.io, CoinGecko, Alpha Vantage, etc.)
+   - **Step 2:** Select which assets to track (stocks, crypto, ETFs, CETES)
+   - **Step 3:** Review and launch your first data sync
 
-* Deployment instructions
+### Development with Demo Data
 
-* ...
+For development, seed the database with sample data:
+
+```bash
+bin/rails db:seed
+```
+
+This creates an admin user (`admin@stockerly.com` / `password123`), sample assets, trades, alerts, and more.
+
+## Running Tests
+
+```bash
+bundle exec rspec
+```
+
+## Architecture
+
+Pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts: Identity, Trading, Alerts, Market Data, Administration, Notifications.
+
+See `CLAUDE.md` for detailed architecture documentation.
+
+## License
+
+100% free & open source.

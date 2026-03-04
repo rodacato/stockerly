@@ -4,6 +4,10 @@ module RequestHelpers
     post login_path, params: { email: user.email, password: password }
   end
 
+  def login_as_without_onboarding(user, password: "password123")
+    post login_path, params: { email: user.email, password: password }
+  end
+
   def ensure_onboarded(user)
     return if user.onboarded?
 
