@@ -134,4 +134,15 @@ Rails.application.config.after_initialize do
     integration_name: "Banxico",
     circuit_breaker_key: "banxico"
   )
+  DataSourceRegistry.register(:ai_intelligence,
+    name: "AI Intelligence",
+    icon: "psychology",
+    color: "violet",
+    gateway_class: MarketData::Gateways::LlmGateway,
+    job_class: nil,
+    job_args: [],
+    test_symbol: nil,
+    integration_name: "AI Intelligence",
+    circuit_breaker_key: "llm"
+  )
 end

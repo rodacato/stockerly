@@ -523,6 +523,18 @@ Integration.find_or_create_by!(provider_name: "Banxico") do |i|
   i.daily_call_limit = 1_000
 end
 
+# --- AI Intelligence (optional — uncomment and configure to enable AI features) ---
+# Supported providers: "anthropic" (Claude), "openai" (GPT)
+# Set custom base_url to use SheLLM, Ollama, Together, or any compatible endpoint
+# Integration.find_or_create_by!(provider_name: "AI Intelligence") do |i|
+#   i.provider_type = "AI / LLM"
+#   i.requires_api_key = true
+#   i.connection_status = :disconnected
+#   i.max_requests_per_minute = 10
+#   i.daily_call_limit = 200
+#   i.settings = { "provider" => "anthropic", "model" => "claude-sonnet-4-5-20250514" }
+# end
+
 # --- Asset Fundamentals (sample AAPL OVERVIEW) ---
 AssetFundamental.find_or_create_by!(asset: aapl, period_label: "OVERVIEW") do |f|
   f.metrics = {

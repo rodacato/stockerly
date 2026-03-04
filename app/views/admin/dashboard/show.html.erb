@@ -166,6 +166,42 @@
     </div>
   <% end %>
 
+  <%# AI Intelligence %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="material-symbols-outlined text-xl text-violet-600 dark:text-violet-400">psychology</span>
+      <h2 class="text-lg font-bold text-slate-900 dark:text-white">AI Intelligence</h2>
+      <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">Optional</span>
+    </div>
+
+    <% ai_integration = Integration.find_by(provider_name: "AI Intelligence") %>
+    <% if ai_integration %>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3">
+          <p class="text-xs text-violet-600 dark:text-violet-400 font-medium">Provider</p>
+          <p class="text-sm font-bold text-violet-700 dark:text-violet-300 capitalize"><%= ai_integration.setting("provider") || "anthropic" %></p>
+        </div>
+        <div class="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3">
+          <p class="text-xs text-violet-600 dark:text-violet-400 font-medium">Model</p>
+          <p class="text-sm font-bold text-violet-700 dark:text-violet-300 truncate"><%= ai_integration.setting("model") || "default" %></p>
+        </div>
+        <div class="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3">
+          <p class="text-xs text-violet-600 dark:text-violet-400 font-medium">Daily Usage</p>
+          <p class="text-sm font-bold text-violet-700 dark:text-violet-300"><%= ai_integration.api_calls_today %> / <%= ai_integration.daily_call_limit %></p>
+        </div>
+        <div class="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3">
+          <p class="text-xs text-violet-600 dark:text-violet-400 font-medium">Status</p>
+          <%= render "components/status_badge", status: { "connected" => "active", "syncing" => "warning", "disconnected" => "error" }[ai_integration.connection_status] || ai_integration.connection_status %>
+        </div>
+      </div>
+    <% else %>
+      <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">AI Intelligence is not configured. Enable it to unlock portfolio insights, news sentiment analysis, and fundamental health checks.</p>
+        <p class="text-xs text-slate-500">Uncomment the AI Intelligence section in <code class="text-xs bg-slate-200 dark:bg-slate-700 px-1 rounded">db/seeds.rb</code> or create the Integration manually. Supports Anthropic (Claude), OpenAI (GPT), or any compatible endpoint.</p>
+      </div>
+    <% end %>
+  </div>
+
   <%# Two-column panels %>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <%# Integrations Panel %>
