@@ -4,7 +4,7 @@ module MarketData
       include Pagy::Backend
 
       def call(params: {})
-        scope = Asset.includes(:trend_scores)
+        scope = Asset.includes(:trend_scores, :asset_price_histories)
 
         scope = scope.where(asset_type: params[:type]) if params[:type].present?
         scope = scope.by_sector(params[:sector])

@@ -3,7 +3,7 @@ module Identity
     class LoadProfile < ApplicationUseCase
       def call(user:)
         watchlist_items = user.watchlist_items
-                              .includes(:asset)
+                              .includes(asset: :asset_price_histories)
                               .order(created_at: :desc)
 
         Success({
