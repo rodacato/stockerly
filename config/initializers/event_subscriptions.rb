@@ -12,6 +12,9 @@ Rails.application.config.after_initialize do
   # Administration
   EventBus.subscribe(Identity::Events::UserSuspended, Administration::Handlers::CreateAuditLogOnSuspension)
   EventBus.subscribe(Identity::Events::UserSuspended, Administration::Handlers::SendSuspensionEmail)
+  EventBus.subscribe(Identity::Events::UserReactivated, Administration::Handlers::CreateAuditLogOnReactivation)
+  EventBus.subscribe(Identity::Events::UserReactivated, Administration::Handlers::SendReactivationEmail)
+  EventBus.subscribe(Identity::Events::UserDeleted, Administration::Handlers::CreateAuditLogOnDeletion)
   EventBus.subscribe(MarketData::Events::AssetCreated, Administration::Handlers::CreateAuditLogOnAssetCreation)
   EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::SyncAssetOnCreation)
   EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::BackfillHistoryOnAssetCreation)

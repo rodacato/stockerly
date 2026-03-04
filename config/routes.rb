@@ -85,8 +85,11 @@ Rails.application.routes.draw do
     resources :logs, only: [ :index ] do
       collection { get :export_csv }
     end
-    resources :users, only: [ :index ] do
-      member { patch :suspend }
+    resources :users, only: [ :index, :destroy ] do
+      member do
+        patch :suspend
+        patch :reactivate
+      end
     end
   end
 end

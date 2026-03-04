@@ -38,12 +38,28 @@
               <%= render "components/status_badge", status: user.status %>
             </td>
             <td class="px-6 py-4 text-right">
-              <% unless user.admin? || user.suspended? %>
-                <%= button_to suspend_admin_user_path(user), method: :patch,
-                    class: "p-1.5 text-slate-400 hover:text-rose-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
-                    data: { turbo_confirm: "Suspend #{user.full_name}?" } do %>
-                  <span class="material-symbols-outlined text-lg">block</span>
-                <% end %>
+              <% unless user.admin? %>
+                <div class="flex items-center justify-end gap-1">
+                  <% if user.suspended? %>
+                    <%= button_to reactivate_admin_user_path(user), method: :patch,
+                        class: "p-1.5 text-slate-400 hover:text-green-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
+                        data: { turbo_confirm: "Reactivate #{user.full_name}?" } do %>
+                      <span class="material-symbols-outlined text-lg">check_circle</span>
+                    <% end %>
+                  <% else %>
+                    <%= button_to suspend_admin_user_path(user), method: :patch,
+                        class: "p-1.5 text-slate-400 hover:text-rose-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
+                        data: { turbo_confirm: "Suspend #{user.full_name}?" } do %>
+                      <span class="material-symbols-outlined text-lg">block</span>
+                    <% end %>
+                  <% end %>
+
+                  <%= button_to admin_user_path(user), method: :delete,
+                      class: "p-1.5 text-slate-400 hover:text-red-600 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
+                      data: { turbo_confirm: "Permanently delete #{user.full_name}? This cannot be undone." } do %>
+                    <span class="material-symbols-outlined text-lg">delete_forever</span>
+                  <% end %>
+                </div>
               <% end %>
             </td>
           </tr>
