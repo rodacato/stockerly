@@ -725,6 +725,106 @@ module WebmockHelpers
       .to_return(status: 500, body: "Internal Server Error")
   end
 
+  # --- Finnhub ---
+
+  def stub_finnhub_quote(symbol, current: 150.25, change_percent: 1.69, prev_close: 147.75)
+    stub_request(:get, "https://finnhub.io/api/v1/quote")
+      .with(query: hash_including("symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {
+          c: current, d: current - prev_close, dp: change_percent,
+          h: current + 1, l: current - 1, o: current - 0.5,
+          pc: prev_close, t: Time.current.to_i
+        }.to_json
+      )
+  end
+
+  def stub_finnhub_quote_not_found(symbol)
+    stub_request(:get, "https://finnhub.io/api/v1/quote")
+      .with(query: hash_including("symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { c: 0, d: nil, dp: nil, h: 0, l: 0, o: 0, pc: 0, t: 0 }.to_json
+      )
+  end
+
+  def stub_finnhub_candles(symbol, days: 7)
+    timestamps = days.times.map { |i| (days - i).days.ago.to_i }
+    stub_request(:get, "https://finnhub.io/api/v1/stock/candle")
+      .with(query: hash_including("symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {
+          s: "ok",
+          c: days.times.map { |i| 183.0 + i },
+          o: days.times.map { |i| 180.0 + i },
+          h: days.times.map { |i| 185.0 + i },
+          l: days.times.map { |i| 178.0 + i },
+          v: days.times.map { |i| 50_000_000 + (i * 1_000_000) },
+          t: timestamps
+        }.to_json
+      )
+  end
+
+  def stub_finnhub_candles_empty(symbol)
+    stub_request(:get, "https://finnhub.io/api/v1/stock/candle")
+      .with(query: hash_including("symbol" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { s: "no_data" }.to_json
+      )
+  end
+
+  def stub_finnhub_search(query, count: 2)
+    results = [
+      { "description" => "APPLE INC", "displaySymbol" => "AAPL", "symbol" => "AAPL", "type" => "Common Stock" },
+      { "description" => "APPLE HOSPITALITY REIT", "displaySymbol" => "APLE", "symbol" => "APLE", "type" => "Common Stock" }
+    ].first(count)
+
+    stub_request(:get, "https://finnhub.io/api/v1/search")
+      .with(query: hash_including("q" => query))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { count: results.size, result: results }.to_json
+      )
+  end
+
+  def stub_finnhub_search_empty(query)
+    stub_request(:get, "https://finnhub.io/api/v1/search")
+      .with(query: hash_including("q" => query))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { count: 0, result: [] }.to_json
+      )
+  end
+
+  def stub_finnhub_rate_limited
+    stub_request(:get, %r{finnhub\.io/api/v1/quote})
+      .to_return(status: 429, body: "Rate limit exceeded")
+  end
+
+  def stub_finnhub_server_error
+    stub_request(:get, %r{finnhub\.io/api/v1/quote})
+      .to_return(status: 500, body: "Internal Server Error")
+  end
+
+  def stub_finnhub_search_rate_limited
+    stub_request(:get, %r{finnhub\.io/api/v1/search})
+      .to_return(status: 429, body: "Rate limit exceeded")
+  end
+
+  def stub_finnhub_candles_rate_limited
+    stub_request(:get, %r{finnhub\.io/api/v1/stock/candle})
+      .to_return(status: 429, body: "Rate limit exceeded")
+  end
+
   # --- LLM (AI Intelligence) ---
 
   def stub_llm_completion(content:, provider: "anthropic", base_url: nil)
