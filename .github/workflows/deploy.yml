@@ -82,6 +82,7 @@ jobs:
       EXCHANGERATE_API_KEY: ${{ secrets.EXCHANGERATE_API_KEY }}
       ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
       BANXICO_API_TOKEN: ${{ secrets.BANXICO_API_TOKEN }}
+      HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_API_KEY }}
 
     steps:
       - name: Checkout code
@@ -102,3 +103,10 @@ jobs:
 
       - name: Deploy with Kamal
         run: bin/kamal deploy
+
+      - name: Notify Honeybadger of deploy
+        if: success()
+        run: |
+          curl --silent --show-error \
+            --data "deploy[environment]=production&deploy[revision]=${{ github.sha }}&deploy[repository]=${{ github.repository }}&deploy[local_username]=${{ github.actor }}&api_key=$HONEYBADGER_API_KEY" \
+            https://api.honeybadger.io/v1/deploys
