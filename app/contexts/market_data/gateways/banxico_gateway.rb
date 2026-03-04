@@ -6,6 +6,7 @@ module MarketData
     include Dry::Monads[:result]
 
     BASE_URL = "https://www.banxico.org.mx/SieAPIRest/service/v1/"
+    PROVIDER = "Banxico"
     TIMEOUT  = 10
 
     # Banxico series IDs for CETES by term (days)
@@ -16,8 +17,8 @@ module MarketData
       "364" => "SF43945"
     }.freeze
 
-    def initialize(api_token: nil)
-      @api_token = api_token || ENV.fetch("BANXICO_API_TOKEN", "")
+    def initialize(api_key: nil)
+      @api_token = api_key || resolve_api_key
     end
 
     # Fetch latest auction result for a specific CETES term.
@@ -52,6 +53,15 @@ module MarketData
     end
 
     private
+
+    def resolve_api_key
+      integration = Integration.find_by(provider_name: PROVIDER)
+      key = integration&.api_key_encrypted
+      raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
+      key
+    rescue ActiveRecord::Encryption::Errors::Decryption
+      raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
+    end
 
     def connection
       @connection ||= Faraday.new(url: BASE_URL) do |f|

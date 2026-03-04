@@ -173,10 +173,12 @@ module MarketData
     end
 
     def resolve_api_key
-      Integration.find_by(provider_name: PROVIDER)&.api_key_encrypted ||
-        ENV.fetch("FMP_API_KEY", "")
+      integration = Integration.find_by(provider_name: PROVIDER)
+      key = integration&.api_key_encrypted
+      raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
+      key
     rescue ActiveRecord::Encryption::Errors::Decryption
-      ENV.fetch("FMP_API_KEY", "")
+      raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
     end
     end
   end

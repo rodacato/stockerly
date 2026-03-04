@@ -203,14 +203,17 @@ module MarketData
     end
 
     def resolve_api_key
-      Integration.find_by(provider_name: "CoinGecko")&.api_key_encrypted ||
-        ENV.fetch("COINGECKO_API_KEY", "")
+      integration = Integration.find_by(provider_name: PROVIDER)
+      key = integration&.api_key_encrypted
+      raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
+      key
     rescue ActiveRecord::Encryption::Errors::Decryption
-      ENV.fetch("COINGECKO_API_KEY", "")
+      raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
     end
 
     def resolve_pro_tier
-      ENV.fetch("COINGECKO_PRO", "false") == "true"
+      integration = Integration.find_by(provider_name: PROVIDER)
+      integration&.setting("pro_tier") == true
     end
     end
   end
