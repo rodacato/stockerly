@@ -20,4 +20,9 @@ class UserMailer < ApplicationMailer
     @user = user
     mail(to: user.email, subject: "Your Stockerly account has been suspended")
   end
+
+  def account_reactivated(user)
+    @user = user
+    mail(to: user.email, subject: "Your Stockerly account has been reactivated")
+  end
 end
