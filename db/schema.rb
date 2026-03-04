@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_04_162204) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_04_195116) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -60,8 +60,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_04_162204) do
     t.integer "daily_calls", default: 0, null: false
     t.boolean "enabled", default: true, null: false
     t.bigint "integration_id", null: false
+    t.boolean "is_default", default: false, null: false
     t.string "name", default: "Default", null: false
     t.datetime "updated_at", null: false
+    t.index ["integration_id", "is_default"], name: "index_api_key_pools_on_integration_default", unique: true, where: "(is_default = true)"
     t.index ["integration_id"], name: "index_api_key_pools_on_integration_id"
   end
 

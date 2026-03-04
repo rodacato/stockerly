@@ -43,6 +43,35 @@ RSpec.describe ApiKeyPool, type: :model do
         expect(described_class.least_used).to eq([ low, high ])
       end
     end
+
+    describe ".default_key" do
+      it "returns only default keys" do
+        default = create(:api_key_pool, :default, integration: integration)
+        create(:api_key_pool, integration: integration)
+
+        expect(described_class.default_key).to eq([ default ])
+      end
+    end
+  end
+
+  describe "is_default validation" do
+    it "allows one default per integration" do
+      integration = create(:integration)
+      create(:api_key_pool, :default, integration: integration)
+
+      duplicate = build(:api_key_pool, :default, integration: integration)
+      expect(duplicate).not_to be_valid
+      expect(duplicate.errors[:is_default]).to be_present
+    end
+
+    it "allows defaults on different integrations" do
+      int_a = create(:integration, provider_name: "Provider A")
+      int_b = create(:integration, provider_name: "Provider B")
+      create(:api_key_pool, :default, integration: int_a)
+
+      second_default = build(:api_key_pool, :default, integration: int_b)
+      expect(second_default).to be_valid
+    end
   end
 
   describe "#masked_api_key" do

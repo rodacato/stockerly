@@ -44,6 +44,15 @@ class Integration < ApplicationRecord
     settings&.dig(key.to_s)
   end
 
+  def active_api_key
+    pool = api_key_pools.enabled.default_key.first || api_key_pools.enabled.least_used.first
+    pool&.api_key_encrypted || api_key_encrypted
+  end
+
+  def api_key_configured?
+    api_key_pools.enabled.exists? || api_key_encrypted.present?
+  end
+
   def masked_api_key
     return nil unless api_key_encrypted.present?
     "••••••••••••#{api_key_encrypted.last(4)}"

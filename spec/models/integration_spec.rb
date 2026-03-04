@@ -140,6 +140,54 @@ RSpec.describe Integration, type: :model do
     end
   end
 
+  describe "#active_api_key" do
+    it "returns default pool key when present" do
+      integration = create(:integration)
+      create(:api_key_pool, :default, integration: integration, api_key_encrypted: "default_key_123")
+      create(:api_key_pool, integration: integration, api_key_encrypted: "other_key_456")
+
+      expect(integration.active_api_key).to eq("default_key_123")
+    end
+
+    it "returns least-used enabled pool key when no default" do
+      integration = create(:integration)
+      create(:api_key_pool, integration: integration, api_key_encrypted: "key_a", daily_calls: 10)
+      create(:api_key_pool, integration: integration, api_key_encrypted: "key_b", daily_calls: 2)
+
+      expect(integration.active_api_key).to eq("key_b")
+    end
+
+    it "falls back to legacy api_key_encrypted when no pool keys" do
+      integration = create(:integration, api_key_encrypted: "legacy_key_123")
+      integration.api_key_pools.destroy_all
+
+      expect(integration.active_api_key).to eq("legacy_key_123")
+    end
+  end
+
+  describe "#api_key_configured?" do
+    it "returns true with enabled pool keys" do
+      integration = create(:integration)
+      create(:api_key_pool, :default, integration: integration)
+
+      expect(integration.api_key_configured?).to be true
+    end
+
+    it "returns true with legacy api_key_encrypted" do
+      integration = create(:integration, api_key_encrypted: "legacy_key")
+      integration.api_key_pools.destroy_all
+
+      expect(integration.api_key_configured?).to be true
+    end
+
+    it "returns false when nothing configured" do
+      integration = build(:integration, requires_api_key: false, api_key_encrypted: nil)
+      integration.save!(validate: false)
+
+      expect(integration.api_key_configured?).to be false
+    end
+  end
+
   describe "encryption" do
     it "encrypts the api_key_encrypted field" do
       integration = create(:integration, api_key_encrypted: "secret_key_123")
