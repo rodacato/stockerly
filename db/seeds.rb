@@ -461,7 +461,7 @@ end
 # API keys are NOT seeded — configure them via Admin > Integrations.
 Integration.find_or_create_by!(provider_name: "Polygon.io") do |i|
   i.provider_type = "Stocks & Forex"
-  i.requires_api_key = false
+  i.requires_api_key = true
   i.connection_status = :disconnected
   i.max_requests_per_minute = 5
   i.daily_call_limit = 500
@@ -497,28 +497,28 @@ Integration.find_or_create_by!(provider_name: "CNN") do |i|
 end
 Integration.find_or_create_by!(provider_name: "Alpha Vantage") do |i|
   i.provider_type = "Fundamentals"
-  i.requires_api_key = false
+  i.requires_api_key = true
   i.connection_status = :disconnected
   i.max_requests_per_minute = 5
   i.daily_call_limit = 25
 end
 Integration.find_or_create_by!(provider_name: "FMP") do |i|
   i.provider_type = "Dividends & Splits"
-  i.requires_api_key = false
+  i.requires_api_key = true
   i.connection_status = :disconnected
   i.max_requests_per_minute = 10
   i.daily_call_limit = 250
 end
 Integration.find_or_create_by!(provider_name: "ExchangeRate") do |i|
   i.provider_type = "FX Rates"
-  i.requires_api_key = false
+  i.requires_api_key = true
   i.connection_status = :disconnected
   i.max_requests_per_minute = 10
   i.daily_call_limit = 1_500
 end
 Integration.find_or_create_by!(provider_name: "Banxico") do |i|
   i.provider_type = "CETES & Fixed Income"
-  i.requires_api_key = false
+  i.requires_api_key = true
   i.connection_status = :disconnected
   i.daily_call_limit = 1_000
 end
