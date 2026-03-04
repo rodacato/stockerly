@@ -119,7 +119,7 @@ Rails.application.config.after_initialize do
     job_class: RefreshFxRatesJob,
     job_args: [],
     test_symbol: nil,
-    integration_name: nil,
+    integration_name: "ExchangeRate",
     circuit_breaker_key: "fx"
   )
 

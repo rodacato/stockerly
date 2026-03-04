@@ -458,21 +458,21 @@ unless SystemLog.exists?
 end
 
 # --- Integrations ---
+# API keys are NOT seeded — configure them via Admin > Integrations.
 Integration.find_or_create_by!(provider_name: "Polygon.io") do |i|
   i.provider_type = "Stocks & Forex"
-  i.api_key_encrypted = ENV.fetch("POLYGON_API_KEY", "pk_live_abc123xyz789")
-  i.connection_status = :connected
-  i.last_sync_at = 2.minutes.ago
+  i.requires_api_key = false
+  i.connection_status = :disconnected
   i.max_requests_per_minute = 5
   i.daily_call_limit = 500
 end
 Integration.find_or_create_by!(provider_name: "CoinGecko") do |i|
   i.provider_type = "Cryptocurrency"
-  i.api_key_encrypted = ENV.fetch("COINGECKO_API_KEY", "cg_demo_key_456def")
-  i.connection_status = :syncing
-  i.last_sync_at = 1.hour.ago
+  i.requires_api_key = false
+  i.connection_status = :disconnected
   i.max_requests_per_minute = 30
   i.daily_call_limit = 10_000
+  i.settings = { "pro_tier" => false }
 end
 Integration.find_or_create_by!(provider_name: "Yahoo Finance") do |i|
   i.provider_type = "Mexican Stocks & ETFs"
@@ -495,23 +495,32 @@ Integration.find_or_create_by!(provider_name: "CNN") do |i|
   i.last_sync_at = 1.day.ago
   i.daily_call_limit = 100
 end
-
 Integration.find_or_create_by!(provider_name: "Alpha Vantage") do |i|
   i.provider_type = "Fundamentals"
-  i.api_key_encrypted = ENV.fetch("ALPHA_VANTAGE_API_KEY", "av_demo_key_789")
-  i.connection_status = :connected
-  i.last_sync_at = 1.day.ago
+  i.requires_api_key = false
+  i.connection_status = :disconnected
   i.max_requests_per_minute = 5
   i.daily_call_limit = 25
 end
 Integration.find_or_create_by!(provider_name: "FMP") do |i|
   i.provider_type = "Dividends & Splits"
-  i.api_key_encrypted = ENV.fetch("FMP_API_KEY", "fmp_demo_key_123")
-  i.requires_api_key = true
-  i.connection_status = :connected
-  i.last_sync_at = 1.week.ago
+  i.requires_api_key = false
+  i.connection_status = :disconnected
   i.max_requests_per_minute = 10
   i.daily_call_limit = 250
+end
+Integration.find_or_create_by!(provider_name: "ExchangeRate") do |i|
+  i.provider_type = "FX Rates"
+  i.requires_api_key = false
+  i.connection_status = :disconnected
+  i.max_requests_per_minute = 10
+  i.daily_call_limit = 1_500
+end
+Integration.find_or_create_by!(provider_name: "Banxico") do |i|
+  i.provider_type = "CETES & Fixed Income"
+  i.requires_api_key = false
+  i.connection_status = :disconnected
+  i.daily_call_limit = 1_000
 end
 
 # --- Asset Fundamentals (sample AAPL OVERVIEW) ---
