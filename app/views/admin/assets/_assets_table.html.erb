@@ -13,8 +13,8 @@
           <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <% @assets.each do |asset| %>
+      <% @assets.each do |asset| %>
+        <tbody data-controller="reveal">
           <tr class="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
             <td class="px-6 py-4">
               <p class="font-bold text-sm text-slate-900 dark:text-white"><%= asset.name %></p>
@@ -49,6 +49,11 @@
             </td>
             <td class="px-6 py-4 text-right">
               <div class="flex items-center justify-end gap-2">
+                <button data-action="reveal#toggle"
+                    class="p-1.5 text-slate-400 hover:text-primary transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+                    title="Edit asset">
+                  <span class="material-symbols-outlined text-lg">edit</span>
+                </button>
                 <%= button_to trigger_sync_admin_asset_path(asset), method: :post,
                     class: "p-1.5 text-slate-400 hover:text-emerald-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
                     title: "Sync now" do %>
@@ -68,8 +73,51 @@
               </div>
             </td>
           </tr>
-        <% end %>
-      </tbody>
+
+          <%# Inline edit row %>
+          <tr data-reveal-target="content" class="hidden border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
+            <td colspan="7" class="px-6 py-4">
+              <%= form_with(url: admin_asset_path(asset), scope: :asset, method: :patch, class: "flex items-center gap-3 flex-wrap") do |f| %>
+                <% input_class = "px-2.5 py-1.5 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] font-bold text-slate-400 uppercase">Name</label>
+                  <%= f.text_field :name, value: asset.name, placeholder: "Name", class: "#{input_class} w-44" %>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] font-bold text-slate-400 uppercase">Exchange</label>
+                  <%= f.text_field :exchange, value: asset.exchange, placeholder: "Exchange", class: "#{input_class} w-24" %>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] font-bold text-slate-400 uppercase">Country</label>
+                  <%= f.text_field :country, value: asset.country, placeholder: "XX", class: "#{input_class} w-16" %>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] font-bold text-slate-400 uppercase">Sector</label>
+                  <%= f.text_field :sector, value: asset.sector, placeholder: "Sector", class: "#{input_class} w-28" %>
+                </div>
+
+                <div class="flex flex-col gap-1 flex-1">
+                  <label class="text-[10px] font-bold text-slate-400 uppercase">Logo URL</label>
+                  <%= f.text_field :logo_url, value: asset.logo_url, placeholder: "https://...", class: "#{input_class} w-full" %>
+                </div>
+
+                <div class="flex items-end gap-2 pt-3">
+                  <%= f.submit "Save",
+                      class: "px-3 py-1.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors cursor-pointer" %>
+                  <button type="button" data-action="reveal#toggle"
+                      class="px-3 py-1.5 text-sm font-medium text-slate-500 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    Cancel
+                  </button>
+                </div>
+              <% end %>
+            </td>
+          </tr>
+        </tbody>
+      <% end %>
     </table>
   </div>
 

@@ -81,7 +81,7 @@ Rails.application.routes.draw do
     get   "onboarding/complete",     to: "onboarding#complete", as: :onboarding_complete
     post  "onboarding/launch",       to: "onboarding#launch", as: :onboarding_launch
 
-    resources :assets, only: [ :index, :create, :destroy ] do
+    resources :assets, only: [ :index, :create, :update, :destroy ] do
       member do
         patch :toggle_status
         post  :trigger_sync

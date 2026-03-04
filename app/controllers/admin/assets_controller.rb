@@ -54,6 +54,19 @@ module Admin
       end
     end
 
+    def update
+      result = Administration::UseCases::Assets::UpdateAsset.call(
+        admin: current_user,
+        params: update_params.to_h.merge(id: params[:id].to_i)
+      )
+
+      if result.success?
+        redirect_to admin_assets_path, notice: "Asset \"#{result.value!.symbol}\" updated successfully."
+      else
+        redirect_to admin_assets_path, alert: result.failure.last.is_a?(Hash) ? result.failure.last.values.flatten.first : result.failure.last
+      end
+    end
+
     def destroy
       result = Administration::UseCases::Assets::DeleteAsset.call(asset_id: params[:id], admin: current_user)
 
@@ -82,6 +95,10 @@ module Admin
 
     def asset_params
       params.require(:asset).permit(:symbol, :name, :asset_type, :country, :exchange, :sector, :logo_url)
+    end
+
+    def update_params
+      params.require(:asset).permit(:name, :logo_url, :sector, :exchange, :country)
     end
   end
 end
