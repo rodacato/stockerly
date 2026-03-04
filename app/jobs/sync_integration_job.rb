@@ -9,6 +9,12 @@ class SyncIntegrationJob < ApplicationJob
     integration = Integration.find_by(id: integration_id)
     return unless integration
 
+    if integration.requires_api_key? && integration.api_key_encrypted.blank?
+      integration.update_column(:connection_status, Integration.connection_statuses[:disconnected])
+      log_sync_failure("Integration Sync: #{integration.provider_name}", "API key required but not configured")
+      return
+    end
+
     integration.update!(connection_status: :syncing)
 
     result = test_connectivity(integration)

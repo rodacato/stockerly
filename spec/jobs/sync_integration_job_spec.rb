@@ -43,6 +43,28 @@ RSpec.describe SyncIntegrationJob, type: :job do
       end
     end
 
+    context "when integration requires API key but has none" do
+      let!(:unconfigured) do
+        integration = build(:integration, provider_name: "Alpha Vantage", requires_api_key: true, api_key_encrypted: nil)
+        integration.save!(validate: false)
+        integration
+      end
+
+      it "sets status to disconnected" do
+        described_class.perform_now(unconfigured.id)
+
+        unconfigured.reload
+        expect(unconfigured.connection_status).to eq("disconnected")
+      end
+
+      it "creates an error SystemLog" do
+        described_class.perform_now(unconfigured.id)
+
+        expect(SystemLog.last.severity).to eq("error")
+        expect(SystemLog.last.error_message).to include("API key required")
+      end
+    end
+
     context "when integration does not exist" do
       it "does nothing" do
         expect {

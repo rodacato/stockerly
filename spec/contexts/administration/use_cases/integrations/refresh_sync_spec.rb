@@ -22,5 +22,26 @@ RSpec.describe Administration::UseCases::Integrations::RefreshSync do
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:not_found)
     end
+
+    context "when integration requires API key but has none" do
+      let!(:unconfigured) do
+        integration = build(:integration, provider_name: "Alpha Vantage", requires_api_key: true, api_key_encrypted: nil)
+        integration.save!(validate: false)
+        integration
+      end
+
+      it "returns missing_api_key failure" do
+        result = described_class.call(integration_id: unconfigured.id)
+
+        expect(result).to be_failure
+        expect(result.failure[0]).to eq(:missing_api_key)
+      end
+
+      it "does not enqueue a job" do
+        expect {
+          described_class.call(integration_id: unconfigured.id)
+        }.not_to have_enqueued_job(SyncIntegrationJob)
+      end
+    end
   end
 end
