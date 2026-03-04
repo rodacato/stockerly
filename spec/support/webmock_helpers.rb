@@ -710,6 +710,37 @@ module WebmockHelpers
       .to_return(status: 500, body: "Internal Server Error")
   end
 
+  # --- LLM (AI Intelligence) ---
+
+  def stub_llm_completion(content:, provider: "anthropic", base_url: nil)
+    case provider
+    when "anthropic"
+      url = "#{base_url || 'https://api.anthropic.com'}/v1/messages"
+      body = { content: [ { type: "text", text: content } ] }.to_json
+    when "openai"
+      url = "#{base_url || 'https://api.openai.com'}/v1/chat/completions"
+      body = { choices: [ { message: { role: "assistant", content: content } } ] }.to_json
+    end
+
+    stub_request(:post, url)
+      .to_return(status: 200, headers: { "Content-Type" => "application/json" }, body: body)
+  end
+
+  def stub_llm_rate_limited(provider: "anthropic")
+    url = provider == "anthropic" ? %r{api\.anthropic\.com/v1/messages} : %r{api\.openai\.com/v1/chat/completions}
+    stub_request(:post, url).to_return(status: 429, body: "Rate limit exceeded")
+  end
+
+  def stub_llm_error(status: 500, provider: "anthropic")
+    url = provider == "anthropic" ? %r{api\.anthropic\.com/v1/messages} : %r{api\.openai\.com/v1/chat/completions}
+    stub_request(:post, url).to_return(status: status, body: "Server Error")
+  end
+
+  def stub_llm_timeout(provider: "anthropic")
+    url = provider == "anthropic" ? %r{api\.anthropic\.com/v1/messages} : %r{api\.openai\.com/v1/chat/completions}
+    stub_request(:post, url).to_timeout
+  end
+
   private
 
   def stub_yahoo_chart(symbol, price:, previous_close:, volume: 0, short_name: nil, regular_start: nil, regular_end: nil)
