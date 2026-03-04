@@ -23,7 +23,7 @@
               <p class="text-xs text-slate-400 uppercase tracking-wider"><%= integration.provider_type %></p>
             </div>
           </div>
-          <% if integration.requires_api_key? && integration.api_key_encrypted.blank? %>
+          <% if integration.requires_api_key? && integration.disconnected? %>
             <span class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600">
               <span class="size-2 rounded-full bg-amber-500"></span>
               Not Configured
@@ -67,7 +67,7 @@
         <%# Last sync + API key %>
         <div class="flex items-center gap-4 text-xs text-slate-400 mb-4">
           <span>Last Sync &middot; <span class="text-slate-600 dark:text-slate-300"><%= integration.last_sync_at ? time_ago_in_words(integration.last_sync_at) + " ago" : "Never" %></span></span>
-          <% if integration.requires_api_key? && integration.api_key_encrypted.blank? %>
+          <% if integration.requires_api_key? && integration.disconnected? %>
             <span class="text-amber-600 font-medium">Key &middot; Not configured</span>
           <% elsif integration.masked_api_key %>
             <span>Key &middot; <span class="font-mono text-slate-500"><%= integration.masked_api_key %></span></span>
@@ -126,44 +126,33 @@
         </div>
 
         <%# Action buttons %>
-        <div class="flex flex-col gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
-          <% if integration.requires_api_key? %>
-            <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex items-center gap-2" do |f| %>
-              <%= f.text_field :api_key_encrypted, name: "integration[api_key_encrypted]",
-                  placeholder: integration.api_key_encrypted.present? ? integration.masked_api_key : "Paste API Key",
-                  class: "flex-1 px-3 py-1.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary font-mono",
-                  autocomplete: "off" %>
-              <%= f.submit "Save Key", class: "px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors cursor-pointer" %>
-            <% end %>
+        <div class="flex items-center gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
+          <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex items-center gap-2" do |f| %>
+            <%= f.number_field :daily_call_limit, name: "integration[daily_call_limit]",
+                value: integration.daily_call_limit,
+                class: "w-20 px-2 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary",
+                title: "Daily limit" %>
+            <%= f.number_field :max_requests_per_minute, name: "integration[max_requests_per_minute]",
+                value: integration.max_requests_per_minute,
+                placeholder: "req/min",
+                class: "w-20 px-2 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary",
+                title: "Per-minute limit" %>
+            <%= f.submit "Update Limits", class: "px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer" %>
           <% end %>
 
-          <div class="flex items-center gap-2">
-            <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex items-center gap-2" do |f| %>
-              <%= f.number_field :daily_call_limit, name: "integration[daily_call_limit]",
-                  value: integration.daily_call_limit,
-                  class: "w-20 px-2 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary",
-                  title: "Daily limit" %>
-              <%= f.number_field :max_requests_per_minute, name: "integration[max_requests_per_minute]",
-                  value: integration.max_requests_per_minute,
-                  placeholder: "req/min",
-                  class: "w-20 px-2 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary",
-                  title: "Per-minute limit" %>
-              <%= f.submit "Update Limits", class: "px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer" %>
-            <% end %>
+          <%= button_to refresh_sync_admin_integration_path(integration),
+              method: :post,
+              class: "px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors" do %>
+            Refresh Sync
+          <% end %>
 
-            <%= button_to refresh_sync_admin_integration_path(integration),
-                method: :post,
-                class: "px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors" do %>
-              Refresh Sync
-            <% end %>
-
-            <%= button_to admin_integration_path(integration),
-                method: :delete,
-                class: "px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors",
-                data: { turbo_confirm: "Delete #{integration.provider_name}? This removes all pool keys." } do %>
-              Delete
-            <% end %>
-          </div>
+          <%= button_to admin_integration_path(integration),
+              method: :delete,
+              class: "px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors",
+              data: { turbo_confirm: "Delete #{integration.provider_name}? This removes all pool keys." } do %>
+            Delete
+          <% end %>
+        </div>
       </div>
     <% end %>
 

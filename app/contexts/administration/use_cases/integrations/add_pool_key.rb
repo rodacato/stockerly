@@ -27,7 +27,13 @@ module Administration
             name: attrs[:name],
             api_key_encrypted: attrs[:api_key_encrypted]
           )
-          pool_key.save ? Success(pool_key) : Failure([ :validation, pool_key.errors.to_hash ])
+          return Failure([ :validation, pool_key.errors.to_hash ]) unless pool_key.save
+
+          if integration.connection_status != "connected"
+            integration.update!(connection_status: :connected, last_sync_at: Time.current)
+          end
+
+          Success(pool_key)
         end
       end
     end
