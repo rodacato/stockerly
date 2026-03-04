@@ -1,8 +1,8 @@
 # Stockerly — Roadmap
 
 > **Fecha:** 2026-03-04
-> **Estado actual:** ~1946 specs, Phase 21 complete
-> **Siguiente:** Phase 22 — LLM-Powered Intelligence Layer
+> **Estado actual:** ~2080 specs, Phase 22 complete
+> **Siguiente:** Phase 23 — TBD
 
 ---
 
@@ -267,63 +267,61 @@
 
 ---
 
-## Phase 22 — LLM-Powered Intelligence Layer
+## Phase 22 — LLM-Powered Intelligence Layer ✅
 
 > **Theme:** "Delegate research and analysis to AI you already pay for"
 > **Owner:** Domain Architect + Data Engineer + Rails Engineer
-> **Estimated specs:** ~65
-> **External dependency:** SheLLM service (separate repo — see `SHELLM_PLAN.md`)
+> **Actual specs:** +134 (2080 total)
 
 ### Architecture
 
-Stockerly does NOT call LLM APIs directly. Instead, it communicates with an independent **SheLLM** microservice that wraps CLI tools (claude, gemini, codex) via existing subscriptions. No API keys needed.
+Multi-provider LLM gateway with 2 API formats (Anthropic + OpenAI). Custom `base_url` supports SheLLM, Ollama, Together, or any compatible endpoint. Purely optional — app works perfectly without it.
 
 ```
-Stockerly                     SheLLM (separate repo)          CLI Subscriptions
-                              (Node.js + Express)
-LlmGateway ──► POST ──►  /completions ──► subprocess ──► claude -p "..."
-(Faraday)      JSON        route by           spawn        gemini -p "..."
-             ◄── JSON ◄──  provider  ◄── parse stdout ◄── codex exec "..."
+Admin → AI Intelligence Integration
+         ├── Provider: anthropic  → POST https://api.anthropic.com/v1/messages
+         ├── Provider: openai     → POST https://api.openai.com/v1/chat/completions
+         └── Custom base_url      → Any API-compatible endpoint
 ```
 
 ### 22.0 — Stockerly LLM Gateway
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 153 | Add LlmGateway with Faraday client to SheLLM | Gateway, CircuitBreaker, RateLimiter integration | +8 |
-| 154 | Add SheLLM Integration seed and admin health indicator | Seeds, admin view, health check | +4 |
-| 155 | Add LlmResponseContract for output validation | Contract, Dry::Validation, JSON schema enforcement | +6 |
+| 153 | Add LlmGateway with multi-provider support | Gateway, Anthropic + OpenAI adapters, RateLimiter | +9 |
+| 154 | Add AI Intelligence admin section and Integration seed | Seeds, admin view, data source registry | +0 |
+| 155 | Add LLM response contracts for output validation | 3 contracts: LlmResponse, Insight, Sentiment | +6 |
 
 ### 22.1 — Portfolio Insight Generator
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 156 | Add InsightGenerator domain service with analysis prompt | Domain service, system prompt template, anonymizer | +8 |
-| 157 | Add GeneratePortfolioInsightsJob as daily recurring job | Job (11:15pm after snapshots), events, handlers | +6 |
-| 158 | Add AI insight card to dashboard with attribution label | Views, Turbo Frame, opt-out toggle, "AI-generated" label | +4 |
+| 156 | Add InsightGenerator domain service with anonymizer | Domain service, system prompt, PortfolioDataAnonymizer | +8 |
+| 157 | Add GeneratePortfolioInsight use case and model | Migration, model, use case, job, factory | +6 |
+| 158 | Add AI insight card to dashboard | Views, AssembleDashboard integration, disclaimer | +4 |
 
 ### 22.2 — News Sentiment Analysis
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 159 | Add NewsSentimentAnalyzer domain service with batch processing | Domain service, batch prompt (10 articles per call) | +8 |
-| 160 | Add AnalyzeNewsSentimentJob triggered after news sync | Job, event handler, migration (sentiment columns on news_articles) | +6 |
-| 161 | Add sentiment badges and filter to news feed | Views, filter, Turbo Frame update | +4 |
+| 159 | Add NewsSentimentAnalyzer domain service | Domain service, batch prompt (max 10 articles) | +8 |
+| 160 | Add sentiment columns and async news analysis handler | Migration, handler, event subscription | +6 |
+| 161 | Add sentiment badges to news feed cards | Views, emerald/rose/slate color coding | +4 |
 
 ### 22.3 — Fundamental Health Checks
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 162 | Add FundamentalHealthCheck domain service | Domain service, prompt template, 7-day cache | +6 |
-| 163 | Add AI health check section to asset detail page | Views, Turbo Frame, cache integration | +4 |
+| 162 | Add FundamentalHealthCheck domain service | Domain service, HealthCheckResponseContract | +6 |
+| 163 | Add AI health check section to asset detail page | Views, 7-day cache, SVG gauge | +4 |
 
 ### 22.4 — Earnings Narrative
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 164 | Add EarningsNarrativeGenerator for earnings detail page | Domain service, views, cache | +5 |
+| 164 | Add EarningsNarrativeGenerator with earnings tab integration | Domain service, NarrativeResponseContract, views, 7-day cache | +5 |
 
-**Phase 22 Total: ~65 specs, ~12 commits**
+**Phase 22 Total: +134 specs, 12 commits** ✅
 
 ---
 
@@ -344,10 +342,7 @@ Phase 20 (Production Readiness) ────► FMP fallback, PWA, health dashbo
     │
 Phase 21 (Smart Analytics) ─────────► Concentration alerts, enhanced TrendScore ✅
     │
-Phase 22 (LLM Intelligence) ────────► AI insights (requires SheLLM deployed) ← NEXT
-    ▲
-    │ External dependency: SheLLM (separate repo)
-    │ See SHELLM_PLAN.md
+Phase 22 (LLM Intelligence) ────────► AI insights, multi-provider gateway ✅
 ```
 
 ### Totals
@@ -362,14 +357,12 @@ Phase 22 (LLM Intelligence) ────────► AI insights (requires Sh
 | ~~20.1~~ | ~~PWA Support~~ | ~~2~~ | ~~6~~ | ~~1898~~ |
 | ~~20.2~~ | ~~Monitoring Enhancements~~ | ~~1~~ | ~~4~~ | ~~1902~~ |
 | ~~21~~ | ~~Smart Analytics~~ | ~~4~~ | ~~20~~ | ~~1946~~ |
-| 22 | LLM Intelligence | 12 | ~65 | ~2011 |
-| | **Total Remaining** | **~12** | **~65** | **~2011** |
+| ~~22~~ | ~~LLM Intelligence~~ | ~~12~~ | ~~134~~ | ~~2080~~ |
+| | **Total Remaining** | **0** | **0** | **2080** |
 
 ### External Dependencies
 
-| Dependency | Repository | Status | Required By |
-|---|---|---|---|
-| **SheLLM** | `shellm` | Plan ready (`SHELLM_PLAN.md`) | Phase 22 |
+None — all phases complete. AI Intelligence uses standard provider APIs (Anthropic/OpenAI) or any compatible endpoint.
 
 ---
 
