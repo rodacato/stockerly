@@ -1,4 +1,21 @@
 <%# Earnings tab: historical EPS results with beat/miss indicators %>
+<% if @earnings_narrative %>
+  <div class="mb-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-lg text-violet-600 dark:text-violet-400">psychology</span>
+        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Earnings Narrative</h4>
+      </div>
+      <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">AI-generated</span>
+    </div>
+    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-2"><%= @earnings_narrative[:narrative] %></p>
+    <div class="flex items-center gap-3 text-xs text-slate-500">
+      <span class="capitalize font-medium">Pattern: <%= @earnings_narrative[:pattern] %></span>
+      <span>Consistency: <%= @earnings_narrative[:consistency_score] %>%</span>
+    </div>
+    <p class="mt-2 text-[10px] text-slate-400">This is AI-generated analysis, not financial advice.</p>
+  </div>
+<% end %>
 <% if @earnings_events.present? %>
   <%# EPS Bar Chart — actual vs estimated %>
   <% reported = @earnings_events.select { |e| e.actual_eps.present? }.reverse %>
