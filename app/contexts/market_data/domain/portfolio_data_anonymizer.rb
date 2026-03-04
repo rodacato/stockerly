@@ -9,8 +9,8 @@ module MarketData
           top_performer: extract_performer(summary, :top),
           worst_performer: extract_performer(summary, :worst),
           position_count: portfolio.positions.open.count,
-          concentration_hhi: concentration&.dig(:hhi),
-          risk_level: concentration&.dig(:label),
+          concentration_hhi: concentration.respond_to?(:hhi) ? concentration.hhi : concentration&.dig(:hhi),
+          risk_level: concentration.respond_to?(:hhi_label) ? concentration.hhi_label : concentration&.dig(:label),
           sector_weights: extract_sector_weights(portfolio)
         }
       end
