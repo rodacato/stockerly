@@ -73,5 +73,41 @@ end %>
         <p class="text-sm text-slate-500 text-center py-8">No allocation data yet.</p>
       <% end %>
     </div>
+    <%# Concentration Risk %>
+    <% if @concentration&.has_data %>
+      <div class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+        <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg text-primary">monitoring</span>
+          Concentration Risk
+        </h4>
+        <%
+          badge_color = case @concentration.risk_level
+                        when :high then "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400"
+                        when :moderate then "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400"
+                        else "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400"
+                        end
+        %>
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-500">HHI Index</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase <%= badge_color %>">
+              <%= @concentration.hhi_label %> (<%= @concentration.hhi %>)
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-500">Largest Position</span>
+            <span class="text-xs font-bold text-slate-900 dark:text-white">
+              <%= @concentration.max_position_symbol %> (<%= @concentration.max_position_pct %>%)
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-500">Top Sector</span>
+            <span class="text-xs font-bold text-slate-900 dark:text-white">
+              <%= @concentration.max_sector_name %> (<%= @concentration.max_sector_pct %>%)
+            </span>
+          </div>
+        </div>
+      </div>
+    <% end %>
   </section>
 </div>

@@ -17,6 +17,7 @@
           <option value="FG_CRYPTO">Crypto F&amp;G</option>
           <option value="FG_STOCKS">Stocks F&amp;G</option>
         </select>
+        <input type="hidden" name="alert[asset_symbol]" id="concentration_symbol" value="PORTFOLIO" disabled>
       </div>
       <div class="space-y-2">
         <label class="text-xs font-bold text-slate-500 uppercase">Condition</label>
@@ -30,6 +31,7 @@
           <option value="sentiment_above">Sentiment Above (F&amp;G)</option>
           <option value="sentiment_below">Sentiment Below (F&amp;G)</option>
           <option value="volume_spike">Volume Spike (&gt;X avg)</option>
+          <option value="concentration_risk">Concentration Risk (HHI)</option>
         </select>
       </div>
       <div class="space-y-2">
@@ -48,19 +50,29 @@
 <script>
   function toggleSentimentFields(select) {
     var isSentiment = select.value.indexOf("sentiment_") === 0;
+    var isConcentration = select.value === "concentration_risk";
     var tickerInput = document.getElementById("ticker_input");
     var sentimentSelect = document.getElementById("sentiment_index_select");
+    var concentrationSymbol = document.getElementById("concentration_symbol");
 
     if (isSentiment) {
       tickerInput.classList.add("hidden");
       tickerInput.disabled = true;
       sentimentSelect.classList.remove("hidden");
       sentimentSelect.disabled = false;
+      concentrationSymbol.disabled = true;
+    } else if (isConcentration) {
+      tickerInput.classList.add("hidden");
+      tickerInput.disabled = true;
+      sentimentSelect.classList.add("hidden");
+      sentimentSelect.disabled = true;
+      concentrationSymbol.disabled = false;
     } else {
       tickerInput.classList.remove("hidden");
       tickerInput.disabled = false;
       sentimentSelect.classList.add("hidden");
       sentimentSelect.disabled = true;
+      concentrationSymbol.disabled = true;
     }
   }
 </script>

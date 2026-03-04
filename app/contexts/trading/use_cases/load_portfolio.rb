@@ -26,6 +26,7 @@ module Trading
         returns_calculator = Domain::PeriodReturnsCalculator.new(portfolio)
 
         risk_metrics = compute_risk_metrics(portfolio)
+        concentration = Domain::ConcentrationAnalyzer.analyze(portfolio: portfolio)
 
         result = {
           portfolio: portfolio,
@@ -38,7 +39,8 @@ module Trading
           benchmark_data: nil,
           upcoming_dividends: tab == "dividends" ? Domain::UpcomingDividendsPresenter.new(portfolio).upcoming : [],
           risk_metrics: risk_metrics,
-          allocation_by_type: allocation_by_type
+          allocation_by_type: allocation_by_type,
+          concentration: concentration
         }
 
         if benchmark.present? && BENCHMARK_INDICES.include?(benchmark)

@@ -23,11 +23,12 @@ RSpec.describe AlertRule, type: :model do
   end
 
   describe "enums" do
-    it "defines condition enum with 8 values including volume_spike" do
+    it "defines condition enum with 9 values including concentration_risk" do
       expect(AlertRule.conditions.keys).to contain_exactly(
         "price_crosses_above", "price_crosses_below",
         "day_change_percent", "rsi_overbought", "rsi_oversold",
-        "sentiment_above", "sentiment_below", "volume_spike"
+        "sentiment_above", "sentiment_below", "volume_spike",
+        "concentration_risk"
       )
     end
 
