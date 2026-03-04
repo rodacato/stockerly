@@ -27,9 +27,9 @@ RSpec.describe KeyRotation do
     end
 
     context "without pool keys" do
-      it "falls back to integration primary key" do
+      it "returns nil" do
         result = described_class.next_key_for("Polygon.io")
-        expect(result).to eq("primary_key")
+        expect(result).to be_nil
       end
     end
 

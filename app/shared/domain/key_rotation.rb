@@ -8,12 +8,9 @@ class KeyRotation
     return nil unless integration
 
     pool_key = integration.api_key_pools.enabled.least_used.first
+    return nil unless pool_key
 
-    if pool_key
-      pool_key.increment!(:daily_calls)
-      pool_key.api_key_encrypted
-    else
-      integration.api_key_encrypted
-    end
+    pool_key.increment!(:daily_calls)
+    pool_key.api_key_encrypted
   end
 end

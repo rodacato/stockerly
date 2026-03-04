@@ -55,8 +55,7 @@ module MarketData
     private
 
     def resolve_api_key
-      integration = Integration.find_by(provider_name: PROVIDER)
-      key = integration&.api_key_encrypted
+      key = KeyRotation.next_key_for(PROVIDER)
       raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
       key
     rescue ActiveRecord::Encryption::Errors::Decryption

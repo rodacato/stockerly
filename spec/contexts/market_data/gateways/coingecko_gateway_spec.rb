@@ -173,7 +173,10 @@ RSpec.describe MarketData::Gateways::CoingeckoGateway do
 
   describe "API key resolution" do
     context "when Integration record exists with valid key" do
-      before { create(:integration, provider_name: "CoinGecko", api_key_encrypted: "db_key") }
+      before do
+        integration = create(:integration, provider_name: "CoinGecko", api_key_encrypted: "db_key")
+        create(:api_key_pool, :default, integration: integration, api_key_encrypted: "db_key")
+      end
 
       it "uses the database key" do
         expect { described_class.new }.not_to raise_error
@@ -202,9 +205,10 @@ RSpec.describe MarketData::Gateways::CoingeckoGateway do
   describe "pro tier resolution" do
     context "when Integration has pro_tier setting" do
       before do
-        create(:integration, provider_name: "CoinGecko",
+        integration = create(:integration, provider_name: "CoinGecko",
                api_key_encrypted: "db_key",
                settings: { "pro_tier" => true })
+        create(:api_key_pool, :default, integration: integration, api_key_encrypted: "db_key")
       end
 
       it "uses pro API base URL" do
@@ -215,9 +219,10 @@ RSpec.describe MarketData::Gateways::CoingeckoGateway do
 
     context "when Integration has no pro_tier setting" do
       before do
-        create(:integration, provider_name: "CoinGecko",
+        integration = create(:integration, provider_name: "CoinGecko",
                api_key_encrypted: "db_key",
                settings: {})
+        create(:api_key_pool, :default, integration: integration, api_key_encrypted: "db_key")
       end
 
       it "defaults to demo tier" do

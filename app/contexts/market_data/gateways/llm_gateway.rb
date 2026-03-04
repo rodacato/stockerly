@@ -16,7 +16,7 @@ module MarketData
 
     def initialize
       @integration = Integration.find_by(provider_name: PROVIDER)
-      @configured  = @integration.present? && @integration.api_key_encrypted.present?
+      @configured  = @integration.present? && @integration.api_key_configured?
     end
 
     def configured?
@@ -58,7 +58,7 @@ module MarketData
       body[:system] = system_prompt if system_prompt.present?
 
       response = connection(base_url).post("/v1/messages") do |req|
-        req.headers["x-api-key"] = @integration.api_key_encrypted
+        req.headers["x-api-key"] = @integration.active_api_key
         req.headers["anthropic-version"] = "2023-06-01"
         req.headers["Content-Type"] = "application/json"
         req.body = body.to_json
@@ -84,7 +84,7 @@ module MarketData
       body = { model: model, max_tokens: max_tokens, messages: messages }
 
       response = connection(base_url).post("/v1/chat/completions") do |req|
-        req.headers["Authorization"] = "Bearer #{@integration.api_key_encrypted}"
+        req.headers["Authorization"] = "Bearer #{@integration.active_api_key}"
         req.headers["Content-Type"] = "application/json"
         req.body = body.to_json
       end

@@ -4,7 +4,7 @@ RSpec.describe MarketData::Gateways::LlmGateway do
   let(:gateway) { described_class.new }
 
   let!(:integration) do
-    create(:integration,
+    int = create(:integration,
       provider_name: "AI Intelligence",
       provider_type: "AI / LLM",
       api_key_encrypted: "test-api-key-123",
@@ -12,6 +12,8 @@ RSpec.describe MarketData::Gateways::LlmGateway do
       max_requests_per_minute: 10,
       daily_call_limit: 200,
       settings: { "provider" => "anthropic", "model" => "claude-sonnet-4-5-20250514" })
+    create(:api_key_pool, :default, integration: int, api_key_encrypted: "test-api-key-123")
+    int
   end
 
   describe "#complete with Anthropic provider" do
