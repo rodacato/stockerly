@@ -13,6 +13,9 @@ module Admin
 
       result = Administration::UseCases::Dashboard::LoadSyncOverview.call
       @sync_overview = result.value! if result.success?
+
+      health_result = Administration::UseCases::Dashboard::LoadHealthMetrics.call
+      @health = health_result.value! if health_result.success?
     end
 
     def refresh_fx_rates

@@ -76,6 +76,96 @@
     </div>
   <% end %>
 
+  <%# System Health %>
+  <% if @health %>
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+      <div class="mb-4">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white">System Health</h2>
+        <p class="text-xs text-slate-500 mt-1">Job queue, cache, and circuit breaker status</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <%# Job Queue Panel %>
+        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-lg text-blue-600 dark:text-blue-400">queue</span>
+            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Job Queue</h3>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-xs text-slate-500">Pending</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:queue_depth]&.to_s || "N/A" %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-xs text-slate-500">In Progress</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:in_progress_jobs]&.to_s || "N/A" %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-xs text-slate-500">Scheduled</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:scheduled_jobs]&.to_s || "N/A" %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-xs text-slate-500">Failed</span>
+              <% failed = @health[:failed_jobs] %>
+              <span class="text-xs font-bold <%= failed && failed > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-900 dark:text-white' %>"><%= failed&.to_s || "N/A" %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-xs text-slate-500">Workers</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:queue_workers]&.to_s || "N/A" %></span>
+            </div>
+          </div>
+        </div>
+
+        <%# Cache Store Panel %>
+        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400">cached</span>
+            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Cache Store</h3>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-xs text-slate-500">Entries</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:cache_entries] ? number_with_delimiter(@health[:cache_entries]) : "N/A" %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-xs text-slate-500">Size</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:cache_byte_size] ? number_to_human_size(@health[:cache_byte_size]) : "N/A" %></span>
+            </div>
+          </div>
+        </div>
+
+        <%# Circuit Breakers Panel %>
+        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400">electric_bolt</span>
+            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Circuit Breakers</h3>
+          </div>
+          <% if @health[:open_circuits_count] && @health[:open_circuits_count] > 0 %>
+            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-md p-2 mb-2">
+              <p class="text-xs font-bold text-amber-700 dark:text-amber-300"><%= @health[:open_circuits_count] %> circuit(s) tripped in last 24h</p>
+            </div>
+          <% else %>
+            <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-md p-2 mb-2">
+              <p class="text-xs font-bold text-emerald-700 dark:text-emerald-300">All circuits healthy</p>
+            </div>
+          <% end %>
+          <% if @health[:circuit_breaker_events].present? %>
+            <div class="space-y-1.5 mt-2">
+              <% @health[:circuit_breaker_events].limit(3).each do |event| %>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-slate-600 dark:text-slate-400 truncate flex-1"><%= event.task_name.sub("Circuit Breaker: ", "") %></span>
+                  <%= render "components/status_badge", status: event.severity %>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-xs text-slate-400 mt-2">No circuit breaker events in 24h.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <%# Two-column panels %>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <%# Integrations Panel %>
