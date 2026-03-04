@@ -1,12 +1,11 @@
 module SparklineHelper
-  # Returns normalized heights (0-100) from the last `days` of price history.
+  # Returns normalized heights (0-100) from the last `points` of price history.
   # Falls back to nil if no history is available (sparkline uses direction-based bars).
-  def sparkline_heights(asset, days: 7)
-    cutoff = days.days.ago.to_date
+  def sparkline_heights(asset, points: 7)
     closes = if asset.asset_price_histories.loaded?
-               asset.asset_price_histories.select { |h| h.date >= cutoff }.sort_by(&:date).map(&:close)
+               asset.asset_price_histories.sort_by(&:date).last(points).map(&:close)
     else
-               asset.asset_price_histories.recent(days).pluck(:close)
+               asset.asset_price_histories.order(date: :desc).limit(points).pluck(:close).reverse
     end
     return nil if closes.size < 2
 

@@ -47,15 +47,15 @@ RSpec.describe SparklineHelper do
       end
     end
 
-    context "with custom days parameter" do
+    context "with custom points parameter" do
       before do
         14.times do |i|
           create(:asset_price_history, asset: asset, date: (14 - i).days.ago.to_date, close: 100 + i)
         end
       end
 
-      it "limits to specified number of days" do
-        heights = helper.sparkline_heights(asset, days: 5)
+      it "limits to specified number of points" do
+        heights = helper.sparkline_heights(asset, points: 5)
 
         expect(heights.size).to eq(5)
       end
@@ -83,6 +83,23 @@ RSpec.describe SparklineHelper do
       it "returns correct heights from preloaded data" do
         preloaded_asset = Asset.includes(:asset_price_histories).find(asset.id)
         heights = helper.sparkline_heights(preloaded_asset)
+
+        expect(heights).to be_an(Array)
+        expect(heights.size).to eq(7)
+        expect(heights.first).to eq(0)
+        expect(heights.last).to eq(100)
+      end
+    end
+
+    context "with stale data older than 7 days" do
+      before do
+        7.times do |i|
+          create(:asset_price_history, asset: asset, date: 30.days.ago.to_date + i, close: 100 + (i * 10))
+        end
+      end
+
+      it "still returns sparkline from the most recent data points" do
+        heights = helper.sparkline_heights(asset)
 
         expect(heights).to be_an(Array)
         expect(heights.size).to eq(7)
