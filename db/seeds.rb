@@ -527,6 +527,13 @@ Integration.find_or_create_by!(provider_name: "Banxico") do |i|
   i.connection_status = :disconnected
   i.daily_call_limit = 1_000
 end
+Integration.find_or_create_by!(provider_name: "Finnhub") do |i|
+  i.provider_type = "Stocks & Market Data"
+  i.requires_api_key = true
+  i.connection_status = :disconnected
+  i.max_requests_per_minute = 60
+  i.daily_call_limit = 500
+end
 
 # --- AI Intelligence (optional — uncomment and configure to enable AI features) ---
 # Supported providers: "anthropic" (Claude), "openai" (GPT)

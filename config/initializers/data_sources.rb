@@ -15,6 +15,18 @@ Rails.application.config.after_initialize do
     circuit_breaker_key: "stock"
   )
 
+  DataSourceRegistry.register(:finnhub_stocks,
+    name: "US Stocks — Finnhub",
+    icon: "show_chart",
+    color: "cyan",
+    gateway_class: MarketData::Gateways::FinnhubGateway,
+    job_class: SyncPriorityAssetsJob,
+    job_args: %w[stock high],
+    test_symbol: "AAPL",
+    integration_name: "Finnhub",
+    circuit_breaker_key: "finnhub"
+  )
+
   DataSourceRegistry.register(:coingecko_crypto,
     name: "Crypto — CoinGecko",
     icon: "currency_bitcoin",
