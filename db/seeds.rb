@@ -249,17 +249,22 @@ end
 
 
 # --- Asset Logos (backfill — safe for re-runs) ---
-# Clearbit logo API is defunct. Only crypto logos (CoinGecko) are reliable.
-# Stock/ETF badges use the styled text fallback in _asset_badge.html.erb.
-{
-  "BTC"   => "https://assets.coingecko.com/coins/images/1/small/bitcoin.png",
-  "ETH"   => "https://assets.coingecko.com/coins/images/279/small/ethereum.png",
-  "SOL"   => "https://assets.coingecko.com/coins/images/4128/small/solana.png"
-}.each do |symbol, url|
-  Asset.find_by(symbol: symbol)&.update!(logo_url: url)
+# Crypto: CoinGecko direct image URLs
+# Stocks/ETFs (US): Parqet logo service (https://assets.parqet.com/logos/symbol/TICKER)
+# MX tickers & fixed income: no logo coverage, uses styled text fallback in _asset_badge.html.erb
+Asset.where(logo_url: nil).find_each do |asset|
+  logo = case asset.asset_type
+  when "crypto"
+    coingecko_ids = { "BTC" => [1, "bitcoin"], "ETH" => [279, "ethereum"], "SOL" => [4128, "solana"] }
+    ids = coingecko_ids[asset.symbol.upcase]
+    ids ? "https://assets.coingecko.com/coins/images/#{ids[0]}/small/#{ids[1]}.png" : nil
+  when "fixed_income", "index"
+    nil
+  else
+    asset.country == "MX" ? nil : "https://assets.parqet.com/logos/symbol/#{asset.symbol}"
+  end
+  asset.update!(logo_url: logo) if logo
 end
-# Clear any stale Clearbit URLs
-Asset.where("logo_url LIKE ?", "%clearbit%").update_all(logo_url: nil)
 
 # --- Trades & Positions for Alex ---
 portfolio = alex.portfolio

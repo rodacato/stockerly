@@ -2,7 +2,7 @@ module Administration
   module UseCases
     module Assets
       class CreateAsset < ApplicationUseCase
-        SYNTH_LOGO_URL = "https://logo.synthfinance.com/ticker/%s"
+        PARQET_LOGO_URL = "https://assets.parqet.com/logos/symbol/%s"
         COINGECKO_LOGO_URL = "https://assets.coingecko.com/coins/images/%s/small/%s.png"
         COINGECKO_IMAGE_IDS = {
           "BTC" => [ 1, "bitcoin" ], "ETH" => [ 279, "ethereum" ], "SOL" => [ 4128, "solana" ],
@@ -33,8 +33,10 @@ module Administration
           when "crypto"
                    ids = COINGECKO_IMAGE_IDS[attrs[:symbol].upcase]
                    ids ? format(COINGECKO_LOGO_URL, ids[0], ids[1]) : nil
+          when "fixed_income"
+                   nil
           else
-                   format(SYNTH_LOGO_URL, attrs[:symbol])
+                   attrs[:country] == "MX" ? nil : format(PARQET_LOGO_URL, attrs[:symbol])
           end
 
           attrs.merge(logo_url: logo)

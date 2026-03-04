@@ -25,16 +25,22 @@ RSpec.describe Administration::UseCases::Assets::CreateAsset do
       described_class.call(admin: admin, params: valid_params)
     end
 
-    it "auto-generates logo URL for stocks via Synth Finance" do
+    it "auto-generates logo URL for stocks via Parqet" do
       result = described_class.call(admin: admin, params: valid_params)
 
-      expect(result.value!.logo_url).to eq("https://logo.synthfinance.com/ticker/MSFT")
+      expect(result.value!.logo_url).to eq("https://assets.parqet.com/logos/symbol/MSFT")
     end
 
-    it "auto-generates logo URL for ETFs via Synth Finance" do
+    it "auto-generates logo URL for ETFs via Parqet" do
       result = described_class.call(admin: admin, params: valid_params.merge(asset_type: "etf", symbol: "SPY"))
 
-      expect(result.value!.logo_url).to eq("https://logo.synthfinance.com/ticker/SPY")
+      expect(result.value!.logo_url).to eq("https://assets.parqet.com/logos/symbol/SPY")
+    end
+
+    it "skips logo URL for MX stocks" do
+      result = described_class.call(admin: admin, params: valid_params.merge(country: "MX", symbol: "GENIUSSACV.MX"))
+
+      expect(result.value!.logo_url).to be_nil
     end
 
     it "auto-generates logo URL for known crypto via CoinGecko" do
