@@ -20,7 +20,26 @@
             </div>
             <div>
               <p class="font-bold text-sm text-slate-900 dark:text-white"><%= integration.provider_name %></p>
-              <p class="text-xs text-slate-400 uppercase tracking-wider"><%= integration.provider_type %></p>
+              <div class="flex items-center gap-2">
+                <p class="text-xs text-slate-400 uppercase tracking-wider"><%= integration.provider_type %></p>
+                <% provider_urls = {
+                  "Polygon.io" => "https://polygon.io",
+                  "CoinGecko" => "https://www.coingecko.com",
+                  "Yahoo Finance" => "https://finance.yahoo.com",
+                  "Alternative.me" => "https://alternative.me",
+                  "CNN" => "https://www.cnn.com/markets/fear-and-greed",
+                  "Alpha Vantage" => "https://www.alphavantage.co",
+                  "FMP" => "https://financialmodelingprep.com",
+                  "ExchangeRate" => "https://www.exchangerate-api.com",
+                  "Banxico" => "https://www.banxico.org.mx",
+                  "AI Intelligence" => "https://docs.anthropic.com"
+                } %>
+                <% if (url = provider_urls[integration.provider_name]) %>
+                  <a href="<%= url %>" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-primary transition-colors" title="Visit website">
+                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+                  </a>
+                <% end %>
+              </div>
             </div>
           </div>
           <% if integration.requires_api_key? && !integration.api_key_configured? %>
