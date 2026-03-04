@@ -10,4 +10,8 @@ class TrendScore < ApplicationRecord
   validates :score, presence: true, inclusion: { in: 0..100 }
 
   scope :latest, -> { order(calculated_at: :desc) }
+
+  def factor_breakdown
+    (factors.presence || {}).with_indifferent_access
+  end
 end
