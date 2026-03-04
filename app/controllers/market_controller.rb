@@ -27,6 +27,7 @@ class MarketController < AuthenticatedController
       @price_histories = data[:price_histories] || []
       @pe_history = data[:pe_history]
       @dividends = data[:dividends] || []
+      @ai_health_check = data[:ai_health_check]
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
 
       trigger_fundamental_sync(@asset) unless @has_fundamentals

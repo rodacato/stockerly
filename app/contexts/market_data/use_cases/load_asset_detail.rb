@@ -27,13 +27,16 @@ module MarketData
 
         dividends = asset.asset_type_stock? || asset.asset_type_etf? ? asset.dividends.order(ex_date: :desc).limit(12) : []
 
+        ai_health_check = compute_ai_health(asset, fundamental)
+
         Success({
           asset: asset,
           presenter: presenter,
           has_fundamentals: fundamental.present?,
           price_histories: price_histories,
           pe_history: pe_history,
-          dividends: dividends
+          dividends: dividends,
+          ai_health_check: ai_health_check
         })
       end
 
@@ -61,6 +64,15 @@ module MarketData
           investment_cost_100: discount_price ? (discount_price * quantity_example).round(2) : nil,
           face_value_100: Domain::YieldCalculator.investment_value(face_value: asset.face_value || 10.0, quantity: quantity_example)
         }
+      end
+
+      def compute_ai_health(asset, fundamental)
+        return nil unless fundamental
+
+        Rails.cache.fetch("ai_health/#{asset.id}", expires_in: 7.days) do
+          result = Domain::FundamentalHealthCheck.analyze(asset: asset, fundamental: fundamental)
+          result.success? ? result.value! : nil
+        end
       end
 
       def resolve_fundamental(asset)

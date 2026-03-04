@@ -1,0 +1,64 @@
+<%# AI Fundamental Health Check — only rendered when @ai_health_check is present %>
+<section class="mt-8 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-xl text-violet-600 dark:text-violet-400">psychology</span>
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white">AI Health Check</h3>
+    </div>
+    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">AI-generated</span>
+  </div>
+
+  <%# Health Score Gauge %>
+  <div class="flex items-center gap-4 mb-4">
+    <% score = @ai_health_check[:health_score] %>
+    <% score_color = score >= 70 ? "emerald" : score >= 40 ? "amber" : "rose" %>
+    <div class="relative w-16 h-16">
+      <svg viewBox="0 0 36 36" class="w-16 h-16 -rotate-90">
+        <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" stroke-width="3" class="text-slate-100 dark:text-slate-800"/>
+        <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-dasharray="<%= score %>, 100"
+                class="text-<%= score_color %>-500"/>
+      </svg>
+      <span class="absolute inset-0 flex items-center justify-center text-sm font-bold text-slate-900 dark:text-white"><%= score %></span>
+    </div>
+    <div>
+      <p class="text-sm font-bold text-slate-900 dark:text-white">Health Score</p>
+      <p class="text-xs text-slate-500"><%= score >= 70 ? "Healthy" : score >= 40 ? "Fair" : "Weak" %></p>
+    </div>
+  </div>
+
+  <%# Strengths %>
+  <% if @ai_health_check[:strengths].present? %>
+    <div class="mb-3">
+      <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Strengths</h4>
+      <ul class="space-y-1">
+        <% @ai_health_check[:strengths].each do |strength| %>
+          <li class="flex items-start gap-1.5 text-xs text-emerald-700 dark:text-emerald-400">
+            <span class="material-symbols-outlined text-xs mt-0.5">check_circle</span>
+            <span><%= strength %></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# Concerns %>
+  <% if @ai_health_check[:concerns].present? %>
+    <div class="mb-3">
+      <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Concerns</h4>
+      <ul class="space-y-1">
+        <% @ai_health_check[:concerns].each do |concern| %>
+          <li class="flex items-start gap-1.5 text-xs text-amber-700 dark:text-amber-400">
+            <span class="material-symbols-outlined text-xs mt-0.5">warning</span>
+            <span><%= concern %></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# Summary %>
+  <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-3"><%= @ai_health_check[:summary] %></p>
+
+  <p class="text-[10px] text-slate-400">This is AI-generated analysis, not financial advice.</p>
+</section>
