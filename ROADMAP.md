@@ -1,8 +1,8 @@
 # Stockerly — Roadmap
 
-> **Fecha:** 2026-03-03
-> **Estado actual:** ~1898 specs, Phase 20.1 complete
-> **Siguiente:** Phase 20.2 — Monitoring Enhancements
+> **Fecha:** 2026-03-04
+> **Estado actual:** ~1946 specs, Phase 21 complete
+> **Siguiente:** Phase 22 — LLM-Powered Intelligence Layer
 
 ---
 
@@ -111,7 +111,19 @@
 
 **PWA Support:** `manifest.json` (standalone display, `#004a99` theme, SVG + PNG icons), service worker with network-first navigation (offline fallback page), cache-first Google Fonts, stale-while-revalidate for static assets (CSS/JS/images). Pre-caches offline page and icons on install. Old cache cleanup on activate. Service worker registration in `application.js`. Layout updated with `<link rel="manifest">`, `<meta name="theme-color">`, and `apple-mobile-web-app-status-bar-style`.
 
-### Key Architecture Decisions (Phases 9-20)
+### Phase 20.2 Summary (~1902 specs, 1 commit)
+
+**Monitoring Enhancements:** `HealthMetrics` domain service in `app/shared/domain/` collecting metrics from Solid Queue (pending/failed/scheduled jobs), Solid Cache (entries count, oldest entry age), and SystemLog (errors in last 24h, warnings in last 24h). Savepoint transactions (`requires_new: true`) to prevent cross-database query failures from poisoning test transactions. `LoadHealthMetrics` use case in Administration context. Admin dashboard System Health section with 3-column grid (Job Queue, Cache Store, Circuit Breakers).
+
+### Phase 21.0 Summary (~1938 specs, 2 commits)
+
+**Concentration Alerts:** `ConcentrationAnalyzer` domain service computing HHI (Herfindahl-Hirschman Index), max position %, max sector %, and risk level (:low/:moderate/:high). `ConcentrationResult` Dry::Struct value object with `hhi_label` ("Diversified"/<1500, "Moderate"/1500-2499, "Concentrated"/≥2500). `concentration_risk` alert condition (enum value 8) with `PORTFOLIO` sentinel symbol. `EvaluateConcentrationRules` use case triggered on portfolio load. Color-coded concentration risk badges in portfolio allocation sidebar.
+
+### Phase 21.1 Summary (~1946 specs, 2 commits)
+
+**Enhanced TrendScore:** `TrendScoreCalculator` upgraded from 2-factor to 5-factor scoring with graceful degradation (≥35 closes → 5-factor; 15-34 → 2-factor fallback). New factors: MACD signal (EMA-12/26 histogram normalized to 0-100), volume trend (5d/20d ratio, inverted for bearish), EMA crossover (EMA-9 vs EMA-21 spread). Weights: RSI 30%, Momentum 20%, MACD 20%, Volume 15%, EMA 15%. `factors` JSONB column on `trend_scores` table. `factor_breakdown` method on TrendScore model. Hover popover on market listings showing per-factor mini-bars with color coding (emerald ≥60, amber ≥40, rose <40). `trend_breakdown_controller.js` Stimulus controller for show/hide.
+
+### Key Architecture Decisions (Phases 9-21)
 
 | Decision | Resolution |
 |----------|-----------|
@@ -124,7 +136,9 @@
 | Alpha Vantage rate limit | Inspect body for "Note" key (returns HTTP 200, not 429) |
 | Crypto adaptive rendering | Stocks: 7 tabs, Crypto: 2 tabs (Summary + Market Data) |
 | Crypto fundamentals storage | `period_label: "CRYPTO_MARKET"` in AssetFundamental |
-| TrendScore formula | 60% normalized RSI-14 + 40% normalized 7-day momentum |
+| TrendScore formula | 5-factor (≥35 closes): RSI 30%, Momentum 20%, MACD 20%, Volume 15%, EMA 15%. Fallback 2-factor (<35): RSI 60%, Momentum 40% |
+| HHI concentration | Σ(weight²) × 10,000 — Diversified <1500, Moderate 1500-2499, Concentrated ≥2500 |
+| Concentration alert sentinel | `PORTFOLIO` asset_symbol for portfolio-level alerts (same pattern as `FG_CRYPTO`) |
 | Email verification | Soft block (banner), not hard redirect |
 | Weekly insight language | Strictly observational, disclaimer footer reused |
 | CETES yield calculation | Discount rate → yield to maturity (Mexican convention) |
@@ -189,10 +203,10 @@
 
 ---
 
-## Upcoming Phases (20.2-22)
+## Upcoming Phases (22)
 
-> **Objetivo:** Production readiness, analytics depth, AI intelligence
-> **Note:** Phase 20.0 (FMP Fundamentals Fallback) and 20.1 (PWA Support) completed 2026-03-03. Honeybadger error tracking added ahead of schedule.
+> **Objetivo:** AI intelligence layer
+> **Note:** Phases 20.0-20.2 (Production Readiness) and 21 (Concentration Alerts & Enhanced TrendScore) completed 2026-03-04. Honeybadger error tracking added ahead of schedule.
 
 ---
 
@@ -216,11 +230,11 @@
 | ~~145~~ | ~~Add PWA manifest, service worker, and offline page~~ | ~~manifest.json, service worker, icons, offline.html~~ | ~~+4~~ |
 | ~~146~~ | ~~Add cache strategy for fonts and stale-while-revalidate~~ | ~~Google Fonts cache, stale-while-revalidate for assets~~ | ~~+2~~ |
 
-### 20.2 — Monitoring Enhancements
+### ~~20.2 — Monitoring Enhancements~~ (Done)
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 147 | Add health dashboard improvements (job queue depth, cache hit rate) | Admin view, domain service, Solid Queue metrics | +4 |
+| ~~147~~ | ~~Add health dashboard improvements (job queue depth, cache hit rate)~~ | ~~Admin view, domain service, Solid Queue metrics~~ | ~~+4~~ |
 
 > **Note:** Error tracking (Honeybadger) already integrated ahead of Phase 20. See commit `364a161`.
 
@@ -235,21 +249,21 @@
 > **Estimated specs:** ~20
 > **Rationale:** Concentration risk data already available via `allocation_by_sector` and `allocation_by_asset_type`. TrendScore currently uses only RSI-14 + 7-day momentum (2 factors) — adding MACD, volume, and fundamentals weight creates a meaningful scoring upgrade.
 
-### 21.0 — Concentration Alerts
+### ~~21.0 — Concentration Alerts~~ (Done)
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 149 | Add ConcentrationAnalyzer domain service | HHI index, single-position %, sector % thresholds, risk levels | +6 |
-| 150 | Add concentration_risk condition to AlertRule with dashboard warnings | Migration, AlertEvaluator extension, portfolio sidebar badges | +6 |
+| ~~149~~ | ~~Add ConcentrationAnalyzer domain service~~ | ~~HHI index, single-position %, sector % thresholds, risk levels~~ | ~~+6~~ |
+| ~~150~~ | ~~Add concentration_risk condition to AlertRule with dashboard warnings~~ | ~~Migration, AlertEvaluator extension, portfolio sidebar badges~~ | ~~+6~~ |
 
-### 21.1 — Enhanced TrendScore
+### ~~21.1 — Enhanced TrendScore~~ (Done)
 
 | # | Commit | Scope | Specs |
 |---|--------|-------|-------|
-| 151 | Enhance TrendScoreCalculator with MACD, volume, and EMA factors | Add 3 new factors (MACD signal, volume trend, EMA crossover), reweight to 5-factor blend | +5 |
-| 152 | Add TrendScore breakdown tooltip on market listings | Show per-factor scores in metric tooltip, color-coded contribution bars | +3 |
+| ~~151~~ | ~~Enhance TrendScoreCalculator with MACD, volume, and EMA factors~~ | ~~Add 3 new factors (MACD signal, volume trend, EMA crossover), reweight to 5-factor blend~~ | ~~+5~~ |
+| ~~152~~ | ~~Add TrendScore breakdown tooltip on market listings~~ | ~~Show per-factor scores in metric tooltip, color-coded contribution bars~~ | ~~+3~~ |
 
-**Phase 21 Total: ~20 specs, ~4 commits**
+**Phase 21 Total: ~20 specs, ~4 commits** ✅
 
 ---
 
@@ -326,11 +340,11 @@ Phase 18 (Analytics Depth) ──────────► Data depth (risk, e
     │
 Phase 19 (UX Polish) ───────────────► Loading states, lazy tabs, empty state consistency ✅
     │
-Phase 20 (Production Readiness) ────► FMP fallback, PWA, health dashboard ← NEXT
+Phase 20 (Production Readiness) ────► FMP fallback, PWA, health dashboard ✅
     │
-Phase 21 (Smart Analytics) ─────────► Concentration alerts, enhanced TrendScore
+Phase 21 (Smart Analytics) ─────────► Concentration alerts, enhanced TrendScore ✅
     │
-Phase 22 (LLM Intelligence) ────────► AI insights (requires SheLLM deployed)
+Phase 22 (LLM Intelligence) ────────► AI insights (requires SheLLM deployed) ← NEXT
     ▲
     │ External dependency: SheLLM (separate repo)
     │ See SHELLM_PLAN.md
@@ -346,10 +360,10 @@ Phase 22 (LLM Intelligence) ────────► AI insights (requires Sh
 | ~~19~~ | ~~UX Polish~~ | ~~4~~ | ~~41~~ | ~~1882~~ |
 | ~~20.0~~ | ~~FMP Fundamentals Fallback~~ | ~~2~~ | ~~10~~ | ~~1892~~ |
 | ~~20.1~~ | ~~PWA Support~~ | ~~2~~ | ~~6~~ | ~~1898~~ |
-| 20.2 | Monitoring Enhancements | 1 | ~4 | ~1902 |
-| 21 | Smart Analytics | 4 | ~20 | ~1922 |
-| 22 | LLM Intelligence | 12 | ~65 | ~1987 |
-| | **Total Remaining** | **~17** | **~89** | **~1987** |
+| ~~20.2~~ | ~~Monitoring Enhancements~~ | ~~1~~ | ~~4~~ | ~~1902~~ |
+| ~~21~~ | ~~Smart Analytics~~ | ~~4~~ | ~~20~~ | ~~1946~~ |
+| 22 | LLM Intelligence | 12 | ~65 | ~2011 |
+| | **Total Remaining** | **~12** | **~65** | **~2011** |
 
 ### External Dependencies
 
