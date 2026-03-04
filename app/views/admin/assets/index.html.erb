@@ -26,38 +26,59 @@
 
     <div data-reveal-target="content" class="hidden mt-4">
       <%= form_with(url: admin_assets_path, scope: :asset, method: :post,
-          class: "bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-primary/30 dark:border-primary/30 p-6") do |f| %>
+          class: "bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-primary/30 dark:border-primary/30 p-6",
+          data: { controller: "ticker-search", ticker_search_url_value: search_admin_assets_path }) do |f| %>
         <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4">New Asset</h3>
+
+        <%# Autocomplete search input %>
+        <div class="relative mb-4">
+          <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus-within:ring-2 focus-within:ring-primary">
+            <span class="material-symbols-outlined text-lg text-slate-400">search</span>
+            <input type="text"
+              placeholder="Search by ticker or company name (e.g. AAPL, Apple)..."
+              autocomplete="off"
+              data-ticker-search-target="input"
+              data-action="input->ticker-search#search keydown->ticker-search#navigate"
+              class="w-full text-sm bg-transparent text-slate-900 dark:text-white placeholder-slate-400 outline-none">
+          </div>
+          <div data-ticker-search-target="results"
+               class="hidden absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-h-64 overflow-y-auto">
+          </div>
+        </div>
+
+        <%# Form fields with Stimulus targets %>
+        <% input_class = "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
           <div>
             <%= f.text_field :symbol, placeholder: "Symbol (e.g. AAPL)",
-                class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+                data: { ticker_search_target: "symbol" }, class: input_class %>
           </div>
           <div>
             <%= f.text_field :name, placeholder: "Name (e.g. Apple Inc.)",
-                class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+                data: { ticker_search_target: "name" }, class: input_class %>
           </div>
           <div>
             <%= f.select :asset_type,
-                options_for_select([["Stock", "stock"], ["Crypto", "crypto"], ["Index", "index"], ["ETF", "etf"]]),
+                options_for_select([["Stock", "stock"], ["Crypto", "crypto"], ["Index", "index"], ["ETF", "etf"], ["Fixed Income", "fixed_income"]]),
                 { prompt: "Asset Type" },
+                data: { ticker_search_target: "assetType" },
                 class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary" %>
           </div>
           <div>
             <%= f.text_field :country, placeholder: "Country (e.g. US)",
-                class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+                data: { ticker_search_target: "country" }, class: input_class %>
           </div>
           <div>
             <%= f.text_field :exchange, placeholder: "Exchange (e.g. NASDAQ)",
-                class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+                data: { ticker_search_target: "exchange" }, class: input_class %>
           </div>
           <div>
             <%= f.text_field :sector, placeholder: "Sector (e.g. Technology)",
-                class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+                data: { ticker_search_target: "sector" }, class: input_class %>
           </div>
           <div>
             <%= f.text_field :logo_url, placeholder: "Logo URL (auto-generated if blank)",
-                class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
+                class: input_class %>
           </div>
           <div class="flex items-end">
             <%= f.submit "Create Asset",

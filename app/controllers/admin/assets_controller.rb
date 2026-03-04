@@ -2,6 +2,7 @@ module Admin
   class AssetsController < BaseController
     rate_limit to: 5, within: 1.minute, only: :trigger_sync
     rate_limit to: 10, within: 1.minute, only: :create
+    rate_limit to: 15, within: 1.minute, only: :search
 
     def index
       result = Administration::UseCases::Assets::ListAssets.call(params: filter_params)
@@ -30,6 +31,16 @@ module Admin
         redirect_to admin_assets_path, notice: "Bulk sync enqueued."
       else
         redirect_to admin_assets_path, alert: "Failed to enqueue sync."
+      end
+    end
+
+    def search
+      result = Administration::UseCases::Assets::SearchTicker.call(query: params[:q])
+
+      if result.success?
+        render json: result.value!
+      else
+        render json: { error: result.failure.last }, status: :unprocessable_content
       end
     end
 

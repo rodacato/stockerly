@@ -86,7 +86,10 @@ Rails.application.routes.draw do
         patch :toggle_status
         post  :trigger_sync
       end
-      collection { post :trigger_sync_all }
+      collection do
+        post :trigger_sync_all
+        get  :search
+      end
     end
     resources :integrations, only: [ :index, :create, :update, :destroy ] do
       member { post :refresh_sync }
