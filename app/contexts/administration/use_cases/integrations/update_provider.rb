@@ -26,6 +26,11 @@ module Administration
           update_attrs = attrs.except(:id).compact
           return Success({}) if update_attrs.empty?
 
+          if update_attrs[:api_key_encrypted].present? && integration.connection_status != "connected"
+            update_attrs[:connection_status] = :connected
+            update_attrs[:last_sync_at] = Time.current
+          end
+
           changes = update_attrs.each_with_object({}) do |(key, value), hash|
             old_value = integration.send(key)
             hash[key.to_s] = { from: old_value, to: value } if old_value != value
