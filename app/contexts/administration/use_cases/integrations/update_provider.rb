@@ -23,21 +23,41 @@ module Administration
         end
 
         def update(integration, attrs)
-          update_attrs = attrs.except(:id).compact
-          return Success({}) if update_attrs.empty?
+          api_key_value = attrs[:api_key_encrypted]
+          update_attrs = attrs.except(:id, :api_key_encrypted).compact
 
-          if update_attrs[:api_key_encrypted].present? && integration.connection_status != "connected"
-            update_attrs[:connection_status] = :connected
-            update_attrs[:last_sync_at] = Time.current
+          if api_key_value.present?
+            upsert_default_pool_key(integration, api_key_value)
+            if integration.connection_status != "connected"
+              update_attrs[:connection_status] = :connected
+              update_attrs[:last_sync_at] = Time.current
+            end
           end
+
+          return Success({}) if update_attrs.empty? && api_key_value.blank?
 
           changes = update_attrs.each_with_object({}) do |(key, value), hash|
             old_value = integration.send(key)
             hash[key.to_s] = { from: old_value, to: value } if old_value != value
           end
+          changes["api_key_encrypted"] = { from: "[FILTERED]", to: "[FILTERED]" } if api_key_value.present?
 
-          integration.update!(update_attrs)
+          integration.update!(update_attrs) if update_attrs.present?
           Success(changes)
+        end
+
+        def upsert_default_pool_key(integration, api_key_value)
+          default_key = integration.api_key_pools.find_by(is_default: true)
+          if default_key
+            default_key.update!(api_key_encrypted: api_key_value)
+          else
+            integration.api_key_pools.create!(
+              name: "Default",
+              api_key_encrypted: api_key_value,
+              is_default: true,
+              enabled: true
+            )
+          end
         end
       end
     end

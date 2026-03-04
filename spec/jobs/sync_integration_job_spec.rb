@@ -3,7 +3,11 @@ require "rails_helper"
 RSpec.describe SyncIntegrationJob, type: :job do
   describe "#perform" do
     context "with Polygon.io integration" do
-      let!(:integration) { create(:integration, provider_name: "Polygon.io", connection_status: :connected) }
+      let!(:integration) do
+        int = create(:integration, provider_name: "Polygon.io", connection_status: :connected)
+        create(:api_key_pool, :default, integration: int, api_key_encrypted: "test_key")
+        int
+      end
 
       context "when connectivity test succeeds" do
         before { stub_polygon_price("AAPL") }
@@ -44,11 +48,7 @@ RSpec.describe SyncIntegrationJob, type: :job do
     end
 
     context "when integration requires API key but has none" do
-      let!(:unconfigured) do
-        integration = build(:integration, provider_name: "Alpha Vantage", requires_api_key: true, api_key_encrypted: nil)
-        integration.save!(validate: false)
-        integration
-      end
+      let!(:unconfigured) { create(:integration, provider_name: "Alpha Vantage", requires_api_key: true, api_key_encrypted: nil) }
 
       it "sets status to disconnected" do
         described_class.perform_now(unconfigured.id)

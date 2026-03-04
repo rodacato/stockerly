@@ -13,8 +13,9 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
 
       expect(result).to be_success
       expect(result.value![:updated]).to eq(2)
-      expect(polygon.reload.api_key_encrypted).to eq("poly_key_123")
-      expect(polygon.reload.connection_status).to eq("connected")
+      default_key = polygon.reload.api_key_pools.default_key.first
+      expect(default_key.api_key_encrypted).to eq("poly_key_123")
+      expect(polygon.connection_status).to eq("connected")
     end
 
     it "skips blank values" do

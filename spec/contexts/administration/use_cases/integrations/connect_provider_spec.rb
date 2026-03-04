@@ -24,10 +24,14 @@ RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
       described_class.call(admin: admin, params: valid_params)
     end
 
-    it "accepts optional api_key_encrypted" do
+    it "creates a default pool key when api_key_encrypted is provided" do
       result = described_class.call(admin: admin, params: valid_params.merge(api_key_encrypted: "sk-123"))
 
       expect(result).to be_success
+      integration = result.value!
+      default_key = integration.api_key_pools.default_key.first
+      expect(default_key).to be_present
+      expect(default_key.api_key_encrypted).to eq("sk-123")
     end
 
     it "returns Failure for missing provider_name" do

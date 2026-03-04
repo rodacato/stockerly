@@ -24,7 +24,8 @@ RSpec.describe "Admin Onboarding", type: :request do
         api_keys: { integration.id.to_s => "my_api_key" }
       }
       expect(response).to redirect_to(admin_onboarding_assets_path)
-      expect(integration.reload.api_key_encrypted).to eq("my_api_key")
+      default_key = integration.reload.api_key_pools.default_key.first
+      expect(default_key.api_key_encrypted).to eq("my_api_key")
     end
   end
 

@@ -25,7 +25,7 @@ module Admin
     end
 
     def complete
-      @integrations_configured = Integration.where.not(api_key_encrypted: nil).count
+      @integrations_configured = Integration.joins(:api_key_pools).where(api_key_pools: { enabled: true }).distinct.count
       @integrations_total = Integration.count
       @assets_count = Asset.count
     end

@@ -11,7 +11,18 @@ module Administration
             integration = Integration.find_by(id: integration_id)
             next unless integration
 
-            integration.update!(api_key_encrypted: api_key_value, connection_status: :connected)
+            default_key = integration.api_key_pools.find_by(is_default: true)
+            if default_key
+              default_key.update!(api_key_encrypted: api_key_value)
+            else
+              integration.api_key_pools.create!(
+                name: "Default",
+                api_key_encrypted: api_key_value,
+                is_default: true,
+                enabled: true
+              )
+            end
+            integration.update!(connection_status: :connected) unless integration.connected?
             updated += 1
           end
 
