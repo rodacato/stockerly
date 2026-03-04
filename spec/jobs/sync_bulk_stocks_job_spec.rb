@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe SyncBulkStocksJob, type: :job do
   before do
+    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
     SyncSingleAssetJob::CIRCUIT_BREAKERS.each_value(&:reset!)
   end
 

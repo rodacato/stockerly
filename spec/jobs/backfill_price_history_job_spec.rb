@@ -1,6 +1,11 @@
 require "rails_helper"
 
 RSpec.describe BackfillPriceHistoryJob, type: :job do
+  before do
+    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
+  end
+
   describe "#perform" do
     context "with a stock asset" do
       let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock) }

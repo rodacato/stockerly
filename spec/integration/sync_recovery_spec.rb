@@ -3,6 +3,10 @@ require "rails_helper"
 RSpec.describe "Sync Recovery (E2E)", type: :model do
   include ActiveJob::TestHelper
 
+  before do
+    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+  end
+
   describe "recovery from sync_issue" do
     let!(:asset) do
       create(:asset,

@@ -4,6 +4,7 @@ RSpec.describe SyncStatementsJob, type: :job do
   let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 189.43) }
 
   before do
+    create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "test_key")
     stub_alpha_vantage_income_statement("AAPL")
     stub_alpha_vantage_balance_sheet("AAPL")
     stub_alpha_vantage_cash_flow("AAPL")

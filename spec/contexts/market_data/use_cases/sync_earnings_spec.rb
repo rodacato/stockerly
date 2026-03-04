@@ -1,6 +1,10 @@
 require "rails_helper"
 
 RSpec.describe MarketData::UseCases::SyncEarnings do
+  before do
+    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+  end
+
   describe ".call" do
     let!(:apple) { create(:asset, symbol: "AAPL", asset_type: :stock) }
 

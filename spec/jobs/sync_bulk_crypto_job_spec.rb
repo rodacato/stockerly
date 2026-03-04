@@ -1,6 +1,10 @@
 require "rails_helper"
 
 RSpec.describe SyncBulkCryptoJob, type: :job do
+  before do
+    create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
+  end
+
   describe "#perform" do
     let!(:btc) { create(:asset, :crypto, symbol: "BTC", current_price: 60_000.00, price_updated_at: 10.minutes.ago) }
     let!(:eth) { create(:asset, :crypto, symbol: "ETH", current_price: 3_000.00, price_updated_at: 10.minutes.ago) }

@@ -218,4 +218,32 @@ RSpec.describe MarketData::Gateways::PolygonGateway do
       end
     end
   end
+
+  describe "API key resolution" do
+    context "when Integration record exists with valid key" do
+      before { create(:integration, provider_name: "Polygon.io", api_key_encrypted: "db_key") }
+
+      it "uses the database key" do
+        expect { described_class.new }.not_to raise_error
+      end
+    end
+
+    context "when no Integration record exists" do
+      it "raises ApiKeyNotConfiguredError" do
+        expect { described_class.new }.to raise_error(
+          MarketData::Gateways::ApiKeyNotConfiguredError, /Polygon\.io/
+        )
+      end
+    end
+
+    context "when Integration exists but api_key_encrypted is nil" do
+      before { create(:integration, :keyless, provider_name: "Polygon.io") }
+
+      it "raises ApiKeyNotConfiguredError" do
+        expect { described_class.new }.to raise_error(
+          MarketData::Gateways::ApiKeyNotConfiguredError
+        )
+      end
+    end
+  end
 end

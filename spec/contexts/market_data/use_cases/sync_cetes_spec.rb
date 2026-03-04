@@ -3,6 +3,10 @@ require "rails_helper"
 RSpec.describe MarketData::UseCases::SyncCetes do
   subject(:use_case) { described_class.new }
 
+  before do
+    create(:integration, provider_name: "Banxico", api_key_encrypted: "test_key")
+  end
+
   describe "#call" do
     it "syncs CETES assets and publishes CetesSynced" do
       stub_banxico_auctions(term: "28", yield_rate: 11.15, date: "25/02/2026")

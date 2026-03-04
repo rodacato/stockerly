@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe MarketData::Gateways::BanxicoGateway do
-  subject(:gateway) { described_class.new(api_token: "test_token") }
+  subject(:gateway) { described_class.new(api_key: "test_token") }
 
   describe "#fetch_auctions" do
     context "when Banxico returns valid data" do
@@ -64,6 +64,34 @@ RSpec.describe MarketData::Gateways::BanxicoGateway do
 
         expect(result).to be_failure
         expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+  end
+
+  describe "API key resolution" do
+    context "when Integration record exists with valid key" do
+      before { create(:integration, provider_name: "Banxico", api_key_encrypted: "db_key") }
+
+      it "uses the database key" do
+        expect { described_class.new }.not_to raise_error
+      end
+    end
+
+    context "when no Integration record exists" do
+      it "raises ApiKeyNotConfiguredError" do
+        expect { described_class.new }.to raise_error(
+          MarketData::Gateways::ApiKeyNotConfiguredError, /Banxico/
+        )
+      end
+    end
+
+    context "when Integration exists but api_key_encrypted is nil" do
+      before { create(:integration, :keyless, provider_name: "Banxico") }
+
+      it "raises ApiKeyNotConfiguredError" do
+        expect { described_class.new }.to raise_error(
+          MarketData::Gateways::ApiKeyNotConfiguredError
+        )
       end
     end
   end

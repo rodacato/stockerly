@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe SyncSingleAssetJob, type: :job do
   before do
+    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
     # Reset class-level circuit breakers between tests to avoid cross-test contamination
     described_class::CIRCUIT_BREAKERS.each_value(&:reset!)
   end

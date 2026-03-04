@@ -1,6 +1,10 @@
 require "rails_helper"
 
 RSpec.describe RefreshFxRatesJob, type: :job do
+  before do
+    create(:integration, provider_name: "ExchangeRate", api_key_encrypted: "test_key")
+  end
+
   describe "#perform" do
     context "when API returns valid data" do
       before { stub_fx_rates }

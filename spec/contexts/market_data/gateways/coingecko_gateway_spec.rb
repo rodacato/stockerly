@@ -170,4 +170,60 @@ RSpec.describe MarketData::Gateways::CoingeckoGateway do
       end
     end
   end
+
+  describe "API key resolution" do
+    context "when Integration record exists with valid key" do
+      before { create(:integration, provider_name: "CoinGecko", api_key_encrypted: "db_key") }
+
+      it "uses the database key" do
+        expect { described_class.new }.not_to raise_error
+      end
+    end
+
+    context "when no Integration record exists" do
+      it "raises ApiKeyNotConfiguredError" do
+        expect { described_class.new }.to raise_error(
+          MarketData::Gateways::ApiKeyNotConfiguredError, /CoinGecko/
+        )
+      end
+    end
+
+    context "when Integration exists but api_key_encrypted is nil" do
+      before { create(:integration, :keyless, provider_name: "CoinGecko") }
+
+      it "raises ApiKeyNotConfiguredError" do
+        expect { described_class.new }.to raise_error(
+          MarketData::Gateways::ApiKeyNotConfiguredError
+        )
+      end
+    end
+  end
+
+  describe "pro tier resolution" do
+    context "when Integration has pro_tier setting" do
+      before do
+        create(:integration, provider_name: "CoinGecko",
+               api_key_encrypted: "db_key",
+               settings: { "pro_tier" => true })
+      end
+
+      it "uses pro API base URL" do
+        gw = described_class.new
+        expect(gw.send(:instance_variable_get, :@pro)).to be true
+      end
+    end
+
+    context "when Integration has no pro_tier setting" do
+      before do
+        create(:integration, provider_name: "CoinGecko",
+               api_key_encrypted: "db_key",
+               settings: {})
+      end
+
+      it "defaults to demo tier" do
+        gw = described_class.new
+        expect(gw.send(:instance_variable_get, :@pro)).to be false
+      end
+    end
+  end
 end

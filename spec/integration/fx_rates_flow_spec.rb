@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "FX Rates Flow (E2E)", type: :model do
-  before { stub_fx_rates }
+  before do
+    create(:integration, provider_name: "ExchangeRate", api_key_encrypted: "test_key")
+    stub_fx_rates
+  end
 
   it "refreshes FX rates → creates records → logs success" do
     expect {

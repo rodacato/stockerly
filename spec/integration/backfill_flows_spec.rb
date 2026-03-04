@@ -3,6 +3,10 @@ require "rails_helper"
 RSpec.describe "Backfill Flows (E2E)", type: :model do
   include ActiveJob::TestHelper
 
+  before do
+    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+  end
+
   describe "first boot scenario" do
     let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active) }
 

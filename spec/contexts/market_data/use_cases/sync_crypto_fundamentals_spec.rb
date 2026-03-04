@@ -4,6 +4,10 @@ RSpec.describe MarketData::UseCases::SyncCryptoFundamentals do
   let!(:crypto_asset) { create(:asset, symbol: "BTC", name: "Bitcoin", asset_type: :crypto, current_price: 67_250) }
   let!(:stock_asset) { create(:asset, symbol: "AAPL", name: "Apple", asset_type: :stock, current_price: 227) }
 
+  before do
+    create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
+  end
+
   describe "#call" do
     context "with valid crypto asset" do
       before { stub_coingecko_markets }
