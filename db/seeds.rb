@@ -463,77 +463,9 @@ unless SystemLog.exists?
 end
 
 # --- Integrations ---
+# Synced from DataSourceRegistry definitions. Defaults defined in lib/tasks/sync.rake.
 # API keys are NOT seeded — configure them via Admin > Integrations.
-Integration.find_or_create_by!(provider_name: "Polygon.io") do |i|
-  i.provider_type = "Stocks & Forex"
-  i.requires_api_key = true
-  i.connection_status = :disconnected
-  i.max_requests_per_minute = 5
-  i.daily_call_limit = 500
-end
-Integration.find_or_create_by!(provider_name: "CoinGecko") do |i|
-  i.provider_type = "Cryptocurrency"
-  i.requires_api_key = false
-  i.connection_status = :disconnected
-  i.max_requests_per_minute = 30
-  i.daily_call_limit = 10_000
-  i.settings = { "pro_tier" => false }
-end
-Integration.find_or_create_by!(provider_name: "Yahoo Finance") do |i|
-  i.provider_type = "Mexican Stocks & ETFs"
-  i.requires_api_key = false
-  i.connection_status = :connected
-  i.last_sync_at = Time.current
-  i.daily_call_limit = 2_000
-end
-Integration.find_or_create_by!(provider_name: "Alternative.me") do |i|
-  i.provider_type = "Sentiment"
-  i.requires_api_key = false
-  i.connection_status = :connected
-  i.last_sync_at = 1.day.ago
-  i.daily_call_limit = 100
-end
-Integration.find_or_create_by!(provider_name: "CNN") do |i|
-  i.provider_type = "Sentiment"
-  i.requires_api_key = false
-  i.connection_status = :connected
-  i.last_sync_at = 1.day.ago
-  i.daily_call_limit = 100
-end
-Integration.find_or_create_by!(provider_name: "Alpha Vantage") do |i|
-  i.provider_type = "Fundamentals"
-  i.requires_api_key = true
-  i.connection_status = :disconnected
-  i.max_requests_per_minute = 5
-  i.daily_call_limit = 25
-end
-Integration.find_or_create_by!(provider_name: "FMP") do |i|
-  i.provider_type = "Dividends & Splits"
-  i.requires_api_key = true
-  i.connection_status = :disconnected
-  i.max_requests_per_minute = 10
-  i.daily_call_limit = 250
-end
-Integration.find_or_create_by!(provider_name: "ExchangeRate") do |i|
-  i.provider_type = "FX Rates"
-  i.requires_api_key = true
-  i.connection_status = :disconnected
-  i.max_requests_per_minute = 10
-  i.daily_call_limit = 1_500
-end
-Integration.find_or_create_by!(provider_name: "Banxico") do |i|
-  i.provider_type = "CETES & Fixed Income"
-  i.requires_api_key = true
-  i.connection_status = :disconnected
-  i.daily_call_limit = 1_000
-end
-Integration.find_or_create_by!(provider_name: "Finnhub") do |i|
-  i.provider_type = "Stocks & Market Data"
-  i.requires_api_key = true
-  i.connection_status = :disconnected
-  i.max_requests_per_minute = 60
-  i.daily_call_limit = 500
-end
+Rake::Task["stockerly:sync"].invoke
 
 # --- AI Intelligence (optional — uncomment and configure to enable AI features) ---
 # Supported providers: "anthropic" (Claude), "openai" (GPT)
