@@ -4,6 +4,8 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::CreateAlertPreferencesOnRegistration)
   EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::SendWelcomeEmailOnRegistration)
   EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::SendVerificationEmailOnRegistration)
+  EventBus.subscribe(Identity::Events::FirstAdminCreated, Identity::Handlers::CreatePortfolioOnRegistration)
+  EventBus.subscribe(Identity::Events::FirstAdminCreated, Identity::Handlers::CreateAlertPreferencesOnRegistration)
   EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::InvalidateSessionsOnPasswordChange)
   EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::CreateAuditLogOnPasswordChange)
   EventBus.subscribe(Identity::Events::UserLoggedIn, Identity::Handlers::CreateAuditLogOnLogin)

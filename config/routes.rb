@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   get "up", to: "rails/health#show", as: :rails_health_check  # Kamal deploy probe (always 200 if Rails boots)
   get "health", to: "health#show"                              # Detailed sync-freshness monitor
 
+  # --- First-Boot Setup ---
+  get  "setup", to: "setup#new"
+  post "setup", to: "setup#create"
+
   # --- Public Pages ---
   root "pages#landing"
   get "open-source", to: "pages#open_source", as: :open_source
@@ -68,6 +72,14 @@ Rails.application.routes.draw do
     root "dashboard#show"
     post "refresh_fx_rates", to: "dashboard#refresh_fx_rates"
     post "trigger_data_source/:key", to: "dashboard#trigger_data_source", as: :trigger_data_source
+
+    # Admin Onboarding Wizard
+    get   "onboarding/integrations", to: "onboarding#integrations", as: :onboarding_integrations
+    patch "onboarding/integrations", to: "onboarding#save_integrations", as: :onboarding_save_integrations
+    get   "onboarding/assets",       to: "onboarding#assets", as: :onboarding_assets
+    post  "onboarding/assets",       to: "onboarding#save_assets", as: :onboarding_save_assets
+    get   "onboarding/complete",     to: "onboarding#complete", as: :onboarding_complete
+    post  "onboarding/launch",       to: "onboarding#launch", as: :onboarding_launch
 
     resources :assets, only: [ :index, :create, :destroy ] do
       member do

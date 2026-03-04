@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :logged_in?
 
+  before_action :redirect_to_setup
   before_action :set_honeybadger_context
 
   def append_info_to_payload(payload)
@@ -16,6 +17,14 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def redirect_to_setup
+    return if User.exists?
+    return if is_a?(SetupController)
+    return if controller_path == "rails/health" || controller_name == "health"
+
+    redirect_to setup_path
+  end
 
   def set_honeybadger_context
     Honeybadger.context(user_id: current_user&.id, user_email: current_user&.email)

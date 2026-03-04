@@ -1,0 +1,70 @@
+<% content_for(:admin_page_title, "Setup — API Keys") %>
+
+<main class="flex-1 flex flex-col items-center py-10 px-4">
+  <div class="w-full max-w-3xl">
+    <%# Progress %>
+    <div class="mb-10">
+      <div class="flex justify-between items-end mb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-primary">Admin Setup</span>
+          <h2 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Step 1 of 3</h2>
+        </div>
+        <span class="text-slate-400 text-xs font-semibold italic">33% complete</span>
+      </div>
+      <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+        <div class="h-full bg-primary w-1/3 rounded-full"></div>
+      </div>
+    </div>
+
+    <%# Title %>
+    <div class="mb-8">
+      <h1 class="text-3xl font-black text-slate-900 dark:text-white leading-tight mb-3">Connect Your Data Sources</h1>
+      <p class="text-slate-500 dark:text-slate-400 text-lg">Add API keys for the market data providers you want to use. You can skip this and configure later from Admin > Integrations.</p>
+    </div>
+
+    <%# Integration Cards %>
+    <%= form_with url: admin_onboarding_save_integrations_path, method: :patch, class: "space-y-3 mb-10" do |f| %>
+      <% @integrations.each do |integration| %>
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-xl text-primary">hub</span>
+              </div>
+              <div>
+                <p class="font-bold text-sm text-slate-900 dark:text-white"><%= integration.provider_name %></p>
+                <p class="text-xs text-slate-400 uppercase tracking-wider"><%= integration.provider_type %></p>
+              </div>
+            </div>
+            <% unless integration.requires_api_key? %>
+              <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+                <span class="size-2 rounded-full bg-emerald-500"></span>
+                No key needed
+              </span>
+            <% end %>
+          </div>
+          <div>
+            <input type="text" name="api_keys[<%= integration.id %>]"
+                   placeholder="Paste your <%= integration.provider_name %> API key"
+                   value="<%= integration.api_key_encrypted.present? ? '' : '' %>"
+                   class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary">
+          </div>
+        </div>
+      <% end %>
+
+      <%# Footer Navigation %>
+      <div class="flex items-center justify-between pt-6">
+        <span></span>
+        <div class="flex items-center gap-4">
+          <%= link_to admin_onboarding_assets_path, class: "text-sm font-medium text-slate-500 hover:text-primary transition-colors" do %>
+            Skip for now
+          <% end %>
+          <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-primary/25 flex items-center gap-2">
+            Continue
+            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</main>
