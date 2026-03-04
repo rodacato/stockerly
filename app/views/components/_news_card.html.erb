@@ -1,9 +1,18 @@
-<%# Usage: render "components/news_card", ticker: "AAPL", source: "Bloomberg", time_ago: "2h ago", title: "Headline" %>
+<%# Usage: render "components/news_card", ticker: "AAPL", source: "Bloomberg", time_ago: "2h ago", title: "Headline", sentiment: "bullish" %>
 <% ticker ||= nil %>
+<% sentiment ||= nil %>
 
 <div class="flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
   <% if ticker.present? %>
     <span class="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px] font-bold shrink-0"><%= ticker %></span>
+    <% if sentiment.present? %>
+      <span class="px-1 py-0.5 rounded text-[9px] font-bold
+        <%= sentiment == 'bullish' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' :
+            sentiment == 'bearish' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300' :
+            'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400' %> shrink-0">
+        <%= sentiment.capitalize %>
+      </span>
+    <% end %>
   <% else %>
     <span class="material-symbols-outlined text-base text-slate-400 shrink-0">article</span>
   <% end %>

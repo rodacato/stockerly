@@ -10,6 +10,7 @@
     <% @news.each do |article| %>
       <%= render "components/news_card",
         ticker: article.related_ticker,
+        sentiment: article.sentiment,
         source: article.source,
         time_ago: time_ago_in_words(article.published_at) + " ago",
         title: article.title %>
