@@ -270,15 +270,16 @@ GEM
       railties (>= 7.1)
       stimulus-rails
       turbo-rails
-    monetize (1.13.0)
-      money (~> 6.12)
-    money (6.19.0)
-      i18n (>= 0.6.4, <= 2)
-    money-rails (1.15.0)
-      activesupport (>= 3.0)
-      monetize (~> 1.9)
-      money (~> 6.13)
-      railties (>= 3.0)
+    monetize (2.0.0)
+      money (~> 7.0)
+    money (7.0.2)
+      bigdecimal
+      i18n (~> 1.9)
+    money-rails (3.0.0)
+      activesupport (>= 7.0)
+      monetize (~> 2.0)
+      money (~> 7.0)
+      railties (>= 7.0)
     msgpack (1.8.0)
     net-http (0.9.1)
       uri (>= 0.11.1)
@@ -554,7 +555,7 @@ DEPENDENCIES
   kamal
   lograge
   mission_control-jobs
-  money-rails (~> 1.15)
+  money-rails (~> 3.0)
   pagy (~> 9.0)
   pg (~> 1.1)
   propshaft

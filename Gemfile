@@ -33,7 +33,7 @@ gem "dry-monads", "~> 1.6"
 gem "pagy", "~> 9.0"
 
 # Currency formatting and conversion [https://github.com/RubyMoney/money-rails]
-gem "money-rails", "~> 1.15"
+gem "money-rails", "~> 3.0"
 
 # HTTP client for external API gateways [https://github.com/lostisland/faraday]
 gem "faraday", "~> 2.9"
