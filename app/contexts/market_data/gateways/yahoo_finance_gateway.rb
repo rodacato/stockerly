@@ -81,7 +81,7 @@ module MarketData
     # Search tickers by name or symbol via Yahoo Finance search API.
     # Returns Success([{ symbol:, name:, quote_type:, exchange:, exchange_display: }, ...])
     def search_tickers(query)
-      response = connection.get("/v1/finance/search") do |req|
+      response = search_connection.get("/v1/finance/search") do |req|
         req.params["q"] = query
         req.params["quotesCount"] = 8
         req.params["newsCount"] = 0
@@ -178,6 +178,17 @@ module MarketData
 
       now = Time.current.to_i
       now >= trading["start"].to_i && now <= trading["end"].to_i
+    end
+
+    # Dedicated connection for search — no retry middleware, no Accept: application/json.
+    # Yahoo Finance blocks automated-looking search requests.
+    def search_connection
+      @search_connection ||= Faraday.new(url: BASE_URL) do |f|
+        f.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        f.response :json
+        f.options.timeout = TIMEOUT
+        f.options.open_timeout = TIMEOUT
+      end
     end
 
     def batch_connection
