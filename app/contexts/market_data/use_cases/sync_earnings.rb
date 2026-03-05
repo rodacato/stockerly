@@ -7,9 +7,10 @@ module MarketData
         assets = Asset.where(asset_type: :stock, sync_status: [ :active, :sync_issue ])
         cutoff_date = Date.current + days_ahead.days
         synced = 0
+        chain = GatewayChain.for_capability(:earnings)
 
         assets.find_each do |asset|
-          result = Gateways::PolygonGateway.new.fetch_earnings(asset.symbol)
+          result = chain.fetch_earnings(asset.symbol)
           next if result.failure?
 
           result.value!.each do |data|

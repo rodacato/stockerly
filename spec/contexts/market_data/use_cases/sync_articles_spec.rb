@@ -176,7 +176,7 @@ RSpec.describe MarketData::UseCases::SyncArticles do
     it "returns Failure" do
       result = described_class.call
       expect(result).to be_failure
-      expect(result.failure.first).to eq(:gateway_error)
+      expect(result.failure.first).to eq(:all_gateways_failed)
     end
 
     it "does not create any articles" do

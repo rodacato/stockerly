@@ -4,7 +4,7 @@ module MarketData
       TITLE_SIMILARITY_THRESHOLD = 0.65
 
       def call
-        result = Gateways::PolygonGateway.new.fetch_news(limit: 20)
+        result = GatewayChain.for_capability(:news).fetch_news(limit: 20)
 
         return result if result.failure?
 
