@@ -13,6 +13,7 @@ RSpec.describe DataSourceRegistry do
       job_class: test_job,
       job_args: [ "foo" ],
       test_symbol: "TEST",
+      test_method: :fetch_price,
       integration_name: "Test Provider",
       circuit_breaker_key: "test",
       capabilities: %i[prices historical]

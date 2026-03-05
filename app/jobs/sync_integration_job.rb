@@ -42,6 +42,6 @@ class SyncIntegrationJob < ApplicationJob
 
     return Dry::Monads::Success(:ok) unless test_symbol
 
-    gateway.fetch_price(test_symbol)
+    gateway.public_send(source.test_method, test_symbol)
   end
 end

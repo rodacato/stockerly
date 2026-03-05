@@ -236,13 +236,13 @@ RSpec.describe GatewayChain do
 
       DataSourceRegistry.register(:source_a,
         name: "A", icon: "x", color: "blue", gateway_class: TestGatewayA,
-        job_class: nil, job_args: [], test_symbol: nil,
+        job_class: nil, job_args: [], test_symbol: nil, test_method: :fetch_price,
         integration_name: "Provider A", circuit_breaker_key: "a",
         capabilities: %i[prices news])
 
       DataSourceRegistry.register(:source_b,
         name: "B", icon: "x", color: "red", gateway_class: TestGatewayB,
-        job_class: nil, job_args: [], test_symbol: nil,
+        job_class: nil, job_args: [], test_symbol: nil, test_method: :fetch_price,
         integration_name: "Provider B", circuit_breaker_key: "b",
         capabilities: %i[news])
 
@@ -258,13 +258,13 @@ RSpec.describe GatewayChain do
 
       DataSourceRegistry.register(:source_a,
         name: "A", icon: "x", color: "blue", gateway_class: TestGatewayA,
-        job_class: nil, job_args: [], test_symbol: nil,
+        job_class: nil, job_args: [], test_symbol: nil, test_method: :fetch_price,
         integration_name: "Provider A", circuit_breaker_key: "a",
         capabilities: %i[news])
 
       DataSourceRegistry.register(:source_b,
         name: "B", icon: "x", color: "red", gateway_class: TestGatewayA,
-        job_class: nil, job_args: [], test_symbol: nil,
+        job_class: nil, job_args: [], test_symbol: nil, test_method: :fetch_price,
         integration_name: "Provider A", circuit_breaker_key: "b",
         capabilities: %i[news])
 
@@ -285,13 +285,13 @@ RSpec.describe GatewayChain do
 
       DataSourceRegistry.register(:source_fail,
         name: "Fail", icon: "x", color: "red", gateway_class: TestFailingGateway,
-        job_class: nil, job_args: [], test_symbol: nil,
+        job_class: nil, job_args: [], test_symbol: nil, test_method: :fetch_price,
         integration_name: "Failing", circuit_breaker_key: "f",
         capabilities: %i[news])
 
       DataSourceRegistry.register(:source_ok,
         name: "OK", icon: "x", color: "blue", gateway_class: TestGatewayA,
-        job_class: nil, job_args: [], test_symbol: nil,
+        job_class: nil, job_args: [], test_symbol: nil, test_method: :fetch_price,
         integration_name: "OK", circuit_breaker_key: "o",
         capabilities: %i[news])
 

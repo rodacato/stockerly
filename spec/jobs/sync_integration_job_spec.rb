@@ -45,6 +45,35 @@ RSpec.describe SyncIntegrationJob, type: :job do
       end
     end
 
+    context "with Alpha Vantage integration (fundamentals gateway)" do
+      let!(:integration) do
+        create(:integration, provider_name: "Alpha Vantage", connection_status: :connected, pool_key_value: "test_key")
+      end
+
+      context "when connectivity test succeeds" do
+        before { stub_alpha_vantage_overview("AAPL") }
+
+        it "uses fetch_overview instead of fetch_price" do
+          described_class.perform_now(integration.id)
+
+          integration.reload
+          expect(integration.connection_status).to eq("connected")
+          expect(integration.last_sync_at).to be_present
+        end
+      end
+
+      context "when connectivity test fails" do
+        before { stub_alpha_vantage_server_error }
+
+        it "sets status to disconnected" do
+          described_class.perform_now(integration.id)
+
+          integration.reload
+          expect(integration.connection_status).to eq("disconnected")
+        end
+      end
+    end
+
     context "when integration requires API key but has none" do
       let!(:unconfigured) { create(:integration, provider_name: "Alpha Vantage", requires_api_key: true, pool_key_value: nil) }
 

@@ -14,6 +14,7 @@ Rails.application.config.after_initialize do
     job_class: SyncPriorityAssetsJob,
     job_args: %w[stock high],
     test_symbol: "AAPL",
+    test_method: :fetch_price,
     integration_name: "Polygon.io",
     circuit_breaker_key: "stock",
     capabilities: %i[prices historical indices]
@@ -27,6 +28,7 @@ Rails.application.config.after_initialize do
     job_class: SyncPriorityAssetsJob,
     job_args: %w[stock high],
     test_symbol: "AAPL",
+    test_method: :fetch_price,
     integration_name: "Finnhub",
     circuit_breaker_key: "finnhub",
     capabilities: %i[prices historical search news earnings]
@@ -40,6 +42,7 @@ Rails.application.config.after_initialize do
     job_class: SyncPriorityAssetsJob,
     job_args: %w[crypto high],
     test_symbol: "BTC",
+    test_method: :fetch_price,
     integration_name: "CoinGecko",
     circuit_breaker_key: "crypto",
     capabilities: %i[prices historical market_data]
@@ -53,6 +56,7 @@ Rails.application.config.after_initialize do
     job_class: SyncPriorityAssetsJob,
     job_args: %w[stock high],
     test_symbol: "GENIUSSACV.MX",
+    test_method: :fetch_price,
     integration_name: "Yahoo Finance",
     circuit_breaker_key: "bmv",
     capabilities: %i[prices historical search indices]
@@ -66,6 +70,7 @@ Rails.application.config.after_initialize do
     job_class: RefreshFearGreedJob,
     job_args: [],
     test_symbol: nil,
+    test_method: :fetch_price,
     integration_name: "Alternative.me",
     circuit_breaker_key: "crypto_fear_greed",
     capabilities: %i[sentiment]
@@ -79,6 +84,7 @@ Rails.application.config.after_initialize do
     job_class: RefreshFearGreedJob,
     job_args: [],
     test_symbol: nil,
+    test_method: :fetch_price,
     integration_name: "CNN",
     circuit_breaker_key: "stock_fear_greed",
     capabilities: %i[sentiment]
@@ -92,6 +98,7 @@ Rails.application.config.after_initialize do
     job_class: SyncNewsJob,
     job_args: [],
     test_symbol: nil,
+    test_method: :fetch_price,
     integration_name: "Polygon.io",
     circuit_breaker_key: "polygon_news",
     capabilities: %i[news]
@@ -105,6 +112,7 @@ Rails.application.config.after_initialize do
     job_class: SyncMarketIndicesJob,
     job_args: [],
     test_symbol: nil,
+    test_method: :fetch_price,
     integration_name: "Yahoo Finance",
     circuit_breaker_key: "yahoo_indices",
     capabilities: %i[indices]
@@ -118,6 +126,7 @@ Rails.application.config.after_initialize do
     job_class: SyncAllFundamentalsJob,
     job_args: [],
     test_symbol: "AAPL",
+    test_method: :fetch_overview,
     integration_name: "Alpha Vantage",
     circuit_breaker_key: "alpha_vantage",
     capabilities: %i[fundamentals]
@@ -131,6 +140,7 @@ Rails.application.config.after_initialize do
     job_class: SyncEarningsJob,
     job_args: [],
     test_symbol: "AAPL",
+    test_method: :fetch_price,
     integration_name: "Polygon.io",
     circuit_breaker_key: "polygon_earnings",
     capabilities: %i[earnings]
@@ -144,6 +154,7 @@ Rails.application.config.after_initialize do
     job_class: RefreshFxRatesJob,
     job_args: [],
     test_symbol: nil,
+    test_method: :fetch_price,
     integration_name: "ExchangeRate",
     circuit_breaker_key: "fx",
     capabilities: %i[fx]
@@ -157,6 +168,7 @@ Rails.application.config.after_initialize do
     job_class: SyncCetesJob,
     job_args: [],
     test_symbol: nil,
+    test_method: :fetch_price,
     integration_name: "Banxico",
     circuit_breaker_key: "banxico",
     capabilities: %i[cetes]
@@ -170,6 +182,7 @@ Rails.application.config.after_initialize do
     job_class: nil,
     job_args: [],
     test_symbol: nil,
+    test_method: :fetch_price,
     integration_name: "AI Intelligence",
     circuit_breaker_key: "llm",
     capabilities: %i[llm]

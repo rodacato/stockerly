@@ -11,6 +11,7 @@ class DataSourceRegistry
     :job_class,         # String class name for sync, e.g. "SyncAllAssetsJob"
     :job_args,          # Array of args to pass to the job, e.g. ["stock"]
     :test_symbol,       # Symbol used for connectivity test, e.g. "AAPL"
+    :test_method,       # Gateway method for connectivity test, e.g. :fetch_price
     :integration_name,  # Matches Integration#provider_name, e.g. "Polygon.io"
     :circuit_breaker_key, # Key for CircuitBreaker lookup, e.g. "stock"
     :capabilities       # Array of capability symbols, e.g. [:prices, :news, :earnings]
