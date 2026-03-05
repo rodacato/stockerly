@@ -4,8 +4,13 @@
     <%# Left: asset info %>
     <div class="flex gap-5 items-center">
       <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-        <div class="flex items-center justify-center size-16 text-slate-400 dark:text-slate-500">
-          <span class="material-symbols-outlined text-4xl"><%= asset.asset_type_crypto? ? "currency_bitcoin" : (asset.asset_type_fixed_income? ? "account_balance" : "show_chart") %></span>
+        <div class="flex items-center justify-center size-16">
+          <% if asset.logo_url.present? %>
+            <%= image_tag asset.logo_url, alt: asset.symbol, class: "size-14 rounded-lg object-contain", onerror: "this.style.display='none';this.nextElementSibling.style.display='flex';" %>
+            <span class="material-symbols-outlined text-4xl text-slate-400 dark:text-slate-500" style="display:none;"><%= asset.asset_type_crypto? ? "currency_bitcoin" : (asset.asset_type_fixed_income? ? "account_balance" : "show_chart") %></span>
+          <% else %>
+            <span class="material-symbols-outlined text-4xl text-slate-400 dark:text-slate-500"><%= asset.asset_type_crypto? ? "currency_bitcoin" : (asset.asset_type_fixed_income? ? "account_balance" : "show_chart") %></span>
+          <% end %>
         </div>
       </div>
       <div class="flex flex-col">
