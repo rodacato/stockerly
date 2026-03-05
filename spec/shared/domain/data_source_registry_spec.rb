@@ -14,7 +14,8 @@ RSpec.describe DataSourceRegistry do
       job_args: [ "foo" ],
       test_symbol: "TEST",
       integration_name: "Test Provider",
-      circuit_breaker_key: "test"
+      circuit_breaker_key: "test",
+      capabilities: %i[prices historical]
     }
   end
 
@@ -79,6 +80,32 @@ RSpec.describe DataSourceRegistry do
       described_class.register(:source_b, **attrs.merge(name: "B"))
 
       expect(described_class.keys).to contain_exactly(:source_a, :source_b)
+    end
+  end
+
+  describe ".for_capability" do
+    it "returns sources that have the requested capability" do
+      described_class.register(:source_a, **attrs.merge(capabilities: %i[prices news]))
+      described_class.register(:source_b, **attrs.merge(name: "B", capabilities: %i[news earnings]))
+      described_class.register(:source_c, **attrs.merge(name: "C", capabilities: %i[earnings]))
+
+      result = described_class.for_capability(:news)
+      expect(result.map(&:key)).to eq([ :source_a, :source_b ])
+    end
+
+    it "returns empty array when no sources have the capability" do
+      described_class.register(:source_a, **attrs.merge(capabilities: %i[prices]))
+
+      expect(described_class.for_capability(:news)).to eq([])
+    end
+
+    it "preserves registration order" do
+      described_class.register(:first, **attrs.merge(name: "First", capabilities: %i[prices]))
+      described_class.register(:second, **attrs.merge(name: "Second", capabilities: %i[prices]))
+      described_class.register(:third, **attrs.merge(name: "Third", capabilities: %i[prices]))
+
+      result = described_class.for_capability(:prices)
+      expect(result.map(&:key)).to eq([ :first, :second, :third ])
     end
   end
 end

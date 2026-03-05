@@ -12,7 +12,8 @@ class DataSourceRegistry
     :job_args,          # Array of args to pass to the job, e.g. ["stock"]
     :test_symbol,       # Symbol used for connectivity test, e.g. "AAPL"
     :integration_name,  # Matches Integration#provider_name, e.g. "Polygon.io"
-    :circuit_breaker_key # Key for CircuitBreaker lookup, e.g. "stock"
+    :circuit_breaker_key, # Key for CircuitBreaker lookup, e.g. "stock"
+    :capabilities       # Array of capability symbols, e.g. [:prices, :news, :earnings]
   )
 
   @sources = {}
@@ -32,6 +33,10 @@ class DataSourceRegistry
 
     def for_integration(provider_name)
       @sources.values.find { |ds| ds.integration_name == provider_name }
+    end
+
+    def for_capability(capability)
+      @sources.values.select { |ds| ds.capabilities.include?(capability) }
     end
 
     def keys

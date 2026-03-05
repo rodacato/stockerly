@@ -1,6 +1,9 @@
 # Registers all known data sources at boot time.
 # New sources should be added here so they appear in admin and are
 # resolvable by SyncIntegrationJob.
+#
+# Registration order within each capability defines fallback priority:
+# the first source registered for a capability is the primary provider.
 
 Rails.application.config.after_initialize do
   DataSourceRegistry.register(:polygon_stocks,
@@ -12,7 +15,8 @@ Rails.application.config.after_initialize do
     job_args: %w[stock high],
     test_symbol: "AAPL",
     integration_name: "Polygon.io",
-    circuit_breaker_key: "stock"
+    circuit_breaker_key: "stock",
+    capabilities: %i[prices historical indices]
   )
 
   DataSourceRegistry.register(:finnhub_stocks,
@@ -24,7 +28,8 @@ Rails.application.config.after_initialize do
     job_args: %w[stock high],
     test_symbol: "AAPL",
     integration_name: "Finnhub",
-    circuit_breaker_key: "finnhub"
+    circuit_breaker_key: "finnhub",
+    capabilities: %i[prices historical search news earnings]
   )
 
   DataSourceRegistry.register(:coingecko_crypto,
@@ -36,7 +41,8 @@ Rails.application.config.after_initialize do
     job_args: %w[crypto high],
     test_symbol: "BTC",
     integration_name: "CoinGecko",
-    circuit_breaker_key: "crypto"
+    circuit_breaker_key: "crypto",
+    capabilities: %i[prices historical market_data]
   )
 
   DataSourceRegistry.register(:yahoo_bmv,
@@ -48,7 +54,8 @@ Rails.application.config.after_initialize do
     job_args: %w[stock high],
     test_symbol: "GENIUSSACV.MX",
     integration_name: "Yahoo Finance",
-    circuit_breaker_key: "bmv"
+    circuit_breaker_key: "bmv",
+    capabilities: %i[prices historical search indices]
   )
 
   DataSourceRegistry.register(:crypto_fear_greed,
@@ -60,7 +67,8 @@ Rails.application.config.after_initialize do
     job_args: [],
     test_symbol: nil,
     integration_name: "Alternative.me",
-    circuit_breaker_key: "crypto_fear_greed"
+    circuit_breaker_key: "crypto_fear_greed",
+    capabilities: %i[sentiment]
   )
 
   DataSourceRegistry.register(:stock_fear_greed,
@@ -72,7 +80,8 @@ Rails.application.config.after_initialize do
     job_args: [],
     test_symbol: nil,
     integration_name: "CNN",
-    circuit_breaker_key: "stock_fear_greed"
+    circuit_breaker_key: "stock_fear_greed",
+    capabilities: %i[sentiment]
   )
 
   DataSourceRegistry.register(:polygon_news,
@@ -84,7 +93,8 @@ Rails.application.config.after_initialize do
     job_args: [],
     test_symbol: nil,
     integration_name: "Polygon.io",
-    circuit_breaker_key: "polygon_news"
+    circuit_breaker_key: "polygon_news",
+    capabilities: %i[news]
   )
 
   DataSourceRegistry.register(:yahoo_indices,
@@ -96,7 +106,8 @@ Rails.application.config.after_initialize do
     job_args: [],
     test_symbol: nil,
     integration_name: "Yahoo Finance",
-    circuit_breaker_key: "yahoo_indices"
+    circuit_breaker_key: "yahoo_indices",
+    capabilities: %i[indices]
   )
 
   DataSourceRegistry.register(:alpha_vantage_fundamentals,
@@ -108,7 +119,8 @@ Rails.application.config.after_initialize do
     job_args: [],
     test_symbol: "AAPL",
     integration_name: "Alpha Vantage",
-    circuit_breaker_key: "alpha_vantage"
+    circuit_breaker_key: "alpha_vantage",
+    capabilities: %i[fundamentals]
   )
 
   DataSourceRegistry.register(:polygon_earnings,
@@ -120,7 +132,8 @@ Rails.application.config.after_initialize do
     job_args: [],
     test_symbol: "AAPL",
     integration_name: "Polygon.io",
-    circuit_breaker_key: "polygon_earnings"
+    circuit_breaker_key: "polygon_earnings",
+    capabilities: %i[earnings]
   )
 
   DataSourceRegistry.register(:fx_rates,
@@ -132,7 +145,8 @@ Rails.application.config.after_initialize do
     job_args: [],
     test_symbol: nil,
     integration_name: "ExchangeRate",
-    circuit_breaker_key: "fx"
+    circuit_breaker_key: "fx",
+    capabilities: %i[fx]
   )
 
   DataSourceRegistry.register(:banxico_cetes,
@@ -144,8 +158,10 @@ Rails.application.config.after_initialize do
     job_args: [],
     test_symbol: nil,
     integration_name: "Banxico",
-    circuit_breaker_key: "banxico"
+    circuit_breaker_key: "banxico",
+    capabilities: %i[cetes]
   )
+
   DataSourceRegistry.register(:ai_intelligence,
     name: "AI Intelligence",
     icon: "psychology",
@@ -155,6 +171,7 @@ Rails.application.config.after_initialize do
     job_args: [],
     test_symbol: nil,
     integration_name: "AI Intelligence",
-    circuit_breaker_key: "llm"
+    circuit_breaker_key: "llm",
+    capabilities: %i[llm]
   )
 end

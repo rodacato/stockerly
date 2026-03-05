@@ -60,7 +60,8 @@ RSpec.describe "stockerly:sync rake task" do
         name: "Test", icon: "test", color: "gray",
         gateway_class: MarketData::Gateways::MarketDataGateway,
         job_class: nil, job_args: [], test_symbol: nil,
-        integration_name: "NewProvider", circuit_breaker_key: "test"
+        integration_name: "NewProvider", circuit_breaker_key: "test",
+        capabilities: %i[prices]
       )
 
       Rake::Task["stockerly:sync"].invoke
