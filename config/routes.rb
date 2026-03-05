@@ -68,6 +68,10 @@ Rails.application.routes.draw do
   patch "profile/preferences", to: "profiles#update_preferences", as: :update_preferences
 
   # --- Admin Zone ---
+  constraints ->(req) { (id = req.session[:user_id]) && User.find_by(id: id)&.admin? } do
+    mount MissionControl::Jobs::Engine, at: "/admin/jobs"
+  end
+
   namespace :admin do
     root "dashboard#show"
     post "refresh_fx_rates", to: "dashboard#refresh_fx_rates"
