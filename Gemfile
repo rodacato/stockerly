@@ -30,7 +30,7 @@ gem "dry-validation", "~> 1.10"
 gem "dry-monads", "~> 1.6"
 
 # Pagination [https://github.com/ddnexus/pagy]
-gem "pagy", "~> 9.0"
+gem "pagy", "~> 43.3"
 
 # Currency formatting and conversion [https://github.com/RubyMoney/money-rails]
 gem "money-rails", "~> 3.0"

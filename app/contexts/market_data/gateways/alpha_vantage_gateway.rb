@@ -90,11 +90,11 @@ module MarketData
 
       av_type = match["3. type"]
       quote_type = case av_type
-                   when "Equity" then "EQUITY"
-                   when "ETF" then "ETF"
-                   when "Mutual Fund" then "MUTUALFUND"
-                   else "EQUITY"
-                   end
+      when "Equity" then "EQUITY"
+      when "ETF" then "ETF"
+      when "Mutual Fund" then "MUTUALFUND"
+      else "EQUITY"
+      end
 
       {
         symbol: symbol,
