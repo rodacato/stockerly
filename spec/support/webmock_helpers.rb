@@ -464,6 +464,22 @@ module WebmockHelpers
       )
   end
 
+  def stub_alpha_vantage_ticker_search(keywords, results: [])
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "SYMBOL_SEARCH", "keywords" => keywords))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { "bestMatches" => results }.to_json
+      )
+  end
+
+  def stub_alpha_vantage_ticker_search_error(status: 500)
+    stub_request(:get, "https://www.alphavantage.co/query")
+      .with(query: hash_including("function" => "SYMBOL_SEARCH"))
+      .to_return(status: status, body: "Error")
+  end
+
   def stub_alpha_vantage_rate_limited(function = nil)
     query = function ? hash_including("function" => function) : hash_including("apikey")
     stub_request(:get, "https://www.alphavantage.co/query")

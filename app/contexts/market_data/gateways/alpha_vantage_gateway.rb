@@ -56,7 +56,54 @@ module MarketData
       fetch_statement(symbol, "CASH_FLOW")
     end
 
+    # Search tickers by keyword via SYMBOL_SEARCH endpoint.
+    # Returns Success([{ symbol:, name:, quote_type:, exchange:, exchange_display: }, ...])
+    def search_tickers(query)
+      response = connection.get("/query") do |req|
+        req.params["function"] = "SYMBOL_SEARCH"
+        req.params["keywords"] = query
+        req.params["apikey"] = @api_key
+      end
+
+      return Failure([ :gateway_error, "Alpha Vantage returned #{response.status}" ]) unless response.success?
+
+      body = response.body
+      return Failure([ :rate_limited, body["Note"] ]) if body.key?("Note")
+      return Failure([ :auth_error, body["Information"] ]) if body.key?("Information")
+
+      matches = body["bestMatches"] || []
+      results = matches.filter_map { |m| parse_search_match(m) }
+
+      Success(results)
+    rescue Faraday::TimeoutError, Faraday::ConnectionFailed
+      Failure([ :timeout, "Alpha Vantage request timed out" ])
+    rescue Faraday::Error => e
+      Failure([ :gateway_error, e.message ])
+    end
+
     private
+
+    # Maps Alpha Vantage SYMBOL_SEARCH result to normalized format.
+    def parse_search_match(match)
+      symbol = match["1. symbol"]
+      return nil if symbol.blank?
+
+      av_type = match["3. type"]
+      quote_type = case av_type
+                   when "Equity" then "EQUITY"
+                   when "ETF" then "ETF"
+                   when "Mutual Fund" then "MUTUALFUND"
+                   else "EQUITY"
+                   end
+
+      {
+        symbol: symbol,
+        name: match["2. name"] || symbol,
+        quote_type: quote_type,
+        exchange: match["4. region"] || "",
+        exchange_display: match["4. region"] || ""
+      }
+    end
 
     # Shared fetch + parse logic for all 3 statement types.
     def fetch_statement(symbol, function)

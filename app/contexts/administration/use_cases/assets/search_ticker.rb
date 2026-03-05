@@ -10,37 +10,26 @@ module Administration
           "MUTUALFUND" => "etf"
         }.freeze
 
-        EXCHANGE_COUNTRY_MAP = {
-          "NMS" => "US", "NYQ" => "US", "NGM" => "US", "NCM" => "US",
-          "PCX" => "US", "BTS" => "US", "ASE" => "US",
-          "MEX" => "MX",
-          "LSE" => "GB", "IOB" => "GB",
-          "TYO" => "JP", "JPX" => "JP",
-          "FRA" => "DE", "GER" => "DE",
-          "PAR" => "FR",
-          "TOR" => "CA", "CNQ" => "CA",
-          "SAO" => "BR",
-          "SHH" => "CN", "SHZ" => "CN",
-          "HKG" => "HK",
-          "KSC" => "KR", "KOE" => "KR",
-          "TAI" => "TW",
-          "CCC" => nil
-        }.freeze
-
-        EXCHANGE_DISPLAY_MAP = {
-          "NMS" => "NASDAQ", "NYQ" => "NYSE", "NGM" => "NASDAQ", "NCM" => "NASDAQ",
-          "PCX" => "NYSE ARCA", "BTS" => "BATS", "ASE" => "AMEX",
-          "MEX" => "BMV",
-          "LSE" => "LSE", "IOB" => "LSE",
-          "TYO" => "TSE", "FRA" => "FRA", "PAR" => "EPA",
-          "TOR" => "TSX", "SAO" => "B3",
-          "CCC" => "CRYPTO"
+        REGION_COUNTRY_MAP = {
+          "United States" => "US",
+          "United Kingdom" => "GB",
+          "Germany" => "DE", "Frankfurt" => "DE",
+          "France" => "FR", "Paris" => "FR",
+          "Japan" => "JP", "Tokyo" => "JP",
+          "Canada" => "CA", "Toronto" => "CA",
+          "Brazil" => "BR", "Brazil/Sao Paolo" => "BR",
+          "Mexico" => "MX",
+          "China" => "CN", "Shanghai" => "CN", "Shenzhen" => "CN",
+          "Hong Kong" => "HK",
+          "South Korea" => "KR",
+          "Taiwan" => "TW",
+          "India" => "IN"
         }.freeze
 
         def call(query:)
           return Failure([ :validation, "Query must be at least 2 characters" ]) if query.blank? || query.strip.length < 2
 
-          gateway = MarketData::Gateways::YahooFinanceGateway.new
+          gateway = MarketData::Gateways::AlphaVantageGateway.new
           results = yield gateway.search_tickers(query.strip)
 
           mapped = results.map { |r| map_result(r) }
@@ -51,14 +40,14 @@ module Administration
         private
 
         def map_result(result)
-          exchange_code = result[:exchange]
+          region = result[:exchange]
 
           {
             symbol: result[:symbol],
             name: result[:name],
             asset_type: QUOTE_TYPE_MAP[result[:quote_type]] || "stock",
-            exchange: EXCHANGE_DISPLAY_MAP[exchange_code] || result[:exchange_display] || exchange_code,
-            country: EXCHANGE_COUNTRY_MAP[exchange_code]
+            exchange: region,
+            country: REGION_COUNTRY_MAP[region]
           }
         end
       end

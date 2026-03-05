@@ -3,14 +3,18 @@ require "rails_helper"
 RSpec.describe "Admin Assets Search", type: :request do
   let!(:admin) { create(:user, :admin, email: "admin@example.com", password: "password123") }
 
+  before { create(:integration, provider_name: "Alpha Vantage") }
+
   describe "GET /admin/assets/search" do
     context "when authenticated as admin" do
       before { login_as(admin) }
 
       it "returns JSON with search results" do
-        stub_yahoo_ticker_search("AAPL", results: [
-          { "symbol" => "AAPL", "longname" => "Apple Inc.", "quoteType" => "EQUITY",
-            "exchange" => "NMS", "exchDisp" => "NASDAQ" }
+        stub_alpha_vantage_ticker_search("AAPL", results: [
+          { "1. symbol" => "AAPL", "2. name" => "Apple Inc.", "3. type" => "Equity",
+            "4. region" => "United States", "5. marketOpen" => "09:30",
+            "6. marketClose" => "16:00", "7. timezone" => "UTC-04",
+            "8. currency" => "USD", "9. matchScore" => "1.0000" }
         ])
 
         get search_admin_assets_path, params: { q: "AAPL" },
@@ -33,7 +37,7 @@ RSpec.describe "Admin Assets Search", type: :request do
       end
 
       it "returns 422 when gateway fails" do
-        stub_yahoo_ticker_search_error(status: 500)
+        stub_alpha_vantage_ticker_search_error(status: 500)
 
         get search_admin_assets_path, params: { q: "AAPL" },
           headers: { "Accept" => "application/json" }

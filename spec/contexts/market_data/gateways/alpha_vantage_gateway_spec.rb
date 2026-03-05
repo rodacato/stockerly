@@ -224,6 +224,60 @@ RSpec.describe MarketData::Gateways::AlphaVantageGateway do
     end
   end
 
+  describe "#search_tickers" do
+    context "when successful" do
+      before do
+        stub_alpha_vantage_ticker_search("AAPL", results: [
+          { "1. symbol" => "AAPL", "2. name" => "Apple Inc.", "3. type" => "Equity",
+            "4. region" => "United States", "5. marketOpen" => "09:30",
+            "6. marketClose" => "16:00", "7. timezone" => "UTC-04",
+            "8. currency" => "USD", "9. matchScore" => "1.0000" }
+        ])
+      end
+
+      it "returns Success with parsed results" do
+        result = gateway.search_tickers("AAPL")
+        expect(result).to be_success
+
+        data = result.value!
+        expect(data.size).to eq(1)
+        expect(data.first[:symbol]).to eq("AAPL")
+        expect(data.first[:name]).to eq("Apple Inc.")
+        expect(data.first[:quote_type]).to eq("EQUITY")
+      end
+    end
+
+    context "when no matches" do
+      before { stub_alpha_vantage_ticker_search("ZZZZ", results: []) }
+
+      it "returns Success with empty array" do
+        result = gateway.search_tickers("ZZZZ")
+        expect(result).to be_success
+        expect(result.value!).to eq([])
+      end
+    end
+
+    context "when rate limited" do
+      before { stub_alpha_vantage_rate_limited("SYMBOL_SEARCH") }
+
+      it "returns Failure with :rate_limited" do
+        result = gateway.search_tickers("AAPL")
+        expect(result).to be_failure
+        expect(result.failure[0]).to eq(:rate_limited)
+      end
+    end
+
+    context "when server error" do
+      before { stub_alpha_vantage_ticker_search_error(status: 500) }
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.search_tickers("AAPL")
+        expect(result).to be_failure
+        expect(result.failure[0]).to eq(:gateway_error)
+      end
+    end
+  end
+
   describe "API key resolution" do
     context "when Integration record exists with valid key" do
       before do
