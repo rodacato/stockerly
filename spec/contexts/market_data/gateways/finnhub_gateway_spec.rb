@@ -149,6 +149,134 @@ RSpec.describe MarketData::Gateways::FinnhubGateway do
     end
   end
 
+  describe "#fetch_news" do
+    context "when Finnhub returns valid news" do
+      before { stub_finnhub_news("AAPL", count: 3) }
+
+      it "returns Success with parsed articles" do
+        result = gateway.fetch_news(ticker: "AAPL")
+
+        expect(result).to be_success
+        articles = result.value!
+        expect(articles.size).to eq(3)
+        expect(articles.first).to include(:title, :summary, :source, :url, :image_url, :published_at, :related_ticker)
+        expect(articles.first[:title]).to eq("Article 1 about AAPL")
+        expect(articles.first[:source]).to eq("Reuters")
+        expect(articles.first[:related_ticker]).to eq("AAPL")
+      end
+    end
+
+    context "when no ticker provided" do
+      it "returns Failure with :not_supported" do
+        result = gateway.fetch_news
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:not_supported)
+      end
+    end
+
+    context "when no articles found" do
+      before { stub_finnhub_news_empty("AAPL") }
+
+      it "returns Success with empty array" do
+        result = gateway.fetch_news(ticker: "AAPL")
+
+        expect(result).to be_success
+        expect(result.value!).to be_empty
+      end
+    end
+
+    context "when limit is applied" do
+      before { stub_finnhub_news("AAPL", count: 10) }
+
+      it "limits the number of articles returned" do
+        result = gateway.fetch_news(ticker: "AAPL", limit: 2)
+
+        expect(result).to be_success
+        expect(result.value!.size).to eq(2)
+      end
+    end
+
+    context "when rate limited (429)" do
+      before { stub_finnhub_news_rate_limited }
+
+      it "returns Failure with :rate_limited" do
+        result = gateway.fetch_news(ticker: "AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:rate_limited)
+      end
+    end
+
+    context "when connection times out" do
+      before do
+        stub_request(:get, %r{finnhub\.io/api/v1/company-news})
+          .to_timeout
+      end
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.fetch_news(ticker: "AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+  end
+
+  describe "#fetch_earnings" do
+    context "when Finnhub returns valid earnings" do
+      before { stub_finnhub_earnings("AAPL", count: 2) }
+
+      it "returns Success with parsed earnings events" do
+        result = gateway.fetch_earnings("AAPL")
+
+        expect(result).to be_success
+        events = result.value!
+        expect(events.size).to eq(2)
+        expect(events.first).to include(:report_date, :fiscal_quarter, :fiscal_year, :estimated_eps, :actual_eps, :timing)
+        expect(events.first[:actual_eps]).to eq(1.52.to_d)
+        expect(events.first[:timing]).to eq(:before_market_open)
+        expect(events.last[:timing]).to eq(:after_market_close)
+      end
+    end
+
+    context "when no earnings found" do
+      before { stub_finnhub_earnings_empty("AAPL") }
+
+      it "returns Success with empty array" do
+        result = gateway.fetch_earnings("AAPL")
+
+        expect(result).to be_success
+        expect(result.value!).to be_empty
+      end
+    end
+
+    context "when rate limited (429)" do
+      before { stub_finnhub_earnings_rate_limited }
+
+      it "returns Failure with :rate_limited" do
+        result = gateway.fetch_earnings("AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:rate_limited)
+      end
+    end
+
+    context "when connection times out" do
+      before do
+        stub_request(:get, %r{finnhub\.io/api/v1/calendar/earnings})
+          .to_timeout
+      end
+
+      it "returns Failure with :gateway_error" do
+        result = gateway.fetch_earnings("AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:gateway_error)
+      end
+    end
+  end
+
   describe "#search_tickers" do
     context "when Finnhub returns results" do
       before { stub_finnhub_search("apple", count: 2) }

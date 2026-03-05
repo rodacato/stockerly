@@ -825,6 +825,64 @@ module WebmockHelpers
       .to_return(status: 429, body: "Rate limit exceeded")
   end
 
+  def stub_finnhub_news(symbol, count: 3)
+    articles = count.times.map do |i|
+      {
+        "category" => "company news",
+        "datetime" => 1.day.ago.to_i + (i * 3600),
+        "headline" => "Article #{i + 1} about #{symbol}",
+        "id" => 100 + i,
+        "image" => "https://example.com/image#{i}.jpg",
+        "related" => symbol,
+        "source" => "Reuters",
+        "summary" => "Summary of article #{i + 1}",
+        "url" => "https://example.com/article-#{i + 1}"
+      }
+    end
+
+    stub_request(:get, %r{finnhub\.io/api/v1/company-news})
+      .to_return(status: 200, body: articles.to_json, headers: { "Content-Type" => "application/json" })
+  end
+
+  def stub_finnhub_news_empty(symbol)
+    stub_request(:get, %r{finnhub\.io/api/v1/company-news})
+      .to_return(status: 200, body: "[]", headers: { "Content-Type" => "application/json" })
+  end
+
+  def stub_finnhub_news_rate_limited
+    stub_request(:get, %r{finnhub\.io/api/v1/company-news})
+      .to_return(status: 429, body: "Rate limit exceeded")
+  end
+
+  def stub_finnhub_earnings(symbol, count: 2)
+    events = count.times.map do |i|
+      {
+        "date" => (Date.current + (i * 90).days).to_s,
+        "epsActual" => i.zero? ? 1.52 : nil,
+        "epsEstimate" => 1.45 + (i * 0.1),
+        "hour" => i.zero? ? "bmo" : "amc",
+        "quarter" => ((Date.current.month / 3.0).ceil + i) % 4 + 1,
+        "revenueActual" => i.zero? ? 94_836_000_000 : nil,
+        "revenueEstimate" => 92_000_000_000,
+        "symbol" => symbol,
+        "year" => Date.current.year
+      }
+    end
+
+    stub_request(:get, %r{finnhub\.io/api/v1/calendar/earnings})
+      .to_return(status: 200, body: { "earningsCalendar" => events }.to_json, headers: { "Content-Type" => "application/json" })
+  end
+
+  def stub_finnhub_earnings_empty(symbol)
+    stub_request(:get, %r{finnhub\.io/api/v1/calendar/earnings})
+      .to_return(status: 200, body: { "earningsCalendar" => [] }.to_json, headers: { "Content-Type" => "application/json" })
+  end
+
+  def stub_finnhub_earnings_rate_limited
+    stub_request(:get, %r{finnhub\.io/api/v1/calendar/earnings})
+      .to_return(status: 429, body: "Rate limit exceeded")
+  end
+
   # --- LLM (AI Intelligence) ---
 
   def stub_llm_completion(content:, provider: "anthropic", base_url: nil)
