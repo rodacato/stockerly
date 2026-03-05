@@ -35,7 +35,8 @@ export default class extends Controller {
     script.async = true
     script.type = "text/javascript"
     script.textContent = JSON.stringify({
-      autosize: true,
+      width: "100%",
+      height: 700,
       symbol: this.symbolValue,
       interval: "D",
       timezone: "America/New_York",

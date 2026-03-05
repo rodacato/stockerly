@@ -1,10 +1,10 @@
 <%# TradingView Advanced Chart widget — lazy-loaded via IntersectionObserver %>
-<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6 overflow-hidden"
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6"
      data-controller="tradingview"
      data-tradingview-symbol-value="<%= tradingview_symbol(@asset) %>"
      data-tradingview-theme-value="light">
-  <div data-tradingview-target="container" class="tradingview-widget-container" style="height: 600px;">
-    <div class="flex items-center justify-center h-full text-slate-400">
+  <div data-tradingview-target="container" class="tradingview-widget-container">
+    <div class="flex items-center justify-center text-slate-400" style="height: 700px;">
       <span class="material-symbols-outlined text-3xl animate-pulse">show_chart</span>
     </div>
   </div>
