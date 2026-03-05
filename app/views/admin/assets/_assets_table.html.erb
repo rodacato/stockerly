@@ -1,3 +1,5 @@
+<% filter = params.permit(:type, :status, :search).to_h.compact_blank %>
+
 <%# Asset listing table with real data %>
 <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
   <div class="overflow-x-auto">
@@ -55,16 +57,19 @@
                   <span class="material-symbols-outlined text-lg">edit</span>
                 </button>
                 <%= button_to trigger_sync_admin_asset_path(asset), method: :post,
+                    params: filter,
                     class: "p-1.5 text-slate-400 hover:text-emerald-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
                     title: "Sync now" do %>
                   <span class="material-symbols-outlined text-lg">sync</span>
                 <% end %>
                 <%= button_to toggle_status_admin_asset_path(asset), method: :patch,
+                    params: filter,
                     class: "p-1.5 text-slate-400 hover:text-primary transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
                     title: asset.active? ? "Pause sync" : "Resume sync" do %>
                   <span class="material-symbols-outlined text-lg"><%= asset.active? ? "pause" : "play_arrow" %></span>
                 <% end %>
                 <%= button_to admin_asset_path(asset), method: :delete,
+                    params: filter,
                     class: "p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
                     title: "Delete asset",
                     data: { turbo_confirm: "Delete #{asset.symbol}? This will remove all related data (watchlists, positions, trades, price history)." } do %>
@@ -77,7 +82,7 @@
           <%# Inline edit row %>
           <tr data-reveal-target="content" class="hidden border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
             <td colspan="7" class="px-6 py-4">
-              <%= form_with(url: admin_asset_path(asset), scope: :asset, method: :patch, class: "flex items-center gap-3 flex-wrap") do |f| %>
+              <%= form_with(url: admin_asset_path(asset, **filter), scope: :asset, method: :patch, class: "flex items-center gap-3 flex-wrap") do |f| %>
                 <% input_class = "px-2.5 py-1.5 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
 
                 <div class="flex flex-col gap-1">

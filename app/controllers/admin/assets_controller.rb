@@ -18,9 +18,9 @@ module Admin
       result = Administration::UseCases::Assets::TriggerSync.call(asset_id: params[:id])
 
       if result.success?
-        redirect_to admin_assets_path, notice: "Sync job enqueued."
+        redirect_with_filters(notice: "Sync job enqueued.")
       else
-        redirect_to admin_assets_path, alert: result.failure.last
+        redirect_with_filters(alert: result.failure.last)
       end
     end
 
@@ -28,9 +28,9 @@ module Admin
       result = Administration::UseCases::Assets::TriggerSync.call(asset_type: params[:type])
 
       if result.success?
-        redirect_to admin_assets_path, notice: "Bulk sync enqueued."
+        redirect_with_filters(notice: "Bulk sync enqueued.")
       else
-        redirect_to admin_assets_path, alert: "Failed to enqueue sync."
+        redirect_with_filters(alert: "Failed to enqueue sync.")
       end
     end
 
@@ -48,9 +48,9 @@ module Admin
       result = Administration::UseCases::Assets::CreateAsset.call(admin: current_user, params: asset_params.to_h)
 
       if result.success?
-        redirect_to admin_assets_path, notice: "Asset \"#{result.value!.symbol}\" created successfully."
+        redirect_with_filters(notice: "Asset \"#{result.value!.symbol}\" created successfully.")
       else
-        redirect_to admin_assets_path, alert: result.failure.last.is_a?(Hash) ? result.failure.last.values.flatten.first : result.failure.last
+        redirect_with_filters(alert: result.failure.last.is_a?(Hash) ? result.failure.last.values.flatten.first : result.failure.last)
       end
     end
 
@@ -61,9 +61,9 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_assets_path, notice: "Asset \"#{result.value!.symbol}\" updated successfully."
+        redirect_with_filters(notice: "Asset \"#{result.value!.symbol}\" updated successfully.")
       else
-        redirect_to admin_assets_path, alert: result.failure.last.is_a?(Hash) ? result.failure.last.values.flatten.first : result.failure.last
+        redirect_with_filters(alert: result.failure.last.is_a?(Hash) ? result.failure.last.values.flatten.first : result.failure.last)
       end
     end
 
@@ -71,9 +71,9 @@ module Admin
       result = Administration::UseCases::Assets::DeleteAsset.call(asset_id: params[:id], admin: current_user)
 
       if result.success?
-        redirect_to admin_assets_path, notice: "Asset \"#{result.value!}\" deleted."
+        redirect_with_filters(notice: "Asset \"#{result.value!}\" deleted.")
       else
-        redirect_to admin_assets_path, alert: result.failure.last
+        redirect_with_filters(alert: result.failure.last)
       end
     end
 
@@ -81,16 +81,20 @@ module Admin
       result = Administration::UseCases::Assets::ToggleStatus.call(asset_id: params[:id])
 
       if result.success?
-        redirect_to admin_assets_path, notice: "Asset status updated."
+        redirect_with_filters(notice: "Asset status updated.")
       else
-        redirect_to admin_assets_path, alert: result.failure.last
+        redirect_with_filters(alert: result.failure.last)
       end
     end
 
     private
 
     def filter_params
-      params.permit(:type, :search, :page).to_h.symbolize_keys
+      params.permit(:type, :status, :search, :page).to_h.symbolize_keys
+    end
+
+    def redirect_with_filters(notice: nil, alert: nil)
+      redirect_to admin_assets_path(filter_params.except(:page)), notice: notice, alert: alert
     end
 
     def asset_params
