@@ -8,6 +8,7 @@ module Administration
           scope = Asset.all
           scope = scope.where(asset_type: params[:type]) if params[:type].present?
           scope = scope.where(country: params[:country]) if params[:country].present?
+          scope = scope.where(sync_status: params[:status]) if params[:status].present?
           scope = scope.where("name ILIKE :q OR symbol ILIKE :q", q: "%#{params[:search]}%") if params[:search].present?
           scope = scope.order(symbol: :asc)
 

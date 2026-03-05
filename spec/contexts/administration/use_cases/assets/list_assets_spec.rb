@@ -29,5 +29,17 @@ RSpec.describe Administration::UseCases::Assets::ListAssets do
       expect(result.value![:assets].count).to eq(1)
       expect(result.value![:assets].first.symbol).to eq("AAPL")
     end
+
+    it "filters by sync status" do
+      result = described_class.call(params: { status: "disabled" })
+      expect(result.value![:assets].count).to eq(1)
+      expect(result.value![:assets].first.symbol).to eq("ETH")
+    end
+
+    it "combines type and status filters" do
+      result = described_class.call(params: { type: "crypto", status: "active" })
+      expect(result.value![:assets].count).to eq(1)
+      expect(result.value![:assets].first.symbol).to eq("BTC")
+    end
   end
 end

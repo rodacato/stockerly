@@ -96,6 +96,46 @@
     <%= render "components/admin_kpi_card", title: "Listed", value: number_with_delimiter(@pagy.count), icon: "list", color: :amber %>
   </div>
 
+  <%# Filters %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+    <%= form_with(url: admin_assets_path, method: :get, class: "flex flex-wrap items-end gap-3", data: { turbo_frame: "_top" }) do |f| %>
+      <div class="flex-1 min-w-[200px]">
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Search</label>
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus-within:ring-2 focus-within:ring-primary">
+          <span class="material-symbols-outlined text-base text-slate-400">search</span>
+          <input type="text" name="search" value="<%= params[:search] %>"
+            placeholder="Search by name or symbol..." autocomplete="off"
+            class="w-full text-sm bg-transparent text-slate-900 dark:text-white placeholder-slate-400 outline-none">
+        </div>
+      </div>
+
+      <div class="w-36">
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Type</label>
+        <%= f.select :type,
+            options_for_select([["All Types", ""], ["Stock", "stock"], ["Crypto", "crypto"], ["ETF", "etf"], ["Index", "index"], ["Fixed Income", "fixed_income"]], params[:type]),
+            {},
+            class: "w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary" %>
+      </div>
+
+      <div class="w-36">
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Status</label>
+        <%= f.select :status,
+            options_for_select([["All Statuses", ""], ["Active", "active"], ["Disabled", "disabled"], ["Sync Issue", "sync_issue"]], params[:status]),
+            {},
+            class: "w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary" %>
+      </div>
+
+      <div class="flex items-end gap-2">
+        <%= f.submit "Filter",
+            class: "px-4 py-1.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors cursor-pointer" %>
+        <% if params[:search].present? || params[:type].present? || params[:status].present? %>
+          <%= link_to "Clear", admin_assets_path,
+              class: "px-4 py-1.5 text-sm font-medium text-slate-500 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
   <%# Assets Table %>
   <%= render "admin/assets/assets_table" %>
 </div>
