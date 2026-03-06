@@ -255,7 +255,7 @@ end
 Asset.where(logo_url: nil).find_each do |asset|
   logo = case asset.asset_type
   when "crypto"
-    coingecko_ids = { "BTC" => [1, "bitcoin"], "ETH" => [279, "ethereum"], "SOL" => [4128, "solana"] }
+    coingecko_ids = { "BTC" => [ 1, "bitcoin" ], "ETH" => [ 279, "ethereum" ], "SOL" => [ 4128, "solana" ] }
     ids = coingecko_ids[asset.symbol.upcase]
     ids ? "https://assets.coingecko.com/coins/images/#{ids[0]}/small/#{ids[1]}.png" : nil
   when "fixed_income", "index"

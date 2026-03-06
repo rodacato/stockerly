@@ -14,10 +14,10 @@ class SetupController < ApplicationController
       redirect_to admin_onboarding_integrations_path, notice: "Admin account created! Let's configure your instance."
     else
       case result.failure
-      in [:validation, errors]
+      in [ :validation, errors ]
         @errors = errors
         render :new, status: :unprocessable_content
-      in [:setup_complete, _]
+      in [ :setup_complete, _ ]
         redirect_to root_path, alert: "Setup already completed."
       end
     end

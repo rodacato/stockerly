@@ -4,11 +4,16 @@
 
 If you discover a security vulnerability, please report it responsibly. **Do not open a public issue.**
 
-Send an email to **rodacato@gmail.com** with:
+Use **GitHub Private Vulnerability Reporting**:
 
-- A description of the vulnerability
-- Steps to reproduce the issue
-- Any potential impact
+1. Go to the repository's **Security** tab
+2. Click **Report a vulnerability**
+3. Include:
+	- A description of the vulnerability
+	- Steps to reproduce the issue
+	- Any potential impact
+
+If private reporting is unavailable, open a private discussion with maintainers before disclosure.
 
 You will receive a response within 48 hours.
 
@@ -39,3 +44,12 @@ The following files contain or reference secrets and **must never be committed**
 4. **Do not log sensitive data** — avoid logging params that may contain passwords or tokens
 5. **Keep dependencies updated** — run `bundle audit` periodically to check for known vulnerabilities
 6. **Review `.gitignore`** before committing — ensure no sensitive files are staged
+
+## Secret Leak Response
+
+If a secret is accidentally committed:
+
+1. Revoke and rotate the secret immediately
+2. Remove it from git history (`git filter-repo`), then force-push
+3. Invalidate affected sessions/tokens
+4. Document impact and remediation in a private incident note

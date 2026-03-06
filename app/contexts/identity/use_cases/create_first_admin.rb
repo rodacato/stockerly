@@ -2,7 +2,7 @@ module Identity
   module UseCases
     class CreateFirstAdmin < ApplicationUseCase
       def call(params:)
-        return Failure([:setup_complete, "Setup already completed"]) if User.exists?
+        return Failure([ :setup_complete, "Setup already completed" ]) if User.exists?
 
         attrs = yield validate(Contracts::CreateFirstAdminContract, params)
         user = yield persist(attrs)
@@ -24,7 +24,7 @@ module Identity
           is_verified: true,
           email_verified_at: Time.current
         )
-        user.save ? Success(user) : Failure([:validation, user.errors.to_hash])
+        user.save ? Success(user) : Failure([ :validation, user.errors.to_hash ])
       end
 
       def bootstrap_platform!
