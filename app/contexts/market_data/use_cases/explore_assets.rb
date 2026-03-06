@@ -1,9 +1,9 @@
 module MarketData
   module UseCases
     class ExploreAssets < ApplicationUseCase
-      include Pagy::Backend
+      include Pagy::Method
 
-      def call(params: {})
+      def call(params: {}, request: nil)
         scope = Asset.includes(:trend_scores, :asset_price_histories)
 
         scope = scope.where(asset_type: params[:type]) if params[:type].present?
@@ -13,7 +13,11 @@ module MarketData
         scope = scope.where("name ILIKE :q OR symbol ILIKE :q", q: "%#{params[:search]}%") if params[:search].present?
         scope = scope.order(symbol: :asc)
 
-        pagy, assets = pagy(scope, limit: 20, page: params[:page] || 1)
+        pagy, assets = pagy(:offset, scope,
+          limit: 20,
+          page: params[:page] || 1,
+          request: request || { base_url: "", path: "", params: {}, cookie: nil }
+        )
 
         indices = MarketIndex.major
         vix = MarketIndex.vix

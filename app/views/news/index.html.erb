@@ -101,7 +101,7 @@
         <%# Pagination %>
         <% if @pagy.pages > 1 %>
           <div class="flex justify-center py-4">
-            <%== pagy_nav(@pagy) %>
+            <%== @pagy.series_nav %>
           </div>
         <% end %>
       </div>
