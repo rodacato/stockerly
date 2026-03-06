@@ -106,7 +106,7 @@ RSpec.describe GatewayChain do
   end
 
   describe "#fetch_news" do
-    let(:news_data) { [{ title: "Article 1", summary: "Summary", source: "Reuters", url: "https://example.com", image_url: nil, published_at: Time.current, related_ticker: "AAPL" }] }
+    let(:news_data) { [ { title: "Article 1", summary: "Summary", source: "Reuters", url: "https://example.com", image_url: nil, published_at: Time.current, related_ticker: "AAPL" } ] }
 
     context "when primary gateway succeeds" do
       it "returns the primary result" do
@@ -169,7 +169,7 @@ RSpec.describe GatewayChain do
   end
 
   describe "#fetch_earnings" do
-    let(:earnings_data) { [{ report_date: Date.current, fiscal_quarter: 1, fiscal_year: 2026, estimated_eps: 1.45.to_d, actual_eps: 1.52.to_d, timing: :before_market_open }] }
+    let(:earnings_data) { [ { report_date: Date.current, fiscal_quarter: 1, fiscal_year: 2026, estimated_eps: 1.45.to_d, actual_eps: 1.52.to_d, timing: :before_market_open } ] }
 
     context "when primary gateway succeeds" do
       it "returns the primary result" do

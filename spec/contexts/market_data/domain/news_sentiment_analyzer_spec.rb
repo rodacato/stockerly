@@ -65,7 +65,7 @@ RSpec.describe MarketData::Domain::NewsSentimentAnalyzer do
     end
 
     it "returns Failure when contract validation fails" do
-      response = { articles: [{ title: "A", sentiment: "positive", score: 50 }] }.to_json
+      response = { articles: [ { title: "A", sentiment: "positive", score: 50 } ] }.to_json
       stub_llm_completion(content: response, provider: "anthropic")
 
       result = described_class.analyze(articles: articles)
