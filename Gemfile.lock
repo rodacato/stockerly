@@ -270,15 +270,16 @@ GEM
       railties (>= 7.1)
       stimulus-rails
       turbo-rails
-    monetize (1.13.0)
-      money (~> 6.12)
-    money (6.19.0)
-      i18n (>= 0.6.4, <= 2)
-    money-rails (1.15.0)
-      activesupport (>= 3.0)
-      monetize (~> 1.9)
-      money (~> 6.13)
-      railties (>= 3.0)
+    monetize (2.0.0)
+      money (~> 7.0)
+    money (7.0.2)
+      bigdecimal
+      i18n (~> 1.9)
+    money-rails (3.0.0)
+      activesupport (>= 7.0)
+      monetize (~> 2.0)
+      money (~> 7.0)
+      railties (>= 7.0)
     msgpack (1.8.0)
     net-http (0.9.1)
       uri (>= 0.11.1)
@@ -314,7 +315,10 @@ GEM
     nokogiri (1.19.1-x86_64-linux-musl)
       racc (~> 1.4)
     ostruct (0.6.3)
-    pagy (9.4.0)
+    pagy (43.3.1)
+      json
+      uri
+      yaml
     parallel (1.27.0)
     parser (3.3.10.2)
       ast (~> 2.4.1)
@@ -518,6 +522,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yaml (0.4.0)
     zeitwerk (2.7.5)
 
 PLATFORMS
@@ -554,8 +559,8 @@ DEPENDENCIES
   kamal
   lograge
   mission_control-jobs
-  money-rails (~> 1.15)
-  pagy (~> 9.0)
+  money-rails (~> 3.0)
+  pagy (~> 43.3)
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
