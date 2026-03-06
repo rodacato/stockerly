@@ -1,0 +1,21 @@
+title = "Stockerly Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Dummy credentials and examples in tests and documentation"
+paths = [
+  '''^spec/''',
+  '''^docs/spec/''',
+  '''^db/seeds\.rb$''',
+  '''^README\.md$''',
+  '''^\.env\.example$''',
+  '''^\.kamal/secrets$'''
+]
+regexes = [
+  '''password123''',
+  '''newpassword[0-9]+''',
+  '''pk_live_abc123xyz789''',
+  '''cg_demo_key_456def'''
+]

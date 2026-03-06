@@ -33,6 +33,15 @@ if [ -z "$STAGED_FILES" ]; then
   exit 0
 fi
 
+# If gitleaks is installed locally, run a stronger staged-diff scan.
+if command -v gitleaks >/dev/null 2>&1; then
+  if ! git diff --cached --no-color | gitleaks stdin --redact --config=.gitleaks.toml >/dev/null 2>&1; then
+    echo -e "${RED}Blocked: gitleaks detected a potential secret in staged changes${NC}"
+    echo "Review findings with: gitleaks git --redact --config .gitleaks.toml"
+    exit 1
+  fi
+fi
+
 FOUND=0
 
 for FILE in $STAGED_FILES; do

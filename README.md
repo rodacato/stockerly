@@ -52,6 +52,23 @@ This creates an admin user (`admin@stockerly.com` / `password123`), sample asset
 bundle exec rspec
 ```
 
+## Security Checks
+
+```bash
+bin/brakeman
+bin/bundler-audit
+```
+
+Install local git hooks to reduce accidental secret leaks:
+
+```bash
+bin/setup-hooks
+```
+
+Pre-release hardening checklist:
+
+- `docs/OPEN_SOURCE_SECURITY_CHECKLIST.md`
+
 ## Architecture
 
 Pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts: Identity, Trading, Alerts, Market Data, Administration, Notifications.
