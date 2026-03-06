@@ -1,7 +1,7 @@
 module Admin
   class UsersController < BaseController
     def index
-      result = Administration::UseCases::Users::ListUsers.call(params: filter_params)
+      result = Administration::UseCases::Users::ListUsers.call(params: filter_params, request: request)
       data = result.value!
 
       @pagy  = data[:pagy]

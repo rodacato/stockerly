@@ -1,9 +1,9 @@
 module MarketData
   module UseCases
     class ListArticles < ApplicationUseCase
-      include Pagy::Backend
+      include Pagy::Method
 
-      def call(user: nil, params: {})
+      def call(user: nil, params: {}, request: nil)
         scope = NewsArticle.order(published_at: :desc)
 
         if params[:filter] == "watchlist" && user
@@ -16,7 +16,11 @@ module MarketData
         scope = scope.published_after(time_boundary(params[:time_range])) if params[:time_range].present?
         scope = scope.where("title ILIKE :q OR summary ILIKE :q", q: "%#{params[:search]}%") if params[:search].present?
 
-        pagy, articles = pagy(scope, limit: 12, page: params[:page] || 1)
+        pagy, articles = pagy(:offset, scope,
+          limit: 12,
+          page: params[:page] || 1,
+          request: request || { base_url: "", path: "", params: {}, cookie: nil }
+        )
 
         Success({ pagy: pagy, articles: articles })
       end

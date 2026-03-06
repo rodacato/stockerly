@@ -1,9 +1,7 @@
 module Admin
   class LogsController < BaseController
-    include Pagy::Backend
-
     def index
-      result = Administration::UseCases::Logs::ListLogs.call(params: filter_params)
+      result = Administration::UseCases::Logs::ListLogs.call(params: filter_params, request: request)
 
       if result.success?
         data  = result.value!

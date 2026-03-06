@@ -5,7 +5,7 @@ module Admin
     rate_limit to: 15, within: 1.minute, only: :search
 
     def index
-      result = Administration::UseCases::Assets::ListAssets.call(params: filter_params)
+      result = Administration::UseCases::Assets::ListAssets.call(params: filter_params, request: request)
       data = result.value!
 
       @pagy          = data[:pagy]

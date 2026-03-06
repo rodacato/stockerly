@@ -1,8 +1,6 @@
 class MarketController < AuthenticatedController
-  include Pagy::Backend
-
   def index
-    result = MarketData::UseCases::ExploreAssets.call(params: filter_params)
+    result = MarketData::UseCases::ExploreAssets.call(params: filter_params, request: request)
 
     case result
     in Dry::Monads::Success(data)
