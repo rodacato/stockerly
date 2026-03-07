@@ -9,17 +9,19 @@ Open-source fintech platform for market trends, portfolios, alerts, and earnings
 
 100% free and open source — no pricing tiers, no premium features.
 
-<!-- TODO: Add screenshots
 ## Screenshots
 
 | Dashboard | Market Listings | Asset Detail |
 |-----------|----------------|--------------|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Market](docs/screenshots/market.png) | ![Asset](docs/screenshots/asset-detail.png) |
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Market](docs/screenshots/market.png) | ![Asset Detail](docs/screenshots/asset-detail.png) |
 
-| Portfolio | Alerts | Admin |
-|-----------|--------|-------|
-| ![Portfolio](docs/screenshots/portfolio.png) | ![Alerts](docs/screenshots/alerts.png) | ![Admin](docs/screenshots/admin.png) |
--->
+| Portfolio | Alerts |
+|-----------|--------|
+| ![Portfolio](docs/screenshots/portfolio.png) | ![Alerts](docs/screenshots/alerts.png) |
+
+| Admin — Assets | Admin — Integrations | Admin — Logs |
+|----------------|----------------------|--------------|
+| ![Admin Assets](docs/screenshots/admin-assets.png) | ![Admin Integrations](docs/screenshots/admin-integrations.png) | ![Admin Logs](docs/screenshots/admin-logs.png) |
 
 ## Features
 
