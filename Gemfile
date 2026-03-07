@@ -25,7 +25,7 @@ gem "csv"
 
 # DDD / Domain modeling [https://dry-rb.org/]
 gem "dry-types", "~> 1.7"
-gem "dry-struct", "~> 1.6"
+gem "dry-struct", "~> 1.8"
 gem "dry-validation", "~> 1.10"
 gem "dry-monads", "~> 1.6"
 
