@@ -48,9 +48,22 @@ bin/rubocop
 bin/ci
 ```
 
-### 2. Update CHANGELOG.md
+### 2. Bump the version
 
-Move entries from `[Unreleased]` to the new version section:
+Update `lib/stockerly/version.rb` with the new version:
+
+```ruby
+module Stockerly
+  VERSION = "0.2.0-alpha"
+end
+```
+
+This version is used by Honeybadger to track releases in error reporting.
+
+### 3. Update CHANGELOG.md
+
+Move entries from `[Unreleased]` to the new version section. The `[Unreleased]` section
+must be empty (or removed) — this ensures the changelog is always up to date before tagging.
 
 ```markdown
 ## [Unreleased]
@@ -69,26 +82,26 @@ Update the comparison links at the bottom of the file:
 [0.1.0-alpha]: https://github.com/rodacato/stockerly/releases/tag/v0.1.0-alpha
 ```
 
-### 3. Commit the changelog
+### 4. Commit the release
 
 ```bash
-git add CHANGELOG.md
-git commit -m "Prepare release v0.2.0-alpha"
+git add lib/stockerly/version.rb CHANGELOG.md
+git commit -m "Bump version to v0.2.0-alpha"
 ```
 
-### 4. Create the tag
+### 5. Create the tag
 
 ```bash
 git tag -a v0.2.0-alpha -m "Release v0.2.0-alpha"
 ```
 
-### 5. Push
+### 6. Push
 
 ```bash
 git push origin master --tags
 ```
 
-### 6. Create GitHub Release
+### 7. Create GitHub Release
 
 ```bash
 gh release create v0.2.0-alpha \

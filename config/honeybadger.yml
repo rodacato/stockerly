@@ -1,5 +1,6 @@
 ---
 api_key: '<%= ENV["HONEYBADGER_API_KEY"] %>'
+revision: '<%= Stockerly::VERSION %>'
 report_data: <%= !Rails.env.local? %>
 
 params_filters:
