@@ -1,0 +1,17 @@
+<% content_for(:title, "Maintenance | Stockerly") %>
+
+<main class="grow flex items-center justify-center p-4">
+  <div class="text-center max-w-md">
+    <div class="size-20 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+      <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-4xl">construction</span>
+    </div>
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Under Maintenance</h1>
+    <p class="text-slate-500 dark:text-slate-400 mb-6">
+      Stockerly is temporarily unavailable while we perform scheduled maintenance.
+      We'll be back shortly.
+    </p>
+    <p class="text-xs text-slate-400">
+      If you're an administrator, <%= link_to "sign in", login_path, class: "text-primary underline hover:text-primary/80" %> to access the site.
+    </p>
+  </div>
+</main>

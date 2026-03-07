@@ -4,6 +4,9 @@ puts "Seeding database..."
 SiteConfig.find_or_create_by!(key: "registration_open") do |c|
   c.value = "false"
 end
+SiteConfig.find_or_create_by!(key: "maintenance_mode") do |c|
+  c.value = "false"
+end
 
 # --- Users ---
 # Admin is NOT seeded — use the Setup Wizard at /setup on first boot.

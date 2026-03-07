@@ -18,4 +18,8 @@ class SiteConfig < ApplicationRecord
   def self.registration_open?
     enabled?("registration_open")
   end
+
+  def self.maintenance_mode?
+    enabled?("maintenance_mode")
+  end
 end

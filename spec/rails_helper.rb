@@ -80,6 +80,7 @@ RSpec.configure do |config|
   config.before(:each) do
     EventBus.clear!
     SiteConfig.set("registration_open", "true")
+    SiteConfig.set("maintenance_mode", "false")
   end
 
   # Bullet N+1 detection — enabled after Rails boot to avoid frozen autoload_paths

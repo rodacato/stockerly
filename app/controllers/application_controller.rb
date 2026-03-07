@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :logged_in?
 
   before_action :redirect_to_setup
+  before_action :check_maintenance_mode
   before_action :set_honeybadger_context
 
   def append_info_to_payload(payload)
@@ -24,6 +25,16 @@ class ApplicationController < ActionController::Base
     return if controller_path == "rails/health" || controller_name == "health"
 
     redirect_to setup_path
+  end
+
+  def check_maintenance_mode
+    return unless SiteConfig.maintenance_mode?
+    return if current_user&.admin?
+    return if is_a?(SetupController)
+    return if is_a?(SessionsController)
+    return if controller_path == "rails/health" || controller_name == "health"
+
+    render "shared/maintenance", layout: "public", status: :service_unavailable
   end
 
   def set_honeybadger_context
