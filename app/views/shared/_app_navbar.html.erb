@@ -36,6 +36,13 @@
 
       <%# Right Actions %>
       <div class="flex items-center gap-3 shrink-0">
+        <%# Admin Console %>
+        <% if current_user.admin? %>
+          <%= link_to admin_root_path, title: "Admin Console", class: "p-2 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" do %>
+            <span class="material-symbols-outlined text-xl">admin_panel_settings</span>
+          <% end %>
+        <% end %>
+
         <%# Notifications %>
         <div class="relative" data-controller="notification">
           <button class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors"
@@ -84,6 +91,15 @@
           <span class="material-symbols-outlined text-xl"><%= icon %></span>
           <%= label %>
         <% end %>
+      <% end %>
+
+      <% if current_user.admin? %>
+        <div class="border-t border-slate-200 dark:border-slate-800 pt-2 mt-2">
+          <%= link_to admin_root_path, class: "flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors" do %>
+            <span class="material-symbols-outlined text-xl">admin_panel_settings</span>
+            Admin Console
+          <% end %>
+        </div>
       <% end %>
 
       <div class="border-t border-slate-200 dark:border-slate-800 pt-2 mt-2">
