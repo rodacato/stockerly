@@ -1,9 +1,13 @@
 # Stockerly
 
 [![CI](https://github.com/rodacato/stockerly/actions/workflows/ci.yml/badge.svg)](https://github.com/rodacato/stockerly/actions/workflows/ci.yml)
-[![Ruby](https://img.shields.io/badge/Ruby-3.3.6-red)](https://www.ruby-lang.org/)
-[![Rails](https://img.shields.io/badge/Rails-8.1.2-red)](https://rubyonrails.org/)
+[![Security](https://github.com/rodacato/stockerly/actions/workflows/security.yml/badge.svg)](https://github.com/rodacato/stockerly/actions/workflows/security.yml)
+[![Coverage](https://img.shields.io/badge/Coverage-94%25-brightgreen)](https://github.com/rodacato/stockerly)
+[![Ruby](https://img.shields.io/badge/Ruby-3.3.6-CC342D?logo=ruby&logoColor=white)](https://www.ruby-lang.org/)
+[![Rails](https://img.shields.io/badge/Rails-8.1.2-D30001?logo=rubyonrails&logoColor=white)](https://rubyonrails.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 Open-source fintech platform for market trends, portfolios, alerts, and earnings. Built with Rails 8, PostgreSQL, Hotwire, and Tailwind CSS 4.
 
