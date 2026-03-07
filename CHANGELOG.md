@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-rc1] - 2026-03-07
+
+Hardened for public deployment. Registration and maintenance controls, admin
+settings panel, and CI fixes since the alpha.
+
+### Added
+- Admin Settings page with toggle controls for site-wide configuration
+- Maintenance mode (503 page for non-admin users, admin-exempt)
+- Registration toggle via SiteConfig (close/open public sign-ups)
+- Honeypot anti-bot field on registration form
+- `SiteConfig` model for persistent key/value site settings
+- Navigation links between app and admin areas
+- Screenshots gallery in README
+- CI badges for security, coverage, PostgreSQL, and PRs welcome
+
+### Changed
+- Seeds no longer create a default admin user (use Setup Wizard instead)
+- README simplified to single hero screenshot with collapsible gallery
+
+### Fixed
+- CI FrozenError caused by Zeitwerk conflict with `lib/stockerly/version.rb`
+
 ## [0.1.0-alpha] - 2026-03-07
 
 First public alpha release. All core features are functional with ~2080 specs
@@ -128,5 +150,6 @@ and ~94% test coverage.
 - Pre-commit hooks for secret leak prevention
 - ~2080 RSpec specs with ~94% line coverage (branch coverage enabled)
 
-[Unreleased]: https://github.com/rodacato/stockerly/compare/v0.1.0-alpha...HEAD
+[Unreleased]: https://github.com/rodacato/stockerly/compare/v0.1.0-rc1...HEAD
+[0.1.0-rc1]: https://github.com/rodacato/stockerly/compare/v0.1.0-alpha...v0.1.0-rc1
 [0.1.0-alpha]: https://github.com/rodacato/stockerly/releases/tag/v0.1.0-alpha

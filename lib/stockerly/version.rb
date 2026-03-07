@@ -1,3 +1,3 @@
 module Stockerly
-  VERSION = "0.1.0-alpha"
+  VERSION = "0.1.0-rc1"
 end
