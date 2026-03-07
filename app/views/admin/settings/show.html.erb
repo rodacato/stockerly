@@ -1,0 +1,75 @@
+<% content_for(:title, "Settings | Admin") %>
+
+<div class="mb-8">
+  <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Settings</h1>
+  <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage site-wide configuration.</p>
+</div>
+
+<div class="max-w-2xl space-y-6">
+  <%# Registration Section %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
+        <span class="material-symbols-outlined text-primary">person_add</span>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white">Registration</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Control whether new users can create accounts.</p>
+      </div>
+    </div>
+
+    <%= form_with url: admin_settings_path, method: :patch, class: "space-y-4" do |f| %>
+      <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+        <div>
+          <p class="text-sm font-medium text-slate-900 dark:text-white">Allow public registration</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            When disabled, the registration page redirects to login with a "Registration is currently closed" message.
+          </p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="hidden" name="registration_open" value="0">
+          <input type="checkbox" name="registration_open" value="1" class="sr-only peer" <%= "checked" if @registration_open %>>
+          <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+        </label>
+      </div>
+
+      <div class="flex justify-end">
+        <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+          Save Settings
+        </button>
+      </div>
+    <% end %>
+  </div>
+
+  <%# Version Info %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+        <span class="material-symbols-outlined text-slate-500">info</span>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white">About</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">System information.</p>
+      </div>
+    </div>
+
+    <dl class="grid grid-cols-2 gap-4 text-sm">
+      <div>
+        <dt class="text-slate-500 dark:text-slate-400">Version</dt>
+        <dd class="font-mono font-medium text-slate-900 dark:text-white"><%= Stockerly::VERSION %></dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 dark:text-slate-400">Ruby</dt>
+        <dd class="font-mono font-medium text-slate-900 dark:text-white"><%= RUBY_VERSION %></dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 dark:text-slate-400">Rails</dt>
+        <dd class="font-mono font-medium text-slate-900 dark:text-white"><%= Rails.version %></dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 dark:text-slate-400">Environment</dt>
+        <dd class="font-mono font-medium text-slate-900 dark:text-white"><%= Rails.env %></dd>
+      </div>
+    </dl>
+  </div>
+</div>

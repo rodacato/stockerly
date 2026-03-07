@@ -22,7 +22,8 @@
           ["Integrations", admin_integrations_path, "hub"],
           ["Jobs", "/admin/jobs", "work_history"],
           ["Logs", admin_logs_path, "receipt_long"],
-          ["Users", admin_users_path, "group"]
+          ["Users", admin_users_path, "group"],
+          ["Settings", admin_settings_path, "settings"]
         ].each do |label, path, icon| %>
           <%= link_to path, class: "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors #{admin_nav_active?(path)}" do %>
             <span class="material-symbols-outlined text-xl"><%= icon %></span>
@@ -32,6 +33,14 @@
       </div>
     </div>
   </nav>
+
+  <%# Back to App %>
+  <div class="px-4 pb-2">
+    <%= link_to dashboard_path, class: "flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors" do %>
+      <span class="material-symbols-outlined text-xl">arrow_back</span>
+      Back to App
+    <% end %>
+  </div>
 
   <%# Admin User Card %>
   <div class="border-t border-slate-200 dark:border-slate-800 p-4">

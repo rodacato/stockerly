@@ -110,5 +110,6 @@ Rails.application.routes.draw do
         patch :reactivate
       end
     end
+    resource :settings, only: [ :show, :update ]
   end
 end

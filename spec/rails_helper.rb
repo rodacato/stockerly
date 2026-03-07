@@ -77,7 +77,10 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
 
-  config.before(:each) { EventBus.clear! }
+  config.before(:each) do
+    EventBus.clear!
+    SiteConfig.set("registration_open", "true")
+  end
 
   # Bullet N+1 detection — enabled after Rails boot to avoid frozen autoload_paths
   Bullet.enable = true

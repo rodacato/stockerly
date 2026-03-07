@@ -28,9 +28,16 @@ module Identity
       end
 
       def bootstrap_platform!
+        create_site_defaults!
         create_integrations!
         create_market_indices!
         create_fx_rates!
+      end
+
+      def create_site_defaults!
+        SiteConfig.find_or_create_by!(key: "registration_open") do |c|
+          c.value = "false"
+        end
       end
 
       def create_integrations!

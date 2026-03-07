@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_04_213034) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_07_170207) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -361,6 +361,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_04_213034) do
     t.index ["token_digest"], name: "index_remember_tokens_on_token_digest", unique: true
     t.index ["user_id", "expires_at"], name: "index_remember_tokens_on_user_id_and_expires_at"
     t.index ["user_id"], name: "index_remember_tokens_on_user_id"
+  end
+
+  create_table "site_configs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
+    t.string "value", default: "", null: false
+    t.index ["key"], name: "index_site_configs_on_key", unique: true
   end
 
   create_table "stock_splits", force: :cascade do |t|

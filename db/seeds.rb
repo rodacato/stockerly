@@ -1,14 +1,13 @@
 puts "Seeding database..."
 
-# --- Users ---
-admin = User.find_or_create_by!(email: "admin@stockerly.com") do |u|
-  u.full_name = "Admin User"
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :admin
-  u.is_verified = true
-  u.email_verified_at = Time.current
+# --- Site Configuration ---
+SiteConfig.find_or_create_by!(key: "registration_open") do |c|
+  c.value = "false"
 end
+
+# --- Users ---
+# Admin is NOT seeded — use the Setup Wizard at /setup on first boot.
+# The wizard creates your admin account securely with your own credentials.
 
 alex = User.find_or_create_by!(email: "alex.thompson@example.com") do |u|
   u.full_name = "Alex Thompson"
@@ -43,7 +42,7 @@ demo = User.find_or_create_by!(email: "demo@stockerly.com") do |u|
 end
 
 # --- Portfolios & AlertPreferences (created via event handlers in prod, manual in seeds) ---
-[ admin, alex, sarah, jdoe, demo ].each do |user|
+[ alex, sarah, jdoe, demo ].each do |user|
   Portfolio.find_or_create_by!(user: user) do |p|
     p.inception_date = user.created_at.to_date
   end
@@ -509,8 +508,8 @@ end
 
 # --- Audit Logs ---
 unless AuditLog.exists?
-  AuditLog.create!(user: admin, action: "admin.assets.create", auditable: aapl, changes_data: { after: { symbol: "AAPL" } }, ip_address: "127.0.0.1")
-  AuditLog.create!(user: admin, action: "admin.integrations.connect", auditable: Integration.first, changes_data: { after: { provider: "Polygon.io" } }, ip_address: "127.0.0.1")
+  AuditLog.create!(user: alex, action: "admin.assets.create", auditable: aapl, changes_data: { after: { symbol: "AAPL" } }, ip_address: "127.0.0.1")
+  AuditLog.create!(user: alex, action: "admin.integrations.connect", auditable: Integration.first, changes_data: { after: { provider: "Polygon.io" } }, ip_address: "127.0.0.1")
 end
 
 puts "Seeded: #{User.count} users, #{Asset.count} assets, #{Position.count} positions, #{Trade.count} trades, #{AlertRule.count} alert rules, #{EarningsEvent.count} earnings, #{NewsArticle.count} news, #{Notification.count} notifications, #{PortfolioSnapshot.count} snapshots, #{FxRate.count} FX rates, #{Dividend.count} dividends."
