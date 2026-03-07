@@ -13,19 +13,7 @@ Open-source fintech platform for market trends, portfolios, alerts, and earnings
 
 100% free and open source — no pricing tiers, no premium features.
 
-## Screenshots
-
-| Dashboard | Market Listings | Asset Detail |
-|-----------|----------------|--------------|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Market](docs/screenshots/market.png) | ![Asset Detail](docs/screenshots/asset-detail.png) |
-
-| Portfolio | Alerts |
-|-----------|--------|
-| ![Portfolio](docs/screenshots/portfolio.png) | ![Alerts](docs/screenshots/alerts.png) |
-
-| Admin — Assets | Admin — Integrations | Admin — Logs |
-|----------------|----------------------|--------------|
-| ![Admin Assets](docs/screenshots/admin-assets.png) | ![Admin Integrations](docs/screenshots/admin-integrations.png) | ![Admin Logs](docs/screenshots/admin-logs.png) |
+![Dashboard](docs/screenshots/dashboard.png)
 
 ## Features
 
@@ -219,6 +207,23 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 3. Run the tests (`bundle exec rspec`)
 4. Commit your changes
 5. Open a Pull Request
+
+## Gallery
+
+<details>
+<summary>More screenshots</summary>
+
+![Market Listings](docs/screenshots/market.png)
+![Asset Detail](docs/screenshots/asset-detail.png)
+![Portfolio](docs/screenshots/portfolio.png)
+![Alerts](docs/screenshots/alerts.png)
+![Admin — Assets](docs/screenshots/admin-assets.png)
+![News](docs/screenshots/news.png)
+![Admin — Integrations](docs/screenshots/admin-integrations.png)
+![Admin — Settings](docs/screenshots/admin-settings.png)
+![Admin — Logs](docs/screenshots/admin-logs.png)
+
+</details>
 
 ## License
 
