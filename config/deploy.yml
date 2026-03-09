@@ -16,6 +16,9 @@ servers:
       - <%= ENV["HOST_IP"] %>
     cmd: bundle exec rails solid_queue:start
 
+ssh:
+  user: deploy
+
 proxy:
   ssl: false
   host: stockerly.notdefined.dev

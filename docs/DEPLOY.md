@@ -22,7 +22,7 @@ No inbound ports 80/443 needed on the server. Only SSH (22) is open for Kamal de
 ## Prerequisites
 
 - Hetzner VPS (Ubuntu 22.04+, minimum 2GB RAM)
-- Docker Hub account
+- GitHub account (GHCR is used as the container registry)
 - Cloudflare account with the domain added
 
 ## 1. Provision the Server
@@ -31,9 +31,13 @@ No inbound ports 80/443 needed on the server. Only SSH (22) is open for Kamal de
 ssh root@YOUR_SERVER_IP < bin/provision-server
 ```
 
+> **Note:** The provision script runs as root but creates a `deploy` user with Docker access.
+> All subsequent SSH access (Kamal, manual operations) uses the `deploy` user.
+
 This installs:
 - Docker
 - cloudflared
+- `deploy` user (with Docker group access)
 - UFW firewall (only port 22 open)
 - 2GB swap
 - Automatic security updates
@@ -72,12 +76,17 @@ Add these secrets:
 
 | Secret | How to get it |
 |---|---|
-| `KAMAL_REGISTRY_PASSWORD` | Docker Hub > Account Settings > Personal Access Tokens > Generate (Read & Write) |
-| `RAILS_MASTER_KEY` | Content of `config/master.key` in the project |
+| `HOST_IP` | Your Hetzner server IP |
+| `SSH_PRIVATE_KEY` | Private SSH key for the `deploy` user on the server |
 | `POSTGRES_PASSWORD` | Generate with `openssl rand -hex 32` |
-| `SSH_PRIVATE_KEY` | Private SSH key matching the public key on the server |
-| `DOCKER_REGISTRY_USER` | Your Docker Hub username (e.g., `rodacato`) |
-| `SERVER_IP` | Your Hetzner server IP |
+| `SECRET_KEY_BASE` | Generate with `bin/rails secret` |
+| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | Generate with `bin/rails db:encryption:init` |
+| `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | Generate with `bin/rails db:encryption:init` |
+| `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | Generate with `bin/rails db:encryption:init` |
+| `HONEYBADGER_API_KEY` | From Honeybadger project settings (optional) |
+| `RESEND_API_KEY` | From Resend dashboard (optional) |
+
+> **Note:** The registry uses GHCR (GitHub Container Registry) with `GITHUB_TOKEN` — no Docker Hub credentials needed.
 
 ## 4. First Deploy (kamal setup)
 
@@ -86,10 +95,11 @@ The first deploy needs `kamal setup` to bootstrap kamal-proxy and accessories.
 Run locally (requires SSH access and secrets exported):
 
 ```bash
-export KAMAL_REGISTRY_PASSWORD=your-docker-hub-token
-export DOCKER_REGISTRY_USER=rodacato
-export SERVER_IP=YOUR_SERVER_IP
-export RAILS_MASTER_KEY=$(cat config/master.key)
+export KAMAL_REGISTRY_PASSWORD=your-github-pat   # GitHub PAT with packages:write scope
+export GITHUB_REPOSITORY=rodacato/stockerly
+export GITHUB_ACTOR=rodacato
+export HOST_IP=YOUR_SERVER_IP
+export SECRET_KEY_BASE=$(bin/rails secret)
 export POSTGRES_PASSWORD=$(openssl rand -hex 32)
 
 bin/kamal setup
@@ -140,7 +150,7 @@ Verify PostgreSQL is running: `bin/kamal accessory details postgres`.
 
 **Tunnel not connecting:**
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh deploy@YOUR_SERVER_IP
 systemctl status cloudflared
 journalctl -u cloudflared -f
 ```

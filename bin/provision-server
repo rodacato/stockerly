@@ -51,6 +51,25 @@ else
   echo "    cloudflared already installed, skipping."
 fi
 
+echo "==> Creating deploy user..."
+if ! id "deploy" &>/dev/null; then
+  adduser --disabled-password --gecos "Deploy" deploy
+  usermod -aG docker deploy
+  mkdir -p /home/deploy/.ssh
+  chmod 700 /home/deploy/.ssh
+  # Copy root's authorized_keys so the same SSH key works for deploy
+  if [ -f /root/.ssh/authorized_keys ]; then
+    cp /root/.ssh/authorized_keys /home/deploy/.ssh/authorized_keys
+    chmod 600 /home/deploy/.ssh/authorized_keys
+    chown -R deploy:deploy /home/deploy/.ssh
+  fi
+  echo "    deploy user created and added to docker group."
+else
+  # Ensure deploy user is in docker group even if already exists
+  usermod -aG docker deploy
+  echo "    deploy user already exists, ensured docker group membership."
+fi
+
 echo "==> Installing curl and git..."
 apt-get install -y curl git
 
@@ -67,8 +86,9 @@ echo "  Server provisioned!"
 echo "============================================"
 echo ""
 echo "Next steps:"
-echo "  1. Create a Cloudflare Tunnel in Zero Trust dashboard"
-echo "  2. Install the tunnel on this server:"
+echo "  1. Add your SSH public key to /home/deploy/.ssh/authorized_keys"
+echo "  2. Create a Cloudflare Tunnel in Zero Trust dashboard"
+echo "  3. Install the tunnel on this server:"
 echo "     cloudflared service install <TUNNEL_TOKEN>"
-echo "  3. Run 'kamal setup' from your local machine"
+echo "  4. Run 'kamal setup' from your local machine"
 echo ""

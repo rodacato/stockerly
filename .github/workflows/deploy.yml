@@ -98,7 +98,14 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy with Kamal
-        run: bin/kamal deploy
+        run: |
+          # Check if the postgres container exists (running or stopped) via SSH
+          if ssh -o StrictHostKeyChecking=no deploy@$HOST_IP docker container inspect stockerly-postgres &>/dev/null; then
+            bin/kamal deploy
+          else
+            echo "First deploy — bootstrapping with kamal setup..."
+            bin/kamal setup
+          fi
 
       - name: Notify Honeybadger of deploy
         if: success()
