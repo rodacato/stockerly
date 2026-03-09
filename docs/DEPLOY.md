@@ -113,13 +113,31 @@ This will:
 
 After this, verify at `https://stockerly.notdefined.dev`
 
-## 5. Subsequent Deploys (automatic)
+## 5. Initial Setup
+
+After the first deploy, visit `https://stockerly.notdefined.dev/setup` to run the **Setup Wizard**. It is only accessible when no users exist in the database and will:
+
+1. Create your admin account (name, email, password)
+2. Bootstrap platform defaults (site config, integrations, market indices, FX rates)
+3. Guide you through API key configuration and asset selection
+
+> **Note:** Seeds (`db/seeds.rb`) are **not** run in production — the Setup Wizard handles all bootstrapping. Registration is disabled by default and can be enabled from the admin panel.
+
+## 6. Subsequent Deploys (automatic)
 
 Every push to `master` triggers `.github/workflows/deploy.yml` which runs `kamal deploy`.
 
 You can also trigger manually from the GitHub Actions tab using "Run workflow".
 
-## 6. Useful Kamal Commands
+## 7. Useful Kamal Commands
+
+All Kamal commands run from your **local machine** (not the VPS). Load env vars first:
+
+```bash
+set -a && source .env.production && set +a
+```
+
+Then:
 
 ```bash
 bin/kamal details        # Check app status
