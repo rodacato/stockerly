@@ -15,20 +15,19 @@
     <meta property="og:site_name" content="Stockerly">
     <meta property="og:title" content="<%= content_for(:title) || "Stockerly | Navigate the Markets with Confidence" %>">
     <meta property="og:description" content="<%= content_for(:description) || "Open Source Market Intelligence Platform. Data-driven trends, portfolios, alerts, and earnings for the modern investor." %>">
-    <meta property="og:image" content="/og_image.png">
+    <%# TODO: generate og_image.png from SVG brand assets %>
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<%= content_for(:title) || "Stockerly | Navigate the Markets with Confidence" %>">
     <meta name="twitter:description" content="<%= content_for(:description) || "Open Source Market Intelligence Platform. Data-driven trends, portfolios, alerts, and earnings for the modern investor." %>">
-    <meta name="twitter:image" content="/og_image.png">
+    <%# TODO: generate twitter card image from SVG brand assets %>
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
 
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32">
-    <link rel="icon" href="/icon.png" type="image/png" sizes="512x512">
-    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon-192.svg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
