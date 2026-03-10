@@ -8,48 +8,51 @@ SiteConfig.find_or_create_by!(key: "maintenance_mode") do |c|
   c.value = "false"
 end
 
-# --- Users ---
+# --- Demo Users (development only) ---
 # Admin is NOT seeded — use the Setup Wizard at /setup on first boot.
 # The wizard creates your admin account securely with your own credentials.
+# Demo users are only created in development to avoid blocking /setup in production.
 
-alex = User.find_or_create_by!(email: "alex.thompson@example.com") do |u|
-  u.full_name = "Alex Thompson"
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :user
-  u.is_verified = true
-  u.email_verified_at = Time.current
-end
-
-sarah = User.find_or_create_by!(email: "sarah.s@web3.io") do |u|
-  u.full_name = "Sarah Chen"
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :user
-end
-
-jdoe = User.find_or_create_by!(email: "john.doe@example.com") do |u|
-  u.full_name = "John Doe"
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :user
-end
-
-demo = User.find_or_create_by!(email: "demo@stockerly.com") do |u|
-  u.full_name = "Demo Trader"
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :user
-  u.is_verified = true
-  u.email_verified_at = Time.current
-end
-
-# --- Portfolios & AlertPreferences (created via event handlers in prod, manual in seeds) ---
-[ alex, sarah, jdoe, demo ].each do |user|
-  Portfolio.find_or_create_by!(user: user) do |p|
-    p.inception_date = user.created_at.to_date
+if Rails.env.development?
+  alex = User.find_or_create_by!(email: "alex.thompson@example.com") do |u|
+    u.full_name = "Alex Thompson"
+    u.password = "password123"
+    u.password_confirmation = "password123"
+    u.role = :user
+    u.is_verified = true
+    u.email_verified_at = Time.current
   end
-  AlertPreference.find_or_create_by!(user: user)
+
+  sarah = User.find_or_create_by!(email: "sarah.s@web3.io") do |u|
+    u.full_name = "Sarah Chen"
+    u.password = "password123"
+    u.password_confirmation = "password123"
+    u.role = :user
+  end
+
+  jdoe = User.find_or_create_by!(email: "john.doe@example.com") do |u|
+    u.full_name = "John Doe"
+    u.password = "password123"
+    u.password_confirmation = "password123"
+    u.role = :user
+  end
+
+  demo = User.find_or_create_by!(email: "demo@stockerly.com") do |u|
+    u.full_name = "Demo Trader"
+    u.password = "password123"
+    u.password_confirmation = "password123"
+    u.role = :user
+    u.is_verified = true
+    u.email_verified_at = Time.current
+  end
+
+  # --- Portfolios & AlertPreferences (created via event handlers in prod, manual in seeds) ---
+  [ alex, sarah, jdoe, demo ].each do |user|
+    Portfolio.find_or_create_by!(user: user) do |p|
+      p.inception_date = user.created_at.to_date
+    end
+    AlertPreference.find_or_create_by!(user: user)
+  end
 end
 
 # --- Assets ---
@@ -268,55 +271,56 @@ Asset.where(logo_url: nil).find_each do |asset|
   asset.update!(logo_url: logo) if logo
 end
 
-# --- Trades & Positions for Alex ---
-portfolio = alex.portfolio
-portfolio.update!(buying_power: 8_240.15, inception_date: Date.new(2023, 1, 12))
+# --- Demo data for Alex (development only) ---
+if Rails.env.development? && (alex = User.find_by(email: "alex.thompson@example.com"))
+  portfolio = alex.portfolio
+  portfolio.update!(buying_power: 8_240.15, inception_date: Date.new(2023, 1, 12))
 
-unless Position.where(portfolio: portfolio).exists?
-  [
-    { asset: aapl, shares: 50,  price: 150.20, currency: "USD", date: 1.year.ago },
-    { asset: msft, shares: 30,  price: 280.15, currency: "USD", date: 10.months.ago },
-    { asset: tsla, shares: 20,  price: 242.50, currency: "USD", date: 8.months.ago },
-    { asset: nvda, shares: 15,  price: 420.00, currency: "USD", date: 6.months.ago },
-    { asset: genius, shares: 200, price: 25.50, currency: "MXN", date: 3.months.ago }
-  ].each do |t|
-    position = Position.create!(
-      portfolio: portfolio, asset: t[:asset], shares: t[:shares],
-      avg_cost: t[:price], currency: t[:currency], status: :open, opened_at: t[:date]
-    )
-    Trade.create!(
-      portfolio: portfolio, asset: t[:asset], position: position,
-      side: :buy, shares: t[:shares], price_per_share: t[:price],
-      total_amount: t[:shares] * t[:price], currency: t[:currency],
-      executed_at: t[:date]
-    )
+  unless Position.where(portfolio: portfolio).exists?
+    [
+      { asset: aapl, shares: 50,  price: 150.20, currency: "USD", date: 1.year.ago },
+      { asset: msft, shares: 30,  price: 280.15, currency: "USD", date: 10.months.ago },
+      { asset: tsla, shares: 20,  price: 242.50, currency: "USD", date: 8.months.ago },
+      { asset: nvda, shares: 15,  price: 420.00, currency: "USD", date: 6.months.ago },
+      { asset: genius, shares: 200, price: 25.50, currency: "MXN", date: 3.months.ago }
+    ].each do |t|
+      position = Position.create!(
+        portfolio: portfolio, asset: t[:asset], shares: t[:shares],
+        avg_cost: t[:price], currency: t[:currency], status: :open, opened_at: t[:date]
+      )
+      Trade.create!(
+        portfolio: portfolio, asset: t[:asset], position: position,
+        side: :buy, shares: t[:shares], price_per_share: t[:price],
+        total_amount: t[:shares] * t[:price], currency: t[:currency],
+        executed_at: t[:date]
+      )
+    end
   end
-end
 
-# --- Watchlist for Alex ---
-[ aapl, tsla, btc, nvda, msft ].each do |asset|
-  WatchlistItem.find_or_create_by!(user: alex, asset: asset) do |w|
-    w.entry_price = asset.current_price
+  # --- Watchlist for Alex ---
+  [ aapl, tsla, btc, nvda, msft ].each do |asset|
+    WatchlistItem.find_or_create_by!(user: alex, asset: asset) do |w|
+      w.entry_price = asset.current_price
+    end
   end
-end
 
-# --- Alert Rules for Alex ---
-unless AlertRule.where(user: alex).exists?
-  AlertRule.create!(user: alex, asset_symbol: "AAPL",    condition: :price_crosses_above, threshold_value: 195.00, status: :active)
-  AlertRule.create!(user: alex, asset_symbol: "TSLA",    condition: :rsi_oversold,        threshold_value: 30,     status: :paused)
-  AlertRule.create!(user: alex, asset_symbol: "BTC/USD", condition: :day_change_percent,  threshold_value: 5.0,    status: :active)
-end
+  # --- Alert Rules for Alex ---
+  unless AlertRule.where(user: alex).exists?
+    AlertRule.create!(user: alex, asset_symbol: "AAPL",    condition: :price_crosses_above, threshold_value: 195.00, status: :active)
+    AlertRule.create!(user: alex, asset_symbol: "TSLA",    condition: :rsi_oversold,        threshold_value: 30,     status: :paused)
+    AlertRule.create!(user: alex, asset_symbol: "BTC/USD", condition: :day_change_percent,  threshold_value: 5.0,    status: :active)
+  end
 
-# --- Alert Events ---
-unless AlertEvent.where(user: alex).exists?
-  AlertEvent.create!(user: alex, asset_symbol: "MSFT", message: "Price crossed above resistance at $420.50", event_status: :triggered, triggered_at: 2.minutes.ago)
-  AlertEvent.create!(user: alex, asset_symbol: "AMZN", message: "Fell below target of $175.00",              event_status: :triggered, triggered_at: 15.minutes.ago)
-  AlertEvent.create!(user: alex, asset_symbol: "NVDA", message: "24h volume spiked by 12.5%",                event_status: :settled,   triggered_at: 1.hour.ago)
-  AlertEvent.create!(user: alex, asset_symbol: "META", message: "Golden cross pattern detected on 4H chart", event_status: :settled,   triggered_at: 2.hours.ago)
-end
+  # --- Alert Events ---
+  unless AlertEvent.where(user: alex).exists?
+    AlertEvent.create!(user: alex, asset_symbol: "MSFT", message: "Price crossed above resistance at $420.50", event_status: :triggered, triggered_at: 2.minutes.ago)
+    AlertEvent.create!(user: alex, asset_symbol: "AMZN", message: "Fell below target of $175.00",              event_status: :triggered, triggered_at: 15.minutes.ago)
+    AlertEvent.create!(user: alex, asset_symbol: "NVDA", message: "24h volume spiked by 12.5%",                event_status: :settled,   triggered_at: 1.hour.ago)
+    AlertEvent.create!(user: alex, asset_symbol: "META", message: "Golden cross pattern detected on 4H chart", event_status: :settled,   triggered_at: 2.hours.ago)
+  end
 
-# --- Alert Preferences ---
-alex.alert_preference.update!(browser_push: true, email_digest: true, sms_notifications: false)
+  # --- Alert Preferences ---
+  alex.alert_preference.update!(browser_push: true, email_digest: true, sms_notifications: false)
 
 # --- Market Indices ---
 MarketIndex.find_or_create_by!(symbol: "SPX") do |i|
@@ -394,40 +398,61 @@ Asset.find_or_create_by!(symbol: "CETE364D") do |a|
   a.sync_status = :disabled
 end
 
-# --- News Articles ---
-unless NewsArticle.exists?
-  NewsArticle.create!(
-    title: "Apple's Vision Pro Sales Exceed Expectations in First Quarter",
-    summary: "New supply chain data suggests strong demand for the spatial computing headset across institutional markets.",
-    source: "Bloomberg", related_ticker: "AAPL", published_at: 2.hours.ago,
-    image_url: "https://placehold.co/120x80", url: "https://example.com/aapl-vision-pro"
-  )
-  NewsArticle.create!(
-    title: "Microsoft Announces Multi-Billion Dollar AI Infrastructure Plan",
-    summary: "The tech giant plans to double its data center capacity to support growing enterprise AI demands globally.",
-    source: "Reuters", related_ticker: "MSFT", published_at: 5.hours.ago,
-    image_url: "https://placehold.co/120x80", url: "https://example.com/msft-ai"
-  )
-  NewsArticle.create!(
-    title: "Tesla Shifts Focus to Next-Gen Platform for Affordable EV",
-    summary: "The company is reportedly restructuring its autonomous AI unit as it pivots toward a sub-$25,000 electric vehicle.",
-    source: "WSJ", related_ticker: "TSLA", published_at: 8.hours.ago,
-    image_url: "https://placehold.co/120x80", url: "https://example.com/tsla-ev"
-  )
-end
-
-# --- Portfolio Snapshots for Alex ---
-unless PortfolioSnapshot.where(portfolio: portfolio).exists?
-  5.downto(1).each do |days_ago|
-    PortfolioSnapshot.create!(
-      portfolio: portfolio,
-      date: days_ago.days.ago.to_date,
-      total_value: portfolio.total_value + rand(-500.0..500.0).round(2),
-      cash_value: portfolio.buying_power,
-      invested_value: (portfolio.total_value - portfolio.buying_power + rand(-300.0..300.0)).round(2)
+if Rails.env.development?
+  # --- News Articles ---
+  unless NewsArticle.exists?
+    NewsArticle.create!(
+      title: "Apple's Vision Pro Sales Exceed Expectations in First Quarter",
+      summary: "New supply chain data suggests strong demand for the spatial computing headset across institutional markets.",
+      source: "Bloomberg", related_ticker: "AAPL", published_at: 2.hours.ago,
+      image_url: "https://placehold.co/120x80", url: "https://example.com/aapl-vision-pro"
+    )
+    NewsArticle.create!(
+      title: "Microsoft Announces Multi-Billion Dollar AI Infrastructure Plan",
+      summary: "The tech giant plans to double its data center capacity to support growing enterprise AI demands globally.",
+      source: "Reuters", related_ticker: "MSFT", published_at: 5.hours.ago,
+      image_url: "https://placehold.co/120x80", url: "https://example.com/msft-ai"
+    )
+    NewsArticle.create!(
+      title: "Tesla Shifts Focus to Next-Gen Platform for Affordable EV",
+      summary: "The company is reportedly restructuring its autonomous AI unit as it pivots toward a sub-$25,000 electric vehicle.",
+      source: "WSJ", related_ticker: "TSLA", published_at: 8.hours.ago,
+      image_url: "https://placehold.co/120x80", url: "https://example.com/tsla-ev"
     )
   end
 end
+
+  # --- Portfolio Snapshots for Alex ---
+  unless PortfolioSnapshot.where(portfolio: portfolio).exists?
+    5.downto(1).each do |days_ago|
+      PortfolioSnapshot.create!(
+        portfolio: portfolio,
+        date: days_ago.days.ago.to_date,
+        total_value: portfolio.total_value + rand(-500.0..500.0).round(2),
+        cash_value: portfolio.buying_power,
+        invested_value: (portfolio.total_value - portfolio.buying_power + rand(-300.0..300.0)).round(2)
+      )
+    end
+  end
+
+  # --- Dividends ---
+  unless Dividend.exists?
+    aapl_div = Dividend.create!(asset: aapl, ex_date: 1.month.ago.to_date, pay_date: 3.weeks.ago.to_date, amount_per_share: 0.24, currency: "USD")
+    DividendPayment.create!(portfolio: portfolio, dividend: aapl_div, shares_held: 50, total_amount: 12.00, received_at: 3.weeks.ago)
+  end
+
+  # --- Notifications for Alex ---
+  unless Notification.where(user: alex).exists?
+    Notification.create!(user: alex, title: "MSFT crossed $420.50", body: "Your price alert for Microsoft was triggered.", notification_type: :alert_triggered, notifiable: AlertEvent.first)
+    Notification.create!(user: alex, title: "AAPL earnings tomorrow", body: "Apple reports Q4 earnings after market close.", notification_type: :earnings_reminder)
+  end
+
+  # --- Audit Logs ---
+  unless AuditLog.exists?
+    AuditLog.create!(user: alex, action: "admin.assets.create", auditable: aapl, changes_data: { after: { symbol: "AAPL" } }, ip_address: "127.0.0.1")
+    AuditLog.create!(user: alex, action: "admin.integrations.connect", auditable: Integration.first, changes_data: { after: { provider: "Polygon.io" } }, ip_address: "127.0.0.1")
+  end
+end # Rails.env.development? (alex demo data)
 
 # --- FX Rates ---
 FxRate.find_or_create_by!(base_currency: "USD", quote_currency: "EUR") do |r|
@@ -443,76 +468,50 @@ FxRate.find_or_create_by!(base_currency: "USD", quote_currency: "GBP") do |r|
   r.fetched_at = 1.hour.ago
 end
 
-# --- Dividends ---
-unless Dividend.exists?
-  aapl_div = Dividend.create!(asset: aapl, ex_date: 1.month.ago.to_date, pay_date: 3.weeks.ago.to_date, amount_per_share: 0.24, currency: "USD")
-  DividendPayment.create!(portfolio: portfolio, dividend: aapl_div, shares_held: 50, total_amount: 12.00, received_at: 3.weeks.ago)
-end
-
-# --- Notifications for Alex ---
-unless Notification.where(user: alex).exists?
-  Notification.create!(user: alex, title: "MSFT crossed $420.50", body: "Your price alert for Microsoft was triggered.", notification_type: :alert_triggered, notifiable: AlertEvent.first)
-  Notification.create!(user: alex, title: "AAPL earnings tomorrow", body: "Apple reports Q4 earnings after market close.", notification_type: :earnings_reminder)
-end
-
-# --- System Logs ---
-unless SystemLog.exists?
-  SystemLog.create!(task_name: "FX Rate Update",       module_name: "Finance",     severity: :success, duration_seconds: 1.2)
-  SystemLog.create!(task_name: "Shopify Price Sync",    module_name: "Marketplace", severity: :error,   duration_seconds: 5.4, error_message: "Auth Exception: Connection timeout after 5000ms")
-  SystemLog.create!(task_name: "Inventory Audit",       module_name: "Warehouse",   severity: :warning, duration_seconds: 12.8, error_message: "Partial sync: 3 items skipped")
-  SystemLog.create!(task_name: "Daily Backup",          module_name: "Core",        severity: :success, duration_seconds: 45.0)
-  SystemLog.create!(task_name: "User Session Clean-up", module_name: "Auth",        severity: :success, duration_seconds: 0.8)
-end
-
 # --- Integrations ---
 # Synced from DataSourceRegistry definitions. Defaults defined in lib/tasks/sync.rake.
 # API keys are NOT seeded — configure them via Admin > Integrations.
 Rake::Task["stockerly:sync"].invoke
 
-# --- AI Intelligence (optional — uncomment and configure to enable AI features) ---
-# Supported providers: "anthropic" (Claude), "openai" (GPT)
-# Set custom base_url to use SheLLM, Ollama, Together, or any compatible endpoint
-# Integration.find_or_create_by!(provider_name: "AI Intelligence") do |i|
-#   i.provider_type = "AI / LLM"
-#   i.requires_api_key = true
-#   i.connection_status = :disconnected
-#   i.max_requests_per_minute = 10
-#   i.daily_call_limit = 200
-#   i.settings = { "provider" => "anthropic", "model" => "claude-sonnet-4-5-20250514" }
-# end
+if Rails.env.development?
+  # --- System Logs ---
+  unless SystemLog.exists?
+    SystemLog.create!(task_name: "FX Rate Update",       module_name: "Finance",     severity: :success, duration_seconds: 1.2)
+    SystemLog.create!(task_name: "Shopify Price Sync",    module_name: "Marketplace", severity: :error,   duration_seconds: 5.4, error_message: "Auth Exception: Connection timeout after 5000ms")
+    SystemLog.create!(task_name: "Inventory Audit",       module_name: "Warehouse",   severity: :warning, duration_seconds: 12.8, error_message: "Partial sync: 3 items skipped")
+    SystemLog.create!(task_name: "Daily Backup",          module_name: "Core",        severity: :success, duration_seconds: 45.0)
+    SystemLog.create!(task_name: "User Session Clean-up", module_name: "Auth",        severity: :success, duration_seconds: 0.8)
+  end
 
-# --- Asset Fundamentals (sample AAPL OVERVIEW) ---
-AssetFundamental.find_or_create_by!(asset: aapl, period_label: "OVERVIEW") do |f|
-  f.metrics = {
-    "symbol" => "AAPL", "name" => "Apple Inc.", "sector" => "Technology",
-    "exchange" => "NASDAQ", "currency" => "USD", "country" => "USA",
-    "eps" => "6.07", "book_value" => "3.95", "dividend_per_share" => "0.96",
-    "dividend_yield" => "0.0052", "profit_margin" => "0.2461",
-    "operating_margin" => "0.3031", "return_on_equity" => "1.5700",
-    "return_on_assets" => "0.2720", "revenue_ttm" => "391035000000",
-    "ebitda" => "131561000000", "beta" => "1.24",
-    "market_cap" => "2940000000000", "shares_outstanding" => "15500000000",
-    "pe_ratio" => "31.25", "price_to_book" => "47.96",
-    "price_to_sales" => "7.52", "ev_to_ebitda" => "23.45",
-    "revenue_per_share" => "25.23", "quarterly_earnings_growth" => "0.10",
-    "quarterly_revenue_growth" => "0.05", "fifty_two_week_high" => "199.62",
-    "fifty_two_week_low" => "164.08", "forward_pe" => "28.50",
-    "peg_ratio" => "2.15", "analyst_target_price" => "200.00"
-  }
-  f.source = "api_overview"
-  f.calculated_at = 1.day.ago
-end
+  # --- Asset Fundamentals (sample AAPL OVERVIEW) ---
+  if (aapl = Asset.find_by(symbol: "AAPL"))
+    AssetFundamental.find_or_create_by!(asset: aapl, period_label: "OVERVIEW") do |f|
+      f.metrics = {
+        "symbol" => "AAPL", "name" => "Apple Inc.", "sector" => "Technology",
+        "exchange" => "NASDAQ", "currency" => "USD", "country" => "USA",
+        "eps" => "6.07", "book_value" => "3.95", "dividend_per_share" => "0.96",
+        "dividend_yield" => "0.0052", "profit_margin" => "0.2461",
+        "operating_margin" => "0.3031", "return_on_equity" => "1.5700",
+        "return_on_assets" => "0.2720", "revenue_ttm" => "391035000000",
+        "ebitda" => "131561000000", "beta" => "1.24",
+        "market_cap" => "2940000000000", "shares_outstanding" => "15500000000",
+        "pe_ratio" => "31.25", "price_to_book" => "47.96",
+        "price_to_sales" => "7.52", "ev_to_ebitda" => "23.45",
+        "revenue_per_share" => "25.23", "quarterly_earnings_growth" => "0.10",
+        "quarterly_revenue_growth" => "0.05", "fifty_two_week_high" => "199.62",
+        "fifty_two_week_low" => "164.08", "forward_pe" => "28.50",
+        "peg_ratio" => "2.15", "analyst_target_price" => "200.00"
+      }
+      f.source = "api_overview"
+      f.calculated_at = 1.day.ago
+    end
+  end
 
-# --- Fear & Greed Readings ---
-unless FearGreedReading.exists?
-  FearGreedReading.create!(index_type: "crypto", value: 25, classification: "Fear", source: "alternative.me", fetched_at: 6.hours.ago)
-  FearGreedReading.create!(index_type: "stocks", value: 62, classification: "Greed", source: "cnn", fetched_at: 6.hours.ago)
-end
-
-# --- Audit Logs ---
-unless AuditLog.exists?
-  AuditLog.create!(user: alex, action: "admin.assets.create", auditable: aapl, changes_data: { after: { symbol: "AAPL" } }, ip_address: "127.0.0.1")
-  AuditLog.create!(user: alex, action: "admin.integrations.connect", auditable: Integration.first, changes_data: { after: { provider: "Polygon.io" } }, ip_address: "127.0.0.1")
+  # --- Fear & Greed Readings ---
+  unless FearGreedReading.exists?
+    FearGreedReading.create!(index_type: "crypto", value: 25, classification: "Fear", source: "alternative.me", fetched_at: 6.hours.ago)
+    FearGreedReading.create!(index_type: "stocks", value: 62, classification: "Greed", source: "cnn", fetched_at: 6.hours.ago)
+  end
 end
 
 puts "Seeded: #{User.count} users, #{Asset.count} assets, #{Position.count} positions, #{Trade.count} trades, #{AlertRule.count} alert rules, #{EarningsEvent.count} earnings, #{NewsArticle.count} news, #{Notification.count} notifications, #{PortfolioSnapshot.count} snapshots, #{FxRate.count} FX rates, #{Dividend.count} dividends."
