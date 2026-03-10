@@ -228,7 +228,7 @@ Follow `CONTRIBUTING.md` conventions:
 | Use Cases Catalog | `docs/spec/COMMANDS.md` |
 | Expert Profiles | `docs/spec/EXPERTS.md` |
 | Deployment Guide | `docs/DEPLOY.md` |
-| Brand System | `docs/BRANDING.md` |
+| Brand System | `docs/branding/BRANDING.md` |
 | AI Identity & Principles | `IDENTITY.md` |
 | Contributing Guide | `CONTRIBUTING.md` |
 | Design Processing | `designs/wip/PROCESSING.md` |

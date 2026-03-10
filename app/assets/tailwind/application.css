@@ -3,10 +3,18 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-primary: #004a99;
-  --color-background-light: #f5f7f8;
-  --color-background-dark: #0f1923;
-  --font-family-display: "Inter", sans-serif;
+  --color-primary: #005A98;
+  --color-secondary: #1E293B;
+  --color-accent: #3BC175;
+  --color-background-light: #F5F7F8;
+  --color-background-dark: #0F1923;
+  --color-success: #3BC175;
+  --color-warning: #F5A623;
+  --color-error: #E24C3C;
+  --color-info: #3B82F6;
+  --font-family-display: "Plus Jakarta Sans", sans-serif;
+  --font-family-body: "Inter", sans-serif;
+  --font-family-mono: "JetBrains Mono", monospace;
 }
 
 /* Smooth scroll for anchor links */

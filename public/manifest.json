@@ -1,13 +1,13 @@
 {
-  "name": "Stockerly — Master the Markets",
+  "name": "Stockerly — Navigate the Markets with Confidence",
   "short_name": "Stockerly",
-  "description": "Data-driven market trends, portfolios, alerts, and earnings for the modern investor.",
+  "description": "Open Source Market Intelligence Platform. Data-driven trends, portfolios, alerts, and earnings.",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f8fafc",
-  "theme_color": "#004a99",
+  "background_color": "#F5F7F8",
+  "theme_color": "#005A98",
   "categories": ["finance", "business"],
   "icons": [
     {

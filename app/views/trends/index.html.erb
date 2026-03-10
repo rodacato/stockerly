@@ -143,8 +143,8 @@
               <svg class="w-full h-full drop-shadow-lg" viewBox="0 0 1000 400" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#004a99" stop-opacity="0.2"/>
-                    <stop offset="100%" stop-color="#004a99" stop-opacity="0"/>
+                    <stop offset="0%" stop-color="#005A98" stop-opacity="0.2"/>
+                    <stop offset="100%" stop-color="#005A98" stop-opacity="0"/>
                   </linearGradient>
                 </defs>
                 <%
@@ -157,7 +157,7 @@
                   area_path = "M#{points.first} L#{line_path} L#{points.last.split(',')[0]},400 L0,400 Z"
                 %>
                 <path d="<%= area_path %>" fill="url(#lineGradient)"/>
-                <path d="M<%= line_path %>" fill="none" stroke="#004a99" stroke-width="3" stroke-linecap="round"/>
+                <path d="M<%= line_path %>" fill="none" stroke="#005A98" stroke-width="3" stroke-linecap="round"/>
               </svg>
             </div>
           <% else %>

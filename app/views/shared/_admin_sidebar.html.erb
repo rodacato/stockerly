@@ -2,11 +2,9 @@
   <%# Logo %>
   <div class="h-16 flex items-center gap-2.5 px-6 border-b border-slate-200 dark:border-slate-800">
     <%= link_to admin_root_path, class: "flex items-center gap-2.5" do %>
-      <span class="material-symbols-outlined text-3xl text-primary">query_stats</span>
-      <div>
-        <span class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Stockerly</span>
-        <span class="block text-[10px] font-medium text-slate-400 -mt-1">Admin Console</span>
-      </div>
+      <img src="/logo_light.png" alt="Stockerly" class="h-7 dark:hidden">
+      <img src="/logo_dark.png" alt="Stockerly" class="h-7 hidden dark:block">
+      <span class="block text-[10px] font-medium text-slate-400 -mt-1">Admin Console</span>
     <% end %>
   </div>
 

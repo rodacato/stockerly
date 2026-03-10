@@ -3,8 +3,8 @@
     <div class="flex h-16 items-center justify-between gap-4">
       <%# Logo %>
       <%= link_to dashboard_path, class: "flex items-center gap-2 shrink-0" do %>
-        <span class="material-symbols-outlined text-3xl text-primary">query_stats</span>
-        <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Stockerly</span>
+        <img src="/logo_light.png" alt="Stockerly" class="h-8 dark:hidden">
+        <img src="/logo_dark.png" alt="Stockerly" class="h-8 hidden dark:block">
       <% end %>
 
       <%# Global Search (Cmd+K) %>

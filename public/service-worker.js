@@ -1,5 +1,5 @@
 // Stockerly Service Worker — cache-first for static assets, network-first for pages
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const STATIC_CACHE = `stockerly-static-${CACHE_VERSION}`;
 const FONT_CACHE = `stockerly-fonts-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";

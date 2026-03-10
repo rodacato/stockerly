@@ -54,12 +54,12 @@
 
 .pagy.nav a:hover {
   background-color: #f1f5f9;
-  color: #004a99;
+  color: #005A98;
 }
 
 .pagy.nav a[aria-current="page"],
 .pagy.nav [role="link"][aria-current="page"] {
-  background-color: #004a99;
+  background-color: #005A98;
   color: #ffffff;
   font-weight: 700;
 }

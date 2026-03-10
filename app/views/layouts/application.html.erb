@@ -2,31 +2,43 @@
 <html lang="en" class="<%= content_for(:html_class) %>">
   <head>
     <meta charset="utf-8">
-    <title><%= content_for(:title) || "Stockerly | Master the Markets with Data-Driven Trends" %></title>
+    <title><%= content_for(:title) || "Stockerly | Navigate the Markets with Confidence" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="<%= content_for(:description) || "Leverage advanced algorithms and AI indicators to identify emerging market opportunities. Professional tools for the modern investor." %>">
+    <meta name="description" content="<%= content_for(:description) || "Open Source Market Intelligence Platform. Data-driven trends, portfolios, alerts, and earnings for the modern investor." %>">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="application-name" content="Stockerly">
-    <meta name="theme-color" content="#004a99">
+    <meta name="theme-color" content="#005A98">
+
+    <%# Open Graph / Social Sharing %>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Stockerly">
+    <meta property="og:title" content="<%= content_for(:title) || "Stockerly | Navigate the Markets with Confidence" %>">
+    <meta property="og:description" content="<%= content_for(:description) || "Open Source Market Intelligence Platform. Data-driven trends, portfolios, alerts, and earnings for the modern investor." %>">
+    <meta property="og:image" content="/og_image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= content_for(:title) || "Stockerly | Navigate the Markets with Confidence" %>">
+    <meta name="twitter:description" content="<%= content_for(:description) || "Open Source Market Intelligence Platform. Data-driven trends, portfolios, alerts, and earnings for the modern investor." %>">
+    <meta name="twitter:image" content="/og_image.png">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
 
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32">
+    <link rel="icon" href="/icon.png" type="image/png" sizes="512x512">
     <link rel="apple-touch-icon" href="/icon-192.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+  <body class="font-body bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
     <%= content_for?(:body) ? yield(:body) : yield %>
   </body>
 </html>
