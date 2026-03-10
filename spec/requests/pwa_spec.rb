@@ -35,8 +35,8 @@ RSpec.describe "PWA", type: :request do
       get "/service-worker.js"
 
       expect(response.body).to include("/offline.html")
-      expect(response.body).to include("/icon-192.png")
-      expect(response.body).to include("/icon-512.png")
+      expect(response.body).to include("/icon-192.svg")
+      expect(response.body).to include("/icon-512.svg")
     end
   end
 
