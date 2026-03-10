@@ -152,9 +152,9 @@ All Use Cases inherit from `ApplicationUseCase` which provides:
 
 ### Frontend Stack
 
-- **CSS:** Tailwind CSS 4 with custom theme (primary color `#004a99`)
-- **Icons:** Material Symbols Rounded (Google Fonts)
-- **Typography:** Inter (Google Fonts)
+- **CSS:** Tailwind CSS 4 with custom theme (primary `#005A98`, see `docs/BRANDING.md`)
+- **Icons:** Material Symbols Outlined (Google Fonts)
+- **Typography:** Plus Jakarta Sans (headings), Inter (body), JetBrains Mono (financial data)
 - **Charts:** CSS/SVG inline (conic-gradient donut, SVG sparklines)
 
 ### Layouts
@@ -228,6 +228,7 @@ Follow `CONTRIBUTING.md` conventions:
 | Use Cases Catalog | `docs/spec/COMMANDS.md` |
 | Expert Profiles | `docs/spec/EXPERTS.md` |
 | Deployment Guide | `docs/DEPLOY.md` |
+| Brand System | `docs/BRANDING.md` |
 | AI Identity & Principles | `IDENTITY.md` |
 | Contributing Guide | `CONTRIBUTING.md` |
 | Design Processing | `designs/wip/PROCESSING.md` |
