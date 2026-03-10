@@ -34,8 +34,8 @@ Use in navbar, landing page, documentation, OG images, and presentations.
 
 | Variant | File | Background |
 |---------|------|------------|
-| Light mode | `logo_light.png` | For light backgrounds (`#F5F7F8`) |
-| Dark mode | `logo_dark.png` | For dark backgrounds (`#0F1923`) |
+| Light mode | `logo_light.svg` | For light backgrounds (`#F5F7F8`) |
+| Dark mode | `logo_dark.svg` | For dark backgrounds (`#0F1923`) |
 
 ### Icon (Standalone)
 
@@ -43,16 +43,16 @@ Use when space is limited: favicon, app icon, collapsed sidebar, social avatar, 
 
 | Size | File | Purpose |
 |------|------|---------|
-| 32x32 | `favicon_32x32.png` | Browser favicon |
-| 64x64 | `icon_64x64.png` | Small UI contexts |
-| 192x192 | `apple_touch_icon_192x192.png` | Apple Touch Icon, PWA icon |
-| 512x512 | `icon_512x512.png` | PWA splash, app stores |
+| 32x32 | `favicon.svg` | Browser favicon |
+| 64x64 | `icon_64x64.svg` | Small UI contexts |
+| 192x192 | `app_icon.svg` | Apple Touch Icon, PWA icon |
+| 512x512 | `icon_512x512.svg` | PWA splash, app stores |
 
 ### OG Image
 
 | Size | File | Purpose |
 |------|------|---------|
-| 1200x630 | `og_image_1200x630.png` | Social sharing (Twitter, LinkedIn, Open Graph) |
+| — | *Not yet available as SVG* | Social sharing (Twitter, LinkedIn, Open Graph) |
 
 ### Clear Space
 
@@ -289,13 +289,14 @@ font-mono tabular-nums
 
 ```
 docs/branding/
-├── logo_light.png               # Full logo for light backgrounds
-├── logo_dark.png                # Full logo for dark backgrounds
-├── favicon_32x32.png            # Browser favicon
-├── icon_64x64.png               # Small icon
-├── apple_touch_icon_192x192.png # Apple Touch / PWA icon
-├── icon_512x512.png             # PWA splash / large icon
-└── og_image_1200x630.png        # Social sharing image
+├── logo_light.svg               # Full logo for light backgrounds
+├── logo_dark.svg                # Full logo for dark backgrounds
+├── favicon.svg                  # Browser favicon (32x32)
+├── icon_64x64.svg               # Small icon
+├── app_icon.svg                 # Apple Touch / PWA icon (192x192)
+├── app_icon_large.svg           # Large app icon (512x512, more rounded)
+├── icon_512x512.svg             # PWA splash / large icon
+└── apple_touch_icon.svg         # Apple Touch Icon variant
 ```
 
 ---
