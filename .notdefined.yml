@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://notdefined.dev/schema/notdefined.yml.json
+# Generado para notdefined.dev/projects
+
+tagline: "Tu terminal de mercados, portafolio y alertas — sin pagar Bloomberg"
+description: >
+  Plataforma fintech open source para seguir tendencias del mercado, administrar portafolios,
+  configurar alertas y revisar earnings. Hecho con Rails 8, PostgreSQL, Hotwire y Tailwind CSS 4.
+  Arquitectura DDD + Hexagonal con 6 bounded contexts y eventos de dominio.
+category: producto
+status: activo
+lang: Ruby
+tags:
+  - fintech
+  - rails
+  - ddd
+  - hotwire
+  - portfolio
+repo: https://github.com/rodacato/stockerly
+order: 1
+
+icon: docs/branding/icon_64x64.svg
+background_color: "#005A98"
+screenshot: docs/screenshots/dashboard.png
