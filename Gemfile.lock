@@ -218,7 +218,7 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.18.1)
+    json (2.19.2)
     json-schema (6.1.0)
       addressable (~> 2.8)
       bigdecimal (>= 3.1, < 5)
@@ -315,7 +315,7 @@ GEM
     nokogiri (1.19.1-x86_64-linux-musl)
       racc (~> 1.4)
     ostruct (0.6.3)
-    pagy (43.3.1)
+    pagy (43.4.1)
       json
       uri
       yaml
@@ -560,7 +560,7 @@ DEPENDENCIES
   lograge
   mission_control-jobs
   money-rails (~> 3.0)
-  pagy (~> 43.3)
+  pagy (~> 43.4)
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
