@@ -1,23 +1,51 @@
-# yaml-language-server: $schema=https://notdefined.dev/schema/notdefined.yml.json
-# Generado para notdefined.dev/projects
+# .notdefined.yml — metadata for rodacato/projects
+# Spec: https://github.com/rodacato/rodacato/blob/master/docs/guides/notdefined-yml-spec.md
 
-tagline: "Tu terminal de mercados, portafolio y alertas — sin pagar Bloomberg"
+# --- Identity ---
+tagline: "Track your investment portfolio without depending on anyone"
 description: >
-  Plataforma fintech open source para seguir tendencias del mercado, administrar portafolios,
-  configurar alertas y revisar earnings. Hecho con Rails 8, PostgreSQL, Hotwire y Tailwind CSS 4.
-  Arquitectura DDD + Hexagonal con 6 bounded contexts y eventos de dominio.
-category: producto
-status: activo
+  Stock tracking, price alerts, earnings calendar, and market trends.
+  Open-source, self-hosted, built with Rails 8 and Hotwire.
+  I built it because free finance apps always end up
+  hitting you with a paywall.
+version: "0.1.0-rc1"
+icon: docs/branding/icon_64x64.svg
+background_color: "#005A98"
+screenshot: docs/screenshots/notdefined.png
+screenshots:
+  - path: docs/screenshots/dashboard.png
+    alt: "Main dashboard with portfolio overview and market trends"
+  - path: docs/screenshots/market.png
+    alt: "Market listings with TrendScore and Fear & Greed Index"
+  - path: docs/screenshots/portfolio.png
+    alt: "Portfolio detail with allocation, returns, and risk metrics"
+  - path: docs/screenshots/alerts.png
+    alt: "Price alert configuration panel"
+  - path: docs/screenshots/asset-detail.png
+    alt: "Asset detail page with fundamentals and earnings"
+  - path: docs/screenshots/news.png
+    alt: "Aggregated financial news feed"
+  - path: docs/screenshots/admin-integrations.png
+    alt: "Admin panel with API integration health monitoring"
+
+# --- Classification ---
+category: product
+status: active
 lang: Ruby
+stack:
+  - Rails 8
+  - PostgreSQL 16
+  - Hotwire
+  - Tailwind CSS 4
+  - dry-rb
+  - Solid Queue
+  - Kamal 2
 tags:
   - fintech
   - rails
   - ddd
-  - hotwire
-  - portfolio
-repo: https://github.com/rodacato/stockerly
-order: 1
+  - docker
 
-icon: docs/branding/icon_64x64.svg
-background_color: "#005A98"
-screenshot: docs/screenshots/dashboard.png
+# --- Links ---
+repo: https://github.com/rodacato/stockerly
+url: https://stockerly.notdefined.dev
