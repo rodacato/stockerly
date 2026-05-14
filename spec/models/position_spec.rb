@@ -38,18 +38,27 @@ RSpec.describe Position, type: :model do
     end
   end
 
-  describe "scopes" do
-    let(:portfolio) { create(:portfolio) }
-    let(:asset)     { create(:asset) }
-    let!(:domestic) { create(:position, portfolio: portfolio, asset: asset, currency: "USD") }
-    let!(:international) { create(:position, portfolio: portfolio, asset: create(:asset), currency: "MXN") }
+  describe "#currency" do
+    it "is delegated to the asset (single source of truth, #43)" do
+      mxn_asset = create(:asset, :mexican)
+      usd_asset = create(:asset, :stock)
 
-    it ".domestic returns USD positions" do
-      expect(Position.domestic).to contain_exactly(domestic)
+      mx_position = create(:position, asset: mxn_asset)
+      us_position = create(:position, asset: usd_asset)
+
+      expect(mx_position.currency).to eq("MXN")
+      expect(us_position.currency).to eq("USD")
     end
 
-    it ".international returns non-USD positions" do
-      expect(Position.international).to contain_exactly(international)
+    it "reflects asset currency changes (no drift, no duplicate column)" do
+      asset = create(:asset, :stock, currency: "USD")
+      position = create(:position, asset: asset)
+
+      # In practice an asset would never change currency mid-life, but the delegate
+      # guarantees no drift: if the asset is authoritative, the position follows.
+      asset.update!(currency: "MXN")
+
+      expect(position.reload.currency).to eq("MXN")
     end
   end
 

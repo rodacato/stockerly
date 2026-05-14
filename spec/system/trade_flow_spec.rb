@@ -27,7 +27,7 @@ RSpec.describe "Trade flow", type: :system do
   end
 
   it "executes a sell trade and reduces position shares" do
-    create(:position, portfolio: portfolio, asset: asset, shares: 20, avg_cost: 100.0, status: :open, currency: "USD")
+    create(:position, portfolio: portfolio, asset: asset, shares: 20, avg_cost: 100.0, status: :open)
 
     page.driver.post trades_path, trade: {
       asset_symbol: "AAPL", side: "sell", shares: "5", price_per_share: "150.0"
@@ -39,7 +39,7 @@ RSpec.describe "Trade flow", type: :system do
   end
 
   it "closes position when selling all shares" do
-    create(:position, portfolio: portfolio, asset: asset, shares: 10, avg_cost: 100.0, status: :open, currency: "USD")
+    create(:position, portfolio: portfolio, asset: asset, shares: 10, avg_cost: 100.0, status: :open)
 
     page.driver.post trades_path, trade: {
       asset_symbol: "AAPL", side: "sell", shares: "10", price_per_share: "150.0"

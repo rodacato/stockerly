@@ -39,7 +39,6 @@ module Trading
           asset: asset,
           shares: 0,
           avg_cost: attrs[:price_per_share],
-          currency: asset.currency,
           opened_at: Time.current,
           status: :open
         )

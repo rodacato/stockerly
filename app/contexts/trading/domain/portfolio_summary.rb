@@ -31,14 +31,6 @@ module Trading
         GainLoss.new(absolute: diff.to_f, percent: percent.to_f)
       end
 
-      def domestic_value
-        portfolio.open_positions.domestic.joins(:asset).sum("positions.shares * COALESCE(assets.current_price, 0)")
-      end
-
-      def international_value
-        portfolio.open_positions.international.joins(:asset).sum("positions.shares * COALESCE(assets.current_price, 0)")
-      end
-
       def total_invested
         portfolio.open_positions.sum("positions.shares * positions.avg_cost")
       end
@@ -49,8 +41,6 @@ module Trading
           buying_power: buying_power,
           unrealized_gain: unrealized_gain,
           day_gain: day_gain,
-          domestic_value: domestic_value,
-          international_value: international_value,
           total_invested: total_invested
         }
       end

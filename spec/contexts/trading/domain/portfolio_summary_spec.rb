@@ -7,8 +7,8 @@ RSpec.describe Trading::Domain::PortfolioSummary do
   let(:asset_intl) { create(:asset, symbol: "GENIUSSACV.MX", current_price: 80.0, sector: "Technology") }
 
   before do
-    create(:position, portfolio: portfolio, asset: asset_usd, shares: 10, avg_cost: 100.0, currency: "USD")
-    create(:position, portfolio: portfolio, asset: asset_intl, shares: 20, avg_cost: 60.0, currency: "MXN")
+    create(:position, portfolio: portfolio, asset: asset_usd, shares: 10, avg_cost: 100.0)
+    create(:position, portfolio: portfolio, asset: asset_intl, shares: 20, avg_cost: 60.0)
   end
 
   subject { Trading::Domain::PortfolioSummary.new(portfolio) }
@@ -53,18 +53,6 @@ RSpec.describe Trading::Domain::PortfolioSummary do
     end
   end
 
-  describe "#domestic_value" do
-    it "sums market value of USD positions" do
-      expect(subject.domestic_value).to eq(1500.0)
-    end
-  end
-
-  describe "#international_value" do
-    it "sums market value of non-USD positions" do
-      expect(subject.international_value).to eq(1600.0)
-    end
-  end
-
   describe "#total_invested" do
     it "sums cost basis of open positions" do
       # USD: 10 * 100 = 1000, MXN: 20 * 60 = 1200 => 2200
@@ -79,8 +67,6 @@ RSpec.describe Trading::Domain::PortfolioSummary do
       expect(hash).to have_key(:buying_power)
       expect(hash).to have_key(:unrealized_gain)
       expect(hash).to have_key(:day_gain)
-      expect(hash).to have_key(:domestic_value)
-      expect(hash).to have_key(:international_value)
       expect(hash).to have_key(:total_invested)
     end
   end

@@ -3,13 +3,12 @@ class Position < ApplicationRecord
   belongs_to :asset
   has_many   :trades, dependent: :destroy
 
+  delegate :currency, to: :asset
+
   enum :status, { open: 0, closed: 1 }
 
   validates :shares,   presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :avg_cost, presence: true, numericality: { greater_than: 0 }
-
-  scope :domestic,      -> { where(currency: "USD") }
-  scope :international, -> { where.not(currency: "USD") }
 
   def market_value
     shares * (asset.current_price || 0)

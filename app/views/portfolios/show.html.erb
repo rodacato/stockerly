@@ -32,7 +32,6 @@
         <%= dg.positive? ? '+' : '' %><%= number_to_percentage(dg.percent, precision: 1) %>
       </span>
     </div>
-    <p class="text-xs text-slate-400 mt-2">Domestic: <%= number_to_currency(@summary.domestic_value) %> &bull; International: <%= number_to_currency(@summary.international_value) %></p>
   </div>
 
   <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">

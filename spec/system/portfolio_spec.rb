@@ -10,8 +10,8 @@ RSpec.describe "Portfolio tabs", type: :system do
   let!(:aapl) { create(:asset, symbol: "AAPL", name: "Apple Inc.", current_price: 189.0) }
   let!(:tsla) { create(:asset, symbol: "TSLA", name: "Tesla, Inc.", current_price: 176.0) }
 
-  let!(:open_position) { create(:position, portfolio: portfolio, asset: aapl, shares: 10, avg_cost: 150.0, status: :open, currency: "USD") }
-  let!(:closed_position) { create(:position, portfolio: portfolio, asset: tsla, shares: 0, avg_cost: 200.0, status: :closed, currency: "USD", closed_at: 1.week.ago) }
+  let!(:open_position) { create(:position, portfolio: portfolio, asset: aapl, shares: 10, avg_cost: 150.0, status: :open) }
+  let!(:closed_position) { create(:position, portfolio: portfolio, asset: tsla, shares: 0, avg_cost: 200.0, status: :closed, closed_at: 1.week.ago) }
 
   before do
     visit login_path
