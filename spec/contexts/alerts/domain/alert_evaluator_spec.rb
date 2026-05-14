@@ -126,5 +126,4 @@ RSpec.describe Alerts::Domain::AlertEvaluator do
       end
     end
   end
-
 end

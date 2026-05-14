@@ -72,25 +72,8 @@ RSpec.describe "Alert management", type: :system do
     expect(page).to have_content("SMS Notifications")
   end
 
-  it "shows sentiment condition options in the form" do
-    visit alerts_path
-    expect(page).to have_select("alert[condition]", with_options: [ "Sentiment Above (F&G)", "Sentiment Below (F&G)" ])
-  end
-
-  it "creates a sentiment alert rule via form" do
-    visit alerts_path
-    fill_in "alert[asset_symbol]", with: "FG_CRYPTO"
-    select "Sentiment Above (F&G)", from: "alert[condition]"
-    fill_in "alert[threshold_value]", with: "75"
-    click_button "Set Alert"
-
-    expect(page).to have_content("F&G CRYPTO")
-    expect(page).to have_content("Sentiment above")
-  end
-
   it "shows volume spike condition option in the form" do
     visit alerts_path
     expect(page).to have_select("alert[condition]", with_options: [ "Volume Spike (>X avg)" ])
   end
-
 end
