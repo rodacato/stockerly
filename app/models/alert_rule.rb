@@ -8,10 +8,7 @@ class AlertRule < ApplicationRecord
     day_change_percent:  2,
     rsi_overbought:      3,
     rsi_oversold:        4,
-    sentiment_above:     5,
-    sentiment_below:     6,
-    volume_spike:        7,
-    concentration_risk:  8
+    volume_spike:        7
   }
   enum :status, { active: 0, paused: 1 }
 
