@@ -165,11 +165,10 @@ RSpec.describe "Event Subscription Wiring" do
     end
 
     describe "MarketData::Events::FearGreedUpdated" do
-      it "has log and sentiment alert evaluation handlers" do
+      it "has log handler" do
         handlers = EventBus.handlers_for(MarketData::Events::FearGreedUpdated)
 
         expect(handlers).to include(MarketData::Handlers::LogFearGreedUpdate)
-        expect(handlers).to include(Alerts::Handlers::EvaluateSentimentAlerts)
       end
     end
 

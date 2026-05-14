@@ -53,7 +53,6 @@ Rails.application.config.after_initialize do
 
   # Sentiment
   EventBus.subscribe(MarketData::Events::FearGreedUpdated, MarketData::Handlers::LogFearGreedUpdate)
-  EventBus.subscribe(MarketData::Events::FearGreedUpdated, Alerts::Handlers::EvaluateSentimentAlerts)
 
   # Dividends
   EventBus.subscribe(MarketData::Events::DividendsSynced, MarketData::Handlers::LogDividendsSync)

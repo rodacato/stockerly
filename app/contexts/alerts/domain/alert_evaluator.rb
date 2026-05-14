@@ -34,26 +34,11 @@ module Alerts
         end
       end
 
-      def self.evaluate_sentiment(rules, fg_value)
-        rules.select { |rule| sentiment_triggered?(rule, fg_value) }
-      end
-
-      def self.sentiment_triggered?(rule, fg_value)
-        case rule.condition
-        when "sentiment_above"
-          fg_value >= rule.threshold_value
-        when "sentiment_below"
-          fg_value <= rule.threshold_value
-        else
-          false
-        end
-      end
-
       def self.average_volume(asset, days: 5)
         asset.asset_price_histories.where("date >= ?", days.days.ago.to_date).average(:volume)&.to_i || 0
       end
 
-      private_class_method :triggered?, :sentiment_triggered?, :average_volume
+      private_class_method :triggered?, :average_volume
     end
   end
 end

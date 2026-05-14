@@ -93,12 +93,4 @@ RSpec.describe "Alert management", type: :system do
     expect(page).to have_select("alert[condition]", with_options: [ "Volume Spike (>X avg)" ])
   end
 
-  it "displays sentiment rules with readable symbol" do
-    create(:alert_rule, user: user, asset_symbol: "FG_STOCKS",
-           condition: :sentiment_below, threshold_value: 25.0, status: :active)
-
-    visit alerts_path
-    expect(page).to have_content("F&G STOCKS")
-    expect(page).to have_content("Sentiment below")
-  end
 end
