@@ -227,6 +227,6 @@ Follow `CONTRIBUTING.md` conventions:
 | Expert Panel v2 (8 Core + 8 Situational) | `docs/research/experts.md` |
 | Deployment Guide | `docs/ops/deploy.md` |
 | Archived specs (NOT current source of truth) | `docs/archive/` |
-| Brand System | `docs/branding/BRANDING.md` |
+| Brand system (palette, components, logos, decision record) | `docs/design/` |
 | AI Identity & Principles | `IDENTITY.md` |
 | Contributing Guide | `CONTRIBUTING.md` |

@@ -13,11 +13,10 @@
 | Why Stockerly exists, for whom | [`vision/`](./vision/) |
 | Immutable architecture decisions | [`architecture/adr/`](./architecture/adr/) |
 | How bounded contexts are organized | [`architecture/README.md`](./architecture/README.md) |
-| Design system, design tokens | [`design/`](./design/) (placeholder until Sprint 2) |
+| Design system: palette, typography, components, logos, decision record | [`design/`](./design/) |
 | Research notes, code audits, expert panel | [`research/`](./research/) |
 | Deploy, security, runbooks | [`ops/`](./ops/) |
 | Sprint protocol, retros | [`sprints/`](./sprints/) |
-| Branding (logos, palette, typography) | [`branding/`](./branding/) |
 | Screenshots for README/showcase | [`screenshots/`](./screenshots/) |
 | Archived documents (NOT current source of truth) | [`archive/`](./archive/) |
 

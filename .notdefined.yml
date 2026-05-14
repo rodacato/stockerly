@@ -9,8 +9,8 @@ description: >
   I built it because free finance apps always end up
   hitting you with a paywall.
 version: "0.1.0-rc1"
-icon: docs/branding/icon_64x64.svg
-background_color: "#005A98"
+icon: docs/design/glyph.svg
+background_color: "#5B6CFF"
 screenshot: docs/screenshots/notdefined.png
 screenshots:
   - path: docs/screenshots/dashboard.png
