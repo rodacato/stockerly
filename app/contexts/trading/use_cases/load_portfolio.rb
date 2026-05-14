@@ -25,7 +25,6 @@ module Trading
         allocation_by_type = portfolio.allocation_by_asset_type
         returns_calculator = Domain::PeriodReturnsCalculator.new(portfolio)
 
-        risk_metrics = compute_risk_metrics(portfolio)
         concentration = Domain::ConcentrationAnalyzer.analyze(portfolio: portfolio)
 
         result = {
@@ -38,7 +37,6 @@ module Trading
           chart_data: returns_calculator.chart_data(period: "1M"),
           benchmark_data: nil,
           upcoming_dividends: tab == "dividends" ? Domain::UpcomingDividendsPresenter.new(portfolio).upcoming : [],
-          risk_metrics: risk_metrics,
           allocation_by_type: allocation_by_type,
           concentration: concentration
         }
@@ -51,11 +49,6 @@ module Trading
       end
 
       private
-
-      def compute_risk_metrics(portfolio)
-        snapshots = portfolio.snapshots.order(:date)
-        Domain::PortfolioRiskCalculator.new(snapshots: snapshots).calculate
-      end
 
       def compute_benchmark(portfolio, benchmark_symbol)
         index = MarketIndex.find_by(symbol: benchmark_symbol)
