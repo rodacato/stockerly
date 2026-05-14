@@ -37,7 +37,6 @@ class MarketController < AuthenticatedController
   def earnings_tab
     @asset = Asset.find_by!(symbol: params[:symbol].upcase)
     @earnings_events = @asset.earnings_events.order(report_date: :desc).limit(8)
-    @earnings_narrative = compute_earnings_narrative(@asset, @earnings_events)
     render layout: false
   end
 
@@ -54,17 +53,6 @@ class MarketController < AuthenticatedController
 
   def build_market_status
     { us: MarketHours.us_market_open?, bmv: MarketHours.bmv_market_open?, crypto: true }
-  end
-
-  def compute_earnings_narrative(asset, earnings_events)
-    return nil if earnings_events.size < 2
-
-    Rails.cache.fetch("earnings_narrative/#{asset.id}", expires_in: 7.days) do
-      result = MarketData::Domain::EarningsNarrativeGenerator.generate(
-        asset: asset, earnings_events: earnings_events
-      )
-      result.success? ? result.value! : nil
-    end
   end
 
   def trigger_fundamental_sync(asset)
