@@ -43,7 +43,6 @@ Rails.application.config.after_initialize do
 
   # News
   EventBus.subscribe(MarketData::Events::NewsSynced, MarketData::Handlers::LogNewsSync)
-  EventBus.subscribe(MarketData::Events::NewsSynced, MarketData::Handlers::AnalyzeNewsSentiment)
 
   # Earnings
   EventBus.subscribe(MarketData::Events::EarningsSynced, MarketData::Handlers::LogEarningsSync)
