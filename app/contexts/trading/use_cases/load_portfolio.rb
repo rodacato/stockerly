@@ -22,8 +22,6 @@ module Trading
         allocation_by_type = portfolio.allocation_by_asset_type
         returns_calculator = Domain::PeriodReturnsCalculator.new(portfolio)
 
-        concentration = Domain::ConcentrationAnalyzer.analyze(portfolio: portfolio)
-
         Success({
           portfolio: portfolio,
           positions: positions,
@@ -33,8 +31,7 @@ module Trading
           period_returns: returns_calculator.calculate,
           chart_data: returns_calculator.chart_data(period: "1M"),
           upcoming_dividends: tab == "dividends" ? Domain::UpcomingDividendsPresenter.new(portfolio).upcoming : [],
-          allocation_by_type: allocation_by_type,
-          concentration: concentration
+          allocation_by_type: allocation_by_type
         })
       end
     end

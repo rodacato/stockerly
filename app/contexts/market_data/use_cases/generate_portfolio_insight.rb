@@ -9,9 +9,8 @@ module MarketData
         return Failure([ :no_positions, "Portfolio has no open positions" ]) if positions.empty?
 
         summary = build_summary(portfolio, positions)
-        concentration = Trading::Domain::ConcentrationAnalyzer.analyze(portfolio: portfolio)
         anonymized = Domain::PortfolioDataAnonymizer.anonymize(
-          portfolio: portfolio, summary: summary, concentration: concentration
+          portfolio: portfolio, summary: summary, concentration: nil
         )
 
         result = Domain::InsightGenerator.generate(portfolio_data: anonymized)
