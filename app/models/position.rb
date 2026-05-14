@@ -3,7 +3,7 @@ class Position < ApplicationRecord
   belongs_to :asset
   has_many   :trades, dependent: :destroy
 
-  delegate :currency, to: :asset
+  delegate :currency, to: :asset, allow_nil: true
 
   enum :status, { open: 0, closed: 1 }
 
