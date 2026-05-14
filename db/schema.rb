@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_14_153124) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_14_184524) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -405,6 +405,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_153124) do
     t.datetime "discarded_at"
     t.datetime "executed_at", null: false
     t.decimal "fee", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "fx_rate_at_execution", precision: 15, scale: 8
     t.bigint "portfolio_id", null: false
     t.bigint "position_id"
     t.decimal "price_per_share", precision: 15, scale: 4, null: false

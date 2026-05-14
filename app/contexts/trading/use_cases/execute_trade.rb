@@ -11,7 +11,10 @@ module Trading
 
         return Failure([ :insufficient_shares, "Not enough shares to sell" ]) if sell_exceeds_position?(attrs, position)
 
-        trade = persist_trade(portfolio, asset, position, attrs)
+        trade_currency = attrs[:currency] || asset.currency
+        fx_rate = yield resolve_fx_rate(trade_currency, user.preferred_currency, attrs[:fx_rate_at_execution])
+
+        trade = persist_trade(portfolio, asset, position, attrs, trade_currency, fx_rate)
         update_position_after_trade(position, attrs)
 
         publish(Events::TradeExecuted.new(
@@ -36,7 +39,7 @@ module Trading
           asset: asset,
           shares: 0,
           avg_cost: attrs[:price_per_share],
-          currency: "USD",
+          currency: asset.currency,
           opened_at: Time.current,
           status: :open
         )
@@ -49,7 +52,7 @@ module Trading
         false
       end
 
-      def persist_trade(portfolio, asset, position, attrs)
+      def persist_trade(portfolio, asset, position, attrs, currency, fx_rate)
         portfolio.trades.create!(
           asset: asset,
           position: position,
@@ -57,7 +60,8 @@ module Trading
           shares: attrs[:shares],
           price_per_share: attrs[:price_per_share],
           fee: attrs[:fee] || 0,
-          currency: position&.currency || "USD",
+          currency: currency,
+          fx_rate_at_execution: fx_rate,
           executed_at: parse_executed_at(attrs[:executed_at])
         )
       end
@@ -83,6 +87,42 @@ module Trading
         Time.zone.parse(value)
       rescue ArgumentError
         Time.current
+      end
+
+      # Returns the FX rate expressing 1 unit of `trade_currency` in `preferred_currency`.
+      # Resolution order:
+      #   1. Same currency → 1.0
+      #   2. Explicit override from params (manual entry)
+      #   3. Latest FxRate row in DB (forward)
+      #   4. Best-effort gateway refresh, retry forward
+      #   5. Inverse FxRate row (1 / reverse-direction rate)
+      #   6. Failure(:fx_rate_unavailable)
+      #
+      # Note: we capture FX *at record time*, not at trade execution time (S2 pragmatic
+      # call — no historical FX storage yet). For backdated trades needing precision,
+      # pass `fx_rate_at_execution` explicitly in params. See PR #42 notes.
+      # Cross-context call to MarketData is a known leak tracked for Sprint 5.
+      def resolve_fx_rate(trade_currency, preferred_currency, override)
+        return Success(1.0) if trade_currency == preferred_currency
+        return Success(override.to_f) if override
+
+        rate = FxRate.convert(1.0, from: trade_currency, to: preferred_currency)
+        return Success(rate.to_f) if rate
+
+        refresh_fx_rates(base: trade_currency, target: preferred_currency)
+        rate = FxRate.convert(1.0, from: trade_currency, to: preferred_currency)
+        return Success(rate.to_f) if rate
+
+        inverse = FxRate.convert(1.0, from: preferred_currency, to: trade_currency)
+        return Success((1.0 / inverse).to_f) if inverse && inverse > 0
+
+        Failure([ :fx_rate_unavailable, "Could not determine FX rate: #{trade_currency} -> #{preferred_currency}" ])
+      end
+
+      def refresh_fx_rates(base:, target:)
+        MarketData::Gateways::FxRatesGateway.new.refresh_rates(base: base, targets: [ target ])
+      rescue StandardError
+        nil
       end
     end
   end

@@ -8,6 +8,8 @@ module Trading
         required(:price_per_share).filled(:float)
         optional(:fee).maybe(:float)
         optional(:executed_at).maybe(:string)
+        optional(:currency).maybe(:string, included_in?: Asset::SUPPORTED_CURRENCIES)
+        optional(:fx_rate_at_execution).maybe(:float)
       end
 
       rule(:shares) do
@@ -16,6 +18,10 @@ module Trading
 
       rule(:price_per_share) do
         key.failure("must be greater than 0") if value <= 0
+      end
+
+      rule(:fx_rate_at_execution) do
+        key.failure("must be greater than 0") if value && value <= 0
       end
 
       rule(:asset_symbol) do

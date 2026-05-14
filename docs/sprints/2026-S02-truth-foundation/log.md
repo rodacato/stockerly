@@ -54,3 +54,13 @@ Final scope: 6 issues (5 sub-issues of #27 + #31). Parallel: #34. Epic #27 track
 | TODO/FIXME markers | 2 | ≤2 |
 
 The grep-based metrics are directional, not literal. False positives expected; trend matters more than absolute number.
+
+## 2026-05-14 — #41 merged (S2-A) + entropy baseline corrected
+
+#41 (`Asset.currency` + country-based backfill) merged via PR #46. Gemini code review caught 3 real issues during review: (a) `country IN ('US','USA')` redundant since `country` is `limit: 2`, (b) audience.md said "5 JTBDs" but list is 6 (fixed in master), (c) `audit-entropy.sh` regex used `\1` snake_case backreference but Ruby namespaces are PascalCase — false positives inflated leak count. All 3 fixed in the same PR / via separate commits.
+
+**Entropy baseline correction:** after fixing the regex, the real cross-context leak count is **9, not 33**. The 33 baseline was 24 false positives + 9 real leaks. New target: -1 for #45.
+
+**Workflow learnings during #41:**
+- Adrian had master 18 commits ahead of origin when PR #46 was opened, which made the PR diff show 19 commits initially. Resolved with force-push after he pushed master.
+- Two parallel cleanup PRs (#47 remove claude-review workflow, #48 deps refresh + supersede 12 dependabot PRs) merged before rebasing #46 — kept #41 work focused and let CI noise (`claude-review` always failing) get fixed in isolation.
