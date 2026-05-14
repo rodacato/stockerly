@@ -7,10 +7,11 @@ Rails.application.routes.draw do
   get  "setup", to: "setup#new"
   post "setup", to: "setup#create"
 
-  # --- Public Pages ---
-  root "pages#landing"
-  get "open-source", to: "pages#open_source", as: :open_source
-  get "trends",      to: "trends#index"
+  # --- Root ---
+  # No public landing: the project is a closed beta, not a marketing funnel.
+  # Anyone reaching `/` is bounced to `/login` (which redirects authenticated
+  # users to `/dashboard`).
+  root to: redirect("/login")
 
   # --- Legal ---
   get "privacy",         to: "legal#privacy"

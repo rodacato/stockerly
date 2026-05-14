@@ -76,8 +76,7 @@ RSpec.describe "Sessions", type: :request do
     it "logs out and redirects to root" do
       delete logout_path
       expect(response).to redirect_to(root_path)
-      follow_redirect!
-      expect(response.body).to include("Signed out successfully")
+      expect(flash[:notice]).to eq("Signed out successfully.")
     end
 
     it "clears remember token on logout" do

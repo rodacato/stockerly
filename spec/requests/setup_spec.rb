@@ -68,7 +68,9 @@ RSpec.describe "Setup", type: :request, setup_bypass: false do
   describe "redirect_to_setup" do
     context "when no users exist" do
       it "redirects public pages to setup" do
-        get root_path
+        # / now route-redirects to /login; the setup check fires at the SessionsController
+        # before_action, which sends the user on to /setup if no users exist.
+        get login_path
         expect(response).to redirect_to(setup_path)
       end
 

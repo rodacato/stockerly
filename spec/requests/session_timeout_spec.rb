@@ -71,7 +71,7 @@ RSpec.describe "Session timeout", type: :request do
     it "does not trigger timeout check for public pages" do
       reset!
       travel_to 31.minutes.from_now do
-        get root_path
+        get login_path
         expect(response).to have_http_status(:ok)
       end
     end

@@ -35,15 +35,13 @@ RSpec.describe "Admin pages", type: :request do
     it "redirects /admin to root for non-admin users" do
       get admin_root_path
       expect(response).to redirect_to(root_path)
-      follow_redirect!
-      expect(response.body).to include("Not authorized")
+      expect(flash[:alert]).to eq("Not authorized.")
     end
 
     it "redirects /admin/assets to root for non-admin users" do
       get admin_assets_path
       expect(response).to redirect_to(root_path)
-      follow_redirect!
-      expect(response.body).to include("Not authorized")
+      expect(flash[:alert]).to eq("Not authorized.")
     end
 
     it "redirects /admin/logs to root for non-admin users" do

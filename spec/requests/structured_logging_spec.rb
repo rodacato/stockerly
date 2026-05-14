@@ -21,7 +21,7 @@ RSpec.describe "Structured logging payload", type: :request do
       payloads = []
       callback = lambda { |_name, _start, _finish, _id, payload| payloads << payload }
       ActiveSupport::Notifications.subscribed(callback, "process_action.action_controller") do
-        get root_path
+        get login_path
       end
 
       expect(payloads.last[:user_id]).to be_nil

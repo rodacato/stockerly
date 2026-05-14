@@ -6,37 +6,23 @@ RSpec.describe "Navigation", type: :system do
   end
 
   describe "Public zone" do
-    it "navigates from landing to trends" do
+    it "redirects root to login (no public landing — closed beta)" do
       visit root_path
-      click_link "Trend Explorer"
-      expect(page).to have_current_path(trends_path)
-      expect(page).to have_content("Trend Explorer")
+      expect(page).to have_current_path(login_path)
     end
 
-    it "navigates from landing to open source" do
-      visit root_path
-      click_link "Open Source", match: :first
-      expect(page).to have_current_path(open_source_path)
-    end
-
-    it "navigates to legal pages from footer" do
-      visit root_path
-      click_link "Privacy Policy"
+    it "navigates to legal pages from login footer" do
+      visit login_path
+      click_link "Privacy Policy", match: :first
       expect(page).to have_current_path(privacy_path)
 
-      visit root_path
-      click_link "Terms of Service"
+      visit login_path
+      click_link "Terms of Service", match: :first
       expect(page).to have_current_path(terms_path)
 
-      visit root_path
+      visit login_path
       click_link "Risk Disclosure"
       expect(page).to have_current_path(risk_disclosure_path)
-    end
-
-    it "shows login and register links" do
-      visit root_path
-      expect(page).to have_link("Login", href: login_path)
-      expect(page).to have_link("Get Started", href: register_path)
     end
   end
 
@@ -64,7 +50,7 @@ RSpec.describe "Navigation", type: :system do
       expect(page).to have_content("Dashboard")
     end
 
-    it "logs out and returns to root" do
+    it "logs out and lands on login (via root redirect)" do
       user = create(:user, email: "logout@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
@@ -74,7 +60,7 @@ RSpec.describe "Navigation", type: :system do
       expect(page).to have_current_path(dashboard_path)
 
       click_button "Sign Out"
-      expect(page).to have_current_path(root_path)
+      expect(page).to have_current_path(login_path)
     end
   end
 
@@ -125,7 +111,9 @@ RSpec.describe "Navigation", type: :system do
       click_button "Sign In"
 
       visit admin_assets_path
-      expect(page).to have_current_path(root_path)
+      # Admin guard redirects to root; route redirect bounces to /login; SessionsController
+      # sees the user is logged in and forwards to /dashboard. Flash carries through.
+      expect(page).to have_current_path(dashboard_path)
     end
   end
 

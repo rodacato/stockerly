@@ -52,7 +52,7 @@ RSpec.describe "PWA", type: :request do
 
   describe "layout" do
     it "includes manifest link and theme-color meta tag" do
-      get root_path
+      get login_path
 
       expect(response.body).to include('<link rel="manifest" href="/manifest.json">')
       expect(response.body).to include('<meta name="theme-color" content="#005A98">')
