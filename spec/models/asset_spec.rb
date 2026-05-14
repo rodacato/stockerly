@@ -24,6 +24,62 @@ RSpec.describe Asset, type: :model do
       expect(asset).not_to be_valid
       expect(asset.errors[:symbol]).to include("has already been taken")
     end
+
+    describe "currency" do
+      it "requires currency" do
+        asset.currency = nil
+        expect(asset).not_to be_valid
+        expect(asset.errors[:currency]).to include("can't be blank")
+      end
+
+      it "accepts USD" do
+        asset.currency = "USD"
+        expect(asset).to be_valid
+      end
+
+      it "accepts MXN" do
+        asset.currency = "MXN"
+        expect(asset).to be_valid
+      end
+
+      it "rejects unsupported currencies in the beta scope" do
+        asset.currency = "EUR"
+        expect(asset).not_to be_valid
+        expect(asset.errors[:currency]).to include("is not included in the list")
+      end
+
+      it "defaults to USD when not set on a new record" do
+        new_asset = Asset.create!(name: "Test", symbol: "TEST", asset_type: :stock)
+        expect(new_asset.currency).to eq("USD")
+      end
+
+      it "exposes SUPPORTED_CURRENCIES as a frozen constant" do
+        expect(Asset::SUPPORTED_CURRENCIES).to eq(%w[USD MXN])
+        expect(Asset::SUPPORTED_CURRENCIES).to be_frozen
+      end
+    end
+  end
+
+  describe "factory currency variants" do
+    it "defaults to USD for plain :asset" do
+      expect(build(:asset).currency).to eq("USD")
+    end
+
+    it ":mexican trait yields MXN" do
+      expect(build(:asset, :mexican).currency).to eq("MXN")
+    end
+
+    it ":fixed_income trait yields MXN (CETES are MX-only in beta scope)" do
+      expect(build(:asset, :fixed_income).currency).to eq("MXN")
+    end
+
+    it ":crypto trait yields USD (industry convention)" do
+      expect(build(:asset, :crypto).currency).to eq("USD")
+    end
+
+    it ":etf trait yields USD by default" do
+      expect(build(:asset, :etf).currency).to eq("USD")
+    end
   end
 
   describe "enums" do

@@ -4,6 +4,7 @@ FactoryBot.define do
     sequence(:symbol) { |n| "SYM#{n}" }
     asset_type { :stock }
     sync_status { :active }
+    currency { "USD" }
     current_price { 150.0000 }
     change_percent_24h { 1.25 }
     sector { "Technology" }
@@ -34,6 +35,7 @@ FactoryBot.define do
       sector { nil }
       exchange { "Banxico" }
       country { "MX" }
+      currency { "MXN" }
       yield_rate { 11.15 }
       maturity_date { 28.days.from_now.to_date }
       face_value { 10.0 }
@@ -43,6 +45,7 @@ FactoryBot.define do
     trait :mexican do
       exchange { "BMV" }
       country { "MX" }
+      currency { "MXN" }
       data_source { "Yahoo Finance" }
     end
 

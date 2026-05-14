@@ -201,11 +201,11 @@ end
 
 # Mexico (BMV) — prices via Yahoo Finance
 genius = Asset.find_or_create_by!(symbol: "GENIUSSACV.MX") do |a|
-  a.name = "Genius Sports SAB"; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "BMV"; a.country = "MX"
+  a.name = "Genius Sports SAB"; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "BMV"; a.country = "MX"; a.currency = "MXN"
   a.data_source = "Yahoo Finance"; a.current_price = 32.50; a.change_percent_24h = 0.92; a.volume = 450_000; a.price_updated_at = 2.minutes.ago
 end
 ivvpeso = Asset.find_or_create_by!(symbol: "IVVPESO.MX") do |a|
-  a.name = "iShares S&P 500 MXN"; a.asset_type = :etf; a.exchange = "BMV"; a.country = "MX"
+  a.name = "iShares S&P 500 MXN"; a.asset_type = :etf; a.exchange = "BMV"; a.country = "MX"; a.currency = "MXN"
   a.data_source = "Yahoo Finance"; a.current_price = 645.20; a.change_percent_24h = 0.75; a.volume = 1_200_000; a.price_updated_at = 2.minutes.ago
 end
 
@@ -384,6 +384,7 @@ Asset.find_or_create_by!(symbol: "CETE28D") do |a|
   a.face_value = 10.0
   a.exchange = "Banxico"
   a.country = "MX"
+  a.currency = "MXN"
   a.sync_status = :disabled
 end
 Asset.find_or_create_by!(symbol: "CETE364D") do |a|
@@ -395,6 +396,7 @@ Asset.find_or_create_by!(symbol: "CETE364D") do |a|
   a.face_value = 10.0
   a.exchange = "Banxico"
   a.country = "MX"
+  a.currency = "MXN"
   a.sync_status = :disabled
 end
 

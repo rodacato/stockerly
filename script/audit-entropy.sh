@@ -24,11 +24,18 @@ FORMAT="text"
 
 # 1. Cross-context leaks: a context calling another context's namespace directly.
 # Heuristic: a file in app/contexts/<A>/ that mentions <B>:: where B != A (and B != one of the shared roots).
+# Self-references are excluded with explicit context-folder → PascalCase-namespace pairs
+# because the snake_case folder name (market_data) doesn't match the Ruby namespace (MarketData).
 # False positives possible (test fixtures, comments) — keep the regex narrow.
 leaks=$(
   grep -rEn 'Trading::|MarketData::|Alerts::|Identity::|Administration::|Notifications::' \
     app/contexts/ 2>/dev/null \
-    | grep -v -E 'app/contexts/(trading|market_data|alerts|identity|administration|notifications)/[^:]+:.*\1::' \
+    | grep -v -E 'app/contexts/trading/[^:]+:.*Trading::' \
+    | grep -v -E 'app/contexts/market_data/[^:]+:.*MarketData::' \
+    | grep -v -E 'app/contexts/alerts/[^:]+:.*Alerts::' \
+    | grep -v -E 'app/contexts/identity/[^:]+:.*Identity::' \
+    | grep -v -E 'app/contexts/administration/[^:]+:.*Administration::' \
+    | grep -v -E 'app/contexts/notifications/[^:]+:.*Notifications::' \
     | grep -v -E '^\s*#' \
     | wc -l | tr -d ' '
 )

@@ -1,4 +1,6 @@
 class Asset < ApplicationRecord
+  SUPPORTED_CURRENCIES = %w[USD MXN].freeze
+
   enum :asset_type, { stock: 0, crypto: 1, index: 2, etf: 3, fixed_income: 4 }, prefix: true
   enum :sync_status, { active: 0, disabled: 1, sync_issue: 2 }
 
@@ -14,8 +16,9 @@ class Asset < ApplicationRecord
   has_many :financial_statements,  dependent: :destroy
   has_many :asset_fundamentals,    dependent: :destroy
 
-  validates :name,   presence: true
-  validates :symbol, presence: true, uniqueness: { case_sensitive: false }
+  validates :name,     presence: true
+  validates :symbol,   presence: true, uniqueness: { case_sensitive: false }
+  validates :currency, presence: true, inclusion: { in: SUPPORTED_CURRENCIES }
 
   scope :stocks,      -> { where(asset_type: :stock) }
   scope :cryptos,     -> { where(asset_type: :crypto) }
