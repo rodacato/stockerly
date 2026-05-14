@@ -40,8 +40,7 @@ module Trading
           indices: indices,
           sentiment: sentiment,
           fear_greed: fear_greed,
-          weekly_insight: weekly_insight,
-          ai_insight: user.portfolio_insights.recent.latest.first
+          weekly_insight: weekly_insight
         })
       end
 
