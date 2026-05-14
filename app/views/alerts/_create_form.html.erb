@@ -10,13 +10,12 @@
     <%= form_with url: alerts_path, method: :post, class: "grid grid-cols-1 md:grid-cols-4 gap-4 items-end" do |f| %>
       <div class="space-y-2">
         <label class="text-xs font-bold text-slate-500 uppercase">Ticker</label>
-        <input type="text" name="alert[asset_symbol]" id="ticker_input" placeholder="e.g. NVDA"
+        <input type="text" name="alert[asset_symbol]" placeholder="e.g. NVDA"
                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm uppercase font-bold" />
-        <input type="hidden" name="alert[asset_symbol]" id="concentration_symbol" value="PORTFOLIO" disabled>
       </div>
       <div class="space-y-2">
         <label class="text-xs font-bold text-slate-500 uppercase">Condition</label>
-        <select name="alert[condition]" id="alert_condition" onchange="toggleConcentrationFields(this)"
+        <select name="alert[condition]"
                 class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm">
           <option value="price_crosses_above">Price Crosses Above</option>
           <option value="price_crosses_below">Price Crosses Below</option>
@@ -24,7 +23,6 @@
           <option value="rsi_overbought">RSI Overbought (&gt;70)</option>
           <option value="rsi_oversold">RSI Oversold (&lt;30)</option>
           <option value="volume_spike">Volume Spike (&gt;X avg)</option>
-          <option value="concentration_risk">Concentration Risk (HHI)</option>
         </select>
       </div>
       <div class="space-y-2">
@@ -39,21 +37,3 @@
     <% end %>
   </div>
 </section>
-
-<script>
-  function toggleConcentrationFields(select) {
-    var isConcentration = select.value === "concentration_risk";
-    var tickerInput = document.getElementById("ticker_input");
-    var concentrationSymbol = document.getElementById("concentration_symbol");
-
-    if (isConcentration) {
-      tickerInput.classList.add("hidden");
-      tickerInput.disabled = true;
-      concentrationSymbol.disabled = false;
-    } else {
-      tickerInput.classList.remove("hidden");
-      tickerInput.disabled = false;
-      concentrationSymbol.disabled = true;
-    }
-  }
-</script>
