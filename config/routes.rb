@@ -10,8 +10,9 @@ Rails.application.routes.draw do
   # --- Root ---
   # No public landing: the project is a closed beta, not a marketing funnel.
   # Anyone reaching `/` is bounced to `/login` (which redirects authenticated
-  # users to `/dashboard`).
-  root to: redirect("/login")
+  # users to `/dashboard`). Use 302 instead of the Rails default 301 so browsers
+  # don't aggressively cache the redirect — we may re-route `/` later.
+  root to: redirect("/login", status: 302)
 
   # --- Legal ---
   get "privacy",         to: "legal#privacy"
