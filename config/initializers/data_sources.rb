@@ -173,18 +173,4 @@ Rails.application.config.after_initialize do
     circuit_breaker_key: "banxico",
     capabilities: %i[cetes]
   )
-
-  DataSourceRegistry.register(:ai_intelligence,
-    name: "AI Intelligence",
-    icon: "psychology",
-    color: "violet",
-    gateway_class: MarketData::Gateways::LlmGateway,
-    job_class: nil,
-    job_args: [],
-    test_symbol: nil,
-    test_method: :fetch_price,
-    integration_name: "AI Intelligence",
-    circuit_breaker_key: "llm",
-    capabilities: %i[llm]
-  )
 end
