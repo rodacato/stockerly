@@ -23,6 +23,9 @@ module Trading
       extend Dry::Monads[:result]
 
       def self.call(trade_currency:, preferred_currency:, override: nil)
+        trade_currency = trade_currency.to_s.upcase
+        preferred_currency = preferred_currency.to_s.upcase
+
         return Success(BigDecimal(1)) if trade_currency == preferred_currency
         return Success(override) if override
 
@@ -44,6 +47,7 @@ module Trading
       rescue StandardError
         nil
       end
+      private_class_method :refresh_fx_rates
     end
   end
 end

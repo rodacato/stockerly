@@ -11,6 +11,15 @@ RSpec.describe Trading::Domain::FxRateResolver do
         expect(result).to be_success
         expect(result.value!).to eq(BigDecimal(1))
       end
+
+      it "normalizes currency case (mxn == MXN)" do
+        expect(MarketData::Gateways::FxRatesGateway).not_to receive(:new)
+
+        result = described_class.call(trade_currency: "mxn", preferred_currency: "MXN")
+
+        expect(result).to be_success
+        expect(result.value!).to eq(BigDecimal(1))
+      end
     end
 
     context "when explicit override is provided" do
