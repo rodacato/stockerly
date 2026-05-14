@@ -71,7 +71,7 @@ Trigger a single action. Hierarchy controls how loud the button feels.
 <%# Danger %>
 <%= button_tag "Eliminar posición",
       class: "bg-negative hover:opacity-90 text-fg-inverse font-semibold px-4 py-2 rounded-md",
-      data: { confirm: "¿Eliminar esta posición de manera permanente?" } %>
+      data: { confirm: "Eliminar esta posición de forma permanente." } %>
 ```
 
 ### States
@@ -234,6 +234,24 @@ When zero rows match: collapse to a single full-width row with the EmptyState co
 - **Sparklines belong inside a cell**, not a separate column header. See §9.
 - **Never reverse gain/loss colors.** Green is always up; coral/red is always down.
 - **Always include a units column or units tag** if the table mixes currencies.
+- **Numeric cells use a glyph prefix** (`▲` / `▼` / `–`) on gain/loss values so a deuteranope can still scan the column. See Appendix A.1.
+
+### Mobile (`<md`) — hard rule
+
+Below the `md` breakpoint (768 px), `<table>` does not render. The DataTable re-renders as a vertical list of row-cards. This is not negotiable per Appendix A.3 — desktop tables don't read on phones.
+
+```
+┌──────────────────────────────┐
+│ AAPL · 50 sh        ▲ +1.20% │
+│ Apple Inc.            $9,420 │
+└──────────────────────────────┘
+```
+
+- Symbol + primary identifier top-left, delta + glyph top-right.
+- Secondary description bottom-left, total/market-value bottom-right.
+- Whole card is the tap target → navigates to the detail screen.
+- Sort/filter controls collapse into a single ghost-button "Ordenar" + `Select` row above the list.
+- Sparkline renders full-width below the secondary line within the card.
 
 ---
 
@@ -426,10 +444,17 @@ A control that switches between system, light, and dark themes. Persists per-use
 
 ### Markup sketch
 
+This is a **radio group**, not three independent buttons — wrap in `role="radiogroup"` and each segment is `role="radio"` with `aria-checked` reflecting the active mode. Arrow keys move between segments; `Space` activates. See Appendix A.1 for the full accessibility rationale.
+
 ```erb
-<div class="inline-flex items-center bg-bg-muted rounded-md p-1" data-controller="theme">
+<div class="inline-flex items-center bg-bg-muted rounded-md p-1"
+     data-controller="theme"
+     role="radiogroup"
+     aria-label="Seleccionar tema">
   <% [:system, :light, :dark].each do |mode| %>
     <button type="button"
+            role="radio"
+            aria-checked="<%= current_theme == mode %>"
             data-action="theme#set"
             data-theme-mode-param="<%= mode %>"
             class="px-2 py-1 rounded text-fg-subtle data-[active=true]:bg-primary-muted data-[active=true]:text-primary">
@@ -530,16 +555,32 @@ Which components go together for which page. Use these as starting layouts for n
 
 ---
 
-## 15. Don't-build list
+## 15. Don't-build and deferred components
+
+### 15.1 Don't-build list
 
 Components that have been considered and rejected. Adding any of these later requires a brief justification in [`brand.md §11`](./brand.md).
 
 - **Tooltip illustrations / mascot characters.** Brand voice is sober — no Slacks-style cartoons.
 - **Carousels.** If the content has a sort order, list it; if not, prioritize the top item and link the rest.
-- **Toast popups for non-critical info.** Use inline state in the affected component (e.g., a fresh DateStamp after a sync) — toasts get dismissed before they're read.
 - **Sticky "buy now" CTAs.** No transactional language; no upsell affordance.
 - **Achievement / streak badges.** Stockerly tracks portfolios, not engagement.
 - **Animated number tickers.** Numbers update on real events, not on render. Animation suggests change where there isn't one.
+
+### 15.2 Toasts — banned with one carve-out
+
+- **Banned:** success toasts ("Posición guardada con éxito"), info toasts, engagement nudges. These belong inline (see Appendix A.5).
+- **Allowed:** a single `AlertToast` component for **alert-rule trigger events while the user is on a non-Alerts page** — anchored bottom-right, max 1 visible at a time, auto-dismisses after 8 s, click routes to alert detail. Without this carve-out, alerts go silent when the user is elsewhere in the app, which defeats their purpose. Spec to be added when the alerts UI is implemented (Sprint 3 or later).
+- **Rule:** toasts never substitute for inline state. Cross-context, time-sensitive events only.
+
+### 15.3 Deferred components (will exist later, not yet specified)
+
+Not banned — just not in this catalog yet. Adding any of these requires a discovery card and the §16 promotion criteria.
+
+- **Modal / Dialog.** Implied by the `danger` Button's `data-confirm`. **Placeholder until Sprint 4:** browser-native `confirm()` for destructive confirms. No custom dialog markup in views yet. When Modal/Dialog ships, it will replace the native confirm (focus trap, `Esc` to close, return focus to opener — see Appendix A.1 keyboard expectations).
+- **Tabs.** Used informally on Portfolio detail and Market detail composition sketches (§14.2, Appendix A.6.3). Until a shared Tabs component lands, render tabs as a simple `<nav>` of links with an `aria-current="page"` on the active one. No JS, no roving-tabindex yet.
+- **AlertToast.** See §15.2.
+- **Dropdown / Combobox.** Used informally on the Trade entry's symbol autocomplete (Appendix A.6.1). Native `<datalist>` is the placeholder.
 
 ---
 
