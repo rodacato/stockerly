@@ -36,7 +36,7 @@ leaks=$(
     | grep -v -E 'app/contexts/identity/[^:]+:.*Identity::' \
     | grep -v -E 'app/contexts/administration/[^:]+:.*Administration::' \
     | grep -v -E 'app/contexts/notifications/[^:]+:.*Notifications::' \
-    | grep -v -E '^\s*#' \
+    | grep -v -E ':[0-9]+:\s*#' \
     | wc -l | tr -d ' '
 )
 

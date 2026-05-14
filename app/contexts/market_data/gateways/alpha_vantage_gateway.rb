@@ -101,7 +101,8 @@ module MarketData
         name: match["2. name"] || symbol,
         quote_type: quote_type,
         exchange: match["4. region"] || "",
-        exchange_display: match["4. region"] || ""
+        exchange_display: match["4. region"] || "",
+        currency: match["8. currency"]
       }
     end
 

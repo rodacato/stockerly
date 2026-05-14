@@ -101,5 +101,34 @@ RSpec.describe Administration::UseCases::Assets::CreateAsset do
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:validation)
     end
+
+    describe "currency capture (#45)" do
+      it "persists currency when provided via params" do
+        result = described_class.call(
+          admin: admin,
+          params: valid_params.merge(symbol: "WALMEX.MX", country: "MX", currency: "MXN")
+        )
+
+        expect(result).to be_success
+        expect(result.value!.currency).to eq("MXN")
+      end
+
+      it "falls back to the Asset schema default (USD) when currency omitted" do
+        result = described_class.call(admin: admin, params: valid_params)
+
+        expect(result).to be_success
+        expect(result.value!.currency).to eq("USD")
+      end
+
+      it "rejects currencies outside SUPPORTED_CURRENCIES" do
+        result = described_class.call(
+          admin: admin,
+          params: valid_params.merge(currency: "EUR")
+        )
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:validation)
+      end
+    end
   end
 end

@@ -27,10 +27,7 @@ module Administration
         }.freeze
 
         def call(query:)
-          return Failure([ :validation, "Query must be at least 2 characters" ]) if query.blank? || query.strip.length < 2
-
-          gateway = MarketData::Gateways::AlphaVantageGateway.new
-          results = yield gateway.search_tickers(query.strip)
+          results = yield MarketData::UseCases::SearchTickers.call(query: query)
 
           mapped = results.map { |r| map_result(r) }
 
@@ -41,14 +38,29 @@ module Administration
 
         def map_result(result)
           region = result[:exchange]
+          country = REGION_COUNTRY_MAP[region]
+          asset_type = QUOTE_TYPE_MAP[result[:quote_type]] || "stock"
 
           {
             symbol: result[:symbol],
             name: result[:name],
-            asset_type: QUOTE_TYPE_MAP[result[:quote_type]] || "stock",
+            asset_type: asset_type,
             exchange: region,
-            country: REGION_COUNTRY_MAP[region]
+            country: country,
+            currency: derive_currency(result[:currency], country, asset_type)
           }
+        end
+
+        # Alpha Vantage SYMBOL_SEARCH usually includes currency directly. Fall back to
+        # country/asset_type heuristics for the rare cases where the provider omits it.
+        # Same logic as #41's backfill migration; only kicks in if the upstream payload
+        # is missing currency.
+        def derive_currency(provider_currency, country, asset_type)
+          return provider_currency if provider_currency.present?
+          return "MXN" if country == "MX" || asset_type == "fixed_income"
+          return "USD" if country == "US" || asset_type == "crypto"
+
+          "USD"
         end
       end
     end

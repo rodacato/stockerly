@@ -43,6 +43,34 @@ RSpec.describe Administration::UseCases::Assets::SearchTicker do
         expect(mx[:symbol]).to eq("AAPL.MEX")
         expect(mx[:country]).to eq("MX")
       end
+
+      it "propagates currency from the provider response (#45)" do
+        result = described_class.call(query: "AAPL")
+
+        expect(result.value!.first[:currency]).to eq("USD")
+        expect(result.value!.last[:currency]).to eq("MXN")
+      end
+    end
+
+    context "when provider omits currency" do
+      before do
+        stub_alpha_vantage_ticker_search("XX", results: [
+          { "1. symbol" => "XX", "2. name" => "Test", "3. type" => "Equity",
+            "4. region" => "United States", "9. matchScore" => "1.0000" },
+          { "1. symbol" => "XX.MX", "2. name" => "Test MX", "3. type" => "Equity",
+            "4. region" => "Mexico", "9. matchScore" => "0.5000" }
+        ])
+      end
+
+      it "falls back to USD for US-country results (#45)" do
+        result = described_class.call(query: "XX")
+        expect(result.value!.first[:currency]).to eq("USD")
+      end
+
+      it "falls back to MXN for MX-country results (#45)" do
+        result = described_class.call(query: "XX")
+        expect(result.value!.last[:currency]).to eq("MXN")
+      end
     end
 
     context "with ETF results" do

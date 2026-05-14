@@ -10,6 +10,7 @@ module Administration
           optional(:exchange).maybe(:string)
           optional(:sector).maybe(:string)
           optional(:logo_url).maybe(:string)
+          optional(:currency).maybe(:string, included_in?: Asset::SUPPORTED_CURRENCIES)
         end
 
         rule(:symbol) do
