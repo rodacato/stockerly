@@ -125,148 +125,59 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
     end
   end
 
-  describe "currency and fx_rate capture (#42 / S2-B)" do
+  describe "currency and fx_rate capture — integration with FxRateResolver (#42)" do
+    # Resolution-branch coverage lives in spec/contexts/trading/domain/fx_rate_resolver_spec.rb.
+    # These specs cover what the use case alone is responsible for: deriving currency
+    # from the asset, propagating override from params, persisting the resolved rate,
+    # and ensuring no partial trade is created when resolution fails.
     let(:mx_user) { create(:user, preferred_currency: "MXN") }
     let!(:mx_portfolio) { create(:portfolio, user: mx_user) }
 
-    context "when trade currency matches user preferred currency" do
-      let!(:mxn_asset) { create(:asset, :mexican, symbol: "WALMEX.MX") }
+    it "derives currency from the asset and persists fx_rate when currencies match" do
+      create(:asset, :mexican, symbol: "WALMEX.MX")
 
-      it "stores fx_rate_at_execution = 1.0 without any gateway call" do
-        expect(MarketData::Gateways::FxRatesGateway).not_to receive(:new)
+      result = described_class.call(
+        user: mx_user,
+        params: buy_params.merge(asset_symbol: "WALMEX.MX")
+      )
 
-        result = described_class.call(
-          user: mx_user,
-          params: buy_params.merge(asset_symbol: "WALMEX.MX")
-        )
-
-        expect(result).to be_success
-        trade = result.value!
-        expect(trade.currency).to eq("MXN")
-        expect(trade.fx_rate_at_execution).to eq(1.0)
-      end
-
-      it "derives currency from the asset, ignoring missing param" do
-        result = described_class.call(
-          user: mx_user,
-          params: buy_params.merge(asset_symbol: "WALMEX.MX")
-        )
-
-        expect(result.value!.currency).to eq("MXN")
-      end
+      expect(result).to be_success
+      trade = result.value!
+      expect(trade.currency).to eq("MXN")
+      expect(trade.fx_rate_at_execution).to eq(BigDecimal(1))
     end
 
-    context "when trade currency differs and FxRate exists in DB" do
-      let!(:fx_rate) { create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.5) }
+    it "passes through the explicit override from params" do
+      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.5)
+      expect(MarketData::Gateways::FxRatesGateway).not_to receive(:new)
 
-      it "uses the latest FxRate without calling the gateway" do
-        expect(MarketData::Gateways::FxRatesGateway).not_to receive(:new)
+      result = described_class.call(
+        user: mx_user,
+        params: buy_params.merge(fx_rate_at_execution: 18.42)
+      )
 
+      expect(result).to be_success
+      expect(result.value!.fx_rate_at_execution).to eq(BigDecimal("18.42"))
+    end
+
+    it "persists the rate resolved by FxRateResolver against the DB" do
+      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.5)
+
+      result = described_class.call(user: mx_user, params: buy_params)
+
+      expect(result).to be_success
+      expect(result.value!.fx_rate_at_execution).to eq(BigDecimal("17.5"))
+    end
+
+    it "fails and does not persist a trade when the resolver returns :fx_rate_unavailable" do
+      gateway = instance_double(MarketData::Gateways::FxRatesGateway, refresh_rates: nil)
+      allow(MarketData::Gateways::FxRatesGateway).to receive(:new).and_return(gateway)
+
+      expect {
         result = described_class.call(user: mx_user, params: buy_params)
-
-        expect(result).to be_success
-        expect(result.value!.fx_rate_at_execution).to eq(17.5)
-      end
-    end
-
-    context "when explicit fx_rate_at_execution is provided" do
-      let!(:fx_rate) { create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.5) }
-
-      it "honors the manual override even when DB has a different rate" do
-        expect(MarketData::Gateways::FxRatesGateway).not_to receive(:new)
-
-        result = described_class.call(
-          user: mx_user,
-          params: buy_params.merge(fx_rate_at_execution: 18.42)
-        )
-
-        expect(result).to be_success
-        expect(result.value!.fx_rate_at_execution).to eq(18.42)
-      end
-    end
-
-    context "when no FxRate exists and gateway refresh succeeds" do
-      let(:gateway) { instance_double(MarketData::Gateways::FxRatesGateway) }
-
-      it "refreshes via the gateway and uses the new rate" do
-        allow(MarketData::Gateways::FxRatesGateway).to receive(:new).and_return(gateway)
-        allow(gateway).to receive(:refresh_rates) do
-          FxRate.create!(base_currency: "USD", quote_currency: "MXN", rate: 17.25, fetched_at: Time.current)
-        end
-
-        result = described_class.call(user: mx_user, params: buy_params)
-
-        expect(result).to be_success
-        expect(result.value!.fx_rate_at_execution).to eq(17.25)
-        expect(gateway).to have_received(:refresh_rates).with(base: "USD", targets: [ "MXN" ])
-      end
-    end
-
-    context "when only an inverse rate exists" do
-      let!(:usd_user) { create(:user, preferred_currency: "USD") }
-      let!(:usd_portfolio) { create(:portfolio, user: usd_user) }
-      let!(:mxn_asset) { create(:asset, :mexican, symbol: "WALMEX.MX") }
-      let!(:inverse_rate) { create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.5) }
-      let(:gateway) { instance_double(MarketData::Gateways::FxRatesGateway, refresh_rates: nil) }
-
-      before { allow(MarketData::Gateways::FxRatesGateway).to receive(:new).and_return(gateway) }
-
-      it "inverts the rate when forward direction is missing" do
-        result = described_class.call(
-          user: usd_user,
-          params: buy_params.merge(asset_symbol: "WALMEX.MX")
-        )
-
-        expect(result).to be_success
-        expect(result.value!.fx_rate_at_execution).to be_within(0.0001).of(1.0 / 17.5)
-      end
-    end
-
-    context "when no rate is available anywhere" do
-      let(:gateway) { instance_double(MarketData::Gateways::FxRatesGateway, refresh_rates: nil) }
-
-      before { allow(MarketData::Gateways::FxRatesGateway).to receive(:new).and_return(gateway) }
-
-      it "fails with :fx_rate_unavailable" do
-        result = described_class.call(user: mx_user, params: buy_params)
-
         expect(result).to be_failure
         expect(result.failure.first).to eq(:fx_rate_unavailable)
-        expect(result.failure[1]).to include("USD -> MXN")
-      end
-
-      it "does not persist a partial trade" do
-        expect { described_class.call(user: mx_user, params: buy_params) }
-          .not_to change(Trade, :count)
-      end
-    end
-
-    context "when the gateway raises an error" do
-      let(:gateway) { instance_double(MarketData::Gateways::FxRatesGateway) }
-
-      before do
-        allow(MarketData::Gateways::FxRatesGateway).to receive(:new).and_return(gateway)
-        allow(gateway).to receive(:refresh_rates).and_raise(StandardError, "API down")
-      end
-
-      it "falls back to inverse rate if available" do
-        create(:fx_rate, base_currency: "MXN", quote_currency: "USD", rate: 0.06)
-
-        # Inverse is "MXN -> USD". We want "USD -> MXN" which is 1/0.06 ≈ 16.66.
-        # But our user is mx_user (preferred MXN) buying USD asset, so we lookup USD -> MXN.
-        # The seeded row is MXN -> USD, which is the INVERSE of what we want.
-        result = described_class.call(user: mx_user, params: buy_params)
-
-        expect(result).to be_success
-        expect(result.value!.fx_rate_at_execution).to be_within(0.01).of(1.0 / 0.06)
-      end
-
-      it "fails cleanly when no fallback exists" do
-        result = described_class.call(user: mx_user, params: buy_params)
-
-        expect(result).to be_failure
-        expect(result.failure.first).to eq(:fx_rate_unavailable)
-      end
+      }.not_to change(Trade, :count)
     end
   end
 
