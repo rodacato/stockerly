@@ -103,18 +103,18 @@ module Trading
       # pass `fx_rate_at_execution` explicitly in params. See PR #42 notes.
       # Cross-context call to MarketData is a known leak tracked for Sprint 5.
       def resolve_fx_rate(trade_currency, preferred_currency, override)
-        return Success(1.0) if trade_currency == preferred_currency
-        return Success(override.to_f) if override
+        return Success(BigDecimal(1)) if trade_currency == preferred_currency
+        return Success(override) if override
 
-        rate = FxRate.convert(1.0, from: trade_currency, to: preferred_currency)
-        return Success(rate.to_f) if rate
+        rate = FxRate.convert(1, from: trade_currency, to: preferred_currency)
+        return Success(rate) if rate
 
         refresh_fx_rates(base: trade_currency, target: preferred_currency)
-        rate = FxRate.convert(1.0, from: trade_currency, to: preferred_currency)
-        return Success(rate.to_f) if rate
+        rate = FxRate.convert(1, from: trade_currency, to: preferred_currency)
+        return Success(rate) if rate
 
-        inverse = FxRate.convert(1.0, from: preferred_currency, to: trade_currency)
-        return Success((1.0 / inverse).to_f) if inverse && inverse > 0
+        inverse = FxRate.convert(1, from: preferred_currency, to: trade_currency)
+        return Success(BigDecimal(1) / inverse) if inverse && inverse > 0
 
         Failure([ :fx_rate_unavailable, "Could not determine FX rate: #{trade_currency} -> #{preferred_currency}" ])
       end

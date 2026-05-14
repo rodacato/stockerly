@@ -9,7 +9,7 @@ module Trading
         optional(:fee).maybe(:float)
         optional(:executed_at).maybe(:string)
         optional(:currency).maybe(:string, included_in?: Asset::SUPPORTED_CURRENCIES)
-        optional(:fx_rate_at_execution).maybe(:float)
+        optional(:fx_rate_at_execution).maybe(:decimal)
       end
 
       rule(:shares) do
