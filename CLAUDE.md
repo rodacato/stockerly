@@ -106,18 +106,28 @@ Shared infrastructure uses Zeitwerk collapse — no namespace prefix:
 
 ### Cross-Context Communication
 
-Contexts communicate **only via domain events**. No direct imports across contexts.
+**Writes** that cross context boundaries flow exclusively through domain events. **Reads** follow the customer/supplier pattern documented in [ADR-002](docs/architecture/adr/0002-trading-marketdata-boundary.md): a downstream context may call the supplier's public read API (use cases and `Queries::*` objects, plus domain services explicitly marked as read API), but never reaches into the supplier's ActiveRecord models or gateways.
+
+Current customer/supplier pair: **Trading → MarketData** (Trading reads, MarketData does not read Trading). Other pairs may adopt the pattern via additional ADRs when needed.
 
 ```ruby
-# Market Data publishes → Alerts subscribes
+# Writes: events (unchanged)
 EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
+
+# Reads: supplier's public API
+news     = MarketData::Queries::RecentNews.call
+trending = MarketData::Queries::TrendingAssets.call(limit: 5)
+fx_rate  = MarketData::UseCases::EnsureFreshFxRate.call(base: "USD", target: "MXN")
 ```
 
+Forbidden in Trading: direct AR model access (`NewsArticle.recent`, `MarketIndex.major`, `FearGreedReading.latest_*`) and direct gateway instantiation (`MarketData::Gateways::*.new`).
+
 Key cross-context flows:
-- `MarketData::Events::AssetPriceUpdated` → `Alerts::Handlers::EvaluateAlertsOnPriceUpdate`
-- `MarketData::Events::FearGreedUpdated` → `Alerts::Handlers::EvaluateSentimentAlerts`
-- `Trading::Events::SplitDetected` → `Trading::Handlers::AdjustPositionsOnSplit`
-- `Identity::Events::UserRegistered` → `Identity::Handlers::CreatePortfolioOnRegistration`
+- `MarketData::Events::AssetPriceUpdated` → `Alerts::Handlers::EvaluateAlertsOnPriceUpdate` (write event)
+- `MarketData::Events::FearGreedUpdated` → `Alerts::Handlers::EvaluateSentimentAlerts` (write event)
+- `Trading::Events::SplitDetected` → `Trading::Handlers::AdjustPositionsOnSplit` (write event)
+- `Identity::Events::UserRegistered` → `Identity::Handlers::CreatePortfolioOnRegistration` (write event)
+- `MarketData::Queries::*` consumed by Trading (read API per ADR-002)
 
 ### ApplicationUseCase Base Class
 
