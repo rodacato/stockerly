@@ -23,6 +23,12 @@ module MarketData
 
       private
 
+      # CETES_28D / CETES_91D / etc. are abstract instrument symbols that roll —
+      # each weekly auction is a new lot with a new maturity. Previously this
+      # sync wrote `Asset.maturity_date = Date.current + days`, which silently
+      # overwrote each user's lot maturity (the wrong granularity). Per #29 the
+      # per-position maturity is captured at trade execution and frozen for the
+      # life of the position; the abstract asset no longer carries one.
       def upsert_cetes_asset(term, data)
         asset = Asset.find_or_initialize_by(symbol: "CETES_#{term}D")
         days = term.to_i
@@ -37,7 +43,6 @@ module MarketData
           asset_type: :fixed_income,
           yield_rate: data[:yield_rate],
           face_value: 10.0,
-          maturity_date: Date.current + days.days,
           exchange: "Banxico",
           country: "MX",
           current_price: discount_price,
