@@ -79,13 +79,14 @@ todos=$(
     | wc -l | tr -d ' '
 )
 
-# 6. Hardcoded color classes in views: emerald / rose / amber / violet / blue
-# with a Tailwind shade number (text-emerald-600, bg-rose-50, etc.). Each hit
-# is a candidate for migration to a @theme semantic token (success / error /
-# warning / info). Tracked as part of #37 (S3 → S6 incremental migration);
-# must decrease each sprint.
+# 6. Hardcoded color classes in views: any Tailwind palette other than slate
+# (the neutral track stays as-is until S6). Each hit is a candidate for
+# migration to a @theme semantic token (success / error / warning / info /
+# primary). Tracked as part of #37 (S3 → S6 incremental migration); must
+# decrease each sprint.
 hardcoded_color_classes=$(
-  grep -rEn '(bg|text|border)-(emerald|rose|amber|violet|blue)-[0-9]+' app/views/ 2>/dev/null \
+  grep -rEn '(bg|text|border)-[a-z]+-[0-9]+' app/views/ 2>/dev/null \
+    | grep -v -E '(bg|text|border)-slate-[0-9]+' \
     | wc -l | tr -d ' '
 )
 
