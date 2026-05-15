@@ -19,14 +19,14 @@
 <%# Stats Overview — 3 portfolio cards %>
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-4">
   <% if @summary %>
-    <%= render "components/stat_card", title: "Total Balance", value: number_to_currency(@summary.total_value), change: "#{@summary.day_gain.positive? ? '+' : ''}#{number_to_percentage(@summary.day_gain.percent, precision: 1)}", change_positive: @summary.day_gain.positive?, icon: "account_balance_wallet" %>
+    <%= render "components/kpi_card", title: "Total Balance", value: number_to_currency(@summary.total_value), change: "#{@summary.day_gain.positive? ? '+' : ''}#{number_to_percentage(@summary.day_gain.percent, precision: 1)}", change_positive: @summary.day_gain.positive?, icon: "account_balance_wallet" %>
     <% dg = @summary.day_gain %>
-    <%= render "components/stat_card", title: "Day Gain/Loss", value: "#{dg.positive? ? '+' : ''}#{number_to_currency(dg.absolute)}", change: "#{dg.positive? ? '+' : ''}#{number_to_percentage(dg.percent, precision: 1)}", change_positive: dg.positive?, icon: "trending_up" %>
-    <%= render "components/stat_card", title: "Buying Power", value: number_to_currency(@summary.buying_power), icon: "savings" %>
+    <%= render "components/kpi_card", title: "Day Gain/Loss", value: "#{dg.positive? ? '+' : ''}#{number_to_currency(dg.absolute)}", change: "#{dg.positive? ? '+' : ''}#{number_to_percentage(dg.percent, precision: 1)}", change_positive: dg.positive?, icon: "trending_up" %>
+    <%= render "components/kpi_card", title: "Buying Power", value: number_to_currency(@summary.buying_power), icon: "savings" %>
   <% else %>
-    <%= render "components/stat_card", title: "Total Balance", value: "$0.00", icon: "account_balance_wallet" %>
-    <%= render "components/stat_card", title: "Day Gain/Loss", value: "$0.00", icon: "trending_up" %>
-    <%= render "components/stat_card", title: "Buying Power", value: "$0.00", icon: "savings" %>
+    <%= render "components/kpi_card", title: "Total Balance", value: "$0.00", icon: "account_balance_wallet" %>
+    <%= render "components/kpi_card", title: "Day Gain/Loss", value: "$0.00", icon: "trending_up" %>
+    <%= render "components/kpi_card", title: "Buying Power", value: "$0.00", icon: "savings" %>
   <% end %>
 </div>
 
