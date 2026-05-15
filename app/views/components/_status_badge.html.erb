@@ -1,16 +1,23 @@
 <%# Usage: render "components/status_badge", status: "active" %>
 <%# Supported: active, paused, error, warning, info, pending, suspended, disabled, sync_issue %>
+<%#
+  Semantic tokens from app/assets/tailwind/application.css @theme (#37).
+  Neutral states (pending, disabled) stay on slate because they describe
+  absence rather than a success/warning/error event. Suspended and
+  sync_issue collapse onto error/warning — they ARE those states under
+  different domain names.
+%>
 <%
   colors = {
-    "active"     => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    "paused"     => "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-    "error"      => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-    "warning"    => "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-    "info"       => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    "active"     => "bg-success/10 text-success dark:bg-success/20",
+    "paused"     => "bg-warning/10 text-warning dark:bg-warning/20",
+    "error"      => "bg-error/10 text-error dark:bg-error/20",
+    "warning"    => "bg-warning/10 text-warning dark:bg-warning/20",
+    "info"       => "bg-info/10 text-info dark:bg-info/20",
     "pending"    => "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
-    "suspended"  => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+    "suspended"  => "bg-error/10 text-error dark:bg-error/20",
     "disabled"   => "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-500",
-    "sync_issue" => "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"
+    "sync_issue" => "bg-warning/10 text-warning dark:bg-warning/20"
   }
   badge_class = colors[status.to_s] || colors["info"]
 %>
