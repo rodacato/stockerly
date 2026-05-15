@@ -1,0 +1,28 @@
+<%# Recent technical-zone transitions for this asset (#40 JTBD #6).
+    Rendered on the asset detail page; descriptive copy per ADR-001. %>
+<% observations = asset.technical_observations.recent.within_last(30).limit(5) %>
+<% if observations.any? %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm mb-8">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+        <span class="material-symbols-outlined text-lg">insights</span>
+        <p class="text-sm font-semibold tracking-tight uppercase">Recent Observations</p>
+      </div>
+    </div>
+    <ul class="space-y-3">
+      <% observations.each do |observation| %>
+        <li class="flex items-start gap-3 pb-3 border-b border-slate-100 dark:border-slate-800 last:border-0 last:pb-0">
+          <span class="material-symbols-outlined text-base text-slate-400">trending_up</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-slate-900 dark:text-white">
+              <%= asset.symbol %> <%= observation.phrase %>
+            </p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              <%= time_ago_in_words(observation.observed_at) %> ago
+            </p>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
