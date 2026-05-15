@@ -1,0 +1,30 @@
+<%# Upcoming Events — fixed-income maturities (#29 JTBD #3).
+    Descriptive copy per ADR-001: shows what's happening, no action verbs. %>
+<% if @upcoming_maturities.present? %>
+  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+        <span class="material-symbols-outlined text-lg">event</span>
+        <p class="text-sm font-semibold tracking-tight uppercase">Upcoming Events</p>
+      </div>
+    </div>
+    <ul class="space-y-3">
+      <% @upcoming_maturities.each do |position| %>
+        <% days_until = (position.maturity_date - Date.current).to_i %>
+        <% when_phrase = days_until == 0 ? "today" : days_until == 1 ? "tomorrow" : "in #{days_until} days" %>
+        <% urgent = days_until <= 3 %>
+        <li class="flex items-start gap-3 pb-3 border-b border-slate-100 dark:border-slate-800 last:border-0 last:pb-0">
+          <span class="material-symbols-outlined text-base <%= urgent ? 'text-amber-500' : 'text-slate-400' %>">schedule</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-slate-900 dark:text-white truncate">
+              <%= position.asset.symbol %> expires <%= when_phrase %>
+            </p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              <%= position.asset.name %> — <%= position.shares.to_i %> units, matures <%= position.maturity_date.strftime("%b %d, %Y") %>
+            </p>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

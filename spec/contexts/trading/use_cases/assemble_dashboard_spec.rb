@@ -18,6 +18,7 @@ RSpec.describe Trading::UseCases::AssembleDashboard do
       expect(data).to have_key(:sentiment)
       expect(data).to have_key(:fear_greed)
       expect(data).to have_key(:weekly_insight)
+      expect(data).to have_key(:upcoming_maturities)
     end
 
     it "includes PortfolioSummary when portfolio exists" do
@@ -139,6 +140,49 @@ RSpec.describe Trading::UseCases::AssembleDashboard do
       result = described_class.call(user: user.reload)
       insight = result.value![:weekly_insight]
       expect(insight[:has_data]).to be false
+    end
+
+    describe "upcoming_maturities (#29 JTBD #3)" do
+      let!(:cetes) { create(:asset, :fixed_income, symbol: "CETES_28D") }
+
+      it "returns positions maturing within 30 days, sorted by soonest first" do
+        create(:position, portfolio: portfolio, asset: cetes, maturity_date: 25.days.from_now.to_date)
+        create(:position, portfolio: portfolio, asset: cetes, maturity_date: 5.days.from_now.to_date)
+        create(:position, portfolio: portfolio, asset: cetes, maturity_date: 12.days.from_now.to_date)
+
+        result = described_class.call(user: user)
+        maturities = result.value![:upcoming_maturities]
+
+        expect(maturities.map { |p| (p.maturity_date - Date.current).to_i }).to eq([ 5, 12, 25 ])
+      end
+
+      it "excludes positions maturing beyond the 30-day window" do
+        create(:position, portfolio: portfolio, asset: cetes, maturity_date: 40.days.from_now.to_date)
+        create(:position, portfolio: portfolio, asset: cetes, maturity_date: 25.days.from_now.to_date)
+
+        result = described_class.call(user: user)
+        expect(result.value![:upcoming_maturities].size).to eq(1)
+      end
+
+      it "excludes expired (past-maturity) positions" do
+        create(:position, portfolio: portfolio, asset: cetes, maturity_date: 2.days.ago.to_date)
+
+        result = described_class.call(user: user)
+        expect(result.value![:upcoming_maturities]).to be_empty
+      end
+
+      it "excludes closed positions" do
+        create(:position, portfolio: portfolio, asset: cetes, maturity_date: 5.days.from_now.to_date, status: :closed, closed_at: Time.current)
+
+        result = described_class.call(user: user)
+        expect(result.value![:upcoming_maturities]).to be_empty
+      end
+
+      it "is empty when the user has no portfolio" do
+        portfolio.destroy
+        result = described_class.call(user: user.reload)
+        expect(result.value![:upcoming_maturities]).to eq([])
+      end
     end
 
     it "preloads asset_price_histories on watchlist items" do

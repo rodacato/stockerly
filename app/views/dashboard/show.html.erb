@@ -75,6 +75,7 @@
     <%= turbo_frame_tag "dashboard_trending", src: dashboard_trending_path, loading: "lazy" do %>
       <%= render "components/skeleton", type: "card", count: 1 %>
     <% end %>
+    <%= render "dashboard/upcoming_events" %>
     <%= render "dashboard/weekly_insight" %>
     <%= render "dashboard/market_status" %>
   </div>

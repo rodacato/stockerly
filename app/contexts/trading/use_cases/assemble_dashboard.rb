@@ -32,6 +32,7 @@ module Trading
         }
 
         weekly_insight = compute_weekly_insight(portfolio, currency)
+        upcoming_maturities = portfolio ? load_upcoming_maturities(portfolio) : []
 
         Success({
           summary: summary,
@@ -42,6 +43,7 @@ module Trading
           sentiment: sentiment,
           fear_greed: fear_greed,
           weekly_insight: weekly_insight,
+          upcoming_maturities: upcoming_maturities,
           currency: currency
         })
       end
@@ -66,6 +68,21 @@ module Trading
       end
 
       NormalizedSnapshot = Data.define(:date, :total_value)
+
+      UPCOMING_MATURITY_WINDOW_DAYS = 30
+
+      # Fixed-income positions whose lot-level maturity falls inside the
+      # next 30 days, ordered by soonest first. Used by the dashboard
+      # "Upcoming events" surface (#29 JTBD #3). The 30-day window is a
+      # superset of the alert thresholds (7/3/1) so the user sees what's
+      # coming weeks before an alert fires.
+      def load_upcoming_maturities(portfolio)
+        portfolio.positions
+                 .where(status: :open)
+                 .where(maturity_date: Date.current..(Date.current + UPCOMING_MATURITY_WINDOW_DAYS.days))
+                 .order(:maturity_date)
+                 .includes(:asset)
+      end
     end
   end
 end
