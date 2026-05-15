@@ -79,6 +79,16 @@ todos=$(
     | wc -l | tr -d ' '
 )
 
+# 6. Hardcoded color classes in views: emerald / rose / amber / violet / blue
+# with a Tailwind shade number (text-emerald-600, bg-rose-50, etc.). Each hit
+# is a candidate for migration to a @theme semantic token (success / error /
+# warning / info). Tracked as part of #37 (S3 → S6 incremental migration);
+# must decrease each sprint.
+hardcoded_color_classes=$(
+  grep -rEn '(bg|text|border)-(emerald|rose|amber|violet|blue)-[0-9]+' app/views/ 2>/dev/null \
+    | wc -l | tr -d ' '
+)
+
 # ---- output ----
 
 if [[ "$FORMAT" == "json" ]]; then
@@ -89,7 +99,8 @@ if [[ "$FORMAT" == "json" ]]; then
   "hardcoded_usd_literals": $hardcoded_usd,
   "adr001_violations_in_views": $adr001_violations,
   "bloated_docs_count": $bloated_docs,
-  "todo_fixme_markers": $todos
+  "todo_fixme_markers": $todos,
+  "hardcoded_color_classes_in_views": $hardcoded_color_classes
 }
 EOF
   exit 0
@@ -106,6 +117,7 @@ cat <<EOF
   ADR-001 violations in views:        $adr001_violations
   Bloated docs (>200 lines):          $bloated_docs
   TODO/FIXME/XXX markers:             $todos
+  Hardcoded color classes in views:   $hardcoded_color_classes
 
 EOF
 
@@ -116,10 +128,10 @@ if [[ -n "$bloated_docs_list" ]]; then
 fi
 
 cat <<EOF
-  ↓ Sprint 2 target deltas:
-    - hardcoded_usd_literals → near 0 (Asset.currency lands)
-    - cross_context_leaks    → 1 less (#45 / S2-E)
-    - adr001_violations      → near 0 (#31 closes)
+  ↓ Sprint 3+ target deltas:
+    - hardcoded_color_classes → decrease each sprint via #37 migration
+    - cross_context_leaks     → S5 architectural sprint (ADR-002)
+    - adr001_violations       → S6 prescriptive copy rewrite (#36)
 
   Compare across sprints by checking this file's output into the retro.
 ═══════════════════════════════════════════════════════════════
