@@ -33,10 +33,10 @@
             <p class="text-slate-900 dark:text-white text-2xl font-semibold tracking-tight"><%= number_to_currency(asset.current_price) %></p>
             <% change = asset.change_percent_24h || 0 %>
             <% positive = change >= 0 %>
-            <p class="<%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %> text-lg font-medium">
+            <p class="<%= positive ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %> text-lg font-medium">
               <%= positive ? '+' : '' %><%= number_with_precision(change, precision: 2) %>%
             </p>
-            <span class="material-symbols-outlined text-lg <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
+            <span class="material-symbols-outlined text-lg <%= positive ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>">
               <%= positive ? 'trending_up' : 'trending_down' %>
             </span>
           <% end %>
@@ -68,13 +68,13 @@
         <% if is_watchlisted %>
           <%= button_to watchlist_item_path(asset.watchlist_items.find_by(user: current_user)),
                 method: :delete,
-                class: "flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-sm font-bold border border-emerald-200 dark:border-emerald-800" do %>
+                class: "flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-success/10 dark:bg-success/20 text-success-fg dark:text-success text-sm font-bold border border-success/20 dark:border-success/30" do %>
             <span class="material-symbols-outlined">check_circle</span>
             <span>Watching</span>
           <% end %>
         <% else %>
           <%= button_to watchlist_items_path, params: { asset_id: asset.id },
-                class: "flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-sm font-bold shadow-md hover:bg-blue-800 transition-all" do %>
+                class: "flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-sm font-bold shadow-md hover:bg-primary/90 transition-all" do %>
             <span class="material-symbols-outlined">add_circle</span>
             <span>Add to Watchlist</span>
           <% end %>

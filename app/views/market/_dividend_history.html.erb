@@ -40,7 +40,7 @@
               <td class="py-3 px-4 text-slate-600 dark:text-slate-300">
                 <%= div.pay_date&.strftime("%b %d, %Y") || "—" %>
               </td>
-              <td class="py-3 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
+              <td class="py-3 px-4 text-right font-bold text-success-fg dark:text-success">
                 <%= number_to_currency(div.amount_per_share) %>
               </td>
             </tr>

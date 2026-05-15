@@ -11,7 +11,7 @@
     <div class="p-5 space-y-4">
       <div class="flex justify-between items-center">
         <span class="text-sm text-slate-500 dark:text-slate-400">Annual Yield Rate</span>
-        <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400"><%= number_with_precision(asset.yield_rate, precision: 2) %>%</span>
+        <span class="text-lg font-bold text-success-fg dark:text-success"><%= number_with_precision(asset.yield_rate, precision: 2) %>%</span>
       </div>
       <div class="flex justify-between items-center">
         <span class="text-sm text-slate-500 dark:text-slate-400">Face Value</span>
@@ -88,16 +88,16 @@
         <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-1">Value at Maturity</p>
         <p class="text-xl font-bold text-slate-900 dark:text-white">$<%= number_with_precision(yield_data[:face_value_100], precision: 2) %></p>
       </div>
-      <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 text-center">
-        <p class="text-xs text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider mb-1">Total Return</p>
-        <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400">+$<%= number_with_precision(yield_data[:total_return_100], precision: 2) %></p>
+      <div class="bg-success/10 dark:bg-success/20 rounded-lg p-4 text-center">
+        <p class="text-xs text-success-fg dark:text-success uppercase font-bold tracking-wider mb-1">Total Return</p>
+        <p class="text-xl font-bold text-success-fg dark:text-success">+$<%= number_with_precision(yield_data[:total_return_100], precision: 2) %></p>
       </div>
     </div>
   </div>
 </section>
 
-<div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-  <p class="text-xs text-amber-700 dark:text-amber-400 flex items-center gap-2">
+<div class="bg-warning/10 dark:bg-warning/20 border border-warning/20 dark:border-warning/30 rounded-lg p-4">
+  <p class="text-xs text-warning-fg dark:text-warning flex items-center gap-2">
     <span class="material-symbols-outlined text-sm">info</span>
     CETES data from Banxico. Past yields do not guarantee future returns.
   </p>

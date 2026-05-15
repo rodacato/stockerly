@@ -30,7 +30,7 @@
       </div>
       <div>
         <p class="text-xs font-medium text-slate-400 mb-1">Target Δ%</p>
-        <span class="text-xl font-black <%= positive_diff ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
+        <span class="text-xl font-black <%= positive_diff ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>">
           <%= positive_diff ? "+" : "" %><%= diff_pct %>%
         </span>
       </div>
@@ -47,11 +47,11 @@
           <div class="absolute top-0 h-full bg-primary/30 rounded-full" style="width: <%= position_pct %>%"></div>
           <div class="absolute -top-1 w-3 h-4 bg-primary rounded-sm transform -translate-x-1/2" style="left: <%= position_pct %>%" title="Current: <%= number_to_currency(current) %>"></div>
           <%# Target marker %>
-          <div class="absolute -top-1 w-0.5 h-4 transform -translate-x-1/2 <%= positive_diff ? 'bg-emerald-500' : 'bg-rose-500' %>" style="left: <%= target_pct %>%" title="Target: <%= number_to_currency(target) %>"></div>
+          <div class="absolute -top-1 w-0.5 h-4 transform -translate-x-1/2 <%= positive_diff ? 'bg-success' : 'bg-error' %>" style="left: <%= target_pct %>%" title="Target: <%= number_to_currency(target) %>"></div>
         </div>
         <div class="flex justify-between mt-2">
           <span class="text-[10px] font-bold text-primary">Current</span>
-          <span class="text-[10px] font-bold <%= positive_diff ? 'text-emerald-600' : 'text-rose-600' %>">Target</span>
+          <span class="text-[10px] font-bold <%= positive_diff ? 'text-success-fg' : 'text-error-fg' %>">Target</span>
         </div>
       </div>
     <% end %>
