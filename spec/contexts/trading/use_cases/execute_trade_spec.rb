@@ -28,6 +28,15 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
       expect(trade.position.shares).to eq(10.0)
     end
 
+    it "leaves maturity_date nil for stock positions even when supplied" do
+      result = described_class.call(
+        user: user,
+        params: buy_params.merge(maturity_date: 28.days.from_now.to_date.iso8601)
+      )
+      expect(result).to be_success
+      expect(result.value!.position.maturity_date).to be_nil
+    end
+
     it "adds shares to existing open position" do
       position = create(:position, portfolio: portfolio, asset: asset, shares: 5.0, avg_cost: 140.0, status: :open)
 
@@ -36,6 +45,62 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
       expect(result).to be_success
       position.reload
       expect(position.shares).to eq(15.0)
+    end
+  end
+
+  describe "fixed-income trades (#29 JTBD #3)" do
+    # CETES are MXN-only; pin the user to MXN so this spec exercises the
+    # maturity_date flow rather than the FX-resolution branch (covered in
+    # the currency/fx_rate describe block below and in fx_rate_resolver_spec).
+    let(:user) { create(:user, preferred_currency: "MXN") }
+    let!(:portfolio) { create(:portfolio, user: user) }
+    let!(:cetes) { create(:asset, :fixed_income, symbol: "CETES_28D") }
+    let(:maturity) { 28.days.from_now.to_date }
+
+    let(:cetes_buy_params) do
+      {
+        asset_symbol: "CETES_28D",
+        side: "buy",
+        shares: 100.0,
+        price_per_share: 9.85,
+        maturity_date: maturity.iso8601
+      }
+    end
+
+    it "persists maturity_date onto the new position" do
+      result = described_class.call(user: user, params: cetes_buy_params)
+      expect(result).to be_success
+      expect(result.value!.position.maturity_date).to eq(maturity)
+    end
+
+    it "keeps the existing maturity_date when adding to an open CETES position" do
+      # Reinvestment scenario: an open position retains its original maturity
+      # even if the user buys more (in practice CETES are typically bought
+      # once per lot, but the model must not silently overwrite).
+      existing = create(
+        :position,
+        portfolio: portfolio,
+        asset: cetes,
+        shares: 50.0,
+        avg_cost: 9.85,
+        maturity_date: maturity
+      )
+
+      result = described_class.call(
+        user: user,
+        params: cetes_buy_params.merge(maturity_date: 91.days.from_now.to_date.iso8601)
+      )
+
+      expect(result).to be_success
+      expect(existing.reload.maturity_date).to eq(maturity)
+      expect(existing.shares).to eq(150.0)
+    end
+
+    it "rejects the trade when maturity_date is missing" do
+      result = described_class.call(user: user, params: cetes_buy_params.except(:maturity_date))
+      expect(result).to be_failure
+      expect(result.failure[0]).to eq(:validation)
+      expect(result.failure[1][:maturity_date]).to include("required for fixed-income assets")
     end
   end
 

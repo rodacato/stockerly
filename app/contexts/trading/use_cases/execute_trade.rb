@@ -44,8 +44,21 @@ module Trading
           shares: 0,
           avg_cost: attrs[:price_per_share],
           opened_at: Time.current,
-          status: :open
+          status: :open,
+          maturity_date: maturity_date_for(asset, attrs)
         )
+      end
+
+      # Per-lot maturity for fixed-income positions only (#29 JTBD #3). The
+      # contract requires the field when the asset is fixed_income; for
+      # other asset types the value is ignored even if supplied.
+      def maturity_date_for(asset, attrs)
+        return nil unless asset.asset_type_fixed_income?
+        return nil if attrs[:maturity_date].blank?
+
+        Date.parse(attrs[:maturity_date])
+      rescue ArgumentError, TypeError
+        nil
       end
 
       def sell_exceeds_position?(attrs, position)
