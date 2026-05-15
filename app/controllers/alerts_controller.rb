@@ -40,31 +40,23 @@ class AlertsController < AuthenticatedController
   end
 
   def toggle
-    result = Alerts::UseCases::ToggleRule.call(user: current_user, rule_id: params[:id])
-
-    case result
-    in Dry::Monads::Success(rule)
-      respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.replace(rule, partial: "alerts/alert_rule", locals: { rule: rule }) }
-        format.html { redirect_to alerts_path, notice: "Alert #{rule.active? ? 'activated' : 'paused'}." }
-      end
-    in Dry::Monads::Failure
-      redirect_to alerts_path, alert: "Alert rule not found."
+    rule = Alerts::UseCases::ToggleRule.call(user: current_user, rule_id: params[:id])
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(rule, partial: "alerts/alert_rule", locals: { rule: rule }) }
+      format.html { redirect_to alerts_path, notice: "Alert #{rule.active? ? 'activated' : 'paused'}." }
     end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to alerts_path, alert: "Alert rule not found."
   end
 
   def destroy
-    result = Alerts::UseCases::DestroyRule.call(user: current_user, rule_id: params[:id])
-
-    case result
-    in Dry::Monads::Success(rule)
-      respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.remove(rule) }
-        format.html { redirect_to alerts_path, notice: "Alert deleted successfully." }
-      end
-    in Dry::Monads::Failure
-      redirect_to alerts_path, alert: "Alert rule not found."
+    rule = Alerts::UseCases::DestroyRule.call(user: current_user, rule_id: params[:id])
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(rule) }
+      format.html { redirect_to alerts_path, notice: "Alert deleted successfully." }
     end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to alerts_path, alert: "Alert rule not found."
   end
 
   private

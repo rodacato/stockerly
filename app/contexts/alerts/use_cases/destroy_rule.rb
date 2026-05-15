@@ -1,18 +1,13 @@
 module Alerts
   module UseCases
-    class DestroyRule < ApplicationUseCase
+    # ADR-006: single-resource mutation with the canonical 404 failure path.
+    # `find` raises ActiveRecord::RecordNotFound; the controller handles
+    # that with a flash + redirect.
+    class DestroyRule < SimpleUseCase
       def call(user:, rule_id:)
-        rule = yield find_rule(user, rule_id)
+        rule = user.alert_rules.find(rule_id)
         rule.destroy!
-
-        Success(rule)
-      end
-
-      private
-
-      def find_rule(user, id)
-        rule = user.alert_rules.find_by(id: id)
-        rule ? Success(rule) : Failure([ :not_found, "Alert rule not found" ])
+        rule
       end
     end
   end

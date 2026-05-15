@@ -6,15 +6,23 @@ RSpec.describe Alerts::UseCases::DestroyRule do
   describe ".call" do
     it "destroys the alert rule" do
       rule = create(:alert_rule, user: user)
-      result = described_class.call(user: user, rule_id: rule.id)
 
-      expect(result).to be_success
-      expect(AlertRule.exists?(rule.id)).to be false
+      expect {
+        described_class.call(user: user, rule_id: rule.id)
+      }.to change(AlertRule, :count).by(-1)
     end
 
-    it "returns Failure when rule not found" do
-      result = described_class.call(user: user, rule_id: 0)
-      expect(result).to be_failure
+    it "returns the destroyed (frozen) rule for caller inspection" do
+      rule = create(:alert_rule, user: user)
+      result = described_class.call(user: user, rule_id: rule.id)
+
+      expect(result).to be_destroyed
+    end
+
+    it "raises ActiveRecord::RecordNotFound for an unknown rule id" do
+      expect {
+        described_class.call(user: user, rule_id: 0)
+      }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

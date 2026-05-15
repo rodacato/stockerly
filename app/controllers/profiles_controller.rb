@@ -17,16 +17,13 @@ class ProfilesController < AuthenticatedController
   end
 
   def update_preferences
-    result = Alerts::UseCases::UpdatePreferences.call(
+    Alerts::UseCases::UpdatePreferences.call(
       user: current_user,
       params: preference_params.to_h.symbolize_keys
     )
-
-    if result.success?
-      head :ok
-    else
-      head :unprocessable_content
-    end
+    head :ok
+  rescue ActiveRecord::RecordInvalid
+    head :unprocessable_content
   end
 
   def change_password
