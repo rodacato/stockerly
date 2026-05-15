@@ -40,16 +40,12 @@ class WatchlistItemsController < AuthenticatedController
   end
 
   def destroy
-    result = Trading::UseCases::RemoveFromWatchlist.call(user: current_user, watchlist_item_id: params[:id])
-
-    case result
-    in Dry::Monads::Success(item)
-      respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.remove(item) }
-        format.html { redirect_back fallback_location: profile_path, notice: "Removed from watchlist." }
-      end
-    in Dry::Monads::Failure
-      redirect_back fallback_location: profile_path, alert: "Item not found."
+    item = Trading::UseCases::RemoveFromWatchlist.call(user: current_user, watchlist_item_id: params[:id])
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(item) }
+      format.html { redirect_back fallback_location: profile_path, notice: "Removed from watchlist." }
     end
+  rescue ActiveRecord::RecordNotFound
+    redirect_back fallback_location: profile_path, alert: "Item not found."
   end
 end

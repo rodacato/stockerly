@@ -78,13 +78,10 @@ module Admin
     end
 
     def toggle_status
-      result = Administration::UseCases::Assets::ToggleStatus.call(asset_id: params[:id])
-
-      if result.success?
-        redirect_with_filters(notice: "Asset status updated.")
-      else
-        redirect_with_filters(alert: result.failure.last)
-      end
+      Administration::UseCases::Assets::ToggleStatus.call(asset_id: params[:id])
+      redirect_with_filters(notice: "Asset status updated.")
+    rescue ActiveRecord::RecordNotFound
+      redirect_with_filters(alert: "Asset not found")
     end
 
     private

@@ -1,18 +1,13 @@
 module Trading
   module UseCases
-    class RemoveFromWatchlist < ApplicationUseCase
+    # ADR-006: single-resource mutation with the canonical 404 failure
+    # path. `find` raises ActiveRecord::RecordNotFound; the controller
+    # handles that with a flash + redirect.
+    class RemoveFromWatchlist < SimpleUseCase
       def call(user:, watchlist_item_id:)
-        item = yield find_item(user, watchlist_item_id)
+        item = user.watchlist_items.find(watchlist_item_id)
         item.destroy!
-
-        Success(item)
-      end
-
-      private
-
-      def find_item(user, id)
-        item = user.watchlist_items.find_by(id: id)
-        item ? Success(item) : Failure([ :not_found, "Watchlist item not found" ])
+        item
       end
     end
   end

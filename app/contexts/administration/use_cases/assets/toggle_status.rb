@@ -1,15 +1,14 @@
 module Administration
   module UseCases
     module Assets
-      class ToggleStatus < ApplicationUseCase
+      # ADR-006: single-resource mutation with the canonical 404 failure
+      # path. `find` raises ActiveRecord::RecordNotFound; the controller
+      # handles that with a flash + redirect.
+      class ToggleStatus < SimpleUseCase
         def call(asset_id:)
-          asset = Asset.find_by(id: asset_id)
-          return Failure([ :not_found, "Asset not found" ]) unless asset
-
-          new_status = asset.active? ? :disabled : :active
-          asset.update!(sync_status: new_status)
-
-          Success(asset)
+          asset = Asset.find(asset_id)
+          asset.update!(sync_status: asset.active? ? :disabled : :active)
+          asset
         end
       end
     end
