@@ -15,7 +15,7 @@ RSpec.describe Notification, type: :model do
   describe "enums" do
     it "defines notification_type enum" do
       expect(Notification.notification_types).to eq(
-        "alert_triggered" => 0, "earnings_reminder" => 1, "system" => 2
+        "alert_triggered" => 0, "earnings_reminder" => 1, "system" => 2, "maturity_reminder" => 3
       )
     end
   end
