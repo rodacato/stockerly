@@ -20,12 +20,13 @@ RSpec.describe "Market asset analyst target price", type: :request do
           })
       end
 
-      it "displays analyst price target with upside" do
+      it "displays analyst price target with positive diff" do
         get market_asset_path(asset.symbol)
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Analyst Price Target")
-        expect(response.body).to include("Upside")
+        expect(response.body).to include("Target Δ%")
+        expect(response.body).to match(/\+\d+(\.\d+)?%/)
       end
     end
 
@@ -42,10 +43,11 @@ RSpec.describe "Market asset analyst target price", type: :request do
           })
       end
 
-      it "displays downside label" do
+      it "displays the neutral target-diff label with a negative value" do
         get market_asset_path(asset.symbol)
 
-        expect(response.body).to include("Downside")
+        expect(response.body).to include("Target Δ%")
+        expect(response.body).to match(/-\d+(\.\d+)?%/)
       end
     end
 
