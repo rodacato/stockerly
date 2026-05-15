@@ -1,0 +1,67 @@
+<%#
+  Usage:
+    render "components/kpi_card",
+      title:           "Total Balance",
+      value:           "$42,540.00",
+      icon:            "account_balance_wallet", # optional
+      tone:            :info,                    # :neutral (default) | :info | :success | :warning | :error
+      change:          "+1.2%",                  # optional inline pill (tone follows change_positive)
+      change_positive: true,                     # required when `change:` is present
+      badge:           "Active",                 # optional small caption pill matching tone
+      subtitle:        "vs yesterday"            # optional small caption under the value
+
+  Replaces the legacy _stat_card and _admin_kpi_card partials. Colors are
+  derived from the brand semantic tokens declared in @theme
+  (text-success / text-error / text-warning / text-info) instead of the
+  hardcoded `emerald/rose/amber/blue-NNN` classes the old partials used.
+%>
+<% icon            ||= nil %>
+<% tone            ||= :neutral %>
+<% change          ||= nil %>
+<% change_positive  = local_assigns.fetch(:change_positive, true) %>
+<% badge           ||= nil %>
+<% subtitle        ||= nil %>
+<%
+  tone_classes = {
+    neutral: { icon_bg: "bg-slate-100 dark:bg-slate-800",     icon_text: "text-slate-500",  badge_text: "text-slate-500"  },
+    info:    { icon_bg: "bg-info/10    dark:bg-info/20",      icon_text: "text-info",       badge_text: "text-info"       },
+    success: { icon_bg: "bg-success/10 dark:bg-success/20",   icon_text: "text-success",    badge_text: "text-success"    },
+    warning: { icon_bg: "bg-warning/10 dark:bg-warning/20",   icon_text: "text-warning",    badge_text: "text-warning"    },
+    error:   { icon_bg: "bg-error/10   dark:bg-error/20",     icon_text: "text-error",      badge_text: "text-error"      }
+  }
+  t = tone_classes[tone.to_sym] || tone_classes[:neutral]
+
+  change_tone = change_positive ? tone_classes[:success] : tone_classes[:error]
+%>
+
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+  <div class="flex items-start justify-between gap-3">
+    <div class="min-w-0">
+      <p class="text-sm font-medium text-slate-500 dark:text-slate-400"><%= title %></p>
+      <div class="mt-2 flex items-baseline gap-2 flex-wrap">
+        <p class="text-2xl font-black tracking-tight text-slate-900 dark:text-white"><%= value %></p>
+        <% if change.present? %>
+          <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= change_tone[:icon_bg] %> <%= change_tone[:icon_text] %>">
+            <span class="material-symbols-outlined text-sm"><%= change_positive ? "trending_up" : "trending_down" %></span>
+            <%= change %>
+          </span>
+        <% end %>
+      </div>
+      <% if subtitle.present? %>
+        <p class="text-xs text-slate-400 dark:text-slate-500 mt-2"><%= subtitle %></p>
+      <% end %>
+    </div>
+    <% if icon.present? %>
+      <div class="flex flex-col items-end gap-2 shrink-0">
+        <span class="size-10 rounded-lg <%= t[:icon_bg] %> flex items-center justify-center">
+          <span class="material-symbols-outlined text-xl <%= t[:icon_text] %>"><%= icon %></span>
+        </span>
+        <% if badge.present? %>
+          <span class="text-xs font-bold <%= t[:badge_text] %>"><%= badge %></span>
+        <% end %>
+      </div>
+    <% elsif badge.present? %>
+      <span class="text-xs font-bold <%= t[:badge_text] %> shrink-0"><%= badge %></span>
+    <% end %>
+  </div>
+</div>
