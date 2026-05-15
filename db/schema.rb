@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_15_031500) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_15_040000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -384,6 +384,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_031500) do
     t.index ["severity"], name: "index_system_logs_on_severity"
   end
 
+  create_table "technical_observations", force: :cascade do |t|
+    t.bigint "asset_id", null: false
+    t.datetime "created_at", null: false
+    t.jsonb "indicator_snapshot", default: {}, null: false
+    t.string "observation_type", null: false
+    t.datetime "observed_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id", "observation_type", "observed_at"], name: "index_obs_on_asset_type_date"
+    t.index ["asset_id"], name: "index_technical_observations_on_asset_id"
+    t.index ["observed_at"], name: "index_technical_observations_on_observed_at"
+  end
+
   create_table "trades", force: :cascade do |t|
     t.bigint "asset_id", null: false
     t.datetime "created_at", null: false
@@ -471,6 +483,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_031500) do
   add_foreign_key "positions", "portfolios"
   add_foreign_key "remember_tokens", "users"
   add_foreign_key "stock_splits", "assets"
+  add_foreign_key "technical_observations", "assets"
   add_foreign_key "trades", "assets"
   add_foreign_key "trades", "portfolios"
   add_foreign_key "trades", "positions"
