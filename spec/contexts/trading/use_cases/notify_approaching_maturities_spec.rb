@@ -84,6 +84,29 @@ RSpec.describe Trading::UseCases::NotifyApproachingMaturities do
       expect { use_case.call }.not_to change(Notification, :count)
     end
 
+    describe "N+1 guard — cooldown lookup is bounded regardless of position count (S04 retro carry-over)" do
+      it "issues a constant number of cooldown queries no matter how many positions match" do
+        # 5 positions all in threshold range: if persist_if_fresh devolves
+        # back to a per-iteration `already_notified_today?` lookup, query
+        # count would grow O(N). The pre-fetched Set keeps it O(1) for the
+        # cooldown check, plus the inserts and surrounding reads.
+        5.times do |i|
+          asset = create(:asset, :fixed_income, symbol: "CETES_TIER_#{i}")
+          create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 9.85, maturity_date: 3.days.from_now.to_date)
+        end
+
+        # Inject a notification for the first position so the cooldown
+        # branch is actually exercised (not just the always-fire path).
+        existing = Position.where.not(maturity_date: nil).first
+        create(:notification, user: user, notifiable: existing, notification_type: :maturity_reminder, created_at: 1.hour.ago)
+
+        # The pre-fetched cooldown query is ONE for the whole batch.
+        # The remaining queries are includes preloads + inserts.
+        # If a regression re-introduces a per-iteration query, this cap fails.
+        expect { use_case.call }.to make_queries(at_most: 20)
+      end
+    end
+
     describe "cooldown (one notification per position per calendar day)" do
       it "does not double-fire when called twice on the same day" do
         maturing_in(3)
