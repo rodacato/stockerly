@@ -26,16 +26,25 @@ class Position < ApplicationRecord
   # Weighted-average cost-per-share in the target currency, derived from
   # each buy trade's historical fx_rate_at_execution. Falls back to the
   # native asset-currency avg_cost when the target matches asset.currency.
+  #
+  # Operates on the in-memory `trades` collection so a caller can preload
+  # via `includes(:trades)` and avoid a per-position query (the call site
+  # in PortfolioSummary#total_invested does this).
   def avg_cost_in(target_currency)
     return avg_cost.to_d if target_currency == asset&.currency
 
-    buys = trades.kept.where(side: :buy)
+    buys = trades.select { |t| t.side == "buy" && t.discarded_at.nil? }
     return 0.to_d if buys.empty?
 
-    total_shares    = buys.sum(:shares)
-    total_user_cost = buys.sum("shares * price_per_share * COALESCE(fx_rate_at_execution, 0)")
+    missing = buys.count { |t| t.fx_rate_at_execution.nil? }
+    if missing.positive?
+      raise "Position##{id}: #{missing} buy trade(s) missing fx_rate_at_execution; cannot derive cost basis in #{target_currency}"
+    end
+
+    total_shares = buys.sum(&:shares)
     return 0.to_d if total_shares.zero?
 
+    total_user_cost = buys.sum { |t| t.shares * t.price_per_share * t.fx_rate_at_execution }
     (total_user_cost / total_shares).to_d
   end
 

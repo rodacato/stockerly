@@ -55,23 +55,17 @@ module Trading
         # WeeklyInsightCalculator computes weekly_change as a percentage of
         # total_value — homogeneous currency is required for the percent
         # to be meaningful when snapshots straddle a preferred_currency
-        # change. Pre-convert to the user's current currency here.
-        normalized = snapshots.map { |s| normalize_snapshot(s, currency) }
+        # change. Pre-convert to the user's current currency here, routing
+        # through Portfolio#convert so its FX cache amortizes the lookups.
+        normalized = snapshots.map do |s|
+          value = portfolio.convert(s.total_value, from: s.currency, to: currency)
+          NormalizedSnapshot.new(date: s.date, total_value: value)
+        end
         positions = portfolio.open_positions.includes(:asset)
         Domain::WeeklyInsightCalculator.calculate(snapshots: normalized, positions: positions)
       end
 
       NormalizedSnapshot = Data.define(:date, :total_value)
-
-      def normalize_snapshot(snapshot, currency)
-        value = if snapshot.currency == currency
-          snapshot.total_value
-        else
-          FxRate.convert(snapshot.total_value.to_d, from: snapshot.currency, to: currency) ||
-            raise("Missing FX rate #{snapshot.currency}->#{currency} (PortfolioSnapshot##{snapshot.id})")
-        end
-        NormalizedSnapshot.new(date: snapshot.date, total_value: value)
-      end
     end
   end
 end

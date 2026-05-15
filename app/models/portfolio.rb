@@ -21,27 +21,35 @@ class Portfolio < ApplicationRecord
   end
 
   def total_value(currency: user.preferred_currency)
-    positions_total = open_positions.includes(:asset).sum do |p|
+    positions_total = open_positions_with_assets.sum do |p|
       position_market_value_in(p, currency)
     end
     positions_total + buying_power_in(currency)
   end
 
+  # Honest gain/loss in the target currency: market value (today's FX) minus
+  # cost basis (each trade's historical FX). The previous implementation
+  # computed the gain in asset currency and converted that delta — which
+  # ignored the FX gain/loss on the principal itself (Gemini #57). Example:
+  # bought $100 of AAPL when FX was 20 MXN/USD (cost 2000 MXN); today
+  # AAPL is still $100 but FX is 17 MXN/USD (value 1700 MXN). The user
+  # actually lost 300 MXN; the old formula reported 0.
   def total_unrealized_gain(currency: user.preferred_currency)
-    open_positions.includes(:asset).sum do |p|
-      raw_gain = p.shares * ((p.asset.current_price || 0) - p.avg_cost)
-      convert(raw_gain, from: p.asset.currency, to: currency)
+    open_positions_with_trades.sum do |p|
+      market = position_market_value_in(p, currency)
+      cost   = p.cost_basis_in(currency)
+      market - cost
     end
   end
 
   def allocation_by_sector(currency: user.preferred_currency)
-    open_positions.includes(:asset).group_by { |p| p.asset.sector }.transform_values do |group|
+    open_positions_with_assets.group_by { |p| p.asset.sector }.transform_values do |group|
       group.sum { |p| position_market_value_in(p, currency) }
     end
   end
 
   def allocation_by_asset_type(currency: user.preferred_currency)
-    open_positions.includes(:asset).group_by { |p| p.asset.asset_type }.transform_values do |group|
+    open_positions_with_assets.group_by { |p| p.asset.asset_type }.transform_values do |group|
       group.sum { |p| position_market_value_in(p, currency) }
     end
   end
@@ -50,7 +58,27 @@ class Portfolio < ApplicationRecord
     snapshots.where(date: Date.yesterday).first
   end
 
+  # Public so PortfolioSummary and PeriodReturnsCalculator can route through
+  # the per-instance FX cache below — collapses what would otherwise be one
+  # FxRate.find_by per position/snapshot into a single query per pair.
+  def convert(amount, from:, to:)
+    return amount.to_d if from == to
+
+    rate = fx_rate_cache[[ from, to ]] ||= FxRate.find_by(base_currency: from, quote_currency: to)&.rate
+    raise "Missing FX rate #{from}->#{to} (Portfolio##{id})" if rate.nil?
+
+    amount.to_d * rate
+  end
+
   private
+
+  def open_positions_with_assets
+    open_positions.includes(:asset)
+  end
+
+  def open_positions_with_trades
+    open_positions.includes(:asset, :trades)
+  end
 
   def position_market_value_in(position, target_currency)
     raw = position.shares * (position.asset.current_price || 0)
@@ -61,11 +89,7 @@ class Portfolio < ApplicationRecord
     convert(buying_power, from: buying_power_currency, to: target_currency)
   end
 
-  def convert(amount, from:, to:)
-    return amount.to_d if from == to
-
-    converted = FxRate.convert(amount.to_d, from: from, to: to)
-    raise "Missing FX rate #{from}->#{to} (Portfolio##{id})" if converted.nil?
-    converted
+  def fx_rate_cache
+    @fx_rate_cache ||= {}
   end
 end

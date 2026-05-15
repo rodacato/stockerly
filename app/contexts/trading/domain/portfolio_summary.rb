@@ -13,10 +13,7 @@ module Trading
       end
 
       def buying_power
-        return portfolio.buying_power if portfolio.buying_power_currency == currency
-
-        FxRate.convert(portfolio.buying_power.to_d, from: portfolio.buying_power_currency, to: currency) ||
-          raise("Missing FX rate #{portfolio.buying_power_currency}->#{currency} (Portfolio##{portfolio.id})")
+        portfolio.convert(portfolio.buying_power, from: portfolio.buying_power_currency, to: currency)
       end
 
       def unrealized_gain
@@ -42,8 +39,11 @@ module Trading
       # This is what makes Gain/Loss percent honest for a mixed MXN+USD
       # portfolio — the previous implementation summed raw asset-currency
       # avg_cost across positions.
+      #
+      # Eager-loads trades so Position#cost_basis_in iterates the loaded
+      # collection in Ruby instead of issuing a per-position SQL query.
       def total_invested
-        portfolio.open_positions.includes(:asset).sum do |p|
+        portfolio.open_positions.includes(:asset, :trades).sum do |p|
           p.cost_basis_in(currency)
         end
       end
@@ -62,10 +62,7 @@ module Trading
       private
 
       def total_value_of(snapshot)
-        return snapshot.total_value if snapshot.currency == currency
-
-        FxRate.convert(snapshot.total_value.to_d, from: snapshot.currency, to: currency) ||
-          raise("Missing FX rate #{snapshot.currency}->#{currency} (PortfolioSnapshot##{snapshot.id})")
+        portfolio.convert(snapshot.total_value, from: snapshot.currency, to: currency)
       end
     end
   end

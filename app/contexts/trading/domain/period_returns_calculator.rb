@@ -60,11 +60,11 @@ module Trading
         GainLoss.new(absolute: diff.round(2), percent: percent.round(2))
       end
 
+      # Routes through Portfolio#convert so the per-instance FX cache
+      # collapses what would otherwise be one FxRate.find_by per snapshot
+      # into a single query per (snapshot.currency, @currency) pair.
       def snapshot_value(snapshot)
-        return snapshot.total_value if snapshot.currency == @currency
-
-        FxRate.convert(snapshot.total_value.to_d, from: snapshot.currency, to: @currency) ||
-          raise("Missing FX rate #{snapshot.currency}->#{@currency} (PortfolioSnapshot##{snapshot.id})")
+        @portfolio.convert(snapshot.total_value, from: snapshot.currency, to: @currency)
       end
 
       def empty_results
