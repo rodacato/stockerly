@@ -129,13 +129,22 @@ Key cross-context flows:
 - `Identity::Events::UserRegistered` → `Identity::Handlers::CreatePortfolioOnRegistration` (write event)
 - `MarketData::Queries::*` consumed by Trading (read API per ADR-002)
 
-### ApplicationUseCase Base Class
+### Use Case Base Classes
 
-All Use Cases inherit from `ApplicationUseCase` which provides:
+Two base classes per [ADR-006](docs/architecture/adr/0006-simple-use-case-criterion.md). Choose by what the use case actually needs.
+
+**`ApplicationUseCase`** — for use cases that compose, validate, or publish:
 - `Dry::Monads[:result, :do]` — `yield` for monadic composition
 - `validate(ContractClass, params)` — returns `Success(attrs)` or `Failure([:validation, errors])`
 - `publish(event)` — dispatches via `EventBus`, returns `Success(event)`
-- Class-level `.call(...)` delegates to `new.call(...)`
+- Returns `Success(value)` / `Failure(tuple)`. Callers pattern-match.
+
+**`SimpleUseCase`** — for trivial wrappers without ceremony:
+- Only provides `.call` class-method delegation. No monads, no validate, no publish.
+- Use for pure reads (returns the value directly), single-resource mutations with a canonical 404 (use `find!`; let `ActiveRecord::RecordNotFound` propagate), and predicates (returns true/false).
+- Returns raw value. Callers consume it directly; controllers `rescue ActiveRecord::RecordNotFound` / `rescue ActiveRecord::RecordInvalid` for the failure paths.
+
+Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUseCase`. Otherwise → `SimpleUseCase`. See `docs/architecture/conventions.md` for examples.
 
 ### EventBus
 
