@@ -213,6 +213,41 @@ This file is the implementation contract for the visual migration scheduled in S
 
 `audit-entropy.sh` already counts hardcoded color literals in views; track the count down each sprint as a proxy for migration progress.
 
+### 4.1 Foreground (`-fg`) variants — WCAG AA pattern (S04)
+
+Semantic tokens like `success`, `error`, `warning`, `info` are tuned for *backgrounds* and *accents* at their saturated mid-tone hue. When used as **text on a light background**, they fail WCAG AA contrast (4.5:1) — the saturated greens / reds / ambers / blues land between 2.2:1 and 4.0:1 on white.
+
+Each colored token therefore has a matching `-fg` variant tuned for text legibility on light surfaces:
+
+| Token | Use | Hex (light) |
+|---|---|---|
+| `success` | bg, accents, dark-mode text | `#3BC175` |
+| `success-fg` | light-mode text | `#1A7C49` |
+| `warning` | bg, accents, dark-mode text | `#F5A623` |
+| `warning-fg` | light-mode text | `#B5760A` |
+| `error` | bg, accents, dark-mode text | `#E24C3C` |
+| `error-fg` | light-mode text | `#B5331E` |
+| `info` | bg, accents, dark-mode text | `#3B82F6` |
+| `info-fg` | light-mode text | `#1D4ED8` |
+
+**Pattern for any colored text:** `text-X-fg dark:text-X`. The light-mode `-fg` variant is contrast-safe on the `bg-X/10` tint and on plain white. The dark-mode base `text-X` is contrast-safe on dark slate (≈5:1 on `bg-slate-900`).
+
+**Pattern for background tints:** `bg-X/10 dark:bg-X/20`. The opacity step compensates for slightly different perceived contrast across modes.
+
+**Pattern for borders:** `border-X/20 dark:border-X/30`. Same opacity rationale.
+
+Established in PR #63 (S04) after Gemini caught the contrast failure on a first-pass migration that collapsed `text-X-700 light / text-X-400 dark` into a single `text-X`. Reference example: any of the S05 slice files (`portfolios/_positions_table.html.erb`, `market/_listings_table.html.erb`, `admin/integrations/index.html.erb`).
+
+### 4.2 Heatmap exception — `dashboard/_fear_greed_card.html.erb`
+
+The Fear & Greed card uses a **5-tier color scale** (red → orange → amber → lime → emerald) representing the 0–100 sentiment score. This is a true heatmap: the intermediate hues (orange, lime) do not map to any of the `success / warning / error / info` semantic roles, and inventing `color-scale-low / mid / high` tokens for a single consumer would be ceremony without value.
+
+**Decision (S05):** leave the F&G card with hardcoded palette colors as a documented exception. The audit script will continue to count its ~7 hits forever; that's accepted noise in the metric.
+
+**Re-evaluation trigger:** if a second view appears that needs a multi-tier heatmap scale (3+ semantic buckets that don't map to existing tokens), define `color-scale-*` tokens at that point and migrate both views together. The S04 retro carry-over set the rule "≥2 true heatmaps → define tokens"; the S05 audit found only F&G qualifies, so the exception stands.
+
+Bucket-style 3-tier indicators (strong/medium/weak, e.g., the trend-strength bar in `_listings_table`) are **not** heatmaps — they map cleanly to `success / warning / error` and follow the standard pattern.
+
 ## 5. When to update this doc
 
 - A new token is added (e.g., a chart-specific palette extension) — add it to §1.1 and the `@theme` block.
