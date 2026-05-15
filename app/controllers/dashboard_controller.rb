@@ -16,17 +16,12 @@ class DashboardController < AuthenticatedController
   end
 
   def news_feed
-    @news = NewsArticle.recent
+    @news = MarketData::Queries::RecentNews.call
     render layout: false
   end
 
   def trending
-    @trending = Asset.where(asset_type: :stock)
-                     .where.not(current_price: nil)
-                     .where.not(change_percent_24h: nil)
-                     .includes(:trend_scores)
-                     .order(Arel.sql("ABS(change_percent_24h) DESC"))
-                     .limit(5)
+    @trending = MarketData::Queries::TrendingAssets.call(limit: 5)
     render layout: false
   end
 

@@ -9,6 +9,9 @@ module MarketData
       (81..100) => "Very Bullish"
     }.freeze
 
+    # Cross-context read API — Trading may call this (ADR-002, grandfathered).
+    # Returns the user's watchlist sentiment as { value: 0..100, label: String }.
+    # @api public
     def self.for_user(user)
       scores = watchlist_scores(user)
       return { value: 50, label: "Neutral" } if scores.empty?

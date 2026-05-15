@@ -11,25 +11,14 @@ module Trading
                               .order(created_at: :desc)
                               .limit(10)
 
-        news = NewsArticle.recent
-
-        trending = Asset.where(asset_type: :stock)
-                        .where.not(current_price: nil)
-                        .where.not(change_percent_24h: nil)
-                        .includes(:trend_scores)
-                        .order(Arel.sql("ABS(change_percent_24h) DESC"))
-                        .limit(5)
-
-        indices = MarketIndex.major.includes(:market_index_histories)
-
+        # ADR-002: cross-context reads go through MarketData::Queries::* and
+        # the explicitly-marked Domain read API (MarketSentiment.for_user).
+        # No direct AR model access from inside Trading.
+        news      = MarketData::Queries::RecentNews.call
+        trending  = MarketData::Queries::TrendingAssets.call(limit: 5)
+        indices   = MarketData::Queries::MajorIndices.call
         sentiment = MarketData::Domain::MarketSentiment.for_user(user)
-
-        fear_greed = {
-          crypto: FearGreedReading.latest_crypto,
-          stocks: FearGreedReading.latest_stocks,
-          crypto_history: FearGreedReading.crypto.recent.reorder(fetched_at: :asc).pluck(:fetched_at, :value),
-          stocks_history: FearGreedReading.stocks.recent.reorder(fetched_at: :asc).pluck(:fetched_at, :value)
-        }
+        fear_greed = MarketData::Queries::CurrentFearGreed.call
 
         weekly_insight = compute_weekly_insight(portfolio, currency)
         upcoming_maturities = portfolio ? load_upcoming_maturities(portfolio) : []
