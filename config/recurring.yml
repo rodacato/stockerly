@@ -41,6 +41,10 @@ production:
     class: CalculateTrendScoresJob
     schedule: at 11:30pm every day
 
+  detect_technical_observations:
+    class: DetectTechnicalObservationsJob
+    schedule: at 11:45pm every day
+
   retry_failed_assets:
     class: RetryFailedAssetsJob
     schedule: at 2am every day
