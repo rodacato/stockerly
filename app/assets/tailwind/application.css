@@ -31,6 +31,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Brand typography — Plus Jakarta Sans on all heading levels.
+   `font-body` (Inter) is already applied to <body> in application.html.erb
+   and inherited everywhere; this rule overrides for h1-h6 so the display
+   font hierarchy from tokens.md §2.1 is automatic, without per-heading
+   class repetition across ~200 view files. */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-display);
+}
+
 /* Print utilities */
 @media print {
   .no-print { display: none !important; }
