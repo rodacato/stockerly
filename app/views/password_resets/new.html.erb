@@ -9,21 +9,21 @@
           <span class="material-symbols-outlined text-white text-3xl">shield_lock</span>
         </div>
         <h1 class="text-3xl font-bold leading-tight mb-4">Secure your account</h1>
-        <p class="text-blue-100 text-lg">Resetting your password is the first step back to your financial dashboard.</p>
+        <p class="text-white/80 text-lg">Resetting your password is the first step back to your financial dashboard.</p>
       </div>
       <div class="relative z-10">
         <div class="space-y-3">
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-emerald-300">shield</span>
-            <span class="text-sm text-blue-100">Secure token-based reset</span>
+            <span class="material-symbols-outlined text-success">shield</span>
+            <span class="text-sm text-white/80">Secure token-based reset</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-emerald-300">timer</span>
-            <span class="text-sm text-blue-100">Link expires in 2 hours</span>
+            <span class="material-symbols-outlined text-success">timer</span>
+            <span class="text-sm text-white/80">Link expires in 2 hours</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-emerald-300">lock</span>
-            <span class="text-sm text-blue-100">All sessions invalidated on reset</span>
+            <span class="material-symbols-outlined text-success">lock</span>
+            <span class="text-sm text-white/80">All sessions invalidated on reset</span>
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@
 
         <%# Success hint — shown via flash after submission %>
         <% if flash[:notice] %>
-          <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg flex gap-3 items-start">
+          <div class="p-4 bg-info/10 dark:bg-info/20 border border-info/20 dark:border-info/30 rounded-lg flex gap-3 items-start">
             <span class="material-symbols-outlined text-primary text-xl">info</span>
             <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"><%= flash[:notice] %></p>
           </div>

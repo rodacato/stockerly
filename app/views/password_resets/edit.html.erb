@@ -9,19 +9,19 @@
           <span class="material-symbols-outlined text-white text-3xl">lock_open</span>
         </div>
         <h1 class="text-3xl font-bold leading-tight mb-4">Set your new password</h1>
-        <p class="text-blue-100 text-lg">Security is our priority. Create a strong password to protect your financial assets and portfolio.</p>
+        <p class="text-white/80 text-lg">Security is our priority. Create a strong password to protect your financial assets and portfolio.</p>
       </div>
       <div class="relative z-10">
         <div class="rounded-lg bg-white/10 p-4 border border-white/10 backdrop-blur-sm">
           <p class="text-sm font-bold text-white mb-2">Password requirements:</p>
           <div class="space-y-1.5">
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-emerald-300 text-sm">check</span>
-              <span class="text-xs text-blue-100">At least 8 characters long</span>
+              <span class="material-symbols-outlined text-success text-sm">check</span>
+              <span class="text-xs text-white/80">At least 8 characters long</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-emerald-300 text-sm">check</span>
-              <span class="text-xs text-blue-100">Both passwords must match</span>
+              <span class="material-symbols-outlined text-success text-sm">check</span>
+              <span class="text-xs text-white/80">Both passwords must match</span>
             </div>
           </div>
         </div>
@@ -47,7 +47,7 @@
 
         <%# Error Messages %>
         <% if @user&.errors&.any? %>
-          <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-sm text-rose-700 dark:text-rose-400">
+          <div class="p-3 rounded-lg bg-error/10 dark:bg-error/20 border border-error/20 dark:border-error/30 text-sm text-error-fg dark:text-error">
             <div class="flex items-center gap-2 mb-1">
               <span class="material-symbols-outlined text-lg">error</span>
               <span class="font-medium">Please fix the following errors:</span>
