@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_15_010645) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_15_031500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -322,6 +322,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_010645) do
     t.datetime "closed_at"
     t.datetime "created_at", null: false
     t.string "labels", default: [], array: true
+    t.date "maturity_date"
     t.text "notes"
     t.datetime "opened_at"
     t.bigint "portfolio_id", null: false
@@ -329,6 +330,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_010645) do
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["asset_id"], name: "index_positions_on_asset_id"
+    t.index ["maturity_date"], name: "index_positions_on_maturity_date", where: "(maturity_date IS NOT NULL)"
     t.index ["portfolio_id", "asset_id", "status"], name: "index_positions_on_portfolio_id_and_asset_id_and_status"
     t.index ["portfolio_id"], name: "index_positions_on_portfolio_id"
     t.index ["status"], name: "index_positions_on_status"

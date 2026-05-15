@@ -38,6 +38,30 @@ RSpec.describe Position, type: :model do
     end
   end
 
+  describe "#maturity_date" do
+    # Lot-level maturity (#29 JTBD #3). Optional at the model level; the
+    # ExecuteTradeContract requires it when asset_type is :fixed_income.
+    it "is optional at the model level" do
+      position = build(:position, maturity_date: nil)
+      expect(position).to be_valid
+    end
+
+    it "persists a date when set" do
+      maturity = 28.days.from_now.to_date
+      position = create(:position, maturity_date: maturity)
+      expect(position.reload.maturity_date).to eq(maturity)
+    end
+
+    it "supports range queries (used by NotifyApproachingMaturities)" do
+      create(:position, maturity_date: 5.days.from_now.to_date)
+      create(:position, maturity_date: 30.days.from_now.to_date)
+      create(:position, maturity_date: nil)
+
+      in_window = Position.where(maturity_date: Date.current..(Date.current + 7.days))
+      expect(in_window.count).to eq(1)
+    end
+  end
+
   describe "#currency" do
     it "is delegated to the asset (single source of truth, #43)" do
       mxn_asset = create(:asset, :mexican)
