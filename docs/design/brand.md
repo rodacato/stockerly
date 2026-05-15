@@ -130,7 +130,7 @@ The audience reads Spanish natively (per [audience.md H2](../vision/audience.md)
 
 **Tone:** sober and direct. Avoid exclamation marks. Numbers carry the emotion.
 
-### 9.1 Extended phrasebook (Renata's preliminary input — see [`components.md` Appendix A.7](./components.md))
+### 9.1 Extended phrasebook (Renata's preliminary input — see [`components.md` §7](./components.md))
 
 | Concept | Use | Avoid |
 |---|---|---|
