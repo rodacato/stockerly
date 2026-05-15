@@ -3,38 +3,41 @@ module MarketData
     # Read-through cache for FX rates (ADR-002 supplier-side wrapper).
     # Trading callers ask for `base → target`; this use case reads the local
     # FxRate cache, refreshes from the external gateway on miss, retries the
-    # read, and falls back to the inverse direction before giving up. Returns
-    # the rate (BigDecimal) or nil. The internal write to the FxRate AR model
-    # is a cache update within MarketData's own ownership — NOT a cross-context
-    # write from Trading.
-    class EnsureFreshFxRate
-      def self.call(base:, target:)
+    # read, and falls back to the inverse direction before giving up. The
+    # internal write to the FxRate AR model is a cache update within
+    # MarketData's own ownership — NOT a cross-context write from Trading.
+    #
+    # Inherits from ApplicationUseCase to match the project convention
+    # (CLAUDE.md "ApplicationUseCase Base Class"). Returns Success(rate) or
+    # Failure([:fx_rate_unavailable, msg]); the latter is intentionally the
+    # same tag and message format that FxRateResolver previously emitted, so
+    # downstream ExecuteTrade can pattern-match without changes.
+    class EnsureFreshFxRate < ApplicationUseCase
+      def call(base:, target:)
         base = base.to_s.upcase
         target = target.to_s.upcase
 
-        # 1. Direct cache lookup.
         rate = FxRate.convert(1, from: base, to: target)
-        return rate if rate
+        return Success(rate) if rate
 
-        # 2. Cache miss → refresh from gateway, retry direct lookup.
         refresh_from_gateway(base: base, target: target)
         rate = FxRate.convert(1, from: base, to: target)
-        return rate if rate
+        return Success(rate) if rate
 
-        # 3. Still missing → inverse direction (refresh may have populated
-        #    target → base even when base → target failed).
         inverse = FxRate.convert(1, from: target, to: base)
-        return BigDecimal(1) / inverse if inverse && inverse.positive?
+        return Success(BigDecimal(1) / inverse) if inverse && inverse.positive?
 
-        nil
+        Failure([ :fx_rate_unavailable, "Could not determine FX rate: #{base} -> #{target}" ])
       end
 
-      def self.refresh_from_gateway(base:, target:)
+      private
+
+      def refresh_from_gateway(base:, target:)
         Gateways::FxRatesGateway.new.refresh_rates(base: base, targets: [ target ])
-      rescue StandardError
+      rescue StandardError => e
+        Rails.logger.error("[MarketData] FX refresh failed for #{base}->#{target}: #{e.message}")
         nil
       end
-      private_class_method :refresh_from_gateway
     end
   end
 end

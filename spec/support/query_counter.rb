@@ -37,8 +37,11 @@ RSpec::Matchers.define :make_queries do |expected|
       next if QueryCounter::IGNORE.match?(payload[:sql])
       queries << payload[:sql]
     end
-    block.call
-    ActiveSupport::Notifications.unsubscribe(sub)
+    begin
+      block.call
+    ensure
+      ActiveSupport::Notifications.unsubscribe(sub)
+    end
     @count = queries.size
 
     if expected[:count]

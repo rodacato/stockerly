@@ -32,10 +32,10 @@ module Trading
         return Success(BigDecimal(1)) if trade_currency == preferred_currency
         return Success(override) if override
 
-        rate = MarketData::UseCases::EnsureFreshFxRate.call(base: trade_currency, target: preferred_currency)
-        return Success(rate) if rate
-
-        Failure([ :fx_rate_unavailable, "Could not determine FX rate: #{trade_currency} -> #{preferred_currency}" ])
+        # EnsureFreshFxRate already emits the canonical
+        # Failure([:fx_rate_unavailable, "Could not determine FX rate: X -> Y"])
+        # — pass through unchanged.
+        MarketData::UseCases::EnsureFreshFxRate.call(base: trade_currency, target: preferred_currency)
       end
     end
   end
