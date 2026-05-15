@@ -1,9 +1,6 @@
 class ProfilesController < AuthenticatedController
   def show
-    result = Identity::UseCases::LoadProfile.call(user: current_user)
-    data = result.value!
-
-    @watchlist_items = data[:watchlist_items]
+    @watchlist_items = Identity::UseCases::LoadProfile.call(user: current_user)
     @market_status   = { us: MarketHours.us_market_open?, bmv: MarketHours.bmv_market_open?, crypto: true }
   end
 

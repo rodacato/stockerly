@@ -2,8 +2,7 @@ class OnboardingController < AuthenticatedController
   def step1; end
 
   def step2
-    result = Identity::UseCases::LoadAssetCatalog.call
-    @assets = result.value![:assets]
+    @assets = Identity::UseCases::LoadAssetCatalog.call
   end
 
   def complete
@@ -19,7 +18,6 @@ class OnboardingController < AuthenticatedController
   end
 
   def step3
-    result = Identity::UseCases::LoadProgress.call(user: current_user)
-    @watchlist_count = result.value![:watchlist_count]
+    @watchlist_count = Identity::UseCases::LoadProgress.call(user: current_user)
   end
 end

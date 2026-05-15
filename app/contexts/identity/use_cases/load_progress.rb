@@ -1,12 +1,9 @@
 module Identity
   module UseCases
-    class LoadProgress < ApplicationUseCase
+    # ADR-006: pure read, no failure path → SimpleUseCase.
+    class LoadProgress < SimpleUseCase
       def call(user:)
-        watchlist_count = user.watchlist_items.count
-
-        Success({
-          watchlist_count: watchlist_count
-        })
+        user.watchlist_items.count
       end
     end
   end

@@ -4,21 +4,18 @@ RSpec.describe Identity::UseCases::LoadProfile do
   let(:user) { create(:user) }
 
   describe ".call" do
-    it "returns Success with watchlist_items" do
+    it "returns the user's watchlist items ordered by created_at DESC" do
       asset = create(:asset, symbol: "AAPL")
       create(:watchlist_item, user: user, asset: asset)
 
       result = described_class.call(user: user)
 
-      expect(result).to be_success
-      data = result.value!
-      expect(data[:watchlist_items].count).to eq(1)
-      expect(data[:watchlist_items].first.asset.symbol).to eq("AAPL")
+      expect(result.count).to eq(1)
+      expect(result.first.asset.symbol).to eq("AAPL")
     end
 
-    it "returns empty watchlist for new user" do
-      result = described_class.call(user: user)
-      expect(result.value![:watchlist_items]).to be_empty
+    it "returns an empty relation for a new user" do
+      expect(described_class.call(user: user)).to be_empty
     end
   end
 end

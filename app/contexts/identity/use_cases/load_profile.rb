@@ -1,14 +1,11 @@
 module Identity
   module UseCases
-    class LoadProfile < ApplicationUseCase
+    # ADR-006: pure read, no failure path → SimpleUseCase.
+    class LoadProfile < SimpleUseCase
       def call(user:)
-        watchlist_items = user.watchlist_items
-                              .includes(asset: :asset_price_histories)
-                              .order(created_at: :desc)
-
-        Success({
-          watchlist_items: watchlist_items
-        })
+        user.watchlist_items
+            .includes(asset: :asset_price_histories)
+            .order(created_at: :desc)
       end
     end
   end

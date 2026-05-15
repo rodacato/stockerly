@@ -1,12 +1,9 @@
 module Identity
   module UseCases
-    class LoadAssetCatalog < ApplicationUseCase
+    # ADR-006: pure read, no failure path → SimpleUseCase.
+    class LoadAssetCatalog < SimpleUseCase
       def call(types: [ :stock, :crypto, :etf ], limit: 20)
-        assets = Asset.where(asset_type: types)
-                      .order(:name)
-                      .limit(limit)
-
-        Success({ assets: assets })
+        Asset.where(asset_type: types).order(:name).limit(limit)
       end
     end
   end
