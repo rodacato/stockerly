@@ -73,27 +73,63 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
       expect(result.value!.position.maturity_date).to eq(maturity)
     end
 
-    it "keeps the existing maturity_date when adding to an open CETES position" do
-      # Reinvestment scenario: an open position retains its original maturity
-      # even if the user buys more (in practice CETES are typically bought
-      # once per lot, but the model must not silently overwrite).
-      existing = create(
+    it "creates a NEW position on reinvestment (lot-separation, #29 HIGH)" do
+      # CETES rolls — each weekly auction is a new lot with its own
+      # maturity_date. A second buy of CETES_28D must NOT merge into the
+      # earlier lot, otherwise the new maturity is silently dropped (the
+      # exact bug Gemini flagged on PR #61 round 1).
+      earlier_maturity = 14.days.from_now.to_date
+      later_maturity = 91.days.from_now.to_date
+
+      earlier_position = create(
         :position,
         portfolio: portfolio,
         asset: cetes,
         shares: 50.0,
         avg_cost: 9.85,
-        maturity_date: maturity
+        maturity_date: earlier_maturity
       )
 
       result = described_class.call(
         user: user,
-        params: cetes_buy_params.merge(maturity_date: 91.days.from_now.to_date.iso8601)
+        params: cetes_buy_params.merge(maturity_date: later_maturity.iso8601)
       )
 
       expect(result).to be_success
-      expect(existing.reload.maturity_date).to eq(maturity)
-      expect(existing.shares).to eq(150.0)
+      new_position = result.value!.position
+
+      # New Position with its own maturity
+      expect(new_position).not_to eq(earlier_position)
+      expect(new_position.maturity_date).to eq(later_maturity)
+      expect(new_position.shares).to eq(100.0)
+
+      # The earlier position is left intact — its maturity_date and share
+      # count are not touched by the new trade.
+      earlier_position.reload
+      expect(earlier_position.maturity_date).to eq(earlier_maturity)
+      expect(earlier_position.shares).to eq(50.0)
+    end
+
+    it "still merges non-fixed-income trades into existing positions (regression guard)" do
+      # Stocks/crypto/etfs continue to merge as before — only fixed_income
+      # breaks the merge default.
+      stock = create(:asset, :stock, symbol: "MSFT")
+      stock_position = create(:position, portfolio: portfolio, asset: stock, shares: 5.0, avg_cost: 100.0)
+
+      result = described_class.call(
+        user: user,
+        params: {
+          asset_symbol: "MSFT",
+          side: "buy",
+          shares: 3.0,
+          price_per_share: 110.0,
+          fx_rate_at_execution: 17.5
+        }
+      )
+
+      expect(result).to be_success
+      expect(result.value!.position).to eq(stock_position)
+      expect(stock_position.reload.shares).to eq(8.0)
     end
 
     it "rejects the trade when maturity_date is missing" do

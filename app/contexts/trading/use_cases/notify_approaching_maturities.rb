@@ -13,11 +13,13 @@ module Trading
 
       def call
         sent = 0
+        positions = approaching_positions.to_a
+        notified_today = ids_notified_today(positions)
 
-        approaching_positions.each do |position|
+        positions.each do |position|
+          next if notified_today.include?(position.id)
           days = days_until_maturity(position)
           next unless THRESHOLD_DAYS.include?(days)
-          next if already_notified_today?(position)
 
           Notification.create!(
             user: position.portfolio.user,
@@ -35,9 +37,11 @@ module Trading
       private
 
       def approaching_positions
+        # Exclude day-0 in the query (the `THRESHOLD_DAYS` set starts at 1)
+        # so the lookup matches the loop's actual fire-set.
         Position
           .where(status: :open)
-          .where(maturity_date: Date.current..(Date.current + THRESHOLD_DAYS.max.days))
+          .where(maturity_date: (Date.current + 1)..(Date.current + THRESHOLD_DAYS.max.days))
           .includes(:asset, portfolio: :user)
       end
 
@@ -46,14 +50,19 @@ module Trading
       end
 
       # Cooldown: at most one maturity_reminder per position per calendar day.
-      # The job runs daily and THRESHOLD_DAYS values are spaced by ≥2 days, so
-      # this date-level dedup is sufficient to prevent both same-day re-runs
-      # and accidental cross-threshold duplicates.
-      def already_notified_today?(position)
+      # Pre-fetches the set of notified Position ids in a single query — avoids
+      # the N+1 pattern of asking "did I notify this one today?" per iteration.
+      # Threshold values are spaced by ≥2 days, so date-level dedup is enough
+      # to prevent both same-day re-runs and accidental cross-threshold dupes.
+      def ids_notified_today(positions)
+        return Set.new if positions.empty?
+
         Notification
-          .where(notifiable: position, notification_type: :maturity_reminder)
+          .where(notifiable_type: "Position", notification_type: :maturity_reminder)
+          .where(notifiable_id: positions.map(&:id))
           .where(created_at: Date.current.all_day)
-          .exists?
+          .pluck(:notifiable_id)
+          .to_set
       end
 
       def title_for(position, days)

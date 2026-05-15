@@ -35,10 +35,28 @@ module Trading
       private
 
       def find_or_create_position(portfolio, asset, attrs)
+        return create_new_position(portfolio, asset, attrs) if always_new_lot?(asset, attrs)
+
         existing = portfolio.positions.find_by(asset: asset, status: :open)
         return existing if existing
         return nil if attrs[:side] == "sell"
 
+        create_new_position(portfolio, asset, attrs)
+      end
+
+      # Fixed-income buys NEVER merge into an existing open position — each
+      # purchase is a distinct lot with its own maturity_date (#29 JTBD #3).
+      # The asset symbol rolls (CETES_28D maturing on Jun 15 and CETES_28D
+      # maturing on Jul 29 share a symbol but are independent lots), so the
+      # default merge-by-asset rule from equities would silently collapse
+      # them and discard the second maturity. Sells of fixed-income are
+      # left on the merge path because they're rare in practice and the
+      # lot-selection question (FIFO vs explicit) is out of #29 scope.
+      def always_new_lot?(asset, attrs)
+        attrs[:side] == "buy" && asset.asset_type_fixed_income?
+      end
+
+      def create_new_position(portfolio, asset, attrs)
         portfolio.positions.create!(
           asset: asset,
           shares: 0,
