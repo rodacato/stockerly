@@ -1,4 +1,4 @@
-# Retro — Sprint <N>
+# Retro — Sprint S04
 
 > Honest post-mortem. Without retro, the sprint does NOT close (hard rule of the protocol).
 >

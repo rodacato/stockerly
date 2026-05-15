@@ -1,4 +1,4 @@
-# QA Pass — Sprint <N>
+# QA Pass — Sprint S04
 
 > Mandatory checklist BEFORE writing `retro.md` and closing the sprint.
 > If an item isn't met → either document why in `retro.md`, or the sprint does NOT close.

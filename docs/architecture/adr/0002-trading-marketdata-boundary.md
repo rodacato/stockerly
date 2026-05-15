@@ -48,6 +48,7 @@ This is the DDD **customer/supplier (supporting subdomain)** pattern, applied to
 - **MarketData publishes events** that Trading subscribes to (already in place: `MarketData::Events::AssetPriceUpdated`, etc.).
 - **Trading publishes events** that MarketData subscribes to **only if needed** — at present, no MarketData handler depends on a Trading event, and that should remain the default.
 - **FxRate access** (currently a top-level AR model) stays as a tolerable shared-model dependency until the FX-storage ADR lands. The `FxRateResolver` direct gateway call is wrapped under this ADR (see Implementation).
+- **Read-through cache pattern** — Trading may call a MarketData read API (e.g., `EnsureFreshFxRate`) whose internal implementation refreshes its own cached AR model from a gateway. This is **not** a cross-context write: Trading reads; MarketData internally decides whether to refresh its own data before responding. The "events only for writes" rule applies to writes whose **intent crosses the boundary** (BC A asking BC B to mutate B's state for A's benefit), not to internal cache refreshes that happen as a side-effect of a read.
 
 #### ❌ Forbidden
 
@@ -102,7 +103,7 @@ This is the DDD **customer/supplier (supporting subdomain)** pattern, applied to
    - `MarketData::Queries::MajorIndices` — wraps `MarketIndex.major.includes(:market_index_histories)`
    - `MarketData::Queries::CurrentFearGreed` — wraps the 4-key hash currently built in `AssembleDashboard:27-32`
 2. **Refactor `Trading::UseCases::AssembleDashboard`** to call those queries. `MarketSentiment.for_user(user)` stays as-is (grandfathered as read API; add YARD comment marking it).
-3. **Update `FxRateResolver`** to call a new `MarketData::UseCases::RefreshFxRate` (wraps the gateway invocation). Remove the "known leak" self-documenting comment.
+3. **Wrap the gateway call in `FxRateResolver`** using a new `MarketData::UseCases::EnsureFreshFxRate` (read-through cache pattern: reads the current `FxRate`, refreshes from the gateway only when stale, returns the rate). The internal write to the `FxRate` AR model is a cache update within MarketData's own ownership — **not** a cross-context write from Trading. Trading sees a read API; MarketData decides when to refresh internally. Remove the "known leak" self-documenting comment in `fx_rate_resolver.rb:20`. (This pattern is also the answer to "doesn't this violate the events-only-for-writes rule?": no, because Trading is not commanding MarketData to mutate state — it's asking MarketData for a fresh value, and MarketData internally decides how to provide it.)
 4. **Remove direct `MarketData::*` references** from `app/contexts/trading/` outside of the new read API. Verify with `grep -rn "MarketData::" app/contexts/trading/`.
 5. **Update CLAUDE.md** "Cross-Context Communication" section to reflect this ADR's nuance.
 
