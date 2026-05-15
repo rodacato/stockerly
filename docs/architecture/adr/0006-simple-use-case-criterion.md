@@ -87,7 +87,7 @@ That's it. The base class provides only `.call` delegation; no monads, no valida
 
 #### ✅ When to use `SimpleUseCase`
 
-- **Read-only loaders for the controller** (`LoadProfile`, `ListRecent`, `LoadProgress`, `LoadAssetCatalog`). Pattern: `result = LoadProfile.call(user:)` followed by `@watchlist_items = result[:watchlist_items]`.
+- **Read-only loaders for the controller** (`LoadProfile`, `ListRecent`, `LoadProgress`, `LoadAssetCatalog`). For loaders that return a single value: `@watchlist_items = LoadProfile.call(user:)`. For loaders that return a hash (when multiple values are derived from the same scope traversal): `data = ListRecent.call(user:); @notifications = data[:notifications]; @unread_count = data[:unread_count]`.
 - **Single-resource mutations where not-found = 404**. Use `user.alert_rules.find(id)` (raising `ActiveRecord::RecordNotFound`) and let Rails' default `rescue_from` produce the 404 response.
 - **Boolean checks / predicates** that don't compose with other use cases.
 

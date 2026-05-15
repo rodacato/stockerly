@@ -6,7 +6,7 @@
 # delegation; the subclass's `#call` returns whatever shape fits — typically
 # a raw ActiveRecord object, a scope, a hash, true/false, or nil.
 class SimpleUseCase
-  def self.call(*args, **kwargs)
-    new.call(*args, **kwargs)
+  def self.call(...)
+    new.call(...)
   end
 end

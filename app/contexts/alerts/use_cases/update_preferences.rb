@@ -5,7 +5,11 @@ module Alerts
     # mechanical failure in a Result tuple.
     class UpdatePreferences < SimpleUseCase
       def call(user:, params:)
-        pref = user.alert_preference || user.create_alert_preference!
+        # Build (not create!) for the new-preference path so `update!`
+        # below performs a single INSERT instead of INSERT+UPDATE. For an
+        # existing preference, `||=` short-circuits and update! is a
+        # straight UPDATE — same single-write outcome.
+        pref = user.alert_preference || user.build_alert_preference
         pref.update!(params.slice(:email_digest, :browser_push, :sms_notifications))
         pref
       end
