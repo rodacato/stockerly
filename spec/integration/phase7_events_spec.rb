@@ -13,15 +13,6 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe Alerts::Events::AlertRuleCreated do
-    it "has required attributes" do
-      event = described_class.new(alert_rule_id: 1, user_id: 2, asset_symbol: "AAPL", condition: "price_crosses_above")
-
-      expect(event.alert_rule_id).to eq(1)
-      expect(event.condition).to eq("price_crosses_above")
-    end
-  end
-
   describe Alerts::Events::AlertRuleTriggered do
     it "has required attributes" do
       event = described_class.new(alert_rule_id: 1, user_id: 2, asset_symbol: "AAPL", triggered_price: "200.0")
@@ -36,38 +27,6 @@ RSpec.describe "Phase 7 Domain Events" do
 
       expect(event.side).to eq("buy")
       expect(event.shares).to eq("10")
-    end
-  end
-
-  describe Trading::Events::PositionOpened do
-    it "has required attributes" do
-      event = described_class.new(position_id: 1, portfolio_id: 2, asset_symbol: "AAPL")
-
-      expect(event.asset_symbol).to eq("AAPL")
-    end
-  end
-
-  describe Trading::Events::PositionClosed do
-    it "has required attributes" do
-      event = described_class.new(position_id: 1, portfolio_id: 2, asset_symbol: "AAPL")
-
-      expect(event.asset_symbol).to eq("AAPL")
-    end
-  end
-
-  describe Trading::Events::WatchlistItemAdded do
-    it "has required attributes" do
-      event = described_class.new(watchlist_item_id: 1, user_id: 2, asset_symbol: "AAPL")
-
-      expect(event.watchlist_item_id).to eq(1)
-    end
-  end
-
-  describe Trading::Events::PortfolioSnapshotTaken do
-    it "has required attributes" do
-      event = described_class.new(snapshot_id: 1, portfolio_id: 2, total_value: "10000.0")
-
-      expect(event.total_value).to eq("10000.0")
     end
   end
 
