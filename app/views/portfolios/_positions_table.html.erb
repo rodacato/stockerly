@@ -46,8 +46,8 @@
     <%# Upcoming Dividends %>
     <% if @upcoming_dividends.present? %>
       <div class="border-b border-slate-100 dark:border-slate-800">
-        <div class="px-6 py-4 bg-emerald-50 dark:bg-emerald-900/20">
-          <h3 class="text-sm font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+        <div class="px-6 py-4 bg-success/10 dark:bg-success/20">
+          <h3 class="text-sm font-bold text-success-fg dark:text-success flex items-center gap-2">
             <span class="material-symbols-outlined text-base">event_upcoming</span>
             Upcoming Dividends
           </h3>
@@ -72,7 +72,7 @@
                   <td class="px-6 py-4 text-center text-sm text-slate-500"><%= ud.pay_date&.strftime("%b %d, %Y") || "—" %></td>
                   <td class="px-6 py-4 text-right text-sm text-slate-900 dark:text-white"><%= number_to_currency(ud.amount_per_share, precision: 4) %></td>
                   <td class="px-6 py-4 text-right text-sm text-slate-900 dark:text-white"><%= ud.shares %></td>
-                  <td class="px-6 py-4 text-right text-sm font-medium text-emerald-600">
+                  <td class="px-6 py-4 text-right text-sm font-medium text-success-fg dark:text-success">
                     <%= number_to_currency(ud.expected_total) %>
                     <span class="ml-1 text-[10px] font-bold text-slate-400 uppercase"><%= ud.currency %></span>
                   </td>
@@ -101,7 +101,7 @@
               <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                 <td class="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white"><%= dp.dividend.asset.symbol %></td>
                 <td class="px-6 py-4 text-center text-sm text-slate-900 dark:text-white"><%= dp.shares_held %></td>
-                <td class="px-6 py-4 text-right text-sm font-medium text-emerald-600"><%= number_to_currency(dp.total_amount) %></td>
+                <td class="px-6 py-4 text-right text-sm font-medium text-success-fg dark:text-success"><%= number_to_currency(dp.total_amount) %></td>
                 <td class="px-6 py-4 text-right text-sm text-slate-500"><%= dp.created_at.strftime("%b %d, %Y") %></td>
               </tr>
             <% end %>
@@ -155,10 +155,10 @@
                 <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(pos.asset.current_price) %></td>
                 <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(pos.market_value) %></td>
                 <td class="px-6 py-4 text-right">
-                  <p class="text-sm font-bold <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
+                  <p class="text-sm font-bold <%= positive ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>">
                     <%= positive ? '+' : '' %><%= number_to_currency(gain) %>
                   </p>
-                  <p class="text-[10px] font-medium <%= positive ? 'text-emerald-500' : 'text-rose-500' %>">
+                  <p class="text-[10px] font-medium <%= positive ? 'text-success-fg/80 dark:text-success/80' : 'text-error-fg/80 dark:text-error/80' %>">
                     <%= positive ? '+' : '' %><%= number_to_percentage(pos.total_gain_percent, precision: 2) %>
                   </p>
                 </td>

@@ -42,13 +42,13 @@
             </div>
           </div>
           <% if integration.requires_api_key? && !integration.api_key_configured? %>
-            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600">
-              <span class="size-2 rounded-full bg-amber-500"></span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-warning-fg dark:text-warning">
+              <span class="size-2 rounded-full bg-warning"></span>
               Not Configured
             </span>
           <% else %>
-            <% status_styles = { "connected" => "text-emerald-600", "syncing" => "text-blue-600", "disconnected" => "text-slate-400" } %>
-            <% dot_styles = { "connected" => "bg-emerald-500", "syncing" => "bg-blue-500", "disconnected" => "bg-slate-300" } %>
+            <% status_styles = { "connected" => "text-success-fg dark:text-success", "syncing" => "text-info-fg dark:text-info", "disconnected" => "text-slate-400" } %>
+            <% dot_styles = { "connected" => "bg-success", "syncing" => "bg-info", "disconnected" => "bg-slate-300" } %>
             <span class="inline-flex items-center gap-1.5 text-xs font-bold <%= status_styles[integration.connection_status] %>">
               <span class="size-2 rounded-full <%= dot_styles[integration.connection_status] %>"></span>
               <%= integration.connection_status.capitalize %>
@@ -64,7 +64,7 @@
               <div class="flex items-center gap-2">
                 <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <% pct = integration.max_requests_per_minute > 0 ? [(integration.minute_calls.to_f / integration.max_requests_per_minute * 100), 100].min : 0 %>
-                  <div class="h-full rounded-full transition-all <%= pct >= 90 ? 'bg-red-500' : pct >= 70 ? 'bg-amber-500' : 'bg-emerald-500' %>" style="width: <%= pct %>%"></div>
+                  <div class="h-full rounded-full transition-all <%= pct >= 90 ? 'bg-error' : pct >= 70 ? 'bg-warning' : 'bg-success' %>" style="width: <%= pct %>%"></div>
                 </div>
                 <span class="text-xs font-mono text-slate-500"><%= integration.minute_calls %>/<%= integration.max_requests_per_minute %></span>
               </div>
@@ -75,7 +75,7 @@
             <div class="flex items-center gap-2">
               <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                 <% daily_pct = integration.daily_call_limit > 0 ? [(integration.daily_api_calls.to_f / integration.daily_call_limit * 100), 100].min : 0 %>
-                <div class="h-full rounded-full transition-all <%= daily_pct >= 90 ? 'bg-red-500' : daily_pct >= 70 ? 'bg-amber-500' : 'bg-emerald-500' %>" style="width: <%= daily_pct %>%"></div>
+                <div class="h-full rounded-full transition-all <%= daily_pct >= 90 ? 'bg-error' : daily_pct >= 70 ? 'bg-warning' : 'bg-success' %>" style="width: <%= daily_pct %>%"></div>
               </div>
               <span class="text-xs font-mono text-slate-500"><%= integration.daily_api_calls %>/<%= integration.daily_call_limit %></span>
             </div>
@@ -86,7 +86,7 @@
         <div class="flex items-center gap-4 text-xs text-slate-400 mb-4">
           <span>Last Sync &middot; <span class="text-slate-600 dark:text-slate-300"><%= integration.last_sync_at ? time_ago_in_words(integration.last_sync_at) + " ago" : "Never" %></span></span>
           <% if integration.requires_api_key? && !integration.api_key_configured? %>
-            <span class="text-amber-600 font-medium">Key &middot; Not configured</span>
+            <span class="text-warning-fg dark:text-warning font-medium">Key &middot; Not configured</span>
           <% elsif (default_pool_key = integration.api_key_pools.default_key.first || integration.api_key_pools.enabled.first) %>
             <span>Key &middot; <span class="font-mono text-slate-500"><%= default_pool_key.masked_api_key %></span></span>
           <% end %>
@@ -105,7 +105,7 @@
               <div class="flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
                 <div class="flex items-center gap-3">
                   <% if pool_key.enabled? %>
-                    <span class="size-2 rounded-full bg-emerald-500"></span>
+                    <span class="size-2 rounded-full bg-success"></span>
                   <% else %>
                     <span class="size-2 rounded-full bg-slate-300"></span>
                   <% end %>
@@ -125,7 +125,7 @@
                   <% end %>
                   <%= button_to admin_integration_pool_key_path(integration, pool_key),
                       method: :delete,
-                      class: "p-1 text-slate-400 hover:text-red-500 transition-colors",
+                      class: "p-1 text-slate-400 hover:text-error transition-colors",
                       title: "Remove",
                       data: { turbo_confirm: "Remove this API key?" } do %>
                     <span class="material-symbols-outlined text-sm">delete</span>
@@ -170,7 +170,7 @@
 
           <%= button_to admin_integration_path(integration),
               method: :delete,
-              class: "px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors",
+              class: "px-3 py-1.5 text-xs font-medium text-error-fg dark:text-error border border-error/30 rounded-lg hover:bg-error/10 transition-colors",
               data: { turbo_confirm: "Delete #{integration.provider_name}? This removes all pool keys." } do %>
             Delete
           <% end %>

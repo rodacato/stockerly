@@ -53,7 +53,7 @@
               <div class="mt-0.5"><%= render "components/data_status", asset: asset, market_open: market_open_for(asset) %></div>
             </td>
             <td class="px-6 py-4 text-right">
-              <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold <%= positive ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+              <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold <%= positive ? 'bg-success/10 dark:bg-success/20 text-success-fg dark:text-success' : 'bg-error/10 dark:bg-error/20 text-error-fg dark:text-error' %>">
                 <%= positive ? '+' : '' %><%= number_with_precision(change, precision: 2) %>%
               </span>
             </td>
@@ -62,12 +62,15 @@
                    data-controller="trend-breakdown"
                    data-action="mouseenter->trend-breakdown#show mouseleave->trend-breakdown#hide">
                 <div class="w-full max-w-[80px] h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <%# Three-bucket semantic map: strong → success, moderate → warning,
+                      weak → error. This is NOT a heatmap (no intermediate hues); it
+                      reuses the existing semantic tokens. %>
                   <% bar_color = if strength >= 80
-                       'bg-emerald-500'
+                       'bg-success'
                      elsif strength >= 50
-                       'bg-amber-400'
+                       'bg-warning'
                      else
-                       'bg-rose-400'
+                       'bg-error'
                      end %>
                   <div class="h-full rounded-full <%= bar_color %>" style="width: <%= strength %>%"></div>
                 </div>
@@ -82,7 +85,7 @@
                       <div class="flex items-center gap-2 mb-1.5">
                         <span class="text-[10px] text-slate-500 w-16 truncate"><%= name %></span>
                         <div class="flex-1 h-1 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                          <% fcolor = value >= 60 ? 'bg-emerald-500' : value >= 40 ? 'bg-amber-400' : 'bg-rose-400' %>
+                          <% fcolor = value >= 60 ? 'bg-success' : value >= 40 ? 'bg-warning' : 'bg-error' %>
                           <div class="h-full rounded-full <%= fcolor %>" style="width: <%= value.clamp(0, 100) %>%"></div>
                         </div>
                         <span class="text-[10px] font-medium text-slate-500 w-7 text-right"><%= value.round.to_i %></span>
@@ -102,7 +105,7 @@
               <div class="flex items-center justify-center gap-2">
                 <%= turbo_frame_tag "watchlist_button_#{asset.id}" do %>
                   <% if @watchlisted_asset_ids.include?(asset.id) %>
-                    <span class="inline-flex items-center gap-1 text-emerald-500 text-xs font-medium">
+                    <span class="inline-flex items-center gap-1 text-success-fg dark:text-success text-xs font-medium">
                       <span class="material-symbols-outlined text-lg">check_circle</span>
                     </span>
                   <% else %>
