@@ -72,7 +72,10 @@
                   <td class="px-6 py-4 text-center text-sm text-slate-500"><%= ud.pay_date&.strftime("%b %d, %Y") || "—" %></td>
                   <td class="px-6 py-4 text-right text-sm text-slate-900 dark:text-white"><%= number_to_currency(ud.amount_per_share, precision: 4) %></td>
                   <td class="px-6 py-4 text-right text-sm text-slate-900 dark:text-white"><%= ud.shares %></td>
-                  <td class="px-6 py-4 text-right text-sm font-medium text-emerald-600"><%= number_to_currency(ud.expected_total) %></td>
+                  <td class="px-6 py-4 text-right text-sm font-medium text-emerald-600">
+                    <%= number_to_currency(ud.expected_total) %>
+                    <span class="ml-1 text-[10px] font-bold text-slate-400 uppercase"><%= ud.currency %></span>
+                  </td>
                 </tr>
               <% end %>
             </tbody>

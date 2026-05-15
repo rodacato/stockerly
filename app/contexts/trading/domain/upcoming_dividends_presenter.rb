@@ -1,9 +1,11 @@
 # Presents upcoming dividends for a portfolio's open positions.
-# Calculates expected payout based on current shares held.
+# Each row is tagged with the dividend's native currency — dividends are
+# paid in the issuer's currency, so converting to user.preferred_currency
+# would lie about what the user actually receives.
 module Trading
   module Domain
     class UpcomingDividendsPresenter
-      UpcomingDividend = Data.define(:asset, :ex_date, :pay_date, :amount_per_share, :shares, :expected_total)
+      UpcomingDividend = Data.define(:asset, :ex_date, :pay_date, :amount_per_share, :shares, :expected_total, :currency)
 
       def initialize(portfolio)
         @portfolio = portfolio
@@ -28,7 +30,8 @@ module Trading
             pay_date: div.pay_date,
             amount_per_share: div.amount_per_share,
             shares: shares,
-            expected_total: shares * div.amount_per_share
+            expected_total: shares * div.amount_per_share,
+            currency: div.currency
           )
         end
       end
