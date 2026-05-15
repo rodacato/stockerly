@@ -36,10 +36,10 @@ Variants: `primary` (the single loud action per screen), `secondary` (important 
 Tokens: `primary` / `primary-hover` / `fg-inverse` (primary); `bg-surface` + `border-default` (secondary); `fg-default` (ghost); `error` + `fg-inverse` (danger). Plus `radius.md`, `font-body`, weight 600.
 
 ### 2.2 Card
-A rounded `<div>` or `<section>` on `bg.surface` with `border-default` and optional shadow. No standalone partial — apply the class string inline, since variants exist mostly in header/footer composition. Tokens: `bg-surface`, `border-default`, `shadow-sm`, `radius.lg`.
+A rounded `<div>` or `<section>` with a light border, optional shadow. No standalone partial — apply the class string inline, since variants exist mostly in header/footer composition. Current pattern: `bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm`. *(The `tokens.md` Lumen spec calls for `bg.surface` / `border.default` named tokens; the current `@theme` does not yet expose them — Lumen palette adoption is a separate work item.)*
 
 ### 2.3 KpiCard
-Headline value (mono, large) + delta pill (success or error) + optional subtitle. Built variants: stat-card and admin-kpi-card unified in S03. Tokens: `bg-surface`, `fg-default`, `success`/`error` pair for the delta pill (`bg-X/10 + text-X-fg` per tokens.md §4.1).
+Headline value (`font-mono font-bold` per `brand.md` §2 numeric rule) + delta pill (success or error tone) + optional subtitle. Built variants: stat-card and admin-kpi-card unified in S03. Tokens: `success`/`error` pair for the delta pill (`bg-X/10 dark:bg-X/20 + text-X-fg dark:text-X` per `tokens.md` §4.1). Card surface uses the inline pattern from §2.2.
 
 ### 2.4 Badge
 Inline pill. Variants: status (success/error/warning/info), severity (log_severity_badge with 4-tier mapping), currency (USD / MXN), data freshness (data_status). Tokens: `bg-X/10 dark:bg-X/20 + text-X-fg dark:text-X` (per tokens.md §4.1).
@@ -51,7 +51,7 @@ Native `<table>` with `border-default` dividers, sortable `<th>` (each with `ari
 Icon + headline + optional sub + optional CTA. Two variants: actionable (with CTA button) vs neutral (no button when there's nothing to do). Don't render a CTA when the user can't act.
 
 ### 2.7 Skeleton
-Loading placeholder; matches final layout dimensions to prevent layout shift. Default 5 rows for DataTable loading; never exceed above-the-fold visible row count. Tokens: `bg-bg-muted` with `animate-pulse`.
+Loading placeholder; matches final layout dimensions to prevent layout shift. Default 5 rows for DataTable loading; never exceed above-the-fold visible row count. Current pattern: `bg-slate-200 dark:bg-slate-700` with `animate-pulse` + `skeleton-shimmer` (the slate neutral track is intentional — placeholders should read as "absence of content", not as semantic state).
 
 ### 2.8 Sparkline
 Inline 7-day mini-chart in a table cell. SVG polyline; stroke = `success` (up) or `error` (down). Width fixed to fit the cell; no axis labels.

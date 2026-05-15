@@ -2,10 +2,10 @@
 <%# With real data: render "components/sparkline", heights: [10, 30, 50, 80], direction: :up %>
 <% direction ||= :up %>
 <% heights ||= nil %>
-<% color = case direction.to_sym
-   when :up then "emerald"
-   when :down then "rose"
-   else "slate"
+<% bar_class = case direction.to_sym
+   when :up    then "bg-success"
+   when :down  then "bg-error"
+   else "bg-slate-400"
    end %>
 
 <div class="flex items-end gap-px h-8 w-16">
@@ -15,7 +15,7 @@
      else [40, 50, 45, 50, 45, 48]
      end %>
   <% bars.each_with_index do |h, i| %>
-    <div class="w-1.5 rounded-t-sm bg-<%= color %>-<%= i == bars.length - 1 ? '500' : '400' %>"
+    <div class="w-1.5 rounded-t-sm <%= bar_class %>"
          style="height: <%= [h, 5].max %>%; opacity: <%= 0.3 + (i.to_f / bars.length * 0.7) %>"></div>
   <% end %>
 </div>
