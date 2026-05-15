@@ -12,6 +12,15 @@
   --color-warning: #F5A623;
   --color-error: #E24C3C;
   --color-info: #3B82F6;
+  /* Foreground variants — darker shades tuned for WCAG AA contrast (≥4.5:1)
+     when used as text on light backgrounds or on the X/10 light-mode tint.
+     Pattern: `text-success-fg dark:text-success` — the base token stays
+     legible on dark slate (≈5:1 contrast); the -fg variant carries the
+     light-mode text. #37 PR #63 round 1. */
+  --color-success-fg: #1A7C49;
+  --color-warning-fg: #B5760A;
+  --color-error-fg: #B5331E;
+  --color-info-fg: #1D4ED8;
   --font-family-display: "Plus Jakarta Sans", sans-serif;
   --font-family-body: "Inter", sans-serif;
   --font-family-mono: "JetBrains Mono", monospace;

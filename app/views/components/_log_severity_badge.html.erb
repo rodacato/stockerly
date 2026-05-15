@@ -3,10 +3,10 @@
 <%# Severity names literally match the semantic tokens defined in @theme — #37. %>
 <%
   config = {
-    "success"  => { bg: "bg-success/10 dark:bg-success/20", text: "text-success", icon: "check_circle" },
-    "error"    => { bg: "bg-error/10 dark:bg-error/20",     text: "text-error",   icon: "error" },
-    "warning"  => { bg: "bg-warning/10 dark:bg-warning/20", text: "text-warning", icon: "warning" },
-    "info"     => { bg: "bg-info/10 dark:bg-info/20",       text: "text-info",    icon: "info" }
+    "success"  => { bg: "bg-success/10 dark:bg-success/20", text: "text-success-fg dark:text-success", icon: "check_circle" },
+    "error"    => { bg: "bg-error/10 dark:bg-error/20",     text: "text-error-fg dark:text-error",     icon: "error" },
+    "warning"  => { bg: "bg-warning/10 dark:bg-warning/20", text: "text-warning-fg dark:text-warning", icon: "warning" },
+    "info"     => { bg: "bg-info/10 dark:bg-info/20",       text: "text-info-fg dark:text-info",       icon: "info" }
   }
   c = config[severity.to_s] || config["info"]
 %>
