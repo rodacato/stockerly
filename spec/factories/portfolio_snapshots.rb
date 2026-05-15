@@ -5,5 +5,6 @@ FactoryBot.define do
     total_value { 50_000.00 }
     cash_value { 10_000.00 }
     invested_value { 40_000.00 }
+    currency { "USD" }
   end
 end

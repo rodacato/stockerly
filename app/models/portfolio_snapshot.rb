@@ -5,6 +5,7 @@ class PortfolioSnapshot < ApplicationRecord
   validates :total_value,    presence: true
   validates :cash_value,     presence: true
   validates :invested_value, presence: true
+  validates :currency,       presence: true
 
   scope :recent, -> { order(date: :desc) }
 end
