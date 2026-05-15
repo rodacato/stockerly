@@ -61,6 +61,14 @@ RSpec.describe Administration::UseCases::Assets::UpdateAsset do
       expect(result).to be_success
     end
 
+    it "does NOT publish AssetUpdated when the diff is empty (no-op submit)" do
+      # Submitting the same values as the current state — changes hash is empty.
+      # Per #35 PR #65 review: publishing a no-op pollutes the audit log.
+      expect(EventBus).not_to receive(:publish).with(an_instance_of(Administration::Events::AssetUpdated))
+
+      described_class.call(admin: admin, params: { id: asset.id, name: asset.name })
+    end
+
     it "returns Failure for validation errors" do
       result = described_class.call(admin: admin, params: { id: asset.id, country: "INVALID" })
 

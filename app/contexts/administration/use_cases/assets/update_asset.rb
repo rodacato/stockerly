@@ -6,12 +6,18 @@ module Administration
           attrs   = yield validate(Administration::Contracts::Assets::UpdateContract, params)
           asset   = yield find(attrs[:id])
           changes = yield update(asset, attrs)
-          _       = yield publish(Administration::Events::AssetUpdated.new(
-            asset_id: asset.id,
-            admin_id: admin.id,
-            symbol: asset.symbol,
-            changes: changes
-          ))
+
+          # Only publish (and therefore audit-log) when something actually
+          # changed. An empty changes hash means the admin submitted the
+          # same values as the current state — that's a no-op, not an event.
+          if changes.any?
+            _ = yield publish(Administration::Events::AssetUpdated.new(
+              asset_id: asset.id,
+              admin_id: admin.id,
+              symbol: asset.symbol,
+              changes: changes
+            ))
+          end
 
           Success(asset)
         end

@@ -11,7 +11,7 @@ RSpec.describe Administration::Handlers::CreateAuditLogOnAssetDeletion do
     log = AuditLog.last
     expect(log.user_id).to eq(admin.id)
     expect(log.action).to eq("asset_deleted")
-    expect(log.changes_data["asset_symbol"]).to eq("TSLA")
+    expect(log.changes_data["symbol"]).to eq("TSLA")
     expect(log.auditable).to be_nil # the asset row is gone by handle time
   end
 end
