@@ -2,7 +2,7 @@ class Notification < ApplicationRecord
   belongs_to :user
   belongs_to :notifiable, polymorphic: true, optional: true
 
-  enum :notification_type, { alert_triggered: 0, earnings_reminder: 1, system: 2 }
+  enum :notification_type, { alert_triggered: 0, earnings_reminder: 1, system: 2, maturity_reminder: 3 }
 
   validates :title, presence: true
 
