@@ -170,7 +170,7 @@
 
           <%= button_to admin_integration_path(integration),
               method: :delete,
-              class: "px-3 py-1.5 text-xs font-medium text-error-fg dark:text-error border border-error/30 rounded-lg hover:bg-error/10 transition-colors",
+              class: "px-3 py-1.5 text-xs font-medium text-error-fg dark:text-error border border-error/20 dark:border-error/30 rounded-lg hover:bg-error/10 dark:hover:bg-error/20 transition-colors",
               data: { turbo_confirm: "Delete #{integration.provider_name}? This removes all pool keys." } do %>
             Delete
           <% end %>

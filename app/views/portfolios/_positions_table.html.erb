@@ -158,7 +158,7 @@
                   <p class="text-sm font-bold <%= positive ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>">
                     <%= positive ? '+' : '' %><%= number_to_currency(gain) %>
                   </p>
-                  <p class="text-[10px] font-medium <%= positive ? 'text-success-fg/80 dark:text-success/80' : 'text-error-fg/80 dark:text-error/80' %>">
+                  <p class="text-[10px] font-medium <%= positive ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>">
                     <%= positive ? '+' : '' %><%= number_to_percentage(pos.total_gain_percent, precision: 2) %>
                   </p>
                 </td>
