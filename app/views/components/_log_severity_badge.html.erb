@@ -1,11 +1,12 @@
 <%# Usage: render "components/log_severity_badge", severity: "success" %>
 <%# Supported: success, error, warning, info %>
+<%# Severity names literally match the semantic tokens defined in @theme — #37. %>
 <%
   config = {
-    "success"  => { bg: "bg-emerald-100 dark:bg-emerald-900/30", text: "text-emerald-700 dark:text-emerald-400", icon: "check_circle" },
-    "error"    => { bg: "bg-rose-100 dark:bg-rose-900/30",       text: "text-rose-700 dark:text-rose-400",       icon: "error" },
-    "warning"  => { bg: "bg-amber-100 dark:bg-amber-900/30",     text: "text-amber-700 dark:text-amber-400",     icon: "warning" },
-    "info"     => { bg: "bg-blue-100 dark:bg-blue-900/30",       text: "text-blue-700 dark:text-blue-400",       icon: "info" }
+    "success"  => { bg: "bg-success/10 dark:bg-success/20", text: "text-success", icon: "check_circle" },
+    "error"    => { bg: "bg-error/10 dark:bg-error/20",     text: "text-error",   icon: "error" },
+    "warning"  => { bg: "bg-warning/10 dark:bg-warning/20", text: "text-warning", icon: "warning" },
+    "info"     => { bg: "bg-info/10 dark:bg-info/20",       text: "text-info",    icon: "info" }
   }
   c = config[severity.to_s] || config["info"]
 %>
