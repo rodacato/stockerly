@@ -26,6 +26,18 @@ Per S03 retro action item ("code-state audit before commit"), audited the surfac
 - ❌ Dashboard "Upcoming events" / CETES near-maturity section does not exist. New partial.
 - Seeds and `LoadAssetDetail` use case already read `asset.maturity_date` — both will need to be updated to read from position when applicable (asset-level fallback may need to be removed entirely).
 
+---
+
+## 2026-05-15 — #29 implementation deviations from DoD (logged before commit)
+
+Two DoD-vs-code-state mismatches discovered when reading actual code on `feat/29-cetes-maturity-per-position` opening. Recording the deviations explicitly so the reviewer can audit the choice:
+
+**1. `asset_type` enum value.** DoD says `asset_type == 'cetes'`. Reality: `Asset` enum has `fixed_income: 4` (with CETES as a subset via `symbol LIKE 'CETES_%D'`). Decision: gate `maturity_date` requirement on `asset.asset_type_fixed_income?` (broader, future-compatible with other fixed-income instruments). Documenting because the next time we add a non-CETES fixed-income asset (e.g., Bonos M, UDIs), the same field will be reused without re-opening this question.
+
+**2. Handler home.** DoD says `Alerts::Handlers::EvaluateMaturityAlerts`. Reality: maturity reminders are system-scheduled, not user-rule-driven. The existing `Alerts::` context is rule-based (price alerts + user-toggled). The cleanest existing pattern is `MarketData::UseCases::NotifyApproachingEarnings` — a use case invoked by a scheduled job. Decision: implement as `Trading::UseCases::NotifyApproachingMaturities` (Trading-owned because Position.maturity_date lives there) + a `NotifyApproachingMaturitiesJob` registered in `config/recurring.yml`. The naming in the DoD was speculative; the architectural fit is cleaner this way. No new BC, no new handler concept; reuses the existing scheduled-notification pattern.
+
+Neither deviation changes the user-visible behavior described in the DoD. Logged here per S03 retro discipline ("when the DoD doesn't match reality, deviate with a logged reason rather than add ceremony").
+
 **#40 (Notable Observations):**
 - ❌ `TechnicalObservation` model does not exist. New migration + model.
 - ❌ `DailyTechnicalObservationsJob` does not exist. New job.
