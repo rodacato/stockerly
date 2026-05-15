@@ -27,21 +27,21 @@
 
       <%# Sync KPI mini-cards %>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-        <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3">
-          <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Successful Syncs</p>
-          <p class="text-xl font-bold text-emerald-700 dark:text-emerald-300"><%= @sync_overview[:sync_counts]["success"] || 0 %></p>
+        <div class="bg-success/10 dark:bg-success/20 rounded-lg p-3">
+          <p class="text-xs text-success font-medium">Successful Syncs</p>
+          <p class="text-xl font-bold text-success"><%= @sync_overview[:sync_counts]["success"] || 0 %></p>
         </div>
-        <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
-          <p class="text-xs text-red-600 dark:text-red-400 font-medium">Failed Syncs</p>
-          <p class="text-xl font-bold text-red-700 dark:text-red-300"><%= @sync_overview[:sync_counts]["error"] || 0 %></p>
+        <div class="bg-error/10 dark:bg-error/20 rounded-lg p-3">
+          <p class="text-xs text-error font-medium">Failed Syncs</p>
+          <p class="text-xl font-bold text-error"><%= @sync_overview[:sync_counts]["error"] || 0 %></p>
         </div>
-        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
-          <p class="text-xs text-blue-600 dark:text-blue-400 font-medium">Assets Syncing</p>
-          <p class="text-xl font-bold text-blue-700 dark:text-blue-300"><%= @sync_overview[:status_counts]["active"] || 0 %></p>
+        <div class="bg-info/10 dark:bg-info/20 rounded-lg p-3">
+          <p class="text-xs text-info font-medium">Assets Syncing</p>
+          <p class="text-xl font-bold text-info"><%= @sync_overview[:status_counts]["active"] || 0 %></p>
         </div>
-        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3">
-          <p class="text-xs text-amber-600 dark:text-amber-400 font-medium">Stale Prices</p>
-          <p class="text-xl font-bold text-amber-700 dark:text-amber-300"><%= @sync_overview[:stale_count] %></p>
+        <div class="bg-warning/10 dark:bg-warning/20 rounded-lg p-3">
+          <p class="text-xs text-warning font-medium">Stale Prices</p>
+          <p class="text-xl font-bold text-warning"><%= @sync_overview[:stale_count] %></p>
         </div>
       </div>
 
@@ -61,12 +61,12 @@
         <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Recent Sync Errors</h3>
         <div class="space-y-2">
           <% @sync_overview[:recent_errors].each do |log| %>
-            <div class="flex items-center justify-between p-2.5 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30">
+            <div class="flex items-center justify-between p-2.5 rounded-lg bg-error/10 dark:bg-error/15 border border-error/20">
               <div class="flex-1 min-w-0">
-                <p class="text-xs font-medium text-red-800 dark:text-red-300 truncate"><%= log.task_name %></p>
-                <p class="text-xs text-red-600 dark:text-red-400 truncate"><%= log.error_message %></p>
+                <p class="text-xs font-medium text-error truncate"><%= log.task_name %></p>
+                <p class="text-xs text-error/80 truncate"><%= log.error_message %></p>
               </div>
-              <span class="text-xs text-red-500 dark:text-red-400 whitespace-nowrap ml-3"><%= time_ago_in_words(log.created_at) %> ago</span>
+              <span class="text-xs text-error/70 whitespace-nowrap ml-3"><%= time_ago_in_words(log.created_at) %> ago</span>
             </div>
           <% end %>
         </div>
@@ -88,7 +88,7 @@
         <%# Job Queue Panel %>
         <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-lg text-blue-600 dark:text-blue-400">queue</span>
+            <span class="material-symbols-outlined text-lg text-info">queue</span>
             <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Job Queue</h3>
           </div>
           <div class="space-y-2">
@@ -107,7 +107,7 @@
             <div class="flex justify-between">
               <span class="text-xs text-slate-500">Failed</span>
               <% failed = @health[:failed_jobs] %>
-              <span class="text-xs font-bold <%= failed && failed > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-900 dark:text-white' %>"><%= failed&.to_s || "N/A" %></span>
+              <span class="text-xs font-bold <%= failed && failed > 0 ? 'text-error' : 'text-slate-900 dark:text-white' %>"><%= failed&.to_s || "N/A" %></span>
             </div>
             <div class="flex justify-between">
               <span class="text-xs text-slate-500">Workers</span>
@@ -119,7 +119,7 @@
         <%# Cache Store Panel %>
         <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400">cached</span>
+            <span class="material-symbols-outlined text-lg text-success">cached</span>
             <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Cache Store</h3>
           </div>
           <div class="space-y-2">
@@ -137,16 +137,16 @@
         <%# Circuit Breakers Panel %>
         <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400">electric_bolt</span>
+            <span class="material-symbols-outlined text-lg text-warning">electric_bolt</span>
             <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Circuit Breakers</h3>
           </div>
           <% if @health[:open_circuits_count] && @health[:open_circuits_count] > 0 %>
-            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-md p-2 mb-2">
-              <p class="text-xs font-bold text-amber-700 dark:text-amber-300"><%= @health[:open_circuits_count] %> circuit(s) tripped in last 24h</p>
+            <div class="bg-warning/10 dark:bg-warning/20 rounded-md p-2 mb-2">
+              <p class="text-xs font-bold text-warning"><%= @health[:open_circuits_count] %> circuit(s) tripped in last 24h</p>
             </div>
           <% else %>
-            <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-md p-2 mb-2">
-              <p class="text-xs font-bold text-emerald-700 dark:text-emerald-300">All circuits healthy</p>
+            <div class="bg-success/10 dark:bg-success/20 rounded-md p-2 mb-2">
+              <p class="text-xs font-bold text-success">All circuits healthy</p>
             </div>
           <% end %>
           <% if @health[:circuit_breaker_events].present? %>
