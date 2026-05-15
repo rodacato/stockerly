@@ -3,7 +3,7 @@
 
 <%= render "market/asset_header", asset: @asset, presenter: @presenter, is_watchlisted: @is_watchlisted %>
 
-<%= render "market/recent_observations", asset: @asset %>
+<%= render "market/recent_observations", asset: @asset, observations: @recent_observations %>
 
 <% if @asset.asset_type_stock? || @asset.asset_type_etf? || @asset.asset_type_crypto? %>
   <%= render "market/tradingview_chart" %>

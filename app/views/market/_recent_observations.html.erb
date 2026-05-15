@@ -1,6 +1,7 @@
 <%# Recent technical-zone transitions for this asset (#40 JTBD #6).
-    Rendered on the asset detail page; descriptive copy per ADR-001. %>
-<% observations = asset.technical_observations.recent.within_last(30).limit(5) %>
+    Rendered on the asset detail page; descriptive copy per ADR-001.
+    The `observations` collection is loaded by MarketController#show — the
+    partial is presentation-only and never queries the DB itself. %>
 <% if observations.any? %>
   <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm mb-8">
     <div class="flex items-center justify-between mb-4">

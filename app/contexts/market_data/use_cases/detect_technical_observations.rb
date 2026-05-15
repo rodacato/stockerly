@@ -27,8 +27,20 @@ module MarketData
         Asset.where.not(current_price: nil)
       end
 
+      # Trailing window is SMA200's 201 closes + 1 to compare yesterday/today.
+      # +8 buffer absorbs any future indicator that needs a slightly longer
+      # lookback without forcing a redeploy. Anything older than this is dead
+      # weight for the detector.
+      WINDOW_SIZE = 210
+
       def detect_for(asset)
-        closes = asset.asset_price_histories.order(:date).pluck(:close)
+        # Bounded fetch: trailing window only, ordered oldest→newest after the
+        # reverse. Avoids loading years of history per asset into memory.
+        closes = asset.asset_price_histories
+                      .order(date: :desc)
+                      .limit(WINDOW_SIZE)
+                      .pluck(:close)
+                      .reverse
         return 0 if closes.size < 16 # RSI(14) needs 15 + we look back 1 day
 
         observed_at = Time.current
@@ -92,7 +104,9 @@ module MarketData
       end
 
       # Weekly cooldown per (asset, observation_type). Prevents flooding
-      # when an asset oscillates around a threshold.
+      # when an asset oscillates around a threshold. Persistence failures
+      # are logged but never crash the daily job — one bad asset must not
+      # block the rest of the universe.
       def persist_if_fresh(asset, type, observed_at, snapshot)
         recent_exists = asset.technical_observations
                              .where(observation_type: type)
@@ -107,6 +121,11 @@ module MarketData
           indicator_snapshot: snapshot
         )
         true
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+        Rails.logger.warn(
+          "[DetectTechnicalObservations] Skipped #{asset.symbol} / #{type}: #{e.message}"
+        )
+        false
       end
     end
   end

@@ -26,6 +26,7 @@ class MarketController < AuthenticatedController
       @pe_history = data[:pe_history]
       @dividends = data[:dividends] || []
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
+      @recent_observations = @asset.technical_observations.recent.within_last(30).limit(5)
 
       trigger_fundamental_sync(@asset) unless @has_fundamentals
     in Dry::Monads::Failure[ :not_found, _ ]
