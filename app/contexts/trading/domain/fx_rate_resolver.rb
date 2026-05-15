@@ -17,8 +17,11 @@ module Trading
     # for #42, deferred to a future issue when beta usage demands it). For backdated
     # trades requiring precision, callers may supply `override`.
     #
-    # Cross-context call to MarketData::Gateways::FxRatesGateway is a known leak
-    # tracked for Sprint 5 (architectural).
+    # The cache + refresh + inverse-fallback logic lives in
+    # MarketData::UseCases::EnsureFreshFxRate (ADR-002 supplier-side wrapper).
+    # This class adds Trading-specific concerns: same-currency shortcut, explicit
+    # override, and the Success/Failure monad surface that ExecuteTrade consumes
+    # via `yield`.
     class FxRateResolver
       extend Dry::Monads[:result]
 
@@ -29,25 +32,11 @@ module Trading
         return Success(BigDecimal(1)) if trade_currency == preferred_currency
         return Success(override) if override
 
-        rate = FxRate.convert(1, from: trade_currency, to: preferred_currency)
+        rate = MarketData::UseCases::EnsureFreshFxRate.call(base: trade_currency, target: preferred_currency)
         return Success(rate) if rate
-
-        refresh_fx_rates(base: trade_currency, target: preferred_currency)
-        rate = FxRate.convert(1, from: trade_currency, to: preferred_currency)
-        return Success(rate) if rate
-
-        inverse = FxRate.convert(1, from: preferred_currency, to: trade_currency)
-        return Success(BigDecimal(1) / inverse) if inverse && inverse > 0
 
         Failure([ :fx_rate_unavailable, "Could not determine FX rate: #{trade_currency} -> #{preferred_currency}" ])
       end
-
-      def self.refresh_fx_rates(base:, target:)
-        MarketData::Gateways::FxRatesGateway.new.refresh_rates(base: base, targets: [ target ])
-      rescue StandardError
-        nil
-      end
-      private_class_method :refresh_fx_rates
     end
   end
 end
