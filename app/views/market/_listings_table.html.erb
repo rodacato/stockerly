@@ -23,10 +23,10 @@
           <% score = asset.latest_trend_score %>
           <% strength = score&.score || 0 %>
           <% strength_label = case strength
-               when 80..100 then strength >= 90 ? "Parabolic" : "Strong"
+               when 80..100 then "High score"
                when 50..79  then "Moderate"
-               when 25..49  then "Weakening"
-               else "Weak"
+               when 25..49  then "Low-moderate"
+               else "Low score"
              end %>
           <%= turbo_stream_from "asset_#{asset.id}" %>
           <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
