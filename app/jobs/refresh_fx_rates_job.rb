@@ -1,5 +1,7 @@
-# Refreshes foreign exchange rates from the external API.
-# Publishes MarketData::Events::FxRatesRefreshed event on success.
+# Refreshes foreign exchange rates from the external API. Success/failure
+# already lands in the SyncLog table via SyncLogging — there's no separate
+# audience for an FxRatesRefreshed event, so #35 removed the publish call
+# and dropped the event class.
 class RefreshFxRatesJob < ApplicationJob
   include SyncLogging
 
@@ -12,7 +14,6 @@ class RefreshFxRatesJob < ApplicationJob
 
     if result.success?
       log_sync_success("FX Rate Refresh")
-      EventBus.publish(MarketData::Events::FxRatesRefreshed.new)
     else
       log_sync_failure("FX Rate Refresh", result.failure[1])
     end

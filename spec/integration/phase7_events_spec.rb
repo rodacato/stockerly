@@ -38,14 +38,6 @@ RSpec.describe "Phase 7 Domain Events" do
     end
   end
 
-  describe MarketData::Events::FxRatesRefreshed do
-    it "can be instantiated with no attributes" do
-      event = described_class.new
-
-      expect(event.occurred_at).to be_present
-    end
-  end
-
   describe Administration::Events::CsvExported do
     it "has required attributes" do
       event = described_class.new(user_id: 1, export_type: "trades")
