@@ -9,10 +9,10 @@
 
   <%# KPI Cards %>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <%= render "components/admin_kpi_card", title: "Total Assets",   value: number_with_delimiter(@total_assets),   icon: "database",      color: :blue %>
-    <%= render "components/admin_kpi_card", title: "Syncing Assets", value: @syncing_assets.to_s,                   icon: "sync",          color: :green, badge: "Active" %>
-    <%= render "components/admin_kpi_card", title: "Total Users",    value: number_with_delimiter(@total_users),     icon: "group",         color: :amber %>
-    <%= render "components/admin_kpi_card", title: "Errors (24h)",   value: @error_logs_24h.to_s,                   icon: "error_outline", color: :red %>
+    <%= render "components/kpi_card", title: "Total Assets",   value: number_with_delimiter(@total_assets), icon: "database",      tone: :info %>
+    <%= render "components/kpi_card", title: "Syncing Assets", value: @syncing_assets.to_s,                 icon: "sync",          tone: :success, badge: "Active" %>
+    <%= render "components/kpi_card", title: "Total Users",    value: number_with_delimiter(@total_users),  icon: "group",         tone: :warning %>
+    <%= render "components/kpi_card", title: "Errors (24h)",   value: @error_logs_24h.to_s,                 icon: "error_outline", tone: :error %>
   </div>
 
   <%# Sync Operations %>

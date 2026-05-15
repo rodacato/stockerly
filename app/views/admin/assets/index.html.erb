@@ -91,9 +91,9 @@
 
   <%# KPI Cards %>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <%= render "components/admin_kpi_card", title: "Total Assets", value: number_with_delimiter(@total_count), icon: "database", color: :blue %>
-    <%= render "components/admin_kpi_card", title: "Syncing Assets", value: @syncing_count.to_s, icon: "sync", color: :green, badge: "Active" %>
-    <%= render "components/admin_kpi_card", title: "Listed", value: number_with_delimiter(@pagy.count), icon: "list", color: :amber %>
+    <%= render "components/kpi_card", title: "Total Assets",   value: number_with_delimiter(@total_count), icon: "database", tone: :info %>
+    <%= render "components/kpi_card", title: "Syncing Assets", value: @syncing_count.to_s,                icon: "sync",     tone: :success, badge: "Active" %>
+    <%= render "components/kpi_card", title: "Listed",         value: number_with_delimiter(@pagy.count), icon: "list",     tone: :warning %>
   </div>
 
   <%# Filters %>

@@ -33,9 +33,9 @@
 
   <%# Stats Cards %>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <%= render "components/admin_kpi_card", title: "Successful Tasks", value: "98.4%", icon: "check_circle", color: :green, badge: "+0.3% this yesterday" %>
-    <%= render "components/admin_kpi_card", title: "Active Alerts", value: "3", icon: "warning", color: :amber, badge: "Requires attention" %>
-    <%= render "components/admin_kpi_card", title: "Avg. Run Time", value: "2.4s", icon: "timer", color: :blue %>
-    <%= render "components/admin_kpi_card", title: "Log Storage", value: "42GB", icon: "storage", color: :blue %>
+    <%= render "components/kpi_card", title: "Successful Tasks", value: "98.4%", icon: "check_circle", tone: :success, badge: "+0.3% this yesterday" %>
+    <%= render "components/kpi_card", title: "Active Alerts",    value: "3",     icon: "warning",      tone: :warning, badge: "Requires attention" %>
+    <%= render "components/kpi_card", title: "Avg. Run Time",    value: "2.4s",  icon: "timer",        tone: :info %>
+    <%= render "components/kpi_card", title: "Log Storage",      value: "42GB",  icon: "storage",      tone: :info %>
   </div>
 </div>
