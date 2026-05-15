@@ -10,12 +10,13 @@ module Trading
         "1Y" => 1.year
       }.freeze
 
-      def initialize(portfolio)
+      def initialize(portfolio, currency: nil)
         @portfolio = portfolio
+        @currency  = currency || portfolio.user.preferred_currency
       end
 
       def calculate
-        current_value = @portfolio.total_value
+        current_value = @portfolio.total_value(currency: @currency)
         snapshots = @portfolio.snapshots.order(:date)
         return empty_results if snapshots.empty?
 
@@ -40,8 +41,7 @@ module Trading
         @portfolio.snapshots
           .where("date >= ?", start_date)
           .order(:date)
-          .pluck(:date, :total_value)
-          .map { |date, value| { date: date, value: value.to_f } }
+          .map { |snap| { date: snap.date, value: snapshot_value(snap).to_f } }
       end
 
       private
@@ -53,11 +53,18 @@ module Trading
       def compute_return(current_value, snapshot)
         return GainLoss.new(absolute: 0.0, percent: 0.0) unless snapshot
 
-        base = snapshot.total_value.to_f
+        base = snapshot_value(snapshot).to_f
         diff = current_value.to_f - base
         percent = base.positive? ? (diff / base * 100) : 0.0
 
         GainLoss.new(absolute: diff.round(2), percent: percent.round(2))
+      end
+
+      def snapshot_value(snapshot)
+        return snapshot.total_value if snapshot.currency == @currency
+
+        FxRate.convert(snapshot.total_value.to_d, from: snapshot.currency, to: @currency) ||
+          raise("Missing FX rate #{snapshot.currency}->#{@currency} (PortfolioSnapshot##{snapshot.id})")
       end
 
       def empty_results

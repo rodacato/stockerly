@@ -3,7 +3,8 @@ module Trading
     class AssembleDashboard < ApplicationUseCase
       def call(user:)
         portfolio = user.portfolio
-        summary = portfolio ? Domain::PortfolioSummary.new(portfolio) : nil
+        currency = user.preferred_currency
+        summary = portfolio ? Domain::PortfolioSummary.new(portfolio, currency: currency) : nil
 
         watchlist_items = user.watchlist_items
                               .includes(asset: [ :trend_scores, :asset_price_histories ])
@@ -30,7 +31,7 @@ module Trading
           stocks_history: FearGreedReading.stocks.recent.reorder(fetched_at: :asc).pluck(:fetched_at, :value)
         }
 
-        weekly_insight = compute_weekly_insight(portfolio)
+        weekly_insight = compute_weekly_insight(portfolio, currency)
 
         Success({
           summary: summary,
@@ -40,18 +41,36 @@ module Trading
           indices: indices,
           sentiment: sentiment,
           fear_greed: fear_greed,
-          weekly_insight: weekly_insight
+          weekly_insight: weekly_insight,
+          currency: currency
         })
       end
 
       private
 
-      def compute_weekly_insight(portfolio)
+      def compute_weekly_insight(portfolio, currency)
         return { has_data: false } unless portfolio
 
         snapshots = portfolio.snapshots.where(date: 7.days.ago.to_date..Date.current).order(:date)
+        # WeeklyInsightCalculator computes weekly_change as a percentage of
+        # total_value — homogeneous currency is required for the percent
+        # to be meaningful when snapshots straddle a preferred_currency
+        # change. Pre-convert to the user's current currency here.
+        normalized = snapshots.map { |s| normalize_snapshot(s, currency) }
         positions = portfolio.open_positions.includes(:asset)
-        Domain::WeeklyInsightCalculator.calculate(snapshots: snapshots, positions: positions)
+        Domain::WeeklyInsightCalculator.calculate(snapshots: normalized, positions: positions)
+      end
+
+      NormalizedSnapshot = Data.define(:date, :total_value)
+
+      def normalize_snapshot(snapshot, currency)
+        value = if snapshot.currency == currency
+          snapshot.total_value
+        else
+          FxRate.convert(snapshot.total_value.to_d, from: snapshot.currency, to: currency) ||
+            raise("Missing FX rate #{snapshot.currency}->#{currency} (PortfolioSnapshot##{snapshot.id})")
+        end
+        NormalizedSnapshot.new(date: snapshot.date, total_value: value)
       end
     end
   end

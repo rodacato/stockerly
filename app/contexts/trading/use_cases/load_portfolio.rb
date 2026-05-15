@@ -5,7 +5,8 @@ module Trading
         portfolio = user.portfolio
         return Failure([ :not_found, "Portfolio not found" ]) unless portfolio
 
-        summary = Domain::PortfolioSummary.new(portfolio)
+        currency = user.preferred_currency
+        summary = Domain::PortfolioSummary.new(portfolio, currency: currency)
 
         positions = case tab
         when "closed"
@@ -18,9 +19,9 @@ module Trading
                       portfolio.open_positions.includes(:asset)
         end
 
-        allocation = portfolio.allocation_by_sector
-        allocation_by_type = portfolio.allocation_by_asset_type
-        returns_calculator = Domain::PeriodReturnsCalculator.new(portfolio)
+        allocation = portfolio.allocation_by_sector(currency: currency)
+        allocation_by_type = portfolio.allocation_by_asset_type(currency: currency)
+        returns_calculator = Domain::PeriodReturnsCalculator.new(portfolio, currency: currency)
 
         Success({
           portfolio: portfolio,
@@ -31,7 +32,8 @@ module Trading
           period_returns: returns_calculator.calculate,
           chart_data: returns_calculator.chart_data(period: "1M"),
           upcoming_dividends: tab == "dividends" ? Domain::UpcomingDividendsPresenter.new(portfolio).upcoming : [],
-          allocation_by_type: allocation_by_type
+          allocation_by_type: allocation_by_type,
+          currency: currency
         })
       end
     end
