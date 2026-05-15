@@ -9,7 +9,7 @@
   <% if @summary %>
     <% dg = @summary.day_gain %>
     <p class="mt-1 text-slate-500 dark:text-slate-400">Your portfolio is
-      <span class="<%= dg.positive? ? 'text-emerald-600' : 'text-rose-600' %> font-semibold"><%= dg.positive? ? '+' : '' %><%= number_to_percentage(dg.percent, precision: 1) %></span> today.
+      <span class="<%= dg.positive? ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %> font-semibold"><%= dg.positive? ? '+' : '' %><%= number_to_percentage(dg.percent, precision: 1) %></span> today.
       Here's what you missed.</p>
   <% else %>
     <p class="mt-1 text-slate-500 dark:text-slate-400">Here's your market overview.</p>
@@ -46,9 +46,9 @@
       <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400 mt-1"><%= @sentiment[:label] %></span>
     </div>
     <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
-      <div class="h-full bg-emerald-500" style="width: <%= sentiment_value %>%"></div>
-      <div class="h-full bg-amber-400" style="width: <%= [100 - sentiment_value, 20].min %>%"></div>
-      <div class="h-full bg-rose-500" style="width: <%= [100 - sentiment_value - 20, 0].max %>%"></div>
+      <div class="h-full bg-success" style="width: <%= sentiment_value %>%"></div>
+      <div class="h-full bg-warning" style="width: <%= [100 - sentiment_value, 20].min %>%"></div>
+      <div class="h-full bg-error" style="width: <%= [100 - sentiment_value - 20, 0].max %>%"></div>
     </div>
     <p class="mt-2 text-xs font-medium text-slate-400"><%= sentiment_value %>% — Based on your watchlist</p>
   </div>

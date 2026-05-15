@@ -2,9 +2,9 @@
 <% icon_color ||= "bg-slate-500" %>
 <%
   status_config = {
-    connected: { dot: "bg-emerald-500", label: "Connected", text: "text-emerald-600" },
-    syncing:   { dot: "bg-blue-500",    label: "Syncing",   text: "text-blue-600" },
-    inactive:  { dot: "bg-slate-300",   label: "Inactive",  text: "text-slate-400" }
+    connected: { dot: "bg-success", label: "Connected", text: "text-success-fg dark:text-success" },
+    syncing:   { dot: "bg-info",    label: "Syncing",   text: "text-info-fg dark:text-info" },
+    inactive:  { dot: "bg-slate-300", label: "Inactive", text: "text-slate-400" }
   }
   s = status_config[status.to_sym] || status_config[:inactive]
 %>

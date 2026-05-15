@@ -41,11 +41,11 @@
                     <span><%= event.asset.symbol %></span>
                     <div class="flex items-center gap-0.5">
                       <% if beat_miss == :beat %>
-                        <span class="text-emerald-600 dark:text-emerald-400" title="Beat <%= event.eps_surprise_percent %>%">
+                        <span class="text-success-fg dark:text-success" title="Beat <%= event.eps_surprise_percent %>%">
                           <span class="material-symbols-outlined text-[10px]">trending_up</span>
                         </span>
                       <% elsif beat_miss == :miss %>
-                        <span class="text-rose-600 dark:text-rose-400" title="Miss <%= event.eps_surprise_percent %>%">
+                        <span class="text-error-fg dark:text-error" title="Miss <%= event.eps_surprise_percent %>%">
                           <span class="material-symbols-outlined text-[10px]">trending_down</span>
                         </span>
                       <% end %>
@@ -56,11 +56,11 @@
                   <div class="flex items-center justify-between text-[9px] font-bold bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-400">
                     <span><%= event.asset.symbol %> (<%= timing_label %>)</span>
                     <% if beat_miss == :beat %>
-                      <span class="text-emerald-600 dark:text-emerald-400" title="Beat <%= event.eps_surprise_percent %>%">
+                      <span class="text-success-fg dark:text-success" title="Beat <%= event.eps_surprise_percent %>%">
                         <span class="material-symbols-outlined text-[10px]">trending_up</span>
                       </span>
                     <% elsif beat_miss == :miss %>
-                      <span class="text-rose-600 dark:text-rose-400" title="Miss <%= event.eps_surprise_percent %>%">
+                      <span class="text-error-fg dark:text-error" title="Miss <%= event.eps_surprise_percent %>%">
                         <span class="material-symbols-outlined text-[10px]">trending_down</span>
                       </span>
                     <% end %>

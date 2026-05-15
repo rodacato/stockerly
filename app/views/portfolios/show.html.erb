@@ -27,7 +27,7 @@
     <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Portfolio Value</p>
     <div class="mt-2 flex items-baseline gap-2">
       <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white"><%= number_to_currency(@summary.total_value) %></span>
-      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= dg.positive? ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= dg.positive? ? 'bg-success/10 dark:bg-success/20 text-success-fg dark:text-success' : 'bg-error/10 dark:bg-error/20 text-error-fg dark:text-error' %>">
         <span class="material-symbols-outlined text-sm"><%= dg.positive? ? 'trending_up' : 'trending_down' %></span>
         <%= dg.positive? ? '+' : '' %><%= number_to_percentage(dg.percent, precision: 1) %>
       </span>
@@ -37,8 +37,8 @@
   <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
     <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Unrealized Gain/Loss</p>
     <div class="mt-2 flex items-baseline gap-2">
-      <span class="text-2xl font-black tracking-tight <%= ug.positive? ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>"><%= ug.positive? ? '+' : '' %><%= number_to_currency(ug.absolute) %></span>
-      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= ug.positive? ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' %>">
+      <span class="text-2xl font-black tracking-tight <%= ug.positive? ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>"><%= ug.positive? ? '+' : '' %><%= number_to_currency(ug.absolute) %></span>
+      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= ug.positive? ? 'bg-success/10 dark:bg-success/20 text-success-fg dark:text-success' : 'bg-error/10 dark:bg-error/20 text-error-fg dark:text-error' %>">
         <%= ug.positive? ? '+' : '' %><%= number_to_percentage(ug.percent, precision: 1) %>
       </span>
     </div>
