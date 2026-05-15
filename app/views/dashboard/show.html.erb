@@ -76,6 +76,9 @@
       <%= render "components/skeleton", type: "card", count: 1 %>
     <% end %>
     <%= render "dashboard/upcoming_events" %>
+    <%= turbo_frame_tag "dashboard_notable_observations", src: dashboard_notable_observations_path, loading: "lazy" do %>
+      <%= render "components/skeleton", type: "card", count: 1 %>
+    <% end %>
     <%= render "dashboard/weekly_insight" %>
     <%= render "dashboard/market_status" %>
   </div>
