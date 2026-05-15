@@ -8,6 +8,7 @@ module Administration
           changes = yield update(asset, attrs)
           _       = yield publish(Administration::Events::AssetUpdated.new(
             asset_id: asset.id,
+            admin_id: admin.id,
             symbol: asset.symbol,
             changes: changes
           ))

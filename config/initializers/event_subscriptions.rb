@@ -17,9 +17,14 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(Identity::Events::UserReactivated, Administration::Handlers::CreateAuditLogOnReactivation)
   EventBus.subscribe(Identity::Events::UserReactivated, Administration::Handlers::SendReactivationEmail)
   EventBus.subscribe(Identity::Events::UserDeleted, Administration::Handlers::CreateAuditLogOnDeletion)
+  EventBus.subscribe(Identity::Events::EmailVerified, Identity::Handlers::CreateAuditLogOnEmailVerification)
+  EventBus.subscribe(Identity::Events::ProfileUpdated, Identity::Handlers::CreateAuditLogOnProfileUpdate)
   EventBus.subscribe(MarketData::Events::AssetCreated, Administration::Handlers::CreateAuditLogOnAssetCreation)
   EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::SyncAssetOnCreation)
   EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::BackfillHistoryOnAssetCreation)
+  EventBus.subscribe(MarketData::Events::AssetDeleted, Administration::Handlers::CreateAuditLogOnAssetDeletion)
+  EventBus.subscribe(Administration::Events::AssetUpdated, Administration::Handlers::CreateAuditLogOnAssetUpdate)
+  EventBus.subscribe(Administration::Events::CsvExported, Administration::Handlers::CreateAuditLogOnCsvExport)
 
   # Market Data
   EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
