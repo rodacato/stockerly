@@ -59,13 +59,14 @@ Then:
 | Need | Command | What it does |
 |---|---|---|
 | Tail current app logs | `bin/kamal logs` | Live tail; Ctrl-C to exit |
-| Filter logs by request | `bin/kamal logs \| grep "request_id=<ID>"` | `config/environments/production.rb` sets `config.log_tags = [ :request_id ]`. User can find their `request_id` in HTML response headers (`X-Request-Id`) and forward it. **There is no `user_id` in log tags today** — see §3.3 gap |
+| Filter logs by request | `bin/kamal logs \| grep "request_id=<ID>"` | `config/environments/production.rb` sets `config.log_tags = [ :request_id ]`. User can find their `request_id` in HTML response headers (`X-Request-Id`) and forward it |
+| Filter logs by user | `bin/kamal logs \| grep '"user_id":<ID>'` | `user_id` is included in the structured JSON body by Lograge (`config/environments/production.rb` lines 51-59 + `ApplicationController#append_info_to_payload`), so grepping the body works even though it's not in the Rails tag prefix |
 | Rails console in prod | `bin/kamal console` | **Read-only by discipline**, not by enforcement. Use it to inspect, not to mutate, unless you have a fix-script and a backup |
 | Bash shell in prod | `bin/kamal shell` | For diagnostic shell access (e.g., disk space, running processes) |
-| PostgreSQL console | `bin/kamal dbc` | Direct `psql` on the production DB. Same discipline — read first, mutate only with explicit intent |
+| PostgreSQL console | `bin/kamal db` | Direct `psql` on the production DB. Same discipline — read first, mutate only with explicit intent |
 | App status | `bin/kamal details` | Is the container up? Last deploy? |
 
-**Hard rule before any mutation in `bin/kamal console` or `bin/kamal dbc`:**
+**Hard rule before any mutation in `bin/kamal console` or `bin/kamal db`:**
 
 1. Take a snapshot of the relevant table(s) first (`pg_dump` of just those tables, or a `SELECT ... INTO` to a backup table).
 2. Write the mutation as a transaction with explicit `BEGIN; ... ROLLBACK;` first to see what it would do.
@@ -226,8 +227,8 @@ If you miss these, that's data for the retro — not an apology to write. The be
 
 Known limitations of the current support setup, to address in future sprints if they become real friction:
 
-- [ ] **No structured admin UI to look up a specific user's recent activity.** Today: open `bin/kamal dbc` and write SQL. Issue worth opening if it happens 3+ times in S07.
-- [ ] **`user_id` not in log tags.** Production logs tag `request_id` only. Filtering by user means asking the user for their `X-Request-Id` header (most users won't know how) or correlating manually via timestamp + DB user record. Cheap fix: add `:user_id` to `config.log_tags` in `production.rb` and wrap controllers with `tagged_logger { |l| l.tagged("user:#{current_user&.id}") { yield } }`. Defer to S08 if friction appears.
+- [ ] **No structured admin UI to look up a specific user's recent activity.** Today: open `bin/kamal db` and write SQL. Issue worth opening if it happens 3+ times in S07.
+- [ ] **`user_id` not in Rails log tag prefix (cosmetic).** `user_id` is already in the structured JSON body via Lograge (`production.rb:51-59` + `ApplicationController#append_info_to_payload`), so filtering by user works today: `bin/kamal logs | grep '"user_id":<ID>'` (see §1.3 table). The remaining gap is cosmetic — `user_id` doesn't appear in the human-readable Rails tag prefix. If that becomes triage friction in S07, add `:user_id` to `config.log_tags` in `production.rb`.
 - [ ] **No "freeze writes" mode** for the app during data-corrupting incidents. Today the only stop is `bin/kamal app stop` which takes the whole site down.
 - [ ] **No status page** for beta users to check independently. Today: they email and ask. Acceptable for ≤20 users; reconsider if beta opens to more.
 - [ ] **No automated digest of received bug reports** in the inbox. Today: read each email; works for ≤5/week.
@@ -246,7 +247,7 @@ This document is only useful if it's been **exercised end-to-end at least once b
 2. Open `/report-bug` and submit a fake report: title `Test runbook`, description `Verifying runbook flow`.
 3. Check the inbox at `support@notdefined.dev` — does the email arrive with `user_id` and email attached?
 4. Open `bin/kamal logs` and grep for the test user's `user_id` — can you find their recent activity?
-5. Open `bin/kamal dbc` and query for the test user — can you confirm what you saw in logs?
+5. Open `bin/kamal db` and query for the test user — can you confirm what you saw in logs?
 6. Write a reply to yourself following §1.5 acuse-de-recibo guidelines.
 
 If any step has a gap (email doesn't arrive, log filtering doesn't work, DB query is awkward) — that's a real gap, fix before closing #78.
