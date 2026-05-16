@@ -4,6 +4,11 @@
 # belong in git's global ignore instead:
 # `$XDG_CONFIG_HOME/git/ignore` or `~/.config/git/ignore`
 
+# Local workspace artifacts (design mockups, scratch notes, etc.) that should
+# never be committed to the repo. See .claude/memory/project_design_assets.md
+# for the inventory and conventions.
+/.local/
+
 # Ignore bundler config.
 /.bundle
 
