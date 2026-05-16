@@ -1,0 +1,22 @@
+<% content_for(:title, "Bienvenido a Stockerly") %>
+
+<main class="flex-1 flex flex-col items-center py-12 px-4">
+  <div class="w-full max-w-2xl space-y-8">
+    <%# Greeting %>
+    <div>
+      <h1 class="text-3xl font-bold text-fg-default tracking-tight">Hola, <%= current_user.full_name.split.first %></h1>
+      <p class="text-sm text-fg-subtle mt-2">Te incorporaste a la beta cerrada de Stockerly.</p>
+    </div>
+
+    <%# Beta context card %>
+    <%= render "shared/welcome_body" %>
+
+    <%# Primary CTA %>
+    <%= button_to complete_welcome_path,
+          method: :post,
+          class: "w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 cursor-pointer" do %>
+      <span>Ir al dashboard</span>
+      <span class="material-symbols-outlined text-lg">arrow_forward</span>
+    <% end %>
+  </div>
+</main>

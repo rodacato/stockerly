@@ -1,0 +1,44 @@
+<%# Shared body between /welcome and /help. Beta context + 3 starting guide cards + support footer. %>
+
+<%# Beta context card %>
+<div class="rounded-2xl border border-primary/20 bg-primary/5 p-5 flex gap-4">
+  <div class="size-8 shrink-0 flex items-center justify-center text-primary mt-0.5">
+    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7" aria-hidden="true">
+      <path d="M10 22V10h12" />
+      <path d="M42 10h12v12" />
+      <path d="M10 42v12h12" />
+      <path d="M42 54h12v-12" />
+      <circle cx="32" cy="32" r="5" fill="currentColor" stroke="none" />
+    </svg>
+  </div>
+  <div class="min-w-0">
+    <h2 class="text-lg font-semibold text-fg-default mb-1.5">Esto es beta cerrada</h2>
+    <p class="text-sm text-fg-default leading-relaxed">Somos un grupo de menos de 20 personas probando juntos. Las cosas pueden cambiar o romperse. Si algo no funciona como esperas, no eres tú — es la beta.</p>
+  </div>
+</div>
+
+<%# Starting guide — 3 cards %>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+  <% [
+    { icon: "add_chart",            title: "Registra tu primer movimiento", body: "Carga una compra o venta para empezar a calcular tu rendimiento.", href: portfolio_path },
+    { icon: "visibility",           title: "Crea una watchlist",            body: "Sigue los activos que te interesan sin tenerlos en cartera.",     href: market_path },
+    { icon: "notifications_active", title: "Configura una alerta",          body: "Recibe avisos cuando un precio o métrica cruce un umbral.",       href: alerts_path }
+  ].each do |card| %>
+    <%= link_to card[:href], class: "group flex flex-col p-5 rounded-2xl bg-bg-surface border border-border-default hover:border-primary/30 hover:bg-bg-muted transition-colors no-underline text-fg-default" do %>
+      <div class="size-8 rounded-lg bg-bg-muted text-fg-default inline-flex items-center justify-center mb-4">
+        <span class="material-symbols-outlined text-lg"><%= card[:icon] %></span>
+      </div>
+      <h3 class="text-base font-semibold text-fg-default mb-1.5"><%= card[:title] %></h3>
+      <p class="text-sm text-fg-subtle leading-relaxed flex-1"><%= card[:body] %></p>
+      <span class="text-fg-subtle group-hover:text-primary transition-colors mt-3 inline-flex items-center text-sm">
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      </span>
+    <% end %>
+  <% end %>
+</div>
+
+<%# Support footer %>
+<div class="text-sm text-fg-subtle space-y-1.5">
+  <p>¿Encontraste un bug? <%= link_to "Repórtalo aquí.", new_bug_report_path, class: "text-primary border-b border-primary/40 hover:border-primary transition-colors" %></p>
+  <p>¿Otra pregunta? Escríbenos a <%= mail_to "support@notdefined.dev", nil, class: "text-primary border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
+</div>

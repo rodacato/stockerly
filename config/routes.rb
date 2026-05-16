@@ -37,11 +37,11 @@ Rails.application.routes.draw do
   post "resend-verification", to: "email_verifications#create", as: :resend_verification
 
   # --- Authenticated Zone ---
-  get  "onboarding/step1", to: "onboarding#step1"
-  get  "onboarding/step2", to: "onboarding#step2"
-  post "onboarding/complete", to: "onboarding#complete", as: :complete_onboarding
-  post "onboarding/skip",     to: "onboarding#skip",     as: :skip_onboarding
-  get  "onboarding/step3", to: "onboarding#step3"
+  get  "welcome",     to: "welcome#show",     as: :welcome
+  post "welcome",     to: "welcome#complete", as: :complete_welcome
+  get  "help",        to: "help#show",        as: :help
+  get  "report-bug",  to: "bug_reports#new",  as: :new_bug_report
+  post "report-bug",  to: "bug_reports#create", as: :bug_reports
 
   get "news",      to: "news#index"
   get "dashboard",           to: "dashboard#show"

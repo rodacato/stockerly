@@ -46,6 +46,6 @@ RSpec.describe "Registration flow", type: :request do
       invite_code: invite.code
     }
     follow_redirect!
-    expect(response).to redirect_to(onboarding_step1_path)
+    expect(response).to redirect_to(welcome_path)
   end
 end

@@ -16,14 +16,14 @@ class AuthenticatedController < ApplicationController
 
   def redirect_to_onboarding
     return unless current_user
-    return if is_a?(OnboardingController)
+    return if is_a?(WelcomeController)
     return if is_a?(Admin::OnboardingController)
     return if current_user.onboarded?
 
     if current_user.admin?
       redirect_to admin_onboarding_integrations_path
     else
-      redirect_to onboarding_step1_path
+      redirect_to welcome_path
     end
   end
 

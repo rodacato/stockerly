@@ -1,0 +1,15 @@
+<p>Nuevo reporte de bug en Stockerly beta cerrada.</p>
+
+<p>
+  <strong>Reportado por:</strong> <%= @user.full_name %> &lt;<%= @user.email %>&gt;<br>
+  <strong>User ID:</strong> <%= @user.id %>
+</p>
+
+<h3>Título</h3>
+<p><%= @title %></p>
+
+<h3>Descripción</h3>
+<p style="white-space: pre-wrap;"><%= @description %></p>
+
+<hr>
+<p style="color: #64748B; font-size: 12px;">Para responder, usa Reply (este correo lleva Reply-To al usuario).</p>

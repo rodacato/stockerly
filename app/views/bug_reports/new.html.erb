@@ -1,0 +1,60 @@
+<% content_for(:title, "Reportar un bug") %>
+
+<main class="flex-1 flex flex-col items-center py-12 px-4">
+  <div class="w-full max-w-xl">
+    <% if @submitted %>
+      <%# Success state %>
+      <div class="space-y-6">
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-primary text-3xl">check_circle</span>
+          <h1 class="text-2xl font-semibold text-fg-default tracking-tight">Reporte enviado</h1>
+        </div>
+        <p class="text-base text-fg-default leading-relaxed">Gracias. Lo voy a revisar lo antes posible y te respondo al correo con el que te registraste.</p>
+        <div class="flex items-center gap-4 pt-2">
+          <%= link_to "Volver al dashboard", dashboard_path,
+                class: "inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors" %>
+          <%= link_to "Reportar otro bug", new_bug_report_path,
+                class: "text-sm text-fg-subtle hover:text-primary transition-colors border-b border-transparent hover:border-primary" %>
+        </div>
+      </div>
+    <% else %>
+      <%# Form state (with optional errors) %>
+      <div class="mb-8">
+        <h1 class="text-2xl font-semibold text-fg-default tracking-tight">Reportar un bug</h1>
+        <p class="text-sm text-fg-subtle mt-2">Cuéntanos qué pasó. Esto llega directo al correo de soporte de la beta.</p>
+      </div>
+
+      <%= form_with url: bug_reports_path, method: :post, scope: nil, class: "space-y-5" do |f| %>
+        <% has_title_err = @errors&.dig(:title).present? %>
+        <% has_desc_err  = @errors&.dig(:description).present? %>
+
+        <div>
+          <%= label_tag :title, "Resumen", class: "block text-sm font-medium text-fg-default mb-1.5" %>
+          <%= text_field_tag :title, @bug_report.title,
+                placeholder: "p. ej. La gráfica de mi portafolio no carga.",
+                class: "w-full px-3 py-2.5 rounded-lg border #{has_title_err ? 'border-negative bg-negative-bg' : 'border-border-default bg-bg-surface'} text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" %>
+          <% if has_title_err %>
+            <p class="text-xs text-negative-fg dark:text-negative mt-1.5">Este campo es obligatorio (mínimo 3 caracteres).</p>
+          <% end %>
+        </div>
+
+        <div>
+          <%= label_tag :description, "Detalles", class: "block text-sm font-medium text-fg-default mb-1.5" %>
+          <%= text_area_tag :description, @bug_report.description, rows: 6,
+                placeholder: "Describe qué intentaste hacer, qué pasó, y qué esperabas que pasara. Si puedes, incluye pasos para reproducirlo.",
+                class: "w-full px-3 py-2.5 rounded-lg border #{has_desc_err ? 'border-negative bg-negative-bg' : 'border-border-default bg-bg-surface'} text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-y" %>
+          <% if has_desc_err %>
+            <p class="text-xs text-negative-fg dark:text-negative mt-1.5">Este campo es obligatorio (mínimo 10 caracteres).</p>
+          <% end %>
+          <p class="text-xs text-fg-subtle mt-1.5">Tu correo y tu sesión actual se adjuntan automáticamente para que podamos diagnosticarlo. No incluyas datos sensibles que no quieras compartir.</p>
+        </div>
+
+        <div class="flex items-center justify-between gap-4 pt-2">
+          <%= link_to "Cancelar", dashboard_path, class: "text-sm text-fg-subtle hover:text-primary transition-colors" %>
+          <%= f.submit "Enviar reporte",
+                class: "inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors cursor-pointer" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</main>

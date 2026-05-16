@@ -37,7 +37,7 @@ RSpec.describe "Registrations", type: :request do
 
       expect(response).to redirect_to(dashboard_path)
       follow_redirect!
-      expect(response).to redirect_to(onboarding_step1_path)
+      expect(response).to redirect_to(welcome_path)
     end
 
     it "rejects mismatched passwords" do

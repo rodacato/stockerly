@@ -59,29 +59,6 @@ RSpec.describe "Refactored controller flows", type: :request do
     end
   end
 
-  describe "Onboarding with DB assets via Use Case" do
-    it "step2 shows real assets from database" do
-      create(:asset, symbol: "GOOGL", name: "Alphabet Inc.", asset_type: :stock)
-      create(:asset, symbol: "ETH", name: "Ethereum", asset_type: :crypto)
-
-      get onboarding_step2_path
-
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("GOOGL")
-      expect(response.body).to include("ETH")
-    end
-
-    it "step3 shows real watchlist progress" do
-      asset = create(:asset, symbol: "AAPL")
-      create(:watchlist_item, user: user, asset: asset)
-
-      get onboarding_step3_path
-
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("1 asset")
-    end
-  end
-
   describe "Admin assets list via Use Case" do
     let!(:admin) { create(:user, :admin, email: "admin_ref@example.com", password: "password123") }
 
