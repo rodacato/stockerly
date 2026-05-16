@@ -8,7 +8,7 @@ metadata:
   validated-at: S07-close (2026-05-16)
 ---
 
-> **Status: Validated.** Initially captured as work-in-progress during S07 mid-sprint and reassessed at S07 close on 2026-05-16. Five screens (`/privacy`, `/admin/invites`, `/welcome`, `/help`, `/report-bug`) shipped through this workflow with zero regenerations needed and zero mockup-vs-implementation drift. The workflow is now the canonical approach for any new screen in Stockerly. Promoted to `docs/design/brand.md` §11 (link from `docs/design/brand.md` to this memory).
+> **Status: Validated.** Initially captured as work-in-progress during S07 mid-sprint and reassessed at S07 close on 2026-05-16. Five screens (`/privacy`, `/admin/invites`, `/welcome`, `/help`, `/report-bug`) shipped through this workflow with zero regenerations needed and zero mockup-vs-implementation drift. The workflow is now the canonical approach for any new screen in Stockerly. Promoted to `docs/design/brand.md` §10.1 (link from `docs/design/brand.md` to this memory).
 
 ## The workflow (canonical, post-S07)
 
@@ -69,7 +69,7 @@ Each checkpoint from the original reassessment plan, with concrete answers from 
 - ✅ **Expert consultation changed the output meaningfully.** C5 Renata's "no full-page hero" and "max-w-2xl centered container" constraints, S5 Ileana's LFPDPPP-section list, and C4 Marisol's "Tailwind arbitrary values instead of raw hex" all shaped the prompts in ways that landed in the mockups.
 - ✅ **Prompt-in-comment format worked.** No review friction; the comment URL is easy to share and the design tool ingests the markdown cleanly. Adrian's preference for fenced code blocks over blockquote prose became the new default mid-sprint and worked well on the `/welcome` prompt regeneration.
 
-**Conclusion: promoted to canonical.** Status moves from work-in-progress to validated; reassess clause dropped; this memory is now the reference for the workflow. A short §11 entry in `docs/design/brand.md` points readers here for the operational detail.
+**Conclusion: promoted to canonical.** Status moves from work-in-progress to validated; reassess clause dropped; this memory is now the reference for the workflow. A short §10.1 entry in `docs/design/brand.md` points readers here for the operational detail.
 
 ---
 
