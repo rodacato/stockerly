@@ -36,7 +36,7 @@
 - [x] **New ADR** — none required. The two architectural deviations in #74 were small enough to document inline in PR/commit (admin context placement; single-use-case transaction). The bigger wizard-replacement in #77 is documented in `log.md` and the commit message.
 - [x] **Vision update** — none. Audience/scope unchanged.
 - [x] **Design docs** — `docs/design/` unchanged. The mockup batch `Stockerly-1.0` is gitignored under `.local/` per `project_design_assets.md`. Brand kit honored across all 5 implementations (Lumen palette, Plus Jakarta Sans + Inter + JetBrains Mono, descriptive voice).
-- [ ] **Screenshots regenerated** — pending. `docs/screenshots/` not updated this sprint (visual changes were verifiable in mockups + manual smoke).
+- [ ] **Screenshots regenerated** — **deferred to S08 open.** `docs/screenshots/` not updated this sprint despite 5 new/rewritten screens shipped (`/welcome`, `/help`, `/report-bug`, `/admin/invites`, `/privacy`). Visual changes were verified against mockups + manual smoke during implementation, but the canonical screenshots step was skipped. Tracked explicitly in `retro.md` "What to change" as a S08 carry-over so it doesn't get lost.
 - [x] **CLAUDE.md / IDENTITY.md / memory** — three new memory entries added: `project_design_assets`, `project_design_workflow_wip`, `feedback_protect_master`. Memory index `MEMORY.md` reflects all three.
 
 ## GitHub hygiene
