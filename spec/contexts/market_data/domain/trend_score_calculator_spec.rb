@@ -27,7 +27,7 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
         expect(result).to be_a(Hash)
         expect(result[:score]).to be_between(70, 100)
         expect(result[:direction]).to eq(:upward)
-        expect(result[:label]).to be_in(%i[moderate strong parabolic])
+        expect(result[:label]).to be_in(%i[moderate high_score peak])
       end
     end
 
@@ -43,7 +43,7 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
         expect(result).to be_a(Hash)
         expect(result[:score]).to be_between(0, 40)
         expect(result[:direction]).to eq(:downward)
-        expect(result[:label]).to be_in(%i[weak weakening])
+        expect(result[:label]).to be_in(%i[low_score low_moderate])
       end
     end
 
@@ -52,13 +52,13 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
         Array.new(20) { 150.0 }
       end
 
-      it "returns a sideways score with upward direction (momentum = 0)" do
+      it "returns a neutral score with upward direction (momentum = 0)" do
         result = described_class.calculate(closes: closes)
 
         expect(result).to be_a(Hash)
         expect(result[:score]).to be_between(40, 60)
         expect(result[:direction]).to eq(:upward)
-        expect(result[:label]).to eq(:sideways)
+        expect(result[:label]).to eq(:neutral)
       end
     end
 
@@ -88,7 +88,7 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
         closes = (1..20).map { |i| 100.0 + (i * 1.0) }
         result = described_class.calculate(closes: closes)
 
-        expect(result[:label]).to be_in(%i[weak weakening sideways moderate strong parabolic])
+        expect(result[:label]).to be_in(%i[low_score low_moderate neutral moderate high_score peak])
       end
     end
 

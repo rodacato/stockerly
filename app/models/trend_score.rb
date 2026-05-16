@@ -2,8 +2,8 @@ class TrendScore < ApplicationRecord
   belongs_to :asset
 
   enum :label, {
-    weak: 0, moderate: 1, strong: 2,
-    parabolic: 3, sideways: 4, weakening: 5
+    low_score: 0, low_moderate: 1, neutral: 2,
+    moderate: 3, high_score: 4, peak: 5
   }
   enum :direction, { upward: 0, downward: 1 }
 

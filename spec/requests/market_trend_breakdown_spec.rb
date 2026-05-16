@@ -17,7 +17,7 @@ RSpec.describe "Market Listings Trend Breakdown", type: :request do
     end
 
     it "renders factor breakdown popover when factors data is present" do
-      create(:trend_score, asset: asset, score: 80, label: :strong, direction: :upward,
+      create(:trend_score, asset: asset, score: 80, label: :high_score, direction: :upward,
         factors: { rsi: 72.5, momentum: 65.0, macd: 58.3, volume_trend: 61.0, ema_crossover: 70.2 })
 
       get market_path
@@ -29,7 +29,7 @@ RSpec.describe "Market Listings Trend Breakdown", type: :request do
     end
 
     it "does not render factor breakdown for legacy scores without factors" do
-      create(:trend_score, asset: asset, score: 60, label: :sideways, direction: :upward, factors: {})
+      create(:trend_score, asset: asset, score: 60, label: :neutral, direction: :upward, factors: {})
 
       get market_path
 

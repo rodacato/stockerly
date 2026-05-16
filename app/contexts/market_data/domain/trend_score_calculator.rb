@@ -169,12 +169,12 @@ module MarketData
 
     def label_for(score)
       case score
-      when 0..20   then :weak
-      when 21..40  then :weakening
-      when 41..60  then :sideways
+      when 0..20   then :low_score
+      when 21..40  then :low_moderate
+      when 41..60  then :neutral
       when 61..80  then :moderate
-      when 81..90  then :strong
-      when 91..100 then :parabolic
+      when 81..90  then :high_score
+      when 91..100 then :peak
       end
     end
     end

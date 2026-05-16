@@ -30,7 +30,7 @@ RSpec.describe TrendScore, type: :model do
   describe "enums" do
     it "defines label enum with 6 values" do
       expect(TrendScore.labels.keys).to contain_exactly(
-        "weak", "moderate", "strong", "parabolic", "sideways", "weakening"
+        "low_score", "low_moderate", "neutral", "moderate", "high_score", "peak"
       )
     end
 
