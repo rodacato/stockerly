@@ -24,13 +24,11 @@ metadata:
 | **Bugs from beta** | **GitHub Issues** |
 
 **Sprint protocol:**
-- **Effort metric:** Claude session-hours (not calendar days). S1 ~10-12h, S2 ~20h, S3 ~12h (deletion-heavy), S4 ~18h (new-feature with pattern proximity), S5 ~22h (architectural refactor), S6 ~8h (pure mechanical migration with AI editing). Calendar target is orientativo. Close trigger is QA + retro, not the date. Decided 2026-05-14 — Adrian works evenings/weekends with intense paired sessions, so calendar duration varies wildly while session-hours are comparable across sprints.
-- **Estimation multiplier on raw hours** (updated post-S06 with 4 data points):
-  - **0.5×** for pure-mechanical migration sprints with complete discovery cards + AI-accelerated editing (S06 came in at 8h vs 21h projected with 1.2× — file-by-file regex-replace work compressed dramatically)
-  - **1.0×** for refactor sprints with an existing ADR (S05 came in at 22h vs 27h projected with 1.3× — design decided, only implementation remains)
-  - **1.2×** for deletion-heavy sprints (S03 came in at 12h vs 25h projected with 1.5×)
-  - **1.3×** for new-feature sprints with a nearby existing pattern (S04 came in at 18h vs 28h projected with 1.5×)
-  - **1.5×** reserved for greenfield work with no pattern to copy
+- **Effort metric:** Claude session-hours (not calendar days). S1 ~10-12h, S2 ~20h, S3 ~12h, S4 ~18h, S5 ~22h, S6 ~8h, S7 ~14h. Calendar target is orientativo. Close trigger is QA + retro, not the date. Decided 2026-05-14 — Adrian works evenings/weekends with intense paired sessions, so calendar duration varies wildly while session-hours are comparable across sprints.
+- **Estimation multiplier on raw hours** (consolidated post-S07 with 5 data points across S03–S07; the legacy 1.2–1.5× factors no longer fit the data):
+  - **0.5×** for sprints with mockups-in-hand AND concrete discovery card DoDs. The unknowns (visual decisions, copy decisions, layout decisions, architectural placement) get resolved BEFORE implementation, not during. S06 (0.38×), S07 (0.45×), S03 (0.48×) all clustered here despite different work types (mechanical migration, feature build-out, deletion-heavy).
+  - **0.8×** for sprints with concrete DoDs but no mockups. Visual / copy decisions happen during implementation, adding back some variance. S04 (0.64×) and S05 (0.81×) clustered here — feature with nearby pattern, refactor with ADR. The unknown-resolution overhead is real but bounded.
+  - **1.5×** reserved for greenfield work without DoD or mockup. Rarely applicable in the current regime — by the time the discovery card is complete the work has moved out of this category. If a sprint genuinely lands here, the discovery is incomplete and should be returned for refinement before opening the sprint.
 - Goal: single sentence in milestone description, also in `docs/sprints/<n>/GOAL.md` (referenced from milestone, not duplicated)
 - QA pass MANDATORY before close (manual smoke test, audit script, CI green, design audit)
 - Retro post-close required (`docs/sprints/<n>/retro.md` — what worked / what didn't / what to change)

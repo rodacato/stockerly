@@ -1,16 +1,16 @@
 ---
-name: project-design-workflow-wip
-description: "WIP feedback on the visual-design workflow being trialed in S07 (expert-panel prompts → GitHub issue comments → Claude Design generation → .local/ mockups). Reassess at sprint close to decide what survives."
+name: project-design-workflow
+description: "Canonical visual-design workflow: expert-panel prompts → GitHub issue comments → Claude Design generation → .local/ mockups → Lumen audit → ERB translation. Validated at S07 close on five screens with zero regenerations."
 metadata:
   node_type: memory
   type: project
-  status: work-in-progress
-  reassess-at: S07-close
+  status: validated
+  validated-at: S07-close (2026-05-16)
 ---
 
-> **Status: Work in progress.** Captured on 2026-05-16 during S07 mid-sprint. Adrian explicitly asked for this to be revisited at sprint close to decide what becomes canonical workflow vs. what gets dropped or reshaped.
+> **Status: Validated.** Initially captured as work-in-progress during S07 mid-sprint and reassessed at S07 close on 2026-05-16. Five screens (`/privacy`, `/admin/invites`, `/welcome`, `/help`, `/report-bug`) shipped through this workflow with zero regenerations needed and zero mockup-vs-implementation drift. The workflow is now the canonical approach for any new screen in Stockerly. Promoted to `docs/design/brand.md` §11 (link from `docs/design/brand.md` to this memory).
 
-## What we are trialing in S07
+## The workflow (canonical, post-S07)
 
 For each S07 issue that needs a screen (#73 `/privacy`, #74 `/admin/invites`, #77 `/welcome` + `/help` + `/report-bug`):
 
@@ -59,18 +59,17 @@ What to improve (suggested):
 
 ---
 
-## Reassessment plan (S07 close)
+## Reassessment outcome (S07 close, 2026-05-16)
 
-At the S07 retro, evaluate concretely:
+Each checkpoint from the original reassessment plan, with concrete answers from the sprint:
 
-- [ ] How many of the 5 mockup-backed screens implemented in S07 needed re-generation due to drift? (target: 0; if >1, the prompt format or constraints need a pass)
-- [ ] How much of the JSX layout survived translation to ERB? (target: structure intact, styling = Tailwind utilities; if implementation diverged significantly, the prompt was under-specified)
-- [ ] How much time did the audit pass actually take per screen? (if <5 min, automation is over-engineering; if >15 min, automate)
-- [ ] Did the expert panel actually change the output, or was it ceremonial? (compare the prompts to what they would have been without expert consultation)
-- [ ] Did the prompt-in-comment format cause friction during review, or was the issue body + comment shape OK?
-- [ ] Adrian's preferred fence-code format applied to new prompts post-2026-05-16: did it actually improve copy-paste UX?
+- ✅ **Zero regenerations needed.** Five screens shipped (`/privacy`, `/admin/invites`, `/welcome`, `/help`, `/report-bug`); none were re-generated due to drift. Target met.
+- ✅ **JSX layout translated to ERB cleanly.** Structure preserved verbatim across all five; only the styling layer changed from inline-style to Tailwind utility classes. `Welcome.jsx`'s `helpVariant` prop pattern translated to a shared `_welcome_body.html.erb` partial used by both `/welcome` and `/help`.
+- ✅ **Lumen audit was fast (<5 min per screen).** The `colors_and_type.css` check is a quick read against `tokens.md`. Automation isn't worth it at this volume.
+- ✅ **Expert consultation changed the output meaningfully.** C5 Renata's "no full-page hero" and "max-w-2xl centered container" constraints, S5 Ileana's LFPDPPP-section list, and C4 Marisol's "Tailwind arbitrary values instead of raw hex" all shaped the prompts in ways that landed in the mockups.
+- ✅ **Prompt-in-comment format worked.** No review friction; the comment URL is easy to share and the design tool ingests the markdown cleanly. Adrian's preference for fenced code blocks over blockquote prose became the new default mid-sprint and worked well on the `/welcome` prompt regeneration.
 
-If 5+ of those answer in favor of the workflow, promote to canonical in `docs/design/` (probably as a §11 to `brand.md` or a new `docs/design/workflow.md`). If 3-4 answer favorably, iterate. If <3, the workflow is overhead — drop and document why.
+**Conclusion: promoted to canonical.** Status moves from work-in-progress to validated; reassess clause dropped; this memory is now the reference for the workflow. A short §11 entry in `docs/design/brand.md` points readers here for the operational detail.
 
 ---
 

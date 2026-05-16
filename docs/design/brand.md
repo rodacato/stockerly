@@ -186,6 +186,12 @@ This section is a workflow guide for future sessions with visual tools (Claude D
 - [ ] At least one empty state is rendered to verify the "—" convention.
 - [ ] Dark mode is genuinely warm-dark (`#1A1B23` family), not slate-cold-dark.
 
+### 10.1 End-to-end workflow (canonical post-S07)
+
+The full operational workflow — expert-panel consultation → self-contained markdown prompt → GitHub issue comment → external generation → `.local/design-mockups/` storage → Lumen-fidelity audit → ERB translation with Tailwind tokens — is documented in the `project_design_workflow` memory entry (`.claude/memory/project_design_workflow.md`).
+
+Validated at S07 close on five screens (`/privacy`, `/admin/invites`, `/welcome`, `/help`, `/report-bug`) with zero regenerations and zero mockup-vs-implementation drift. Adopt the same pattern for any new screen in S08+.
+
 ## 11. Decision Record
 
 Captured for future reference when the brand is revisited or extended.
