@@ -4,18 +4,18 @@ class LegalController < ApplicationController
   before_action { expires_in 1.day, public: true }
 
   def privacy
-    @page_title = "Privacy Policy"
-    @page_subtitle = "Ensuring your data is safe, transparently handled, and always yours."
-    @last_updated = "October 24, 2023"
-    @breadcrumbs = [ "Privacy Policy" ]
+    @page_title = "Aviso de privacidad"
+    @page_subtitle = "Conforme al Art. 16 LFPDPPP. Qué datos tratamos, cómo y por qué."
+    @last_updated = "16 MAY 2026 · CDMX"
+    @breadcrumbs = [ "Aviso de privacidad" ]
     @toc_sections = [
-      { id: "introduction", icon: "info", title: "Introduction", active: true },
-      { id: "collection", icon: "database", title: "Information Collection" },
-      { id: "usage", icon: "insights", title: "Data Usage" },
-      { id: "storage", icon: "shield_lock", title: "Storage & Protection" },
-      { id: "rights", icon: "person_check", title: "User Rights" },
-      { id: "cookies", icon: "cookie", title: "Cookies & Tracking" },
-      { id: "contact", icon: "mail", title: "Contact Us" }
+      { id: "responsable", icon: "person", title: "Identidad del responsable", active: true },
+      { id: "datos", icon: "database", title: "Datos que recolectamos" },
+      { id: "finalidades", icon: "insights", title: "Finalidades del tratamiento" },
+      { id: "transferencias", icon: "swap_horiz", title: "Transferencias a terceros" },
+      { id: "arco", icon: "person_check", title: "Derechos ARCO" },
+      { id: "cambios", icon: "edit_note", title: "Cambios al aviso" },
+      { id: "contacto", icon: "mail", title: "Contacto" }
     ]
   end
 

@@ -1,139 +1,73 @@
-<%# 1. Introduction %>
-<section class="scroll-mt-24" id="introduction">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">1. Introduction</h2>
-  <div class="text-slate-600 dark:text-slate-400 leading-relaxed space-y-4">
-    <p>Welcome to Stockerly. Your privacy is critically important to us. At Stockerly, we have a few fundamental principles: We don't ask you for personal information unless we truly need it. We don't share your personal information with anyone except to comply with the law, develop our products, or protect our rights.</p>
-    <p>This Privacy Policy applies to our website and all services provided by Stockerly. By accessing our services, you agree to the collection and use of information in accordance with this policy.</p>
+<%# 1. Identidad del responsable %>
+<section class="scroll-mt-24" id="responsable">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">1. Identidad y domicilio del responsable</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Stockerly es un proyecto personal mantenido por Adrian Castillo (CDMX, México). Para asuntos relacionados con el tratamiento de tus datos personales, contáctanos en <%= mail_to "support@notdefined.dev", "support@notdefined.dev", class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
   </div>
 </section>
 
-<%# 2. Information Collection %>
-<section class="scroll-mt-24" id="collection">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">2. Information Collection</h2>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-    <div class="p-6 rounded-xl border border-primary/10 bg-white dark:bg-slate-800/50">
-      <h3 class="font-bold text-primary mb-2 flex items-center gap-2">
-        <span class="material-symbols-outlined text-lg">person</span>
-        Personal Data
-      </h3>
-      <p class="text-sm text-slate-600 dark:text-slate-400">While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you, including email addresses, name, and phone number.</p>
-    </div>
-    <div class="p-6 rounded-xl border border-primary/10 bg-white dark:bg-slate-800/50">
-      <h3 class="font-bold text-primary mb-2 flex items-center gap-2">
-        <span class="material-symbols-outlined text-lg">devices</span>
-        Usage Data
-      </h3>
-      <p class="text-sm text-slate-600 dark:text-slate-400">We may also collect information on how the Service is accessed and used. This includes your IP address, browser type, browser version, and the pages of our Service that you visit.</p>
-    </div>
+<%# 2. Datos personales que recolectamos %>
+<section class="scroll-mt-24" id="datos">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">2. Datos personales que recolectamos</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Cuando te registras y usas Stockerly, tratamos los siguientes datos personales:</p>
+    <ul class="space-y-3 list-disc pl-6">
+      <li><strong class="font-semibold text-fg-default">Datos de identificación</strong> — correo electrónico y nombre.</li>
+      <li><strong class="font-semibold text-fg-default">Datos de autenticación</strong> — contraseña, almacenada en formato cifrado (no en texto plano).</li>
+      <li><strong class="font-semibold text-fg-default">Datos financieros que tú cargas</strong> — movimientos de tu portafolio (compras, ventas, tickers, cantidades, tasas de cambio que ingreses manualmente).</li>
+    </ul>
   </div>
 </section>
 
-<%# 3. Data Usage %>
-<section class="scroll-mt-24" id="usage">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">3. Data Usage</h2>
-  <ul class="space-y-4">
-    <li class="flex gap-4">
-      <span class="shrink-0 size-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">01</span>
-      <p class="text-slate-600 dark:text-slate-400">To provide and maintain our Service, including monitoring usage patterns.</p>
-    </li>
-    <li class="flex gap-4">
-      <span class="shrink-0 size-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">02</span>
-      <p class="text-slate-600 dark:text-slate-400">To notify you about changes to our Service and provide customer support.</p>
-    </li>
-    <li class="flex gap-4">
-      <span class="shrink-0 size-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">03</span>
-      <p class="text-slate-600 dark:text-slate-400">To gather analysis or valuable information so that we can improve our Service.</p>
-    </li>
-  </ul>
-</section>
-
-<%# 4. Storage & Protection (Highlight Section) %>
-<section class="scroll-mt-24 p-8 rounded-2xl bg-primary text-white shadow-xl" id="storage">
-  <div class="flex items-center gap-4 mb-6">
-    <div class="size-12 rounded-xl bg-white/20 flex items-center justify-center">
-      <span class="material-symbols-outlined text-3xl">verified_user</span>
-    </div>
-    <h2 class="text-3xl font-bold">4. Storage & Protection</h2>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div class="space-y-3">
-      <h4 class="font-bold text-lg flex items-center gap-2">
-        <span class="material-symbols-outlined">lock</span>
-        Encryption
-      </h4>
-      <p class="text-white/80 leading-relaxed text-sm">All data is encrypted in transit using industry-standard SSL/TLS protocols. Sensitive data at rest is protected with AES-256 encryption.</p>
-    </div>
-    <div class="space-y-3">
-      <h4 class="font-bold text-lg flex items-center gap-2">
-        <span class="material-symbols-outlined">dns</span>
-        Global Servers
-      </h4>
-      <p class="text-white/80 leading-relaxed text-sm">Our primary servers are located in high-security data centers with 24/7 surveillance and strict access controls.</p>
-    </div>
-  </div>
-  <div class="mt-8 pt-8 border-t border-white/10 italic text-sm text-white/60 text-center">
-    "Your data is never sold to third parties. Period."
+<%# 3. Finalidades del tratamiento %>
+<section class="scroll-mt-24" id="finalidades">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">3. Finalidades del tratamiento</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Usamos tus datos personales para:</p>
+    <ul class="space-y-3 list-disc pl-6">
+      <li><strong class="font-semibold text-fg-default">Operar la plataforma</strong> — calcular tu portafolio, mostrar tus posiciones, generar alertas que tú configures.</li>
+      <li><strong class="font-semibold text-fg-default">Comunicarnos contigo</strong> — responder reportes de bugs o preguntas que envíes durante la beta cerrada.</li>
+      <li><strong class="font-semibold text-fg-default">Mantener la seguridad de tu cuenta</strong> — registros operativos mínimos (logs técnicos) sin fines comerciales.</li>
+    </ul>
   </div>
 </section>
 
-<%# 5. User Rights %>
-<section class="scroll-mt-24" id="rights">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">5. User Rights</h2>
-  <p class="text-slate-600 dark:text-slate-400 mb-6">Stockerly aims to take reasonable steps to allow you to correct, amend, delete, or limit the use of your Personal Data.</p>
-  <div class="space-y-3">
-    <div class="flex items-start gap-3 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-700">
-      <span class="material-symbols-outlined text-primary mt-1">check_circle</span>
-      <div>
-        <h4 class="font-bold text-slate-900 dark:text-white">Right of Access</h4>
-        <p class="text-sm text-slate-500 dark:text-slate-400">You can request a copy of the personal data we hold about you at any time.</p>
-      </div>
-    </div>
-    <div class="flex items-start gap-3 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-700">
-      <span class="material-symbols-outlined text-primary mt-1">check_circle</span>
-      <div>
-        <h4 class="font-bold text-slate-900 dark:text-white">Right to Erasure</h4>
-        <p class="text-sm text-slate-500 dark:text-slate-400">Commonly known as the 'right to be forgotten'. You can request that we delete your personal information.</p>
-      </div>
-    </div>
-    <div class="flex items-start gap-3 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-700">
-      <span class="material-symbols-outlined text-primary mt-1">check_circle</span>
-      <div>
-        <h4 class="font-bold text-slate-900 dark:text-white">Right to Portability</h4>
-        <p class="text-sm text-slate-500 dark:text-slate-400">You have the right to request that we transfer the data that we have collected to another organization.</p>
-      </div>
-    </div>
+<%# 4. Transferencias de datos a terceros %>
+<section class="scroll-mt-24" id="transferencias">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">4. Transferencias de datos a terceros</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Stockerly consulta proveedores externos de datos de mercado (precios de acciones, tasas de cambio) para mostrarte información actualizada. Estas consultas no incluyen datos personales tuyos — son solicitudes anónimas de precios.</p>
+    <p>No vendemos, intercambiamos ni transferimos tus datos personales a terceros con fines comerciales.</p>
   </div>
 </section>
 
-<%# 6. Cookies & Tracking %>
-<section class="scroll-mt-24" id="cookies">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">6. Cookies & Tracking</h2>
-  <p class="text-slate-600 dark:text-slate-400 mb-4">We use cookies and similar tracking technologies to track the activity on our Service and hold certain information.</p>
-  <div class="bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 p-6 rounded-xl">
-    <div class="flex flex-wrap gap-2">
-      <span class="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Session Cookies</span>
-      <span class="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Preference Cookies</span>
-      <span class="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Security Cookies</span>
-    </div>
-    <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Service.</p>
+<%# 5. Tus derechos ARCO %>
+<section class="scroll-mt-24" id="arco">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">5. Tus derechos ARCO <span class="text-base font-normal text-fg-subtle">(Acceso, Rectificación, Cancelación, Oposición)</span></h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Tienes derecho a:</p>
+    <ul class="space-y-3 list-disc pl-6">
+      <li><strong class="font-semibold text-fg-default">Acceso</strong> — saber qué datos personales tenemos de ti.</li>
+      <li><strong class="font-semibold text-fg-default">Rectificación</strong> — corregir datos inexactos o desactualizados.</li>
+      <li><strong class="font-semibold text-fg-default">Cancelación</strong> — solicitar que eliminemos tus datos cuando ya no los necesites.</li>
+      <li><strong class="font-semibold text-fg-default">Oposición</strong> — pedir que dejemos de tratar tus datos para finalidades específicas.</li>
+    </ul>
+    <p>Para ejercer cualquiera de estos derechos, escríbenos a <%= mail_to "support@notdefined.dev", "support@notdefined.dev", class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>. Respondemos en un plazo razonable (mejor esfuerzo, sin compromiso público durante la beta).</p>
   </div>
 </section>
 
-<%# 7. Contact Us %>
-<section class="scroll-mt-24 pb-12" id="contact">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">7. Contact Us</h2>
-  <p class="text-slate-600 dark:text-slate-400 mb-8">If you have any questions about this Privacy Policy, please contact our dedicated Data Protection Officer.</p>
-  <div class="bg-primary/5 border border-primary/20 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8">
-    <div class="size-20 bg-primary text-white rounded-full flex items-center justify-center shrink-0">
-      <span class="material-symbols-outlined text-4xl">alternate_email</span>
-    </div>
-    <div class="text-center md:text-left">
-      <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Privacy Support Team</h4>
-      <p class="text-slate-500 dark:text-slate-400 mb-4">Available Mon-Fri, 9am - 5pm EST</p>
-      <a class="inline-flex items-center gap-2 text-primary font-bold hover:underline" href="mailto:privacy@stockerly.com">
-        privacy@stockerly.com
-        <span class="material-symbols-outlined text-sm">open_in_new</span>
-      </a>
-    </div>
+<%# 6. Cambios al aviso %>
+<section class="scroll-mt-24" id="cambios">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">6. Cambios al aviso</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Si actualizamos este aviso, modificaremos la fecha al inicio de la página y avisaremos a los usuarios activos por correo electrónico antes de que los cambios entren en vigor.</p>
+  </div>
+</section>
+
+<%# 7. Contacto %>
+<section class="scroll-mt-24 pb-4" id="contacto">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">7. Contacto</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Cualquier pregunta sobre este aviso o sobre el tratamiento de tus datos: <%= mail_to "support@notdefined.dev", "support@notdefined.dev", class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
   </div>
 </section>
