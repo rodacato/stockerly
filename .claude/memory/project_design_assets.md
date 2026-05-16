@@ -28,7 +28,7 @@ Mapping mockup → S07 issue:
 | `.local/design-mockups/Stockerly-1.0/privacy/` | [#73 LFPDPPP rewrite](https://github.com/rodacato/stockerly/issues/73) | Ready to implement |
 | `.local/design-mockups/Stockerly-1.0/admin_invites/` | [#74 Invite-by-code system](https://github.com/rodacato/stockerly/issues/74) | Ready to implement |
 | `.local/design-mockups/Stockerly-1.0/report_bug/` | [#77 Onboarding (part: /report-bug)](https://github.com/rodacato/stockerly/issues/77) | Ready to implement |
-| **(missing)** `welcome/` | [#77 Onboarding (part: /welcome + /help)](https://github.com/rodacato/stockerly/issues/77) | **Not generated yet** — ask Adrian to regenerate from the design prompt at `gh issue view 77` (first comment) |
+| `.local/design-mockups/Stockerly-1.0/welcome/` | [#77 Onboarding (part: /welcome + /help)](https://github.com/rodacato/stockerly/issues/77) | Ready to implement (added 2026-05-16, audited: copy verbatim from prompt, palette Lumen, focal-frame motif applied creatively in BetaCard, `helpVariant` prop covers both routes from one component) |
 | `.local/design-mockups/Stockerly-1.0/asset_detail/` | (none) | **Bonus** — not part of S07 scope. Keep for future asset-detail work; do not implement during S07 |
 
 ### Lumen-fidelity audit (done 2026-05-16)

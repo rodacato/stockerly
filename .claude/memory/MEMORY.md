@@ -11,6 +11,7 @@
 - [Working method](project_working_method.md) — GitHub Issues/Projects + docs/ split, sprint protocol, discovery cards required
 - [Expert panel v2](project_expert_panel_v2.md) — 8 Core + 8 Situational with names; canonical doc at docs/research/experts.md
 - [Design assets](project_design_assets.md) — External mockups live in .local/design-mockups/ (gitignored); Lumen palette is source of truth; current batch Stockerly-1.0 for S07
+- [Design workflow WIP](project_design_workflow_wip.md) — Expert panel + prompts-as-comments + Claude Design + .local/ being trialed in S07; reassess at sprint close
 
 ## Feedback
 - [Brutal honesty mandate](feedback_brutal_honesty.md) — Adrian's explicit ask, applies to all responses
