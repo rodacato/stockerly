@@ -22,7 +22,7 @@ class RegistrationsController < ApplicationController
       start_session(user)
       redirect_to dashboard_path, notice: "Welcome to Stockerly, #{user.full_name}!"
     in Dry::Monads::Failure[ :validation, errors ]
-      @user = User.new(registration_params)
+      @user = User.new(registration_params.except(:invite_code))
       errors.each { |field, msgs| msgs.each { |msg| @user.errors.add(field, msg) } }
       render :new, status: :unprocessable_content
     end
@@ -31,7 +31,7 @@ class RegistrationsController < ApplicationController
   private
 
   def registration_params
-    params.permit(:full_name, :email, :password, :password_confirmation)
+    params.permit(:full_name, :email, :password, :password_confirmation, :invite_code)
   end
 
   def redirect_if_logged_in

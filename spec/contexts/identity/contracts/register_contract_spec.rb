@@ -4,7 +4,13 @@ RSpec.describe Identity::Contracts::RegisterContract do
   subject(:contract) { described_class.new }
 
   let(:valid_params) do
-    { full_name: "John Doe", email: "john@example.com", password: "password123", password_confirmation: "password123" }
+    {
+      full_name: "John Doe",
+      email: "john@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      invite_code: "a3f89c2e4b1d"
+    }
   end
 
   it "passes with valid params" do
@@ -40,5 +46,22 @@ RSpec.describe Identity::Contracts::RegisterContract do
     result = contract.call(valid_params.merge(password_confirmation: "different123"))
     expect(result).to be_failure
     expect(result.errors[:password_confirmation]).to be_present
+  end
+
+  it "fails with missing invite_code" do
+    result = contract.call(valid_params.except(:invite_code))
+    expect(result).to be_failure
+    expect(result.errors[:invite_code]).to be_present
+  end
+
+  it "fails with malformed invite_code" do
+    result = contract.call(valid_params.merge(invite_code: "not-hex-123!"))
+    expect(result).to be_failure
+    expect(result.errors[:invite_code]).to be_present
+  end
+
+  it "accepts hyphenated invite_code (normalized to 12 hex chars)" do
+    result = contract.call(valid_params.merge(invite_code: "a3f8-9c2e-4b1d"))
+    expect(result).to be_success
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_16_151829) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_16_174817) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -239,6 +239,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_16_151829) do
     t.datetime "updated_at", null: false
     t.index ["connection_status"], name: "index_integrations_on_connection_status"
     t.index ["provider_name"], name: "index_integrations_on_provider_name", unique: true
+  end
+
+  create_table "invite_codes", force: :cascade do |t|
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by_user_id", null: false
+    t.string "note"
+    t.datetime "updated_at", null: false
+    t.datetime "used_at"
+    t.bigint "used_by_user_id"
+    t.index ["code"], name: "index_invite_codes_on_code", unique: true
+    t.index ["created_by_user_id"], name: "index_invite_codes_on_created_by_user_id"
+    t.index ["used_by_user_id"], name: "index_invite_codes_on_used_by_user_id"
   end
 
   create_table "market_index_histories", force: :cascade do |t|
@@ -475,6 +488,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_16_151829) do
   add_foreign_key "dividends", "assets"
   add_foreign_key "earnings_events", "assets"
   add_foreign_key "financial_statements", "assets"
+  add_foreign_key "invite_codes", "users", column: "created_by_user_id"
+  add_foreign_key "invite_codes", "users", column: "used_by_user_id"
   add_foreign_key "market_index_histories", "market_indices"
   add_foreign_key "notifications", "users"
   add_foreign_key "portfolio_snapshots", "portfolios"

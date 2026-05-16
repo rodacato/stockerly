@@ -3,7 +3,7 @@ module Identity
     class Register < ApplicationUseCase
       def call(params:)
         attrs = yield validate(Contracts::RegisterContract, params)
-        user  = yield persist(attrs)
+        user  = yield persist_with_invite(attrs)
         _     = yield publish(Events::UserRegistered.new(user_id: user.id, email: user.email))
 
         Success(user)
@@ -11,14 +11,28 @@ module Identity
 
       private
 
-      def persist(attrs)
-        user = User.new(
-          full_name: attrs[:full_name],
-          email: attrs[:email],
-          password: attrs[:password],
-          password_confirmation: attrs[:password_confirmation]
-        )
-        user.save ? Success(user) : Failure([ :validation, user.errors.to_hash ])
+      def persist_with_invite(attrs)
+        normalized = InviteCode.normalize(attrs[:invite_code])
+
+        ActiveRecord::Base.transaction do
+          invite = InviteCode.lock.find_by(code: normalized)
+
+          return Failure([ :validation, { invite_code: [ "código de invitación inválido" ] } ]) unless invite
+          return Failure([ :validation, { invite_code: [ "código ya canjeado" ] } ]) if invite.used?
+
+          user = User.new(
+            full_name: attrs[:full_name],
+            email: attrs[:email],
+            password: attrs[:password],
+            password_confirmation: attrs[:password_confirmation]
+          )
+
+          return Failure([ :validation, user.errors.to_hash ]) unless user.save
+
+          invite.update!(used_at: Time.current, used_by_user: user)
+
+          Success(user)
+        end
       end
     end
   end

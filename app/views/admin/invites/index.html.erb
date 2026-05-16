@@ -1,0 +1,60 @@
+<% content_for(:admin_page_title, "Códigos de invitación") %>
+
+<div class="space-y-8">
+  <%# Header %>
+  <div>
+    <h1 class="text-2xl font-bold text-fg-default">Códigos de invitación</h1>
+    <p class="text-fg-subtle mt-1 text-sm">Genera códigos de un solo uso para invitar amigos a la beta cerrada.</p>
+  </div>
+
+  <%# Generate card %>
+  <div class="bg-bg-surface border border-border-default rounded-xl shadow-sm p-6">
+    <h3 class="text-lg font-semibold text-fg-default mb-1">Generar nuevo código</h3>
+    <p class="text-sm text-fg-subtle mb-5">El código se genera al pulsar el botón. Anota una nota para recordar a quién lo enviaste.</p>
+
+    <%= form_with url: admin_invites_path, method: :post, class: "flex flex-col sm:flex-row sm:items-end gap-3" do |f| %>
+      <div class="flex-1">
+        <%= f.label :note, class: "block text-sm font-medium text-fg-default mb-1.5" do %>
+          Nota <span class="text-fg-subtle font-normal">(opcional)</span>
+        <% end %>
+        <%= f.text_field :note,
+              placeholder: 'p. ej. "Pablo", "amigo Juan"',
+              class: "w-full px-3 py-2 rounded-lg border border-border-default bg-bg-surface text-fg-default placeholder-fg-subtle focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" %>
+      </div>
+      <%= f.submit "Generar código",
+            class: "inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-colors cursor-pointer" %>
+    <% end %>
+  </div>
+
+  <%# Just-generated highlight card %>
+  <% if @just_created_code.present? %>
+    <% just_invite = @invites.find { |i| i.code == @just_created_code } %>
+    <% if just_invite %>
+      <div class="rounded-xl p-5 border border-primary/30 bg-primary/5">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-primary text-base">check_circle</span>
+          <span class="text-xs font-semibold uppercase tracking-wider text-primary">Código generado</span>
+          <% if just_invite.note.present? %>
+            <span class="w-1 h-1 rounded-full bg-primary/50"></span>
+            <span class="text-xs text-fg-subtle">Nota: <%= just_invite.note %></span>
+          <% end %>
+        </div>
+        <div class="flex items-center gap-3 p-4 bg-bg-surface border border-primary/20 rounded-lg">
+          <code class="flex-1 font-mono text-lg font-medium text-primary select-all"><%= just_invite.formatted_code %></code>
+          <button type="button"
+                  data-controller="clipboard"
+                  data-clipboard-text-value="<%= just_invite.formatted_code %>"
+                  data-action="click->clipboard#copy"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-bg-surface border border-border-default text-fg-default text-sm font-medium hover:bg-bg-muted transition-colors">
+            <span class="material-symbols-outlined text-sm">content_copy</span>
+            Copiar
+          </button>
+        </div>
+        <p class="mt-3 text-sm text-fg-subtle">Compártelo privadamente. Se invalida después del primer uso.</p>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%# History table %>
+  <%= render "admin/invites/invites_table", invites: @invites, just_created_code: @just_created_code %>
+</div>

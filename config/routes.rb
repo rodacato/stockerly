@@ -113,6 +113,7 @@ Rails.application.routes.draw do
         patch :reactivate
       end
     end
+    resources :invites, only: [ :index, :create ]
     resource :settings, only: [ :show, :update ]
   end
 end

@@ -17,16 +17,20 @@ RSpec.describe "Registrations", type: :request do
   end
 
   describe "POST /register" do
+    let(:invite) { create(:invite_code) }
+
     let(:valid_params) do
       {
         full_name: "Jane Doe",
         email: "jane@example.com",
         password: "password123",
-        password_confirmation: "password123"
+        password_confirmation: "password123",
+        invite_code: invite.code
       }
     end
 
     it "creates user and redirects to onboarding" do
+      invite # trigger let-eager creation so the count delta only reflects the registrant
       expect {
         post register_path, params: valid_params
       }.to change(User, :count).by(1)
@@ -53,6 +57,36 @@ RSpec.describe "Registrations", type: :request do
       post register_path, params: valid_params
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("already been taken")
+    end
+
+    it "rejects missing invite code" do
+      post register_path, params: valid_params.except(:invite_code)
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
+    it "rejects invalid invite code" do
+      post register_path, params: valid_params.merge(invite_code: "deadbeef1234")
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("inválido")
+    end
+
+    it "rejects already-used invite code" do
+      used_invite = create(:invite_code, :used)
+      post register_path, params: valid_params.merge(invite_code: used_invite.code)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("canjeado")
+    end
+
+    it "accepts hyphenated invite code" do
+      post register_path, params: valid_params.merge(invite_code: invite.formatted_code)
+      expect(response).to redirect_to(dashboard_path)
+    end
+
+    it "consumes invite code on successful registration" do
+      post register_path, params: valid_params
+      invite.reload
+      expect(invite).to be_used
+      expect(invite.used_by_user.email).to eq("jane@example.com")
     end
 
     it "repopulates fields on error" do

@@ -2,8 +2,16 @@ require "rails_helper"
 
 RSpec.describe Identity::UseCases::Register do
   describe ".call" do
+    let(:invite) { create(:invite_code) }
+
     let(:valid_params) do
-      { full_name: "John Doe", email: "john@example.com", password: "password123", password_confirmation: "password123" }
+      {
+        full_name: "John Doe",
+        email: "john@example.com",
+        password: "password123",
+        password_confirmation: "password123",
+        invite_code: invite.code
+      }
     end
 
     it "creates a user and returns Success" do
@@ -15,6 +23,24 @@ RSpec.describe Identity::UseCases::Register do
       expect(user).to be_persisted
       expect(user.full_name).to eq("John Doe")
       expect(user.email).to eq("john@example.com")
+    end
+
+    it "consumes the invite code atomically with user creation" do
+      result = described_class.call(params: valid_params)
+
+      expect(result).to be_success
+      invite.reload
+      expect(invite.used_at).to be_present
+      expect(invite.used_by_user).to eq(result.value!)
+    end
+
+    it "accepts hyphenated invite_code by normalizing" do
+      hyphenated = invite.formatted_code
+      result = described_class.call(params: valid_params.merge(invite_code: hyphenated))
+
+      expect(result).to be_success
+      invite.reload
+      expect(invite).to be_used
     end
 
     it "publishes UserRegistered event" do
@@ -52,7 +78,32 @@ RSpec.describe Identity::UseCases::Register do
       expect(result.failure[1]).to have_key(:password_confirmation)
     end
 
-    it "returns Failure for duplicate email" do
+    it "returns Failure for missing invite_code" do
+      result = described_class.call(params: valid_params.except(:invite_code))
+
+      expect(result).to be_failure
+      expect(result.failure[0]).to eq(:validation)
+      expect(result.failure[1]).to have_key(:invite_code)
+    end
+
+    it "returns Failure for nonexistent invite_code" do
+      result = described_class.call(params: valid_params.merge(invite_code: "deadbeef1234"))
+
+      expect(result).to be_failure
+      expect(result.failure[0]).to eq(:validation)
+      expect(result.failure[1][:invite_code]).to include(match(/inválido/))
+    end
+
+    it "returns Failure for already-used invite_code" do
+      used_invite = create(:invite_code, :used)
+      result = described_class.call(params: valid_params.merge(invite_code: used_invite.code))
+
+      expect(result).to be_failure
+      expect(result.failure[0]).to eq(:validation)
+      expect(result.failure[1][:invite_code]).to include(match(/canjeado/))
+    end
+
+    it "returns Failure for duplicate email and does not consume the invite" do
       create(:user, email: "john@example.com")
 
       result = described_class.call(params: valid_params)
@@ -60,6 +111,9 @@ RSpec.describe Identity::UseCases::Register do
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:validation)
       expect(result.failure[1]).to have_key(:email)
+
+      invite.reload
+      expect(invite).not_to be_used
     end
   end
 end

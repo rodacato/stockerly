@@ -28,11 +28,13 @@ RSpec.describe "Navigation", type: :system do
 
   describe "Auth flow" do
     it "registers and redirects to onboarding" do
+      invite = create(:invite_code)
       visit register_path
       fill_in "Full Name", with: "New User"
       fill_in "Email", with: "newuser@test.com"
       fill_in "Password", with: "password123"
       fill_in "Confirm Password", with: "password123"
+      fill_in "Código de invitación", with: invite.code
       click_button "Create Account"
 
       expect(page).to have_current_path(onboarding_step1_path)

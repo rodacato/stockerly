@@ -8,11 +8,13 @@ RSpec.describe "Registration flow", type: :request do
   end
 
   it "creates portfolio and alert preferences on registration" do
+    invite = create(:invite_code)
     post register_path, params: {
       full_name: "Jane Doe",
       email: "jane@example.com",
       password: "password123",
-      password_confirmation: "password123"
+      password_confirmation: "password123",
+      invite_code: invite.code
     }
 
     user = User.find_by(email: "jane@example.com")
@@ -23,21 +25,25 @@ RSpec.describe "Registration flow", type: :request do
   end
 
   it "redirects to dashboard after registration" do
+    invite = create(:invite_code)
     post register_path, params: {
       full_name: "Jane Doe",
       email: "jane2@example.com",
       password: "password123",
-      password_confirmation: "password123"
+      password_confirmation: "password123",
+      invite_code: invite.code
     }
     expect(response).to redirect_to(dashboard_path)
   end
 
   it "new user is redirected to onboarding from dashboard" do
+    invite = create(:invite_code)
     post register_path, params: {
       full_name: "Jane Doe",
       email: "jane3@example.com",
       password: "password123",
-      password_confirmation: "password123"
+      password_confirmation: "password123",
+      invite_code: invite.code
     }
     follow_redirect!
     expect(response).to redirect_to(onboarding_step1_path)

@@ -1,0 +1,70 @@
+<%# Invite codes history table %>
+<% available_count = invites.count { |i| !i.used? } %>
+
+<div class="bg-bg-surface border border-border-default rounded-xl shadow-sm overflow-hidden">
+  <div class="px-6 py-4 border-b border-border-default flex items-baseline gap-3">
+    <h3 class="text-lg font-semibold text-fg-default">Historial</h3>
+    <% if invites.any? %>
+      <span class="text-xs text-fg-subtle">
+        <%= invites.count %> <%= invites.count == 1 ? "código" : "códigos" %> · <%= available_count %> <%= available_count == 1 ? "disponible" : "disponibles" %>
+      </span>
+    <% end %>
+  </div>
+
+  <% if invites.empty? %>
+    <div class="py-16 px-6 text-center">
+      <div class="size-11 rounded-xl bg-bg-muted inline-flex items-center justify-center text-fg-subtle mb-3">
+        <span class="material-symbols-outlined text-xl">mail</span>
+      </div>
+      <p class="text-sm text-fg-subtle">Aún no hay códigos generados.</p>
+    </div>
+  <% else %>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-bg-muted">
+          <tr>
+            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-fg-subtle">Código</th>
+            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-fg-subtle">Nota</th>
+            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-fg-subtle">Generado</th>
+            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-fg-subtle">Estado</th>
+            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-fg-subtle">Canjeado por</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% invites.each do |invite| %>
+            <% is_new = invite.code == just_created_code %>
+            <% is_used = invite.used? %>
+            <tr class="border-b border-border-default last:border-b-0 <%= "bg-primary/5" if is_new %>">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2.5">
+                  <code class="font-mono text-sm <%= is_used ? "text-fg-subtle line-through" : "text-primary" %>"><%= invite.formatted_code %></code>
+                  <% if is_new %>
+                    <span class="inline-block text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary">Nuevo</span>
+                  <% end %>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-fg-default"><%= invite.note.presence || "—" %></td>
+              <td class="px-6 py-4 text-sm text-fg-subtle"><%= invite.created_at.strftime("%d %b %Y · %H:%M") %></td>
+              <td class="px-6 py-4">
+                <% if is_used %>
+                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-semibold bg-bg-muted text-fg-subtle">
+                    <span class="size-1.5 rounded-full bg-fg-subtle"></span>
+                    Canjeado
+                  </span>
+                <% else %>
+                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-semibold bg-positive-bg text-positive-fg dark:text-positive">
+                    <span class="size-1.5 rounded-full bg-positive"></span>
+                    Disponible
+                  </span>
+                <% end %>
+              </td>
+              <td class="px-6 py-4 text-sm text-fg-default">
+                <%= invite.used_by_user&.email || "—" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
