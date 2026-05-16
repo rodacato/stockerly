@@ -1,5 +1,5 @@
 ---
-name: design-workflow-wip
+name: project-design-workflow-wip
 description: "WIP feedback on the visual-design workflow being trialed in S07 (expert-panel prompts → GitHub issue comments → Claude Design generation → .local/ mockups). Reassess at sprint close to decide what survives."
 metadata:
   node_type: memory
