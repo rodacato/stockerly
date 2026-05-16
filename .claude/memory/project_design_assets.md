@@ -6,7 +6,7 @@ metadata:
   type: project
 ---
 
-External design mockups (HTML + JSX exports from Claude Design / Stitch / Figma AI) live in `/workspaces/stockerly/.local/design-mockups/` — gitignored via `/.local/` in `.gitignore`. Adrian explicitly does not want them committed to the repo.
+External design mockups (HTML + JSX exports from Claude Design / Stitch / Figma AI) live in `.local/design-mockups/` (relative to repo root) — gitignored via `/.local/` in `.gitignore`. Adrian explicitly does not want them committed to the repo.
 
 **Why:** The repo is the production code source of truth. Mockups are pre-implementation artifacts that get translated to ERB views during execution. Keeping them locally available speeds up the implementation pass but committing them would pollute the repo with intermediate state that decays as the actual implementation diverges.
 
@@ -45,7 +45,11 @@ Checked `Stockerly-1.0/privacy/colors_and_type.css` as representative sample. **
 - Motion tokens: `--motion-fast: 120ms`, `--motion-base: 200ms`, `--motion-slow: 320ms`, with cubic-bezier easings
 - Z-index scale: `--z-nav: 40`, `--z-overlay: 80`, `--z-modal: 90`, `--z-toast: 100`
 
-**Decision for S07:** when implementing, prefer existing Lumen tokens (`bg.muted`, `radius.lg`) where the mockup's extras don't add value. Where extras are genuinely useful (motion tokens for transitions, z-index for layering), inline the rgba/value in the ERB without inventing new tokens. Token expansion is an S08+ decision via ADR.
+**Decision for S07:** when implementing, prefer existing Lumen tokens (`bg.muted`, `radius.lg`) where the mockup's extras don't add value. For mockup extras that are genuinely useful but not yet canonical:
+- **Scalar values** (motion durations in ms, z-index integers): inline directly in ERB via `style="transition-duration: 200ms"` or via Tailwind arbitrary values like `z-[80]`. These are cheap and don't pollute the palette.
+- **Colors / rgba overlays**: never inline as raw hex/rgba. Use Tailwind arbitrary values like `bg-[rgba(91,108,255,0.08)]` so the consumer code stays grep-able and migration to a canonical token (when promoted) is a single search-replace.
+
+Token expansion to canonical Lumen is an S08+ decision via ADR.
 
 ### Per-screen file inventory
 
