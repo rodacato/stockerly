@@ -12,6 +12,7 @@
 - [Expert panel v2](project_expert_panel_v2.md) — 8 Core + 8 Situational with names; canonical doc at docs/research/experts.md
 - [Design assets](project_design_assets.md) — External mockups live in .local/design-mockups/ (gitignored); Lumen palette is source of truth; current batch Stockerly-1.0 for S07
 - [Design workflow](project_design_workflow.md) — Canonical visual-design workflow validated at S07 close (5 screens, zero regenerations); promoted from WIP
+- [Parallel research workflow](project_parallel_research_workflow.md) — Validated 2026-05-17: spend idle weekly budget on 8 parallel agents → audits + content/product research → cross-synthesis. ~45min, ~150-200K tokens.
 
 ## Feedback
 - [Brutal honesty mandate](feedback_brutal_honesty.md) — Adrian's explicit ask, applies to all responses

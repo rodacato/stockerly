@@ -9,6 +9,11 @@
 # for the inventory and conventions.
 /.local/
 
+# Local research workspace (audits, market studies, technical primers).
+# Source material for future issues/sprints; not part of the codebase.
+# See .research/README.md for the index.
+/.research/
+
 # Ignore bundler config.
 /.bundle
 
