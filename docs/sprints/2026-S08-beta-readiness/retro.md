@@ -1,10 +1,10 @@
-# Retro — Sprint <N>
+# Retro — Sprint S08
 
 > Honest post-mortem. Without retro, the sprint does NOT close (hard rule of the protocol).
 >
 > **Close date:** YYYY-MM-DD
 > **Actual duration:** N weeks (vs estimated: N weeks)
-> **Goal:** <copy from GOAL.md>
+> **Goal:** Close the pre-beta blockers surfaced by research (terms + risk + privacy + ARCO + Art. 8 consent + cost-basis P0) and revamp the auth flow (login + register) so the first invited friend registers on legally sound and mathematically truthful foundations.
 
 ---
 

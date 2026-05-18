@@ -14,7 +14,7 @@ Six issues. Mix of compliance blockers (B-* family from research), correctness P
 | #103 | Risk Disclosure rewrite — eliminate false leverage/margin claims (B-02) | Pre-beta-blocker (civil liability from false declarations) | ✅ |
 | #104 | Privacy update (INAI→SABG, retention, remisiones) + ARCO procedure (B-04+B-05) | Pre-beta-blocker (NLFPDPPP DOF 20-mar-2025 compliance) | ✅ |
 | #105 | Multi-currency cost-basis P0 — TakeSnapshotsJob uses Portfolio#total_value(currency:) (C1) | JTBD #1 (Consolidated patrimony in MXN truthful for mixed portfolios) | ✅ |
-| #95 | Login revamp — es-MX + Lumen | Auth-family coherence + es-MX migration | ✅ (mockup ready en `.local/`) |
+| #95 | Login revamp — es-MX + Lumen | Auth-family coherence + es-MX migration | ✅ (mockup ready in `.local/`) |
 | #96 | Register revamp — complete es-MX + Lumen + **B-03 Art. 8 consent** | Auth-family + LFPDPPP Art. 8 express consent for datos patrimoniales | ✅ (mockup ready, B-03 inline scope) |
 
 **Total estimated raw effort:** ~28-38h (~14-19h actual per S07 calibration 0.5×)
