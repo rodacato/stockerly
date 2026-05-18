@@ -44,9 +44,9 @@ RSpec.describe "Navigation", type: :system do
       user = create(:user, email: "login@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
-      fill_in "Email", with: "login@test.com"
-      fill_in "Password", with: "password123"
-      click_button "Sign In"
+      fill_in "Correo electrónico", with: "login@test.com"
+      fill_in "Contraseña", with: "password123"
+      click_button "Iniciar sesión"
 
       expect(page).to have_current_path(dashboard_path)
       expect(page).to have_content("Dashboard")
@@ -56,9 +56,9 @@ RSpec.describe "Navigation", type: :system do
       user = create(:user, email: "logout@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
-      fill_in "Email", with: "logout@test.com"
-      fill_in "Password", with: "password123"
-      click_button "Sign In"
+      fill_in "Correo electrónico", with: "logout@test.com"
+      fill_in "Contraseña", with: "password123"
+      click_button "Iniciar sesión"
       expect(page).to have_current_path(dashboard_path)
 
       click_button "Sign Out"
@@ -72,9 +72,9 @@ RSpec.describe "Navigation", type: :system do
 
     before do
       visit login_path
-      fill_in "Email", with: "nav@test.com"
-      fill_in "Password", with: "password123"
-      click_button "Sign In"
+      fill_in "Correo electrónico", with: "nav@test.com"
+      fill_in "Contraseña", with: "password123"
+      click_button "Iniciar sesión"
     end
 
     it "navigates to all app pages via navbar" do
@@ -108,9 +108,9 @@ RSpec.describe "Navigation", type: :system do
       user = create(:user, email: "nonadmin@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
-      fill_in "Email", with: "nonadmin@test.com"
-      fill_in "Password", with: "password123"
-      click_button "Sign In"
+      fill_in "Correo electrónico", with: "nonadmin@test.com"
+      fill_in "Contraseña", with: "password123"
+      click_button "Iniciar sesión"
 
       visit admin_assets_path
       # Admin guard redirects to root; route redirect bounces to /login; SessionsController
@@ -124,9 +124,9 @@ RSpec.describe "Navigation", type: :system do
 
     before do
       visit login_path
-      fill_in "Email", with: "admin@test.com"
-      fill_in "Password", with: "password123"
-      click_button "Sign In"
+      fill_in "Correo electrónico", with: "admin@test.com"
+      fill_in "Contraseña", with: "password123"
+      click_button "Iniciar sesión"
     end
 
     it "navigates to all admin pages via sidebar" do

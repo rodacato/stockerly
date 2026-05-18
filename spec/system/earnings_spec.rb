@@ -12,9 +12,9 @@ RSpec.describe "Earnings calendar", type: :system do
 
   before do
     visit login_path
-    fill_in "Email", with: "earnings@test.com"
-    fill_in "Password", with: "password123"
-    click_button "Sign In"
+    fill_in "Correo electrónico", with: "earnings@test.com"
+    fill_in "Contraseña", with: "password123"
+    click_button "Iniciar sesión"
   end
 
   it "displays earnings calendar heading and month navigation" do

@@ -15,9 +15,9 @@ RSpec.describe "Portfolio tabs", type: :system do
 
   before do
     visit login_path
-    fill_in "Email", with: "portfolio@test.com"
-    fill_in "Password", with: "password123"
-    click_button "Sign In"
+    fill_in "Correo electrónico", with: "portfolio@test.com"
+    fill_in "Contraseña", with: "password123"
+    click_button "Iniciar sesión"
   end
 
   it "shows portfolio summary cards" do

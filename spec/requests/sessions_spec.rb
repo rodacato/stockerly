@@ -7,7 +7,8 @@ RSpec.describe "Sessions", type: :request do
     it "renders the login page" do
       get login_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Welcome back")
+      expect(response.body).to include("Inicia sesión")
+      expect(response.body).to include("Correo electrónico")
     end
 
     it "redirects to dashboard if already logged in" do

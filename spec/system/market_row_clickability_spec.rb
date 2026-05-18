@@ -10,9 +10,9 @@ RSpec.describe "Market row clickability", type: :system do
 
   before do
     visit login_path
-    fill_in "Email", with: "market@test.com"
-    fill_in "Password", with: "password123"
-    click_button "Sign In"
+    fill_in "Correo electrónico", with: "market@test.com"
+    fill_in "Contraseña", with: "password123"
+    click_button "Iniciar sesión"
   end
 
   it "renders market rows with row-link controller" do

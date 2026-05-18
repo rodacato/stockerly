@@ -11,9 +11,9 @@ RSpec.describe "Alert management", type: :system do
 
   before do
     visit login_path
-    fill_in "Email", with: "alerts@test.com"
-    fill_in "Password", with: "password123"
-    click_button "Sign In"
+    fill_in "Correo electrónico", with: "alerts@test.com"
+    fill_in "Contraseña", with: "password123"
+    click_button "Iniciar sesión"
   end
 
   it "displays alert page with create form and empty state" do

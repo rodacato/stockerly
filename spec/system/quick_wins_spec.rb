@@ -10,9 +10,9 @@ RSpec.describe "Quick wins", type: :system do
 
   before do
     visit login_path
-    fill_in "Email", with: "qw@test.com"
-    fill_in "Password", with: "password123"
-    click_button "Sign In"
+    fill_in "Correo electrónico", with: "qw@test.com"
+    fill_in "Contraseña", with: "password123"
+    click_button "Iniciar sesión"
   end
 
   describe "Fear & Greed card with inline sparkline" do

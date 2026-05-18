@@ -9,7 +9,7 @@ RSpec.describe "Password reset flow", type: :system do
 
   it "navigates to forgot password page from login" do
     visit login_path
-    click_link "Forgot password?"
+    click_link "Recupérala."
     expect(page).to have_current_path(forgot_password_path)
     expect(page).to have_content("Forgot your password?")
   end

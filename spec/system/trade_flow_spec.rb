@@ -11,9 +11,9 @@ RSpec.describe "Trade flow", type: :system do
 
   before do
     visit login_path
-    fill_in "Email", with: "trader@test.com"
-    fill_in "Password", with: "password123"
-    click_button "Sign In"
+    fill_in "Correo electrónico", with: "trader@test.com"
+    fill_in "Contraseña", with: "password123"
+    click_button "Iniciar sesión"
   end
 
   it "executes a buy trade and shows position in portfolio" do

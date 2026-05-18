@@ -12,9 +12,9 @@ RSpec.describe "Admin asset management", type: :system do
   describe "as admin user" do
     before do
       visit login_path
-      fill_in "Email", with: "admin@test.com"
-      fill_in "Password", with: "password123"
-      click_button "Sign In"
+      fill_in "Correo electrónico", with: "admin@test.com"
+      fill_in "Contraseña", with: "password123"
+      click_button "Iniciar sesión"
     end
 
     it "displays asset management page with KPI cards" do
@@ -59,9 +59,9 @@ RSpec.describe "Admin asset management", type: :system do
 
     it "cannot access admin zone" do
       visit login_path
-      fill_in "Email", with: "regular@test.com"
-      fill_in "Password", with: "password123"
-      click_button "Sign In"
+      fill_in "Correo electrónico", with: "regular@test.com"
+      fill_in "Contraseña", with: "password123"
+      click_button "Iniciar sesión"
 
       visit admin_assets_path
       expect(page).not_to have_content("Asset Management")

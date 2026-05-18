@@ -10,9 +10,9 @@ RSpec.describe "Global search", type: :system do
 
   before do
     visit login_path
-    fill_in "Email", with: "search@test.com"
-    fill_in "Password", with: "password123"
-    click_button "Sign In"
+    fill_in "Correo electrónico", with: "search@test.com"
+    fill_in "Contraseña", with: "password123"
+    click_button "Iniciar sesión"
   end
 
   it "displays the search button in navbar" do
