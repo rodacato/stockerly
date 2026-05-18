@@ -118,4 +118,41 @@ RSpec.describe "Legal pages", type: :request do
       expect(response.body).to include("tribunales de la Ciudad de México")
     end
   end
+
+  describe "GET /risk-disclosure" do
+    before { get risk_disclosure_path }
+
+    it "responds 200" do
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "renders the page title in es-MX" do
+      expect(response.body).to include("Advertencia de riesgo")
+    end
+
+    it "removes the previous fictional leverage/margin/liquidation content" do
+      expect(response.body).not_to match(/margin call/i)
+      expect(response.body).not_to match(/leverage/i)
+      expect(response.body).not_to match(/liquidation/i)
+      expect(response.body).not_to match(/stop[- ]loss/i)
+      expect(response.body).not_to match(/slippage/i)
+      expect(response.body).not_to include("Stockerly may close")
+      expect(response.body).not_to include("October 24, 2023")
+    end
+
+    it "states that Stockerly does not execute orders or custody assets" do
+      expect(response.body).to match(/no ejecuta órdenes/i)
+      expect(response.body).to match(/no custodia/i)
+    end
+
+    it "declares it is not a CNBV-regulated entity nor an investment advisor" do
+      expect(response.body).to include("CNBV")
+      expect(response.body).to match(/no es una entidad regulada/i)
+      expect(response.body).to match(/constituye una recomendación personalizada/i)
+    end
+
+    it "tells users to verify with their broker before operating" do
+      expect(response.body).to match(/verifica.*broker/i)
+    end
+  end
 end

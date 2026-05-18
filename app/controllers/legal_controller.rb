@@ -39,16 +39,17 @@ class LegalController < ApplicationController
   end
 
   def risk_disclosure
-    @page_title = "Risk Disclosure"
-    @page_subtitle = "Important information about the risks associated with trading and investing."
-    @last_updated = "October 24, 2023"
-    @breadcrumbs = [ "Risk Disclosure" ]
+    @page_title = "Advertencia de riesgo"
+    @page_subtitle = "Stockerly es informativo. Toda inversión conlleva riesgo de pérdida. Lee esto antes de basar decisiones en lo que muestra la plataforma."
+    @last_updated = "18 MAY 2026 · CDMX"
+    @breadcrumbs = [ "Advertencia de riesgo" ]
     @toc_sections = [
-      { id: "introduction", icon: "info", title: "Introduction", active: true },
-      { id: "market-risk", icon: "trending_down", title: "Market Volatility" },
-      { id: "leverage", icon: "account_balance_wallet", title: "Leverage & Margin" },
-      { id: "technical", icon: "monitor_heart", title: "Technical Risks" },
-      { id: "regulatory", icon: "gavel", title: "Regulatory Info" }
+      { id: "introduccion", icon: "info", title: "Resumen del riesgo", active: true },
+      { id: "servicio", icon: "visibility", title: "Qué es y qué no es Stockerly" },
+      { id: "datos", icon: "data_alert", title: "Riesgos de los datos" },
+      { id: "mercado", icon: "trending_down", title: "Riesgos de mercado" },
+      { id: "asesoria", icon: "gavel", title: "No constituye asesoría" },
+      { id: "verificacion", icon: "verified", title: "Verifica con tu broker" }
     ]
   end
 end
