@@ -5,15 +5,17 @@ class LegalController < ApplicationController
 
   def privacy
     @page_title = "Aviso de privacidad"
-    @page_subtitle = "Conforme al Art. 16 LFPDPPP. Qué datos tratamos, cómo y por qué."
-    @last_updated = "16 MAY 2026 · CDMX"
+    @page_subtitle = "Conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (DOF 20-mar-2025). Qué datos tratamos, cómo, por qué y por cuánto tiempo."
+    @last_updated = "18 MAY 2026 · CDMX"
     @breadcrumbs = [ "Aviso de privacidad" ]
     @toc_sections = [
       { id: "responsable", icon: "person", title: "Identidad del responsable", active: true },
       { id: "datos", icon: "database", title: "Datos que recolectamos" },
-      { id: "finalidades", icon: "insights", title: "Finalidades del tratamiento" },
-      { id: "transferencias", icon: "swap_horiz", title: "Transferencias a terceros" },
-      { id: "arco", icon: "person_check", title: "Derechos ARCO" },
+      { id: "finalidades", icon: "insights", title: "Finalidades necesarias y voluntarias" },
+      { id: "retencion", icon: "schedule", title: "Conservación de los datos" },
+      { id: "remisiones", icon: "swap_horiz", title: "Remisiones y transferencias" },
+      { id: "arco", icon: "person_check", title: "Derechos ARCO (20 días hábiles)" },
+      { id: "autoridad", icon: "balance", title: "Autoridad de protección de datos" },
       { id: "cambios", icon: "edit_note", title: "Cambios al aviso" },
       { id: "contacto", icon: "mail", title: "Contacto" }
     ]
