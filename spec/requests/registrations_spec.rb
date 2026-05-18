@@ -109,5 +109,14 @@ RSpec.describe "Registrations", type: :request do
       user = User.find_by(email: "jane@example.com")
       expect(user.consents_data_processing_at).to be_present
     end
+
+    it "preserves the consent checkbox state when re-rendering after a non-consent validation error" do
+      # User checked the consent box but mistyped the password confirmation.
+      # The checkbox should still be checked on re-render — forcing them to
+      # re-check it on every form error is bad UX.
+      post register_path, params: valid_params.merge(password_confirmation: "different")
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to match(/name="consents_data_processing"[^>]*checked/)
+    end
   end
 end

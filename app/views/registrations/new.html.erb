@@ -60,7 +60,7 @@
 
         <%# B-03 Art. 8 NLFPDPPP — express consent for patrimonial data (non-pre-checked) %>
         <div class="flex items-start gap-3 mt-2 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
-          <input type="checkbox" id="consents_data_processing" name="consents_data_processing" value="1" class="mt-1 w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary">
+          <%= check_box_tag "consents_data_processing", "1", @consents_data_processing, id: "consents_data_processing", class: "mt-1 w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary" %>
           <label for="consents_data_processing" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
             Autorizo expresamente el tratamiento de mis datos patrimoniales y financieros (portafolio, transacciones) por Stockerly, conforme al Art. 8 de la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Consulta el <%= link_to "Aviso de privacidad", privacy_path, class: "text-primary font-medium hover:underline" %>.
           </label>
