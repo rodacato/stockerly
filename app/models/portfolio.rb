@@ -21,10 +21,13 @@ class Portfolio < ApplicationRecord
   end
 
   def total_value(currency: user.preferred_currency)
-    positions_total = open_positions_with_assets.sum do |p|
+    invested_value(currency: currency) + buying_power_in(currency)
+  end
+
+  def invested_value(currency: user.preferred_currency)
+    open_positions_with_assets.sum do |p|
       position_market_value_in(p, currency)
     end
-    positions_total + buying_power_in(currency)
   end
 
   # Honest gain/loss in the target currency: market value (today's FX) minus

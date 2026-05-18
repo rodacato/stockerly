@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_16_174817) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_18_131404) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -310,7 +310,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_16_174817) do
   create_table "portfolio_snapshots", force: :cascade do |t|
     t.decimal "cash_value", precision: 15, scale: 2, null: false
     t.datetime "created_at", null: false
-    t.string "currency", default: "USD", null: false
+    t.string "currency", null: false
     t.date "date", null: false
     t.decimal "invested_value", precision: 15, scale: 2, null: false
     t.bigint "portfolio_id", null: false
