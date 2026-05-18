@@ -1,101 +1,96 @@
-<%# TL;DR Summary %>
-<div class="p-6 bg-primary/5 rounded-xl border-l-4 border-primary mb-10">
-  <h4 class="font-bold text-primary mb-2 flex items-center gap-2">
-    <span class="material-symbols-outlined">info</span> Summary (TL;DR)
-  </h4>
-  <p class="text-sm text-slate-700 dark:text-slate-300">
-    By using Stockerly, you agree to these rules. We provide market data for informational purposes only. You are responsible for your account security. We own the platform software and content. Investing involves risk, and we are not liable for financial losses.
-  </p>
-</div>
-
-<%# 1. Acceptance of Terms %>
-<section class="scroll-mt-24" id="acceptance">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">1. Acceptance of Terms</h2>
-  <div class="text-slate-600 dark:text-slate-400 leading-relaxed space-y-4">
-    <p>By accessing or using the Stockerly website, mobile application, or any other services provided by Stockerly (collectively, the "Platform"), you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this Platform.</p>
-    <p>We reserve the right to modify these terms at any time. We will notify users of any material changes by posting the new terms on this page and updating the "Effective Date" at the top.</p>
+<%# 1. Identidad del responsable %>
+<section class="scroll-mt-24" id="responsable">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">1. Identidad del responsable</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Stockerly es un proyecto personal de código abierto mantenido por Adrian Castillo, persona física con domicilio en la Ciudad de México, México. Para cualquier asunto relacionado con estos términos, contáctanos en <%= mail_to "support@notdefined.dev", nil, class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
+    <p>Stockerly <strong class="font-semibold text-fg-default">no es una entidad financiera</strong>, no opera como broker, intermediario bursátil, asesor de inversiones ni institución de tecnología financiera (ITF) bajo la Ley para Regular las Instituciones de Tecnología Financiera.</p>
   </div>
 </section>
 
-<%# 2. User Accounts %>
-<section class="scroll-mt-24" id="accounts">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">2. User Accounts</h2>
-  <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">To access certain features of the Platform, you may be required to register for an account. When you register, you agree to:</p>
-  <ul class="list-disc pl-6 mb-4 text-slate-600 dark:text-slate-400 space-y-2">
-    <li>Provide accurate, current, and complete information.</li>
-    <li>Maintain and promptly update your account information.</li>
-    <li>Maintain the security of your password and accept all risks of unauthorized access to your account.</li>
-    <li>Notify us immediately if you discover or suspect any security breaches related to the Platform.</li>
-  </ul>
-</section>
-
-<%# 3. Platform Usage %>
-<section class="scroll-mt-24" id="platform-usage">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">3. Platform Usage</h2>
-  <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Stockerly grants you a limited, non-exclusive, non-transferable, and revocable license to use our Platform strictly in accordance with these Terms.</p>
-  <h3 class="text-xl font-semibold text-slate-800 dark:text-slate-200 mt-8 mb-3">Prohibited Activities</h3>
-  <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">You agree not to engage in any of the following prohibited activities:</p>
-  <ul class="list-disc pl-6 mb-4 text-slate-600 dark:text-slate-400 space-y-2">
-    <li>Using the Platform for any illegal purpose or in violation of any local, state, national, or international law.</li>
-    <li>Attempting to interfere with, compromise the system integrity or security, or decipher any transmissions to or from the servers running the Platform.</li>
-    <li>Taking any action that imposes, or may impose at our sole discretion an unreasonable or disproportionately large load on our infrastructure.</li>
-    <li>Uploading invalid data, viruses, worms, or other software agents through the Platform.</li>
-  </ul>
-</section>
-
-<%# 4. Intellectual Property %>
-<section class="scroll-mt-24" id="intellectual-property">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">4. Intellectual Property</h2>
-  <div class="text-slate-600 dark:text-slate-400 leading-relaxed space-y-4">
-    <p>The Platform and its original content, features, and functionality are and will remain the exclusive property of Stockerly and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Stockerly.</p>
-    <p>Users may post content, such as comments or portfolio screenshots. By posting content, you grant Stockerly a non-exclusive, worldwide, royalty-free license to use, reproduce, and display such content.</p>
+<%# 2. Naturaleza del servicio %>
+<section class="scroll-mt-24" id="servicio">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">2. Naturaleza del servicio</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Stockerly es una herramienta <strong class="font-semibold text-fg-default">informativa y de registro personal</strong> que te permite:</p>
+    <ul class="space-y-3 list-disc pl-6">
+      <li>Capturar manualmente movimientos de compra y venta de instrumentos que tú ejecutas en otras plataformas.</li>
+      <li>Visualizar el valor y desempeño de tu portafolio en la moneda que prefieras.</li>
+      <li>Consultar datos de mercado obtenidos de proveedores públicos.</li>
+      <li>Configurar alertas y observaciones sobre instrumentos.</li>
+    </ul>
+    <p>Stockerly <strong class="font-semibold text-fg-default">no</strong> custodia tu dinero, <strong class="font-semibold text-fg-default">no</strong> ejecuta órdenes de compra o venta, <strong class="font-semibold text-fg-default">no</strong> ofrece apalancamiento, margen ni productos derivados, y <strong class="font-semibold text-fg-default">no</strong> proporciona asesoría financiera, fiscal o legal personalizada.</p>
+    <p>Los datos que muestra Stockerly pueden estar retrasados, contener errores o estar incompletos. No los uses como única fuente para decisiones de inversión.</p>
   </div>
 </section>
 
-<%# 5. Limitations of Liability %>
-<section class="scroll-mt-24" id="liability">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">5. Limitations of Liability</h2>
-  <div class="my-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+<%# 3. Cuenta y uso permitido %>
+<section class="scroll-mt-24" id="cuenta">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">3. Cuenta y uso permitido</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Para usar Stockerly necesitas una cuenta. Al registrarte aceptas:</p>
+    <ul class="space-y-3 list-disc pl-6">
+      <li>Proporcionar información veraz y mantenerla actualizada.</li>
+      <li>Mantener la confidencialidad de tu contraseña y asumir la responsabilidad de la actividad de tu cuenta.</li>
+      <li>Notificarnos a la brevedad si detectas acceso no autorizado.</li>
+    </ul>
+    <p>Te comprometes a <strong class="font-semibold text-fg-default">no</strong>:</p>
+    <ul class="space-y-3 list-disc pl-6">
+      <li>Usar Stockerly con fines ilícitos o en violación de la legislación aplicable.</li>
+      <li>Intentar comprometer la seguridad o integridad de la plataforma, ni acceder a datos de otras cuentas.</li>
+      <li>Generar carga desproporcionada sobre la infraestructura (scraping masivo, ataques automatizados).</li>
+      <li>Cargar contenido malicioso (virus, scripts dañinos).</li>
+    </ul>
+    <p>Podemos suspender o cancelar tu cuenta si incumples estos términos, previo aviso razonable cuando sea posible.</p>
+  </div>
+</section>
+
+<%# 4. Propiedad intelectual y código abierto %>
+<section class="scroll-mt-24" id="propiedad">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">4. Propiedad intelectual y código abierto</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>El código fuente de Stockerly se publica bajo una licencia de software libre y está disponible públicamente. La marca, el logotipo y los identificadores visuales pertenecen a Adrian Castillo y no pueden usarse para identificar productos o servicios derivados sin autorización por escrito.</p>
+    <p>El contenido que tú generas (movimientos del portafolio, alertas configuradas, notas personales) es <strong class="font-semibold text-fg-default">tuyo</strong>. Stockerly almacena y procesa estos datos únicamente para operar el servicio, conforme al <%= link_to "Aviso de privacidad", privacy_path, class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
+  </div>
+</section>
+
+<%# 5. Limitación de responsabilidad %>
+<section class="scroll-mt-24" id="responsabilidad">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">5. Limitación de responsabilidad</h2>
+  <div class="my-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg max-w-prose">
     <p class="text-amber-800 dark:text-amber-400 font-bold flex items-center gap-2 mb-2">
-      <span class="material-symbols-outlined">gavel</span> IMPORTANT FINANCIAL DISCLAIMER
+      <span class="material-symbols-outlined">gavel</span> Importante
     </p>
-    <p class="text-sm text-amber-700 dark:text-amber-300 italic">
-      Stockerly is an information provider, not a financial advisor. All data, analysis, and trends provided are for educational and informational purposes only. We do not guarantee the accuracy of market data.
+    <p class="text-sm text-amber-700 dark:text-amber-300">
+      Stockerly se proporciona "tal cual" (AS IS), sin garantías de ningún tipo. Las decisiones de inversión son tu responsabilidad. Stockerly no es responsable de pérdidas financieras derivadas de operaciones que tú ejecutes en otras plataformas con base en información mostrada aquí.
     </p>
   </div>
-  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">In no event shall Stockerly, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Platform.</p>
-</section>
-
-<%# 6. Termination %>
-<section class="scroll-mt-24" id="termination">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">6. Termination</h2>
-  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">We may terminate or suspend your account and bar access to the Platform immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms.</p>
-</section>
-
-<%# 7. Contact Information %>
-<section class="scroll-mt-24" id="contact">
-  <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">7. Contact Information</h2>
-  <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">If you have any questions about these Terms, please contact our legal department:</p>
-  <div class="flex flex-col gap-3 mt-4">
-    <div class="flex items-center gap-3">
-      <span class="material-symbols-outlined text-primary">mail</span>
-      <span class="text-slate-700 dark:text-slate-300">legal@stockerly.com</span>
-    </div>
-    <div class="flex items-center gap-3">
-      <span class="material-symbols-outlined text-primary">location_on</span>
-      <span class="text-slate-700 dark:text-slate-300">123 Financial Plaza, Suite 500, New York, NY 10004</span>
-    </div>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>En la máxima medida permitida por la ley aplicable, Adrian Castillo y los colaboradores del proyecto <strong class="font-semibold text-fg-default">no son responsables</strong> por daños directos, indirectos, incidentales, especiales o consecuentes derivados del uso o imposibilidad de uso del servicio, incluyendo —sin limitarse a— pérdida de utilidades, pérdida de datos, interrupción del servicio o errores en los datos de mercado.</p>
+    <p>Esta limitación aplica incluso si se hubiera advertido la posibilidad de tales daños. Nada en estos términos limita responsabilidades que no puedan excluirse legalmente (dolo o mala fe).</p>
   </div>
 </section>
 
-<%# Action Footer %>
-<div class="mt-20 pt-10 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
-  <div>
-    <p class="text-sm text-slate-500 font-medium">Last updated: October 24, 2023</p>
-    <p class="text-xs text-slate-400">Stockerly Legal Dept. v2.4.1</p>
+<%# 6. Ley aplicable y jurisdicción %>
+<section class="scroll-mt-24" id="jurisdiccion">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">6. Ley aplicable y jurisdicción</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Estos términos se rigen por las leyes federales de los Estados Unidos Mexicanos. Para cualquier controversia relacionada con la interpretación o cumplimiento de estos términos, las partes se someten a la competencia de los tribunales de la Ciudad de México, renunciando a cualquier otro fuero que pudiera corresponderles.</p>
   </div>
-  <div class="flex gap-4">
-    <%= link_to "Decline", root_path, class: "px-6 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" %>
-    <%= link_to "I Accept the Terms", register_path, class: "px-8 py-2.5 rounded-lg bg-primary text-white font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20" %>
+</section>
+
+<%# 7. Modificaciones %>
+<section class="scroll-mt-24" id="cambios">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">7. Modificaciones</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Podemos actualizar estos términos para reflejar cambios en el servicio, en la legislación o en las prácticas operativas. Cuando haya cambios materiales avisaremos a los usuarios activos por correo electrónico antes de que entren en vigor. La fecha de última actualización aparece al inicio de esta página.</p>
+    <p>Si continúas usando Stockerly después de la entrada en vigor de los cambios, se entenderá que los aceptas. Si no estás de acuerdo, puedes solicitar la cancelación de tu cuenta conforme al Aviso de privacidad.</p>
   </div>
-</div>
+</section>
+
+<%# 8. Contacto %>
+<section class="scroll-mt-24 pb-4" id="contacto">
+  <h2 class="text-2xl font-bold text-fg-default mb-4">8. Contacto</h2>
+  <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
+    <p>Para preguntas, comentarios o reportes relacionados con estos términos: <%= mail_to "support@notdefined.dev", nil, class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
+  </div>
+</section>

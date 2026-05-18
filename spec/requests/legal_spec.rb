@@ -80,4 +80,42 @@ RSpec.describe "Legal pages", type: :request do
       expect(content).to match(/validación de identidad/i)
     end
   end
+
+  describe "GET /terms" do
+    before { get terms_path }
+
+    it "responds 200" do
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "renders the page title in es-MX" do
+      expect(response.body).to include("Términos del servicio")
+    end
+
+    it "does NOT contain the defective references from the previous version" do
+      expect(response.body).not_to include("New York, NY 10004")
+      expect(response.body).not_to include("legal@stockerly.com")
+      expect(response.body).not_to include("Stockerly Legal Dept")
+      expect(response.body).not_to include("October 24, 2023")
+    end
+
+    it "names the responsible party (Adrian Castillo / CDMX)" do
+      expect(response.body).to include("Adrian Castillo")
+      expect(response.body).to include("Ciudad de México")
+    end
+
+    it "uses the project support email" do
+      expect(response.body).to include("support@notdefined.dev")
+    end
+
+    it "declares that Stockerly is not a broker / does not custody money or execute orders" do
+      expect(response.body).to include("no es una entidad financiera")
+      expect(response.body).to match(/no.*custodia/i)
+      expect(response.body).to match(/no.*ejecuta/i)
+    end
+
+    it "establishes CDMX jurisdiction (not NY)" do
+      expect(response.body).to include("tribunales de la Ciudad de México")
+    end
+  end
 end

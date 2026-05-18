@@ -22,18 +22,19 @@ class LegalController < ApplicationController
   end
 
   def terms
-    @page_title = "Terms of Service"
-    @page_subtitle = "Please read these terms carefully before using Stockerly."
-    @last_updated = "October 24, 2023"
-    @breadcrumbs = [ "Terms of Service" ]
+    @page_title = "Términos del servicio"
+    @page_subtitle = "Reglas de uso de Stockerly. Léelos antes de aceptar al registrarte."
+    @last_updated = "18 MAY 2026 · CDMX"
+    @breadcrumbs = [ "Términos del servicio" ]
     @toc_sections = [
-      { id: "acceptance", icon: "check_circle", title: "Acceptance of Terms", active: true },
-      { id: "accounts", icon: "person", title: "User Accounts" },
-      { id: "platform-usage", icon: "terminal", title: "Platform Usage" },
-      { id: "intellectual-property", icon: "copyright", title: "Intellectual Property" },
-      { id: "liability", icon: "warning", title: "Limitations of Liability" },
-      { id: "termination", icon: "cancel", title: "Termination" },
-      { id: "contact", icon: "mail", title: "Contact Information" }
+      { id: "responsable", icon: "person", title: "Identidad del responsable", active: true },
+      { id: "servicio", icon: "info", title: "Naturaleza del servicio" },
+      { id: "cuenta", icon: "manage_accounts", title: "Cuenta y uso permitido" },
+      { id: "propiedad", icon: "copyright", title: "Propiedad intelectual y código abierto" },
+      { id: "responsabilidad", icon: "gavel", title: "Limitación de responsabilidad" },
+      { id: "jurisdiccion", icon: "balance", title: "Ley aplicable y jurisdicción" },
+      { id: "cambios", icon: "edit_note", title: "Modificaciones" },
+      { id: "contacto", icon: "mail", title: "Contacto" }
     ]
   end
 
