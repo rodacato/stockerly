@@ -23,7 +23,10 @@ Antes de cualquier acción, valida que la persona que solicita es titular de los
 2. Si hay duda razonable (correo distinto, lenguaje atípico, datos imprecisos), responde solicitando una prueba adicional en los primeros **5 días hábiles**:
    - Captura de pantalla del último correo transaccional recibido de Stockerly, o
    - Confirmación enviada desde el correo registrado a `support@notdefined.dev` con texto: "Confirmo solicitud ARCO del {fecha}".
-3. Si la solicitud se realiza a través de un representante, requiere identificación oficial del titular y carta poder simple firmada (escaneada).
+3. Si la solicitud se realiza a través de un representante, requiere lo previsto por el Art. 89 del Reglamento de la LFPDPPP: identificación oficial vigente del titular **y** del representante, más uno de los siguientes instrumentos que acrediten la representación:
+   - Carta poder firmada ante **dos testigos** (anexando identificación oficial de ambos testigos), o
+   - Instrumento público (poder notarial).
+   La carta poder simple sin testigos no es suficiente para validar la representación.
 
 Si no se acredita identidad razonablemente, niega la solicitud documentando el motivo. Conserva la negativa por el plazo de retención de bitácoras.
 
