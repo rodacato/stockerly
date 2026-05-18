@@ -14,7 +14,8 @@ RSpec.describe "Registration flow", type: :request do
       email: "jane@example.com",
       password: "password123",
       password_confirmation: "password123",
-      invite_code: invite.code
+      invite_code: invite.code,
+      consents_data_processing: "1"
     }
 
     user = User.find_by(email: "jane@example.com")
@@ -31,7 +32,8 @@ RSpec.describe "Registration flow", type: :request do
       email: "jane2@example.com",
       password: "password123",
       password_confirmation: "password123",
-      invite_code: invite.code
+      invite_code: invite.code,
+      consents_data_processing: "1"
     }
     expect(response).to redirect_to(dashboard_path)
   end
@@ -43,7 +45,8 @@ RSpec.describe "Registration flow", type: :request do
       email: "jane3@example.com",
       password: "password123",
       password_confirmation: "password123",
-      invite_code: invite.code
+      invite_code: invite.code,
+      consents_data_processing: "1"
     }
     follow_redirect!
     expect(response).to redirect_to(welcome_path)

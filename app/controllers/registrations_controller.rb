@@ -15,14 +15,14 @@ class RegistrationsController < ApplicationController
       return
     end
 
-    result = Identity::UseCases::Register.call(params: registration_params.to_h)
+    result = Identity::UseCases::Register.call(params: registration_params_with_consent)
 
     case result
     in Dry::Monads::Success(user)
       start_session(user)
       redirect_to dashboard_path, notice: "Welcome to Stockerly, #{user.full_name}!"
     in Dry::Monads::Failure[ :validation, errors ]
-      @user = User.new(registration_params.except(:invite_code))
+      @user = User.new(registration_params.except(:invite_code, :consents_data_processing))
       errors.each { |field, msgs| msgs.each { |msg| @user.errors.add(field, msg) } }
       render :new, status: :unprocessable_content
     end
@@ -31,7 +31,18 @@ class RegistrationsController < ApplicationController
   private
 
   def registration_params
-    params.permit(:full_name, :email, :password, :password_confirmation, :invite_code)
+    params.permit(:full_name, :email, :password, :password_confirmation, :invite_code, :consents_data_processing)
+  end
+
+  # Checkbox arrives as "1" when checked, missing/nil otherwise. Coerce to a
+  # real boolean so the contract's `value(:bool)` rule sees true/false
+  # (ActiveModel::Type::Boolean#cast returns nil for nil — explicitly fold
+  # nil to false so an unchecked checkbox is treated as denial, not as a
+  # missing field).
+  def registration_params_with_consent
+    raw = registration_params.to_h
+    raw["consents_data_processing"] = ActiveModel::Type::Boolean.new.cast(raw["consents_data_processing"]) == true
+    raw
   end
 
   def redirect_if_logged_in

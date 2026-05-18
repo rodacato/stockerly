@@ -24,7 +24,8 @@ module Identity
             full_name: attrs[:full_name],
             email: attrs[:email],
             password: attrs[:password],
-            password_confirmation: attrs[:password_confirmation]
+            password_confirmation: attrs[:password_confirmation],
+            consents_data_processing_at: Time.current
           )
 
           return Failure([ :validation, user.errors.to_hash ]) unless user.save

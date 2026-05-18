@@ -1,17 +1,17 @@
-<% content_for(:title, "Register | Stockerly") %>
+<% content_for(:title, "Crear cuenta | Stockerly") %>
 
 <main class="grow flex items-center justify-center p-4 py-12">
   <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-xl p-8 lg:p-10">
     <%# Toggle Switch %>
     <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg mb-8">
-      <%= link_to "Login", login_path, class: "flex-1 py-2 text-sm font-semibold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors text-center" %>
-      <div class="flex-1 py-2 text-sm font-semibold rounded-md bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white text-center">Create Account</div>
+      <%= link_to "Iniciar sesión", login_path, class: "flex-1 py-2 text-sm font-semibold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors text-center" %>
+      <div class="flex-1 py-2 text-sm font-semibold rounded-md bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white text-center">Crear cuenta</div>
     </div>
 
     <div class="space-y-6">
       <div class="text-center md:text-left">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Create your account</h2>
-        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Get started with Stockerly in seconds.</p>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Crea tu cuenta</h2>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Únete a la beta cerrada de Stockerly.</p>
       </div>
 
       <%# Error Messages %>
@@ -19,7 +19,7 @@
         <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-sm text-rose-700 dark:text-rose-400">
           <div class="flex items-center gap-2 mb-1">
             <span class="material-symbols-outlined text-lg">error</span>
-            <span class="font-medium">Please fix the following errors:</span>
+            <span class="font-medium">Por favor revisa los campos marcados:</span>
           </div>
           <ul class="list-disc pl-9 space-y-0.5">
             <% @user.errors.full_messages.each do |message| %>
@@ -37,35 +37,44 @@
           <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
         </div>
         <div>
-          <label for="full_name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Full Name</label>
-          <input type="text" id="full_name" name="full_name" autocomplete="name" placeholder="John Doe" value="<%= @user&.full_name %>" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          <label for="full_name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Nombre completo</label>
+          <input type="text" id="full_name" name="full_name" autocomplete="name" placeholder="Andrés Reyes" value="<%= @user&.full_name %>" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
         </div>
         <div>
-          <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
-          <input type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" value="<%= @user&.email %>" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Correo electrónico</label>
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="tu.correo@ejemplo.com" value="<%= @user&.email %>" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
         </div>
         <div>
-          <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
-          <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Min. 8 characters" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Contraseña</label>
+          <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
         </div>
         <div>
-          <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Confirm Password</label>
-          <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Repeat your password" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Confirmar contraseña</label>
+          <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Repite tu contraseña" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
         </div>
         <div>
           <label for="invite_code" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Código de invitación</label>
           <input type="text" id="invite_code" name="invite_code" autocomplete="off" inputmode="text" placeholder="xxxx-xxxx-xxxx" value="<%= params[:invite_code] %>" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-mono">
           <p class="mt-1.5 text-xs text-slate-500 dark:text-slate-400">Stockerly está en beta cerrada. Necesitas un código de invitación para registrarte.</p>
         </div>
+
+        <%# B-03 Art. 8 NLFPDPPP — express consent for patrimonial data (non-pre-checked) %>
+        <div class="flex items-start gap-3 mt-2 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
+          <input type="checkbox" id="consents_data_processing" name="consents_data_processing" value="1" class="mt-1 w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary">
+          <label for="consents_data_processing" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+            Autorizo expresamente el tratamiento de mis datos patrimoniales y financieros (portafolio, transacciones) por Stockerly, conforme al Art. 8 de la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Consulta el <%= link_to "Aviso de privacidad", privacy_path, class: "text-primary font-medium hover:underline" %>.
+          </label>
+        </div>
+
         <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2">
-          <span>Create Account</span>
+          <span>Crear cuenta</span>
           <span class="material-symbols-outlined text-lg">arrow_forward</span>
         </button>
       <% end %>
 
       <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">
-        Al registrarte aceptas nuestros
-        <%= link_to "Términos de servicio", terms_path, class: "underline hover:text-slate-800 dark:hover:text-slate-200" %> y nuestro
+        Al crear tu cuenta aceptas nuestros
+        <%= link_to "Términos del servicio", terms_path, class: "underline hover:text-slate-800 dark:hover:text-slate-200" %> y nuestro
         <%= link_to "Aviso de privacidad", privacy_path, class: "underline hover:text-slate-800 dark:hover:text-slate-200" %>.
       </p>
     </div>

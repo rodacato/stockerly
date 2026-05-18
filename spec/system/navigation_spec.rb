@@ -30,12 +30,13 @@ RSpec.describe "Navigation", type: :system do
     it "registers and redirects to welcome" do
       invite = create(:invite_code)
       visit register_path
-      fill_in "Full Name", with: "New User"
-      fill_in "Email", with: "newuser@test.com"
-      fill_in "Password", with: "password123"
-      fill_in "Confirm Password", with: "password123"
+      fill_in "Nombre completo", with: "New User"
+      fill_in "Correo electrónico", with: "newuser@test.com"
+      fill_in "Contraseña", with: "password123"
+      fill_in "Confirmar contraseña", with: "password123"
       fill_in "Código de invitación", with: invite.code
-      click_button "Create Account"
+      check "consents_data_processing"
+      click_button "Crear cuenta"
 
       expect(page).to have_current_path(welcome_path)
     end

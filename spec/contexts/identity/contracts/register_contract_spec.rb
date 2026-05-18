@@ -9,7 +9,8 @@ RSpec.describe Identity::Contracts::RegisterContract do
       email: "john@example.com",
       password: "password123",
       password_confirmation: "password123",
-      invite_code: "a3f89c2e4b1d"
+      invite_code: "a3f89c2e4b1d",
+      consents_data_processing: true
     }
   end
 
@@ -63,5 +64,17 @@ RSpec.describe Identity::Contracts::RegisterContract do
   it "accepts hyphenated invite_code (normalized to 12 hex chars)" do
     result = contract.call(valid_params.merge(invite_code: "a3f8-9c2e-4b1d"))
     expect(result).to be_success
+  end
+
+  it "fails when Art. 8 consent is missing" do
+    result = contract.call(valid_params.except(:consents_data_processing))
+    expect(result).to be_failure
+    expect(result.errors[:consents_data_processing]).to be_present
+  end
+
+  it "fails when Art. 8 consent is false (not pre-checked)" do
+    result = contract.call(valid_params.merge(consents_data_processing: false))
+    expect(result).to be_failure
+    expect(result.errors[:consents_data_processing]).to be_present
   end
 end

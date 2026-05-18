@@ -10,7 +10,8 @@ RSpec.describe Identity::UseCases::Register do
         email: "john@example.com",
         password: "password123",
         password_confirmation: "password123",
-        invite_code: invite.code
+        invite_code: invite.code,
+        consents_data_processing: true
       }
     end
 
@@ -23,6 +24,23 @@ RSpec.describe Identity::UseCases::Register do
       expect(user).to be_persisted
       expect(user.full_name).to eq("John Doe")
       expect(user.email).to eq("john@example.com")
+    end
+
+    it "persists the Art. 8 NLFPDPPP consent timestamp" do
+      result = described_class.call(params: valid_params)
+
+      expect(result).to be_success
+      user = result.value!
+      expect(user.consents_data_processing_at).to be_present
+      expect(user.consents_data_processing_at).to be_within(1.minute).of(Time.current)
+    end
+
+    it "returns Failure when Art. 8 consent is not granted" do
+      result = described_class.call(params: valid_params.merge(consents_data_processing: false))
+
+      expect(result).to be_failure
+      expect(result.failure[0]).to eq(:validation)
+      expect(result.failure[1]).to have_key(:consents_data_processing)
     end
 
     it "consumes the invite code atomically with user creation" do
