@@ -58,7 +58,7 @@ RSpec.describe TakeSnapshotsJob, type: :job do
         create(:position, portfolio: portfolio, asset: usd_asset, shares: 2,  avg_cost: 90,  status: :open)
       end
 
-      it "converts each position to preferred_currency before summing" do
+      it "converts each position to preferred_currency before summing (rejects naive cross-currency sum)" do
         described_class.perform_now
 
         snapshot = PortfolioSnapshot.last
@@ -68,13 +68,9 @@ RSpec.describe TakeSnapshotsJob, type: :job do
         expect(snapshot.total_value.to_f).to eq(5400.0)
         expect(snapshot.cash_value.to_f).to eq(1000.0)
         expect(snapshot.currency).to eq("MXN")
-      end
 
-      it "is NOT the naive cross-currency sum (regression guard)" do
-        described_class.perform_now
-
-        # The pre-fix bug would have produced: 5×200 + 2×100 + 1000 = 2200 MXN+USD garbage
-        snapshot = PortfolioSnapshot.last
+        # Regression guard — the pre-fix bug summed raw market_value across
+        # currencies and would have produced 5×200 + 2×100 + 1000 = 2200.
         expect(snapshot.total_value.to_f).not_to eq(2200.0)
       end
     end
