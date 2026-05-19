@@ -20,7 +20,7 @@ class RegistrationsController < ApplicationController
     case result
     in Dry::Monads::Success(user)
       start_session(user)
-      redirect_to dashboard_path, notice: "Welcome to Stockerly, #{user.full_name}!"
+      redirect_to dashboard_path, notice: "¡Bienvenido a Stockerly, #{user.full_name}!"
     in Dry::Monads::Failure[ :validation, errors ]
       @user = User.new(registration_params.except(:invite_code, :consents_data_processing))
       @consents_data_processing = registration_params[:consents_data_processing] == "1"

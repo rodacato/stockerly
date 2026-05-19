@@ -39,7 +39,7 @@ RSpec.describe Identity::UseCases::Login do
 
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:suspended)
-      expect(result.failure[1]).to include("suspended")
+      expect(result.failure[1]).to include("suspendida")
     end
 
     it "returns Failure for empty email" do

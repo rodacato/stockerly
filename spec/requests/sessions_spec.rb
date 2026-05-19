@@ -23,19 +23,19 @@ RSpec.describe "Sessions", type: :request do
       post login_path, params: { email: "test@example.com", password: "password123" }
       expect(response).to redirect_to(dashboard_path)
       follow_redirect!
-      expect(response.body).to include("Welcome back")
+      expect(response.body).to match(/Qué gusto verte de vuelta/)
     end
 
     it "rejects invalid password" do
       post login_path, params: { email: "test@example.com", password: "wrong" }
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("Invalid email or password")
+      expect(response.body).to match(/Correo o contraseña/)
     end
 
     it "rejects unknown email" do
       post login_path, params: { email: "nobody@example.com", password: "password123" }
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("Invalid email or password")
+      expect(response.body).to include("Correo o contraseña inválidos")
     end
 
     it "rejects suspended users" do
@@ -43,7 +43,7 @@ RSpec.describe "Sessions", type: :request do
       post login_path, params: { email: "test@example.com", password: "password123" }
       expect(response).to redirect_to(login_path)
       follow_redirect!
-      expect(response.body).to include("suspended")
+      expect(response.body).to include("suspendida")
     end
 
     it "sets remember cookie when remember=1" do
@@ -65,7 +65,7 @@ RSpec.describe "Sessions", type: :request do
     it "rejects login with missing email param" do
       post login_path, params: { password: "password123" }
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("Invalid email or password")
+      expect(response.body).to include("Correo o contraseña inválidos")
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.describe "Sessions", type: :request do
     it "logs out and redirects to root" do
       delete logout_path
       expect(response).to redirect_to(root_path)
-      expect(flash[:notice]).to eq("Signed out successfully.")
+      expect(flash[:notice]).to eq("Sesión cerrada correctamente.")
     end
 
     it "clears remember token on logout" do

@@ -1,48 +1,93 @@
-<%# Dashboard — authenticated home page %>
+<%# Dashboard — authenticated home page (Stockerly-2.0 design pass) %>
 <% if @watchlist_items.blank? && @summary.nil? %>
-  <%= render "components/empty_state", icon: "visibility", title: "Your watchlist is empty", description: "Start tracking stocks and crypto by adding them to your watchlist.", cta_text: "Explore Markets", cta_path: market_path %>
+  <%= render "components/empty_state", icon: "visibility", title: "Tu watchlist está vacía", description: "Comienza a seguir acciones y crypto agregándolas a tu watchlist.", cta_text: "Explorar mercado", cta_path: market_path %>
 <% else %>
 
-<%# Welcome Section %>
-<div class="mb-8">
-  <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Welcome back, <%= current_user.full_name %></h2>
+<%# 1 · Greeting band — hour-aware salutation + portfolio delta + date stamp %>
+<div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+  <div>
+    <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Panel de control</p>
+    <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+      <%= dashboard_greeting %>, <%= first_name_of(current_user) %>.
+    </h2>
+    <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
+      <% if @summary %>
+        <% dg = @summary.day_gain %>
+        Tu portafolio cambió
+        <span class="font-mono font-semibold <%= dg.positive? ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>"><%= dg.positive? ? "+" : "" %><%= number_to_percentage(dg.percent, precision: 2) %></span>
+        hoy. Esto es lo que pasó.
+      <% else %>
+        Esto es lo que pasó hoy en los mercados.
+      <% end %>
+    </p>
+  </div>
+  <div class="flex flex-col items-start md:items-end gap-1.5">
+    <span class="font-mono text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      <%= I18n.l(Date.current, format: "%a · %d %b %Y").upcase %> · CDMX
+    </span>
+    <% if @market_status[:bmv] %>
+      <span class="inline-flex items-center gap-1.5 text-[11.5px] text-slate-500 dark:text-slate-400">
+        <span class="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_0_3px_rgba(16,185,129,0.18)]"></span>
+        Datos en vivo · BMV abierto
+      </span>
+    <% end %>
+  </div>
+</div>
+
+<%# 2 · KPI strip — 4 cards: Valor total / Ganancia del día / CETES por vencer / Saldo disponible %>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
   <% if @summary %>
     <% dg = @summary.day_gain %>
-    <p class="mt-1 text-slate-500 dark:text-slate-400">Your portfolio is
-      <span class="<%= dg.positive? ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %> font-semibold"><%= dg.positive? ? '+' : '' %><%= number_to_percentage(dg.percent, precision: 1) %></span> today.
-      Here's what you missed.</p>
+    <%= render "dashboard/kpi_card",
+        icon:   "account_balance_wallet",
+        title:  "Valor total",
+        value:  format_currency_mx(@summary.total_value, currency: @currency),
+        change: { sign: dg.positive? ? "+" : "−", amount: dg.percent.abs.round(2).to_s, label: "hoy", positive: dg.positive? } %>
+    <%= render "dashboard/kpi_card",
+        icon:   "trending_up",
+        title:  "Ganancia del día",
+        value:  "#{dg.positive? ? '+' : '−'} #{format_currency_mx(dg.absolute.abs, currency: @currency)}",
+        tone:   (dg.positive? ? :positive : :default),
+        change: { sign: dg.positive? ? "+" : "−", amount: dg.percent.abs.round(2).to_s, label: "", positive: dg.positive? } %>
+    <% if @cetes_summary && @cetes_summary[:count].positive? %>
+      <%= render "dashboard/kpi_card",
+          icon:    "event",
+          title:   "CETES por vencer",
+          value:   format_currency_mx(@cetes_summary[:total_value], currency: @currency, precision: 0),
+          caption: "#{@cetes_summary[:count]} en los próximos 30 días" %>
+    <% else %>
+      <%= render "dashboard/kpi_card",
+          icon:    "event",
+          title:   "CETES por vencer",
+          value:   format_currency_mx(0, currency: @currency, precision: 0),
+          caption: "Sin vencimientos próximos" %>
+    <% end %>
+    <%= render "dashboard/kpi_card",
+        icon:    "savings",
+        title:   "Saldo disponible",
+        value:   format_currency_mx(@summary.buying_power, currency: @currency),
+        caption: "Sin invertir" %>
   <% else %>
-    <p class="mt-1 text-slate-500 dark:text-slate-400">Here's your market overview.</p>
+    <%= render "dashboard/kpi_card", icon: "account_balance_wallet", title: "Valor total",       value: format_currency_mx(0, currency: @currency || "MXN"), caption: "Sin posiciones" %>
+    <%= render "dashboard/kpi_card", icon: "trending_up",            title: "Ganancia del día",  value: format_currency_mx(0, currency: @currency || "MXN"), caption: "Sin movimiento" %>
+    <%= render "dashboard/kpi_card", icon: "event",                  title: "CETES por vencer",  value: format_currency_mx(0, currency: @currency || "MXN", precision: 0), caption: "Sin vencimientos" %>
+    <%= render "dashboard/kpi_card", icon: "savings",                title: "Saldo disponible",  value: format_currency_mx(0, currency: @currency || "MXN"), caption: "Sin invertir" %>
   <% end %>
 </div>
 
-<%# Stats Overview — 3 portfolio cards %>
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-4">
-  <% if @summary %>
-    <%= render "components/kpi_card", title: "Total Balance", value: number_to_currency(@summary.total_value), change: "#{@summary.day_gain.positive? ? '+' : ''}#{number_to_percentage(@summary.day_gain.percent, precision: 1)}", change_positive: @summary.day_gain.positive?, icon: "account_balance_wallet" %>
-    <% dg = @summary.day_gain %>
-    <%= render "components/kpi_card", title: "Day Gain/Loss", value: "#{dg.positive? ? '+' : ''}#{number_to_currency(dg.absolute)}", change: "#{dg.positive? ? '+' : ''}#{number_to_percentage(dg.percent, precision: 1)}", change_positive: dg.positive?, icon: "trending_up" %>
-    <%= render "components/kpi_card", title: "Buying Power", value: number_to_currency(@summary.buying_power), icon: "savings" %>
-  <% else %>
-    <%= render "components/kpi_card", title: "Total Balance", value: "$0.00", icon: "account_balance_wallet" %>
-    <%= render "components/kpi_card", title: "Day Gain/Loss", value: "$0.00", icon: "trending_up" %>
-    <%= render "components/kpi_card", title: "Buying Power", value: "$0.00", icon: "savings" %>
-  <% end %>
-</div>
-
-<%# Sentiment & Fear/Greed — 3 cards %>
+<%# 3 · Sentiment band — 3 cards %>
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
   <%# Market Sentiment — watchlist-based %>
   <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
     <div class="flex items-center justify-between mb-3">
       <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
         <span class="material-symbols-outlined text-lg">monitoring</span>
-        <p class="text-sm font-semibold tracking-tight uppercase">Watchlist Sentiment</p>
+        <p class="text-sm font-semibold tracking-tight uppercase">Sentimiento de tu watchlist</p>
       </div>
     </div>
     <% sentiment_value = @sentiment[:value] %>
     <div class="flex flex-col items-center py-1 mb-4">
-      <span class="text-4xl font-bold text-slate-900 dark:text-white"><%= sentiment_value %></span>
+      <span class="font-mono text-4xl font-bold text-slate-900 dark:text-white"><%= sentiment_value %></span>
       <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400 mt-1"><%= @sentiment[:label] %></span>
     </div>
     <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
@@ -50,17 +95,17 @@
       <div class="h-full bg-warning" style="width: <%= [100 - sentiment_value, 20].min %>%"></div>
       <div class="h-full bg-error" style="width: <%= [100 - sentiment_value - 20, 0].max %>%"></div>
     </div>
-    <p class="mt-2 text-xs font-medium text-slate-400"><%= sentiment_value %>% — Based on your watchlist</p>
+    <p class="mt-2 text-xs font-medium text-slate-400">Basado en tus activos</p>
   </div>
 
   <%# Crypto Fear & Greed %>
   <%= render "dashboard/fear_greed_card", reading: @fear_greed[:crypto], label: "Crypto", history: @fear_greed[:crypto_history] %>
 
   <%# Stocks Fear & Greed %>
-  <%= render "dashboard/fear_greed_card", reading: @fear_greed[:stocks], label: "Stocks", history: @fear_greed[:stocks_history] %>
+  <%= render "dashboard/fear_greed_card", reading: @fear_greed[:stocks], label: "Acciones", history: @fear_greed[:stocks_history] %>
 </div>
 
-<%# Dashboard Grid — 8 + 4 columns %>
+<%# 4 · Main grid — 8 + 4 columns %>
 <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
   <%# Main Content Column %>
   <div class="lg:col-span-8 space-y-8">

@@ -11,7 +11,9 @@ RSpec.describe "Authenticated pages", type: :request do
     it "renders the dashboard with user name" do
       get dashboard_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Welcome back")
+      # Welcome flash carries the user's full name after login. The greeting
+      # itself only renders when the user has a portfolio + watchlist (covered
+      # by spec/requests/dashboard/dashboard_revamp_spec.rb).
       expect(response.body).to include(user.full_name)
     end
   end

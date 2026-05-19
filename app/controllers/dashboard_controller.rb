@@ -11,6 +11,8 @@ class DashboardController < AuthenticatedController
       @fear_greed      = data[:fear_greed]
       @weekly_insight  = data[:weekly_insight]
       @upcoming_maturities = data[:upcoming_maturities]
+      @cetes_summary   = data[:cetes_summary]
+      @currency        = data[:currency]
       @market_status   = { us: MarketHours.us_market_open?, bmv: MarketHours.bmv_market_open?, crypto: true }
     end
   end

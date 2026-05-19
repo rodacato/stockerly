@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
       start_session(user)
       remember(user) if params[:remember] == "1"
       EventBus.publish(Identity::Events::UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
-      redirect_to dashboard_path, notice: "Welcome back, #{user.full_name}!"
+      redirect_to dashboard_path, notice: "¡Qué gusto verte de vuelta, #{user.full_name}!"
     in Dry::Monads::Failure[ :suspended, message ]
       publish_login_failed
       redirect_to login_path, alert: message
@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
       flash.now[:alert] = message
       render :new, status: :unprocessable_content
     in Dry::Monads::Failure[ :validation, _ ]
-      flash.now[:alert] = "Invalid email or password."
+      flash.now[:alert] = "Correo o contraseña inválidos."
       render :new, status: :unprocessable_content
     end
   end
@@ -32,7 +32,7 @@ class SessionsController < ApplicationController
   def destroy
     forget(current_user) if current_user
     reset_session
-    redirect_to root_path, notice: "Signed out successfully."
+    redirect_to root_path, notice: "Sesión cerrada correctamente."
   end
 
   private

@@ -40,7 +40,7 @@ RSpec.describe "Dashboard F&G inline sparklines", type: :request do
       get dashboard_path
 
       expect(response.body).to include("Crypto Fear")
-      expect(response.body).to include("Stocks Fear")
+      expect(response.body).to include("Acciones Fear")
       expect(response.body.scan("30-day trend").size).to eq(2)
     end
 

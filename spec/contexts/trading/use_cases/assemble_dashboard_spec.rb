@@ -19,6 +19,7 @@ RSpec.describe Trading::UseCases::AssembleDashboard do
       expect(data).to have_key(:fear_greed)
       expect(data).to have_key(:weekly_insight)
       expect(data).to have_key(:upcoming_maturities)
+      expect(data).to have_key(:cetes_summary)
     end
 
     it "includes PortfolioSummary when portfolio exists" do
@@ -182,6 +183,40 @@ RSpec.describe Trading::UseCases::AssembleDashboard do
         portfolio.destroy
         result = described_class.call(user: user.reload)
         expect(result.value![:upcoming_maturities]).to eq([])
+      end
+    end
+
+    describe "cetes_summary (S09 #90 KPI card)" do
+      let(:user) { create(:user, preferred_currency: "MXN") }
+      let!(:portfolio) { create(:portfolio, user: user, buying_power: 5000.0) }
+      let!(:cetes) { create(:asset, :fixed_income, symbol: "CETES_28D", current_price: 10.0) }
+
+      it "aggregates count, total value in preferred currency, and soonest_days" do
+        create(:position, portfolio: portfolio, asset: cetes, shares: 100, avg_cost: 10, maturity_date: 5.days.from_now.to_date)
+        create(:position, portfolio: portfolio, asset: cetes, shares: 50,  avg_cost: 10, maturity_date: 12.days.from_now.to_date)
+
+        result = described_class.call(user: user)
+        summary = result.value![:cetes_summary]
+
+        expect(summary[:count]).to eq(2)
+        expect(summary[:soonest_days]).to eq(5)
+        # 100 × 10 + 50 × 10 = 1500 MXN (already in preferred currency)
+        expect(summary[:total_value].to_f).to eq(1500.0)
+      end
+
+      it "returns zero summary when no fixed-income maturities upcoming" do
+        # Only an equity position, no CETES
+        equity = create(:asset, currency: "MXN", current_price: 100)
+        create(:position, portfolio: portfolio, asset: equity, shares: 10)
+
+        result = described_class.call(user: user)
+        expect(result.value![:cetes_summary]).to eq(count: 0, total_value: 0, soonest_days: nil)
+      end
+
+      it "returns nil when the user has no portfolio" do
+        portfolio.destroy
+        result = described_class.call(user: user.reload)
+        expect(result.value![:cetes_summary]).to be_nil
       end
     end
 

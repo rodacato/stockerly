@@ -1,0 +1,58 @@
+<%#
+  Dashboard-specific KPI card per Stockerly-2.0 mockup.
+  Distinct from components/_kpi_card.html.erb (which is shared with admin
+  and uses a different visual treatment). Both can coexist; this one is
+  Lumen-aligned for the user-facing dashboard.
+
+  Usage:
+    render "dashboard/kpi_card",
+      icon:    "account_balance_wallet",
+      title:   "Valor total",
+      value:   "MXN 1,247,580.40",
+      change:  { sign: "+", amount: "1.20", label: "hoy", positive: true }, # optional
+      caption: "Sin invertir",                                              # optional
+      tone:    :positive                                                    # optional (:positive | :default)
+%>
+<%
+  icon    = local_assigns.fetch(:icon)
+  title   = local_assigns.fetch(:title)
+  value   = local_assigns.fetch(:value)
+  change  = local_assigns[:change]
+  caption = local_assigns[:caption]
+  tone    = local_assigns[:tone] || :default
+  value_color_class = tone == :positive ? "text-success-fg dark:text-success" : "text-slate-900 dark:text-white"
+%>
+
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 flex flex-col gap-3.5 min-w-0">
+  <div class="flex items-center gap-2.5">
+    <span class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center shrink-0">
+      <span class="material-symbols-outlined text-lg" aria-hidden="true"><%= icon %></span>
+    </span>
+    <span class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 truncate">
+      <%= title %>
+    </span>
+  </div>
+
+  <div class="min-w-0">
+    <div class="font-mono text-2xl font-medium tracking-tight leading-tight truncate <%= value_color_class %>">
+      <%= value %>
+    </div>
+
+    <div class="mt-2.5 flex items-center gap-2 min-h-[1.375rem]">
+      <% if change.present? %>
+        <% positive = change[:positive] %>
+        <% pill_bg = positive ? "bg-success/10 dark:bg-success/20" : "bg-error/10 dark:bg-error/20" %>
+        <% pill_fg = positive ? "text-success-fg dark:text-success" : "text-error-fg dark:text-error" %>
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11.5px] font-mono font-semibold <%= pill_bg %> <%= pill_fg %>">
+          <span class="material-symbols-outlined text-[11px]" aria-hidden="true"><%= positive ? "arrow_upward" : "arrow_downward" %></span>
+          <%= change[:sign] %><%= change[:amount] %>%<%= " #{change[:label]}" if change[:label].present? %>
+        </span>
+      <% end %>
+      <% if caption.present? %>
+        <span class="text-[11.5px] text-slate-500 dark:text-slate-400 truncate">
+          <%= caption %>
+        </span>
+      <% end %>
+    </div>
+  </div>
+</div>
