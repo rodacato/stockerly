@@ -64,7 +64,7 @@ Notable per-PR moments:
 - **#98 Trades (PR #118):** new `Trade::MODIFICATION_WINDOW = 30.days` + `Trade#editable?` predicate to replace inlined time-arithmetic in the view. New `TradesHelper#trades_summary_by_currency` for single-pass aggregation. **HIGH-severity Gemini catch:** `trade.shares.to_i` in the success flash was truncating fractional/crypto values (10.5 → 10). Dropped the cast.
 - **#99 Password recovery (PR #119):** closes the auth family arc that started with S08 #95 (login) + #96 (register). New `User::PASSWORD_RESET_EXPIRES_IN = 2.hours` constant + `ApplicationHelper#duration_in_words_es` so view + mailer share one source. **HIGH-severity Gemini catch:** validation failure branch in controller wasn't setting `@user`, so the edit view never showed errors. Refactored `ResetPassword` use case to top-level imperative structure (find → contract → update → success) where both contract and update failures attach errors to the User model.
 - **#92 Market (PR #120):** new `MarketIndex::MAJOR_SYMBOLS` with `array_position` SQL ordering so IPC always renders first regardless of insert order. Extracted `MarketHelper#vix_tier` + `#trend_strength_label` from views.
-- **#97 Profile (PR #121):** removed the watchlist embed (redundant with /dashboard + /market). 4-tab settings layout. Added `preferred_currency` selector wired through `UpdateInfo`. ARCO data-export action via pre-filled `mailto:` to support. **Important Gemini catch:** I had been using **"NLFPDPPP"** as informal shorthand for the post-DOF-2025-03-20 law — the official acronym stays "LFPDPPP" (the name didn't change, only the content). The typo had propagated to **13 files** across S08 + S09. Fixed cross-repo in this PR.
+- **#97 Profile (PR #121):** removed the watchlist embed (redundant with /dashboard + /market). 4-tab settings layout. Added `preferred_currency` selector wired through `UpdateInfo`. ARCO data-export action via pre-filled `mailto:` to support. **Important Gemini catch:** I had been using **"NLFPDPPP"** as informal shorthand for the post-DOF-2025-03-20 law — the official acronym stays "LFPDPPP" (the name didn't change, only the content). The typo had propagated to **12 files** across S08 + S09. Fixed cross-repo in this PR.
 - **#113 i18n decision (PR #122):** No-Go for now. Adrian's framing was important: *"si esperemos hasta despues o cuando no haya features o trabajo que hace donde podamos gastar llm tokens, pero por ahorita para el siguiente sprint serian cosas de mas valor"*. Captured two explicit re-visit triggers (bilingual product goal OR idle capacity) in CLAUDE.md + memory. The decision file is the canonical answer for future Gemini repeats.
 
 ---
@@ -91,7 +91,7 @@ This deserves its own note. I introduced "NLFPDPPP" (with the N) in S08 as my in
 - `spec/contexts/identity/use_cases/register_spec.rb` (1)
 - `spec/requests/legal_spec.rb` (2)
 
-= 26 occurrences across 9 files. Fixed cross-repo in PR #121 commit `936158b`. Lesson: **legal acronyms get checked against an authoritative source on first use**, not propagated from intuition. Especially when the spec describes the law itself and a regulator could read it.
+= 26 occurrences across 12 files. Fixed cross-repo in PR #121 commit `936158b`. Lesson: **legal acronyms get checked against an authoritative source on first use**, not propagated from intuition. Especially when the spec describes the law itself and a regulator could read it.
 
 ---
 

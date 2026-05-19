@@ -69,5 +69,5 @@ For each JTBD touched in this sprint:
 - Test suite grew from 2255 (S08 close) → 2353 (S09 close), +98 specs (+~4%). Coverage held at 94.7% line / 76.9% branch.
 - Three new constants introduced for cross-context truth-sharing: `Stockerly::SUPPORT_EMAIL` (from S08, used in #97), `User::PASSWORD_RESET_EXPIRES_IN` (#99), `Trade::MODIFICATION_WINDOW` (#98), `MarketIndex::MAJOR_SYMBOLS` (#92).
 - New helpers extracted: `DashboardHelper#format_currency_mx`, `#dashboard_greeting`, `#duration_in_words_es` (ApplicationHelper), `TradesHelper#trades_summary_by_currency`, `MarketHelper#vix_tier`, `#trend_strength_label`.
-- One cross-repo correctness fix landed inside a PR (#121): NLFPDPPP → LFPDPPP across 26 occurrences in 9 files. Captured in retro as a "legal acronyms get authoritative-source lookup" discipline going forward.
+- One cross-repo correctness fix landed inside a PR (#121): NLFPDPPP → LFPDPPP across 26 occurrences in 12 files. Captured in retro as a "legal acronyms get authoritative-source lookup" discipline going forward.
 - Auth flow now fully es-MX end-to-end: login (S08 #95) → register (S08 #96) → recovery (S09 #99). The dashboard + portfolio + trades + market + profile arc is also fully es-MX + Lumen.
