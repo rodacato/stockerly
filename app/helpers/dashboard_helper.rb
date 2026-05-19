@@ -13,12 +13,9 @@ module DashboardHelper
 
   # Formats an amount as "MXN 1,247,580.40" (ISO code prefix + grouped digits).
   # Defaults to 2 decimals. Use precision: 4 for CETES yields / FX rates.
+  # nil is treated as 0 so the precision parameter still applies.
   def format_currency_mx(amount, currency:, precision: 2)
-    return "#{currency} 0.00" if amount.nil?
-
-    formatted = number_with_delimiter(
-      number_with_precision(amount, precision: precision, delimiter: "")
-    )
+    formatted = number_with_precision(amount || 0, precision: precision, delimiter: ",")
     "#{currency} #{formatted}"
   end
 

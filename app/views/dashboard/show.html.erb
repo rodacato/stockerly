@@ -42,13 +42,13 @@
         icon:   "account_balance_wallet",
         title:  "Valor total",
         value:  format_currency_mx(@summary.total_value, currency: @currency),
-        change: { sign: dg.positive? ? "+" : "−", amount: dg.percent.abs.round(2).to_s, label: "hoy", positive: dg.positive? } %>
+        change: { sign: dg.positive? ? "+" : "−", amount: number_with_precision(dg.percent.abs, precision: 2), label: "hoy", positive: dg.positive? } %>
     <%= render "dashboard/kpi_card",
         icon:   "trending_up",
         title:  "Ganancia del día",
         value:  "#{dg.positive? ? '+' : '−'} #{format_currency_mx(dg.absolute.abs, currency: @currency)}",
         tone:   (dg.positive? ? :positive : :default),
-        change: { sign: dg.positive? ? "+" : "−", amount: dg.percent.abs.round(2).to_s, label: "", positive: dg.positive? } %>
+        change: { sign: dg.positive? ? "+" : "−", amount: number_with_precision(dg.percent.abs, precision: 2), label: "", positive: dg.positive? } %>
     <% if @cetes_summary && @cetes_summary[:count].positive? %>
       <%= render "dashboard/kpi_card",
           icon:    "event",

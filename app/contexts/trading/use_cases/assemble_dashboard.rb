@@ -83,22 +83,28 @@ module Trading
       # Skips positions whose FX rate is missing (rather than failing the
       # whole dashboard) — the count reflects only convertible positions.
       def compute_cetes_summary(maturities, portfolio, currency)
-        fixed_income = maturities.select { |p| p.asset.asset_type_fixed_income? }
-        return { count: 0, total_value: 0, soonest_days: nil } if fixed_income.empty?
+        today = Date.current
+        count = 0
+        total = 0
+        soonest = nil
 
-        convertible = fixed_income.map do |p|
-          value = portfolio.convert(p.market_value, from: p.asset.currency, to: currency)
-          [ p, value ]
-        rescue RuntimeError
-          nil
-        end.compact
+        maturities.each do |p|
+          next unless p.asset.asset_type_fixed_income?
 
-        return { count: 0, total_value: 0, soonest_days: nil } if convertible.empty?
+          value =
+            begin
+              portfolio.convert(p.market_value, from: p.asset.currency, to: currency)
+            rescue RuntimeError
+              next
+            end
 
-        total = convertible.sum { |(_, value)| value }
-        soonest = convertible.map { |(p, _)| (p.maturity_date - Date.current).to_i }.min
+          count += 1
+          total += value
+          days = (p.maturity_date - today).to_i
+          soonest = days if soonest.nil? || days < soonest
+        end
 
-        { count: convertible.size, total_value: total, soonest_days: soonest }
+        { count: count, total_value: total, soonest_days: soonest }
       end
     end
   end
