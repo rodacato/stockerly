@@ -7,7 +7,7 @@ class UserMailer < ApplicationMailer
   def password_reset(user, reset_url)
     @user = user
     @reset_url = reset_url
-    mail(to: user.email, subject: "Reset your Stockerly password")
+    mail(to: user.email, subject: "Restablece tu contraseña de Stockerly")
   end
 
   def verify_email(user, verification_url)

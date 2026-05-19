@@ -9,7 +9,7 @@ class PasswordResetsController < ApplicationController
 
   def create
     Identity::UseCases::RequestPasswordReset.call(params: { email: params[:email] })
-    redirect_to login_path, notice: "If that email exists, you'll receive reset instructions shortly."
+    redirect_to login_path, notice: "Si ese correo está registrado, recibirás instrucciones para restablecer tu contraseña en unos minutos."
   end
 
   def edit; end
@@ -19,7 +19,7 @@ class PasswordResetsController < ApplicationController
 
     case result
     in Dry::Monads::Success
-      redirect_to login_path, notice: "Password reset successfully. Please sign in."
+      redirect_to login_path, notice: "Contraseña restablecida correctamente. Inicia sesión con tu nueva contraseña."
     in Dry::Monads::Failure[ :invalid_token, message ]
       redirect_to forgot_password_path, alert: message
     in Dry::Monads::Failure[ :validation, _ ]
@@ -33,7 +33,7 @@ class PasswordResetsController < ApplicationController
     @user = User.find_by_password_reset_token(params[:token])
 
     unless @user
-      redirect_to forgot_password_path, alert: "Invalid or expired reset link."
+      redirect_to forgot_password_path, alert: "El enlace de restablecimiento es inválido o expiró."
     end
   end
 

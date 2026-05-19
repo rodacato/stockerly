@@ -15,7 +15,7 @@ module Identity
 
       def find_by_token(token)
         user = User.find_by_password_reset_token(token)
-        user ? Success(user) : Failure([ :invalid_token, "Invalid or expired reset link." ])
+        user ? Success(user) : Failure([ :invalid_token, "El enlace de restablecimiento es inválido o expiró." ])
       end
 
       def update_password(user, attrs)

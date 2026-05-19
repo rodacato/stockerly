@@ -11,41 +11,41 @@ RSpec.describe "Password reset flow", type: :system do
     visit login_path
     click_link "Recupérala."
     expect(page).to have_current_path(forgot_password_path)
-    expect(page).to have_content("Forgot your password?")
+    expect(page).to have_content("¿Olvidaste tu contraseña?")
   end
 
   it "submits email and sees success message" do
     visit forgot_password_path
-    fill_in "Email", with: "reset@test.com"
-    click_button "Send Reset Link"
+    fill_in "Correo electrónico", with: "reset@test.com"
+    click_button "Enviar enlace"
 
     expect(page).to have_current_path(login_path)
-    expect(page).to have_content("reset instructions")
+    expect(page).to have_content("instrucciones para restablecer")
   end
 
   it "visits reset link with valid token and shows form" do
     token = user.password_reset_token
     visit reset_password_path(token)
 
-    expect(page).to have_content("Create new password")
+    expect(page).to have_content("Crear nueva contraseña")
   end
 
   it "resets password with valid new password" do
     token = user.password_reset_token
     visit reset_password_path(token)
 
-    fill_in "New Password", with: "newpassword456"
-    fill_in "Confirm Password", with: "newpassword456"
-    click_button "Reset Password"
+    fill_in "Nueva contraseña", with: "newpassword456"
+    fill_in "Confirmar nueva contraseña", with: "newpassword456"
+    click_button "Restablecer contraseña"
 
     expect(page).to have_current_path(login_path)
-    expect(page).to have_content("Password reset successfully")
+    expect(page).to have_content("Contraseña restablecida correctamente")
   end
 
   it "shows error for invalid token" do
     visit reset_password_path("invalid-token-abc")
 
     expect(page).to have_current_path(forgot_password_path)
-    expect(page).to have_content("Invalid or expired")
+    expect(page).to have_content("inválido o expiró")
   end
 end

@@ -24,7 +24,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it "sets the correct subject" do
-      expect(mail.subject).to eq("Reset your Stockerly password")
+      expect(mail.subject).to eq("Restablece tu contraseña de Stockerly")
     end
   end
 

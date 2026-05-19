@@ -7,7 +7,7 @@ RSpec.describe "PasswordResets", type: :request do
     it "renders the forgot password page" do
       get forgot_password_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Forgot your password?")
+      expect(response.body).to include("¿Olvidaste tu contraseña?")
     end
   end
 
@@ -16,14 +16,14 @@ RSpec.describe "PasswordResets", type: :request do
       post forgot_password_path, params: { email: "test@example.com" }
       expect(response).to redirect_to(login_path)
       follow_redirect!
-      expect(response.body).to include("reset instructions")
+      expect(response.body).to include("instrucciones para restablecer")
     end
 
     it "redirects with same message for non-existing email (anti-enumeration)" do
       post forgot_password_path, params: { email: "nobody@example.com" }
       expect(response).to redirect_to(login_path)
       follow_redirect!
-      expect(response.body).to include("reset instructions")
+      expect(response.body).to include("instrucciones para restablecer")
     end
 
     it "logs the reset URL for existing user" do
@@ -43,7 +43,7 @@ RSpec.describe "PasswordResets", type: :request do
       token = user.password_reset_token
       get reset_password_path(token)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Create new password")
+      expect(response.body).to include("Crear nueva contraseña")
     end
 
     it "redirects for invalid token" do
