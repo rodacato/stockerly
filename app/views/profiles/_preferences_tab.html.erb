@@ -1,0 +1,49 @@
+<%# Preferencias tab — currency + notifications. es-MX per S09 #97. %>
+<div class="space-y-6">
+  <%# Currency preference — controls how the dashboard, portfolio, and chart values are denominated %>
+  <section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+    <h3 class="text-lg font-bold mb-1 text-slate-900 dark:text-white">Moneda preferida</h3>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Define la moneda en la que se muestran tus totales consolidados (portafolio, snapshots, dashboard).</p>
+
+    <%= form_with url: profile_path, method: :patch, class: "space-y-4 max-w-md" do |f| %>
+      <%# Submit the existing required fields untouched so the contract passes %>
+      <%= hidden_field_tag "profile[full_name]", user.full_name %>
+      <%= hidden_field_tag "profile[email]", user.email %>
+      <div class="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg max-w-xs">
+        <% [ [ "MXN", "Peso mexicano" ], [ "USD", "Dólar estadounidense" ] ].each do |code, name| %>
+          <% selected = user.preferred_currency == code %>
+          <label class="flex-1 cursor-pointer">
+            <input type="radio" name="profile[preferred_currency]" value="<%= code %>" <%= "checked" if selected %> class="sr-only peer">
+            <span class="block text-center text-xs font-bold py-2 px-3 rounded-md transition-colors <%= selected ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300' %>">
+              <span class="font-mono"><%= code %></span> · <%= name %>
+            </span>
+          </label>
+        <% end %>
+      </div>
+      <button type="submit" class="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors shadow-sm">
+        Guardar moneda
+      </button>
+    <% end %>
+  </section>
+
+  <%# Notification preferences — toggle persists via PATCH /profile/preferences %>
+  <section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+    <h3 class="text-lg font-bold mb-1 text-slate-900 dark:text-white">Notificaciones</h3>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Configura qué resúmenes y alertas recibes por correo.</p>
+
+    <% email_pref = user.alert_preference&.email_digest != false %>
+    <div class="flex items-center justify-between" data-controller="toggle"
+         data-toggle-url-value="<%= update_preferences_path %>"
+         data-toggle-field-value="email_digest">
+      <div>
+        <p class="text-sm font-semibold text-slate-900 dark:text-white">Resumen semanal por correo</p>
+        <p class="text-xs text-slate-500">Recibe un digest cada lunes con el desempeño de tu watchlist.</p>
+      </div>
+      <button type="button" data-action="click->toggle#toggle"
+              class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out">
+        <span data-toggle-target="track" class="pointer-events-none inline-block h-5 w-11 rounded-full transition-colors duration-200 ease-in-out <%= email_pref ? 'bg-primary' : 'bg-slate-200 dark:bg-slate-700' %>"></span>
+        <span data-toggle-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform duration-200 ease-in-out <%= email_pref ? 'translate-x-5' : 'translate-x-0' %>"></span>
+      </button>
+    </div>
+  </section>
+</div>

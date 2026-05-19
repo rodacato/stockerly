@@ -134,7 +134,7 @@ RSpec.describe "Authenticated pages", type: :request do
       get profile_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(user.full_name)
-      expect(response.body).to include("Personal Information")
+      expect(response.body).to include("Información personal")
     end
   end
 
@@ -143,7 +143,7 @@ RSpec.describe "Authenticated pages", type: :request do
       patch profile_path, params: { profile: { full_name: user.full_name, email: user.email } }
       expect(response).to redirect_to(profile_path)
       follow_redirect!
-      expect(response.body).to include("Profile updated")
+      expect(response.body).to include("Perfil actualizado")
     end
   end
 
@@ -154,7 +154,7 @@ RSpec.describe "Authenticated pages", type: :request do
       }
       expect(response).to redirect_to(profile_path)
       follow_redirect!
-      expect(response.body).to include("Password changed")
+      expect(response.body).to include("Contraseña cambiada")
     end
   end
 end

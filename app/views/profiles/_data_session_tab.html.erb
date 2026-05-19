@@ -1,0 +1,39 @@
+<%# Datos y sesión tab — LFPDPPP data export + sign out. es-MX per S09 #97. %>
+<div class="space-y-6">
+  <%# ARCO data export — links to support email (procedure documented in docs/ops/arco-procedure.md) %>
+  <section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+    <h3 class="text-lg font-bold mb-1 text-slate-900 dark:text-white">Tus datos</h3>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
+      Conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (NLFPDPPP),
+      puedes solicitar acceso, rectificación, cancelación u oposición sobre tus datos (derechos ARCO).
+      Tiempo de respuesta: 20 días hábiles.
+    </p>
+
+    <div class="flex flex-wrap gap-3">
+      <%= mail_to Stockerly::SUPPORT_EMAIL, "Solicitar acceso a mis datos",
+          subject: "Solicitud ARCO - Acceso a mis datos",
+          body: "Solicito copia de los datos personales que Stockerly tiene de mi cuenta (#{current_user.email}).",
+          class: "px-5 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-semibold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors inline-flex items-center gap-2" %>
+
+      <%= mail_to Stockerly::SUPPORT_EMAIL, "Eliminar mi cuenta",
+          subject: "Solicitud ARCO - Cancelación de cuenta",
+          body: "Solicito la eliminación de mi cuenta (#{current_user.email}) y los datos personales asociados.",
+          class: "px-5 py-2.5 border border-rose-200 dark:border-rose-800 bg-white dark:bg-slate-900 text-sm font-semibold text-rose-600 dark:text-rose-400 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors inline-flex items-center gap-2" %>
+    </div>
+    <p class="mt-4 text-xs text-slate-500 dark:text-slate-400">
+      Más detalles del procedimiento ARCO en el <%= link_to "Aviso de privacidad", privacy_path, class: "text-primary font-medium hover:underline" %>.
+    </p>
+  </section>
+
+  <%# Sign out %>
+  <section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+    <h3 class="text-lg font-bold mb-1 text-slate-900 dark:text-white">Sesión</h3>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Cierra tu sesión en este dispositivo.</p>
+
+    <%= button_to logout_path, method: :delete,
+        class: "px-5 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-semibold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors inline-flex items-center gap-2" do %>
+      <span class="material-symbols-outlined text-sm">logout</span>
+      Cerrar sesión
+    <% end %>
+  </section>
+</div>

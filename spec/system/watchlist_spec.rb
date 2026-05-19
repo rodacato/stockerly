@@ -1,5 +1,8 @@
 require "rails_helper"
 
+# Watchlist add/remove specs. Per S09 #97 the watchlist embed was removed
+# from /profile; the canonical surfaces are /dashboard (table) and /market
+# (per-row + button to add). These specs assert against those surfaces.
 RSpec.describe "Watchlist management", type: :system do
   before do
     driven_by :rack_test
@@ -23,38 +26,37 @@ RSpec.describe "Watchlist management", type: :system do
     expect(page).to have_content("Tesla, Inc.")
   end
 
-  it "adds asset to watchlist from market page" do
+  it "adds asset to watchlist from market page and surfaces it on dashboard" do
     page.driver.post watchlist_items_path, asset_id: aapl.id
-    visit profile_path
+    visit dashboard_path
 
-    expect(page).to have_content("My Watchlist")
     expect(page).to have_content("Apple Inc.")
   end
 
-  it "shows watchlist table with watched assets on profile" do
+  it "shows watchlist on dashboard with watched assets" do
     create(:watchlist_item, user: user, asset: aapl)
     create(:watchlist_item, user: user, asset: tsla)
 
-    visit profile_path
-    expect(page).to have_content("My Watchlist")
+    visit dashboard_path
     expect(page).to have_content("Apple Inc.")
     expect(page).to have_content("Tesla, Inc.")
   end
 
-  it "removes asset from watchlist on profile" do
+  it "removes asset from watchlist" do
     item = create(:watchlist_item, user: user, asset: aapl)
 
-    visit profile_path
+    visit dashboard_path
     expect(page).to have_content("Apple Inc.")
 
     page.driver.delete watchlist_item_path(item)
-    visit profile_path
+    visit dashboard_path
 
     expect(page).not_to have_content("Apple Inc.")
   end
 
-  it "shows empty watchlist state" do
-    visit profile_path
+  it "shows empty watchlist state on dashboard" do
+    visit dashboard_path
+    # Dashboard empty state copy: from app/views/dashboard/_watchlist_table.html.erb
     expect(page).to have_content("No assets in your watchlist")
   end
 end

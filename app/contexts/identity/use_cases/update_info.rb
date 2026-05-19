@@ -18,7 +18,9 @@ module Identity
       end
 
       def persist(user, attrs)
-        user.update!(full_name: attrs[:full_name], email: attrs[:email])
+        update_attrs = { full_name: attrs[:full_name], email: attrs[:email] }
+        update_attrs[:preferred_currency] = attrs[:preferred_currency] if attrs[:preferred_currency].present?
+        user.update!(update_attrs)
         Success(user)
       rescue ActiveRecord::RecordInvalid => e
         Failure([ :validation, e.record.errors.to_hash ])

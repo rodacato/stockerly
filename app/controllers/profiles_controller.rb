@@ -1,15 +1,12 @@
 class ProfilesController < AuthenticatedController
-  def show
-    @watchlist_items = Identity::UseCases::LoadProfile.call(user: current_user)
-    @market_status   = { us: MarketHours.us_market_open?, bmv: MarketHours.bmv_market_open?, crypto: true }
-  end
+  def show; end
 
   def update
     result = Identity::UseCases::UpdateInfo.call(user: current_user, params: profile_params.to_h)
 
     case result
     in Dry::Monads::Success
-      redirect_to profile_path, notice: "Profile updated successfully."
+      redirect_to profile_path, notice: "Perfil actualizado."
     in Dry::Monads::Failure[ :validation, errors ]
       flash.now[:alert] = errors.values.flatten.first
       render :show, status: :unprocessable_content
@@ -31,7 +28,7 @@ class ProfilesController < AuthenticatedController
 
     case result
     in Dry::Monads::Success
-      redirect_to profile_path, notice: "Password changed successfully."
+      redirect_to profile_path, notice: "Contraseña cambiada correctamente."
     in Dry::Monads::Failure[ :unauthorized, message ]
       redirect_to profile_path, alert: message
     in Dry::Monads::Failure[ :validation, errors ]
@@ -42,7 +39,7 @@ class ProfilesController < AuthenticatedController
   private
 
   def profile_params
-    params.require(:profile).permit(:full_name, :email)
+    params.require(:profile).permit(:full_name, :email, :preferred_currency)
   end
 
   def password_params

@@ -47,15 +47,14 @@ RSpec.describe "Refactored controller flows", type: :request do
     end
   end
 
-  describe "Profile with watchlist via Use Case" do
-    it "loads profile with real watchlist items" do
-      asset = create(:asset, symbol: "TSLA", name: "Tesla Inc.")
-      create(:watchlist_item, user: user, asset: asset)
-
+  describe "Profile page (S09 #97 — watchlist removed)" do
+    it "loads profile successfully (watchlist no longer rendered here per S09 #97)" do
       get profile_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("TSLA")
+      # The watchlist lives on /dashboard and /market now; profile is
+      # purely user settings.
+      expect(response.body).to include("Información personal")
     end
   end
 
