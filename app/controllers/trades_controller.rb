@@ -13,7 +13,7 @@ class TradesController < AuthenticatedController
           render turbo_stream: [
             turbo_stream.prepend("trade_history", partial: "trades/trade_row", locals: { trade: trade }),
             turbo_stream.prepend("flash_messages", partial: "shared/flash_message",
-              locals: { type: "notice", message: "#{trade.side == 'buy' ? 'Compra' : 'Venta'} registrada: #{trade.shares.to_i} títulos de #{trade.asset.symbol}" })
+              locals: { type: "notice", message: "#{trade.buy? ? 'Compra' : 'Venta'} registrada: #{trade.shares} títulos de #{trade.asset.symbol}" })
           ]
         end
         format.html { redirect_to portfolio_path, notice: "Movimiento registrado." }

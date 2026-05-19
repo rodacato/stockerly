@@ -1,6 +1,6 @@
 <%# Single trade row — used by index and Turbo Stream prepend. es-MX per S09 #98. %>
 <% is_buy = trade.buy? %>
-<% can_modify = trade.executed_at >= 30.days.ago %>
+<% can_modify = trade.editable? %>
 <tr id="<%= dom_id(trade) %>" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
   <td class="px-6 py-4 text-sm font-mono text-slate-500"><%= trade.executed_at.strftime("%d %b %Y %H:%M") %></td>
   <td class="px-6 py-4">

@@ -26,7 +26,7 @@ RSpec.describe "Trade management", type: :system do
     visit trades_path
 
     expect(page).to have_content("Movimientos")
-    expect(page).to have_content("Actions")
+    expect(page).to have_content("Acciones")
     expect(page).to have_content("AAPL")
   end
 

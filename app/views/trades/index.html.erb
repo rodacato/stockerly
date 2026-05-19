@@ -1,13 +1,11 @@
 <%# Trades (Movimientos) — audit trail of all executed trades. es-MX per S09 #98. %>
-<%
-  # Summary aggregates by currency, computed from the 50 most-recent trades
-  # shown in the table below. Keeps the summary scoped to what the user sees
-  # rather than the full historical aggregate (which would require a separate
-  # use case).
-  buys_by_currency  = @trades.select(&:buy?).group_by(&:currency).transform_values  { |list| list.sum(&:total_amount) }
-  sells_by_currency = @trades.select(&:sell?).group_by(&:currency).transform_values { |list| list.sum(&:total_amount) }
-  fees_by_currency  = @trades.group_by(&:currency).transform_values { |list| list.sum(&:fee) }
-%>
+<%# Summary aggregates by currency, scoped to the 50 most-recent trades
+    shown in the table below. The aggregation lives in TradesHelper so the
+    template stays focused on presentation. %>
+<% summary = trades_summary_by_currency(@trades) %>
+<% buys_by_currency  = summary[:buys] %>
+<% sells_by_currency = summary[:sells] %>
+<% fees_by_currency  = summary[:fees] %>
 
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
   <div>
@@ -53,10 +51,8 @@
     <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
       <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Comisiones</p>
       <div class="mt-2 space-y-1">
-        <% any_fee = fees_by_currency.values.any? { |total| total.positive? } %>
-        <% if any_fee %>
+        <% if fees_by_currency.any? %>
           <% fees_by_currency.each do |currency, total| %>
-            <% next unless total.positive? %>
             <p class="font-mono text-xl font-medium text-slate-900 dark:text-white"><%= format_currency_mx(total, currency: currency) %></p>
           <% end %>
         <% else %>
