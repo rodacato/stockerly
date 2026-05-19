@@ -1,6 +1,6 @@
 # Procedimiento operativo ARCO
 
-> Cómo procesar solicitudes de Acceso, Rectificación, Cancelación, Oposición (ARCO) y revocación de consentimiento, conforme a los Arts. 28-32 NLFPDPPP (DOF 20-mar-2025).
+> Cómo procesar solicitudes de Acceso, Rectificación, Cancelación, Oposición (ARCO) y revocación de consentimiento, conforme a los Arts. 28-32 LFPDPPP (DOF 20-mar-2025).
 
 ---
 
@@ -13,7 +13,7 @@ Las solicitudes llegan por correo a `support@notdefined.dev`. Marca la solicitud
 - Derecho que ejerce (acceso, rectificación, cancelación, oposición o revocación).
 - Descripción exacta de los datos sobre los que recae.
 
-La fecha de recepción inicia el **plazo de 20 días hábiles** (Art. 32 NLFPDPPP).
+La fecha de recepción inicia el **plazo de 20 días hábiles** (Art. 32 LFPDPPP).
 
 ## 2. Validación de identidad
 
@@ -49,7 +49,7 @@ Si no se acredita identidad razonablemente, niega la solicitud documentando el m
 - Si es una finalidad voluntaria (no aplicable hoy), aplica la oposición sin cancelar la cuenta.
 
 ### Revocación del consentimiento
-- Equivalente operativo a oposición sobre todas las finalidades para las que se otorgó consentimiento expreso. Para datos patrimoniales (Art. 8 NLFPDPPP), la revocación implica detener su tratamiento y, salvo obligación legal de conservación, eliminarlos.
+- Equivalente operativo a oposición sobre todas las finalidades para las que se otorgó consentimiento expreso. Para datos patrimoniales (Art. 8 LFPDPPP), la revocación implica detener su tratamiento y, salvo obligación legal de conservación, eliminarlos.
 
 ## 4. Respuesta al titular
 
@@ -86,9 +86,9 @@ Conserva esta bitácora por el plazo establecido por la legislación aplicable. 
 
 | Hito | Plazo | Norma |
 |---|---|---|
-| Solicitud de información adicional para identidad | 5 días hábiles | Art. 32 NLFPDPPP |
-| Respuesta al titular | 20 días hábiles | Art. 32 NLFPDPPP |
-| Aplicación de la acción (cuando procede) | 15 días hábiles posteriores a la respuesta | Art. 32 NLFPDPPP |
+| Solicitud de información adicional para identidad | 5 días hábiles | Art. 32 LFPDPPP |
+| Respuesta al titular | 20 días hábiles | Art. 32 LFPDPPP |
+| Aplicación de la acción (cuando procede) | 15 días hábiles posteriores a la respuesta | Art. 32 LFPDPPP |
 | Eliminación de datos tras cancelación de cuenta | 30 días naturales | Aviso de privacidad vigente |
 
 Si por causa justificada no es posible cumplir el plazo de respuesta, comunica al titular la prórroga (única, por igual periodo) antes del vencimiento del plazo original.

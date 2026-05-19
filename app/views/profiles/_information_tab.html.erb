@@ -1,22 +1,22 @@
 <%# Información tab — full name + email. es-MX per S09 #97. %>
+<%
+  input_classes = "w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+  label_classes = "block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5"
+%>
 <section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
   <h3 class="text-lg font-bold mb-1 text-slate-900 dark:text-white">Información personal</h3>
   <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Actualiza tu nombre y correo electrónico.</p>
 
-  <%= form_with url: profile_path, method: :patch, class: "space-y-4 max-w-md" do |f| %>
+  <%= form_with scope: :profile, url: profile_path, method: :patch, class: "space-y-4 max-w-md" do |f| %>
     <div>
-      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nombre completo</label>
-      <input type="text" name="profile[full_name]" value="<%= user.full_name %>" required
-             class="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+      <%= f.label :full_name, "Nombre completo", class: label_classes %>
+      <%= f.text_field :full_name, value: user.full_name, required: true, class: input_classes %>
     </div>
     <div>
-      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Correo electrónico</label>
-      <input type="email" name="profile[email]" value="<%= user.email %>" required
-             class="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+      <%= f.label :email, "Correo electrónico", class: label_classes %>
+      <%= f.email_field :email, value: user.email, required: true, class: input_classes %>
       <p class="mt-1.5 text-xs text-slate-500 dark:text-slate-400">Si cambias tu correo, necesitarás verificarlo nuevamente.</p>
     </div>
-    <button type="submit" class="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors shadow-sm">
-      Guardar cambios
-    </button>
+    <%= f.submit "Guardar cambios", class: "px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors shadow-sm cursor-pointer" %>
   <% end %>
 </section>

@@ -7,7 +7,7 @@
 
 ## Goal & scope
 
-- [x] **Sprint goal achieved** — all pre-beta blockers closed (B-01 Terms, B-02 Risk, B-03 Art. 8 consent, B-04 Privacy NLFPDPPP, B-05 ARCO procedure) + C1 cost-basis P0 fixed + auth revamps (#95 login + #96 register) shipped.
+- [x] **Sprint goal achieved** — all pre-beta blockers closed (B-01 Terms, B-02 Risk, B-03 Art. 8 consent, B-04 Privacy LFPDPPP, B-05 ARCO procedure) + C1 cost-basis P0 fixed + auth revamps (#95 login + #96 register) shipped.
 - [x] **All `main` scope issues** closed — 6/6 (#102, #103, #104, #105, #95, #96).
 - [x] **Parallel issues** — none in this sprint (single-themed).
 - [x] **Unclosed issues** — none. One new issue (#113) created mid-sprint for i18n decision, parked in S09 milestone (not a regression, intentional deferral).

@@ -8,8 +8,8 @@ RSpec.describe "Legal pages", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "references NLFPDPPP (the DOF 20-mar-2025 framework)" do
-      expect(response.body).to match(/NLFPDPPP/i)
+    it "references LFPDPPP (the DOF 20-mar-2025 framework)" do
+      expect(response.body).to match(/LFPDPPP/i)
       expect(response.body).to include("20 de marzo de 2025")
     end
 

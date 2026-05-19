@@ -23,7 +23,7 @@ module Identity
         key.failure("must be 12 hex characters") unless normalized&.match?(/\A[a-f0-9]{12}\z/)
       end
 
-      # Art. 8 NLFPDPPP — datos patrimoniales (portfolio, trades) require
+      # Art. 8 LFPDPPP — datos patrimoniales (portfolio, trades) require
       # express, non-pre-checked consent at registration. Persisted as a
       # timestamp in `users.consents_data_processing_at`.
       rule(:consents_data_processing) do

@@ -18,7 +18,7 @@ Initial S08 scope was Option B "First-amigo full path" — 6 design revamp issue
 
 After reviewing the parallel research surfaced overnight (`.research/SYNTHESIS-content-product.md`), scope was **reset to Camino E — Mix compliance + auth-design**. Reasons:
 
-1. **Pre-beta blockers identified by research** make the original polish-only scope irresponsible: terms + risk-disclosure are *defective* (describe activities Stockerly doesn't perform), privacy is incomplete vs NLFPDPPP DOF-20-mar-2025, Art. 8 consent missing for datos patrimoniales, ARCO procedure undocumented.
+1. **Pre-beta blockers identified by research** make the original polish-only scope irresponsible: terms + risk-disclosure are *defective* (describe activities Stockerly doesn't perform), privacy is incomplete vs LFPDPPP DOF-20-mar-2025, Art. 8 consent missing for datos patrimoniales, ARCO procedure undocumented.
 2. **Carry-over P0 multi-currency cost-basis bug** would make the dashboard mockup (#90) render mathematically false numbers if implemented as-is. The fix needs to land BEFORE the dashboard implementation.
 3. **The auth revamps (#95 + #96)** are still in scope — small (~3h each) AND #96 register naturally integrates the B-03 Art. 8 consent. Co-fix.
 
@@ -63,7 +63,7 @@ Walked through the full scope in one session: #105 (C1 fix) → #102 (Terms) →
 - **#105 C1:** added `Portfolio#invested_value(currency:)` symmetric with `total_value`. Removed `default: "USD"` from `portfolio_snapshots.currency` to force explicit declaration. No backfill — closed beta with empty portfolios makes pre-fix snapshots irrelevant. Logged in commit.
 - **#102 Terms:** rewrote 8 sections es-MX with CDMX jurisdiction. Also localized the shared `legal.html.erb` layout chrome ("Last Updated" → "Última actualización", "Print" → "Imprimir") — it's used by privacy + terms + risk too.
 - **#103 Risk Disclosure:** removed all leverage/margin/liquidation/stop-loss/slippage fiction. Added explicit CNBV non-regulation statement and verify-with-your-broker guidance.
-- **#104 Privacy + ARCO:** referenced NLFPDPPP DOF-20-mar-2025, split necesarias/voluntarias (Art. 15), retention policy (Art. 11), remisiones (Arts. 35-36), 20-day ARCO window (Art. 32). New `docs/ops/arco-procedure.md` operational runbook.
+- **#104 Privacy + ARCO:** referenced LFPDPPP DOF-20-mar-2025, split necesarias/voluntarias (Art. 15), retention policy (Art. 11), remisiones (Arts. 35-36), 20-day ARCO window (Art. 32). New `docs/ops/arco-procedure.md` operational runbook.
 - **#95 Login:** localized + cross-cutting update of ~16 system specs that used English form labels. Specs visiting `/register` and `/forgot-password` kept English strings (those views land in #96 and S09 #99).
 - **#96 Register + B-03:** added Art. 8 consent checkbox (non-pre-checked), migration for `users.consents_data_processing_at`, contract + use case wired through. Controller coerces nil → false explicitly so unchecked is denial, not "field missing".
 

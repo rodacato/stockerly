@@ -10,7 +10,7 @@
 
 ## Context
 
-The Gemini auto-review on PR #110 flagged that Art. 16 Fracción I of the Ley Federal de Protección de Datos Personales en Posesión de los Particulares (NLFPDPPP, DOF 20-mar-2025) requires the privacy notice to state the **full domicile** of the responsible party (the person or entity that decides on the data processing), not just the city.
+The Gemini auto-review on PR #110 flagged that Art. 16 Fracción I of the Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP, DOF 20-mar-2025) requires the privacy notice to state the **full domicile** of the responsible party (the person or entity that decides on the data processing), not just the city.
 
 The current `/privacy` view names *"Adrian Castillo, persona física con domicilio en la Ciudad de México, México"* and the support email — it does not publish a street address, ZIP code, or apartment number.
 
@@ -38,7 +38,7 @@ This is a knowing departure from a literal reading of Art. 16 Fracción I in exc
 - Beta invitees who care about literal compliance may find the omission notable. The disclosure language makes the trade-off visible rather than hidden.
 
 **Operational requirement**
-- The support inbox must respond to formal domicile requests within the same 20-business-day window as ARCO requests (Art. 32 NLFPDPPP). This is operationally cheap: the response is a one-paragraph email with the address.
+- The support inbox must respond to formal domicile requests within the same 20-business-day window as ARCO requests (Art. 32 LFPDPPP). This is operationally cheap: the response is a one-paragraph email with the address.
 - If the beta expands beyond a closed circle of personal friends, this ADR should be revisited — the larger the user base, the weaker the personal-safety argument carries against the compliance one.
 
 ## Revisit triggers

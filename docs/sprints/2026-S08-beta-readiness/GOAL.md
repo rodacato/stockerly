@@ -16,9 +16,9 @@
 S07 closed with the system functionally ready to invite the first friend to closed beta. But the parallel research executed on 2026-05-17 surfaced 5 pre-beta blockers + 1 carry-over P0 that **make the invite irresponsible** in its current state:
 
 1. **Terms of Service and Risk Disclosure are defective** — they declare broker activities (margin/leverage/liquidation/NY jurisdiction) that Stockerly does NOT perform. An invitee "accepts" documents that misrepresent the product. Consent defect + possible civil liability.
-2. **The Privacy Notice** rewritten in S07 #73 is es-MX and well-intentioned, but remained incomplete against the NLFPDPPP (DOF 20-mar-2025): missing SABG context (INAI extinct), distinguishing necessary vs voluntary purposes (Art. 15), retention policy (Art. 11), declaration of international remissions (Arts. 35-36 — currently says "we do not transfer to third parties" which is false).
-3. **No express consent for patrimonial data** (Art. 8 NLFPDPPP). The current register accepts terms + privacy but the user's portfolio + trades require specific non-pre-checked consent.
-4. **No operational ARCO procedure** documented (Art. 32 NLFPDPPP, 20 business days).
+2. **The Privacy Notice** rewritten in S07 #73 is es-MX and well-intentioned, but remained incomplete against the LFPDPPP (DOF 20-mar-2025): missing SABG context (INAI extinct), distinguishing necessary vs voluntary purposes (Art. 15), retention policy (Art. 11), declaration of international remissions (Arts. 35-36 — currently says "we do not transfer to third parties" which is false).
+3. **No express consent for patrimonial data** (Art. 8 LFPDPPP). The current register accepts terms + privacy but the user's portfolio + trades require specific non-pre-checked consent.
+4. **No operational ARCO procedure** documented (Art. 32 LFPDPPP, 20 business days).
 5. **TakeSnapshotsJob sums cross-currency without conversion** — the dashboard mockup (#90) shows `MXN 1,247,580.40` as consolidated total, but the job that produces that figure today sums USD + MXN as if they were the same unit. **The dashboard math is fiction for mixed portfolios.**
 
 In addition to closing blockers, S08 revamps **/login** + **/register** for Lumen + es-MX (auth-family completion started in S07 #73). The register naturally integrates the B-03 Art. 8 consent — co-fix.

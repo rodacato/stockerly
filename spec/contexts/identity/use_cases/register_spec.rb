@@ -26,7 +26,7 @@ RSpec.describe Identity::UseCases::Register do
       expect(user.email).to eq("john@example.com")
     end
 
-    it "persists the Art. 8 NLFPDPPP consent timestamp" do
+    it "persists the Art. 8 LFPDPPP consent timestamp" do
       result = described_class.call(params: valid_params)
 
       expect(result).to be_success
