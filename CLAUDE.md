@@ -220,8 +220,18 @@ Coverage: ~94% line, branch coverage enabled via SimpleCov.
 
 ## Conventions
 
-- Respond in **Spanish** by default
-- All code, documentation, and comments in **English**
+### Language (3 zones, no Rails I18n)
+
+| Zone | Language |
+|---|---|
+| Chat with Adrian | Español |
+| Repo artifacts (commits, issues, PRs, code, comments, docs in `docs/`) | English |
+| User-facing UI (views, flashes, mailers, page titles, controller error strings) | **es-MX** |
+
+**No Rails I18n infrastructure.** Strings live inline in views and controllers as plain es-MX. No `config/locales/es-MX.yml`, no `t(".key")` lookups. This is a conscious decision per [ADR-0007](docs/architecture/adr/0007-defer-i18n-adoption.md) — the product targets MX investors only, and a YAML lookup layer would add indirection without payoff until a second locale exists. Reviewer suggestions to migrate to I18n are deferred (#113 closed wont-fix); re-open if/when bilingual support becomes a real goal.
+
+### Other
+
 - Pragmatic over dogmatic — DDD is a tool, not religion
 - No over-engineering: only implement what was requested
 - Frontend-first: static views first, then connect backend
