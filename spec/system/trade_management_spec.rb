@@ -25,7 +25,7 @@ RSpec.describe "Trade management", type: :system do
   it "shows trade history page with actions column" do
     visit trades_path
 
-    expect(page).to have_content("Trade History")
+    expect(page).to have_content("Movimientos")
     expect(page).to have_content("Actions")
     expect(page).to have_content("AAPL")
   end
@@ -35,7 +35,7 @@ RSpec.describe "Trade management", type: :system do
     visit trades_path
 
     expect(page).not_to have_content("AAPL")
-    expect(page).to have_content("No trades yet")
+    expect(page).to have_content("Aún no hay movimientos")
   end
 
   it "shows edit and delete buttons for recent trades" do

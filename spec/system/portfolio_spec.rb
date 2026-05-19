@@ -55,6 +55,6 @@ RSpec.describe "Portfolio tabs", type: :system do
     visit portfolio_path(tab: "trades")
     expect(page).to have_content("Movimientos")
     expect(page).to have_content("AAPL")
-    expect(page).to have_content("buy")
+    expect(page).to have_content("Compra")
   end
 end

@@ -16,7 +16,7 @@ RSpec.describe "Trades", type: :request do
       it "renders the trade history page" do
         get trades_path
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Trade History")
+        expect(response.body).to include("Movimientos")
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe "Trades", type: :request do
 
       expect(response).to redirect_to(portfolio_path)
       follow_redirect!
-      expect(response.body).to include("Trade executed successfully")
+      expect(response.body).to include("Movimiento registrado.")
     end
 
     it "creates a sell trade when position has enough shares" do
@@ -71,7 +71,7 @@ RSpec.describe "Trades", type: :request do
 
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
         expect(response.body).to include("trade_history")
-        expect(response.body).to include("Buy executed")
+        expect(response.body).to include("Compra registrada")
       end
 
       it "responds with turbo_stream error on failure" do
@@ -94,8 +94,8 @@ RSpec.describe "Trades", type: :request do
     it "returns turbo_stream with edit form" do
       get edit_trade_path(trade), as: :turbo_stream
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(response.body).to include("Save")
-      expect(response.body).to include("Cancel")
+      expect(response.body).to include("Guardar")
+      expect(response.body).to include("Cancelar")
     end
 
     it "redirects when trade not found" do
@@ -118,7 +118,7 @@ RSpec.describe "Trades", type: :request do
 
       expect(response).to redirect_to(trades_path)
       follow_redirect!
-      expect(response.body).to include("Trade updated successfully")
+      expect(response.body).to include("Movimiento actualizado.")
       expect(trade.reload.shares).to eq(15.0)
     end
 
@@ -126,7 +126,7 @@ RSpec.describe "Trades", type: :request do
       patch trade_path(trade), params: { trade: { shares: "15" } }, as: :turbo_stream
 
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(response.body).to include("Trade updated successfully")
+      expect(response.body).to include("Movimiento actualizado.")
     end
 
     it "rejects update on old trade" do
@@ -154,7 +154,7 @@ RSpec.describe "Trades", type: :request do
 
       expect(response).to redirect_to(trades_path)
       follow_redirect!
-      expect(response.body).to include("Trade deleted")
+      expect(response.body).to include("Movimiento eliminado")
       expect(trade.reload.discarded?).to be true
     end
 

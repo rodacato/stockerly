@@ -31,7 +31,7 @@ RSpec.describe "Empty state consistency", type: :request do
       get trades_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("No trades yet")
+      expect(response.body).to include("Aún no hay movimientos")
       expect(response.body).to include("swap_horiz")
     end
   end

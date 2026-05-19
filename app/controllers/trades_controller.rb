@@ -13,10 +13,10 @@ class TradesController < AuthenticatedController
           render turbo_stream: [
             turbo_stream.prepend("trade_history", partial: "trades/trade_row", locals: { trade: trade }),
             turbo_stream.prepend("flash_messages", partial: "shared/flash_message",
-              locals: { type: "notice", message: "#{trade.side.capitalize} executed: #{trade.shares.to_i} shares of #{trade.asset.symbol}" })
+              locals: { type: "notice", message: "#{trade.side == 'buy' ? 'Compra' : 'Venta'} registrada: #{trade.shares.to_i} títulos de #{trade.asset.symbol}" })
           ]
         end
-        format.html { redirect_to portfolio_path, notice: "Trade executed successfully." }
+        format.html { redirect_to portfolio_path, notice: "Movimiento registrado." }
       end
     in Dry::Monads::Failure[ :validation, errors ]
       error_msg = errors.values.flatten.first
@@ -44,7 +44,7 @@ class TradesController < AuthenticatedController
     trade = current_user.portfolio&.trades&.find_by(id: params[:id])
 
     if trade.nil?
-      redirect_to trades_path, alert: "Trade not found."
+      redirect_to trades_path, alert: "Movimiento no encontrado."
       return
     end
 
@@ -67,10 +67,10 @@ class TradesController < AuthenticatedController
           render turbo_stream: [
             turbo_stream.replace(trade, partial: "trades/trade_row", locals: { trade: trade }),
             turbo_stream.prepend("flash_messages", partial: "shared/flash_message",
-              locals: { type: "notice", message: "Trade updated successfully." })
+              locals: { type: "notice", message: "Movimiento actualizado." })
           ]
         end
-        format.html { redirect_to trades_path, notice: "Trade updated successfully." }
+        format.html { redirect_to trades_path, notice: "Movimiento actualizado." }
       end
     in Dry::Monads::Failure[ :validation, errors ]
       error_msg = errors.values.flatten.first
@@ -102,10 +102,10 @@ class TradesController < AuthenticatedController
           render turbo_stream: [
             turbo_stream.remove(trade),
             turbo_stream.prepend("flash_messages", partial: "shared/flash_message",
-              locals: { type: "notice", message: "Trade deleted." })
+              locals: { type: "notice", message: "Movimiento eliminado." })
           ]
         end
-        format.html { redirect_to trades_path, notice: "Trade deleted." }
+        format.html { redirect_to trades_path, notice: "Movimiento eliminado." }
       end
     in Dry::Monads::Failure[ _, message ]
       respond_to do |format|
