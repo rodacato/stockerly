@@ -49,6 +49,6 @@ metadata:
 - Bilingual support (es-MX + en) becomes a real product goal (e.g. opening beyond Mexican audience), OR
 - LLM/contributor capacity is idle (no higher-value features in flight) AND someone wants to do the migration as cleanup.
 
-Until then, hardcoded es-MX is the explicit convention, not an oversight. Gemini reviewer suggestions to adopt I18n are redirected to closed issue #113 + [ADR-0007](docs/architecture/adr/0007-defer-i18n-adoption.md) instead of debated per PR.
+Until then, hardcoded es-MX is the explicit convention, not an oversight. Gemini reviewer suggestions to adopt I18n are redirected to closed issue #113 + [ADR-0007](../../docs/architecture/adr/0007-defer-i18n-adoption.md) instead of debated per PR.
 
 **Self-check before any `git commit`, `gh issue create`, `gh pr create`, or file in `docs/`:** is the artifact in English? If not, translate before committing. Inverse self-check before a view or flash: is the user-facing copy es-MX?

@@ -228,7 +228,7 @@ Coverage: ~94% line, branch coverage enabled via SimpleCov.
 | Repo artifacts (commits, issues, PRs, code, comments, docs in `docs/`) | English |
 | User-facing UI (views, flashes, mailers, page titles, controller error strings) | **es-MX** |
 
-**No Rails I18n infrastructure.** Strings live inline in views and controllers as plain es-MX. No `config/locales/es-MX.yml`, no `t(".key")` lookups. This is a conscious decision per [ADR-0007](docs/architecture/adr/0007-defer-i18n-adoption.md) — the product targets MX investors only, and a YAML lookup layer would add indirection without payoff until a second locale exists. Reviewer suggestions to migrate to I18n are deferred (#113 closed wont-fix); re-open if/when bilingual support becomes a real goal.
+**No Rails I18n infrastructure.** Strings live inline in views and controllers as plain es-MX. No `config/locales/es-MX.yml`, no `t(".key")` lookups. This is a conscious decision per [ADR-0007](docs/architecture/adr/0007-defer-i18n-adoption.md) — the product targets MX investors only, and a YAML lookup layer would add indirection without payoff until a second locale exists. Reviewer suggestions to migrate to I18n are deferred (#113 closed wont-fix). Re-open the decision if either trigger holds: (a) bilingual support becomes a real product goal (e.g. expansion beyond Mexican audience), OR (b) LLM/contributor capacity is idle and someone wants the migration as cleanup work.
 
 ### Other
 
