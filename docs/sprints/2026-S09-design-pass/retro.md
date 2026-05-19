@@ -1,10 +1,10 @@
-# Retro — Sprint <N>
+# Retro — Sprint S09
 
 > Honest post-mortem. Without retro, the sprint does NOT close (hard rule of the protocol).
 >
 > **Close date:** YYYY-MM-DD
 > **Actual duration:** N weeks (vs estimated: N weeks)
-> **Goal:** <copy from GOAL.md>
+> **Goal:** Implement the Stockerly-2.0 design pass on the operational screens (dashboard, portfolio, trades, password recovery) so the first invited friend lands on a visually coherent es-MX UI built on top of S08's truthful + legally valid foundations.
 
 ---
 
