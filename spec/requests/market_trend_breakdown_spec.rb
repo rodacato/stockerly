@@ -13,7 +13,7 @@ RSpec.describe "Market Listings Trend Breakdown", type: :request do
       get market_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Moderate (75%)")
+      expect(response.body).to include("Moderada (75%)")
     end
 
     it "renders factor breakdown popover when factors data is present" do
@@ -23,7 +23,7 @@ RSpec.describe "Market Listings Trend Breakdown", type: :request do
       get market_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Factor Breakdown")
+      expect(response.body).to include("Factores")
       expect(response.body).to include("RSI")
       expect(response.body).to include("MACD")
     end
@@ -34,7 +34,7 @@ RSpec.describe "Market Listings Trend Breakdown", type: :request do
       get market_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).not_to include("Factor Breakdown")
+      expect(response.body).not_to include("Factores")
     end
   end
 end

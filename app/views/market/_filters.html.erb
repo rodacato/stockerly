@@ -1,13 +1,13 @@
-<%# Search bar + filter dropdowns %>
+<%# Search bar + filter dropdowns. es-MX per S09 #92. %>
 <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm mb-8">
   <%= form_tag market_path, method: :get, class: "flex flex-col lg:flex-row items-start lg:items-end gap-4" do %>
     <%# Search %>
     <div class="flex-1 w-full lg:w-auto">
-      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Search Assets</label>
+      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Buscar activos</label>
       <div class="relative">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
         <%= text_field_tag :search, params[:search],
-            placeholder: "Search by ticker or company name...",
+            placeholder: "Busca por ticker o nombre de empresa…",
             class: "w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" %>
       </div>
     </div>
@@ -16,27 +16,45 @@
     <div class="w-full lg:w-40">
       <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sector</label>
       <%= select_tag :sector,
-          options_for_select([["All Sectors", ""], "Technology", "Healthcare", "Finance", "Energy", "Consumer"], params[:sector]),
+          options_for_select([
+            [ "Todos los sectores", "" ],
+            [ "Tecnología", "Technology" ],
+            [ "Salud", "Healthcare" ],
+            [ "Finanzas", "Finance" ],
+            [ "Energía", "Energy" ],
+            [ "Consumo", "Consumer" ]
+          ], params[:sector]),
           class: "w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" %>
     </div>
 
     <%# Type filter %>
     <div class="w-full lg:w-40">
-      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Asset Type</label>
+      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Tipo de activo</label>
       <%= select_tag :type,
-          options_for_select([["All Types", ""], ["Stocks", "stock"], ["ETFs", "etf"], ["Crypto", "crypto"], ["Index", "index"], ["Fixed Income", "fixed_income"]], params[:type]),
+          options_for_select([
+            [ "Todos los tipos", "" ],
+            [ "Acciones", "stock" ],
+            [ "ETFs", "etf" ],
+            [ "Cripto", "crypto" ],
+            [ "Índices", "index" ],
+            [ "CETES", "fixed_income" ]
+          ], params[:type]),
           class: "w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" %>
     </div>
 
     <%# Country filter %>
     <div class="w-full lg:w-40">
-      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Country</label>
+      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">País</label>
       <%= select_tag :country,
-          options_for_select([["All Countries", ""], ["US", "US"], ["Mexico", "MX"]], params[:country]),
+          options_for_select([
+            [ "Todos los países", "" ],
+            [ "México", "MX" ],
+            [ "Estados Unidos", "US" ]
+          ], params[:country]),
           class: "w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" %>
     </div>
 
     <%# Apply button %>
-    <%= submit_tag "Apply", class: "px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm cursor-pointer" %>
+    <%= submit_tag "Aplicar", class: "px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm cursor-pointer" %>
   <% end %>
 </div>

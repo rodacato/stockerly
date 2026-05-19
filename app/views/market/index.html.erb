@@ -1,7 +1,14 @@
-<%# Market Explorer — browse and filter market listings %>
+<%# Market Explorer — browse and filter trackable assets. es-MX per S09 #92. %>
+
+<%# Header — kicker + title + descriptive subtitle %>
+<div class="mb-6">
+  <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Explorar</p>
+  <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Mercados</h2>
+  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Índices, tipo de cambio, acciones, CETES y cripto en un solo lugar. Filtra y agrega a tu watchlist.</p>
+</div>
 
 <% if @indices.any? %>
-  <%# Global Market Indices Strip %>
+  <%# Indices strip — MX-first per S09 #92 (IPC + IPC CompMx, then SPX/NDX/DJI/UKX) %>
   <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
     <% @indices.each do |idx| %>
       <% change = idx.change_percent || 0 %>
@@ -14,22 +21,30 @@
     <% end %>
   </div>
 
-  <%# VIX Volatility Indicator %>
+  <%# VIX Volatility Indicator. Static class triplets per tier so Tailwind's
+      JIT compiler can see the full names at build time (no dynamic
+      class-name interpolation). %>
   <% if @vix %>
     <% vix_val = @vix.value.to_f %>
-    <% vix_color = vix_val < 20 ? "emerald" : (vix_val < 30 ? "amber" : "rose") %>
-    <% vix_label = vix_val < 20 ? "Low Volatility" : (vix_val < 30 ? "Moderate" : "High Volatility") %>
+    <% vix_tier =
+         if vix_val < 20
+           { icon: "text-emerald-500", value: "text-emerald-600 dark:text-emerald-400", pill: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30", label: "Volatilidad baja" }
+         elsif vix_val < 30
+           { icon: "text-amber-500", value: "text-amber-600 dark:text-amber-400", pill: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30", label: "Volatilidad moderada" }
+         else
+           { icon: "text-rose-500", value: "text-rose-600 dark:text-rose-400", pill: "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30", label: "Volatilidad alta" }
+         end %>
     <div class="flex items-center gap-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-5 py-3 mb-8 shadow-sm">
       <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-lg text-<%= vix_color %>-500">speed</span>
-        <span class="text-sm font-black text-slate-900 dark:text-white">VIX</span>
-        <span class="text-sm font-bold text-<%= vix_color %>-600 dark:text-<%= vix_color %>-400"><%= number_with_precision(vix_val, precision: 2) %></span>
+        <span class="material-symbols-outlined text-lg <%= vix_tier[:icon] %>">speed</span>
+        <span class="font-mono text-sm font-black text-slate-900 dark:text-white">VIX</span>
+        <span class="font-mono text-sm font-bold <%= vix_tier[:value] %>"><%= number_with_precision(vix_val, precision: 2) %></span>
       </div>
       <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
         <div class="h-full rounded-full bg-linear-to-r from-emerald-400 via-amber-400 to-rose-500" style="width: <%= [vix_val, 80].min / 80.0 * 100 %>%"></div>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <span class="text-xs font-semibold text-<%= vix_color %>-600 dark:text-<%= vix_color %>-400 bg-<%= vix_color %>-50 dark:bg-<%= vix_color %>-900/30 px-2 py-0.5 rounded-md"><%= vix_label %></span>
+        <span class="text-xs font-semibold px-2 py-0.5 rounded-md <%= vix_tier[:pill] %>"><%= vix_tier[:label] %></span>
       </div>
     </div>
   <% end %>
@@ -40,12 +55,12 @@
 
 <%# Market Listings Table %>
 <% if @assets.any? %>
-  <%= render "market/listings_table" %>
+  <%= render "market/listings_table", assets: @assets, pagy: @pagy, watchlisted_asset_ids: @watchlisted_asset_ids %>
 <% else %>
   <%= render "components/empty_state",
       icon: "search_off",
-      title: "No results found",
-      description: "Try adjusting your filters or search term to find what you're looking for.",
-      cta_text: "Clear Filters",
+      title: "Sin resultados",
+      description: "Ajusta los filtros o el término de búsqueda para encontrar activos.",
+      cta_text: "Limpiar filtros",
       cta_path: market_path %>
 <% end %>

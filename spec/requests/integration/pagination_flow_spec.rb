@@ -13,7 +13,7 @@ RSpec.describe "Pagination flow", type: :request do
     # Page 1: should have 20 assets
     get market_path
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Market Listings")
+    expect(response.body).to include("Listado de mercado")
 
     # Page 2: should have remaining 5
     get market_path(page: 2)

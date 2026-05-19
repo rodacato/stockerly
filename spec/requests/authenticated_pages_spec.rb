@@ -23,7 +23,7 @@ RSpec.describe "Authenticated pages", type: :request do
       create(:asset, name: "Apple Inc.", symbol: "AAPL")
       get market_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Market Listings")
+      expect(response.body).to include("Listado de mercado")
     end
   end
 
