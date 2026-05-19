@@ -17,25 +17,25 @@ RSpec.describe "Portfolio empty state", type: :system do
 
   it "shows summary cards even with no positions" do
     visit portfolio_path
-    expect(page).to have_content("Investment Portfolio")
-    expect(page).to have_content("Total Portfolio Value")
-    expect(page).to have_content("Available Buying Power")
+    expect(page).to have_content("Posiciones y movimientos")
+    expect(page).to have_content("Valor total del portafolio")
+    expect(page).to have_content("Saldo disponible")
   end
 
   it "shows the trade form on empty portfolio" do
     visit portfolio_path
-    expect(page).to have_content("Log a Trade")
-    expect(page).to have_button("Execute Trade", visible: :all)
+    expect(page).to have_content("Registrar movimiento")
+    expect(page).to have_button("Registrar movimiento", visible: :all)
   end
 
   it "shows header action buttons on empty portfolio" do
     visit portfolio_path
-    expect(page).to have_link("Trade Log")
-    expect(page).to have_link("Explore Markets")
+    expect(page).to have_link("Movimientos")
+    expect(page).to have_link("Explorar mercado")
   end
 
   it "shows positions table with empty state message" do
     visit portfolio_path
-    expect(page).to have_content("No open positions yet")
+    expect(page).to have_content("Aún no hay posiciones abiertas")
   end
 end

@@ -35,8 +35,8 @@ RSpec.describe "Authenticated pages", type: :request do
 
       get portfolio_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Investment Portfolio")
-      expect(response.body).to include("Portfolio Allocation")
+      expect(response.body).to include("Posiciones y movimientos")
+      expect(response.body).to include("Distribución del portafolio")
     end
   end
 

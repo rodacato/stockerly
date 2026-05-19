@@ -1,80 +1,79 @@
-<%# Positions table with tabs (Open/Closed/Dividends) %>
+<%# Positions table with tabs (Open/Closed/Dividends/Trades). es-MX per S09 #91. %>
 <section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
   <%# Tabs header — uses query params for Turbo Drive navigation %>
-  <div class="flex items-center border-b border-slate-100 dark:border-slate-800">
-    <%= link_to portfolio_path(tab: "open"), class: "px-6 py-4 text-sm font-bold border-b-2 #{@tab == 'open' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
-      Open Positions <span class="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full"><%= @portfolio.open_positions.size %></span>
+  <div class="flex items-center border-b border-slate-100 dark:border-slate-800 overflow-x-auto">
+    <%= link_to portfolio_path(tab: "open"), class: "px-6 py-4 text-sm font-bold border-b-2 whitespace-nowrap #{tab == 'open' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+      Posiciones abiertas <span class="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full"><%= portfolio.open_positions.size %></span>
     <% end %>
-    <%= link_to portfolio_path(tab: "closed"), class: "px-6 py-4 text-sm font-medium border-b-2 #{@tab == 'closed' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
-      Closed Positions
+    <%= link_to portfolio_path(tab: "closed"), class: "px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap #{tab == 'closed' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+      Cerradas
     <% end %>
-    <%= link_to portfolio_path(tab: "dividends"), class: "px-6 py-4 text-sm font-medium border-b-2 #{@tab == 'dividends' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
-      Dividend History
+    <%= link_to portfolio_path(tab: "dividends"), class: "px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap #{tab == 'dividends' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+      Dividendos
     <% end %>
-    <%= link_to portfolio_path(tab: "trades"), class: "px-6 py-4 text-sm font-medium border-b-2 #{@tab == 'trades' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
-      Trade Log
+    <%= link_to portfolio_path(tab: "trades"), class: "px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap #{tab == 'trades' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+      Movimientos
     <% end %>
   </div>
 
-  <% if @tab == "trades" %>
+  <% if tab == "trades" %>
     <%# Trade Log %>
-    <% if @positions.present? %>
+    <% if positions.present? %>
       <div class="overflow-x-auto">
         <table class="w-full text-left">
           <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
             <tr>
-              <th class="px-6 py-3 font-semibold">Date</th>
-              <th class="px-6 py-3 font-semibold">Asset</th>
-              <th class="px-6 py-3 font-semibold text-center">Side</th>
-              <th class="px-6 py-3 font-semibold text-right">Shares</th>
-              <th class="px-6 py-3 font-semibold text-right">Price</th>
+              <th class="px-6 py-3 font-semibold">Fecha</th>
+              <th class="px-6 py-3 font-semibold">Activo</th>
+              <th class="px-6 py-3 font-semibold text-center">Operación</th>
+              <th class="px-6 py-3 font-semibold text-right">Títulos</th>
+              <th class="px-6 py-3 font-semibold text-right">Precio</th>
               <th class="px-6 py-3 font-semibold text-right">Total</th>
-              <th class="px-6 py-3 font-semibold text-right">Fee</th>
+              <th class="px-6 py-3 font-semibold text-right">Comisión</th>
             </tr>
           </thead>
           <tbody id="trade_history" class="divide-y divide-slate-100 dark:divide-slate-800">
-            <% @positions.each do |trade| %>
+            <% positions.each do |trade| %>
               <%= render "trades/trade_row", trade: trade %>
             <% end %>
           </tbody>
         </table>
       </div>
     <% else %>
-      <%= render "components/empty_state", icon: "swap_horiz", title: "No trades yet", description: "Use the form above to log your first trade." %>
+      <%= render "components/empty_state", icon: "swap_horiz", title: "Aún no hay movimientos", description: "Usa el formulario de arriba para registrar tu primer movimiento." %>
     <% end %>
-  <% elsif @tab == "dividends" %>
+  <% elsif tab == "dividends" %>
     <%# Upcoming Dividends %>
-    <% if @upcoming_dividends.present? %>
+    <% if upcoming_dividends.present? %>
       <div class="border-b border-slate-100 dark:border-slate-800">
         <div class="px-6 py-4 bg-success/10 dark:bg-success/20">
           <h3 class="text-sm font-bold text-success-fg dark:text-success flex items-center gap-2">
             <span class="material-symbols-outlined text-base">event_upcoming</span>
-            Upcoming Dividends
+            Próximos dividendos
           </h3>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left">
             <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
               <tr>
-                <th class="px-6 py-3 font-semibold">Asset</th>
-                <th class="px-6 py-3 font-semibold text-center">Ex-Date</th>
-                <th class="px-6 py-3 font-semibold text-center">Pay Date</th>
-                <th class="px-6 py-3 font-semibold text-right">$/Share</th>
-                <th class="px-6 py-3 font-semibold text-right">Shares</th>
-                <th class="px-6 py-3 font-semibold text-right">Expected Payout</th>
+                <th class="px-6 py-3 font-semibold">Activo</th>
+                <th class="px-6 py-3 font-semibold text-center">Fecha ex</th>
+                <th class="px-6 py-3 font-semibold text-center">Fecha de pago</th>
+                <th class="px-6 py-3 font-semibold text-right">Por título</th>
+                <th class="px-6 py-3 font-semibold text-right">Títulos</th>
+                <th class="px-6 py-3 font-semibold text-right">Pago esperado</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-              <% @upcoming_dividends.each do |ud| %>
+              <% upcoming_dividends.each do |ud| %>
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                   <td class="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white"><%= ud.asset.symbol %></td>
-                  <td class="px-6 py-4 text-center text-sm text-slate-500"><%= ud.ex_date.strftime("%b %d, %Y") %></td>
-                  <td class="px-6 py-4 text-center text-sm text-slate-500"><%= ud.pay_date&.strftime("%b %d, %Y") || "—" %></td>
-                  <td class="px-6 py-4 text-right text-sm text-slate-900 dark:text-white"><%= number_to_currency(ud.amount_per_share, precision: 4) %></td>
-                  <td class="px-6 py-4 text-right text-sm text-slate-900 dark:text-white"><%= ud.shares %></td>
-                  <td class="px-6 py-4 text-right text-sm font-medium text-success-fg dark:text-success">
-                    <%= number_to_currency(ud.expected_total) %>
-                    <span class="ml-1 text-[10px] font-bold text-slate-400 uppercase"><%= ud.currency %></span>
+                  <td class="px-6 py-4 text-center text-sm text-slate-500"><%= ud.ex_date.strftime("%d %b %Y") %></td>
+                  <td class="px-6 py-4 text-center text-sm text-slate-500"><%= ud.pay_date&.strftime("%d %b %Y") || "—" %></td>
+                  <td class="px-6 py-4 text-right text-sm font-mono text-slate-900 dark:text-white"><%= format_currency_mx(ud.amount_per_share, currency: ud.currency, precision: 4) %></td>
+                  <td class="px-6 py-4 text-right text-sm font-mono text-slate-900 dark:text-white"><%= ud.shares %></td>
+                  <td class="px-6 py-4 text-right text-sm font-mono font-medium text-success-fg dark:text-success">
+                    <%= format_currency_mx(ud.expected_total, currency: ud.currency) %>
                   </td>
                 </tr>
               <% end %>
@@ -85,51 +84,54 @@
     <% end %>
 
     <%# Dividend History %>
-    <% if @positions.present? %>
+    <% if positions.present? %>
       <div class="overflow-x-auto">
         <table class="w-full text-left">
           <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
             <tr>
-              <th class="px-6 py-3 font-semibold">Asset</th>
-              <th class="px-6 py-3 font-semibold text-center">Shares Held</th>
-              <th class="px-6 py-3 font-semibold text-right">Amount</th>
-              <th class="px-6 py-3 font-semibold text-right">Date</th>
+              <th class="px-6 py-3 font-semibold">Activo</th>
+              <th class="px-6 py-3 font-semibold text-center">Títulos en posesión</th>
+              <th class="px-6 py-3 font-semibold text-right">Monto</th>
+              <th class="px-6 py-3 font-semibold text-right">Fecha</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-            <% @positions.each do |dp| %>
+            <% positions.each do |dp| %>
               <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                 <td class="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white"><%= dp.dividend.asset.symbol %></td>
-                <td class="px-6 py-4 text-center text-sm text-slate-900 dark:text-white"><%= dp.shares_held %></td>
-                <td class="px-6 py-4 text-right text-sm font-medium text-success-fg dark:text-success"><%= number_to_currency(dp.total_amount) %></td>
-                <td class="px-6 py-4 text-right text-sm text-slate-500"><%= dp.created_at.strftime("%b %d, %Y") %></td>
+                <td class="px-6 py-4 text-center text-sm font-mono text-slate-900 dark:text-white"><%= dp.shares_held %></td>
+                <td class="px-6 py-4 text-right text-sm font-mono font-medium text-success-fg dark:text-success"><%= format_currency_mx(dp.total_amount, currency: dp.dividend.currency) %></td>
+                <td class="px-6 py-4 text-right text-sm text-slate-500"><%= dp.created_at.strftime("%d %b %Y") %></td>
               </tr>
             <% end %>
           </tbody>
         </table>
       </div>
     <% else %>
-      <%= render "components/empty_state", icon: "payments", title: "No dividend history yet", description: "Dividend payments will appear here." %>
+      <%= render "components/empty_state", icon: "payments", title: "Aún no hay historial de dividendos", description: "Los pagos de dividendos aparecerán aquí." %>
     <% end %>
   <% else %>
     <%# Open or Closed Positions %>
-    <% if @positions.present? %>
+    <% if positions.present? %>
       <div class="overflow-x-auto">
         <table class="w-full text-left">
           <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
             <tr>
               <th class="px-6 py-3 font-semibold">Ticker</th>
-              <th class="px-6 py-3 font-semibold text-center">Shares</th>
-              <th class="px-6 py-3 font-semibold text-right">Avg Cost</th>
-              <th class="px-6 py-3 font-semibold text-right">Market Price</th>
-              <th class="px-6 py-3 font-semibold text-right">Market Value</th>
-              <th class="px-6 py-3 font-semibold text-right">Total Gain</th>
+              <th class="px-6 py-3 font-semibold text-center">Tipo</th>
+              <th class="px-6 py-3 font-semibold text-center">Títulos</th>
+              <th class="px-6 py-3 font-semibold text-right">Costo prom.</th>
+              <th class="px-6 py-3 font-semibold text-right">Precio actual</th>
+              <th class="px-6 py-3 font-semibold text-right">Valor en posición</th>
+              <th class="px-6 py-3 font-semibold text-right">Ganancia</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-            <% @positions.each do |pos| %>
+            <% type_labels = { "stock" => "Acción", "crypto" => "Cripto", "index" => "Índice", "etf" => "ETF", "fixed_income" => "CETE" } %>
+            <% positions.each do |pos| %>
               <% gain = pos.total_gain %>
               <% positive = gain >= 0 %>
+              <% pos_currency = pos.currency %>
               <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
@@ -142,7 +144,7 @@
                         <% end %>
                       </div>
                       <div class="flex items-center gap-1 flex-wrap">
-                        <p class="text-xs text-slate-500"><%= pos.currency %></p>
+                        <p class="font-mono text-xs text-slate-500"><%= pos.asset.symbol %></p>
                         <% pos.labels.each do |label| %>
                           <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium"><%= label %></span>
                         <% end %>
@@ -150,15 +152,20 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900 dark:text-white"><%= pos.shares %></td>
-                <td class="px-6 py-4 text-right text-sm text-slate-500"><%= number_to_currency(pos.avg_cost) %></td>
-                <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(pos.asset.current_price) %></td>
-                <td class="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-white"><%= number_to_currency(pos.market_value) %></td>
+                <td class="px-6 py-4 text-center">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                    <%= type_labels[pos.asset.asset_type] || pos.asset.asset_type.titleize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center text-sm font-mono text-slate-900 dark:text-white"><%= pos.shares %></td>
+                <td class="px-6 py-4 text-right text-sm font-mono text-slate-500"><%= format_currency_mx(pos.avg_cost, currency: pos_currency) %></td>
+                <td class="px-6 py-4 text-right text-sm font-mono font-medium text-slate-900 dark:text-white"><%= format_currency_mx(pos.asset.current_price, currency: pos_currency) %></td>
+                <td class="px-6 py-4 text-right text-sm font-mono font-medium text-slate-900 dark:text-white"><%= format_currency_mx(pos.market_value, currency: pos_currency) %></td>
                 <td class="px-6 py-4 text-right">
-                  <p class="text-sm font-bold <%= positive ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>">
-                    <%= positive ? '+' : '' %><%= number_to_currency(gain) %>
+                  <p class="text-sm font-mono font-bold <%= positive ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>">
+                    <%= positive ? '+' : '' %><%= format_currency_mx(gain, currency: pos_currency) %>
                   </p>
-                  <p class="text-[10px] font-medium <%= positive ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>">
+                  <p class="text-[10px] font-mono font-medium <%= positive ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>">
                     <%= positive ? '+' : '' %><%= number_to_percentage(pos.total_gain_percent, precision: 2) %>
                   </p>
                 </td>
@@ -168,7 +175,8 @@
         </table>
       </div>
     <% else %>
-      <%= render "components/empty_state", icon: (@tab == "closed" ? "lock" : "trending_up"), title: "No #{@tab} positions yet", description: "Positions will appear here." %>
+      <% empty_title = tab == "closed" ? "Aún no hay posiciones cerradas" : "Aún no hay posiciones abiertas" %>
+      <%= render "components/empty_state", icon: (tab == "closed" ? "lock" : "trending_up"), title: empty_title, description: "Las posiciones aparecerán aquí." %>
     <% end %>
   <% end %>
 </section>

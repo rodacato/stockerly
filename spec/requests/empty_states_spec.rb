@@ -11,7 +11,7 @@ RSpec.describe "Empty state consistency", type: :request do
       get portfolio_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("No open positions yet")
+      expect(response.body).to include("Aún no hay posiciones abiertas")
       expect(response.body).to include("trending_up")
     end
   end

@@ -14,8 +14,8 @@ RSpec.describe "Portfolio allocation breakdown", type: :request do
       get portfolio_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("By Sector")
-      expect(response.body).to include("By Type")
+      expect(response.body).to include("Por sector")
+      expect(response.body).to include("Por tipo")
       expect(response.body).to include("Technology")
     end
 
@@ -33,7 +33,7 @@ RSpec.describe "Portfolio allocation breakdown", type: :request do
 
       get portfolio_path
 
-      expect(response.body).to include("No allocation data yet")
+      expect(response.body).to include("Aún no hay datos de distribución")
     end
   end
 end

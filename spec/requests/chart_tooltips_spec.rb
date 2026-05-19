@@ -52,7 +52,8 @@ RSpec.describe "Interactive chart tooltips", type: :request do
     it "includes formatted currency values in circle data attributes" do
       get portfolio_path
 
-      expect(response.body).to include('data-value="$')
+      # Performance chart now uses MXN/USD ISO prefix (S09 #91) instead of "$".
+      expect(response.body).to match(/data-value="(MXN|USD) /)
     end
   end
 end

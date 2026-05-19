@@ -17,7 +17,7 @@ RSpec.describe "Market asset dividend history", type: :request do
         get market_asset_path(asset.symbol)
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Dividend History")
+        expect(response.body).to include("Historial de dividendos")
       end
 
       it "shows amount per share values" do
@@ -32,7 +32,7 @@ RSpec.describe "Market asset dividend history", type: :request do
       it "does not render dividend history section" do
         get market_asset_path(asset.symbol)
 
-        expect(response.body).not_to include("Dividend History")
+        expect(response.body).not_to include("Historial de dividendos")
       end
     end
   end

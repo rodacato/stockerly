@@ -1,61 +1,55 @@
-<%# Portfolio — investment portfolio overview %>
+<%# Portfolio — investment portfolio overview (Stockerly-2.0, S09 #91) %>
 
-<%# Header with action buttons — always visible %>
+<%# Header — title + actions, always visible %>
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
   <div>
-    <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Investment Portfolio</h2>
-    <p class="mt-1 text-slate-500 dark:text-slate-400">Track and manage your equity positions in real-time</p>
+    <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Tu portafolio</p>
+    <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Posiciones y movimientos</h2>
+    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Registra tus operaciones, sigue tu desempeño y revisa tu distribución por tipo de activo.</p>
   </div>
   <div class="flex gap-3">
     <%= link_to trades_path, class: "px-4 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm" do %>
       <span class="material-symbols-outlined text-sm align-middle mr-1">history</span>
-      Trade Log
+      Movimientos
     <% end %>
     <%= link_to market_path, class: "px-4 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm" do %>
       <span class="material-symbols-outlined text-sm align-middle mr-1">search</span>
-      Explore Markets
+      Explorar mercado
     <% end %>
   </div>
 </div>
 
-<%# 3 Summary Stat Cards — always visible %>
+<%# 3 KPI cards — es-MX titles, MXN/USD ISO prefix, mono numbers %>
 <% ug = @summary.unrealized_gain %>
 <% dg = @summary.day_gain %>
 <% bp_pct = @summary.total_value.positive? ? (@summary.buying_power / @summary.total_value * 100) : 0 %>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Portfolio Value</p>
-    <div class="mt-2 flex items-baseline gap-2">
-      <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white"><%= number_to_currency(@summary.total_value) %></span>
-      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= dg.positive? ? 'bg-success/10 dark:bg-success/20 text-success-fg dark:text-success' : 'bg-error/10 dark:bg-error/20 text-error-fg dark:text-error' %>">
-        <span class="material-symbols-outlined text-sm"><%= dg.positive? ? 'trending_up' : 'trending_down' %></span>
-        <%= dg.positive? ? '+' : '' %><%= number_to_percentage(dg.percent, precision: 1) %>
-      </span>
-    </div>
-  </div>
+  <%= render "dashboard/kpi_card",
+      icon:   "account_balance_wallet",
+      title:  "Valor total del portafolio",
+      value:  format_currency_mx(@summary.total_value, currency: @currency),
+      change: { sign: dg.positive? ? "+" : "−", amount: number_with_precision(dg.percent.abs, precision: 2), label: "hoy", positive: dg.positive? } %>
 
-  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Unrealized Gain/Loss</p>
-    <div class="mt-2 flex items-baseline gap-2">
-      <span class="text-2xl font-black tracking-tight <%= ug.positive? ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>"><%= ug.positive? ? '+' : '' %><%= number_to_currency(ug.absolute) %></span>
-      <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold <%= ug.positive? ? 'bg-success/10 dark:bg-success/20 text-success-fg dark:text-success' : 'bg-error/10 dark:bg-error/20 text-error-fg dark:text-error' %>">
-        <%= ug.positive? ? '+' : '' %><%= number_to_percentage(ug.percent, precision: 1) %>
-      </span>
-    </div>
-    <p class="text-xs text-slate-400 mt-2">Since <%= @portfolio.inception_date&.strftime("%b %d, %Y") %></p>
-  </div>
+  <%= render "dashboard/kpi_card",
+      icon:    "trending_up",
+      title:   "Ganancia no realizada",
+      value:   "#{ug.positive? ? '+' : '−'} #{format_currency_mx(ug.absolute.abs, currency: @currency)}",
+      tone:    (ug.positive? ? :positive : :default),
+      change:  { sign: ug.positive? ? "+" : "−", amount: number_with_precision(ug.percent.abs, precision: 2), label: "", positive: ug.positive? },
+      caption: @portfolio.inception_date.present? ? "Desde #{l(@portfolio.inception_date, format: '%d %b %Y')}" : nil %>
 
-  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Available Buying Power</p>
-    <div class="mt-2 flex items-baseline gap-2">
-      <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white"><%= number_to_currency(@summary.buying_power) %></span>
-    </div>
-    <p class="text-xs text-slate-400 mt-2"><%= number_to_percentage(bp_pct, precision: 1) %> of portfolio</p>
-  </div>
+  <%= render "dashboard/kpi_card",
+      icon:    "savings",
+      title:   "Saldo disponible",
+      value:   format_currency_mx(@summary.buying_power, currency: @currency),
+      caption: "#{number_with_precision(bp_pct, precision: 1)}% del portafolio" %>
 </div>
 
 <%# Performance Chart %>
-<%= render "portfolios/performance_chart" %>
+<%= render "portfolios/performance_chart",
+    chart_data: @chart_data,
+    period_returns: @period_returns,
+    currency: @currency %>
 
 <%# Trade Form — always visible %>
 <%= render "trades/trade_form" %>
@@ -63,10 +57,17 @@
 <%# Portfolio Grid: Allocation (1/3) + Positions (2/3) %>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
   <%# Allocation Sidebar %>
-  <%= render "portfolios/allocation_sidebar" %>
+  <%= render "portfolios/allocation_sidebar",
+      allocation: @allocation,
+      allocation_by_type: @allocation_by_type,
+      summary: @summary %>
 
   <%# Positions Table %>
   <div class="lg:col-span-2">
-    <%= render "portfolios/positions_table" %>
+    <%= render "portfolios/positions_table",
+        tab: @tab,
+        positions: @positions,
+        portfolio: @portfolio,
+        upcoming_dividends: @upcoming_dividends %>
   </div>
 </div>
