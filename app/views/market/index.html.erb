@@ -21,30 +21,22 @@
     <% end %>
   </div>
 
-  <%# VIX Volatility Indicator. Static class triplets per tier so Tailwind's
-      JIT compiler can see the full names at build time (no dynamic
-      class-name interpolation). %>
+  <%# VIX Volatility Indicator. Tier config (icons, colors, label) lives
+      in MarketHelper#vix_tier for testability and reuse. %>
   <% if @vix %>
     <% vix_val = @vix.value.to_f %>
-    <% vix_tier =
-         if vix_val < 20
-           { icon: "text-emerald-500", value: "text-emerald-600 dark:text-emerald-400", pill: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30", label: "Volatilidad baja" }
-         elsif vix_val < 30
-           { icon: "text-amber-500", value: "text-amber-600 dark:text-amber-400", pill: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30", label: "Volatilidad moderada" }
-         else
-           { icon: "text-rose-500", value: "text-rose-600 dark:text-rose-400", pill: "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30", label: "Volatilidad alta" }
-         end %>
+    <% tier = vix_tier(vix_val) %>
     <div class="flex items-center gap-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-5 py-3 mb-8 shadow-sm">
       <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-lg <%= vix_tier[:icon] %>">speed</span>
+        <span class="material-symbols-outlined text-lg <%= tier[:icon] %>">speed</span>
         <span class="font-mono text-sm font-black text-slate-900 dark:text-white">VIX</span>
-        <span class="font-mono text-sm font-bold <%= vix_tier[:value] %>"><%= number_with_precision(vix_val, precision: 2) %></span>
+        <span class="font-mono text-sm font-bold <%= tier[:value] %>"><%= number_with_precision(vix_val, precision: 2) %></span>
       </div>
       <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
         <div class="h-full rounded-full bg-linear-to-r from-emerald-400 via-amber-400 to-rose-500" style="width: <%= [vix_val, 80].min / 80.0 * 100 %>%"></div>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <span class="text-xs font-semibold px-2 py-0.5 rounded-md <%= vix_tier[:pill] %>"><%= vix_tier[:label] %></span>
+        <span class="text-xs font-semibold px-2 py-0.5 rounded-md <%= tier[:pill] %>"><%= tier[:label] %></span>
       </div>
     </div>
   <% end %>
@@ -55,7 +47,7 @@
 
 <%# Market Listings Table %>
 <% if @assets.any? %>
-  <%= render "market/listings_table", assets: @assets, pagy: @pagy, watchlisted_asset_ids: @watchlisted_asset_ids %>
+  <%= render "market/listings_table", assets: @assets, pagy: @pagy, watchlisted_asset_ids: @watchlisted_asset_ids, market_status: @market_status %>
 <% else %>
   <%= render "components/empty_state",
       icon: "search_off",
