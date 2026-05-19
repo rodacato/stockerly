@@ -18,7 +18,8 @@
 - [Brutal honesty mandate](feedback_brutal_honesty.md) — Adrian's explicit ask, applies to all responses
 - [My anti-patterns](feedback_anti_patterns.md) — 7 enforcement targets from 22-phase retrospective
 - [No co-author attribution](feedback_no_coauthor.md) — Never add Co-Authored-By or AI attribution to commits/issues/PRs
-- [Repo artifacts in English](feedback_repo_language_english.md) — Chat in Spanish, commits/issues/docs in English
+- [Three-layer language rule](feedback_repo_language_english.md) — Chat es / repo en / UI es-MX. No i18n infra today — hardcoded es-MX is the explicit convention.
 - [Readable code, minimal comments](feedback_readable_code.md) — Self-explanatory code first; comments only for non-obvious why, one short line
 - [PR review workflow](feedback_pr_review_workflow.md) — When asked to handle PR feedback, run the full Gemini-review loop (fetch → triage → fix → CI → push → reply inline) without asking for steps
 - [Protect master](feedback_protect_master.md) — Never push directly to master / never bypass branch protection. Use explicit refspec on push. Captured after 2026-05-16 incident on #81.
+- [Parallelize low-risk work](feedback_parallelize_when_low_risk.md) — When sprint has disjoint, well-spec'd tasks, launch parallel Agents in worktrees instead of sequential. Captured after S08 retro 2026-05-18.
