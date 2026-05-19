@@ -154,7 +154,7 @@
                 </td>
                 <td class="px-6 py-4 text-center">
                   <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                    <%= type_labels[pos.asset.asset_type] || pos.asset.asset_type.titleize %>
+                    <%= type_labels[pos.asset.asset_type.to_s] || pos.asset.asset_type.to_s.titleize %>
                   </span>
                 </td>
                 <td class="px-6 py-4 text-center text-sm font-mono text-slate-900 dark:text-white"><%= pos.shares %></td>
