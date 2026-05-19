@@ -7,6 +7,22 @@ module ApplicationHelper
     current_page?(path) ? "bg-primary text-white" : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800"
   end
 
+  # Renders a duration in es-MX human form: "2 horas", "1 hora", "30 minutos",
+  # "24 horas". Avoids relying on Rails' `distance_of_time_in_words` since
+  # the project does not yet have an es-MX locale wired (see issue #113).
+  def duration_in_words_es(duration)
+    seconds = duration.to_i
+    if seconds % 1.hour.to_i == 0
+      hours = seconds / 1.hour.to_i
+      hours == 1 ? "1 hora" : "#{hours} horas"
+    elsif seconds % 1.minute.to_i == 0
+      minutes = seconds / 1.minute.to_i
+      minutes == 1 ? "1 minuto" : "#{minutes} minutos"
+    else
+      "#{seconds} segundos"
+    end
+  end
+
   # Returns a hash describing the data freshness state for an asset.
   #
   # @param asset [Asset] the asset to check

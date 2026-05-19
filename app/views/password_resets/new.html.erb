@@ -19,7 +19,7 @@
           </div>
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-success">timer</span>
-            <span class="text-sm text-white/80">El enlace expira en 2 horas</span>
+            <span class="text-sm text-white/80">El enlace expira en <%= duration_in_words_es(User::PASSWORD_RESET_EXPIRES_IN) %></span>
           </div>
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-success">lock</span>

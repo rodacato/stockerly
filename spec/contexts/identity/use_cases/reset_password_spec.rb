@@ -55,7 +55,11 @@ RSpec.describe Identity::UseCases::ResetPassword do
 
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:validation)
-      expect(result.failure[1]).to have_key(:password_confirmation)
+      # Use case now returns the user object (with errors attached) so the
+      # controller can re-render the form with feedback. Field-level
+      # assertions go through ActiveModel::Errors instead of a Hash.
+      expect(result.failure[1]).to be_a(User)
+      expect(result.failure[1].errors[:password_confirmation]).to be_present
     end
   end
 end

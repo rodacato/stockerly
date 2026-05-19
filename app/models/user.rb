@@ -41,8 +41,12 @@ class User < ApplicationRecord
   # --- Callbacks ---
   before_validation :downcase_email
 
-  # Override Rails 8 default (15 min) to 2 hours
-  generates_token_for :password_reset, expires_in: 2.hours do
+  # Override Rails 8 default (15 min). Single source of truth for the
+  # password-reset link lifetime — referenced by the mailer body, the
+  # views' "el enlace expira en X" hint, and any operational tooling.
+  PASSWORD_RESET_EXPIRES_IN = 2.hours
+
+  generates_token_for :password_reset, expires_in: PASSWORD_RESET_EXPIRES_IN do
     password_salt&.last(10)
   end
 
