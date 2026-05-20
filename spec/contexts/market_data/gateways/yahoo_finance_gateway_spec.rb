@@ -220,6 +220,25 @@ RSpec.describe MarketData::Gateways::YahooFinanceGateway do
       end
     end
 
+    context "always reports actual_eps as nil for upcoming events" do
+      before do
+        stub_yahoo_earnings("WALMEX.MX",
+          dates: [ Date.new(2026, 5, 28) ],
+          estimate: 1.24
+        )
+      end
+
+      # Regression: calendarEvents only carries the UPCOMING report — Yahoo
+      # has no `actual` field on this endpoint. An earlier version of
+      # parse_earnings mistakenly assigned `earningsChart.currentQuarterEstimate`
+      # (still an estimate) to actual_eps when earningsAverage was missing,
+      # which made every upcoming row render as "Reportado".
+      it "does not populate actual_eps from estimate-shaped fields" do
+        event = gateway.fetch_earnings("WALMEX.MX").value!.first
+        expect(event[:actual_eps]).to be_nil
+      end
+    end
+
     context "with an unconfirmed date range" do
       before do
         stub_yahoo_earnings("GFNORTEO.MX",

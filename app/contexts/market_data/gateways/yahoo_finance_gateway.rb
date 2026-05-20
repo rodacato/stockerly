@@ -307,15 +307,20 @@ module MarketData
       report_date = Time.at(raws.max).utc.to_date
       confirmed   = raws.size == 1
 
-      estimate = cal.dig("earningsAverage", "raw")&.to_d
-      actual   = summary&.dig("currentQuarterEstimate", "raw")&.to_d if cal["earningsAverage"].nil?
+      # Yahoo's calendarEvents only carries the UPCOMING earnings event, so
+      # actual_eps is always nil here — Yahoo doesn't expose actuals on this
+      # endpoint. earningsAverage is the primary estimate; earningsChart's
+      # currentQuarterEstimate is a documented fallback when calendarEvents
+      # omits the average.
+      estimate  = cal.dig("earningsAverage", "raw")&.to_d
+      estimate ||= summary&.dig("currentQuarterEstimate", "raw")&.to_d
 
       event = {
         report_date:    report_date,
         fiscal_quarter: ((report_date.month - 1) / 3) + 1,
         fiscal_year:    report_date.year,
         estimated_eps:  estimate,
-        actual_eps:     actual,
+        actual_eps:     nil,
         confirmed:      confirmed
       }
 

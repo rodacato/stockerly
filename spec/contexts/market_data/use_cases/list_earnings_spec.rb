@@ -74,5 +74,11 @@ RSpec.describe MarketData::UseCases::ListEarnings do
       data = described_class.call(user: user, mercado: "BMV")
       expect(data[:counts][:watchlist]).to eq(1)
     end
+
+    it "computes watchlist count from the already-loaded upcoming array (no extra query)" do
+      # If a regression re-introduces a per-call EarningsEvent.where(...).count
+      # for the watchlist counter, query count climbs past the cap.
+      expect { described_class.call(user: user) }.to make_queries(at_most: 8)
+    end
   end
 end

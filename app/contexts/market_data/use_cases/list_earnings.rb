@@ -43,9 +43,9 @@ module MarketData
           upcoming:       group_by_day(upcoming),
           recent:         recent,
           counts: {
-            upcoming: upcoming.length,
-            recent:   recent.length,
-            watchlist: watchlist_count(watchlist_asset_ids, days, mercado)
+            upcoming:  upcoming.length,
+            recent:    recent.length,
+            watchlist: upcoming.count { |e| watchlist_asset_ids.include?(e.asset_id) }
           }
         }
       end
@@ -57,15 +57,6 @@ module MarketData
       # per day without an extra sort pass.
       def group_by_day(events)
         events.group_by(&:report_date).sort_by(&:first)
-      end
-
-      def watchlist_count(watchlist_asset_ids, days, mercado)
-        return 0 if watchlist_asset_ids.empty?
-
-        EarningsEvent.upcoming_window(days)
-                     .for_market(mercado)
-                     .where(asset_id: watchlist_asset_ids)
-                     .count
       end
     end
   end
