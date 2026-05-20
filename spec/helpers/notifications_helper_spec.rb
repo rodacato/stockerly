@@ -73,4 +73,28 @@ RSpec.describe NotificationsHelper, type: :helper do
       expect(helper.format_date_header(Date.new(2026, 5, 13))).to eq("MIÉ 13 MAY 2026")
     end
   end
+
+  describe "#notifiable_asset_symbol" do
+    let(:user) { create(:user) }
+
+    it "returns the symbol carried by an AlertRule (no Asset lookup)" do
+      rule = create(:alert_rule, user: user, asset_symbol: "AAPL")
+      n    = create(:notification, user: user, notifiable: rule)
+
+      expect(helper.notifiable_asset_symbol(n)).to eq("AAPL")
+    end
+
+    it "returns the symbol from an EarningsEvent's preloaded asset" do
+      asset = create(:asset, :stock, symbol: "NVDA")
+      event = create(:earnings_event, asset: asset)
+      n     = create(:notification, user: user, notifiable: event)
+
+      expect(helper.notifiable_asset_symbol(n)).to eq("NVDA")
+    end
+
+    it "returns nil when there is no notifiable" do
+      n = create(:notification, user: user, notifiable: nil)
+      expect(helper.notifiable_asset_symbol(n)).to be_nil
+    end
+  end
 end

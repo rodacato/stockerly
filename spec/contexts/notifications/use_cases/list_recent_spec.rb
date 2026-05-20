@@ -69,5 +69,45 @@ RSpec.describe Notifications::UseCases::ListRecent do
       expect(data[:counts][:alerts]).to eq(1)
       expect(data[:counts][:system]).to eq(1)
     end
+
+    describe "N+1 guard — notifiable + asset preloading is bounded by type, not by row" do
+      it "issues a constant number of queries regardless of how many notifications carry asset-bearing notifiables" do
+        # 5 EarningsEvent notifications + 5 Position notifications + 5 AlertRule
+        # notifications. Without the two-step polymorphic preload, each row that
+        # reads `notifiable.asset.symbol` (10 rows) would fire its own SELECT.
+        # The preloader caps that at ONE query per asset-owning klass.
+        portfolio = create(:portfolio, user: user)
+
+        5.times do |i|
+          asset = create(:asset, :stock, symbol: "STK#{i}")
+          event = create(:earnings_event, asset: asset)
+          create(:notification, user: user, notifiable: event, notification_type: :earnings_reminder)
+        end
+        5.times do |i|
+          asset    = create(:asset, :fixed_income, symbol: "CET#{i}")
+          position = create(:position, portfolio: portfolio, asset: asset, maturity_date: 3.days.from_now)
+          create(:notification, user: user, notifiable: position, notification_type: :maturity_reminder)
+        end
+        5.times do |i|
+          rule = create(:alert_rule, user: user, asset_symbol: "ALR#{i}")
+          create(:notification, user: user, notifiable: rule, notification_type: :alert_triggered)
+        end
+
+        # The exact query budget breaks down roughly as:
+        # - 4 counts (notification_type group, unread, plus the all/read math)
+        # - 1 main filtered notifications select
+        # - 1 polymorphic notifiable preload per concrete klass (3 types)
+        # - 1 asset preload per asset-owning klass (2 types)
+        # - 1 to_a/size materialization for filtered + 1 per row in test
+        # Cap is generous to absorb factory churn but tight enough that a
+        # regression into per-row `n.notifiable.asset` loops would blow past it.
+        expect {
+          data = described_class.call(user: user)
+          # Force the inbox-row code path the helper walks per row.
+          data[:notifications].each { |n| n.notifiable&.is_a?(EarningsEvent) ? n.notifiable.asset&.symbol : nil }
+          data[:notifications].each { |n| n.notifiable&.is_a?(Position) ? n.notifiable.asset&.symbol : nil }
+        }.to make_queries(at_most: 15)
+      end
+    end
   end
 end

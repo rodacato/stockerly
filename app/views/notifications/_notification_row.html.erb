@@ -1,7 +1,7 @@
 <%# Single notification row — used by /notifications and Turbo-Stream prepend. %>
 <%
   unread       = !notification.read?
-  asset_target = notifiable_asset_link(notification)
+  asset_symbol = notifiable_asset_symbol(notification)
 %>
 <div id="<%= dom_id(notification) %>"
      class="relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 <%= unread ? 'bg-primary/[0.04] dark:bg-primary/10' : 'bg-white dark:bg-slate-800' %> px-5 py-3.5">
@@ -30,16 +30,12 @@
       <p class="text-sm <%= unread ? 'font-medium' : 'font-normal' %> text-slate-900 dark:text-slate-100 leading-relaxed">
         <%= notification.title %><%= notification.body.present? ? ". #{notification.body}" : "" %>
       </p>
-      <% if asset_target.is_a?(Asset) %>
-        <%= link_to market_asset_path(asset_target.symbol),
+      <% if asset_symbol.present? %>
+        <%= link_to market_asset_path(asset_symbol),
               class: "inline-flex items-center gap-1.5 self-start font-mono text-xs font-semibold text-primary hover:underline" do %>
-          <%= asset_target.symbol %>
+          <%= asset_symbol %>
           <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
         <% end %>
-      <% elsif asset_target.is_a?(String) %>
-        <span class="inline-flex items-center gap-1.5 self-start font-mono text-xs font-semibold text-slate-500 dark:text-slate-400">
-          <%= asset_target %>
-        </span>
       <% end %>
     </div>
 

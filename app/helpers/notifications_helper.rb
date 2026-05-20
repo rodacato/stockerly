@@ -94,15 +94,14 @@ module NotificationsHelper
     end
   end
 
-  def notifiable_asset_link(notification)
+  # Returns the asset symbol associated with the notification, or nil. The
+  # inbox row links to /market/:symbol — the Asset record itself isn't
+  # needed, so we read the symbol straight off the already-loaded notifiable
+  # (preloaded by ListRecent) instead of per-row Asset.find_by hits.
+  def notifiable_asset_symbol(notification)
     case notification.notifiable
-    when AlertRule
-      asset = Asset.find_by(symbol: notification.notifiable.asset_symbol)
-      asset || notification.notifiable.asset_symbol
-    when EarningsEvent
-      notification.notifiable.asset
-    when Position
-      notification.notifiable.asset
+    when AlertRule               then notification.notifiable.asset_symbol
+    when EarningsEvent, Position then notification.notifiable.asset&.symbol
     end
   end
 end
