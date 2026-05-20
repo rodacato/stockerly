@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_20_015305) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_20_173758) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -172,6 +172,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_20_015305) do
   create_table "earnings_events", force: :cascade do |t|
     t.decimal "actual_eps", precision: 10, scale: 4
     t.bigint "asset_id", null: false
+    t.boolean "confirmed", default: true, null: false
     t.datetime "created_at", null: false
     t.decimal "estimated_eps", precision: 10, scale: 4
     t.date "report_date", null: false

@@ -90,5 +90,52 @@ RSpec.describe MarketData::UseCases::SyncEarnings do
 
       expect(schedule).to eq("at 9am every day")
     end
+
+    describe "BMV path (Yahoo Finance)" do
+      let!(:walmex) { create(:asset, :stock, symbol: "WALMEX.MX", exchange: "BMV", currency: "MXN") }
+
+      it "routes .MX assets to Yahoo and bypasses the US chain" do
+        stub_polygon_earnings_empty("AAPL")
+        stub_yahoo_earnings("WALMEX.MX", dates: [ 3.days.from_now.to_date ], estimate: 1.24)
+
+        result = described_class.call
+        expect(result).to be_success
+        expect(EarningsEvent.where(asset: walmex).count).to eq(1)
+
+        event = EarningsEvent.find_by(asset: walmex)
+        expect(event.estimated_eps.to_f).to eq(1.24)
+        expect(event.confirmed).to be true
+      end
+
+      it "persists confirmed=false when Yahoo returns a date range" do
+        stub_polygon_earnings_empty("AAPL")
+        stub_yahoo_earnings("WALMEX.MX",
+          dates: [ 3.days.from_now.to_date, 7.days.from_now.to_date ],
+          estimate: 1.24
+        )
+
+        described_class.call
+        event = EarningsEvent.find_by(asset: walmex)
+        expect(event.confirmed).to be false
+        expect(event.report_date).to eq(7.days.from_now.to_date)
+      end
+
+      it "skips BMV assets when Yahoo errors" do
+        stub_polygon_earnings_empty("AAPL")
+        stub_yahoo_earnings_error("WALMEX.MX", status: 500)
+
+        result = described_class.call
+        expect(result).to be_success
+        expect(EarningsEvent.where(asset: walmex).count).to eq(0)
+      end
+
+      it "does NOT route BMV tickers through the Polygon/Finnhub chain" do
+        stub_yahoo_earnings("WALMEX.MX", dates: [ 3.days.from_now.to_date ], estimate: 1.24)
+        stub_polygon_earnings_empty("AAPL")
+        # No Polygon stub for WALMEX.MX — if the use case mistakenly routed
+        # BMV through the US chain, WebMock would raise on the unstubbed call.
+        expect { described_class.call }.not_to raise_error
+      end
+    end
   end
 end

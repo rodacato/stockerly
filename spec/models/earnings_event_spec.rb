@@ -49,8 +49,36 @@ RSpec.describe EarningsEvent, type: :model do
 
     it ".reported returns events with actual_eps" do
       reported = create(:earnings_event, asset: asset, report_date: 1.month.ago, actual_eps: 3.0)
-      pending_event = create(:earnings_event, asset: create(:asset), report_date: 1.month.from_now)
+      _pending = create(:earnings_event, asset: create(:asset), report_date: 1.month.from_now)
       expect(EarningsEvent.reported).to contain_exactly(reported)
+    end
+
+    it ".upcoming_window returns events in the next N days" do
+      in_window = create(:earnings_event, asset: asset, report_date: 3.days.from_now.to_date)
+      far       = create(:earnings_event, asset: create(:asset), report_date: 30.days.from_now.to_date)
+      expect(EarningsEvent.upcoming_window(7)).to contain_exactly(in_window)
+      expect(EarningsEvent.upcoming_window(31)).to contain_exactly(in_window, far)
+    end
+
+    it ".recent_window returns events from the previous N days (excluding today)" do
+      recent = create(:earnings_event, asset: asset, report_date: 3.days.ago.to_date, actual_eps: 1.0)
+      today  = create(:earnings_event, asset: create(:asset), report_date: Date.current)
+      expect(EarningsEvent.recent_window(7)).to contain_exactly(recent)
+      expect(EarningsEvent.recent_window(7)).not_to include(today)
+    end
+
+    it ".for_market filters by Asset.exchange" do
+      bmv_asset = create(:asset, :stock, exchange: "BMV")
+      bmv_event = create(:earnings_event, asset: bmv_asset, report_date: 3.days.from_now.to_date)
+      _us_event = create(:earnings_event, asset: create(:asset, :stock, exchange: "NASDAQ"), report_date: 3.days.from_now.to_date)
+      expect(EarningsEvent.for_market("BMV")).to contain_exactly(bmv_event)
+    end
+
+    it ".for_market acts as no-op for unknown values" do
+      bmv_asset = create(:asset, :stock, exchange: "BMV")
+      bmv_event = create(:earnings_event, asset: bmv_asset, report_date: 3.days.from_now.to_date)
+      us_event  = create(:earnings_event, asset: create(:asset, :stock, exchange: "NASDAQ"), report_date: 3.days.from_now.to_date)
+      expect(EarningsEvent.for_market("todos")).to contain_exactly(bmv_event, us_event)
     end
   end
 

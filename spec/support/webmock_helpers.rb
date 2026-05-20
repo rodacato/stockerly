@@ -320,6 +320,41 @@ module WebmockHelpers
       )
   end
 
+  # Stubs Yahoo's quoteSummary calendarEvents endpoint (used by BMV earnings sync).
+  # Pass `dates:` as an Array of Date/Integer (unix). 1 entry = confirmed,
+  # 2 entries = unconfirmed range.
+  def stub_yahoo_earnings(ticker, dates: [], estimate: nil)
+    raws = dates.map { |d| d.is_a?(Date) ? d.to_time.to_i : d.to_i }
+    body = {
+      quoteSummary: {
+        result: [ {
+          calendarEvents: {
+            earnings: raws.empty? ? {} : {
+              earningsDate: raws.map { |r| { raw: r } },
+              earningsAverage: estimate.nil? ? nil : { raw: estimate.to_f }
+            }
+          }
+        } ]
+      }
+    }
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v10/finance/quoteSummary/#{Regexp.escape(ticker)}})
+      .to_return(status: 200, headers: { "Content-Type" => "application/json" }, body: body.to_json)
+  end
+
+  def stub_yahoo_earnings_empty(ticker)
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v10/finance/quoteSummary/#{Regexp.escape(ticker)}})
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { quoteSummary: { result: [] } }.to_json
+      )
+  end
+
+  def stub_yahoo_earnings_error(ticker, status: 500)
+    stub_request(:get, %r{query2\.finance\.yahoo\.com/v10/finance/quoteSummary/#{Regexp.escape(ticker)}})
+      .to_return(status: status, body: "Error")
+  end
+
   def stub_yahoo_ticker_search(query, results: [])
     stub_request(:get, %r{query2\.finance\.yahoo\.com/v1/finance/search})
       .with(query: hash_including("q" => query))

@@ -1,0 +1,25 @@
+<%# Date group block — header + ordered list of earnings cards.
+    Locals: date (Date|nil), rows (Array<EarningsEvent>), accent (Boolean),
+            faded (Boolean), heading (String, optional) %>
+<% heading_text = local_assigns[:heading].presence || (date && earnings_date_header(date)) %>
+
+<section class="flex flex-col gap-2.5">
+  <header class="flex items-baseline gap-3 border-b border-slate-200 dark:border-slate-700 pb-2.5">
+    <span class="text-sm font-semibold uppercase tracking-[0.12em] text-slate-900 dark:text-white"><%= heading_text %></span>
+    <span class="font-mono text-xs font-medium text-slate-500 dark:text-slate-400">
+      <%= rows.length %> <%= rows.length == 1 ? "reporte" : "reportes" %>
+    </span>
+    <div class="flex-1"></div>
+    <% if accent %>
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-primary">
+        <span class="material-symbols-outlined text-[13px]">event_available</span>
+        HOY
+      </span>
+    <% end %>
+  </header>
+  <div class="flex flex-col gap-2">
+    <% rows.each do |event| %>
+      <%= render "earnings/event_card", event: event, faded: faded %>
+    <% end %>
+  </div>
+</section>

@@ -79,22 +79,21 @@ RSpec.describe "Authenticated pages", type: :request do
   end
 
   describe "GET /earnings" do
-    it "renders the earnings calendar" do
+    it "renders the earnings calendar header in es-MX" do
       get earnings_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Earnings Calendar")
-      expect(response.body).to include("Watchlist Priority")
+      expect(response.body).to include("Calendario de reportes")
+      expect(response.body).to include("Reportes trimestrales")
     end
 
-    it "filters by watchlist" do
-      get earnings_path(filter: "watchlist")
+    it "filters by watchlist via watchlist_only param" do
+      get earnings_path(watchlist_only: "true")
       expect(response).to have_http_status(:ok)
     end
 
-    it "navigates months via date param" do
-      get earnings_path(date: "2024-10-15")
+    it "filters by mercado" do
+      get earnings_path(mercado: "BMV")
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("October 2024")
     end
   end
 

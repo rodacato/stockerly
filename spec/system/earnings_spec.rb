@@ -1,14 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "Earnings calendar", type: :system do
-  before do
-    driven_by :rack_test
-  end
+  before { driven_by :rack_test }
 
   let!(:user) { create(:user, email: "earnings@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
-  let!(:portfolio) { create(:portfolio, user: user) }
-  let!(:aapl) { create(:asset, symbol: "AAPL", name: "Apple Inc.", current_price: 189.0) }
-  let!(:tsla) { create(:asset, symbol: "TSLA", name: "Tesla, Inc.", current_price: 176.0) }
+
+  let!(:aapl) { create(:asset, :stock, symbol: "AAPL", name: "Apple Inc.", exchange: "NASDAQ", currency: "USD") }
+  let!(:nvda) { create(:asset, :stock, symbol: "NVDA", name: "NVIDIA Corp.", exchange: "NASDAQ", currency: "USD") }
+  let!(:walmex) { create(:asset, :stock, symbol: "WALMEX.MX", name: "Walmart de México", exchange: "BMV", currency: "MXN") }
 
   before do
     visit login_path
@@ -17,69 +16,71 @@ RSpec.describe "Earnings calendar", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "displays earnings calendar heading and month navigation" do
+  it "renders the header eyebrow + h1 + KPI cards" do
     visit earnings_path
-    expect(page).to have_content("Earnings Calendar")
-    expect(page).to have_content(Date.current.strftime("%B %Y"))
+
+    expect(page).to have_content("Reportes trimestrales")
+    expect(page).to have_content("Calendario de reportes")
+    expect(page).to have_content("Período actual")
+    expect(page).to have_content("En tu watchlist")
   end
 
-  it "shows earnings events on calendar with ticker symbols" do
-    create(:earnings_event, asset: aapl, report_date: Date.current.beginning_of_month + 14.days)
+  it "lists upcoming events grouped by date with es-MX day headers" do
+    create(:earnings_event, asset: aapl,   report_date: 2.days.from_now.to_date, estimated_eps: 1.65)
+    create(:earnings_event, asset: walmex, report_date: 4.days.from_now.to_date, estimated_eps: 1.24)
 
     visit earnings_path
+
     expect(page).to have_content("AAPL")
+    expect(page).to have_content("WALMEX.MX")
+    expect(page).to have_content("Próximos")
+    expect(page).to have_content((2.days.from_now.to_date).day.to_s)
   end
 
-  it "filters by watchlist when My Watchlist is selected" do
-    create(:watchlist_item, user: user, asset: aapl)
-    create(:earnings_event, asset: aapl, report_date: Date.current.beginning_of_month + 14.days)
-    create(:earnings_event, asset: tsla, report_date: Date.current.beginning_of_month + 15.days)
+  it "filters by mercado=BMV" do
+    create(:earnings_event, asset: aapl,   report_date: 2.days.from_now.to_date)
+    create(:earnings_event, asset: walmex, report_date: 3.days.from_now.to_date)
 
-    visit earnings_path(filter: "watchlist")
-    expect(page).to have_content("AAPL")
-    expect(page).not_to have_content("TSLA")
+    visit earnings_path(mercado: "BMV")
+
+    expect(page).to have_content("WALMEX.MX")
+    expect(page).not_to have_content(/^AAPL$/)
   end
 
-  it "navigates to next month" do
-    next_month = Date.current.next_month
-    visit earnings_path(date: next_month)
-    expect(page).to have_content(next_month.strftime("%B %Y"))
+  it "filters by watchlist_only" do
+    create(:watchlist_item, user: user, asset: walmex)
+    create(:earnings_event, asset: walmex, report_date: 3.days.from_now.to_date)
+    create(:earnings_event, asset: nvda,   report_date: 4.days.from_now.to_date)
+
+    visit earnings_path(watchlist_only: true)
+
+    expect(page).to have_content("WALMEX.MX")
+    expect(page).not_to have_content("NVDA")
   end
 
-  it "displays beat badge for earnings that beat estimates" do
-    create(:earnings_event, asset: aapl,
-           report_date: Date.current.beginning_of_month + 10.days,
-           estimated_eps: 2.00, actual_eps: 2.30)
+  it "renders the empty-watchlist state when no matches" do
+    visit earnings_path(watchlist_only: true)
+    expect(page).to have_content("No hay reportes en tu watchlist para este filtro.")
+  end
+
+  it "renders the recent section for events in the last 7 days with delta" do
+    create(:earnings_event, asset: nvda, report_date: 3.days.ago.to_date, estimated_eps: 5.00, actual_eps: 5.30)
 
     visit earnings_path
-    expect(page).to have_css("span[title*='Beat']")
+    expect(page).to have_content("Recientes")
+    expect(page).to have_content("Reportado")
+    expect(page).to have_content("NVDA")
   end
 
-  it "displays miss badge for earnings that missed estimates" do
-    create(:earnings_event, asset: aapl,
-           report_date: Date.current.beginning_of_month + 10.days,
-           estimated_eps: 2.00, actual_eps: 1.70)
-
+  it "switches period via the segmented control" do
     visit earnings_path
-    expect(page).to have_css("span[title*='Miss']")
+    click_link "Este mes"
+    expect(current_url).to include("periodo=mes")
   end
 
-  it "shows no badge for pending earnings without actual EPS" do
-    create(:earnings_event, asset: aapl,
-           report_date: Date.current.beginning_of_month + 10.days,
-           estimated_eps: 2.00, actual_eps: nil)
-
+  it "marks unconfirmed BMV events with the 'fecha por confirmar' tag" do
+    create(:earnings_event, asset: walmex, report_date: 4.days.from_now.to_date, confirmed: false)
     visit earnings_path
-    expect(page).not_to have_css("span[title*='Beat']")
-    expect(page).not_to have_css("span[title*='Miss']")
-  end
-
-  it "shows beat/miss surprise percentage in title attribute" do
-    create(:earnings_event, asset: aapl,
-           report_date: Date.current.beginning_of_month + 10.days,
-           estimated_eps: 2.00, actual_eps: 2.30)
-
-    visit earnings_path
-    expect(page).to have_css("span[title='Beat 15.0%']")
+    expect(page).to have_content("fecha por confirmar")
   end
 end

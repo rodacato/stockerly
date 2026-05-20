@@ -99,6 +99,31 @@ module MarketData
       Failure([ :gateway_error, e.message ])
     end
 
+    # Fetch the next earnings event for a ticker via Yahoo's quoteSummary
+    # `calendarEvents` module. Used for BMV emisoras where Polygon/Finnhub
+    # have no coverage. The endpoint returns the upcoming report only — Yahoo
+    # does not expose a forward-looking calendar list per ticker — so the
+    # Success array carries 0 or 1 element.
+    #
+    # When `earningsDate` is a single value the event is confirmed; when it's
+    # a [low, high] range the date is unconfirmed and we take the upper bound
+    # so the calendar isn't optimistic.
+    #
+    # Returns Success([{ report_date:, fiscal_quarter:, fiscal_year:,
+    #                   estimated_eps:, actual_eps:, timing:, confirmed: }, ...])
+    def fetch_earnings(ticker)
+      response = connection.get("/v10/finance/quoteSummary/#{ERB::Util.url_encode(ticker)}") do |req|
+        req.params["modules"] = "calendarEvents,earnings"
+      end
+
+      return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+      return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
+
+      parse_earnings(response.body)
+    rescue Faraday::Error => e
+      Failure([ :gateway_error, e.message ])
+    end
+
     # Fetch quotes for market indices (S&P 500, NASDAQ, DOW, FTSE, IPC, VIX).
     # Returns Success([{ symbol:, name:, value:, change_percent:, is_open: }, ...])
     def fetch_index_quotes(symbols = INDEX_SYMBOL_MAP.keys)
@@ -257,6 +282,44 @@ module MarketData
       Success(results)
     rescue Faraday::Error => e
       Failure([ :gateway_error, e.message ])
+    end
+
+    # Yahoo's calendarEvents shape:
+    #   quoteSummary.result[0].calendarEvents.earnings
+    #     earningsDate: [{raw: <unix>, fmt: "YYYY-MM-DD"}]            -> confirmed
+    #     earningsDate: [{raw: <low>}, {raw: <high>}]                 -> unconfirmed (range)
+    #     earningsAverage / earningsLow / earningsHigh: EPS estimates
+    #
+    # The :timing field is left nil for BMV emisoras — Yahoo does not surface
+    # before/after market open for `.MX` tickers, and SyncEarnings#upsert_event
+    # defaults to :after_market_close when timing is absent.
+    def parse_earnings(body)
+      cal     = body.dig("quoteSummary", "result", 0, "calendarEvents", "earnings")
+      summary = body.dig("quoteSummary", "result", 0, "earnings", "earningsChart")
+      return Success([]) if cal.blank?
+
+      dates = Array(cal["earningsDate"])
+      return Success([]) if dates.empty?
+
+      raws = dates.map { |d| d.is_a?(Hash) ? d["raw"] : d }.compact
+      return Success([]) if raws.empty?
+
+      report_date = Time.at(raws.max).utc.to_date
+      confirmed   = raws.size == 1
+
+      estimate = cal.dig("earningsAverage", "raw")&.to_d
+      actual   = summary&.dig("currentQuarterEstimate", "raw")&.to_d if cal["earningsAverage"].nil?
+
+      event = {
+        report_date:    report_date,
+        fiscal_quarter: ((report_date.month - 1) / 3) + 1,
+        fiscal_year:    report_date.year,
+        estimated_eps:  estimate,
+        actual_eps:     actual,
+        confirmed:      confirmed
+      }
+
+      Success([ event ])
     end
 
     def parse_historical(body)

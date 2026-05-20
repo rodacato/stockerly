@@ -1,65 +1,109 @@
-<%# Earnings Calendar — monitor upcoming financial reports %>
+<%# /earnings — calendar of upcoming + recent earnings reports. Lumen + es-MX, mockup Stockerly-2.0. %>
 
-<%# Header & Filters %>
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-  <div>
-    <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Earnings Calendar</h1>
-    <p class="text-slate-500 dark:text-slate-400 mt-1">Monitor upcoming financial reports and quarterly results.</p>
-  </div>
-  <div class="flex flex-wrap items-center gap-4">
-    <%# Toggle: My Watchlist / All Markets %>
-    <div class="bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 flex shadow-sm">
-      <%= link_to "My Watchlist", earnings_path(filter: "watchlist", date: @date),
-          class: "px-4 py-1.5 text-sm font-semibold rounded-md transition-colors #{params[:filter] == 'watchlist' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:text-primary'}" %>
-      <%= link_to "All Markets", earnings_path(date: @date),
-          class: "px-4 py-1.5 text-sm font-semibold rounded-md transition-colors #{params[:filter].blank? ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:text-primary'}" %>
+<div class="mx-auto max-w-6xl space-y-6">
+  <%# Header band: eyebrow + h1 + subtitle + KPI mini-cards %>
+  <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <div>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Reportes trimestrales</p>
+      <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Calendario de reportes</h1>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Próximas y recientes publicaciones de utilidades. Filtra por mercado o por tu watchlist.</p>
     </div>
-
-    <%# Month Navigator %>
-    <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-      <%= link_to earnings_path(date: @date.prev_month, filter: params[:filter]),
-          class: "p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500" do %>
-        <span class="material-symbols-outlined">chevron_left</span>
-      <% end %>
-      <span class="text-sm font-bold px-2 text-slate-700 dark:text-slate-300"><%= @date.strftime("%B %Y") %></span>
-      <%= link_to earnings_path(date: @date.next_month, filter: params[:filter]),
-          class: "p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500" do %>
-        <span class="material-symbols-outlined">chevron_right</span>
-      <% end %>
+    <div class="flex gap-3">
+      <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3 shadow-sm min-w-[150px]">
+        <p class="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Período actual</p>
+        <p class="mt-1 font-mono text-2xl font-medium tracking-tight text-slate-900 dark:text-white">
+          <%= @counts[:upcoming] %> <span class="text-sm font-normal text-slate-500 dark:text-slate-400"><%= @counts[:upcoming] == 1 ? "reporte" : "reportes" %></span>
+        </p>
+      </div>
+      <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3 shadow-sm min-w-[150px]">
+        <p class="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">En tu watchlist</p>
+        <p class="mt-1 font-mono text-2xl font-medium tracking-tight text-slate-900 dark:text-white">
+          <%= @counts[:watchlist] %> <span class="text-sm font-normal text-slate-500 dark:text-slate-400"><%= @counts[:watchlist] == 1 ? "reporte" : "reportes" %></span>
+        </p>
+      </div>
     </div>
   </div>
-</div>
 
-<%# Main Layout: Sidebar + Calendar %>
-<div class="flex flex-col lg:flex-row gap-8">
-  <%# Left Sidebar %>
-  <aside class="w-full lg:w-80 flex flex-col gap-6 shrink-0">
-    <%= render "earnings/watchlist_priority" %>
-    <%= render "earnings/pro_tips" %>
-  </aside>
-
-  <%# Calendar Grid %>
-  <section class="flex-grow">
-    <%= render "earnings/calendar_grid" %>
-
-    <%# Legend %>
-    <div class="mt-6 flex flex-wrap items-center gap-6 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
-      <div class="flex items-center gap-2">
-        <div class="size-3 bg-primary rounded-full"></div>
-        <span class="text-xs font-medium text-slate-600 dark:text-slate-400">Watchlist Active</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="size-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full"></div>
-        <span class="text-xs font-medium text-slate-600 dark:text-slate-400">General Market</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-sm text-slate-400">wb_sunny</span>
-        <span class="text-xs font-medium text-slate-600 dark:text-slate-400">Before Market Open</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-sm text-slate-400">nights_stay</span>
-        <span class="text-xs font-medium text-slate-600 dark:text-slate-400">After Market Close</span>
+  <%# Filter strip: período segmented + mercado chips + watchlist toggle %>
+  <div class="flex flex-col gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3.5 shadow-sm">
+    <div class="flex flex-wrap items-center gap-4">
+      <span class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Período</span>
+      <div class="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-1">
+        <% earnings_period_options.each do |label, slug| %>
+          <% active = (@periodo == slug) %>
+          <%= link_to earnings_path(periodo: slug, mercado: @mercado, watchlist_only: @watchlist_only),
+                class: "rounded-md px-3 py-1 text-xs #{active ? 'font-semibold text-slate-900 dark:text-white bg-white dark:bg-slate-800 shadow-sm' : 'font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}" do %>
+            <%= label %>
+          <% end %>
+        <% end %>
       </div>
     </div>
-  </section>
+
+    <div class="flex flex-wrap items-center gap-4">
+      <span class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Mercado</span>
+      <div class="flex flex-wrap gap-1.5">
+        <% earnings_market_options.each do |label, slug| %>
+          <% active = (@mercado == slug) %>
+          <%= link_to earnings_path(periodo: @periodo, mercado: slug, watchlist_only: @watchlist_only),
+                class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary bg-primary/10 border border-primary/25' : 'font-medium text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}" do %>
+            <%= label %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="flex-1"></div>
+      <%= link_to earnings_path(periodo: @periodo, mercado: @mercado, watchlist_only: !@watchlist_only),
+            class: "inline-flex items-center gap-2 rounded-lg border #{@watchlist_only ? 'border-primary/25 bg-primary/10' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'} px-3 py-1.5" do %>
+        <span class="relative inline-flex h-4 w-8 items-center rounded-full <%= @watchlist_only ? 'bg-primary' : 'bg-slate-200 dark:bg-slate-700' %>">
+          <span class="inline-block h-3 w-3 rounded-full bg-white shadow transform transition-transform <%= @watchlist_only ? 'translate-x-4' : 'translate-x-0.5' %>"></span>
+        </span>
+        <span class="text-xs <%= @watchlist_only ? 'font-semibold text-primary' : 'font-medium text-slate-700 dark:text-slate-300' %>">Sólo mi watchlist</span>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @upcoming.empty? && @recent.empty? %>
+    <%# Empty state %>
+    <div class="flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-8 py-20 text-center shadow-sm">
+      <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 text-slate-400">
+        <span class="material-symbols-outlined text-3xl">event_busy</span>
+      </div>
+      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
+        <%= @watchlist_only ? "No hay reportes en tu watchlist para este filtro." : "Sin reportes para este filtro." %>
+      </h2>
+      <p class="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
+        <%= @watchlist_only ? "Cambia el período o agrega más activos a tu watchlist." : "Cambia el período o el mercado para ver más." %>
+      </p>
+      <%= link_to (@watchlist_only ? market_path : earnings_path),
+            class: "mt-5 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm font-medium text-slate-900 dark:text-white shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700/60" do %>
+        <span class="material-symbols-outlined text-[15px]"><%= @watchlist_only ? "bookmark" : "restart_alt" %></span>
+        <%= @watchlist_only ? "Ver mi watchlist" : "Limpiar filtros" %>
+      <% end %>
+    </div>
+  <% else %>
+    <%# Upcoming section %>
+    <% if @upcoming.any? %>
+      <section class="flex flex-col gap-4">
+        <div class="flex items-baseline gap-3">
+          <h2 class="font-display text-base font-semibold tracking-tight text-slate-900 dark:text-white">Próximos</h2>
+          <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+            <%= @counts[:upcoming] %> <%= @counts[:upcoming] == 1 ? "reporte" : "reportes" %> · período <%= @periodo %>
+          </span>
+        </div>
+        <% @upcoming.each_with_index do |(date, rows), idx| %>
+          <%= render "earnings/date_group", date: date, rows: rows, accent: idx.zero?, faded: false %>
+        <% end %>
+      </section>
+    <% end %>
+
+    <%# Recent section %>
+    <% if @recent.any? %>
+      <section class="flex flex-col gap-4 mt-2">
+        <div class="flex items-baseline gap-3">
+          <h2 class="font-display text-base font-semibold tracking-tight text-slate-900 dark:text-white">Recientes</h2>
+          <span class="font-mono text-xs text-slate-500 dark:text-slate-400">últimos <%= MarketData::UseCases::ListEarnings::RECENT_WINDOW_DAYS %> días · <%= @recent.length %> publicados</span>
+        </div>
+        <%= render "earnings/date_group", date: nil, rows: @recent, heading: "Publicados recientemente", accent: false, faded: true %>
+      </section>
+    <% end %>
+  <% end %>
 </div>

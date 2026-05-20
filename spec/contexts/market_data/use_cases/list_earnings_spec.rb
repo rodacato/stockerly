@@ -2,44 +2,77 @@ require "rails_helper"
 
 RSpec.describe MarketData::UseCases::ListEarnings do
   let(:user) { create(:user) }
-  let(:apple) { create(:asset, symbol: "AAPL") }
-  let(:tesla) { create(:asset, symbol: "TSLA") }
-  let(:date) { Date.new(2024, 10, 15) }
 
-  let!(:apple_event) { create(:earnings_event, asset: apple, report_date: Date.new(2024, 10, 24)) }
-  let!(:tesla_event) { create(:earnings_event, asset: tesla, report_date: Date.new(2024, 10, 18)) }
+  let(:walmex)  { create(:asset, :stock, symbol: "WALMEX.MX",  exchange: "BMV",    currency: "MXN") }
+  let(:apple)   { create(:asset, :stock, symbol: "AAPL",       exchange: "NASDAQ", currency: "USD") }
+  let(:nvda)    { create(:asset, :stock, symbol: "NVDA",       exchange: "NASDAQ", currency: "USD") }
+  let(:ko)      { create(:asset, :stock, symbol: "KO",         exchange: "NYSE",   currency: "USD") }
+
+  let!(:walmex_event) { create(:earnings_event, asset: walmex, report_date: 2.days.from_now.to_date) }
+  let!(:apple_event)  { create(:earnings_event, asset: apple,  report_date: 4.days.from_now.to_date) }
+  let!(:nvda_event)   { create(:earnings_event, asset: nvda,   report_date: 5.days.from_now.to_date) }
+  let!(:recent_event) { create(:earnings_event, asset: ko,     report_date: 3.days.ago.to_date, actual_eps: 0.65, estimated_eps: 0.62) }
 
   before do
-    create(:watchlist_item, user: user, asset: apple)
+    create(:watchlist_item, user: user, asset: walmex)
   end
 
-  describe "#call" do
-    it "returns all events for the given month" do
-      result = described_class.call(user: user, date: date)
-      expect(result).to be_success
-      data = result.value!
-      expect(data[:events]).to include(apple_event, tesla_event)
-      expect(data[:date]).to eq(date)
+  describe ".call" do
+    it "returns upcoming events grouped by date + recent + counts" do
+      data = described_class.call(user: user)
+
+      expect(data[:periodo]).to eq("semana")
+      expect(data[:mercado]).to eq("todos")
+      expect(data[:watchlist_only]).to be false
+
+      group_dates = data[:upcoming].map(&:first)
+      expect(group_dates).to eq([ walmex_event.report_date, apple_event.report_date, nvda_event.report_date ])
+
+      expect(data[:recent]).to contain_exactly(recent_event)
+      expect(data[:counts][:upcoming]).to eq(3)
+      expect(data[:counts][:recent]).to eq(1)
+      expect(data[:counts][:watchlist]).to eq(1)
     end
 
-    it "filters events by watchlist when requested" do
-      result = described_class.call(user: user, date: date, filter: "watchlist")
-      data = result.value!
-      expect(data[:events]).to include(apple_event)
-      expect(data[:events]).not_to include(tesla_event)
+    it "filters by mercado (BMV)" do
+      data = described_class.call(user: user, mercado: "BMV")
+      events_in_groups = data[:upcoming].flat_map(&:last)
+      expect(events_in_groups).to contain_exactly(walmex_event)
+      expect(data[:counts][:upcoming]).to eq(1)
     end
 
-    it "always returns watchlist_events" do
-      result = described_class.call(user: user, date: date)
-      data = result.value!
-      expect(data[:watchlist_events]).to include(apple_event)
-      expect(data[:watchlist_events]).not_to include(tesla_event)
+    it "filters by mercado (NASDAQ)" do
+      data = described_class.call(user: user, mercado: "NASDAQ")
+      events_in_groups = data[:upcoming].flat_map(&:last)
+      expect(events_in_groups).to contain_exactly(apple_event, nvda_event)
     end
 
-    it "returns empty when no events in month" do
-      result = described_class.call(user: user, date: Date.new(2025, 6, 1))
-      data = result.value!
-      expect(data[:events]).to be_empty
+    it "ignores unknown mercado values (acts as 'todos')" do
+      data = described_class.call(user: user, mercado: "XYZ")
+      expect(data[:counts][:upcoming]).to eq(3)
+    end
+
+    it "filters by watchlist_only" do
+      data = described_class.call(user: user, watchlist_only: true)
+      events_in_groups = data[:upcoming].flat_map(&:last)
+      expect(events_in_groups).to contain_exactly(walmex_event)
+    end
+
+    it "extends the lookahead window when periodo=mes" do
+      create(:earnings_event, asset: apple, report_date: 20.days.from_now.to_date)
+      data = described_class.call(user: user, periodo: "mes")
+      expect(data[:counts][:upcoming]).to be >= 4
+    end
+
+    it "falls back to semana when periodo is invalid" do
+      data = described_class.call(user: user, periodo: "nope")
+      expect(data[:periodo]).to eq("semana")
+    end
+
+    it "watchlist count reflects the active mercado filter" do
+      create(:watchlist_item, user: user, asset: apple)
+      data = described_class.call(user: user, mercado: "BMV")
+      expect(data[:counts][:watchlist]).to eq(1)
     end
   end
 end

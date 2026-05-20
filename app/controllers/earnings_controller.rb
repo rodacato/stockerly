@@ -1,14 +1,18 @@
 class EarningsController < AuthenticatedController
   def index
-    date = params[:date].present? ? Date.parse(params[:date]) : Date.current
-    result = MarketData::UseCases::ListEarnings.call(user: current_user, date: date, filter: params[:filter])
+    data = MarketData::UseCases::ListEarnings.call(
+      user:           current_user,
+      periodo:        params[:periodo].presence || MarketData::UseCases::ListEarnings::DEFAULT_PERIOD,
+      mercado:        params[:mercado].presence || "todos",
+      watchlist_only: ActiveModel::Type::Boolean.new.cast(params[:watchlist_only])
+    )
 
-    case result
-    in Dry::Monads::Success(data)
-      @events           = data[:events]
-      @date             = data[:date]
-      @watchlist_events = data[:watchlist_events]
-    end
+    @periodo        = data[:periodo]
+    @mercado        = data[:mercado]
+    @watchlist_only = data[:watchlist_only]
+    @upcoming       = data[:upcoming]
+    @recent         = data[:recent]
+    @counts         = data[:counts]
   end
 
   def show

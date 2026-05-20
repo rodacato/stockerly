@@ -1,0 +1,82 @@
+<%# Single earnings event card. Locals: event (EarningsEvent), faded (Boolean) %>
+<%
+  reported  = event.actual_eps.present?
+  delta_pct = event.eps_surprise_percent
+  currency  = earnings_currency(event)
+%>
+<div class="grid gap-x-4 gap-y-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3.5 md:grid-cols-[minmax(0,1.6fr)_88px_140px_140px_88px_120px] md:items-center <%= faded ? 'opacity-80' : '' %>">
+  <%# Col 1 — Ticker + name + chips + time %>
+  <div class="min-w-0">
+    <div class="flex items-baseline gap-3">
+      <%= link_to event.asset.symbol, market_asset_path(event.asset.symbol),
+            class: "font-mono text-sm font-semibold text-primary tracking-tight hover:underline" %>
+      <span class="truncate text-sm font-medium text-slate-900 dark:text-white">
+        <%= event.asset.name %>
+      </span>
+    </div>
+    <div class="mt-1.5 flex flex-wrap items-center gap-2">
+      <span class="rounded bg-slate-100 dark:bg-slate-700 px-2 py-0.5 font-mono text-[10.5px] font-semibold tracking-wide text-slate-500 dark:text-slate-400"><%= earnings_venue(event) %></span>
+      <span class="rounded bg-slate-100 dark:bg-slate-700 px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">Acción</span>
+      <span class="text-[11.5px] text-slate-500 dark:text-slate-400">· <%= earnings_timing_label(event) %></span>
+      <% unless event.confirmed? %>
+        <span class="inline-flex items-center gap-1 text-[10.5px] font-semibold uppercase tracking-[0.04em] text-amber-600 dark:text-amber-400">
+          <span class="material-symbols-outlined text-[12px]">schedule</span>
+          fecha por confirmar
+        </span>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Col 2 — Período %>
+  <div>
+    <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Período</p>
+    <p class="mt-0.5 font-mono text-[13px] font-medium text-slate-900 dark:text-white"><%= earnings_period_label(event) %></p>
+  </div>
+
+  <%# Col 3 — Estimado %>
+  <div>
+    <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Estimado</p>
+    <p class="mt-0.5 font-mono text-[13px] font-medium text-slate-900 dark:text-white">
+      <% if event.estimated_eps.present? %>
+        <%= currency %> <%= sprintf("%.2f", event.estimated_eps) %> <span class="text-slate-500 dark:text-slate-400">/ acción</span>
+      <% else %>
+        <span class="text-slate-500 dark:text-slate-400">Sin estimación reciente</span>
+      <% end %>
+    </p>
+  </div>
+
+  <%# Col 4 — Reportado %>
+  <div>
+    <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Reportado</p>
+    <p class="mt-0.5 font-mono text-[13px] font-medium text-slate-900 dark:text-white">
+      <% if reported %>
+        <%= currency %> <%= sprintf("%.2f", event.actual_eps) %> <span class="text-slate-500 dark:text-slate-400">/ acción</span>
+      <% else %>
+        <span class="text-slate-500 dark:text-slate-400">—</span>
+      <% end %>
+    </p>
+  </div>
+
+  <%# Col 5 — Δ vs est. %>
+  <div>
+    <% if delta_pct.present? %>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Δ vs est.</p>
+      <p class="mt-0.5 inline-flex items-center gap-1 font-mono text-[13px] font-semibold <%= earnings_delta_classes(delta_pct) %>">
+        <span class="material-symbols-outlined text-[12px]"><%= delta_pct >= 0 ? "arrow_upward" : "arrow_downward" %></span>
+        <%= delta_pct >= 0 ? "+" : "−" %><%= sprintf("%.1f", delta_pct.abs) %>%
+      </p>
+    <% end %>
+  </div>
+
+  <%# Col 6 — Status + (reported only) report link %>
+  <div class="flex flex-col items-start gap-1.5 md:items-end">
+    <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-semibold <%= earnings_status_classes(event) %>">
+      <span class="size-1.5 rounded-full <%= reported ? 'bg-emerald-500' : 'bg-slate-400' %>"></span>
+      <%= earnings_status_label(event) %>
+    </span>
+    <% if reported %>
+      <%= link_to "Ver reporte →", earning_path(event),
+            class: "whitespace-nowrap text-xs font-medium text-primary hover:underline" %>
+    <% end %>
+  </div>
+</div>

@@ -11,6 +11,20 @@ class EarningsEvent < ApplicationRecord
   }
   scope :upcoming, -> { where("report_date >= ?", Date.current).order(:report_date) }
   scope :reported, -> { where.not(actual_eps: nil) }
+  scope :recent_window, ->(days = 7) {
+    where(report_date: (Date.current - days.days)..(Date.current - 1)).order(report_date: :desc)
+  }
+  scope :upcoming_window, ->(days = 7) {
+    where(report_date: Date.current..(Date.current + days.days)).order(:report_date)
+  }
+  scope :for_market, ->(market) {
+    case market.to_s
+    when "BMV", "NASDAQ", "NYSE"
+      joins(:asset).where(assets: { exchange: market })
+    else
+      all
+    end
+  }
 
   # Returns :beat, :miss, or nil (pending)
   def beat_miss
