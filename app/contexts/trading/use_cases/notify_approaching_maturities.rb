@@ -65,17 +65,23 @@ module Trading
           .to_set
       end
 
+      MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
+
       def title_for(position, days)
-        "#{position.asset.symbol} expires #{when_phrase(days)}"
+        "#{position.asset.symbol} vence #{when_phrase(days)}"
       end
 
       def body_for(position, days)
-        "Your #{position.asset.name} position (#{position.shares.to_i} units, " \
-          "matures on #{position.maturity_date.strftime('%b %d, %Y')}) expires #{when_phrase(days)}."
+        "Tu posición en #{position.asset.name} (#{position.shares.to_i} unidades, " \
+          "vence el #{format_date_es(position.maturity_date)}) #{when_phrase(days)}."
       end
 
       def when_phrase(days)
-        days == 1 ? "tomorrow" : "in #{days} days"
+        days == 1 ? "mañana" : "en #{days} días"
+      end
+
+      def format_date_es(date)
+        "#{date.day} #{MONTHS_ES[date.month - 1]} #{date.year}"
       end
     end
   end

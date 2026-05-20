@@ -1,26 +1,29 @@
-<%# Notification Panel — dropdown connected to real Notification model %>
+<%# Notification Panel — dropdown connected to real Notification model. %>
+<%# Locals: notifications (Array<Notification>), unread_count (Integer) %>
 
 <div class="hidden absolute right-0 mt-3 w-[380px] bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col z-60"
      data-notification-target="panel">
   <%# Header %>
   <div class="px-4 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
     <div class="flex items-center gap-2">
-      <h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg">Notifications</h3>
-      <% if @navbar_unread_count && @navbar_unread_count > 0 %>
-        <span class="bg-primary px-2 py-0.5 rounded-full text-[11px] font-bold text-white uppercase tracking-wider" data-notification-target="badge"><%= @navbar_unread_count %> new</span>
+      <h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg">Notificaciones</h3>
+      <% if unread_count > 0 %>
+        <span class="bg-primary px-2 py-0.5 rounded-full text-[11px] font-bold text-white uppercase tracking-wider" data-notification-target="badge">
+          <%= unread_count %> <%= unread_count == 1 ? "nueva" : "nuevas" %>
+        </span>
       <% end %>
     </div>
-    <% if @navbar_unread_count && @navbar_unread_count > 0 %>
+    <% if unread_count > 0 %>
       <%= button_to mark_all_read_notifications_path, method: :patch, class: "text-primary text-sm font-semibold hover:underline", data: { action: "click->notification#markAllAsRead" } do %>
-        Mark all read
+        Marcar todas
       <% end %>
     <% end %>
   </div>
 
   <%# Scrollable List %>
   <div class="max-h-[480px] overflow-y-auto">
-    <% if @navbar_notifications.present? %>
-      <% @navbar_notifications.each do |notification| %>
+    <% if notifications.present? %>
+      <% notifications.each do |notification| %>
         <% unread = !notification.read? %>
         <div class="flex gap-4 px-4 py-4 <%= unread ? 'bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/20' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800' %> transition-colors border-b border-slate-50 dark:border-slate-800 cursor-pointer" data-notification-target="item">
           <div class="shrink-0 flex items-center justify-center size-10 rounded-full <%= notification_icon_style(notification) %>">
@@ -29,7 +32,7 @@
           <div class="flex flex-col flex-1">
             <div class="flex items-center justify-between">
               <p class="<%= unread ? 'text-slate-900 dark:text-slate-100 font-semibold' : 'text-slate-500 dark:text-slate-400 font-medium' %> text-sm leading-tight"><%= notification.title %></p>
-              <span class="text-slate-400 text-[11px]"><%= time_ago_in_words(notification.created_at) %> ago</span>
+              <span class="text-slate-400 text-[11px]">hace <%= time_ago_in_words(notification.created_at) %></span>
             </div>
             <% if notification.body.present? %>
               <p class="<%= unread ? 'text-slate-600 dark:text-slate-400' : 'text-slate-500 dark:text-slate-500' %> text-sm mt-1 leading-normal"><%= notification.body %></p>
@@ -37,7 +40,7 @@
             <% if unread %>
               <div class="mt-2 flex items-center gap-1">
                 <div class="size-2 rounded-full bg-primary"></div>
-                <span class="text-[10px] text-primary font-bold uppercase tracking-tight"><%= notification.notification_type.humanize %></span>
+                <span class="text-[10px] text-primary font-bold uppercase tracking-tight"><%= notification_category_label(notification) %></span>
               </div>
             <% end %>
           </div>
@@ -46,7 +49,7 @@
     <% else %>
       <div class="py-12 text-center">
         <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-2">notifications_off</span>
-        <p class="text-slate-500 dark:text-slate-400 text-sm">No notifications yet</p>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">Sin notificaciones por ahora.</p>
       </div>
     <% end %>
   </div>
@@ -54,7 +57,7 @@
   <%# Footer %>
   <div class="border-t border-slate-100 dark:border-slate-800 p-3 bg-slate-50/50 dark:bg-slate-900/50 flex justify-center">
     <%= link_to notifications_path, class: "text-primary text-sm font-bold hover:text-primary/80 transition-colors flex items-center gap-1" do %>
-      View All Notifications
+      Ver todas las notificaciones
       <span class="material-symbols-outlined text-sm">arrow_forward</span>
     <% end %>
   </div>

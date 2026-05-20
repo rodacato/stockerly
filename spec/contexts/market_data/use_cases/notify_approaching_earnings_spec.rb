@@ -29,7 +29,7 @@ RSpec.describe MarketData::UseCases::NotifyApproachingEarnings do
         expect(notification.notification_type).to eq("earnings_reminder")
         expect(notification.title).to include("AAPL")
         expect(notification.body).to include("Apple Inc.")
-        expect(notification.body).to include("2 days")
+        expect(notification.body).to include("en 2 días")
         expect(notification.notifiable).to eq(event)
       end
 
@@ -49,7 +49,7 @@ RSpec.describe MarketData::UseCases::NotifyApproachingEarnings do
         expect { described_class.call }.to change(Notification, :count).by(1)
 
         notification = Notification.last
-        expect(notification.body).to include("today")
+        expect(notification.body).to include("hoy")
       end
     end
 

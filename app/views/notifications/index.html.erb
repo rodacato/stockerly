@@ -1,52 +1,142 @@
-<%# Notifications page — all user notifications %>
-<div class="max-w-3xl mx-auto py-8">
-  <div class="flex items-center justify-between mb-6">
+<%# /notifications — unified inbox (alerts + system). Lumen + es-MX, mockup Stockerly-2.0. %>
+
+<div class="mx-auto max-w-5xl space-y-6">
+  <%# Header band: eyebrow + h1 + subtitle + bulk actions %>
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
     <div>
-      <h1 class="text-2xl font-black text-slate-900 dark:text-white">Notifications</h1>
-      <p class="text-slate-500 mt-1"><%= @unread_count %> unread</p>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Bandeja</p>
+      <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Notificaciones</h1>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Alertas que se dispararon y avisos del sistema.</p>
     </div>
-    <% if @unread_count > 0 %>
-      <%= button_to "Mark all read", mark_all_read_notifications_path, method: :patch,
-          class: "text-primary text-sm font-bold hover:underline" %>
-    <% end %>
+    <div class="flex items-center gap-3">
+      <% if @counts[:read].to_i > 0 %>
+        <%= button_to destroy_read_notifications_path, method: :delete, form: { data: { turbo_confirm: "¿Eliminar las notificaciones leídas?" } },
+            class: "inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" do %>
+          <span class="material-symbols-outlined text-[15px]">delete_sweep</span>
+          Eliminar leídas
+        <% end %>
+      <% end %>
+      <% if @counts[:unread].to_i > 0 %>
+        <%= button_to mark_all_read_notifications_path, method: :patch,
+            class: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm font-medium text-slate-900 dark:text-white shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700/60" do %>
+          <span class="material-symbols-outlined text-[15px]">done_all</span>
+          Marcar todas como leídas
+        <% end %>
+      <% else %>
+        <span class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm font-medium text-slate-400 dark:text-slate-500 opacity-60">
+          <span class="material-symbols-outlined text-[15px]">done_all</span>
+          Marcar todas como leídas
+        </span>
+      <% end %>
+    </div>
   </div>
 
-  <% if @notifications.any? %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
-      <% @notifications.each do |notif| %>
-        <div class="flex gap-4 px-5 py-4 <%= notif.read? ? '' : 'bg-primary/5' %>">
-          <div class="shrink-0 flex items-center justify-center size-10 rounded-full
-                      <%= case notif.notification_type
-                          when 'alert_triggered' then 'bg-amber-100 text-amber-600'
-                          when 'earnings_reminder' then 'bg-blue-100 text-blue-600'
-                          else 'bg-slate-100 text-slate-500'
-                          end %>">
-            <span class="material-symbols-outlined"><%= notif.alert_triggered? ? 'bolt' : (notif.earnings_reminder? ? 'calendar_today' : 'settings') %></span>
-          </div>
-          <div class="flex-1">
-            <div class="flex items-center justify-between">
-              <p class="text-sm font-semibold text-slate-900 dark:text-white"><%= notif.title %></p>
-              <span class="text-[11px] text-slate-400"><%= time_ago_in_words(notif.created_at) %> ago</span>
-            </div>
-            <% if notif.body.present? %>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><%= notif.body %></p>
-            <% end %>
-          </div>
-          <% unless notif.read? %>
-            <%= button_to mark_as_read_notification_path(notif), method: :patch,
-                class: "shrink-0 text-primary text-xs font-bold hover:underline self-center" do %>
-              Read
-            <% end %>
+  <%# Filter bar: tipo chips + estado chips + shown/total chip %>
+  <div class="flex flex-wrap items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3 shadow-sm">
+    <div class="flex items-center gap-2.5">
+      <span class="text-[10.5px] font-semibold uppercase tracking-[0.10em] text-slate-500 dark:text-slate-400">Tipo</span>
+      <div class="flex gap-1.5">
+        <%
+          tipos = [
+            ["todos",   "Todos",   @counts[:all]],
+            ["alertas", "Alertas", @counts[:alerts]],
+            ["sistema", "Sistema", @counts[:system]]
+          ]
+        %>
+        <% tipos.each do |slug, label, count| %>
+          <% active = (@tipo == slug) %>
+          <%= link_to notifications_path(tipo: slug, estado: @estado),
+                class: "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary bg-primary/10 border border-primary/25' : 'font-medium text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}" do %>
+            <%= label %>
+            <span class="rounded px-1 font-mono text-[10px] font-semibold <%= active ? 'bg-white dark:bg-slate-800 text-primary' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400' %>">
+              <%= count %>
+            </span>
           <% end %>
-        </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="h-5 w-px bg-slate-200 dark:bg-slate-700"></div>
+
+    <div class="flex items-center gap-2.5">
+      <span class="text-[10.5px] font-semibold uppercase tracking-[0.10em] text-slate-500 dark:text-slate-400">Estado</span>
+      <div class="flex gap-1.5">
+        <%
+          estados = [
+            ["todos",     "Todos",     @counts[:all]],
+            ["no_leidas", "No leídas", @counts[:unread]],
+            ["leidas",    "Leídas",    @counts[:read]]
+          ]
+        %>
+        <% estados.each do |slug, label, count| %>
+          <% active = (@estado == slug) %>
+          <%= link_to notifications_path(tipo: @tipo, estado: slug),
+                class: "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary bg-primary/10 border border-primary/25' : 'font-medium text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}" do %>
+            <%= label %>
+            <span class="rounded px-1 font-mono text-[10px] font-semibold <%= active ? 'bg-white dark:bg-slate-800 text-primary' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400' %>">
+              <%= count %>
+            </span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="flex-1"></div>
+
+    <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+      <span class="material-symbols-outlined text-[14px]">list</span>
+      Mostrando
+      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= @shown_count %></span>
+      de
+      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= @counts[:all] %></span>
+      notificaciones
+    </span>
+  </div>
+
+  <%# List or empty state %>
+  <% if @notifications.any? %>
+    <div id="notifications_list" class="flex flex-col gap-5">
+      <% group_notifications_by_date(@notifications).each do |heading, rows| %>
+        <section class="flex flex-col gap-2.5">
+          <header class="flex items-baseline gap-3 border-b border-slate-200 dark:border-slate-700 pb-2.5">
+            <span class="text-sm font-semibold uppercase tracking-[0.12em] text-slate-900 dark:text-white"><%= heading %></span>
+            <span class="font-mono text-xs font-medium text-slate-500 dark:text-slate-400">
+              <%= rows.length %> <%= rows.length == 1 ? "notificación" : "notificaciones" %>
+            </span>
+          </header>
+          <div class="flex flex-col gap-2">
+            <% rows.each do |n| %>
+              <%= render "notification_row", notification: n %>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+    </div>
+  <% elsif @counts[:all].to_i == 0 %>
+    <%# Estado A: cero notificaciones (cuenta nueva o todo eliminado) %>
+    <div class="flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-8 py-20 text-center shadow-sm">
+      <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 text-slate-400">
+        <span class="material-symbols-outlined text-3xl">notifications_off</span>
+      </div>
+      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Sin notificaciones por ahora.</h2>
+      <p class="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">Cuando una alerta se dispare o haya un aviso del sistema, aparecerá aquí.</p>
+      <%= link_to alerts_path, class: "mt-5 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm font-medium text-slate-900 dark:text-white shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700/60" do %>
+        <span class="material-symbols-outlined text-[15px]">tune</span>
+        Ver mis alertas configuradas
       <% end %>
     </div>
   <% else %>
-    <%= render "components/empty_state",
-        icon: "notifications_none",
-        title: "No notifications",
-        description: "You're all caught up! Notifications will appear here when triggered.",
-        cta_text: "Go to Dashboard",
-        cta_path: dashboard_path %>
+    <%# Estado B: el dataset tiene notificaciones pero los filtros no coinciden %>
+    <div class="flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-8 py-20 text-center shadow-sm">
+      <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 text-slate-400">
+        <span class="material-symbols-outlined text-3xl">filter_alt_off</span>
+      </div>
+      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Sin coincidencias con tus filtros.</h2>
+      <p class="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">Cambia un filtro o limpia los filtros para ver todas.</p>
+      <%= link_to notifications_path, class: "mt-5 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm font-medium text-slate-900 dark:text-white shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700/60" do %>
+        <span class="material-symbols-outlined text-[15px]">restart_alt</span>
+        Limpiar filtros
+      <% end %>
+    </div>
   <% end %>
 </div>

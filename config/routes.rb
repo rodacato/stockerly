@@ -64,7 +64,10 @@ Rails.application.routes.draw do
   resources :watchlist_items, only: [ :create, :destroy ]
   resources :notifications, only: [ :index ] do
     member { patch :mark_as_read }
-    collection { patch :mark_all_read }
+    collection do
+      patch  :mark_all_read
+      delete :destroy_read
+    end
   end
   resource :profile,   only: [ :show, :update ]
   patch "profile/password",    to: "profiles#change_password",    as: :change_password

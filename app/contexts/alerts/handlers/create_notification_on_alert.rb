@@ -13,8 +13,8 @@ module Alerts
 
         Notifications::UseCases::CreateNotification.new.call(
           user_id: user_id,
-          title: "Alert: #{symbol} at $#{price}",
-          body: "Your alert for #{symbol} was triggered at $#{price}",
+          title: "Alerta disparada: #{symbol}",
+          body:  "Tu alerta para #{symbol} se disparó. Precio: #{price}.",
           notification_type: :alert_triggered,
           notifiable: rule
         )

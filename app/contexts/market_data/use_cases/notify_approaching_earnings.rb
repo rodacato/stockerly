@@ -17,8 +17,8 @@ module MarketData
 
             Notification.create!(
               user: user,
-              title: "#{event.asset.symbol} earnings on #{event.report_date.strftime('%b %d')}",
-              body: "#{event.asset.name} reports earnings #{event.report_date == Date.current ? 'today' : "in #{(event.report_date - Date.current).to_i} days"}. Estimated EPS: #{event.estimated_eps || 'N/A'}.",
+              title: "#{event.asset.symbol} reporta resultados el #{format_date_es(event.report_date)}",
+              body:  "#{event.asset.name} reporta #{when_phrase_es(event.report_date)}. EPS estimado: #{event.estimated_eps || 'N/D'}.",
               notification_type: :earnings_reminder,
               notifiable: event
             )
@@ -43,6 +43,19 @@ module MarketData
           notifiable: event,
           notification_type: :earnings_reminder
         ).exists?
+      end
+
+      MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
+
+      def format_date_es(date)
+        "#{date.day} #{MONTHS_ES[date.month - 1]}"
+      end
+
+      def when_phrase_es(date)
+        days = (date - Date.current).to_i
+        return "hoy" if days == 0
+        return "mañana" if days == 1
+        "en #{days} días"
       end
     end
   end

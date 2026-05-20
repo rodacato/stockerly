@@ -1,0 +1,60 @@
+<%# Single notification row — used by /notifications and Turbo-Stream prepend. %>
+<%
+  unread       = !notification.read?
+  asset_target = notifiable_asset_link(notification)
+%>
+<div id="<%= dom_id(notification) %>"
+     class="relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 <%= unread ? 'bg-primary/[0.04] dark:bg-primary/10' : 'bg-white dark:bg-slate-800' %> px-5 py-3.5">
+  <% if unread %>
+    <span class="absolute inset-y-0 left-0 w-1 bg-primary"></span>
+  <% end %>
+  <div class="grid grid-cols-[32px_minmax(0,1fr)_auto] gap-x-3.5 gap-y-1.5 items-start">
+    <%# Icon tile %>
+    <span class="flex size-8 items-center justify-center rounded-lg <%= notification_icon_style(notification) %>">
+      <span class="material-symbols-outlined text-[18px]"><%= notification_icon(notification) %></span>
+    </span>
+
+    <%# Body column: chip row + body + asset link %>
+    <div class="min-w-0 flex flex-col gap-1.5">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="rounded px-2 py-0.5 text-[11px] font-semibold <%= notification_category_chip_classes(notification) %>">
+          <%= notification_category_label(notification) %>
+        </span>
+        <% if unread %>
+          <span class="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-primary">
+            <span class="size-1.5 rounded-full bg-primary"></span>
+            No leída
+          </span>
+        <% end %>
+      </div>
+      <p class="text-sm <%= unread ? 'font-medium' : 'font-normal' %> text-slate-900 dark:text-slate-100 leading-relaxed">
+        <%= notification.title %><%= notification.body.present? ? ". #{notification.body}" : "" %>
+      </p>
+      <% if asset_target.is_a?(Asset) %>
+        <%= link_to market_asset_path(asset_target.symbol),
+              class: "inline-flex items-center gap-1.5 self-start font-mono text-xs font-semibold text-primary hover:underline" do %>
+          <%= asset_target.symbol %>
+          <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
+        <% end %>
+      <% elsif asset_target.is_a?(String) %>
+        <span class="inline-flex items-center gap-1.5 self-start font-mono text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <%= asset_target %>
+        </span>
+      <% end %>
+    </div>
+
+    <%# Time + actions column %>
+    <div class="flex flex-col items-end gap-2 min-w-0">
+      <span class="whitespace-nowrap text-xs font-medium text-slate-500 dark:text-slate-400">
+        <%= format_notification_time(notification) %>
+      </span>
+      <% if unread %>
+        <%= button_to mark_as_read_notification_path(notification), method: :patch,
+              class: "inline-flex items-center gap-1.5 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1 text-[11.5px] font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" do %>
+          <span class="material-symbols-outlined text-[13px]">mark_email_read</span>
+          Marcar leída
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -2,19 +2,16 @@ require "rails_helper"
 
 RSpec.describe NotificationsHelper, type: :helper do
   describe "#notification_icon" do
-    it "returns bolt for alert_triggered" do
-      notification = build(:notification, notification_type: :alert_triggered)
-      expect(helper.notification_icon(notification)).to eq("bolt")
-    end
-
-    it "returns calendar_today for earnings_reminder" do
-      notification = build(:notification, notification_type: :earnings_reminder)
-      expect(helper.notification_icon(notification)).to eq("calendar_today")
-    end
-
-    it "returns settings for system" do
-      notification = build(:notification, notification_type: :system)
-      expect(helper.notification_icon(notification)).to eq("settings")
+    {
+      alert_triggered:   "notifications_active",
+      earnings_reminder: "event",
+      maturity_reminder: "event_available",
+      system:            "info"
+    }.each do |type, icon|
+      it "returns #{icon} for #{type}" do
+        notification = build(:notification, notification_type: type)
+        expect(helper.notification_icon(notification)).to eq(icon)
+      end
     end
 
     it "returns notifications for unrecognized type" do
@@ -25,30 +22,55 @@ RSpec.describe NotificationsHelper, type: :helper do
   end
 
   describe "#notification_icon_style" do
-    it "returns muted style for read notifications" do
-      notification = build(:notification, read: true)
-      expect(helper.notification_icon_style(notification)).to include("text-slate-400")
+    it "returns the emerald 'alerta' tile for alert + reminder types" do
+      %i[alert_triggered earnings_reminder maturity_reminder].each do |type|
+        n = build(:notification, notification_type: type)
+        expect(helper.notification_icon_style(n)).to include("emerald")
+      end
     end
 
-    it "returns amber style for unread alert_triggered" do
-      notification = build(:notification, notification_type: :alert_triggered, read: false)
-      expect(helper.notification_icon_style(notification)).to include("bg-amber-100")
+    it "returns the primary 'sistema' tile for system notifications" do
+      n = build(:notification, notification_type: :system)
+      expect(helper.notification_icon_style(n)).to include("primary")
+    end
+  end
+
+  describe "#notification_category_label" do
+    it { expect(helper.notification_category_label(build(:notification, notification_type: :alert_triggered))).to eq("Alerta") }
+    it { expect(helper.notification_category_label(build(:notification, notification_type: :system))).to eq("Sistema") }
+  end
+
+  describe "#group_notifications_by_date" do
+    let(:user) { create(:user) }
+
+    it "buckets into Hoy / Ayer / Más temprano in display order" do
+      today_n     = create(:notification, user: user, created_at: 2.hours.ago)
+      yesterday_n = create(:notification, user: user, created_at: 1.day.ago)
+      earlier_n   = create(:notification, user: user, created_at: 5.days.ago)
+
+      groups = helper.group_notifications_by_date([ today_n, yesterday_n, earlier_n ])
+
+      expect(groups.length).to eq(3)
+      expect(groups[0][0]).to start_with("Hoy")
+      expect(groups[0][1]).to contain_exactly(today_n)
+      expect(groups[1][0]).to start_with("Ayer")
+      expect(groups[1][1]).to contain_exactly(yesterday_n)
+      expect(groups[2][0]).to start_with("Más temprano")
+      expect(groups[2][1]).to contain_exactly(earlier_n)
     end
 
-    it "returns blue style for unread earnings_reminder" do
-      notification = build(:notification, notification_type: :earnings_reminder, read: false)
-      expect(helper.notification_icon_style(notification)).to include("bg-blue-100")
+    it "omits empty buckets" do
+      today_n = create(:notification, user: user, created_at: 1.hour.ago)
+      groups  = helper.group_notifications_by_date([ today_n ])
+      expect(groups.length).to eq(1)
+      expect(groups[0][0]).to start_with("Hoy")
     end
+  end
 
-    it "returns slate style for unread system notification" do
-      notification = build(:notification, notification_type: :system, read: false)
-      expect(helper.notification_icon_style(notification)).to include("text-slate-600")
-    end
-
-    it "returns default style for unread unrecognized type" do
-      notification = build(:notification, notification_type: :system, read: false)
-      allow(notification).to receive(:notification_type).and_return("other")
-      expect(helper.notification_icon_style(notification)).to include("bg-slate-100")
+  describe "#format_date_header" do
+    it "formats with es-MX weekday + month abbreviations" do
+      # Wednesday 2026-05-13
+      expect(helper.format_date_header(Date.new(2026, 5, 13))).to eq("MIÉ 13 MAY 2026")
     end
   end
 end
