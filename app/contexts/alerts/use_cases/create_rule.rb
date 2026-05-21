@@ -12,7 +12,7 @@ module Alerts
 
       def persist(user, attrs)
         rule = user.alert_rules.create!(
-          asset_symbol: attrs[:asset_symbol].upcase,
+          asset_symbol: attrs[:asset_symbol].to_s.upcase.presence,
           condition: attrs[:condition],
           threshold_value: attrs[:threshold_value],
           window_days: attrs[:window_days],

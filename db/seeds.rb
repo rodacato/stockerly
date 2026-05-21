@@ -1,5 +1,8 @@
 puts "Seeding database..."
 
+# --- Market holidays (BMV + Banxico, used by date-based alert rules) ---
+load Rails.root.join("db/seeds/market_holidays.rb")
+
 # --- Site Configuration ---
 SiteConfig.find_or_create_by!(key: "registration_open") do |c|
   c.value = "false"

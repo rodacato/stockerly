@@ -20,8 +20,9 @@ module Alerts
         EventBus.publish(Events::AlertRuleTriggered.new(
           alert_rule_id: result.rule.id,
           user_id: result.rule.user_id,
-          asset_symbol: result.rule.asset_symbol,
-          triggered_price: result.event_date.to_s
+          asset_symbol: result.rule.asset_symbol.to_s,
+          triggered_price: result.event_date.to_s,
+          context: result.context || {}
         ))
       end
     end

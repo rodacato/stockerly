@@ -27,7 +27,8 @@ RSpec.describe AlertRule, type: :model do
       expect(AlertRule.conditions.keys).to contain_exactly(
         "price_crosses_above", "price_crosses_below",
         "day_change_percent", "rsi_overbought", "rsi_oversold",
-        "volume_spike", "dividend_ex_date"
+        "volume_spike", "dividend_ex_date",
+        "bmv_holiday", "cete_auction"
       )
     end
 

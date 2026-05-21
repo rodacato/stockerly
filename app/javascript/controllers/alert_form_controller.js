@@ -85,6 +85,12 @@ export default class extends Controller {
       case "dividend_ex_date":
         text = `Te avisaremos ${window} día(s) antes del próximo ex-date de dividendo de ${ticker}.`
         break
+      case "bmv_holiday":
+        text = `Te avisaremos ${window} día(s) antes de cada festivo de la BMV.`
+        break
+      case "cete_auction":
+        text = `Te avisaremos ${window} día(s) antes de la próxima subasta de CETES.`
+        break
       default:
         text = `Te avisaremos cuando se cumpla la condición en ${ticker}.`
     }
@@ -99,7 +105,9 @@ export default class extends Controller {
       case "volume_spike":
         return "Múltiplo del promedio"
       case "dividend_ex_date":
-        return "Días antes del ex-date"
+      case "bmv_holiday":
+      case "cete_auction":
+        return "Días antes del evento"
       default:
         return "Umbral de precio"
     }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_21_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_21_203500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,13 +40,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_21_120000) do
   end
 
   create_table "alert_rules", force: :cascade do |t|
-    t.string "asset_symbol", null: false
+    t.string "asset_symbol"
     t.integer "condition", null: false
     t.integer "cooldown_minutes", default: 60
     t.datetime "created_at", null: false
     t.datetime "last_triggered_at"
     t.integer "status", default: 0, null: false
-    t.decimal "threshold_value", precision: 15, scale: 4, null: false
+    t.decimal "threshold_value", precision: 15, scale: 4
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.integer "window_days"
@@ -254,6 +254,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_21_120000) do
     t.index ["code"], name: "index_invite_codes_on_code", unique: true
     t.index ["created_by_user_id"], name: "index_invite_codes_on_created_by_user_id"
     t.index ["used_by_user_id"], name: "index_invite_codes_on_used_by_user_id"
+  end
+
+  create_table "market_holidays", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "date", null: false
+    t.integer "market", default: 0, null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_market_holidays_on_date"
+    t.index ["market", "date"], name: "index_market_holidays_on_market_and_date", unique: true
   end
 
   create_table "market_index_histories", force: :cascade do |t|

@@ -9,7 +9,9 @@ module AlertsHelper
     "rsi_overbought"      => "RSI sobrecomprado",
     "rsi_oversold"        => "RSI sobrevendido",
     "volume_spike"        => "Volumen anómalo",
-    "dividend_ex_date"    => "Dividendo próximo"
+    "dividend_ex_date"    => "Dividendo próximo",
+    "bmv_holiday"         => "BMV festivo",
+    "cete_auction"        => "Subasta CETES"
   }.freeze
 
   # Live-feed accent dot color per AlertRule#condition. Drives off the
@@ -22,13 +24,18 @@ module AlertsHelper
     "rsi_overbought"      => "bg-amber-500",
     "rsi_oversold"        => "bg-amber-500",
     "volume_spike"        => "bg-amber-500",
-    "dividend_ex_date"    => "bg-primary"
+    "dividend_ex_date"    => "bg-primary",
+    "bmv_holiday"         => "bg-primary",
+    "cete_auction"        => "bg-primary"
   }.freeze
 
   # Kind chip shown next to the ticker (per mockup: "Acción", "Mercado",
   # "Fondo", "CETE"). We derive it from the symbol because we don't have a
   # downstream Asset record for every alert rule (rules can outlive assets).
   def alert_rule_kind_label(rule)
+    return "BMV"   if rule.condition == "bmv_holiday"
+    return "CETES" if rule.condition == "cete_auction"
+
     case rule.asset_symbol
     when /\ACETES?_/i, /\ACETE\b/i then "CETE"
     when /\.MX\z/i                 then "Acción MX"
@@ -60,6 +67,10 @@ module AlertsHelper
       "volumen > #{format_threshold(rule.threshold_value)}× promedio 30d"
     when "dividend_ex_date"
       "#{rule.window_days.to_i} día(s) antes del ex-date"
+    when "bmv_holiday"
+      "#{rule.window_days.to_i} día(s) antes de un festivo BMV"
+    when "cete_auction"
+      "#{rule.window_days.to_i} día(s) antes de una subasta Banxico"
     else
       rule.condition.to_s.humanize
     end
@@ -101,7 +112,9 @@ module AlertsHelper
       [ "rsi_oversold",        "RSI sobrevendido" ],
       [ "rsi_overbought",      "RSI sobrecomprado" ],
       [ "volume_spike",        "Volumen anómalo" ],
-      [ "dividend_ex_date",    "Dividendo próximo" ]
+      [ "dividend_ex_date",    "Dividendo próximo" ],
+      [ "bmv_holiday",         "BMV festivo" ],
+      [ "cete_auction",        "Subasta CETES" ]
     ]
   end
 
