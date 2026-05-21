@@ -1,0 +1,48 @@
+<%# Filter bar: search + severity segmented control + module dropdown + range dropdown %>
+<%= form_with(url: admin_logs_path, method: :get, data: { turbo_action: "replace" },
+      class: "flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3 shadow-sm") do |f| %>
+
+  <%# Search %>
+  <div class="flex flex-1 min-w-[260px] items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 h-9">
+    <span class="material-symbols-outlined text-base text-slate-400">search</span>
+    <%= f.text_field :search, value: params[:search],
+        placeholder: "Buscar por ID, tarea o palabra clave…",
+        autocomplete: "off",
+        class: "w-full bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none" %>
+  </div>
+
+  <%# Severity segmented control %>
+  <div class="inline-flex items-center gap-0.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-0.5 text-xs">
+    <% Admin::LogsHelper::SEVERITY_OPTIONS.each do |slug, label, value| %>
+      <% active = (params[:severity].presence || "todos") == slug %>
+      <%= link_to admin_logs_path(search: params[:search], module_name: params[:module_name], range: params[:range], severity: value),
+            class: "rounded-md px-2.5 py-1 font-medium #{active ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}" do %>
+        <%= label %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# Module dropdown %>
+  <%= f.select :module_name,
+        options_for_select(Admin::LogsHelper::MODULE_OPTIONS.map { |slug, label, value| [ "Módulo: #{label}", value.to_s ] }, params[:module_name].to_s),
+        {},
+        onchange: "this.form.requestSubmit()",
+        class: "rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-primary/40" %>
+
+  <%# Range dropdown %>
+  <%= f.select :range,
+        options_for_select(Admin::LogsHelper::RANGE_OPTIONS.map { |slug, label, value| [ "Rango: #{label}", value ] }, (params[:range].presence || Admin::LogsHelper::DEFAULT_RANGE)),
+        {},
+        onchange: "this.form.requestSubmit()",
+        class: "rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-primary/40" %>
+
+  <% if admin_logs_any_filter_active? %>
+    <div class="ml-auto">
+      <%= link_to admin_logs_path,
+            class: "inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" do %>
+        <span class="material-symbols-outlined text-[14px]">filter_alt_off</span>
+        Limpiar filtros
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

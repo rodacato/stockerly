@@ -4,9 +4,10 @@ module Admin
       result = Administration::UseCases::Logs::ListLogs.call(params: filter_params, request: request)
 
       if result.success?
-        data  = result.value!
-        @pagy = data[:pagy]
-        @logs = data[:logs]
+        data         = result.value!
+        @pagy        = data[:pagy]
+        @logs        = data[:logs]
+        @total_count = data[:total_count]
       end
     end
 
@@ -16,14 +17,14 @@ module Admin
       if result.success?
         send_data result.value!, filename: "system_logs_#{Date.current}.csv", type: "text/csv"
       else
-        redirect_to admin_logs_path, alert: "Export failed."
+        redirect_to admin_logs_path, alert: "La exportación falló."
       end
     end
 
     private
 
     def filter_params
-      params.permit(:severity, :module_name, :search, :page).to_h.symbolize_keys
+      params.permit(:severity, :module_name, :range, :search, :page).to_h.symbolize_keys
     end
   end
 end

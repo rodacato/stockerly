@@ -15,20 +15,24 @@ RSpec.describe "Admin logs error details", type: :request do
       expect(response.body).to include("Connection timeout after 5000ms")
     end
 
-    it "renders expand button for logs with error details" do
+    it "renders an expand control (chevron) for logs with error details" do
       create(:system_log, :error, error_message: "Gateway timeout")
       get admin_logs_path
 
-      expect(response.body).to include("expand_more")
+      # Every row renders a chevron column; rows with error_message wire the
+      # toggle action onto the icon.
       expect(response.body).to include('data-action="reveal#toggle"')
+      expect(response.body).to include("chevron_right")
     end
 
-    it "does not render expand button for success logs" do
+    it "does not wire the toggle action for success logs" do
       create(:system_log, task_name: "Successful Sync", severity: :success)
       get admin_logs_path
 
-      expect(response.body).not_to include("expand_more")
+      # The chevron icon still renders (placeholder), but no toggle action
+      # nor reveal-target panel exists for success rows.
       expect(response.body).not_to include('data-action="reveal#toggle"')
+      expect(response.body).not_to include('data-reveal-target="content"')
     end
 
     it "renders the error detail row as hidden with reveal target" do

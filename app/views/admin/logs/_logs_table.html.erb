@@ -1,70 +1,37 @@
-<%# System logs table with expandable error details %>
-<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<%# Logs table — dense rows, severity dot column, expand-row reveals payload. %>
+<%# Locals: logs (collection), pagy (Pagy object) %>
+<div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
   <div class="overflow-x-auto">
     <table class="w-full text-left">
-      <thead class="bg-slate-50 dark:bg-slate-800/50">
+      <thead class="bg-slate-50 dark:bg-slate-900/40">
         <tr>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Task / Execution</th>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Module</th>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Timestamp</th>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Duration</th>
+          <th class="w-7 px-3 py-3"><span class="sr-only">Severidad</span></th>
+          <th class="px-3 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Marca de tiempo</th>
+          <th class="px-3 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Módulo</th>
+          <th class="px-3 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Tarea</th>
+          <th class="px-3 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Mensaje</th>
+          <th class="w-8 px-3 py-3"><span class="sr-only">Detalle</span></th>
         </tr>
       </thead>
-      <% if @logs.any? %>
-        <% @logs.each do |log| %>
-          <% has_details = log.error_message.present? %>
-          <tbody<%= ' data-controller="reveal"'.html_safe if has_details %>>
-            <tr class="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-              <td class="px-6 py-4">
-                <%= render "components/log_severity_badge", severity: log.severity %>
-              </td>
-              <td class="px-6 py-4">
-                <div class="flex items-center gap-2">
-                  <p class="text-sm font-bold text-slate-900 dark:text-white"><%= log.task_name %></p>
-                  <% if has_details %>
-                    <button data-action="reveal#toggle"
-                            class="text-slate-400 hover:text-primary transition-colors cursor-pointer"
-                            title="Show error details">
-                      <span class="material-symbols-outlined text-base">expand_more</span>
-                    </button>
-                  <% end %>
-                </div>
-              </td>
-              <td class="px-6 py-4">
-                <span class="text-sm text-slate-500"><%= log.module_name %></span>
-              </td>
-              <td class="px-6 py-4">
-                <span class="text-sm text-slate-500"><%= time_ago_in_words(log.created_at) %> ago</span>
-              </td>
-              <td class="px-6 py-4">
-                <span class="text-sm font-mono text-slate-600 dark:text-slate-300"><%= log.duration_seconds ? "#{log.duration_seconds}s" : "—" %></span>
-              </td>
-            </tr>
-            <% if has_details %>
-              <tr data-reveal-target="content" class="hidden">
-                <td colspan="5" class="px-6 py-3 bg-rose-50 dark:bg-rose-900/10 border-b border-slate-100 dark:border-slate-800">
-                  <div class="flex items-start gap-2 ml-6">
-                    <span class="material-symbols-outlined text-sm text-rose-500 mt-0.5">error</span>
-                    <pre class="text-xs text-slate-700 dark:text-slate-300 font-mono whitespace-pre-wrap break-all"><%= log.error_message %></pre>
-                  </div>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        <% end %>
-      <% else %>
-        <tbody>
-          <tr>
-            <td colspan="5" class="px-6 py-8 text-center text-slate-500">No logs found matching your filters.</td>
-          </tr>
-        </tbody>
+      <% logs.each do |log| %>
+        <%= render "admin/logs/log_row", log: log %>
       <% end %>
     </table>
   </div>
 
-  <%# Pagination %>
-  <div class="px-6 pb-4">
-    <%== @pagy.series_nav if @pagy.pages > 1 %>
+  <%# Pagination footer: "Mostrando N de M registros · filtros se conservan al paginar" %>
+  <div class="flex flex-col gap-2 border-t border-slate-200 dark:border-slate-700 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="text-xs text-slate-500 dark:text-slate-400">
+      Mostrando
+      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= logs.length %></span>
+      de
+      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= number_with_delimiter(pagy.count) %></span>
+      registros · filtros aplicados se conservan al paginar
+    </div>
+    <% if pagy.pages > 1 %>
+      <div class="text-xs">
+        <%== pagy.series_nav %>
+      </div>
+    <% end %>
   </div>
 </div>

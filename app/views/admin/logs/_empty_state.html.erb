@@ -1,0 +1,24 @@
+<%# Empty state — shown when filters return zero rows. %>
+<div class="flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-8 py-16 text-center shadow-sm">
+  <div class="mb-4 flex size-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 text-slate-400">
+    <span class="material-symbols-outlined text-2xl">filter_alt</span>
+  </div>
+  <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Sin registros que coincidan con los filtros.</h2>
+  <% if admin_logs_any_filter_active? %>
+    <p class="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
+      <% parts = [] %>
+      <% parts << "búsqueda <span class='font-mono text-slate-900 dark:text-white'>\"#{ERB::Util.h(params[:search])}\"</span>" if params[:search].present? %>
+      <% parts << "severidad <span class='font-mono text-slate-900 dark:text-white'>#{params[:severity]}</span>" if params[:severity].present? %>
+      <% parts << "módulo <span class='font-mono text-slate-900 dark:text-white'>#{params[:module_name]}</span>" if params[:module_name].present? %>
+      <% parts << "rango <span class='font-mono text-slate-900 dark:text-white'>#{admin_logs_current_range_label.downcase}</span>" if params[:range].present? %>
+      <%= parts.join(" · ").html_safe %>.
+    </p>
+    <%= link_to admin_logs_path,
+          class: "mt-5 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90" do %>
+      <span class="material-symbols-outlined text-[15px]">filter_alt_off</span>
+      Limpiar filtros
+    <% end %>
+  <% else %>
+    <p class="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">Sin actividad en los últimos 90 días.</p>
+  <% end %>
+</div>
