@@ -83,7 +83,9 @@ module Admin
     def integration_last_check_label(integration)
       ts = integration.last_sync_at
       return "nunca" unless ts
-      seconds = (Time.current - ts).to_i
+      # Clamp at 0 to avoid "hace -1 s" when client/server clock skew
+      # makes the timestamp slightly in the future.
+      seconds = [ (Time.current - ts).to_i, 0 ].max
       return "hace #{seconds} s" if seconds < 60
       return "hace #{seconds / 60} min" if seconds < 3600
       return "hace #{seconds / 3600} h" if seconds < 86_400

@@ -4,7 +4,10 @@
   pill  = integration_pill_meta(state)
   caps  = integration_capabilities_label(integration)
   site  = integration_website(integration)
-  keys  = integration.api_key_pools.order(is_default: :desc, name: :asc)
+  # Sort in Ruby to reuse the api_key_pools collection preloaded via
+  # `includes(:api_key_pools)` in the controller (.order would issue a
+  # second SQL query per card and defeat the eager-load).
+  keys  = integration.api_key_pools.sort_by { |k| [ k.is_default? ? 0 : 1, k.name.to_s ] }
 %>
 
 <article class="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm lg:grid-cols-[280px_minmax(0,1fr)_220px]">

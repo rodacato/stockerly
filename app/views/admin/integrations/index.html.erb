@@ -10,8 +10,8 @@
       <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Gestiona conexiones a APIs, claves rotativas y verificaciones de salud.</p>
     </div>
     <div class="text-[12.5px] text-slate-500 dark:text-slate-400">
-      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= @integrations.count %></span>
-      <%= @integrations.count == 1 ? "integración" : "integraciones" %> registradas
+      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= @integrations.size %></span>
+      <%= @integrations.size == 1 ? "integración" : "integraciones" %> registradas
     </div>
   </div>
 
