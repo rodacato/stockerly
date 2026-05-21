@@ -22,10 +22,13 @@ module Admin
       end
     end
 
-    # "21 MAY 2026 · 14:32" — absolute, mono-friendly.
+    # "21 MAY 2026 · 14:32" — absolute, mono-friendly. Uses Time.zone with a
+    # CDMX fallback (zone is configured globally; the fallback only kicks in
+    # if the app boots without an explicit zone).
     def setting_absolute_ts(time)
       return "—" unless time
-      t = time.in_time_zone("America/Mexico_City")
+      zone = Time.zone || ActiveSupport::TimeZone["America/Mexico_City"]
+      t = time.in_time_zone(zone)
       "#{t.day.to_s.rjust(2, '0')} #{MONTHS_ES[t.month - 1]} #{t.year} · #{t.strftime('%H:%M')}"
     end
 

@@ -83,4 +83,40 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
     visit admin_settings_path
     expect(page).to have_content("Aún no hay cambios registrados.")
   end
+
+  it "fetches the four toggle rows with a batched SELECT (regression: N+1)" do
+    %w[registration_open maintenance_mode auto_sync_enabled email_notifications_enabled].each do |key|
+      SiteConfig.set(key, true)
+    end
+
+    queries = []
+    sub = ActiveSupport::Notifications.subscribe("sql.active_record") do |_n, _s, _f, _id, payload|
+      sql = payload[:sql]
+      next if payload[:name] == "SCHEMA"
+      next if QueryCounter::IGNORE.match?(sql)
+      queries << sql if sql.include?("site_configs")
+    end
+
+    visit admin_settings_path
+    ActiveSupport::Notifications.unsubscribe(sub)
+
+    # The controller batches all 4 toggle keys into a single WHERE-IN.
+    batched = queries.count { |q| q.match?(/IN \(.+,.+,.+,.+\)/) }
+    expect(batched).to be >= 1
+  end
+
+  it "rolls the SiteConfig + SiteConfigChange writes back together on failure" do
+    SiteConfig.set("registration_open", false)
+    allow(SiteConfigChange).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+
+    expect {
+      begin
+        page.driver.submit :patch, admin_settings_path,
+                           { "registration_open" => "1", "maintenance_mode" => "0",
+                             "auto_sync_enabled" => "0", "email_notifications_enabled" => "0" }
+      rescue ActiveRecord::RecordInvalid
+        # Expected — the transaction should re-raise.
+      end
+    }.not_to change { SiteConfig.registration_open? }
+  end
 end
