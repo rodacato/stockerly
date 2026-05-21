@@ -21,8 +21,8 @@ RSpec.describe "Empty state consistency", type: :request do
       get alerts_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("No alert rules configured")
-      expect(response.body).to include("notifications_none")
+      expect(response.body).to include("Aún no tienes alertas configuradas")
+      expect(response.body).to include("notifications_off")
     end
   end
 

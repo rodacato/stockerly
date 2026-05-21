@@ -15,6 +15,7 @@ module Alerts
           asset_symbol: attrs[:asset_symbol].upcase,
           condition: attrs[:condition],
           threshold_value: attrs[:threshold_value],
+          window_days: attrs[:window_days],
           status: :active
         )
         Success(rule)

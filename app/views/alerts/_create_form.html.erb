@@ -1,39 +1,95 @@
-<%# Create New Alert form %>
-<section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-  <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
-    <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
-      <span class="material-symbols-outlined text-primary">add_circle</span>
-      Create New Alert
-    </h3>
+<%# Create alert rule — chip-style type selector + dynamic fields per Stockerly-2.0 mockup. %>
+<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-5 shadow-sm">
+  <div class="flex items-baseline gap-3 mb-4">
+    <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Crear una alerta</h2>
+    <span class="text-sm text-slate-500 dark:text-slate-400">Define cuándo y cómo quieres que te avisemos.</span>
   </div>
-  <div class="p-6">
-    <%= form_with url: alerts_path, method: :post, class: "grid grid-cols-1 md:grid-cols-4 gap-4 items-end" do |f| %>
-      <div class="space-y-2">
-        <label class="text-xs font-bold text-slate-500 uppercase">Ticker</label>
-        <input type="text" name="alert[asset_symbol]" placeholder="e.g. NVDA"
-               class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm uppercase font-bold" />
+
+  <%= form_with url: alerts_path, method: :post, data: { controller: "alert-form" }, class: "space-y-5" do |f| %>
+    <%# Hidden condition value driven by chip clicks %>
+    <input type="hidden" name="alert[condition]" value="price_crosses_above" data-alert-form-target="conditionInput">
+
+    <%# Row 1 — type chips %>
+    <div>
+      <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2">Tipo de alerta</p>
+      <div class="flex flex-wrap gap-1.5">
+        <% alert_condition_options.each_with_index do |(slug, label), i| %>
+          <% chip_classes = i.zero? ? "border-primary/25 bg-primary/10 text-primary font-semibold" : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-medium" %>
+          <button type="button"
+                  data-alert-form-target="chip"
+                  data-condition="<%= slug %>"
+                  data-active="<%= i.zero? %>"
+                  data-action="click->alert-form#selectChip"
+                  class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs <%= chip_classes %>">
+            <%= label %>
+          </button>
+        <% end %>
       </div>
-      <div class="space-y-2">
-        <label class="text-xs font-bold text-slate-500 uppercase">Condition</label>
-        <select name="alert[condition]"
-                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm">
-          <option value="price_crosses_above">Price Crosses Above</option>
-          <option value="price_crosses_below">Price Crosses Below</option>
-          <option value="day_change_percent">% Day Change &gt;</option>
-          <option value="rsi_overbought">RSI Overbought (&gt;70)</option>
-          <option value="rsi_oversold">RSI Oversold (&lt;30)</option>
-          <option value="volume_spike">Volume Spike (&gt;X avg)</option>
-        </select>
+    </div>
+
+    <%# Row 2 — activo + umbral + (window_days when applicable) %>
+    <div class="grid grid-cols-1 gap-3 md:grid-cols-12">
+      <div class="md:col-span-6">
+        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">Activo</p>
+        <div class="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 h-10">
+          <span class="material-symbols-outlined text-[16px] text-slate-400">search</span>
+          <input type="text"
+                 name="alert[asset_symbol]"
+                 placeholder="NVDA, WALMEX.MX, BTC…"
+                 autocomplete="off"
+                 data-alert-form-target="ticker"
+                 data-action="input->alert-form#refreshPreview"
+                 class="w-full bg-transparent text-sm font-mono font-semibold uppercase text-slate-900 dark:text-white placeholder:font-normal placeholder:normal-case placeholder:text-slate-400 focus:outline-none">
+        </div>
       </div>
-      <div class="space-y-2">
-        <label class="text-xs font-bold text-slate-500 uppercase">Threshold Value</label>
-        <input type="number" name="alert[threshold_value]" placeholder="Value" step="0.01"
-               class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-transparent focus:ring-primary focus:border-primary text-sm" />
+
+      <div class="md:col-span-3">
+        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5" data-alert-form-target="thresholdLabel">Umbral de precio</p>
+        <div class="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 h-10">
+          <input type="number"
+                 step="0.01"
+                 name="alert[threshold_value]"
+                 placeholder="200.00"
+                 autocomplete="off"
+                 data-alert-form-target="threshold"
+                 data-action="input->alert-form#refreshPreview"
+                 class="w-full bg-transparent text-sm font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none">
+        </div>
       </div>
-      <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2 rounded-lg transition-all flex items-center justify-center gap-2 text-sm shadow-md shadow-primary/20">
-        <span class="material-symbols-outlined text-sm">notifications_active</span>
-        Set Alert
+
+      <div class="md:col-span-3 hidden"
+           data-alert-form-target="panel"
+           data-alert-form-conditions="dividend_ex_date">
+        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">Ventana</p>
+        <div class="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 h-10">
+          <input type="number"
+                 step="1"
+                 min="1"
+                 name="alert[window_days]"
+                 placeholder="7"
+                 value="7"
+                 autocomplete="off"
+                 data-alert-form-target="windowDays"
+                 data-action="input->alert-form#refreshPreview"
+                 class="w-full bg-transparent text-sm font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none">
+          <span class="text-xs text-slate-500 dark:text-slate-400">días antes</span>
+        </div>
+      </div>
+    </div>
+
+    <%# Preview + submit %>
+    <div class="flex flex-col gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 p-3.5 sm:flex-row sm:items-center">
+      <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <span class="material-symbols-outlined text-[16px]">visibility</span>
+      </div>
+      <p class="flex-1 text-sm text-slate-700 dark:text-slate-200" data-alert-form-target="preview">
+        Te avisaremos cuando se cumpla la condición en tu activo.
+      </p>
+      <button type="submit"
+              class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90">
+        <span class="material-symbols-outlined text-[16px]">notifications_active</span>
+        Crear alerta
       </button>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 </section>

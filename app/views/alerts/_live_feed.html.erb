@@ -1,32 +1,34 @@
-<%# Live Alert Feed — data from @events %>
-<section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col max-h-[700px]">
-  <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-primary text-white rounded-t-xl">
-    <h3 class="font-bold text-lg flex items-center gap-2">
-      <span class="material-symbols-outlined">bolt</span>
-      Live Alert Feed
-    </h3>
-    <span class="bg-white/20 px-2 py-0.5 rounded text-[10px] font-bold animate-pulse">LIVE</span>
+<%# Live feed of recent alert triggers. Descriptive es-MX copy per ADR-0001. %>
+<%# locals: (events:) %>
+<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
+  <div class="flex items-baseline gap-3 px-5 pt-5 pb-3">
+    <h2 class="text-base font-semibold tracking-tight text-slate-900 dark:text-white">Disparadas recientemente</h2>
+    <div class="flex-1"></div>
+    <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+      <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 ring-2 ring-emerald-500/20"></span>
+      Live
+    </span>
   </div>
-  <div class="flex-grow overflow-y-auto p-4 space-y-3">
-    <% if @events.present? %>
-      <% @events.each do |event| %>
-        <% is_triggered = event.triggered? %>
-        <% border_color = is_triggered ? 'border-l-emerald-500' : 'border-l-slate-300 dark:border-l-slate-600' %>
-        <div class="p-4 rounded-lg border-l-4 <%= border_color %> relative transition-all hover:translate-x-1 <%= is_triggered ? 'bg-slate-50 dark:bg-slate-800' : 'bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 opacity-70' %>">
-          <span class="absolute top-2 right-4 text-[10px] text-slate-400 font-medium"><%= time_ago_in_words(event.triggered_at) %> ago</span>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="font-black text-slate-900 dark:text-white"><%= event.asset_symbol %></span>
-            <% if is_triggered %>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">Triggered</span>
-            <% else %>
-              <span class="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded font-bold uppercase">Settled</span>
-            <% end %>
+
+  <% if events.any? %>
+    <div class="divide-y divide-slate-100 dark:divide-slate-700">
+      <% events.each do |event| %>
+        <div class="grid grid-cols-[8px_1fr] gap-3 px-5 py-3">
+          <span class="mt-1.5 h-1.5 w-1.5 rounded-full <%= alert_event_accent(event) %>"></span>
+          <div class="min-w-0">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400"><%= alert_event_when(event) %></p>
+            <p class="mt-0.5 text-sm text-slate-700 dark:text-slate-200">
+              <span class="font-mono font-semibold text-primary"><%= event.asset_symbol %></span>
+              <span class="text-slate-400"> · </span>
+              <%= event.message.sub(/\A#{Regexp.escape(event.asset_symbol)}[:\s·]*/, "") %>
+            </p>
           </div>
-          <p class="text-sm text-slate-600 dark:text-slate-400"><%= event.message %></p>
         </div>
       <% end %>
-    <% else %>
-      <%= render "components/empty_state", icon: "notifications_active", title: "No recent alert events", description: "Triggered alerts will appear here in real time." %>
-    <% end %>
-  </div>
+    </div>
+  <% else %>
+    <div class="px-5 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+      Sin avisos recientes. Tus alertas activas están a la escucha.
+    </div>
+  <% end %>
 </section>

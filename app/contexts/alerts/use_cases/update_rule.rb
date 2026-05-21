@@ -20,7 +20,8 @@ module Alerts
         rule.update!(
           asset_symbol: attrs[:asset_symbol].upcase,
           condition: attrs[:condition],
-          threshold_value: attrs[:threshold_value]
+          threshold_value: attrs[:threshold_value],
+          window_days: attrs[:window_days]
         )
         Success(rule)
       rescue ActiveRecord::RecordInvalid => e

@@ -1,24 +1,48 @@
-<%# Single alert rule row for Turbo Stream operations %>
+<%# Single alert rule row for Turbo Stream operations. Mockup-aligned columns. %>
+<%# locals: (rule:) %>
 <% is_active = rule.active? %>
-<%= tag.tr id: dom_id(rule), class: "hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group" do %>
-  <td class="px-6 py-4 font-black text-slate-900 dark:text-white"><%= rule.asset_symbol.start_with?("FG_") ? rule.asset_symbol.sub("FG_", "F&G ") : rule.asset_symbol %></td>
-  <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"><%= rule.condition.humanize %></td>
-  <td class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-white"><%= rule.threshold_value %></td>
-  <td class="px-6 py-4">
-    <div class="flex justify-center">
-      <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter <%= is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' %>">
-        <%= is_active ? 'Active' : 'Paused' %>
+<%= tag.tr id: dom_id(rule), class: "group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 #{'opacity-60' unless is_active}" do %>
+  <td class="px-5 py-3.5">
+    <div class="flex items-center gap-2">
+      <span class="font-mono text-sm font-semibold text-slate-900 dark:text-white tracking-tight">
+        <%= rule.asset_symbol %>
+      </span>
+      <span class="rounded px-1.5 py-0.5 text-[10.5px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700/60">
+        <%= alert_rule_kind_label(rule) %>
       </span>
     </div>
   </td>
-  <td class="px-6 py-4 text-right">
-    <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-      <%= button_to toggle_alert_path(rule), method: :patch, class: "p-1.5 hover:bg-primary/10 rounded text-primary transition-colors", data: { turbo_method: :patch } do %>
-        <span class="material-symbols-outlined text-lg"><%= is_active ? 'pause' : 'play_arrow' %></span>
-      <% end %>
-      <%= button_to alert_path(rule), method: :delete, class: "p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded text-red-500 transition-colors", data: { turbo_method: :delete } do %>
-        <span class="material-symbols-outlined text-lg">delete</span>
+  <td class="px-5 py-3.5 text-sm text-slate-700 dark:text-slate-200">
+    <%= alert_condition_label(rule) %>
+  </td>
+  <td class="px-5 py-3.5 font-mono text-xs text-slate-500 dark:text-slate-400">
+    <%= alert_condition_summary(rule) %>
+  </td>
+  <td class="px-5 py-3.5 text-xs text-slate-500 dark:text-slate-400">
+    <% if rule.last_triggered_at %>
+      hace <%= time_ago_in_words(rule.last_triggered_at) %> · <%= rule.last_triggered_at.in_time_zone('America/Mexico_City').strftime('%H:%M') %> CDMX
+    <% else %>
+      nunca
+    <% end %>
+  </td>
+  <td class="px-5 py-3.5">
+    <div class="flex items-center justify-center">
+      <%= button_to toggle_alert_path(rule), method: :patch,
+            form_class: "inline-flex",
+            class: "relative inline-flex h-5 w-9 items-center rounded-full transition-colors #{is_active ? 'bg-primary' : 'bg-slate-200 dark:bg-slate-700'}",
+            aria: { label: is_active ? "Pausar alerta" : "Activar alerta" },
+            title: is_active ? "Pausar" : "Activar" do %>
+        <span class="inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform <%= is_active ? 'translate-x-4' : 'translate-x-0.5' %>"></span>
       <% end %>
     </div>
+  </td>
+  <td class="px-5 py-3.5 text-right">
+    <%= button_to alert_path(rule), method: :delete,
+          form: { data: { turbo_confirm: "¿Eliminar esta alerta?" } },
+          class: "inline-flex items-center justify-center rounded-md p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-900/30",
+          aria: { label: "Eliminar alerta" },
+          title: "Eliminar" do %>
+      <span class="material-symbols-outlined text-[16px]">delete</span>
+    <% end %>
   </td>
 <% end %>

@@ -22,6 +22,17 @@ RSpec.describe Alerts::UseCases::CreateRule do
       expect(result.value!.asset_symbol).to eq("AAPL")
     end
 
+    it "persists window_days for dividend_ex_date" do
+      result = described_class.call(user: user, params: {
+        asset_symbol: "AAPL",
+        condition: "dividend_ex_date",
+        threshold_value: 0,
+        window_days: 5
+      })
+      expect(result).to be_success
+      expect(result.value!.window_days).to eq(5)
+    end
+
     it "returns Failure when asset_symbol is missing" do
       result = described_class.call(user: user, params: valid_params.merge(asset_symbol: ""))
       expect(result).to be_failure
@@ -35,6 +46,16 @@ RSpec.describe Alerts::UseCases::CreateRule do
 
     it "returns Failure when threshold is missing" do
       result = described_class.call(user: user, params: valid_params.merge(threshold_value: nil))
+      expect(result).to be_failure
+    end
+
+    it "returns Failure when window_days is missing for dividend_ex_date" do
+      result = described_class.call(user: user, params: {
+        asset_symbol: "AAPL",
+        condition: "dividend_ex_date",
+        threshold_value: 0,
+        window_days: 0
+      })
       expect(result).to be_failure
     end
   end

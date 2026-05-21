@@ -1,28 +1,59 @@
-<%# Active Alert Rules table — data from @rules %>
-<section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-  <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
-    <h3 class="font-bold text-lg text-slate-900 dark:text-white">Active Alert Rules</h3>
+<%# Active alert rules — tabbed filter + descriptive condition column per Stockerly-2.0 mockup. %>
+<%# locals: (rules:, counts:, filter:) %>
+<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden">
+  <div class="flex items-baseline gap-3 px-6 pt-5 pb-2">
+    <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Tus reglas</h2>
+    <span class="rounded px-1.5 py-0.5 font-mono text-[11px] font-medium text-primary bg-primary/10">
+      <%= counts[:active] %> activas, <%= counts[:paused] %> pausadas
+    </span>
+    <div class="flex-1"></div>
+    <span class="text-xs text-slate-500 dark:text-slate-400">
+      Mostrando <%= rules.size %> de <%= counts[:all] %>
+    </span>
   </div>
-  <% if @rules.present? %>
+
+  <%# Tabs %>
+  <div class="flex items-center gap-1 border-b border-slate-200 dark:border-slate-700 px-6">
+    <%
+      tabs = [
+        ["active", "Activas",  counts[:active]],
+        ["paused", "Pausadas", counts[:paused]],
+        ["all",    "Todas",    counts[:all]]
+      ]
+    %>
+    <% tabs.each do |slug, label, count| %>
+      <% active = (filter == slug) %>
+      <% tab_text = active ? "font-semibold text-slate-900 dark:text-white border-primary" : "font-medium text-slate-500 dark:text-slate-400 border-transparent" %>
+      <% chip_classes = active ? "bg-primary/10 text-primary" : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400" %>
+      <%= link_to alerts_path(filter: slug),
+            class: "inline-flex items-center gap-2 border-b-2 px-3 py-2.5 text-sm #{tab_text} -mb-px" do %>
+        <%= label %>
+        <span class="rounded px-1.5 py-0.5 font-mono text-[10.5px] font-medium <%= chip_classes %>"><%= count %></span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if rules.any? %>
     <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
+      <table class="w-full text-left">
         <thead>
-          <tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-[10px] uppercase font-bold tracking-widest">
-            <th class="px-6 py-3">Symbol</th>
-            <th class="px-6 py-3">Condition</th>
-            <th class="px-6 py-3">Target</th>
-            <th class="px-6 py-3 text-center">Status</th>
-            <th class="px-6 py-3 text-right">Actions</th>
+          <tr class="bg-slate-50 dark:bg-slate-900/40 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+            <th class="px-5 py-2.5">Activo</th>
+            <th class="px-5 py-2.5">Tipo</th>
+            <th class="px-5 py-2.5">Condición</th>
+            <th class="px-5 py-2.5">Última disparada</th>
+            <th class="px-5 py-2.5 text-center">Estado</th>
+            <th class="px-5 py-2.5 text-right"></th>
           </tr>
         </thead>
-        <tbody id="alert_rules" class="divide-y divide-slate-100 dark:divide-slate-800">
-          <% @rules.each do |rule| %>
+        <tbody id="alert_rules" class="divide-y divide-slate-100 dark:divide-slate-700">
+          <% rules.each do |rule| %>
             <%= render "alerts/alert_rule", rule: rule %>
           <% end %>
         </tbody>
       </table>
     </div>
   <% else %>
-    <%= render "components/empty_state", icon: "notifications_none", title: "No alert rules configured", description: "Use the form above to create your first alert." %>
+    <%= render "alerts/empty_rules" %>
   <% end %>
 </section>

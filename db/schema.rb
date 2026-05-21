@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_20_173758) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_21_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,6 +49,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_20_173758) do
     t.decimal "threshold_value", precision: 15, scale: 4, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.integer "window_days"
     t.index ["asset_symbol"], name: "index_alert_rules_on_asset_symbol"
     t.index ["user_id", "status"], name: "index_alert_rules_on_user_id_and_status"
     t.index ["user_id"], name: "index_alert_rules_on_user_id"

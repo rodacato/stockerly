@@ -44,8 +44,8 @@ RSpec.describe "Authenticated pages", type: :request do
     it "renders the alerts page with rules and live feed" do
       get alerts_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Trend Alerts")
-      expect(response.body).to include("Live Alert Feed")
+      expect(response.body).to include("Tus alertas")
+      expect(response.body).to include("Disparadas recientemente")
     end
   end
 
@@ -54,7 +54,7 @@ RSpec.describe "Authenticated pages", type: :request do
       post alerts_path, params: { alert: { asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200.0 } }
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
-      expect(response.body).to include("Alert created")
+      expect(response.body).to include("Alerta creada")
     end
   end
 
@@ -64,7 +64,7 @@ RSpec.describe "Authenticated pages", type: :request do
       patch alert_path(rule), params: { alert: { asset_symbol: "TSLA", condition: "price_crosses_below", threshold_value: 150.0 } }
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
-      expect(response.body).to include("Alert updated")
+      expect(response.body).to include("Alerta actualizada")
     end
   end
 
@@ -74,7 +74,7 @@ RSpec.describe "Authenticated pages", type: :request do
       delete alert_path(rule)
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
-      expect(response.body).to include("Alert deleted")
+      expect(response.body).to include("Alerta eliminada")
     end
   end
 

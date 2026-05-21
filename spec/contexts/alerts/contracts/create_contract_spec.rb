@@ -29,11 +29,24 @@ RSpec.describe Alerts::Contracts::CreateContract do
       expect(result.errors[:threshold_value]).to be_present
     end
 
-    %w[price_crosses_above price_crosses_below day_change_percent rsi_overbought rsi_oversold volume_spike].each do |condition|
+    %w[price_crosses_above price_crosses_below day_change_percent rsi_overbought rsi_oversold volume_spike dividend_ex_date].each do |condition|
       it "accepts condition '#{condition}'" do
-        result = subject.call(valid_params.merge(condition: condition))
+        params = valid_params.merge(condition: condition)
+        params = params.merge(window_days: 7) if condition == "dividend_ex_date"
+        result = subject.call(params)
         expect(result).to be_success
       end
+    end
+
+    it "requires window_days >= 1 for dividend_ex_date" do
+      result = subject.call(valid_params.merge(condition: "dividend_ex_date", window_days: 0))
+      expect(result).to be_failure
+      expect(result.errors[:window_days]).to be_present
+    end
+
+    it "accepts window_days as nil for price-based conditions" do
+      result = subject.call(valid_params.merge(window_days: nil))
+      expect(result).to be_success
     end
   end
 end
