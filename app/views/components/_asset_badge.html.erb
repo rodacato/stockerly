@@ -29,7 +29,6 @@
     <%= image_tag asset.logo_url, alt: asset.symbol,
           class: "rounded-lg object-cover #{size_classes}",
           loading: "lazy",
-          data: { asset_badge_target: "image" },
           onerror: "this.style.display='none';this.nextElementSibling.classList.remove('hidden');this.nextElementSibling.classList.add('flex');" %>
     <div class="hidden items-center justify-center rounded-lg font-bold uppercase tracking-tighter <%= size_classes %> <%= bg_classes %>">
       <%= asset.symbol %>

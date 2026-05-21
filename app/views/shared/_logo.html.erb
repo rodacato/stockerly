@@ -10,5 +10,5 @@
     transactional emails when prefixed with the absolute host. %>
 <% height_class = local_assigns.fetch(:height_class, "h-9") %>
 <% alt_text     = local_assigns.fetch(:alt_text, "Stockerly") %>
-<img src="/logo_light.svg" alt="<%= alt_text %>" class="<%= height_class %> dark:hidden">
-<img src="/logo_dark.svg"  alt="<%= alt_text %>" class="<%= height_class %> hidden dark:block">
+<%= image_tag "/logo_light.svg", alt: alt_text, class: "#{height_class} dark:hidden" %>
+<%= image_tag "/logo_dark.svg",  alt: alt_text, class: "#{height_class} hidden dark:block" %>
