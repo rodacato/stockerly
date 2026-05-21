@@ -1,14 +1,30 @@
-<% content_for(:admin_page_title, "Users") %>
+<% content_for(:admin_page_title, "Usuarios") %>
 
-<div class="space-y-8">
-  <%# Header %>
-  <div class="flex items-start justify-between">
+<div class="space-y-6">
+  <%# Header band: eyebrow + h1 + subhead + count chip %>
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
     <div>
-      <h1 class="text-2xl font-bold text-slate-900 dark:text-white">User Management</h1>
-      <p class="text-slate-500 mt-1">Monitor and manage access for <%= number_with_delimiter(@pagy.count) %> users.</p>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Usuarios</p>
+      <h1 class="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Cuentas registradas</h1>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Gestiona usuarios, roles y estado de cuentas del beta cerrado.</p>
     </div>
+    <span class="inline-flex items-center gap-1.5 self-start rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 sm:self-end">
+      <span class="material-symbols-outlined text-[14px]">group</span>
+      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= @total_count %></span>
+      <%= @total_count == 1 ? "usuario" : "usuarios" %>
+      <span class="px-1 opacity-40">·</span>
+      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= @admin_count %></span>
+      <%= @admin_count == 1 ? "administrador" : "administradores" %>
+    </span>
   </div>
 
-  <%# Users Table %>
-  <%= render "admin/users/users_table" %>
+  <% if @total_count.zero? %>
+    <%= render "admin/users/empty_state" %>
+  <% else %>
+    <%# Filter bar: search + Rol chips + Estado chips %>
+    <%= render "admin/users/filters" %>
+
+    <%# Users table %>
+    <%= render "admin/users/users_table", users: @users, pagy: @pagy %>
+  <% end %>
 </div>

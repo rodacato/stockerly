@@ -1,66 +1,28 @@
-<%# User management table with real data %>
-<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<%# Users table — dense rows, Lumen tokens, es-MX. %>
+<%# Locals: users (collection), pagy (Pagy object) %>
+<div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
   <div class="overflow-x-auto">
     <table class="w-full text-left">
-      <thead class="bg-slate-50 dark:bg-slate-800/50">
+      <thead class="bg-slate-50 dark:bg-slate-900/40">
         <tr>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">User Profile</th>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Join Date</th>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Role</th>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
-          <th class="px-6 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+          <% %w[Perfil Registro Rol Estado].each do |h| %>
+            <th class="px-4 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400"><%= h %></th>
+          <% end %>
+          <th class="px-4 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Última actividad</th>
+          <th class="px-4 py-3 text-right">
+            <span class="sr-only">Acciones</span>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <% @users.each do |user| %>
-          <tr class="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div class="size-9 rounded-full bg-primary flex items-center justify-center">
-                  <span class="text-white text-xs font-bold"><%= user.full_name[0..1].upcase %></span>
-                </div>
-                <div>
-                  <p class="font-bold text-sm text-slate-900 dark:text-white"><%= user.full_name %></p>
-                  <p class="text-xs text-slate-400"><%= user.email %></p>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="text-sm text-slate-500"><%= user.created_at.strftime("%b %d, %Y") %></span>
-            </td>
-            <td class="px-6 py-4">
-              <% role_colors = { "admin" => "bg-primary text-white", "user" => "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300" } %>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold <%= role_colors[user.role] || role_colors['user'] %>">
-                <%= user.role.capitalize %>
-              </span>
-            </td>
-            <td class="px-6 py-4">
-              <%= render "components/status_badge", status: user.status %>
-            </td>
-            <td class="px-6 py-4 text-right">
-              <% unless user.admin? %>
-                <div class="flex items-center justify-end gap-1">
-                  <% if user.suspended? %>
-                    <%= button_to reactivate_admin_user_path(user), method: :patch,
-                        class: "p-1.5 text-slate-400 hover:text-green-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
-                        data: { turbo_confirm: "Reactivate #{user.full_name}?" } do %>
-                      <span class="material-symbols-outlined text-lg">check_circle</span>
-                    <% end %>
-                  <% else %>
-                    <%= button_to suspend_admin_user_path(user), method: :patch,
-                        class: "p-1.5 text-slate-400 hover:text-rose-500 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
-                        data: { turbo_confirm: "Suspend #{user.full_name}?" } do %>
-                      <span class="material-symbols-outlined text-lg">block</span>
-                    <% end %>
-                  <% end %>
-
-                  <%= button_to admin_user_path(user), method: :delete,
-                      class: "p-1.5 text-slate-400 hover:text-red-600 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
-                      data: { turbo_confirm: "Permanently delete #{user.full_name}? This cannot be undone." } do %>
-                    <span class="material-symbols-outlined text-lg">delete_forever</span>
-                  <% end %>
-                </div>
-              <% end %>
+        <% if users.any? %>
+          <% users.each do |user| %>
+            <%= render "admin/users/user_row", user: user %>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="6" class="px-4 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+              Sin usuarios que coincidan con los filtros.
             </td>
           </tr>
         <% end %>
@@ -68,8 +30,9 @@
     </table>
   </div>
 
-  <%# Pagination %>
-  <div class="px-6 pb-4">
-    <%== @pagy.series_nav if @pagy.pages > 1 %>
-  </div>
+  <% if pagy.pages > 1 %>
+    <div class="border-t border-slate-200 dark:border-slate-700 px-4 py-3">
+      <%== pagy.series_nav %>
+    </div>
+  <% end %>
 </div>

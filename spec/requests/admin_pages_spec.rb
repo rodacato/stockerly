@@ -163,7 +163,7 @@ RSpec.describe "Admin pages", type: :request do
     it "renders the users page" do
       get admin_users_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("User Management")
+      expect(response.body).to include("Cuentas registradas")
     end
 
     it "renders the integrations page" do

@@ -1,0 +1,126 @@
+<%# Single user row + overflow menu. Locals: user %>
+<%
+  status_key = admin_user_lifecycle_status(user)
+  status_label = admin_user_status_label(status_key)
+  status_classes = admin_user_status_pill_classes(status_key)
+  relative, absolute = admin_user_last_activity(user)
+  is_admin = user.admin?
+  is_self  = user == current_user
+  dim = user.suspended?
+%>
+<tr class="border-t border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
+  <%# Perfil %>
+  <td class="px-4 py-3">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold tracking-wide">
+        <%= admin_user_initials(user) %>
+      </div>
+      <div class="min-w-0">
+        <div class="truncate text-sm font-semibold <%= dim ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-white' %>">
+          <%= user.full_name %>
+          <% if is_self %>
+            <span class="ml-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">· tú</span>
+          <% end %>
+        </div>
+        <div class="mt-0.5 truncate font-mono text-[11px] text-slate-500 dark:text-slate-400">
+          <%= user.email %>
+        </div>
+      </div>
+    </div>
+  </td>
+
+  <%# Registro %>
+  <td class="px-4 py-3 whitespace-nowrap font-mono text-xs text-slate-500 dark:text-slate-400">
+    <%= admin_user_registration_label(user) %>
+  </td>
+
+  <%# Rol %>
+  <td class="px-4 py-3">
+    <span class="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider <%= is_admin ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400' %>">
+      <% if is_admin %>
+        <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">shield</span>
+      <% end %>
+      <%= is_admin ? "Admin" : "Usuario" %>
+    </span>
+  </td>
+
+  <%# Estado %>
+  <td class="px-4 py-3">
+    <span class="inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider <%= status_classes %>">
+      <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+      <%= status_label %>
+    </span>
+  </td>
+
+  <%# Última actividad %>
+  <td class="px-4 py-3 whitespace-nowrap">
+    <% if relative %>
+      <div class="text-xs text-slate-700 dark:text-slate-200"><%= relative %></div>
+      <div class="mt-0.5 font-mono text-[11px] text-slate-500 dark:text-slate-400"><%= absolute %></div>
+    <% else %>
+      <div class="text-xs italic text-slate-500 dark:text-slate-400"><%= absolute %></div>
+    <% end %>
+  </td>
+
+  <%# Acciones — overflow menu %>
+  <td class="px-4 py-3 text-right">
+    <div class="relative inline-flex gap-1" data-controller="reveal">
+      <button type="button"
+              aria-label="Más acciones"
+              aria-haspopup="menu"
+              data-action="reveal#toggle"
+              class="inline-flex size-8 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60 focus:outline-none focus:ring-2 focus:ring-primary/50">
+        <span class="material-symbols-outlined text-base">more_horiz</span>
+      </button>
+
+      <div data-reveal-target="content"
+           role="menu"
+           class="hidden absolute right-0 top-full z-20 mt-1.5 min-w-[208px] rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 shadow-lg">
+        <% unless is_admin || is_self %>
+          <%= button_to "#promote-placeholder", method: :post, disabled: true,
+                form: { class: "block" },
+                class: "flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-slate-400 dark:text-slate-500 cursor-not-allowed",
+                title: "Disponible pronto" do %>
+            <span class="material-symbols-outlined text-[14px]">shield</span>
+            Promover a admin
+          <% end %>
+        <% end %>
+
+        <% if status_key == :unverified %>
+          <%= button_to "#resend-verification-placeholder", method: :post, disabled: true,
+                form: { class: "block" },
+                class: "flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-slate-400 dark:text-slate-500 cursor-not-allowed",
+                title: "Disponible pronto" do %>
+            <span class="material-symbols-outlined text-[14px]">mark_email_read</span>
+            Reenviar verificación
+          <% end %>
+        <% end %>
+
+        <% if user.suspended? %>
+          <%= button_to reactivate_admin_user_path(user), method: :patch,
+                form: { class: "block", data: { turbo_confirm: "¿Reactivar a #{user.full_name}?" } },
+                class: "flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20" do %>
+            <span class="material-symbols-outlined text-[14px]">play_circle</span>
+            Reactivar
+          <% end %>
+        <% elsif !is_admin && !is_self %>
+          <%= button_to suspend_admin_user_path(user), method: :patch,
+                form: { class: "block", data: { turbo_confirm: "¿Suspender a #{user.full_name}?" } },
+                class: "flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20" do %>
+            <span class="material-symbols-outlined text-[14px]">pause_circle</span>
+            Suspender
+          <% end %>
+        <% end %>
+
+        <button type="button"
+                data-controller="clipboard"
+                data-clipboard-text-value="<%= user.email %>"
+                data-action="clipboard#copy"
+                class="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60">
+          <span class="material-symbols-outlined text-[14px]">content_copy</span>
+          Copiar correo
+        </button>
+      </div>
+    </div>
+  </td>
+</tr>
