@@ -7,7 +7,7 @@ RSpec.describe Alerts::UseCases::EvaluateDateBasedRules do
   describe ".call" do
     it "publishes AlertRuleTriggered for each matching rule" do
       rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :dividend_ex_date, threshold_value: 0, window_days: 7)
-      create(:dividend, asset: asset, ex_date: 2.days.from_now.to_date, amount_per_share: 0.5)
+      create(:dividend, asset: asset, ex_date: 7.days.from_now.to_date, amount_per_share: 0.5)
 
       published = []
       EventBus.subscribe(Alerts::Events::AlertRuleTriggered, ->(event) { published << event })
@@ -34,7 +34,7 @@ RSpec.describe Alerts::UseCases::EvaluateDateBasedRules do
 
     it "ignores paused rules" do
       create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :dividend_ex_date, threshold_value: 0, window_days: 7, status: :paused)
-      create(:dividend, asset: asset, ex_date: 2.days.from_now.to_date, amount_per_share: 0.5)
+      create(:dividend, asset: asset, ex_date: 7.days.from_now.to_date, amount_per_share: 0.5)
 
       published = []
       EventBus.subscribe(Alerts::Events::AlertRuleTriggered, ->(event) { published << event })

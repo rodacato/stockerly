@@ -26,11 +26,22 @@ class AlertRule < ApplicationRecord
   scope :date_based, -> { where(condition: DATE_BASED_CONDITIONS) }
   scope :price_based, -> { where.not(condition: DATE_BASED_CONDITIONS) }
 
+  DEFAULT_COOLDOWN_MINUTES = 60
+
+  # Symbol convention: `XXX.MX` for BMV-listed equities (priced in MXN); the
+  # rest default to USD. Single source of truth for any code that needs to
+  # format thresholds or pick a currency badge for an alert.
+  def currency
+    asset_symbol.to_s.match?(/\.MX\z/i) ? "MXN" : "USD"
+  end
+
   def date_based?
     DATE_BASED_CONDITIONS.include?(condition)
   end
 
   def cooled_down?
-    last_triggered_at.nil? || last_triggered_at < cooldown_minutes.minutes.ago
+    return true if last_triggered_at.nil?
+
+    last_triggered_at < (cooldown_minutes || DEFAULT_COOLDOWN_MINUTES).minutes.ago
   end
 end

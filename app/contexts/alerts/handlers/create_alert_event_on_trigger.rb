@@ -47,8 +47,7 @@ module Alerts
       end
 
       def self.format_threshold(rule)
-        currency = rule.asset_symbol.to_s.match?(/\.MX$/) ? "MXN" : "USD"
-        "#{currency} #{format('%.2f', rule.threshold_value.to_f)}"
+        "#{rule.currency} #{format('%.2f', rule.threshold_value.to_f)}"
       end
 
       private_class_method :build_message, :format_threshold

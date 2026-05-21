@@ -12,6 +12,19 @@ module AlertsHelper
     "dividend_ex_date"    => "Dividendo próximo"
   }.freeze
 
+  # Live-feed accent dot color per AlertRule#condition. Drives off the
+  # rule's condition (not the localized message text) so the mapping
+  # survives copy edits and locale changes.
+  CONDITION_ACCENTS = {
+    "price_crosses_above" => "bg-emerald-500",
+    "price_crosses_below" => "bg-rose-500",
+    "day_change_percent"  => "bg-amber-500",
+    "rsi_overbought"      => "bg-amber-500",
+    "rsi_oversold"        => "bg-amber-500",
+    "volume_spike"        => "bg-amber-500",
+    "dividend_ex_date"    => "bg-primary"
+  }.freeze
+
   # Kind chip shown next to the ticker (per mockup: "Acción", "Mercado",
   # "Fondo", "CETE"). We derive it from the symbol because we don't have a
   # downstream Asset record for every alert rule (rules can outlive assets).
@@ -34,9 +47,9 @@ module AlertsHelper
   def alert_condition_summary(rule)
     case rule.condition
     when "price_crosses_above"
-      "cruza #{alert_currency_label(rule)} #{format_threshold(rule.threshold_value)} al alza"
+      "cruza #{rule.currency} #{format_threshold(rule.threshold_value)} al alza"
     when "price_crosses_below"
-      "cruza #{alert_currency_label(rule)} #{format_threshold(rule.threshold_value)} a la baja"
+      "cruza #{rule.currency} #{format_threshold(rule.threshold_value)} a la baja"
     when "day_change_percent"
       "se mueve más de #{format_threshold(rule.threshold_value)}% en el día"
     when "rsi_overbought"
@@ -50,10 +63,6 @@ module AlertsHelper
     else
       rule.condition.to_s.humanize
     end
-  end
-
-  def alert_currency_label(rule)
-    rule.asset_symbol.to_s.match?(/\.MX\z/i) ? "MXN" : "USD"
   end
 
   def format_threshold(value)
@@ -77,15 +86,10 @@ module AlertsHelper
   end
 
   def alert_event_accent(event)
-    msg = event.message.to_s
-    case
-    when msg.include?("a la baja")      then "bg-rose-500"
-    when msg.include?("al alza")        then "bg-emerald-500"
-    when msg.include?("sobrevendido")   then "bg-amber-500"
-    when msg.include?("sobrecomprado")  then "bg-amber-500"
-    when msg.include?("anómalo")        then "bg-amber-500"
-    else                                     "bg-primary"
-    end
+    rule = event.alert_rule
+    return "bg-primary" unless rule
+
+    CONDITION_ACCENTS.fetch(rule.condition, "bg-primary")
   end
 
   # Available condition options for the create form, in display order. The
