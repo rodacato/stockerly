@@ -98,7 +98,7 @@ Migration relaxed `asset_symbol` + `threshold_value` NOT NULL constraints; marke
 
 ---
 
-## 2026-05-21 — Admin Lumen migration adelantado (6 PRs #134-#139)
+## 2026-05-21 — Admin Lumen migration pulled forward (6 PRs #134-#139)
 
 Originally S11+ scope per the GOAL.md anti-scope. Adrian wanted to advance the design pass on the admin zone in parallel with BMV/CETE. Followed the canonical visual-design workflow: drafted 6 self-contained prompts at `.local/design-mockups/Stockerly-2.0/admin/PROMPTS.md` (with shared preamble + screen-specific sections), Adrian generated mockups externally, I launched 2 parallel agents in worktrees:
 

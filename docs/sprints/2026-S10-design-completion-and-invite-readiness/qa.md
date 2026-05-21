@@ -10,7 +10,7 @@
 - [x] **Sprint goal partially achieved** — design pass arc closed on all 4 mockup-ready screens (#100 #101 #93 #94 all merged) + #124 + #125. **The "first beta invite" half of the goal did NOT execute** — Adrian deferred sending. See retro.
 - [x] **All `main` scope issues** closed: #100 ✅ #101 ✅ #93 ✅ #94 ✅
 - [x] **Parallel issues** resolved: #124 ✅ closed · #125 → invite-prep deliverables shipped (#130, runbook in `docs/ops/beta-invite.md`); reactive-bucket capacity remained unused because invite didn't go out
-- [x] **Unclosed issues**: none from the sprint scope. All 6 reached terminal state.
+- [x] **Unclosed issues**: none from the sprint scope. All 6 scope items + #133 (added during sprint) reached terminal state — 7 total.
 
 ## Code health
 
@@ -18,7 +18,7 @@
 - [x] `bin/rubocop` no offenses — **871 files inspected, no offenses detected**
 - [x] `bin/brakeman` no new warnings — **No warnings found**
 - [x] `bin/bundler-audit` no vulnerabilities — **No vulnerabilities found**
-- [x] CI on GitHub Actions green — all 14 merged PRs (#127–#139) shipped 10/10 green
+- [x] CI on GitHub Actions green — all 13 merged PRs (#127–#139) shipped 10/10 green; PR #140 also CI-green but intentionally held open until this close lands (see retro)
 - [x] Working tree clean — only this close commit on `chore/s10-close`; PR #140 (brand-asset refresh) stays open on its own branch per Adrian's "merge after S10 close" decision
 
 ## Vision compliance
@@ -38,7 +38,7 @@
 
 ## GitHub hygiene
 
-- [x] **Closed issues** — #93 #94 #100 #101 #124 + #133 (added during sprint) all merged via their respective PRs and auto-closed via "Closes #N" in PR bodies.
+- [x] **Closed issues** — #93 #94 #100 #101 #124 #125 + #133 (added during sprint) all reached terminal state. Code-bearing issues (#93/#94/#100/#101/#124/#133) auto-closed via "Closes #N" in PR bodies. #125 closed manually after invite-prep deliverables shipped via #130 even though no reactive fixes used the reserve capacity.
 - [x] **Milestone ready to close** — the S10 milestone is implicit (no GitHub Milestone object), tracked here in `scope.md` + this `qa.md`. All scope items in terminal state.
 - [x] **No orphan issues** — confirmed via `gh issue list --state open` cross-checked against scope.md.
 
