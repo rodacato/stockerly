@@ -18,7 +18,7 @@ module Admin
       result = Administration::UseCases::Assets::TriggerSync.call(asset_id: params[:id])
 
       if result.success?
-        redirect_with_filters(notice: "Sync job enqueued.")
+        redirect_with_filters(notice: "Sincronización encolada.")
       else
         redirect_with_filters(alert: result.failure.last)
       end
@@ -28,9 +28,9 @@ module Admin
       result = Administration::UseCases::Assets::TriggerSync.call(asset_type: params[:type])
 
       if result.success?
-        redirect_with_filters(notice: "Bulk sync enqueued.")
+        redirect_with_filters(notice: "Sincronización masiva encolada.")
       else
-        redirect_with_filters(alert: "Failed to enqueue sync.")
+        redirect_with_filters(alert: "No se pudo encolar la sincronización.")
       end
     end
 
@@ -48,7 +48,7 @@ module Admin
       result = Administration::UseCases::Assets::CreateAsset.call(admin: current_user, params: asset_params.to_h)
 
       if result.success?
-        redirect_with_filters(notice: "Asset \"#{result.value!.symbol}\" created successfully.")
+        redirect_with_filters(notice: "Activo \"#{result.value!.symbol}\" creado.")
       else
         redirect_with_filters(alert: result.failure.last.is_a?(Hash) ? result.failure.last.values.flatten.first : result.failure.last)
       end
@@ -61,7 +61,7 @@ module Admin
       )
 
       if result.success?
-        redirect_with_filters(notice: "Asset \"#{result.value!.symbol}\" updated successfully.")
+        redirect_with_filters(notice: "Activo \"#{result.value!.symbol}\" actualizado.")
       else
         redirect_with_filters(alert: result.failure.last.is_a?(Hash) ? result.failure.last.values.flatten.first : result.failure.last)
       end
@@ -71,7 +71,7 @@ module Admin
       result = Administration::UseCases::Assets::DeleteAsset.call(asset_id: params[:id], admin: current_user)
 
       if result.success?
-        redirect_with_filters(notice: "Asset \"#{result.value!}\" deleted.")
+        redirect_with_filters(notice: "Activo \"#{result.value!}\" eliminado.")
       else
         redirect_with_filters(alert: result.failure.last)
       end
@@ -79,15 +79,15 @@ module Admin
 
     def toggle_status
       Administration::UseCases::Assets::ToggleStatus.call(asset_id: params[:id])
-      redirect_with_filters(notice: "Asset status updated.")
+      redirect_with_filters(notice: "Estado del activo actualizado.")
     rescue ActiveRecord::RecordNotFound
-      redirect_with_filters(alert: "Asset not found")
+      redirect_with_filters(alert: "Activo no encontrado.")
     end
 
     private
 
     def filter_params
-      params.permit(:type, :status, :search, :page).to_h.symbolize_keys
+      params.permit(:type, :status, :market, :search, :page).to_h.symbolize_keys
     end
 
     def redirect_with_filters(notice: nil, alert: nil)

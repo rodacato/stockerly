@@ -17,10 +17,10 @@ RSpec.describe "Admin asset management", type: :system do
       click_button "Iniciar sesión"
     end
 
-    it "displays asset management page with KPI cards" do
+    it "displays asset management page with header band" do
       visit admin_assets_path
-      expect(page).to have_content("Asset Management")
-      expect(page).to have_content("Total Assets")
+      expect(page).to have_content("Catálogo de activos")
+      expect(page).to have_content("Activos")
     end
 
     it "shows assets table with asset details" do
@@ -64,7 +64,7 @@ RSpec.describe "Admin asset management", type: :system do
       click_button "Iniciar sesión"
 
       visit admin_assets_path
-      expect(page).not_to have_content("Asset Management")
+      expect(page).not_to have_content("Catálogo de activos")
     end
   end
 end

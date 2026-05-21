@@ -1,141 +1,37 @@
-<% content_for(:admin_page_title, "Assets") %>
+<% content_for(:admin_page_title, "Activos") %>
 
-<div class="space-y-6">
-  <%# Header %>
-  <div class="flex items-start justify-between">
+<div class="space-y-6" data-controller="reveal">
+  <%# Header band: eyebrow + h1 + subhead + CTAs %>
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
     <div>
-      <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Asset Management</h1>
-      <p class="text-slate-500 mt-1">Overview and configuration of global Stocks & Crypto instruments.</p>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Catálogo de activos</p>
+      <h1 class="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Activos</h1>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Crea, edita y sincroniza activos rastreados por Stockerly.</p>
     </div>
     <div class="flex items-center gap-2">
       <%= button_to trigger_sync_all_admin_assets_path, method: :post,
-          class: "inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors" do %>
-        <span class="material-symbols-outlined text-lg">sync</span>
-        Sync All Assets
+            class: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm font-semibold text-slate-900 dark:text-white shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700/60" do %>
+        <span class="material-symbols-outlined text-[15px]">sync</span>
+        Sincronizar todos
       <% end %>
+      <button type="button" data-action="reveal#toggle"
+              class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90">
+        <span class="material-symbols-outlined text-[15px]">add</span>
+        Nuevo activo
+      </button>
     </div>
   </div>
 
-  <%# Add New Asset Form %>
-  <div data-controller="reveal">
-    <button data-action="reveal#toggle"
-        class="w-full bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-4 hover:border-primary transition-colors flex items-center justify-center gap-2 text-slate-500 hover:text-primary cursor-pointer">
-      <span class="material-symbols-outlined text-xl">add_circle</span>
-      <span class="text-sm font-semibold">Add New Asset</span>
-    </button>
+  <% if @total_count.zero? %>
+    <%= render "admin/assets/empty_state" %>
+  <% else %>
+    <%# Filter bar: search + Tipo + Estado + Mercado chip groups %>
+    <%= render "admin/assets/filters" %>
 
-    <div data-reveal-target="content" class="hidden mt-4">
-      <%= form_with(url: admin_assets_path, scope: :asset, method: :post,
-          class: "bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-primary/30 dark:border-primary/30 p-6",
-          data: { controller: "ticker-search", ticker_search_url_value: search_admin_assets_path }) do |f| %>
-        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4">New Asset</h3>
+    <%# New asset form (revealed by the Nuevo activo CTA above) %>
+    <%= render "admin/assets/new_asset_form" %>
 
-        <%# Autocomplete search input %>
-        <div class="relative mb-4">
-          <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus-within:ring-2 focus-within:ring-primary">
-            <span class="material-symbols-outlined text-lg text-slate-400">search</span>
-            <input type="text"
-              placeholder="Search by ticker or company name (e.g. AAPL, Apple)..."
-              autocomplete="off"
-              data-ticker-search-target="input"
-              data-action="input->ticker-search#search keydown->ticker-search#navigate"
-              class="w-full text-sm bg-transparent text-slate-900 dark:text-white placeholder-slate-400 outline-none">
-          </div>
-          <div data-ticker-search-target="results"
-               class="hidden absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-h-64 overflow-y-auto">
-          </div>
-        </div>
-
-        <%# Form fields with Stimulus targets %>
-        <% input_class = "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary" %>
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          <div>
-            <%= f.text_field :symbol, placeholder: "Symbol (e.g. AAPL)",
-                data: { ticker_search_target: "symbol" }, class: input_class %>
-          </div>
-          <div>
-            <%= f.text_field :name, placeholder: "Name (e.g. Apple Inc.)",
-                data: { ticker_search_target: "name" }, class: input_class %>
-          </div>
-          <div>
-            <%= f.select :asset_type,
-                options_for_select([["Stock", "stock"], ["Crypto", "crypto"], ["Index", "index"], ["ETF", "etf"], ["Fixed Income", "fixed_income"]]),
-                { prompt: "Asset Type" },
-                data: { ticker_search_target: "assetType" },
-                class: "w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary" %>
-          </div>
-          <div>
-            <%= f.text_field :country, placeholder: "Country (e.g. US)",
-                data: { ticker_search_target: "country" }, class: input_class %>
-          </div>
-          <div>
-            <%= f.text_field :exchange, placeholder: "Exchange (e.g. NASDAQ)",
-                data: { ticker_search_target: "exchange" }, class: input_class %>
-          </div>
-          <div>
-            <%= f.text_field :sector, placeholder: "Sector (e.g. Technology)",
-                data: { ticker_search_target: "sector" }, class: input_class %>
-          </div>
-          <div>
-            <%= f.text_field :logo_url, placeholder: "Logo URL (auto-generated if blank)",
-                class: input_class %>
-          </div>
-          <div class="flex items-end">
-            <%= f.submit "Create Asset",
-                class: "w-full px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors cursor-pointer" %>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  </div>
-
-  <%# KPI Cards %>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <%= render "components/kpi_card", title: "Total Assets",   value: number_with_delimiter(@total_count), icon: "database", tone: :info %>
-    <%= render "components/kpi_card", title: "Syncing Assets", value: @syncing_count.to_s,                icon: "sync",     tone: :success, badge: "Active" %>
-    <%= render "components/kpi_card", title: "Listed",         value: number_with_delimiter(@pagy.count), icon: "list",     tone: :warning %>
-  </div>
-
-  <%# Filters %>
-  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
-    <%= form_with(url: admin_assets_path, method: :get, class: "flex flex-wrap items-end gap-3", data: { turbo_frame: "_top" }) do |f| %>
-      <div class="flex-1 min-w-[200px]">
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Search</label>
-        <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus-within:ring-2 focus-within:ring-primary">
-          <span class="material-symbols-outlined text-base text-slate-400">search</span>
-          <input type="text" name="search" value="<%= params[:search] %>"
-            placeholder="Search by name or symbol..." autocomplete="off"
-            class="w-full text-sm bg-transparent text-slate-900 dark:text-white placeholder-slate-400 outline-none">
-        </div>
-      </div>
-
-      <div class="w-36">
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Type</label>
-        <%= f.select :type,
-            options_for_select([["All Types", ""], ["Stock", "stock"], ["Crypto", "crypto"], ["ETF", "etf"], ["Index", "index"], ["Fixed Income", "fixed_income"]], params[:type]),
-            {},
-            class: "w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary" %>
-      </div>
-
-      <div class="w-36">
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Status</label>
-        <%= f.select :status,
-            options_for_select([["All Statuses", ""], ["Active", "active"], ["Disabled", "disabled"], ["Sync Issue", "sync_issue"]], params[:status]),
-            {},
-            class: "w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary" %>
-      </div>
-
-      <div class="flex items-end gap-2">
-        <%= f.submit "Filter",
-            class: "px-4 py-1.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors cursor-pointer" %>
-        <% if params[:search].present? || params[:type].present? || params[:status].present? %>
-          <%= link_to "Clear", admin_assets_path,
-              class: "px-4 py-1.5 text-sm font-medium text-slate-500 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-
-  <%# Assets Table %>
-  <%= render "admin/assets/assets_table" %>
+    <%# Assets table %>
+    <%= render "admin/assets/assets_table", assets: @assets, pagy: @pagy %>
+  <% end %>
 </div>

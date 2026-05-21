@@ -85,11 +85,11 @@ RSpec.describe "Admin pages", type: :request do
     end
 
     it "renders the asset management page" do
+      create(:asset)
       get admin_assets_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Asset Management")
-      expect(response.body).to include("Total Assets")
-      expect(response.body).to include("Add New Asset")
+      expect(response.body).to include("Catálogo de activos")
+      expect(response.body).to include("Nuevo activo")
     end
 
     it "creates a new asset from admin" do
@@ -111,7 +111,7 @@ RSpec.describe "Admin pages", type: :request do
 
       expect(response).to redirect_to(admin_assets_path)
       follow_redirect!
-      expect(response.body).to include("Asset Management")
+      expect(response.body).to include("Activos")
     end
 
     it "enqueues RefreshFxRatesJob on refresh_fx_rates" do
@@ -149,7 +149,7 @@ RSpec.describe "Admin pages", type: :request do
 
       expect(response).to redirect_to(admin_assets_path)
       follow_redirect!
-      expect(response.body).to include("deleted")
+      expect(response.body).to include("eliminado")
     end
 
     it "renders the system logs page" do
