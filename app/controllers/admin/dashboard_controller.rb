@@ -11,6 +11,9 @@ module Admin
       @integrations   = Integration.all
       @data_sources   = DataSourceRegistry.all
 
+      @recent_activity = SystemLog.recent.limit(20)
+      @activity_total  = SystemLog.last_24h.count
+
       result = Administration::UseCases::Dashboard::LoadSyncOverview.call
       @sync_overview = result.value! if result.success?
 
@@ -20,15 +23,15 @@ module Admin
 
     def refresh_fx_rates
       RefreshFxRatesJob.perform_later
-      redirect_to admin_root_path, notice: "FX rates refresh enqueued."
+      redirect_to admin_root_path, notice: "Sincronización de tipos de cambio programada."
     end
 
     def trigger_data_source
       source = DataSourceRegistry.find(params[:key].to_sym)
       source.job_class.perform_later(*source.job_args)
-      redirect_to admin_root_path, notice: "#{source.name} sync enqueued."
+      redirect_to admin_root_path, notice: "Sincronización de #{source.name} programada."
     rescue KeyError
-      redirect_to admin_root_path, alert: "Unknown data source."
+      redirect_to admin_root_path, alert: "Fuente de datos desconocida."
     end
   end
 end

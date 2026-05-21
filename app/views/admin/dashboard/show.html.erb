@@ -1,232 +1,303 @@
-<% content_for(:admin_page_title, "Dashboard") %>
+<%# /admin — Panel general. Lumen + es-MX, mockup Stockerly-2.0. %>
+<% content_for(:admin_page_title, "Panel general") %>
 
 <div class="space-y-6">
-  <%# Header %>
-  <div>
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Admin Dashboard</h1>
-    <p class="text-slate-500 mt-1">System overview and key metrics at a glance.</p>
+  <%# Header band %>
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Consola de administración</p>
+      <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Panel general</h1>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Estado del sistema y operaciones recientes.</p>
+    </div>
+    <div class="flex flex-col items-start gap-1 sm:items-end">
+      <span class="font-mono text-[11.5px] font-medium tracking-[0.06em] text-slate-500 dark:text-slate-400">
+        <%= admin_absolute_ts(Time.current) %> CDMX
+      </span>
+      <% degraded = @error_logs_24h.to_i > 0 || @health.to_h[:open_circuits_count].to_i > 0 %>
+      <span class="inline-flex items-center gap-1.5 text-[11.5px] font-medium <%= degraded ? "text-amber-600 dark:text-amber-400" : "text-emerald-600 dark:text-emerald-400" %>">
+        <span class="size-1.5 rounded-full bg-current ring-2 ring-current/20"></span>
+        <% if degraded %>
+          Operación degradada · revisa fuentes con incidencia
+        <% else %>
+          Operación nominal · todas las fuentes activas
+        <% end %>
+      </span>
+    </div>
   </div>
 
-  <%# KPI Cards %>
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <%= render "components/kpi_card", title: "Total Assets",   value: number_with_delimiter(@total_assets), icon: "database",      tone: :info %>
-    <%= render "components/kpi_card", title: "Syncing Assets", value: @syncing_assets.to_s,                 icon: "sync",          tone: :success, badge: "Active" %>
-    <%= render "components/kpi_card", title: "Total Users",    value: number_with_delimiter(@total_users),  icon: "group",         tone: :warning %>
-    <%= render "components/kpi_card", title: "Errors (24h)",   value: @error_logs_24h.to_s,                 icon: "error_outline", tone: :error %>
-  </div>
-
-  <%# Sync Operations %>
-  <% if @sync_overview %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
-      <div class="flex items-center justify-between mb-4">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 dark:text-white">Sync Operations</h2>
-          <p class="text-xs text-slate-500 mt-1">Last 24 hours activity overview</p>
+  <%# KPI cards row (4 equal) %>
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <%# Card 1: Activos totales — primary tint %>
+    <div class="flex flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
+      <div class="flex items-start justify-between gap-3">
+        <span class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Activos totales</span>
+        <span class="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <span class="material-symbols-outlined text-[16px]">database</span>
+        </span>
+      </div>
+      <div>
+        <div class="font-mono text-[28px] font-medium tracking-tight text-primary"><%= number_with_delimiter(@total_assets) %></div>
+        <div class="mt-2 text-[11.5px] text-slate-500 dark:text-slate-400">
+          <% week_new = Asset.where("created_at >= ?", 7.days.ago).count %>
+          <%= week_new == 0 ? "Sin altas esta semana." : "#{week_new} #{week_new == 1 ? 'nuevo' : 'nuevos'} esta semana." %>
         </div>
       </div>
+    </div>
 
-      <%# Sync KPI mini-cards %>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-        <div class="bg-success/10 dark:bg-success/20 rounded-lg p-3">
-          <p class="text-xs text-success-fg dark:text-success font-medium">Successful Syncs</p>
-          <p class="text-xl font-bold text-success-fg dark:text-success"><%= @sync_overview[:sync_counts]["success"] || 0 %></p>
-        </div>
-        <div class="bg-error/10 dark:bg-error/20 rounded-lg p-3">
-          <p class="text-xs text-error-fg dark:text-error font-medium">Failed Syncs</p>
-          <p class="text-xl font-bold text-error-fg dark:text-error"><%= @sync_overview[:sync_counts]["error"] || 0 %></p>
-        </div>
-        <div class="bg-info/10 dark:bg-info/20 rounded-lg p-3">
-          <p class="text-xs text-info-fg dark:text-info font-medium">Assets Syncing</p>
-          <p class="text-xl font-bold text-info-fg dark:text-info"><%= @sync_overview[:status_counts]["active"] || 0 %></p>
-        </div>
-        <div class="bg-warning/10 dark:bg-warning/20 rounded-lg p-3">
-          <p class="text-xs text-warning-fg dark:text-warning font-medium">Stale Prices</p>
-          <p class="text-xl font-bold text-warning-fg dark:text-warning"><%= @sync_overview[:stale_count] %></p>
+    <%# Card 2: Sincronizando — positive %>
+    <div class="flex flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
+      <div class="flex items-start justify-between gap-3">
+        <span class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Sincronizando</span>
+        <span class="flex size-7 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+          <span class="material-symbols-outlined text-[16px]">sync</span>
+        </span>
+      </div>
+      <div>
+        <div class="font-mono text-[28px] font-medium tracking-tight text-emerald-600 dark:text-emerald-400"><%= number_with_delimiter(@syncing_assets) %></div>
+        <div class="mt-2 text-[11.5px] text-slate-500 dark:text-slate-400">
+          <% coverage = @total_assets.to_i > 0 ? (@syncing_assets.to_f / @total_assets * 100).round(1) : 0 %>
+          <%= @total_assets.to_i > 0 ? "#{coverage} % de cobertura" : "Sin activos registrados." %>
         </div>
       </div>
+    </div>
 
-      <%# Quick Actions — registry-driven %>
-      <div class="flex flex-wrap gap-2 mb-5">
-        <% @data_sources.each do |source| %>
-          <%= button_to admin_trigger_data_source_path(key: source.key), method: :post,
-              class: "inline-flex items-center gap-1.5 px-3 py-1.5 bg-#{source.color}-600 text-white text-xs font-semibold rounded-lg hover:bg-#{source.color}-700 transition-colors" do %>
-            <span class="material-symbols-outlined text-sm"><%= source.icon %></span>
-            Sync <%= source.name.split(" — ").first %>
+    <%# Card 3: Usuarios — neutral %>
+    <div class="flex flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
+      <div class="flex items-start justify-between gap-3">
+        <span class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Usuarios</span>
+        <span class="flex size-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">
+          <span class="material-symbols-outlined text-[16px]">group</span>
+        </span>
+      </div>
+      <div>
+        <div class="font-mono text-[28px] font-medium tracking-tight text-slate-900 dark:text-white"><%= number_with_delimiter(@total_users) %></div>
+        <div class="mt-2 text-[11.5px] text-slate-500 dark:text-slate-400">
+          <% admins = User.admin.count %>
+          <% non_admins = [ @total_users.to_i - admins, 0 ].max %>
+          <%= admins %> <%= admins == 1 ? "admin" : "admins" %> · <%= non_admins %> <%= non_admins == 1 ? "invitado" : "invitados" %>
+        </div>
+      </div>
+    </div>
+
+    <%# Card 4: Errores 24h — negative if > 0, subtle if 0 %>
+    <% has_errors = @error_logs_24h.to_i > 0 %>
+    <% last_error = @recent_logs.find { |l| l.severity == "error" } %>
+    <div class="flex flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
+      <div class="flex items-start justify-between gap-3">
+        <span class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Errores 24 h</span>
+        <span class="flex size-7 items-center justify-center rounded-lg <%= has_errors ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400' : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500' %>">
+          <span class="material-symbols-outlined text-[16px]">error_outline</span>
+        </span>
+      </div>
+      <div>
+        <div class="font-mono text-[28px] font-medium tracking-tight <%= has_errors ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400 dark:text-slate-500' %>">
+          <%= @error_logs_24h.to_i %>
+        </div>
+        <div class="mt-2 text-[11.5px] text-slate-500 dark:text-slate-400">
+          <% if has_errors && last_error %>
+            Último: <%= admin_relative_ts(last_error.created_at) %>
+          <% elsif has_errors %>
+            Último error en las últimas 24 h.
+          <% else %>
+            Sin incidentes en 24 h.
           <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Operaciones de sincronización %>
+  <% if @sync_overview %>
+    <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
+      <header class="flex flex-wrap items-baseline gap-3 px-5 pt-4 pb-3">
+        <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Operaciones de sincronización</h2>
+        <span class="text-xs text-slate-500 dark:text-slate-400">Últimas 24 horas</span>
+        <div class="ml-auto">
+          <%= link_to admin_logs_path(modulo: "sync"), class: "inline-flex items-center gap-1 text-[12.5px] font-medium text-primary hover:underline" do %>
+            Ver historial
+            <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+          <% end %>
+        </div>
+      </header>
+
+      <div class="flex flex-col gap-5 px-5 pb-5">
+        <%# Mini KPI strip — 4 equal %>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <% [
+              [ "Exitosas", @sync_overview[:sync_counts]["success"].to_i, "emerald" ],
+              [ "Fallidas", @sync_overview[:sync_counts]["error"].to_i,   "rose" ],
+              [ "Activas",  @sync_overview[:status_counts]["active"].to_i, "primary" ],
+              [ "Stale",    @sync_overview[:stale_count].to_i,             "amber" ]
+            ].each do |label, value, tone| %>
+            <% bg = { "emerald" => "bg-emerald-500/10 border-emerald-500/30", "rose" => "bg-rose-500/10 border-rose-500/30", "primary" => "bg-primary/10 border-primary/25", "amber" => "bg-amber-500/10 border-amber-500/30" }[tone] %>
+            <% fg = { "emerald" => "text-emerald-700 dark:text-emerald-400", "rose" => "text-rose-700 dark:text-rose-400", "primary" => "text-primary", "amber" => "text-amber-700 dark:text-amber-400" }[tone] %>
+            <div class="flex flex-col gap-1.5 rounded-xl border <%= bg %> px-4 py-3">
+              <span class="text-[10.5px] font-bold uppercase tracking-[0.12em] <%= fg %>"><%= label %></span>
+              <span class="font-mono text-[22px] font-medium leading-none text-slate-900 dark:text-white">
+                <%= number_with_delimiter(value) %>
+              </span>
+            </div>
+          <% end %>
+        </div>
+
+        <%# Manual sync chips %>
+        <div>
+          <div class="mb-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+            Disparar manualmente
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <% @data_sources.each do |source| %>
+              <%= button_to admin_trigger_data_source_path(key: source.key), method: :post,
+                  form: { class: "inline-flex" },
+                  class: "group inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-[12px] font-medium text-slate-700 dark:text-slate-200 hover:bg-primary/5 hover:border-primary/30 transition-colors" do %>
+                <span><%= source.name.split(" — ").first %></span>
+                <span class="inline-flex size-[18px] items-center justify-center rounded bg-primary/10 text-primary">
+                  <span class="material-symbols-outlined text-[13px]">play_arrow</span>
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+          <p class="mt-2.5 text-[11.5px] text-slate-500 dark:text-slate-400">
+            Disparar manualmente respeta el rate limit configurado.
+          </p>
+        </div>
+      </div>
+    </section>
+  <% end %>
+
+  <%# Fuentes de datos %>
+  <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
+    <header class="flex flex-wrap items-baseline gap-3 px-5 pt-4 pb-3">
+      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Fuentes de datos</h2>
+      <span class="text-xs text-slate-500 dark:text-slate-400">
+        <%= @integrations.count %> <%= @integrations.count == 1 ? "integración" : "integraciones" %>
+      </span>
+      <div class="ml-auto">
+        <%= link_to admin_integrations_path, class: "inline-flex items-center gap-1 text-[12.5px] font-medium text-primary hover:underline" do %>
+          Administrar integraciones
+          <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
         <% end %>
       </div>
+    </header>
 
-      <%# Recent Sync Errors %>
-      <% if @sync_overview[:recent_errors].any? %>
-        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Recent Sync Errors</h3>
-        <div class="space-y-2">
-          <% @sync_overview[:recent_errors].each do |log| %>
-            <div class="flex items-center justify-between p-2.5 rounded-lg bg-error/10 dark:bg-error/20 border border-error/20 dark:border-error/30">
-              <div class="flex-1 min-w-0">
-                <p class="text-xs font-medium text-error-fg dark:text-error truncate"><%= log.task_name %></p>
-                <p class="text-xs text-error-fg dark:text-error truncate"><%= log.error_message %></p>
-              </div>
-              <span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap ml-3"><%= time_ago_in_words(log.created_at) %> ago</span>
-            </div>
-          <% end %>
-        </div>
-      <% else %>
-        <p class="text-sm text-slate-400">No sync errors in the last 24 hours.</p>
-      <% end %>
-    </div>
-  <% end %>
-
-  <%# System Health %>
-  <% if @health %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
-      <div class="mb-4">
-        <h2 class="text-lg font-bold text-slate-900 dark:text-white">System Health</h2>
-        <p class="text-xs text-slate-500 mt-1">Job queue, cache, and circuit breaker status</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <%# Job Queue Panel %>
-        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-lg text-info-fg dark:text-info">queue</span>
-            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Job Queue</h3>
-          </div>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-xs text-slate-500">Pending</span>
-              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:queue_depth]&.to_s || "N/A" %></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-xs text-slate-500">In Progress</span>
-              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:in_progress_jobs]&.to_s || "N/A" %></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-xs text-slate-500">Scheduled</span>
-              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:scheduled_jobs]&.to_s || "N/A" %></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-xs text-slate-500">Failed</span>
-              <% failed = @health[:failed_jobs] %>
-              <span class="text-xs font-bold <%= failed && failed > 0 ? 'text-error-fg dark:text-error' : 'text-slate-900 dark:text-white' %>"><%= failed&.to_s || "N/A" %></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-xs text-slate-500">Workers</span>
-              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:queue_workers]&.to_s || "N/A" %></span>
-            </div>
-          </div>
-        </div>
-
-        <%# Cache Store Panel %>
-        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-lg text-success-fg dark:text-success">cached</span>
-            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Cache Store</h3>
-          </div>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-xs text-slate-500">Entries</span>
-              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:cache_entries] ? number_with_delimiter(@health[:cache_entries]) : "N/A" %></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-xs text-slate-500">Size</span>
-              <span class="text-xs font-bold text-slate-900 dark:text-white"><%= @health[:cache_byte_size] ? number_to_human_size(@health[:cache_byte_size]) : "N/A" %></span>
-            </div>
-          </div>
-        </div>
-
-        <%# Circuit Breakers Panel %>
-        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-lg text-warning-fg dark:text-warning">electric_bolt</span>
-            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Circuit Breakers</h3>
-          </div>
-          <% if @health[:open_circuits_count] && @health[:open_circuits_count] > 0 %>
-            <div class="bg-warning/10 dark:bg-warning/20 rounded-md p-2 mb-2">
-              <p class="text-xs font-bold text-warning-fg dark:text-warning"><%= @health[:open_circuits_count] %> circuit(s) tripped in last 24h</p>
-            </div>
-          <% else %>
-            <div class="bg-success/10 dark:bg-success/20 rounded-md p-2 mb-2">
-              <p class="text-xs font-bold text-success-fg dark:text-success">All circuits healthy</p>
-            </div>
-          <% end %>
-          <% if @health[:circuit_breaker_events].present? %>
-            <div class="space-y-1.5 mt-2">
-              <% @health[:circuit_breaker_events].limit(3).each do |event| %>
-                <div class="flex items-center justify-between">
-                  <span class="text-xs text-slate-600 dark:text-slate-400 truncate flex-1"><%= event.task_name.sub("Circuit Breaker: ", "") %></span>
-                  <%= render "components/status_badge", status: event.severity %>
-                </div>
-              <% end %>
-            </div>
-          <% else %>
-            <p class="text-xs text-slate-400 mt-2">No circuit breaker events in 24h.</p>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
-  <%# Two-column panels %>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <%# Integrations Panel %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
-      <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Data Integrations</h2>
+    <div class="px-5 pb-5">
       <% if @integrations.any? %>
-        <div class="space-y-3">
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
           <% @integrations.each do |integration| %>
-            <% status_map = { "connected" => "active", "syncing" => "warning", "disconnected" => "error" } %>
-            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-              <div>
-                <p class="text-sm font-bold text-slate-900 dark:text-white"><%= integration.provider_name %></p>
-                <p class="text-xs text-slate-500"><%= integration.provider_type %></p>
+            <% state = admin_integration_state(integration) %>
+            <% pill = admin_source_state_pill(state) %>
+            <div class="flex flex-col gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+              <div class="flex items-start gap-3">
+                <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">
+                  <span class="material-symbols-outlined text-[18px]">hub</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="truncate text-[13.5px] font-semibold text-slate-900 dark:text-white">
+                    <%= integration.provider_name %>
+                  </div>
+                  <div class="mt-0.5 truncate text-[11.5px] text-slate-500 dark:text-slate-400">
+                    <%= integration.provider_type.to_s.titleize.presence || "—" %>
+                  </div>
+                </div>
+                <span class="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-[0.06em] <%= pill[:bg] %> <%= pill[:fg] %>">
+                  <span class="size-1.5 rounded-full bg-current"></span>
+                  <%= pill[:label] %>
+                </span>
               </div>
-              <%= render "components/status_badge", status: status_map[integration.connection_status] || integration.connection_status %>
+              <div class="flex items-end justify-between gap-3 border-t border-dashed border-slate-200 dark:border-slate-700 pt-3">
+                <div class="min-w-0">
+                  <div class="text-[10.5px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Última sincronización</div>
+                  <div class="mt-0.5 text-[12.5px] font-medium text-slate-900 dark:text-white">
+                    <%= integration.last_sync_at ? admin_relative_ts(integration.last_sync_at) : "Sin sincronizar" %>
+                  </div>
+                  <% if integration.last_sync_at %>
+                    <div class="mt-0.5 truncate font-mono text-[10.5px] text-slate-500 dark:text-slate-400">
+                      <%= admin_absolute_ts(integration.last_sync_at) %>
+                    </div>
+                  <% else %>
+                    <div class="mt-0.5 truncate font-mono text-[10.5px] text-slate-500 dark:text-slate-400">
+                      última: nunca
+                    </div>
+                  <% end %>
+                </div>
+                <%= link_to admin_integrations_path, class: "inline-flex items-center gap-1 whitespace-nowrap text-[12px] font-medium text-primary hover:underline" do %>
+                  Configurar
+                  <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                <% end %>
+              </div>
             </div>
           <% end %>
         </div>
       <% else %>
-        <p class="text-sm text-slate-400">No integrations configured.</p>
+        <p class="py-6 text-center text-sm text-slate-500 dark:text-slate-400">Sin integraciones configuradas.</p>
       <% end %>
     </div>
+  </section>
 
-    <%# Recent Logs Panel %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-slate-900 dark:text-white">Recent Logs</h2>
-        <%= link_to "View All", admin_logs_path, class: "text-sm text-primary font-medium hover:underline" %>
+  <%# Actividad reciente %>
+  <section class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
+    <header class="flex flex-wrap items-baseline gap-3 px-5 pt-4 pb-3">
+      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Actividad reciente</h2>
+      <span class="text-xs text-slate-500 dark:text-slate-400">Últimos <%= @recent_activity.size %> eventos del sistema</span>
+    </header>
+
+    <% if @recent_activity.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full table-fixed border-collapse">
+          <colgroup>
+            <col style="width: 200px">
+            <col style="width: 28px">
+            <col style="width: 160px">
+            <col>
+          </colgroup>
+          <thead>
+            <tr class="bg-slate-50 dark:bg-slate-900/50">
+              <% [ "Marca de tiempo", "", "Módulo", "Mensaje" ].each do |h| %>
+                <th class="border-y border-slate-200 dark:border-slate-700 px-4 py-2.5 text-left text-[10.5px] font-bold uppercase tracking-[0.10em] text-slate-500 dark:text-slate-400">
+                  <%= h %>
+                </th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @recent_activity.each_with_index do |log, i| %>
+              <tr class="<%= "border-t border-slate-200 dark:border-slate-700" if i.positive? %> hover:bg-slate-50/60 dark:hover:bg-slate-900/30">
+                <td class="px-4 py-2 font-mono text-[11.5px] font-medium tracking-[0.02em] text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                  <%= admin_absolute_ts(log.created_at) %>
+                </td>
+                <td class="px-1 py-2">
+                  <span class="inline-block size-[7px] rounded-full <%= admin_severity_dot_class(log.severity) %>"></span>
+                </td>
+                <td class="px-4 py-2">
+                  <span class="inline-flex items-center rounded bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 text-[10.5px] font-semibold tracking-[0.04em] text-slate-500 dark:text-slate-400">
+                    <%= admin_module_label(log.module_name) %>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-[13px] text-slate-900 dark:text-white">
+                  <span class="block truncate"><%= log.task_name %><% if log.error_message.present? %><span class="text-slate-500 dark:text-slate-400"> — <%= log.error_message %></span><% end %></span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
       </div>
-      <% if @recent_logs.any? %>
-        <div class="space-y-3">
-          <% @recent_logs.each do |log| %>
-            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-slate-900 dark:text-white truncate"><%= log.task_name %></p>
-                <p class="text-xs text-slate-500"><%= time_ago_in_words(log.created_at) %> ago</p>
-              </div>
-              <%= render "components/status_badge", status: log.severity %>
-            </div>
-          <% end %>
-        </div>
-      <% else %>
-        <p class="text-sm text-slate-400">No logs recorded yet.</p>
-      <% end %>
-    </div>
-  </div>
-
-  <%# Quick Links %>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <% [
-      ["Manage Assets", admin_assets_path, "database", "View and sync all market instruments"],
-      ["System Logs",   admin_logs_path,   "receipt_long", "Monitor operations and errors"],
-      ["User Management", admin_users_path, "group", "View users and manage integrations"]
-    ].each do |label, path, icon, description| %>
-      <%= link_to path, class: "bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 hover:border-primary/50 transition-colors group" do %>
-        <div class="flex items-center gap-3 mb-2">
-          <span class="material-symbols-outlined text-xl text-primary"><%= icon %></span>
-          <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors"><%= label %></h3>
-        </div>
-        <p class="text-xs text-slate-500"><%= description %></p>
-      <% end %>
+      <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-5 py-3">
+        <span class="text-[11.5px] text-slate-500 dark:text-slate-400">
+          Mostrando
+          <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= @recent_activity.size %></span>
+          de
+          <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= number_with_delimiter(@activity_total) %></span>
+          eventos · ventana 24 h
+        </span>
+        <%= link_to admin_logs_path, class: "inline-flex items-center gap-1 text-[12.5px] font-medium text-primary hover:underline" do %>
+          Ver bitácora completa
+          <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="px-5 py-12 text-center">
+        <p class="text-sm text-slate-500 dark:text-slate-400">Sin actividad en los últimos 20 eventos.</p>
+      </div>
     <% end %>
-  </div>
+  </section>
 </div>

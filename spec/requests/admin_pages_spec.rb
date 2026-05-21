@@ -67,21 +67,21 @@ RSpec.describe "Admin pages", type: :request do
       create(:integration, provider_name: "Polygon.io", provider_type: "Stocks & Forex")
       get admin_root_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Admin Dashboard")
-      expect(response.body).to include("Total Assets")
-      expect(response.body).to include("Total Users")
-      expect(response.body).to include("Data Integrations")
-      expect(response.body).to include("Recent Logs")
+      expect(response.body).to include("Panel general")
+      expect(response.body).to include("Activos totales")
+      expect(response.body).to include("Usuarios")
+      expect(response.body).to include("Fuentes de datos")
+      expect(response.body).to include("Actividad reciente")
     end
 
     it "renders the admin dashboard with sync operations panel" do
       create(:system_log, task_name: "Sync Error", module_name: "sync", severity: :error, error_message: "Timeout")
       get admin_root_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Sync Operations")
-      expect(response.body).to include("Successful Syncs")
-      expect(response.body).to include("Failed Syncs")
-      expect(response.body).to include("Sync FX Rates")
+      expect(response.body).to include("Operaciones de sincronización")
+      expect(response.body).to include("Exitosas")
+      expect(response.body).to include("Fallidas")
+      expect(response.body).to include("FX Rates")
     end
 
     it "renders the asset management page" do
@@ -129,7 +129,7 @@ RSpec.describe "Admin pages", type: :request do
 
       expect(response).to redirect_to(admin_root_path)
       follow_redirect!
-      expect(response.body).to include("FX Rates sync enqueued")
+      expect(response.body).to include("Sincronización de FX Rates programada.")
     end
 
     it "returns alert for unknown data source" do
@@ -137,7 +137,7 @@ RSpec.describe "Admin pages", type: :request do
 
       expect(response).to redirect_to(admin_root_path)
       follow_redirect!
-      expect(response.body).to include("Unknown data source")
+      expect(response.body).to include("Fuente de datos desconocida.")
     end
 
     it "deletes an asset from admin" do
