@@ -58,14 +58,12 @@ module Admin
       [ label, tier_classes ]
     end
 
-    def admin_asset_last_failure_reason(asset)
+    # Lookup the last-failure tuple [message, timestamp] for an asset from a
+    # pre-built hash keyed by symbol. The hash is computed once by ListAssets
+    # so each page render runs at most one SQL query (no N+1).
+    def admin_asset_last_failure_reason(asset, failure_reasons)
       return nil unless asset.sync_issue?
-
-      SystemLog
-        .where(task_name: "All Gateways Failed: #{asset.symbol}", module_name: "sync", severity: :error)
-        .order(created_at: :desc)
-        .limit(1)
-        .pick(:error_message, :created_at)
+      failure_reasons[asset.symbol]
     end
 
     def admin_assets_filter_active?(key, slug, default: "todos")

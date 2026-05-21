@@ -8,10 +8,11 @@ module Admin
       result = Administration::UseCases::Assets::ListAssets.call(params: filter_params, request: request)
       data = result.value!
 
-      @pagy          = data[:pagy]
-      @assets        = data[:assets]
-      @total_count   = data[:total_count]
-      @syncing_count = data[:syncing_count]
+      @pagy            = data[:pagy]
+      @assets          = data[:assets]
+      @total_count     = data[:total_count]
+      @syncing_count   = data[:syncing_count]
+      @failure_reasons = data[:failure_reasons]
     end
 
     def trigger_sync

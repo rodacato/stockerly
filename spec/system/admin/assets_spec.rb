@@ -96,6 +96,14 @@ RSpec.describe "Admin · Catálogo de activos", type: :system do
     expect(page).to have_link("Limpiar filtros", href: admin_assets_path)
   end
 
+  it "preserves the active tipo + estado + mercado chips when the search form submits" do
+    visit admin_assets_path(type: "stock", status: "active", market: "NASDAQ")
+    # Regression for #137 — search form must carry filters via hidden fields.
+    expect(page).to have_field("type", type: "hidden", with: "stock")
+    expect(page).to have_field("status", type: "hidden", with: "active")
+    expect(page).to have_field("market", type: "hidden", with: "NASDAQ")
+  end
+
   it "shows the inline-edit form structure for each row" do
     visit admin_assets_path
     # Inline-edit forms are rendered (hidden) for every row; verify the markup

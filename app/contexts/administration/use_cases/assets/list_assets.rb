@@ -24,6 +24,7 @@ module Administration
           Success({
             pagy: pagy,
             assets: assets,
+            failure_reasons: latest_failure_reasons(assets),
             total_count: Asset.count,
             syncing_count: Asset.syncing.count
           })
@@ -40,6 +41,27 @@ module Administration
             scope.where(exchange: market)
           else
             scope
+          end
+        end
+
+        # Batches the last-failure lookup for every asset on the page into a
+        # single SQL query keyed by task_name. Eliminates the N+1 the per-row
+        # helper used to incur (gemini-code-assist review on #137).
+        def latest_failure_reasons(assets)
+          issue_assets = assets.select(&:sync_issue?)
+          return {} if issue_assets.empty?
+
+          task_names = issue_assets.map { |a| "All Gateways Failed: #{a.symbol}" }
+
+          # latest log per task_name via DISTINCT ON (PostgreSQL).
+          rows = SystemLog
+            .select("DISTINCT ON (task_name) task_name, error_message, created_at")
+            .where(task_name: task_names, module_name: "sync", severity: :error)
+            .order(:task_name, created_at: :desc)
+
+          rows.each_with_object({}) do |log, acc|
+            symbol = log.task_name.sub(/\AAll Gateways Failed: /, "")
+            acc[symbol] = [ log.error_message, log.created_at ]
           end
         end
       end
