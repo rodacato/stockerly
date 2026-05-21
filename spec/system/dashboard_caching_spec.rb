@@ -77,6 +77,6 @@ RSpec.describe "Dashboard caching", type: :system do
 
     visit dashboard_path
 
-    expect(page).to have_content("Dashboard")
+    expect(page).to have_content("Panel")
   end
 end

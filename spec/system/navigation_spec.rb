@@ -50,7 +50,7 @@ RSpec.describe "Navigation", type: :system do
       click_button "Iniciar sesión"
 
       expect(page).to have_current_path(dashboard_path)
-      expect(page).to have_content("Dashboard")
+      expect(page).to have_content("Panel")
     end
 
     it "logs out and lands on login (via root redirect)" do
@@ -62,7 +62,7 @@ RSpec.describe "Navigation", type: :system do
       click_button "Iniciar sesión"
       expect(page).to have_current_path(dashboard_path)
 
-      click_button "Sign Out"
+      click_button "Cerrar sesión"
       expect(page).to have_current_path(login_path)
     end
   end
@@ -80,11 +80,11 @@ RSpec.describe "Navigation", type: :system do
 
     it "navigates to all app pages via navbar" do
       {
-        "Market" => market_path,
-        "Portfolio" => portfolio_path,
-        "Alerts" => alerts_path,
-        "Earnings" => earnings_path,
-        "News" => news_path
+        "Mercado"   => market_path,
+        "Portafolio" => portfolio_path,
+        "Alertas"   => alerts_path,
+        "Reportes"  => earnings_path,
+        "Noticias"  => news_path
       }.each do |label, path|
         visit dashboard_path
         click_link label, match: :first
