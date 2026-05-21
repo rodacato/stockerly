@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_21_203500) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_21_215000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -376,6 +376,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_21_203500) do
     t.index ["user_id"], name: "index_remember_tokens_on_user_id"
   end
 
+  create_table "site_config_changes", force: :cascade do |t|
+    t.bigint "admin_id", null: false
+    t.datetime "created_at", null: false
+    t.string "key", null: false
+    t.string "new_value"
+    t.string "old_value"
+    t.datetime "updated_at", null: false
+    t.index ["admin_id"], name: "index_site_config_changes_on_admin_id"
+    t.index ["created_at"], name: "index_site_config_changes_on_created_at"
+    t.index ["key"], name: "index_site_config_changes_on_key"
+  end
+
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "key", null: false
@@ -511,6 +523,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_21_203500) do
   add_foreign_key "positions", "assets"
   add_foreign_key "positions", "portfolios"
   add_foreign_key "remember_tokens", "users"
+  add_foreign_key "site_config_changes", "users", column: "admin_id"
   add_foreign_key "stock_splits", "assets"
   add_foreign_key "technical_observations", "assets"
   add_foreign_key "trades", "assets"

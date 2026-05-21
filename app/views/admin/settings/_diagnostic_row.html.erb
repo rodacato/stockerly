@@ -1,0 +1,10 @@
+<%# A single read-only diagnostic row. Locals: label, value, (first = false) %>
+<% first ||= false %>
+<div class="grid grid-cols-[180px_minmax(0,1fr)] items-baseline gap-6 py-3 <%= first ? "" : "border-t border-slate-200 dark:border-slate-700" %>">
+  <div class="text-[11.5px] font-bold uppercase tracking-[0.10em] text-slate-500 dark:text-slate-400">
+    <%= label %>
+  </div>
+  <div title="<%= value %>" class="truncate font-mono text-[13px] font-medium tracking-[0.02em] text-slate-900 dark:text-white">
+    <%= value.presence || "—" %>
+  </div>
+</div>

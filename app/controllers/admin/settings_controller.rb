@@ -1,15 +1,59 @@
 module Admin
   class SettingsController < BaseController
+    TOGGLE_KEYS = %w[registration_open maintenance_mode auto_sync_enabled email_notifications_enabled].freeze
+
     def show
-      @registration_open = SiteConfig.registration_open?
-      @maintenance_mode = SiteConfig.maintenance_mode?
+      @registration_open           = SiteConfig.registration_open?
+      @maintenance_mode            = SiteConfig.maintenance_mode?
+      @auto_sync_enabled           = SiteConfig.enabled?("auto_sync_enabled")
+      @email_notifications_enabled = SiteConfig.enabled?("email_notifications_enabled")
+
+      @applied_at = TOGGLE_KEYS.index_with do |key|
+        SiteConfig.find_by(key: key)&.updated_at
+      end
+
+      @recent_changes = SiteConfigChange.recent.includes(:admin).limit(8)
+      @diagnostics    = build_diagnostics
     end
 
     def update
-      SiteConfig.set("registration_open", params[:registration_open] == "1")
-      SiteConfig.set("maintenance_mode", params[:maintenance_mode] == "1")
+      changes = TOGGLE_KEYS.each_with_object([]) do |key, memo|
+        next unless params.key?(key)
+        new_value = (params[key] == "1").to_s
+        old_value = SiteConfig.enabled?(key).to_s
+        next if old_value == new_value
+        memo << [ key, old_value, new_value ]
+      end
 
-      redirect_to admin_settings_path, notice: "Settings updated."
+      changes.each do |key, old_value, new_value|
+        SiteConfig.set(key, new_value == "true")
+        SiteConfigChange.create!(key: key, old_value: old_value, new_value: new_value, admin: current_user)
+      end
+
+      redirect_to admin_settings_path, notice: "Ajustes guardados."
+    end
+
+    private
+
+    def build_diagnostics
+      {
+        version:    Stockerly::VERSION,
+        ruby:       RUBY_VERSION,
+        rails:      Rails.version,
+        environment: Rails.env,
+        solid_queue: solid_queue_summary,
+        cache_entries: HealthMetrics.cache_entries
+      }
+    end
+
+    def solid_queue_summary
+      active    = HealthMetrics.in_progress_jobs
+      failed    = HealthMetrics.failed_jobs
+      scheduled = HealthMetrics.scheduled_jobs
+      return "—" if [ active, failed, scheduled ].all?(&:nil?)
+      "#{active || 0} en proceso · #{failed || 0} fallidos · #{scheduled || 0} programados"
+    rescue StandardError
+      "—"
     end
   end
 end

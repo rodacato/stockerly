@@ -1,102 +1,124 @@
-<% content_for(:title, "Settings | Admin") %>
+<%# /admin/settings — Ajustes del sistema. Lumen + es-MX, mockup Stockerly-2.0. %>
+<% content_for(:admin_page_title, "Configuración") %>
 
-<div class="mb-8">
-  <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Settings</h1>
-  <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage site-wide configuration.</p>
-</div>
+<div class="space-y-6">
+  <%# Header band %>
+  <div>
+    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Configuración</p>
+    <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Ajustes del sistema</h1>
+    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Toggles globales que afectan toda la aplicación. Cambios surten efecto inmediato.</p>
+  </div>
 
-<div class="max-w-2xl space-y-6">
-  <%= form_with url: admin_settings_path, method: :patch do |f| %>
-    <%# Maintenance Mode %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="size-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-          <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">construction</span>
-        </div>
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 dark:text-white">Maintenance Mode</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">Take the site offline for non-admin users.</p>
-        </div>
-      </div>
+  <%= form_with url: admin_settings_path, method: :patch, class: "space-y-6" do %>
+    <%# Card 1 — Acceso %>
+    <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pt-4 pb-1 shadow-sm">
+      <header class="flex items-baseline gap-3 pb-1">
+        <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Acceso a la plataforma</h2>
+        <span class="text-xs text-slate-500 dark:text-slate-400">Sign-ups y modo mantenimiento</span>
+      </header>
 
-      <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
-        <div>
-          <p class="text-sm font-medium text-slate-900 dark:text-white">Enable maintenance mode</p>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Non-admin users see a maintenance page. Admins can still access everything, including this toggle to turn it off.
-          </p>
-        </div>
-        <label class="relative inline-flex items-center cursor-pointer">
-          <input type="hidden" name="maintenance_mode" value="0">
-          <input type="checkbox" name="maintenance_mode" value="1" class="sr-only peer" <%= "checked" if @maintenance_mode %>>
-          <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-amber-500/50 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-        </label>
-      </div>
-    </div>
+      <%= render "setting_row",
+          name: "registration_open",
+          label: "Registro abierto",
+          description: "Permite que nuevos usuarios se registren con código de invitación válido.",
+          on: @registration_open,
+          applied_at: @applied_at["registration_open"],
+          first: true %>
 
-    <%# Registration %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <span class="material-symbols-outlined text-primary">person_add</span>
-        </div>
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 dark:text-white">Registration</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">Control whether new users can create accounts.</p>
-        </div>
-      </div>
+      <%= render "setting_row",
+          name: "maintenance_mode",
+          label: "Modo mantenimiento",
+          description: "Bloquea el acceso a la app y muestra un banner. Sesiones existentes continúan.",
+          on: @maintenance_mode,
+          applied_at: @applied_at["maintenance_mode"] %>
 
-      <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
-        <div>
-          <p class="text-sm font-medium text-slate-900 dark:text-white">Allow public registration</p>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            When disabled, the registration page redirects to login with a "Registration is currently closed" message.
-          </p>
+      <% if @maintenance_mode %>
+        <div class="pb-4 pt-1">
+          <div class="flex items-start gap-3 rounded-lg border border-amber-300/60 bg-amber-500/10 px-3 py-2.5">
+            <span class="material-symbols-outlined mt-0.5 text-[18px] text-amber-600 dark:text-amber-400">campaign</span>
+            <div class="flex-1 min-w-0">
+              <div class="text-[12px] font-bold uppercase tracking-[0.06em] text-amber-700 dark:text-amber-400">Banner activo</div>
+              <div class="mt-1 text-[13px] text-slate-900 dark:text-white">
+                Los usuarios verán:
+                <span class="ml-1 inline-flex items-center rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-1.5 py-0.5 font-mono text-[12.5px] text-slate-900 dark:text-white">
+                  "Stockerly está en mantenimiento. Volvemos pronto."
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <label class="relative inline-flex items-center cursor-pointer">
-          <input type="hidden" name="registration_open" value="0">
-          <input type="checkbox" name="registration_open" value="1" class="sr-only peer" <%= "checked" if @registration_open %>>
-          <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-        </label>
-      </div>
-    </div>
+      <% end %>
+    </section>
+
+    <%# Card 2 — Datos %>
+    <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pt-4 pb-1 shadow-sm">
+      <header class="flex items-baseline gap-3 pb-1">
+        <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Datos y sincronización</h2>
+        <span class="text-xs text-slate-500 dark:text-slate-400">Jobs recurrentes y correo</span>
+      </header>
+
+      <%= render "setting_row",
+          name: "auto_sync_enabled",
+          label: "Sincronización automática",
+          description: "Permite que los jobs recurrentes corran en background (precios, CETES, cripto, FX).",
+          on: @auto_sync_enabled,
+          applied_at: @applied_at["auto_sync_enabled"],
+          first: true %>
+
+      <%= render "setting_row",
+          name: "email_notifications_enabled",
+          label: "Notificaciones por correo",
+          description: "Permite envío de transactional emails (bienvenida, recuperación de contraseña, alertas).",
+          on: @email_notifications_enabled,
+          applied_at: @applied_at["email_notifications_enabled"] %>
+    </section>
 
     <div class="flex justify-end">
-      <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors">
-        Save Settings
+      <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90">
+        <span class="material-symbols-outlined text-[15px]">save</span>
+        Guardar ajustes
       </button>
     </div>
   <% end %>
 
-  <%# Version Info %>
-  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
-    <div class="flex items-center gap-3 mb-4">
-      <div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-        <span class="material-symbols-outlined text-slate-500">info</span>
-      </div>
-      <div>
-        <h2 class="text-lg font-bold text-slate-900 dark:text-white">About</h2>
-        <p class="text-sm text-slate-500 dark:text-slate-400">System information.</p>
-      </div>
-    </div>
+  <%# Card 3 — Diagnóstico (read-only) %>
+  <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pt-4 pb-1 shadow-sm">
+    <header class="flex items-baseline gap-3 pb-1">
+      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Diagnóstico</h2>
+      <span class="text-xs text-slate-500 dark:text-slate-400">Estado de runtime · sólo lectura</span>
+    </header>
 
-    <dl class="grid grid-cols-2 gap-4 text-sm">
-      <div>
-        <dt class="text-slate-500 dark:text-slate-400">Version</dt>
-        <dd class="font-mono font-medium text-slate-900 dark:text-white"><%= Stockerly::VERSION %></dd>
+    <% [
+        [ "Versión",     @diagnostics[:version] ],
+        [ "Ambiente",    @diagnostics[:environment] ],
+        [ "Ruby",        @diagnostics[:ruby] ],
+        [ "Rails",       @diagnostics[:rails] ],
+        [ "Solid Queue", @diagnostics[:solid_queue] ],
+        [ "Cache",       @diagnostics[:cache_entries] ? "#{number_with_delimiter(@diagnostics[:cache_entries])} entradas" : "—" ]
+      ].each_with_index do |(label, value), i| %>
+      <%= render "diagnostic_row", label: label, value: value, first: i.zero? %>
+    <% end %>
+  </section>
+
+  <%# Card 4 — Cambios recientes %>
+  <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pt-4 pb-3 shadow-sm">
+    <header class="flex items-baseline gap-3 pb-1">
+      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Cambios recientes de configuración</h2>
+      <span class="text-xs text-slate-500 dark:text-slate-400">Últimos <%= @recent_changes.size %> cambios</span>
+    </header>
+
+    <% if @recent_changes.any? %>
+      <% @recent_changes.each_with_index do |change, i| %>
+        <%= render "audit_entry", change: change, first: i.zero? %>
+      <% end %>
+      <div class="mt-2 border-t border-slate-200 dark:border-slate-700 pt-3">
+        <%= link_to admin_logs_path(modulo: "admin"), class: "inline-flex items-center gap-1 text-[12.5px] font-medium text-primary hover:underline" do %>
+          Ver todos en bitácora
+          <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+        <% end %>
       </div>
-      <div>
-        <dt class="text-slate-500 dark:text-slate-400">Ruby</dt>
-        <dd class="font-mono font-medium text-slate-900 dark:text-white"><%= RUBY_VERSION %></dd>
-      </div>
-      <div>
-        <dt class="text-slate-500 dark:text-slate-400">Rails</dt>
-        <dd class="font-mono font-medium text-slate-900 dark:text-white"><%= Rails.version %></dd>
-      </div>
-      <div>
-        <dt class="text-slate-500 dark:text-slate-400">Environment</dt>
-        <dd class="font-mono font-medium text-slate-900 dark:text-white"><%= Rails.env %></dd>
-      </div>
-    </dl>
-  </div>
+    <% else %>
+      <p class="py-4 text-sm text-slate-500 dark:text-slate-400">Aún no hay cambios registrados.</p>
+    <% end %>
+  </section>
 </div>
