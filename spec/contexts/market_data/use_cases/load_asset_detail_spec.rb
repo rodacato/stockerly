@@ -90,6 +90,26 @@ RSpec.describe MarketData::UseCases::LoadAssetDetail do
       end
     end
 
+    context "has_statements flag" do
+      it "is true when financial statements exist" do
+        create(:financial_statement, asset: asset, statement_type: :income_statement,
+               period_type: :annual, fiscal_date_ending: Date.new(2024, 9, 28),
+               fiscal_year: 2024, data: { "totalRevenue" => "1" })
+
+        expect(described_class.call(symbol: "AAPL").value![:has_statements]).to be(true)
+      end
+
+      it "is false when no statements exist" do
+        expect(described_class.call(symbol: "AAPL").value![:has_statements]).to be(false)
+      end
+
+      it "is omitted for fixed-income assets (yield card replaces tabs)" do
+        cetes = create(:asset, :fixed_income, symbol: "CETES_28D")
+
+        expect(described_class.call(symbol: cetes.symbol).value!).not_to have_key(:has_statements)
+      end
+    end
+
     context "when asset does not exist" do
       it "returns Failure with :not_found" do
         result = described_class.call(symbol: "INVALID")

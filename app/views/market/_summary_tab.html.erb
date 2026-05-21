@@ -1,6 +1,7 @@
-<%# Summary tab: adaptive metrics based on asset type %>
+<%# Resumen tab — Stockerly-2.0 (S10 #93). Adaptive metric grid by asset type
+    plus the analyst target band for stocks. es-MX. %>
 <% if @has_fundamentals %>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <% summary_metrics_for(@asset).each do |key| %>
       <% defn = MarketData::Domain::MetricDefinitions.find(key) rescue nil %>
       <% next unless defn %>
@@ -9,13 +10,19 @@
     <% end %>
   </div>
 
-  <%= render "market/analyst_target" %>
+  <% if @asset.asset_type_stock? %>
+    <div class="mt-6">
+      <%= render "market/analyst_target" %>
+    </div>
+  <% end %>
 <% else %>
-  <div class="flex flex-col items-center justify-center py-16 text-center">
-    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">analytics</span>
-    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">No fundamental data available</h3>
-    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">
-      Fundamental data is not yet available for this asset. Data syncs daily — check back soon.
+  <div class="flex flex-col items-center justify-center py-12 text-center">
+    <div class="mb-4 flex size-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400">
+      <span class="material-symbols-outlined text-3xl">analytics</span>
+    </div>
+    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Sin datos fundamentales</h3>
+    <p class="mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
+      Aún no tenemos información financiera para este activo. Los datos se sincronizan a diario — vuelve más tarde.
     </p>
   </div>
 <% end %>

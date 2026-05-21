@@ -1,10 +1,11 @@
-<%# Historical P/E Ratio chart — SVG polyline (90 days) with Y-axis values and date labels %>
+<%# Historical P/E Ratio chart — 90-day SVG polyline with value/neutral/expensive
+    bands. es-MX labels (S10 #93). %>
 <% if @pe_history.present? && @pe_history.size >= 2 %>
-  <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-8">
-    <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-      <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
-        <span class="material-symbols-outlined text-primary">analytics</span>
-        Historical P/E Ratio (90 days)
+  <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+    <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/30">
+      <h3 class="text-sm font-semibold flex items-center gap-2 text-slate-900 dark:text-white">
+        <span class="material-symbols-outlined text-base text-primary">analytics</span>
+        Razón P/U histórica · últimos 90 días
       </h3>
     </div>
     <div class="p-5">
@@ -16,7 +17,6 @@
         pe_range = max_pe - min_pe
         pe_range = 1.0 if pe_range.zero?
 
-        # Chart dimensions with space for Y-axis labels
         left_margin = 45
         right_margin = 10
         total_width = 500
@@ -43,7 +43,6 @@
                        "#ef4444"
                      end
 
-        # Y-axis tick values (min, mid, max)
         mid_pe = (min_pe + max_pe) / 2.0
         y_ticks = [
           { value: max_pe, y: padding_y },
@@ -51,15 +50,12 @@
           { value: min_pe, y: height - bottom_margin }
         ]
 
-        # Color band boundaries normalized to chart coordinates
         band_15_y = height - bottom_margin - (([15 - min_pe, 0].max / pe_range) * usable_height)
         band_25_y = height - bottom_margin - (([25 - min_pe, 0].max / pe_range) * usable_height)
 
-        # Date labels (first, ~1/3, ~2/3, last)
         date_indices = [0, points.size / 3, (points.size * 2) / 3, points.size - 1].uniq
       %>
       <svg viewBox="0 0 <%= total_width %> <%= height %>" class="w-full" style="height: 180px;" preserveAspectRatio="xMidYMid meet">
-        <%# Color bands (value / neutral / expensive) %>
         <% if min_pe < 25 && max_pe > 15 %>
           <% green_bottom = [band_15_y, height - bottom_margin].min %>
           <% if 15 > min_pe %>
@@ -73,7 +69,6 @@
           <% end %>
         <% end %>
 
-        <%# Y-axis labels and grid lines %>
         <% y_ticks.each do |tick| %>
           <text x="<%= left_margin - 5 %>" y="<%= tick[:y].round(1) %>" text-anchor="end" dominant-baseline="middle"
                 fill="#94a3b8" font-size="10" font-weight="500"><%= tick[:value].round(1) %></text>
@@ -81,33 +76,31 @@
                 stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
         <% end %>
 
-        <%# X-axis date labels %>
         <% date_indices.each do |idx| %>
           <% x_pos = left_margin + (idx * step_x) %>
           <text x="<%= x_pos.round(1) %>" y="<%= height - 3 %>" text-anchor="middle"
-                fill="#94a3b8" font-size="9" font-weight="500"><%= points[idx][:date].strftime("%b %d") %></text>
+                fill="#94a3b8" font-size="9" font-weight="500"><%= short_date_es(points[idx][:date]) %></text>
           <line x1="<%= x_pos.round(1) %>" y1="<%= padding_y %>" x2="<%= x_pos.round(1) %>" y2="<%= height - bottom_margin %>"
                 stroke="#e2e8f0" stroke-width="0.3" stroke-dasharray="2,4"/>
         <% end %>
 
-        <%# Data line %>
         <polyline points="<%= polyline_pts %>"
                   fill="none" stroke="<%= line_color %>" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 
-        <%# End-point dot with value %>
         <% last_x = left_margin + ((points.size - 1) * step_x)
            last_normalized = (last_pe - min_pe) / pe_range
            last_y = height - bottom_margin - (last_normalized * usable_height) %>
         <circle cx="<%= last_x.round(1) %>" cy="<%= last_y.round(1) %>" r="3" fill="<%= line_color %>"/>
       </svg>
-      <div class="flex justify-between mt-2 text-[10px] font-medium text-slate-400">
-        <div class="flex gap-3 mx-auto">
-          <span class="text-success-fg dark:text-success">Value (&lt;15)</span>
-          <span class="text-warning-fg dark:text-warning">Neutral</span>
-          <span class="text-error-fg dark:text-error">Expensive (&gt;25)</span>
-        </div>
+
+      <div class="flex justify-center gap-4 mt-2 text-[10.5px] font-medium">
+        <span class="text-emerald-600 dark:text-emerald-400">Atractiva (&lt;15)</span>
+        <span class="text-amber-600 dark:text-amber-400">Neutral (15-25)</span>
+        <span class="text-rose-600 dark:text-rose-400">Cara (&gt;25)</span>
       </div>
-      <p class="mt-2 text-xs text-slate-400">Current P/E: <span class="font-bold text-slate-600 dark:text-slate-300"><%= last_pe.round(2) %></span></p>
+      <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+        P/U actual: <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= last_pe.round(2) %></span>
+      </p>
     </div>
   </section>
 <% end %>

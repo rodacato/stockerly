@@ -38,15 +38,14 @@ RSpec.describe "Dashboard — Notable Observations (#40 JTBD #6)", type: :reques
         expect(response.body).not_to include("Microsoft")
       end
 
-      it "uses descriptive copy per ADR-001 (no imperative verbs)" do
+      it "uses descriptive copy per ADR-001 (no imperative verbs, es-MX after #93)" do
         create(:technical_observation, asset: aapl, observation_type: "rsi_oversold_entered", observed_at: 1.hour.ago)
 
         get dashboard_notable_observations_path
-        expect(response.body).to include("entered oversold zone")
+        expect(response.body).to include("entró en zona de sobreventa")
 
         body = response.body
-        expect(body).not_to match(/\b(buy|sell|rebalance|consider)\b/i)
-        expect(body).not_to match(/you should|time to/i)
+        expect(body).not_to match(/\b(comprar|vender|rebalancear|considera|considere|deberías?|debes|es momento)\b/i)
       end
 
       it "excludes observations older than 14 days" do
@@ -54,8 +53,8 @@ RSpec.describe "Dashboard — Notable Observations (#40 JTBD #6)", type: :reques
         create(:technical_observation, asset: aapl, observation_type: "rsi_oversold_exited", observed_at: 20.days.ago)
 
         get dashboard_notable_observations_path
-        expect(response.body).to include("entered oversold zone")
-        expect(response.body).not_to include("exited oversold zone")
+        expect(response.body).to include("entró en zona de sobreventa")
+        expect(response.body).not_to include("salió de la zona de sobreventa")
       end
 
       it "renders nothing visible when the user-filtered set is empty" do

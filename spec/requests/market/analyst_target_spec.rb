@@ -24,8 +24,8 @@ RSpec.describe "Market asset analyst target price", type: :request do
         get market_asset_path(asset.symbol)
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Analyst Price Target")
-        expect(response.body).to include("Target Δ%")
+        expect(response.body).to include("Precio objetivo de analistas")
+        expect(response.body).to include("Diferencia")
         expect(response.body).to match(/\+\d+(\.\d+)?%/)
       end
     end
@@ -46,7 +46,7 @@ RSpec.describe "Market asset analyst target price", type: :request do
       it "displays the neutral target-diff label with a negative value" do
         get market_asset_path(asset.symbol)
 
-        expect(response.body).to include("Target Δ%")
+        expect(response.body).to include("Diferencia")
         expect(response.body).to match(/-\d+(\.\d+)?%/)
       end
     end
@@ -55,7 +55,7 @@ RSpec.describe "Market asset analyst target price", type: :request do
       it "does not render the analyst target card" do
         get market_asset_path(asset.symbol)
 
-        expect(response.body).not_to include("Analyst Price Target")
+        expect(response.body).not_to include("Precio objetivo de analistas")
       end
     end
   end

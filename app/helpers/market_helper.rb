@@ -34,4 +34,97 @@ module MarketHelper
     else              "Muy débil"
     end
   end
+
+  # es-MX label for the asset detail header chip ("Acción", "ETF", "Cripto",
+  # "CETE", "Índice"). Used in the new Stockerly-2.0 /market/:symbol header.
+  def asset_type_label_es(asset)
+    case asset.asset_type
+    when "stock"         then "Acción"
+    when "etf"           then "ETF"
+    when "crypto"        then "Cripto"
+    when "fixed_income"  then "CETE"
+    when "index"         then "Índice"
+    else asset.asset_type.to_s.humanize
+    end
+  end
+
+  # Native-currency price prefix used on the asset detail header and price
+  # chart. Per ADR / S09 convention: "MXN 48.50" / "USD 612.85".
+  def asset_currency_price(asset, precision: 2)
+    "#{asset.currency} #{number_with_precision(asset.current_price || 0, precision: precision, delimiter: ',')}"
+  end
+
+  # Relative-time label in es-MX: "hace 12 min", "hoy", "ayer", "hace 3 días".
+  # Used for technical observations in the asset detail page.
+  def observation_when(time)
+    return "—" if time.nil?
+
+    delta = Time.current - time
+    case delta
+    when 0...60        then "hace un instante"
+    when 60...3600     then "hace #{(delta / 60).to_i} min"
+    when 3600...86_400 then "hace #{(delta / 3600).to_i} h"
+    when 86_400...172_800 then "ayer"
+    else "hace #{(delta / 86_400).to_i} días"
+    end
+  end
+
+  # es-MX accent → dot color class for the observation row.
+  def observation_dot_class(accent)
+    case accent
+    when "pos"  then "bg-emerald-500"
+    when "warn" then "bg-amber-500"
+    else             "bg-primary"
+    end
+  end
+
+  # Es-MX abbreviated month names (matches EarningsHelper::MONTHS).
+  ASSET_MONTHS_ES = %w[ENE FEB MAR ABR MAY JUN JUL AGO SEP OCT NOV DIC].freeze
+  ASSET_MONTHS_ES_LOWER = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
+
+  # "13 may 2026" — used in dividend tables, FY headers, etc.
+  def short_date_es(date)
+    return "—" if date.nil?
+
+    "#{date.day} #{ASSET_MONTHS_ES_LOWER[date.month - 1]} #{date.year}"
+  end
+
+  # "13 MAY 2026" — uppercase variant for compact eyebrow contexts.
+  def short_date_upper_es(date)
+    return "—" if date.nil?
+
+    "#{date.day} #{ASSET_MONTHS_ES[date.month - 1]} #{date.year}"
+  end
+
+  # Es-MX caption shown below the chart card depending on data source.
+  def asset_data_source_caption(asset)
+    if asset.asset_type_crypto?
+      "Fuente: CoinGecko · #{asset.currency}"
+    elsif asset.asset_type_fixed_income?
+      "Fuente: Banxico · MXN"
+    elsif asset.exchange == "BMV"
+      "Fuente: Yahoo Finance · BMV · #{asset.currency}"
+    else
+      "Fuente: Alpha Vantage · #{asset.exchange || '—'} · #{asset.currency}"
+    end
+  end
+
+  # Returns the visible tab list for an asset, in es-MX. Adaptive per #93:
+  # crypto/ETF/fixed_income trim away tabs they cannot populate, equity
+  # may still drop tabs when underlying data is missing.
+  def asset_detail_tabs(asset, has_fundamentals:, has_dividends:, has_statements:)
+    return [] if asset.asset_type_fixed_income?
+
+    tabs = [ { key: :resumen, label: "Resumen" } ]
+
+    if asset.asset_type_crypto?
+      tabs << { key: :mercado, label: "Mercado" } if has_fundamentals
+      return tabs
+    end
+
+    tabs << { key: :valoracion, label: "Valoración" } if has_fundamentals
+    tabs << { key: :dividendos, label: "Dividendos" } if has_dividends
+    tabs << { key: :estados,    label: "Estados financieros" } if has_statements
+    tabs
+  end
 end

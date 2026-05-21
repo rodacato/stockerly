@@ -1,5 +1,7 @@
 require "rails_helper"
 
+# CETES detail surface (S10 #93 — Stockerly-2.0). The yield card replaces
+# the tab system; copy is es-MX.
 RSpec.describe "CETES detail page", type: :system do
   before do
     driven_by :rack_test
@@ -10,7 +12,7 @@ RSpec.describe "CETES detail page", type: :system do
   let!(:cetes) do
     create(:asset, :fixed_income,
            symbol: "CETES_28D",
-           name: "CETES 28 Days",
+           name: "CETES 28 días",
            yield_rate: 11.15,
            face_value: 10.0,
            maturity_date: 20.days.from_now.to_date,
@@ -24,28 +26,29 @@ RSpec.describe "CETES detail page", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "displays CETES detail page with yield information" do
+  it "displays the yield card with annualized rate" do
     visit market_asset_path(cetes.symbol)
 
-    expect(page).to have_content("CETES 28 Days")
-    expect(page).to have_content("Fixed Income")
-    expect(page).to have_content("Yield Information")
+    expect(page).to have_content("CETES 28 días")
+    expect(page).to have_content("CETE")
+    expect(page).to have_content("Detalle de la emisión")
     expect(page).to have_content("11.15")
   end
 
-  it "shows maturity progress and days to maturity" do
+  it "shows the maturity progress band and days remaining" do
     visit market_asset_path(cetes.symbol)
 
-    expect(page).to have_content("Maturity Progress")
-    expect(page).to have_content("20 days remaining")
+    expect(page).to have_content("Avance al vencimiento")
+    expect(page).to have_content("20 días restantes")
   end
 
-  it "shows investment calculator section" do
+  it "shows the investment calculator with MXN figures" do
     visit market_asset_path(cetes.symbol)
 
-    expect(page).to have_content("Investment Calculator")
-    expect(page).to have_content("Investment Cost")
-    expect(page).to have_content("Value at Maturity")
-    expect(page).to have_content("Total Return")
+    expect(page).to have_content("Simulación de inversión")
+    expect(page).to have_content("Inversión inicial")
+    expect(page).to have_content("Valor al vencimiento")
+    expect(page).to have_content("Rendimiento estimado")
+    expect(page).to have_content(/MXN\s/)
   end
 end

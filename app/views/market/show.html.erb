@@ -1,76 +1,71 @@
-<%# Asset Detail Page — tabbed fundamentals view (adaptive by asset type) %>
+<%# Asset detail — Stockerly-2.0 (S10 #93). Adaptive layout by asset type:
+    - Equity / ETF: header → observations → chart → tabs (Resumen + optional
+      Valoración / Dividendos / Estados financieros)
+    - Crypto: header → observations → chart → tabs (Resumen + Mercado)
+    - Fixed income (CETE): header → observations → yield card (replaces tabs)
+    Tabs are skipped entirely when their underlying data is missing. %>
 <%= turbo_stream_from "asset_#{@asset.id}" %>
 
-<%= render "market/asset_header", asset: @asset, presenter: @presenter, is_watchlisted: @is_watchlisted %>
+<div class="mx-auto max-w-6xl space-y-6">
+  <%= render "market/asset_header", asset: @asset, presenter: @presenter, is_watchlisted: @is_watchlisted %>
 
-<%= render "market/recent_observations", asset: @asset, observations: @recent_observations %>
+  <%= render "market/recent_observations", asset: @asset, observations: @recent_observations %>
 
-<% if @asset.asset_type_stock? || @asset.asset_type_etf? || @asset.asset_type_crypto? %>
-  <%= render "market/tradingview_chart" %>
-<% else %>
-  <%= render "market/price_chart" %>
-<% end %>
+  <% if @asset.asset_type_stock? || @asset.asset_type_etf? || @asset.asset_type_crypto? %>
+    <%= render "market/tradingview_chart" %>
+  <% else %>
+    <%= render "market/price_chart" %>
+  <% end %>
 
-<% if @asset.asset_type_fixed_income? %>
-  <%= render "market/fixed_income_detail", asset: @asset, yield_data: @yield_data %>
-<% else %>
-  <div data-controller="tabs">
-    <%# Horizontal tab bar %>
-    <div class="border-b border-slate-200 dark:border-slate-800 mb-8 overflow-x-auto">
-      <div class="flex gap-8 min-w-max">
-        <% if @asset.asset_type_crypto? %>
-          <% tab_names = ["Summary", "Market Data"] %>
-        <% else %>
-          <% tab_names = %w[Summary Valuation Profitability Health Growth Dividends Earnings Statements] %>
-        <% end %>
-        <% tab_names.each do |tab_name| %>
-          <button data-tabs-target="tab" data-action="tabs#switch"
-                  class="pb-4 pt-2 text-sm font-bold tracking-wide border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors">
-            <%= tab_name %>
-          </button>
-        <% end %>
-      </div>
-    </div>
+  <% if @asset.asset_type_fixed_income? %>
+    <%# CETE / fixed income: yield card replaces the tab system %>
+    <%= render "market/fixed_income_detail", asset: @asset, yield_data: @yield_data %>
+  <% else %>
+    <%
+      tabs = asset_detail_tabs(
+        @asset,
+        has_fundamentals: @has_fundamentals,
+        has_dividends:    @dividends.present?,
+        has_statements:   @has_statements
+      )
+    %>
 
-    <%# Tab panels — adaptive by asset type %>
-    <div data-tabs-target="panel">
-      <%= render "market/summary_tab" %>
-    </div>
-    <% if @asset.asset_type_crypto? %>
-      <div data-tabs-target="panel" class="hidden">
-        <%= render "market/category_tab", category: :crypto_market %>
+    <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm overflow-hidden" data-controller="tabs">
+      <div class="border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
+        <div class="flex gap-1 min-w-max px-4">
+          <% tabs.each_with_index do |tab, idx| %>
+            <% active = idx.zero? %>
+            <button data-tabs-target="tab" data-action="tabs#switch"
+                    class="px-3.5 py-3 text-sm <%= active ? 'font-semibold text-slate-900 dark:text-white border-b-2 border-primary -mb-px' : 'font-medium text-slate-500 dark:text-slate-400 border-b-2 border-transparent hover:text-slate-900 dark:hover:text-slate-100' %> transition-colors">
+              <%= tab[:label] %>
+            </button>
+          <% end %>
+        </div>
       </div>
-    <% else %>
-      <div data-tabs-target="panel" class="hidden">
-        <%= render "market/category_tab", category: :valuation %>
-      </div>
-      <div data-tabs-target="panel" class="hidden">
-        <%= render "market/category_tab", category: :profitability %>
-      </div>
-      <div data-tabs-target="panel" class="hidden">
-        <%= render "market/category_tab", category: :health %>
-      </div>
-      <div data-tabs-target="panel" class="hidden">
-        <%= render "market/category_tab", category: :growth %>
-      </div>
-      <div data-tabs-target="panel" class="hidden">
-        <%= render "market/category_tab", category: :dividends %>
-        <%= render "market/dividend_history" %>
-      </div>
-      <div data-tabs-target="panel" class="hidden">
-        <%= turbo_frame_tag "asset_earnings_tab", src: market_asset_earnings_tab_path(@asset.symbol), loading: "lazy" do %>
-          <%= render "components/skeleton", type: "text", count: 2 %>
-        <% end %>
-      </div>
-      <div data-tabs-target="panel" class="hidden">
-        <%= turbo_frame_tag "asset_statements_tab", src: market_asset_statements_tab_path(@asset.symbol), loading: "lazy" do %>
-          <%= render "components/skeleton", type: "table_row", count: 5 %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
 
-  <%= render "market/pe_chart" if @asset.asset_type_stock? %>
-<% end %>
+      <% tabs.each_with_index do |tab, idx| %>
+        <div data-tabs-target="panel" class="<%= 'hidden' unless idx.zero? %> px-5 py-6">
+          <% case tab[:key] %>
+          <% when :resumen %>
+            <%= render "market/summary_tab" %>
+          <% when :valoracion %>
+            <%= render "market/category_tab", category: :valuation %>
+          <% when :mercado %>
+            <%= render "market/category_tab", category: :crypto_market %>
+          <% when :dividendos %>
+            <%= render "market/dividend_history" %>
+          <% when :estados %>
+            <%= turbo_frame_tag "asset_statements_tab", src: market_asset_statements_tab_path(@asset.symbol), loading: "lazy" do %>
+              <%= render "components/skeleton", type: "table_row", count: 5 %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </section>
 
-<%= render "market/disclaimer" %>
+    <%# P/E history shown below tabs for stocks only (visual evidence next to fundamentals) %>
+    <%= render "market/pe_chart" if @asset.asset_type_stock? %>
+  <% end %>
+
+  <%= render "market/disclaimer" %>
+</div>

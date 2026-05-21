@@ -1,57 +1,57 @@
-<%# Reusable metric card with educational tooltip popover %>
+<%# Reusable metric card with educational tooltip popover — es-MX (S10 #93).
+    The labels and copy ("Qué mide", "Cómo interpretarlo") come from the
+    inline strings here; the metric's display_name + descriptions still come
+    from MarketData::Domain::MetricDefinitions and remain in English for the
+    duration of S10 (financial-glossary translation is a separate ticket). %>
 <% value_display = format_metric_value(value, definition.format_type) %>
-<div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+<div class="relative rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm hover:shadow-md transition-shadow"
      data-controller="metric-tooltip">
-  <div class="flex items-center justify-between mb-4">
-    <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-      <span class="text-xs font-bold uppercase tracking-wider"><%= definition.display_name %></span>
-    </div>
+  <div class="flex items-center justify-between mb-3">
+    <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+      <%= definition.display_name %>
+    </p>
     <button data-action="click->metric-tooltip#toggle"
             class="text-slate-400 hover:text-primary transition-colors cursor-help"
-            aria-label="Learn about <%= definition.display_name %>">
+            aria-label="Ver detalle de <%= definition.display_name %>">
       <span class="material-symbols-outlined text-sm">info</span>
     </button>
   </div>
   <div class="flex flex-col gap-1">
-    <p class="text-slate-900 dark:text-white text-3xl font-bold"><%= value_display %></p>
-    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium"><%= definition.short_desc %></p>
+    <p class="font-mono text-2xl font-medium text-slate-900 dark:text-white tracking-tight"><%= value_display %></p>
+    <p class="text-sm text-slate-500 dark:text-slate-400"><%= definition.short_desc %></p>
   </div>
 
-  <%# Educational tooltip popover %>
+  <%# Tooltip popover %>
   <div data-metric-tooltip-target="popover"
-       class="hidden absolute top-full left-0 mt-3 w-full z-20 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-    <%# Arrow %>
+       class="hidden absolute top-full left-0 mt-3 w-full z-20 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
     <div class="absolute -top-2 left-8 w-4 h-4 bg-white dark:bg-slate-800 rotate-45 border-t border-l border-slate-200 dark:border-slate-700"></div>
 
-    <%# Header %>
     <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-700 relative">
-      <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+      <h3 class="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
         <span class="material-symbols-outlined text-primary text-lg">school</span>
         <%= definition.display_name %>
       </h3>
       <button data-action="click->metric-tooltip#close"
               class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-              aria-label="Close tooltip">
+              aria-label="Cerrar">
         <span class="material-symbols-outlined text-lg">close</span>
       </button>
     </div>
 
-    <%# Body %>
     <div class="p-4 space-y-3 relative">
       <section>
-        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">What it measures</h4>
+        <h4 class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Qué mide</h4>
         <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"><%= definition.short_desc %></p>
       </section>
       <section>
-        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">How to interpret</h4>
+        <h4 class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Cómo interpretarlo</h4>
         <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"><%= definition.context_guidance %></p>
       </section>
     </div>
 
-    <%# Disclaimer footer %>
     <div class="bg-slate-50 dark:bg-slate-900 px-4 py-2 border-t border-slate-100 dark:border-slate-700">
-      <p class="text-[10px] text-slate-400 italic text-center">
-        Financial data is informational only. Historical performance does not guarantee future results.
+      <p class="text-[10px] italic text-center text-slate-500 dark:text-slate-400">
+        Información referencial. El desempeño pasado no garantiza resultados futuros.
       </p>
     </div>
   </div>

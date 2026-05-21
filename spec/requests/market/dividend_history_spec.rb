@@ -20,11 +20,11 @@ RSpec.describe "Market asset dividend history", type: :request do
         expect(response.body).to include("Historial de dividendos")
       end
 
-      it "shows amount per share values" do
+      it "shows amount per share values with the native currency prefix" do
         get market_asset_path(asset.symbol)
 
-        expect(response.body).to include("$0.24")
-        expect(response.body).to include("$0.22")
+        expect(response.body).to match(/USD\s+0\.2400/)
+        expect(response.body).to match(/USD\s+0\.2200/)
       end
     end
 

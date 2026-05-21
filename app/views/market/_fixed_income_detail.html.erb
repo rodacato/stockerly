@@ -1,104 +1,148 @@
-<%# Fixed income detail: yield info, maturity progress, investment calculator %>
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-  <%# Yield Information Card %>
-  <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-    <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-      <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
-        <span class="material-symbols-outlined text-primary">percent</span>
-        Yield Information
-      </h3>
-    </div>
-    <div class="p-5 space-y-4">
-      <div class="flex justify-between items-center">
-        <span class="text-sm text-slate-500 dark:text-slate-400">Annual Yield Rate</span>
-        <span class="text-lg font-bold text-success-fg dark:text-success"><%= number_with_precision(asset.yield_rate, precision: 2) %>%</span>
-      </div>
-      <div class="flex justify-between items-center">
-        <span class="text-sm text-slate-500 dark:text-slate-400">Face Value</span>
-        <span class="font-semibold text-slate-900 dark:text-white">$<%= number_with_precision(asset.face_value, precision: 2) %> MXN</span>
-      </div>
-      <% if yield_data[:discount_price] %>
-        <div class="flex justify-between items-center">
-          <span class="text-sm text-slate-500 dark:text-slate-400">Discount Price</span>
-          <span class="font-semibold text-slate-900 dark:text-white">$<%= number_with_precision(yield_data[:discount_price], precision: 4) %> MXN</span>
-        </div>
-      <% end %>
-      <% if asset.maturity_date %>
-        <div class="flex justify-between items-center">
-          <span class="text-sm text-slate-500 dark:text-slate-400">Maturity Date</span>
-          <span class="font-semibold text-slate-900 dark:text-white"><%= asset.maturity_date.strftime("%B %d, %Y") %></span>
-        </div>
-      <% end %>
-      <div class="flex justify-between items-center">
-        <span class="text-sm text-slate-500 dark:text-slate-400">Days to Maturity</span>
-        <span class="font-semibold text-slate-900 dark:text-white"><%= yield_data[:days_to_maturity] %> days</span>
-      </div>
-    </div>
-  </section>
+<%# CETE / fixed income detail — Stockerly-2.0 (S10 #93). Replaces the tab
+    system: yield hero + 2x2 fact grid + maturity progress + investment
+    calculator. All copy es-MX; native currency prefix throughout. %>
+<%
+  total_days =
+    if (m = asset.symbol.to_s.match(/CETES?_(\d+)D/i))
+      m[1].to_i
+    else
+      yield_data[:days_to_maturity].to_i
+    end
+  days_remaining = yield_data[:days_to_maturity].to_i
+  days_elapsed   = [ total_days - days_remaining, 0 ].max
+  progress_pct   = total_days.positive? ? (days_elapsed.to_f / total_days * 100).clamp(0, 100) : 0
+%>
 
-  <%# Maturity Progress Card %>
-  <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-    <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-      <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
-        <span class="material-symbols-outlined text-primary">calendar_today</span>
-        Maturity Progress
-      </h3>
-    </div>
-    <div class="p-5 space-y-4">
-      <% if asset.maturity_date %>
-        <% term_match = asset.symbol.match(/CETES_(\d+)D/) %>
-        <% total_days = term_match ? term_match[1].to_i : yield_data[:days_to_maturity] %>
-        <% days_elapsed = total_days - yield_data[:days_to_maturity] %>
-        <% progress = total_days > 0 ? (days_elapsed.to_f / total_days * 100).clamp(0, 100) : 0 %>
-
-        <div class="flex justify-between text-sm mb-2">
-          <span class="text-slate-500 dark:text-slate-400">Issue</span>
-          <span class="text-slate-500 dark:text-slate-400">Maturity</span>
-        </div>
-        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
-          <div class="bg-primary rounded-full h-3 transition-all" style="width: <%= number_with_precision(progress, precision: 1) %>%"></div>
-        </div>
-        <div class="flex justify-between text-xs mt-1">
-          <span class="text-slate-400"><%= days_elapsed %> days elapsed</span>
-          <span class="font-medium text-primary"><%= yield_data[:days_to_maturity] %> days remaining</span>
-        </div>
-      <% else %>
-        <p class="text-sm text-slate-500 dark:text-slate-400">Maturity date not available.</p>
-      <% end %>
-    </div>
-  </section>
-</div>
-
-<%# Investment Calculator Card %>
-<section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-8">
-  <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-    <h3 class="font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
-      <span class="material-symbols-outlined text-primary">calculate</span>
-      Investment Calculator
-    </h3>
+<%# 1 · Yield hero + facts grid %>
+<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-2 mb-5">
+    <h2 class="font-display text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
+      Detalle de la emisión
+    </h2>
+    <span class="text-xs text-slate-500 dark:text-slate-400">
+      Cifras con base en la última subasta · Banxico
+    </span>
   </div>
-  <div class="p-5">
-    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Example investment: 100 CETES units</p>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 text-center">
-        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-1">Investment Cost</p>
-        <p class="text-xl font-bold text-slate-900 dark:text-white">$<%= number_with_precision(yield_data[:investment_cost_100], precision: 2) %></p>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6 lg:gap-8 lg:items-center">
+    <%# Yield hero %>
+    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40 px-5 py-5 flex flex-col gap-1.5">
+      <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+        Tasa <%= total_days.positive? ? "#{total_days}D" : "anualizada" %>
+      </p>
+      <p class="font-mono text-5xl font-medium tracking-tight text-slate-900 dark:text-white leading-none">
+        <%= number_with_precision(asset.yield_rate || 0, precision: 2) %>%
+      </p>
+      <p class="text-xs text-slate-500 dark:text-slate-400">
+        Rendimiento anualizado · antes de ISR
+      </p>
+    </div>
+
+    <%# 2x2 fact grid %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="border-t border-slate-200 dark:border-slate-700 pt-3">
+        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Plazo</p>
+        <p class="mt-1 font-mono text-lg font-medium text-slate-900 dark:text-white">
+          <%= total_days.positive? ? "#{total_days} días" : "—" %>
+        </p>
       </div>
-      <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 text-center">
-        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-1">Value at Maturity</p>
-        <p class="text-xl font-bold text-slate-900 dark:text-white">$<%= number_with_precision(yield_data[:face_value_100], precision: 2) %></p>
+
+      <div class="border-t border-slate-200 dark:border-slate-700 pt-3">
+        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Vencimiento</p>
+        <p class="mt-1 font-mono text-lg font-medium text-slate-900 dark:text-white">
+          <%= short_date_upper_es(asset.maturity_date) %>
+        </p>
+        <% if days_remaining.positive? %>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">faltan <%= days_remaining %> días</p>
+        <% end %>
       </div>
-      <div class="bg-success/10 dark:bg-success/20 rounded-lg p-4 text-center">
-        <p class="text-xs text-success-fg dark:text-success uppercase font-bold tracking-wider mb-1">Total Return</p>
-        <p class="text-xl font-bold text-success-fg dark:text-success">+$<%= number_with_precision(yield_data[:total_return_100], precision: 2) %></p>
+
+      <div class="border-t border-slate-200 dark:border-slate-700 pt-3">
+        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Valor nominal</p>
+        <p class="mt-1 font-mono text-lg font-medium text-slate-900 dark:text-white">
+          MXN <%= number_with_precision(asset.face_value || 0, precision: 2, delimiter: ",") %>
+        </p>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">por título</p>
+      </div>
+
+      <div class="border-t border-slate-200 dark:border-slate-700 pt-3">
+        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Precio con descuento</p>
+        <p class="mt-1 font-mono text-lg font-medium text-slate-900 dark:text-white">
+          <% if yield_data[:discount_price] %>
+            MXN <%= number_with_precision(yield_data[:discount_price], precision: 4, delimiter: ",") %>
+          <% else %>
+            —
+          <% end %>
+        </p>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">vía Cetes Directo</p>
       </div>
     </div>
   </div>
 </section>
 
-<div class="bg-warning/10 dark:bg-warning/20 border border-warning/20 dark:border-warning/30 rounded-lg p-4">
-  <p class="text-xs text-warning-fg dark:text-warning flex items-center gap-2">
-    <span class="material-symbols-outlined text-sm">info</span>
-    CETES data from Banxico. Past yields do not guarantee future returns.
+<%# 2 · Maturity progress %>
+<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+  <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+    <span class="material-symbols-outlined text-base text-primary">calendar_today</span>
+    Avance al vencimiento
+  </h3>
+
+  <% if asset.maturity_date.present? %>
+    <div class="flex justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-2">
+      <span>Emisión</span>
+      <span>Vencimiento</span>
+    </div>
+    <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
+      <div class="bg-primary h-full rounded-full transition-all" style="width: <%= number_with_precision(progress_pct, precision: 1) %>%"></div>
+    </div>
+    <div class="flex justify-between mt-2 text-[11px] font-medium">
+      <span class="text-slate-500 dark:text-slate-400"><%= days_elapsed %> días transcurridos</span>
+      <span class="text-primary"><%= days_remaining %> días restantes</span>
+    </div>
+  <% else %>
+    <p class="text-sm text-slate-500 dark:text-slate-400">Fecha de vencimiento no disponible.</p>
+  <% end %>
+</section>
+
+<%# 3 · Investment calculator %>
+<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+  <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+    <span class="material-symbols-outlined text-base text-primary">calculate</span>
+    Simulación de inversión
+  </h3>
+  <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Ejemplo con 100 títulos CETES</p>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40 p-4 text-center">
+      <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Inversión inicial</p>
+      <p class="mt-1 font-mono text-xl font-medium text-slate-900 dark:text-white">
+        <% if yield_data[:investment_cost_100] %>
+          MXN <%= number_with_precision(yield_data[:investment_cost_100], precision: 2, delimiter: ",") %>
+        <% else %>—<% end %>
+      </p>
+    </div>
+    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40 p-4 text-center">
+      <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Valor al vencimiento</p>
+      <p class="mt-1 font-mono text-xl font-medium text-slate-900 dark:text-white">
+        <% if yield_data[:face_value_100] %>
+          MXN <%= number_with_precision(yield_data[:face_value_100], precision: 2, delimiter: ",") %>
+        <% else %>—<% end %>
+      </p>
+    </div>
+    <div class="rounded-xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/70 dark:bg-emerald-900/20 p-4 text-center">
+      <p class="text-[10.5px] font-semibold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">Rendimiento estimado</p>
+      <p class="mt-1 font-mono text-xl font-medium text-emerald-700 dark:text-emerald-400">
+        <% if yield_data[:total_return_100] %>
+          +MXN <%= number_with_precision(yield_data[:total_return_100], precision: 2, delimiter: ",") %>
+        <% else %>—<% end %>
+      </p>
+    </div>
+  </div>
+</section>
+
+<aside class="rounded-xl border border-amber-200 dark:border-amber-900/40 bg-amber-50/70 dark:bg-amber-900/20 px-4 py-3 flex items-start gap-2">
+  <span class="material-symbols-outlined text-base text-amber-700 dark:text-amber-400">info</span>
+  <p class="text-xs text-amber-800 dark:text-amber-300 leading-snug">
+    Datos de CETES provistos por Banxico. Los rendimientos pasados no garantizan resultados futuros.
   </p>
-</div>
+</aside>

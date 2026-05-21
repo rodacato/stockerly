@@ -25,20 +25,61 @@ class TechnicalObservation < ApplicationRecord
 
   # Descriptive label per ADR-001 — purely observational, no action verbs.
   # The asset symbol is rendered by the caller so this stays asset-agnostic.
+  # Copy is es-MX (Adrian's UI language). The English keys stay as the
+  # canonical persisted observation_type — only the user-facing phrase is es-MX.
   PHRASES = {
-    "rsi_oversold_entered"   => "entered oversold zone (RSI(14) below 30)",
-    "rsi_overbought_entered" => "entered overbought zone (RSI(14) above 70)",
-    "rsi_oversold_exited"    => "exited oversold zone",
-    "rsi_overbought_exited"  => "exited overbought zone",
-    "ma200_crossed_above"    => "crossed above its MA200",
-    "ma200_crossed_below"    => "crossed below its MA200",
-    "ma50_crossed_above"     => "crossed above its MA50",
-    "ma50_crossed_below"     => "crossed below its MA50",
-    "bb_upper_breached"      => "broke its upper Bollinger Band",
-    "bb_lower_breached"      => "broke its lower Bollinger Band"
+    "rsi_oversold_entered"   => "entró en zona de sobreventa (RSI(14) por debajo de 30)",
+    "rsi_overbought_entered" => "entró en zona de sobrecompra (RSI(14) por encima de 70)",
+    "rsi_oversold_exited"    => "salió de la zona de sobreventa",
+    "rsi_overbought_exited"  => "salió de la zona de sobrecompra",
+    "ma200_crossed_above"    => "cruzó al alza su MA200",
+    "ma200_crossed_below"    => "cruzó a la baja su MA200",
+    "ma50_crossed_above"     => "cruzó al alza su MA50",
+    "ma50_crossed_below"     => "cruzó a la baja su MA50",
+    "bb_upper_breached"      => "rompió la banda de Bollinger superior",
+    "bb_lower_breached"      => "rompió la banda de Bollinger inferior"
+  }.freeze
+
+  # Short uppercase tag rendered next to the phrase in the asset detail
+  # "Observaciones recientes" panel (S10 #93).
+  TAGS = {
+    "rsi_oversold_entered"   => "RSI",
+    "rsi_overbought_entered" => "RSI",
+    "rsi_oversold_exited"    => "RSI",
+    "rsi_overbought_exited"  => "RSI",
+    "ma200_crossed_above"    => "MEDIA MÓVIL",
+    "ma200_crossed_below"    => "MEDIA MÓVIL",
+    "ma50_crossed_above"     => "MEDIA MÓVIL",
+    "ma50_crossed_below"     => "MEDIA MÓVIL",
+    "bb_upper_breached"      => "BANDAS",
+    "bb_lower_breached"      => "BANDAS"
+  }.freeze
+
+  # Visual accent ("pos" green, "warn" amber, neutral primary) for the
+  # observation dot. Choice mirrors the Stockerly-2.0 mockup intent:
+  # bullish-leaning signals → pos; bearish/extreme → warn; rest → neutral.
+  ACCENTS = {
+    "rsi_oversold_entered"   => "warn",
+    "rsi_overbought_entered" => "warn",
+    "rsi_oversold_exited"    => "pos",
+    "rsi_overbought_exited"  => "neutral",
+    "ma200_crossed_above"    => "pos",
+    "ma200_crossed_below"    => "warn",
+    "ma50_crossed_above"     => "pos",
+    "ma50_crossed_below"     => "warn",
+    "bb_upper_breached"      => "warn",
+    "bb_lower_breached"      => "warn"
   }.freeze
 
   def phrase
     PHRASES.fetch(observation_type, observation_type.humanize)
+  end
+
+  def tag
+    TAGS.fetch(observation_type, "SEÑAL")
+  end
+
+  def accent
+    ACCENTS.fetch(observation_type, "neutral")
   end
 end

@@ -1,52 +1,62 @@
-<%# Dividend payment history — last 12 records from @dividends %>
+<%# Historial de dividendos — es-MX (S10 #93). Annual rollup + last 12 records. %>
 <% if @dividends.present? %>
-  <%# Annual summary %>
   <%
     annual_totals = @dividends.group_by { |d| d.ex_date.year }.transform_values do |divs|
       divs.sum { |d| d.amount_per_share.to_f }
     end
+    ccy = @asset.currency
   %>
 
-  <div class="mt-8">
-    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-4">Historial de dividendos</h4>
+  <div>
+    <h4 class="text-sm font-semibold text-slate-900 dark:text-white mb-4">Historial de dividendos</h4>
 
     <% if annual_totals.size >= 2 %>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         <% annual_totals.first(4).each do |year, total| %>
-          <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-center">
-            <p class="text-[10px] font-bold uppercase text-slate-400"><%= year %></p>
-            <span class="text-lg font-black text-slate-900 dark:text-white"><%= number_to_currency(total) %></span>
-            <p class="text-[10px] text-slate-400">per share</p>
+          <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 p-3 text-center">
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400"><%= year %></p>
+            <p class="mt-1 font-mono text-base font-medium text-slate-900 dark:text-white"><%= ccy %> <%= number_with_precision(total, precision: 2, delimiter: ",") %></p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400">por acción</p>
           </div>
         <% end %>
       </div>
     <% end %>
 
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
       <table class="w-full text-sm">
-        <thead>
-          <tr class="border-b border-slate-200 dark:border-slate-800">
-            <th class="text-left py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">Ex-Date</th>
-            <th class="text-left py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">Pay Date</th>
-            <th class="text-right py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">Amount/Share</th>
+        <thead class="bg-slate-50 dark:bg-slate-800/40">
+          <tr>
+            <th class="text-left py-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Ex-dividendo</th>
+            <th class="text-left py-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Fecha de pago</th>
+            <th class="text-right py-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Monto / acción</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
           <% @dividends.each do |div| %>
-            <tr class="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
               <td class="py-3 px-4 text-slate-900 dark:text-white font-medium">
-                <%= div.ex_date.strftime("%b %d, %Y") %>
+                <%= short_date_es(div.ex_date) %>
               </td>
               <td class="py-3 px-4 text-slate-600 dark:text-slate-300">
-                <%= div.pay_date&.strftime("%b %d, %Y") || "—" %>
+                <%= short_date_es(div.pay_date) %>
               </td>
-              <td class="py-3 px-4 text-right font-bold text-success-fg dark:text-success">
-                <%= number_to_currency(div.amount_per_share) %>
+              <td class="py-3 px-4 text-right font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                <%= ccy %> <%= number_with_precision(div.amount_per_share, precision: 4, delimiter: ",") %>
               </td>
             </tr>
           <% end %>
         </tbody>
       </table>
     </div>
+  </div>
+<% else %>
+  <div class="flex flex-col items-center justify-center py-12 text-center">
+    <div class="mb-4 flex size-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400">
+      <span class="material-symbols-outlined text-3xl">paid</span>
+    </div>
+    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Sin dividendos registrados</h3>
+    <p class="mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
+      Este activo no ha pagado dividendos en el período disponible.
+    </p>
   </div>
 <% end %>

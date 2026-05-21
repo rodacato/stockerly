@@ -21,6 +21,7 @@ class MarketController < AuthenticatedController
       @asset = data[:asset]
       @presenter = data[:presenter]
       @has_fundamentals = data[:has_fundamentals]
+      @has_statements = data[:has_statements]
       @yield_data = data[:yield_data]
       @price_histories = data[:price_histories] || []
       @pe_history = data[:pe_history]
@@ -30,7 +31,7 @@ class MarketController < AuthenticatedController
 
       trigger_fundamental_sync(@asset) unless @has_fundamentals
     in Dry::Monads::Failure[ :not_found, _ ]
-      redirect_to market_path, alert: "Asset not found"
+      redirect_to market_path, alert: "Activo no encontrado"
     end
   end
 

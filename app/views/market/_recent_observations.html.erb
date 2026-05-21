@@ -1,29 +1,37 @@
-<%# Recent technical-zone transitions for this asset (#40 JTBD #6).
-    Rendered on the asset detail page; descriptive copy per ADR-001.
-    The `observations` collection is loaded by MarketController#show — the
-    partial is presentation-only and never queries the DB itself. %>
+<%# Recent technical-zone transitions — Stockerly-2.0 (S10 #93). Prominent
+    panel shown above the chart with descriptive copy per ADR-001
+    ("AAPL entró en zona de sobreventa…"). Tags + relative time + accent dot
+    mirror the mockup. Phrases/tags/accents come from TechnicalObservation. %>
 <% if observations.any? %>
-  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm mb-8">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-        <span class="material-symbols-outlined text-lg">insights</span>
-        <p class="text-sm font-semibold tracking-tight uppercase">Recent Observations</p>
-      </div>
-    </div>
-    <ul class="space-y-3">
+  <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+    <header class="flex flex-wrap items-baseline gap-2 px-5 pt-4 pb-3">
+      <h2 class="font-display text-base font-semibold tracking-tight text-slate-900 dark:text-white">
+        Observaciones recientes
+      </h2>
+      <span class="text-xs text-slate-500 dark:text-slate-400">
+        Filtradas a <span class="font-mono text-slate-700 dark:text-slate-300"><%= asset.symbol %></span> · últimos 30 días
+      </span>
+      <span class="ml-auto text-[11px] italic text-slate-500 dark:text-slate-400">
+        Lecturas, no recomendaciones.
+      </span>
+    </header>
+
+    <ul class="divide-y divide-slate-100 dark:divide-slate-800">
       <% observations.each do |observation| %>
-        <li class="flex items-start gap-3 pb-3 border-b border-slate-100 dark:border-slate-800 last:border-0 last:pb-0">
-          <span class="material-symbols-outlined text-base text-slate-400">trending_up</span>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-slate-900 dark:text-white">
-              <%= asset.symbol %> <%= observation.phrase %>
-            </p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">
-              <%= time_ago_in_words(observation.observed_at) %> ago
-            </p>
-          </div>
+        <li class="grid grid-cols-[8px_1fr_auto] sm:grid-cols-[8px_1fr_140px_120px] items-center gap-3.5 px-5 py-3.5">
+          <span class="inline-block h-1.5 w-1.5 rounded-full <%= observation_dot_class(observation.accent) %>"></span>
+          <p class="text-sm text-slate-700 dark:text-slate-200 leading-snug">
+            <span class="font-mono font-semibold text-primary"><%= asset.symbol %></span>
+            <%= observation.phrase %>
+          </p>
+          <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+            <%= observation.tag %>
+          </span>
+          <span class="text-right text-xs text-slate-500 dark:text-slate-400">
+            <%= observation_when(observation.observed_at) %>
+          </span>
         </li>
       <% end %>
     </ul>
-  </div>
+  </section>
 <% end %>

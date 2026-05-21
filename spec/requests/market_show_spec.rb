@@ -1,5 +1,8 @@
 require "rails_helper"
 
+# Asset detail surface (S10 #93 — Stockerly-2.0). Asserts es-MX copy,
+# adaptive tab structure, and currency prefix. Behavioral specs for
+# LoadAssetDetail live in spec/contexts/market_data/use_cases/.
 RSpec.describe "Market Asset Detail", type: :request do
   let!(:user) { create(:user, email: "detail@example.com", password: "password123") }
   let!(:asset) { create(:asset, symbol: "AAPL", name: "Apple Inc.", current_price: 227.44, sector: "Technology", exchange: "NASDAQ", country: "US") }
@@ -15,6 +18,19 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("AAPL")
     end
 
+    it "renders the price block with the native currency prefix" do
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to match(/USD\s+227\.44/)
+    end
+
+    it "renders the es-MX asset-type chip for an equity" do
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to match(/>\s*Acción\s*</)
+      expect(response.body).not_to include("Equity")
+    end
+
     it "shows fundamental metrics when data exists" do
       create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
         metrics: { "eps" => "6.07", "beta" => "1.24", "pe_ratio" => "31.25" })
@@ -26,54 +42,76 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("Beta")
     end
 
-    it "shows empty state when no fundamentals" do
+    it "shows the es-MX empty state when no fundamentals" do
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("No fundamental data available")
+      expect(response.body).to include("Sin datos fundamentales")
     end
 
-    it "redirects to market index when asset not found" do
+    it "redirects to market index with an es-MX alert when asset not found" do
       get market_asset_path("INVALID")
 
       expect(response).to redirect_to(market_path)
+      follow_redirect!
+      expect(flash[:alert]).to eq("Activo no encontrado")
     end
 
-    it "shows watchlist status for watched assets" do
+    it "shows watchlist status (es-MX) for watched assets" do
       create(:watchlist_item, user: user, asset: asset)
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Watching")
+      expect(response.body).to include("Quitar de watchlist")
     end
 
-    it "shows add to watchlist button for unwatched assets" do
+    it "shows add-to-watchlist CTA (es-MX) for unwatched assets" do
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Add to Watchlist")
+      expect(response.body).to include("Agregar a watchlist")
     end
 
-    it "renders tab navigation" do
+    it "renders the always-visible Resumen tab" do
       get market_asset_path(asset.symbol)
 
-      expect(response.body).to include("Summary")
-      expect(response.body).to include("Valuation")
-      expect(response.body).to include("Profitability")
-      expect(response.body).to include("Health")
-      expect(response.body).to include("Growth")
-      expect(response.body).to include("Dividends")
-      expect(response.body).to include("Statements")
+      expect(response.body).to match(/>\s*Resumen\s*</)
     end
 
-    it "shows GAAP label based on country" do
-      create(:asset_fundamental, asset: asset)
+    it "drops 4-letter tabs when fundamentals/dividends/statements are absent" do
       get market_asset_path(asset.symbol)
+
+      expect(response.body).not_to match(/>\s*Valoración\s*</)
+      expect(response.body).not_to match(/>\s*Dividendos\s*</)
+      expect(response.body).not_to match(/>\s*Estados financieros\s*</)
+    end
+
+    it "renders Valoración + Estados financieros tabs when data exists" do
+      create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
+        metrics: { "pe_ratio" => "31.25" })
+      create(:financial_statement, asset: asset,
+        statement_type: :income_statement, period_type: :annual,
+        fiscal_date_ending: Date.new(2024, 9, 28), fiscal_year: 2024,
+        data: { "totalRevenue" => "394328000000" })
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to match(/>\s*Valoración\s*</)
+      expect(response.body).to match(/>\s*Estados financieros\s*</)
+    end
+
+    it "shows the GAAP label inside the statements tab" do
+      create(:financial_statement, asset: asset,
+        statement_type: :income_statement, period_type: :annual,
+        fiscal_date_ending: Date.new(2024, 9, 28), fiscal_year: 2024,
+        data: { "totalRevenue" => "394328000000" })
+
+      get market_asset_statements_tab_path(asset.symbol)
 
       expect(response.body).to include("US GAAP")
     end
 
-    it "renders P/E chart section when price history and EPS exist" do
+    it "renders the P/U history section when price history and EPS exist" do
       create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
              metrics: { "eps" => "6.07" })
       3.times do |i|
@@ -83,15 +121,21 @@ RSpec.describe "Market Asset Detail", type: :request do
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Historical P/E Ratio")
+      expect(response.body).to include("Razón P/U histórica")
     end
 
-    it "renders TradingView chart widget for stocks" do
+    it "renders the TradingView chart widget for stocks" do
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('data-controller="tradingview"')
       expect(response.body).to include('data-tradingview-symbol-value="NASDAQ:AAPL"')
+    end
+
+    it "renders the es-MX data-source caption" do
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include("Fuente:")
     end
 
     context "on-demand fundamental sync" do
@@ -135,16 +179,17 @@ RSpec.describe "Market Asset Detail", type: :request do
       end
     end
 
-    it "renders fixed income detail for CETES assets" do
-      cetes = create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28 Days",
+    it "renders fixed income detail (yield card) for CETES assets" do
+      cetes = create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28 días",
                      yield_rate: 11.15, face_value: 10.0, maturity_date: 20.days.from_now.to_date)
 
       get market_asset_path(cetes.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Yield Information")
-      expect(response.body).to include("Fixed Income")
+      expect(response.body).to include("Detalle de la emisión")
+      expect(response.body).to match(/>\s*CETE\s*</)
       expect(response.body).to include("Banxico")
+      expect(response.body).to include("Avance al vencimiento")
     end
   end
 end

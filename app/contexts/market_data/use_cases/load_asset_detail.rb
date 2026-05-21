@@ -26,11 +26,13 @@ module MarketData
         end
 
         dividends = asset.asset_type_stock? || asset.asset_type_etf? ? asset.dividends.order(ex_date: :desc).limit(12) : []
+        has_statements = !asset.asset_type_crypto? && asset.financial_statements.exists?
 
         Success({
           asset: asset,
           presenter: presenter,
           has_fundamentals: fundamental.present?,
+          has_statements: has_statements,
           price_histories: price_histories,
           pe_history: pe_history,
           dividends: dividends

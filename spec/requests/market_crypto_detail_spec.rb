@@ -1,5 +1,8 @@
 require "rails_helper"
 
+# Crypto-variant of /market/:symbol (S10 #93 — Stockerly-2.0). Adaptive
+# tab list: only Resumen + Mercado, never Valoración / Dividendos /
+# Estados financieros.
 RSpec.describe "Market Crypto Asset Detail", type: :request do
   let!(:user) { create(:user, email: "crypto@example.com", password: "password123") }
   let!(:crypto_asset) { create(:asset, symbol: "BTC", name: "Bitcoin", asset_type: :crypto, current_price: 67_250) }
@@ -20,24 +23,24 @@ RSpec.describe "Market Crypto Asset Detail", type: :request do
   before { login_as(user) }
 
   describe "GET /market/:symbol for crypto" do
-    it "renders Digital Asset type badge" do
+    it "renders the es-MX Cripto type chip" do
       get market_asset_path(crypto_asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Digital Asset")
+      expect(response.body).to match(/>\s*Cripto\s*</)
     end
 
-    it "renders only Summary and Market Data tabs" do
+    it "renders only Resumen and Mercado tabs" do
       get market_asset_path(crypto_asset.symbol)
 
-      expect(response.body).to include("Summary")
-      expect(response.body).to include("Market Data")
-      expect(response.body).not_to include("Profitability")
-      expect(response.body).not_to include("Dividends")
-      expect(response.body).not_to include("Statements")
+      expect(response.body).to match(/>\s*Resumen\s*</)
+      expect(response.body).to match(/>\s*Mercado\s*</)
+      expect(response.body).not_to match(/>\s*Valoración\s*</)
+      expect(response.body).not_to match(/>\s*Dividendos\s*</)
+      expect(response.body).not_to match(/>\s*Estados financieros\s*</)
     end
 
-    it "renders crypto-specific metrics in summary tab" do
+    it "renders crypto-specific metrics in the summary tab" do
       get market_asset_path(crypto_asset.symbol)
 
       expect(response.body).to include("Circulating Supply")
@@ -47,7 +50,7 @@ RSpec.describe "Market Crypto Asset Detail", type: :request do
       expect(response.body).to include("Vol / Market Cap")
     end
 
-    it "shows CoinGecko source attribution" do
+    it "shows the CoinGecko source attribution (es-MX)" do
       get market_asset_path(crypto_asset.symbol)
 
       expect(response.body).to include("CoinGecko")
@@ -56,18 +59,15 @@ RSpec.describe "Market Crypto Asset Detail", type: :request do
   end
 
   describe "GET /market/:symbol for stocks (regression)" do
-    it "still renders all 7 stock tabs" do
+    it "renders the trimmed equity tab set" do
       get market_asset_path(stock_asset.symbol)
 
-      expect(response.body).to include("Equity")
-      expect(response.body).to include("Summary")
-      expect(response.body).to include("Valuation")
-      expect(response.body).to include("Profitability")
-      expect(response.body).to include("Health")
-      expect(response.body).to include("Growth")
-      expect(response.body).to include("Dividends")
-      expect(response.body).to include("Statements")
-      expect(response.body).not_to include("Digital Asset")
+      expect(response.body).to match(/>\s*Acción\s*</)
+      expect(response.body).to match(/>\s*Resumen\s*</)
+      # Mercado the navbar link is fine; only the Mercado *tab button* is
+      # crypto-only. Assert that no `data-tabs-target="tab"` button carries
+      # the Mercado label.
+      expect(response.body).not_to match(/data-tabs-target="tab"[^>]*>\s*Mercado\s*</)
     end
   end
 end

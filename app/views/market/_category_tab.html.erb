@@ -1,11 +1,20 @@
-<%# Generic category tab: renders metric cards for a given MarketData::Domain::MetricDefinitions category %>
+<%# Generic category tab: renders metric cards for a given
+    MarketData::Domain::MetricDefinitions category. es-MX empty state. %>
 <% if @has_fundamentals %>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <% MarketData::Domain::MetricDefinitions.by_category(category).each do |defn| %>
       <% value = resolve_metric_value(@presenter, defn.key) %>
       <%= render "market/metric_card", definition: defn, value: value %>
     <% end %>
   </div>
 <% else %>
-  <%= render "components/empty_state", icon: "analytics", title: "No data available", description: "Fundamental data has not been synced for this asset yet." %>
+  <div class="flex flex-col items-center justify-center py-12 text-center">
+    <div class="mb-4 flex size-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400">
+      <span class="material-symbols-outlined text-3xl">analytics</span>
+    </div>
+    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Sin datos disponibles</h3>
+    <p class="mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
+      Los datos fundamentales aún no se han sincronizado para este activo.
+    </p>
+  </div>
 <% end %>

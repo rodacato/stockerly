@@ -29,13 +29,13 @@ RSpec.describe "Market Asset Metric Tooltips", type: :request do
       expect(response.body).to include('data-action="click->metric-tooltip#close"')
     end
 
-    it "renders educational content sections" do
-      expect(response.body).to include("What it measures")
-      expect(response.body).to include("How to interpret")
+    it "renders educational content sections (es-MX)" do
+      expect(response.body).to include("Qué mide")
+      expect(response.body).to include("Cómo interpretarlo")
     end
 
-    it "renders disclaimer in tooltip footer" do
-      expect(response.body).to include("Financial data is informational only")
+    it "renders disclaimer in tooltip footer (es-MX)" do
+      expect(response.body).to include("Información referencial")
     end
 
     it "renders metric definition context guidance" do
