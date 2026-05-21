@@ -5,13 +5,19 @@
   </div>
   <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Sin registros que coincidan con los filtros.</h2>
   <% if admin_logs_any_filter_active? %>
+    <%
+      # Build the chips as a safe_join of tag-helpers so each param value is
+      # escaped individually — never interpolate user-controlled params into
+      # an html_safe string (XSS). Fix for #139 CodeQL alert.
+      mono_chip = "font-mono text-slate-900 dark:text-white"
+      chips = []
+      chips << safe_join([ "búsqueda ", content_tag(:span, %("#{params[:search]}"), class: mono_chip) ]) if params[:search].present?
+      chips << safe_join([ "severidad ", content_tag(:span, params[:severity], class: mono_chip) ]) if params[:severity].present?
+      chips << safe_join([ "módulo ",   content_tag(:span, params[:module_name], class: mono_chip) ]) if params[:module_name].present?
+      chips << safe_join([ "rango ",    content_tag(:span, admin_logs_current_range_label.downcase, class: mono_chip) ]) if params[:range].present?
+    %>
     <p class="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-      <% parts = [] %>
-      <% parts << "búsqueda <span class='font-mono text-slate-900 dark:text-white'>\"#{ERB::Util.h(params[:search])}\"</span>" if params[:search].present? %>
-      <% parts << "severidad <span class='font-mono text-slate-900 dark:text-white'>#{params[:severity]}</span>" if params[:severity].present? %>
-      <% parts << "módulo <span class='font-mono text-slate-900 dark:text-white'>#{params[:module_name]}</span>" if params[:module_name].present? %>
-      <% parts << "rango <span class='font-mono text-slate-900 dark:text-white'>#{admin_logs_current_range_label.downcase}</span>" if params[:range].present? %>
-      <%= parts.join(" · ").html_safe %>.
+      <%= safe_join(chips, " · ") %>.
     </p>
     <%= link_to admin_logs_path,
           class: "mt-5 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90" do %>

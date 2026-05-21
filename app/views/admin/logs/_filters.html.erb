@@ -11,6 +11,11 @@
         class: "w-full bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none" %>
   </div>
 
+  <%# Hidden field — severity is set via link-based segmented control, so it
+      must ride along when the search form submits. module + range live in
+      f.select dropdowns below and self-serialize. %>
+  <%= hidden_field_tag :severity, params[:severity] if params[:severity].present? %>
+
   <%# Severity segmented control %>
   <div class="inline-flex items-center gap-0.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-0.5 text-xs">
     <% Admin::LogsHelper::SEVERITY_OPTIONS.each do |slug, label, value| %>

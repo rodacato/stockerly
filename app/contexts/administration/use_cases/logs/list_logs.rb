@@ -12,7 +12,7 @@ module Administration
           scope = SystemLog.recent
           scope = scope.where(severity: params[:severity]) if params[:severity].present?
           scope = scope.by_module(params[:module_name])
-          scope = scope.where("task_name ILIKE :q OR error_message ILIKE :q", q: "%#{params[:search]}%") if params[:search].present?
+          scope = apply_search(scope, params[:search])
           scope = apply_range(scope, params[:range].presence || DEFAULT_RANGE)
 
           pagy, logs = pagy(:offset, scope,
@@ -21,6 +21,11 @@ module Administration
             request: request || { base_url: "", path: "", params: {}, cookie: nil }
           )
 
+          # The header chip displays the absolute "X registros" — semantically
+          # the total across all 90-day-windowed data, NOT the filtered count.
+          # SystemLog.count is acceptable while the table stays in the low
+          # millions (current beta is ~10k); migrate to a counter cache or
+          # PG_class.reltuples estimate when scale demands it.
           Success({
             pagy: pagy,
             logs: logs,
@@ -29,6 +34,14 @@ module Administration
         end
 
         private
+
+        # Escape LIKE meta-characters (% and _) so a search query like "50%"
+        # doesn't match unintentionally (gemini review on #139).
+        def apply_search(scope, query)
+          return scope if query.blank?
+          like = "%#{ActiveRecord::Base.sanitize_sql_like(query)}%"
+          scope.where("task_name ILIKE :q OR error_message ILIKE :q", q: like)
+        end
 
         def apply_range(scope, key)
           case key.to_s

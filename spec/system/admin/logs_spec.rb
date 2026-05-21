@@ -130,4 +130,21 @@ RSpec.describe "Admin · Bitácora", type: :system do
     expect(page).to have_link("Exportar CSV",
       href: export_csv_admin_logs_path(severity: "error", module_name: "sync"))
   end
+
+  it "carries severity through the search form via a hidden field" do
+    visit admin_logs_path(severity: "error")
+    # Regression for #139 — severity is set via segmented links (outside the
+    # form), so it must ride along as a hidden field when the search form
+    # submits.
+    expect(page).to have_field("severity", type: "hidden", with: "error")
+  end
+
+  it "escapes user-controlled params in the empty-state filter description" do
+    # XSS regression for #139 — the empty-state used to interpolate params
+    # into html_safe. Pass a payload and assert it never reaches the DOM as
+    # a real element.
+    visit admin_logs_path(severity: "error", module_name: "auth", search: "<svg/onload=alert(1)>")
+    expect(page).to have_content("Sin registros que coincidan con los filtros.")
+    expect(page).not_to have_css("svg[onload]")
+  end
 end

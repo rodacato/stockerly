@@ -36,6 +36,18 @@ module Admin
       end
     end
 
+    # Color classes for the inline severity label inside an expanded panel
+    # (the "Severidad · ERROR" meta chip). Centralizes UI-mapping that was
+    # otherwise duplicated as a ternary in the row partial.
+    def admin_log_severity_text_classes(severity)
+      case severity.to_s
+      when "success" then "text-emerald-600 dark:text-emerald-400"
+      when "warning" then "text-amber-600 dark:text-amber-400"
+      when "error"   then "text-rose-600 dark:text-rose-400"
+      else                "text-slate-600 dark:text-slate-400"
+      end
+    end
+
     def admin_log_timestamp(log)
       ts = log.created_at
       d  = ts.to_date
