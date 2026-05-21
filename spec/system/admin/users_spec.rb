@@ -97,6 +97,14 @@ RSpec.describe "Admin · Cuentas registradas", type: :system do
     expect(page).to have_link("Limpiar filtros", href: admin_users_path)
   end
 
+  it "preserves the active role + status chips when the search form submits" do
+    visit admin_users_path(role: "user", status: "suspended")
+    # Hidden fields rendered alongside the search input — submitting the form
+    # must carry role + status through (regression for #135 bot review).
+    expect(page).to have_field("role", type: "hidden", with: "user")
+    expect(page).to have_field("status", type: "hidden", with: "suspended")
+  end
+
   it "suspends an active user via the overflow menu action" do
     visit admin_users_path
     page.driver.submit :patch, suspend_admin_user_path(active_user), {}
