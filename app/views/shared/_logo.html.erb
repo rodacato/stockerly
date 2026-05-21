@@ -1,0 +1,14 @@
+<%# Canonical Stockerly wordmark. Single source of truth for the logo render.
+    Locals:
+      height_class:  Tailwind height class (default "h-9"). Use:
+                       "h-6"  → footer / small chrome
+                       "h-7"  → admin sidebar
+                       "h-9"  → app + public navbar (default)
+      alt_text:      String (default "Stockerly")
+    Light/dark variants swap via the existing `dark:hidden` / `hidden dark:block`
+    pair. Both SVGs live at the public root so they are also reachable from
+    transactional emails when prefixed with the absolute host. %>
+<% height_class = local_assigns.fetch(:height_class, "h-9") %>
+<% alt_text     = local_assigns.fetch(:alt_text, "Stockerly") %>
+<img src="/logo_light.svg" alt="<%= alt_text %>" class="<%= height_class %> dark:hidden">
+<img src="/logo_dark.svg"  alt="<%= alt_text %>" class="<%= height_class %> hidden dark:block">

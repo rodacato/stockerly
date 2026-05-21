@@ -4,8 +4,7 @@
       <%# Brand %>
       <div class="shrink-0">
         <%= link_to root_path, class: "flex items-center gap-2 mb-3" do %>
-          <img src="/logo_light.svg" alt="Stockerly" class="h-6 dark:hidden">
-          <img src="/logo_dark.svg" alt="Stockerly" class="h-6 hidden dark:block">
+          <%= render "shared/logo", height_class: "h-6" %>
         <% end %>
         <p class="text-slate-500 dark:text-slate-400 text-xs max-w-xs leading-relaxed">
           Open Source Market Intelligence Platform.<br>Private by Design. Data-Driven by Nature.

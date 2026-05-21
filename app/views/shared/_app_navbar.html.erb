@@ -3,8 +3,7 @@
     <div class="flex h-18 items-center justify-between gap-4">
       <%# Logo %>
       <%= link_to dashboard_path, class: "flex items-center gap-2 shrink-0" do %>
-        <img src="/logo_light.svg" alt="Stockerly" class="h-9 dark:hidden">
-        <img src="/logo_dark.svg" alt="Stockerly" class="h-9 hidden dark:block">
+        <%= render "shared/logo" %>
       <% end %>
 
       <%# Global Search (Cmd+K) %>

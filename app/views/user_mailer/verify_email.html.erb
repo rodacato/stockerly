@@ -1,5 +1,11 @@
-<h1>Verify your email address</h1>
-<p>Hi <%= @user.full_name %>,</p>
-<p>Thank you for signing up for Stockerly. Please verify your email address by clicking the link below:</p>
-<p><%= link_to "Verify my email", @verification_url %></p>
-<p>This link will expire in 24 hours. If you didn't create a Stockerly account, you can safely ignore this email.</p>
+<h1 style="margin:0 0 16px; font-size:22px; font-weight:700; color:#0f172a;">Verifica tu correo</h1>
+<p style="margin:0 0 12px; line-height:1.55; color:#334155;">Hola <%= @user.full_name %>,</p>
+<p style="margin:0 0 16px; line-height:1.55; color:#334155;">
+  Gracias por registrarte en Stockerly. Verifica tu correo dando clic al enlace:
+</p>
+<p style="margin:0 0 16px;">
+  <%= link_to "Verificar mi correo", @verification_url, style: "display:inline-block; padding:10px 20px; background:#005A98; color:#ffffff; text-decoration:none; border-radius:8px; font-weight:600;" %>
+</p>
+<p style="margin:0; font-size:13px; line-height:1.55; color:#64748b;">
+  Este enlace expira en 24 horas. Si no creaste una cuenta en Stockerly puedes ignorar este correo.
+</p>
