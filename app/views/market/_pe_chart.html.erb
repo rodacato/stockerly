@@ -79,7 +79,7 @@
         <% date_indices.each do |idx| %>
           <% x_pos = left_margin + (idx * step_x) %>
           <text x="<%= x_pos.round(1) %>" y="<%= height - 3 %>" text-anchor="middle"
-                fill="#94a3b8" font-size="9" font-weight="500"><%= short_date_es(points[idx][:date]) %></text>
+                fill="#94a3b8" font-size="9" font-weight="500"><%= short_date_es(points[idx][:date], include_year: false) %></text>
           <line x1="<%= x_pos.round(1) %>" y1="<%= padding_y %>" x2="<%= x_pos.round(1) %>" y2="<%= height - bottom_margin %>"
                 stroke="#e2e8f0" stroke-width="0.3" stroke-dasharray="2,4"/>
         <% end %>

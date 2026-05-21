@@ -2,15 +2,16 @@
     system: yield hero + 2x2 fact grid + maturity progress + investment
     calculator. All copy es-MX; native currency prefix throughout. %>
 <%
-  total_days =
-    if (m = asset.symbol.to_s.match(/CETES?_(\d+)D/i))
-      m[1].to_i
-    else
-      yield_data[:days_to_maturity].to_i
-    end
-  days_remaining = yield_data[:days_to_maturity].to_i
-  days_elapsed   = [ total_days - days_remaining, 0 ].max
-  progress_pct   = total_days.positive? ? (days_elapsed.to_f / total_days * 100).clamp(0, 100) : 0
+  # `total_days` only comes from the symbol pattern (CETES_28D / CETES_91D / ...).
+  # No `issue_date` on Asset yet, so for non-CETES fixed-income instruments
+  # we can't compute progress — leave it nil and hide the maturity-progress
+  # block. Storing issue_date is a separate enhancement (#XX follow-up).
+  parsed_term     = asset.symbol.to_s.match(/CETES?_(\d+)D/i)
+  total_days      = parsed_term ? parsed_term[1].to_i : nil
+  days_remaining  = yield_data[:days_to_maturity].to_i
+  days_elapsed    = total_days ? [ total_days - days_remaining, 0 ].max : nil
+  progress_pct    = total_days ? (days_elapsed.to_f / total_days * 100).clamp(0, 100) : nil
+  show_progress   = total_days.present? && asset.maturity_date.present?
 %>
 
 <%# 1 · Yield hero + facts grid %>
@@ -28,7 +29,7 @@
     <%# Yield hero %>
     <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40 px-5 py-5 flex flex-col gap-1.5">
       <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-        Tasa <%= total_days.positive? ? "#{total_days}D" : "anualizada" %>
+        Tasa <%= total_days.present? ? "#{total_days}D" : "anualizada" %>
       </p>
       <p class="font-mono text-5xl font-medium tracking-tight text-slate-900 dark:text-white leading-none">
         <%= number_with_precision(asset.yield_rate || 0, precision: 2) %>%
@@ -43,7 +44,7 @@
       <div class="border-t border-slate-200 dark:border-slate-700 pt-3">
         <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Plazo</p>
         <p class="mt-1 font-mono text-lg font-medium text-slate-900 dark:text-white">
-          <%= total_days.positive? ? "#{total_days} días" : "—" %>
+          <%= total_days.present? ? "#{total_days} días" : "—" %>
         </p>
       </div>
 
@@ -87,7 +88,7 @@
     Avance al vencimiento
   </h3>
 
-  <% if asset.maturity_date.present? %>
+  <% if show_progress %>
     <div class="flex justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-2">
       <span>Emisión</span>
       <span>Vencimiento</span>
@@ -99,6 +100,13 @@
       <span class="text-slate-500 dark:text-slate-400"><%= days_elapsed %> días transcurridos</span>
       <span class="text-primary"><%= days_remaining %> días restantes</span>
     </div>
+  <% elsif asset.maturity_date.present? %>
+    <p class="text-sm text-slate-500 dark:text-slate-400">
+      Vence el <%= short_date_upper_es(asset.maturity_date) %> · faltan <%= days_remaining %> días.
+    </p>
+    <p class="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
+      Avance no disponible: el instrumento no expone el plazo original de emisión.
+    </p>
   <% else %>
     <p class="text-sm text-slate-500 dark:text-slate-400">Fecha de vencimiento no disponible.</p>
   <% end %>

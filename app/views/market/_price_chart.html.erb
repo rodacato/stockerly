@@ -52,8 +52,8 @@
     </div>
 
     <div class="flex justify-between mt-2 text-[10.5px] font-medium text-slate-500 dark:text-slate-400">
-      <span><%= short_date_es(chart[:first_date]) %></span>
-      <span><%= short_date_es(chart[:last_date]) %></span>
+      <span><%= short_date_es(chart[:first_date], include_year: false) %></span>
+      <span><%= short_date_es(chart[:last_date], include_year: false) %></span>
     </div>
   </section>
 <% end %>
