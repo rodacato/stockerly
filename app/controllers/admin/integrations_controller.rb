@@ -13,7 +13,7 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_integrations_path, notice: "Provider connected successfully."
+        redirect_to admin_integrations_path, notice: "Integración conectada."
       else
         redirect_to admin_integrations_path, alert: result.failure.last
       end
@@ -26,7 +26,7 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_integrations_path, notice: "Provider updated successfully."
+        redirect_to admin_integrations_path, notice: "Integración actualizada."
       else
         redirect_to admin_integrations_path, alert: result.failure.last
       end
@@ -39,7 +39,7 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_integrations_path, notice: "Provider deleted."
+        redirect_to admin_integrations_path, notice: "Integración eliminada."
       else
         redirect_to admin_integrations_path, alert: result.failure.last
       end
@@ -49,7 +49,7 @@ module Admin
       result = Administration::UseCases::Integrations::RefreshSync.call(integration_id: params[:id])
 
       if result.success?
-        redirect_back fallback_location: admin_assets_path, notice: "Integration sync enqueued."
+        redirect_back fallback_location: admin_assets_path, notice: "Sincronización de la integración programada."
       else
         redirect_back fallback_location: admin_assets_path, alert: result.failure.last
       end

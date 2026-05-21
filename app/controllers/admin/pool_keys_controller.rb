@@ -7,7 +7,7 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_integrations_path, notice: "API key added to pool."
+        redirect_to admin_integrations_path, notice: "Clave agregada al pool."
       else
         redirect_to admin_integrations_path, alert: result.failure.last
       end
@@ -20,8 +20,8 @@ module Admin
       )
 
       if result.success?
-        status = result.value!.enabled ? "enabled" : "disabled"
-        redirect_to admin_integrations_path, notice: "API key #{status}."
+        status = result.value!.enabled ? "habilitada" : "deshabilitada"
+        redirect_to admin_integrations_path, notice: "Clave #{status}."
       else
         redirect_to admin_integrations_path, alert: result.failure.last
       end
@@ -34,7 +34,7 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_integrations_path, notice: "API key removed from pool."
+        redirect_to admin_integrations_path, notice: "Clave eliminada del pool."
       else
         redirect_to admin_integrations_path, alert: result.failure.last
       end

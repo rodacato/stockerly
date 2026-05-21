@@ -169,7 +169,7 @@ RSpec.describe "Admin pages", type: :request do
     it "renders the integrations page" do
       get admin_integrations_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Market Data Connectivity")
+      expect(response.body).to include("Conectividad de mercado")
     end
   end
 end

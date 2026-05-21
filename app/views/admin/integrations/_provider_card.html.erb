@@ -1,0 +1,148 @@
+<%# Provider card per Stockerly-2.0 mockup. 3 zones: identity · status+keys · actions. %>
+<%
+  state = integration_pill_state(integration)
+  pill  = integration_pill_meta(state)
+  caps  = integration_capabilities_label(integration)
+  site  = integration_website(integration)
+  keys  = integration.api_key_pools.order(is_default: :desc, name: :asc)
+%>
+
+<article class="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm lg:grid-cols-[280px_minmax(0,1fr)_220px]">
+  <%# Left zone — identity %>
+  <div class="flex items-start gap-3 min-w-0">
+    <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+      <span class="material-symbols-outlined text-[20px]">hub</span>
+    </div>
+    <div class="min-w-0">
+      <div class="text-sm font-bold tracking-tight text-slate-900 dark:text-white"><%= integration.provider_name %></div>
+      <div class="mt-1 truncate font-mono text-[10.5px] font-medium uppercase tracking-[0.10em] text-slate-500 dark:text-slate-400" title="<%= caps %>">
+        <%= caps %>
+      </div>
+      <% if site %>
+        <a href="https://<%= site %>" target="_blank" rel="noopener noreferrer" class="mt-1.5 inline-flex items-center gap-1 text-[11.5px] text-slate-500 dark:text-slate-400 hover:text-primary">
+          <span class="material-symbols-outlined text-[11px]">open_in_new</span>
+          <%= site %>
+        </a>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Middle zone — status + sub-stats + keys %>
+  <div class="flex min-w-0 flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <span class="inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-[0.06em] <%= pill[:bg] %> <%= pill[:fg] %>">
+        <span class="size-1.5 rounded-full bg-current"></span>
+        <%= pill[:label] %>
+      </span>
+
+      <span class="inline-flex items-baseline gap-1.5">
+        <span class="text-[10.5px] font-bold uppercase tracking-[0.10em] text-slate-500 dark:text-slate-400">Rate-limit</span>
+        <span class="font-mono text-[12.5px] font-medium tracking-[0.02em] text-slate-900 dark:text-white"><%= integration_rate_limit_label(integration) %></span>
+      </span>
+
+      <span class="inline-flex items-baseline gap-1.5">
+        <span class="text-[10.5px] font-bold uppercase tracking-[0.10em] text-slate-500 dark:text-slate-400">Pool</span>
+        <span class="font-mono text-[12.5px] font-medium tracking-[0.02em] text-slate-900 dark:text-white">
+          <% if keys.any? %><%= keys.size %> <%= keys.size == 1 ? "clave" : "claves" %><% else %>—<% end %>
+        </span>
+      </span>
+
+      <span class="inline-flex items-baseline gap-1.5">
+        <span class="text-[10.5px] font-bold uppercase tracking-[0.10em] text-slate-500 dark:text-slate-400">Última verificación</span>
+        <span class="font-mono text-[12.5px] font-medium tracking-[0.02em] text-slate-900 dark:text-white"><%= integration_last_check_label(integration) %></span>
+      </span>
+    </div>
+
+    <%# Per-state extra note %>
+    <% if state == :error %>
+      <div class="inline-flex w-fit items-center gap-2 rounded-lg bg-rose-500/10 px-2.5 py-1.5 text-[12px] font-medium text-rose-700 dark:text-rose-400">
+        <span class="material-symbols-outlined text-[14px]">error_outline</span>
+        Conexión sin respuesta válida. Verifica claves y reintenta.
+      </div>
+    <% elsif state == :paused && integration.requires_api_key? && !integration.api_key_configured? %>
+      <div class="inline-flex w-fit items-center gap-2 rounded-lg bg-amber-500/10 px-2.5 py-1.5 text-[12px] font-medium text-amber-700 dark:text-amber-400">
+        <span class="material-symbols-outlined text-[14px]">pause_circle</span>
+        Sin claves activas — agrega una para reanudar.
+      </div>
+    <% end %>
+
+    <%# Key chips %>
+    <% if keys.any? %>
+      <div class="flex flex-wrap gap-2">
+        <% keys.each do |pool_key| %>
+          <% status = pool_key_status(pool_key) %>
+          <div class="inline-flex flex-col gap-0.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-1.5 pl-2.5 pr-1">
+            <div class="flex items-center gap-2">
+              <span class="size-1.5 shrink-0 rounded-full <%= pool_key_dot_class(status) %>"></span>
+              <span class="font-mono text-[12px] font-medium tracking-[0.04em] text-slate-900 dark:text-white">••••<%= pool_key_short_id(pool_key) %></span>
+              <% if pool_key.is_default? %>
+                <span class="rounded bg-primary/10 px-1 py-px font-mono text-[9.5px] font-bold text-primary">DEFAULT</span>
+              <% end %>
+              <%= button_to toggle_admin_integration_pool_key_path(integration, pool_key), method: :patch,
+                  form: { class: "inline-flex" },
+                  class: "rounded px-1.5 py-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 hover:text-primary",
+                  title: pool_key.enabled? ? "Deshabilitar clave" : "Habilitar clave" do %>
+                <%= pool_key.enabled? ? "Pausar" : "Activar" %>
+              <% end %>
+              <%= button_to admin_integration_pool_key_path(integration, pool_key), method: :delete,
+                  form: { class: "inline-flex", data: { turbo_confirm: "¿Eliminar esta clave del pool?" } },
+                  class: "rounded px-1 py-0.5 text-slate-400 hover:text-rose-600",
+                  title: "Eliminar clave" do %>
+                <span class="material-symbols-outlined text-[13px]">close</span>
+              <% end %>
+            </div>
+            <% if status != :ok %>
+              <span class="pl-3.5 text-[10.5px] text-slate-500 dark:text-slate-400">deshabilitada</span>
+            <% elsif pool_key.daily_calls.to_i > 0 %>
+              <span class="pl-3.5 font-mono text-[10.5px] text-slate-500 dark:text-slate-400">
+                <%= number_with_delimiter(pool_key.daily_calls) %> llamadas hoy
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-[12.5px] text-slate-500 dark:text-slate-400">Sin claves configuradas.</div>
+    <% end %>
+
+    <%# Inline add-key form (always available) %>
+    <%= form_with url: admin_integration_pool_keys_path(integration), method: :post,
+        class: "flex flex-wrap items-center gap-2" do |f| %>
+      <%= f.text_field :name, name: "api_key_pool[name]", placeholder: "Etiqueta (p. ej. principal)",
+          class: "flex-1 min-w-[160px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 text-[12.5px] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40" %>
+      <%= f.text_field :api_key_encrypted, name: "api_key_pool[api_key_encrypted]", placeholder: "Clave API",
+          class: "flex-[2] min-w-[200px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-mono text-[12.5px] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40" %>
+      <%= f.submit "Agregar clave", class: "inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-[12px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60 cursor-pointer" %>
+    <% end %>
+  </div>
+
+  <%# Right zone — actions %>
+  <div class="flex flex-col gap-2 lg:items-stretch">
+    <%= button_to refresh_sync_admin_integration_path(integration), method: :post,
+        form: { class: "flex" },
+        class: "inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-primary/25 bg-primary/10 px-3.5 py-2 text-[13px] font-semibold text-primary hover:bg-primary/15" do %>
+      <span class="material-symbols-outlined text-[15px]">bolt</span>
+      Verificar conexión
+    <% end %>
+    <div class="flex flex-wrap items-center gap-2">
+      <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex flex-1 items-center gap-2" do |f| %>
+        <%= f.number_field :daily_call_limit, name: "integration[daily_call_limit]",
+            value: integration.daily_call_limit,
+            class: "w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-1.5 font-mono text-[11.5px] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
+            title: "Límite diario" %>
+        <%= f.number_field :max_requests_per_minute, name: "integration[max_requests_per_minute]",
+            value: integration.max_requests_per_minute,
+            placeholder: "—",
+            class: "w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-1.5 font-mono text-[11.5px] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
+            title: "Por minuto" %>
+        <%= f.submit "Guardar", class: "rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-[11.5px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60 cursor-pointer" %>
+      <% end %>
+      <%= button_to admin_integration_path(integration), method: :delete,
+          form: { class: "flex", data: { turbo_confirm: "¿Eliminar #{integration.provider_name}? Se borrarán todas las claves del pool." } },
+          class: "inline-flex size-9 items-center justify-center rounded-lg border border-rose-200 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20",
+          title: "Eliminar integración" do %>
+        <span class="material-symbols-outlined text-[15px]">delete</span>
+      <% end %>
+    </div>
+  </div>
+</article>
