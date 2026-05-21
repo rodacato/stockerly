@@ -70,5 +70,37 @@ RSpec.describe Alerts::Handlers::CreateAlertEventOnTrigger do
       expect(msg).to include("NVDA aparece sobrevendido")
       expect(msg).not_to match(/comprar|vender|considera/i)
     end
+
+    # Regression for #133 review: the publisher in EvaluateDateBasedRules
+    # passes `result.rule.asset_symbol.to_s` which yields `""` (truthy, not
+    # nil) for marketwide rules. `||=` would never fire and AlertEvent
+    # would land with an empty asset_symbol. `.presence ||` covers it.
+    it "falls back to BMV when an empty-string asset_symbol arrives for a bmv_holiday rule" do
+      mw_rule = create(:alert_rule, :marketwide, user: user, condition: :bmv_holiday)
+      described_class.call(
+        alert_rule_id: mw_rule.id,
+        user_id: user.id,
+        asset_symbol: "",
+        triggered_price: 3.days.from_now.to_date.to_s,
+        context: { days_until: 3, holiday_name: "Festivo prueba" }
+      )
+      event = AlertEvent.last
+      expect(event.asset_symbol).to eq("BMV")
+      expect(event.message).to include("BMV cerrado en 3 día(s): Festivo prueba.")
+    end
+
+    it "falls back to CETES when an empty-string asset_symbol arrives for a cete_auction rule" do
+      mw_rule = create(:alert_rule, :marketwide, user: user, condition: :cete_auction)
+      described_class.call(
+        alert_rule_id: mw_rule.id,
+        user_id: user.id,
+        asset_symbol: "",
+        triggered_price: 3.days.from_now.to_date.to_s,
+        context: { days_until: 3 }
+      )
+      event = AlertEvent.last
+      expect(event.asset_symbol).to eq("CETES")
+      expect(event.message).to include("Próxima subasta Banxico de CETES en 3 día(s).")
+    end
   end
 end

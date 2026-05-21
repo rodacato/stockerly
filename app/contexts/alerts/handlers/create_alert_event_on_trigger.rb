@@ -11,8 +11,11 @@ module Alerts
         rule = AlertRule.find_by(id: rule_id)
         # Marketwide alerts (bmv_holiday / cete_auction) don't bind to an asset
         # symbol — surface the rule's display name instead so AlertEvent still
-        # has something to render in the live feed.
-        symbol ||= rule&.condition == "bmv_holiday" ? "BMV" : "CETES"
+        # has something to render in the live feed. Use `.presence` because the
+        # publisher passes `asset_symbol.to_s` (truthy `""` for marketwide
+        # rules), so `||=` would never fire and AlertEvent.asset_symbol would
+        # land as an empty string.
+        symbol = symbol.presence || (rule&.condition == "bmv_holiday" ? "BMV" : "CETES")
 
         AlertEvent.create!(
           alert_rule: rule,

@@ -71,17 +71,17 @@ module Alerts
         })
       end
 
-      # First Banxico-business-Tuesday on/after `from`. Walks day-by-day
-      # accepting Tuesdays that aren't on the Banxico holiday list. If
-      # `from` is itself a non-Tuesday weekday, the result is the next
-      # Tuesday; if `from` is a Tuesday holiday, the result is the Tuesday
-      # of the following week.
+      # First Banxico-business-Tuesday on/after `from`. Jumps straight to the
+      # next Tuesday (rather than walking day-by-day) then advances week-by-
+      # week while that Tuesday lands on a Banxico holiday — at most O(1)
+      # plus the number of consecutive Tuesday-holidays from `from` (in
+      # practice, ~0).
       def self.next_cete_auction_date(from:)
-        candidate = from
-        loop do
-          return candidate if candidate.tuesday? && !MarketHoliday.holiday?(market: :Banxico, date: candidate)
-          candidate += 1
-        end
+        # Date#wday is 2 for Tuesday; the modulo aligns `candidate` to the
+        # next Tuesday on/after `from`.
+        candidate = from + ((2 - from.wday) % 7)
+        candidate += 7 while MarketHoliday.holiday?(market: :Banxico, date: candidate)
+        candidate
       end
 
       private_class_method :evaluate_dividend_ex_date, :evaluate_bmv_holiday, :evaluate_cete_auction
