@@ -1,35 +1,35 @@
-<%# Single trade row — used by index and Turbo Stream prepend. es-MX per S09 #98. %>
+<%# Single trade row — used by index and Turbo Stream prepend. es-MX per S09 #98.
+    Lumen + inline delete-confirm trigger per S11 #145. %>
 <% is_buy = trade.buy? %>
 <% can_modify = trade.editable? %>
-<tr id="<%= dom_id(trade) %>" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
-  <td class="px-6 py-4 text-sm font-mono text-slate-500"><%= trade.executed_at.strftime("%d %b %Y %H:%M") %></td>
+<tr id="<%= dom_id(trade) %>" class="hover:bg-bg-muted transition-colors group">
+  <td class="px-6 py-4 text-sm font-mono text-fg-subtle"><%= trade.executed_at.strftime("%d %b %Y %H:%M") %></td>
   <td class="px-6 py-4">
     <div class="flex items-center gap-2">
       <%= render "components/asset_badge", asset: trade.asset, size: "sm" %>
-      <span class="font-mono text-sm font-bold text-slate-900 dark:text-white"><%= trade.asset.symbol %></span>
+      <span class="font-mono text-sm font-bold text-fg-default"><%= trade.asset.symbol %></span>
     </div>
   </td>
   <td class="px-6 py-4 text-center">
-    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter <%= is_buy ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' : 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400' %>">
+    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter <%= is_buy ? 'bg-positive-bg text-positive-fg' : 'bg-warning-bg text-warning-fg' %>">
       <%= is_buy ? "Compra" : "Venta" %>
     </span>
   </td>
-  <td class="px-6 py-4 text-right text-sm font-mono font-medium text-slate-900 dark:text-white"><%= trade.shares %></td>
-  <td class="px-6 py-4 text-right text-sm font-mono text-slate-500"><%= format_currency_mx(trade.price_per_share, currency: trade.currency, precision: 4) %></td>
-  <td class="px-6 py-4 text-right text-sm font-mono font-bold text-slate-900 dark:text-white"><%= format_currency_mx(trade.total_amount, currency: trade.currency) %></td>
-  <td class="px-6 py-4 text-right text-sm font-mono text-slate-400"><%= trade.fee.positive? ? format_currency_mx(trade.fee, currency: trade.currency) : "—" %></td>
+  <td class="px-6 py-4 text-right text-sm font-mono font-medium text-fg-default"><%= trade.shares %></td>
+  <td class="px-6 py-4 text-right text-sm font-mono text-fg-subtle"><%= format_currency_mx(trade.price_per_share, currency: trade.currency, precision: 4) %></td>
+  <td class="px-6 py-4 text-right text-sm font-mono font-bold text-fg-default"><%= format_currency_mx(trade.total_amount, currency: trade.currency) %></td>
+  <td class="px-6 py-4 text-right text-sm font-mono text-fg-subtle"><%= trade.fee.positive? ? format_currency_mx(trade.fee, currency: trade.currency) : "—" %></td>
   <td class="px-6 py-4 text-right">
     <% if can_modify %>
       <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <%= link_to edit_trade_path(trade), data: { turbo_method: :get, turbo_stream: true },
-            class: "p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-primary transition-colors",
+            class: "p-1.5 rounded-lg hover:bg-bg-muted text-fg-subtle hover:text-primary transition-colors",
             title: "Editar movimiento" do %>
           <span class="material-symbols-outlined text-[18px]">edit</span>
         <% end %>
-        <%= button_to trade_path(trade), method: :delete,
-            class: "p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer",
-            title: "Eliminar movimiento",
-            data: { turbo_confirm: "¿Eliminar este movimiento? Esta acción no se puede deshacer." } do %>
+        <%= link_to confirm_destroy_trade_path(trade), data: { turbo_method: :get, turbo_stream: true },
+            class: "p-1.5 rounded-lg hover:bg-negative-bg text-fg-subtle hover:text-negative transition-colors",
+            title: "Eliminar movimiento" do %>
           <span class="material-symbols-outlined text-[18px]">delete</span>
         <% end %>
       </div>

@@ -32,7 +32,9 @@ RSpec.describe "Empty state consistency", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Aún no hay movimientos")
-      expect(response.body).to include("swap_horiz")
+      # Icon swapped to `history` in S11 #145 to match the Stockerly-2.0
+      # mockup; previous `swap_horiz` no longer renders.
+      expect(response.body).to include("history")
     end
   end
 end

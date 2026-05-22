@@ -1,9 +1,9 @@
 require "rails_helper"
 
-# Trades (Movimientos) revamp (S09 #98) — asserts es-MX surface +
-# currency-aware columns + summary aggregation. Behavioral specs for
-# create/update/destroy live in spec/requests/trades_spec.rb.
-RSpec.describe "Trades revamp (S09 #98)", type: :request do
+# Trades (Movimientos) revamp — asserts es-MX surface + currency-aware
+# columns + per-currency footer totals introduced in S11 #145.
+# Behavioral specs for create/update/destroy live in spec/requests/trades_spec.rb.
+RSpec.describe "Trades revamp (S09 #98 + S11 #145)", type: :request do
   let(:user) { create(:user, email: "t98@example.com", preferred_currency: "MXN", password: "password123") }
   let!(:portfolio) { create(:portfolio, user: user, buying_power: 50_000.0) }
   let(:mxn_asset) { create(:asset, :mexican, symbol: "ICA", currency: "MXN", current_price: 50.0) }
@@ -18,13 +18,13 @@ RSpec.describe "Trades revamp (S09 #98)", type: :request do
     it "renders the es-MX header" do
       get trades_path
       expect(response.body).to include("Movimientos")
-      expect(response.body).to include("Historial auditable")
       expect(response.body).to include("Volver al portafolio")
     end
 
     it "renders the es-MX empty state when no trades exist" do
       get trades_path
       expect(response.body).to include("Aún no hay movimientos")
+      expect(response.body).to include("Registra tu primer trade")
     end
 
     it "does NOT contain the previous English copy" do
@@ -46,15 +46,11 @@ RSpec.describe "Trades revamp (S09 #98)", type: :request do
       get trades_path
     end
 
-    it "renders the summary cards with per-currency totals" do
-      expect(response.body).to include("Total compras")
-      expect(response.body).to include("Total ventas")
-      expect(response.body).to include("Comisiones")
+    it "renders the footer totals per currency" do
+      expect(response.body).to include("Invertido")
       # MXN compras = 4800, USD compras = 1500
       expect(response.body).to match(/MXN\s+4,800\.00/)
       expect(response.body).to match(/USD\s+1,500\.00/)
-      # MXN ventas = 1040
-      expect(response.body).to match(/MXN\s+1,040\.00/)
     end
 
     it "renders es-MX table headers" do

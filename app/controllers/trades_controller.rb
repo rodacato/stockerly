@@ -1,6 +1,27 @@
 class TradesController < AuthenticatedController
+  # Filter params accepted on /trades:
+  #   tipo:    "todos" | "compras" | "ventas"
+  #   mercado: "todos" | "mxn" | "usd"
+  #   anio:    "todos" | "<YYYY>"
+  # Filters apply server-side via scopes on the trades collection. Counts
+  # are computed against the unfiltered relation so the chips can show
+  # the full year list and an honest "shown / total" footer label.
   def index
-    @trades = current_user.portfolio&.trades&.kept&.recent&.includes(:asset, :position)&.limit(50) || []
+    @tipo    = params[:tipo].presence    || "todos"
+    @mercado = params[:mercado].presence || "todos"
+    @anio    = params[:anio].presence    || "todos"
+
+    base = current_user.portfolio&.trades&.kept&.includes(:asset, :position) || Trade.none
+    @total_count = base.count
+    @available_years = base.pluck(:executed_at).map(&:year).uniq.sort.reverse
+
+    scope = base
+    scope = scope.where(side: filter_side)             if filter_side
+    scope = scope.where(currency: filter_currency)     if filter_currency
+    scope = scope.where("EXTRACT(YEAR FROM executed_at) = ?", @anio.to_i) if @anio != "todos"
+
+    @trades = scope.recent.limit(50)
+    @shown_count = @trades.size
   end
 
   def create
@@ -50,6 +71,24 @@ class TradesController < AuthenticatedController
 
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.replace(trade, partial: "trades/edit_row", locals: { trade: trade }) }
+      format.html { redirect_to trades_path }
+    end
+  end
+
+  # Inline delete-confirm row replaces the trade row when the user clicks
+  # delete. Lets the destroy action run without a JS confirm() dialog,
+  # which is hostile on mobile and inconsistent with the Stockerly-2.0
+  # design language.
+  def confirm_destroy
+    trade = current_user.portfolio&.trades&.find_by(id: params[:id])
+
+    if trade.nil?
+      redirect_to trades_path, alert: "Movimiento no encontrado."
+      return
+    end
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(trade, partial: "trades/confirm_delete_row", locals: { trade: trade }) }
       format.html { redirect_to trades_path }
     end
   end
@@ -132,5 +171,19 @@ class TradesController < AuthenticatedController
 
   def update_trade_params
     params.require(:trade).permit(:shares, :price_per_share, :fee, :executed_at)
+  end
+
+  def filter_side
+    case @tipo
+    when "compras" then :buy
+    when "ventas"  then :sell
+    end
+  end
+
+  def filter_currency
+    case @mercado
+    when "mxn" then "MXN"
+    when "usd" then "USD"
+    end
   end
 end

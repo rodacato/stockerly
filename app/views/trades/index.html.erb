@@ -1,92 +1,187 @@
-<%# Trades (Movimientos) — audit trail of all executed trades. es-MX per S09 #98. %>
-<%# Summary aggregates by currency, scoped to the 50 most-recent trades
-    shown in the table below. The aggregation lives in TradesHelper so the
-    template stays focused on presentation. %>
+<%# /trades — chronological movement history (Movimientos).
+    es-MX per S09 #98 and S11 #145. Stockerly-2.0 Lumen + filter strip +
+    footer totals + inline delete-confirm + empty-state CTA. %>
 <% summary = trades_summary_by_currency(@trades) %>
-<% buys_by_currency  = summary[:buys] %>
-<% sells_by_currency = summary[:sells] %>
-<% fees_by_currency  = summary[:fees] %>
 
-<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-  <div>
-    <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Tu portafolio</p>
-    <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Movimientos</h2>
-    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Historial auditable de tus operaciones. Edita o elimina movimientos recientes (≤30 días).</p>
+<div class="mx-auto max-w-7xl space-y-6">
+  <%# Header band: eyebrow + h1 + subtitle + back link %>
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle">Tu portafolio</p>
+      <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-fg-default">Movimientos</h1>
+      <p class="mt-1 text-sm text-fg-subtle">Auditar, editar o eliminar cualquier compra o venta registrada (≤30 días).</p>
+    </div>
+    <%= link_to portfolio_path,
+        class: "inline-flex items-center gap-2 rounded-lg border border-border-default bg-bg-surface px-4 py-2.5 text-sm font-bold text-fg-default shadow-sm hover:bg-bg-muted transition-colors" do %>
+      <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+      Volver al portafolio
+    <% end %>
   </div>
-  <%= link_to portfolio_path, class: "px-4 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm" do %>
-    <span class="material-symbols-outlined text-sm align-middle mr-1">arrow_back</span>
-    Volver al portafolio
+
+  <%# Filter strip — Tipo · Mercado · Año, consistent with /alerts and /notifications. %>
+  <% if @total_count.positive? %>
+    <div class="flex flex-wrap items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-5 py-3 shadow-sm">
+      <span class="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Filtros</span>
+
+      <%# Tipo %>
+      <div class="flex items-center gap-2.5">
+        <span class="text-[10.5px] font-semibold uppercase tracking-[0.10em] text-fg-subtle">Tipo</span>
+        <div class="flex gap-1.5">
+          <% [["todos", "Todos"], ["compras", "Compras"], ["ventas", "Ventas"]].each do |slug, label| %>
+            <% active = (@tipo == slug) %>
+            <%= link_to trades_path(tipo: slug, mercado: @mercado, anio: @anio),
+                  class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary bg-primary-muted border border-primary/25' : 'font-medium text-fg-subtle border border-border-default hover:bg-bg-muted'}" do %>
+              <%= label %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="h-5 w-px bg-border-default"></div>
+
+      <%# Mercado (currency) %>
+      <div class="flex items-center gap-2.5">
+        <span class="text-[10.5px] font-semibold uppercase tracking-[0.10em] text-fg-subtle">Mercado</span>
+        <div class="flex gap-1.5">
+          <% [["todos", "Todos"], ["mxn", "MXN"], ["usd", "USD"]].each do |slug, label| %>
+            <% active = (@mercado == slug) %>
+            <%= link_to trades_path(tipo: @tipo, mercado: slug, anio: @anio),
+                  class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary bg-primary-muted border border-primary/25' : 'font-medium text-fg-subtle border border-border-default hover:bg-bg-muted'}" do %>
+              <%= label %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <% if @available_years.any? %>
+        <div class="h-5 w-px bg-border-default"></div>
+
+        <%# Año %>
+        <div class="flex items-center gap-2.5">
+          <span class="text-[10.5px] font-semibold uppercase tracking-[0.10em] text-fg-subtle">Año</span>
+          <div class="flex flex-wrap gap-1.5">
+            <% (["todos"] + @available_years.map(&:to_s)).each do |slug| %>
+              <% label = (slug == "todos" ? "Todos" : slug) %>
+              <% active = (@anio == slug) %>
+              <%= link_to trades_path(tipo: @tipo, mercado: @mercado, anio: slug),
+                    class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary bg-primary-muted border border-primary/25' : 'font-medium text-fg-subtle border border-border-default hover:bg-bg-muted'}" do %>
+                <%= label %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="flex-1"></div>
+
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-border-default bg-bg-muted px-3 py-1.5 text-xs font-medium text-fg-subtle">
+        <span class="material-symbols-outlined text-[14px]">list</span>
+        Mostrando
+        <span class="font-mono font-semibold text-fg-default"><%= @shown_count %></span>
+        de
+        <span class="font-mono font-semibold text-fg-default"><%= @total_count %></span>
+      </span>
+
+      <% if @tipo != "todos" || @mercado != "todos" || @anio != "todos" %>
+        <%= link_to trades_path,
+              class: "text-xs font-medium text-primary hover:underline" do %>
+          Limpiar filtros
+        <% end %>
+      <% end %>
+    </div>
   <% end %>
+
+  <%# Table or empty state %>
+  <section class="rounded-2xl border border-border-default bg-bg-surface overflow-hidden shadow-sm">
+    <% if @trades.present? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-bg-muted text-[10.5px] uppercase tracking-[0.10em] text-fg-subtle">
+            <tr>
+              <th class="px-6 py-3 font-semibold">Fecha</th>
+              <th class="px-6 py-3 font-semibold">Activo</th>
+              <th class="px-6 py-3 font-semibold text-center">Operación</th>
+              <th class="px-6 py-3 font-semibold text-right">Títulos</th>
+              <th class="px-6 py-3 font-semibold text-right">Precio</th>
+              <th class="px-6 py-3 font-semibold text-right">Total</th>
+              <th class="px-6 py-3 font-semibold text-right">Comisión</th>
+              <th class="px-6 py-3 font-semibold text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="trade_history" class="divide-y divide-border-default">
+            <% @trades.each do |trade| %>
+              <%= render "trades/trade_row", trade: trade %>
+            <% end %>
+          </tbody>
+          <%# Footer totals row — total invertido per currency, realized
+              cash per currency, trade count. Realized number is an
+              approximation (see TradesHelper docstring). %>
+          <tfoot class="bg-bg-muted border-t border-border-default">
+            <tr>
+              <td colspan="3" class="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.10em] text-fg-subtle">
+                En pantalla · <%= summary[:count] %> <%= summary[:count] == 1 ? "movimiento" : "movimientos" %>
+              </td>
+              <td colspan="3" class="px-6 py-4 text-right text-xs font-mono">
+                <div class="flex flex-col gap-1 items-end">
+                  <% if summary[:buys].any? %>
+                    <% summary[:buys].each do |currency, total| %>
+                      <span class="text-fg-default">
+                        <span class="text-[10px] uppercase tracking-wider text-fg-subtle">Invertido</span>
+                        <span class="font-semibold ml-1"><%= format_currency_mx(total, currency: currency) %></span>
+                      </span>
+                    <% end %>
+                  <% else %>
+                    <span class="text-fg-subtle">—</span>
+                  <% end %>
+                </div>
+              </td>
+              <td colspan="2" class="px-6 py-4 text-right text-xs font-mono">
+                <div class="flex flex-col gap-1 items-end">
+                  <% if summary[:realized].any? %>
+                    <% summary[:realized].each do |currency, total| %>
+                      <% tone = total.positive? ? "text-positive" : (total.negative? ? "text-negative" : "text-fg-subtle") %>
+                      <span class="<%= tone %>">
+                        <span class="text-[10px] uppercase tracking-wider text-fg-subtle">G/P realizada</span>
+                        <span class="font-semibold ml-1"><%= format_currency_mx(total, currency: currency) %></span>
+                      </span>
+                    <% end %>
+                  <% else %>
+                    <span class="text-fg-subtle">—</span>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    <% elsif @total_count.zero? %>
+      <%# Estado A: cuenta sin movimientos — CTA al portafolio (donde vive el form). %>
+      <div class="flex flex-col items-center justify-center px-8 py-20 text-center">
+        <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-bg-muted text-fg-subtle">
+          <span class="material-symbols-outlined text-3xl">history</span>
+        </div>
+        <h2 class="text-lg font-semibold tracking-tight text-fg-default">Aún no hay movimientos registrados.</h2>
+        <p class="mt-2 max-w-md text-sm text-fg-subtle">Registra tu primera compra desde el portafolio para empezar.</p>
+        <%= link_to portfolio_path,
+              class: "mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors" do %>
+          <span class="material-symbols-outlined text-[18px]">add</span>
+          Registra tu primer trade
+        <% end %>
+      </div>
+    <% else %>
+      <%# Estado B: hay movimientos pero los filtros no coinciden. %>
+      <div class="flex flex-col items-center justify-center px-8 py-20 text-center">
+        <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-bg-muted text-fg-subtle">
+          <span class="material-symbols-outlined text-3xl">filter_alt_off</span>
+        </div>
+        <h2 class="text-lg font-semibold tracking-tight text-fg-default">Sin coincidencias con tus filtros.</h2>
+        <p class="mt-2 max-w-md text-sm text-fg-subtle">Cambia un filtro o límpialos para ver todos tus movimientos.</p>
+        <%= link_to trades_path,
+              class: "mt-5 inline-flex items-center gap-2 rounded-lg border border-border-default bg-bg-surface px-3.5 py-2 text-sm font-medium text-fg-default shadow-sm hover:bg-bg-muted" do %>
+          <span class="material-symbols-outlined text-[15px]">restart_alt</span>
+          Limpiar filtros
+        <% end %>
+      </div>
+    <% end %>
+  </section>
 </div>
-
-<%# Summary cards — one row per currency present, grouped by buy/sell/fee %>
-<% if @trades.present? %>
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
-      <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Total compras</p>
-      <div class="mt-2 space-y-1">
-        <% if buys_by_currency.any? %>
-          <% buys_by_currency.each do |currency, total| %>
-            <p class="font-mono text-xl font-medium text-slate-900 dark:text-white"><%= format_currency_mx(total, currency: currency) %></p>
-          <% end %>
-        <% else %>
-          <p class="font-mono text-xl font-medium text-slate-400">—</p>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
-      <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Total ventas</p>
-      <div class="mt-2 space-y-1">
-        <% if sells_by_currency.any? %>
-          <% sells_by_currency.each do |currency, total| %>
-            <p class="font-mono text-xl font-medium text-slate-900 dark:text-white"><%= format_currency_mx(total, currency: currency) %></p>
-          <% end %>
-        <% else %>
-          <p class="font-mono text-xl font-medium text-slate-400">—</p>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
-      <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Comisiones</p>
-      <div class="mt-2 space-y-1">
-        <% if fees_by_currency.any? %>
-          <% fees_by_currency.each do |currency, total| %>
-            <p class="font-mono text-xl font-medium text-slate-900 dark:text-white"><%= format_currency_mx(total, currency: currency) %></p>
-          <% end %>
-        <% else %>
-          <p class="font-mono text-xl font-medium text-slate-400">—</p>
-        <% end %>
-      </div>
-    </div>
-  </div>
-<% end %>
-
-<section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
-  <% if @trades.present? %>
-    <div class="overflow-x-auto">
-      <table class="w-full text-left">
-        <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500">
-          <tr>
-            <th class="px-6 py-3 font-semibold">Fecha</th>
-            <th class="px-6 py-3 font-semibold">Activo</th>
-            <th class="px-6 py-3 font-semibold text-center">Operación</th>
-            <th class="px-6 py-3 font-semibold text-right">Títulos</th>
-            <th class="px-6 py-3 font-semibold text-right">Precio</th>
-            <th class="px-6 py-3 font-semibold text-right">Total</th>
-            <th class="px-6 py-3 font-semibold text-right">Comisión</th>
-            <th class="px-6 py-3 font-semibold text-right">Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="trade_history" class="divide-y divide-slate-100 dark:divide-slate-800">
-          <% @trades.each do |trade| %>
-            <%= render "trades/trade_row", trade: trade %>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% else %>
-    <%= render "components/empty_state", icon: "swap_horiz", title: "Aún no hay movimientos", description: "Tu historial de movimientos aparecerá aquí." %>
-  <% end %>
-</section>
