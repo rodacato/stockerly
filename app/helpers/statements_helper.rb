@@ -1,61 +1,67 @@
 module StatementsHelper
+  # Display labels for the three financial-statement tables on /market/:symbol.
+  # Translated to es-MX per S11 #148 — matches BMV-emisora nomenclature so MX
+  # investors who already read public-issuer reports recognize the terms.
+  # Enum keys (:totalRevenue, :grossProfit, etc.) are NOT translated — those
+  # map directly to Alpha Vantage JSON keys and changing them would break the
+  # gateway-to-view contract.
   INCOME_LINE_ITEMS = [
-    { section: "Revenue & Profitability" },
-    { key: "totalRevenue", label: "Revenue", bold: true },
-    { key: "costOfRevenue", label: "Cost of Revenue", indent: true },
-    { key: "costofGoodsAndServicesSold", label: "Cost of Goods Sold", indent: true },
-    { key: "grossProfit", label: "Gross Profit", bold: true, margin_key: "grossProfitMargin" },
-    { section: "Operating Performance" },
-    { key: "operatingExpenses", label: "Operating Expenses" },
-    { key: "researchAndDevelopment", label: "R&D Expenses", indent: true },
-    { key: "sellingGeneralAndAdministrative", label: "SG&A", indent: true },
-    { key: "operatingIncome", label: "Operating Income", bold: true, accent: true, margin_key: "operatingMargin" },
+    { section: "Ingresos y rentabilidad" },
+    { key: "totalRevenue", label: "Ingresos", bold: true },
+    { key: "costOfRevenue", label: "Costo de ventas", indent: true },
+    { key: "costofGoodsAndServicesSold", label: "Costo de mercancías vendidas", indent: true },
+    { key: "grossProfit", label: "Utilidad bruta", bold: true, margin_key: "grossProfitMargin" },
+    { section: "Desempeño operativo" },
+    { key: "operatingExpenses", label: "Gastos operativos" },
+    { key: "researchAndDevelopment", label: "Gastos de I+D", indent: true },
+    { key: "sellingGeneralAndAdministrative", label: "Gastos generales, de venta y administración", indent: true },
+    { key: "operatingIncome", label: "Utilidad de operación", bold: true, accent: true, margin_key: "operatingMargin" },
     { key: "ebitda", label: "EBITDA", bold: true },
-    { section: "Bottom Line" },
-    { key: "incomeBeforeTax", label: "Pre-Tax Income" },
-    { key: "incomeTaxExpense", label: "Income Tax Expense", indent: true },
-    { key: "netIncome", label: "Net Income", bold: true, margin_key: "netProfitMargin" },
-    { key: "dilutedEPS", label: "Diluted EPS", bold: true }
+    { section: "Resultado final" },
+    { key: "incomeBeforeTax", label: "Utilidad antes de impuestos" },
+    { key: "incomeTaxExpense", label: "Impuestos sobre la renta", indent: true },
+    { key: "netIncome", label: "Utilidad neta", bold: true, margin_key: "netProfitMargin" },
+    { key: "dilutedEPS", label: "UPA diluida", bold: true }
   ].freeze
 
   BALANCE_SHEET_LINE_ITEMS = [
-    { section: "Assets" },
-    { key: "totalAssets", label: "Total Assets", bold: true },
-    { key: "totalCurrentAssets", label: "Current Assets", indent: true },
-    { key: "cashAndCashEquivalentsAtCarryingValue", label: "Cash & Equivalents", indent: true },
-    { key: "shortTermInvestments", label: "Short-Term Investments", indent: true },
-    { key: "currentNetReceivables", label: "Receivables", indent: true },
-    { key: "inventory", label: "Inventory", indent: true },
-    { key: "totalNonCurrentAssets", label: "Non-Current Assets", indent: true },
-    { key: "propertyPlantEquipment", label: "PP&E", indent: true },
-    { key: "goodwill", label: "Goodwill", indent: true },
-    { section: "Liabilities" },
-    { key: "totalLiabilities", label: "Total Liabilities", bold: true },
-    { key: "totalCurrentLiabilities", label: "Current Liabilities", indent: true },
-    { key: "shortTermDebt", label: "Short-Term Debt", indent: true },
-    { key: "longTermDebt", label: "Long-Term Debt", indent: true },
-    { section: "Equity" },
-    { key: "totalShareholderEquity", label: "Shareholder Equity", bold: true },
-    { key: "retainedEarnings", label: "Retained Earnings", indent: true },
-    { key: "commonStockSharesOutstanding", label: "Shares Outstanding" }
+    { section: "Activos" },
+    { key: "totalAssets", label: "Activos totales", bold: true },
+    { key: "totalCurrentAssets", label: "Activo circulante", indent: true },
+    { key: "cashAndCashEquivalentsAtCarryingValue", label: "Efectivo y equivalentes", indent: true },
+    { key: "shortTermInvestments", label: "Inversiones de corto plazo", indent: true },
+    { key: "currentNetReceivables", label: "Cuentas por cobrar", indent: true },
+    { key: "inventory", label: "Inventarios", indent: true },
+    { key: "totalNonCurrentAssets", label: "Activo no circulante", indent: true },
+    { key: "propertyPlantEquipment", label: "Propiedad, planta y equipo", indent: true },
+    { key: "goodwill", label: "Crédito mercantil", indent: true },
+    { section: "Pasivos" },
+    { key: "totalLiabilities", label: "Pasivos totales", bold: true },
+    { key: "totalCurrentLiabilities", label: "Pasivo circulante", indent: true },
+    { key: "shortTermDebt", label: "Deuda de corto plazo", indent: true },
+    { key: "longTermDebt", label: "Deuda de largo plazo", indent: true },
+    { section: "Capital" },
+    { key: "totalShareholderEquity", label: "Capital contable", bold: true },
+    { key: "retainedEarnings", label: "Utilidades retenidas", indent: true },
+    { key: "commonStockSharesOutstanding", label: "Acciones en circulación" }
   ].freeze
 
   CASH_FLOW_LINE_ITEMS = [
-    { section: "Operating Activities" },
-    { key: "operatingCashflow", label: "Operating Cash Flow", bold: true },
-    { key: "netIncome", label: "Net Income", indent: true },
-    { key: "depreciationDepletionAndAmortization", label: "Depreciation & Amortization", indent: true },
-    { key: "changeInOperatingLiabilities", label: "Change in Operating Liabilities", indent: true },
-    { key: "changeInOperatingAssets", label: "Change in Operating Assets", indent: true },
-    { section: "Investing Activities" },
-    { key: "cashflowFromInvestment", label: "Investing Cash Flow", bold: true },
-    { key: "capitalExpenditures", label: "Capital Expenditures", indent: true },
-    { section: "Financing Activities" },
-    { key: "cashflowFromFinancing", label: "Financing Cash Flow", bold: true },
-    { key: "dividendPayout", label: "Dividends Paid", indent: true },
-    { key: "commonStockRepurchased", label: "Stock Buybacks", indent: true },
-    { section: "Summary" },
-    { key: "changeInCashAndCashEquivalents", label: "Net Change in Cash", bold: true }
+    { section: "Actividades de operación" },
+    { key: "operatingCashflow", label: "Flujo de efectivo operativo", bold: true },
+    { key: "netIncome", label: "Utilidad neta", indent: true },
+    { key: "depreciationDepletionAndAmortization", label: "Depreciación y amortización", indent: true },
+    { key: "changeInOperatingLiabilities", label: "Cambio en pasivos operativos", indent: true },
+    { key: "changeInOperatingAssets", label: "Cambio en activos operativos", indent: true },
+    { section: "Actividades de inversión" },
+    { key: "cashflowFromInvestment", label: "Flujo de inversión", bold: true },
+    { key: "capitalExpenditures", label: "Inversión en activos fijos (CAPEX)", indent: true },
+    { section: "Actividades de financiamiento" },
+    { key: "cashflowFromFinancing", label: "Flujo de financiamiento", bold: true },
+    { key: "dividendPayout", label: "Dividendos pagados", indent: true },
+    { key: "commonStockRepurchased", label: "Recompra de acciones", indent: true },
+    { section: "Resumen" },
+    { key: "changeInCashAndCashEquivalents", label: "Cambio neto en efectivo", bold: true }
   ].freeze
 
   def line_items_for(statement_type)

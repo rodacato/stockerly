@@ -1,7 +1,6 @@
 <%# Financial statements — sub-tabs for income statement / balance sheet /
-    cash flow. es-MX surface (S10 #93). The granular line-item labels in
-    StatementsHelper stay in English for S10 (full glossary translation is a
-    separate ticket). %>
+    cash flow. es-MX surface (S10 #93). Line-item labels in StatementsHelper
+    are now BMV-emisora es-MX after #148. %>
 <% has_statements = @asset.financial_statements.exists? %>
 
 <% if has_statements %>
