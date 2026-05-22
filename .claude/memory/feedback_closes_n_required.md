@@ -21,7 +21,7 @@ metadata:
 
 **What "Closes #N" does and doesn't do:**
 - It only fires on merge to the **default branch** (master). PRs against feature branches or merged elsewhere don't auto-close.
-- It only fires for `closes / closed / closing / fixes / fixed / fixing / resolves / resolved / resolving`. Other variants ("addresses", "for") do NOT auto-close.
+- It only fires for `close / closes / closed / fix / fixes / fixed / resolve / resolves / resolved`. Other variants (`closing / fixing / resolving`, "addresses", "for") do NOT auto-close.
 - It works in PR body OR merge commit message. Easiest path: PR body.
 
 **Cost of getting this wrong:** every miss adds a manual `gh issue close` + a confused moment at the next sprint open ("wait, didn't we ship this?"). At scale (S10's 3 misses across ~14 PRs = ~20% miss rate without explicit mandate) it makes the sprint-close audit unreliable.
