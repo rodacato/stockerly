@@ -43,12 +43,16 @@
      pass 4.5:1 on white. ---------------------------------------------- */
   --color-positive:          #10B981;
   --color-positive-bg:       #ECFDF5;
+  --color-positive-fg:       #047857;
   --color-negative:          #F43F5E;
   --color-negative-bg:       #FFF1F3;
+  --color-negative-fg:       #BE123C;
   --color-warning:           #F59E0B;
   --color-warning-bg:        #FFFBEB;
+  --color-warning-fg:        #B45309;
   --color-info:              #5B6CFF;   /* alias of primary per tokens.md §1.1 */
   --color-info-bg:           #EEF0FF;
+  --color-info-fg:           #4757E3;
 
   /* Legacy semantic aliases — same hex, old names. Eliminate when the
      codebase converges on positive/negative/warning/info naming. */
@@ -56,8 +60,6 @@
   --color-success-fg:        #047857;
   --color-error:             #F43F5E;
   --color-error-fg:          #BE123C;
-  --color-warning-fg:        #B45309;
-  --color-info-fg:           #4757E3;
 
   /* Legacy structural aliases — pre-Lumen names kept to avoid a wide
      view sweep this PR. Migration to the canonical names happens
@@ -94,12 +96,16 @@
 
     --color-positive:          #34D399;
     --color-positive-bg:       #0F2E25;
+    --color-positive-fg:       #34D399;
     --color-negative:          #FB7185;
     --color-negative-bg:       #3A1620;
+    --color-negative-fg:       #FB7185;
     --color-warning:           #FBBF24;
     --color-warning-bg:        #3A2A0C;
+    --color-warning-fg:        #FBBF24;
     --color-info:              #7B89FF;
     --color-info-bg:           #2A2E55;
+    --color-info-fg:           #7B89FF;
 
     /* Legacy aliases — dark variants. -fg collapses to the base token
        in dark mode (saturated mid-tone already passes contrast on
@@ -108,8 +114,6 @@
     --color-success-fg:        #34D399;
     --color-error:             #FB7185;
     --color-error-fg:          #FB7185;
-    --color-warning-fg:        #FBBF24;
-    --color-info-fg:           #7B89FF;
 
     --color-secondary:         #F8FAFC;
     --color-accent:            #34D399;
