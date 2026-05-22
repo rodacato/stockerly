@@ -1,107 +1,73 @@
 <% content_for(:title, "Restablecer contraseña | Stockerly") %>
+<%# State 3 — reset form. Token comes from the URL; we resolve the user
+    via `find_user_by_token` in the controller. Per S11 #147. %>
 
 <main class="grow flex items-center justify-center p-4 py-12">
-  <div class="w-full max-w-4xl bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-xl flex flex-col md:flex-row min-h-[600px]">
-    <%# Left Side: Branding %>
-    <div class="hidden md:flex md:w-1/2 bg-primary relative overflow-hidden p-12 flex-col justify-between text-white">
-      <div class="relative z-10">
-        <div class="size-12 bg-white/20 rounded-lg flex items-center justify-center mb-8">
-          <span class="material-symbols-outlined text-white text-3xl">lock_open</span>
-        </div>
-        <h1 class="text-3xl font-bold leading-tight mb-4">Establece tu nueva contraseña</h1>
-        <p class="text-white/80 text-lg">Crea una contraseña segura para proteger el acceso a tu portafolio y tus movimientos.</p>
+  <div class="w-full max-w-md bg-bg-surface rounded-2xl shadow-xl border border-border-default p-8 lg:p-10">
+    <div class="space-y-6">
+      <div class="text-center md:text-left">
+        <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle">Restablecer contraseña</p>
+        <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-fg-default">Nueva contraseña</h2>
+        <p class="mt-1 text-sm text-fg-subtle">Elige una contraseña que recuerdes y no compartas con nadie.</p>
       </div>
-      <div class="relative z-10">
-        <div class="rounded-lg bg-white/10 p-4 border border-white/10 backdrop-blur-sm">
-          <p class="text-sm font-bold text-white mb-2">Requisitos:</p>
-          <div class="space-y-1.5">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-success text-sm">check</span>
-              <span class="text-xs text-white/80">Mínimo 8 caracteres</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-success text-sm">check</span>
-              <span class="text-xs text-white/80">Ambas contraseñas deben coincidir</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <%# Background pattern %>
-      <div class="absolute inset-0 opacity-10 pointer-events-none">
-        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <path d="M0 100 L20 80 L40 90 L60 50 L80 70 L100 20 V100 H0 Z" fill="white"/>
-        </svg>
-      </div>
-    </div>
 
-    <%# Right Side: Reset Password Form %>
-    <div class="w-full md:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-      <div class="space-y-6">
-        <div class="text-center md:text-left">
-          <div class="size-14 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto md:mx-0">
-            <span class="material-symbols-outlined text-primary text-3xl">lock</span>
+      <%# Error Messages — surfaced when the password contract fails %>
+      <% if @user&.errors&.any? %>
+        <div class="rounded-lg border border-negative/30 bg-negative-bg/40 p-3 text-sm text-negative-fg">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            <span class="font-medium">Por favor revisa los campos marcados:</span>
           </div>
-          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Crear nueva contraseña</h2>
-          <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Ingresa tu nueva contraseña y confírmala abajo.</p>
+          <ul class="list-disc pl-9 space-y-0.5">
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= form_with url: reset_password_path(token: params[:token]), method: :patch, class: "space-y-4" do |f| %>
+        <%# Nueva contraseña %>
+        <div data-controller="password-visibility">
+          <label for="password" class="block text-sm font-medium text-fg-default mb-1.5">Nueva contraseña</label>
+          <div class="relative">
+            <input type="password" id="password" name="password" autocomplete="new-password" required
+                   placeholder="••••••••"
+                   data-password-visibility-target="input"
+                   class="w-full px-4 py-3 rounded-lg border border-border-default bg-bg-surface text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all pr-12">
+            <button type="button" data-action="click->password-visibility#toggle"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-fg-subtle hover:text-fg-default">
+              <span class="material-symbols-outlined" data-password-visibility-target="icon">visibility</span>
+            </button>
+          </div>
+          <p class="mt-1.5 text-xs text-fg-subtle">Mínimo 8 caracteres.</p>
         </div>
 
-        <%# Error Messages %>
-        <% if @user&.errors&.any? %>
-          <div class="p-3 rounded-lg bg-error/10 dark:bg-error/20 border border-error/20 dark:border-error/30 text-sm text-error-fg dark:text-error">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="material-symbols-outlined text-lg">error</span>
-              <span class="font-medium">Por favor revisa los campos marcados:</span>
-            </div>
-            <ul class="list-disc pl-9 space-y-0.5">
-              <% @user.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
+        <%# Confirmar nueva contraseña %>
+        <div data-controller="password-visibility">
+          <label for="password_confirmation" class="block text-sm font-medium text-fg-default mb-1.5">Confirmar nueva contraseña</label>
+          <div class="relative">
+            <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" required
+                   placeholder="••••••••"
+                   data-password-visibility-target="input"
+                   class="w-full px-4 py-3 rounded-lg border border-border-default bg-bg-surface text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all pr-12">
+            <button type="button" data-action="click->password-visibility#toggle"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-fg-subtle hover:text-fg-default">
+              <span class="material-symbols-outlined" data-password-visibility-target="icon">visibility</span>
+            </button>
           </div>
-        <% end %>
-
-        <%= form_with url: reset_password_path(token: params[:token]), method: :patch, class: "space-y-4" do |f| %>
-          <%# New Password Field with visibility toggle %>
-          <div data-controller="password-visibility">
-            <label for="password" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Nueva contraseña</label>
-            <div class="relative">
-              <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required
-                     data-password-visibility-target="input"
-                     class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all pr-12">
-              <button type="button" data-action="click->password-visibility#toggle"
-                      class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                <span class="material-symbols-outlined" data-password-visibility-target="icon">visibility</span>
-              </button>
-            </div>
-          </div>
-
-          <%# Confirm Password Field with visibility toggle %>
-          <div data-controller="password-visibility">
-            <label for="password_confirmation" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Confirmar nueva contraseña</label>
-            <div class="relative">
-              <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Repite la nueva contraseña" required
-                     data-password-visibility-target="input"
-                     class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all pr-12">
-              <button type="button" data-action="click->password-visibility#toggle"
-                      class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                <span class="material-symbols-outlined" data-password-visibility-target="icon">visibility</span>
-              </button>
-            </div>
-          </div>
-
-          <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2 group">
-            <span>Restablecer contraseña</span>
-            <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
-          </button>
-        <% end %>
-
-        <div class="text-center pt-2">
-          <%= link_to login_path, class: "inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline" do %>
-            <span class="material-symbols-outlined text-lg">arrow_back</span>
-            Volver al inicio de sesión
-          <% end %>
         </div>
-      </div>
+
+        <button type="submit"
+                class="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2">
+          Actualizar contraseña
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </button>
+      <% end %>
+
+      <p class="text-center text-xs text-fg-subtle">
+        Después de actualizarla volverás a iniciar sesión.
+      </p>
     </div>
   </div>
 </main>

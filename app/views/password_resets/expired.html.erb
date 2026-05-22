@@ -1,0 +1,31 @@
+<% content_for(:title, "Enlace expirado | Stockerly") %>
+<%# State 4 — reset-expired. Rendered by `find_user_by_token` when the
+    token is invalid or aged out, or by `update` if the token died
+    between GET and PATCH. Per S11 #147. %>
+
+<main class="grow flex items-center justify-center p-4 py-12">
+  <div class="w-full max-w-md bg-bg-surface rounded-2xl shadow-xl border border-border-default p-8 lg:p-10">
+    <div class="flex flex-col items-center text-center space-y-3">
+      <div class="size-14 rounded-2xl bg-negative-bg text-negative flex items-center justify-center mb-2">
+        <span class="material-symbols-outlined text-3xl">link_off</span>
+      </div>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle">Restablecer contraseña</p>
+      <h2 class="text-2xl font-extrabold tracking-tight text-fg-default">Enlace inválido o expirado</h2>
+      <p class="text-sm text-fg-subtle max-w-sm">
+        Este enlace ya no funciona. Los enlaces de recuperación expiran después de
+        <span class="font-mono font-semibold text-fg-default"><%= duration_in_words_es(User::PASSWORD_RESET_EXPIRES_IN) %></span>.
+      </p>
+    </div>
+
+    <%= link_to forgot_password_path,
+          class: "mt-6 w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2" do %>
+      Solicitar enlace nuevo
+      <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+    <% end %>
+
+    <p class="mt-4 text-center text-sm text-fg-subtle">
+      ¿Recordaste tu contraseña?
+      <%= link_to "Inicia sesión.", login_path, class: "text-primary font-medium hover:underline" %>
+    </p>
+  </div>
+</main>
