@@ -25,11 +25,14 @@ module TradesHelper
       summary[:count] += 1
       bucket = trade.buy? ? :buys : :sells
       summary[bucket][trade.currency] += trade.total_amount
-      summary[:fees][trade.currency] += trade.fee if trade.fee.positive?
+      # Safe-nav on `fee` — the DB column carries a 0.0 default + null:false,
+      # but in-memory unsaved records or unrelated edge cases can leave it
+      # nil, and crashing the page over a missing fee is worse than zero.
+      summary[:fees][trade.currency] += trade.fee if trade.fee&.positive?
 
       if trade.sell? && trade.position.present?
         cost_basis = trade.position.avg_cost * trade.shares
-        summary[:realized][trade.currency] += trade.total_amount - cost_basis - trade.fee
+        summary[:realized][trade.currency] += trade.total_amount - cost_basis - (trade.fee || 0)
       end
     end
 

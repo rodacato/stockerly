@@ -13,14 +13,23 @@ class TradesController < AuthenticatedController
 
     base = current_user.portfolio&.trades&.kept&.includes(:asset, :position) || Trade.none
     @total_count = base.count
-    @available_years = base.pluck(:executed_at).map(&:year).uniq.sort.reverse
+    # Aggregate year-extraction at the DB level so we don't pull every
+    # executed_at timestamp into Ruby memory just to call `.uniq` on
+    # year. EXTRACT runs once; the result set is tiny.
+    @available_years = base.distinct.pluck(Arel.sql("EXTRACT(YEAR FROM executed_at)::int")).sort.reverse
 
     scope = base
-    scope = scope.where(side: filter_side)             if filter_side
-    scope = scope.where(currency: filter_currency)     if filter_currency
-    scope = scope.where("EXTRACT(YEAR FROM executed_at) = ?", @anio.to_i) if @anio != "todos"
+    scope = scope.where(side: filter_side)         if filter_side
+    scope = scope.where(currency: filter_currency) if filter_currency
+    # Use a date-range comparison instead of EXTRACT(YEAR FROM ...) so
+    # Postgres can hit the `index_trades_on_executed_at` index. `all_year`
+    # generates the inclusive [Jan 1, Dec 31] range.
+    scope = scope.where(executed_at: Time.zone.local(@anio.to_i).all_year) if @anio != "todos"
 
-    @trades = scope.recent.limit(50)
+    # Materialize once: the view iterates the relation twice (table body
+    # + summary helper). `.to_a` avoids a redundant COUNT for `@shown_count`
+    # and a double-load of the rows.
+    @trades = scope.recent.limit(50).to_a
     @shown_count = @trades.size
   end
 
