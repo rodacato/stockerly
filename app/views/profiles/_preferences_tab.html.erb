@@ -33,10 +33,12 @@
         </div>
       </div>
 
-      <%# Currency — keep existing semantics, restyled. %>
-      <%= form_with url: profile_path, method: :patch, scope: :profile, class: "flex items-center gap-4 py-3.5" do |f| %>
-        <%= hidden_field_tag "profile[full_name]", user.full_name %>
-        <%= hidden_field_tag "profile[email]", user.email %>
+      <%# Currency — posts to the dedicated /profile/currency endpoint,
+          which only writes the preferred_currency attribute. Avoids the
+          hidden-field pattern that risks stale-data overwrites of
+          full_name / email when the user has the profile open in
+          multiple tabs (Gemini review, #146). %>
+      <%= form_with url: update_currency_path, method: :patch, scope: :profile, class: "flex items-center gap-4 py-3.5" do |f| %>
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-fg-default">Moneda preferida</p>
           <p class="text-xs text-fg-subtle">Define cómo se muestran tus totales consolidados en el panel.</p>

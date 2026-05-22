@@ -12,7 +12,7 @@
   <%# 2-col grid: 4/12 sidebar + 8/12 settings (stacks on mobile). %>
   <div class="grid grid-cols-1 gap-6 md:grid-cols-12">
     <div class="md:col-span-4">
-      <%= render "profiles/identity_card", user: current_user %>
+      <%= render "profiles/identity_card", user: current_user, counts: @sidebar %>
     </div>
 
     <div class="md:col-span-8">
@@ -42,7 +42,10 @@
             <%= render "profiles/information_tab", user: current_user %>
           </div>
           <div data-tabs-target="panel" class="hidden">
-            <%= render "profiles/security_tab", user: current_user %>
+            <%= render "profiles/security_tab",
+                       user: current_user,
+                       active_sessions: @active_sessions,
+                       current_session_id: @current_session_id %>
           </div>
           <div data-tabs-target="panel" class="hidden">
             <%= render "profiles/preferences_tab", user: current_user %>

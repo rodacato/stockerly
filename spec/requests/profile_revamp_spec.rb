@@ -101,5 +101,21 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
       expect(user.reload.preferred_currency).to eq("MXN")
       expect(user.reload.full_name).to eq("New Name")
     end
+
+    it "is also reachable via the dedicated /profile/currency endpoint (S11 #146 review fix)" do
+      patch update_currency_path, params: { profile: { preferred_currency: "USD" } }
+      expect(response).to redirect_to(profile_path)
+      follow_redirect!
+      expect(response.body).to include("Moneda actualizada")
+      expect(user.reload.preferred_currency).to eq("USD")
+    end
+
+    it "rejects unsupported currencies on /profile/currency" do
+      patch update_currency_path, params: { profile: { preferred_currency: "EUR" } }
+      expect(response).to redirect_to(profile_path)
+      follow_redirect!
+      expect(response.body).to include("Moneda no soportada.")
+      expect(user.reload.preferred_currency).to eq("MXN")
+    end
   end
 end

@@ -72,6 +72,7 @@ Rails.application.routes.draw do
   resource :profile,   only: [ :show, :update ]
   patch  "profile/password",    to: "profiles#change_password",    as: :change_password
   patch  "profile/preferences", to: "profiles#update_preferences", as: :update_preferences
+  patch  "profile/currency",    to: "profiles#update_currency",    as: :update_currency
   delete "profile/sessions/:id", to: "profiles#revoke_session",    as: :revoke_session
 
   # --- Admin Zone ---

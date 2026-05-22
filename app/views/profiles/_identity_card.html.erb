@@ -1,10 +1,12 @@
 <%# IdentityCard sidebar — avatar + name + email + miembro desde +
     plan/role badge. Stacks above the settings panel on mobile via
-    grid-cols-1 → grid-cols-12 at md. es-MX per S11 #146. %>
+    grid-cols-1 → grid-cols-12 at md.
+    Counts come precomputed from ProfilesController#show via `counts:`
+    local — no inline DB queries.
+    es-MX per S11 #146. %>
 <% initials = user.full_name.to_s.split.map(&:first).join.upcase.presence || user.email[0].upcase %>
 <% role_label = user.admin? ? "Administrador" : "Usuario" %>
 <% role_icon  = user.admin? ? "shield_person" : "person" %>
-<% portfolio = user.portfolio %>
 
 <aside class="rounded-2xl border border-border-default bg-bg-surface p-6 shadow-sm">
   <div class="flex flex-col items-center gap-4 text-center">
@@ -31,27 +33,21 @@
         <span class="material-symbols-outlined text-[15px]">account_balance_wallet</span>
       </span>
       <span class="text-sm text-fg-default flex-1">Posiciones abiertas</span>
-      <span class="font-mono text-sm font-semibold text-fg-default">
-        <%= portfolio&.positions&.where(status: :open)&.count || 0 %>
-      </span>
+      <span class="font-mono text-sm font-semibold text-fg-default"><%= counts[:open_positions] %></span>
     </div>
     <div class="flex items-center gap-3">
       <span class="size-7 rounded-md bg-bg-muted text-fg-subtle flex items-center justify-center shrink-0">
         <span class="material-symbols-outlined text-[15px]">visibility</span>
       </span>
       <span class="text-sm text-fg-default flex-1">Activos en watchlist</span>
-      <span class="font-mono text-sm font-semibold text-fg-default">
-        <%= user.watchlist_items.count %>
-      </span>
+      <span class="font-mono text-sm font-semibold text-fg-default"><%= counts[:watchlist_items] %></span>
     </div>
     <div class="flex items-center gap-3">
       <span class="size-7 rounded-md bg-bg-muted text-fg-subtle flex items-center justify-center shrink-0">
         <span class="material-symbols-outlined text-[15px]">notifications_active</span>
       </span>
       <span class="text-sm text-fg-default flex-1">Alertas activas</span>
-      <span class="font-mono text-sm font-semibold text-fg-default">
-        <%= user.alert_rules.where(status: :active).count %>
-      </span>
+      <span class="font-mono text-sm font-semibold text-fg-default"><%= counts[:active_alerts] %></span>
     </div>
   </div>
 </aside>
