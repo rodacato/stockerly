@@ -16,7 +16,6 @@ class PasswordResetsController < ApplicationController
   # emails) — never reveal whether an account exists.
   def create
     Identity::UseCases::RequestPasswordReset.call(params: { email: params[:email] })
-    @submitted_email = params[:email].to_s.strip
     render :sent
   end
 
