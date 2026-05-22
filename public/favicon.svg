@@ -1,10 +1,10 @@
 <svg width="32" height="32" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stockerly">
   <rect width="64" height="64" fill="#5B6CFF" rx="12"/>
   <g fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M16 26V16h10"/>
-    <path d="M38 16h10v10"/>
-    <path d="M16 38v10h10"/>
-    <path d="M38 48h10v-10"/>
+    <path d="M10 22V10h12"/>
+    <path d="M42 10h12v12"/>
+    <path d="M10 42v12h12"/>
+    <path d="M42 54h12v-12"/>
   </g>
-  <circle cx="32" cy="32" r="4" fill="#ffffff"/>
+  <circle cx="32" cy="32" r="5" fill="#ffffff"/>
 </svg>

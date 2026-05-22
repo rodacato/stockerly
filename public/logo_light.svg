@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="130" height="40" viewBox="0 0 130 40" role="img" aria-label="Stockerly">
-  <g transform="translate(2 8) scale(.375)" fill="none" stroke="#5B6CFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+  <g transform="translate(2 8) scale(.375)" fill="none" stroke="#0F172A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
     <path d="M10 22V10h12"/>
     <path d="M42 10h12v12"/>
     <path d="M10 42v12h12"/>
