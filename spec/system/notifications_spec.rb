@@ -20,8 +20,14 @@ RSpec.describe "Notifications inbox", type: :system do
   end
 
   it "renders grouped notifications with filter chip counts" do
-    create(:notification, user: user, notification_type: :alert_triggered, title: "NVDA cruzó USD 600", created_at: 1.hour.ago, read: false)
-    create(:notification, user: user, notification_type: :system,          title: "BMV cerrado el lunes", created_at: 1.day.ago, read: true)
+    # Noon-anchored timestamps so the test doesn't flake when CI runs near
+    # midnight UTC (relative offsets like `1.hour.ago` would otherwise spill
+    # into the previous calendar day and break the "Hoy ·" / "Ayer ·"
+    # bucket assertions below).
+    today_noon     = Date.current.beginning_of_day + 12.hours
+    yesterday_noon = today_noon - 1.day
+    create(:notification, user: user, notification_type: :alert_triggered, title: "NVDA cruzó USD 600", created_at: today_noon, read: false)
+    create(:notification, user: user, notification_type: :system,          title: "BMV cerrado el lunes", created_at: yesterday_noon, read: true)
 
     visit notifications_path
 

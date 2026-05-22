@@ -42,11 +42,18 @@ RSpec.describe NotificationsHelper, type: :helper do
 
   describe "#group_notifications_by_date" do
     let(:user) { create(:user) }
+    # Anchor timestamps at noon-of-day so bucket assignment is deterministic
+    # regardless of when the suite runs. Using relative offsets (`2.hours.ago`,
+    # `1.day.ago`) made the spec flake when CI hit it near midnight UTC —
+    # `2.hours.ago` could land in `yesterday`, breaking the count.
+    let(:noon_today)      { Date.current.beginning_of_day + 12.hours }
+    let(:noon_yesterday)  { noon_today - 1.day }
+    let(:noon_5_days_ago) { noon_today - 5.days }
 
     it "buckets into Hoy / Ayer / Más temprano in display order" do
-      today_n     = create(:notification, user: user, created_at: 2.hours.ago)
-      yesterday_n = create(:notification, user: user, created_at: 1.day.ago)
-      earlier_n   = create(:notification, user: user, created_at: 5.days.ago)
+      today_n     = create(:notification, user: user, created_at: noon_today)
+      yesterday_n = create(:notification, user: user, created_at: noon_yesterday)
+      earlier_n   = create(:notification, user: user, created_at: noon_5_days_ago)
 
       groups = helper.group_notifications_by_date([ today_n, yesterday_n, earlier_n ])
 
@@ -60,7 +67,7 @@ RSpec.describe NotificationsHelper, type: :helper do
     end
 
     it "omits empty buckets" do
-      today_n = create(:notification, user: user, created_at: 1.hour.ago)
+      today_n = create(:notification, user: user, created_at: noon_today)
       groups  = helper.group_notifications_by_date([ today_n ])
       expect(groups.length).to eq(1)
       expect(groups[0][0]).to start_with("Hoy")

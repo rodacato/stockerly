@@ -17,7 +17,7 @@ The S10 close audit (`.local/design-mockups/Stockerly-2.0/AUDIT-operational.md` 
 
 > The Lumen palette in `docs/design/tokens.md` was never applied to `app/assets/tailwind/application.css`. The CSS layer still ships `--color-primary: #005A98` (pre-Lumen corporate blue) instead of `#5B6CFF` (Lumen primary). Every "Stockerly-2.0 design pass" since S07 merged Lumen-shaped layouts + copy against the wrong color tokens. Structurally surfaces match the mockups; chromatically none do.
 
-This is a one-file, ~30-LoC change (#142) that unblocks visual truth on all 12 user-facing surfaces simultaneously. **Ship it first** so the design completions that follow (#143 dashboard, #145 profile, #146 password recovery, #144 asset detail, #147 trades) compound on top of correct chrome instead of re-papering over the wrong primary.
+This is a one-file, ~30-LoC change (#142) that unblocks visual truth on all 12 user-facing surfaces simultaneously. **Ship it first** so the design completions that follow (#143 dashboard, #146 profile, #147 password recovery, #144 asset detail, #145 trades) compound on top of correct chrome instead of re-papering over the wrong primary.
 
 The 3 design-pass deferrals from S10 retro (dashboard sidebar, profile 2-col, password recovery) are the highest-value remaining gaps the beta amigo will see if they actually log in and start clicking around. They were deferred in S09/S10 due to scope discipline, not because they were unimportant — and now that we have the parallel-agent capacity demonstrated twice (S10 #93/#94 + admin 6-pack), they can fit in one sprint.
 

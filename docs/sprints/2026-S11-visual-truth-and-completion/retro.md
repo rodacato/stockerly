@@ -1,4 +1,4 @@
-# Retro — Sprint <N>
+# Retro — Sprint S11 (visual-truth-and-completion)
 
 > Honest post-mortem. Without retro, the sprint does NOT close (hard rule of the protocol).
 >
