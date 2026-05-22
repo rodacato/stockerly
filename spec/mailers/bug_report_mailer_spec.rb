@@ -19,12 +19,12 @@ RSpec.describe BugReportMailer, type: :mailer do
     end
 
     it "renders the canonical Stockerly logo via the mailer layout" do
-      expect(mail.html_part.body.to_s).to include("logo_light.svg")
-      expect(mail.html_part.body.to_s).to include('alt="Stockerly"')
+      expect(mail.html_part.decoded).to include("logo_light.svg")
+      expect(mail.html_part.decoded).to include('alt="Stockerly"')
     end
 
     it "includes user identity and reported text in both body parts" do
-      [ mail.text_part.body.to_s, mail.html_part.body.to_s ].each do |body|
+      [ mail.text_part.decoded, mail.html_part.decoded ].each do |body|
         expect(body).to include("Pablo Reyes")
         expect(body).to include("pablo@example.com")
         expect(body).to include("La gráfica no carga")
