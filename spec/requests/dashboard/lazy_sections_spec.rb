@@ -55,7 +55,7 @@ RSpec.describe "Dashboard lazy-loaded sections", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("dashboard_trending")
       expect(response.body).to include("TSLA")
-      expect(response.body).to include("Trending Today")
+      expect(response.body).to include("Tendencias hoy")
     end
 
     it "renders without layout" do

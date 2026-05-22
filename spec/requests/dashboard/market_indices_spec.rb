@@ -15,7 +15,7 @@ RSpec.describe "Dashboard market indices", type: :request do
       get dashboard_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Market Indices")
+      expect(response.body).to include("Estado del mercado")
       expect(response.body).to include("SPX")
       expect(response.body).to include("S&amp;P 500")
     end
@@ -26,7 +26,8 @@ RSpec.describe "Dashboard market indices", type: :request do
       get dashboard_path
 
       expect(response.body).to include("NDX")
-      expect(response.body).to include("trending_down")
+      # Redesigned panel uses Lumen tokens for negative tone instead of a trending_down icon.
+      expect(response.body).to include("text-negative")
     end
 
     it "renders sparkline when history exists" do

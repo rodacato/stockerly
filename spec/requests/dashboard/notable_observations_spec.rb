@@ -62,7 +62,7 @@ RSpec.describe "Dashboard — Notable Observations (#40 JTBD #6)", type: :reques
         create(:technical_observation, asset: msft, observation_type: "rsi_oversold_entered", observed_at: 1.hour.ago)
 
         get dashboard_notable_observations_path
-        expect(response.body).not_to include("Notable Observations")
+        expect(response.body).not_to include("Observaciones técnicas")
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe "Dashboard — Notable Observations (#40 JTBD #6)", type: :reques
         create(:technical_observation, asset: aapl, observation_type: "rsi_oversold_entered", observed_at: 1.hour.ago)
 
         get dashboard_notable_observations_path
-        expect(response.body).not_to include("Notable Observations")
+        expect(response.body).not_to include("Observaciones técnicas")
       end
     end
   end

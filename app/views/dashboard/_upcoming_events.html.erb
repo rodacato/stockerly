@@ -1,30 +1,56 @@
-<%# Upcoming Events — fixed-income maturities (#29 JTBD #3).
-    Descriptive copy per ADR-001: shows what's happening, no action verbs. %>
+<%# Próximos vencimientos — Stockerly-2.0 dashboard pass (S11 #143).
+    Mockup: .local/design-mockups/Stockerly-2.0/dashboard/Dashboard.jsx · MaturitiesPanel.
+    Descriptive copy per ADR-001 (no imperative verbs). Reads @upcoming_maturities
+    (fixed-income positions inside the next 30 days, loaded by
+    Trading::UseCases::AssembleDashboard). %>
 <% if @upcoming_maturities.present? %>
-  <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-        <span class="material-symbols-outlined text-lg">event</span>
-        <p class="text-sm font-semibold tracking-tight uppercase">Upcoming Events</p>
-      </div>
-    </div>
-    <ul class="space-y-3">
-      <% @upcoming_maturities.each do |position| %>
-        <% days_until = (position.maturity_date - Date.current).to_i %>
-        <% when_phrase = days_until == 0 ? "today" : days_until == 1 ? "tomorrow" : "in #{days_until} days" %>
-        <% urgent = days_until <= 3 %>
-        <li class="flex items-start gap-3 pb-3 border-b border-slate-100 dark:border-slate-800 last:border-0 last:pb-0">
-          <span class="material-symbols-outlined text-base <%= urgent ? 'text-amber-500' : 'text-slate-400' %>">schedule</span>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-slate-900 dark:text-white truncate">
-              <%= position.asset.symbol %> expires <%= when_phrase %>
+  <section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+    <header class="flex items-baseline gap-2 px-4 py-3.5">
+      <h3 class="text-[15px] font-semibold tracking-tight text-fg-default">Próximos vencimientos</h3>
+      <span class="text-[11px] text-fg-subtle">30 días</span>
+    </header>
+
+    <ul class="px-4 pb-3">
+      <% @upcoming_maturities.each_with_index do |position, i| %>
+        <%
+          days_until = (position.maturity_date - Date.current).to_i
+          when_phrase =
+            if days_until.zero?
+              "hoy"
+            elsif days_until == 1
+              "mañana"
+            else
+              "en #{days_until} días"
+            end
+          urgent = days_until <= 3
+          # Tipo chip — derive from asset symbol for CETES (e.g. CETES_28D → CETE 28D).
+          digits = position.asset.symbol.to_s[/\d+/]
+          tipo_label = digits ? "CETE #{digits}D" : "Renta fija"
+        %>
+        <li class="grid grid-cols-[1fr_auto] gap-3 py-2.5 <%= 'border-t border-border-default' if i.positive? %>">
+          <div class="min-w-0">
+            <span class="inline-flex items-center rounded bg-warning-bg px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-warning-fg">
+              <%= tipo_label %>
+            </span>
+            <p class="mt-1.5 text-[13px] text-fg-default leading-snug">
+              <span class="font-mono font-semibold"><%= position.asset.symbol %></span>
+              vence <%= when_phrase %>
             </p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">
-              <%= position.asset.name %> — <%= position.shares.to_i %> units, matures <%= position.maturity_date.strftime("%b %d, %Y") %>
+            <p class="text-[11px] text-fg-subtle">
+              <%= position.asset.name %> · <%= position.shares.to_i %>
+              <%= "título".pluralize(position.shares.to_i) %>
             </p>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="text-[12.5px] font-medium <%= urgent ? 'text-warning-fg' : 'text-fg-default' %>">
+              <%= when_phrase.capitalize %>
+            </div>
+            <div class="mt-0.5 font-mono text-[10.5px] uppercase tracking-wider text-fg-subtle">
+              <%= short_date_upper_es(position.maturity_date) %>
+            </div>
           </div>
         </li>
       <% end %>
     </ul>
-  </div>
+  </section>
 <% end %>

@@ -16,9 +16,9 @@ RSpec.describe "Dashboard — Upcoming Events (#29 JTBD #3)", type: :request do
       it "renders the Upcoming Events section with descriptive copy" do
         get dashboard_path
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Upcoming Events")
+        expect(response.body).to include("Próximos vencimientos")
         expect(response.body).to include("CETES_28D")
-        expect(response.body).to include("expires in 5 days")
+        expect(response.body).to include("vence en 5 días")
       end
 
       it "does NOT render prescriptive action copy (ADR-001)" do
@@ -34,7 +34,7 @@ RSpec.describe "Dashboard — Upcoming Events (#29 JTBD #3)", type: :request do
       it "does not render the Upcoming Events section at all (no empty card)" do
         get dashboard_path
         expect(response).to have_http_status(:ok)
-        expect(response.body).not_to include("Upcoming Events")
+        expect(response.body).not_to include("Próximos vencimientos")
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe "Dashboard — Upcoming Events (#29 JTBD #3)", type: :request do
       it "does not list expired positions (past-maturity is not 'upcoming')" do
         create(:position, portfolio: portfolio, asset: cetes, shares: 100, avg_cost: 9.85, maturity_date: 3.days.ago.to_date)
         get dashboard_path
-        expect(response.body).not_to include("Upcoming Events")
+        expect(response.body).not_to include("Próximos vencimientos")
       end
     end
   end

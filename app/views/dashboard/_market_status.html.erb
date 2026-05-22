@@ -1,61 +1,47 @@
-<%# Market Indices — values, changes, and sparklines from @indices %>
-<section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
-  <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Market Indices</h3>
-  <div class="space-y-3">
-    <% @indices.each do |idx| %>
-      <%
-        val = idx.value&.to_f
-        chg = idx.change_percent&.to_f || 0
-        positive = chg >= 0
-        is_open = idx.is_open
-        recent_points = idx.market_index_histories.sort_by(&:date).last(5)
-      %>
-      <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800/50 last:border-b-0">
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2">
-            <span class="h-1.5 w-1.5 rounded-full <%= is_open ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400' %>"></span>
-            <span class="text-sm font-bold text-slate-900 dark:text-white truncate"><%= idx.symbol %></span>
+<%# Estado del mercado — Stockerly-2.0 dashboard pass (S11 #143).
+    Mockup: .local/design-mockups/Stockerly-2.0/dashboard/Dashboard.jsx · MarketsPanel.
+    Renders one row per index showing the open/closed dot, the index name +
+    last value, and the day Δ. The mockup uses three venues (BMV / NYSE /
+    NASDAQ); we surface every index seeded in @indices so the panel scales
+    with whatever MarketData::Queries::MajorIndices returns. %>
+<section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+  <header class="px-4 py-3.5">
+    <h3 class="text-[15px] font-semibold tracking-tight text-fg-default">Estado del mercado</h3>
+  </header>
+
+  <% if @indices.present? %>
+    <ul class="px-4 pb-3">
+      <% @indices.each_with_index do |idx, i| %>
+        <%
+          val      = idx.value&.to_f
+          chg      = idx.change_percent&.to_f || 0
+          positive = chg >= 0
+          is_open  = idx.is_open
+        %>
+        <li class="grid grid-cols-[1fr_auto] items-center gap-3 py-2.5 <%= 'border-t border-border-default' if i.positive? %>">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium text-fg-default truncate"><%= idx.name.presence || idx.symbol %></span>
+              <span class="inline-flex items-center gap-1 rounded bg-bg-muted px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider <%= is_open ? 'text-positive' : 'text-fg-subtle' %>">
+                <span class="h-1.5 w-1.5 rounded-full <%= is_open ? 'bg-positive animate-pulse' : 'bg-fg-subtle' %>"></span>
+                <%= is_open ? "Abierto" : "Cerrado" %>
+              </span>
+            </div>
+            <p class="mt-1 truncate font-mono text-[11px] text-fg-subtle">
+              <%= idx.symbol %><% if val %> · <%= number_with_delimiter(val.round(2)) %><% end %>
+            </p>
           </div>
-          <p class="text-[10px] text-slate-400 ml-3.5 truncate"><%= idx.name %></p>
-        </div>
-
-        <%# Sparkline — last 5 points %>
-        <% if recent_points.size >= 2 %>
-          <%
-            spark_w = 48
-            spark_h = 20
-            vals = recent_points.map { |h| h.close_value.to_f }
-            spark_min = vals.min
-            spark_range = vals.max - spark_min
-            spark_range = 1.0 if spark_range.zero?
-            step = spark_w.to_f / (vals.size - 1)
-            spark_pts = vals.each_with_index.map { |v, i|
-              x = (i * step).round(1)
-              y = (spark_h - ((v - spark_min) / spark_range * spark_h)).round(1)
-              "#{x},#{y}"
-            }.join(" ")
-            spark_color = positive ? "#10b981" : "#ef4444"
-          %>
-          <svg viewBox="0 0 <%= spark_w %> <%= spark_h %>" class="w-12 h-5 shrink-0 mx-2" preserveAspectRatio="none">
-            <polyline points="<%= spark_pts %>"
-                      fill="none" stroke="<%= spark_color %>" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-          </svg>
-        <% end %>
-
-        <div class="text-right shrink-0 ml-2">
-          <% if val && val.positive? %>
-            <span class="text-sm font-bold text-slate-900 dark:text-white"><%= number_with_delimiter(val.round(1)) %></span>
-          <% end %>
-          <div class="flex items-center justify-end gap-0.5">
-            <span class="material-symbols-outlined text-xs <%= positive ? 'text-emerald-500' : 'text-rose-500' %>">
-              <%= positive ? 'trending_up' : 'trending_down' %>
-            </span>
-            <span class="text-xs font-bold <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
-              <%= positive ? '+' : '' %><%= number_to_percentage(chg, precision: 2) %>
+          <div class="text-right shrink-0">
+            <span class="font-mono text-sm font-medium <%= positive ? 'text-positive' : 'text-negative' %>">
+              <%= positive ? "+" : "−" %><%= number_to_percentage(chg.abs, precision: 2) %>
             </span>
           </div>
-        </div>
-      </div>
-    <% end %>
-  </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="px-5 py-8 text-center text-sm text-fg-subtle">
+      Sin datos de mercados ahora mismo.
+    </div>
+  <% end %>
 </section>

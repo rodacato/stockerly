@@ -1,21 +1,43 @@
-<%# Relevant News feed — data from @news %>
-<section>
-  <div class="flex items-center justify-between mb-4">
-    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Relevant News</h3>
-    <div class="flex gap-2">
-      <%= link_to "View All", news_path, class: "rounded-lg bg-primary text-white px-3 py-1.5 text-xs font-bold shadow-sm" %>
+<%# Noticias del mercado — Stockerly-2.0 dashboard pass (S11 #143).
+    Mockup: .local/design-mockups/Stockerly-2.0/dashboard/Dashboard.jsx · NewsFeed.
+    Compact list inside a single card, served lazily via dashboard/news_feed.
+    Reads @news (RecentNews query) populated by DashboardController#news_feed. %>
+<section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+  <header class="flex items-center gap-3 px-5 py-4">
+    <h2 class="text-base font-semibold tracking-tight text-fg-default">Noticias del mercado</h2>
+    <div class="ml-auto">
+      <%= link_to "Ver todas", news_path,
+            class: "inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-[11px] font-semibold text-fg-inverse hover:bg-primary-hover transition-colors" %>
     </div>
-  </div>
-  <div class="space-y-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-2 shadow-sm">
-    <% @news.each do |article| %>
-      <%= render "components/news_card",
-        ticker: article.related_ticker,
-        source: article.source,
-        time_ago: time_ago_in_words(article.published_at) + " ago",
-        title: article.title %>
-    <% end %>
-  </div>
-  <% if @news.empty? %>
-    <p class="text-sm text-slate-500 text-center py-4">No news articles available.</p>
+  </header>
+
+  <% if @news.present? %>
+    <ul class="divide-y divide-border-default space-y-1">
+      <% @news.each do |article| %>
+        <li class="px-5 py-3.5">
+          <div class="flex items-start gap-3">
+            <% if article.related_ticker.present? %>
+              <span class="inline-flex shrink-0 items-center rounded bg-primary-muted px-1.5 py-0.5 font-mono text-[10px] font-semibold text-primary">
+                <%= article.related_ticker %>
+              </span>
+            <% else %>
+              <span class="material-symbols-outlined shrink-0 text-base text-fg-subtle">article</span>
+            <% end %>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium text-fg-default leading-snug">
+                <%= article.title %>
+              </p>
+              <p class="mt-1 text-[11px] text-fg-subtle">
+                <%= article.source %><% if article.published_at %> · hace <%= time_ago_in_words(article.published_at) %><% end %>
+              </p>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="px-5 py-10 text-center text-sm text-fg-subtle">
+      Sin noticias por ahora.
+    </div>
   <% end %>
 </section>

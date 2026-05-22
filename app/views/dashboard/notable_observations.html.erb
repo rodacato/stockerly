@@ -1,28 +1,30 @@
+<%# Observaciones técnicas — Stockerly-2.0 dashboard pass (S11 #143).
+    Mockup: .local/design-mockups/Stockerly-2.0/dashboard/Dashboard.jsx · ObservationsPanel.
+    Lazy-loaded turbo frame served by DashboardController#notable_observations.
+    Filtered to user-owned/watched assets per ADR-002. Descriptive copy
+    (no imperative verbs) per ADR-001. %>
 <%= turbo_frame_tag "dashboard_notable_observations" do %>
   <% if @observations.any? %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-          <span class="material-symbols-outlined text-lg">insights</span>
-          <p class="text-sm font-semibold tracking-tight uppercase">Notable Observations</p>
-        </div>
-      </div>
-      <ul class="space-y-3">
-        <% @observations.each do |observation| %>
-          <li class="flex items-start gap-3 pb-3 border-b border-slate-100 dark:border-slate-800 last:border-0 last:pb-0">
-            <span class="material-symbols-outlined text-base text-slate-400">trending_up</span>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                <%= link_to observation.asset.symbol, market_asset_path(observation.asset.symbol), class: "hover:underline" %>
-                <%= observation.phrase %>
-              </p>
-              <p class="text-xs text-slate-500 dark:text-slate-400">
-                <%= observation.asset.name %> — <%= time_ago_in_words(observation.observed_at) %> ago
-              </p>
-            </div>
+    <section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+      <header class="flex items-baseline gap-2 px-4 py-3.5">
+        <h3 class="text-[15px] font-semibold tracking-tight text-fg-default">Observaciones técnicas</h3>
+        <span class="text-[11px] text-fg-subtle">Filtradas a tus activos</span>
+      </header>
+
+      <ul class="px-4 pb-3">
+        <% @observations.each_with_index do |observation, i| %>
+          <li class="py-3 <%= 'border-t border-border-default' if i.positive? %>">
+            <p class="text-[13px] leading-snug text-fg-default">
+              <%= link_to observation.asset.symbol, market_asset_path(observation.asset.symbol),
+                          class: "font-mono font-semibold text-primary hover:underline" %>
+              <%= observation.phrase %>.
+            </p>
+            <p class="mt-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
+              <%= observation.asset.name %> · hace <%= time_ago_in_words(observation.observed_at) %>
+            </p>
           </li>
         <% end %>
       </ul>
-    </div>
+    </section>
   <% end %>
 <% end %>

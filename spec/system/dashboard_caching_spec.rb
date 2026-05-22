@@ -34,7 +34,7 @@ RSpec.describe "Dashboard caching", type: :system do
     visit dashboard_path
 
     expect(page).to have_content("Cached Asset")
-    expect(page).to have_content("Watchlist Performance")
+    expect(page).to have_content("Tus posiciones")
   end
 
   it "renders lazy Turbo Frame placeholder for trending section" do
@@ -48,7 +48,7 @@ RSpec.describe "Dashboard caching", type: :system do
   it "renders weekly insight with cached content" do
     visit dashboard_path
 
-    expect(page).to have_content("Weekly Insight")
+    expect(page).to have_content("Lectura semanal")
   end
 
   it "renders market status with cached content" do
@@ -56,20 +56,20 @@ RSpec.describe "Dashboard caching", type: :system do
 
     visit dashboard_path
 
-    expect(page).to have_content("Market Indices")
+    expect(page).to have_content("Estado del mercado")
   end
 
   it "busts watchlist row cache when asset price changes" do
-    asset = create(:asset, symbol: "BUST", name: "Cache Bust", current_price: 100.0)
+    asset = create(:asset, symbol: "BUST", name: "Cache Bust", currency: "USD", current_price: 100.0)
     create(:watchlist_item, user: user, asset: asset)
 
     visit dashboard_path
-    expect(page).to have_content("$100.00")
+    expect(page).to have_content("USD 100.00")
 
     asset.update!(current_price: 150.0)
 
     visit dashboard_path
-    expect(page).to have_content("$150.00")
+    expect(page).to have_content("USD 150.00")
   end
 
   it "loads dashboard without errors when cache is cold" do

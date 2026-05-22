@@ -57,6 +57,6 @@ RSpec.describe "Watchlist management", type: :system do
   it "shows empty watchlist state on dashboard" do
     visit dashboard_path
     # Dashboard empty state copy: from app/views/dashboard/_watchlist_table.html.erb
-    expect(page).to have_content("No assets in your watchlist")
+    expect(page).to have_content("Aún no sigues ningún activo.")
   end
 end
