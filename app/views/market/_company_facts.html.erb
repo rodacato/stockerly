@@ -30,6 +30,7 @@
       facts << ["País",      company_overview["country"]]  if company_overview["country"].present?
       facts << ["Bolsa",     company_overview["exchange"].presence || asset.exchange.presence]
       facts << ["Divisa",    company_overview["currency"].presence || asset.currency]
+      visible_facts = facts.reject { |_, v| v.blank? }
       description = company_overview["description"].presence
     %>
     <div class="grid grid-cols-1 gap-8 px-5 py-6 sm:px-6 lg:grid-cols-12">
@@ -49,8 +50,8 @@
       <div class="lg:col-span-5">
         <h3 class="text-base font-semibold tracking-tight text-fg-default">Ficha</h3>
         <dl class="mt-1.5">
-          <% facts.compact.reject { |_, v| v.blank? }.each_with_index do |(label, value), i| %>
-            <div class="flex items-center justify-between border-t border-border-default py-2.5 <%= 'border-b' if i == facts.size - 1 %>">
+          <% visible_facts.each_with_index do |(label, value), i| %>
+            <div class="flex items-center justify-between border-t border-border-default py-2.5 <%= 'border-b' if i == visible_facts.size - 1 %>">
               <dt class="text-sm text-fg-subtle"><%= label %></dt>
               <dd class="text-sm font-medium text-fg-default"><%= value %></dd>
             </div>
