@@ -23,3 +23,4 @@
 - [PR review workflow](feedback_pr_review_workflow.md) — When asked to handle PR feedback, run the full Gemini-review loop (fetch → triage → fix → CI → push → reply inline) without asking for steps
 - [Protect master](feedback_protect_master.md) — Never push directly to master / never bypass branch protection. Use explicit refspec on push. Captured after 2026-05-16 incident on #81.
 - [Parallelize low-risk work](feedback_parallelize_when_low_risk.md) — When sprint has disjoint, well-spec'd tasks, launch parallel Agents in worktrees instead of sequential. Captured after S08 retro 2026-05-18.
+- [Closes #N required](feedback_closes_n_required.md) — Every PR body MUST include `Closes #<N>` so GitHub auto-closes. Mandate explicitly in agent prompts. Captured after S10 left 3 stale issues; S11 fix proved it works.
