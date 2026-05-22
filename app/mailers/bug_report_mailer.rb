@@ -7,7 +7,7 @@ class BugReportMailer < ApplicationMailer
     mail(
       to: "support@notdefined.dev",
       reply_to: user.email,
-      subject: "[Beta bug] #{title.truncate(60)}"
+      subject: "[Bug beta] #{title.truncate(60)}"
     )
   end
 end
