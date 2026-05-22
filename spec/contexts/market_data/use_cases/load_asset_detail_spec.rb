@@ -118,5 +118,41 @@ RSpec.describe MarketData::UseCases::LoadAssetDetail do
         expect(result.failure[0]).to eq(:not_found)
       end
     end
+
+    # S11 #144: "Acerca de la empresa / Ficha" reads the descriptive fields
+    # from the OVERVIEW row (not the CALCULATED one). Exposed as
+    # :company_overview so the partial doesn't have to query AR directly.
+    context "company_overview payload" do
+      it "exposes the OVERVIEW metrics hash for a stock with an overview row" do
+        create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
+               metrics: { "description" => "Apple makes phones.", "sector" => "Technology" })
+
+        data = described_class.call(symbol: "AAPL").value!
+
+        expect(data[:company_overview]).to be_present
+        expect(data[:company_overview]["description"]).to eq("Apple makes phones.")
+        expect(data[:company_overview]["sector"]).to eq("Technology")
+      end
+
+      it "returns nil when no OVERVIEW row exists" do
+        data = described_class.call(symbol: "AAPL").value!
+        expect(data[:company_overview]).to be_nil
+      end
+
+      it "returns nil for crypto assets (no company behind them)" do
+        btc = create(:asset, symbol: "BTC", asset_type: :crypto, current_price: 60_000)
+        create(:asset_fundamental, asset: btc, period_label: "OVERVIEW",
+               metrics: { "description" => "Should not surface" })
+
+        data = described_class.call(symbol: "BTC").value!
+        expect(data[:company_overview]).to be_nil
+      end
+
+      it "is omitted for fixed_income assets entirely" do
+        cetes = create(:asset, :fixed_income, symbol: "CETES_91D")
+        data = described_class.call(symbol: "CETES_91D").value!
+        expect(data).not_to have_key(:company_overview)
+      end
+    end
   end
 end

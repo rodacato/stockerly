@@ -1,5 +1,6 @@
-<%# Resumen tab — Stockerly-2.0 (S10 #93). Adaptive metric grid by asset type
-    plus the analyst target band for stocks. es-MX. %>
+<%# Resumen tab — Stockerly-2.0 (S10 #93, S11 #144). Adaptive metric grid
+    by asset type plus the analyst target band for stocks. Closes with the
+    "Acerca de la empresa / Ficha" 2-col block (#144). es-MX. %>
 <% if @has_fundamentals %>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <% summary_metrics_for(@asset).each do |key| %>
@@ -26,3 +27,5 @@
     </p>
   </div>
 <% end %>
+
+<%= render "market/company_facts", asset: @asset, company_overview: @company_overview %>

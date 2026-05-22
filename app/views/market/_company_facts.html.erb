@@ -1,0 +1,70 @@
+<%# Acerca de la empresa / Ficha — Stockerly-2.0 asset detail (S11 #144).
+    Mockup: .local/design-mockups/Stockerly-2.0/asset/AssetDetailPage.jsx · ResumenPanel.
+    Locals:
+      asset            (required) — Asset record
+      company_overview (optional) — Hash of AssetFundamental(OVERVIEW)#metrics,
+                                    or nil when no overview row exists.
+    Behavior:
+      - stock / ETF: 2-col grid with description (left) and key facts (right).
+      - crypto: alt copy explaining the asset isn't a registered company.
+      - fixed_income: renders nothing (asset detail uses fixed_income_detail).
+      - missing data: "Ficha no disponible para este activo" fallback. %>
+<% return if asset.asset_type_fixed_income? %>
+
+<section class="mt-6 rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+  <% if asset.asset_type_crypto? %>
+    <div class="px-5 py-6 sm:px-6">
+      <h3 class="text-base font-semibold tracking-tight text-fg-default">Acerca del activo</h3>
+      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-fg-subtle">
+        <%= asset.name %> es un criptoactivo, no una empresa con domicilio fiscal,
+        consejo de administración ni reportes trimestrales. Para ver su volumen,
+        capitalización y suministro circulante consulta la pestaña
+        <span class="font-medium text-fg-default">Mercado</span>.
+      </p>
+    </div>
+  <% elsif company_overview.present? %>
+    <%
+      facts = []
+      facts << ["Sector",    company_overview["sector"]]    if company_overview["sector"].present?
+      facts << ["Industria", company_overview["industry"]] if company_overview["industry"].present?
+      facts << ["País",      company_overview["country"]]  if company_overview["country"].present?
+      facts << ["Bolsa",     company_overview["exchange"].presence || asset.exchange.presence]
+      facts << ["Divisa",    company_overview["currency"].presence || asset.currency]
+      description = company_overview["description"].presence
+    %>
+    <div class="grid grid-cols-1 gap-8 px-5 py-6 sm:px-6 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <h3 class="text-base font-semibold tracking-tight text-fg-default">Acerca de la empresa</h3>
+        <% if description %>
+          <p class="mt-2.5 max-w-prose text-sm leading-relaxed text-fg-subtle">
+            <%= description %>
+          </p>
+        <% else %>
+          <p class="mt-2.5 text-sm text-fg-subtle">
+            Sin descripción disponible para <%= asset.name %>.
+          </p>
+        <% end %>
+      </div>
+
+      <div class="lg:col-span-5">
+        <h3 class="text-base font-semibold tracking-tight text-fg-default">Ficha</h3>
+        <dl class="mt-1.5">
+          <% facts.compact.reject { |_, v| v.blank? }.each_with_index do |(label, value), i| %>
+            <div class="flex items-center justify-between border-t border-border-default py-2.5 <%= 'border-b' if i == facts.size - 1 %>">
+              <dt class="text-sm text-fg-subtle"><%= label %></dt>
+              <dd class="text-sm font-medium text-fg-default"><%= value %></dd>
+            </div>
+          <% end %>
+        </dl>
+      </div>
+    </div>
+  <% else %>
+    <div class="px-5 py-6 sm:px-6">
+      <h3 class="text-base font-semibold tracking-tight text-fg-default">Acerca de la empresa</h3>
+      <p class="mt-2 text-sm text-fg-subtle">
+        Ficha no disponible para este activo. La información se sincroniza a diario —
+        vuelve más tarde.
+      </p>
+    </div>
+  <% end %>
+</section>

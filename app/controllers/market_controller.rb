@@ -26,6 +26,7 @@ class MarketController < AuthenticatedController
       @price_histories = data[:price_histories] || []
       @pe_history = data[:pe_history]
       @dividends = data[:dividends] || []
+      @company_overview = data[:company_overview]
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
       @recent_observations = @asset.technical_observations.recent.within_last(30).limit(5)
 

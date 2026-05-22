@@ -27,6 +27,7 @@ module MarketData
 
         dividends = asset.asset_type_stock? || asset.asset_type_etf? ? asset.dividends.order(ex_date: :desc).limit(12) : []
         has_statements = !asset.asset_type_crypto? && asset.financial_statements.exists?
+        company_overview = resolve_company_overview(asset)
 
         Success({
           asset: asset,
@@ -35,7 +36,8 @@ module MarketData
           has_statements: has_statements,
           price_histories: price_histories,
           pe_history: pe_history,
-          dividends: dividends
+          dividends: dividends,
+          company_overview: company_overview
         })
       end
 
@@ -72,6 +74,18 @@ module MarketData
           calculated = asset.asset_fundamentals.where(period_label: "CALCULATED").latest.first
           calculated || asset.asset_fundamentals.overview.latest.first
         end
+      end
+
+      # Read-only "Ficha de empresa" payload — descriptive fields from the
+      # Alpha Vantage OVERVIEW row (description, sector, industry, country,
+      # exchange, employees, ipo year, website). Returns nil for crypto and
+      # fixed_income — those asset types don't have a company behind them and
+      # the view renders an alternative copy / nothing.
+      def resolve_company_overview(asset)
+        return nil if asset.asset_type_crypto? || asset.asset_type_fixed_income?
+
+        overview = asset.asset_fundamentals.overview.latest.first
+        overview&.metrics&.with_indifferent_access
       end
     end
   end

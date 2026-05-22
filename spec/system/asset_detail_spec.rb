@@ -123,6 +123,108 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
     end
   end
 
+  # S11 #144: "Acerca de la empresa / Ficha" 2-col block appended to the
+  # Resumen tab. Adaptive per asset_type per the issue DoD:
+  # stock → facts, ETF → facts, crypto → alt copy ("Acerca del activo"),
+  # fixed_income → block renders nothing.
+  describe "Acerca de la empresa / Ficha (#144)" do
+    context "stock with an OVERVIEW row" do
+      let!(:walmex) { create(:asset, name: "Wal-Mart de México", symbol: "WALMEX", asset_type: :stock, exchange: "BMV", currency: "MXN", country: "MX", current_price: 78.50) }
+
+      before do
+        create(:asset_fundamental, asset: walmex, period_label: "OVERVIEW",
+          metrics: {
+            "description" => "Wal-Mart de México opera Bodega Aurrera, Walmart y Sam's Club en México.",
+            "sector"      => "Consumer Defensive",
+            "industry"    => "Discount Stores",
+            "country"     => "Mexico",
+            "exchange"    => "BMV",
+            "currency"    => "MXN"
+          })
+      end
+
+      it "renders the description, the Ficha heading and the key facts" do
+        visit market_asset_path(walmex.symbol)
+
+        expect(page).to have_content("Acerca de la empresa")
+        expect(page).to have_content("Wal-Mart de México opera Bodega Aurrera")
+        expect(page).to have_content("Ficha")
+        expect(page).to have_content("Sector")
+        expect(page).to have_content("Consumer Defensive")
+        expect(page).to have_content("Industria")
+        expect(page).to have_content("Discount Stores")
+        expect(page).to have_content("País")
+        expect(page).to have_content("Mexico")
+      end
+    end
+
+    context "ETF with an OVERVIEW row" do
+      let!(:voo) { create(:asset, :etf, name: "Vanguard S&P 500 ETF", symbol: "VOO", currency: "USD", current_price: 540.12) }
+
+      before do
+        create(:asset_fundamental, asset: voo, period_label: "OVERVIEW",
+          metrics: {
+            "description" => "ETF que replica el índice S&P 500 de Vanguard.",
+            "sector"      => "Equity",
+            "country"     => "US",
+            "exchange"    => "NYSE",
+            "currency"    => "USD"
+          })
+      end
+
+      it "renders the Ficha block with the ETF's descriptive fields" do
+        visit market_asset_path(voo.symbol)
+
+        expect(page).to have_content("Acerca de la empresa")
+        expect(page).to have_content("ETF que replica el índice S&P 500")
+        expect(page).to have_content("Ficha")
+      end
+    end
+
+    context "crypto asset" do
+      let!(:btc) { create(:asset, :crypto, name: "Bitcoin", symbol: "BTC", currency: "USD", current_price: 67_250.00) }
+
+      before do
+        create(:asset_fundamental, asset: btc, period_label: "CRYPTO_MARKET",
+          metrics: { "market_cap" => "1310000000000" })
+      end
+
+      it "shows the alt copy 'Acerca del activo' instead of the company facts" do
+        visit market_asset_path(btc.symbol)
+
+        expect(page).to have_content("Acerca del activo")
+        expect(page).to have_content("criptoactivo")
+        expect(page).not_to have_content("Acerca de la empresa")
+        expect(page).not_to have_content("Ficha")
+      end
+    end
+
+    context "fixed_income (CETE)" do
+      let!(:cete) do
+        create(:asset, :fixed_income, name: "CETES 28 días", symbol: "CETES_28D",
+          yield_rate: 10.85, face_value: 10.0, maturity_date: 5.days.from_now.to_date)
+      end
+
+      it "renders no Acerca de la empresa / Ficha block at all (yield card replaces tabs)" do
+        visit market_asset_path(cete.symbol)
+
+        expect(page).not_to have_content("Acerca de la empresa")
+        expect(page).not_to have_content("Acerca del activo")
+        expect(page).not_to have_content("Ficha")
+      end
+    end
+
+    context "stock without an OVERVIEW row" do
+      let!(:apple) { create(:asset, name: "Apple Inc.", symbol: "AAPL", asset_type: :stock, currency: "USD", current_price: 227.44) }
+
+      it "renders the Ficha-not-available fallback copy in es-MX" do
+        visit market_asset_path(apple.symbol)
+
+        expect(page).to have_content("Ficha no disponible para este activo")
+      end
+    end
+  end
+
   describe "recent observations panel" do
     let!(:apple) { create(:asset, name: "Apple Inc.", symbol: "AAPL", asset_type: :stock, currency: "USD", current_price: 227.44, country: "US") }
 
