@@ -10,7 +10,7 @@ RSpec.describe "PWA", type: :request do
       expect(manifest["short_name"]).to eq("Stockerly")
       expect(manifest["start_url"]).to eq("/dashboard")
       expect(manifest["display"]).to eq("standalone")
-      expect(manifest["theme_color"]).to eq("#005A98")
+      expect(manifest["theme_color"]).to eq("#5B6CFF")
       expect(manifest["icons"].size).to be >= 2
     end
   end
@@ -55,7 +55,7 @@ RSpec.describe "PWA", type: :request do
       get login_path
 
       expect(response.body).to include('<link rel="manifest" href="/manifest.json">')
-      expect(response.body).to include('<meta name="theme-color" content="#005A98">')
+      expect(response.body).to include('<meta name="theme-color" content="#5B6CFF">')
     end
   end
 end
