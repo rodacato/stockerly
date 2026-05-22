@@ -37,8 +37,7 @@
               vence <%= when_phrase %>
             </p>
             <p class="text-[11px] text-fg-subtle">
-              <%= position.asset.name %> · <%= position.shares.to_i %>
-              <%= "título".pluralize(position.shares.to_i) %>
+              <%= position.asset.name %> · <%= pluralize(position.shares.to_i, "título") %>
             </p>
           </div>
           <div class="text-right shrink-0">
