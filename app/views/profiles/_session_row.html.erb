@@ -1,0 +1,32 @@
+<%# Single session row — used by the Seguridad tab session list.
+    `id: nil` indicates a synthesized "current request" session that has
+    no backing RememberToken; the close-session button is rendered only
+    for persisted tokens. es-MX per S11 #146. %>
+<div class="flex items-center gap-3 rounded-lg border border-border-default bg-bg-muted px-4 py-3">
+  <div class="size-9 rounded-md bg-bg-surface text-fg-subtle border border-border-default flex items-center justify-center shrink-0">
+    <span class="material-symbols-outlined text-[18px]">laptop_mac</span>
+  </div>
+  <div class="min-w-0 flex-1">
+    <p class="text-sm font-medium text-fg-default truncate"><%= label %></p>
+    <div class="mt-0.5 flex items-center gap-2 text-xs text-fg-subtle">
+      <% if is_current %>
+        <span class="inline-flex size-1.5 rounded-full bg-positive shadow-[0_0_0_3px_var(--color-positive-bg)]"></span>
+        <span class="font-medium text-positive"><%= when_text %></span>
+        <span>·</span>
+      <% else %>
+        <span><%= when_text %></span>
+        <span>·</span>
+      <% end %>
+      <span class="font-mono">IP <%= ip %></span>
+    </div>
+  </div>
+  <% if id.present? && !is_current %>
+    <%= button_to revoke_session_path(id: id), method: :delete,
+          class: "text-xs font-medium text-primary hover:underline cursor-pointer",
+          form: { data: { turbo_confirm: "¿Cerrar esta sesión?" } } do %>
+      Cerrar sesión
+    <% end %>
+  <% elsif is_current %>
+    <span class="text-xs font-medium text-fg-subtle">Este dispositivo</span>
+  <% end %>
+</div>

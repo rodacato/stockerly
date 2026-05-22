@@ -1,22 +1,22 @@
-<%# Información tab — full name + email. es-MX per S09 #97. %>
+<%# Información tab — nombre + correo. es-MX per S09 #97, Lumen S11 #146. %>
 <%
-  input_classes = "w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-  label_classes = "block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5"
+  input_classes = "w-full px-4 py-2.5 rounded-lg border border-border-default bg-bg-muted text-sm text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+  label_classes = "block text-xs font-bold text-fg-subtle uppercase tracking-wider mb-1.5"
 %>
-<section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-  <h3 class="text-lg font-bold mb-1 text-slate-900 dark:text-white">Información personal</h3>
-  <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Actualiza tu nombre y correo electrónico.</p>
+<section>
+  <h3 class="text-base font-semibold tracking-tight text-fg-default">Información personal</h3>
+  <p class="mt-1 text-sm text-fg-subtle mb-5">Esta información solo se usa para identificarte dentro de Stockerly.</p>
 
   <%= form_with scope: :profile, url: profile_path, method: :patch, class: "space-y-4 max-w-md" do |f| %>
     <div>
       <%= f.label :full_name, "Nombre completo", class: label_classes %>
-      <%= f.text_field :full_name, value: user.full_name, required: true, class: input_classes %>
+      <%= f.text_field :full_name, value: user.full_name, required: true, autocomplete: "name", class: input_classes %>
     </div>
     <div>
       <%= f.label :email, "Correo electrónico", class: label_classes %>
-      <%= f.email_field :email, value: user.email, required: true, class: input_classes %>
-      <p class="mt-1.5 text-xs text-slate-500 dark:text-slate-400">Si cambias tu correo, necesitarás verificarlo nuevamente.</p>
+      <%= f.email_field :email, value: user.email, required: true, autocomplete: "email", class: input_classes %>
+      <p class="mt-1.5 text-xs text-fg-subtle">Si cambias tu correo, necesitarás verificarlo nuevamente.</p>
     </div>
-    <%= f.submit "Guardar cambios", class: "px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors shadow-sm cursor-pointer" %>
+    <%= f.submit "Guardar cambios", class: "inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover shadow-sm cursor-pointer" %>
   <% end %>
 </section>

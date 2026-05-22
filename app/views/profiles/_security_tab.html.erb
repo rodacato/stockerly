@@ -1,26 +1,66 @@
-<%# Seguridad tab — change password. es-MX per S09 #97. %>
-<section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-  <h3 class="text-lg font-bold mb-1 text-slate-900 dark:text-white">Seguridad</h3>
-  <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Cambia tu contraseña. Las sesiones activas se cerrarán al hacerlo.</p>
+<%# Seguridad tab — change password + active sessions list. es-MX per
+    S11 #146. Sessions backed by RememberToken; the current browser
+    session is synthesized from request when no remember_token covers it. %>
+<div class="space-y-8">
+  <%# Cambiar contraseña %>
+  <section>
+    <h3 class="text-base font-semibold tracking-tight text-fg-default">Cambiar contraseña</h3>
+    <p class="mt-1 text-sm text-fg-subtle">Mínimo 8 caracteres. La actual permanece válida hasta que confirmes.</p>
 
-  <%= form_with url: change_password_path, method: :patch, class: "space-y-4 max-w-md" do |f| %>
-    <div>
-      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Contraseña actual</label>
-      <input type="password" name="password_change[current_password]" autocomplete="current-password" required
-             class="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+    <%= form_with url: change_password_path, method: :patch, class: "mt-4 space-y-4 max-w-md" do |f| %>
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-fg-subtle mb-1.5">Contraseña actual</label>
+        <input type="password" name="password_change[current_password]" autocomplete="current-password" required
+               class="w-full px-4 py-2.5 rounded-lg border border-border-default bg-bg-muted text-sm text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+      </div>
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-fg-subtle mb-1.5">Nueva contraseña</label>
+        <input type="password" name="password_change[password]" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required
+               class="w-full px-4 py-2.5 rounded-lg border border-border-default bg-bg-muted text-sm text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+      </div>
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-fg-subtle mb-1.5">Confirmar nueva contraseña</label>
+        <input type="password" name="password_change[password_confirmation]" autocomplete="new-password" required
+               class="w-full px-4 py-2.5 rounded-lg border border-border-default bg-bg-muted text-sm text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+      </div>
+      <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover shadow-sm">
+        <span class="material-symbols-outlined text-[16px]">lock_reset</span>
+        Actualizar contraseña
+      </button>
+    <% end %>
+  </section>
+
+  <div class="border-t border-border-default"></div>
+
+  <%# Sesiones activas %>
+  <section>
+    <h3 class="text-base font-semibold tracking-tight text-fg-default">Sesiones activas</h3>
+    <p class="mt-1 text-sm text-fg-subtle">
+      Dispositivos donde tu cuenta está abierta. Cierra los que no reconozcas.
+    </p>
+
+    <div class="mt-4 space-y-2.5">
+      <%# Current session — synthesized from the current request. Only
+          shown when no remember_token covers this device (to avoid
+          duplicating the "active now" row). %>
+      <% remember_sessions = current_user.remember_tokens.active.order(last_used_at: :desc) %>
+      <% if remember_sessions.empty? %>
+        <%= render "profiles/session_row",
+                   id: nil,
+                   label: session_user_agent_label(request.user_agent),
+                   ip: request.remote_ip,
+                   when_text: "Activa ahora",
+                   is_current: true %>
+      <% end %>
+
+      <% remember_sessions.each_with_index do |token, idx| %>
+        <%= render "profiles/session_row",
+                   id: token.id,
+                   label: session_user_agent_label(token.user_agent),
+                   ip: token.ip_address || "—",
+                   when_text: session_when_text(token.last_used_at || token.created_at),
+                   is_current: idx.zero? %>
+      <% end %>
     </div>
-    <div>
-      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nueva contraseña</label>
-      <input type="password" name="password_change[password]" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required
-             class="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
-    </div>
-    <div>
-      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Confirmar nueva contraseña</label>
-      <input type="password" name="password_change[password_confirmation]" autocomplete="new-password" required
-             class="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
-    </div>
-    <button type="submit" class="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors shadow-sm">
-      Cambiar contraseña
-    </button>
-  <% end %>
-</section>
+  </section>
+</div>

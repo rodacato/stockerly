@@ -23,6 +23,19 @@ class ProfilesController < AuthenticatedController
     head :unprocessable_content
   end
 
+  # Revokes a single remember-token-backed session ("close session on
+  # this device" from the Seguridad tab). Scoped to current_user so a
+  # crafted id cannot drop another user's token.
+  def revoke_session
+    token = current_user.remember_tokens.find_by(id: params[:id])
+    if token
+      token.destroy
+      redirect_to profile_path, notice: "Sesión cerrada en ese dispositivo."
+    else
+      redirect_to profile_path, alert: "Esa sesión ya no está activa."
+    end
+  end
+
   def change_password
     result = Identity::UseCases::ChangePassword.call(user: current_user, params: password_params.to_h)
 

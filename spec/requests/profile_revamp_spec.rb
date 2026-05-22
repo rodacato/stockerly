@@ -23,10 +23,12 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
     end
 
     it "renders the four tabbed settings" do
-      expect(response.body).to include(">Información<")
-      expect(response.body).to include(">Seguridad<")
-      expect(response.body).to include(">Preferencias<")
-      expect(response.body).to include(">Datos y sesión<")
+      # Tab labels live in <button> nodes; match label text rather than
+      # exact node delimiters since the buttons carry many class names.
+      expect(response.body).to include("Información")
+      expect(response.body).to include("Seguridad")
+      expect(response.body).to include("Preferencias")
+      expect(response.body).to include("Datos y sesión")
     end
 
     it "renders the Información tab content (form labels in es-MX)" do
@@ -43,11 +45,18 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
       expect(response.body).to include("Cambiar contraseña")
     end
 
-    it "renders the Preferencias tab with currency selector + notifications toggle" do
+    it "renders the Preferencias tab with theme, currency selector and 3-channel notifications" do
       expect(response.body).to include("Moneda preferida")
-      expect(response.body).to include("Peso mexicano")
-      expect(response.body).to include("Dólar estadounidense")
-      expect(response.body).to include("Resumen semanal por correo")
+      # 3-channel toggles per S11 #146 (replaces the prior single
+      # "Resumen semanal por correo" toggle).
+      expect(response.body).to include("Avisos por correo")
+      expect(response.body).to include("Avisos en la app")
+      expect(response.body).to include("Avisos por SMS")
+      # Theme picker
+      expect(response.body).to include("Apariencia")
+      expect(response.body).to include("Claro")
+      expect(response.body).to include("Oscuro")
+      expect(response.body).to include("Sistema")
     end
 
     it "preselects the user's current preferred_currency in the selector" do

@@ -1,30 +1,57 @@
-<%# Profile — user settings only. Watchlist removed per S09 #97 (lives in /market). %>
+<%# /profile — Stockerly-2.0 2-col layout: IdentityCard sidebar (left)
+    + settings tabs (right). Stacks on mobile. es-MX per S11 #146. %>
 
-<%= render "profiles/profile_header", user: current_user %>
-
-<%# Tabbed settings layout — single column, fluid. %>
-<div data-controller="tabs">
-  <%# Tab buttons %>
-  <div class="flex gap-1 mb-6 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 overflow-x-auto">
-    <button data-tabs-target="tab" data-action="tabs#switch" class="flex-1 min-w-32 text-xs font-bold py-2 px-4 rounded-md transition-colors">Información</button>
-    <button data-tabs-target="tab" data-action="tabs#switch" class="flex-1 min-w-32 text-xs font-bold py-2 px-4 rounded-md transition-colors">Seguridad</button>
-    <button data-tabs-target="tab" data-action="tabs#switch" class="flex-1 min-w-32 text-xs font-bold py-2 px-4 rounded-md transition-colors">Preferencias</button>
-    <button data-tabs-target="tab" data-action="tabs#switch" class="flex-1 min-w-32 text-xs font-bold py-2 px-4 rounded-md transition-colors">Datos y sesión</button>
+<div class="mx-auto max-w-7xl space-y-6">
+  <%# Header band %>
+  <div>
+    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle">Perfil</p>
+    <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-fg-default">Tu perfil</h1>
+    <p class="mt-1 text-sm text-fg-subtle">Gestiona tu información, seguridad y preferencias.</p>
   </div>
 
-  <div data-tabs-target="panel">
-    <%= render "profiles/information_tab", user: current_user %>
-  </div>
+  <%# 2-col grid: 4/12 sidebar + 8/12 settings (stacks on mobile). %>
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-12">
+    <div class="md:col-span-4">
+      <%= render "profiles/identity_card", user: current_user %>
+    </div>
 
-  <div data-tabs-target="panel" class="hidden">
-    <%= render "profiles/security_tab" %>
-  </div>
+    <div class="md:col-span-8">
+      <div data-controller="tabs" class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+        <%# Tab strip — underline pattern. %>
+        <div class="flex gap-1 px-2 sm:px-4 border-b border-border-default overflow-x-auto">
+          <button data-tabs-target="tab" data-action="tabs#switch"
+                  class="whitespace-nowrap text-sm font-medium px-3 py-3.5 border-b-2 border-transparent text-fg-subtle transition-colors">
+            Información
+          </button>
+          <button data-tabs-target="tab" data-action="tabs#switch"
+                  class="whitespace-nowrap text-sm font-medium px-3 py-3.5 border-b-2 border-transparent text-fg-subtle transition-colors">
+            Seguridad
+          </button>
+          <button data-tabs-target="tab" data-action="tabs#switch"
+                  class="whitespace-nowrap text-sm font-medium px-3 py-3.5 border-b-2 border-transparent text-fg-subtle transition-colors">
+            Preferencias
+          </button>
+          <button data-tabs-target="tab" data-action="tabs#switch"
+                  class="whitespace-nowrap text-sm font-medium px-3 py-3.5 border-b-2 border-transparent text-fg-subtle transition-colors">
+            Datos y sesión
+          </button>
+        </div>
 
-  <div data-tabs-target="panel" class="hidden">
-    <%= render "profiles/preferences_tab", user: current_user %>
-  </div>
-
-  <div data-tabs-target="panel" class="hidden">
-    <%= render "profiles/data_session_tab" %>
+        <div class="p-6">
+          <div data-tabs-target="panel">
+            <%= render "profiles/information_tab", user: current_user %>
+          </div>
+          <div data-tabs-target="panel" class="hidden">
+            <%= render "profiles/security_tab", user: current_user %>
+          </div>
+          <div data-tabs-target="panel" class="hidden">
+            <%= render "profiles/preferences_tab", user: current_user %>
+          </div>
+          <div data-tabs-target="panel" class="hidden">
+            <%= render "profiles/data_session_tab" %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,9 +1,9 @@
-<%# Datos y sesión tab — LFPDPPP data export + sign out. es-MX per S09 #97. %>
-<div class="space-y-6">
-  <%# ARCO data export — links to support email (procedure documented in docs/ops/arco-procedure.md) %>
-  <section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-    <h3 class="text-lg font-bold mb-1 text-slate-900 dark:text-white">Tus datos</h3>
-    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
+<%# Datos y sesión tab — LFPDPPP data export + sign out. es-MX per
+    S09 #97, Lumen S11 #146. %>
+<div class="space-y-8">
+  <section>
+    <h3 class="text-base font-semibold tracking-tight text-fg-default">Tus datos</h3>
+    <p class="mt-1 text-sm text-fg-subtle mb-4">
       Conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP),
       puedes solicitar acceso, rectificación, cancelación u oposición sobre tus datos (derechos ARCO).
       Tiempo de respuesta: 20 días hábiles.
@@ -13,26 +13,27 @@
       <%= mail_to Stockerly::SUPPORT_EMAIL, "Solicitar acceso a mis datos",
           subject: "Solicitud ARCO - Acceso a mis datos",
           body: "Solicito copia de los datos personales que Stockerly tiene de mi cuenta (#{current_user.email}).",
-          class: "px-5 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-semibold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors inline-flex items-center gap-2" %>
+          class: "inline-flex items-center gap-2 rounded-lg border border-border-default bg-bg-surface px-4 py-2 text-sm font-semibold text-fg-default hover:bg-bg-muted transition-colors" %>
 
       <%= mail_to Stockerly::SUPPORT_EMAIL, "Eliminar mi cuenta",
           subject: "Solicitud ARCO - Cancelación de cuenta",
           body: "Solicito la eliminación de mi cuenta (#{current_user.email}) y los datos personales asociados.",
-          class: "px-5 py-2.5 border border-rose-200 dark:border-rose-800 bg-white dark:bg-slate-900 text-sm font-semibold text-rose-600 dark:text-rose-400 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors inline-flex items-center gap-2" %>
+          class: "inline-flex items-center gap-2 rounded-lg border border-negative/40 bg-bg-surface px-4 py-2 text-sm font-semibold text-negative hover:bg-negative-bg transition-colors" %>
     </div>
-    <p class="mt-4 text-xs text-slate-500 dark:text-slate-400">
+    <p class="mt-4 text-xs text-fg-subtle">
       Más detalles del procedimiento ARCO en el <%= link_to "Aviso de privacidad", privacy_path, class: "text-primary font-medium hover:underline" %>.
     </p>
   </section>
 
-  <%# Sign out %>
-  <section class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-    <h3 class="text-lg font-bold mb-1 text-slate-900 dark:text-white">Sesión</h3>
-    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Cierra tu sesión en este dispositivo.</p>
+  <div class="border-t border-border-default"></div>
+
+  <section>
+    <h3 class="text-base font-semibold tracking-tight text-fg-default">Sesión</h3>
+    <p class="mt-1 text-sm text-fg-subtle mb-4">Cierra tu sesión en este dispositivo.</p>
 
     <%= button_to logout_path, method: :delete,
-        class: "px-5 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-semibold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors inline-flex items-center gap-2" do %>
-      <span class="material-symbols-outlined text-sm">logout</span>
+        class: "inline-flex items-center gap-2 rounded-lg border border-border-default bg-bg-surface px-4 py-2 text-sm font-semibold text-fg-default hover:bg-bg-muted transition-colors" do %>
+      <span class="material-symbols-outlined text-[16px]">logout</span>
       Cerrar sesión
     <% end %>
   </section>
