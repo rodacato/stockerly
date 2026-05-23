@@ -13,13 +13,15 @@
 | #168 | Audit multi-currency calculators against trade fx_rate_at_execution | JTBD #1 (consolidated patrimony in MXN) · C1 + C6 audit | ✅ |
 | #169 | Confirm support@notdefined.dev is monitored + alias documented | Compliance (LFPDPPP Art. 32) · S5 audit | ✅ |
 | #170 | Harden InviteCode flow — enumeration + expiration (race-condition finding retracted post-review) | Beta invite safety · C7 + S1 audit | ✅ |
-| #172 | Resend webhooks → EmailEvent table (invite delivery tracking) | Beta-cohort observability · S1 audit | ✅ |
-| #171 | UserActivity table + event subscriptions for feature usage | Decision-making capacity · C6 + S1 audit | ✅ |
+| #172 | UserActivity table + event subscriptions for feature usage | Decision-making capacity · C6 + S1 audit | ✅ |
 | #173 | CheckSyncHealthJob — proactive Sentry alert on stale syncs | Operational visibility · S1 audit | ✅ |
-| #175 | Banxico FX (TC_TC002) as primary USD/MXN source | Trust differentiator MX · C1 + S2 audit | ✅ |
+| #179 | Resend webhooks → EmailEvent table (invite delivery tracking) | Beta-cohort observability · S1 audit | ✅ |
 | #174 | Lumen migration completion — cards/sidebars/auth/allocation donut | Visual coherence · C5 audit | ✅ |
+| #175 | [research] Data sources deep-dive + TradingView free widgets evaluation | Data strategy · Adrian direction + S2 audit | ✅ |
 | #176 | In-app account deletion (ARCO Cancelación) | LFPDPPP Art. 19 · S5 audit | ✅ |
-| #177 | [research] Data sources deep-dive + TradingView free widgets evaluation | Data strategy · Adrian direction + S2 audit | ✅ |
+| #177 | Banxico FX (TC_TC002) as primary USD/MXN source | Trust differentiator MX · C1 + S2 audit | ✅ |
+
+> **Issue numbering note:** The parallel `gh issue create` batch on 2026-05-23 returned issue numbers out of input order. A subsequent `gh issue edit 170` (to apply gemini's race-condition retraction from PR #178 review) accidentally overwrote what turned out to be the Resend webhooks issue. Cleanup: #171 closed as duplicate invite; Resend re-filed as #179. The 10-issue scope is preserved.
 
 **Total estimated raw effort:** ~20-30h (~12-18h actual with parallel-agent compression per S08-S11 calibration ~0.4-0.6×)
 
@@ -50,13 +52,13 @@ Carry-over discipline from S07-S11. Findings to verify at start of each issue:
 - **#168 (calculators):** Lucía's scenario in the issue body MUST be reproducible as a spec before fixing. Spec-first audit; if scenario passes already, partial credit — find a scenario where it doesn't.
 - **#169 (support email):** Confirm Adrian owns `notdefined.dev` MX/DNS records (he does; serves `stockerly.notdefined.dev`). Test the alias roundtrip end-to-end before closing.
 - **#170 (invite-code):** Race-condition portion withdrawn (gemini-code-assist review of PR #178 caught false positive — `Register#persist_with_invite` already uses `ActiveRecord::Base.transaction` + `InviteCode.lock.find_by`, which is `SELECT ... FOR UPDATE`, textbook pessimistic locking). Scope reduced to enumeration normalization + expiration timestamp (~1.5h instead of ~3h). Audit doc updated in `docs/research/audit-2026-05-23/C7-fadia-security.md` §"What's missing #1".
-- **#171 (UserActivity):** Avoid double-counting on Turbo Frame requests. Use `ActiveSupport::Notifications` or controller `after_action` filtered to `format.html`. Don't subscribe to every domain event blindly — pick the 6-8 actions that map to JTBDs.
-- **#172 (Resend webhooks):** Resend signature verification is non-negotiable. Test with both valid and invalid signatures.
+- **#172 (UserActivity):** Avoid double-counting on Turbo Frame requests. Use `ActiveSupport::Notifications` or controller `after_action` filtered to `format.html`. Don't subscribe to every domain event blindly — pick the 6-8 actions that map to JTBDs.
+- **#179 (Resend webhooks):** Resend signature verification is non-negotiable. Test with both valid and invalid signatures.
 - **#173 (CheckSyncHealthJob):** Dedup via Solid Cache to prevent alert storms.
 - **#174 (Lumen polish):** Spot-check after grep — search-and-replace can miss interpolations. Visual browser pass before merge.
-- **#175 (Banxico FX):** Banxico SIE returns null on weekends/holidays. Handle gracefully — fall back to exchangerate-api.
+- **#177 (Banxico FX):** Banxico SIE returns null on weekends/holidays. Handle gracefully — fall back to exchangerate-api.
 - **#176 (account deletion):** Hard-delete vs soft-delete: docs/ops/arco-procedure.md says "30 days for deletion". Use soft-delete (timestamp) + recurring job for hard-delete after 30d.
-- **#177 (research):** Read-only. No code changes. Output is the markdown deliverable + S13 issue candidates.
+- **#175 (research):** Read-only. No code changes. Output is the markdown deliverable + S13 issue candidates.
 
 ---
 
@@ -71,17 +73,17 @@ Carry-over discipline from S07-S11. Findings to verify at start of each issue:
 
 **Wave 3 — P0 visibility (Day 2-3, parallel agents):**
 4. Launch 3 parallel agents in worktrees:
-   - **#172** Resend webhooks
-   - **#171** UserActivity
+   - **#179** Resend webhooks
+   - **#172** UserActivity
    - **#173** Sync health alerting
 5. All 3 ship as separate PRs
 
 **Wave 4 — P1 polish + research (Day 3-4, parallel agents):**
 6. Launch 3 parallel agents in worktrees:
-   - **#175** Banxico FX gateway
+   - **#177** Banxico FX gateway
    - **#174** Lumen polish sweep
    - **#176** In-app deletion flow
-7. Launch #177 research issue as a 4th read-only Explore agent (no worktree needed)
+7. Launch #175 research issue as a 4th read-only Explore agent (no worktree needed)
 8. All ship as separate PRs (research = one doc PR)
 
 **Wave 5 — Close (Day 4-5):**
