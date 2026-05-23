@@ -12,7 +12,7 @@
 |---|---|---|---|
 | #168 | Audit multi-currency calculators against trade fx_rate_at_execution | JTBD #1 (consolidated patrimony in MXN) · C1 + C6 audit | ✅ |
 | #169 | Confirm support@notdefined.dev is monitored + alias documented | Compliance (LFPDPPP Art. 32) · S5 audit | ✅ |
-| #170 | Harden InviteCode flow — race condition + enumeration + expiration | Beta invite safety · C7 + S1 audit | ✅ |
+| #170 | Harden InviteCode flow — enumeration + expiration (race-condition finding retracted post-review) | Beta invite safety · C7 + S1 audit | ✅ |
 | #172 | Resend webhooks → EmailEvent table (invite delivery tracking) | Beta-cohort observability · S1 audit | ✅ |
 | #171 | UserActivity table + event subscriptions for feature usage | Decision-making capacity · C6 + S1 audit | ✅ |
 | #173 | CheckSyncHealthJob — proactive Sentry alert on stale syncs | Operational visibility · S1 audit | ✅ |
@@ -49,7 +49,7 @@ Carry-over discipline from S07-S11. Findings to verify at start of each issue:
 
 - **#168 (calculators):** Lucía's scenario in the issue body MUST be reproducible as a spec before fixing. Spec-first audit; if scenario passes already, partial credit — find a scenario where it doesn't.
 - **#169 (support email):** Confirm Adrian owns `notdefined.dev` MX/DNS records (he does; serves `stockerly.notdefined.dev`). Test the alias roundtrip end-to-end before closing.
-- **#170 (invite-code):** Concurrent-spec must use real DB locks (not mocks) to catch the race. `Thread.new` + `join` pattern.
+- **#170 (invite-code):** Race-condition portion withdrawn (gemini-code-assist review of PR #178 caught false positive — `Register#persist_with_invite` already uses `ActiveRecord::Base.transaction` + `InviteCode.lock.find_by`, which is `SELECT ... FOR UPDATE`, textbook pessimistic locking). Scope reduced to enumeration normalization + expiration timestamp (~1.5h instead of ~3h). Audit doc updated in `docs/research/audit-2026-05-23/C7-fadia-security.md` §"What's missing #1".
 - **#171 (UserActivity):** Avoid double-counting on Turbo Frame requests. Use `ActiveSupport::Notifications` or controller `after_action` filtered to `format.html`. Don't subscribe to every domain event blindly — pick the 6-8 actions that map to JTBDs.
 - **#172 (Resend webhooks):** Resend signature verification is non-negotiable. Test with both valid and invalid signatures.
 - **#173 (CheckSyncHealthJob):** Dedup via Solid Cache to prevent alert storms.

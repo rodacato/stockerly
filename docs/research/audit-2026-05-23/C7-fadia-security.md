@@ -53,9 +53,12 @@ With one real user live (2026-05-21 invite sent), you're transitioning from 1 �
 
 ## What's missing (prioritized by user-growth risk)
 
-### 1. **CRITICAL: Invite code race condition — no one-time use enforcement before INSERT**
-**Vulnerability Class:** Race condition / replay attack
-**Risk:** User A obtains invite code (e.g., via email), starts registration, User B intercepts and completes registration with the same code before A's transaction commits. At growth to 5 users, this becomes plausible (shared Slack channel, accidentally copied code, phishing).
+### 1. **~~CRITICAL: Invite code race condition~~ — RETRACTED (false positive)**
+
+> **Correction added 2026-05-23 post-gemini-review of PR #178:** This finding is a false positive. [`Register#persist_with_invite`](../../../app/contexts/identity/use_cases/register.rb#L17-L36) wraps the flow in `ActiveRecord::Base.transaction` and uses `InviteCode.lock.find_by(code:)`, which generates a `SELECT ... FOR UPDATE` query. PostgreSQL acquires a row-level lock that blocks any concurrent transaction trying to read the same row until commit. Request B's `lock.find_by` blocks at line 18 until Request A's transaction commits, then sees the updated `used_at`, and the `if invite.used?` guard at line 21 correctly fails the registration. The original "evidence" I cited (the `.lock` call) is exactly what defeats my conclusion. Apologies for the false alarm — my mental model didn't account for `.lock` inside an explicit transaction being equivalent to pessimistic locking. The historical finding text follows for transparency.
+
+**Vulnerability Class (HISTORICAL):** Race condition / replay attack
+**Risk (HISTORICAL):** User A obtains invite code (e.g., via email), starts registration, User B intercepts and completes registration with the same code before A's transaction commits. At growth to 5 users, this becomes plausible (shared Slack channel, accidentally copied code, phishing).
 
 **Evidence:**
 - `Register` use case acquires a lock on the invite: `InviteCode.lock.find_by(code: normalized)` (`app/contexts/identity/use_cases/register.rb:18`)

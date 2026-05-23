@@ -39,20 +39,22 @@ S11 closed the CSS-token migration (#142) and 6 design completions, but:
 
 ---
 
-### F3 — Invite-code flow has security AND ops gaps
+### F3 — Invite-code flow has ops gaps (race-condition finding RETRACTED)
 
-**Surfaced by:** C7 Fadia (race condition + enumeration), S1 Olusegun (no expiration, no click tracking).
+**Surfaced by:** C7 Fadia (enumeration), S1 Olusegun (no expiration, no click tracking).
 
-- **C7 CRITICAL:** Race condition between `find_by(code)` and `update!(used_at:)` allows two simultaneous registrations on the same code. 1-2 hours to fix.
-- **C7 HIGH:** Distinct error messages leak whether a code exists / is used. 30 min to normalize.
+**CORRECTION (added after gemini-code-assist review of PR #178):** Fadia's "race condition" finding is a false positive. [`Register#persist_with_invite`](../../../app/contexts/identity/use_cases/register.rb#L17-L36) wraps the flow in `ActiveRecord::Base.transaction` and uses `InviteCode.lock.find_by(code:)`, which generates `SELECT ... FOR UPDATE`. PostgreSQL acquires a row-level lock that blocks any concurrent transaction trying to read the same row until commit. By the time a second registration's lock is granted, the row reflects the first registration's `used_at` update, and the `if invite.used?` guard catches it. Fadia's evidence (citing the `.lock` call) is what defeats her own conclusion — `.lock` inside an explicit transaction is the textbook fix to the race she described. Lesson: even 12-year-experience expert personas can misread `.lock` outside of an explicit transaction context. Always verify expert findings against the actual code.
+
+**What remains real in this finding:**
+- **C7 HIGH:** Distinct error messages leak whether a code exists / is used (enumeration). 30 min to normalize.
 - **S1 MEDIUM:** No expiration timestamp; codes live forever. 1 hour to add.
-- **S1 HIGH:** No tracking of whether the invite email was delivered/opened/clicked. 2-3 hours via Resend webhooks.
+- **S1 HIGH:** No tracking of whether the invite email was delivered/opened/clicked. 2-3 hours via Resend webhooks (separate issue, F5).
 
-These compound: the invite flow is the single gate to the beta cohort and currently has neither security nor observability.
+These compound: the invite flow is the single gate to the beta cohort and currently has weak observability + enumeration leak.
 
-**Severity:** P0 collectively. Both Fadia and Olusegun put this as their #1 recommendation.
+**Severity:** P1 (downgraded from P0 — the race-condition fear was the P0 driver, and it's not real).
 
-**Effort:** ~6 hours for the whole bundle.
+**Effort:** ~1.5 hours for enumeration + expiration. Resend webhooks (3h) tracked separately as F5.
 
 ---
 
@@ -153,12 +155,11 @@ Combined with F5: the system is correct most of the time, but when it breaks we 
 
 | Item | Source | Effort |
 |---|---|---|
-| F3 — Invite code race condition | C7 | 1-2h |
 | F7 — Real support email | S5 | 15 min |
 | F1 — Audit/fix multi-currency calculators | C1, C6 | 4-8h |
 | F5 — Basic UserActivity tracking | C6, S1 | 3h |
 
-**P0 total:** ~9-14h. One focused sprint week.
+**P0 total:** ~7-11h. (F3 race-condition finding retracted post-gemini-review; enumeration + expiration moved to P1.)
 
 ### P1 — Ship within next 2 sprints, before cohort hits 5
 
@@ -168,12 +169,11 @@ Combined with F5: the system is correct most of the time, but when it breaks we 
 | F4 — Banxico FX rates | C1, S2 | 2h |
 | F6 — Sync job failure alerting | S1, S3 | 1-2h |
 | Email delivery webhooks (Resend) | S1 | 2-3h |
-| Invite code expiration | S1 | 1h |
-| Invite enumeration fix | C7 | 30 min |
+| Invite code expiration + enumeration fix | S1, C7 | 1.5h |
 | In-app account deletion | S5 | half day |
 | Alpha Vantage right-sizing | S2 | 2-4h |
 
-**P1 total:** ~13-18h. Another focused sprint week.
+**P1 total:** ~12-17h.
 
 ### P2 — Ship when convenient
 
@@ -227,7 +227,7 @@ The next failure (and there will be one) will demand them all at once on a Frida
 
 ## What this tells us about S12 shape
 
-(Detailed proposal in `S12-proposal.md` — file follows in the next message.)
+(Detailed proposal in `S12-proposal.md`.)
 
 Two shapes possible:
 
