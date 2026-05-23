@@ -2,7 +2,7 @@
 <section class="scroll-mt-24" id="responsable">
   <h2 class="text-2xl font-bold text-fg-default mb-4">1. Identidad del responsable</h2>
   <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
-    <p>Stockerly es un proyecto personal de código abierto mantenido por Adrian Castillo, persona física con domicilio en la Ciudad de México, México. Para cualquier asunto relacionado con estos términos, contáctanos en <%= mail_to "support@notdefined.dev", nil, class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
+    <p>Stockerly es un proyecto personal de código abierto mantenido por Adrian Castillo, persona física con domicilio en la Ciudad de México, México. Para cualquier asunto relacionado con estos términos, contáctanos en <%= mail_to Stockerly::SUPPORT_EMAIL, nil, class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
     <p>Stockerly <strong class="font-semibold text-fg-default">no es una entidad financiera</strong>, no opera como broker, intermediario bursátil, asesor de inversiones ni institución de tecnología financiera (ITF) bajo la Ley para Regular las Instituciones de Tecnología Financiera.</p>
   </div>
 </section>
@@ -91,6 +91,6 @@
 <section class="scroll-mt-24 pb-4" id="contacto">
   <h2 class="text-2xl font-bold text-fg-default mb-4">8. Contacto</h2>
   <div class="text-fg-default/80 leading-relaxed space-y-4 max-w-prose">
-    <p>Para preguntas, comentarios o reportes relacionados con estos términos: <%= mail_to "support@notdefined.dev", nil, class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
+    <p>Para preguntas, comentarios o reportes relacionados con estos términos: <%= mail_to Stockerly::SUPPORT_EMAIL, nil, class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
   </div>
 </section>

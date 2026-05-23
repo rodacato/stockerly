@@ -251,3 +251,35 @@ This document is only useful if it's been **exercised end-to-end at least once b
 6. Write a reply to yourself following §1.5 acuse-de-recibo guidelines.
 
 If any step has a gap (email doesn't arrive, log filtering doesn't work, DB query is awkward) — that's a real gap, fix before closing #78.
+
+---
+
+## 5. Support email routing (LFPDPPP Art. 32 obligation)
+
+The published support address — `Stockerly::SUPPORT_EMAIL` in `config/initializers/stockerly.rb`, currently `support@notdefined.dev` — appears in:
+
+- Privacy notice (`app/views/legal/privacy.html.erb`) — primary ARCO contact
+- Terms of service (`app/views/legal/terms.html.erb`) — general inquiries
+- Risk disclosure (`app/views/legal/risk_disclosure.html.erb`) — broker-discrepancy reports
+- In-app welcome / help (`app/views/shared/_welcome_body.html.erb`) — general support
+- Bug-report mailer recipient (`app/mailers/bug_report_mailer.rb`)
+- ARCO procedure (`docs/ops/arco-procedure.md`)
+
+**LFPDPPP Art. 32 obligation:** when a user exercises an ARCO right (Acceso / Rectificación / Cancelación / Oposición), the data controller must respond within **20 business days**. If `support@notdefined.dev` doesn't actually route to Adrian's monitored inbox, the obligation is violated the moment the first ARCO request is sent.
+
+### Required pre-flight check (before each new beta-cohort invite)
+
+1. From an external address (Gmail, personal email — anything outside `*.notdefined.dev`), send a test message to `support@notdefined.dev` with subject `[Stockerly ops] routing check YYYY-MM-DD`.
+2. Confirm it lands in Adrian's monitored inbox within 5 minutes.
+3. If it bounces or doesn't arrive: the alias is broken. Fix the DNS forwarder / Resend configuration before sending any beta invite.
+4. Note the date of the last successful routing check in this file (replace the line below).
+
+**Last verified:** `_pending Adrian's confirmation (issue #169)_`
+
+### When changing `Stockerly::SUPPORT_EMAIL`
+
+If the constant is updated to a different address:
+
+1. Run the pre-flight check above against the new address.
+2. Grep the repo for any remaining hardcoded references to the old address (should be zero — all consumer code references the constant, ops docs may have literal historical references that are fine).
+3. Update the runbook and ARCO procedure if the address change has operational implications (e.g., new monitored inbox owner, different SLA).

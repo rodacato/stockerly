@@ -80,6 +80,6 @@
       <li>Confirma las comisiones, costos cambiarios y consecuencias fiscales aplicables a tu situación.</li>
       <li>Lee los prospectos, hojas resumen u otros documentos regulatorios que correspondan al instrumento.</li>
     </ul>
-    <p>Si detectas una discrepancia entre lo que muestra Stockerly y lo que reporta tu broker, asume que tu broker tiene la versión correcta y repórtanos el error en <%= mail_to "support@notdefined.dev", nil, class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
+    <p>Si detectas una discrepancia entre lo que muestra Stockerly y lo que reporta tu broker, asume que tu broker tiene la versión correcta y repórtanos el error en <%= mail_to Stockerly::SUPPORT_EMAIL, nil, class: "text-primary font-medium border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
   </div>
 </section>

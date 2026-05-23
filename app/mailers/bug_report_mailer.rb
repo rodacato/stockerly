@@ -5,7 +5,7 @@ class BugReportMailer < ApplicationMailer
     @description = description
 
     mail(
-      to: "support@notdefined.dev",
+      to: Stockerly::SUPPORT_EMAIL,
       reply_to: user.email,
       subject: "[Bug beta] #{title.truncate(60)}"
     )

@@ -40,5 +40,5 @@
 <%# Support footer %>
 <div class="text-sm text-fg-subtle space-y-1.5">
   <p>¿Encontraste un bug? <%= link_to "Repórtalo aquí.", new_bug_report_path, class: "text-primary border-b border-primary/40 hover:border-primary transition-colors" %></p>
-  <p>¿Otra pregunta? Escríbenos a <%= mail_to "support@notdefined.dev", nil, class: "text-primary border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
+  <p>¿Otra pregunta? Escríbenos a <%= mail_to Stockerly::SUPPORT_EMAIL, nil, class: "text-primary border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
 </div>
