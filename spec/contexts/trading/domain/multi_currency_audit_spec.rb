@@ -156,40 +156,81 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
     end
   end
 
-  describe "Snapshot-based calculators (day_gain, period_returns) with cross-currency snapshots" do
-    let!(:yesterday_snap_in_usd) do
-      # Yesterday's snapshot was recorded in USD-terms (e.g., user was USD-preferred
-      # at that time). Today the user is MXN-preferred. The day_gain calculator
-      # must convert yesterday's USD value to MXN using today's FX before diffing.
+  describe "Snapshot-based calculators (day_gain, period_returns) — same-currency baseline" do
+    # NormaL operation: TakeSnapshotsJob (app/jobs/take_snapshots_job.rb:18-30)
+    # always stores snapshots in portfolio.user.preferred_currency at the time
+    # of snapshot. So as long as the user keeps the same preferred_currency,
+    # snapshots and the current view are same-currency → no conversion needed
+    # → day_gain and period_returns are correct.
+
+    let!(:yesterday_snap_in_mxn) do
       create(:portfolio_snapshot,
              portfolio: portfolio,
              date: Date.yesterday,
-             total_value: 3_000.0,       # USD value
+             total_value: 52_500.0,
+             cash_value: 0,
+             invested_value: 52_500.0,
+             currency: "MXN")
+    end
+
+    it "PortfolioSummary#day_gain = today_mxn - yesterday_mxn (same currency, no conversion)" do
+      summary = Trading::Domain::PortfolioSummary.new(portfolio)
+      # Today: 54,250 MXN. Yesterday: 52,500 MXN. Diff: +1,750 MXN. %: 3.33
+      expect(summary.day_gain.absolute).to be_within(0.01).of(1_750.0)
+      expect(summary.day_gain.percent).to be_within(0.01).of(3.33)
+    end
+
+    it "PeriodReturnsCalculator with same-currency historical snapshots" do
+      create(:portfolio_snapshot, portfolio: portfolio, date: 7.days.ago,
+             total_value: 50_000.0, cash_value: 0, invested_value: 50_000.0, currency: "MXN")
+      create(:portfolio_snapshot, portfolio: portfolio, date: 30.days.ago,
+             total_value: 49_000.0, cash_value: 0, invested_value: 49_000.0, currency: "MXN")
+
+      result = Trading::Domain::PeriodReturnsCalculator.new(portfolio).calculate
+      # 7-day: 54,250 - 50,000 = 4,250 / 50,000 = 8.5%
+      expect(result["1W"].percent).to be_within(0.01).of(8.5)
+      # 30-day: 54,250 - 49,000 = 5,250 / 49,000 ≈ 10.71%
+      expect(result["1M"].percent).to be_within(0.01).of(10.71)
+    end
+  end
+
+  describe "Snapshot-based calculators — cross-currency edge case (KNOWN GAP, see #183)" do
+    # Edge case: user toggled preferred_currency mid-stream (UI added in S11 #146).
+    # Old snapshots remain in the old currency. Portfolio#convert only knows TODAY's
+    # FX rate, so revaluing historical snapshots at today's rate effectively zeroes
+    # the FX-on-principal effect. This contradicts total_unrealized_gain's contract
+    # (which preserves historical FX). The gap is documented in #183 with a
+    # decision matrix (FX-history table, lazy recompute, lock the toggle, accept
+    # imperfection). Caught by gemini-code-assist in PR #181 review.
+    #
+    # These specs ASSERT THE CURRENT BEHAVIOR — they're a regression guard so the
+    # gap doesn't widen, NOT a statement that this is correct. When #183 lands,
+    # update these assertions to the honest values.
+
+    let!(:yesterday_snap_in_usd) do
+      create(:portfolio_snapshot,
+             portfolio: portfolio,
+             date: Date.yesterday,
+             total_value: 3_000.0,       # USD value from before currency toggle
              cash_value: 0,
              invested_value: 3_000.0,
              currency: "USD")
     end
 
-    it "PortfolioSummary#day_gain converts yesterday's USD snapshot to MXN before diffing" do
+    it "day_gain revalues yesterday's USD snapshot at TODAY's FX (FX-on-principal ignored)" do
       summary = Trading::Domain::PortfolioSummary.new(portfolio)
-      # Today: 54,250 MXN. Yesterday (USD 3,000 × 17.50 FX): 52,500 MXN.
-      # Diff: +1,750 MXN.
+      # Current behavior: 3,000 USD × 17.50 = 52,500 baseline. day_gain = 1,750.
+      # Honest behavior would need yesterday's FX: 3,000 × 17.00 = 51,000 → day_gain = 3,250.
+      # Until #183 lands, current behavior captures incomplete picture.
       expect(summary.day_gain.absolute).to be_within(0.01).of(1_750.0)
-      # Percent: 1,750 / 52,500 = ~3.33%
-      expect(summary.day_gain.percent).to be_within(0.01).of(3.33)
     end
 
-    it "PeriodReturnsCalculator#calculate works with mixed-currency snapshots" do
-      # Add older snapshots that were recorded in different currencies over time
-      create(:portfolio_snapshot, portfolio: portfolio, date: 7.days.ago,
-             total_value: 50_000.0, cash_value: 0, invested_value: 50_000.0, currency: "MXN")
+    it "period_returns revalues each cross-currency snapshot at TODAY's FX (FX-on-principal ignored)" do
       create(:portfolio_snapshot, portfolio: portfolio, date: 30.days.ago,
              total_value: 2_800.0, cash_value: 0, invested_value: 2_800.0, currency: "USD")
-
       result = Trading::Domain::PeriodReturnsCalculator.new(portfolio).calculate
-      # 7-day baseline (MXN 50,000) → today 54,250 MXN → gain 4,250 / 50,000 = 8.5%
-      expect(result["1W"].percent).to be_within(0.01).of(8.5)
-      # 30-day baseline (USD 2,800 × 17.50 = 49,000 MXN) → today 54,250 → 5,250 / 49,000 ≈ 10.71%
+      # Current: 30-day USD 2,800 × today's 17.50 = 49,000 baseline → 10.71%
+      # Honest: need historical FX from 30 days ago to compute true MXN baseline
       expect(result["1M"].percent).to be_within(0.01).of(10.71)
     end
   end
