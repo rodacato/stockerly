@@ -40,7 +40,7 @@
 - [x] Each issue has a complete discovery card — 10/10 filed 2026-05-23 with audit-derived discovery
 - [x] Total `In Progress` issues ≤ 7 (hard rule) — 0 currently; max 4-6 during sprint depending on parallel-agent batches
 - [x] Parallel ≤ 30% of total estimated effort — #150 reserve is ~15% of estimated effort; well inside cap
-- [x] `GOAL.md` goal is covered by the selected issues — trust (#168 + #175), safety (#170), visibility (#171 + #172 + #173), compliance (#169 + #176), polish (#174), research carry (#177)
+- [x] `GOAL.md` goal is covered by the selected issues — trust (#168 + #177), safety (#170), visibility (#172 + #173 + #179), compliance (#169 + #176), polish (#174), research carry (#175)
 - [x] `blocked` issues have their dependency identified — none; all 10 main issues are independent except #176 (in-app deletion) which is conceptually adjacent to #169 (support email) but neither blocks the other
 
 ---
@@ -95,13 +95,13 @@ Carry-over discipline from S07-S11. Findings to verify at start of each issue:
 
 ## Deferred (out of S12 scope, candidates for S13)
 
-- Implementation of TradingView widgets (depends on #177 research outcome)
-- New data-source integrations (Bitso BTC/MXN, El Economista, etc. — depends on #177)
+- Implementation of TradingView widgets (depends on #175 research outcome)
+- New data-source integrations (Bitso BTC/MXN, El Economista, etc. — depends on #175)
 - Admin AuditLog viewer UI (Fadia P2)
 - Performance indexes + Solid Queue worker tuning (Yui P2)
 - ARCO Acceso (export my data) flow (Ileana P1, next sprint)
 - Cookies disclosure update + Resend DPA filing (Ileana P3)
-- Polygon news gateway cleanup (Adriana — bundle into #177's implementation phase)
+- Polygon news gateway cleanup (Adriana — bundle into #175's implementation phase)
 - Bug-report mailer reply-to masking (Ileana P3)
 - Kill JTBD #2 drawdown alerts (Esther's recommendation — Adrian's call)
 - Remember-me token IP/UA enforcement (Fadia P2)
@@ -114,5 +114,5 @@ Carry-over discipline from S07-S11. Findings to verify at start of each issue:
 - **#168 calculator audit balloons** if more calculators are wrong than Lucía's audit suggested. Mitigation: if effort exceeds 8h, split into "audit-only" PR (this sprint) + "fix per-calculator" PRs (S13). Document findings in `docs/research/audit-2026-05-23/calculators-followup.md`.
 - **Wave 3 parallel agents conflict** on shared files (event subscriptions, base controller). Mitigation: pre-stage `config/initializers/event_subscriptions.rb` edits in main thread before launching agents; brief each agent on the specific files it owns.
 - **Beta amigo replies mid-sprint** with critical bug. Mitigation: #150 reserve bucket. If reserve exhausts, scope-cut on #176 (in-app deletion) first per Adrian's stated descope priority.
-- **#177 research surfaces a P0 finding** (e.g., a critical provider is down 50% of the time). Mitigation: file as S13 P0 issue immediately; don't disrupt S12 unless beta-amigo-blocking.
+- **#175 research surfaces a P0 finding** (e.g., a critical provider is down 50% of the time). Mitigation: file as S13 P0 issue immediately; don't disrupt S12 unless beta-amigo-blocking.
 - **Large scope (10 main + reactive) repeats S11 over-delivery anti-pattern.** Adrian explicitly chose this size at sprint open knowing this, tied to audit findings (not feature creep). Tracking goal at retro: did we close 10/10, or did we close 7/10 + descope cleanly?
