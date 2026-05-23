@@ -256,7 +256,7 @@ If any step has a gap (email doesn't arrive, log filtering doesn't work, DB quer
 
 ## 5. Support email routing (LFPDPPP Art. 32 obligation)
 
-The published support address — `Stockerly::SUPPORT_EMAIL` in `config/initializers/stockerly.rb`, currently `support@notdefined.dev` — appears in:
+The published support address — `Stockerly::SUPPORT_EMAIL` in `config/initializers/stockerly.rb` — appears in:
 
 - Privacy notice (`app/views/legal/privacy.html.erb`) — primary ARCO contact
 - Terms of service (`app/views/legal/terms.html.erb`) — general inquiries
@@ -281,5 +281,5 @@ The published support address — `Stockerly::SUPPORT_EMAIL` in `config/initiali
 If the constant is updated to a different address:
 
 1. Run the pre-flight check above against the new address.
-2. Grep the repo for any remaining hardcoded references to the old address (should be zero — all consumer code references the constant, ops docs may have literal historical references that are fine).
+2. Grep the entire repo for any remaining hardcoded references to the old address (e.g., `grep -r "support@old-address" .`). All consumer code should reference the constant; ops docs may have literal historical references that are fine — review case by case.
 3. Update the runbook and ARCO procedure if the address change has operational implications (e.g., new monitored inbox owner, different SLA).
