@@ -19,7 +19,9 @@ RSpec.describe BugReportMailer, type: :mailer do
     end
 
     it "renders the canonical Stockerly logo via the mailer layout" do
-      expect(mail.html_part.decoded).to include("logo_light.svg")
+      # Propshaft fingerprints the URL as logo_light-<digest>.svg, so we match
+      # the stable stem rather than the literal filename.
+      expect(mail.html_part.decoded).to match(%r{logo_light-[0-9a-f]+\.svg})
       expect(mail.html_part.decoded).to include('alt="Stockerly"')
     end
 

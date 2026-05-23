@@ -25,9 +25,14 @@
     <%= csp_meta_tag %>
     <%= yield :head %>
 
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon-192.svg">
+    <%# Cache-bust query param: bump when /favicon.svg, /apple-touch-icon.png,
+        or /manifest.json content changes. PWA-spec URLs must stay stable
+        (browsers/iOS expect them at well-known paths), so we ride the query
+        string to invalidate Cloudflare's edge cache on brand updates. %>
+    <link rel="manifest" href="/manifest.json?v=2">
+    <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+    <link rel="icon" href="/icon-192.png?v=2" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

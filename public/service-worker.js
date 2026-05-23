@@ -1,15 +1,18 @@
 // Stockerly Service Worker — cache-first for static assets, network-first for pages
-const CACHE_VERSION = "v3";
+// Bump CACHE_VERSION whenever brand assets change; the activate handler purges
+// older `stockerly-*` caches so stale logos can't survive across deploys.
+const CACHE_VERSION = "v4";
 const STATIC_CACHE = `stockerly-static-${CACHE_VERSION}`;
 const FONT_CACHE = `stockerly-fonts-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 
-// Assets to pre-cache on install
+// Assets to pre-cache on install. Query strings match the layout/manifest so
+// SW + browser share cache entries instead of double-fetching.
 const PRECACHE_URLS = [
   OFFLINE_URL,
-  "/icon.svg",
-  "/icon-192.svg",
-  "/icon-512.svg"
+  "/icon.svg?v=2",
+  "/icon-192.png?v=2",
+  "/icon-512.png?v=2"
 ];
 
 // Install: pre-cache offline page and icons

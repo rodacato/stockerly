@@ -5,7 +5,9 @@ RSpec.describe UserMailer, type: :mailer do
 
   shared_examples "logo-bearing mailer" do
     it "renders the canonical Stockerly logo via the mailer layout (absolute URL)" do
-      expect(mail.body.encoded).to include("logo_light.svg")
+      # Propshaft fingerprints the URL as logo_light-<digest>.svg, so we match
+      # the stable stem rather than the literal filename.
+      expect(mail.body.encoded).to match(%r{logo_light-[0-9a-f]+\.svg})
       expect(mail.body.encoded).to include('alt="Stockerly"')
     end
 

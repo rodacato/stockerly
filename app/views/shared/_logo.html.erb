@@ -5,10 +5,10 @@
                        "h-7"  → admin sidebar
                        "h-9"  → app + public navbar (default)
       alt_text:      String (default "Stockerly")
-    Light/dark variants swap via the existing `dark:hidden` / `hidden dark:block`
-    pair. Both SVGs live at the public root so they are also reachable from
-    transactional emails when prefixed with the absolute host. %>
+    SVGs live in app/assets/images so Propshaft fingerprints the URL — when
+    brand content changes the URL changes, defeating any upstream caching
+    (browsers, Cloudflare). Light/dark variants swap via dark: variants. %>
 <% height_class = local_assigns.fetch(:height_class, "h-9") %>
 <% alt_text     = local_assigns.fetch(:alt_text, "Stockerly") %>
-<%= image_tag "/logo_light.svg", alt: alt_text, class: "#{height_class} dark:hidden" %>
-<%= image_tag "/logo_dark.svg",  alt: alt_text, class: "#{height_class} hidden dark:block" %>
+<%= image_tag "logo_light.svg", alt: alt_text, class: "#{height_class} dark:hidden" %>
+<%= image_tag "logo_dark.svg",  alt: alt_text, class: "#{height_class} hidden dark:block" %>

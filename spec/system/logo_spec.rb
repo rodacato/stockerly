@@ -13,8 +13,8 @@ RSpec.describe "Stockerly wordmark across surfaces", type: :system do
     it "renders the wordmark on the landing page" do
       visit root_path
       expect(page).to have_css("img[alt='Stockerly']")
-      expect(page).to have_css("img[src*='logo_light.svg']")
-      expect(page).to have_css("img[src*='logo_dark.svg']")
+      expect(page).to have_css("img[src*='logo_light']")
+      expect(page).to have_css("img[src*='logo_dark']")
     end
 
     it "renders the wordmark on the login page" do
