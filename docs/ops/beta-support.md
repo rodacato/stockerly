@@ -283,3 +283,79 @@ If the constant is updated to a different address:
 1. Run the pre-flight check above against the new address.
 2. Grep the entire repo for any remaining hardcoded references to the old address (e.g., `grep -r "support@old-address" .`). All consumer code should reference the constant; ops docs may have literal historical references that are fine — review case by case.
 3. Update the runbook and ARCO procedure if the address change has operational implications (e.g., new monitored inbox owner, different SLA).
+
+---
+
+## 7. Sync health alerts
+
+Recurring `CheckSyncHealthJob` (runs hourly at `:45`) inspects the `SystemLog` table for each critical data sync and fires a Sentry warning when a sync has been silently failing — that is, **errors in the last 25 hours AND zero successes in the same window**. The goal is for Adrian to learn about stale FX rates / prices / news / earnings / CETES *before* a beta amigo notices an outdated number on the dashboard.
+
+### What triggers the alert
+
+For each task name in `CheckSyncHealthJob::CRITICAL_SYNCS`:
+
+- `"FX Rate Refresh"`
+- `"Bulk Stock Sync"`
+- `"Bulk BMV Sync"`
+- `"Bulk Crypto Sync"`
+- `"News Sync"`
+- `"Earnings Sync"`
+- `"CETES Sync"`
+- `"Market Indices Sync"`
+
+The job runs this rule:
+
+```ruby
+logs = SystemLog.where(task_name: task).where("created_at > ?", 25.hours.ago)
+alert if logs.where(severity: :error).exists? && !logs.where(severity: :success).exists?
+```
+
+A single recent success "cures" prior errors — a sync that hiccupped at 3am but recovered at 4am is healthy and silent.
+
+**Dedup:** alerts are suppressed for **6 hours** per task via `Rails.cache` (Solid Cache in production). Two consecutive hourly runs against the same stuck sync produce one Sentry event, not 24/day.
+
+### Where to see it
+
+- Sentry project dashboard (Adrian's account; DSN configured via `SENTRY_DSN`)
+- Look for warnings with message `Sync failing: <task name>`
+- The `extra` payload includes `task_name`, `last_error_at`, `last_error_message`, `last_success_at`, `lookback_window`
+
+### How to investigate when it fires
+
+1. Pull the last few SystemLog rows for the failing task:
+
+   ```ruby
+   # bin/rails console (prod)
+   SystemLog
+     .where(task_name: "FX Rate Refresh")
+     .where("created_at > ?", 25.hours.ago)
+     .order(created_at: :desc)
+     .limit(5)
+     .pluck(:created_at, :severity, :error_message)
+   ```
+
+2. Cross-check the upstream gateway — most failures map to:
+   - `FX Rate Refresh` → ExchangeRate API key / quota (`Integration.find_by(provider_name: "ExchangeRate")`)
+   - `Bulk Stock Sync` / `Bulk BMV Sync` → AlphaVantage / Polygon rate limits
+   - `Bulk Crypto Sync` → CoinGecko rate limits
+   - `News Sync` → NewsAPI quota
+   - `Earnings Sync` → AlphaVantage `EARNINGS_CALENDAR`
+   - `CETES Sync` → Banxico SIE (returns null on weekends/holidays — false-positive risk on Mondays only if it actually didn't recover Sunday)
+   - `Market Indices Sync` → Polygon
+3. If the upstream is healthy, check `bin/kamal logs | grep <JobName>` for stack traces.
+4. Re-run the job manually to confirm fix: `bin/rails runner "RefreshFxRatesJob.perform_now"` (substitute the affected job).
+
+### How to silence a known-broken sync temporarily
+
+If a sync is broken upstream and you don't want the hourly Sentry noise until the fix ships:
+
+1. Open `config/recurring.yml` and comment out the failing job entry (e.g. `# sync_cetes:` block) so it stops producing new error rows.
+2. Optionally clear the dedup key so the next genuine failure alerts immediately when the sync resumes:
+
+   ```ruby
+   Rails.cache.delete("sync_health_alert:CETES Sync")
+   ```
+
+3. Re-deploy. Document the silenced sync + ETA in the deploy notes so it doesn't stay silenced forever.
+
+To add a new monitored sync, append its exact `task_name` string to `CheckSyncHealthJob::CRITICAL_SYNCS` — must match the literal string used in the corresponding `SystemLog.create!` / `log_sync_success` / `log_sync_failure` call (see `app/jobs/concerns/sync_logging.rb`).
