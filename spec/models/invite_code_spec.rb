@@ -47,6 +47,19 @@ RSpec.describe InviteCode, type: :model do
       used    = create(:invite_code, :used)
       expect(InviteCode.used).to contain_exactly(used)
     end
+
+    it ".expired returns only codes past expires_at" do
+      _fresh  = create(:invite_code)
+      expired = create(:invite_code, :expired)
+      expect(InviteCode.expired).to contain_exactly(expired)
+    end
+
+    it ".active returns unused + not-yet-expired" do
+      active   = create(:invite_code)
+      _used    = create(:invite_code, :used)
+      _expired = create(:invite_code, :expired)
+      expect(InviteCode.active).to contain_exactly(active)
+    end
   end
 
   describe ".normalize" do
@@ -82,6 +95,43 @@ RSpec.describe InviteCode, type: :model do
 
     it "returns true when used_at is present" do
       expect(build(:invite_code, :used).used?).to be true
+    end
+  end
+
+  describe "#expired?" do
+    it "returns false when expires_at is in the future" do
+      expect(build(:invite_code, expires_at: 1.day.from_now).expired?).to be false
+    end
+
+    it "returns true when expires_at is in the past" do
+      expect(build(:invite_code, :expired).expired?).to be true
+    end
+  end
+
+  describe "#redeemable?" do
+    it "is true for fresh, unused codes" do
+      expect(build(:invite_code).redeemable?).to be true
+    end
+
+    it "is false for used codes" do
+      expect(build(:invite_code, :used).redeemable?).to be false
+    end
+
+    it "is false for expired codes" do
+      expect(build(:invite_code, :expired).redeemable?).to be false
+    end
+  end
+
+  describe "default expires_at" do
+    it "is set 7 days from now on create when not provided" do
+      invite = create(:invite_code)
+      expect(invite.expires_at).to be_within(2.seconds).of(7.days.from_now)
+    end
+
+    it "respects an explicit expires_at" do
+      explicit = 30.days.from_now
+      invite = create(:invite_code, expires_at: explicit)
+      expect(invite.expires_at).to be_within(1.second).of(explicit)
     end
   end
 

@@ -10,5 +10,9 @@ FactoryBot.define do
       used_at { Time.current }
       association :used_by_user, factory: :user
     end
+
+    trait :expired do
+      expires_at { 1.day.ago }
+    end
   end
 end

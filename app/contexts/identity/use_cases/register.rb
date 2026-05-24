@@ -11,14 +11,18 @@ module Identity
 
       private
 
+      # Single generic error message for invalid / used / expired invite
+      # codes — defeats enumeration. An attacker cannot tell from the error
+      # whether a code never existed, was already redeemed, or has aged out.
+      INVITE_GENERIC_ERROR = "código de invitación inválido o ya usado".freeze
+
       def persist_with_invite(attrs)
         normalized = InviteCode.normalize(attrs[:invite_code])
 
         ActiveRecord::Base.transaction do
           invite = InviteCode.lock.find_by(code: normalized)
 
-          return Failure([ :validation, { invite_code: [ "código de invitación inválido" ] } ]) unless invite
-          return Failure([ :validation, { invite_code: [ "código ya canjeado" ] } ]) if invite.used?
+          return Failure([ :validation, { invite_code: [ INVITE_GENERIC_ERROR ] } ]) unless invite&.redeemable?
 
           user = User.new(
             full_name: attrs[:full_name],

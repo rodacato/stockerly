@@ -104,21 +104,35 @@ RSpec.describe Identity::UseCases::Register do
       expect(result.failure[1]).to have_key(:invite_code)
     end
 
-    it "returns Failure for nonexistent invite_code" do
+    # Enumeration defense (#170): the invalid / used / expired branches all
+    # return the same generic error message so an attacker can't infer code
+    # existence by observing distinct errors.
+    let(:generic_error) { Identity::UseCases::Register::INVITE_GENERIC_ERROR }
+
+    it "returns generic Failure for nonexistent invite_code (anti-enumeration)" do
       result = described_class.call(params: valid_params.merge(invite_code: "deadbeef1234"))
 
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:validation)
-      expect(result.failure[1][:invite_code]).to include(match(/inválido/))
+      expect(result.failure[1][:invite_code]).to eq([ generic_error ])
     end
 
-    it "returns Failure for already-used invite_code" do
+    it "returns same generic Failure for already-used invite_code" do
       used_invite = create(:invite_code, :used)
       result = described_class.call(params: valid_params.merge(invite_code: used_invite.code))
 
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:validation)
-      expect(result.failure[1][:invite_code]).to include(match(/canjeado/))
+      expect(result.failure[1][:invite_code]).to eq([ generic_error ])
+    end
+
+    it "returns same generic Failure for expired invite_code" do
+      expired_invite = create(:invite_code, :expired)
+      result = described_class.call(params: valid_params.merge(invite_code: expired_invite.code))
+
+      expect(result).to be_failure
+      expect(result.failure[0]).to eq(:validation)
+      expect(result.failure[1][:invite_code]).to eq([ generic_error ])
     end
 
     it "returns Failure for duplicate email and does not consume the invite" do
