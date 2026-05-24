@@ -9,15 +9,17 @@
 class CleanupExpiredInviteCodesJob < ApplicationJob
   queue_as :default
 
+  CYCLE_WINDOW = 24.hours
+
   def perform
-    expired_count = InviteCode.expired.unused.count
+    expired_count = InviteCode.unused.where(expires_at: CYCLE_WINDOW.ago..Time.current).count
     return if expired_count.zero?
 
     SystemLog.create!(
       task_name: "InviteCode Cleanup",
       module_name: "identity",
       severity: :success,
-      error_message: "#{expired_count} invite code(s) expired without being redeemed in the last cycle"
+      error_message: "#{expired_count} invite code(s) expired without being redeemed in the last #{CYCLE_WINDOW.inspect}"
     )
   end
 end
