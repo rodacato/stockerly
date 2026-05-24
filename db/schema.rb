@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_23_234907) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_24_022020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -182,6 +182,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_234907) do
     t.index ["asset_id", "report_date"], name: "index_earnings_events_on_asset_id_and_report_date", unique: true
     t.index ["asset_id"], name: "index_earnings_events_on_asset_id"
     t.index ["report_date"], name: "index_earnings_events_on_report_date"
+  end
+
+  create_table "email_events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.string "event_type", null: false
+    t.string "message_id"
+    t.datetime "occurred_at", null: false
+    t.jsonb "raw_payload", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_email_events_on_email"
+    t.index ["event_type"], name: "index_email_events_on_event_type"
+    t.index ["message_id", "event_type"], name: "index_email_events_on_message_and_type", unique: true, where: "(message_id IS NOT NULL)"
+    t.index ["message_id"], name: "index_email_events_on_message_id"
   end
 
   create_table "fear_greed_readings", force: :cascade do |t|
@@ -475,6 +489,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_234907) do
     t.index ["score"], name: "index_trend_scores_on_score"
   end
 
+  create_table "user_activities", force: :cascade do |t|
+    t.string "action", null: false
+    t.datetime "created_at", null: false
+    t.datetime "occurred_at", null: false
+    t.jsonb "params", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["action"], name: "index_user_activities_on_action"
+    t.index ["occurred_at"], name: "index_user_activities_on_occurred_at"
+    t.index ["user_id", "action", "occurred_at"], name: "index_user_activities_on_user_action_occurred"
+    t.index ["user_id"], name: "index_user_activities_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "avatar_url"
     t.datetime "consents_data_processing_at"
@@ -532,6 +559,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_234907) do
   add_foreign_key "trades", "portfolios"
   add_foreign_key "trades", "positions"
   add_foreign_key "trend_scores", "assets"
+  add_foreign_key "user_activities", "users"
   add_foreign_key "watchlist_items", "assets"
   add_foreign_key "watchlist_items", "users"
 end

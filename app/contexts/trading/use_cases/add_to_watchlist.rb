@@ -5,6 +5,13 @@ module Trading
         asset = yield find_asset(asset_id)
         item  = yield create_item(user, asset)
 
+        publish(Events::WatchlistItemAdded.new(
+          watchlist_item_id: item.id,
+          user_id:           user.id,
+          asset_id:          asset.id,
+          asset_symbol:      asset.symbol
+        ))
+
         Success(item)
       end
 

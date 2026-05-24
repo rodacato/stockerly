@@ -283,3 +283,51 @@ If the constant is updated to a different address:
 1. Run the pre-flight check above against the new address.
 2. Grep the entire repo for any remaining hardcoded references to the old address (e.g., `grep -r "support@old-address" .`). All consumer code should reference the constant; ops docs may have literal historical references that are fine — review case by case.
 3. Update the runbook and ARCO procedure if the address change has operational implications (e.g., new monitored inbox owner, different SLA).
+
+---
+
+## 6. UserActivity queries
+
+> Added Sprint S12 (#172). The `user_activities` table records (a) page views on tracked authenticated controllers (`dashboard#show`, `market#index|show`, `portfolios#show`, `alerts#index`, `earnings#index`, `notifications#index`, `profiles#show`) and (b) three event-driven actions: `trade_executed`, `alert_rule_created`, `watchlist_item_added`.
+>
+> Use these from `bin/kamal console` when a beta-amigo report is vague ("no me funciona") and you need to know what the user actually touched before they reported.
+
+### Canonical queries
+
+**1. What did user N do this week?**
+
+```ruby
+UserActivity
+  .where(user_id: N)
+  .where("occurred_at > ?", 7.days.ago)
+  .order(occurred_at: :desc)
+```
+
+Returns the user's full activity stream — page views interleaved with action events. Read top to bottom to reconstruct the session.
+
+**2. Is anyone touching the watchlist feature?**
+
+```ruby
+UserActivity.by_action("watchlist_item_added").last(20)
+```
+
+Swap the action string to triage other features: `"trade_executed"`, `"alert_rule_created"`, `"page_view:earnings#index"`, etc. If the count is zero over the last week, that feature is effectively dead in the beta — useful signal for S13 prioritization.
+
+**3. Which user is most active this month?**
+
+```ruby
+UserActivity
+  .where("occurred_at > ?", 30.days.ago)
+  .group(:user_id)
+  .count
+  .sort_by { |_, v| -v }
+  .first(5)
+```
+
+Returns the top-5 user_ids by row count. Combine with `User.where(id: ids).pluck(:id, :email)` to put names on the numbers.
+
+### Conventions
+
+- `action` strings are technical identifiers in English (`"trade_executed"`, `"page_view:dashboard#show"`), not user-facing copy. Stable across releases — safe to grep, group, and filter.
+- `params` is JSONB and varies by action. Trade rows carry `asset_symbol`, `side`, `shares`. Page-view rows carry `controller` + `action`. Don't depend on a key existing for every row.
+- All inserts go through `ActivityRecorder.call(user:, action:, params:)`. New actions plug in by calling it from a handler or controller. Direct `UserActivity.create!` from caller code is a smell — funnel through the recorder so the nil-user guard and error swallowing are uniform.
