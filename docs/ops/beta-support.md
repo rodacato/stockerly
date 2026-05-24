@@ -283,3 +283,31 @@ If the constant is updated to a different address:
 1. Run the pre-flight check above against the new address.
 2. Grep the entire repo for any remaining hardcoded references to the old address (e.g., `grep -r "support@old-address" .`). All consumer code should reference the constant; ops docs may have literal historical references that are fine — review case by case.
 3. Update the runbook and ARCO procedure if the address change has operational implications (e.g., new monitored inbox owner, different SLA).
+
+---
+
+## 8. Email delivery query
+
+Resend webhooks (`POST /webhooks/resend`) persist every email lifecycle event to the `email_events` table. Use it to answer "did the amigo get the invite?" without poking through provider dashboards.
+
+**Setup requirement.** `RESEND_WEBHOOK_SECRET` (the `whsec_...` signing secret from the Resend dashboard) MUST be set in the production env. The controller rejects every request with `401` when it's missing — no dev fallback. The webhook URL to register in Resend is `https://stockerly.notdefined.dev/webhooks/resend`.
+
+**Common queries** (run from `bin/kamal console` on prod):
+
+```ruby
+# "Did amigo X get the invite?"
+EmailEvent.for_email("amigo@example.com").recent.pluck(:event_type, :occurred_at)
+
+# "Was a specific message delivered?"
+EmailEvent.for_message("email_abc123").by_type("delivered").any?
+
+# "Did anyone bounce in the last week?"
+EmailEvent.by_type("bounced").where("occurred_at > ?", 7.days.ago).pluck(:email, :occurred_at)
+
+# "Show me the full lifecycle of one message (sent → delivered → opened → clicked)"
+EmailEvent.for_message("email_abc123").recent.pluck(:event_type, :occurred_at)
+```
+
+**Event types** mirror Resend with the `email.` prefix stripped: `sent`, `delivered`, `bounced`, `complained`, `opened`, `clicked`.
+
+**Limitations.** Stockerly sends mail via Resend SMTP (no Ruby SDK), so we have no programmatic `message_id` at send time. The `sent` row is created by the webhook itself when Resend fires `email.sent`. If a webhook is dropped, that send is silently missing from the table — diagnose via Resend's own dashboard log retention.

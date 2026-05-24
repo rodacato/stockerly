@@ -3,6 +3,11 @@ Rails.application.routes.draw do
   get "up", to: "rails/health#show", as: :rails_health_check  # Kamal deploy probe (always 200 if Rails boots)
   get "health", to: "health#show"                              # Detailed sync-freshness monitor
 
+  # --- Webhooks (external providers; no CSRF, no session) ---
+  namespace :webhooks do
+    post "resend", to: "resend#create"
+  end
+
   # --- First-Boot Setup ---
   get  "setup", to: "setup#new"
   post "setup", to: "setup#create"
