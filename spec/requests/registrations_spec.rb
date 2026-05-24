@@ -66,17 +66,29 @@ RSpec.describe "Registrations", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
     end
 
-    it "rejects invalid invite code" do
+    # Enumeration defense (#170): invalid / used / expired branches return the
+    # same generic message so an attacker can't infer code state by reading
+    # error text.
+    let(:generic_error_fragment) { "inválido o ya usado" }
+
+    it "rejects invalid invite code with generic message" do
       post register_path, params: valid_params.merge(invite_code: "deadbeef1234")
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("inválido")
+      expect(response.body).to include(generic_error_fragment)
     end
 
-    it "rejects already-used invite code" do
+    it "rejects already-used invite code with the SAME generic message" do
       used_invite = create(:invite_code, :used)
       post register_path, params: valid_params.merge(invite_code: used_invite.code)
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("canjeado")
+      expect(response.body).to include(generic_error_fragment)
+    end
+
+    it "rejects expired invite code with the SAME generic message" do
+      expired_invite = create(:invite_code, :expired)
+      post register_path, params: valid_params.merge(invite_code: expired_invite.code)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(generic_error_fragment)
     end
 
     it "accepts hyphenated invite code" do
