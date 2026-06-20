@@ -5,7 +5,7 @@ require 'simplecov_json_formatter'
 # SonarQube reads the JSON formatter output, not the legacy .resultset.json.
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::JSONFormatter,
+  SimpleCov::Formatter::JSONFormatter
 ])
 
 SimpleCov.start 'rails' do
