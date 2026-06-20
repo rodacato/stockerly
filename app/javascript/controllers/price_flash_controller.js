@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Flashes green/red when an asset price changes via Turbo Stream replacement.
 // Usage: data-controller="price-flash" data-price-flash-value="150.00"
-export default class extends Controller {
+export default class PriceFlashController extends Controller {
   static values = { price: String }
 
   connect() {

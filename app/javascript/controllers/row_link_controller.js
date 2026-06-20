@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Makes a table row clickable — navigates to data-row-link-url-value on click
 // Ignores clicks on buttons, links, and form elements within the row
-export default class extends Controller {
+export default class RowLinkController extends Controller {
   static values = { url: String }
 
   visit(event) {

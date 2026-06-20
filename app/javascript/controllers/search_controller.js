@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="search"
-export default class extends Controller {
+export default class SearchController extends Controller {
   static targets = ["overlay", "modal", "input", "results", "assetResults", "group"]
   static values = { url: String }
 

@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-export default class extends Controller {
+export default class ClipboardController extends Controller {
   static values = { text: String }
 
   async copy(event) {

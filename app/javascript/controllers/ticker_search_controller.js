@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-export default class extends Controller {
+export default class TickerSearchController extends Controller {
   static targets = ["input", "results", "symbol", "name", "assetType", "exchange", "country", "sector"]
   static values = { url: String }
 

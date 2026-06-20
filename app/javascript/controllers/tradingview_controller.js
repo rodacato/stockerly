@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Lazy-loads TradingView Advanced Chart widget using IntersectionObserver.
 // Usage: <div data-controller="tradingview" data-tradingview-symbol-value="NASDAQ:AAPL">
-export default class extends Controller {
+export default class TradingviewController extends Controller {
   static values = { symbol: String, theme: { type: String, default: "light" } }
   static targets = ["container"]
 

@@ -7,7 +7,7 @@ import { Controller } from "@hotwired/stimulus"
 //   - target "svg": the <svg> element
 //   - target "tooltip": a hidden <div> for displaying values
 //   - <circle> elements inside the SVG with data-date and data-value attributes
-export default class extends Controller {
+export default class ChartTooltipController extends Controller {
   static targets = ["svg", "tooltip"]
 
   connect() {

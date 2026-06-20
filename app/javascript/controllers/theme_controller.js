@@ -11,7 +11,7 @@ import { Controller } from "@hotwired/stimulus"
 // early application.html.erb head script reads the same key on first
 // paint so reloads don't FOUC. No server round-trip — theme is a pure
 // client preference.
-export default class extends Controller {
+export default class ThemeController extends Controller {
   static targets = ["option"]
   static values = { storageKey: { type: String, default: "stockerly.theme" } }
 

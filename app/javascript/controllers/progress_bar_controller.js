@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Displays a thin progress bar at the top of the page during Turbo navigations.
 // Attach to the app layout wrapper; the bar target is the visual indicator element.
-export default class extends Controller {
+export default class ProgressBarController extends Controller {
   static targets = ["bar"]
 
   connect() {

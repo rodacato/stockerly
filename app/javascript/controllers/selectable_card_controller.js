@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="selectable-card"
-export default class extends Controller {
+export default class SelectableCardController extends Controller {
   static targets = ["card", "icon"]
 
   toggle(event) {
