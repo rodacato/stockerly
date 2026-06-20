@@ -23,8 +23,8 @@ export default class extends Controller {
       return
     }
 
-    const oldPrice = parseFloat(this.previousPrice)
-    const newPrice = parseFloat(this.priceValue)
+    const oldPrice = Number.parseFloat(this.previousPrice)
+    const newPrice = Number.parseFloat(this.priceValue)
 
     if (oldPrice === newPrice) return
 

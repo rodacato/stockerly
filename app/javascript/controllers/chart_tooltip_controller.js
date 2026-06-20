@@ -36,7 +36,7 @@ export default class extends Controller {
     let minDist = Infinity
 
     circles.forEach((circle) => {
-      const cx = parseFloat(circle.getAttribute("cx"))
+      const cx = Number.parseFloat(circle.getAttribute("cx"))
       const dist = Math.abs(cx - svgX)
       if (dist < minDist) {
         minDist = dist
