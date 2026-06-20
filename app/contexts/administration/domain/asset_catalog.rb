@@ -1,39 +1,43 @@
 module Administration
   module Domain
     class AssetCatalog
+      DATA_SOURCE_POLYGON   = "Polygon.io"
+      DATA_SOURCE_COINGECKO = "CoinGecko API"
+      DATA_SOURCE_YAHOO     = "Yahoo Finance"
+
       CATALOG = {
         us_stocks: [
-          { symbol: "AAPL", name: "Apple Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: "Polygon.io" },
-          { symbol: "MSFT", name: "Microsoft Corp.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: "Polygon.io" },
-          { symbol: "GOOGL", name: "Alphabet Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: "Polygon.io" },
-          { symbol: "AMZN", name: "Amazon.com Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Consumer Cyclical", country: "US", data_source: "Polygon.io" },
-          { symbol: "NVDA", name: "NVIDIA Corp.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: "Polygon.io" },
-          { symbol: "META", name: "Meta Platforms", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: "Polygon.io" },
-          { symbol: "TSLA", name: "Tesla, Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Consumer Cyclical", country: "US", data_source: "Polygon.io" },
-          { symbol: "JPM", name: "JPMorgan Chase", asset_type: "stock", exchange: "NYSE", sector: "Finance", country: "US", data_source: "Polygon.io" },
-          { symbol: "JNJ", name: "Johnson & Johnson", asset_type: "stock", exchange: "NYSE", sector: "Healthcare", country: "US", data_source: "Polygon.io" },
-          { symbol: "KO", name: "Coca-Cola Co.", asset_type: "stock", exchange: "NYSE", sector: "Consumer", country: "US", data_source: "Polygon.io" },
-          { symbol: "PG", name: "Procter & Gamble", asset_type: "stock", exchange: "NYSE", sector: "Consumer", country: "US", data_source: "Polygon.io" },
-          { symbol: "OKE", name: "Oneok Inc.", asset_type: "stock", exchange: "NYSE", sector: "Energy", country: "US", data_source: "Polygon.io" }
+          { symbol: "AAPL", name: "Apple Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "MSFT", name: "Microsoft Corp.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "GOOGL", name: "Alphabet Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "AMZN", name: "Amazon.com Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Consumer Cyclical", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "NVDA", name: "NVIDIA Corp.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "META", name: "Meta Platforms", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "TSLA", name: "Tesla, Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Consumer Cyclical", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "JPM", name: "JPMorgan Chase", asset_type: "stock", exchange: "NYSE", sector: "Finance", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "JNJ", name: "Johnson & Johnson", asset_type: "stock", exchange: "NYSE", sector: "Healthcare", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "KO", name: "Coca-Cola Co.", asset_type: "stock", exchange: "NYSE", sector: "Consumer", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "PG", name: "Procter & Gamble", asset_type: "stock", exchange: "NYSE", sector: "Consumer", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "OKE", name: "Oneok Inc.", asset_type: "stock", exchange: "NYSE", sector: "Energy", country: "US", data_source: DATA_SOURCE_POLYGON }
         ],
         crypto: [
-          { symbol: "BTC", name: "Bitcoin", asset_type: "crypto", data_source: "CoinGecko API" },
-          { symbol: "ETH", name: "Ethereum", asset_type: "crypto", data_source: "CoinGecko API" },
-          { symbol: "SOL", name: "Solana", asset_type: "crypto", data_source: "CoinGecko API" },
-          { symbol: "ADA", name: "Cardano", asset_type: "crypto", data_source: "CoinGecko API" },
-          { symbol: "DOT", name: "Polkadot", asset_type: "crypto", data_source: "CoinGecko API" },
-          { symbol: "DOGE", name: "Dogecoin", asset_type: "crypto", data_source: "CoinGecko API" }
+          { symbol: "BTC", name: "Bitcoin", asset_type: "crypto", data_source: DATA_SOURCE_COINGECKO },
+          { symbol: "ETH", name: "Ethereum", asset_type: "crypto", data_source: DATA_SOURCE_COINGECKO },
+          { symbol: "SOL", name: "Solana", asset_type: "crypto", data_source: DATA_SOURCE_COINGECKO },
+          { symbol: "ADA", name: "Cardano", asset_type: "crypto", data_source: DATA_SOURCE_COINGECKO },
+          { symbol: "DOT", name: "Polkadot", asset_type: "crypto", data_source: DATA_SOURCE_COINGECKO },
+          { symbol: "DOGE", name: "Dogecoin", asset_type: "crypto", data_source: DATA_SOURCE_COINGECKO }
         ],
         etfs: [
-          { symbol: "SPY", name: "SPDR S&P 500 ETF", asset_type: "etf", exchange: "NYSE", country: "US", data_source: "Polygon.io" },
-          { symbol: "QQQ", name: "Invesco QQQ Trust", asset_type: "etf", exchange: "NASDAQ", country: "US", data_source: "Polygon.io" },
-          { symbol: "VOO", name: "Vanguard S&P 500", asset_type: "etf", exchange: "NYSE", country: "US", data_source: "Polygon.io" },
-          { symbol: "VTI", name: "Vanguard Total Stock", asset_type: "etf", exchange: "NYSE", country: "US", data_source: "Polygon.io" },
-          { symbol: "ARKK", name: "ARK Innovation ETF", asset_type: "etf", exchange: "NYSE", country: "US", data_source: "Polygon.io" }
+          { symbol: "SPY", name: "SPDR S&P 500 ETF", asset_type: "etf", exchange: "NYSE", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "QQQ", name: "Invesco QQQ Trust", asset_type: "etf", exchange: "NASDAQ", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "VOO", name: "Vanguard S&P 500", asset_type: "etf", exchange: "NYSE", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "VTI", name: "Vanguard Total Stock", asset_type: "etf", exchange: "NYSE", country: "US", data_source: DATA_SOURCE_POLYGON },
+          { symbol: "ARKK", name: "ARK Innovation ETF", asset_type: "etf", exchange: "NYSE", country: "US", data_source: DATA_SOURCE_POLYGON }
         ],
         mexican_stocks: [
-          { symbol: "GENIUSSACV.MX", name: "Genius Sports SAB", asset_type: "stock", exchange: "BMV", sector: "Technology", country: "MX", data_source: "Yahoo Finance" },
-          { symbol: "IVVPESO.MX", name: "iShares S&P 500 MXN", asset_type: "etf", exchange: "BMV", country: "MX", data_source: "Yahoo Finance" }
+          { symbol: "GENIUSSACV.MX", name: "Genius Sports SAB", asset_type: "stock", exchange: "BMV", sector: "Technology", country: "MX", data_source: DATA_SOURCE_YAHOO },
+          { symbol: "IVVPESO.MX", name: "iShares S&P 500 MXN", asset_type: "etf", exchange: "BMV", country: "MX", data_source: DATA_SOURCE_YAHOO }
         ],
         fixed_income: [
           { symbol: "CETE28D", name: "CETES 28 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX" },

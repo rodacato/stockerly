@@ -103,19 +103,16 @@ module AlertsHelper
     CONDITION_ACCENTS.fetch(rule.condition, "bg-primary")
   end
 
-  # Available condition options for the create form, in display order. The
-  # mockup uses chip-style selectors so we expose both the slug and the
-  # es-MX label here for the view.
+  # Conditions offered in the create form, in display order. Derives labels
+  # from CONDITION_LABELS so the copy lives in one place (the form, the rules
+  # table, and the live feed stay in sync).
+  CONDITION_OPTION_ORDER = %w[
+    price_crosses_above rsi_oversold rsi_overbought
+    volume_spike dividend_ex_date bmv_holiday cete_auction
+  ].freeze
+
   def alert_condition_options
-    [
-      [ "price_crosses_above", "Precio cruza umbral" ],
-      [ "rsi_oversold",        "RSI sobrevendido" ],
-      [ "rsi_overbought",      "RSI sobrecomprado" ],
-      [ "volume_spike",        "Volumen anómalo" ],
-      [ "dividend_ex_date",    "Dividendo próximo" ],
-      [ "bmv_holiday",         "BMV festivo" ],
-      [ "cete_auction",        "Subasta CETES" ]
-    ]
+    CONDITION_OPTION_ORDER.map { |condition| [ condition, CONDITION_LABELS.fetch(condition) ] }
   end
 
   # Conditions that need a "Dirección" (al alza / a la baja) segmented
