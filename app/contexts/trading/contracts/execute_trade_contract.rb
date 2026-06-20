@@ -1,6 +1,8 @@
 module Trading
   module Contracts
     class ExecuteTradeContract < ApplicationContract
+      POSITIVE_VALUE_ERROR = "must be greater than 0"
+
       params do
         required(:asset_symbol).filled(:string)
         required(:side).filled(:string, included_in?: %w[buy sell])
@@ -14,15 +16,15 @@ module Trading
       end
 
       rule(:shares) do
-        key.failure("must be greater than 0") if value <= 0
+        key.failure(POSITIVE_VALUE_ERROR) if value <= 0
       end
 
       rule(:price_per_share) do
-        key.failure("must be greater than 0") if value <= 0
+        key.failure(POSITIVE_VALUE_ERROR) if value <= 0
       end
 
       rule(:fx_rate_at_execution) do
-        key.failure("must be greater than 0") if value && value <= 0
+        key.failure(POSITIVE_VALUE_ERROR) if value && value <= 0
       end
 
       rule(:asset_symbol) do

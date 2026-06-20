@@ -1,12 +1,14 @@
 class LegalController < ApplicationController
   layout "legal"
 
+  LAST_UPDATED = "18 MAY 2026 · CDMX"
+
   before_action { expires_in 1.day, public: true }
 
   def privacy
     @page_title = "Aviso de privacidad"
     @page_subtitle = "Conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (DOF 20-mar-2025). Qué datos tratamos, cómo, por qué y por cuánto tiempo."
-    @last_updated = "18 MAY 2026 · CDMX"
+    @last_updated = LAST_UPDATED
     @breadcrumbs = [ "Aviso de privacidad" ]
     @toc_sections = [
       { id: "responsable", icon: "person", title: "Identidad del responsable", active: true },
@@ -24,7 +26,7 @@ class LegalController < ApplicationController
   def terms
     @page_title = "Términos del servicio"
     @page_subtitle = "Reglas de uso de Stockerly. Léelos antes de aceptar al registrarte."
-    @last_updated = "18 MAY 2026 · CDMX"
+    @last_updated = LAST_UPDATED
     @breadcrumbs = [ "Términos del servicio" ]
     @toc_sections = [
       { id: "responsable", icon: "person", title: "Identidad del responsable", active: true },
@@ -41,7 +43,7 @@ class LegalController < ApplicationController
   def risk_disclosure
     @page_title = "Advertencia de riesgo"
     @page_subtitle = "Stockerly es informativo. Toda inversión conlleva riesgo de pérdida. Lee esto antes de basar decisiones en lo que muestra la plataforma."
-    @last_updated = "18 MAY 2026 · CDMX"
+    @last_updated = LAST_UPDATED
     @breadcrumbs = [ "Advertencia de riesgo" ]
     @toc_sections = [
       { id: "introduccion", icon: "info", title: "Resumen del riesgo", active: true },
