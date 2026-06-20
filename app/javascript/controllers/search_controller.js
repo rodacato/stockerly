@@ -68,7 +68,7 @@ export default class SearchController extends Controller {
   async performSearch(query) {
     try {
       const url = this.urlValue || "/search"
-      const response = await window.fetch(`${url}?q=${encodeURIComponent(query)}&format=modal`, {
+      const response = await globalThis.fetch(`${url}?q=${encodeURIComponent(query)}&format=modal`, {
         headers: {
           "Accept": "text/html",
           "X-Requested-With": "XMLHttpRequest"
@@ -118,7 +118,7 @@ export default class SearchController extends Controller {
       const selected = items[this.selectedIndex]
       if (selected && selected.href) {
         this.close()
-        window.Turbo.visit(selected.href)
+        globalThis.Turbo.visit(selected.href)
       }
     }
   }

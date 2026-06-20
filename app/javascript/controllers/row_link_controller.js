@@ -11,7 +11,7 @@ export default class RowLinkController extends Controller {
     if (target) return
 
     if (this.urlValue) {
-      window.Turbo.visit(this.urlValue)
+      globalThis.Turbo.visit(this.urlValue)
     }
   }
 }

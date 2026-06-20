@@ -17,7 +17,7 @@ export default class ThemeController extends Controller {
 
   connect() {
     this.render(this.currentMode)
-    this.mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    this.mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)")
     this.mediaQueryListener = () => {
       if (this.currentMode === "system") this.applyMode("system")
     }
@@ -45,7 +45,7 @@ export default class ThemeController extends Controller {
 
   applyMode(mode) {
     const wantsDark = mode === "dark" ||
-      (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      (mode === "system" && globalThis.matchMedia("(prefers-color-scheme: dark)").matches)
     document.documentElement.classList.toggle("dark", wantsDark)
   }
 

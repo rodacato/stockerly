@@ -31,7 +31,7 @@ export default class TickerSearchController extends Controller {
   async performSearch(query) {
     try {
       this.showLoading()
-      const response = await window.fetch(
+      const response = await globalThis.fetch(
         `${this.urlValue}?q=${encodeURIComponent(query)}`,
         { headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" } }
       )
