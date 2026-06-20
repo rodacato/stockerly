@@ -1,13 +1,18 @@
 # Stockerly
 
 [![CI](https://github.com/rodacato/stockerly/actions/workflows/ci.yml/badge.svg)](https://github.com/rodacato/stockerly/actions/workflows/ci.yml)
-[![Security](https://github.com/rodacato/stockerly/actions/workflows/security.yml/badge.svg)](https://github.com/rodacato/stockerly/actions/workflows/security.yml)
-[![Coverage](https://img.shields.io/badge/Coverage-94%25-brightgreen)](https://github.com/rodacato/stockerly)
+[![Quality Gate](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=alert_status)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+[![Coverage](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=coverage)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+[![Maintainability](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=sqale_rating)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+[![Reliability](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=reliability_rating)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+[![Security](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=security_rating)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+
 [![Ruby](https://img.shields.io/badge/Ruby-3.3.6-CC342D?logo=ruby&logoColor=white)](https://www.ruby-lang.org/)
 [![Rails](https://img.shields.io/badge/Rails-8.1.2-D30001?logo=rubyonrails&logoColor=white)](https://rubyonrails.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Beta](https://img.shields.io/badge/beta-invite--only-orange)](CONTRIBUTING.md)
 
 Open-source fintech platform for market trends, portfolios, alerts, and earnings. Built with Rails 8, PostgreSQL, Hotwire, and Tailwind CSS 4.
 
