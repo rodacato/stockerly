@@ -3,7 +3,7 @@
   <%= form_tag market_path, method: :get, class: "flex flex-col lg:flex-row items-start lg:items-end gap-4" do %>
     <%# Search %>
     <div class="flex-1 w-full lg:w-auto">
-      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Buscar activos</label>
+      <label for="search" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Buscar activos</label>
       <div class="relative">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
         <%= text_field_tag :search, params[:search],
@@ -14,7 +14,7 @@
 
     <%# Sector filter %>
     <div class="w-full lg:w-40">
-      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sector</label>
+      <label for="sector" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sector</label>
       <%= select_tag :sector,
           options_for_select([
             [ "Todos los sectores", "" ],
@@ -29,7 +29,7 @@
 
     <%# Type filter %>
     <div class="w-full lg:w-40">
-      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Tipo de activo</label>
+      <label for="type" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Tipo de activo</label>
       <%= select_tag :type,
           options_for_select([
             [ "Todos los tipos", "" ],
@@ -44,7 +44,7 @@
 
     <%# Country filter %>
     <div class="w-full lg:w-40">
-      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">País</label>
+      <label for="country" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">País</label>
       <%= select_tag :country,
           options_for_select([
             [ "Todos los países", "" ],
