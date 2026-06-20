@@ -102,6 +102,7 @@ module NotificationsHelper
     case notification.notifiable
     when AlertRule               then notification.notifiable.asset_symbol
     when EarningsEvent, Position then notification.notifiable.asset&.symbol
+    else nil
     end
   end
 end

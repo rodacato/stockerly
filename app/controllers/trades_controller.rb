@@ -188,6 +188,7 @@ class TradesController < AuthenticatedController
     case @tipo
     when "compras" then :buy
     when "ventas"  then :sell
+    else nil
     end
   end
 
@@ -195,6 +196,7 @@ class TradesController < AuthenticatedController
     case @mercado
     when "mxn" then "MXN"
     when "usd" then "USD"
+    else nil
     end
   end
 end

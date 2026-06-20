@@ -33,6 +33,7 @@ module MarketData
         when "24h" then 24.hours.ago
         when "7d"  then 7.days.ago
         when "30d" then 30.days.ago
+        else nil
         end
       end
     end
