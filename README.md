@@ -1,11 +1,11 @@
 # Stockerly
 
 [![CI](https://github.com/rodacato/stockerly/actions/workflows/ci.yml/badge.svg)](https://github.com/rodacato/stockerly/actions/workflows/ci.yml)
-[![Quality Gate](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=alert_status)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
-[![Coverage](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=coverage)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
-[![Maintainability](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=sqale_rating)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
-[![Reliability](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=reliability_rating)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
-[![Security](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=security_rating)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+[![Quality Gate](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=alert_status&token=sqb_500a04df309530790583c67b9505d0e88c24474c)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+[![Coverage](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=coverage&token=sqb_500a04df309530790583c67b9505d0e88c24474c)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+[![Maintainability](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=sqale_rating&token=sqb_500a04df309530790583c67b9505d0e88c24474c)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+[![Reliability](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=reliability_rating&token=sqb_500a04df309530790583c67b9505d0e88c24474c)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
+[![Security](https://sonarqube.notdefined.dev/api/project_badges/measure?project=stockerly&metric=security_rating&token=sqb_500a04df309530790583c67b9505d0e88c24474c)](https://sonarqube.notdefined.dev/dashboard?id=stockerly)
 
 [![Ruby](https://img.shields.io/badge/Ruby-3.3.6-CC342D?logo=ruby&logoColor=white)](https://www.ruby-lang.org/)
 [![Rails](https://img.shields.io/badge/Rails-8.1.2-D30001?logo=rubyonrails&logoColor=white)](https://rubyonrails.org/)
