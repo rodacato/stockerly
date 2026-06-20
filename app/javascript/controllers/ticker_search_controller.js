@@ -162,6 +162,6 @@ export default class extends Controller {
   }
 
   escapeAttr(text) {
-    return text.replaceAll(/&/g, "&amp;").replaceAll(/"/g, "&quot;").replaceAll(/</g, "&lt;").replaceAll(/>/g, "&gt;")
+    return text.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
   }
 }
