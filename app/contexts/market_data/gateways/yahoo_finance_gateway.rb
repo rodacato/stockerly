@@ -6,6 +6,9 @@ module MarketData
     include Dry::Monads[:result]
 
     BASE_URL = "https://query2.finance.yahoo.com"
+    RATE_LIMITED_MESSAGE = "Yahoo Finance rate limit exceeded"
+    USER_AGENT_HEADER = "User-Agent"
+    USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
     TIMEOUT  = 5
 
     # Yahoo Finance symbols → our internal MarketIndex symbols
@@ -70,7 +73,7 @@ module MarketData
         req.params["interval"] = "1d"
       end
 
-      return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
 
       parse_historical(response.body)
@@ -88,7 +91,7 @@ module MarketData
         req.params["enableFuzzyQuery"] = true
       end
 
-      return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
 
       quotes = response.body["quotes"] || []
@@ -116,7 +119,7 @@ module MarketData
         req.params["modules"] = "calendarEvents,earnings"
       end
 
-      return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
 
       parse_earnings(response.body)
@@ -166,7 +169,7 @@ module MarketData
         req.params["interval"] = "1d"
       end
 
-      return Failure([ :rate_limited, "Yahoo Finance rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "Yahoo Finance returned #{response.status}" ]) unless response.success?
 
       meta = response.body.dig("chart", "result", 0, "meta")
@@ -181,7 +184,7 @@ module MarketData
       @connection ||= Faraday.new(url: BASE_URL) do |f|
         f.request :retry, max: 3, interval: 1, backoff_factor: 2,
                           retry_statuses: [ 500, 502, 503 ]
-        f.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        f.headers[USER_AGENT_HEADER] = USER_AGENT
         f.headers["Accept"] = "application/json"
         f.response :json
         f.options.timeout = TIMEOUT
@@ -209,7 +212,7 @@ module MarketData
     # Yahoo Finance blocks automated-looking search requests.
     def search_connection
       @search_connection ||= Faraday.new(url: BASE_URL) do |f|
-        f.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        f.headers[USER_AGENT_HEADER] = USER_AGENT
         f.response :json
         f.options.timeout = TIMEOUT
         f.options.open_timeout = TIMEOUT
@@ -220,7 +223,7 @@ module MarketData
       @batch_connection ||= Faraday.new(url: "https://query1.finance.yahoo.com") do |f|
         f.request :retry, max: 2, interval: 0.5, backoff_factor: 2,
                           retry_statuses: [ 500, 502, 503 ]
-        f.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        f.headers[USER_AGENT_HEADER] = USER_AGENT
         f.headers["Accept"] = "application/json"
         f.response :json
         f.options.timeout = TIMEOUT

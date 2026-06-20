@@ -9,6 +9,7 @@ module MarketData
     DEMO_URL = "https://api.coingecko.com"
     PRO_URL  = "https://pro-api.coingecko.com"
     PROVIDER = "CoinGecko"
+    RATE_LIMITED_MESSAGE = "#{PROVIDER} rate limit exceeded"
     TIMEOUT  = 5
 
     # CoinGecko uses lowercase IDs, not ticker symbols.
@@ -58,7 +59,7 @@ module MarketData
         apply_auth(req)
       end
 
-      return Failure([ :rate_limited, "CoinGecko rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "CoinGecko returned #{response.status}" ]) unless response.success?
 
       parse_historical(response.body)
@@ -83,7 +84,7 @@ module MarketData
         apply_auth(req)
       end
 
-      return Failure([ :rate_limited, "CoinGecko rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "CoinGecko returned #{response.status}" ]) unless response.success?
 
       parse_bulk(symbols, response.body)
@@ -108,7 +109,7 @@ module MarketData
         apply_auth(req)
       end
 
-      return Failure([ :rate_limited, "CoinGecko rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "CoinGecko returned #{response.status}" ]) unless response.success?
 
       parse_market_data(symbols, response.body)
