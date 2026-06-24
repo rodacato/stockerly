@@ -41,9 +41,10 @@ env:
     SOLID_QUEUE_IN_PUMA: false
     WEB_CONCURRENCY: 2
     RAILS_MAX_THREADS: 5
-    # Prometheus metrics (opt-in). Uncomment + set the METRICS_TOKEN secret to
-    # expose GET /metrics. Off by default.
-    # METRICS_ENABLED: true
+    # Prometheus metrics (opt-in). Off unless the METRICS_ENABLED environment
+    # variable is "true" AND the METRICS_TOKEN secret is set. Toggle via the
+    # GitHub Environment variable — no code change needed.
+    METRICS_ENABLED: <%= ENV.fetch("METRICS_ENABLED", "false") %>
     SENTRY_ENVIRONMENT: <%= ENV["SENTRY_ENVIRONMENT"] %>
     SENTRY_TRACES_SAMPLE_RATE: <%= ENV["SENTRY_TRACES_SAMPLE_RATE"] %>
     SENTRY_RELEASE: <%= ENV["SENTRY_RELEASE"] %>
