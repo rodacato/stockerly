@@ -85,6 +85,7 @@ Add these secrets:
 | `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | Generate with `bin/rails db:encryption:init` |
 | `HONEYBADGER_API_KEY` | From Honeybadger project settings (optional) |
 | `RESEND_API_KEY` | From Resend dashboard (optional) |
+| `METRICS_TOKEN` | Generate with `openssl rand -hex 32` (optional — enables the Prometheus endpoint) |
 
 > **Note:** The registry uses GHCR (GitHub Container Registry) with `GITHUB_TOKEN` — no Docker Hub credentials needed.
 
@@ -149,6 +150,42 @@ bin/kamal rollback       # Rollback to previous version
 bin/kamal app restart    # Restart the app
 bin/kamal accessory restart postgres  # Restart PostgreSQL
 ```
+
+## Prometheus Metrics (optional)
+
+The app can expose Prometheus metrics (Yabeda) for an external, self-hosted
+Prometheus to scrape. The feature is **opt-in and decoupled from infrastructure** —
+treat it like any third-party metrics endpoint: a standard HTTPS URL guarded by a
+bearer token. No tunnel changes, no private port, no VPN required.
+
+- **Enable it:** set the `METRICS_TOKEN` secret. Leave it unset and the whole
+  feature stays off — no endpoint, no middleware, no overhead.
+- **Endpoint:** `GET https://stockerly.notdefined.dev/metrics`
+- **Port inside the container:** `3000` (same Puma the app runs on; routed by
+  kamal-proxy). No extra port is published.
+- **Auth:** `Authorization: Bearer <METRICS_TOKEN>`. Without a valid token the
+  endpoint returns `401`; when `METRICS_TOKEN` is unset it returns `404`
+  (fail-closed — never exposed by accident).
+
+Example Prometheus scrape config:
+
+```yaml
+scrape_configs:
+  - job_name: stockerly
+    scheme: https
+    metrics_path: /metrics
+    authorization:
+      type: Bearer
+      credentials: "<METRICS_TOKEN>"
+    static_configs:
+      - targets: ["stockerly.notdefined.dev"]
+```
+
+Exposed metrics include `stockerly_data_age_seconds` (age of the freshest
+market-data sync), Rails request metrics (yabeda-rails), and per-worker Puma
+metrics (yabeda-puma-plugin, clustered only). Under clustered Puma
+(`WEB_CONCURRENCY > 0`) a shared file store aggregates workers so a single scrape
+reflects the whole instance.
 
 ## Troubleshooting
 

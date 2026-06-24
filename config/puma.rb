@@ -42,6 +42,14 @@ plugin :tmp_restart
 # Run the Solid Queue supervisor inside of Puma for single-server deployments.
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 
+# Expose per-worker Puma metrics to Yabeda (scraped at /metrics). Opt-in via
+# METRICS_TOKEN; only useful clustered, where the control app reports stats
+# from every worker.
+if !ENV["METRICS_TOKEN"].to_s.empty? && ENV.fetch("WEB_CONCURRENCY", 0).to_i.positive?
+  activate_control_app
+  plugin :yabeda
+end
+
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]

@@ -46,6 +46,11 @@ gem "lograge"
 gem "sentry-ruby"
 gem "sentry-rails"
 
+# Prometheus metrics for an external self-hosted scraper [https://github.com/yabeda-rb/yabeda]
+gem "yabeda-rails"
+gem "yabeda-prometheus"
+gem "yabeda-puma-plugin"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
