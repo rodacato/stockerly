@@ -1,11 +1,22 @@
 # Prometheus instrumentation via Yabeda — OPT-IN.
 #
-# The whole feature is off unless METRICS_TOKEN is set. An operator (or a fork
-# that doesn't want metrics) does nothing and gets nothing wired up: no
-# endpoint, no middleware, no data store, no overhead. Setting the token both
-# enables the feature and secures the endpoint, which is scraped at GET /metrics
-# by any external Prometheus over HTTPS — no coupling to private networking.
-return if ENV["METRICS_TOKEN"].blank?
+# Two switches, both required to wire anything up:
+#   METRICS_ENABLED  explicit on/off flag (truthy: 1/true/yes/on)
+#   METRICS_TOKEN    bearer token securing the endpoint
+#
+# An operator (or a fork that doesn't want metrics) does nothing and gets
+# nothing: no endpoint, no middleware, no data store, no overhead. The flag is
+# separate from the token so metrics can be toggled off without deleting the
+# secret. The endpoint is scraped at GET /metrics by any external Prometheus
+# over HTTPS — no coupling to private networking. Enabling without a token
+# fails closed (stays off) so metrics are never exposed unauthenticated.
+metrics_enabled = %w[1 true yes on].include?(ENV["METRICS_ENABLED"].to_s.strip.downcase)
+
+if metrics_enabled && ENV["METRICS_TOKEN"].blank?
+  Rails.logger.warn("[metrics] METRICS_ENABLED is set but METRICS_TOKEN is blank — endpoint stays disabled (fail-closed).")
+end
+
+return unless metrics_enabled && ENV["METRICS_TOKEN"].present?
 
 # Multiprocess aggregation: under clustered Puma (WEB_CONCURRENCY > 0) each
 # worker — and the master, where the puma plugin collects server stats — writes

@@ -20,7 +20,8 @@ end
 require 'spec_helper'
 ENV['RAILS_ENV'] = 'test'
 # Enable the Prometheus endpoint at boot so request specs can exercise it.
-# In production the metrics feature is opt-in via this same env var.
+# In production the metrics feature is opt-in via these same env vars.
+ENV['METRICS_ENABLED'] ||= 'true'
 ENV['METRICS_TOKEN'] ||= 'test-metrics-token'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production

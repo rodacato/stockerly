@@ -158,8 +158,11 @@ Prometheus to scrape. The feature is **opt-in and decoupled from infrastructure*
 treat it like any third-party metrics endpoint: a standard HTTPS URL guarded by a
 bearer token. No tunnel changes, no private port, no VPN required.
 
-- **Enable it:** set the `METRICS_TOKEN` secret. Leave it unset and the whole
-  feature stays off — no endpoint, no middleware, no overhead.
+- **Enable it:** set `METRICS_ENABLED: true` (in `config/deploy.yml` → `env.clear`)
+  **and** the `METRICS_TOKEN` secret. Both are required. Leave `METRICS_ENABLED`
+  off (the default) and the whole feature stays off — no endpoint, no middleware,
+  no overhead. The flag is separate from the token so you can toggle metrics off
+  without deleting the secret; enabling without a token fails closed (stays off).
 - **Endpoint:** `GET https://stockerly.notdefined.dev/metrics`
 - **Port inside the container:** `3000` (same Puma the app runs on; routed by
   kamal-proxy). No extra port is published.

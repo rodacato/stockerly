@@ -43,9 +43,10 @@ plugin :tmp_restart
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 
 # Expose per-worker Puma metrics to Yabeda (scraped at /metrics). Opt-in via
-# METRICS_TOKEN; only useful clustered, where the control app reports stats
-# from every worker.
-if !ENV["METRICS_TOKEN"].to_s.empty? && ENV.fetch("WEB_CONCURRENCY", 0).to_i.positive?
+# METRICS_ENABLED + METRICS_TOKEN; only useful clustered, where the control app
+# reports stats from every worker.
+metrics_enabled = %w[1 true yes on].include?(ENV["METRICS_ENABLED"].to_s.strip.downcase)
+if metrics_enabled && !ENV["METRICS_TOKEN"].to_s.empty? && ENV.fetch("WEB_CONCURRENCY", 0).to_i.positive?
   activate_control_app
   plugin :yabeda
 end
