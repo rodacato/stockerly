@@ -32,6 +32,25 @@ The reference implementation target is **Tailwind CSS 4** with `darkMode: 'class
 | `color.info` | `#5B6CFF` | `#7B89FF` | **Alias of `color.primary`.** Stockerly only has one accent; the alias keeps consumer code semantically clear without inviting a second hue. |
 | `color.info.bg` | `#EEF0FF` | `#2A2E55` | |
 
+**Data-viz tokens** (chart encoding only — see §1.4 for the rules):
+
+| Token | Light | Dark | Notes |
+|---|---|---|---|
+| `color.chart.1` | `#5B6CFF` | `#7B89FF` | Categorical series 1 (= primary). |
+| `color.chart.2` | `#38BDF8` | `#5CC8F5` | Categorical series 2. |
+| `color.chart.3` | `#10B981` | `#34D399` | Categorical series 3. |
+| `color.chart.4` | `#F59E0B` | `#FBBF24` | Categorical series 4. |
+| `color.chart.5` | `#F43F5E` | `#FB7185` | Categorical series 5. |
+| `color.chart.6` | `#7C6CF0` | `#A78BFA` | Categorical series 6. |
+| `color.chart.7` | `#F97316` | `#FB923C` | Categorical series 7. |
+| `color.chart.8` | `#06B6D4` | `#22D3EE` | Categorical series 8. |
+| `color.chart.neutral` | `#94A3B8` | `#94A3B8` | Unclassified / "Otro" slice. |
+| `color.sentiment.1` | `#F43F5E` | `#FB7185` | Fear & Greed tier 1 (0–24, extreme fear). |
+| `color.sentiment.2` | `#F59E0B` | `#FBBF24` | Tier 2 (25–44). |
+| `color.sentiment.3` | `#FBBF24` | `#FCD34D` | Tier 3 (45–55, neutral). |
+| `color.sentiment.4` | `#A3E635` | `#BEF264` | Tier 4 (56–74). |
+| `color.sentiment.5` | `#10B981` | `#34D399` | Tier 5 (75–100, extreme greed). |
+
 ### 1.2 Tailwind 4 `@theme` block
 
 ```css
@@ -62,6 +81,23 @@ The reference implementation target is **Tailwind CSS 4** with `darkMode: 'class
   --color-warning-bg:        #FFFBEB;
   --color-info:              #5B6CFF;
   --color-info-bg:           #EEF0FF;
+
+  /* Data-viz — chart encoding only (see §1.4). */
+  --color-chart-1:           #5B6CFF;
+  --color-chart-2:           #38BDF8;
+  --color-chart-3:           #10B981;
+  --color-chart-4:           #F59E0B;
+  --color-chart-5:           #F43F5E;
+  --color-chart-6:           #7C6CF0;
+  --color-chart-7:           #F97316;
+  --color-chart-8:           #06B6D4;
+  --color-chart-neutral:     #94A3B8;
+
+  --color-sentiment-1:       #F43F5E;
+  --color-sentiment-2:       #F59E0B;
+  --color-sentiment-3:       #FBBF24;
+  --color-sentiment-4:       #A3E635;
+  --color-sentiment-5:       #10B981;
 }
 
 /* Dark mode overrides — toggled via html.dark (Tailwind 4 darkMode: class). */
@@ -90,6 +126,22 @@ The reference implementation target is **Tailwind CSS 4** with `darkMode: 'class
     --color-warning-bg:     #3A2A0C;
     --color-info:           #7B89FF;
     --color-info-bg:        #2A2E55;
+
+    --color-chart-1:        #7B89FF;
+    --color-chart-2:        #5CC8F5;
+    --color-chart-3:        #34D399;
+    --color-chart-4:        #FBBF24;
+    --color-chart-5:        #FB7185;
+    --color-chart-6:        #A78BFA;
+    --color-chart-7:        #FB923C;
+    --color-chart-8:        #22D3EE;
+    --color-chart-neutral:  #94A3B8;
+
+    --color-sentiment-1:    #FB7185;
+    --color-sentiment-2:    #FBBF24;
+    --color-sentiment-3:    #FCD34D;
+    --color-sentiment-4:    #BEF264;
+    --color-sentiment-5:    #34D399;
   }
 }
 ```
@@ -116,6 +168,27 @@ Reference tokens through Tailwind utility classes. The `--color-*` custom proper
 ```
 
 **Never hardcode hex values in views.** If a color doesn't exist as a token, add a token first.
+
+### 1.4 Data-viz tokens — `chart-*` and `sentiment-*`
+
+Two **closed** token sets exist solely so charts stop hardcoding hex. They are *not* part of the UI chrome palette — chrome stays one-accent (`primary`). Use them only inside a data visualization:
+
+- **`chart-1…8` + `chart-neutral`** — a categorical palette for multi-series charts (donut segments, future bar/line series). Assign by index, not by meaning; `chart-3` is not "the success series". `chart-neutral` is the "Otro" / unclassified slice.
+- **`sentiment-1…5`** — the 0→100 Fear & Greed heatmap ramp (negative → positive). Tier `1` is extreme fear, `5` is extreme greed.
+
+Because chart colors land in `style="..."` (conic-gradient stops, SVG `stroke`, inline `background-color`) rather than utility classes, reference them as CSS variables and let them resolve per theme:
+
+```erb
+<%# Donut segment — color comes from the token, dark mode is automatic %>
+<% colors = (1..8).map { |n| "var(--color-chart-#{n})" } %>
+<span style="background: <%= colors[i] %>"></span>
+
+<%# Sentiment tier %>
+<% sentiment = "var(--color-sentiment-#{tier})" %>
+<span style="color: <%= sentiment %>"><%= value %></span>
+```
+
+Adding a 9th categorical color or a 6th sentiment tier is a token change (update §1.1 + §1.2 + this section), never an inline hex. Keep the sets closed: if a chart "needs" an off-palette hue, the chart has too many series.
 
 ---
 
@@ -238,15 +311,15 @@ Each colored token therefore has a matching `-fg` variant tuned for text legibil
 
 Established in PR #63 (S04) after Gemini caught the contrast failure on a first-pass migration that collapsed `text-X-700 light / text-X-400 dark` into a single `text-X`. Reference example: any of the S05 slice files (`portfolios/_positions_table.html.erb`, `market/_listings_table.html.erb`, `admin/integrations/index.html.erb`).
 
-### 4.2 Heatmap exception — `dashboard/_fear_greed_card.html.erb`
+### 4.2 Fear & Greed heatmap — now tokenized via `sentiment-*` (S05 exception reversed)
 
-The Fear & Greed card uses a **5-tier color scale** (red → orange → amber → lime → emerald) representing the 0–100 sentiment score. This is a true heatmap: the intermediate hues (orange, lime) do not map to any of the `success / warning / error / info` semantic roles, and inventing `color-scale-low / mid / high` tokens for a single consumer would be ceremony without value.
+The Fear & Greed card (`dashboard/_fear_greed_card.html.erb`) uses a **5-tier color scale** (negative → positive) over the 0–100 sentiment score. It now consumes the `sentiment-1…5` tokens (§1.4), not hardcoded hex.
 
-**Decision (S05):** leave the F&G card with hardcoded palette colors as a documented exception. The audit script will continue to count its ~7 hits forever; that's accepted noise in the metric.
+**Original decision (S05):** leave the card with hardcoded palette colors as a documented exception, on the grounds that "a single consumer doesn't justify scale tokens — that's ceremony without value." The re-evaluation trigger was "≥2 true heatmaps → define tokens."
 
-**Re-evaluation trigger:** if a second view appears that needs a multi-tier heatmap scale (3+ semantic buckets that don't map to existing tokens), define `color-scale-*` tokens at that point and migrate both views together. The S04 retro carry-over set the rule "≥2 true heatmaps → define tokens"; the S05 audit found only F&G qualifies, so the exception stands.
+**Reversal (this PR):** the trigger that actually fired was *not* a second heatmap — it was **internal inconsistency in the single consumer**. The card carried three drifting copies of the same scale: the headline number used Tailwind classes (`emerald-500` = `#10B981`), while the sparkline and gauge gradient hardcoded *different* hex (`#22C55E`, a separate green). The dynamic class names (`bg-<%= color %>-500`) also relied on Tailwind keeping those utilities in the build. Tokenizing collapses the three copies into one source of truth, makes the scale dark-mode aware for free, and drops the card's hardcoded-hex count to zero — value beyond mere rule compliance. The `chart-*` layer (§1.4) landed in the same PR for the allocation donut, so the marginal cost of a parallel `sentiment-*` set was near zero.
 
-Bucket-style 3-tier indicators (strong/medium/weak, e.g., the trend-strength bar in `_listings_table`) are **not** heatmaps — they map cleanly to `success / warning / error` and follow the standard pattern.
+Bucket-style 3-tier indicators (strong/medium/weak, e.g., the trend-strength bar in `_listings_table`) are **not** heatmaps — they map cleanly to `positive / warning / negative` and follow the standard semantic pattern, not `sentiment-*`.
 
 ## 5. When to update this doc
 

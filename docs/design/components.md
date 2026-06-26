@@ -57,7 +57,7 @@ Loading placeholder; matches final layout dimensions to prevent layout shift. De
 Inline 7-day mini-chart in a table cell. SVG polyline; stroke = `success` (up) or `error` (down). Width fixed to fit the cell; no axis labels.
 
 ### 2.9 DonutChart
-SVG conic-gradient or stroke-segments donut for compositional breakdown. Variants: single-segment (100% one asset → render flat circle with name centered, OR EmptyState — never a solid ring). Scales to 120 px on mobile; legend wraps below.
+SVG conic-gradient or stroke-segments donut for compositional breakdown. Variants: single-segment (100% one asset → render flat circle with name centered, OR EmptyState — never a solid ring). Scales to 120 px on mobile; legend wraps below. Segment colors come from the `chart-1…8` data-viz tokens ([`tokens.md §1.4`](./tokens.md)) as `var(--color-chart-#{n})` — never raw hex.
 
 ### 2.10 FormField
 Label + input + helper text + error. Two error paths: Rails validation (post-submit) and async `validate` endpoint. Same visual treatment. Tokens: `bg-surface` + `border-default` (idle), `border-error` + `text-error-fg` (error), `border-primary` (focus).

@@ -222,6 +222,12 @@ Captured for future reference when the brand is revisited or extended.
 - **Chosen:** Light is the default-on-load. Dark is offered via a real toggle persisted to user preferences.
 - **One-line rationale:** Audience reviews on weekends, often in daylight. Loading dark on a sunlit kitchen table is the wrong first impression.
 
+### 11.5 Data-viz token layer (2026-06-26)
+
+- **Chosen:** add two **closed** data-viz token sets — `chart-1…8` + `chart-neutral` (categorical) and `sentiment-1…5` (Fear & Greed ramp) — used for chart encoding only. Chrome stays one-accent (`primary`); these never bleed into buttons, nav, or status chips. Defined in [`tokens.md §1.4`](./tokens.md), consumed by the allocation donut and the F&G card via `var(--color-*)` in inline styles.
+- **Why now:** the donut hardcoded an 8-hex array and the F&G card carried three drifting copies of its scale (headline `#10B981` vs sparkline `#22C55E`). Tokenizing killed the hardcoded hex, fixed the inconsistency, and made both dark-mode aware for free. This **reverses** the S05 single-consumer exception in `tokens.md §4.2` — see that section for the honest trigger (internal inconsistency, not a second heatmap).
+- **Considered + rejected:** *(a)* keep F&G hardcoded but just unify its three copies to one consistent hex — fixes the bug with zero new tokens but leaves hardcoded hex in views and no dark-mode adaptation; *(b)* reuse the semantic `positive/warning/negative` tokens for the scale — rejected because the intermediate tiers (amber, lime) don't map to any semantic role, exactly as S05 noted.
+
 ## 12. When to update this doc
 
 - A new component pattern gets used in 3+ screens and isn't in [`components.md`](./components.md).
