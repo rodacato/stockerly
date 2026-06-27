@@ -17,6 +17,7 @@ module Alerts
           when "dividend_ex_date" then evaluate_dividend_ex_date(rule, today)
           when "bmv_holiday"      then evaluate_bmv_holiday(rule, today)
           when "cete_auction"     then evaluate_cete_auction(rule, today)
+          else nil
           end
         end
       end

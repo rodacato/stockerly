@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Manages educational metric tooltips on asset detail page.
 // Opens a popover with definition and interpretation guidance.
-export default class extends Controller {
+export default class MetricTooltipController extends Controller {
   static targets = ["popover"]
 
   toggle(event) {

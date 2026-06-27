@@ -286,6 +286,126 @@ If the constant is updated to a different address:
 
 ---
 
+## 6. UserActivity queries
+
+> Added Sprint S12 (#172). The `user_activities` table records (a) page views on tracked authenticated controllers (`dashboard#show`, `market#index|show`, `portfolios#show`, `alerts#index`, `earnings#index`, `notifications#index`, `profiles#show`) and (b) three event-driven actions: `trade_executed`, `alert_rule_created`, `watchlist_item_added`.
+>
+> Use these from `bin/kamal console` when a beta-amigo report is vague ("no me funciona") and you need to know what the user actually touched before they reported.
+
+### Canonical queries
+
+**1. What did user N do this week?**
+
+```ruby
+UserActivity
+  .where(user_id: N)
+  .where("occurred_at > ?", 7.days.ago)
+  .order(occurred_at: :desc)
+```
+
+Returns the user's full activity stream — page views interleaved with action events. Read top to bottom to reconstruct the session.
+
+**2. Is anyone touching the watchlist feature?**
+
+```ruby
+UserActivity.by_action("watchlist_item_added").last(20)
+```
+
+Swap the action string to triage other features: `"trade_executed"`, `"alert_rule_created"`, `"page_view:earnings#index"`, etc. If the count is zero over the last week, that feature is effectively dead in the beta — useful signal for S13 prioritization.
+
+**3. Which user is most active this month?**
+
+```ruby
+UserActivity
+  .where("occurred_at > ?", 30.days.ago)
+  .group(:user_id)
+  .count
+  .sort_by { |_, v| -v }
+  .first(5)
+```
+
+Returns the top-5 user_ids by row count. Combine with `User.where(id: ids).pluck(:id, :email)` to put names on the numbers.
+
+### Conventions
+
+- `action` strings are technical identifiers in English (`"trade_executed"`, `"page_view:dashboard#show"`), not user-facing copy. Stable across releases — safe to grep, group, and filter.
+- `params` is JSONB and varies by action. Trade rows carry `asset_symbol`, `side`, `shares`. Page-view rows carry `controller` + `action`. Don't depend on a key existing for every row.
+- All inserts go through `ActivityRecorder.call(user:, action:, params:)`. New actions plug in by calling it from a handler or controller. Direct `UserActivity.create!` from caller code is a smell — funnel through the recorder so the nil-user guard and error swallowing are uniform.
+
+## 7. Sync health alerts
+
+Recurring `CheckSyncHealthJob` (runs hourly at `:45`) inspects the `SystemLog` table for each critical data sync and fires a Sentry warning when a sync has been silently failing — that is, **errors in the last 25 hours AND zero successes in the same window**. The goal is for Adrian to learn about stale FX rates / prices / news / earnings / CETES *before* a beta amigo notices an outdated number on the dashboard.
+
+### What triggers the alert
+
+For each task name in `CheckSyncHealthJob::CRITICAL_SYNCS`:
+
+- `"FX Rate Refresh"`
+- `"Bulk Stock Sync"`
+- `"Bulk BMV Sync"`
+- `"Bulk Crypto Sync"`
+- `"News Sync"`
+- `"Earnings Sync"`
+- `"CETES Sync"`
+- `"Market Indices Sync"`
+
+The job runs this rule:
+
+```ruby
+logs = SystemLog.where(task_name: task).where("created_at > ?", 25.hours.ago)
+alert if logs.where(severity: :error).exists? && !logs.where(severity: :success).exists?
+```
+
+A single recent success "cures" prior errors — a sync that hiccupped at 3am but recovered at 4am is healthy and silent.
+
+**Dedup:** alerts are suppressed for **6 hours** per task via `Rails.cache` (Solid Cache in production). Two consecutive hourly runs against the same stuck sync produce one Sentry event, not 24/day.
+
+### Where to see it
+
+- Sentry project dashboard (Adrian's account; DSN configured via `SENTRY_DSN`)
+- Look for warnings with message `Sync failing: <task name>`
+- The `extra` payload includes `task_name`, `last_error_at`, `last_error_message`, `last_success_at`, `lookback_window`
+
+### How to investigate when it fires
+
+1. Pull the last few SystemLog rows for the failing task:
+
+   ```ruby
+   # bin/rails console (prod)
+   SystemLog
+     .where(task_name: "FX Rate Refresh")
+     .where("created_at > ?", 25.hours.ago)
+     .order(created_at: :desc)
+     .limit(5)
+     .pluck(:created_at, :severity, :error_message)
+   ```
+
+2. Cross-check the upstream gateway — most failures map to:
+   - `FX Rate Refresh` → ExchangeRate API key / quota (`Integration.find_by(provider_name: "ExchangeRate")`)
+   - `Bulk Stock Sync` / `Bulk BMV Sync` → AlphaVantage / Polygon rate limits
+   - `Bulk Crypto Sync` → CoinGecko rate limits
+   - `News Sync` → NewsAPI quota
+   - `Earnings Sync` → AlphaVantage `EARNINGS_CALENDAR`
+   - `CETES Sync` → Banxico SIE (returns null on weekends/holidays — false-positive risk on Mondays only if it actually didn't recover Sunday)
+   - `Market Indices Sync` → Polygon
+3. If the upstream is healthy, check `bin/kamal logs | grep <JobName>` for stack traces.
+4. Re-run the job manually to confirm fix: `bin/rails runner "RefreshFxRatesJob.perform_now"` (substitute the affected job).
+
+### How to silence a known-broken sync temporarily
+
+If a sync is broken upstream and you don't want the hourly Sentry noise until the fix ships:
+
+1. Open `config/recurring.yml` and comment out the failing job entry (e.g. `# sync_cetes:` block) so it stops producing new error rows.
+2. Optionally clear the dedup key so the next genuine failure alerts immediately when the sync resumes:
+
+   ```ruby
+   Rails.cache.delete("sync_health_alert:CETES Sync")
+   ```
+
+3. Re-deploy. Document the silenced sync + ETA in the deploy notes so it doesn't stay silenced forever.
+
+To add a new monitored sync, append its exact `task_name` string to `CheckSyncHealthJob::CRITICAL_SYNCS` — must match the literal string used in the corresponding `SystemLog.create!` / `log_sync_success` / `log_sync_failure` call (see `app/jobs/concerns/sync_logging.rb`).
+
 ## 8. Email delivery query
 
 Resend webhooks (`POST /webhooks/resend`) persist every email lifecycle event to the `email_events` table. Use it to answer "did the amigo get the invite?" without poking through provider dashboards.

@@ -46,6 +46,11 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(Trading::Events::TradeUpdated, Trading::Handlers::LogTradeUpdate)
   EventBus.subscribe(Trading::Events::TradeDeleted, Trading::Handlers::LogTradeDelete)
 
+  # UserActivity recording (#172) — domain events that map to JTBDs.
+  EventBus.subscribe(Trading::Events::TradeExecuted,       Trading::Handlers::RecordTradeActivity)
+  EventBus.subscribe(Trading::Events::WatchlistItemAdded,  Trading::Handlers::RecordWatchlistItemAddedActivity)
+  EventBus.subscribe(Alerts::Events::RuleCreated,          Alerts::Handlers::RecordRuleCreatedActivity)
+
   # News
   EventBus.subscribe(MarketData::Events::NewsSynced, MarketData::Handlers::LogNewsSync)
 

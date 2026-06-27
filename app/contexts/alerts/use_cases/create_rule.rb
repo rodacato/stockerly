@@ -5,6 +5,13 @@ module Alerts
         attrs = yield validate(Alerts::Contracts::CreateContract, params)
         rule  = yield persist(user, attrs)
 
+        publish(Events::RuleCreated.new(
+          rule_id:      rule.id,
+          user_id:      user.id,
+          asset_symbol: rule.asset_symbol,
+          condition:    rule.condition.to_s
+        ))
+
         Success(rule)
       end
 

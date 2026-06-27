@@ -69,6 +69,26 @@
   --color-background-light:  #FAFAF7;
   --color-background-dark:   #1A1B23;
 
+  /* --- Data-viz — closed token sets for chart encoding only. Chrome stays
+     one-accent (primary); these exist solely so multi-series charts and the
+     sentiment heatmap stop hardcoding hex. See tokens.md §1.4 + §4.2. ----- */
+  --color-chart-1:           #5B6CFF;
+  --color-chart-2:           #38BDF8;
+  --color-chart-3:           #10B981;
+  --color-chart-4:           #F59E0B;
+  --color-chart-5:           #F43F5E;
+  --color-chart-6:           #7C6CF0;
+  --color-chart-7:           #F97316;
+  --color-chart-8:           #06B6D4;
+  --color-chart-neutral:     #94A3B8;
+
+  /* Fear & Greed sentiment scale, 0→100 (negative → positive). */
+  --color-sentiment-1:       #F43F5E;
+  --color-sentiment-2:       #F59E0B;
+  --color-sentiment-3:       #FBBF24;
+  --color-sentiment-4:       #A3E635;
+  --color-sentiment-5:       #10B981;
+
   /* --- Typography ------------------------------------------------------ */
   --font-family-display: "Plus Jakarta Sans", sans-serif;
   --font-family-body:    "Inter", sans-serif;
@@ -119,6 +139,22 @@
     --color-accent:            #34D399;
     --color-background-light:  #1A1B23;
     --color-background-dark:   #1A1B23;
+
+    --color-chart-1:           #7B89FF;
+    --color-chart-2:           #5CC8F5;
+    --color-chart-3:           #34D399;
+    --color-chart-4:           #FBBF24;
+    --color-chart-5:           #FB7185;
+    --color-chart-6:           #A78BFA;
+    --color-chart-7:           #FB923C;
+    --color-chart-8:           #22D3EE;
+    --color-chart-neutral:     #94A3B8;
+
+    --color-sentiment-1:       #FB7185;
+    --color-sentiment-2:       #FBBF24;
+    --color-sentiment-3:       #FCD34D;
+    --color-sentiment-4:       #BEF264;
+    --color-sentiment-5:       #34D399;
   }
 }
 

@@ -93,24 +93,24 @@
           field_class = "rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-2.5 py-1.5 text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary/40"
         %>
         <div class="flex flex-col gap-1">
-          <label class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Nombre</label>
-          <%= f.text_field :name, value: asset.name, placeholder: "Nombre", class: "#{field_class} w-56" %>
+          <label for="asset_name_<%= asset.id %>" class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Nombre</label>
+          <%= f.text_field :name, id: "asset_name_#{asset.id}", value: asset.name, placeholder: "Nombre", class: "#{field_class} w-56" %>
         </div>
         <div class="flex flex-col gap-1">
-          <label class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Mercado</label>
-          <%= f.text_field :exchange, value: asset.exchange, placeholder: "NASDAQ", class: "#{field_class} w-28 font-mono uppercase" %>
+          <label for="asset_exchange_<%= asset.id %>" class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Mercado</label>
+          <%= f.text_field :exchange, id: "asset_exchange_#{asset.id}", value: asset.exchange, placeholder: "NASDAQ", class: "#{field_class} w-28 font-mono uppercase" %>
         </div>
         <div class="flex flex-col gap-1">
-          <label class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">País</label>
-          <%= f.text_field :country, value: asset.country, placeholder: "XX", class: "#{field_class} w-16 font-mono uppercase" %>
+          <label for="asset_country_<%= asset.id %>" class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">País</label>
+          <%= f.text_field :country, id: "asset_country_#{asset.id}", value: asset.country, placeholder: "XX", class: "#{field_class} w-16 font-mono uppercase" %>
         </div>
         <div class="flex flex-col gap-1">
-          <label class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Sector</label>
-          <%= f.text_field :sector, value: asset.sector, placeholder: "Sector", class: "#{field_class} w-32" %>
+          <label for="asset_sector_<%= asset.id %>" class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Sector</label>
+          <%= f.text_field :sector, id: "asset_sector_#{asset.id}", value: asset.sector, placeholder: "Sector", class: "#{field_class} w-32" %>
         </div>
         <div class="flex flex-1 flex-col gap-1 min-w-[200px]">
-          <label class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">URL del logo</label>
-          <%= f.text_field :logo_url, value: asset.logo_url, placeholder: "https://…", class: "#{field_class} w-full font-mono text-xs" %>
+          <label for="asset_logo_url_<%= asset.id %>" class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">URL del logo</label>
+          <%= f.text_field :logo_url, id: "asset_logo_url_#{asset.id}", value: asset.logo_url, placeholder: "https://…", class: "#{field_class} w-full font-mono text-xs" %>
         </div>
         <div class="ml-auto flex items-end gap-2 pt-1">
           <button type="button" data-action="reveal#toggle"

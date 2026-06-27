@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-export default class extends Controller {
+export default class FlashController extends Controller {
   static values = { dismissAfter: { type: Number, default: 5000 } }
 
   connect() {

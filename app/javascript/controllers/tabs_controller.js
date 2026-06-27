@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="tabs"
-export default class extends Controller {
+export default class TabsController extends Controller {
   static targets = ["tab", "panel"]
 
   connect() {

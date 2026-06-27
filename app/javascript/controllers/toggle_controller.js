@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="toggle"
 // Optional persistence: add data-toggle-url-value and data-toggle-field-value
-export default class extends Controller {
+export default class ToggleController extends Controller {
   static targets = ["knob", "track"]
   static values = { url: String, field: String }
 

@@ -5,13 +5,11 @@
 # `$XDG_CONFIG_HOME/git/ignore` or `~/.config/git/ignore`
 
 # Local workspace artifacts (design mockups, scratch notes, etc.) that should
-# never be committed to the repo. See .claude/memory/project_design_assets.md
-# for the inventory and conventions.
+# never be committed to the repo.
 /.local/
 
 # Local research workspace (audits, market studies, technical primers).
 # Source material for future issues/sprints; not part of the codebase.
-# See .research/README.md for the index.
 /.research/
 
 # Ignore bundler config.
@@ -52,8 +50,7 @@
 !/app/assets/builds/.keep
 
 # LLM / AI tool files
-.claude/*
-!.claude/memory/
+.claude/
 .cursor/
 .cursorignore
 .cursorindexingignore
@@ -66,3 +63,7 @@
 .codeium/
 .continue/
 .windsurf/
+
+# kwik-e: personal AI memory + local overrides — synced via rodacato/kwik-e-mart, never committed
+.kwik-e/
+CLAUDE.local.md

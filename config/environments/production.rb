@@ -99,6 +99,8 @@ Rails.application.configure do
     ENV["HOST_IP"]
   ].compact
 
-  # Skip DNS rebinding protection for the default health check endpoint.
-  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # Skip DNS rebinding protection for the health check and Prometheus metrics
+  # endpoints — both are reached by infra (Kamal probe, external scraper) whose
+  # Host header isn't in the allowlist. /metrics stays protected by its bearer token.
+  config.host_authorization = { exclude: ->(request) { [ "/up", "/metrics" ].include?(request.path) } }
 end

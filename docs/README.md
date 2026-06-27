@@ -47,4 +47,4 @@
 
 ## AI assistant's persistent memory
 
-Lives at [`../.claude/memory/`](../.claude/memory/). Tracked in git and auto-loaded by the assistant. Contains user profile, vision, decisions, anti-patterns, and brutal-honesty mandate.
+Lives at [`../.kwik-e/memory/`](../.kwik-e/memory/). Tracked in git and auto-loaded by the assistant. Contains user profile, vision, decisions, anti-patterns, and brutal-honesty mandate.

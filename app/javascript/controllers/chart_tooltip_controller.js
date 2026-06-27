@@ -7,7 +7,7 @@ import { Controller } from "@hotwired/stimulus"
 //   - target "svg": the <svg> element
 //   - target "tooltip": a hidden <div> for displaying values
 //   - <circle> elements inside the SVG with data-date and data-value attributes
-export default class extends Controller {
+export default class ChartTooltipController extends Controller {
   static targets = ["svg", "tooltip"]
 
   connect() {
@@ -36,7 +36,7 @@ export default class extends Controller {
     let minDist = Infinity
 
     circles.forEach((circle) => {
-      const cx = parseFloat(circle.getAttribute("cx"))
+      const cx = Number.parseFloat(circle.getAttribute("cx"))
       const dist = Math.abs(cx - svgX)
       if (dist < minDist) {
         minDist = dist

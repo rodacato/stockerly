@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="onboarding-form"
 // Manages the onboarding step 2 form: counter, validation, and submission
-export default class extends Controller {
+export default class OnboardingFormController extends Controller {
   static targets = ["counter", "counterIcon", "submitBtn", "hiddenInputs"]
 
   updateCount() {

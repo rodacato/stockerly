@@ -112,3 +112,7 @@ production:
   cleanup_expired_invite_codes:
     class: CleanupExpiredInviteCodesJob
     schedule: at 3am every day
+
+  check_sync_health:
+    class: CheckSyncHealthJob
+    schedule: every hour at minute 45
