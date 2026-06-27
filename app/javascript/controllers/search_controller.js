@@ -82,8 +82,9 @@ export default class SearchController extends Controller {
           this.selectedIndex = -1
         }
       }
-    } catch (_error) {
-      // Silently fail — user can still use quick actions
+    } catch (error) {
+      // No user-facing error — quick actions remain usable; log for debugging.
+      console.error("Asset search failed", error)
     }
   }
 
@@ -116,7 +117,7 @@ export default class SearchController extends Controller {
     } else if (event.key === "Enter" && this.selectedIndex >= 0) {
       event.preventDefault()
       const selected = items[this.selectedIndex]
-      if (selected && selected.href) {
+      if (selected?.href) {
         this.close()
         globalThis.Turbo.visit(selected.href)
       }

@@ -17,7 +17,7 @@
       </div>
 
       <%# Desktop Nav %>
-      <nav class="hidden lg:flex items-center gap-0.5">
+      <nav class="hidden lg:flex items-center gap-0.5" aria-label="Navegación principal">
         <% [
           ["Panel", dashboard_path, "dashboard"],
           ["Mercado", market_path, "monitoring"],
@@ -72,7 +72,7 @@
     </div>
 
     <%# Mobile Nav %>
-    <nav class="hidden lg:hidden pb-4 space-y-1" data-mobile-menu-target="menu">
+    <nav class="hidden lg:hidden pb-4 space-y-1" data-mobile-menu-target="menu" aria-label="Navegación móvil">
       <%# Mobile Search %>
       <div class="relative mb-3 md:hidden">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>

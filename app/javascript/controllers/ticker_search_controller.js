@@ -42,7 +42,8 @@ export default class TickerSearchController extends Controller {
       } else {
         this.showError()
       }
-    } catch (_error) {
+    } catch (error) {
+      console.error("Ticker search failed", error)
       this.showError()
     }
   }
