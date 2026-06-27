@@ -8,6 +8,7 @@ module MarketData
 
     BASE_URL = "https://finnhub.io/api/v1"
     PROVIDER = "Finnhub"
+    RATE_LIMITED_MESSAGE = "#{PROVIDER} rate limit exceeded"
     TIMEOUT  = 5
 
     def initialize(api_key: nil)
@@ -25,7 +26,7 @@ module MarketData
         req.params["token"] = @api_key
       end
 
-      return Failure([ :rate_limited, "Finnhub rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "Finnhub returned #{response.status}" ]) unless response.success?
 
       parse_quote(symbol, response.body)
@@ -63,7 +64,7 @@ module MarketData
         req.params["token"] = @api_key
       end
 
-      return Failure([ :rate_limited, "Finnhub rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "Finnhub returned #{response.status}" ]) unless response.success?
 
       parse_candles(response.body)
@@ -89,7 +90,7 @@ module MarketData
         req.params["token"] = @api_key
       end
 
-      return Failure([ :rate_limited, "Finnhub rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "Finnhub returned #{response.status}" ]) unless response.success?
 
       parse_news(response.body, limit: limit)
@@ -113,7 +114,7 @@ module MarketData
         req.params["token"] = @api_key
       end
 
-      return Failure([ :rate_limited, "Finnhub rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "Finnhub returned #{response.status}" ]) unless response.success?
 
       parse_earnings(response.body)
@@ -132,7 +133,7 @@ module MarketData
         req.params["token"] = @api_key
       end
 
-      return Failure([ :rate_limited, "Finnhub rate limit exceeded" ]) if response.status == 429
+      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
       return Failure([ :gateway_error, "Finnhub returned #{response.status}" ]) unless response.success?
 
       parse_search(response.body)

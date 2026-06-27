@@ -7,7 +7,7 @@ import { Controller } from "@hotwired/stimulus"
 //   * Each "panel" target declares which conditions it applies to via
 //     data-alert-form-conditions; we show/hide on chip change.
 //   * The preview text recomposes from the ticker/threshold/window inputs.
-export default class extends Controller {
+export default class AlertFormController extends Controller {
   static targets = [
     "chip",
     "conditionInput",

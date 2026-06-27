@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="notification"
-export default class extends Controller {
+export default class NotificationController extends Controller {
   static targets = ["panel", "badge", "item"]
 
   connect() {

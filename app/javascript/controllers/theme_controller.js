@@ -11,13 +11,13 @@ import { Controller } from "@hotwired/stimulus"
 // early application.html.erb head script reads the same key on first
 // paint so reloads don't FOUC. No server round-trip — theme is a pure
 // client preference.
-export default class extends Controller {
+export default class ThemeController extends Controller {
   static targets = ["option"]
   static values = { storageKey: { type: String, default: "stockerly.theme" } }
 
   connect() {
     this.render(this.currentMode)
-    this.mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    this.mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)")
     this.mediaQueryListener = () => {
       if (this.currentMode === "system") this.applyMode("system")
     }
@@ -45,7 +45,7 @@ export default class extends Controller {
 
   applyMode(mode) {
     const wantsDark = mode === "dark" ||
-      (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      (mode === "system" && globalThis.matchMedia("(prefers-color-scheme: dark)").matches)
     document.documentElement.classList.toggle("dark", wantsDark)
   }
 

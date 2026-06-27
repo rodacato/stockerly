@@ -35,17 +35,17 @@
 
     <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
       <div>
-        <label class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Símbolo</label>
+        <label for="asset_symbol" class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Símbolo</label>
         <%= f.text_field :symbol, placeholder: "AAPL",
               data: { ticker_search_target: "symbol" }, class: mono_class %>
       </div>
       <div>
-        <label class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Nombre</label>
+        <label for="asset_name" class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Nombre</label>
         <%= f.text_field :name, placeholder: "Apple Inc.",
               data: { ticker_search_target: "name" }, class: input_class %>
       </div>
       <div>
-        <label class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Tipo</label>
+        <label for="asset_asset_type" class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Tipo</label>
         <%= f.select :asset_type,
               options_for_select([
                 [ "Acción",    "stock" ],
@@ -59,22 +59,22 @@
               class: select_class %>
       </div>
       <div>
-        <label class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Mercado</label>
+        <label for="asset_exchange" class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Mercado</label>
         <%= f.text_field :exchange, placeholder: "NASDAQ · BMV · COINGECKO",
               data: { ticker_search_target: "exchange" }, class: mono_class %>
       </div>
       <div>
-        <label class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">País</label>
+        <label for="asset_country" class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">País</label>
         <%= f.text_field :country, placeholder: "MX · US",
               data: { ticker_search_target: "country" }, class: mono_class %>
       </div>
       <div>
-        <label class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Sector</label>
+        <label for="asset_sector" class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Sector</label>
         <%= f.text_field :sector, placeholder: "Technology",
               data: { ticker_search_target: "sector" }, class: input_class %>
       </div>
       <div class="lg:col-span-2">
-        <label class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+        <label for="asset_logo_url" class="mb-1 block text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
           URL del logo
           <span class="ml-1 normal-case tracking-normal italic text-slate-400">opcional</span>
         </label>

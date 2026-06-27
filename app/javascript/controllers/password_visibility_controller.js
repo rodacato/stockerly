@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="password-visibility"
-export default class extends Controller {
+export default class PasswordVisibilityController extends Controller {
   static targets = ["input", "icon"]
 
   toggle() {

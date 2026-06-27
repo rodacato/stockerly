@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="onboarding-select"
 // Manages stock selection toggling in onboarding step 2
-export default class extends Controller {
+export default class OnboardingSelectController extends Controller {
   static values = { assetId: Number }
   static outlets = ["onboarding-form"]
 

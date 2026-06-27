@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Shows/hides trend score factor breakdown popover on hover.
-export default class extends Controller {
+export default class TrendBreakdownController extends Controller {
   static targets = ["popover"]
 
   show() {

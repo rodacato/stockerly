@@ -219,4 +219,4 @@ Currently required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `r
 - [ADR-001](../architecture/adr/0001-descriptive-not-prescriptive-language.md) — product language
 - [Code Audit 2026-05](../research/code-audit-2026-05/README.md) — initial backlog input
 - [Expert Panel](../research/experts.md) — structured consultations
-- [Working method memory](../../.claude/memory/project_working_method.md) — AI assistant's persistent version
+- [Working method memory](../../.kwik-e/memory/project_working_method.md) — AI assistant's persistent version

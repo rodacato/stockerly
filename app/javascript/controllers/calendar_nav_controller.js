@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="calendar-nav"
-export default class extends Controller {
+export default class CalendarNavController extends Controller {
   static targets = ["label"]
   static values = { months: Array }
 

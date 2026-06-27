@@ -1,4 +1,5 @@
-<%# Usage: render "components/donut_chart", segments: [{label: "Technology", pct: 45, color: "#5B6CFF"}, ...], center_label: "Equities", center_value: "92.4%" %>
+<%# Usage: render "components/donut_chart", segments: [{label: "Tecnología", pct: 45, color: "var(--color-chart-1)"}, ...], center_label: "Invertido", center_value: "92.4%" %>
+<%# Segment colors must come from the --color-chart-* token set (tokens.md §1.4), never raw hex. %>
 <% segments ||= [] %>
 <% center_label ||= "" %>
 <% center_value ||= "" %>

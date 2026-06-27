@@ -7,6 +7,8 @@ class SyncBulkStocksJob < ApplicationJob
 
   queue_as :default
 
+  TASK_NAME = "Bulk Stock Sync"
+
   retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
 
   def perform(asset_ids)
@@ -17,11 +19,11 @@ class SyncBulkStocksJob < ApplicationJob
 
     if result.success?
       updated = update_assets(assets, result.value!)
-      log_sync_success("Bulk Stock Sync", message: "#{updated}/#{assets.size} updated")
+      log_sync_success(TASK_NAME, message: "#{updated}/#{assets.size} updated")
     elsif result.failure[0] == :rate_limited || result.failure[0] == :circuit_open
-      log_sync_failure("Bulk Stock Sync", result.failure[1], severity: :warning)
+      log_sync_failure(TASK_NAME, result.failure[1], severity: :warning)
     else
-      log_sync_failure("Bulk Stock Sync", result.failure[1])
+      log_sync_failure(TASK_NAME, result.failure[1])
     end
   end
 

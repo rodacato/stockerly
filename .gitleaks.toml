@@ -3,7 +3,7 @@ title = "Stockerly Gitleaks Config"
 [extend]
 useDefault = true
 
-[[allowlists]]
+[allowlist]
 description = "Dummy credentials and examples in tests and documentation"
 paths = [
   '''^spec/''',

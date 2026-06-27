@@ -6,6 +6,8 @@ module MarketData
     class AlphaVantageGateway < FundamentalsGateway
     BASE_URL = "https://www.alphavantage.co"
     PROVIDER = "Alpha Vantage"
+    QUERY_PATH = "/query"
+    TIMEOUT_MESSAGE = "#{PROVIDER} request timed out"
     TIMEOUT  = 10
 
     def initialize(api_key: nil)
@@ -18,7 +20,7 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/query") do |req|
+      response = connection.get(QUERY_PATH) do |req|
         req.params["function"] = "OVERVIEW"
         req.params["symbol"] = symbol
         req.params["apikey"] = @api_key
@@ -33,7 +35,7 @@ module MarketData
 
       parse_overview(body)
     rescue Faraday::TimeoutError, Faraday::ConnectionFailed
-      Failure([ :timeout, "Alpha Vantage request timed out" ])
+      Failure([ :timeout, TIMEOUT_MESSAGE ])
     rescue Faraday::Error => e
       Failure([ :gateway_error, e.message ])
     rescue JSON::ParserError
@@ -59,7 +61,7 @@ module MarketData
     # Search tickers by keyword via SYMBOL_SEARCH endpoint.
     # Returns Success([{ symbol:, name:, quote_type:, exchange:, exchange_display: }, ...])
     def search_tickers(query)
-      response = connection.get("/query") do |req|
+      response = connection.get(QUERY_PATH) do |req|
         req.params["function"] = "SYMBOL_SEARCH"
         req.params["keywords"] = query
         req.params["apikey"] = @api_key
@@ -76,7 +78,7 @@ module MarketData
 
       Success(results)
     rescue Faraday::TimeoutError, Faraday::ConnectionFailed
-      Failure([ :timeout, "Alpha Vantage request timed out" ])
+      Failure([ :timeout, TIMEOUT_MESSAGE ])
     rescue Faraday::Error => e
       Failure([ :gateway_error, e.message ])
     end
@@ -111,7 +113,7 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/query") do |req|
+      response = connection.get(QUERY_PATH) do |req|
         req.params["function"] = function
         req.params["symbol"] = symbol
         req.params["apikey"] = @api_key
@@ -130,7 +132,7 @@ module MarketData
         quarterly_reports: (body["quarterlyReports"] || []).map { |r| normalize_keys(r) }
       })
     rescue Faraday::TimeoutError, Faraday::ConnectionFailed
-      Failure([ :timeout, "Alpha Vantage request timed out" ])
+      Failure([ :timeout, TIMEOUT_MESSAGE ])
     rescue Faraday::Error => e
       Failure([ :gateway_error, e.message ])
     rescue JSON::ParserError

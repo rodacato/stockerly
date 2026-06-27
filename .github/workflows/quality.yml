@@ -1,0 +1,70 @@
+# Standardized quality + security gate — calls rodacato/sector-7g.
+# Update the reusable workflows there → this repo inherits the change.
+name: Sector 7g - Quality
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  security:
+    uses: rodacato/sector-7g/.github/workflows/security.yml@master
+    with:
+      blocking: false # report-only for now; flip to true (or remove) to enforce
+
+  sonar:
+    # Manual-only for now: runs on "Run workflow", not on every push/PR.
+    # Runs the suite first so SimpleCov writes coverage/.resultset.json — the
+    # scan reads it via sonar.ruby.coverage.reportPaths.
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: stockerly
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: stockerly_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_HOST: localhost
+      DATABASE_USERNAME: stockerly
+      DATABASE_PASSWORD: test_password
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history → accurate "new code" / blame dates
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up database
+        run: bin/rails db:create db:schema:load
+
+      - name: Run tests with coverage
+        run: bundle exec rspec
+
+      - name: SonarQube scan
+        uses: rodacato/sector-7g/actions/sonar-scan@master
+        with:
+          host_url: ${{ vars.SONAR_HOST_URL }}
+          token: ${{ secrets.SONAR_TOKEN }}

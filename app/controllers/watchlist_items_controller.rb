@@ -1,4 +1,6 @@
 class WatchlistItemsController < AuthenticatedController
+  FLASH_PARTIAL = "shared/flash_message"
+
   def create
     result = Trading::UseCases::AddToWatchlist.call(user: current_user, asset_id: params[:asset_id])
 
@@ -14,7 +16,7 @@ class WatchlistItemsController < AuthenticatedController
                 end
               end),
             turbo_stream.prepend("flash_messages",
-              partial: "shared/flash_message", locals: { type: "notice", message: "Added to watchlist." })
+              partial: FLASH_PARTIAL, locals: { type: "notice", message: "Added to watchlist." })
           ]
         end
         format.html { redirect_back fallback_location: dashboard_path, notice: "Added to watchlist." }
@@ -24,7 +26,7 @@ class WatchlistItemsController < AuthenticatedController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: "shared/flash_message", locals: { type: "alert", message: message })
+            partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
         format.html { redirect_back fallback_location: market_path, alert: message }
       end
@@ -32,7 +34,7 @@ class WatchlistItemsController < AuthenticatedController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: "shared/flash_message", locals: { type: "alert", message: message })
+            partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
         format.html { redirect_back fallback_location: market_path, alert: message }
       end

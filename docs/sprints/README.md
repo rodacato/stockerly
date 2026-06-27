@@ -87,7 +87,7 @@ Write `retro.md` following the template. Minimum:
   5. Architecture without cross-context leaks
   6. Docs reflect code
 - **Real vs estimated time** (calibration for future sprints)
-- **Anti-pattern violated, if any** (reference `.claude/memory/feedback_anti_patterns.md`)
+- **Anti-pattern violated, if any** (reference `.kwik-e/memory/feedback_anti_patterns.md`)
 
 #### Formal close
 
@@ -140,6 +140,6 @@ No `Co-Authored-By` (project rule).
 
 - [Vision README](../vision/README.md) — the north star
 - [JTBDs](../vision/jobs-to-be-done.md) — the 6 canonical
-- [Working method memory](../../.claude/memory/project_working_method.md) — AI assistant's version
+- [Working method memory](../../.kwik-e/memory/project_working_method.md) — AI assistant's version
 - [GitHub workflow](../ops/github-workflow.md) — manual for using GitHub
-- [Anti-patterns](../../.claude/memory/feedback_anti_patterns.md) — what to avoid
+- [Anti-patterns](../../.kwik-e/memory/feedback_anti_patterns.md) — what to avoid

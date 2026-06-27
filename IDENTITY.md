@@ -147,11 +147,11 @@ Without the 4 filters, it doesn't get built. No exceptions.
 - **Chat with Adrian:** Spanish
 - **Plans and drafts in chat:** Spanish OK
 - **Anything committed to the repo** (commits, issues, PRs, docs, code comments): **English**
-- See `.claude/memory/feedback_repo_language_english.md`
+- See `.kwik-e/memory/feedback_repo_language_english.md`
 
 ### No co-author attribution
 
-Commits, issues, PRs, releases, and any artifact attributed to Adrian must NOT include `Co-Authored-By:` or any AI attribution line. See `.claude/memory/feedback_no_coauthor.md`.
+Commits, issues, PRs, releases, and any artifact attributed to Adrian must NOT include `Co-Authored-By:` or any AI attribution line. See `.kwik-e/memory/feedback_no_coauthor.md`.
 
 ---
 
@@ -203,7 +203,7 @@ If a consultation significantly changes project direction → ADR. Without an AD
 | **Expert Panel** | [`docs/research/experts.md`](docs/research/experts.md) | 8 Core + 8 Situational |
 | **Sprint protocol** | [`docs/sprints/README.md`](docs/sprints/README.md) | Sprint operating manual |
 | **GitHub workflow** | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | How we use Issues + Projects |
-| **Persistent memory** | [`.claude/memory/`](.claude/memory/) | User profile, decisions, anti-patterns |
+| **Persistent memory** | [`.kwik-e/memory/`](.kwik-e/memory/) | User profile, decisions, anti-patterns |
 | **Deployment** | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare guide |
 | **Designs in process** | [`designs/wip/PROCESSING.md`](designs/wip/PROCESSING.md) | Stitch workflow (redesign closed at sprint) |
 

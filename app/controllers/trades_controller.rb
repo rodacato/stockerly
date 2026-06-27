@@ -1,4 +1,6 @@
 class TradesController < AuthenticatedController
+  FLASH_PARTIAL = "shared/flash_message"
+
   # Filter params accepted on /trades:
   #   tipo:    "todos" | "compras" | "ventas"
   #   mercado: "todos" | "mxn" | "usd"
@@ -42,7 +44,7 @@ class TradesController < AuthenticatedController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.prepend("trade_history", partial: "trades/trade_row", locals: { trade: trade }),
-            turbo_stream.prepend("flash_messages", partial: "shared/flash_message",
+            turbo_stream.prepend("flash_messages", partial: FLASH_PARTIAL,
               locals: { type: "notice", message: "#{trade.buy? ? 'Compra' : 'Venta'} registrada: #{trade.shares} títulos de #{trade.asset.symbol}" })
           ]
         end
@@ -53,7 +55,7 @@ class TradesController < AuthenticatedController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: "shared/flash_message", locals: { type: "alert", message: error_msg })
+            partial: FLASH_PARTIAL, locals: { type: "alert", message: error_msg })
         end
         format.html { redirect_to portfolio_path, alert: error_msg }
       end
@@ -61,7 +63,7 @@ class TradesController < AuthenticatedController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: "shared/flash_message", locals: { type: "alert", message: message })
+            partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
         format.html { redirect_to portfolio_path, alert: message }
       end
@@ -114,7 +116,7 @@ class TradesController < AuthenticatedController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace(trade, partial: "trades/trade_row", locals: { trade: trade }),
-            turbo_stream.prepend("flash_messages", partial: "shared/flash_message",
+            turbo_stream.prepend("flash_messages", partial: FLASH_PARTIAL,
               locals: { type: "notice", message: "Movimiento actualizado." })
           ]
         end
@@ -125,7 +127,7 @@ class TradesController < AuthenticatedController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: "shared/flash_message", locals: { type: "alert", message: error_msg })
+            partial: FLASH_PARTIAL, locals: { type: "alert", message: error_msg })
         end
         format.html { redirect_to trades_path, alert: error_msg }
       end
@@ -133,7 +135,7 @@ class TradesController < AuthenticatedController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: "shared/flash_message", locals: { type: "alert", message: message })
+            partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
         format.html { redirect_to trades_path, alert: message }
       end
@@ -149,7 +151,7 @@ class TradesController < AuthenticatedController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.remove(trade),
-            turbo_stream.prepend("flash_messages", partial: "shared/flash_message",
+            turbo_stream.prepend("flash_messages", partial: FLASH_PARTIAL,
               locals: { type: "notice", message: "Movimiento eliminado." })
           ]
         end
@@ -159,7 +161,7 @@ class TradesController < AuthenticatedController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: "shared/flash_message", locals: { type: "alert", message: message })
+            partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
         format.html { redirect_to trades_path, alert: message }
       end
@@ -186,6 +188,7 @@ class TradesController < AuthenticatedController
     case @tipo
     when "compras" then :buy
     when "ventas"  then :sell
+    else nil
     end
   end
 
@@ -193,6 +196,7 @@ class TradesController < AuthenticatedController
     case @mercado
     when "mxn" then "MXN"
     when "usd" then "USD"
+    else nil
     end
   end
 end

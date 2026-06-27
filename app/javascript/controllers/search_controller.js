@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="search"
-export default class extends Controller {
+export default class SearchController extends Controller {
   static targets = ["overlay", "modal", "input", "results", "assetResults", "group"]
   static values = { url: String }
 
@@ -68,7 +68,7 @@ export default class extends Controller {
   async performSearch(query) {
     try {
       const url = this.urlValue || "/search"
-      const response = await window.fetch(`${url}?q=${encodeURIComponent(query)}&format=modal`, {
+      const response = await globalThis.fetch(`${url}?q=${encodeURIComponent(query)}&format=modal`, {
         headers: {
           "Accept": "text/html",
           "X-Requested-With": "XMLHttpRequest"
@@ -118,7 +118,7 @@ export default class extends Controller {
       const selected = items[this.selectedIndex]
       if (selected && selected.href) {
         this.close()
-        window.Turbo.visit(selected.href)
+        globalThis.Turbo.visit(selected.href)
       }
     }
   }

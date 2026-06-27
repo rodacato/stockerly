@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-export default class extends Controller {
+export default class TickerSearchController extends Controller {
   static targets = ["input", "results", "symbol", "name", "assetType", "exchange", "country", "sector"]
   static values = { url: String }
 
@@ -31,7 +31,7 @@ export default class extends Controller {
   async performSearch(query) {
     try {
       this.showLoading()
-      const response = await window.fetch(
+      const response = await globalThis.fetch(
         `${this.urlValue}?q=${encodeURIComponent(query)}`,
         { headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" } }
       )
@@ -162,6 +162,6 @@ export default class extends Controller {
   }
 
   escapeAttr(text) {
-    return text.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    return text.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
   }
 }

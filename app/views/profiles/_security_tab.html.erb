@@ -12,18 +12,18 @@
 
     <%= form_with url: change_password_path, method: :patch, class: "mt-4 space-y-4 max-w-md" do |f| %>
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-fg-subtle mb-1.5">Contraseña actual</label>
-        <input type="password" name="password_change[current_password]" autocomplete="current-password" required
+        <label for="password_change_current_password" class="block text-xs font-bold uppercase tracking-wider text-fg-subtle mb-1.5">Contraseña actual</label>
+        <input type="password" id="password_change_current_password" name="password_change[current_password]" autocomplete="current-password" required
                class="w-full px-4 py-2.5 rounded-lg border border-border-default bg-bg-muted text-sm text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none">
       </div>
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-fg-subtle mb-1.5">Nueva contraseña</label>
-        <input type="password" name="password_change[password]" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required
+        <label for="password_change_password" class="block text-xs font-bold uppercase tracking-wider text-fg-subtle mb-1.5">Nueva contraseña</label>
+        <input type="password" id="password_change_password" name="password_change[password]" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required
                class="w-full px-4 py-2.5 rounded-lg border border-border-default bg-bg-muted text-sm text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none">
       </div>
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-fg-subtle mb-1.5">Confirmar nueva contraseña</label>
-        <input type="password" name="password_change[password_confirmation]" autocomplete="new-password" required
+        <label for="password_change_password_confirmation" class="block text-xs font-bold uppercase tracking-wider text-fg-subtle mb-1.5">Confirmar nueva contraseña</label>
+        <input type="password" id="password_change_password_confirmation" name="password_change[password_confirmation]" autocomplete="new-password" required
                class="w-full px-4 py-2.5 rounded-lg border border-border-default bg-bg-muted text-sm text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none">
       </div>
       <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover shadow-sm">

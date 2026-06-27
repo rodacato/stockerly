@@ -7,6 +7,7 @@ module Administration
         KNOWN_MODULES = %w[sync alerts auth admin].freeze
         RANGE_KEYS    = %w[hoy 24h 7d 30d 90d].freeze
         DEFAULT_RANGE = "24h".freeze
+        CREATED_AT_SINCE = "created_at >= ?".freeze
 
         def call(params: {}, request: nil)
           scope = SystemLog.recent
@@ -45,11 +46,11 @@ module Administration
 
         def apply_range(scope, key)
           case key.to_s
-          when "hoy" then scope.where("created_at >= ?", Time.current.beginning_of_day)
-          when "24h" then scope.where("created_at >= ?", 24.hours.ago)
-          when "7d"  then scope.where("created_at >= ?", 7.days.ago)
-          when "30d" then scope.where("created_at >= ?", 30.days.ago)
-          when "90d" then scope.where("created_at >= ?", 90.days.ago)
+          when "hoy" then scope.where(CREATED_AT_SINCE, Time.current.beginning_of_day)
+          when "24h" then scope.where(CREATED_AT_SINCE, 24.hours.ago)
+          when "7d"  then scope.where(CREATED_AT_SINCE, 7.days.ago)
+          when "30d" then scope.where(CREATED_AT_SINCE, 30.days.ago)
+          when "90d" then scope.where(CREATED_AT_SINCE, 90.days.ago)
           else            scope
           end
         end

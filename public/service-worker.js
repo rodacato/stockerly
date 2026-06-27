@@ -101,5 +101,11 @@ function isStaticAsset(url) {
 }
 
 function isGoogleFont(url) {
-  return url.startsWith("https://fonts.googleapis.com") || url.startsWith("https://fonts.gstatic.com");
+  let hostname;
+  try {
+    hostname = new URL(url).hostname;
+  } catch {
+    return false;
+  }
+  return hostname === "fonts.googleapis.com" || hostname === "fonts.gstatic.com";
 }
