@@ -18,10 +18,8 @@ class RateLimiter
     return Success(:allowed) unless integration
 
     # Check per-minute limit
-    if integration.max_requests_per_minute.present?
-      if integration.minute_budget_exhausted?
-        return Failure([ :rate_limited, "#{provider_name}: minute limit reached (#{integration.max_requests_per_minute}/min)" ])
-      end
+    if integration.max_requests_per_minute.present? && integration.minute_budget_exhausted?
+      return Failure([ :rate_limited, "#{provider_name}: minute limit reached (#{integration.max_requests_per_minute}/min)" ])
     end
 
     # Check per-day limit

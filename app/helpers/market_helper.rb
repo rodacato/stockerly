@@ -87,18 +87,21 @@ module MarketHelper
   }.freeze
 
   # Short uppercase es-MX tag rendered next to the phrase in the asset
-  # detail "Observaciones recientes" panel (S10 #93).
+  # detail "Observaciones recientes" panel (S10 #93). One per indicator family.
+  RSI_TAG = "RSI"
+  MOVING_AVERAGE_TAG = "MEDIA MÓVIL"
+  BOLLINGER_TAG = "BANDAS"
   OBSERVATION_TAGS = {
-    "rsi_oversold_entered"   => "RSI",
-    "rsi_overbought_entered" => "RSI",
-    "rsi_oversold_exited"    => "RSI",
-    "rsi_overbought_exited"  => "RSI",
-    "ma200_crossed_above"    => "MEDIA MÓVIL",
-    "ma200_crossed_below"    => "MEDIA MÓVIL",
-    "ma50_crossed_above"     => "MEDIA MÓVIL",
-    "ma50_crossed_below"     => "MEDIA MÓVIL",
-    "bb_upper_breached"      => "BANDAS",
-    "bb_lower_breached"      => "BANDAS"
+    "rsi_oversold_entered"   => RSI_TAG,
+    "rsi_overbought_entered" => RSI_TAG,
+    "rsi_oversold_exited"    => RSI_TAG,
+    "rsi_overbought_exited"  => RSI_TAG,
+    "ma200_crossed_above"    => MOVING_AVERAGE_TAG,
+    "ma200_crossed_below"    => MOVING_AVERAGE_TAG,
+    "ma50_crossed_above"     => MOVING_AVERAGE_TAG,
+    "ma50_crossed_below"     => MOVING_AVERAGE_TAG,
+    "bb_upper_breached"      => BOLLINGER_TAG,
+    "bb_lower_breached"      => BOLLINGER_TAG
   }.freeze
 
   # Visual accent ("pos" green, "warn" amber, neutral primary) for the

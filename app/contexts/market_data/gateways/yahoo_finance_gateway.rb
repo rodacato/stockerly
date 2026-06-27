@@ -51,7 +51,7 @@ module MarketData
       return fallback_bulk_prices(symbols) if response.status == 429
       return fallback_bulk_prices(symbols) unless response.success?
 
-      results = parse_batch_quotes(response.body, symbols)
+      results = parse_batch_quotes(response.body)
       return fallback_bulk_prices(symbols) if results.empty?
 
       Success(results)
@@ -243,7 +243,7 @@ module MarketData
       }
     end
 
-    def parse_batch_quotes(body, symbols)
+    def parse_batch_quotes(body)
       results = body.dig("quoteResponse", "result") || []
       results.filter_map do |quote|
         symbol = quote["symbol"]
