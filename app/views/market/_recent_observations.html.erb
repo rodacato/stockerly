@@ -1,7 +1,7 @@
 <%# Recent technical-zone transitions — Stockerly-2.0 (S10 #93). Prominent
     panel shown above the chart with descriptive copy per ADR-001
     ("AAPL entró en zona de sobreventa…"). Tags + relative time + accent dot
-    mirror the mockup. Phrases/tags/accents come from TechnicalObservation. %>
+    mirror the mockup. Phrases/tags/accents come from MarketHelper. %>
 <% if observations.any? %>
   <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
     <header class="flex flex-wrap items-baseline gap-2 px-5 pt-4 pb-3">
@@ -19,13 +19,13 @@
     <ul class="divide-y divide-slate-100 dark:divide-slate-800">
       <% observations.each do |observation| %>
         <li class="grid grid-cols-[8px_1fr_auto] sm:grid-cols-[8px_1fr_140px_120px] items-center gap-3.5 px-5 py-3.5">
-          <span class="inline-block h-1.5 w-1.5 rounded-full <%= observation_dot_class(observation.accent) %>"></span>
+          <span class="inline-block h-1.5 w-1.5 rounded-full <%= observation_dot_class(observation_accent(observation)) %>"></span>
           <p class="text-sm text-slate-700 dark:text-slate-200 leading-snug">
             <span class="font-mono font-semibold text-primary"><%= asset.symbol %></span>
-            <%= observation.phrase %>
+            <%= observation_phrase(observation) %>
           </p>
           <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
-            <%= observation.tag %>
+            <%= observation_tag(observation) %>
           </span>
           <span class="text-right text-xs text-slate-500 dark:text-slate-400">
             <%= observation_when(observation.observed_at) %>

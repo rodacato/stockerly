@@ -17,7 +17,7 @@
             <p class="text-[13px] leading-snug text-fg-default">
               <%= link_to observation.asset.symbol, market_asset_path(observation.asset.symbol),
                           class: "font-mono font-semibold text-primary hover:underline" %>
-              <%= observation.phrase %>.
+              <%= observation_phrase(observation) %>.
             </p>
             <p class="mt-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
               <%= observation.asset.name %> · hace <%= time_ago_in_words(observation.observed_at) %>

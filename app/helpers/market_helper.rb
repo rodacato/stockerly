@@ -69,6 +69,67 @@ module MarketHelper
     end
   end
 
+  # Descriptive es-MX label for a technical observation, per ADR-001 —
+  # purely observational, no action verbs. The asset symbol is rendered by
+  # the caller so the phrase stays asset-agnostic. English keys remain the
+  # canonical persisted observation_type; only the user-facing copy is es-MX.
+  OBSERVATION_PHRASES = {
+    "rsi_oversold_entered"   => "entró en zona de sobreventa (RSI(14) por debajo de 30)",
+    "rsi_overbought_entered" => "entró en zona de sobrecompra (RSI(14) por encima de 70)",
+    "rsi_oversold_exited"    => "salió de la zona de sobreventa",
+    "rsi_overbought_exited"  => "salió de la zona de sobrecompra",
+    "ma200_crossed_above"    => "cruzó al alza su MA200",
+    "ma200_crossed_below"    => "cruzó a la baja su MA200",
+    "ma50_crossed_above"     => "cruzó al alza su MA50",
+    "ma50_crossed_below"     => "cruzó a la baja su MA50",
+    "bb_upper_breached"      => "rompió la banda de Bollinger superior",
+    "bb_lower_breached"      => "rompió la banda de Bollinger inferior"
+  }.freeze
+
+  # Short uppercase es-MX tag rendered next to the phrase in the asset
+  # detail "Observaciones recientes" panel (S10 #93).
+  OBSERVATION_TAGS = {
+    "rsi_oversold_entered"   => "RSI",
+    "rsi_overbought_entered" => "RSI",
+    "rsi_oversold_exited"    => "RSI",
+    "rsi_overbought_exited"  => "RSI",
+    "ma200_crossed_above"    => "MEDIA MÓVIL",
+    "ma200_crossed_below"    => "MEDIA MÓVIL",
+    "ma50_crossed_above"     => "MEDIA MÓVIL",
+    "ma50_crossed_below"     => "MEDIA MÓVIL",
+    "bb_upper_breached"      => "BANDAS",
+    "bb_lower_breached"      => "BANDAS"
+  }.freeze
+
+  # Visual accent ("pos" green, "warn" amber, neutral primary) for the
+  # observation dot. Bullish-leaning → pos; bearish/extreme → warn; rest →
+  # neutral. Mapped to a CSS class by #observation_dot_class.
+  OBSERVATION_ACCENTS = {
+    "rsi_oversold_entered"   => "warn",
+    "rsi_overbought_entered" => "warn",
+    "rsi_oversold_exited"    => "pos",
+    "rsi_overbought_exited"  => "neutral",
+    "ma200_crossed_above"    => "pos",
+    "ma200_crossed_below"    => "warn",
+    "ma50_crossed_above"     => "pos",
+    "ma50_crossed_below"     => "warn",
+    "bb_upper_breached"      => "warn",
+    "bb_lower_breached"      => "warn"
+  }.freeze
+
+  def observation_phrase(observation)
+    type = observation.observation_type
+    OBSERVATION_PHRASES.fetch(type, type.humanize)
+  end
+
+  def observation_tag(observation)
+    OBSERVATION_TAGS.fetch(observation.observation_type, "SEÑAL")
+  end
+
+  def observation_accent(observation)
+    OBSERVATION_ACCENTS.fetch(observation.observation_type, "neutral")
+  end
+
   # es-MX accent → dot color class for the observation row.
   def observation_dot_class(accent)
     case accent
