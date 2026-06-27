@@ -54,7 +54,7 @@ Under `app/shared/` (Zeitwerk autoload without namespace prefix):
 | Path | Contains |
 |---|---|
 | `shared/base/` | `ApplicationUseCase`, `ApplicationContract` |
-| `shared/domain/` | `CircuitBreaker`, `RateLimiter`, `GatewayChain`, `KeyRotation`, `DataSourceRegistry`, `MarketHours`, `GainLoss`, `RiskMetrics`, `HealthMetrics` |
+| `shared/domain/` | `CircuitBreaker`, `RateLimiter`, `GatewayChain`, `KeyRotation`, `DataSourceRegistry`, `MarketHours`, `GainLoss`, `DataFreshness`, `HealthMetrics`, `ActivityRecorder` |
 | `shared/events/` | `BaseEvent`, `EventBus` |
 | `shared/types/` | `Types` (dry-types) |
 

@@ -18,7 +18,7 @@ Read `IDENTITY.md` at the project root — it defines the AI assistant's role as
 # Development server (Rails + Tailwind CSS watch)
 bin/dev
 
-# Run all tests (1841 specs)
+# Run all tests
 bundle exec rspec
 
 # Run single file or line
@@ -89,7 +89,7 @@ Cross-cutting code with **no namespace change** — available everywhere:
 | Path | Contents |
 |------|----------|
 | `app/shared/base/` | `ApplicationUseCase`, `ApplicationContract` |
-| `app/shared/domain/` | `CircuitBreaker`, `RateLimiter`, `GatewayChain`, `KeyRotation`, `DataSourceRegistry`, `MarketHours`, `GainLoss`, `RiskMetrics` |
+| `app/shared/domain/` | `CircuitBreaker`, `RateLimiter`, `GatewayChain`, `KeyRotation`, `DataSourceRegistry`, `MarketHours`, `GainLoss`, `DataFreshness`, `HealthMetrics`, `ActivityRecorder` |
 | `app/shared/events/` | `BaseEvent`, `EventBus` |
 | `app/shared/types/` | `Types` (Dry::Types definitions) |
 
@@ -167,7 +167,7 @@ Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUs
 
 ### Models
 
-23 ActiveRecord models. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
+37 ActiveRecord models. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
 
 ### Frontend Stack
 
@@ -207,7 +207,7 @@ spec/
 └── factories/        # FactoryBot definitions
 ```
 
-Coverage: ~94% line, branch coverage enabled via SimpleCov.
+Coverage: ~88% line in Sonar, branch coverage enabled via SimpleCov.
 
 ## Environment Gotchas
 
@@ -215,7 +215,7 @@ Coverage: ~94% line, branch coverage enabled via SimpleCov.
 - **Rails 8.1 host authorization** blocks unknown hosts (403) — disabled in `test.rb` with `config.hosts.clear`
 - **`allow_browser versions: :modern`** returns 406 (not 403), only fires when User-Agent contains a recognized version string
 - **`:unprocessable_content`** replaces deprecated `:unprocessable_entity` in Rails 8.1
-- **Ruby pattern matching caveat:** `case/in Dry::Monads::Success(data)` does NOT work — use `if result.success?` instead for conditional checks
+- **Ruby pattern matching:** `case/in Dry::Monads::Success(value)` / `Failure[:tag, payload]` works (dry-monads implements `deconstruct`/`deconstruct_keys`) and is the canonical controller style — used across ~13 controllers (see the Controllers example above). Use `if result.success?` only for a plain boolean check where you don't need to destructure the value.
 - **Solid Cable** is used in development (not async adapter) for cross-process Turbo Stream broadcasts
 
 ## Conventions
@@ -236,7 +236,7 @@ Coverage: ~94% line, branch coverage enabled via SimpleCov.
 - No over-engineering: only implement what was requested
 - Frontend-first: static views first, then connect backend
 - Auth via `has_secure_password` (no Devise), `generates_token_for :password_reset` for reset tokens
-- `money-rails` gem for currency formatting (not custom Value Objects)
+- Money is modeled as a plain `decimal` amount + ISO `currency` string — no Value Object layer
 - No `ransack` — use ActiveRecord scopes with ILIKE for search/filters
 
 ### Commit Style
