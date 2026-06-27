@@ -7,8 +7,6 @@ module Admin
       "email_notifications_enabled" => "notificaciones_por_correo"
     }.freeze
 
-    MONTHS_ES = %w[ENE FEB MAR ABR MAY JUN JUL AGO SEP OCT NOV DIC].freeze
-
     def setting_audit_key(key)
       SETTING_LABELS[key.to_s] || key.to_s
     end
@@ -29,7 +27,7 @@ module Admin
       return "—" unless time
       zone = Time.zone || ActiveSupport::TimeZone["America/Mexico_City"]
       t = time.in_time_zone(zone)
-      "#{t.day.to_s.rjust(2, '0')} #{MONTHS_ES[t.month - 1]} #{t.year} · #{t.strftime('%H:%M')}"
+      "#{t.day.to_s.rjust(2, '0')} #{DatetimeEsHelper::MONTHS_ES[t.month - 1]} #{t.year} · #{t.strftime('%H:%M')}"
     end
 
     # "hace 6 d · 15 MAY 2026" — combined relative + absolute (Stripe-style).

@@ -3,16 +3,16 @@ class PositionsController < AuthenticatedController
     position = current_user.portfolio&.positions&.find_by(id: params[:id])
 
     if position.nil?
-      redirect_to portfolio_path, alert: "Position not found."
+      redirect_to portfolio_path, alert: "No encontramos la posición."
       return
     end
 
     labels = parse_labels(params.dig(:position, :labels))
 
     if position.update(notes: params.dig(:position, :notes), labels: labels)
-      redirect_to portfolio_path, notice: "Position updated."
+      redirect_to portfolio_path, notice: "Actualizamos la posición."
     else
-      redirect_to portfolio_path, alert: "Could not update position."
+      redirect_to portfolio_path, alert: "No pudimos actualizar la posición."
     end
   end
 

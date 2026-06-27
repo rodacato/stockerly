@@ -11,13 +11,11 @@ module Admin
       "alerts"       => "Alertas"
     }.freeze
 
-    MONTHS_ES = %w[ENE FEB MAR ABR MAY JUN JUL AGO SEP OCT NOV DIC].freeze
-
     # "21 MAY 2026 · 14:32" — absolute, mono-friendly.
     def admin_absolute_ts(time)
       return "—" unless time
       t = time.in_time_zone("America/Mexico_City")
-      "#{t.day.to_s.rjust(2, '0')} #{MONTHS_ES[t.month - 1]} #{t.year} · #{t.strftime('%H:%M')}"
+      "#{t.day.to_s.rjust(2, '0')} #{DatetimeEsHelper::MONTHS_ES[t.month - 1]} #{t.year} · #{t.strftime('%H:%M')}"
     end
 
     # "hace 12 min" / "hace 2 h" / "hace 3 d" — relative, lower-case.

@@ -78,8 +78,6 @@ module MarketHelper
     end
   end
 
-  # Es-MX abbreviated month names (matches EarningsHelper::MONTHS).
-  ASSET_MONTHS_ES = %w[ENE FEB MAR ABR MAY JUN JUL AGO SEP OCT NOV DIC].freeze
   ASSET_MONTHS_ES_LOWER = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
 
   # "13 may 2026" — used in dividend tables, FY headers, etc.
@@ -96,7 +94,7 @@ module MarketHelper
   def short_date_upper_es(date, include_year: true)
     return "—" if date.nil?
 
-    base = "#{date.day} #{ASSET_MONTHS_ES[date.month - 1]}"
+    base = "#{date.day} #{DatetimeEsHelper::MONTHS_ES[date.month - 1]}"
     include_year ? "#{base} #{date.year}" : base
   end
 

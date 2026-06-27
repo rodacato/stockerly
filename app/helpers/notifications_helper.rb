@@ -76,11 +76,10 @@ module NotificationsHelper
     out
   end
 
-  WEEKDAYS = %w[DOM LUN MAR MIÉ JUE VIE SÁB].freeze
-  MONTHS   = %w[ENE FEB MAR ABR MAY JUN JUL AGO SEP OCT NOV DIC].freeze
-
   def format_date_header(date)
-    "#{WEEKDAYS[date.wday]} #{date.day} #{MONTHS[date.month - 1]} #{date.year}"
+    weekday = DatetimeEsHelper::WEEKDAYS_ES[date.wday]
+    month   = DatetimeEsHelper::MONTHS_ES[date.month - 1]
+    "#{weekday} #{date.day} #{month} #{date.year}"
   end
 
   def format_notification_time(notification)

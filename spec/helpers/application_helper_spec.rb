@@ -42,7 +42,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       it "returns :closed state regardless of data age" do
         status = helper.combined_data_status(asset, false)
         expect(status[:state]).to eq(:closed)
-        expect(status[:label]).to eq("Market closed")
+        expect(status[:label]).to eq("Mercado cerrado")
         expect(status[:dot_class]).to include("bg-slate-300")
       end
     end
@@ -53,7 +53,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       it "returns :live state" do
         status = helper.combined_data_status(asset, true)
         expect(status[:state]).to eq(:live)
-        expect(status[:label]).to eq("Live")
+        expect(status[:label]).to eq("En vivo")
         expect(status[:dot_class]).to include("bg-emerald-500")
       end
     end
@@ -64,7 +64,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       it "returns :delayed state" do
         status = helper.combined_data_status(asset, true)
         expect(status[:state]).to eq(:delayed)
-        expect(status[:label]).to eq("Delayed")
+        expect(status[:label]).to eq("Retrasado")
         expect(status[:dot_class]).to include("bg-amber-500")
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       it "returns :stale state with relative age label" do
         status = helper.combined_data_status(asset, true)
         expect(status[:state]).to eq(:stale)
-        expect(status[:label]).to eq("20min ago")
+        expect(status[:label]).to eq("hace 20min")
         expect(status[:timestamp]).to be_within(1.second).of(updated_at)
       end
     end
@@ -86,7 +86,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       it "returns stale state with hours label" do
         status = helper.combined_data_status(asset, true)
         expect(status[:state]).to eq(:stale)
-        expect(status[:label]).to eq("3h ago")
+        expect(status[:label]).to eq("hace 3h")
       end
     end
 
@@ -96,7 +96,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       it "returns stale state with days label" do
         status = helper.combined_data_status(asset, true)
         expect(status[:state]).to eq(:stale)
-        expect(status[:label]).to eq("2d ago")
+        expect(status[:label]).to eq("hace 2d")
       end
     end
 
@@ -106,7 +106,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       it "returns :stale state with no data label" do
         status = helper.combined_data_status(asset, true)
         expect(status[:state]).to eq(:stale)
-        expect(status[:label]).to eq("No data")
+        expect(status[:label]).to eq("Sin datos")
       end
     end
   end

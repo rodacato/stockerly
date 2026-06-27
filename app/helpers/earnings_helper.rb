@@ -1,15 +1,13 @@
 module EarningsHelper
-  WEEKDAYS = %w[DOM LUN MAR MIÉ JUE VIE SÁB].freeze
-  MONTHS   = %w[ENE FEB MAR ABR MAY JUN JUL AGO SEP OCT NOV DIC].freeze
-
   WEEKDAY_LABELS = {
     "DOM" => "Domingo", "LUN" => "Lunes", "MAR" => "Martes", "MIÉ" => "Miércoles",
     "JUE" => "Jueves",  "VIE" => "Viernes", "SÁB" => "Sábado"
   }.freeze
 
   def earnings_date_header(date)
-    abbr = WEEKDAYS[date.wday]
-    "#{WEEKDAY_LABELS[abbr]} · #{date.day} #{MONTHS[date.month - 1]} #{date.year}"
+    abbr  = DatetimeEsHelper::WEEKDAYS_ES[date.wday]
+    month = DatetimeEsHelper::MONTHS_ES[date.month - 1]
+    "#{WEEKDAY_LABELS[abbr]} · #{date.day} #{month} #{date.year}"
   end
 
   def earnings_period_label(event)

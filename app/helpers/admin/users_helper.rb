@@ -1,7 +1,5 @@
 module Admin
   module UsersHelper
-    MONTHS_ES = %w[ENE FEB MAR ABR MAY JUN JUL AGO SEP OCT NOV DIC].freeze
-
     # Two-letter initials in primary tint — mirrors the mockup pattern and the
     # navbar avatar elsewhere in the app.
     def admin_user_initials(user)
@@ -14,7 +12,7 @@ module Admin
     # Es-MX three-letter month formatting: "12 MAY 2026".
     def admin_user_registration_label(user)
       d = user.created_at.to_date
-      "#{d.day.to_s.rjust(2, '0')} #{MONTHS_ES[d.month - 1]} #{d.year}"
+      "#{d.day.to_s.rjust(2, '0')} #{DatetimeEsHelper::MONTHS_ES[d.month - 1]} #{d.year}"
     end
 
     # Returns the lifecycle status used by the filter chip group: active,
@@ -55,7 +53,7 @@ module Admin
         elsif diff < 604_800 then "hace #{diff / 86_400} d"
         else
           d = ts.to_date
-          "#{d.day.to_s.rjust(2, '0')} #{MONTHS_ES[d.month - 1]} #{d.year}"
+          "#{d.day.to_s.rjust(2, '0')} #{DatetimeEsHelper::MONTHS_ES[d.month - 1]} #{d.year}"
         end
 
       absolute =
@@ -63,7 +61,7 @@ module Admin
           ts.in_time_zone("America/Mexico_City").strftime("%H:%M")
         else
           d = ts.to_date
-          "#{d.day.to_s.rjust(2, '0')} #{MONTHS_ES[d.month - 1]} #{d.year}"
+          "#{d.day.to_s.rjust(2, '0')} #{DatetimeEsHelper::MONTHS_ES[d.month - 1]} #{d.year}"
         end
 
       [ relative, absolute ]

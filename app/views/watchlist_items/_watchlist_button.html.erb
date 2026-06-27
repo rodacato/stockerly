@@ -1,0 +1,6 @@
+<%# In-watchlist state for an asset's watchlist toggle, swapped in via Turbo Stream. %>
+<%= turbo_frame_tag "watchlist_button_#{asset_id}" do %>
+  <span class="inline-flex items-center gap-1 text-emerald-500 text-xs font-medium">
+    <span class="material-symbols-outlined text-lg">check_circle</span>
+  </span>
+<% end %>

@@ -10,16 +10,12 @@ class WatchlistItemsController < AuthenticatedController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace("watchlist_button_#{item.asset_id}",
-              html: helpers.turbo_frame_tag("watchlist_button_#{item.asset_id}") do
-                helpers.content_tag(:span, class: "inline-flex items-center gap-1 text-emerald-500 text-xs font-medium") do
-                  helpers.content_tag(:span, "check_circle", class: "material-symbols-outlined text-lg")
-                end
-              end),
+              partial: "watchlist_items/watchlist_button", locals: { asset_id: item.asset_id }),
             turbo_stream.prepend("flash_messages",
-              partial: FLASH_PARTIAL, locals: { type: "notice", message: "Added to watchlist." })
+              partial: FLASH_PARTIAL, locals: { type: "notice", message: "Agregado a tu watchlist." })
           ]
         end
-        format.html { redirect_back fallback_location: dashboard_path, notice: "Added to watchlist." }
+        format.html { redirect_back fallback_location: dashboard_path, notice: "Agregado a tu watchlist." }
       end
     in Dry::Monads::Failure[ :validation, errors ]
       message = errors.values.flatten.first
@@ -45,9 +41,9 @@ class WatchlistItemsController < AuthenticatedController
     item = Trading::UseCases::RemoveFromWatchlist.call(user: current_user, watchlist_item_id: params[:id])
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.remove(item) }
-      format.html { redirect_back fallback_location: profile_path, notice: "Removed from watchlist." }
+      format.html { redirect_back fallback_location: profile_path, notice: "Eliminado de tu watchlist." }
     end
   rescue ActiveRecord::RecordNotFound
-    redirect_back fallback_location: profile_path, alert: "Item not found."
+    redirect_back fallback_location: profile_path, alert: "No encontramos ese elemento."
   end
 end

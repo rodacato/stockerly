@@ -32,7 +32,7 @@ module ApplicationHelper
     unless market_open
       return {
         state: :closed,
-        label: "Market closed",
+        label: "Mercado cerrado",
         dot_class: "bg-slate-300 dark:bg-slate-600",
         text_class: "text-slate-400 dark:text-slate-500"
       }
@@ -43,14 +43,14 @@ module ApplicationHelper
     if age < 2
       {
         state: :live,
-        label: "Live",
+        label: "En vivo",
         dot_class: "bg-emerald-500 animate-pulse",
         text_class: "text-emerald-600 dark:text-emerald-400"
       }
     elsif age < 15
       {
         state: :delayed,
-        label: "Delayed",
+        label: "Retrasado",
         dot_class: "bg-amber-500",
         text_class: "text-amber-600 dark:text-amber-400"
       }
@@ -83,16 +83,16 @@ module ApplicationHelper
   end
 
   def stale_age_label(age_minutes)
-    return "No data" if age_minutes == Float::INFINITY
+    return "Sin datos" if age_minutes == Float::INFINITY
 
     if age_minutes < 60
-      "#{age_minutes.round}min ago"
+      "hace #{age_minutes.round}min"
     elsif age_minutes < 1440
       hours = (age_minutes / 60).round
-      "#{hours}h ago"
+      "hace #{hours}h"
     else
       days = (age_minutes / 1440).round
-      "#{days}d ago"
+      "hace #{days}d"
     end
   end
 end

@@ -22,7 +22,7 @@ RSpec.describe "WatchlistItems", type: :request do
       post watchlist_items_path, params: { asset_id: asset.id }, as: :turbo_stream
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
       expect(response.body).to include("watchlist_button_#{asset.id}")
-      expect(response.body).to include("Added to watchlist.")
+      expect(response.body).to include("Agregado a tu watchlist.")
     end
 
     it "shows error flash via turbo_stream when asset already in watchlist" do

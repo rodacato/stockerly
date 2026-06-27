@@ -1,7 +1,5 @@
 module Admin
   module LogsHelper
-    MONTHS_ES = %w[ENE FEB MAR ABR MAY JUN JUL AGO SEP OCT NOV DIC].freeze
-
     SEVERITY_OPTIONS = [
       [ "todos",   "Todos",  nil ],
       [ "success", "Éxito",  "success" ],
@@ -52,7 +50,7 @@ module Admin
       ts = log.created_at
       d  = ts.to_date
       mxn = ts.in_time_zone("America/Mexico_City")
-      "#{d.day.to_s.rjust(2, '0')} #{MONTHS_ES[d.month - 1]} #{d.year} · #{mxn.strftime('%H:%M:%S')}"
+      "#{d.day.to_s.rjust(2, '0')} #{DatetimeEsHelper::MONTHS_ES[d.month - 1]} #{d.year} · #{mxn.strftime('%H:%M:%S')}"
     end
 
     def admin_log_module_chip(module_name)

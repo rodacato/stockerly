@@ -23,7 +23,7 @@ class AuthenticatedController < ApplicationController
 
   def require_authentication
     unless current_user
-      redirect_to login_path, alert: "Please sign in to continue."
+      redirect_to login_path, alert: "Inicia sesión para continuar."
     end
   end
 

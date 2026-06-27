@@ -92,7 +92,7 @@ module AlertsHelper
     elsif date == Date.current - 1
       "ayer · #{cdmx_time} CDMX"
     else
-      "#{date.day} #{NotificationsHelper::MONTHS[date.month - 1]} · #{cdmx_time} CDMX"
+      "#{date.day} #{DatetimeEsHelper::MONTHS_ES[date.month - 1]} · #{cdmx_time} CDMX"
     end
   end
 
