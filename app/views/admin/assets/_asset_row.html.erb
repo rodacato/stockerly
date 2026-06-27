@@ -90,7 +90,7 @@
       <%= form_with(url: admin_asset_path(asset, **filter), scope: :asset, method: :patch,
             class: "flex flex-wrap items-end gap-3") do |f| %>
         <%
-          field_class = "rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-2.5 py-1.5 text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary/40"
+          field_class = "rounded-lg border border-slate-300 dark:border-slate-600 bg-bg-surface px-2.5 py-1.5 text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary/40"
         %>
         <div class="flex flex-col gap-1">
           <label for="asset_name_<%= asset.id %>" class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Nombre</label>

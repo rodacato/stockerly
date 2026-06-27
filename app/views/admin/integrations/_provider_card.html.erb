@@ -112,9 +112,9 @@
     <%= form_with url: admin_integration_pool_keys_path(integration), method: :post,
         class: "flex flex-wrap items-center gap-2" do |f| %>
       <%= f.text_field :name, name: "api_key_pool[name]", placeholder: "Etiqueta (p. ej. principal)",
-          class: "flex-1 min-w-[160px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 text-[12.5px] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40" %>
+          class: "flex-1 min-w-[160px] rounded-lg border border-slate-200 dark:border-slate-700 bg-bg-surface px-2.5 py-1.5 text-[12.5px] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40" %>
       <%= f.text_field :api_key_encrypted, name: "api_key_pool[api_key_encrypted]", placeholder: "Clave API",
-          class: "flex-[2] min-w-[200px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-mono text-[12.5px] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40" %>
+          class: "flex-[2] min-w-[200px] rounded-lg border border-slate-200 dark:border-slate-700 bg-bg-surface px-2.5 py-1.5 font-mono text-[12.5px] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40" %>
       <%= f.submit "Agregar clave", class: "inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-[12px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60 cursor-pointer" %>
     <% end %>
   </div>
@@ -131,12 +131,12 @@
       <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex flex-1 items-center gap-2" do |f| %>
         <%= f.number_field :daily_call_limit, name: "integration[daily_call_limit]",
             value: integration.daily_call_limit,
-            class: "w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-1.5 font-mono text-[11.5px] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
+            class: "w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-bg-surface px-2 py-1.5 font-mono text-[11.5px] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
             title: "Límite diario" %>
         <%= f.number_field :max_requests_per_minute, name: "integration[max_requests_per_minute]",
             value: integration.max_requests_per_minute,
             placeholder: "—",
-            class: "w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-1.5 font-mono text-[11.5px] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
+            class: "w-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-bg-surface px-2 py-1.5 font-mono text-[11.5px] text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
             title: "Por minuto" %>
         <%= f.submit "Guardar", class: "rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-[11.5px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60 cursor-pointer" %>
       <% end %>

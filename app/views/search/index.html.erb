@@ -25,7 +25,7 @@
           <span class="material-symbols-outlined text-primary">show_chart</span>
           Assets (<%= @assets.size %>)
         </h2>
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+        <div class="bg-bg-surface rounded-xl border border-border-default divide-y divide-slate-100 dark:divide-slate-800">
           <% @assets.each do |asset| %>
             <div class="flex items-center justify-between px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
               <div class="flex items-center gap-3">
@@ -49,7 +49,7 @@
           <span class="material-symbols-outlined text-primary">notifications</span>
           Alerts (<%= @alerts.size %>)
         </h2>
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+        <div class="bg-bg-surface rounded-xl border border-border-default divide-y divide-slate-100 dark:divide-slate-800">
           <% @alerts.each do |rule| %>
             <div class="flex items-center justify-between px-5 py-3">
               <div>
@@ -70,7 +70,7 @@
           <span class="material-symbols-outlined text-primary">newspaper</span>
           News (<%= @news.size %>)
         </h2>
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+        <div class="bg-bg-surface rounded-xl border border-border-default divide-y divide-slate-100 dark:divide-slate-800">
           <% @news.each do |article| %>
             <div class="px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
               <p class="text-sm font-bold text-slate-900 dark:text-white"><%= article.title %></p>

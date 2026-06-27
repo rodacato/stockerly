@@ -1,5 +1,5 @@
 <%# Positions table with tabs (Open/Closed/Dividends/Trades). es-MX per S09 #91. %>
-<section class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
+<section class="rounded-xl border border-border-default bg-bg-surface overflow-hidden shadow-sm">
   <%# Tabs header — uses query params for Turbo Drive navigation %>
   <div class="flex items-center border-b border-slate-100 dark:border-slate-800 overflow-x-auto">
     <%= link_to portfolio_path(tab: "open"), class: "px-6 py-4 text-sm font-bold border-b-2 whitespace-nowrap #{tab == 'open' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>

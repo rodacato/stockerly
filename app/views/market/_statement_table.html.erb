@@ -1,7 +1,7 @@
 <%# Statement table — renders financial data in a multi-year table using structured line items %>
 <% line_items = line_items_for(statement_type) %>
 
-<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden">
+<div class="bg-bg-surface border border-border-default rounded-xl shadow-sm overflow-hidden">
   <div class="overflow-x-auto">
     <table class="w-full border-collapse">
       <thead>
@@ -27,7 +27,7 @@
             </tr>
           <% else %>
             <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors <%= 'border-b-2 border-slate-200 dark:border-slate-800' if item[:bold] && item[:margin_key] %>">
-              <td class="sticky left-0 bg-white dark:bg-slate-900 py-3.5 px-6 text-sm <%= item[:bold] ? 'font-bold text-slate-900 dark:text-slate-100' : 'font-medium text-slate-700 dark:text-slate-300' %> <%= 'pl-10' if item[:indent] %>">
+              <td class="sticky left-0 bg-bg-surface py-3.5 px-6 text-sm <%= item[:bold] ? 'font-bold text-slate-900 dark:text-slate-100' : 'font-medium text-slate-700 dark:text-slate-300' %> <%= 'pl-10' if item[:indent] %>">
                 <%= item[:label] %>
                 <% if item[:margin_key] %>
                   <div class="text-[10px] text-slate-400 font-normal mt-0.5">Margen %</div>

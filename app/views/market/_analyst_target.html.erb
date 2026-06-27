@@ -17,7 +17,7 @@
     position_pct = range.positive? ? ((current - low_52w) / range * 100).clamp(0, 100).round : 50
     target_pct   = range.positive? ? ((target - low_52w) / range * 100).clamp(0, 100).round : 50
   %>
-  <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+  <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-bg-surface p-6 shadow-sm">
     <div class="flex items-center gap-2 mb-4">
       <span class="material-symbols-outlined text-lg text-primary">target</span>
       <h4 class="text-sm font-semibold text-slate-900 dark:text-white">Precio objetivo de analistas</h4>

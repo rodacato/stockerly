@@ -26,7 +26,7 @@
   <% if @vix %>
     <% vix_val = @vix.value.to_f %>
     <% tier = vix_tier(vix_val) %>
-    <div class="flex items-center gap-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-5 py-3 mb-8 shadow-sm">
+    <div class="flex items-center gap-4 bg-bg-surface rounded-xl border border-border-default px-5 py-3 mb-8 shadow-sm">
       <div class="flex items-center gap-2">
         <span class="material-symbols-outlined text-lg <%= tier[:icon] %>">speed</span>
         <span class="font-mono text-sm font-black text-slate-900 dark:text-white">VIX</span>

@@ -1,7 +1,7 @@
 <%# Notification Panel — dropdown connected to real Notification model. %>
 <%# Locals: notifications (Array<Notification>), unread_count (Integer) %>
 
-<div class="hidden absolute right-0 mt-3 w-[380px] bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col z-60"
+<div class="hidden absolute right-0 mt-3 w-[380px] bg-bg-surface rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col z-60"
      data-notification-target="panel">
   <%# Header %>
   <div class="px-4 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
@@ -25,7 +25,7 @@
     <% if notifications.present? %>
       <% notifications.each do |notification| %>
         <% unread = !notification.read? %>
-        <div class="flex gap-4 px-4 py-4 <%= unread ? 'bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/20' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800' %> transition-colors border-b border-slate-50 dark:border-slate-800 cursor-pointer" data-notification-target="item">
+        <div class="flex gap-4 px-4 py-4 <%= unread ? 'bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/20' : 'bg-bg-surface hover:bg-slate-50 dark:hover:bg-slate-800' %> transition-colors border-b border-slate-50 dark:border-slate-800 cursor-pointer" data-notification-target="item">
           <div class="shrink-0 flex items-center justify-center size-10 rounded-full <%= notification_icon_style(notification) %>">
             <span class="material-symbols-outlined"><%= notification_icon(notification) %></span>
           </div>

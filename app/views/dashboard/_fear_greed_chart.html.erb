@@ -9,7 +9,7 @@
     { data: stocks_history, label: "Stocks Fear & Greed — 30 Day" }
   ].each do |chart| %>
     <% next if chart[:data].size < 2 %>
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+    <div class="bg-bg-surface rounded-xl border border-border-default p-5 shadow-sm">
       <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3"><%= chart[:label] %></h4>
       <%
         points = chart[:data]

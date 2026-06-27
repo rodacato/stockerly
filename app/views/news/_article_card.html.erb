@@ -1,6 +1,6 @@
 <%# News Article Card — expects local: article (NewsArticle) %>
 <a href="<%= article.url %>" target="_blank" rel="noopener noreferrer" class="block group">
-  <div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow h-full">
+  <div class="bg-bg-surface rounded-xl overflow-hidden border border-border-default hover:shadow-md transition-shadow h-full">
     <div class="aspect-video relative overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
       <% if article.image_url.present? %>
         <%= image_tag article.image_url, alt: "", class: "absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-300", loading: "lazy" %>

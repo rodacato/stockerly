@@ -1,14 +1,14 @@
 <%# Trade form — toggled inline. es-MX per S09 #91. %>
 <div data-controller="reveal" class="mb-8">
   <button data-action="reveal#toggle"
-      class="w-full bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-4 hover:border-primary transition-colors flex items-center justify-center gap-2 text-slate-500 hover:text-primary cursor-pointer">
+      class="w-full bg-bg-surface rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-4 hover:border-primary transition-colors flex items-center justify-center gap-2 text-slate-500 hover:text-primary cursor-pointer">
     <span class="material-symbols-outlined text-xl">swap_horiz</span>
     <span class="text-sm font-semibold">Registrar movimiento</span>
   </button>
 
   <div data-reveal-target="content" class="hidden mt-4">
     <%= form_with(url: trades_path, scope: :trade, method: :post,
-        class: "bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm") do |f| %>
+        class: "bg-bg-surface rounded-xl border border-border-default p-6 shadow-sm") do |f| %>
 
       <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Nuevo movimiento</h3>
 

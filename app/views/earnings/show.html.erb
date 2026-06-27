@@ -7,7 +7,7 @@
     <% end %>
   </div>
 
-  <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+  <div class="overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-sm">
     <%# Header %>
     <div class="border-b border-slate-200 dark:border-slate-800 p-6">
       <div class="flex items-center justify-between gap-4">
@@ -35,27 +35,27 @@
 
     <%# Details grid %>
     <div class="grid grid-cols-2 gap-px bg-slate-200 dark:bg-slate-800">
-      <div class="bg-white dark:bg-slate-900 p-5">
+      <div class="bg-bg-surface p-5">
         <p class="mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">Fecha de reporte</p>
         <p class="text-lg font-bold text-slate-900 dark:text-white"><%= earnings_date_header(@event.report_date) %></p>
         <% unless @event.confirmed? %>
           <p class="mt-1 text-xs font-semibold text-amber-600 dark:text-amber-400">Fecha por confirmar</p>
         <% end %>
       </div>
-      <div class="bg-white dark:bg-slate-900 p-5">
+      <div class="bg-bg-surface p-5">
         <p class="mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">Horario</p>
         <p class="flex items-center gap-1.5 text-lg font-bold capitalize text-slate-900 dark:text-white">
           <span class="material-symbols-outlined text-lg text-slate-400"><%= @event.before_market_open? ? "wb_sunny" : "nights_stay" %></span>
           <%= earnings_timing_label(@event) %>
         </p>
       </div>
-      <div class="bg-white dark:bg-slate-900 p-5">
+      <div class="bg-bg-surface p-5">
         <p class="mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">EPS estimado</p>
         <p class="font-mono text-lg font-bold text-slate-900 dark:text-white">
           <%= @event.estimated_eps ? "#{earnings_currency(@event)} #{sprintf('%.2f', @event.estimated_eps)}" : "—" %>
         </p>
       </div>
-      <div class="bg-white dark:bg-slate-900 p-5">
+      <div class="bg-bg-surface p-5">
         <p class="mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">EPS reportado</p>
         <% if @event.actual_eps %>
           <p class="font-mono text-lg font-bold <%= @event.beat_miss == :beat ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
