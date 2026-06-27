@@ -16,7 +16,7 @@ module Trading
         return [] if open_positions.empty?
 
         asset_ids = open_positions.map(&:asset_id)
-        dividends = Dividend.upcoming.where(asset_id: asset_ids).includes(:asset)
+        dividends = MarketData::Queries::UpcomingDividends.call(asset_ids: asset_ids)
 
         shares_by_asset = open_positions.each_with_object({}) do |pos, hash|
           hash[pos.asset_id] = pos.shares
