@@ -1,0 +1,20 @@
+# Reek config consumed by RubyCritic (bin/quality). Tuned to surface real
+# smells over Rails/Faraday idiom noise.
+detectors:
+  UncommunicativeVariableName:
+    # Conventional short names: rescued error, Faraday builder, indices, query.
+    accept: [e, f, i, j, n, q, x, y, id, db, to]
+  TooManyStatements:
+    max_statements: 10
+  UtilityFunction:
+    # Stateless pure methods are intentional in the functional-domain style.
+    enabled: false
+  IrresponsibleModule:
+    # We don't require a doc comment on every module.
+    enabled: false
+
+exclude_paths:
+  - db
+  - spec
+  - config
+  - bin

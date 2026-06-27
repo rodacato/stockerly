@@ -33,6 +33,10 @@ bin/rubocop -A          # auto-correct
 bin/brakeman            # static analysis
 bin/bundler-audit       # gem vulnerabilities
 
+# Local code quality (complexity / smells / duplication) — preventive, pre-Sonar
+bin/quality             # RubyCritic on Ruby files changed vs origin/master
+bin/quality app lib     # whole-repo baseline (noise tuned in .reek.yml)
+
 # Full CI pipeline (setup + rubocop + bundler-audit + importmap audit + brakeman)
 bin/ci
 
@@ -47,6 +51,14 @@ bin/jobs                # starts Solid Queue worker
 # Clear bootsnap cache (fixes stale config issues)
 rm -rf tmp/cache
 ```
+
+### Before opening a PR
+
+Run `bin/quality` on the changed files and act on the result. Decision rule:
+
+- A new or modified file rated **D or F** → fix the flagged smells, or justify in one line why it stays.
+- Real Reek smells (FeatureEnvy, NestedIterators, DuplicateMethodCall) → fix. Idiom noise is already tuned out in `.reek.yml`.
+- It's advisory, not a hard gate — SonarQube in CI (`quality.yml`) is the enforcing gate. Don't wire `bin/quality` into `bin/ci`.
 
 ## Architecture
 

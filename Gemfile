@@ -108,4 +108,6 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  # Local code-quality report (flog/reek/flay) — preventive pass before Sonar [https://github.com/whitesmith/rubycritic]
+  gem "rubycritic", require: false
 end

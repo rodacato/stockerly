@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Local code-quality pass — complexity (flog), code smells (reek), duplication
+# (flay) via RubyCritic. Preventive check before pushing, to catch the kind of
+# issues SonarQube reports without waiting for the server scan.
+#
+#   bin/quality            # analyze the Ruby files changed vs origin/master
+#   bin/quality app lib    # analyze explicit paths (whole-repo baseline)
+#
+# Reek noise is tuned in .reek.yml. The printed Score is RubyCritic's 0-100
+# health rating for the analyzed set.
+set -euo pipefail
+
+if [[ $# -gt 0 ]]; then
+  paths=("$@")
+else
+  base="origin/master"
+  git rev-parse --verify --quiet "$base" >/dev/null || base="master"
+  mapfile -t paths < <(
+    {
+      git diff --name-only --diff-filter=d "$base"...HEAD -- '*.rb'
+      git diff --name-only --diff-filter=d -- '*.rb'
+      git ls-files --others --exclude-standard -- '*.rb'
+    } | sort -u
+  )
+  if [[ ${#paths[@]} -eq 0 ]]; then
+    echo "No changed Ruby files vs ${base} — nothing to check."
+    exit 0
+  fi
+  echo "Analyzing ${#paths[@]} changed Ruby file(s) vs ${base}:"
+  printf '  %s\n' "${paths[@]}"
+fi
+
+exec bundle exec rubycritic --no-browser -f console "${paths[@]}"
