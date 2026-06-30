@@ -63,59 +63,13 @@ Cross-context communication via domain events only. See [CLAUDE.md](CLAUDE.md) f
 
 ## Getting Started
 
-### Option 1: Devcontainer (Recommended)
+The fastest path is the Dev Container (`Reopen in Container` → `bin/dev`). On bare metal
+(Ruby 3.3.6 + PostgreSQL 16), `bin/setup` does the whole thing — gems, databases, demo data,
+server. Then open **`http://localhost:4100`**. The seeded admin login is
+`admin@stockerly.com` / `password123`. No Node.js needed.
 
-The fastest way to get started. Works with VS Code or GitHub Codespaces.
-
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/rodacato/stockerly.git
-   cd stockerly
-   ```
-
-2. Open in VS Code and select **"Reopen in Container"** (or launch in Codespaces)
-
-3. The `postCreateCommand` script handles everything: dependencies, database, migrations.
-
-4. Start the server:
-   ```bash
-   bin/dev
-   ```
-
-5. Visit `http://localhost:3000` — the **Setup Wizard** guides you through initial configuration.
-
-### Option 2: Manual Setup
-
-**Prerequisites:** Ruby 3.3+, PostgreSQL 16, Node.js (for Tailwind CSS).
-
-1. Clone and install:
-   ```bash
-   git clone https://github.com/rodacato/stockerly.git
-   cd stockerly
-   bundle install
-   ```
-
-2. Create and migrate the database:
-   ```bash
-   bin/rails db:create db:migrate
-   ```
-
-3. Start the server:
-   ```bash
-   bin/dev
-   ```
-
-4. Visit `http://localhost:3000` and follow the Setup Wizard.
-
-### Demo Data
-
-For development with sample data (admin user, assets, trades, alerts):
-
-```bash
-bin/rails db:seed
-```
-
-This creates an admin user: `admin@stockerly.com` / `password123`
+**See [GETTING_STARTED.md](GETTING_STARTED.md) for the full guide** (both run paths, the
+four-database setup, background jobs via `bin/jobs`, first-run check, and troubleshooting).
 
 ## Configuration
 
@@ -192,6 +146,7 @@ See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide.
 
 | Document | Description |
 |----------|-------------|
+| [GETTING_STARTED.md](GETTING_STARTED.md) | Run Stockerly locally — both paths, databases, jobs, troubleshooting |
 | [docs/](docs/) | Documentation index (vision, architecture, ops, archive) |
 | [docs/vision/](docs/vision/) | Product north, audience, JTBDs, non-goals |
 | [docs/architecture/](docs/architecture/) | Bounded contexts map + ADRs |
