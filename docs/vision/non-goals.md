@@ -2,7 +2,7 @@
 
 > What Stockerly explicitly **is NOT**. As important as what we ARE.
 > Each non-goal here is a conscious decision with a reason. Changing one requires an ADR.
-> Last updated: **2026-05-14** (Sprint 1).
+> Last updated: **2026-08-20** (pivot to self-hosted single-user — see [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)).
 
 ---
 
@@ -10,6 +10,7 @@
 
 | Not for | Why |
 |---|---|
+| **Multiple users on one instance** | Single-user by design (ADR-0010). No multi-tenant, no accounts, no roles. Self-hosting means one person, one instance. |
 | **Day traders / scalpers** | Product is modeled around daily-EOD cadence. No sub-daily time resolution, no tick-level WebSocket. |
 | **Institutional investors / advisors** | No multi-tenant, no accounts, no role separation between advisor and client. |
 | **General public arriving via Google** | No commercial landing, no SEO, no conversion funnel. The repo is a public portfolio, not a pull product. |
@@ -43,13 +44,21 @@
 | Confidence-weighted action forecasts | Same. |
 | Section names like "Suggestions", "Recommendations", "Actions to take" | The prescriptive noun becomes a loophole for feature creep. Use "Observations", "Technical analysis", "Context" instead. |
 
+### Data entry & integrations
+
+| Not built | Why |
+|---|---|
+| **Aggregator bank/broker sync (Plaid, Yodlee, SnapTrade)** | **Permanent non-goal at this scale.** A cost trap: automated sync always sits behind a paid aggregator, and Maybe Finance — the same Rails/Hotwire/Postgres stack — died partly on Plaid economics. MX coverage is thin and expensive. See [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) and [the competitive research](../research/competitive-trackers-2026-08.md). Pluggy.ai / Belvo (LatAm-native) are the only ones worth even a future spike, and only behind a documented trigger. |
+| Per-broker CSV auto-parsers (Portfolio-Performance-style, 90+ parsers) | Huge maintenance surface; few MX brokers justify it. Smart generic CSV mapping covers the realistic need. |
+| AI PDF/screenshot statement import; crypto exchange API sync; read-only wallet import | Genuinely attractive, but each requires a documented trigger + JTBD before any work (4-filter, anti-pattern #1). Not rejected — deferred until earned. |
+
 ### Product
 
 | Not built | Why |
 |---|---|
-| Formal SLA (uptime, response time) | Only while this is personal/friends beta. Revisit if Stockerly becomes monetized. |
+| Formal SLA (uptime, response time) | This is a personal, self-hostable tool. Revisit only if Stockerly becomes monetized. |
 | Native mobile apps (iOS/Android) | PWA already covers installation and icons. Not worth maintaining two platforms. |
-| Multi-tenancy / shared accounts / team portfolios | Requires authorization overhaul. Zero demand. |
+| Multi-tenancy / shared accounts / team portfolios | Single-user by design (ADR-0010). The multi-user surface built for the failed beta is being deleted, not extended. |
 | Internationalization (i18n) | es-MX is the only language. A non-MX beta user would signal audience drift. |
 | Social features: public sharing, comments, forums, leaderboards | Not a social product. Not a community product. |
 | Profile sharing / public profile privacy mode | Subset of the above. |
@@ -80,7 +89,7 @@
 
 | Not built | Why |
 |---|---|
-| Optimize for >10K simultaneous users | Closed beta ≤20. Current architecture is already excessive for that scale. |
+| Optimize for >10K simultaneous users | Single-user, self-hosted, one instance per person. Current architecture is already excessive for that scale. |
 | Read replicas, sharding, advanced caching | Solid Cache + fragment caching are already in place. More would be over-engineering. |
 
 ---
@@ -99,6 +108,6 @@
 Only under one of these conditions:
 - Audience change (e.g., Stockerly gets monetized → SLA may come in)
 - Change in Adrian's personal reality (e.g., he starts trading European markets)
-- Strong repeated need from the beta (e.g., 5+ friends ask for the same thing and it makes sense)
+- A real self-hoster shows up with a documented, repeated need (not a hypothetical one) — evaluate via ADR, don't pre-build
 
 In any case: an ADR documents the change and the reason.
