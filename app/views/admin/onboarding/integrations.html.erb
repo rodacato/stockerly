@@ -25,6 +25,8 @@
     <%# Integration Cards %>
     <%= form_with url: admin_onboarding_save_integrations_path, method: :patch, class: "space-y-3 mb-10" do |f| %>
       <% @integrations.each do |integration| %>
+        <% info = MarketData::Domain::ProviderDirectory.for(integration.provider_name) %>
+        <% needs_key = info&.signup_url.present? %>
         <div class="bg-bg-surface rounded-xl border border-border-default p-5">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-3">
@@ -36,19 +38,28 @@
                 <p class="text-xs text-slate-400 uppercase tracking-wider"><%= integration.provider_type %></p>
               </div>
             </div>
-            <% unless integration.requires_api_key? %>
+            <% unless needs_key %>
               <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600">
                 <span class="size-2 rounded-full bg-emerald-500"></span>
-                No key needed
+                Sin API key
               </span>
             <% end %>
           </div>
-          <div>
-            <input type="text" name="api_keys[<%= integration.id %>]"
-                   placeholder="Paste your <%= integration.provider_name %> API key"
-                   value="<%= integration.api_key_configured? ? '' : '' %>"
+
+          <% if info&.description %>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-3"><%= info.description %></p>
+          <% end %>
+
+          <% if needs_key %>
+            <input type="text" name="api_keys[<%= integration.id %>]" autocomplete="off"
+                   placeholder="Pega tu API key de <%= integration.provider_name %>"
                    class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary">
-          </div>
+            <a href="<%= info.signup_url %>" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-primary hover:underline">
+              ¿Dónde consigo la API key?
+              <span class="material-symbols-outlined text-sm">open_in_new</span>
+            </a>
+          <% end %>
         </div>
       <% end %>
 
