@@ -40,15 +40,17 @@
       registration_open toggle, ~12 specs). Portfolio+alert-prefs re-pointed to `FirstAdminCreated`.
       Fixed dangling refs: admin sidebar "Invites" link (caused 87 admin failures), navbar/login register
       links, users empty-state. Green 2608.
-- [ ] **NEXT:** verify-email surface (`email_verifications_controller`, `verify_email` use case,
-      `EmailVerified` event, the banner, User `is_verified`/`email_verified_at`). Now fully dead
-      (setup creates verified user; no registration path makes unverified ones).
-- [ ] `admin/users` management (list/suspend/reactivate/delete) + `remember_token` on User scoping.
-- [ ] Excise `RememberToken` from `ApplicationController` + profiles UI (~40 LOC, own commit + test).
-- [ ] Keep + repurpose `setup_controller` / `CreateFirstAdmin` as the single-user bootstrap.
-- [ ] Prune `event_subscriptions.rb` (line-deletes); rewrite `seeds.rb` single-user.
+- [x] verify-email feature. `4d29ad2`. Green 2581.
+- [x] `remember_token` (auth-core surgery: session-only auth, no "remember me"/active-sessions). `fe6d132`. Green 2556.
+- [x] `admin/users` management (list/suspend/reactivate/delete + events + mailers + nav). `7dcd917`. Green 2503.
+- [ ] **NEXT — User model slim:** drop `status`/`suspended` (enum + column + Login check + factory trait
+      + `not_suspended` scope), `email_verified_at`/`is_verified` column + `email_verified?` + verified
+      scopes (now fully dead), `admins`/`traders` scopes. Big spec-blast (factory + many specs set
+      `email_verified_at`). Keep `role` (admin zone still gates provider config).
+- [ ] Tidy dead `welcome` mailer (caller deleted with registration) + its view/spec.
+- [ ] `seeds.rb` single-user rewrite.
 - NOTE: `api_key_pool` is NOT a delete — it's MarketData plumbing (7 gateways). See Phase 3.
-- NOTE: consider renaming `FirstAdminCreated` → `AccountCreated` (no "admin" in single-user) — later, Identity cleanup.
+- NOTE: consider renaming `FirstAdminCreated` → `AccountCreated` (no "admin" in single-user) — later.
 
 ## Phase 3 — Fix only the simplest needed to continue (problems.md §F + api_key_pool)
 
