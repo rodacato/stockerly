@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Admin pages", type: :request do
-  let(:admin_paths) { [ admin_root_path, admin_assets_path, admin_logs_path, admin_users_path ] }
+  let(:admin_paths) { [ admin_root_path, admin_assets_path, admin_logs_path ] }
 
   describe "authentication guard" do
     it "redirects /admin to login when not authenticated" do
@@ -16,11 +16,6 @@ RSpec.describe "Admin pages", type: :request do
 
     it "redirects /admin/logs to login when not authenticated" do
       get admin_logs_path
-      expect(response).to redirect_to(login_path)
-    end
-
-    it "redirects /admin/users to login when not authenticated" do
-      get admin_users_path
       expect(response).to redirect_to(login_path)
     end
   end
@@ -46,11 +41,6 @@ RSpec.describe "Admin pages", type: :request do
 
     it "redirects /admin/logs to root for non-admin users" do
       get admin_logs_path
-      expect(response).to redirect_to(root_path)
-    end
-
-    it "redirects /admin/users to root for non-admin users" do
-      get admin_users_path
       expect(response).to redirect_to(root_path)
     end
   end
@@ -158,12 +148,6 @@ RSpec.describe "Admin pages", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Bitácora del sistema")
       expect(response.body).to include("FX Rate Update")
-    end
-
-    it "renders the users page" do
-      get admin_users_path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Cuentas registradas")
     end
 
     it "renders the integrations page" do

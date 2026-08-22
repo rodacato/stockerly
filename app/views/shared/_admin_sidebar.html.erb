@@ -19,7 +19,6 @@
           ["Integrations", admin_integrations_path, "hub"],
           ["Jobs", "/admin/jobs", "work_history"],
           ["Logs", admin_logs_path, "receipt_long"],
-          ["Users", admin_users_path, "group"],
           ["Settings", admin_settings_path, "settings"]
         ].each do |label, path, icon| %>
           <%= link_to path, class: "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors #{admin_nav_active?(path)}" do %>

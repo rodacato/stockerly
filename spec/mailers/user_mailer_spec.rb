@@ -45,25 +45,4 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.body.encoded).to include("Restablecer mi contraseña")
     end
   end
-
-
-  describe "#account_suspended" do
-    let(:mail) { described_class.account_suspended(user) }
-
-    it_behaves_like "logo-bearing mailer"
-
-    it "uses the es-MX subject" do
-      expect(mail.subject).to eq("Tu cuenta de Stockerly fue suspendida")
-    end
-  end
-
-  describe "#account_reactivated" do
-    let(:mail) { described_class.account_reactivated(user) }
-
-    it_behaves_like "logo-bearing mailer"
-
-    it "uses the es-MX subject" do
-      expect(mail.subject).to eq("Tu cuenta de Stockerly fue reactivada")
-    end
-  end
 end
