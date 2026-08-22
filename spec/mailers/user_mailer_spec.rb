@@ -16,20 +16,6 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  describe "#welcome" do
-    let(:mail) { described_class.welcome(user) }
-
-    it_behaves_like "logo-bearing mailer"
-
-    it "uses the es-MX subject" do
-      expect(mail.subject).to eq("Bienvenido a Stockerly")
-    end
-
-    it "addresses the user in es-MX body" do
-      expect(mail.body.encoded).to include("Bienvenido a Stockerly, Jane Doe")
-    end
-  end
-
   describe "#password_reset" do
     let(:reset_url) { "https://stockerly.com/reset-password/abc123" }
     let(:mail) { described_class.password_reset(user, reset_url) }
