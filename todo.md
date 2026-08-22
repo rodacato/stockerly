@@ -54,11 +54,24 @@
 
 ## Phase 3 — Fix only the simplest needed to continue (problems.md §F + api_key_pool)
 
-- [ ] Fix the 2 `Notification.create!` bypasses (earnings/maturities never broadcast live).
-- [ ] Dead `AlertPreference` flags: honor or remove.
-- [ ] `api_key_pool` → collapse to a single key per provider (expand-contract: add single-key path →
-      migrate the 7 gateway call-sites + `KeyRotation` → drop the pool ceremony). Simplify for single-user.
-- Minimal only. Registry-wiring / event-log / evaluators are NOT here — they wait for the design phase.
+- [x] Fix the 2 `Notification.create!` bypasses (earnings/maturities never broadcast live). `4f51805`.
+      Green 2505. Added a broadcast regression test to each.
+- [ ] `api_key_pool` → collapse to a single key per provider. **RE-ASSESSED: lower value than it looked.**
+      The pool is *working plumbing* — it already holds 1 key per provider for single-user; nothing is
+      broken. The rework is pure simplification of working code, touching KeyRotation + 7 gateway
+      call-sites + the admin pool_keys UI — real risk for elegance, not a bug fix. Defer to a focused
+      session per cost-justified-tech.
+- [ ] Dead `AlertPreference` flags — **decorative UI, not a bug** (toggles that don't gate anything;
+      no email/SMS channel exists). Group with the User-column slim as cosmetic cleanup, deferred.
+
+## Deferred (working code / cosmetic — focused follow-up sessions, not this marathon)
+
+- User model column slim (`status`/`is_verified`/`email_verified_at`) — ~40 spec files, dead columns.
+- `api_key_pool` → single-key simplification (working plumbing, 7 gateways).
+- `AlertPreference` decorative flags.
+- Dead `welcome` mailer + its view/spec.
+- `seeds.rb` single-user rewrite.
+- Rename `FirstAdminCreated` → `AccountCreated`.
 
 ## Phase 4 — Minimum viable to production
 
