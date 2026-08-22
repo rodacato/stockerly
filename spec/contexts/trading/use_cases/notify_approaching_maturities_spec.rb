@@ -21,6 +21,17 @@ RSpec.describe Trading::UseCases::NotifyApproachingMaturities do
   end
 
   describe ".call" do
+    it "publishes NotificationCreated so it broadcasts (regression: was a direct Notification.create!)" do
+      maturing_in(3)
+      received = []
+      EventBus.subscribe(Notifications::Events::NotificationCreated, ->(event) { received << event })
+
+      use_case.call
+
+      expect(received.size).to eq(1)
+      expect(received.first.title).to include("CETES_28D")
+    end
+
     [ 7, 3, 1 ].each do |days|
       it "fires a maturity_reminder at the #{days}-day threshold" do
         position = maturing_in(days)

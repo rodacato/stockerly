@@ -16,6 +16,16 @@ RSpec.describe MarketData::UseCases::NotifyApproachingEarnings do
         expect { described_class.call }.to change(Notification, :count).by(1)
       end
 
+      it "publishes NotificationCreated so it broadcasts (regression: was a direct Notification.create!)" do
+        received = []
+        EventBus.subscribe(Notifications::Events::NotificationCreated, ->(event) { received << event })
+
+        described_class.call
+
+        expect(received.size).to eq(1)
+        expect(received.first.title).to include("AAPL")
+      end
+
       it "returns count of notifications created" do
         result = described_class.call
         expect(result).to be_success

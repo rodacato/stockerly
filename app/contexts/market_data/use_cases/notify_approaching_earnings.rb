@@ -15,8 +15,8 @@ module MarketData
           users_watching(event.asset).each do |user|
             next if already_notified?(user, event)
 
-            Notification.create!(
-              user: user,
+            Notifications::UseCases::CreateNotification.call(
+              user_id: user.id,
               title: "#{event.asset.symbol} reporta resultados el #{format_date_es(event.report_date)}",
               body:  "#{event.asset.name} reporta #{when_phrase_es(event.report_date)}. EPS estimado: #{event.estimated_eps || 'N/D'}.",
               notification_type: :earnings_reminder,
