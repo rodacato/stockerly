@@ -57,3 +57,10 @@ not a rebuild. That's the story: *good architecture is what lets you be wrong ch
   500'd every admin page until caught — the kind of dangling reference a monolith surfaces loudly
   (87 red specs) and a test suite catches instantly. *Blog beat: the architecture makes deletion
   cheap; the tests make it safe.*
+- **The entire multi-user surface is gone** — six deletions in sequence (email tracking, usage
+  telemetry, registration + invites, email verification, "remember me" + sessions, user
+  management), each its own commit, the suite green at every step (2762 → 2503 examples). Roughly
+  half the "app" was scaffolding for an audience that never existed. What's left is a single-user
+  tracker that boots, logs in, and runs — smaller, and honestly the shape it should have been.
+  *Blog beat: the hardest part of the pivot wasn't writing new code; it was having the discipline
+  to delete, and an architecture clean enough that deleting didn't hurt.*
