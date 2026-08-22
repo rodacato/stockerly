@@ -79,7 +79,11 @@
 ## Deferred (working code / cosmetic — focused follow-up sessions, not this marathon)
 
 - User model column slim (`status`/`is_verified`/`email_verified_at`) — ~40 spec files, dead columns.
-- `api_key_pool` → single-key simplification (working plumbing, 7 gateways).
+- `api_key_pool` → single-key simplification (working plumbing, 7 gateways). **Direction (decided
+  2026-08-22): KEEP the admin key-management UI** — "deploy and forget", the user sets/changes keys
+  via the UI without touching `.env` or redeploying. NOT ENV-based. The rework only collapses the
+  *multi-key pool* (rotation, add/toggle/remove/default, daily counters) to *one key per provider*;
+  the admin config UI stays, just simpler (one key field per provider).
 - `AlertPreference` decorative flags.
 - Dead `welcome` mailer + its view/spec.
 - `seeds.rb` single-user rewrite.
