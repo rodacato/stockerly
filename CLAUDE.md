@@ -136,7 +136,6 @@ Forbidden in Trading: direct AR model access (`NewsArticle.recent`, `MarketIndex
 
 Key cross-context flows:
 - `MarketData::Events::AssetPriceUpdated` → `Alerts::Handlers::EvaluateAlertsOnPriceUpdate` (write event)
-- `MarketData::Events::FearGreedUpdated` → `Alerts::Handlers::EvaluateSentimentAlerts` (write event)
 - `Trading::Events::SplitDetected` → `Trading::Handlers::AdjustPositionsOnSplit` (write event)
 - `Identity::Events::UserRegistered` → `Identity::Handlers::CreatePortfolioOnRegistration` (write event)
 - `MarketData::Queries::*` consumed by Trading (read API per ADR-002)

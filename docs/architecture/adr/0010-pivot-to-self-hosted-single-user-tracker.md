@@ -53,3 +53,12 @@ What is preserved from the prior vision: ADR-0001 descriptive-not-prescriptive l
 **Rollback.** If, while executing the subtraction, the architecture is found to actively fight the single-user self-hosted goal (not expected), reconsider deprecation — with evidence, not before. Deleted code remains in git history.
 
 **Documentation follow-up.** `docs/vision/` (README, audience, non-goals) is rewritten in the same change; the beta-specific `jobs-to-be-done.md` JTBDs largely survive, with JTBD #5 (sub-30-second trade capture) promoted to central given the data-entry finding.
+
+## Addendum — 2026-08-22 (evidence from the code audit)
+
+A 5-stage parallel code audit + a 7-expert panel confirmed the "subtract, don't rewrite" bet with evidence (all 5 stages: EVOLVE). Two factual corrections to this ADR:
+
+- **The P0 FX-at-execution bug is already FIXED**, not pending. `execute_trade.rb` captures `fx_rate_at_execution`; FX-weighted cost basis + honest gain + currency-coherent snapshots are implemented and tested (`multi_currency_audit_spec.rb`). Only the *backdated-trade* FX refinement (Banxico TC at the trade's date) remains — a refinement, not a foundation bug. References above to "fixing the P0" should be read as already-done.
+- **`api_key_pool` must NOT be deleted with the multi-user models.** It is MarketData plumbing — `KeyRotation.next_key_for` feeds 7 gateways (incl. Banxico). Deleting it as-is dark-fails all external data sourcing. Reclassify as **rework** (collapse the pool to a single key per provider), not deletion. The multi-user delete list is otherwise correct and FK-clean.
+
+The EVOLVE execution runs on branch `evolve_2_0_pre` (baseline tag `pre-2.0-evolve`).

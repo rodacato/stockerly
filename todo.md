@@ -18,10 +18,12 @@
 - [x] Branch `evolve_2_0_pre` from the pivot commit + tag `pre-2.0-evolve`.
 - [x] gitignore `/redesign/`.
 - [x] Create `BITACORA_2_0.md` + `todo.md`.
-- [ ] Reconcile stale **context/memory**: `project_decision`, `project_vision` (P0 is FIXED; `api_key_pool`
-      is *rework*, not a multi-user delete). [.kwik-e edit + `apu save`]
-- [ ] Reconcile stale **docs**: ADR-0009 (P0 framing), ADR-0010 (`api_key_pool` in the delete list),
-      CLAUDE.md (the `EvaluateSentimentAlerts` handler claim doesn't exist; note the ADR-002 leaks).
+- [x] Reconcile stale **context/memory**: `project_decision`, `project_vision`, `MEMORY.md` (P0 FIXED;
+      `api_key_pool` = rework). ⚠️ **Adrian: run `apu save`** to propagate — apu isn't on my PATH.
+- [x] Reconcile stale **docs**: CLAUDE.md (dropped the vaporware `EvaluateSentimentAlerts` flow),
+      ADR-0010 (addendum: P0 fixed + `api_key_pool` is plumbing). ADR-0009 needed no change.
+- [ ] Later (Phase 5): fix the ADR-002 read-boundary leaks (Alerts→MarketData AR; Identity/Notifications)
+      — 2 of the 3 die with the multi-user delete anyway.
 
 ## Phase 1 — Safety net first (mancuso's pre-step)
 
