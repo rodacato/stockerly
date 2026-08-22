@@ -68,6 +68,7 @@
 .kwik-e/
 CLAUDE.local.md
 CLAUDE.kwik.md
+.mcp.json
 
 # redesign/: 2.0 discovery + design hub — kept local while we clean up in place
 /redesign/
