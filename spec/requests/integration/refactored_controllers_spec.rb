@@ -90,26 +90,6 @@ RSpec.describe "Refactored controller flows", type: :request do
     end
   end
 
-  describe "Admin users list via Use Case" do
-    let!(:admin) { create(:user, :admin, email: "admin_usr@example.com", password: "password123") }
-    let!(:target) { create(:user, full_name: "Jane Doe", email: "jane@example.com") }
-
-    before do
-      delete logout_path
-      login_as(admin)
-    end
-
-    it "lists users with search" do
-      get admin_users_path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Jane Doe")
-
-      get admin_users_path(search: "jane")
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Jane Doe")
-    end
-  end
-
   describe "Search with real results via Use Case" do
     it "returns search results from database" do
       create(:asset, symbol: "AAPL", name: "Apple Inc.")

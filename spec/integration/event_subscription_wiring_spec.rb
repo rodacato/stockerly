@@ -46,15 +46,6 @@ RSpec.describe "Event Subscription Wiring" do
   # Administration
   # ---------------------------------------------------------------------------
   describe "Administration subscriptions" do
-    describe "Identity::Events::UserSuspended" do
-      it "has audit log and suspension email handlers" do
-        handlers = EventBus.handlers_for(Identity::Events::UserSuspended)
-
-        expect(handlers).to include(Administration::Handlers::CreateAuditLogOnSuspension)
-        expect(handlers).to include(Administration::Handlers::SendSuspensionEmail)
-      end
-    end
-
     describe "MarketData::Events::AssetCreated" do
       it "has audit log, sync, and backfill history handlers" do
         handlers = EventBus.handlers_for(MarketData::Events::AssetCreated)

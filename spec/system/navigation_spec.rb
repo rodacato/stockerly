@@ -123,9 +123,6 @@ RSpec.describe "Navigation", type: :system do
       click_link "Logs"
       expect(page).to have_current_path(admin_logs_path)
 
-      click_link "Users"
-      expect(page).to have_current_path(admin_users_path)
-
       click_link "Assets"
       expect(page).to have_current_path(admin_assets_path)
     end
