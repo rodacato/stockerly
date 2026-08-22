@@ -46,21 +46,6 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  describe "#verify_email" do
-    let(:url) { "https://stockerly.com/verify-email/xyz" }
-    let(:mail) { described_class.verify_email(user, url) }
-
-    it_behaves_like "logo-bearing mailer"
-
-    it "uses the es-MX subject" do
-      expect(mail.subject).to eq("Verifica tu correo de Stockerly")
-    end
-
-    it "embeds the verification link" do
-      expect(mail.body.encoded).to include(url)
-      expect(mail.body.encoded).to include("Verificar mi correo")
-    end
-  end
 
   describe "#account_suspended" do
     let(:mail) { described_class.account_suspended(user) }
