@@ -2,16 +2,18 @@ require "rails_helper"
 
 RSpec.describe MarketData::Domain::ProviderDirectory do
   describe ".for" do
-    it "returns a description and https signup_url for a key-requiring provider" do
+    it "marks a key-requiring provider with an https site and requires_key: true" do
       info = described_class.for("Polygon.io")
       expect(info.description).to be_present
-      expect(info.signup_url).to start_with("https://")
+      expect(info.url).to start_with("https://")
+      expect(info.requires_key).to be(true)
     end
 
-    it "returns a description but no signup_url for a public provider" do
-      info = described_class.for("Yahoo Finance")
+    it "marks a public provider with a source link and requires_key: false" do
+      info = described_class.for("Alternative.me")
       expect(info.description).to be_present
-      expect(info.signup_url).to be_nil
+      expect(info.url).to start_with("https://")
+      expect(info.requires_key).to be(false)
     end
 
     it "returns nil for an unknown provider" do
@@ -20,7 +22,7 @@ RSpec.describe MarketData::Domain::ProviderDirectory do
 
     it "has an entry for every provider the first-boot setup creates" do
       # Drift guard: an Integration created in CreateFirstAdmin with no directory
-      # entry would render an onboarding card with no description or signup link.
+      # entry would render an onboarding card with no description or source link.
       created = File.read(Rails.root.join("app/contexts/identity/use_cases/create_first_admin.rb"))
                     .scan(/provider_name: "([^"]+)"/).flatten.uniq
       missing = created.reject { |name| described_class.for(name) }
