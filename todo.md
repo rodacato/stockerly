@@ -64,6 +64,18 @@
 - [ ] Dead `AlertPreference` flags — **decorative UI, not a bug** (toggles that don't gate anything;
       no email/SMS channel exists). Group with the User-column slim as cosmetic cleanup, deferred.
 
+## Product idea captured (from first-boot dogfood, 2026-08-22)
+
+- **Opt-in checkboxes for editorial data sources (news/sentiment).** Adrian's principle: for
+  *fungible* data (prices, FX, fundamentals) the source doesn't matter — no choice needed. For
+  *editorial* sources (news, sentiment) the source carries bias/coverage → be transparent AND let
+  the user check which ones to use. Today the only editorial Integrations are the 2 sentiment ones
+  (Alternative.me, CNN); news is a capability of Polygon/Finnhub, not a standalone source.
+  **Needs first:** a real per-provider enable/disable on `Integration` (only `connection_status`
+  exists, which is sync-state not preference) + onboarding persistence + sync respecting it. The
+  onboarding save path sits on `api_key_pool` → **build this AFTER the api_key_pool rework**, not
+  bolted onto code we're about to change. Transparency half (show + link each source) already shipped.
+
 ## Deferred (working code / cosmetic — focused follow-up sessions, not this marathon)
 
 - User model column slim (`status`/`is_verified`/`email_verified_at`) — ~40 spec files, dead columns.
