@@ -13,9 +13,9 @@ module MarketData
         "FMP"            => Info.new("Dividendos y splits de tus posiciones.", "https://site.financialmodelingprep.com/developer/docs", true),
         "ExchangeRate"   => Info.new("Tipos de cambio (FX) para consolidar en tu moneda base.", "https://www.exchangerate-api.com/", true),
         "Banxico"        => Info.new("CETES y renta fija mexicana (tasas, subastas).", "https://www.banxico.org.mx/SieAPIRest/service/v1/token", true),
+        "CoinGecko"      => Info.new("Precios de criptomonedas. La Demo API key (gratis) sube los límites.", "https://www.coingecko.com/en/api/pricing", true),
 
         # Public — no key needed
-        "CoinGecko"      => Info.new("Precios de criptomonedas (capa gratuita, sin key).", "https://www.coingecko.com/es/api", false),
         "Yahoo Finance"  => Info.new("Precios de acciones y ETFs de la BMV (México).", "https://finance.yahoo.com", false),
         "Alternative.me" => Info.new("Índice de miedo y codicia de cripto (sentimiento).", "https://alternative.me/crypto/fear-and-greed-index/", false),
         "CNN"            => Info.new("Índice de miedo y codicia del mercado de acciones (sentimiento).", "https://www.cnn.com/markets/fear-and-greed", false)
