@@ -21,8 +21,8 @@ module Trading
           days = days_until_maturity(position)
           next unless THRESHOLD_DAYS.include?(days)
 
-          Notification.create!(
-            user: position.portfolio.user,
+          Notifications::UseCases::CreateNotification.call(
+            user_id: position.portfolio.user.id,
             title: title_for(position, days),
             body: body_for(position, days),
             notification_type: :maturity_reminder,
