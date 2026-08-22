@@ -131,6 +131,6 @@ RSpec.describe "Admin · Cuentas registradas", type: :system do
     # admin session, so we verify the empty-state partial copy directly.
     empty_state = Rails.root.join("app/views/admin/users/_empty_state.html.erb").read
     expect(empty_state).to include("Aún no hay usuarios registrados.")
-    expect(empty_state).to include("Ir a invitaciones")
+    expect(empty_state).to include("La cuenta se crea en la configuración inicial del sistema.")
   end
 end

@@ -34,7 +34,7 @@ module Stockerly
     config.autoload_lib(ignore: %w[assets tasks stockerly middleware])
 
     # Hexagonal Architecture: contexts/ is a root — subdirs become namespaces
-    # e.g. app/contexts/identity/events/user_registered.rb → Identity::Events::UserRegistered
+    # e.g. app/contexts/trading/events/trade_executed.rb → Trading::Events::TradeExecuted
     config.autoload_paths << Rails.root.join("app/contexts")
     config.autoload_paths << Rails.root.join("app/shared")
 

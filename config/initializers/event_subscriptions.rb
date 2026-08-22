@@ -1,9 +1,5 @@
 Rails.application.config.after_initialize do
-  # Identity
-  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::CreatePortfolioOnRegistration)
-  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::CreateAlertPreferencesOnRegistration)
-  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::SendWelcomeEmailOnRegistration)
-  EventBus.subscribe(Identity::Events::UserRegistered, Identity::Handlers::SendVerificationEmailOnRegistration)
+  # Identity — the single-user account is created by first-boot setup (FirstAdminCreated)
   EventBus.subscribe(Identity::Events::FirstAdminCreated, Identity::Handlers::CreatePortfolioOnRegistration)
   EventBus.subscribe(Identity::Events::FirstAdminCreated, Identity::Handlers::CreateAlertPreferencesOnRegistration)
   EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::InvalidateSessionsOnPasswordChange)

@@ -32,7 +32,6 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
   it "labels the toggles in es-MX" do
     visit admin_settings_path
 
-    expect(page).to have_content("Registro abierto")
     expect(page).to have_content("Modo mantenimiento")
     expect(page).to have_content("Sincronización automática")
     expect(page).to have_content("Notificaciones por correo")
@@ -65,18 +64,18 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
   end
 
   it "persists toggle changes and writes an audit entry" do
-    SiteConfig.set("registration_open", false)
+    SiteConfig.set("maintenance_mode", false)
 
     expect {
       page.driver.submit :patch, admin_settings_path,
-                         { "registration_open" => "1", "maintenance_mode" => "0",
+                         { "maintenance_mode" => "1",
                            "auto_sync_enabled" => "0", "email_notifications_enabled" => "0" }
     }.to change(SiteConfigChange, :count).by(1)
 
-    expect(SiteConfig.registration_open?).to be true
+    expect(SiteConfig.maintenance_mode?).to be true
     visit admin_settings_path
     expect(page).to have_content("adrian cambió")
-    expect(page).to have_content("registro_abierto")
+    expect(page).to have_content("modo_mantenimiento")
   end
 
   it "renders the empty audit message when no changes are recorded" do
@@ -84,8 +83,8 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
     expect(page).to have_content("Aún no hay cambios registrados.")
   end
 
-  it "fetches the four toggle rows with a batched SELECT (regression: N+1)" do
-    %w[registration_open maintenance_mode auto_sync_enabled email_notifications_enabled].each do |key|
+  it "fetches the three toggle rows with a batched SELECT (regression: N+1)" do
+    %w[maintenance_mode auto_sync_enabled email_notifications_enabled].each do |key|
       SiteConfig.set(key, true)
     end
 
@@ -100,23 +99,23 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
     visit admin_settings_path
     ActiveSupport::Notifications.unsubscribe(sub)
 
-    # The controller batches all 4 toggle keys into a single WHERE-IN.
-    batched = queries.count { |q| q.match?(/IN \(.+,.+,.+,.+\)/) }
+    # The controller batches all 3 toggle keys into a single WHERE-IN.
+    batched = queries.count { |q| q.match?(/IN \(.+,.+,.+\)/) }
     expect(batched).to be >= 1
   end
 
   it "rolls the SiteConfig + SiteConfigChange writes back together on failure" do
-    SiteConfig.set("registration_open", false)
+    SiteConfig.set("maintenance_mode", false)
     allow(SiteConfigChange).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
 
     expect {
       begin
         page.driver.submit :patch, admin_settings_path,
-                           { "registration_open" => "1", "maintenance_mode" => "0",
+                           { "maintenance_mode" => "1",
                              "auto_sync_enabled" => "0", "email_notifications_enabled" => "0" }
       rescue ActiveRecord::RecordInvalid
         # Expected — the transaction should re-raise.
       end
-    }.not_to change { SiteConfig.registration_open? }
+    }.not_to change { SiteConfig.maintenance_mode? }
   end
 end

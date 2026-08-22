@@ -15,10 +15,6 @@ class SiteConfig < ApplicationRecord
     get(key) == "true"
   end
 
-  def self.registration_open?
-    enabled?("registration_open")
-  end
-
   def self.maintenance_mode?
     enabled?("maintenance_mode")
   end

@@ -8,14 +8,12 @@ RSpec.describe "Event Subscription Wiring" do
   # Identity
   # ---------------------------------------------------------------------------
   describe "Identity subscriptions" do
-    describe "Identity::Events::UserRegistered" do
-      it "has portfolio, alert prefs, welcome email, and verification email handlers" do
-        handlers = EventBus.handlers_for(Identity::Events::UserRegistered)
+    describe "Identity::Events::FirstAdminCreated" do
+      it "has portfolio and alert-preferences handlers (single-user bootstrap)" do
+        handlers = EventBus.handlers_for(Identity::Events::FirstAdminCreated)
 
         expect(handlers).to include(Identity::Handlers::CreatePortfolioOnRegistration)
         expect(handlers).to include(Identity::Handlers::CreateAlertPreferencesOnRegistration)
-        expect(handlers).to include(Identity::Handlers::SendWelcomeEmailOnRegistration)
-        expect(handlers).to include(Identity::Handlers::SendVerificationEmailOnRegistration)
       end
     end
 

@@ -4,7 +4,7 @@ RSpec.describe Identity::Handlers::CreatePortfolioOnRegistration do
   let(:user) { create(:user) }
 
   it "creates a portfolio for the user" do
-    event = Identity::Events::UserRegistered.new(user_id: user.id, email: user.email)
+    event = Identity::Events::FirstAdminCreated.new(user_id: user.id, email: user.email)
 
     expect { described_class.call(event) }.to change(Portfolio, :count).by(1)
     expect(user.reload.portfolio).to be_present
@@ -13,7 +13,7 @@ RSpec.describe Identity::Handlers::CreatePortfolioOnRegistration do
 
   it "does not create duplicate portfolio" do
     create(:portfolio, user: user)
-    event = Identity::Events::UserRegistered.new(user_id: user.id, email: user.email)
+    event = Identity::Events::FirstAdminCreated.new(user_id: user.id, email: user.email)
 
     expect { described_class.call(event) }.not_to change(Portfolio, :count)
   end

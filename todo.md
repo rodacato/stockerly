@@ -35,10 +35,14 @@
 
 - [x] `email_event` — dropped (model, Resend webhook, route, migration, specs, factory). `78001dd`. Green 2736.
 - [x] `user_activity` — dropped (model, ActivityRecorder, 3 handlers, page-view tracking, subs, migration). `4f00567`. Green 2705.
-- [ ] **NEXT (needs decision):** `invite_code` + registration + verify-email + admin/invites. NOT a clean
-      delete — portfolio + alert-prefs creation must move from `UserRegistered` → `FirstAdminCreated`
-      (setup) first, or the single-user bootstrap gets no portfolio. Recommended: re-point the 2 handlers
-      (cross-context write-via-events rule keeps them as handlers, not inline in CreateFirstAdmin).
+- [x] `invite_code` + registration + admin/invites — dropped (model+table, register use-case/contract/
+      controller/view, UserRegistered event, welcome/verify-email handlers, admin/invites, cleanup job,
+      registration_open toggle, ~12 specs). Portfolio+alert-prefs re-pointed to `FirstAdminCreated`.
+      Fixed dangling refs: admin sidebar "Invites" link (caused 87 admin failures), navbar/login register
+      links, users empty-state. Green 2608.
+- [ ] **NEXT:** verify-email surface (`email_verifications_controller`, `verify_email` use case,
+      `EmailVerified` event, the banner, User `is_verified`/`email_verified_at`). Now fully dead
+      (setup creates verified user; no registration path makes unverified ones).
 - [ ] `admin/users` management (list/suspend/reactivate/delete) + `remember_token` on User scoping.
 - [ ] Excise `RememberToken` from `ApplicationController` + profiles UI (~40 LOC, own commit + test).
 - [ ] Keep + repurpose `setup_controller` / `CreateFirstAdmin` as the single-user bootstrap.

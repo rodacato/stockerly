@@ -12,8 +12,7 @@
           <%= link_to current_user.full_name, dashboard_path, class: "hidden sm:flex items-center gap-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" %>
           <%= button_to "Logout", logout_path, method: :delete, class: "px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all" %>
         <% else %>
-          <%= link_to "Login", login_path, class: "hidden sm:block px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all" %>
-          <%= link_to "Get Started", register_path, class: "bg-primary text-white px-5 py-2.5 text-sm font-bold rounded-lg hover:bg-primary/90 shadow-sm transition-all" %>
+          <%= link_to "Login", login_path, class: "bg-primary text-white px-5 py-2.5 text-sm font-bold rounded-lg hover:bg-primary/90 shadow-sm transition-all" %>
         <% end %>
 
         <%# Mobile Menu Toggle %>
