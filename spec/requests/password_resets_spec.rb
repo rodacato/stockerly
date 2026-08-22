@@ -76,15 +76,6 @@ RSpec.describe "PasswordResets", type: :request do
       expect(user.reload.authenticate("newpassword123")).to be_truthy
     end
 
-    it "destroys all remember tokens on password reset" do
-      create(:remember_token, user: user)
-      patch reset_password_path(token), params: {
-        password: "newpassword123",
-        password_confirmation: "newpassword123"
-      }
-      expect(user.remember_tokens.count).to eq(0)
-    end
-
     it "rejects mismatched passwords" do
       patch reset_password_path(token), params: {
         password: "newpassword123",

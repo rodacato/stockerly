@@ -13,7 +13,6 @@ class SessionsController < ApplicationController
     case result
     in Dry::Monads::Success(user)
       start_session(user)
-      remember(user) if params[:remember] == "1"
       EventBus.publish(Identity::Events::UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
       redirect_to dashboard_path, notice: "¡Qué gusto verte de vuelta, #{user.full_name}!"
     in Dry::Monads::Failure[ :suspended, message ]
@@ -30,7 +29,6 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    forget(current_user) if current_user
     reset_session
     redirect_to root_path, notice: "Sesión cerrada correctamente."
   end

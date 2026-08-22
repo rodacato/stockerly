@@ -130,12 +130,6 @@ RSpec.describe User, type: :model do
   end
 
   describe "associations" do
-    it "destroys remember_tokens on user destroy" do
-      user = create(:user)
-      create(:remember_token, user: user)
-      expect { user.destroy }.to change(RememberToken, :count).by(-1)
-    end
-
     it "destroys portfolio on user destroy" do
       user = create(:user)
       create(:portfolio, user: user)

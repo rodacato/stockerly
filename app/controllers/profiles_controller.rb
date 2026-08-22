@@ -4,8 +4,6 @@ class ProfilesController < AuthenticatedController
   # Keeps MVC clean and lets us compose a cheap counts query.
   def show
     @sidebar = identity_card_counts
-    @active_sessions = current_user.remember_tokens.active.order(last_used_at: :desc).to_a
-    @current_session_id = current_remember_token_id
   end
 
   def update
@@ -55,19 +53,6 @@ class ProfilesController < AuthenticatedController
     head :unprocessable_content
   end
 
-  # Revokes a single remember-token-backed session ("close session on
-  # this device" from the Seguridad tab). Scoped to current_user so a
-  # crafted id cannot drop another user's token.
-  def revoke_session
-    token = current_user.remember_tokens.find_by(id: params[:id])
-    if token
-      token.destroy
-      redirect_to profile_path, notice: "Sesión cerrada en ese dispositivo."
-    else
-      redirect_to profile_path, alert: "Esa sesión ya no está activa."
-    end
-  end
-
   def change_password
     result = Identity::UseCases::ChangePassword.call(user: current_user, params: password_params.to_h)
 
@@ -93,21 +78,6 @@ class ProfilesController < AuthenticatedController
 
   def preference_params
     params.permit(:email_digest, :browser_push, :sms_notifications)
-  end
-
-  # Read the current request's remember-token id from the signed cookie.
-  # Returns the integer id when the cookie covers a *real* row owned by
-  # the current user; nil for the cookieless "this device" case (browser
-  # session only) — letting the view fall back to the synthesized row.
-  def current_remember_token_id
-    raw = cookies.signed[:remember_token]
-    return nil if raw.blank?
-
-    token_id, _ = raw.split(":", 2)
-    return nil unless token_id.present?
-
-    id = token_id.to_i
-    current_user.remember_tokens.where(id: id).exists? ? id : nil
   end
 
   # Precompute the IdentityCard sidebar counts at the controller layer

@@ -4,7 +4,6 @@ RSpec.describe "Profile update flow", type: :request do
   let!(:user) { create(:user, full_name: "John Doe", email: "john@example.com", password: "password123") }
 
   before do
-    EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::InvalidateSessionsOnPasswordChange)
     login_as(user)
   end
 
@@ -17,10 +16,7 @@ RSpec.describe "Profile update flow", type: :request do
     expect(user.reload.full_name).to eq("Jane Smith")
   end
 
-  it "changes password and invalidates remember tokens" do
-    create(:remember_token, user: user)
-    expect(user.remember_tokens.count).to eq(1)
-
+  it "changes password" do
     patch change_password_path, params: {
       password_change: {
         current_password: "password123",
@@ -29,6 +25,6 @@ RSpec.describe "Profile update flow", type: :request do
       }
     }
     expect(response).to redirect_to(profile_path)
-    expect(user.remember_tokens.count).to eq(0)
+    expect(user.reload.authenticate("newpassword456")).to be_truthy
   end
 end

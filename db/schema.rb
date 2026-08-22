@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_22_152248) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_22_155756) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -349,20 +349,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_22_152248) do
     t.index ["status"], name: "index_positions_on_status"
   end
 
-  create_table "remember_tokens", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "expires_at", null: false
-    t.string "ip_address"
-    t.datetime "last_used_at"
-    t.string "token_digest", null: false
-    t.datetime "updated_at", null: false
-    t.string "user_agent"
-    t.bigint "user_id", null: false
-    t.index ["token_digest"], name: "index_remember_tokens_on_token_digest", unique: true
-    t.index ["user_id", "expires_at"], name: "index_remember_tokens_on_user_id_and_expires_at"
-    t.index ["user_id"], name: "index_remember_tokens_on_user_id"
-  end
-
   create_table "site_config_changes", force: :cascade do |t|
     t.bigint "admin_id", null: false
     t.datetime "created_at", null: false
@@ -507,7 +493,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_22_152248) do
   add_foreign_key "portfolios", "users"
   add_foreign_key "positions", "assets"
   add_foreign_key "positions", "portfolios"
-  add_foreign_key "remember_tokens", "users"
   add_foreign_key "site_config_changes", "users", column: "admin_id"
   add_foreign_key "stock_splits", "assets"
   add_foreign_key "technical_observations", "assets"

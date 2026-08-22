@@ -15,18 +15,6 @@ RSpec.describe Identity::UseCases::ResetPassword do
       expect(user.reload.authenticate("newpassword123")).to be_truthy
     end
 
-    it "destroys all remember tokens" do
-      create(:remember_token, user: user)
-      create(:remember_token, user: user)
-
-      expect {
-        described_class.call(
-          token: token,
-          params: { password: "newpassword123", password_confirmation: "newpassword123" }
-        )
-      }.to change { user.remember_tokens.count }.from(2).to(0)
-    end
-
     it "returns Failure for invalid token" do
       result = described_class.call(
         token: "invalid-token",

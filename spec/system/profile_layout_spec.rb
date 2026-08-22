@@ -54,49 +54,6 @@ RSpec.describe "Profile layout (S11 #146)", type: :system do
     end
   end
 
-  describe "Active sessions card" do
-    it "shows a synthesized current-session row when no remember_tokens exist" do
-      visit profile_path
-      expect(page).to have_content("Sesiones activas")
-      expect(page).to have_content("Activa ahora")
-      expect(page).to have_content("Este dispositivo")
-    end
-
-    it "lists active remember_token sessions with a Cerrar sesión button" do
-      RememberToken.generate(user, ip_address: "10.0.0.1", user_agent: "Mozilla/5.0 (Macintosh) Chrome/126")
-      RememberToken.generate(user, ip_address: "10.0.0.2", user_agent: "Mozilla/5.0 (X11; Linux) Firefox/130")
-      visit profile_path
-
-      expect(page).to have_content("Chrome · macOS")
-      expect(page).to have_content("Firefox · Linux")
-      expect(page).to have_content("IP 10.0.0.1")
-      expect(page).to have_content("IP 10.0.0.2")
-      # Older session (non-current) gets the Cerrar sesión button
-      expect(page).to have_button("Cerrar sesión")
-    end
-
-    it "revokes a session via DELETE and shows the es-MX notice" do
-      token, _raw = RememberToken.generate(user, ip_address: "10.0.0.1", user_agent: "Chrome")
-      RememberToken.generate(user, ip_address: "10.0.0.2", user_agent: "Firefox")  # newer = current
-
-      page.driver.submit :delete, revoke_session_path(id: token.id), {}
-
-      expect(user.remember_tokens.where(id: token.id)).to be_empty
-      visit profile_path
-      # Flash notice is consumed; the session no longer appears in the list.
-      expect(page).not_to have_content("IP 10.0.0.1")
-    end
-
-    it "ignores a revoke attempt for someone else's session" do
-      other_user = create(:user, email: "other@test.com", password: "password123")
-      other_token, _raw = RememberToken.generate(other_user, ip_address: "10.0.0.99", user_agent: "Chrome")
-
-      page.driver.submit :delete, revoke_session_path(id: other_token.id), {}
-
-      expect(RememberToken.where(id: other_token.id)).to exist
-    end
-  end
-
   describe "3-channel notification preferences" do
     before { visit profile_path }
 

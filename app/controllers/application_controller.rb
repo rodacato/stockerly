@@ -42,11 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    @current_user ||= if session[:user_id]
-      User.find_by(id: session[:user_id])
-    else
-      user_from_remember_cookie
-    end
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
   end
 
   def logged_in?
@@ -78,48 +74,7 @@ class ApplicationController < ActionController::Base
   end
 
   def expire_session(message)
-    forget(current_user) if current_user
     reset_session
     redirect_to login_path, alert: message
-  end
-
-  def remember(user)
-    token_record, raw_token = RememberToken.generate(
-      user,
-      ip_address: request.remote_ip,
-      user_agent: request.user_agent
-    )
-    cookies.signed[:remember_token] = {
-      value: "#{token_record.id}:#{raw_token}",
-      expires: 30.days.from_now,
-      httponly: true,
-      secure: Rails.env.production?,
-      same_site: :lax
-    }
-  end
-
-  def forget(user)
-    if cookies.signed[:remember_token].present?
-      token_id, _ = cookies.signed[:remember_token].split(":", 2)
-      user.remember_tokens.find_by(id: token_id)&.destroy
-    end
-    cookies.delete(:remember_token)
-  end
-
-  def user_from_remember_cookie
-    return unless cookies.signed[:remember_token].present?
-
-    token_id, raw_token = cookies.signed[:remember_token].split(":", 2)
-    return unless token_id.present? && raw_token.present?
-
-    token_record = RememberToken.active.find_by(id: token_id)
-    return unless token_record
-
-    digest = Digest::SHA256.hexdigest(raw_token)
-    return unless ActiveSupport::SecurityUtils.secure_compare(token_record.token_digest, digest)
-
-    token_record.touch_last_used!
-    start_session(token_record.user)
-    token_record.user
   end
 end

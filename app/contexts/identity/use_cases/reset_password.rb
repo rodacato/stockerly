@@ -16,8 +16,6 @@ module Identity
           return Failure([ :validation, user ])
         end
 
-        user.remember_tokens.destroy_all
-
         Success(user)
       end
 
