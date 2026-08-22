@@ -12,9 +12,9 @@ class DropRememberTokens < ActiveRecord::Migration[8.1]
       t.datetime "updated_at", null: false
       t.string "user_agent"
       t.bigint "user_id", null: false
-      t.index ["token_digest"], name: "index_remember_tokens_on_token_digest", unique: true
-      t.index ["user_id", "expires_at"], name: "index_remember_tokens_on_user_id_and_expires_at"
-      t.index ["user_id"], name: "index_remember_tokens_on_user_id"
+      t.index [ "token_digest" ], name: "index_remember_tokens_on_token_digest", unique: true
+      t.index [ "user_id", "expires_at" ], name: "index_remember_tokens_on_user_id_and_expires_at"
+      t.index [ "user_id" ], name: "index_remember_tokens_on_user_id"
     end
   end
 end

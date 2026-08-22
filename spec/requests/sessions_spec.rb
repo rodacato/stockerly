@@ -68,7 +68,6 @@ RSpec.describe "Sessions", type: :request do
       expect(response).to redirect_to(root_path)
       expect(flash[:notice]).to eq("Sesión cerrada correctamente.")
     end
-
   end
 
   describe "DELETE /logout without session" do
