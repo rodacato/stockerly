@@ -4,7 +4,7 @@ RSpec.describe Identity::Handlers::CreateAlertPreferencesOnRegistration do
   let(:user) { create(:user) }
 
   it "creates alert preferences with defaults" do
-    event = Identity::Events::UserRegistered.new(user_id: user.id, email: user.email)
+    event = Identity::Events::FirstAdminCreated.new(user_id: user.id, email: user.email)
 
     expect { described_class.call(event) }.to change(AlertPreference, :count).by(1)
     prefs = user.reload.alert_preference
@@ -15,7 +15,7 @@ RSpec.describe Identity::Handlers::CreateAlertPreferencesOnRegistration do
 
   it "does not create duplicate preferences" do
     create(:alert_preference, user: user)
-    event = Identity::Events::UserRegistered.new(user_id: user.id, email: user.email)
+    event = Identity::Events::FirstAdminCreated.new(user_id: user.id, email: user.email)
 
     expect { described_class.call(event) }.not_to change(AlertPreference, :count)
   end

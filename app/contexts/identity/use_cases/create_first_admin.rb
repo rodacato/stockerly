@@ -35,7 +35,7 @@ module Identity
       end
 
       def create_site_defaults!
-        { "registration_open" => "false", "maintenance_mode" => "false" }.each do |key, default|
+        { "maintenance_mode" => "false" }.each do |key, default|
           SiteConfig.find_or_create_by!(key: key) do |c|
             c.value = default
           end

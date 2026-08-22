@@ -23,8 +23,6 @@ Rails.application.routes.draw do
   get    "login",    to: "sessions#new"
   post   "login",    to: "sessions#create"
   delete "logout",   to: "sessions#destroy"
-  get    "register", to: "registrations#new"
-  post   "register", to: "registrations#create"
 
   # --- Password Reset ---
   get   "forgot-password",       to: "password_resets#new",    as: :forgot_password
@@ -120,7 +118,6 @@ Rails.application.routes.draw do
         patch :reactivate
       end
     end
-    resources :invites, only: [ :index, :create ]
     resource :settings, only: [ :show, :update ]
   end
 end

@@ -1,11 +1,10 @@
 module Admin
   class SettingsController < BaseController
-    TOGGLE_KEYS = %w[registration_open maintenance_mode auto_sync_enabled email_notifications_enabled].freeze
+    TOGGLE_KEYS = %w[maintenance_mode auto_sync_enabled email_notifications_enabled].freeze
 
     def show
       configs = SiteConfig.where(key: TOGGLE_KEYS).index_by(&:key)
 
-      @registration_open           = enabled?(configs["registration_open"])
       @maintenance_mode            = enabled?(configs["maintenance_mode"])
       @auto_sync_enabled           = enabled?(configs["auto_sync_enabled"])
       @email_notifications_enabled = enabled?(configs["email_notifications_enabled"])

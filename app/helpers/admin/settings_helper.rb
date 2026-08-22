@@ -1,7 +1,6 @@
 module Admin
   module SettingsHelper
     SETTING_LABELS = {
-      "registration_open"           => "registro_abierto",
       "maintenance_mode"            => "modo_mantenimiento",
       "auto_sync_enabled"           => "sincronizacion_automatica",
       "email_notifications_enabled" => "notificaciones_por_correo"

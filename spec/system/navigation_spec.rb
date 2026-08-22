@@ -27,20 +27,6 @@ RSpec.describe "Navigation", type: :system do
   end
 
   describe "Auth flow" do
-    it "registers and redirects to welcome" do
-      invite = create(:invite_code)
-      visit register_path
-      fill_in "Nombre completo", with: "New User"
-      fill_in "Correo electrónico", with: "newuser@test.com"
-      fill_in "Contraseña", with: "password123"
-      fill_in "Confirmar contraseña", with: "password123"
-      fill_in "Código de invitación", with: invite.code
-      check "consents_data_processing"
-      click_button "Crear cuenta"
-
-      expect(page).to have_current_path(welcome_path)
-    end
-
     it "logs in and accesses dashboard" do
       user = create(:user, email: "login@test.com", password: "password123", onboarded_at: Time.current)
 
