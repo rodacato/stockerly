@@ -48,3 +48,12 @@ not a rebuild. That's the story: *good architecture is what lets you be wrong ch
   built to answer "did the beta amigos use it?", read by nothing in the product. ~57 specs deleted
   with them; the suite stayed green at every step. The blog-post beat: *the AI-built features that
   measured a fantasy audience were the first things to go, and the architecture let them go cleanly.*
+- **Deleted the whole multi-user registration surface** — invite codes, `/register`, the admin
+  invites UI, and ~1,500 lines — in one commit. The setup that made it safe: the single-user
+  bootstrap (`CreateFirstAdmin` → `FirstAdminCreated`) already existed and already created the
+  portfolio, so "removing registration" was mostly re-pointing two event handlers, not a rewrite.
+  The event-driven boundaries did the heavy lifting — deleting a whole user-journey was a
+  subtraction, not surgery. One honest scar: a stale admin-sidebar link to the deleted invites route
+  500'd every admin page until caught — the kind of dangling reference a monolith surfaces loudly
+  (87 red specs) and a test suite catches instantly. *Blog beat: the architecture makes deletion
+  cheap; the tests make it safe.*
