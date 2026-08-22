@@ -41,3 +41,10 @@ not a rebuild. That's the story: *good architecture is what lets you be wrong ch
   `el-usuario` (ship a screen, don't gold-plate the backend).
 - Decision: **EVOLVE.** Started the cleanup phase — branch `evolve_2_0_pre`, tag `pre-2.0-evolve`
   marking the baseline.
+- **Green baseline: 2762 examples, 0 failures, 94% line coverage.** The safety net is real —
+  which is what makes deleting half the app a low-risk cleanup instead of a gamble.
+- Cleanup began with the two most isolated pieces of beta scar tissue: `email_event` (Resend
+  delivery tracking) and `user_activity` (usage-audit telemetry, #172). Both were **write-only** —
+  built to answer "did the beta amigos use it?", read by nothing in the product. ~57 specs deleted
+  with them; the suite stayed green at every step. The blog-post beat: *the AI-built features that
+  measured a fantasy audience were the first things to go, and the architecture let them go cleanly.*

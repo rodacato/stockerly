@@ -33,12 +33,18 @@
 
 ## Phase 2 — Aggressive delete (FK-clean, problems.md §C)
 
-- [ ] Delete multi-user surface: `invite_code`, `email_event`, `user_activity`; register/verify/
-      invites/users-admin routes + controllers + use-cases + events + handlers.
+- [x] `email_event` — dropped (model, Resend webhook, route, migration, specs, factory). `78001dd`. Green 2736.
+- [x] `user_activity` — dropped (model, ActivityRecorder, 3 handlers, page-view tracking, subs, migration). `4f00567`. Green 2705.
+- [ ] **NEXT (needs decision):** `invite_code` + registration + verify-email + admin/invites. NOT a clean
+      delete — portfolio + alert-prefs creation must move from `UserRegistered` → `FirstAdminCreated`
+      (setup) first, or the single-user bootstrap gets no portfolio. Recommended: re-point the 2 handlers
+      (cross-context write-via-events rule keeps them as handlers, not inline in CreateFirstAdmin).
+- [ ] `admin/users` management (list/suspend/reactivate/delete) + `remember_token` on User scoping.
 - [ ] Excise `RememberToken` from `ApplicationController` + profiles UI (~40 LOC, own commit + test).
 - [ ] Keep + repurpose `setup_controller` / `CreateFirstAdmin` as the single-user bootstrap.
 - [ ] Prune `event_subscriptions.rb` (line-deletes); rewrite `seeds.rb` single-user.
 - NOTE: `api_key_pool` is NOT a delete — it's MarketData plumbing (7 gateways). See Phase 3.
+- NOTE: consider renaming `FirstAdminCreated` → `AccountCreated` (no "admin" in single-user) — later, Identity cleanup.
 
 ## Phase 3 — Fix only the simplest needed to continue (problems.md §F + api_key_pool)
 
