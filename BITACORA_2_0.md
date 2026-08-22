@@ -64,3 +64,20 @@ not a rebuild. That's the story: *good architecture is what lets you be wrong ch
   tracker that boots, logs in, and runs — smaller, and honestly the shape it should have been.
   *Blog beat: the hardest part of the pivot wasn't writing new code; it was having the discipline
   to delete, and an architecture clean enough that deleting didn't hurt.*
+- **A real bug surfaced by the cleanup, not the features:** two notification paths (earnings,
+  bond maturities) used a direct `Notification.create!` that bypassed the broadcast event — so
+  those reminders only appeared on page reload, never live. Routed them through the same funnel
+  the alert path already used, with a regression test that fails if anyone reverts it. *Blog beat:
+  the tests you write during a cleanup catch bugs the original tests never could.*
+- **Asked "what else is dead?" and let an agent sweep the whole codebase** instead of guessing.
+  It found dead use-cases, orphaned helpers/partials, two events published to zero subscribers,
+  four unused gems, and a set of write-only DB columns — a clean map of residue. Deleting the
+  obviously-dead first (zero-reference, no migration) keeps each step green and low-risk; the
+  entangled stuff (a working key-pool subsystem, dead columns needing a migration) is named and
+  deferred, not force-fit into a tired session. *Blog beat: "delete everything unused" is a
+  search problem, not a memory problem — measure the residue, don't recall it.*
+- **Dogfooded the fresh-clone experience:** reset the dev DB to empty and walked the single-user
+  first-boot — no seed, straight into the setup wizard, account created, platform bootstrapped,
+  empty portfolio. The thing a stranger cloning the repo would actually see. First real UX polish
+  from that: the provider-connect step now says *what each data source is for* and *where to get
+  its key* — the "runs it without a manual" packaging promise, made concrete.
