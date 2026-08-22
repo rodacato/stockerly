@@ -2,7 +2,6 @@ Rails.application.config.after_initialize do
   # Identity — the single-user account is created by first-boot setup (FirstAdminCreated)
   EventBus.subscribe(Identity::Events::FirstAdminCreated, Identity::Handlers::CreatePortfolioOnRegistration)
   EventBus.subscribe(Identity::Events::FirstAdminCreated, Identity::Handlers::CreateAlertPreferencesOnRegistration)
-  EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::InvalidateSessionsOnPasswordChange)
   EventBus.subscribe(Identity::Events::PasswordChanged, Identity::Handlers::CreateAuditLogOnPasswordChange)
   EventBus.subscribe(Identity::Events::UserLoggedIn, Identity::Handlers::CreateAuditLogOnLogin)
   EventBus.subscribe(Identity::Events::UserLoginFailed, Identity::Handlers::CreateAuditLogOnLoginFailure)

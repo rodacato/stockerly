@@ -18,10 +18,9 @@ RSpec.describe "Event Subscription Wiring" do
     end
 
     describe "Identity::Events::PasswordChanged" do
-      it "has session invalidation and audit log handlers" do
+      it "has the audit log handler" do
         handlers = EventBus.handlers_for(Identity::Events::PasswordChanged)
 
-        expect(handlers).to include(Identity::Handlers::InvalidateSessionsOnPasswordChange)
         expect(handlers).to include(Identity::Handlers::CreateAuditLogOnPasswordChange)
       end
     end

@@ -1,9 +1,4 @@
-<%# Seguridad tab — change password + active sessions list. es-MX per
-    S11 #146. Sessions backed by RememberToken. Receives the precomputed
-    `active_sessions` collection + the `current_session_id` from the
-    controller (the id of the RememberToken bound to *this* request's
-    signed cookie, or nil if the user is on a cookieless browser
-    session). %>
+<%# Seguridad tab — change password. es-MX. %>
 <div class="space-y-8">
   <%# Cambiar contraseña %>
   <section>
@@ -31,51 +26,5 @@
         Actualizar contraseña
       </button>
     <% end %>
-  </section>
-
-  <div class="border-t border-border-default"></div>
-
-  <%# Sesiones activas %>
-  <section>
-    <h3 class="text-base font-semibold tracking-tight text-fg-default">Sesiones activas</h3>
-    <p class="mt-1 text-sm text-fg-subtle">
-      Dispositivos donde tu cuenta está abierta. Cierra los que no reconozcas.
-    </p>
-
-    <div class="mt-4 space-y-2.5">
-      <%# Always show the row for the current request — either backed by
-          a real RememberToken (`current_session_id`) or synthesized
-          from the request when this browser session isn't remembered.
-          The synthesized row never gets a Cerrar sesión button. %>
-      <% has_current_token = current_session_id.present? && active_sessions.any? { |t| t.id == current_session_id } %>
-      <% if has_current_token %>
-        <% current_token = active_sessions.find { |t| t.id == current_session_id } %>
-        <%= render "profiles/session_row",
-                   id: current_token.id,
-                   label: session_user_agent_label(current_token.user_agent),
-                   ip: current_token.ip_address || "—",
-                   when_text: "Activa ahora",
-                   is_current: true %>
-      <% else %>
-        <%= render "profiles/session_row",
-                   id: nil,
-                   label: session_user_agent_label(request.user_agent),
-                   ip: request.remote_ip,
-                   when_text: "Activa ahora",
-                   is_current: true %>
-      <% end %>
-
-      <%# Then the rest of the active sessions, in last-used order, with
-          the current token excluded so we don't duplicate it. %>
-      <% active_sessions.each do |token| %>
-        <% next if has_current_token && token.id == current_session_id %>
-        <%= render "profiles/session_row",
-                   id: token.id,
-                   label: session_user_agent_label(token.user_agent),
-                   ip: token.ip_address || "—",
-                   when_text: session_when_text(token.last_used_at || token.created_at),
-                   is_current: false %>
-      <% end %>
-    </div>
   </section>
 </div>

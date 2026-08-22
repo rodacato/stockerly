@@ -8,7 +8,6 @@ class User < ApplicationRecord
   # --- Associations ---
   has_one  :portfolio,        dependent: :destroy
   has_one  :alert_preference, dependent: :destroy
-  has_many :remember_tokens,  dependent: :destroy
   has_many :watchlist_items,   dependent: :destroy
   has_many :watched_assets,    through: :watchlist_items, source: :asset
   has_many :alert_rules,       dependent: :destroy
