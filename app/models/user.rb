@@ -50,10 +50,6 @@ class User < ApplicationRecord
     password_salt&.last(10)
   end
 
-  generates_token_for :email_verification, expires_in: 24.hours do
-    email
-  end
-
   private
 
   def downcase_email

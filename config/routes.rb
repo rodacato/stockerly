@@ -30,10 +30,6 @@ Rails.application.routes.draw do
   get   "reset-password/:token", to: "password_resets#edit",   as: :reset_password
   patch "reset-password/:token", to: "password_resets#update"
 
-  # --- Email Verification ---
-  get  "verify-email/:token", to: "email_verifications#show",  as: :verify_email
-  post "resend-verification", to: "email_verifications#create", as: :resend_verification
-
   # --- Authenticated Zone ---
   get  "welcome",     to: "welcome#show",     as: :welcome
   post "welcome",     to: "welcome#complete", as: :complete_welcome

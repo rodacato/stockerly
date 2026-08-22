@@ -118,27 +118,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "email verification tokens" do
-    let(:user) { create(:user) }
-
-    it "generates an email verification token" do
-      token = user.generate_token_for(:email_verification)
-      expect(token).to be_present
-    end
-
-    it "finds user by valid email verification token" do
-      token = user.generate_token_for(:email_verification)
-      found = User.find_by_token_for(:email_verification, token)
-      expect(found).to eq(user)
-    end
-
-    it "invalidates token after email change" do
-      token = user.generate_token_for(:email_verification)
-      user.update!(email: "newemail@example.com")
-      found = User.find_by_token_for(:email_verification, token)
-      expect(found).to be_nil
-    end
-  end
 
   describe "#email_verified?" do
     it "returns false when email_verified_at is nil" do
