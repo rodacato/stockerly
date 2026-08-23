@@ -24,7 +24,7 @@ class BackfillMissingHistoriesJob < ApplicationJob
   private
 
   def assets_needing_backfill
-    Asset.where(sync_status: [ :active, :sync_issue ])
+    Asset.where(sync_status: :active)
          .left_joins(:asset_price_histories)
          .group(:id)
          .having("COUNT(asset_price_histories.id) < ?", MIN_HISTORIES)

@@ -70,14 +70,12 @@ RSpec.describe MarketData::UseCases::SyncEarnings do
       expect(result.value!).to eq(0)
     end
 
-    it "includes sync_issue assets in scope" do
-      stuck = create(:asset, symbol: "STUCK", asset_type: :stock, sync_status: :sync_issue)
+    it "excludes paused (disabled) assets from scope" do
+      paused = create(:asset, :disabled, symbol: "PAUSED", asset_type: :stock)
       stub_polygon_earnings("AAPL", count: 1)
-      stub_polygon_earnings("STUCK", count: 1)
 
-      result = described_class.call
-      expect(result).to be_success
-      expect(EarningsEvent.where(asset: stuck).count).to eq(1)
+      described_class.call
+      expect(EarningsEvent.where(asset: paused).count).to eq(0)
     end
 
     it "defaults to 90 days_ahead window" do

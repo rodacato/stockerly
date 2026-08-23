@@ -12,7 +12,6 @@ module Admin
       @assets          = data[:assets]
       @total_count     = data[:total_count]
       @syncing_count   = data[:syncing_count]
-      @failure_reasons = data[:failure_reasons]
     end
 
     def trigger_sync

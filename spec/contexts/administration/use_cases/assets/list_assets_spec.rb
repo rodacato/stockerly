@@ -58,31 +58,18 @@ RSpec.describe Administration::UseCases::Assets::ListAssets do
       end
     end
 
-    describe "failure_reasons batching (regression: gemini review on #137)" do
-      it "returns a hash keyed by symbol with last failure tuples" do
-        broken = create(:asset, :sync_issue, symbol: "BRK1", name: "Broken One")
-        create(:system_log, :error, task_name: "All Gateways Failed: BRK1", module_name: "sync",
-                                     error_message: "HTTP 429", created_at: 5.minutes.ago)
-        create(:system_log, :error, task_name: "All Gateways Failed: BRK1", module_name: "sync",
-                                     error_message: "HTTP 500", created_at: 2.minutes.ago)
+    describe "sync_error health filter" do
+      it "returns only assets whose last sync failed" do
+        broken = create(:asset, :sync_error, symbol: "BRK1", name: "Broken One")
+        create(:asset, symbol: "OKAY", name: "All Good", last_synced_at: Time.current)
 
-        result = described_class.call(params: {})
-        fr = result.value![:failure_reasons]
-        expect(fr).to have_key(broken.symbol)
-        expect(fr[broken.symbol].first).to eq("HTTP 500") # latest wins
+        symbols = described_class.call(params: { status: "sync_error" }).value![:assets].map(&:symbol)
+        expect(symbols).to include(broken.symbol)
+        expect(symbols).not_to include("OKAY")
       end
 
-      it "runs at most a bounded number of SQL queries regardless of broken-asset count" do
-        12.times do |i|
-          a = create(:asset, :sync_issue, symbol: "BRK#{i}", name: "Broken #{i}")
-          create(:system_log, :error, task_name: "All Gateways Failed: #{a.symbol}",
-                                       module_name: "sync", error_message: "boom #{i}",
-                                       created_at: i.minutes.ago)
-        end
-
-        # Cap protects against the N+1 regression — total query count must
-        # not scale with the number of broken assets.
-        expect { described_class.call(params: {}) }.to make_queries(at_most: 10)
+      it "keeps a failed asset active — a failure never pauses it" do
+        expect(create(:asset, :sync_error, symbol: "BRK2").sync_status).to eq("active")
       end
     end
   end

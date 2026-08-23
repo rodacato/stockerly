@@ -1,11 +1,10 @@
-<%# Single asset row + inline-edit form. Locals: asset, filter, failure_reasons %>
+<%# Single asset row + inline-edit form. Locals: asset, filter %>
 <%
-  failure_reasons ||= {}
   status_key = admin_asset_status_key(asset)
   status_label = admin_asset_status_label(status_key)
   status_classes = admin_asset_status_pill_classes(status_key)
+  status_title = admin_asset_status_title(status_key)
   last_sync_text, last_sync_classes = admin_asset_last_sync(asset)
-  failure_reason = admin_asset_last_failure_reason(asset, failure_reasons)
 %>
 <tbody data-controller="reveal" class="border-t border-slate-100 dark:border-slate-800">
   <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
@@ -37,15 +36,23 @@
       <%= asset.country.presence || "—" %>
     </td>
 
-    <%# Última sync %>
+    <%# Última sync — timestamp + health of the last attempt (✓/✗ + error) %>
     <td class="px-4 py-3 whitespace-nowrap">
-      <span class="text-xs <%= last_sync_classes %>"><%= last_sync_text %></span>
+      <div class="flex items-center gap-1.5">
+        <span class="text-xs <%= last_sync_classes %>"><%= last_sync_text %></span>
+        <% if asset.last_sync_error.present? %>
+          <span title="Último sync falló: <%= asset.last_sync_error %>"
+                class="material-symbols-outlined text-[15px] text-rose-500 cursor-help">error</span>
+        <% elsif asset.last_synced_at.present? %>
+          <span title="Último sync correcto" class="material-symbols-outlined text-[15px] text-emerald-500">check_circle</span>
+        <% end %>
+      </div>
     </td>
 
-    <%# Estado %>
+    <%# Estado — binary and user-controlled (Activo / Pausado) %>
     <td class="px-4 py-3">
-      <span title="<%= failure_reason ? "última falla: #{failure_reason[0]}" : "" %>"
-            class="inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider <%= status_classes %> <%= 'cursor-help' if failure_reason %>">
+      <span title="<%= status_title %>"
+            class="inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider cursor-help <%= status_classes %>">
         <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
         <%= status_label %>
       </span>

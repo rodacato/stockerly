@@ -53,8 +53,9 @@ FactoryBot.define do
       sync_status { :disabled }
     end
 
-    trait :sync_issue do
-      sync_status { :sync_issue }
+    trait :sync_error do
+      last_synced_at { Time.current }
+      last_sync_error { "Todos los gateways fallaron" }
     end
 
     trait :with_logo do

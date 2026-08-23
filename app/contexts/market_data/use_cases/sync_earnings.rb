@@ -24,14 +24,14 @@ module MarketData
 
       def sync_us(cutoff_date)
         chain  = GatewayChain.for_capability(:earnings)
-        assets = Asset.where(asset_type: :stock, sync_status: [ :active, :sync_issue ])
+        assets = Asset.where(asset_type: :stock, sync_status: :active)
                       .where.not(exchange: "BMV")
         sync_with(assets, cutoff_date) { |symbol| chain.fetch_earnings(symbol) }
       end
 
       def sync_bmv(cutoff_date)
         gateway = MarketData::Gateways::YahooFinanceGateway.new
-        assets  = Asset.where(asset_type: :stock, sync_status: [ :active, :sync_issue ], exchange: "BMV")
+        assets  = Asset.where(asset_type: :stock, sync_status: :active, exchange: "BMV")
         sync_with(assets, cutoff_date) { |symbol| gateway.fetch_earnings(symbol) }
       end
 

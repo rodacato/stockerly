@@ -2,7 +2,9 @@ class Asset < ApplicationRecord
   SUPPORTED_CURRENCIES = %w[USD MXN].freeze
 
   enum :asset_type, { stock: 0, crypto: 1, index: 2, etf: 3, fixed_income: 4 }, prefix: true
-  enum :sync_status, { active: 0, disabled: 1, sync_issue: 2 }
+  # Binary and user-controlled: active = synced automatically, disabled = paused
+  # by the user. A failed sync never changes this — it sets last_sync_error.
+  enum :sync_status, { active: 0, disabled: 1 }
 
   has_many :positions,              dependent: :destroy
   has_many :trades,                 dependent: :destroy
@@ -26,6 +28,7 @@ class Asset < ApplicationRecord
   scope :etfs,          -> { where(asset_type: :etf) }
   scope :fixed_incomes, -> { where(asset_type: :fixed_income) }
   scope :syncing,     -> { where(sync_status: :active) }
+  scope :with_sync_error, -> { where.not(last_sync_error: nil) }
   scope :by_sector,   ->(sector) { where(sector: sector) if sector.present? }
   scope :by_country,  ->(country) { where(country: country) if country.present? }
 
@@ -49,5 +52,9 @@ class Asset < ApplicationRecord
 
   def price_stale?
     price_updated_at.nil? || price_updated_at < 15.minutes.ago
+  end
+
+  def last_sync_ok?
+    last_sync_error.blank?
   end
 end

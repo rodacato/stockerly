@@ -45,10 +45,6 @@ production:
     class: DetectTechnicalObservationsJob
     schedule: at 11:45pm every day
 
-  retry_failed_assets:
-    class: RetryFailedAssetsJob
-    schedule: at 2am every day
-
   cleanup_old_logs:
     command: "SystemLog.where('created_at < ?', 90.days.ago).delete_all"
     schedule: at 2:15am every day

@@ -15,7 +15,7 @@ RSpec.describe "Admin · Catálogo de activos", type: :system do
   let!(:walmex)  { create(:asset, :mexican, symbol: "WALMEX", name: "Walmart de México", price_updated_at: 12.minutes.ago) }
   let!(:btc)     { create(:asset, :crypto, symbol: "BTC", name: "Bitcoin", exchange: "COINGECKO", country: nil, price_updated_at: 1.minute.ago) }
   let!(:cete28)  { create(:asset, :fixed_income, symbol: "CETE-28D", name: "CETES 28 días", price_updated_at: 14.minutes.ago) }
-  let!(:nvda)    { create(:asset, :sync_issue, symbol: "NVDA", name: "NVIDIA Corp.", exchange: "NASDAQ", country: "US", price_updated_at: 3.hours.ago) }
+  let!(:nvda)    { create(:asset, :sync_error, symbol: "NVDA", name: "NVIDIA Corp.", exchange: "NASDAQ", country: "US", price_updated_at: 3.hours.ago) }
   let!(:gfnorteo) { create(:asset, :mexican, symbol: "GFNORTEO", name: "Grupo Banorte", price_updated_at: 30.hours.ago) }
   let!(:eth)     { create(:asset, :crypto, :disabled, symbol: "ETH", name: "Ethereum", exchange: "COINGECKO", country: nil) }
 
@@ -57,11 +57,14 @@ RSpec.describe "Admin · Catálogo de activos", type: :system do
     expect(page).to have_content("Banxico")
   end
 
-  it "renders status pills for active, paused, and error states" do
+  it "renders status pills for active and paused, and flags a failed last sync" do
     visit admin_assets_path
     expect(page).to have_content("Activo")
     expect(page).to have_content("Pausado")
-    expect(page).to have_content("Error")
+    # A failed last sync is surfaced in the sync column without pausing the
+    # asset — NVDA stays active.
+    expect(page).to have_css('[title^="Último sync falló"]')
+    expect(nvda.reload.sync_status).to eq("active")
   end
 
   it "filters by tipo" do
@@ -74,6 +77,12 @@ RSpec.describe "Admin · Catálogo de activos", type: :system do
   it "filters by estado — pausados" do
     visit admin_assets_path(status: "disabled")
     expect(page).to have_content("Ethereum")
+    expect(page).not_to have_content("Apple Inc.")
+  end
+
+  it "filters by estado — con problemas (last sync failed)" do
+    visit admin_assets_path(status: "sync_error")
+    expect(page).to have_content("NVIDIA Corp.")
     expect(page).not_to have_content("Apple Inc.")
   end
 

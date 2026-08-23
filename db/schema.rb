@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_22_155756) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_23_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -107,6 +107,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_22_155756) do
     t.string "exchange"
     t.decimal "face_value", precision: 15, scale: 2
     t.datetime "fundamentals_synced_at"
+    t.text "last_sync_error"
+    t.datetime "last_synced_at"
     t.string "logo_url"
     t.decimal "market_cap", precision: 20, scale: 2
     t.date "maturity_date"
@@ -116,7 +118,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_22_155756) do
     t.string "sector"
     t.bigint "shares_outstanding"
     t.string "symbol", null: false
-    t.datetime "sync_issue_since"
     t.integer "sync_status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "volume"

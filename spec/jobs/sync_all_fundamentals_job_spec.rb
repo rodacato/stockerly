@@ -60,11 +60,11 @@ RSpec.describe SyncAllFundamentalsJob, type: :job do
       described_class.perform_now
     end
 
-    it "includes sync_issue assets in scope" do
-      stuck = create(:asset, symbol: "STUCK", asset_type: :stock, sync_status: :sync_issue)
+    it "excludes paused (disabled) assets from scope" do
+      paused = create(:asset, :disabled, symbol: "PAUSED", asset_type: :stock)
 
       expect { described_class.perform_now }
-        .to have_enqueued_job(SyncFundamentalJob).with(stuck.id)
+        .not_to have_enqueued_job(SyncFundamentalJob).with(paused.id)
     end
 
     it "is scheduled bi-weekly (Tuesday and Friday)" do
