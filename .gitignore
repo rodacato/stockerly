@@ -72,3 +72,9 @@ CLAUDE.kwik.md
 
 # redesign/: 2.0 discovery + design hub — kept local while we clean up in place
 /redesign/
+
+# Pencil design system: device captures with real user data — local only
+design/references/
+
+# Pencil editor stray at repo root
+/base.pen
