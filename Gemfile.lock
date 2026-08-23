@@ -214,7 +214,6 @@ GEM
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
-    image_processing (2.0.2)
     importmap-rails (2.2.3)
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -274,16 +273,6 @@ GEM
       railties (>= 7.1)
       stimulus-rails
       turbo-rails
-    monetize (2.0.0)
-      money (~> 7.0)
-    money (7.0.2)
-      bigdecimal
-      i18n (~> 1.9)
-    money-rails (3.0.0)
-      activesupport (>= 7.0)
-      monetize (~> 2.0)
-      money (~> 7.0)
-      railties (>= 7.0)
     msgpack (1.8.3)
     net-http (0.9.1)
       uri (>= 0.11.1)
@@ -606,12 +595,10 @@ DEPENDENCIES
   factory_bot_rails
   faraday (~> 2.9)
   faraday-retry
-  image_processing (~> 2.0)
   importmap-rails
   kamal
   lograge
   mission_control-jobs
-  money-rails (~> 3.0)
   pagy (~> 43.3)
   pg (~> 1.1)
   propshaft
