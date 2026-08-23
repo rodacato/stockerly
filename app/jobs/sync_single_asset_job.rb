@@ -27,13 +27,20 @@ class SyncSingleAssetJob < ApplicationJob
       log_sync_failure("Price Sync: #{asset.symbol}", result.failure[1], severity: :warning)
     elsif result.failure[0] == :all_gateways_failed
       publish_all_gateways_failed(asset, result.failure[2])
+      record_sync_failure(asset, result.failure[1])
       log_sync_failure("Price Sync: #{asset.symbol}", result.failure[1])
     else
+      record_sync_failure(asset, result.failure[1])
       log_sync_failure("Price Sync: #{asset.symbol}", result.failure[1])
     end
   end
 
   private
+
+  # Records the failed attempt on the asset; never pauses it (user's call).
+  def record_sync_failure(asset, message)
+    asset.update_columns(last_synced_at: Time.current, last_sync_error: message)
+  end
 
   def recently_synced?(asset)
     return false if asset.price_updated_at.nil?
@@ -79,7 +86,9 @@ class SyncSingleAssetJob < ApplicationJob
       change_percent_24h: data[:change_percent],
       volume: data[:volume] || asset.volume,
       market_cap: data[:market_cap] || asset.market_cap,
-      price_updated_at: Time.current
+      price_updated_at: Time.current,
+      last_synced_at: Time.current,
+      last_sync_error: nil
     }
     update_attrs[:data_source] = data[:data_source] if data[:data_source]
 

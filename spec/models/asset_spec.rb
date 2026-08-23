@@ -88,7 +88,7 @@ RSpec.describe Asset, type: :model do
     end
 
     it "defines sync_status enum" do
-      expect(Asset.sync_statuses).to eq("active" => 0, "disabled" => 1, "sync_issue" => 2)
+      expect(Asset.sync_statuses).to eq("active" => 0, "disabled" => 1)
     end
   end
 

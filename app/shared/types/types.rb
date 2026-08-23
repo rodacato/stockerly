@@ -4,7 +4,7 @@ module Types
   UserRole         = Types::String.enum("user", "admin")
   UserStatus       = Types::String.enum("active", "suspended")
   AssetType        = Types::String.enum("stock", "crypto", "index")
-  SyncStatus       = Types::String.enum("active", "disabled", "sync_issue")
+  SyncStatus       = Types::String.enum("active", "disabled")
   TradeSide        = Types::String.enum("buy", "sell")
   AlertCondition   = Types::String.enum(
     "price_crosses_above", "price_crosses_below",

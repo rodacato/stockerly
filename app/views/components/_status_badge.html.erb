@@ -1,11 +1,10 @@
 <%# Usage: render "components/status_badge", status: "active" %>
-<%# Supported: active, paused, error, warning, info, pending, suspended, disabled, sync_issue %>
+<%# Supported: active, paused, error, warning, info, pending, suspended, disabled %>
 <%#
   Semantic tokens from app/assets/tailwind/application.css @theme (#37).
   Neutral states (pending, disabled) stay on slate because they describe
-  absence rather than a success/warning/error event. Suspended and
-  sync_issue collapse onto error/warning — they ARE those states under
-  different domain names.
+  absence rather than a success/warning/error event. Suspended collapses onto
+  error — it IS that state under a different domain name.
 %>
 <%
   colors = {
@@ -16,8 +15,7 @@
     "info"       => "bg-info/10 text-info-fg dark:bg-info/20 dark:text-info",
     "pending"    => "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
     "suspended"  => "bg-error/10 text-error-fg dark:bg-error/20 dark:text-error",
-    "disabled"   => "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-500",
-    "sync_issue" => "bg-warning/10 text-warning-fg dark:bg-warning/20 dark:text-warning"
+    "disabled"   => "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-500"
   }
   badge_class = colors[status.to_s] || colors["info"]
 %>

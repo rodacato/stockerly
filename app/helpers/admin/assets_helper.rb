@@ -18,29 +18,32 @@ module Admin
     end
 
     def admin_asset_status_key(asset)
-      case asset.sync_status
-      when "active"     then :active
-      when "disabled"   then :paused
-      when "sync_issue" then :error
-      else                   :active
-      end
+      asset.active? ? :active : :paused
     end
 
     def admin_asset_status_label(key)
-      { active: "Activo", paused: "Pausado", error: "Error" }[key]
+      { active: "Activo", paused: "Pausado" }[key]
+    end
+
+    # Explains the state on hover so the two controls (status vs sync health)
+    # don't get conflated.
+    def admin_asset_status_title(key)
+      {
+        active: "Se sincroniza automáticamente. Un fallo de sync no lo pausa — revisa la columna Última sync.",
+        paused: "Pausado por ti: no se sincroniza hasta que lo reanudes con ▶."
+      }[key]
     end
 
     def admin_asset_status_pill_classes(key)
       {
         active: "bg-emerald-500/12 text-emerald-700 dark:text-emerald-300",
-        paused: "bg-amber-500/14 text-amber-700 dark:text-amber-300",
-        error:  "bg-rose-500/12 text-rose-700 dark:text-rose-300"
+        paused: "bg-amber-500/14 text-amber-700 dark:text-amber-300"
       }[key]
     end
 
     # Returns [text, color_classes] for the última-sync cell.
     def admin_asset_last_sync(asset)
-      ts = asset.price_updated_at
+      ts = asset.last_synced_at
       return [ "sin sincronizar", "text-amber-600 dark:text-amber-400 font-medium" ] if ts.nil?
 
       age = Time.current - ts
@@ -56,14 +59,6 @@ module Admin
         end
 
       [ label, tier_classes ]
-    end
-
-    # Lookup the last-failure tuple [message, timestamp] for an asset from a
-    # pre-built hash keyed by symbol. The hash is computed once by ListAssets
-    # so each page render runs at most one SQL query (no N+1).
-    def admin_asset_last_failure_reason(asset, failure_reasons)
-      return nil unless asset.sync_issue?
-      failure_reasons[asset.symbol]
     end
 
     def admin_assets_filter_active?(key, slug, default: "todos")

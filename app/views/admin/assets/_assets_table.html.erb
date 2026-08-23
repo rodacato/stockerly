@@ -1,7 +1,6 @@
 <%# Assets catalogue table — Lumen tokens, es-MX, inline-edit per row. %>
-<%# Locals: assets (collection), pagy (Pagy object), failure_reasons (Hash{symbol=>[message,ts]}) %>
+<%# Locals: assets (collection), pagy (Pagy object) %>
 <% filter = params.permit(:type, :status, :market, :search).to_h.compact_blank %>
-<% failure_reasons ||= {} %>
 
 <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
   <div class="overflow-x-auto">
@@ -20,7 +19,7 @@
       </thead>
       <% if assets.any? %>
         <% assets.each do |asset| %>
-          <%= render "admin/assets/asset_row", asset: asset, filter: filter, failure_reasons: failure_reasons %>
+          <%= render "admin/assets/asset_row", asset: asset, filter: filter %>
         <% end %>
       <% else %>
         <tbody>
