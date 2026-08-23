@@ -51,6 +51,12 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
     expect(page).to have_content("Stockerly está en mantenimiento. Volvemos pronto.")
   end
 
+  it "links to the Mission Control jobs dashboard from Diagnóstico" do
+    visit admin_settings_path
+
+    expect(page).to have_link("Abrir panel de jobs (Mission Control)", href: "/admin/jobs")
+  end
+
   it "renders runtime diagnostic values (mono labels)" do
     visit admin_settings_path
 

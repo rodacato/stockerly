@@ -91,6 +91,15 @@
       ].each_with_index do |(label, value), i| %>
       <%= render "diagnostic_row", label: label, value: value, first: i.zero? %>
     <% end %>
+
+    <div class="mt-2 mb-3 border-t border-slate-200 dark:border-slate-700 pt-3">
+      <%= link_to "/admin/jobs", target: "_blank", rel: "noopener",
+            class: "inline-flex items-center gap-1.5 text-[12.5px] font-medium text-primary hover:underline" do %>
+        <span class="material-symbols-outlined text-[14px]">work_history</span>
+        Abrir panel de jobs (Mission Control)
+        <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+      <% end %>
+    </div>
   </section>
 
   <%# Card 4 — Cambios recientes %>
