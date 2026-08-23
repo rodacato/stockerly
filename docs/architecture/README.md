@@ -29,7 +29,7 @@ Stockerly has **6 bounded contexts** under `app/contexts/`. Each owns its contra
 | **Administration** | `app/contexts/administration/` | Asset CRUD, integration management, API key pools, system logs, health |
 | **Notifications** | `app/contexts/notifications/` | In-app notification creation and delivery |
 
-> **Historical note:** the original documentation (`docs/archive/spec-2026-Q1/TECHNICAL_SPEC.md`) said "5 bounded contexts". `Notifications` appeared in code later and the doc was never updated. The truth is 6, not 5.
+> **Historical note:** early documentation said "5 bounded contexts". `Notifications` appeared in code later and the doc was never updated. The truth is 6, not 5.
 
 ---
 

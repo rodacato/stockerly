@@ -4,7 +4,7 @@
 - **Date:** 2026-05-15
 - **Author:** Adrian Castillo (with synthesis from the documented expert panel — C2 Hiroto, C6 Esther, C1 Lucía)
 - **Supersedes:** —
-- **Related:** [`docs/research/code-audit-2026-05/diagnosis.md`](../../research/code-audit-2026-05/diagnosis.md), [Issue #33](https://github.com/rodacato/stockerly/issues/33), [Issue #59](https://github.com/rodacato/stockerly/issues/59), [Sprint 1 retro](../../sprints/2026-S01-reset/retro.md)
+- **Related:** [Issue #33](https://github.com/rodacato/stockerly/issues/33), [Issue #59](https://github.com/rodacato/stockerly/issues/59), [1.0 retrospective](../../1.0-retrospective.md)
 
 ---
 

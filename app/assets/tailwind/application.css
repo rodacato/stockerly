@@ -2,10 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Stockerly · Lumen — single source of truth for design tokens.
-   Rationale lives in docs/design/brand.md; concrete reference table
-   in docs/design/tokens.md §1. Light is the default; dark overrides
-   land in @layer base below.
+/* Stockerly · Lumen palette (in place until the redesign ships).
+   The design system source of truth now lives in the design/ folder
+   (Pencil-based). Light is the default; dark overrides land in
+   @layer base below.
 
    Migration notes (S11 #142): this block was previously the pre-Lumen
    palette (#005A98 corporate blue, #3BC175 accent, slate-cold bg).

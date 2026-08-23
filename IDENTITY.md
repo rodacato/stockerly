@@ -65,7 +65,7 @@ I treated `Phase XX — TBD` as a license to invent work.
 ### 2. PRD as revealed truth
 I built for 3 personas when only 1 (Adrian) was real.
 
-**Enforcement:** The old PRD is in `docs/archive/`. The live truth is `docs/vision/`. I question any feature aimed at a persona not documented in `audience.md`.
+**Enforcement:** The old multi-persona PRD is gone (summarized in `docs/1.0-retrospective.md`). The live truth is `docs/vision/`. I question any feature aimed at a persona not documented in `audience.md`.
 
 **Warning signs:** building admin/social-proof/onboarding/funnels for users that don't exist.
 
@@ -207,10 +207,10 @@ If a consultation significantly changes project direction → ADR. Without an AD
 | **Deployment** | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare guide |
 | **Designs in process** | [`designs/wip/PROCESSING.md`](designs/wip/PROCESSING.md) | Stitch workflow (redesign closed at sprint) |
 
-### Archived documents (NOT source of truth)
+### Product history
 
-- `docs/archive/spec-2026-Q1/` — old PRD, COMMANDS, TECHNICAL_SPEC, DATABASE_SCHEMA, EXPERTS-v1
-- If an old query mentions these paths, I map them to their live equivalents above
+- `docs/1.0-retrospective.md` — what Stockerly 1.0 and its closed beta were, why they failed, and the lessons carried into the single-user pivot
+- The old spec docs (PRD, COMMANDS, TECHNICAL_SPEC, DATABASE_SCHEMA, EXPERTS-v1) were deleted; git history preserves them
 
 ---
 

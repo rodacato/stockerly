@@ -4,7 +4,7 @@
 - **Date:** 2026-05-16
 - **Author:** Adrian Castillo (formalizing the position taken across S07 PR reviews)
 - **Supersedes:** —
-- **Related:** [`docs/design/brand.md`](../../design/brand.md) §9 (Spanish-MX UI conventions), [`docs/vision/audience.md`](../../vision/audience.md), [ADR-001](./0001-descriptive-not-prescriptive-language.md)
+- **Related:** [`docs/vision/audience.md`](../../vision/audience.md), [ADR-001](./0001-descriptive-not-prescriptive-language.md)
 
 ---
 
@@ -23,7 +23,7 @@ This ADR codifies the position so that future reviews can be redirected here in 
 ### Facts framing the decision
 
 1. **Single-locale target.** `docs/vision/audience.md` scopes Stockerly to **MX investors only**. The closed beta is ≤20 invited friends, all Mexican. There is no roadmap entry for multi-locale expansion in S07–S09.
-2. **Spanish-MX is canonical, not a translation.** `docs/design/brand.md` §9 explicitly defines the es-MX UI vocabulary as the brand voice — *"Posiciones abiertas"*, *"Saldo disponible"*, *"Buenas tardes, &lt;nombre&gt;"*, the F&G heatmap copy, the date-stamp format. The language is part of the brand, not an interchangeable layer.
+2. **Spanish-MX is canonical, not a translation.** The es-MX UI vocabulary is the brand voice — *"Posiciones abiertas"*, *"Saldo disponible"*, *"Buenas tardes, &lt;nombre&gt;"*, the F&G heatmap copy, the date-stamp format. The language is part of the brand, not an interchangeable layer.
 3. **Adopting I18n for one locale has cost without payoff.** A YAML lookup layer adds (a) the indirection between source and surfaced string, (b) the translator workflow ceremony, (c) the `I18n.t` call site noise, (d) the `config/locales/` migration step for every new screen. None of those costs are offset until a **second locale** exists to translate INTO.
 4. **The current transitional state is acknowledged but bounded.** Some legacy code still has English strings (parts of `/register`, `/login`, `shared/_public_footer`, dry-validation default error messages). The direction is es-MX, not bilingual. New code lands in es-MX directly. Existing English residue gets translated when each surface is reworked, not retrofitted via I18n now.
 5. **The retrospective audit data.** S07's design workflow demonstrated that paste-ready hardcoded es-MX prompts produce design-tool output and ERB implementations with zero translation friction. Adding I18n would not have improved any S07 deliverable; it would have added one indirection layer between the prompt and the rendered text.

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 2.0 pivot — self-hosted single-user tracker (shipped to production 2026-08-23)
+
+Stockerly pivoted from a multi-user closed-beta fintech app to a self-hosted,
+single-user asset tracker after the closed beta failed on UX grounds. See
+[ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)
+and [docs/1.0-retrospective.md](docs/1.0-retrospective.md).
+
+#### Changed
+- Reframed the product as a self-hosted single-user tracker (MXN/USD correct, no aggregators). `Identity` collapsed to single-user login/setup; `Notifications` shrank to in-app only.
+
+#### Removed
+- Multi-user surface: public registration, email verification, and first-admin bootstrap.
+- Most of the `Administration` multi-user surface: invite-by-code system and user management.
+- The "AI Intelligence" LLM integration seed (multi-provider gateway) — dropped, never a real feature.
+- Models backing the deleted surface (invite codes, remember tokens, email events, user activity).
+
 ## [0.1.0-rc1] - 2026-03-07
 
 Hardened for public deployment. Registration and maintenance controls, admin

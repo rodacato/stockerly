@@ -2,7 +2,7 @@
 
 > Virtual expert panel that the AI assistant consults before making significant decisions. They advise — the AI decides — Adrian has the final voice.
 >
-> Inspired by the "expert panel" practice from the Mi Feria project. Replaces the original `docs/spec/EXPERTS.md` (10 experts in a flat list), archived at `docs/archive/spec-2026-Q1/EXPERTS-v1.md`.
+> Inspired by the "expert panel" practice from the Mi Feria project. Replaces an original flat list of 10 experts (removed in the 2.0 cleanup; recoverable from git history).
 >
 > **Last updated:** 2026-05-14 (Sprint 1 — Step 4).
 

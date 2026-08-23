@@ -217,6 +217,6 @@ Currently required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `r
 - [JTBDs](../vision/jobs-to-be-done.md) — the 6 canonical
 - [Non-goals](../vision/non-goals.md) — what we are NOT
 - [ADR-001](../architecture/adr/0001-descriptive-not-prescriptive-language.md) — product language
-- [Code Audit 2026-05](../research/code-audit-2026-05/README.md) — initial backlog input
+- [1.0 retrospective](../1.0-retrospective.md) — historical backlog input
 - [Expert Panel](../research/experts.md) — structured consultations
 - [Working method memory](../../.kwik-e/memory/project_working_method.md) — AI assistant's persistent version
