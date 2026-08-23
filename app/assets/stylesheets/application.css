@@ -29,15 +29,15 @@
 }
 
 /* Pagy pagination styling */
-.pagy.nav {
+.pagy.series-nav {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
 }
 
-.pagy.nav a,
-.pagy.nav [role="link"] {
+.pagy.series-nav a,
+.pagy.series-nav [role="link"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -52,24 +52,24 @@
   transition: all 0.15s ease;
 }
 
-.pagy.nav a:hover {
+.pagy.series-nav a:hover {
   background-color: #f1f5f9;
   color: var(--color-primary);
 }
 
-.pagy.nav a[aria-current="page"],
-.pagy.nav [role="link"][aria-current="page"] {
+.pagy.series-nav a[aria-current="page"],
+.pagy.series-nav [role="link"][aria-current="page"] {
   background-color: var(--color-primary);
   color: #ffffff;
   font-weight: 700;
 }
 
-.pagy.nav [aria-disabled="true"] {
+.pagy.series-nav [aria-disabled="true"] {
   color: #cbd5e1;
   pointer-events: none;
 }
 
-.pagy.nav .gap {
+.pagy.series-nav [role="separator"] {
   color: #94a3b8;
 }
 

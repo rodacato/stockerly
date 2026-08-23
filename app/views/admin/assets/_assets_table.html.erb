@@ -1,6 +1,6 @@
 <%# Assets catalogue table — Lumen tokens, es-MX, inline-edit per row. %>
 <%# Locals: assets (collection), pagy (Pagy object) %>
-<% filter = params.permit(:type, :status, :market, :search).to_h.compact_blank %>
+<% filter = params.permit(:type, :status, :market, :search, :page).to_h.compact_blank %>
 
 <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
   <div class="overflow-x-auto">
