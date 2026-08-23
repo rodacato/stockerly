@@ -4,7 +4,7 @@
 - **Date:** 2026-05-15
 - **Author:** Adrian Castillo (with synthesis from the documented expert panel — C2 Hiroto, C6 Esther)
 - **Supersedes:** —
-- **Related:** [`docs/research/code-audit-2026-05/inventory.md`](../../research/code-audit-2026-05/inventory.md), [Issue #38](https://github.com/rodacato/stockerly/issues/38), [Sprint 1 retro](../../sprints/2026-S01-reset/retro.md), [`CLAUDE.md` — ApplicationUseCase Base Class](../../../CLAUDE.md#applicationusecase-base-class)
+- **Related:** [Issue #38](https://github.com/rodacato/stockerly/issues/38), [1.0 retrospective](../../1.0-retrospective.md), [`CLAUDE.md` — ApplicationUseCase Base Class](../../../CLAUDE.md#applicationusecase-base-class)
 
 ---
 

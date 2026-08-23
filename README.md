@@ -12,11 +12,10 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Beta](https://img.shields.io/badge/beta-invite--only-orange)](CONTRIBUTING.md)
 
-Open-source fintech platform for market trends, portfolios, alerts, and earnings. Built with Rails 8, PostgreSQL, Hotwire, and Tailwind CSS 4.
+Open-source, self-hosted single-user asset tracker for stocks (USD), crypto, and Mexican fixed income (CETES), with correct MXN/USD multi-currency tracking. Built with Rails 8, PostgreSQL, Hotwire, and Tailwind CSS 4.
 
-100% free and open source — no pricing tiers, no premium features.
+100% free and open source — no pricing tiers, no premium features. See [docs/1.0-retrospective.md](docs/1.0-retrospective.md) for why Stockerly pivoted from a multi-user beta to a single-user tracker.
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
@@ -26,8 +25,7 @@ Open-source fintech platform for market trends, portfolios, alerts, and earnings
 - **Market Intelligence** — 5-factor TrendScore (RSI, Momentum, MACD, Volume, EMA), Fear & Greed Index, market indices with sparklines, asset detail pages with adaptive tabs for stocks and crypto.
 - **Alerts** — Price thresholds, sentiment conditions, volume spikes, portfolio concentration risk (HHI). Configurable cooldown system.
 - **Earnings Calendar** — Upcoming earnings with beat/miss tracking, EPS bar charts, analyst target prices, and earnings narrative generation.
-- **News Feed** — Aggregated financial news with watchlist filtering and optional AI-powered sentiment analysis.
-- **AI Intelligence** — Optional LLM-powered insights via multi-provider gateway (Anthropic, OpenAI, or any compatible API). Portfolio analysis, news sentiment, fundamental health checks, earnings narratives.
+- **News Feed** — Aggregated financial news with watchlist filtering.
 - **Dividends & Splits** — Automatic tracking and position adjustment on stock splits.
 - **Multi-Provider Data** — Polygon.io, Alpha Vantage, CoinGecko, FMP, Banxico. Gateway chains with circuit breakers and adaptive scheduling.
 - **PWA** — Installable as a mobile app with offline support.
@@ -39,11 +37,11 @@ Pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts:
 
 | Context | Responsibility |
 |---------|---------------|
-| **Identity** | Registration, auth, profiles, onboarding |
+| **Identity** | Single-user auth, profile, onboarding |
 | **Trading** | Trades, portfolios, watchlists, dashboard |
 | **Alerts** | Rule management, evaluation, triggering |
 | **Market Data** | External data: prices, fundamentals, news, earnings |
-| **Administration** | Admin ops, integrations, logs, user management |
+| **Administration** | Admin ops, integrations, logs, settings |
 | **Notifications** | Notification creation and delivery |
 
 Cross-context communication via domain events only. See [CLAUDE.md](CLAUDE.md) for detailed architecture docs.
@@ -86,18 +84,6 @@ Stockerly integrates with external market data providers. API keys are configure
 | [Banxico](https://www.banxico.org.mx/SieAPIRest/) | Free | CETES rates (Mexican treasury) |
 
 All providers are optional. The app works without any API keys configured — you just won't get live market data.
-
-### AI Intelligence (Optional)
-
-Configure an LLM provider for AI-powered insights:
-
-| Provider | API Format |
-|----------|-----------|
-| Anthropic (Claude) | Anthropic Messages API |
-| OpenAI (GPT) | OpenAI Chat Completions API |
-| Custom endpoint | Any compatible API (Ollama, Together, SheLLM) |
-
-Configured through the admin panel under **AI Intelligence**. The app is fully functional without it.
 
 ## Running Tests
 
@@ -147,20 +133,20 @@ See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide.
 | Document | Description |
 |----------|-------------|
 | [GETTING_STARTED.md](GETTING_STARTED.md) | Run Stockerly locally — both paths, databases, jobs, troubleshooting |
-| [docs/](docs/) | Documentation index (vision, architecture, ops, archive) |
+| [docs/](docs/) | Documentation index (vision, architecture, ops) |
 | [docs/vision/](docs/vision/) | Product north, audience, JTBDs, non-goals |
 | [docs/architecture/](docs/architecture/) | Bounded contexts map + ADRs |
 | [docs/ops/deploy.md](docs/ops/deploy.md) | Production deployment guide |
 | [CHANGELOG.md](CHANGELOG.md) | Release history |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution model (currently closed beta — no external PRs until v1.0) |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution model |
 | [RELEASING.md](RELEASING.md) | Versioning and release process |
 | [SECURITY.md](SECURITY.md) | Security policy and vulnerability reporting |
 | [CLAUDE.md](CLAUDE.md) | Architecture reference (DDD, bounded contexts, conventions) |
-| [docs/archive/](docs/archive/) | Historical specs (NOT current source of truth) |
+| [docs/1.0-retrospective.md](docs/1.0-retrospective.md) | Why Stockerly pivoted from a multi-user beta to a single-user tracker |
 
 ## Contributing
 
-Stockerly is currently in **closed beta** (≤20 invited users). External PRs are not accepted until v1.0. See [docs/vision/audience.md](docs/vision/audience.md) for the audience model.
+Stockerly is a self-hosted single-user tracker, built first as Adrian's daily-driver and packaged so any technically capable person can stand it up. See [docs/vision/audience.md](docs/vision/audience.md) for the audience model and [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 
 If you find a bug or have a question, open an [issue](https://github.com/rodacato/stockerly/issues).
 

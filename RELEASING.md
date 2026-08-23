@@ -124,7 +124,7 @@ There is no fixed schedule. Releases happen when a meaningful set of changes is 
 
 - **Alpha releases** (`0.x.0-alpha`): after completing a roadmap phase or a set of related features
 - **Patch releases** (`0.x.Y`): for urgent bug fixes or security patches
-- **Major milestones**: aligned with GitHub Project milestones (sprint-based since 2026-05-14; for historical phase 1-22 roadmap see [docs/archive/roadmap-phases-1-22.md](docs/archive/roadmap-phases-1-22.md))
+- **Major milestones**: aligned with GitHub Project milestones (sprint-based since 2026-05-14). Product history is summarized in [docs/1.0-retrospective.md](docs/1.0-retrospective.md).
 
 ## Mapping Roadmap Phases to Versions
 

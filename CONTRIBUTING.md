@@ -150,4 +150,4 @@ See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability re
 - Open an [issue](https://github.com/rodacato/stockerly/issues) for bugs or feature requests
 - Review [docs/vision/](docs/vision/) to understand product direction
 - Architecture map: [docs/architecture/](docs/architecture/) — bounded contexts and ADRs
-- Historical roadmap (phases 1-22): [docs/archive/roadmap-phases-1-22.md](docs/archive/roadmap-phases-1-22.md)
+- Product history: [docs/1.0-retrospective.md](docs/1.0-retrospective.md) — why Stockerly pivoted to a single-user tracker

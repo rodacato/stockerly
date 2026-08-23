@@ -1,8 +1,6 @@
 # Stockerly — docs/
 
-> Living project documentation. **Every file here reflects the current reality.** Aspirational/historical material lives in `docs/archive/`.
->
-> Structure established in Sprint 1 (2026-05-14).
+> Living project documentation. **Every file here reflects the current reality.** For the history that led to the current single-user pivot, see [`1.0-retrospective.md`](./1.0-retrospective.md).
 
 ---
 
@@ -13,21 +11,20 @@
 | Why Stockerly exists, for whom | [`vision/`](./vision/) |
 | Immutable architecture decisions | [`architecture/adr/`](./architecture/adr/) |
 | How bounded contexts are organized | [`architecture/README.md`](./architecture/README.md) |
-| Design system: palette, typography, components, logos, decision record | [`design/`](./design/) |
-| Research notes, code audits, expert panel | [`research/`](./research/) |
+| Design system (source of truth, Pencil-based) | [`../design/`](../design/) |
+| Research: expert panel, competitive survey | [`research/`](./research/) |
 | Deploy, security, runbooks | [`ops/`](./ops/) |
-| Sprint protocol, retros | [`sprints/`](./sprints/) |
+| Sprint protocol and template | [`sprints/`](./sprints/) |
 | Screenshots for README/showcase | [`screenshots/`](./screenshots/) |
-| Archived documents (NOT current source of truth) | [`archive/`](./archive/) |
+| Why Stockerly pivoted to a single-user tracker | [`1.0-retrospective.md`](./1.0-retrospective.md) |
 
 ---
 
 ## Hard rules
 
 1. **One source of truth per type.** Vision in `vision/`, decisions in `architecture/adr/`, backlog in GitHub Issues, sprints in GitHub Projects. Never duplicate.
-2. **If it's in `archive/`, it's not current truth.** Map it to its live equivalent above.
-3. **Doc > 200 lines: audit it.** Is it a reference or fiction? Useful documentation fits on a single screen.
-4. **Edits to `vision/` or `architecture/adr/`** require a commit message explaining the reason.
+2. **Doc > 200 lines: audit it.** Is it a reference or fiction? Useful documentation fits on a single screen.
+3. **Edits to `vision/` or `architecture/adr/`** require a commit message explaining the reason.
 
 ---
 
@@ -38,7 +35,7 @@
 | [`/IDENTITY.md`](../IDENTITY.md) | Role and commitments of the AI assistant |
 | [`/CLAUDE.md`](../CLAUDE.md) | Technical context the AI assistant reads automatically |
 | [`/README.md`](../README.md) | Public-facing project introduction |
-| [`/CONTRIBUTING.md`](../CONTRIBUTING.md) | (Reserved — closed beta, no PRs accepted until v1.0) |
+| [`/CONTRIBUTING.md`](../CONTRIBUTING.md) | How to contribute (open source) |
 | [`/RELEASING.md`](../RELEASING.md) | Release process |
 | [`/CHANGELOG.md`](../CHANGELOG.md) | Significant changes history |
 | [`/SECURITY.md`](../SECURITY.md) | Vulnerability reporting |

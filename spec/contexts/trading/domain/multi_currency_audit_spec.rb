@@ -1,7 +1,7 @@
 require "rails_helper"
 
-# Spec-first audit for S12 #168, derived from Lucía's audit scenario
-# (docs/research/audit-2026-05-23/C1-lucia-mx-financial-domain.md §"Top 3 #1").
+# Spec-first audit for S12 #168, derived from Lucía's MX financial-domain
+# audit scenario.
 #
 # Scenario: an MX investor with preferred_currency MXN holds USD-denominated
 # AAPL purchased across two trades with different FX rates. Today's FX is

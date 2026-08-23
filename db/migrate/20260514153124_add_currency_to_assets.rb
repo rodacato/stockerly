@@ -9,8 +9,8 @@ class AddCurrencyToAssets < ActiveRecord::Migration[8.1]
     add_column :assets, :currency, :string, limit: 3, default: "USD", null: false
 
     # Country-driven backfill: MXN candidates first, then explicit USD overrides.
-    # See #41 discovery card and docs/sprints/2026-S02-truth-foundation/log.md
-    # for the rule rationale (we trust country + asset_type, not symbol patterns).
+    # See #41 discovery card for the rule rationale (we trust country +
+    # asset_type, not symbol patterns).
     Asset.reset_column_information
 
     Asset.where(country: "MX")

@@ -76,11 +76,11 @@ Turbo Stream / HTML response                                           Handlers 
 
 | Context | Namespace | Intent |
 |---------|-----------|--------|
-| **Identity** | `Identity::` | User lifecycle: registration, auth, profiles, onboarding, search |
+| **Identity** | `Identity::` | Single-user lifecycle: auth, profile, onboarding, search |
 | **Trading** | `Trading::` | Trade execution, portfolio management, watchlists, dashboard, trends |
 | **Alerts** | `Alerts::` | Alert rule management, evaluation, triggering |
 | **Market Data** | `MarketData::` | External data: prices, fundamentals, news, earnings, indices, gateways |
-| **Administration** | `Administration::` | Admin ops: asset CRUD, integrations, logs, user management |
+| **Administration** | `Administration::` | Admin ops: asset CRUD, integrations, logs, settings |
 | **Notifications** | `Notifications::` | Notification creation and delivery |
 
 Each context has this structure:
@@ -182,7 +182,7 @@ Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUs
 
 ### Frontend Stack
 
-- **CSS:** Tailwind CSS 4 with custom theme (primary `#005A98`, see `docs/BRANDING.md`)
+- **CSS:** Tailwind CSS 4 with a custom theme. The design system lives in `design/` (Pencil-based, source of truth); a visual redesign is underway.
 - **Icons:** Material Symbols Outlined (Google Fonts)
 - **Typography:** Plus Jakarta Sans (headings), Inter (body), JetBrains Mono (financial data)
 - **Charts:** CSS/SVG inline (conic-gradient donut, SVG sparklines)
@@ -193,10 +193,10 @@ Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUs
 
 ### Access Zones
 
-- **Public:** `/`, `/trends`, `/open-source`, `/privacy`, `/terms`, `/risk-disclosure`, `/login`, `/register`
+- **Public:** `/`, `/privacy`, `/terms`, `/risk-disclosure`, `/login`
 - **Authenticated:** `/dashboard`, `/market`, `/portfolio`, `/alerts`, `/earnings`, `/profile`
 - **Password Reset:** `/forgot-password`, `/reset-password/:token`
-- **Admin:** `/admin/assets`, `/admin/logs`, `/admin/users`
+- **Admin:** `/admin/assets`, `/admin/logs`, `/admin/integrations`
 
 ## Test Structure
 
@@ -266,7 +266,7 @@ Follow `CONTRIBUTING.md` conventions:
 | Architecture map + ADRs | `docs/architecture/` |
 | Expert Panel v2 (8 Core + 8 Situational) | `docs/research/experts.md` |
 | Deployment Guide | `docs/ops/deploy.md` |
-| Archived specs (NOT current source of truth) | `docs/archive/` |
-| Brand system (palette, components, logos, decision record) | `docs/design/` |
+| 1.0 retrospective (why the pivot happened) | `docs/1.0-retrospective.md` |
+| Design system (source of truth, Pencil-based) | `design/` |
 | AI Identity & Principles | `IDENTITY.md` |
 | Contributing Guide | `CONTRIBUTING.md` |
