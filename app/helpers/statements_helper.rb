@@ -79,12 +79,4 @@ module StatementsHelper
     num = value.to_f
     format_large_currency(num)
   end
-
-  def compute_margin(statements, numerator_key, denominator_key)
-    statements.map do |stmt|
-      num = stmt.data[numerator_key]&.to_f
-      den = stmt.data[denominator_key]&.to_f
-      den&.nonzero? ? (num / den * 100).round(1) : nil
-    end
-  end
 end
