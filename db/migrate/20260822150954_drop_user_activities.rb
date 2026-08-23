@@ -9,10 +9,10 @@ class DropUserActivities < ActiveRecord::Migration[8.1]
       t.jsonb "params", default: {}, null: false
       t.datetime "updated_at", null: false
       t.bigint "user_id", null: false
-      t.index ["action"], name: "index_user_activities_on_action"
-      t.index ["occurred_at"], name: "index_user_activities_on_occurred_at"
-      t.index ["user_id", "action", "occurred_at"], name: "index_user_activities_on_user_action_occurred"
-      t.index ["user_id"], name: "index_user_activities_on_user_id"
+      t.index [ "action" ], name: "index_user_activities_on_action"
+      t.index [ "occurred_at" ], name: "index_user_activities_on_occurred_at"
+      t.index [ "user_id", "action", "occurred_at" ], name: "index_user_activities_on_user_action_occurred"
+      t.index [ "user_id" ], name: "index_user_activities_on_user_id"
     end
   end
 end

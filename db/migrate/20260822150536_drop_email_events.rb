@@ -10,10 +10,10 @@ class DropEmailEvents < ActiveRecord::Migration[8.1]
       t.datetime "occurred_at", null: false
       t.jsonb "raw_payload", default: {}, null: false
       t.datetime "updated_at", null: false
-      t.index ["email"], name: "index_email_events_on_email"
-      t.index ["event_type"], name: "index_email_events_on_event_type"
-      t.index ["message_id", "event_type"], name: "index_email_events_on_message_and_type", unique: true, where: "(message_id IS NOT NULL)"
-      t.index ["message_id"], name: "index_email_events_on_message_id"
+      t.index [ "email" ], name: "index_email_events_on_email"
+      t.index [ "event_type" ], name: "index_email_events_on_event_type"
+      t.index [ "message_id", "event_type" ], name: "index_email_events_on_message_and_type", unique: true, where: "(message_id IS NOT NULL)"
+      t.index [ "message_id" ], name: "index_email_events_on_message_id"
     end
   end
 end
