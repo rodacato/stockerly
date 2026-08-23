@@ -87,3 +87,14 @@ not a rebuild. That's the story: *good architecture is what lets you be wrong ch
   would have broken the deploy or all data sourcing. Only `money-rails` and `image_processing`
   were actually dead. *Blog beat: an AI audit is a lead, not a verdict — the cost of trusting it
   blind is a broken prod; the cost of verifying is five minutes. The verification is the work.*
+- **Cut over production to the 2.0 — live, and it worked.** Merged to master, deployed to
+  andys-room, and instead of wiping the whole DB we did the smarter thing (Adrian's call): delete
+  only the user-dependent rows (`User.destroy_all` + the two audit tables with dangling FKs) and
+  **keep every non-user table** — the accumulated price history, symbols, fundamentals, news, and
+  the configured integrations + API keys. The fresh single-user instance booted straight into
+  `/setup` with months of market history already there. *Blog beat: the cleanest reset isn't
+  `DROP DATABASE` — it's knowing exactly which rows are yours to throw away and which are the
+  expensive history worth keeping. The pivot deleted an audience, not the data.*
+- **First honest reaction from prod:** it works, but the assets / sync / how-it's-shown feels
+  confusing — the same "can't read the indicators" failure the beta had, still unsolved because
+  this phase was cleanup, not redesign. That's the whole point of the next phase.

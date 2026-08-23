@@ -1,5 +1,20 @@
 # TODO — 2.0 Evolve / Cleanup phase
 
+## ✅ STATUS — 2.0 IS LIVE IN PRODUCTION (2026-08-23)
+
+The evolve/cleanup phase is **DONE and DEPLOYED**. `evolve_2_0_pre` merged to `master`,
+`master → production` deployed to andys-room, prod cut over to a **fresh single-user instance**
+(deleted beta users + audit trails via `User.destroy_all` etc., **kept all market data +
+integrations + api keys**). `stockerly.notdefined.dev` runs the single-user 2.0.
+
+**Next phase = the actual point of the pivot: the NEW DESIGN.** Everything below "phase rule" is the
+now-finished cleanup; the design work lives in the gitignored `redesign/` hub.
+
+**Adrian's first prod observation (2026-08-23):** the **assets / sync / how market data is shown**
+feels confusing — a UX/product area to fix, likely folded into the design phase.
+
+---
+
 > **The phase rule (Adrian, 2026-08-22):** NO new features. Clean up, delete the unnecessary, fix the
 > *simplest* thing needed to continue, get minimum-viable to production, update context + docs. THEN
 > plan new designs, discuss, decide how to continue. This is my running checklist — I keep it current.
