@@ -5,10 +5,10 @@
     <%# Greeting %>
     <div>
       <h1 class="text-3xl font-bold text-fg-default tracking-tight">Hola, <%= current_user.full_name.split.first %></h1>
-      <p class="text-sm text-fg-subtle mt-2">Te incorporaste a la beta cerrada de Stockerly.</p>
+      <p class="text-sm text-fg-subtle mt-2">Tu tracker personal de inversiones.</p>
     </div>
 
-    <%# Beta context card %>
+    <%# Context card + starting guide %>
     <%= render "shared/welcome_body" %>
 
     <%# Primary CTA %>

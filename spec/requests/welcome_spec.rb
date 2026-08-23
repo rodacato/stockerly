@@ -10,8 +10,8 @@ RSpec.describe "Welcome", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Hola")
-      expect(response.body).to include("Te incorporaste a la beta cerrada")
-      expect(response.body).to include("Esto es beta cerrada")
+      expect(response.body).to include("Tu tracker personal de inversiones")
+      expect(response.body).to include("Software en desarrollo")
       expect(response.body).to include("Registra tu primer movimiento")
       expect(response.body).to include("Crea una watchlist")
       expect(response.body).to include("Configura una alerta")

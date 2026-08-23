@@ -10,7 +10,7 @@ RSpec.describe "Help", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Ayuda y soporte")
-      expect(response.body).to include("Esto es beta cerrada")
+      expect(response.body).to include("Software en desarrollo")
       expect(response.body).to include("Repórtalo aquí")
     end
 
