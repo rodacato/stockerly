@@ -114,10 +114,4 @@ module AlertsHelper
   def alert_condition_options
     CONDITION_OPTION_ORDER.map { |condition| [ condition, CONDITION_LABELS.fetch(condition) ] }
   end
-
-  # Conditions that need a "Dirección" (al alza / a la baja) segmented
-  # control. Used by the form preview line.
-  def alert_directional?(condition)
-    %w[price_crosses_above price_crosses_below].include?(condition.to_s)
-  end
 end
