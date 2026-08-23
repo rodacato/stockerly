@@ -91,11 +91,12 @@ code is left loose. Remaining items below are working-code reworks / cosmetic �
 ## Deferred (working code / cosmetic — focused follow-up sessions, not this marathon)
 
 - User model column slim (`status`/`is_verified`/`email_verified_at`) — ~40 spec files, dead columns.
-- `api_key_pool` → single-key simplification (working plumbing, 7 gateways). **Direction (decided
-  2026-08-22): KEEP the admin key-management UI** — "deploy and forget", the user sets/changes keys
-  via the UI without touching `.env` or redeploying. NOT ENV-based. The rework only collapses the
-  *multi-key pool* (rotation, add/toggle/remove/default, daily counters) to *one key per provider*;
-  the admin config UI stays, just simpler (one key field per provider).
+- ~~`api_key_pool` → single-key simplification~~ **CANCELLED (2026-08-23).** Adrian wants to KEEP the
+  multi-key pool: several keys per provider is a deliberate **rate-limit workaround** (rotate across
+  keys to multiply free-tier limits — the "key buckets" mechanism from the vision). No rework; the
+  pool + rotation + admin UI stay as-is. Keys live encrypted in the DB, managed via the admin UI
+  ("deploy and forget"). ⚠️ Update `project_decision` memory (still says "rework to single-key") on
+  next `apu save`.
 - `AlertPreference` decorative flags.
 - Dead `welcome` mailer + its view/spec.
 - `seeds.rb` single-user rewrite.
