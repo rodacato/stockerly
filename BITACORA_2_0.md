@@ -81,3 +81,9 @@ not a rebuild. That's the story: *good architecture is what lets you be wrong ch
   empty portfolio. The thing a stranger cloning the repo would actually see. First real UX polish
   from that: the provider-connect step now says *what each data source is for* and *where to get
   its key* — the "runs it without a manual" packaging promise, made concrete.
+- **The dead-code sweep was right about most things and dangerously wrong about two.** It flagged
+  four "unused" gems; verifying each before deleting caught that `thruster` is the production
+  Docker `CMD` and `faraday-retry` powers the retry middleware in ~11 gateways — removing either
+  would have broken the deploy or all data sourcing. Only `money-rails` and `image_processing`
+  were actually dead. *Blog beat: an AI audit is a lead, not a verdict — the cost of trusting it
+  blind is a broken prod; the cost of verifying is five minutes. The verification is the work.*

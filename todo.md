@@ -76,6 +76,18 @@
   onboarding save path sits on `api_key_pool` → **build this AFTER the api_key_pool rework**, not
   bolted onto code we're about to change. Transparency half (show + link each source) already shipped.
 
+## Tier 1 dead-code cleanup — DONE (2026-08-23)
+
+- [x] Dead use cases (LoadProfile, SyncCryptoFundamentals), SkeletonHelper, orphan partials. `d65cbc5`.
+- [x] Dead helper methods (alert_directional?, app_nav_active?, compute_margin) + 2 orphan events
+      (RuleCreated, WatchlistItemAdded, published to no subscribers). `628a132`.
+- [x] Stale closed-beta + email-verification copy. `08c4299`.
+- [x] Unused gems money-rails + image_processing. `89b83aa`. **Audit was WRONG on thruster (prod
+      Docker CMD) + faraday-retry (~11 gateways) — kept both.** Always verify sweep findings.
+
+**Cleanup base is complete and green (2496 examples).** The multi-user surface is gone and no dead
+code is left loose. Remaining items below are working-code reworks / cosmetic — separate sessions.
+
 ## Deferred (working code / cosmetic — focused follow-up sessions, not this marathon)
 
 - User model column slim (`status`/`is_verified`/`email_verified_at`) — ~40 spec files, dead columns.
