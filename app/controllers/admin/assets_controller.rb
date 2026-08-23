@@ -91,7 +91,7 @@ module Admin
     end
 
     def redirect_with_filters(notice: nil, alert: nil)
-      redirect_to admin_assets_path(filter_params.except(:page)), notice: notice, alert: alert
+      redirect_to admin_assets_path(filter_params), notice: notice, alert: alert
     end
 
     def asset_params
