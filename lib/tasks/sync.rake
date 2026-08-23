@@ -16,8 +16,7 @@ namespace :stockerly do
     "Alpha Vantage"  => { provider_type: "Fundamentals",          requires_api_key: true,  max_requests_per_minute: 5,   daily_call_limit: 25    },
     "FMP"            => { provider_type: "Dividends & Splits",    requires_api_key: true,  max_requests_per_minute: 10,  daily_call_limit: 250   },
     "ExchangeRate"   => { provider_type: "FX Rates",              requires_api_key: true,  max_requests_per_minute: 10,  daily_call_limit: 1_500 },
-    "Banxico"        => { provider_type: "CETES & Fixed Income",  requires_api_key: true,  max_requests_per_minute: nil, daily_call_limit: 1_000 },
-    "AI Intelligence" => { provider_type: "AI / LLM",            requires_api_key: true,  max_requests_per_minute: 10,  daily_call_limit: 100   }
+    "Banxico"        => { provider_type: "CETES & Fixed Income",  requires_api_key: true,  max_requests_per_minute: nil, daily_call_limit: 1_000 }
   }.freeze
 
   def sync_integrations
