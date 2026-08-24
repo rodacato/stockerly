@@ -35,6 +35,14 @@ class TradesController < AuthenticatedController
     @shown_count = @trades.size
   end
 
+  # D11: a real page first. The drawer is a presentation the JS layer adds; if
+  # it never runs, this still works.
+  def new
+    @side = params[:side] == "sell" ? "sell" : "buy"
+    @symbol = params[:symbol]
+    @currency = current_user.preferred_currency
+  end
+
   def create
     result = Trading::UseCases::ExecuteTrade.call(user: current_user, params: trade_params.to_h)
 

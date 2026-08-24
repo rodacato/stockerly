@@ -1,0 +1,34 @@
+<%# The drawer D11 specifies: a route rendered into a frame, presented as a
+    native <dialog>. Bottom-anchored on a phone, centred on desktop (D4). %>
+<div data-controller="sheet">
+  <%# Turbo does the navigation, so the history entry is real; the controller
+      only presents the result. Setting frame.src by hand skips the push. %>
+  <%= link_to new_trade_path,
+              data: { turbo_frame: "trade_sheet", turbo_action: "advance" },
+              class: "flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" do %>
+    <span class="material-symbols-outlined text-xl" aria-hidden="true">add</span>
+    <%= t("trades.new.titulo") %>
+  <% end %>
+
+  <dialog data-sheet-target="dialog"
+          data-action="click->sheet#onDialogClick close->sheet#onClose"
+          class="trade-sheet"
+          aria-label="<%= t("trades.new.titulo") %>">
+    <div class="flex max-h-full min-h-0 flex-col gap-3 p-4">
+      <div class="flex items-center justify-between gap-3">
+        <span class="mx-auto h-1 w-10 rounded-full bg-border-strong sm:hidden" aria-hidden="true"></span>
+        <button type="button" data-action="sheet#close"
+                aria-label="<%= t("trades.new.cerrar") %>"
+                class="flex size-11 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
+          <span class="material-symbols-outlined text-xl" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <%# advance is what makes the drawer affordable (D11): the URL really
+          changes, so the back button closes the sheet for free. %>
+      <%= turbo_frame_tag "trade_sheet",
+                          data: { sheet_target: "frame", action: "turbo:frame-load->sheet#onFrameLoad" },
+                          class: "flex min-h-0 flex-1 flex-col overflow-hidden" %>
+    </div>
+  </dialog>
+</div>

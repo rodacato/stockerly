@@ -54,13 +54,14 @@ Rails.application.routes.draw do
   # live at their own top-level paths.
   get   "assets",                 to: "assets#index"
   get   "tracked",                to: "assets#tracked",     as: :tracked_assets
+  get   "fx_rate",                to: "fx_rates#show"
   patch "tracked/:id/toggle_sync", to: "assets#toggle_sync", as: :toggle_sync_asset
   resource  :portfolio, only: [ :show ]
   resources :alerts, only: [ :index, :create, :update, :destroy ] do
     member { patch :toggle }
   end
   resources :positions, only: [ :update ]
-  resources :trades,    only: [ :index, :create, :edit, :update, :destroy ] do
+  resources :trades,    only: [ :index, :new, :create, :edit, :update, :destroy ] do
     member { get :confirm_destroy }
   end
   resources :earnings,  only: [ :index, :show ]
