@@ -1,0 +1,21 @@
+<header class="hidden items-center justify-between gap-4 border-b border-border-default bg-bg-surface px-6 py-4 lg:flex">
+  <div class="flex flex-col gap-0.5">
+    <%# Not an h1: every screen still owns its own heading. When a slice moves its
+        title up here, that screen drops its heading and this becomes the h1. %>
+    <p class="font-display text-xl font-bold tracking-tight text-fg-default">
+      <%= content_for(:page_title) || t("nav.#{main_nav_items.find { |i| i[:active] }&.dig(:key) || "panorama"}") %>
+    </p>
+    <% if content_for?(:page_subtitle) %>
+      <p class="font-mono text-[11px] uppercase tracking-wider text-fg-subtle"><%= yield :page_subtitle %></p>
+    <% end %>
+  </div>
+
+  <%= link_to notifications_path,
+              "aria-label": navbar_unread_count.zero? ? t("nav.abrir_avisos") : t("nav.avisos_sin_leer", count: navbar_unread_count),
+              class: "relative flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:bg-bg-muted hover:text-primary" do %>
+    <span class="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>
+    <% if navbar_unread_count.positive? %>
+      <span class="absolute right-2.5 top-2.5 size-2 rounded-full bg-negative"></span>
+    <% end %>
+  <% end %>
+</header>

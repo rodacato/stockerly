@@ -127,8 +127,32 @@ pre-work, where it would have been infrastructure with no consumer.
 - ✅ `AlertsHelper#alert_rule_kind_label` reads the `Asset` when one exists, so a crypto rule
   is no longer labelled "Acción"; the symbol heuristic stays as the fallback for rules that
   outlived their asset. Memoized per request — the spec pins the query count.
-- ⬜ **Left undone: the TopBar bell still has no destination.** `/notifications` exists and the
-  redesigned shell links to nothing. It lands with the shell revamp, not from a helper fix.
+- ✅ **The TopBar bell now has a destination.** It links to `/notifications` in both shell
+  variants, and carries the unread count as its accessible name rather than a bare icon plus a
+  silent dot. The dropdown panel it used to open is gone — D13 made the inbox a screen.
+
+## 6b. The shell (slice 1) — DONE
+
+**Status:** shipped. `app.html.erb` composes four partials: `components/_top_bar` (mobile: logo +
+bell), `components/_sidebar_nav` (desktop: the four destinations), `components/_top_bar_desktop`
+(desktop: screen title + bell) and `components/_bottom_nav` (mobile tabs). Both variants render;
+CSS picks. `NavigationHelper` owns the four destinations so nothing is duplicated between them.
+
+- **`admin.html.erb` is gone**, with `_admin_sidebar` and `_admin_header`. `Admin::BaseController`
+  dropped its `layout` line and inherits `app`, so the admin screens render in the same shell as
+  everything else until D5 folds them into Ajustes. Its hardcoded footer claiming "API Gateway:
+  Operational · Database: Healthy" — never wired to a health check — went with it.
+- **Routes are the ones that exist today.** Activos → `/portfolio` and Ajustes → `/profile`;
+  slices 2 and 6 move them to `/assets` and `/settings`. A tab lights up per *controller*, not per
+  path, so `/trades` keeps Activos lit.
+- **The nav went from six entries to four.** `/market`, `/earnings` and `/news` stay routable with
+  no entry point, per Adrian's call; `/search` joins them, because the redesigned TopBar has no
+  search and Activos › Rastreados (its new home) is not built. Three specs pin this so it reads as
+  a decision rather than rot.
+- **The shell title is not an `h1`.** Every screen still owns its heading, and two `h1`s per page
+  is a defect — the first draft shipped one. When a slice moves its title into the bar, that
+  screen drops its heading and the bar's becomes the `h1`.
+- Copy goes through I18n (`nav.*`), the first surface to do so under ADR-011.
 
 ## 7. Delivery channels (D16) — DONE, except one leftover
 

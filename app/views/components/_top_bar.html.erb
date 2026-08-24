@@ -1,0 +1,14 @@
+<header class="sticky top-0 z-40 flex items-center justify-between gap-4 border-b border-border-default bg-bg-surface px-5 py-4 lg:hidden">
+  <%= link_to dashboard_path, "aria-label": t("nav.ir_al_panorama"), class: "flex items-center" do %>
+    <%= render "shared/logo", height_class: "h-7" %>
+  <% end %>
+
+  <%= link_to notifications_path,
+              "aria-label": navbar_unread_count.zero? ? t("nav.abrir_avisos") : t("nav.avisos_sin_leer", count: navbar_unread_count),
+              class: "relative -mr-2 flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary" do %>
+    <span class="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>
+    <% if navbar_unread_count.positive? %>
+      <span class="absolute right-2.5 top-2.5 size-2 rounded-full bg-negative"></span>
+    <% end %>
+  <% end %>
+</header>

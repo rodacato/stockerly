@@ -1,0 +1,16 @@
+<aside class="hidden w-60 shrink-0 flex-col gap-6 border-r border-border-default bg-bg-surface px-4 py-5 lg:sticky lg:top-0 lg:flex lg:h-screen">
+  <%= link_to dashboard_path, "aria-label": t("nav.ir_al_panorama"), class: "flex items-center px-2" do %>
+    <%= render "shared/logo", height_class: "h-7" %>
+  <% end %>
+
+  <nav aria-label="<%= t("nav.principal") %>" class="flex flex-col gap-1">
+    <% main_nav_items.each do |item| %>
+      <%= link_to item[:href],
+                  "aria-current": (item[:active] ? "page" : nil),
+                  class: "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors #{item[:active] ? 'bg-primary-muted font-semibold text-primary' : 'text-fg-subtle hover:bg-bg-muted'}" do %>
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"><%= item[:icon] %></span>
+        <%= t("nav.#{item[:key]}") %>
+      <% end %>
+    <% end %>
+  </nav>
+</aside>

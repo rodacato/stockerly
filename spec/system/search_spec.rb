@@ -15,9 +15,13 @@ RSpec.describe "Global search", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "displays the search button in navbar" do
+  # The 2.0 TopBar is logo + bell; the redesign puts search inside
+  # Activos › Rastreados, which its slice has not built yet. /search stays
+  # routable meanwhile, with no entry point — pinned so it reads as a decision.
+  it "is no longer reachable from the shell" do
     visit dashboard_path
-    expect(page).to have_css("[data-controller='search']")
+    expect(page).not_to have_css("[data-controller='search']")
+    expect(page).not_to have_link(href: search_path)
   end
 
   it "renders the full search results page" do
