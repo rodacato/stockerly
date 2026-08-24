@@ -36,6 +36,19 @@ module DashboardHelper
     t("comun.clasificacion.#{key}", default: key.to_s.humanize)
   end
 
+  # Percentage points, which is not a percentage: the difference between two
+  # returns is stated in points so it is never read as a return of its own.
+  def signed_points(points)
+    value = points.to_f
+    "#{value.negative? ? "−" : "+"}#{number_with_precision(value.abs, precision: 1)} pts"
+  end
+
+  # Maps a points difference onto the same 0-100 track the sentiment cards use.
+  # Clamped at ±10 points, past which more distance stops being informative.
+  def comparison_offset(points)
+    (50 + (points.to_f.clamp(-10, 10) * 5)).round
+  end
+
   # The dot's position on the 0-100 fear/greed track.
   def sentiment_offset(value)
     value.to_i.clamp(0, 100)

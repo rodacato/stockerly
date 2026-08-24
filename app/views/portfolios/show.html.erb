@@ -1,67 +1,100 @@
-<%# Portfolio — investment portfolio overview (Stockerly-2.0, S09 #91) %>
+<%# Consolidado (slice 4). Mobile stacks; desktop puts the chart and the donut
+    side by side, then the two comparison cards. %>
+<% content_for :page_title, t(".titulo") %>
+<% content_for :page_subtitle, t(".tu_patrimonio", currency: @currency) %>
 
-<%# Header — title + actions, always visible %>
-<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-  <div>
-    <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Tu portafolio</p>
-    <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Posiciones y movimientos</h2>
-    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Registra tus operaciones, sigue tu desempeño y revisa tu distribución por tipo de activo.</p>
+<div class="flex flex-col gap-6">
+  <%= render "portfolios/patrimonio_total", summary: @summary, currency: @currency, fx_unavailable: @fx_unavailable %>
+
+  <div class="flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:items-start">
+    <section class="lg:col-span-8">
+      <div class="rounded-2xl border border-border-default bg-bg-surface p-5">
+        <div class="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".como_ha_ido") %></h2>
+          <% if @twr %>
+            <span class="font-mono text-sm font-semibold <%= gain_color(@twr) %>">
+              <%= t(".en_el_periodo", percent: signed_percent(@twr)) %>
+            </span>
+          <% end %>
+        </div>
+
+        <% if @series.any? %>
+          <div class="mt-4" data-controller="chart" data-chart-height-value="240"
+               data-chart-series-value="<%= chart_series_json(@series) %>"></div>
+
+          <div class="mt-3 flex flex-wrap gap-4 text-xs text-fg-subtle">
+            <span class="inline-flex items-center gap-2">
+              <span class="size-2 rounded-full bg-positive"></span><%= t(".valor") %>
+            </span>
+            <span class="inline-flex items-center gap-2">
+              <span class="size-2 rounded-full bg-border-strong"></span><%= t(".aportado") %>
+            </span>
+          </div>
+        <% else %>
+          <div class="mt-4">
+            <%= render "components/empty_state", icon: "show_chart",
+                       title: t(".sin_historial_titulo"), description: t(".sin_historial_cuerpo") %>
+          </div>
+        <% end %>
+
+        <%= render "components/segmented",
+                   label: t(".como_ha_ido"),
+                   options: Trading::UseCases::AssembleConsolidado::PERIODS.keys.map { |key|
+                     [ t(".periodo.#{period_key(key)}"), portfolio_path(period: key), @period == key ]
+                   } %>
+      </div>
+    </section>
+
+    <section class="lg:col-span-4">
+      <div class="rounded-2xl border border-border-default bg-bg-surface p-5">
+        <div class="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".como_repartido") %></h2>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-fg-subtle">
+            <%= t(".por_tipo", currency: @currency) %>
+          </span>
+        </div>
+
+        <% segments = allocation_segments(@allocation) %>
+        <% if segments.any? %>
+          <%# The partial carries its own legend; the artboard leaves the ring's
+              centre empty rather than repeating the total already on the strip. %>
+          <div class="mt-4">
+            <%= render "components/donut_chart", segments: segments %>
+          </div>
+        <% else %>
+          <p class="mt-4 text-sm text-fg-subtle"><%= t("assets.index.vacio_cartera_cuerpo") %></p>
+        <% end %>
+      </div>
+    </section>
   </div>
-  <div class="flex gap-3">
-    <%= link_to trades_path, class: "px-4 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm" do %>
-      <span class="material-symbols-outlined text-sm align-middle mr-1">history</span>
-      Movimientos
+
+  <section class="flex flex-col gap-4">
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".valio_la_pena") %></h2>
+
+    <div class="grid gap-4 lg:grid-cols-2">
+      <%= render "portfolios/comparison_card",
+                 label: t(".vs_cetes", term: Trading::UseCases::AssembleConsolidado::CETES_TERM),
+                 card: @vs_cetes,
+                 body: (@vs_cetes && t(".vs_cetes_cuerpo",
+                        mine: signed_percent(@vs_cetes[:mine]),
+                        benchmark: signed_percent(@vs_cetes[:benchmark]),
+                        term: @vs_cetes[:term],
+                        from: l(@from, format: :long))) %>
+
+      <% if @vs_hold %>
+        <% hold_args = { from: l(@from, format: :long),
+                         value: format_currency_mx(@vs_hold[:hold_value], currency: @currency, precision: 0),
+                         points: number_with_precision(@vs_hold[:points].abs, precision: 1) } %>
+        <% hold_body = @vs_hold[:points].negative? ? t(".vs_hold_cuerpo", **hold_args) : t(".vs_hold_cuerpo_positivo", **hold_args) %>
+      <% end %>
+      <%= render "portfolios/comparison_card", label: t(".vs_hold"), card: @vs_hold, body: hold_body %>
+    </div>
+
+    <% if @vs_cetes || @vs_hold %>
+      <div class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
+        <span class="material-symbols-outlined text-lg text-warning-fg" aria-hidden="true">info</span>
+        <p class="text-xs text-warning-fg"><%= t(".twr_nota") %></p>
+      </div>
     <% end %>
-    <%= link_to market_path, class: "px-4 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm" do %>
-      <span class="material-symbols-outlined text-sm align-middle mr-1">search</span>
-      Explorar mercado
-    <% end %>
-  </div>
-</div>
-
-<%# 3 KPI cards — es-MX titles, MXN/USD ISO prefix, mono numbers %>
-<% ug = @summary.unrealized_gain %>
-<% dg = @summary.day_gain %>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-  <%= render "dashboard/kpi_card",
-      icon:   "account_balance_wallet",
-      title:  "Valor total del portafolio",
-      value:  format_currency_mx(@summary.total_value, currency: @currency),
-      change: { sign: dg.positive? ? "+" : "−", amount: number_with_precision(dg.percent.abs, precision: 2), label: "hoy", positive: dg.positive? } %>
-
-  <%= render "dashboard/kpi_card",
-      icon:    "trending_up",
-      title:   "Ganancia no realizada",
-      value:   "#{ug.positive? ? '+' : '−'} #{format_currency_mx(ug.absolute.abs, currency: @currency)}",
-      tone:    (ug.positive? ? :positive : :default),
-      change:  { sign: ug.positive? ? "+" : "−", amount: number_with_precision(ug.percent.abs, precision: 2), label: "", positive: ug.positive? },
-      caption: @portfolio.inception_date.present? ? "Desde #{l(@portfolio.inception_date, format: '%d %b %Y')}" : nil %>
-
-</div>
-
-<%# Performance Chart %>
-<%= render "portfolios/performance_chart",
-    chart_data: @chart_data,
-    period_returns: @period_returns,
-    currency: @currency %>
-
-<%# Trade Form — always visible %>
-<%= render "trades/trade_form" %>
-
-<%# Portfolio Grid: Allocation (1/3) + Positions (2/3) %>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-  <%# Allocation Sidebar %>
-  <%= render "portfolios/allocation_sidebar",
-      allocation: @allocation,
-      allocation_by_type: @allocation_by_type,
-      summary: @summary %>
-
-  <%# Positions Table %>
-  <div class="lg:col-span-2">
-    <%= render "portfolios/positions_table",
-        tab: @tab,
-        positions: @positions,
-        portfolio: @portfolio,
-        upcoming_dividends: @upcoming_dividends %>
-  </div>
+  </section>
 </div>

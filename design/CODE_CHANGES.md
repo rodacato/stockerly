@@ -226,10 +226,23 @@ production those sit behind a Cloudflare Tunnel whose cache rules key on the pat
   gateway" — true and incomplete: `fetch_auctions` asked for `datos/oportuno`, the latest auction
   only, and nothing persisted a history. `fetch_auction_series` + `cetes_rate_histories` +
   `CetesReinvestedReturn` now cover it, following the pattern slice 2b built for FX.
-- ⬜ **What is left of this slice: the screen.** All four blocks have their data — the strip, the
-  two-series chart (where `lightweight-charts` finally earns its debut), both comparison cards, and
-  the allocation donut. One conflict to settle when it is built: the artboard's strip shows
-  **"Invertido / Disponible"**, and `Disponible` was `buying_power`, deleted by D26.
+- ✅ **The screen shipped.** `/portfolio` is the Consolidado: the strip, the two-series chart, both
+  comparison cards and the allocation donut. **`lightweight-charts` debuts here** — the controller
+  generalized from `price_chart` to `chart`, taking an array of series, which the asset detail will
+  reuse with one.
+- ✅ **The strip conflict is settled the only way D26 allows.** The artboard draws
+  "Invertido / Disponible"; `Disponible` was `buying_power`. The split is gone and the strip carries
+  the total and the day's move.
+- ✅ **The four lists moved to `/positions`** — open, closed, dividends and the trade log — routable
+  with no nav entry, the slice-1 treatment. The S09 KPI strip, the inline trade form and the tabbed
+  allocation sidebar died with the old screen; the sheet at `/trades/new` and this donut replace
+  them. `TradesController` now lands on Activos, where capture lives.
+- 🐞 **Found by the screenshot, fixed here: the allocation donut has never drawn a coloured ring in
+  light mode.** Tailwind 4 tree-shakes `@theme`, and nothing generates a `bg-chart-3` utility — so
+  `--color-chart-2..8` were emitted only inside the dark block, which is ordinary CSS. The data-viz
+  tokens moved to `@theme static`. Every screen that reads `var(--color-chart-N)` was affected; only
+  light mode showed it.
+- ⬜ **What is left of this slice: nothing.**
 - ✅ **D27 is fixed — both halves, on `fix/snapshot-history-alignment`.** `day_gain` subtracts the
   day's external flows, `executed_at` is bounded at today, and `RebuildSnapshots` rewrites the
   history from the trades whenever one is recorded, edited or discarded with a past date. So the

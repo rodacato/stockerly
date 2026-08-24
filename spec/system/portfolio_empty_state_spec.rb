@@ -15,27 +15,18 @@ RSpec.describe "Portfolio empty state", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "shows summary cards even with no positions" do
+  it "says there is no curve to draw rather than showing an empty chart" do
     visit portfolio_path
-    expect(page).to have_content("Posiciones y movimientos")
-    expect(page).to have_content("Valor total del portafolio")
-    expect(page).to have_content("Ganancia no realizada")
+    expect(page).to have_content(I18n.t("portfolios.show.sin_historial_titulo"))
   end
 
-  it "shows the trade form on empty portfolio" do
-    visit portfolio_path
-    expect(page).to have_content("Registrar movimiento")
-    expect(page).to have_button("Registrar movimiento", visible: :all)
-  end
-
-  it "shows header action buttons on empty portfolio" do
-    visit portfolio_path
-    expect(page).to have_link("Movimientos")
-    expect(page).to have_link("Explorar mercado")
+  it "offers the lists a way back to the Consolidado" do
+    visit positions_path
+    expect(page).to have_link(I18n.t("portfolios.show.titulo"))
   end
 
   it "shows positions table with empty state message" do
-    visit portfolio_path
+    visit positions_path
     expect(page).to have_content("Aún no hay posiciones abiertas")
   end
 end

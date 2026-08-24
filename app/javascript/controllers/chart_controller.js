@@ -3,7 +3,10 @@ import { createChart, LineSeries } from "lightweight-charts"
 
 // D2: our own series, never a third-party iframe. Colors read the resolved
 // @theme tokens, so the chart follows the palette and the dark class for free.
-export default class PriceChartController extends Controller {
+//
+// `series` is an array of { data: [{time, value}], token, width } — the
+// Consolidado draws two (value and contributed), the asset detail one.
+export default class ChartController extends Controller {
   static values = { series: Array, height: { type: Number, default: 220 } }
 
   connect() {
@@ -23,9 +26,11 @@ export default class PriceChartController extends Controller {
       timeScale: { borderColor: this.token("--color-border-default") }
     })
 
-    this.chart
-      .addSeries(LineSeries, { color: this.token("--color-chart-1"), lineWidth: 2 })
-      .setData(this.seriesValue)
+    this.seriesValue.forEach(({ data, token, width }) => {
+      this.chart
+        .addSeries(LineSeries, { color: this.token(token || "--color-chart-1"), lineWidth: width || 2 })
+        .setData(data)
+    })
 
     this.chart.timeScale().fitContent()
     this.resizeObserver = new ResizeObserver(([entry]) =>

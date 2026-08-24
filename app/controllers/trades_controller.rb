@@ -56,7 +56,7 @@ class TradesController < AuthenticatedController
               locals: { type: "notice", message: "#{trade.buy? ? 'Compra' : 'Venta'} registrada: #{trade.shares} títulos de #{trade.asset.symbol}" })
           ]
         end
-        format.html { redirect_to portfolio_path, notice: "Movimiento registrado." }
+        format.html { redirect_to assets_path, notice: "Movimiento registrado." }
       end
     in Dry::Monads::Failure[ :validation, errors ]
       error_msg = errors.values.flatten.first
@@ -65,7 +65,7 @@ class TradesController < AuthenticatedController
           render turbo_stream: turbo_stream.prepend("flash_messages",
             partial: FLASH_PARTIAL, locals: { type: "alert", message: error_msg })
         end
-        format.html { redirect_to portfolio_path, alert: error_msg }
+        format.html { redirect_to assets_path, alert: error_msg }
       end
     in Dry::Monads::Failure[ :insufficient_shares, message ]
       respond_to do |format|
@@ -73,10 +73,10 @@ class TradesController < AuthenticatedController
           render turbo_stream: turbo_stream.prepend("flash_messages",
             partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
-        format.html { redirect_to portfolio_path, alert: message }
+        format.html { redirect_to assets_path, alert: message }
       end
     in Dry::Monads::Failure[ _, message ]
-      redirect_to portfolio_path, alert: message
+      redirect_to assets_path, alert: message
     end
   end
 

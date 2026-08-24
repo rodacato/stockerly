@@ -12,14 +12,14 @@ RSpec.describe "Position notes and labels", type: :request do
     it "updates notes" do
       patch position_path(position), params: { position: { notes: "Buy more on dip" } }
 
-      expect(response).to redirect_to(portfolio_path)
+      expect(response).to redirect_to(positions_path)
       expect(position.reload.notes).to eq("Buy more on dip")
     end
 
     it "updates labels from comma-separated string" do
       patch position_path(position), params: { position: { labels: "dividend, growth, long-term" } }
 
-      expect(response).to redirect_to(portfolio_path)
+      expect(response).to redirect_to(positions_path)
       expect(position.reload.labels).to eq(%w[dividend growth long-term])
     end
 
@@ -37,7 +37,7 @@ RSpec.describe "Position notes and labels", type: :request do
 
       patch position_path(other_position), params: { position: { notes: "hack" } }
 
-      expect(response).to redirect_to(portfolio_path)
+      expect(response).to redirect_to(positions_path)
       expect(other_position.reload.notes).to be_nil
     end
   end

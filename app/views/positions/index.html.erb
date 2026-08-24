@@ -1,0 +1,17 @@
+<%# The position lists the Consolidado does not carry. Reachable by URL only —
+    the nav has four destinations and this is not one of them. %>
+<% content_for :page_title, "Posiciones y movimientos" %>
+
+<div class="flex flex-col gap-5">
+  <%= link_to portfolio_path,
+              class: "inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline" do %>
+    <span class="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
+    <%= t("portfolios.show.titulo") %>
+  <% end %>
+
+  <%= render "positions/positions_table",
+             tab: @tab,
+             positions: @positions,
+             portfolio: @portfolio,
+             upcoming_dividends: @upcoming_dividends %>
+</div>

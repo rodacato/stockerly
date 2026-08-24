@@ -21,7 +21,7 @@ RSpec.describe "Trade flow", type: :system do
       asset_symbol: "AAPL", side: "buy", shares: "10", price_per_share: "150.0"
     }
 
-    visit portfolio_path
+    visit positions_path
     expect(page).to have_content("Apple Inc.")
     expect(page).to have_content("10")
   end
@@ -33,7 +33,7 @@ RSpec.describe "Trade flow", type: :system do
       asset_symbol: "AAPL", side: "sell", shares: "5", price_per_share: "150.0"
     }
 
-    visit portfolio_path
+    visit positions_path
     expect(page).to have_content("Apple Inc.")
     expect(page).to have_content("15")
   end
@@ -45,7 +45,7 @@ RSpec.describe "Trade flow", type: :system do
       asset_symbol: "AAPL", side: "sell", shares: "10", price_per_share: "150.0"
     }
 
-    visit portfolio_path(tab: "closed")
+    visit positions_path(tab: "closed")
     expect(page).to have_content("Apple Inc.")
   end
 
@@ -54,7 +54,7 @@ RSpec.describe "Trade flow", type: :system do
       asset_symbol: "AAPL", side: "buy", shares: "5", price_per_share: "150.0"
     }
 
-    visit portfolio_path(tab: "trades")
+    visit positions_path(tab: "trades")
     expect(page).to have_content("AAPL")
     expect(page).to have_content("Compra")
   end
