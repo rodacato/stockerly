@@ -1,12 +1,10 @@
-<%# Empty State — reusable component for pages with no data %>
-<%# Parameters: icon (String), title (String), description (String), cta_text (String, optional), cta_path (String, optional) %>
-
-<div class="flex flex-col items-center justify-center py-16 px-4 text-center">
-  <span class="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4"><%= icon %></span>
-  <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2"><%= title %></h3>
-  <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-[280px]"><%= description %></p>
+<%# Parameters: icon, title, description, cta_text (optional), cta_path (optional) %>
+<div class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-default px-4 py-16 text-center">
+  <span class="material-symbols-outlined mb-4 text-6xl text-border-strong" aria-hidden="true"><%= icon %></span>
+  <h3 class="mb-2 font-display text-lg font-semibold text-fg-default"><%= title %></h3>
+  <p class="mb-6 max-w-[320px] text-sm text-fg-subtle"><%= description %></p>
   <% if local_assigns[:cta_text] && local_assigns[:cta_path] %>
-    <%= link_to cta_path, class: "inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors" do %>
+    <%= link_to cta_path, class: "inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-fg-inverse transition-colors hover:bg-primary-hover" do %>
       <%= cta_text %>
     <% end %>
   <% end %>

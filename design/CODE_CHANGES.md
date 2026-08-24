@@ -58,7 +58,33 @@ without payoff.
 
 ## 4. Activos tab — Cartera vs Sigo (D9, D10)
 
-**Status:** pending — design done (`flows/assets.pen`), code revamp not started.
+**Status:** surface shipped (slice 2a). The trade sheet and the FX block are NOT in it — see below.
+
+- ✅ `/assets` with the `Cartera | Sigo` segmented control, reading `open_positions` and
+  `watchlist_items`. Never one merged list.
+- ✅ `/tracked` — the third tier with the `DAILY_BUDGET` visible, per-asset pause/resume and the
+  one-tap crossing into Sigo. The budget moved out of `SyncAllFundamentalsJob` into
+  `MarketData::Domain::FundamentalsBudget`, so the screen and the job read one calculation.
+- ✅ `watchlist_items.entry_price` renders as "sigues +X%" — captured on every add since it
+  shipped, never once displayed until now.
+- ✅ Money per D10; the 🐞 in `dashboard/_watchlist_table` ("Tus posiciones" over the watchlist)
+  is fixed.
+- ⬜ **Trade sheet (D11) — slice 2c**, together with `cuprite`: it is the first JS that can
+  genuinely break. It also waits on the FX block, since auto-filling the rate *for the trade date*
+  is impossible until history exists.
+- ⬜ **`/admin/assets` is only half absorbed.** Rastreados took the list, the tiers, the budget
+  and pause/resume; creating, searching and deleting assets stayed behind. Both screens exist
+  meanwhile, and the admin one is reachable only by URL.
+- ⚠ **Not drawn, deliberately: the state chip and the confluence dots.** The chip's taxonomy
+  ("neutral", "estirado") exists nowhere in code — `trend_strength_label` measures trend strength,
+  a different thing — and the semáforo is D3, whose engine is gated.
+- 🐞 **`Portfolio#convert` raises on a missing FX rate, and two live screens 500 because of it.**
+  With one USD position, `preferred_currency: "MXN"` and no `fx_rates` row, `/dashboard` and
+  `/portfolio` both raise — today, on master. That is the product's central case on a fresh
+  instance whose FX job has not run. Activos degrades instead (rows fall back to their own
+  currency with the ISO prefix D10 already prescribes, and the screen says it cannot consolidate);
+  the other two are fixed where they are rewritten — `/portfolio` is replaced by this screen and
+  `/dashboard` by slice 3.
 
 - Measure before landing: `grep -rn "watchlist" app/views | wc -l` and `grep -rn "Tus posiciones" app/views`
   — the second currently returns [`app/views/dashboard/_watchlist_table.html.erb`](../app/views/dashboard/_watchlist_table.html.erb),
