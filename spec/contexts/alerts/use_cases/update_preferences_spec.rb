@@ -5,11 +5,11 @@ RSpec.describe Alerts::UseCases::UpdatePreferences do
 
   describe ".call" do
     it "creates and updates the preference when none exists" do
-      pref = described_class.call(user: user, params: { email_digest: true, browser_push: false, sms_notifications: true })
+      pref = described_class.call(user: user, params: { email_digest: true, browser_push: false, urgent_email: true })
 
       expect(pref.email_digest).to be true
       expect(pref.browser_push).to be false
-      expect(pref.sms_notifications).to be true
+      expect(pref.urgent_email).to be true
     end
 
     it "updates an existing preference in place" do

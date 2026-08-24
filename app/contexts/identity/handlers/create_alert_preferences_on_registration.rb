@@ -9,7 +9,7 @@ module Identity
         user.create_alert_preference!(
           email_digest: true,
           browser_push: true,
-          sms_notifications: false
+          urgent_email: false
         )
       end
     end

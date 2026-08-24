@@ -24,9 +24,9 @@ RSpec.describe AlertPreference, type: :model do
       expect(pref.email_digest).to be true
     end
 
-    it "has sms_notifications false by default" do
+    it "has urgent_email false by default" do
       pref = AlertPreference.new
-      expect(pref.sms_notifications).to be false
+      expect(pref.urgent_email).to be false
     end
   end
 end

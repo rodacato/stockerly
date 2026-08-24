@@ -51,7 +51,9 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
       # "Resumen semanal por correo" toggle).
       expect(response.body).to include("Avisos por correo")
       expect(response.body).to include("Avisos en la app")
-      expect(response.body).to include("Avisos por SMS")
+      expect(response.body).to include("Avisos urgentes por correo")
+      # No SMS is sent anywhere in the app; offering the channel was the bug.
+      expect(response.body).not_to include("SMS")
       # Theme picker
       expect(response.body).to include("Apariencia")
       expect(response.body).to include("Claro")

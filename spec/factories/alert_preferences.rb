@@ -3,6 +3,6 @@ FactoryBot.define do
     user
     browser_push { true }
     email_digest { true }
-    sms_notifications { false }
+    urgent_email { false }
   end
 end

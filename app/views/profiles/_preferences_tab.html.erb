@@ -86,14 +86,14 @@
       pref = user.alert_preference
       email_on    = pref&.email_digest      != false
       browser_on  = pref&.browser_push      != false
-      sms_on      = pref&.sms_notifications == true
+      urgent_on   = pref&.urgent_email      == true
     %>
 
     <div class="mt-4 divide-y divide-border-default">
       <% channels = [
-           ["email_digest",      "Avisos por correo",         "Resumen diario + avisos disparados (todas las alertas)", "mail",          email_on],
-           ["browser_push",      "Avisos en la app",          "Push del navegador + campana del header",                "notifications", browser_on],
-           ["sms_notifications", "Avisos por SMS",            "Solo para alertas críticas (Twilio).",                   "sms",           sms_on]
+           ["email_digest",  "Avisos por correo",         "Resumen diario + avisos disparados (todas las alertas)", "mail",          email_on],
+           ["browser_push",  "Avisos en la app",          "Push del navegador + campana del header",                "notifications", browser_on],
+           ["urgent_email",  "Avisos urgentes por correo", "Un correo aparte al momento de disparar una regla.",    "mail",          urgent_on]
          ] %>
       <% channels.each do |field, label, sub, icon, on| %>
         <div class="flex items-center gap-4 py-3.5"

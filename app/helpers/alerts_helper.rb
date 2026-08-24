@@ -29,19 +29,25 @@ module AlertsHelper
     "cete_auction"        => "bg-primary"
   }.freeze
 
-  # Kind chip shown next to the ticker (per mockup: "Acción", "Mercado",
-  # "Fondo", "CETE"). We derive it from the symbol because we don't have a
-  # downstream Asset record for every alert rule (rules can outlive assets).
+  ASSET_TYPE_KIND_LABELS = {
+    "stock"        => "Acción",
+    "crypto"       => "Cripto",
+    "etf"          => "ETF",
+    "index"        => "Mercado",
+    "fixed_income" => "CETE"
+  }.freeze
+
+  # Kind chip shown next to the ticker. The asset decides when we still have
+  # one; the symbol heuristic is the fallback for rules that outlived their
+  # asset, where guessing from `.MX` is all that is left.
   def alert_rule_kind_label(rule)
     return "BMV"   if rule.condition == "bmv_holiday"
     return "CETES" if rule.condition == "cete_auction"
 
-    case rule.asset_symbol
-    when /\ACETES?_/i, /\ACETE\b/i then "CETE"
-    when /\.MX\z/i                 then "Acción MX"
-    when "BMV", "IPC", /\AIPC\b/i  then "Mercado"
-    else                                "Acción"
-    end
+    asset = alert_rule_asset(rule.asset_symbol)
+    return kind_label_for(asset) if asset
+
+    kind_label_from_symbol(rule.asset_symbol)
   end
 
   def alert_condition_label(rule)
@@ -113,5 +119,32 @@ module AlertsHelper
 
   def alert_condition_options
     CONDITION_OPTION_ORDER.map { |condition| [ condition, CONDITION_LABELS.fetch(condition) ] }
+  end
+
+  private
+
+  # Memoized per request: the rules table calls this once per row, and a
+  # handful of rules share very few distinct symbols.
+  def alert_rule_asset(symbol)
+    return nil if symbol.blank?
+
+    @alert_rule_assets ||= {}
+    return @alert_rule_assets[symbol] if @alert_rule_assets.key?(symbol)
+
+    @alert_rule_assets[symbol] = Asset.find_by(symbol: symbol)
+  end
+
+  def kind_label_for(asset)
+    label = ASSET_TYPE_KIND_LABELS.fetch(asset.asset_type, "Acción")
+    label == "Acción" && asset.symbol.to_s.match?(/\.MX\z/i) ? "Acción MX" : label
+  end
+
+  def kind_label_from_symbol(symbol)
+    case symbol
+    when /\ACETES?_/i, /\ACETE\b/i then "CETE"
+    when /\.MX\z/i                 then "Acción MX"
+    when "BMV", "IPC", /\AIPC\b/i  then "Mercado"
+    else                                "Acción"
+    end
   end
 end
