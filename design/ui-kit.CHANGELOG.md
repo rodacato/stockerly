@@ -31,6 +31,7 @@ get promoted here when shared across ≥2 flows (Adrian's growth model).
 
 | Need | Note |
 |---|---|
+| Categorical palette (allocation slices) | The Consolidado donut needed four non-semantic category colors and the kit has none — green/red are reserved for gain/loss, so it borrowed `primary`, `primary-hover`, `warning` and `fg-subtle`. `warning` on a crypto slice reads as a caution it does not mean. A real 4–6 colour categorical ramp is the fix. |
 | PriceChart tokens (axis, band fill, RSI line) | new chart component may need its own color roles — tokenize, don't hardcode |
 | Semáforo "live vs próximamente" states | needs a distinct token/treatment, not color alone |
 
@@ -86,9 +87,11 @@ inline copies were replaced with instances in the same pass.
 
 | Need | Note |
 |---|---|
+| `PatrimonioStrip` | `flows/cockpit.pen` local, 3 instances (the three panorama states), 1 flow. The value + Δ + chevron shape is close to `assets.pen`'s Rastreados row — compare them when a third appears. |
 | `WatchRow` | `flows/assets.pen` local. `AssetRow`'s skeleton but carries price + Δ día + "sigues +X%". One flow — promote only if a second needs it. |
 | `TierChip` (Poseo / Sigo) | `flows/assets.pen` local, 2 artboards, 1 flow. Wait for `alerts.pen`. |
 | `OptionCard` (icon + title + desc + chevron) | Empty-state paths and the Rastreados entry row in `assets.pen`. `onboarding.pen` looks like it has the same shape — **verify against it before promoting**, it was not open during this pass. |
 | `TopBarBack` (back + title + action) | Two artboards in `assets.pen`; `cockpit.pen`'s asset-detail bar is close but stacks ticker + name. Similar, not identical — do not force one master over both. |
+| Categorical palette (allocation slices) | The Consolidado donut needed four non-semantic category colors and the kit has none — green/red are reserved for gain/loss, so it borrowed `primary`, `primary-hover`, `warning` and `fg-subtle`. `warning` on a crypto slice reads as a caution it does not mean. A real 4–6 colour categorical ramp is the fix. |
 | PriceChart tokens (axis, band fill, RSI line) | From 0.1.0, still open — the chart component may need its own color roles. Tokenize, don't hardcode. |
 | Semáforo "live vs próximamente" states | From 0.1.0, still open — needs a distinct treatment, not color alone (D3). |
