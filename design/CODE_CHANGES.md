@@ -31,6 +31,17 @@ keeps it deliberately.
 refactor — the suite is green at 94% coverage and moving code no screen has asked for is risk
 without payoff.
 
+## 0b. Verifications owed — none of these are code, all of them are real
+
+Everything below shipped and passed its gates. These are the checks a machine in
+this container could not perform, listed so they are not mistaken for done.
+
+| What | Why it is still open | How to close it |
+|---|---|---|
+| **The typography, visually** | Until §0.2 no font resolved: `font-mono` fell back to ui-monospace across 175 sites and Inter never applied to `<body>`. The fix changes how the whole app looks and **no human has seen it**. | `bin/dev`, look at a data-heavy screen in both themes |
+| **The trade sheet on a real phone** | D11 exists because the iOS keyboard covers a bottom-anchored sheet. That does not reproduce in headless Chrome on Linux, so the five specs prove the mechanism and not the reason. | Open `/trades/new` on an iPhone, focus a numeric field, confirm Total + Guardar stay reachable. The `Con teclado` artboard is the acceptance target |
+| **`/assets` behind Cloudflare** | Propshaft owns that prefix. If the tunnel caches `/assets/*` as static, an authenticated page could be cached at the edge. Verified in test, never in production. | `curl -sI https://stockerly.notdefined.dev/assets \| grep -i cf-cache-status` — a `HIT` on an authenticated page means excluding the path or moving the route |
+
 ## 1. New `@theme` token values (D1)
 
 **Status:** pending — waiting on the approved identity pass.
