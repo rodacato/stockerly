@@ -1,14 +1,9 @@
 module MarketData
   module Domain
-    # ADR-013: an action verb may reach the user only as a deterministic
-    # function of a persisted TechnicalObservation. This table is that
-    # function, and the only place it exists. Widening it means adding an
-    # observation type and the detector that populates it — never a copy
-    # decision inside a template.
-    #
-    # Types absent from the table produce no verb. Exits (leaving oversold,
-    # leaving overbought) are deliberately absent: they describe a return to
-    # the middle, which is not an action.
+    # ADR-013: this table is the whole allowance — a verb only ever comes from
+    # a persisted observation, and widening it means writing a detector, not
+    # editing a template. Exits are absent on purpose: returning to the middle
+    # is not an action.
     module ObservationAction
       ACTIONS = {
         "rsi_oversold_entered"   => :buy,
