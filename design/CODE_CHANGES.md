@@ -82,6 +82,23 @@ without payoff.
   listener instead of `bottom: 0`, `env(safe-area-inset-bottom)`, `<input type="date">` and
   `inputmode="decimal"`. The `Con teclado` artboard is the acceptance target, not the clean one.
 
+**Precondition — the project has no JS-capable test driver.** All ~40 system specs run on
+`rack_test`, so none of the 27 Stimulus controllers has ever been executed by a test. This slice
+is the first that ships JS which can genuinely break, so the decision lands here rather than in
+pre-work, where it would have been infrastructure with no consumer.
+
+- **Recommendation: `cuprite`** (ferrum, CDP directly — no chromedriver, no selenium). Budget it
+  at the 5-8 system specs for flows that actually depend on JS. **Do not convert the existing
+  ~40** — on `rack_test` they are fast and test what they should.
+- **What a headless driver does NOT buy: D11's acceptance.** The iOS Safari keyboard covering a
+  `bottom: 0` footer, `dvh` collapsing with the address bar, `env(safe-area-inset-bottom)` — none
+  of it reproduces in headless Chrome on Linux. The `Con teclado` artboard is verified on a real
+  phone, the way `design/references/` captures already work. The driver buys mechanical
+  regressions: does the `<dialog>` open, does the Turbo Frame load, does the form submit.
+- **Rejected: Node + vitest** for unit-testing the controllers. The project runs importmap
+  precisely to keep Node out of the asset chain; adding it through the test door pays for a whole
+  build chain for a handful of controllers.
+
 ## 5. Consolidado — "¿Valió la pena?" (D12)
 
 **Status:** pending — design done (`flows/cockpit.pen`), engine gated on a 4-filter card.
