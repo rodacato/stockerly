@@ -15,7 +15,8 @@ module Trading
         fx_rate = yield Trading::Domain::FxRateResolver.call(
           trade_currency: trade_currency,
           preferred_currency: user.preferred_currency,
-          override: attrs[:fx_rate_at_execution]
+          override: attrs[:fx_rate_at_execution],
+          at_date: attrs[:executed_at]&.to_date
         )
 
         trade = persist_trade(portfolio, asset, position, attrs, trade_currency, fx_rate)

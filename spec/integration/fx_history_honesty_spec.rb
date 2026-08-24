@@ -52,3 +52,44 @@ RSpec.describe "Historical FX in period figures", type: :model do
     expect(summary.day_gain.absolute).to eq(9_000)
   end
 end
+
+RSpec.describe "A backdated trade", type: :model do
+  let(:user) { create(:user, preferred_currency: "MXN") }
+  let(:portfolio) { user.portfolio || create(:portfolio, user: user) }
+  let!(:asset) { create(:asset, :stock, symbol: "AAPL", currency: "USD", current_price: 200) }
+
+  before do
+    FxRate.create!(base_currency: "USD", quote_currency: "MXN", rate: 20.0, fetched_at: Time.current)
+    FxRateHistory.record(base: "USD", quote: "MXN", date: Date.new(2026, 5, 12), rate: 17.0, source: "banxico_fix")
+    FxRateHistory.record(base: "USD", quote: "MXN", date: Date.current, rate: 20.0, source: "banxico_fix")
+    portfolio
+  end
+
+  # The residual the P0 left behind: the rate was captured at resolution time,
+  # so a trade entered today for May was booked at today's rate.
+  it "captures the rate of the day it was executed, not the day it was entered" do
+    result = Trading::UseCases::ExecuteTrade.call(
+      user: user,
+      params: {
+        asset_symbol: "AAPL", side: "buy", shares: 10,
+        price_per_share: 150, executed_at: Date.new(2026, 5, 12).to_s
+      }
+    )
+
+    expect(result).to be_success
+    expect(result.value!.fx_rate_at_execution).to eq(17.0)
+  end
+
+  it "still prefers an explicit override over any lookup" do
+    result = Trading::UseCases::ExecuteTrade.call(
+      user: user,
+      params: {
+        asset_symbol: "AAPL", side: "buy", shares: 10,
+        price_per_share: 150, executed_at: Date.new(2026, 5, 12).to_s,
+        fx_rate_at_execution: 16.5
+      }
+    )
+
+    expect(result.value!.fx_rate_at_execution).to eq(16.5)
+  end
+end
