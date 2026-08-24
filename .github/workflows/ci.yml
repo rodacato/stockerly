@@ -57,6 +57,9 @@ jobs:
       - name: Set up database
         run: bin/rails db:create db:schema:load
 
+      - name: Build CSS
+        run: bin/rails tailwindcss:build
+
       - name: Run tests
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
