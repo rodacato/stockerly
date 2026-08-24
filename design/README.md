@@ -62,7 +62,7 @@ flows, not 30.
 
 | Flow | Desktop artboards | Not drawn, because |
 |---|---|---|
-| `auth` | Login | The other four are the same centered card; Login fixes its width (420) |
+| `auth` | Login | Same split-panel as Setup — the two doors match. The other four keep the centered card |
 | `onboarding` | Setup · Integrations · Assets · Welcome | Complete inherits the wizard frame exactly |
 | `cockpit` | Panorama · Asset·Análisis · Consolidado | — |
 | `assets` | Cartera · Registrar movimiento · Rastreados | Sigo, Cartera vacía and the search states reuse patterns above |

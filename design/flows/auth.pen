@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Login + recovery for the single-user self-hosted instance. NO signup — the sole account is created at first-boot /setup (onboarding flow).\n\nEntry: root → /login. Recovery: /forgot-password → email → /reset-password/:token.\n\nScreens: Login (+ notice/error) · 2FA (TOTP) · Forgot password · Email sent · Reset password.\n\nRules: single account; TOTP 2FA (settled: password + TOTP, email OTP fallback, no SMS). Design-led, code is reference (D8).\n\nDesktop (1280): ONE artboard — Login. All five screens are the same centered card, so the only desktop decision is the card's width (342 → 420); the other four inherit it. Drawing them ×2 is the option D4 rejects.\n\n🔴 D23 — the 2FA screen has no code and no decision behind it. This brief calls TOTP 'settled', but: no rotp or equivalent gem, no otp_secret/otp_required column on users, no route, no line of code anywhere in app/ or lib/ — and no entry in DECISIONS.md, no ADR, no CODE_CHANGES section, no GitHub issue. The only record of it existing is design/README.md listing the screen. Implementing it as drawn would repeat the notification-channel pattern: a UI offering something the instance cannot do. Worse for this product than for most — the instance has exactly one account and no support desk, so a lost authenticator locks Adrian out of his own server permanently unless recovery codes ship with it. Not a design call: logged as D23 for Adrian, and the screen stays drawn (design leads) but must not be built before the 4-filter card exists.\n\nCopy: es-MX. kit-version-source 0.1.0 (tokens only; this flow uses ButtonPrimary and Field, both unchanged since 0.1.0).",
+          "content": "Login + recovery for the single-user self-hosted instance. NO signup — the sole account is created at first-boot /setup (onboarding flow).\n\nEntry: root → /login. Recovery: /forgot-password → email → /reset-password/:token.\n\nScreens: Login (+ notice/error) · 2FA (TOTP) · Forgot password · Email sent · Reset password.\n\nRules: single account; TOTP 2FA (settled: password + TOTP, email OTP fallback, no SMS). Design-led, code is reference (D8).\n\nDesktop (1280): ONE artboard — Login, built as the SAME split-panel as onboarding's Setup (900 card = 420 brand + 480 form). They are the two doors into one instance and they now look alike; a plain centered card did not. The other four screens keep the centered-card treatment and inherit the form width — drawing them ×2 is the option D4 rejects.\n\nThe brand panel carries the mark and one line: '100% libre y open source'. Deliberately nothing else. Setup's panel has a title, a subtitle and a checklist because a wizard has something to promise; a login does not, and the product has no tagline that survived the pivot — the ones in the public footer and the meta tags ('Open Source Market Intelligence Platform', 'Private by Design') are pre-pivot copy for the audience ADR-0010 dropped. The claim used here is real: setup/new.html.erb:30 renders it, and onboarding.pen already carries its es-MX form. If the panel should say more, that is a copy decision for Adrian, not a blank to fill.\n\n🔴 D23 — the 2FA screen has no code and no decision behind it. This brief calls TOTP 'settled', but: no rotp or equivalent gem, no otp_secret/otp_required column on users, no route, no line of code anywhere in app/ or lib/ — and no entry in DECISIONS.md, no ADR, no CODE_CHANGES section, no GitHub issue. The only record of it existing is design/README.md listing the screen. Implementing it as drawn would repeat the notification-channel pattern: a UI offering something the instance cannot do. Worse for this product than for most — the instance has exactly one account and no support desk, so a lost authenticator locks Adrian out of his own server permanently unless recovery codes ship with it. Not a design call: logged as D23 for Adrian, and the screen stays drawn (design leads) but must not be built before the 4-filter card exists.\n\nCopy: es-MX. kit-version-source 0.1.0 (tokens only; this flow uses ButtonPrimary and Field, both unchanged since 0.1.0).",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -1350,240 +1350,297 @@
       "children": [
         {
           "type": "frame",
-          "id": "ivh1V",
+          "id": "v2OCQ",
           "name": "Card",
-          "width": 420,
+          "clip": true,
+          "width": 900,
+          "height": 560,
           "fill": "$bg-surface",
           "cornerRadius": "$radius-card",
           "stroke": "$border-default",
           "strokeWidth": 1,
-          "layout": "vertical",
-          "gap": "$space-5",
-          "padding": "$space-6",
           "children": [
             {
               "type": "frame",
-              "id": "zdRNZ",
-              "name": "Brand",
-              "width": "fill_container",
-              "gap": "$space-2",
-              "alignItems": "center",
+              "id": "F8WAz",
+              "name": "Brand Panel",
+              "width": 420,
+              "height": "fill_container",
+              "fill": "$primary",
+              "layout": "vertical",
+              "padding": "$space-6",
+              "justifyContent": "space_between",
               "children": [
                 {
                   "type": "frame",
-                  "id": "wNl3r",
-                  "name": "Glyph",
-                  "width": 26,
-                  "height": 26,
-                  "layout": "none",
+                  "id": "R528UB",
+                  "name": "Brand",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "alignItems": "center",
                   "children": [
                     {
-                      "type": "path",
-                      "id": "QqkgD",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 22v-12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
+                      "type": "frame",
+                      "id": "pcs1p",
+                      "name": "Glyph",
                       "width": 26,
                       "height": 26,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "nElBg",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Bracket",
+                          "geometry": "M10 22v-12h12",
+                          "viewBox": [
+                            0,
+                            0,
+                            64,
+                            64
+                          ],
+                          "fill": "#00000000",
+                          "width": 26,
+                          "height": 26,
+                          "stroke": "$fg-inverse",
+                          "strokeWidth": 5,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        },
+                        {
+                          "type": "path",
+                          "id": "L6JEU",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Bracket",
+                          "geometry": "M42 10h12v12",
+                          "viewBox": [
+                            0,
+                            0,
+                            64,
+                            64
+                          ],
+                          "fill": "#00000000",
+                          "width": 26,
+                          "height": 26,
+                          "stroke": "$fg-inverse",
+                          "strokeWidth": 5,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        },
+                        {
+                          "type": "path",
+                          "id": "CIBWG",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Bracket",
+                          "geometry": "M10 42v12h12",
+                          "viewBox": [
+                            0,
+                            0,
+                            64,
+                            64
+                          ],
+                          "fill": "#00000000",
+                          "width": 26,
+                          "height": 26,
+                          "stroke": "$fg-inverse",
+                          "strokeWidth": 5,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        },
+                        {
+                          "type": "path",
+                          "id": "GNwe0",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Bracket",
+                          "geometry": "M42 54h12v-12",
+                          "viewBox": [
+                            0,
+                            0,
+                            64,
+                            64
+                          ],
+                          "fill": "#00000000",
+                          "width": 26,
+                          "height": 26,
+                          "stroke": "$fg-inverse",
+                          "strokeWidth": 5,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "V6uP0C",
+                          "x": 10.5,
+                          "y": 10.5,
+                          "name": "Focus",
+                          "fill": "$fg-inverse",
+                          "width": 5,
+                          "height": 5
+                        }
+                      ]
                     },
                     {
-                      "type": "path",
-                      "id": "v9af7G",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 10h12v12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 26,
-                      "height": 26,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "THLJv",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 42v12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 26,
-                      "height": 26,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "h3dalZ",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 54h12v-12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 26,
-                      "height": 26,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "p2h7q",
-                      "x": 10.5,
-                      "y": 10.5,
-                      "name": "Focus",
-                      "fill": "$primary",
-                      "width": 5,
-                      "height": 5
+                      "type": "text",
+                      "id": "f7PFOf",
+                      "name": "WM",
+                      "fill": "$fg-inverse",
+                      "content": "stockerly",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.4
                     }
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "SMf0h",
-                  "name": "WM",
-                  "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 18,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "type": "frame",
+                  "id": "hcWbX",
+                  "name": "Claim",
+                  "gap": "$space-2",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "qYDBF",
+                      "name": "Check",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "check",
+                      "library": "lucide",
+                      "fill": "$fg-inverse"
+                    },
+                    {
+                      "type": "text",
+                      "id": "aZUK9",
+                      "name": "Txt",
+                      "fill": "$fg-inverse",
+                      "content": "100% libre y open source",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
                 }
               ]
             },
             {
               "type": "frame",
-              "id": "OHJ6V",
-              "name": "Head",
+              "id": "deYsK",
+              "name": "Form Panel",
               "width": "fill_container",
+              "height": "fill_container",
               "layout": "vertical",
-              "gap": "$space-1",
+              "gap": "$space-4",
+              "padding": [
+                40,
+                44
+              ],
+              "justifyContent": "center",
               "children": [
                 {
-                  "type": "text",
-                  "id": "ifbB5",
-                  "name": "T",
-                  "fill": "$fg-default",
-                  "content": "Inicia sesión",
-                  "fontFamily": "$font-display",
-                  "fontSize": 24,
-                  "fontWeight": "normal"
+                  "type": "frame",
+                  "id": "OHJ6V",
+                  "name": "Head",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$space-1",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ifbB5",
+                      "name": "T",
+                      "fill": "$fg-default",
+                      "content": "Inicia sesión",
+                      "fontFamily": "$font-display",
+                      "fontSize": 24,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "d93CW",
+                      "name": "S",
+                      "fill": "$fg-subtle",
+                      "content": "Accede a tu cuenta.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "r1h3a",
+                  "type": "ref",
+                  "ref": "g7Wd6",
+                  "name": "Email",
+                  "width": "fill_container",
+                  "descendants": {
+                    "cJADr": {
+                      "content": "Correo electrónico"
+                    },
+                    "c8Y8au": {
+                      "content": "tu@correo.com"
+                    }
+                  }
+                },
+                {
+                  "id": "uYiEC",
+                  "type": "ref",
+                  "ref": "g7Wd6",
+                  "name": "Pass",
+                  "width": "fill_container",
+                  "descendants": {
+                    "cJADr": {
+                      "content": "Contraseña"
+                    },
+                    "c8Y8au": {
+                      "content": "••••••••"
+                    }
+                  }
+                },
+                {
+                  "id": "o6UTJ",
+                  "type": "ref",
+                  "ref": "VIZ7o",
+                  "name": "Submit",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mdKP5": {
+                      "content": "Iniciar sesión"
+                    }
+                  }
                 },
                 {
                   "type": "text",
-                  "id": "d93CW",
-                  "name": "S",
-                  "fill": "$fg-subtle",
-                  "content": "Accede a tu cuenta.",
+                  "id": "M7OXP",
+                  "name": "Forgot",
+                  "fill": "$primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "¿Olvidaste tu contraseña? Recupérala.",
+                  "textAlign": "center",
                   "fontFamily": "$font-sans",
-                  "fontSize": 14,
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "vBdiX",
+                  "name": "Legal",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Al iniciar sesión aceptas los Términos y el Aviso de privacidad.",
+                  "lineHeight": 1.5,
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
                   "fontWeight": "normal"
                 }
               ]
-            },
-            {
-              "id": "r1h3a",
-              "type": "ref",
-              "ref": "g7Wd6",
-              "name": "Email",
-              "width": "fill_container",
-              "descendants": {
-                "cJADr": {
-                  "content": "Correo electrónico"
-                },
-                "c8Y8au": {
-                  "content": "tu@correo.com"
-                }
-              }
-            },
-            {
-              "id": "uYiEC",
-              "type": "ref",
-              "ref": "g7Wd6",
-              "name": "Pass",
-              "width": "fill_container",
-              "descendants": {
-                "cJADr": {
-                  "content": "Contraseña"
-                },
-                "c8Y8au": {
-                  "content": "••••••••"
-                }
-              }
-            },
-            {
-              "id": "o6UTJ",
-              "type": "ref",
-              "ref": "VIZ7o",
-              "name": "Submit",
-              "width": "fill_container",
-              "descendants": {
-                "mdKP5": {
-                  "content": "Iniciar sesión"
-                }
-              }
-            },
-            {
-              "type": "text",
-              "id": "M7OXP",
-              "name": "Forgot",
-              "fill": "$primary",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "¿Olvidaste tu contraseña? Recupérala.",
-              "textAlign": "center",
-              "fontFamily": "$font-sans",
-              "fontSize": 13,
-              "fontWeight": "500"
-            },
-            {
-              "type": "text",
-              "id": "vBdiX",
-              "name": "Legal",
-              "fill": "$fg-subtle",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Al iniciar sesión aceptas los Términos y el Aviso de privacidad.",
-              "lineHeight": 1.5,
-              "textAlign": "center",
-              "fontFamily": "$font-sans",
-              "fontSize": 11,
-              "fontWeight": "normal"
             }
           ]
         }
