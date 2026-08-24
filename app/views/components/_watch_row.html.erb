@@ -11,6 +11,10 @@
     <p class="truncate text-xs text-fg-subtle"><%= asset.name %></p>
   </div>
 
+  <div class="w-20 shrink-0">
+    <%= render "components/sparkline", direction: change.negative? ? :down : :up, heights: sparkline_heights(asset) %>
+  </div>
+
   <div class="shrink-0 text-right">
     <p class="font-mono text-sm font-bold text-fg-default">
       <%= format_currency_mx(asset.current_price, currency: asset.currency) %>
