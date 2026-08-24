@@ -40,6 +40,16 @@ is worse than a missing one.
 | `ajustes-registros.png` | `[Ajustes] / Registros / Default` |
 | `ajustes-estado.png` | `[Ajustes] / Estado y mantenimiento / Default` |
 
+**Desktop (1280).** Drawn for the screens whose layout genuinely diverges, per D4 — the rest
+reflow. The kit's shell variant is included because it is what every desktop artboard instances.
+
+| File | Artboard |
+|---|---|
+| `ui-kit-shell-desktop.png` | `AppShellDesktop` (`ui-kit.lib.pen`) |
+| `cockpit-panorama-desktop.png` | `[Cockpit] / Panorama · Desktop / Default` |
+| `cockpit-asset-analisis-desktop.png` | `[Cockpit] / Asset · Análisis · Desktop / Default` |
+| `cockpit-consolidado-desktop.png` | `[Cockpit] / Consolidado · Desktop / Default` |
+
 **Missing:** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention existed
 and have no exports yet. Both files must be open in Pencil to export them — do it on their next
 touch.
