@@ -1,18 +1,4157 @@
 {
-  "version": "2.14",
+  "version": "2.17",
   "children": [
     {
       "type": "frame",
-      "id": "bi8Au",
+      "id": "Zb3v5",
       "x": 0,
       "y": 0,
-      "name": "Frame",
+      "name": "Brief · Reglas y avisos",
+      "width": 360,
+      "fill": "$bg-muted",
+      "cornerRadius": "$radius-md",
+      "layout": "vertical",
+      "gap": "$space-4",
+      "padding": "$space-5",
+      "children": [
+        {
+          "type": "text",
+          "id": "sOker",
+          "name": "BT",
+          "fill": "$fg-default",
+          "content": "Reglas y avisos — brief",
+          "fontFamily": "$font-display",
+          "fontSize": 18,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "hBhm5",
+          "name": "BB",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "The 'Reglas' tab plus the inbox behind the TopBar bell — reglas duras sin corazón, and everything the app decides to tell you.\n\nWhy one file: rules are only ONE of four notification producers (alert_triggered · earnings_reminder · maturity_reminder · system). The bandeja is where all four land, and the bell that opens it lives in the shared TopBar. Splitting them would re-vendor the kit for two screens.\n\nScreens: Reglas (Default · Vacío) · Nueva regla (sheet, D11 route-as-drawer) · Bandeja · Confluencia (D3, design-only).\n\nBandeja/Vacío is deliberately NOT an artboard: it is the same layout with the list replaced by one line (\"Nada por ahora. Aquí caen tus reglas disparadas, los reportes que se acercan y los CETES por vencer.\") — a pure string swap belongs in the brief, not on canvas. Reglas/Vacío IS an artboard because it carries different content: suggested rules derived from what you already own.\n\nGrounding: alert_rules (condition enum of 9, threshold_value, window_days, cooldown_minutes default 60, status active/paused, last_triggered_at) · alert_events (message, triggered_at, event_status) · notifications (notification_type enum of 4, read/read_at, notifiable) · alert_preferences (browser_push, email_digest, sms_notifications). Condition labels and the descriptive summary come verbatim from app/helpers/alerts_helper.rb — ADR-0001: describe the trigger, never tell the user what to do.\n\nThree conditions are date-based (dividend_ex_date, bmv_holiday, cete_auction) and the last two are marketwide — they carry no asset. The design keeps that distinction visible instead of forcing every rule to pick a ticker.\n\nCopy: es-MX. kit-version-source 0.3.0.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Y1ViY0",
+      "x": 0,
+      "y": -760,
+      "name": "TopBar",
+      "reusable": true,
+      "width": 390,
+      "fill": "$bg-surface",
+      "padding": [
+        16,
+        20
+      ],
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "r7JVGz",
+          "name": "Brand",
+          "gap": "$space-2",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "csKtz",
+              "name": "Glyph",
+              "width": 24,
+              "height": 24,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "path",
+                  "id": "ACVqn",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Bk",
+                  "geometry": "M10 22v-12h12",
+                  "viewBox": [
+                    0,
+                    0,
+                    64,
+                    64
+                  ],
+                  "fill": "#00000000",
+                  "width": 24,
+                  "height": 24,
+                  "stroke": "$primary",
+                  "strokeWidth": 5,
+                  "strokeLinejoin": "round",
+                  "strokeLinecap": "round"
+                },
+                {
+                  "type": "path",
+                  "id": "ErQig",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Bk",
+                  "geometry": "M42 10h12v12",
+                  "viewBox": [
+                    0,
+                    0,
+                    64,
+                    64
+                  ],
+                  "fill": "#00000000",
+                  "width": 24,
+                  "height": 24,
+                  "stroke": "$primary",
+                  "strokeWidth": 5,
+                  "strokeLinejoin": "round",
+                  "strokeLinecap": "round"
+                },
+                {
+                  "type": "path",
+                  "id": "mvQa7",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Bk",
+                  "geometry": "M10 42v12h12",
+                  "viewBox": [
+                    0,
+                    0,
+                    64,
+                    64
+                  ],
+                  "fill": "#00000000",
+                  "width": 24,
+                  "height": 24,
+                  "stroke": "$primary",
+                  "strokeWidth": 5,
+                  "strokeLinejoin": "round",
+                  "strokeLinecap": "round"
+                },
+                {
+                  "type": "path",
+                  "id": "Ke4Oz",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Bk",
+                  "geometry": "M42 54h12v-12",
+                  "viewBox": [
+                    0,
+                    0,
+                    64,
+                    64
+                  ],
+                  "fill": "#00000000",
+                  "width": 24,
+                  "height": 24,
+                  "stroke": "$primary",
+                  "strokeWidth": 5,
+                  "strokeLinejoin": "round",
+                  "strokeLinecap": "round"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "hxfdO",
+                  "x": 9.5,
+                  "y": 9.5,
+                  "name": "Fc",
+                  "fill": "$primary",
+                  "width": 5,
+                  "height": 5
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "uYG7d",
+              "name": "WM",
+              "fill": "$fg-default",
+              "content": "stockerly",
+              "fontFamily": "$font-display",
+              "fontSize": 17,
+              "fontWeight": "700",
+              "letterSpacing": -0.4
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "o2vgpN",
+          "name": "BellWrap",
+          "width": 26,
+          "height": 22,
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "EIfs7",
+              "x": 0,
+              "y": 1,
+              "name": "Bell",
+              "width": 20,
+              "height": 20,
+              "icon": "bell",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "frame",
+              "id": "iskR5",
+              "x": 11,
+              "y": 0,
+              "name": "Badge",
+              "fill": "$negative",
+              "cornerRadius": 99,
+              "padding": [
+                1,
+                5
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Ht5pe",
+                  "name": "t",
+                  "fill": "$fg-inverse",
+                  "content": "3",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 9,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "fSLY4",
+      "x": 0,
+      "y": -660,
+      "name": "BottomNav",
+      "reusable": true,
+      "width": 390,
+      "fill": "$bg-surface",
+      "stroke": "$border-default",
+      "strokeWidth": {
+        "top": 1
+      },
+      "padding": [
+        12,
+        8
+      ],
+      "justifyContent": "space_around",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ZhTRR",
+          "name": "Panorama",
+          "layout": "vertical",
+          "gap": 3,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "io1U1",
+              "name": "i",
+              "width": 22,
+              "height": 22,
+              "icon": "layout-grid",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "text",
+              "id": "rL1Sg",
+              "name": "t",
+              "fill": "$fg-subtle",
+              "content": "Panorama",
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "XurIc",
+          "name": "Activos",
+          "layout": "vertical",
+          "gap": 3,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "QQaW4",
+              "name": "i",
+              "width": 22,
+              "height": 22,
+              "icon": "trending-up",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "text",
+              "id": "l8Wfr",
+              "name": "t",
+              "fill": "$fg-subtle",
+              "content": "Activos",
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "IepUQ",
+          "name": "Reglas",
+          "layout": "vertical",
+          "gap": 3,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "nlqo5",
+              "name": "i",
+              "width": 22,
+              "height": 22,
+              "icon": "bell",
+              "library": "lucide",
+              "fill": "$primary"
+            },
+            {
+              "type": "text",
+              "id": "yHFcJ",
+              "name": "t",
+              "fill": "$primary",
+              "content": "Reglas",
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rzZme",
+          "name": "Ajustes",
+          "layout": "vertical",
+          "gap": 3,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "ixgpJ",
+              "name": "i",
+              "width": 22,
+              "height": 22,
+              "icon": "settings",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "text",
+              "id": "l5MZKS",
+              "name": "t",
+              "fill": "$fg-subtle",
+              "content": "Ajustes",
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "gv2fU",
+      "x": 0,
+      "y": -580,
+      "name": "Segmented",
+      "reusable": true,
+      "width": 342,
+      "fill": "$bg-muted",
+      "cornerRadius": "$radius-md",
+      "gap": 4,
+      "padding": 4,
+      "children": [
+        {
+          "type": "frame",
+          "id": "YOvJK",
+          "name": "S1",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-sm",
+          "padding": [
+            13,
+            12
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "FJ22G",
+              "name": "t",
+              "fill": "$fg-default",
+              "content": "Uno",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rJqiE",
+          "name": "S2",
+          "width": "fill_container",
+          "fill": "#00000000",
+          "cornerRadius": "$radius-sm",
+          "padding": [
+            13,
+            12
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "y8p4ew",
+              "name": "t",
+              "fill": "$fg-subtle",
+              "content": "Dos",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "tAAai",
+      "x": 0,
+      "y": -500,
+      "name": "Field",
+      "reusable": true,
+      "width": 320,
+      "layout": "vertical",
+      "gap": "$space-2",
+      "children": [
+        {
+          "type": "text",
+          "id": "MRgsO",
+          "name": "FieldLabel",
+          "fill": "$fg-subtle",
+          "content": "Correo",
+          "fontFamily": "$font-sans",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "hx4lr",
+          "name": "Input",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-md",
+          "stroke": "$border-default",
+          "strokeWidth": 1,
+          "padding": [
+            12,
+            14
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "tCoHP",
+              "name": "Placeholder",
+              "fill": "$fg-subtle",
+              "content": "tu@correo.com",
+              "fontFamily": "$font-sans",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mG9ST",
+      "x": 0,
+      "y": -400,
+      "name": "RuleRow",
+      "reusable": true,
+      "width": 342,
+      "fill": "$bg-surface",
+      "cornerRadius": "$radius-lg",
+      "stroke": "$border-default",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": "$space-2",
+      "padding": [
+        14,
+        16
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "J5rGqf",
+          "name": "R1",
+          "width": "fill_container",
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "BcPkD",
+              "name": "L",
+              "gap": "$space-2",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "w34gr",
+                  "name": "Tk",
+                  "fill": "$fg-default",
+                  "content": "AAPL",
+                  "fontFamily": "$font-display",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "bwmAw",
+                  "name": "Kind",
+                  "fill": "$bg-muted",
+                  "cornerRadius": 99,
+                  "padding": [
+                    2,
+                    8
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "id7QE",
+                      "name": "t",
+                      "fill": "$fg-subtle",
+                      "content": "Acción",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "elFPG",
+              "name": "Status",
+              "fill": "$positive-bg",
+              "cornerRadius": 99,
+              "gap": 5,
+              "padding": [
+                3,
+                9
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "guo4R",
+                  "name": "d",
+                  "fill": "$positive",
+                  "width": 6,
+                  "height": 6
+                },
+                {
+                  "type": "text",
+                  "id": "ocr58",
+                  "name": "t",
+                  "fill": "$positive-fg",
+                  "content": "activa",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "NKemD",
+          "name": "Cond",
+          "fill": "$fg-default",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Precio cruza umbral",
+          "fontFamily": "$font-sans",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "U5SuO",
+          "name": "Sum",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "cruza USD 200 al alza",
+          "lineHeight": 1.4,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "qngCG",
+          "name": "Meta",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Se disparó hace 3 días · espera 60 min entre avisos",
+          "fontFamily": "$font-mono",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "G2rk1",
+      "x": 0,
+      "y": -280,
+      "name": "EventRow",
+      "reusable": true,
+      "width": 342,
+      "gap": "$space-3",
+      "padding": [
+        10,
+        4
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "ellipse",
+          "id": "w4d4b",
+          "name": "d",
+          "fill": "$positive",
+          "width": 8,
+          "height": 8
+        },
+        {
+          "type": "frame",
+          "id": "RJnIc",
+          "name": "Mid",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 1,
+          "children": [
+            {
+              "type": "text",
+              "id": "n9N7Qd",
+              "name": "t",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "AAPL cruzó USD 200 al alza",
+              "lineHeight": 1.35,
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "E9CGvT",
+              "name": "m",
+              "fill": "$fg-subtle",
+              "content": "hoy 09:41",
+              "fontFamily": "$font-mono",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Bn1Lk",
+      "x": 460,
+      "y": 0,
+      "name": "[Reglas] / Reglas / Default",
       "clip": true,
-      "width": 800,
-      "height": 600,
-      "fill": "#FFFFFF",
-      "layout": "none"
+      "width": 390,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "iMWfV",
+          "type": "ref",
+          "ref": "Y1ViY0",
+          "name": "TopBar",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "bzBwA",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "m20Mxr",
+              "name": "KPIs",
+              "width": "fill_container",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "gALg5",
+                  "name": "DISPARADAS HOY",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fdN51",
+                      "name": "l",
+                      "fill": "$fg-subtle",
+                      "content": "DISPARADAS HOY",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.8
+                    },
+                    {
+                      "type": "text",
+                      "id": "x1syGn",
+                      "name": "v",
+                      "fill": "$fg-default",
+                      "content": "2",
+                      "fontFamily": "$font-display",
+                      "fontSize": 26,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "XeN57",
+                      "name": "s",
+                      "fill": "$fg-subtle",
+                      "content": "de 5 reglas",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "QK1OS",
+                  "name": "REGLAS ACTIVAS",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DKspa",
+                      "name": "l",
+                      "fill": "$fg-subtle",
+                      "content": "REGLAS ACTIVAS",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.8
+                    },
+                    {
+                      "type": "text",
+                      "id": "iY93i",
+                      "name": "v",
+                      "fill": "$fg-default",
+                      "content": "5",
+                      "fontFamily": "$font-display",
+                      "fontSize": 26,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "nOXTT",
+                      "name": "s",
+                      "fill": "$fg-subtle",
+                      "content": "1 en pausa",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "gLTIX",
+              "name": "Voz",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tus reglas te avisan cuando algo pasa. Describen el disparo — nunca te dicen qué hacer con él.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "mh9WM",
+              "name": "LH",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "o1T0c",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Tus reglas",
+                  "fontFamily": "$font-display",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "jofiA",
+                  "name": "Nueva",
+                  "fill": "$primary-muted",
+                  "cornerRadius": 99,
+                  "gap": 5,
+                  "padding": [
+                    6,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "ue9Om",
+                      "name": "i",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "plus",
+                      "library": "lucide",
+                      "fill": "$primary"
+                    },
+                    {
+                      "type": "text",
+                      "id": "yWvby",
+                      "name": "t",
+                      "fill": "$primary",
+                      "content": "Nueva",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "P95tn",
+              "name": "Lista",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "id": "rypuZ",
+                  "type": "ref",
+                  "ref": "mG9ST",
+                  "name": "AAPL Precio cruza umbral",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w34gr": {
+                      "content": "AAPL"
+                    },
+                    "id7QE": {
+                      "content": "Acción"
+                    },
+                    "elFPG": {
+                      "fill": "$positive-bg"
+                    },
+                    "guo4R": {
+                      "fill": "$positive"
+                    },
+                    "ocr58": {
+                      "content": "activa",
+                      "fill": "$positive-fg"
+                    },
+                    "NKemD": {
+                      "content": "Precio cruza umbral"
+                    },
+                    "U5SuO": {
+                      "content": "cruza USD 200 al alza"
+                    },
+                    "qngCG": {
+                      "content": "Se disparó hace 3 días · espera 60 min entre avisos"
+                    }
+                  }
+                },
+                {
+                  "id": "uM6FT",
+                  "type": "ref",
+                  "ref": "mG9ST",
+                  "name": "NVDA RSI sobrecomprado",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w34gr": {
+                      "content": "NVDA"
+                    },
+                    "id7QE": {
+                      "content": "Acción"
+                    },
+                    "elFPG": {
+                      "fill": "$positive-bg"
+                    },
+                    "guo4R": {
+                      "fill": "$positive"
+                    },
+                    "ocr58": {
+                      "content": "activa",
+                      "fill": "$positive-fg"
+                    },
+                    "NKemD": {
+                      "content": "RSI sobrecomprado"
+                    },
+                    "U5SuO": {
+                      "content": "RSI(14) por encima de 70"
+                    },
+                    "qngCG": {
+                      "content": "Se disparó hoy 09:41 · espera 60 min entre avisos"
+                    }
+                  }
+                },
+                {
+                  "id": "bcOE5",
+                  "type": "ref",
+                  "ref": "mG9ST",
+                  "name": "BTC % cambio en el día",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w34gr": {
+                      "content": "BTC"
+                    },
+                    "id7QE": {
+                      "content": "Cripto"
+                    },
+                    "elFPG": {
+                      "fill": "$positive-bg"
+                    },
+                    "guo4R": {
+                      "fill": "$positive"
+                    },
+                    "ocr58": {
+                      "content": "activa",
+                      "fill": "$positive-fg"
+                    },
+                    "NKemD": {
+                      "content": "% cambio en el día"
+                    },
+                    "U5SuO": {
+                      "content": "se mueve 6% o más en el día"
+                    },
+                    "qngCG": {
+                      "content": "Se disparó hoy 07:02 · espera 120 min entre avisos"
+                    }
+                  }
+                },
+                {
+                  "id": "jOKrs",
+                  "type": "ref",
+                  "ref": "mG9ST",
+                  "name": "WALMEX.MX Volumen anómalo",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w34gr": {
+                      "content": "WALMEX.MX"
+                    },
+                    "id7QE": {
+                      "content": "Acción MX"
+                    },
+                    "elFPG": {
+                      "fill": "$bg-muted"
+                    },
+                    "guo4R": {
+                      "fill": "$border-strong"
+                    },
+                    "ocr58": {
+                      "content": "pausada",
+                      "fill": "$fg-subtle"
+                    },
+                    "NKemD": {
+                      "content": "Volumen anómalo"
+                    },
+                    "U5SuO": {
+                      "content": "volumen 3× arriba de su promedio de 5 días"
+                    },
+                    "qngCG": {
+                      "content": "Nunca se ha disparado · en pausa desde el 12 ago"
+                    }
+                  }
+                },
+                {
+                  "id": "P2ehG",
+                  "type": "ref",
+                  "ref": "mG9ST",
+                  "name": "— Subasta CETES",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w34gr": {
+                      "content": "—"
+                    },
+                    "id7QE": {
+                      "content": "CETES"
+                    },
+                    "elFPG": {
+                      "fill": "$positive-bg"
+                    },
+                    "guo4R": {
+                      "fill": "$positive"
+                    },
+                    "ocr58": {
+                      "content": "activa",
+                      "fill": "$positive-fg"
+                    },
+                    "NKemD": {
+                      "content": "Subasta CETES"
+                    },
+                    "U5SuO": {
+                      "content": "cada subasta de Banxico, sin activo asociado"
+                    },
+                    "qngCG": {
+                      "content": "Se disparó el 21 ago · regla de mercado"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "s2UK5",
+              "name": "FeedH",
+              "width": "fill_container",
+              "padding": [
+                "$space-2",
+                0,
+                0,
+                0
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ssD2z",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Últimos disparos",
+                  "fontFamily": "$font-display",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "NGU5L",
+                  "name": "v",
+                  "fill": "$primary",
+                  "content": "Ver bandeja",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "On7Bp",
+              "name": "Feed",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "padding": [
+                6,
+                14
+              ],
+              "children": [
+                {
+                  "id": "BK2aR",
+                  "type": "ref",
+                  "ref": "G2rk1",
+                  "name": "hoy 09:41",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w4d4b": {
+                      "fill": "$warning"
+                    },
+                    "n9N7Qd": {
+                      "content": "NVDA entró en zona de sobrecompra (RSI(14) por encima de 70)"
+                    },
+                    "E9CGvT": {
+                      "content": "hoy 09:41"
+                    }
+                  }
+                },
+                {
+                  "id": "Qk6jq",
+                  "type": "ref",
+                  "ref": "G2rk1",
+                  "name": "hoy 07:02",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w4d4b": {
+                      "fill": "$negative"
+                    },
+                    "n9N7Qd": {
+                      "content": "BTC se movió −6.4% en el día"
+                    },
+                    "E9CGvT": {
+                      "content": "hoy 07:02"
+                    }
+                  }
+                },
+                {
+                  "id": "yMhYS",
+                  "type": "ref",
+                  "ref": "G2rk1",
+                  "name": "21 ago 12:10",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w4d4b": {
+                      "fill": "$primary"
+                    },
+                    "n9N7Qd": {
+                      "content": "Subasta CETES de Banxico publicada"
+                    },
+                    "E9CGvT": {
+                      "content": "21 ago 12:10"
+                    }
+                  }
+                },
+                {
+                  "id": "sfNVE",
+                  "type": "ref",
+                  "ref": "G2rk1",
+                  "name": "21 ago 08:33",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w4d4b": {
+                      "fill": "$positive"
+                    },
+                    "n9N7Qd": {
+                      "content": "AAPL cruzó USD 200 al alza"
+                    },
+                    "E9CGvT": {
+                      "content": "21 ago 08:33"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "fpNdy",
+              "name": "ComoTeAviso",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-3",
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "F5hYGy",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Cómo te aviso",
+                  "fontFamily": "$font-display",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "YOSoA",
+                  "name": "Avisos en la app",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dsUwl",
+                      "name": "TC",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "TjrlV",
+                          "name": "l",
+                          "fill": "$fg-default",
+                          "content": "Avisos en la app",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "cUxqm",
+                          "name": "s",
+                          "fill": "$fg-subtle",
+                          "content": "Campana y push del navegador",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KoqJW",
+                      "name": "SW",
+                      "width": 42,
+                      "height": 24,
+                      "fill": "$primary",
+                      "cornerRadius": 99,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "YS6y1",
+                          "x": 21,
+                          "y": 3,
+                          "name": "k",
+                          "fill": "$bg-surface",
+                          "width": 18,
+                          "height": 18
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "NnRKN",
+                  "name": "Resumen diario por correo",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "JgfEw",
+                      "name": "TC",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "g3j1F",
+                          "name": "l",
+                          "fill": "$fg-default",
+                          "content": "Resumen diario por correo",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "wmoYw",
+                          "name": "s",
+                          "fill": "$fg-subtle",
+                          "content": "Un solo correo a las 18:30 CDMX",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tCDu3",
+                      "name": "SW",
+                      "width": 42,
+                      "height": 24,
+                      "fill": "$primary",
+                      "cornerRadius": 99,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "fwOr5",
+                          "x": 21,
+                          "y": 3,
+                          "name": "k",
+                          "fill": "$bg-surface",
+                          "width": 18,
+                          "height": 18
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "UJBTk",
+                  "name": "Avisos urgentes por correo",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "H4BmXe",
+                      "name": "TC",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WSAEx",
+                          "name": "l",
+                          "fill": "$fg-default",
+                          "content": "Avisos urgentes por correo",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "vTuyJ",
+                          "name": "s",
+                          "fill": "$fg-subtle",
+                          "content": "Solo al disparar una regla",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aCfaO",
+                      "name": "SW",
+                      "width": 42,
+                      "height": 24,
+                      "fill": "$border-strong",
+                      "cornerRadius": 99,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "QL6px",
+                          "x": 3,
+                          "y": 3,
+                          "name": "k",
+                          "fill": "$bg-surface",
+                          "width": 18,
+                          "height": 18
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "J8Zfns",
+                  "name": "Mail",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP, sólo quedan los avisos en la app.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "qSmim",
+          "type": "ref",
+          "ref": "fSLY4",
+          "name": "BottomNav",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "rPPff",
+      "x": 0,
+      "y": -180,
+      "name": "NotiRow",
+      "reusable": true,
+      "width": 342,
+      "fill": "$bg-surface",
+      "cornerRadius": "$radius-lg",
+      "stroke": "$border-default",
+      "strokeWidth": 1,
+      "gap": "$space-3",
+      "padding": [
+        12,
+        14
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "Q1Za4",
+          "name": "IW",
+          "width": 32,
+          "height": 32,
+          "fill": "$primary-muted",
+          "cornerRadius": "$radius-sm",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "D5UMe",
+              "name": "i",
+              "width": 16,
+              "height": 16,
+              "icon": "bell",
+              "library": "lucide",
+              "fill": "$primary"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "z1DDU3",
+          "name": "Mid",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "AcKzA",
+              "name": "t",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "AAPL cruzó USD 200 al alza",
+              "lineHeight": 1.3,
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "vMj7h",
+              "name": "b",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tu regla de precio desde el 12 may · al disparo USD 200.14",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "pXPqq",
+              "name": "m",
+              "fill": "$fg-subtle",
+              "content": "09:41",
+              "fontFamily": "$font-mono",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "ellipse",
+          "id": "A7FIc6",
+          "name": "u",
+          "fill": "$primary",
+          "width": 8,
+          "height": 8
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "MYHxK",
+      "x": 920,
+      "y": 0,
+      "name": "[Reglas] / Bandeja / Default",
+      "clip": true,
+      "width": 390,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "G5UCd",
+          "name": "Header",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "stroke": "$border-default",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": "$space-3",
+          "padding": [
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "ZVjUC",
+              "name": "Back",
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "$fg-default"
+            },
+            {
+              "type": "text",
+              "id": "QhK5k",
+              "name": "T",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Bandeja",
+              "fontFamily": "$font-display",
+              "fontSize": 18,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "w7aySJ",
+              "name": "Marcar",
+              "gap": 5,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "MmylY",
+                  "name": "i",
+                  "width": 15,
+                  "height": 15,
+                  "icon": "check-check",
+                  "library": "lucide",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "c05bWy",
+                  "name": "t",
+                  "fill": "$primary",
+                  "content": "Marcar leídas",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "PxlZ5",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-3",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "WpXZi",
+              "name": "Sub",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Todo lo que la app decidió contarte: reglas disparadas, reportes que se acercan, CETES por vencer y avisos del sistema.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "ACM7A",
+              "name": "Filtros",
+              "width": "fill_container",
+              "gap": "$space-2",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "abniZ",
+                  "name": "Todas",
+                  "fill": "$primary-muted",
+                  "cornerRadius": 99,
+                  "stroke": "$primary-muted",
+                  "strokeWidth": 1,
+                  "gap": 5,
+                  "padding": [
+                    8,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "lHKLu",
+                      "name": "t",
+                      "fill": "$primary",
+                      "content": "Todas",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "j34cRK",
+                      "name": "n",
+                      "fill": "$primary",
+                      "content": "12",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "UbHOh",
+                  "name": "Alertas",
+                  "fill": "$bg-surface",
+                  "cornerRadius": 99,
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 5,
+                  "padding": [
+                    8,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Y8k6EE",
+                      "name": "t",
+                      "fill": "$fg-subtle",
+                      "content": "Alertas",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "CCUBk",
+                      "name": "n",
+                      "fill": "$fg-subtle",
+                      "content": "7",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "iQU2W",
+                  "name": "Reportes",
+                  "fill": "$bg-surface",
+                  "cornerRadius": 99,
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 5,
+                  "padding": [
+                    8,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "i01aO",
+                      "name": "t",
+                      "fill": "$fg-subtle",
+                      "content": "Reportes",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "UuhN7",
+                      "name": "n",
+                      "fill": "$fg-subtle",
+                      "content": "2",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "eU4rP",
+                  "name": "CETES",
+                  "fill": "$bg-surface",
+                  "cornerRadius": 99,
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 5,
+                  "padding": [
+                    8,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "CtNOe",
+                      "name": "t",
+                      "fill": "$fg-subtle",
+                      "content": "CETES",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "m78Nil",
+                      "name": "n",
+                      "fill": "$fg-subtle",
+                      "content": "2",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "epTCt",
+              "name": "GHOY",
+              "fill": "$fg-subtle",
+              "content": "HOY",
+              "fontFamily": "$font-mono",
+              "fontSize": 10,
+              "fontWeight": "normal",
+              "letterSpacing": 1
+            },
+            {
+              "type": "frame",
+              "id": "k4b2Ej",
+              "name": "Grupo HOY",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "id": "vuBGK",
+                  "type": "ref",
+                  "ref": "rPPff",
+                  "name": "NVDA entró en zona de ",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q1Za4": {
+                      "fill": "$primary-muted"
+                    },
+                    "D5UMe": {
+                      "icon": "bell",
+                      "fill": "$primary"
+                    },
+                    "AcKzA": {
+                      "content": "NVDA entró en zona de sobrecompra",
+                      "fontWeight": "600",
+                      "fill": "$fg-default"
+                    },
+                    "vMj7h": {
+                      "content": "RSI(14) por encima de 70 · tu regla desde el 03 jun"
+                    },
+                    "pXPqq": {
+                      "content": "09:41"
+                    },
+                    "A7FIc6": {
+                      "enabled": true
+                    }
+                  }
+                },
+                {
+                  "id": "KIbZR",
+                  "type": "ref",
+                  "ref": "rPPff",
+                  "name": "BTC se movió −6.4% en ",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q1Za4": {
+                      "fill": "$negative-bg"
+                    },
+                    "D5UMe": {
+                      "icon": "bell",
+                      "fill": "$negative-fg"
+                    },
+                    "AcKzA": {
+                      "content": "BTC se movió −6.4% en el día",
+                      "fontWeight": "600",
+                      "fill": "$fg-default"
+                    },
+                    "vMj7h": {
+                      "content": "Tu regla de cambio diario (6%) · al disparo MXN 1,318,400"
+                    },
+                    "pXPqq": {
+                      "content": "07:02"
+                    },
+                    "A7FIc6": {
+                      "enabled": true
+                    }
+                  }
+                },
+                {
+                  "id": "IugtT",
+                  "type": "ref",
+                  "ref": "rPPff",
+                  "name": "Tus CETES 28d vencen e",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q1Za4": {
+                      "fill": "$warning-bg"
+                    },
+                    "D5UMe": {
+                      "icon": "landmark",
+                      "fill": "$warning-fg"
+                    },
+                    "AcKzA": {
+                      "content": "Tus CETES 28d vencen en 3 días",
+                      "fontWeight": "600",
+                      "fill": "$fg-default"
+                    },
+                    "vMj7h": {
+                      "content": "Vence el 18 sep · MXN 30,000 más rendimiento"
+                    },
+                    "pXPqq": {
+                      "content": "06:00"
+                    },
+                    "A7FIc6": {
+                      "enabled": true
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "VwHAB",
+              "name": "GAYER",
+              "fill": "$fg-subtle",
+              "content": "AYER",
+              "fontFamily": "$font-mono",
+              "fontSize": 10,
+              "fontWeight": "normal",
+              "letterSpacing": 1
+            },
+            {
+              "type": "frame",
+              "id": "n5Zx0",
+              "name": "Grupo AYER",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "id": "o86LT8",
+                  "type": "ref",
+                  "ref": "rPPff",
+                  "name": "AAPL reporta el 28 de ",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q1Za4": {
+                      "fill": "$bg-muted"
+                    },
+                    "D5UMe": {
+                      "icon": "calendar",
+                      "fill": "$fg-subtle"
+                    },
+                    "AcKzA": {
+                      "content": "AAPL reporta el 28 de agosto",
+                      "fontWeight": "normal",
+                      "fill": "$fg-subtle"
+                    },
+                    "vMj7h": {
+                      "content": "Reporte trimestral en 5 días · tienes 12 títulos"
+                    },
+                    "pXPqq": {
+                      "content": "18:30"
+                    },
+                    "A7FIc6": {
+                      "enabled": false
+                    }
+                  }
+                },
+                {
+                  "id": "hmgSl",
+                  "type": "ref",
+                  "ref": "rPPff",
+                  "name": "AAPL cruzó USD 200 al ",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q1Za4": {
+                      "fill": "$positive-bg"
+                    },
+                    "D5UMe": {
+                      "icon": "bell",
+                      "fill": "$positive-fg"
+                    },
+                    "AcKzA": {
+                      "content": "AAPL cruzó USD 200 al alza",
+                      "fontWeight": "normal",
+                      "fill": "$fg-subtle"
+                    },
+                    "vMj7h": {
+                      "content": "Tu regla de precio desde el 12 may · al disparo USD 200.14"
+                    },
+                    "pXPqq": {
+                      "content": "08:33"
+                    },
+                    "A7FIc6": {
+                      "enabled": false
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "PSl31",
+              "name": "G21 AGO",
+              "fill": "$fg-subtle",
+              "content": "21 AGO",
+              "fontFamily": "$font-mono",
+              "fontSize": 10,
+              "fontWeight": "normal",
+              "letterSpacing": 1
+            },
+            {
+              "type": "frame",
+              "id": "XWXHN",
+              "name": "Grupo 21 AGO",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "id": "Z7Ev84",
+                  "type": "ref",
+                  "ref": "rPPff",
+                  "name": "Subasta CETES de Banxi",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q1Za4": {
+                      "fill": "$bg-muted"
+                    },
+                    "D5UMe": {
+                      "icon": "landmark",
+                      "fill": "$fg-subtle"
+                    },
+                    "AcKzA": {
+                      "content": "Subasta CETES de Banxico publicada",
+                      "fontWeight": "normal",
+                      "fill": "$fg-subtle"
+                    },
+                    "vMj7h": {
+                      "content": "Tasa a 28 días: 9.10% · sin activo asociado"
+                    },
+                    "pXPqq": {
+                      "content": "12:10"
+                    },
+                    "A7FIc6": {
+                      "enabled": false
+                    }
+                  }
+                },
+                {
+                  "id": "H5ihC",
+                  "type": "ref",
+                  "ref": "rPPff",
+                  "name": "Sincronización de prec",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q1Za4": {
+                      "fill": "$bg-muted"
+                    },
+                    "D5UMe": {
+                      "icon": "info",
+                      "fill": "$fg-subtle"
+                    },
+                    "AcKzA": {
+                      "content": "Sincronización de precios reanudada",
+                      "fontWeight": "normal",
+                      "fill": "$fg-subtle"
+                    },
+                    "vMj7h": {
+                      "content": "Alpha Vantage volvió a responder tras 2 horas"
+                    },
+                    "pXPqq": {
+                      "content": "03:15"
+                    },
+                    "A7FIc6": {
+                      "enabled": false
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "tzUfo",
+              "name": "Foot",
+              "width": "fill_container",
+              "gap": 5,
+              "padding": [
+                "$space-2",
+                0,
+                0,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "qBy9R",
+                  "name": "i",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "trash-2",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "XN7iy",
+                  "name": "t",
+                  "fill": "$fg-subtle",
+                  "content": "Borrar las leídas",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bnGt4",
+          "type": "ref",
+          "ref": "fSLY4",
+          "name": "BottomNav",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "vuJEp",
+      "x": 1380,
+      "y": 0,
+      "name": "[Reglas] / Nueva regla / Sheet",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "TQtQv",
+          "x": 0,
+          "y": 0,
+          "name": "Fondo",
+          "width": 390,
+          "height": 844,
+          "fill": "$bg-canvas",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "cYjYS",
+              "type": "ref",
+              "ref": "Y1ViY0",
+              "name": "TopBar",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "HfcVE",
+              "name": "Content",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "padding": [
+                16,
+                24,
+                24,
+                24
+              ],
+              "children": [
+                {
+                  "id": "BA6B6",
+                  "type": "ref",
+                  "ref": "mG9ST",
+                  "name": "AAPL",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w34gr": {
+                      "content": "AAPL"
+                    },
+                    "id7QE": {
+                      "content": "Acción"
+                    },
+                    "NKemD": {
+                      "content": "Precio cruza umbral"
+                    },
+                    "U5SuO": {
+                      "content": "cruza USD 200 al alza"
+                    }
+                  }
+                },
+                {
+                  "id": "r4sbnh",
+                  "type": "ref",
+                  "ref": "mG9ST",
+                  "name": "NVDA",
+                  "width": "fill_container",
+                  "descendants": {
+                    "w34gr": {
+                      "content": "NVDA"
+                    },
+                    "id7QE": {
+                      "content": "Acción"
+                    },
+                    "NKemD": {
+                      "content": "RSI sobrecomprado"
+                    },
+                    "U5SuO": {
+                      "content": "RSI(14) por encima de 70"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "qEuue",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "fill": "$scrim",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "type": "frame",
+          "id": "zf6By",
+          "x": 0,
+          "y": 128,
+          "name": "Sheet",
+          "width": 390,
+          "fill": "$bg-surface",
+          "cornerRadius": [
+            "$radius-card",
+            "$radius-card",
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            10,
+            24,
+            28,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "qUrIz",
+              "name": "GrabWrap",
+              "width": "fill_container",
+              "padding": [
+                0,
+                0,
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 99,
+                  "id": "tnfNK",
+                  "name": "Grab",
+                  "fill": "$border-strong",
+                  "width": 40,
+                  "height": 4
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "MXcHd",
+              "name": "Head",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "r4HbuZ",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Nueva regla",
+                  "fontFamily": "$font-display",
+                  "fontSize": 19,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "icon",
+                  "id": "sWpZl",
+                  "name": "X",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                }
+              ]
+            },
+            {
+              "id": "JCJXN",
+              "type": "ref",
+              "ref": "tAAai",
+              "name": "Activo",
+              "width": "fill_container",
+              "descendants": {
+                "MRgsO": {
+                  "content": "Activo"
+                },
+                "tCoHP": {
+                  "content": "AAPL · Apple",
+                  "fill": "$fg-default"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "Caaxv",
+              "name": "Condiciones",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "d3Eg9k",
+                  "name": "L",
+                  "fill": "$fg-subtle",
+                  "content": "Condición",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "B8FVw4",
+                  "name": "GDe precio",
+                  "fill": "$fg-subtle",
+                  "content": "DE PRECIO",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 9,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "jyLyf",
+                  "name": "WDe precio",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "SCtsQ",
+                      "name": "Precio cruza umbral",
+                      "fill": "$primary-muted",
+                      "cornerRadius": 99,
+                      "stroke": "$primary",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "js6rW",
+                          "name": "t",
+                          "fill": "$primary",
+                          "content": "Precio cruza umbral",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "h9S1Y1",
+                      "name": "% cambio en el día",
+                      "fill": "$bg-surface",
+                      "cornerRadius": 99,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rwaob",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "% cambio en el día",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "V8AFt",
+                  "name": "GDe señal",
+                  "fill": "$fg-subtle",
+                  "content": "DE SEÑAL",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 9,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "qjBAL",
+                  "name": "WDe señal",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "lgEsa",
+                      "name": "RSI sobrecomprado",
+                      "fill": "$bg-surface",
+                      "cornerRadius": 99,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "T0tjT",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "RSI sobrecomprado",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "r8cZWU",
+                      "name": "RSI sobrevendido",
+                      "fill": "$bg-surface",
+                      "cornerRadius": 99,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wMEKh",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "RSI sobrevendido",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "LQoBe",
+                  "name": "WDe señal 2",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "u2anN",
+                      "name": "Volumen anómalo",
+                      "fill": "$bg-surface",
+                      "cornerRadius": 99,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "JU2AA",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "Volumen anómalo",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "ve0it",
+                  "name": "GDe calendario",
+                  "fill": "$fg-subtle",
+                  "content": "DE CALENDARIO",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 9,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "O5Kab",
+                  "name": "WDe calendario",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Nbuqc",
+                      "name": "Dividendo próximo",
+                      "fill": "$bg-surface",
+                      "cornerRadius": 99,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "f24Xv",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "Dividendo próximo",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "OZ6eQ",
+                      "name": "Subasta CETES",
+                      "fill": "$bg-surface",
+                      "cornerRadius": 99,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fp0rL",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "Subasta CETES",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KmFmY",
+                      "name": "BMV festivo",
+                      "fill": "$bg-surface",
+                      "cornerRadius": 99,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Z0VzEg",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "BMV festivo",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SMfdb",
+              "name": "Row",
+              "width": "fill_container",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "id": "C5EoLQ",
+                  "type": "ref",
+                  "ref": "tAAai",
+                  "name": "Umbral",
+                  "width": "fill_container",
+                  "descendants": {
+                    "MRgsO": {
+                      "content": "Umbral"
+                    },
+                    "tCoHP": {
+                      "content": "USD 200",
+                      "fill": "$fg-default"
+                    }
+                  }
+                },
+                {
+                  "id": "Zy0jU",
+                  "type": "ref",
+                  "ref": "tAAai",
+                  "name": "Espera entre avisos",
+                  "width": "fill_container",
+                  "descendants": {
+                    "MRgsO": {
+                      "content": "Espera entre avisos"
+                    },
+                    "tCoHP": {
+                      "content": "60 min",
+                      "fill": "$fg-default"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "RR7bS",
+              "type": "ref",
+              "ref": "gv2fU",
+              "name": "Direccion",
+              "width": "fill_container",
+              "descendants": {
+                "FJ22G": {
+                  "content": "Al alza"
+                },
+                "y8p4ew": {
+                  "content": "A la baja"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "o6dGfx",
+              "name": "Preview",
+              "width": "fill_container",
+              "fill": "$primary-muted",
+              "cornerRadius": "$radius-lg",
+              "layout": "vertical",
+              "gap": 5,
+              "padding": [
+                13,
+                15
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "qiLnm",
+                  "name": "L",
+                  "fill": "$primary",
+                  "content": "ASÍ SE VA A LEER",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 9,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "text",
+                  "id": "pzcAE",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "AAPL cruza USD 200 al alza",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "E8FIRM",
+                  "name": "S",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Te avisa cuando pase. No te dice qué hacer con ello.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ctQFA",
+              "name": "Crear",
+              "width": "fill_container",
+              "fill": "$primary",
+              "cornerRadius": "$radius-md",
+              "padding": [
+                13,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "gPciH",
+                  "name": "t",
+                  "fill": "$fg-inverse",
+                  "content": "Crear regla",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 15,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "VcOde",
+      "x": 1840,
+      "y": 0,
+      "name": "[Reglas] / Reglas / Vacío",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "mnhIR",
+          "type": "ref",
+          "ref": "Y1ViY0",
+          "name": "TopBar",
+          "width": "fill_container",
+          "descendants": {
+            "iskR5": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "ycjB0",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "NMPHD",
+              "name": "IconWrap",
+              "width": 52,
+              "height": 52,
+              "fill": "$primary-muted",
+              "cornerRadius": "$radius-lg",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "KxHwv",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$primary"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "NSG2w",
+              "name": "T",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Todavía no tienes reglas",
+              "lineHeight": 1.25,
+              "fontFamily": "$font-display",
+              "fontSize": 22,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "rz7eu",
+              "name": "B",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Una regla vigila algo que tú definiste y te avisa cuando pasa. No decide por ti, no compra, no vende: sólo te ahorra estar mirando la pantalla.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "wcygS",
+              "name": "SH",
+              "fill": "$fg-subtle",
+              "content": "A PARTIR DE LO QUE YA TIENES",
+              "fontFamily": "$font-mono",
+              "fontSize": 10,
+              "fontWeight": "normal",
+              "letterSpacing": 1
+            },
+            {
+              "type": "frame",
+              "id": "xTU4E",
+              "name": "AAPL cae 5% en un día",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-3",
+              "padding": [
+                13,
+                15
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CDYk0",
+                  "name": "TC",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "B6jvlp",
+                      "name": "T",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "AAPL cae 5% en un día",
+                      "lineHeight": 1.3,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "g7ZC8P",
+                      "name": "S",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Tienes 12 títulos · % cambio en el día",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "A4NCyL",
+                  "name": "Add",
+                  "fill": "$primary-muted",
+                  "cornerRadius": 99,
+                  "gap": 4,
+                  "padding": [
+                    7,
+                    11
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "UL2Vi",
+                      "name": "i",
+                      "width": 13,
+                      "height": 13,
+                      "icon": "plus",
+                      "library": "lucide",
+                      "fill": "$primary"
+                    },
+                    {
+                      "type": "text",
+                      "id": "pHcyF",
+                      "name": "t",
+                      "fill": "$primary",
+                      "content": "Crear",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Yr4DC",
+              "name": "NVDA entra en sobrecompra",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-3",
+              "padding": [
+                13,
+                15
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Vq6Gk",
+                  "name": "TC",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "TJ3dM",
+                      "name": "T",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "NVDA entra en sobrecompra",
+                      "lineHeight": 1.3,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "bZHbc",
+                      "name": "S",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "RSI(14) por encima de 70",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nFHI3",
+                  "name": "Add",
+                  "fill": "$primary-muted",
+                  "cornerRadius": 99,
+                  "gap": 4,
+                  "padding": [
+                    7,
+                    11
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "K3VWU",
+                      "name": "i",
+                      "width": 13,
+                      "height": 13,
+                      "icon": "plus",
+                      "library": "lucide",
+                      "fill": "$primary"
+                    },
+                    {
+                      "type": "text",
+                      "id": "obPCA",
+                      "name": "t",
+                      "fill": "$primary",
+                      "content": "Crear",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "DXbxX",
+              "name": "Tus CETES 28d están por vencer",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-3",
+              "padding": [
+                13,
+                15
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "K6MewY",
+                  "name": "TC",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "IzVfX",
+                      "name": "T",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Tus CETES 28d están por vencer",
+                      "lineHeight": 1.3,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "UKWAn",
+                      "name": "S",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Vence el 18 sep · subasta de Banxico",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Kb5Mq",
+                  "name": "Add",
+                  "fill": "$primary-muted",
+                  "cornerRadius": 99,
+                  "gap": 4,
+                  "padding": [
+                    7,
+                    11
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "BCyYF",
+                      "name": "i",
+                      "width": 13,
+                      "height": 13,
+                      "icon": "plus",
+                      "library": "lucide",
+                      "fill": "$primary"
+                    },
+                    {
+                      "type": "text",
+                      "id": "JI3O5",
+                      "name": "t",
+                      "fill": "$primary",
+                      "content": "Crear",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wyyJU",
+              "name": "Footer",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "justifyContent": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "lWS1h",
+                  "name": "Scratch",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-strong",
+                  "strokeWidth": 1,
+                  "gap": "$space-2",
+                  "padding": [
+                    13,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "n43gI",
+                      "name": "i",
+                      "width": 15,
+                      "height": 15,
+                      "icon": "plus",
+                      "library": "lucide",
+                      "fill": "$fg-default"
+                    },
+                    {
+                      "type": "text",
+                      "id": "assjO",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Crear una desde cero",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c6TB69",
+          "type": "ref",
+          "ref": "fSLY4",
+          "name": "BottomNav",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "N0Uajy",
+      "x": 2300,
+      "y": 0,
+      "name": "[Reglas] / Confluencia / Default",
+      "clip": true,
+      "width": 390,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "jPvZG",
+          "name": "Header",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "stroke": "$border-default",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": "$space-3",
+          "padding": [
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "MO2H3",
+              "name": "Back",
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "$fg-default"
+            },
+            {
+              "type": "text",
+              "id": "tYBmp",
+              "name": "T",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Confluencia",
+              "fontFamily": "$font-display",
+              "fontSize": 18,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZI8w0",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "GM0n5",
+              "name": "Intro",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tres condiciones duras que rara vez coinciden. Cuando las tres se prenden dentro de la misma ventana, el semáforo lo marca en el activo. Es una descripción de lo que pasó — no una orden de compra.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "E9SVR",
+              "name": "Luz 1",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-2",
+              "padding": [
+                14,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KXRvJ",
+                  "name": "Top",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "J0SpF",
+                      "name": "d",
+                      "fill": "$positive",
+                      "width": 12,
+                      "height": 12
+                    },
+                    {
+                      "type": "text",
+                      "id": "lHqIF",
+                      "name": "n",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Luz 1 · Sobrecompra o sobreventa activa",
+                      "lineHeight": 1.3,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PeRxK",
+                      "name": "St",
+                      "fill": "$positive-bg",
+                      "cornerRadius": 99,
+                      "padding": [
+                        3,
+                        9
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ke7rE",
+                          "name": "t",
+                          "fill": "$positive-fg",
+                          "content": "lista",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Pf46W",
+                  "name": "D",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "RSI(14) fuera de 30–70 y el precio fuera de su banda de Bollinger.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "wjWko",
+                  "name": "S",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Se calcula hoy con technical_observations",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CfEY6",
+              "name": "Luz 2",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-2",
+              "padding": [
+                14,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "YcdoV",
+                  "name": "Top",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "BF84c",
+                      "name": "d",
+                      "fill": "$border-strong",
+                      "width": 12,
+                      "height": 12
+                    },
+                    {
+                      "type": "text",
+                      "id": "xz0bK",
+                      "name": "n",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Luz 2 · Señal de confirmación",
+                      "lineHeight": 1.3,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "DqSNP",
+                      "name": "St",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 99,
+                      "padding": [
+                        3,
+                        9
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "s6PL5z",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "próximamente",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "FDnLc",
+                  "name": "D",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Volumen por encima de su promedio mientras la luz 1 sigue prendida.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "faeKu",
+                  "name": "S",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Motor pendiente · nada la calcula todavía",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JiBIW",
+              "name": "Luz 3",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-2",
+              "padding": [
+                14,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "eylTV",
+                  "name": "Top",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "L0yfq6",
+                      "name": "d",
+                      "fill": "$positive",
+                      "width": 12,
+                      "height": 12
+                    },
+                    {
+                      "type": "text",
+                      "id": "MtD7i",
+                      "name": "n",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Luz 3 · Cambio de tendencia",
+                      "lineHeight": 1.3,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "sGXJr",
+                      "name": "St",
+                      "fill": "$positive-bg",
+                      "cornerRadius": 99,
+                      "padding": [
+                        3,
+                        9
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "eryEA",
+                          "name": "t",
+                          "fill": "$positive-fg",
+                          "content": "lista",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "RpaOt",
+                  "name": "D",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Cruce de medias móviles o giro del MACD en la misma dirección.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "c4TM1b",
+                  "name": "S",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Se calcula hoy con trend_scores",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "BmJ3m",
+              "name": "Ventana",
+              "opacity": 0.6,
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-3",
+              "padding": [
+                14,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OSDki",
+                  "name": "TC",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YioEu",
+                      "name": "l",
+                      "fill": "$fg-default",
+                      "content": "Ventana de confluencia",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "OKW7Q",
+                      "name": "s",
+                      "fill": "$fg-subtle",
+                      "content": "Cuántos días cuentan como “a la vez”",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p3jyu",
+                  "name": "V",
+                  "fill": "$bg-muted",
+                  "cornerRadius": "$radius-sm",
+                  "padding": [
+                    7,
+                    11
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "PBwQO",
+                      "name": "t",
+                      "fill": "$fg-subtle",
+                      "content": "5 días",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "n0dkub",
+              "name": "Gate",
+              "width": "fill_container",
+              "fill": "$warning-bg",
+              "cornerRadius": "$radius-lg",
+              "gap": "$space-3",
+              "padding": [
+                13,
+                15
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "uofva",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "info",
+                  "library": "lucide",
+                  "fill": "$warning-fg"
+                },
+                {
+                  "type": "text",
+                  "id": "uy4Au",
+                  "name": "t",
+                  "fill": "$warning-fg",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "El semáforo está diseñado, no construido. Antes de escribirlo tiene que pasar el filtro de 4 — disparador, JTBD, métrica de uso y DoD (D3).",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Qze7n",
+              "name": "CTA",
+              "width": "fill_container",
+              "fill": "$bg-muted",
+              "cornerRadius": "$radius-md",
+              "padding": [
+                13,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "T6lwO",
+                  "name": "t",
+                  "fill": "$fg-subtle",
+                  "content": "Convertir en regla · próximamente",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "G62m7d",
+          "type": "ref",
+          "ref": "fSLY4",
+          "name": "BottomNav",
+          "width": "fill_container"
+        }
+      ]
     }
   ],
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "kit-version-source": {
+      "type": "string",
+      "value": "0.3.0"
+    },
+    "font-display": {
+      "type": "string",
+      "value": "Plus Jakarta Sans"
+    },
+    "font-sans": {
+      "type": "string",
+      "value": "Inter"
+    },
+    "font-mono": {
+      "type": "string",
+      "value": "JetBrains Mono"
+    },
+    "radius-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "radius-md": {
+      "type": "number",
+      "value": 12
+    },
+    "radius-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "radius-card": {
+      "type": "number",
+      "value": 20
+    },
+    "space-1": {
+      "type": "number",
+      "value": 4
+    },
+    "space-2": {
+      "type": "number",
+      "value": 8
+    },
+    "space-3": {
+      "type": "number",
+      "value": 12
+    },
+    "space-4": {
+      "type": "number",
+      "value": 16
+    },
+    "space-5": {
+      "type": "number",
+      "value": 24
+    },
+    "space-6": {
+      "type": "number",
+      "value": 32
+    },
+    "primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "primary-hover": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "primary-muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#EEF0FF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2A2E55",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "bg-canvas": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FAFAF7",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#1A1B23",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "bg-surface": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#23242E",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "bg-muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F4F2EC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2B2D38",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "fg-default": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F172A",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#F8FAFC",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "fg-subtle": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#64748B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "fg-inverse": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#0F172A",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "border-default": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E7E3D9",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#33353F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "border-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#D6D1C4",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3E414C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "positive": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "positive-bg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#ECFDF5",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#0F2E25",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "positive-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#047857",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "negative": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "negative-bg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFF1F3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3A1620",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "negative-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#BE123C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "warning": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "warning-bg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFBEB",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3A2A0C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "warning-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B45309",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "info": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "info-bg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#EEF0FF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2A2E55",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "info-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "scrim": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F172A99",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    }
+  },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"
 }

@@ -73,3 +73,22 @@ with grep counts.
   top of that. Measure before building:
   `grep -rn "period_returns" app | wc -l` — every current consumer is a display of the
   money-weighted figure and stays valid; the new one is not a display, it is a claim.
+
+## 6. Reglas y avisos (D13, D14)
+
+**Status:** pending — design done (`flows/alerts.pen`), no code touched.
+
+- Measure before landing: `grep -rn "sms_notifications" app | wc -l` and
+  `grep -rn "notification_type" app | wc -l` — the first is the column to rename, the second the
+  four producers that must keep working through the copy change.
+- Rename `alert_preferences.sms_notifications` to what the UI already calls it (urgent email).
+  It is a boolean with one honest consumer; the migration is mechanical and the column name is
+  the only thing lying.
+- Rewrite `Alerts::Handlers::CreateNotificationOnAlert`'s title/body per D14: fact first,
+  provenance second, currency never bare. Route the price through `format_currency_mx` instead of
+  interpolating the raw decimal.
+- Fix `AlertsHelper#alert_rule_kind_label`: it falls through to "Acción" for anything that is not
+  `.MX`, CETES or an index, so crypto rules are labelled stocks. Derive from the `Asset` when one
+  exists and keep the symbol heuristic only as the fallback for rules that outlived their asset.
+- Give the TopBar bell a destination — `/notifications` exists and nothing links to it from the
+  redesigned shell.
