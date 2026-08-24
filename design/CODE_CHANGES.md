@@ -58,3 +58,18 @@ with grep counts.
   `max-height: 85dvh`, internal scroll with a **sticky Total + Guardar footer**, `visualViewport`
   listener instead of `bottom: 0`, `env(safe-area-inset-bottom)`, `<input type="date">` and
   `inputmode="decimal"`. The `Con teclado` artboard is the acceptance target, not the clean one.
+
+## 5. Consolidado — "¿Valió la pena?" (D12)
+
+**Status:** pending — design done (`flows/cockpit.pen`), engine gated on a 4-filter card.
+
+- Reuse as-is: `Trading::Domain::PortfolioSummary`, `PeriodReturnsCalculator#chart_data`,
+  `Portfolio#allocation_by_asset_type` / `#allocation_by_sector`, daily `portfolio_snapshots`.
+- Benchmark data needs **no new gateway**: `MarketData::Gateways::BanxicoGateway#fetch_auctions`
+  already returns CETES rates per term (`CETES_SERIES`).
+- 🔴 **Do not reuse `PeriodReturnsCalculator` figures for the comparison cards.** They are
+  money-weighted (current total vs an older snapshot), so a deposit inflates them. Derive TWR from
+  `portfolio_snapshots.cash_value` / `invested_value` flows first; the two cards are only honest on
+  top of that. Measure before building:
+  `grep -rn "period_returns" app | wc -l` — every current consumer is a display of the
+  money-weighted figure and stays valid; the new one is not a display, it is a claim.
