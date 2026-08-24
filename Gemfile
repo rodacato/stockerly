@@ -92,6 +92,10 @@ group :development, :test do
   # System tests [https://github.com/teamcapybara/capybara]
   gem "capybara"
 
+  # Headless Chrome over CDP, no chromedriver. Only the specs that genuinely
+  # depend on JS use it; the rest stay on rack_test, where they are faster.
+  gem "cuprite", require: false
+
   # Code coverage [https://github.com/simplecov-ruby/simplecov]
   gem "simplecov", require: false
 
