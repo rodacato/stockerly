@@ -30,6 +30,11 @@ is worse than a missing one.
 | `activos-registrar-con-teclado.png` | `[Activos] / Registrar movimiento / Con teclado` |
 | `activos-rastreados.png` | `[Activos] / Rastreados / Default` |
 | `activos-rastreados-buscar.png` | `[Activos] / Rastreados · Buscar / Default` |
+| `reglas-lista.png` | `[Reglas] / Reglas / Default` |
+| `reglas-vacio.png` | `[Reglas] / Reglas / Vacío` |
+| `reglas-nueva-regla.png` | `[Reglas] / Nueva regla / Sheet` |
+| `reglas-bandeja.png` | `[Reglas] / Bandeja / Default` |
+| `reglas-confluencia.png` | `[Reglas] / Confluencia / Default` |
 
 **Missing:** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention existed
 and have no exports yet. Both files must be open in Pencil to export them — do it on their next

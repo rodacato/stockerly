@@ -74,12 +74,28 @@ with grep counts.
   `grep -rn "period_returns" app | wc -l` — every current consumer is a display of the
   money-weighted figure and stays valid; the new one is not a display, it is a claim.
 
+## 6. Reglas y avisos (D13, D14) — DONE, except the bell
+
+**Status:** design done (`flows/alerts.pen`); the code fixes shipped in this same PR.
+
+- ✅ `alert_preferences.sms_notifications` renamed to `urgent_email`. Nothing ever sent SMS —
+  no Twilio, no gem, no code path — while the alerts screen already called the same boolean
+  "Avisos urgentes por correo". Both screens now say the same true thing.
+- ✅ `Alerts::Handlers::CreateNotificationOnAlert` rewritten through
+  `Alerts::Domain::TriggerNotice`: fact in the title, provenance in the body, never a bare
+  amount. It lives in the domain because a background handler has no view context.
+- ✅ `AlertsHelper#alert_rule_kind_label` reads the `Asset` when one exists, so a crypto rule
+  is no longer labelled "Acción"; the symbol heuristic stays as the fallback for rules that
+  outlived their asset. Memoized per request — the spec pins the query count.
+- ⬜ **Left undone: the TopBar bell still has no destination.** `/notifications` exists and the
+  redesigned shell links to nothing. It lands with the shell revamp, not from a helper fix.
+
 ## 7. Delivery channels (D16) — DONE, except one leftover
 
-Landed on `fix/alerts-notification-copy`: `AlertMailer` (digest + urgent), `SendDailyDigestJob`
-scheduled at `30 0 * * *` (18:30 CDMX year-round — Mexico dropped DST in 2022),
-`Notifications::Handlers::SendUrgentEmail` on `NotificationCreated`, and both preference screens
-reduced to the two channels that actually deliver.
+`AlertMailer` (digest + urgent), `SendDailyDigestJob` scheduled at `30 0 * * *` (18:30 CDMX
+year-round — Mexico dropped DST in 2022), `Notifications::Handlers::SendUrgentEmail` on
+`NotificationCreated`, and both preference screens reduced to the two channels that actually
+deliver.
 
 **Leftover:** `alert_preferences.browser_push` is now unused — the in-app bell cannot be turned
 off, so the switch was removed rather than left lying. Drop the column when D16 settles whether a
