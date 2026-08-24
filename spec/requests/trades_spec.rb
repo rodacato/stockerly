@@ -36,7 +36,7 @@ RSpec.describe "Trades", type: :request do
         post trades_path, params: valid_buy_params
       }.to change(Trade, :count).by(1)
 
-      expect(response).to redirect_to(portfolio_path)
+      expect(response).to redirect_to(assets_path)
       follow_redirect!
       expect(response.body).to include("Movimiento registrado.")
     end
@@ -48,13 +48,13 @@ RSpec.describe "Trades", type: :request do
         post trades_path, params: { trade: { asset_symbol: "AAPL", side: "sell", shares: "5", price_per_share: "160.0" } }
       }.to change(Trade, :count).by(1)
 
-      expect(response).to redirect_to(portfolio_path)
+      expect(response).to redirect_to(assets_path)
     end
 
     it "redirects with alert on invalid params" do
       post trades_path, params: { trade: { asset_symbol: "", side: "buy", shares: "0", price_per_share: "0" } }
 
-      expect(response).to redirect_to(portfolio_path)
+      expect(response).to redirect_to(assets_path)
       follow_redirect!
       expect(response.body).to include("alert")
     end
@@ -62,7 +62,7 @@ RSpec.describe "Trades", type: :request do
     it "redirects with alert on insufficient shares" do
       post trades_path, params: { trade: { asset_symbol: "AAPL", side: "sell", shares: "5", price_per_share: "150.0" } }
 
-      expect(response).to redirect_to(portfolio_path)
+      expect(response).to redirect_to(assets_path)
     end
 
     context "with turbo_stream format" do

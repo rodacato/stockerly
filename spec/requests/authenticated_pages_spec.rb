@@ -28,15 +28,18 @@ RSpec.describe "Authenticated pages", type: :request do
   end
 
   describe "GET /portfolio" do
-    it "renders the portfolio with allocation and positions" do
+    it "renders the Consolidado, with the lists at their own route" do
       portfolio = create(:portfolio, user: user)
       asset = create(:asset)
       create(:position, portfolio: portfolio, asset: asset, shares: 10, avg_cost: 100.0)
 
       get portfolio_path
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("portfolios.show.titulo"))
+
+      get positions_path
+      expect(response).to have_http_status(:ok)
       expect(response.body).to include("Posiciones y movimientos")
-      expect(response.body).to include("Distribución del portafolio")
     end
   end
 

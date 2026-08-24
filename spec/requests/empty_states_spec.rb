@@ -8,7 +8,7 @@ RSpec.describe "Empty state consistency", type: :request do
   describe "portfolio empty states use component" do
     it "renders standardized empty state for open positions" do
       create(:portfolio, user: user)
-      get portfolio_path
+      get positions_path
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Aún no hay posiciones abiertas")

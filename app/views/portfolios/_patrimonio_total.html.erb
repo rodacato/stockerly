@@ -1,0 +1,28 @@
+<%# Locals: summary, currency, fx_unavailable
+    No "Invertido / Disponible" split: the artboard draws one, and `Disponible`
+    was `buying_power` — deleted by D26 because nothing ever wrote to it. %>
+<% if summary %>
+  <section class="rounded-2xl border border-border-default bg-bg-surface p-5">
+    <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+      <%= t("portfolios.show.patrimonio_total", currency: currency) %>
+    </p>
+    <div class="mt-2 flex flex-wrap items-baseline justify-between gap-3">
+      <p class="font-display text-4xl font-bold tracking-tight text-fg-default">
+        <%= format_currency_mx(summary.total_value, currency: currency, precision: 0) %>
+      </p>
+      <% day = summary.day_gain %>
+      <span class="shrink-0 rounded-full px-3 py-1.5 font-mono text-xs font-semibold
+                   <%= day.percent.negative? ? "bg-negative-bg text-negative-fg" : "bg-positive-bg text-positive-fg" %>">
+        <%= signed_percent(day.percent) %> hoy
+      </span>
+    </div>
+  </section>
+<% elsif fx_unavailable %>
+  <section class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
+    <span class="material-symbols-outlined text-xl text-warning-fg" aria-hidden="true">currency_exchange</span>
+    <div>
+      <p class="text-sm font-semibold text-warning-fg"><%= t("comun.sin_tc_titulo") %></p>
+      <p class="mt-0.5 text-xs text-warning-fg"><%= t("comun.sin_tc_cuerpo") %></p>
+    </div>
+  </section>
+<% end %>

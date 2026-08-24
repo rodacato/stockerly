@@ -1,0 +1,31 @@
+<%# Locals: label, card, body. `card` is nil when the comparison cannot be made. %>
+<article class="rounded-2xl border border-border-default bg-bg-surface p-5">
+  <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= label %></p>
+
+  <% if card %>
+    <% ahead = !card[:points].negative? %>
+    <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
+      <p class="font-display text-4xl font-bold tracking-tight text-fg-default">
+        <%= signed_points(card[:points]) %>
+      </p>
+      <span class="shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold
+                   <%= ahead ? "bg-positive-bg text-positive-fg" : "bg-negative-bg text-negative-fg" %>">
+        <%= ahead ? t("portfolios.show.vas_arriba") : t("portfolios.show.vas_abajo") %>
+      </span>
+    </div>
+
+    <div class="relative mt-4">
+      <div class="flex gap-1">
+        <span class="h-1.5 flex-1 rounded-full bg-negative"></span>
+        <span class="h-1.5 flex-1 rounded-full bg-warning"></span>
+        <span class="h-1.5 flex-1 rounded-full bg-positive"></span>
+      </div>
+      <span class="absolute -top-1 size-3 -translate-x-1/2 rounded-full bg-fg-default"
+            style="left: <%= comparison_offset(card[:points]) %>%"></span>
+    </div>
+
+    <p class="mt-4 text-sm text-fg-subtle"><%= body %></p>
+  <% else %>
+    <p class="mt-3 text-sm text-fg-subtle"><%= t("portfolios.show.sin_comparacion") %></p>
+  <% end %>
+</article>

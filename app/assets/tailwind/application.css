@@ -60,6 +60,23 @@
   --color-background-light:  #FAFAF7;
   --color-background-dark:   #1A1B23;
 
+  /* --- Overlay + shape — from the kit (0.3.0 scrim, D1 radii). ---------- */
+  --color-scrim:             #0F172A99;
+  --radius-card:             20px;
+
+  /* --- Typography ------------------------------------------------------ */
+  --font-display:            "Plus Jakarta Sans", sans-serif;
+  --font-sans:               "Inter", sans-serif;
+  --font-mono:               "JetBrains Mono", monospace;
+}
+
+/* Data-viz tokens live in their own `@theme static` because nothing generates
+   a `bg-chart-3` utility — these are read as `var(--color-chart-N)` from a
+   conic-gradient and from the chart controller. A plain `@theme` tree-shakes
+   what no utility references, which left chart-2..8 undefined in light mode
+   and the allocation donut drawing an empty ring. The dark block below is
+   ordinary CSS, so it always emitted, which is why only light was broken. */
+@theme static {
   /* --- Data-viz — closed token sets for chart encoding only. Chrome stays
      one-accent (primary); these exist solely so multi-series charts and the
      sentiment heatmap stop hardcoding hex. See tokens.md §1.4 + §4.2. ----- */
@@ -80,15 +97,8 @@
   --color-sentiment-4:       #A3E635;
   --color-sentiment-5:       #10B981;
 
-  /* --- Overlay + shape — from the kit (0.3.0 scrim, D1 radii). ---------- */
-  --color-scrim:             #0F172A99;
-  --radius-card:             20px;
-
-  /* --- Typography ------------------------------------------------------ */
-  --font-display:            "Plus Jakarta Sans", sans-serif;
-  --font-sans:               "Inter", sans-serif;
-  --font-mono:               "JetBrains Mono", monospace;
 }
+
 
 /* Theme `lumen` — dark mode. Wins over @theme because @layer base is
    declared after @layer theme, whatever the selector specificity. */

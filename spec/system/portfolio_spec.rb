@@ -20,22 +20,23 @@ RSpec.describe "Portfolio tabs", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "shows portfolio summary cards" do
-    visit portfolio_path
+  it "shows the lists, with the figures on the Consolidado" do
+    visit positions_path
     expect(page).to have_content("Posiciones y movimientos")
-    expect(page).to have_content("Valor total del portafolio")
-    expect(page).to have_content("Ganancia no realizada")
+
+    visit portfolio_path
+    expect(page).to have_content("PATRIMONIO TOTAL")
   end
 
   it "shows open positions tab with position data" do
-    visit portfolio_path(tab: "open")
+    visit positions_path(tab: "open")
     expect(page).to have_content("Posiciones abiertas")
     expect(page).to have_content("Apple Inc.")
     expect(page).to have_content("10")
   end
 
   it "shows closed positions tab" do
-    visit portfolio_path(tab: "closed")
+    visit positions_path(tab: "closed")
     expect(page).to have_content("Cerradas")
     expect(page).to have_content("Tesla, Inc.")
   end
@@ -44,7 +45,7 @@ RSpec.describe "Portfolio tabs", type: :system do
     dividend = create(:dividend, asset: aapl, amount_per_share: 0.24, ex_date: 1.month.ago, pay_date: 3.weeks.ago)
     create(:dividend_payment, portfolio: portfolio, dividend: dividend, shares_held: 10, total_amount: 2.40, received_at: 3.weeks.ago)
 
-    visit portfolio_path(tab: "dividends")
+    visit positions_path(tab: "dividends")
     expect(page).to have_content("Dividendos")
     expect(page).to have_content("AAPL")
   end
@@ -52,7 +53,7 @@ RSpec.describe "Portfolio tabs", type: :system do
   it "shows trade log tab with trades" do
     create(:trade, portfolio: portfolio, asset: aapl, position: open_position, side: :buy, shares: 10, price_per_share: 150.0, total_amount: 1500.0, currency: "USD", executed_at: 1.month.ago)
 
-    visit portfolio_path(tab: "trades")
+    visit positions_path(tab: "trades")
     expect(page).to have_content("Movimientos")
     expect(page).to have_content("AAPL")
     expect(page).to have_content("Compra")

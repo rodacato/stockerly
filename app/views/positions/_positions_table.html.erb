@@ -2,16 +2,16 @@
 <section class="rounded-xl border border-border-default bg-bg-surface overflow-hidden shadow-sm">
   <%# Tabs header — uses query params for Turbo Drive navigation %>
   <div class="flex items-center border-b border-slate-100 dark:border-slate-800 overflow-x-auto">
-    <%= link_to portfolio_path(tab: "open"), class: "px-6 py-4 text-sm font-bold border-b-2 whitespace-nowrap #{tab == 'open' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+    <%= link_to positions_path(tab: "open"), class: "px-6 py-4 text-sm font-bold border-b-2 whitespace-nowrap #{tab == 'open' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
       Posiciones abiertas <span class="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full"><%= portfolio.open_positions.size %></span>
     <% end %>
-    <%= link_to portfolio_path(tab: "closed"), class: "px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap #{tab == 'closed' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+    <%= link_to positions_path(tab: "closed"), class: "px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap #{tab == 'closed' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
       Cerradas
     <% end %>
-    <%= link_to portfolio_path(tab: "dividends"), class: "px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap #{tab == 'dividends' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+    <%= link_to positions_path(tab: "dividends"), class: "px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap #{tab == 'dividends' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
       Dividendos
     <% end %>
-    <%= link_to portfolio_path(tab: "trades"), class: "px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap #{tab == 'trades' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
+    <%= link_to positions_path(tab: "trades"), class: "px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap #{tab == 'trades' ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-600'}" do %>
       Movimientos
     <% end %>
   </div>
