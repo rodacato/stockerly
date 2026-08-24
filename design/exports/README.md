@@ -49,6 +49,9 @@ reflow. The kit's shell variant is included because it is what every desktop art
 | `cockpit-panorama-desktop.png` | `[Cockpit] / Panorama · Desktop / Default` |
 | `cockpit-asset-analisis-desktop.png` | `[Cockpit] / Asset · Análisis · Desktop / Default` |
 | `cockpit-consolidado-desktop.png` | `[Cockpit] / Consolidado · Desktop / Default` |
+| `activos-cartera-desktop.png` | `[Activos] / Cartera · Desktop / Default` |
+| `activos-registrar-movimiento-desktop.png` | `[Activos] / Registrar movimiento · Desktop / Dialog` |
+| `activos-rastreados-desktop.png` | `[Activos] / Rastreados · Desktop / Default` |
 
 **Missing:** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention existed
 and have no exports yet. Both files must be open in Pencil to export them — do it on their next
