@@ -7,9 +7,6 @@ es-MX:
       no_realizada: No realizada %{amount}
       sigo: Sigo
       sigues: sigues %{percent}
-      sin_tc_cuerpo: Falta el tipo de cambio del día, así que no puedo sumar tu patrimonio
-        en una sola moneda. Cada posición se muestra en la suya.
-      sin_tc_titulo: Sin consolidar
       titulo: Activos
       titulos:
         one: 1 título
@@ -40,6 +37,46 @@ es-MX:
       tier_tracked: Rastreado
       titulo: Rastreados
       vacio: Tu instancia aún no rastrea ningún activo.
+  comun:
+    accion:
+      buy: compra
+      sell: vende
+    clasificacion:
+      bearish: Pesimista
+      bullish: Optimista
+      extreme_fear: Miedo extremo
+      extreme_greed: Codicia extrema
+      fear: Miedo
+      greed: Codicia
+      neutral: Neutral
+      very_bearish: Muy pesimista
+      very_bullish: Muy optimista
+    sin_tc_cuerpo: Falta el tipo de cambio del día, así que no puedo sumar tu patrimonio
+      en una sola moneda. Cada posición se muestra en la suya.
+    sin_tc_titulo: Sin consolidar
+    vencimiento:
+      one: vence mañana
+      other: vence en %{count} días
+      zero: vence hoy
+  dashboard:
+    show:
+      carrusel: Sentimiento del mercado
+      fear_greed_crypto: FEAR & GREED · CRIPTO
+      fear_greed_stocks: FEAR & GREED · ACCIONES
+      movimientos_subtitulo: Oportunidades de compra y venta hoy
+      movimientos_titulo: Movimientos de interés
+      movimientos_vacio: Nada que destaque hoy. Tus reglas están tranquilas — vuelve
+        mañana.
+      patrimonio: PATRIMONIO · %{currency}
+      radar_subtitulo: De tu cartera y watchlist · con actividad hoy · valores en
+        %{currency}
+      radar_titulo: Radar
+      radar_vacio: Ninguno de tus activos tuvo movimientos notables.
+      sentimiento_watchlist: SENTIMIENTO · TU WATCHLIST
+      titulo: Panorama
+      ver_mas: Ver más
+      ver_todos: Ver todos
+      vs_ayer: "%{delta} vs ayer"
   date:
     abbr_day_names:
     - dom

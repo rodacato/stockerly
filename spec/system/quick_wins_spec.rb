@@ -15,17 +15,6 @@ RSpec.describe "Quick wins", type: :system do
     click_button "Iniciar sesión"
   end
 
-  describe "Fear & Greed card with inline sparkline" do
-    it "shows F&G card with sparkline when readings exist" do
-      create(:fear_greed_reading, :crypto, value: 30, fetched_at: 2.days.ago)
-      create(:fear_greed_reading, :crypto, value: 50, fetched_at: 1.day.ago)
-
-      visit dashboard_path
-      expect(page).to have_content("Crypto Fear & Greed")
-      expect(page).to have_css("svg[aria-label*='30-day trend']")
-    end
-  end
-
   describe "News watchlist filter" do
     let!(:apple) { create(:asset, symbol: "AAPL", name: "Apple Inc.") }
     let!(:apple_article) { create(:news_article, title: "Apple Earnings Beat", related_ticker: "AAPL", published_at: 1.hour.ago) }

@@ -1,0 +1,32 @@
+<%# Locals: summary, currency, fx_unavailable
+    The chevron goes to Activos, not to the Consolidado: that screen is slice 4
+    and its comparison cards are gated on D12 (TWR). Activos is where the
+    breakdown of this number actually lives today. %>
+<% if summary %>
+  <%= link_to assets_path,
+              class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-5 py-4 transition-colors hover:border-border-strong" do %>
+    <div class="min-w-0 flex-1">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+        <%= t("dashboard.show.patrimonio", currency: currency) %>
+      </p>
+      <p class="mt-1 font-display text-3xl font-bold tracking-tight text-fg-default">
+        <%= number_with_precision(summary.total_value, precision: 0, delimiter: ",") %>
+      </p>
+    </div>
+
+    <% day = summary.day_gain %>
+    <span class="shrink-0 rounded-full px-3 py-1.5 font-mono text-xs font-semibold
+                 <%= day.percent.negative? ? "bg-negative-bg text-negative-fg" : "bg-positive-bg text-positive-fg" %>">
+      <%= signed_percent(day.percent) %> hoy
+    </span>
+    <span class="material-symbols-outlined shrink-0 text-xl text-fg-subtle" aria-hidden="true">chevron_right</span>
+  <% end %>
+<% elsif fx_unavailable %>
+  <section class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
+    <span class="material-symbols-outlined text-xl text-warning-fg" aria-hidden="true">currency_exchange</span>
+    <div>
+      <p class="text-sm font-semibold text-warning-fg"><%= t("comun.sin_tc_titulo") %></p>
+      <p class="mt-0.5 text-xs text-warning-fg"><%= t("comun.sin_tc_cuerpo") %></p>
+    </div>
+  </section>
+<% end %>

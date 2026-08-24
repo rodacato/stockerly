@@ -22,7 +22,7 @@ exists today only as repetition inside page templates.
 | `ButtonSecondary` | inline everywhere | **Net-new** | same sites, secondary variants |
 | `Field` | raw form helpers | **Net-new** | 36 `*_field` / `select` calls, each with its own class string |
 | `Segmented` | `data-controller="tabs"` markup | **Net-new** | 4 templates hand-roll a tab pill |
-| `AssetRow` | table `<tr>` markup | **Net-new** | `dashboard/_watchlist_table`, `market/_listings_table` |
+| `AssetRow` | `components/_asset_row` | ✅ **Shipped** (slices 2, 3) | Panorama's Radar reuses it; gained the optional maturity line |
 | `MovementItem` | table `<tr>` markup | **Net-new** | `trades/_trade_row`, `portfolios/_positions_table` |
 | `MarketCard` | — | **Net-new** | `components/_kpi_card` is the right shape but is dead (§B) |
 | `NavRow` | — | **Net-new** | nothing in code has this shape |
@@ -60,9 +60,10 @@ shape before it shipped.
 |---|---|
 | `_asset_fundamentals` | `MarketData::Handlers::BroadcastFundamentalsUpdate` replaces `#asset_fundamentals_<id>`. That id exists **only inside this partial**, and no view renders the partial — so the broadcast is a silent no-op. Its spec asserts the broadcast call was made, so it passes. Compare `_asset_price`, whose target really is mounted by two tables: same mechanism, wired. |
 
-Decide in slice 3 (asset detail): either mount the frame or delete handler, partial and spec
+Decide in the asset-detail slice: either mount the frame or delete handler, partial and spec
 together. The `rescue ActionView::MissingTemplate` inside the handler is stale — it guards
-against a partial that has existed for a long time.
+against a partial that has existed for a long time. (Slice 3 turned out to be Panorama, not the
+asset detail, so this is still open.)
 
 ### Alive (11)
 
@@ -70,11 +71,11 @@ against a partial that has existed for a long time.
 |---|---|---|
 | `_asset_badge` | 10 | Survives. Folds into `AssetRow` / `MovementItem` as their leading element. |
 | `_empty_state` | 7 | Survives, restyled — the design gives the empty states real content (`activos-cartera-vacia`). |
-| `_sparkline` | 4 | Survives. Becomes part of `AssetRow`. |
+| `_sparkline` | 4 | ✅ **Rewritten in slice 3** — a line, not bars, and `_asset_row` now passes real `heights` instead of drawing an invented shape. |
 | `_skeleton` | 4 | Survives as-is. No kit equivalent and none needed. |
 | `_donut_chart` | 3 | Survives → Consolidado (slice 4). Kit gap: it needs a categorical ramp, still open. |
 | `_data_status` | 2 | Survives; freshness is still shown in the design. |
-| `_index_card` | 2 | Survives → Panorama market cards. Check against `MarketCard` before keeping both. |
+| `_index_card` | 2 | ⚠ **Orphaned by slice 3.** Panorama has no market-index card in the design, and `MajorIndices` lost its last caller. Decide in slice 4: mount or delete. |
 | `_asset_price` | broadcast | Survives — the live-price mechanism the design keeps. |
 | ~~`_global_search`~~ | — | **Deleted in the shell slice.** The redesigned TopBar is logo + bell, and search's new home is Activos › Rastreados, which slice 2 builds. `/search` stays routable with no entry point; a spec pins that. |
 | ~~`_notification_panel`~~ | — | **Deleted in the shell slice.** D13 made the inbox a screen, so the bell navigates to `/notifications` instead of opening a dropdown. |

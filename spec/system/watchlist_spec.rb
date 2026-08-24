@@ -54,9 +54,11 @@ RSpec.describe "Watchlist management", type: :system do
     expect(page).not_to have_content("Apple Inc.")
   end
 
-  it "shows empty watchlist state on dashboard" do
-    visit dashboard_path
-    # Dashboard empty state copy: from app/views/dashboard/_watchlist_table.html.erb
-    expect(page).to have_content("Aún no sigues ningún activo.")
+  # The watchlist left the cockpit with the redesign: Panorama's Radar mixes
+  # held and watched, and the list itself lives under Activos > Sigo.
+  it "shows the empty watchlist state under Activos" do
+    visit assets_path(tab: "sigo")
+
+    expect(page).to have_content(I18n.t("assets.index.vacio_sigo_titulo"))
   end
 end

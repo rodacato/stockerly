@@ -1,0 +1,29 @@
+<%# Locals: observation (TechnicalObservation)
+    ADR-013: the verb is a lookup over this persisted row, the phrase that
+    produced it stays visible, and a reading older than today says so. %>
+<% asset = observation.asset %>
+<% action = observation_action(observation) %>
+<% rsi = observation.indicator_snapshot["rsi"] %>
+<% stale = observation.observed_at.to_date < Date.current %>
+<%= link_to market_asset_path(asset.symbol),
+            class: "flex items-start gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
+  <span class="material-symbols-outlined mt-0.5 shrink-0 text-lg <%= action == :sell ? "text-warning-fg" : "text-positive-fg" %>"
+        aria-hidden="true"><%= action == :sell ? "north_east" : "south_east" %></span>
+
+  <div class="min-w-0 flex-1">
+    <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
+    <p class="text-xs text-fg-subtle">
+      <%= observation_phrase(observation) %><%= " · RSI #{rsi.to_f.round}" if rsi %>
+    </p>
+    <% if stale %>
+      <p class="mt-0.5 font-mono text-[11px] text-fg-subtle"><%= observation_when(observation.observed_at) %></p>
+    <% end %>
+  </div>
+
+  <% if action %>
+    <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold
+                 <%= action == :sell ? "bg-warning-bg text-warning-fg" : "bg-positive-bg text-positive-fg" %>">
+      <%= t("comun.accion.#{action}") %>
+    </span>
+  <% end %>
+<% end %>
