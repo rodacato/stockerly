@@ -4,6 +4,10 @@
     shape is generic and says nothing — pass real ones wherever they exist. %>
 <% direction ||= :up %>
 <% heights ||= nil %>
+<%# Colour follows the same closes that draw the shape. Taking it from the
+    caller's 24h change instead paints a falling line green whenever the week
+    and the day disagree. %>
+<% direction = heights.last < heights.first ? :down : :up if heights.present? %>
 <% stroke = case direction.to_sym
    when :up   then "stroke-positive"
    when :down then "stroke-negative"
