@@ -44,10 +44,11 @@ RSpec.describe "Historical FX in period figures", type: :model do
   end
 
   it "reports day_gain against yesterday's own rate, not today's" do
-    portfolio.update!(buying_power: 60_000)
-    summary = Trading::Domain::PortfolioSummary.new(portfolio, currency: "MXN")
+    asset = create(:asset, :stock, symbol: "WALMEX", currency: "MXN", current_price: 100)
+    create(:position, portfolio: portfolio, asset: asset, shares: 600, avg_cost: 80, status: :open)
+    summary = Trading::Domain::PortfolioSummary.new(portfolio.reload, currency: "MXN")
 
-    # Yesterday: USD 3,000 at 17.00 = 51,000 MXN. Today: 60,000 MXN in cash.
+    # Yesterday: USD 3,000 at 17.00 = 51,000 MXN. Today: 600 × 100 = 60,000 MXN.
     # Honest gain is 9,000; valuing yesterday at today's 17.50 would say 7,500.
     expect(summary.day_gain.absolute).to eq(9_000)
   end

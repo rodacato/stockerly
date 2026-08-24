@@ -23,7 +23,6 @@ RSpec.describe "Panorama", type: :request do
     end
 
     it "declares MXN once on the strip and drops the symbol from the figure" do
-      portfolio.update!(buying_power: 0)
       asset = mxn_asset(symbol: "AMXL", current_price: 15, change_percent_24h: 1.0)
       create(:position, portfolio: portfolio, asset: asset, shares: 1_000, avg_cost: 12, status: :open)
 
@@ -153,11 +152,10 @@ RSpec.describe "Panorama", type: :request do
   describe "the patrimonio strip and late capture" do
     # This screen rendered "+20.0% hoy" for a purchase recorded late.
     it "does not report a backdated purchase as today's move" do
-      portfolio.update!(buying_power: 0)
       held = mxn_asset(symbol: "HELD", current_price: 10, change_percent_24h: 0)
       create(:position, portfolio: portfolio, asset: held, shares: 500, avg_cost: 10, status: :open)
       portfolio.snapshots.create!(date: Date.yesterday, currency: "MXN",
-                                  total_value: 5_000, cash_value: 0, invested_value: 5_000)
+                                  total_value: 5_000, invested_value: 5_000)
       mxn_asset(symbol: "NEW", current_price: 10, change_percent_24h: 0)
 
       Trading::UseCases::ExecuteTrade.call(user: user, params: {

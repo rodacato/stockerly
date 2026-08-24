@@ -4,7 +4,7 @@ RSpec.describe Trading::UseCases::RebuildSnapshots do
   let(:user) { create(:user, preferred_currency: "MXN", onboarded_at: Time.current) }
   let(:portfolio) do
     (user.portfolio || create(:portfolio, user: user))
-      .tap { |p| p.update!(buying_power: 0, inception_date: 30.days.ago.to_date) }
+      .tap { |p| p.update!(inception_date: 30.days.ago.to_date) }
   end
   let(:asset) { create(:asset, :stock, symbol: "WALMEX", currency: "MXN", current_price: 70) }
 
@@ -20,7 +20,7 @@ RSpec.describe Trading::UseCases::RebuildSnapshots do
   # The exact reproduction from D27.
   it "corrects a snapshot that predates a backdated trade" do
     portfolio.snapshots.create!(date: 5.days.ago.to_date, currency: "MXN",
-                                total_value: 0, cash_value: 0, invested_value: 0)
+                                total_value: 0, invested_value: 0)
     buy(100, 10, on: 5.days.ago)
     close(10, on: 5.days.ago.to_date)
 
@@ -74,17 +74,5 @@ RSpec.describe Trading::UseCases::RebuildSnapshots do
   it "does nothing when the range is empty" do
     expect(described_class.call(portfolio: portfolio, from: 5.days.from_now.to_date)).to eq(0)
     expect(portfolio.snapshots).to be_empty
-  end
-
-  it "carries buying_power through as cash, leaving D26 where it is" do
-    portfolio.update!(buying_power: 2_500)
-    buy(100, 10, on: 1.day.ago)
-    close(10, on: 1.day.ago.to_date)
-
-    described_class.call(portfolio: portfolio, from: 1.day.ago.to_date)
-
-    snapshot = portfolio.snapshots.find_by(date: 1.day.ago.to_date)
-    expect(snapshot.cash_value).to eq(2_500)
-    expect(snapshot.total_value).to eq(3_500)
   end
 end

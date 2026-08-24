@@ -22,8 +22,7 @@
 <%# 3 KPI cards — es-MX titles, MXN/USD ISO prefix, mono numbers %>
 <% ug = @summary.unrealized_gain %>
 <% dg = @summary.day_gain %>
-<% bp_pct = @summary.total_value.positive? ? (@summary.buying_power / @summary.total_value * 100) : 0 %>
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
   <%= render "dashboard/kpi_card",
       icon:   "account_balance_wallet",
       title:  "Valor total del portafolio",
@@ -38,11 +37,6 @@
       change:  { sign: ug.positive? ? "+" : "−", amount: number_with_precision(ug.percent.abs, precision: 2), label: "", positive: ug.positive? },
       caption: @portfolio.inception_date.present? ? "Desde #{l(@portfolio.inception_date, format: '%d %b %Y')}" : nil %>
 
-  <%= render "dashboard/kpi_card",
-      icon:    "savings",
-      title:   "Saldo disponible",
-      value:   format_currency_mx(@summary.buying_power, currency: @currency),
-      caption: "#{number_with_precision(bp_pct, precision: 1)}% del portafolio" %>
 </div>
 
 <%# Performance Chart %>

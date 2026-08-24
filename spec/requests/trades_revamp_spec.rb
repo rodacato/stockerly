@@ -5,7 +5,7 @@ require "rails_helper"
 # Behavioral specs for create/update/destroy live in spec/requests/trades_spec.rb.
 RSpec.describe "Trades revamp (S09 #98 + S11 #145)", type: :request do
   let(:user) { create(:user, email: "t98@example.com", preferred_currency: "MXN", password: "password123") }
-  let!(:portfolio) { create(:portfolio, user: user, buying_power: 50_000.0) }
+  let!(:portfolio) { create(:portfolio, user: user) }
   let(:mxn_asset) { create(:asset, :mexican, symbol: "ICA", currency: "MXN", current_price: 50.0) }
   let(:usd_asset) { create(:asset, symbol: "AAPL", currency: "USD", current_price: 189.0) }
 

@@ -19,14 +19,14 @@ RSpec.describe Trading::Domain::PeriodReturnsCalculator do
     end
 
     context "with snapshots" do
-      let!(:portfolio) { create(:portfolio, user: user, buying_power: 0) }
+      let!(:portfolio) { create(:portfolio, user: user) }
       let!(:asset) { create(:asset, :stock, symbol: "AAPL", current_price: 200.0) }
       let!(:position) { create(:position, portfolio: portfolio, asset: asset, shares: 10.0, avg_cost: 150.0, status: :open) }
 
       before do
-        create(:portfolio_snapshot, portfolio: portfolio, date: 2.months.ago.to_date, total_value: 1800.0, cash_value: 0, invested_value: 1800.0)
-        create(:portfolio_snapshot, portfolio: portfolio, date: 2.weeks.ago.to_date, total_value: 1900.0, cash_value: 0, invested_value: 1900.0)
-        create(:portfolio_snapshot, portfolio: portfolio, date: 2.days.ago.to_date, total_value: 1950.0, cash_value: 0, invested_value: 1950.0)
+        create(:portfolio_snapshot, portfolio: portfolio, date: 2.months.ago.to_date, total_value: 1800.0, invested_value: 1800.0)
+        create(:portfolio_snapshot, portfolio: portfolio, date: 2.weeks.ago.to_date, total_value: 1900.0, invested_value: 1900.0)
+        create(:portfolio_snapshot, portfolio: portfolio, date: 2.days.ago.to_date, total_value: 1950.0, invested_value: 1950.0)
       end
 
       it "computes 1M return using the nearest snapshot" do
@@ -41,7 +41,7 @@ RSpec.describe Trading::Domain::PeriodReturnsCalculator do
         results = calculator.calculate
 
         all_time = results["ALL"]
-        # current value: 10 * 200 + 0 buying_power = 2000, first snapshot: 1800
+        # current value: 10 * 200 = 2000, first snapshot: 1800
         expect(all_time.absolute).to eq(200.0)
         expect(all_time.percent).to be_within(0.5).of(11.11)
       end
@@ -58,10 +58,10 @@ RSpec.describe Trading::Domain::PeriodReturnsCalculator do
 
   describe "#chart_data" do
     before do
-      create(:portfolio_snapshot, portfolio: portfolio, date: 3.weeks.ago.to_date, total_value: 1800.0, cash_value: 0, invested_value: 1800.0)
-      create(:portfolio_snapshot, portfolio: portfolio, date: 2.weeks.ago.to_date, total_value: 1850.0, cash_value: 0, invested_value: 1850.0)
-      create(:portfolio_snapshot, portfolio: portfolio, date: 1.week.ago.to_date, total_value: 1900.0, cash_value: 0, invested_value: 1900.0)
-      create(:portfolio_snapshot, portfolio: portfolio, date: 2.months.ago.to_date, total_value: 1700.0, cash_value: 0, invested_value: 1700.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 3.weeks.ago.to_date, total_value: 1800.0, invested_value: 1800.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 2.weeks.ago.to_date, total_value: 1850.0, invested_value: 1850.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 1.week.ago.to_date, total_value: 1900.0, invested_value: 1900.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 2.months.ago.to_date, total_value: 1700.0, invested_value: 1700.0)
     end
 
     it "returns data points for the given period" do

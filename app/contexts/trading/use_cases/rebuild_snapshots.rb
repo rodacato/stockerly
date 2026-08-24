@@ -11,11 +11,8 @@ module Trading
         return 0 if range.nil?
 
         valuation = Domain::HistoricalValuation.new(portfolio, currency: currency)
-        cash = portfolio.buying_power
 
-        range.count do |date|
-          write(portfolio, date, currency, valuation.invested_on(date), cash)
-        end
+        range.count { |date| write(portfolio, date, currency, valuation.invested_on(date)) }
       end
 
       private
@@ -31,14 +28,9 @@ module Trading
 
       # Idempotent by (portfolio_id, date), which carries a unique index —
       # a rebuild that raced the nightly job would otherwise collide.
-      def write(portfolio, date, currency, invested, cash)
+      def write(portfolio, date, currency, invested)
         snapshot = portfolio.snapshots.find_or_initialize_by(date: date)
-        snapshot.update!(
-          currency: currency,
-          invested_value: invested,
-          cash_value: cash,
-          total_value: invested + cash
-        )
+        snapshot.update!(currency: currency, invested_value: invested, total_value: invested)
         true
       end
     end

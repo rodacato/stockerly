@@ -22,7 +22,6 @@ class TakeSnapshotsJob < ApplicationJob
       date: Date.current,
       currency: currency,
       total_value: portfolio.total_value(currency: currency),
-      cash_value: portfolio.buying_power,
       invested_value: portfolio.invested_value(currency: currency)
     )
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique

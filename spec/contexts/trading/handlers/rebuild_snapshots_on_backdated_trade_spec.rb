@@ -4,7 +4,7 @@ RSpec.describe Trading::Handlers::RebuildSnapshotsOnBackdatedTrade do
   let(:user) { create(:user, preferred_currency: "MXN", onboarded_at: Time.current) }
   let(:portfolio) do
     (user.portfolio || create(:portfolio, user: user))
-      .tap { |p| p.update!(buying_power: 0, inception_date: 30.days.ago.to_date) }
+      .tap { |p| p.update!(inception_date: 30.days.ago.to_date) }
   end
   let(:asset) { create(:asset, :stock, symbol: "WALMEX", currency: "MXN", current_price: 10) }
 

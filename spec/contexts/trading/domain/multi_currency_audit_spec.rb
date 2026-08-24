@@ -25,7 +25,7 @@ require "rails_helper"
 
 RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
   let(:user)      { create(:user, preferred_currency: "MXN") }
-  let(:portfolio) { create(:portfolio, user: user, buying_power: 0) }
+  let(:portfolio) { create(:portfolio, user: user) }
   let(:asset)     { create(:asset, symbol: "AAPL", currency: "USD", current_price: 155.0) }
 
   let!(:fx_today) do
@@ -115,7 +115,7 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
       expect(p.invested_value(currency: "MXN").to_f).to be_within(0.01).of(54_250.0)
     end
 
-    it "Portfolio#total_value(currency: 'MXN') = invested + buying_power(0) = 54,250 MXN" do
+    it "Portfolio#total_value(currency: 'MXN') = invested = 54,250 MXN" do
       expect(p.total_value(currency: "MXN").to_f).to be_within(0.01).of(54_250.0)
     end
 
@@ -168,7 +168,6 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
              portfolio: portfolio,
              date: Date.yesterday,
              total_value: 52_500.0,
-             cash_value: 0,
              invested_value: 52_500.0,
              currency: "MXN")
     end
@@ -182,9 +181,9 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
 
     it "PeriodReturnsCalculator with same-currency historical snapshots" do
       create(:portfolio_snapshot, portfolio: portfolio, date: 7.days.ago,
-             total_value: 50_000.0, cash_value: 0, invested_value: 50_000.0, currency: "MXN")
+             total_value: 50_000.0, invested_value: 50_000.0, currency: "MXN")
       create(:portfolio_snapshot, portfolio: portfolio, date: 30.days.ago,
-             total_value: 49_000.0, cash_value: 0, invested_value: 49_000.0, currency: "MXN")
+             total_value: 49_000.0, invested_value: 49_000.0, currency: "MXN")
 
       result = Trading::Domain::PeriodReturnsCalculator.new(portfolio).calculate
       # 7-day: 54,250 - 50,000 = 4,250 / 50,000 = 8.5%
@@ -212,7 +211,6 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
              portfolio: portfolio,
              date: Date.yesterday,
              total_value: 3_000.0,       # USD value from before currency toggle
-             cash_value: 0,
              invested_value: 3_000.0,
              currency: "USD")
     end
@@ -227,7 +225,7 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
 
     it "period_returns revalues each cross-currency snapshot at TODAY's FX (FX-on-principal ignored)" do
       create(:portfolio_snapshot, portfolio: portfolio, date: 30.days.ago,
-             total_value: 2_800.0, cash_value: 0, invested_value: 2_800.0, currency: "USD")
+             total_value: 2_800.0, invested_value: 2_800.0, currency: "USD")
       result = Trading::Domain::PeriodReturnsCalculator.new(portfolio).calculate
       # Current: 30-day USD 2,800 × today's 17.50 = 49,000 baseline → 10.71%
       # Honest: need historical FX from 30 days ago to compute true MXN baseline
@@ -253,7 +251,7 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
 
   describe "Inverse asymmetry check (USD-preferred user same scenario)" do
     let(:usd_user)      { create(:user, preferred_currency: "USD") }
-    let(:usd_portfolio) { create(:portfolio, user: usd_user, buying_power: 0) }
+    let(:usd_portfolio) { create(:portfolio, user: usd_user) }
     let!(:usd_position) do
       create(:position, portfolio: usd_portfolio, asset: asset, shares: 20, avg_cost: 155.0, status: :open).tap do |pos|
         create(:trade, portfolio: usd_portfolio, asset: asset, position: pos, side: :buy,

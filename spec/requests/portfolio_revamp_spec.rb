@@ -5,7 +5,7 @@ require "rails_helper"
 # portfolio_allocation_spec, chart_tooltips_spec) cover layout-specific behavior.
 RSpec.describe "Portfolio revamp (S09 #91)", type: :request do
   let(:user) { create(:user, email: "p91@example.com", preferred_currency: "MXN", password: "password123") }
-  let!(:portfolio) { create(:portfolio, user: user, buying_power: 10_000.0) }
+  let!(:portfolio) { create(:portfolio, user: user) }
 
   before do
     login_as(user)
@@ -24,10 +24,14 @@ RSpec.describe "Portfolio revamp (S09 #91)", type: :request do
       expect(response.body).to include("Posiciones y movimientos")
     end
 
-    it "renders the three S09 KPI titles in es-MX" do
+    it "renders the KPI titles in es-MX" do
       expect(response.body).to include("Valor total del portafolio")
       expect(response.body).to include("Ganancia no realizada")
-      expect(response.body).to include("Saldo disponible")
+    end
+
+    # D26: the third card reported a balance nothing ever wrote to.
+    it "no longer offers a cash balance" do
+      expect(response.body).not_to include("Saldo disponible")
     end
 
     it "formats currency with MXN ISO prefix" do

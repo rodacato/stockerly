@@ -14,14 +14,8 @@ class Portfolio < ApplicationRecord
     positions.where(status: :closed)
   end
 
-  # buying_power is always denominated in the owner's preferred_currency
-  # (deposits/withdrawals happen in that currency on Stockerly's books).
-  def buying_power_currency
-    user.preferred_currency
-  end
-
   def total_value(currency: user.preferred_currency)
-    invested_value(currency: currency) + buying_power_in(currency)
+    invested_value(currency: currency)
   end
 
   def invested_value(currency: user.preferred_currency)
@@ -102,10 +96,6 @@ class Portfolio < ApplicationRecord
   def position_market_value_in(position, target_currency)
     raw = position.shares * (position.asset.current_price || 0)
     convert(raw, from: position.asset.currency, to: target_currency)
-  end
-
-  def buying_power_in(target_currency)
-    convert(buying_power, from: buying_power_currency, to: target_currency)
   end
 
   def fx_rate_cache
