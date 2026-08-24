@@ -32,3 +32,29 @@ with grep counts.
 - The `cockpit.pen` components map 1:1 to `app/views/components/`. Translate after the flow is
   approved (per README fidelity loop). Confluence engine (Light 2 + window) is NOT built here —
   gated on its 4-filter card (D3).
+
+## 4. Activos tab — Cartera vs Sigo (D9, D10)
+
+**Status:** pending — design done (`flows/assets.pen`), code revamp not started.
+
+- Measure before landing: `grep -rn "watchlist" app/views | wc -l` and `grep -rn "Tus posiciones" app/views`
+  — the second currently returns [`app/views/dashboard/_watchlist_table.html.erb`](../app/views/dashboard/_watchlist_table.html.erb),
+  which titles the **watchlist** as positions (the 🐞 in D9).
+- Split the surface the way the design does: one `Activos` route with a segmented control —
+  `Cartera` reads `portfolio.open_positions`, `Sigo` reads `watchlist_items`. Never one merged list.
+- Third tier `Rastreados` = `Asset.syncing`, its own screen (not a peer tab). It absorbs
+  `/admin/assets` — same list, same `toggle_status`/`trigger_sync` actions, minus the admin costume
+  (D5 killed that framing for a single-user instance). Surface the priority ladder honestly: the
+  `DAILY_BUDGET = 25` split across positions → watchlist → rest, straight from
+  `SyncAllFundamentalsJob#prioritized_assets`.
+- Tier transitions are one tap in both directions and name what they buy (following → watchlist
+  sentiment + news/earnings filters; owning → dividends and splits sync at all).
+- Surface `watchlist_items.entry_price` as "sigues +X%" — the column exists and nothing renders it today.
+- Money format per D10: section header declares the currency, rows drop the symbol; off-currency
+  values keep the ISO prefix from `format_currency_mx`.
+- Trade sheet: auto-fill the Banxico FX for the trade date and persist it as `fx_rate_at_execution`
+  (the multi-currency P0 and the data-entry fastidio are the same commit).
+- Trade sheet mechanics per D11 — this is where the mobile browser bites: native `<dialog>`,
+  `max-height: 85dvh`, internal scroll with a **sticky Total + Guardar footer**, `visualViewport`
+  listener instead of `bottom: 0`, `env(safe-area-inset-bottom)`, `<input type="date">` and
+  `inputmode="decimal"`. The `Con teclado` artboard is the acceptance target, not the clean one.
