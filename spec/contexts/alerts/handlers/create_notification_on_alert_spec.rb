@@ -20,8 +20,21 @@ RSpec.describe Alerts::Handlers::CreateNotificationOnAlert do
       }.to change(Notification, :count).by(1)
 
       notification = Notification.last
-      expect(notification.title).to include("AAPL")
+      expect(notification.title).to eq("AAPL cruzó USD 200.00 al alza")
       expect(notification.notification_type).to eq("alert_triggered")
+    end
+
+    it "reports the trigger price with its currency and does not restate the title" do
+      described_class.call(
+        alert_rule_id: rule.id,
+        user_id: user.id,
+        asset_symbol: "AAPL",
+        triggered_price: "200.14"
+      )
+
+      notification = Notification.last
+      expect(notification.body).to include("USD 200.14")
+      expect(notification.body).not_to include(notification.title)
     end
   end
 end

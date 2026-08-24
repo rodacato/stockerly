@@ -47,11 +47,13 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
 
     it "renders the Preferencias tab with theme, currency selector and 3-channel notifications" do
       expect(response.body).to include("Moneda preferida")
-      # 3-channel toggles per S11 #146 (replaces the prior single
-      # "Resumen semanal por correo" toggle).
-      expect(response.body).to include("Avisos por correo")
-      expect(response.body).to include("Avisos en la app")
-      expect(response.body).to include("Avisos por SMS")
+      # Only the channels that actually deliver get a toggle: the digest and
+      # the urgent email. SMS never existed, and the in-app bell cannot be
+      # turned off, so neither is offered as a switch.
+      expect(response.body).to include("Resumen diario por correo")
+      expect(response.body).to include("Avisos urgentes por correo")
+      expect(response.body).not_to include("SMS")
+      expect(response.body).not_to include('data-toggle-field-value="browser_push"')
       # Theme picker
       expect(response.body).to include("Apariencia")
       expect(response.body).to include("Claro")

@@ -91,12 +91,13 @@ RSpec.describe "Alert management", type: :system do
     expect(page).to have_content("cruzó USD 420.00 al alza")
   end
 
-  it "renders the delivery preferences card in es-MX" do
+  it "mirrors the delivery preferences in es-MX, read-only" do
     visit alerts_path
-    expect(page).to have_content("Preferencias de entrega")
-    expect(page).to have_content("Avisos en la app")
+    expect(page).to have_content("Cómo te aviso")
+    expect(page).to have_content("Los avisos siempre llegan a tu campana.")
     expect(page).to have_content("Resumen diario por correo")
     expect(page).to have_content("Avisos urgentes por correo")
+    expect(page).to have_link("Cambiar en Ajustes →", href: profile_path)
   end
 
   it "shows the tabs with active/paused/all counts" do

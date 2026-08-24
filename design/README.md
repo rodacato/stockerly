@@ -47,7 +47,7 @@ screens; smaller ones may merge into a neighbor.
 | `flows/onboarding.pen` | Onboarding | setup, integrations, assets, complete, welcome (+ Setup desktop) | **done · in review** |
 | `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo/black swan), asset detail (Análisis · Mi posición), consolidado | **done · in review** |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | cartera, sigo, cartera vacía, registrar movimiento (sheet + con teclado), rastreados, rastreados·buscar | **done · in review** |
-| `flows/alerts.pen` | Alerts / hard rules | alerts index, rule create/edit, confluence | scaffold |
+| `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (default/vacío), nueva regla (sheet), bandeja, confluencia | **done · in review** |
 | `flows/settings.pen` | Settings + admin | profile (password/prefs/currency), admin integrations/pool-keys/logs/settings | scaffold |
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for

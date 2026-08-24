@@ -54,20 +54,23 @@ RSpec.describe "Profile layout (S11 #146)", type: :system do
     end
   end
 
-  describe "3-channel notification preferences" do
+  describe "notification preferences" do
     before { visit profile_path }
 
-    it "renders one row per channel with a toggle" do
-      expect(page).to have_content("Avisos por correo")
-      expect(page).to have_content("Avisos en la app")
-      expect(page).to have_content("Avisos por SMS")
+    it "offers a toggle only for the channels that actually deliver" do
+      expect(page).to have_content("Resumen diario por correo")
+      expect(page).to have_content("Avisos urgentes por correo")
       expect(page).to have_css('[data-toggle-field-value="email_digest"]')
-      expect(page).to have_css('[data-toggle-field-value="browser_push"]')
-      expect(page).to have_css('[data-toggle-field-value="sms_notifications"]')
+      expect(page).to have_css('[data-toggle-field-value="urgent_email"]')
     end
 
-    it "displays the matrix-stub disclaimer about shared channels" do
-      expect(page).to have_content("Pronto podrás elegir el canal por tipo de notificación.")
+    it "offers no toggle for channels the app cannot send" do
+      expect(page).to have_no_content("SMS")
+      expect(page).to have_no_css('[data-toggle-field-value="browser_push"]')
+    end
+
+    it "says the in-app bell is not optional instead of faking a switch for it" do
+      expect(page).to have_content("Todo aviso llega a tu campana en la app; eso no se apaga.")
     end
   end
 

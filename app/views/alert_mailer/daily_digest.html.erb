@@ -1,0 +1,21 @@
+<h1 style="font-family: sans-serif; font-size: 20px; margin: 0 0 4px;">Tu resumen de hoy</h1>
+<p style="font-family: sans-serif; font-size: 14px; color: #64748B; margin: 0 0 20px;">
+  Esto es lo que pasó con lo que sigues. Nada aquí es una recomendación.
+</p>
+
+<% @notifications.each do |notification| %>
+  <div style="border-top: 1px solid #E7E3D9; padding: 12px 0;">
+    <p style="font-family: sans-serif; font-size: 15px; font-weight: 600; color: #0F172A; margin: 0 0 2px;">
+      <%= notification.title %>
+    </p>
+    <% if notification.body.present? %>
+      <p style="font-family: sans-serif; font-size: 13px; color: #64748B; margin: 0;">
+        <%= notification.body %>
+      </p>
+    <% end %>
+  </div>
+<% end %>
+
+<p style="font-family: sans-serif; font-size: 13px; color: #64748B; margin: 24px 0 0;">
+  Abre Stockerly para ver el detalle. Puedes apagar este resumen en Ajustes.
+</p>
