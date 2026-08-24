@@ -94,6 +94,12 @@ production:
     class: SyncCetesJob
     schedule: "0 10 * * 0"
 
+  # Auctions are weekly; this keeps the rate series the Consolidado's benchmark
+  # reinvests against (D28). Monday morning, after the week's auction settled.
+  sync_cetes_history:
+    class: SyncCetesHistoryJob
+    schedule: "30 10 * * 1"
+
   notify_earnings:
     class: NotifyEarningsJob
     schedule: at 7am every day

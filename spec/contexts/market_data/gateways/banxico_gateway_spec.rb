@@ -3,6 +3,34 @@ require "rails_helper"
 RSpec.describe MarketData::Gateways::BanxicoGateway do
   subject(:gateway) { described_class.new(api_key: "test_token") }
 
+  describe "#fetch_auction_series" do
+    let(:from) { Date.new(2026, 1, 1) }
+    let(:to)   { Date.new(2026, 2, 1) }
+
+    it "returns every auction in the range, not just the latest" do
+      stub_banxico_auction_series(from: from, to: to, auctions: [
+        { fecha: "08/01/2026", dato: "10.15" },
+        { fecha: "15/01/2026", dato: "10.05" }
+      ])
+
+      result = gateway.fetch_auction_series(term: "28", from: from, to: to)
+
+      expect(result).to be_success
+      expect(result.value!.map { |a| a[:yield_rate] }).to eq([ 10.15, 10.05 ])
+      expect(result.value!.first[:auction_date]).to eq(Date.new(2026, 1, 8))
+    end
+
+    it "refuses a term Banxico does not auction" do
+      expect(gateway.fetch_auction_series(term: "45", from: from, to: to)).to be_failure
+    end
+
+    it "fails rather than raising on a gateway error" do
+      stub_request(:get, %r{series/SF43936/datos/}).to_return(status: 500)
+
+      expect(gateway.fetch_auction_series(term: "28", from: from, to: to)).to be_failure
+    end
+  end
+
   describe "#fetch_auctions" do
     context "when Banxico returns valid data" do
       before { stub_banxico_auctions(term: "28", yield_rate: 11.15, date: "25/02/2026") }

@@ -754,6 +754,28 @@ module WebmockHelpers
       )
   end
 
+  # D28: the ranged form of the auction endpoint. `datos` carries one entry per
+  # auction, which parse_auctions already walks.
+  def stub_banxico_auction_series(term: "28", from:, to:, auctions: [])
+    series_id = MarketData::Gateways::BanxicoGateway::CETES_SERIES[term.to_s]
+    path = "series/#{series_id}/datos/#{from.strftime("%Y-%m-%d")}/#{to.strftime("%Y-%m-%d")}"
+
+    stub_request(:get, "#{MarketData::Gateways::BanxicoGateway::BASE_URL}#{path}")
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {
+          bmx: {
+            series: [ {
+              "idSerie" => series_id,
+              "titulo" => "CETES #{term}D",
+              "datos" => auctions.map { |a| { "fecha" => a[:fecha], "dato" => a[:dato].to_s } }
+            } ]
+          }
+        }.to_json
+      )
+  end
+
   def stub_banxico_not_found(term: "28")
     series_id = MarketData::Gateways::BanxicoGateway::CETES_SERIES[term.to_s]
     stub_request(:get, "#{MarketData::Gateways::BanxicoGateway::BASE_URL}series/#{series_id}/datos/oportuno")

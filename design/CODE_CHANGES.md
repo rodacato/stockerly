@@ -219,8 +219,17 @@ production those sit behind a Cloudflare Tunnel whose cache rules key on the pat
 
 - Reuse as-is: `Trading::Domain::PortfolioSummary`, `PeriodReturnsCalculator#chart_data`,
   `Portfolio#allocation_by_asset_type` / `#allocation_by_sector`, daily `portfolio_snapshots`.
-- Benchmark data needs **no new gateway**: `MarketData::Gateways::BanxicoGateway#fetch_auctions`
-  already returns CETES rates per term (`CETES_SERIES`).
+- ✅ **The TWR engine exists** — `Trading::Domain::TimeWeightedReturn`, with flow valuation shared
+  with `day_gain` through `Trading::Domain::ExternalFlows`. A spec compares it against the
+  money-weighted figure on D12's own scenario.
+- ✅ **The CETES benchmark has its rates** (D28). This section said the benchmark "needs no new
+  gateway" — true and incomplete: `fetch_auctions` asked for `datos/oportuno`, the latest auction
+  only, and nothing persisted a history. `fetch_auction_series` + `cetes_rate_histories` +
+  `CetesReinvestedReturn` now cover it, following the pattern slice 2b built for FX.
+- ⬜ **What is left of this slice: the screen.** All four blocks have their data — the strip, the
+  two-series chart (where `lightweight-charts` finally earns its debut), both comparison cards, and
+  the allocation donut. One conflict to settle when it is built: the artboard's strip shows
+  **"Invertido / Disponible"**, and `Disponible` was `buying_power`, deleted by D26.
 - ✅ **D27 is fixed — both halves, on `fix/snapshot-history-alignment`.** `day_gain` subtracts the
   day's external flows, `executed_at` is bounded at today, and `RebuildSnapshots` rewrites the
   history from the trades whenever one is recorded, edited or discarded with a past date. So the

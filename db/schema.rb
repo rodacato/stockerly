@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_24_220000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_24_230000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -145,6 +145,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_220000) do
     t.index ["auditable_type", "auditable_id"], name: "index_audit_logs_on_auditable"
     t.index ["created_at"], name: "index_audit_logs_on_created_at"
     t.index ["user_id", "created_at"], name: "index_audit_logs_on_user_id_and_created_at"
+  end
+
+  create_table "cetes_rate_histories", force: :cascade do |t|
+    t.date "auction_date", null: false
+    t.datetime "created_at", null: false
+    t.string "source", default: "banxico", null: false
+    t.string "term", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "yield_rate", precision: 8, scale: 4, null: false
+    t.index ["auction_date"], name: "index_cetes_rate_histories_on_auction_date"
+    t.index ["term", "auction_date"], name: "index_cetes_rate_histories_on_term_and_date", unique: true
   end
 
   create_table "dividend_payments", force: :cascade do |t|

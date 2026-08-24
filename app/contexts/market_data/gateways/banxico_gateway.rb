@@ -30,17 +30,7 @@ module MarketData
     # Fetch latest auction result for a specific CETES term.
     # Returns Success([{ term:, yield_rate:, price:, auction_date: }])
     def fetch_auctions(term: "28")
-      series_id = CETES_SERIES[term.to_s]
-      return Failure([ :not_found, "Unknown CETES term: #{term}" ]) unless series_id
-
-      response = connection.get("series/#{series_id}/datos/oportuno")
-
-      return Failure([ :rate_limited, "Banxico rate limit exceeded" ]) if response.status == 429
-      return Failure([ :gateway_error, "Banxico returned #{response.status}" ]) unless response.success?
-
-      parse_auctions(response.body, term.to_s)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      auctions_for(term, "oportuno")
     end
 
     # The USD/MXN FIX for a date range, oldest first.
@@ -56,6 +46,14 @@ module MarketData
       parse_fixes(response.body)
     rescue Faraday::Error => e
       Failure([ :gateway_error, e.message ])
+    end
+
+    # Auction results for a term across a date range, oldest first. Same shape
+    # as fetch_auctions — parse_auctions already walks the whole `datos` array,
+    # so only the path differs. Reinvesting at 28 days across a year is roughly
+    # 13 different rates, and `datos/oportuno` only ever returns the last one.
+    def fetch_auction_series(term: "28", from: Date.current, to: Date.current)
+      auctions_for(term, "#{format_date(from)}/#{format_date(to)}")
     end
 
     # Fetch latest auctions for all CETES terms.
@@ -92,6 +90,22 @@ module MarketData
         f.options.timeout = TIMEOUT
         f.options.open_timeout = TIMEOUT
       end
+    end
+
+    # Both auction endpoints differ only in the path segment after `datos`:
+    # `oportuno` for the latest, a date range for the series.
+    def auctions_for(term, path_segment)
+      series_id = CETES_SERIES[term.to_s]
+      return Failure([ :not_found, "Unknown CETES term: #{term}" ]) unless series_id
+
+      response = connection.get("series/#{series_id}/datos/#{path_segment}")
+
+      return Failure([ :rate_limited, "Banxico rate limit exceeded" ]) if response.status == 429
+      return Failure([ :gateway_error, "Banxico returned #{response.status}" ]) unless response.success?
+
+      parse_auctions(response.body, term.to_s)
+    rescue Faraday::Error => e
+      Failure([ :gateway_error, e.message ])
     end
 
     def parse_auctions(body, term)

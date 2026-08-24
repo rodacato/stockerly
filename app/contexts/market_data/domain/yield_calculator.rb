@@ -21,6 +21,14 @@ module MarketData
         ((gain / purchase_price.to_d) * (360.to_d / days.to_d) * 100).round(4)
       end
 
+      # Simple return over a holding period at an annual yield, as a fraction.
+      # Same 360-day convention as the discount math above.
+      def period_return(annual_yield:, days:)
+        return BigDecimal("0") if days.to_i <= 0
+
+        annual_yield.to_d / 100 * days.to_d / 360
+      end
+
       # Total return in currency for a given quantity of bonds.
       def total_return(face_value:, purchase_price:, quantity:)
         ((face_value.to_d - purchase_price.to_d) * quantity.to_d).round(4)
