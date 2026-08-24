@@ -12,10 +12,6 @@ module Trading
         portfolio.total_value(currency: currency)
       end
 
-      def buying_power
-        portfolio.convert(portfolio.buying_power, from: portfolio.buying_power_currency, to: currency)
-      end
-
       def unrealized_gain
         gain = portfolio.total_unrealized_gain(currency: currency)
         base = total_invested
@@ -56,7 +52,6 @@ module Trading
       def to_h
         {
           total_value: total_value,
-          buying_power: buying_power,
           unrealized_gain: unrealized_gain,
           day_gain: day_gain,
           total_invested: total_invested,

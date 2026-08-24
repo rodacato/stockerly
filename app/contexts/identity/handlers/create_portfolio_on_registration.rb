@@ -6,7 +6,7 @@ module Identity
         user = User.find(user_id)
         return if user.portfolio.present?
 
-        user.create_portfolio!(inception_date: Date.current, buying_power: 0)
+        user.create_portfolio!(inception_date: Date.current)
       end
     end
   end

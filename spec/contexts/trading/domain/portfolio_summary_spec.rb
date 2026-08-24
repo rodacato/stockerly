@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Trading::Domain::PortfolioSummary do
   let(:user) { create(:user) }
-  let(:portfolio) { create(:portfolio, user: user, buying_power: 5000.0) }
+  let(:portfolio) { create(:portfolio, user: user) }
   let(:asset_usd) { create(:asset, current_price: 150.0, sector: "Technology") }
   let(:asset_intl) { create(:asset, symbol: "GENIUSSACV.MX", current_price: 80.0, sector: "Technology") }
 
@@ -14,15 +14,9 @@ RSpec.describe Trading::Domain::PortfolioSummary do
   subject { Trading::Domain::PortfolioSummary.new(portfolio) }
 
   describe "#total_value" do
-    it "returns sum of open positions market value plus buying power" do
-      # (10 * 150) + (20 * 80) + 5000 = 1500 + 1600 + 5000 = 8100
-      expect(subject.total_value).to eq(8100.0)
-    end
-  end
-
-  describe "#buying_power" do
-    it "returns portfolio buying power" do
-      expect(subject.buying_power).to eq(5000.0)
+    it "returns the sum of open position market values" do
+      # (10 * 150) + (20 * 80) = 1500 + 1600
+      expect(subject.total_value).to eq(3100.0)
     end
   end
 
@@ -44,12 +38,12 @@ RSpec.describe Trading::Domain::PortfolioSummary do
     end
 
     it "calculates day gain from yesterday snapshot" do
-      create(:portfolio_snapshot, portfolio: portfolio, date: Date.yesterday, total_value: 7800.0, cash_value: 5000.0, invested_value: 2800.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: Date.yesterday, total_value: 2800.0, invested_value: 2800.0)
 
       result = subject.day_gain
-      # today: 8100 - yesterday: 7800 = 300
+      # today: 3100 - yesterday: 2800 = 300
       expect(result.absolute).to eq(300.0)
-      expect(result.percent).to be_within(0.01).of(3.85)
+      expect(result.percent).to be_within(0.01).of(10.71)
     end
   end
 
@@ -64,7 +58,6 @@ RSpec.describe Trading::Domain::PortfolioSummary do
     it "returns all summary data as a hash" do
       hash = subject.to_h
       expect(hash).to have_key(:total_value)
-      expect(hash).to have_key(:buying_power)
       expect(hash).to have_key(:unrealized_gain)
       expect(hash).to have_key(:day_gain)
       expect(hash).to have_key(:total_invested)

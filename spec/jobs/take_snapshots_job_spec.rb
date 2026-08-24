@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe TakeSnapshotsJob, type: :job do
   describe "#perform" do
     let(:user) { create(:user, preferred_currency: "USD") }
-    let!(:portfolio) { create(:portfolio, user: user, buying_power: 5000) }
+    let!(:portfolio) { create(:portfolio, user: user) }
 
     it "creates a snapshot for each portfolio" do
       expect {
@@ -13,7 +13,6 @@ RSpec.describe TakeSnapshotsJob, type: :job do
       snapshot = PortfolioSnapshot.last
       expect(snapshot.portfolio).to eq(portfolio)
       expect(snapshot.date).to eq(Date.current)
-      expect(snapshot.cash_value.to_f).to eq(5000.0)
     end
 
     it "persists the user's preferred_currency on each snapshot" do
@@ -41,13 +40,13 @@ RSpec.describe TakeSnapshotsJob, type: :job do
 
         snapshot = PortfolioSnapshot.last
         expect(snapshot.invested_value.to_f).to eq(1000.0) # 10 shares * $100
-        expect(snapshot.total_value.to_f).to eq(6000.0)    # 1000 + 5000 buying_power
+        expect(snapshot.total_value.to_f).to eq(1000.0)
       end
     end
 
     context "with mixed-currency positions (Lucía invariant)" do
       let(:user)      { create(:user, preferred_currency: "MXN") }
-      let!(:portfolio) { create(:portfolio, user: user, buying_power: 1_000) }
+      let!(:portfolio) { create(:portfolio, user: user) }
 
       let(:mxn_asset) { create(:asset, :mexican, currency: "MXN", current_price: 200) }
       let(:usd_asset) { create(:asset, currency: "USD", current_price: 100) }
@@ -64,9 +63,7 @@ RSpec.describe TakeSnapshotsJob, type: :job do
         snapshot = PortfolioSnapshot.last
         # 5 × 200 MXN + 2 × 100 USD × 17 MXN/USD = 1000 + 3400 = 4400 MXN
         expect(snapshot.invested_value.to_f).to eq(4400.0)
-        # invested 4400 + buying_power 1000 (already MXN) = 5400 MXN
-        expect(snapshot.total_value.to_f).to eq(5400.0)
-        expect(snapshot.cash_value.to_f).to eq(1000.0)
+        expect(snapshot.total_value.to_f).to eq(4400.0)
         expect(snapshot.currency).to eq("MXN")
 
         # Regression guard — the pre-fix bug summed raw market_value across

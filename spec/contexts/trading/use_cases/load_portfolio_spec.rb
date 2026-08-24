@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Trading::UseCases::LoadPortfolio do
   let(:user) { create(:user) }
-  let!(:portfolio) { create(:portfolio, user: user, buying_power: 5000.0) }
+  let!(:portfolio) { create(:portfolio, user: user) }
   let(:asset) { create(:asset, current_price: 150.0, sector: "Technology") }
 
   describe ".call" do

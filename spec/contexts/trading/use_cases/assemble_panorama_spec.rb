@@ -8,7 +8,6 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
 
   describe "the patrimonio strip" do
     it "consolidates when the rate is there" do
-      portfolio.update!(buying_power: 0)
       asset = mxn_asset(symbol: "WALMEX", current_price: 70)
       create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
 

@@ -16,11 +16,6 @@ RSpec.describe PortfolioSnapshot, type: :model do
       expect(snapshot).not_to be_valid
     end
 
-    it "requires cash_value" do
-      snapshot.cash_value = nil
-      expect(snapshot).not_to be_valid
-    end
-
     it "requires invested_value" do
       snapshot.invested_value = nil
       expect(snapshot).not_to be_valid

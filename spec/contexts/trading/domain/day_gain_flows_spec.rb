@@ -5,14 +5,14 @@ require "rails_helper"
 RSpec.describe Trading::Domain::PortfolioSummary, "#day_gain with external flows" do
   let(:user) { create(:user, preferred_currency: "MXN", onboarded_at: Time.current) }
   let(:portfolio) do
-    (user.portfolio || create(:portfolio, user: user)).tap { |p| p.update!(buying_power: 0) }
+    (user.portfolio || create(:portfolio, user: user))
   end
 
   def mxn_asset(**attrs) = create(:asset, :stock, currency: "MXN", **attrs)
 
   def snapshot_yesterday(total)
     portfolio.snapshots.create!(date: Date.yesterday, currency: "MXN",
-                                total_value: total, cash_value: 0, invested_value: total)
+                                total_value: total, invested_value: total)
   end
 
   def record_trade(symbol:, side: "buy", shares:, price:, on: Date.current)

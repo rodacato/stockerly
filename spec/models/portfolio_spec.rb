@@ -44,16 +44,16 @@ RSpec.describe Portfolio, type: :model do
   end
 
   describe "#total_value" do
-    let(:portfolio) { create(:portfolio, buying_power: 1_000) }
+    let(:portfolio) { create(:portfolio) }
     let(:asset)     { create(:asset, current_price: 100.0) }
 
-    it "sums open position values plus buying power" do
+    it "sums open position market values" do
       create(:position, portfolio: portfolio, asset: asset, shares: 10, status: :open)
-      expect(portfolio.total_value).to eq(2_000.0)
+      expect(portfolio.total_value).to eq(1_000.0)
     end
 
-    it "returns only buying power when no positions" do
-      expect(portfolio.total_value).to eq(1_000.0)
+    it "is zero with no positions — there is no cash concept" do
+      expect(portfolio.total_value).to eq(0)
     end
   end
 

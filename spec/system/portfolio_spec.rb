@@ -6,7 +6,7 @@ RSpec.describe "Portfolio tabs", type: :system do
   end
 
   let!(:user) { create(:user, email: "portfolio@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
-  let!(:portfolio) { create(:portfolio, user: user, buying_power: 5000.0) }
+  let!(:portfolio) { create(:portfolio, user: user) }
   let!(:aapl) { create(:asset, symbol: "AAPL", name: "Apple Inc.", current_price: 189.0) }
   let!(:tsla) { create(:asset, symbol: "TSLA", name: "Tesla, Inc.", current_price: 176.0) }
 
@@ -24,7 +24,7 @@ RSpec.describe "Portfolio tabs", type: :system do
     visit portfolio_path
     expect(page).to have_content("Posiciones y movimientos")
     expect(page).to have_content("Valor total del portafolio")
-    expect(page).to have_content("Saldo disponible")
+    expect(page).to have_content("Ganancia no realizada")
   end
 
   it "shows open positions tab with position data" do

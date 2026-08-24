@@ -37,8 +37,9 @@ end %>
     <%# Type panel (default visible — index 0 pairs with "Por tipo" button) %>
     <div data-tabs-target="panel">
       <% if type_segments.present? %>
-        <% equity_pct = summary.total_value.positive? ? ((summary.total_value - summary.buying_power) / summary.total_value * 100).round(1) : 0 %>
-        <%= render "components/donut_chart", segments: type_segments, center_label: "Invertido", center_value: "#{equity_pct}%" %>
+        <%# No center value: with no cash concept the figure was always 100% (D26). %>
+        <%= render "components/donut_chart", segments: type_segments, center_label: "Invertido",
+                   center_value: format_currency_mx(summary.total_value, currency: summary.currency, precision: 0) %>
         <div class="mt-4 space-y-2">
           <% type_segments.each do |seg| %>
             <div class="flex items-center justify-between text-xs">
@@ -58,8 +59,8 @@ end %>
     <%# Sector panel (hidden by default — index 1 pairs with "Por sector" button) %>
     <div data-tabs-target="panel" class="hidden">
       <% if sector_segments.present? %>
-        <% equity_pct = summary.total_value.positive? ? ((summary.total_value - summary.buying_power) / summary.total_value * 100).round(1) : 0 %>
-        <%= render "components/donut_chart", segments: sector_segments, center_label: "Acciones", center_value: "#{equity_pct}%" %>
+        <%= render "components/donut_chart", segments: sector_segments, center_label: "Acciones",
+                   center_value: format_currency_mx(summary.total_value, currency: summary.currency, precision: 0) %>
         <div class="mt-4 space-y-2">
           <% sector_segments.each do |seg| %>
             <div class="flex items-center justify-between text-xs">

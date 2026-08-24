@@ -6,7 +6,7 @@ RSpec.describe "Recording a trade I made days ago", type: :request do
   let(:user) { create(:user, preferred_currency: "MXN", onboarded_at: Time.current) }
   let(:portfolio) do
     (user.portfolio || create(:portfolio, user: user))
-      .tap { |p| p.update!(buying_power: 0, inception_date: 30.days.ago.to_date) }
+      .tap { |p| p.update!(inception_date: 30.days.ago.to_date) }
   end
 
   before do
@@ -18,7 +18,7 @@ RSpec.describe "Recording a trade I made days ago", type: :request do
     asset = create(:asset, :stock, symbol: "WALMEX", currency: "MXN", current_price: 10)
     create(:asset_price_history, asset: asset, date: 5.days.ago.to_date, close: 10)
     portfolio.snapshots.create!(date: 5.days.ago.to_date, currency: "MXN",
-                                total_value: 0, cash_value: 0, invested_value: 0)
+                                total_value: 0, invested_value: 0)
 
     perform_enqueued_jobs do
       post trades_path, params: {

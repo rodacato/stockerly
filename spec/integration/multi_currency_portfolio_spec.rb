@@ -2,7 +2,7 @@ require "rails_helper"
 
 # End-to-end currency-aware portfolio behavior. The lie this PR fixes:
 # Portfolio#total_value used to sum raw asset-currency BigDecimals across
-# positions, then add buying_power on top — producing a number that
+# positions — producing a number that
 # looked plausible (because Ruby is happy to add 1500 + 1000 = 2500)
 # but conflated USD with MXN as if they were the same unit.
 #
@@ -13,7 +13,7 @@ require "rails_helper"
 RSpec.describe "Multi-currency portfolio", type: :model do
   describe "MXN-preferred user with mixed MXN + USD positions" do
     let(:user)      { create(:user, preferred_currency: "MXN") }
-    let(:portfolio) { create(:portfolio, user: user, buying_power: 10_000) } # MXN
+    let(:portfolio) { create(:portfolio, user: user) } # MXN
 
     let(:aapl) do
       create(:asset, symbol: "AAPL", currency: "USD", current_price: 150.0, sector: "Technology")
@@ -48,16 +48,16 @@ RSpec.describe "Multi-currency portfolio", type: :model do
     end
 
     describe "Portfolio#total_value" do
-      it "converts each position to MXN and adds MXN buying_power" do
+      it "converts each position to MXN before summing" do
         # AAPL: 10 × $150 = $1500 USD × 17.5 = 26,250 MXN
         # CETES: 500 × 10 MXN = 5,000 MXN (native)
-        # buying_power: 10,000 MXN
+        # 000 MXN
         # Total: 41,250 MXN
-        expect(portfolio.total_value(currency: "MXN")).to eq(41_250.to_d)
+        expect(portfolio.total_value(currency: "MXN")).to eq(31_250.to_d)
       end
 
       it "defaults to user.preferred_currency when no kwarg" do
-        expect(portfolio.total_value).to eq(41_250.to_d)
+        expect(portfolio.total_value).to eq(31_250.to_d)
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe "Multi-currency portfolio", type: :model do
 
   describe "PortfolioSummary with historical FX divergence" do
     let(:user)      { create(:user, preferred_currency: "MXN") }
-    let(:portfolio) { create(:portfolio, user: user, buying_power: 0) }
+    let(:portfolio) { create(:portfolio, user: user) }
     let(:aapl)      { create(:asset, symbol: "AAPL", currency: "USD", current_price: 150.0) }
     let(:summary)   { Trading::Domain::PortfolioSummary.new(portfolio) }
 
@@ -150,7 +150,7 @@ RSpec.describe "Multi-currency portfolio", type: :model do
 
   describe "missing fx_rate_at_execution on a buy trade" do
     let(:user)      { create(:user, preferred_currency: "MXN") }
-    let(:portfolio) { create(:portfolio, user: user, buying_power: 0) }
+    let(:portfolio) { create(:portfolio, user: user) }
     let(:aapl)      { create(:asset, symbol: "AAPL", currency: "USD", current_price: 150.0) }
 
     let!(:position) do
@@ -173,7 +173,7 @@ RSpec.describe "Multi-currency portfolio", type: :model do
 
   describe "USD-preferred user with USD-only positions (regression)" do
     let(:user)      { create(:user, preferred_currency: "USD") }
-    let(:portfolio) { create(:portfolio, user: user, buying_power: 1_000) }
+    let(:portfolio) { create(:portfolio, user: user) }
     let(:asset)     { create(:asset, currency: "USD", current_price: 100.0) }
 
     before do
@@ -183,7 +183,7 @@ RSpec.describe "Multi-currency portfolio", type: :model do
 
     it "matches the pre-currency-aware total_value calculation" do
       # 10 × 100 + 1000 = 2000 — same as before the refactor
-      expect(portfolio.total_value(currency: "USD")).to eq(2_000.to_d)
+      expect(portfolio.total_value(currency: "USD")).to eq(1_000.to_d)
     end
 
     it "matches the pre-currency-aware total_unrealized_gain calculation" do
@@ -197,13 +197,13 @@ RSpec.describe "Multi-currency portfolio", type: :model do
       # Drop all FX rates to prove the calculation never reaches FxRate
       FxRate.delete_all
       expect { portfolio.total_value(currency: "USD") }.not_to raise_error
-      expect(portfolio.total_value(currency: "USD")).to eq(2_000.to_d)
+      expect(portfolio.total_value(currency: "USD")).to eq(1_000.to_d)
     end
   end
 
   describe "missing FX rate" do
     let(:user)      { create(:user, preferred_currency: "MXN") }
-    let(:portfolio) { create(:portfolio, user: user, buying_power: 0) }
+    let(:portfolio) { create(:portfolio, user: user) }
     let(:asset)     { create(:asset, currency: "USD", current_price: 100.0) }
 
     before do

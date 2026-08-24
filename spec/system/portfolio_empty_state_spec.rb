@@ -6,7 +6,7 @@ RSpec.describe "Portfolio empty state", type: :system do
   end
 
   let!(:user) { create(:user, email: "empty@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
-  let!(:portfolio) { create(:portfolio, user: user, buying_power: 10_000.0) }
+  let!(:portfolio) { create(:portfolio, user: user) }
 
   before do
     visit login_path
@@ -19,7 +19,7 @@ RSpec.describe "Portfolio empty state", type: :system do
     visit portfolio_path
     expect(page).to have_content("Posiciones y movimientos")
     expect(page).to have_content("Valor total del portafolio")
-    expect(page).to have_content("Saldo disponible")
+    expect(page).to have_content("Ganancia no realizada")
   end
 
   it "shows the trade form on empty portfolio" do
