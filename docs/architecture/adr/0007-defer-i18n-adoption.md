@@ -1,9 +1,10 @@
 # ADR-007 — Defer I18n adoption until multi-locale is real
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-011](./0011-adopt-i18n-for-the-2.0-rewrite.md) (2026-08-24)
 - **Date:** 2026-05-16
 - **Author:** Adrian Castillo (formalizing the position taken across S07 PR reviews)
 - **Supersedes:** —
+- **Superseded by:** [ADR-011](./0011-adopt-i18n-for-the-2.0-rewrite.md) — trigger 4 fired (Adrian's explicit request) at the moment the 2.0 rewrite put every user-facing string in play, which is what made adoption cheap.
 - **Related:** [`docs/vision/audience.md`](../../vision/audience.md), [ADR-001](./0001-descriptive-not-prescriptive-language.md)
 
 ---
