@@ -77,10 +77,13 @@ module Trading
       end
 
       def flow_rate(trade)
-        return trade.fx_rate_at_execution if trade.fx_rate_at_execution
-        return 1 if trade.currency == currency
+        captured = trade.fx_rate_at_execution
+        return captured if captured
 
-        portfolio.convert(1, from: trade.currency, to: currency, at_date: trade.executed_at.to_date)
+        from = trade.currency
+        return 1 if from == currency
+
+        portfolio.convert(1, from: from, to: currency, at_date: trade.executed_at.to_date)
       end
 
       # ADR-009: value the snapshot at ITS date, not today's. Revaluing
