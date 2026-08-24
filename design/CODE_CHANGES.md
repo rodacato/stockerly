@@ -100,3 +100,37 @@ deliver.
 **Leftover:** `alert_preferences.browser_push` is now unused — the in-app bell cannot be turned
 off, so the switch was removed rather than left lying. Drop the column when D16 settles whether a
 real push channel revives it; a migration to delete it now would have to be undone if it does.
+
+## 8. Ajustes — one hub, and two switches that must start working (D17, D18)
+
+**Status:** pending — design done (`flows/settings.pen`), no code touched.
+
+- Measure before landing: `grep -rn "auto_sync_enabled\|email_notifications_enabled" app lib | grep -v settings_controller`
+  — today that returns **nothing outside the screen that sets them**. That is the bug.
+- Merge `/profile` and the `/admin` zone into one `Ajustes` with sections. On a single-user
+  instance the admin split is a costume (D5); the asset catalogue already left for Activos (D9)
+  and the notification panel is down to two channels (D16).
+- 🔴 **Precondition for the `Estado y mantenimiento` screen:** wire the two dead toggles before
+  implementing it, or the redesign ships the same lie it documents. `auto_sync_enabled` guards the
+  recurring jobs; `email_notifications_enabled` guards `ApplicationMailer` — which means the digest
+  and the urgent alert from §7 must consult it too.
+- Keep the audit trail: `SiteConfigChange` already records who flipped what and when, and the
+  design surfaces it as "Cambios recientes".
+- D18 is settled for now — pools stay, so the Integraciones screen keeps the per-provider key
+  count and the rotation note. Revisit only with measured quota evidence.
+
+## 9. Alpaca as a data source (D19)
+
+**Status:** pending — designed in `flows/settings.pen`, needs its own 4-filter card before build.
+
+- New gateway alongside the existing ones, following `MarketData::Gateways::*` and registered
+  through `DataSourceRegistry` like the rest. Measure first:
+  `grep -rn "PolygonGateway" app | wc -l` — Polygon is the intended replacement for price history.
+- **Always pass `feed=sip` on historical requests.** The default for a free account is IEX
+  (~2.5% of US volume); taking the default would store daily closes that are not the official
+  close and quietly misvalue every USD position. SIP is free for queries whose `end` is at least
+  15 minutes old, which a daily bar always is.
+- Free-plan envelope: 200 req/min, 7+ years of history, crypto through `/v1beta3`.
+- Use the **market-data API only**. Alpaca is a broker; trade execution is a project non-goal, and
+  the key stored in this instance must not carry trading permissions.
+- No coverage for fundamentals, BMV equities or CETES — those stay where they are.

@@ -48,7 +48,7 @@ screens; smaller ones may merge into a neighbor.
 | `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo/black swan), asset detail (Análisis · Mi posición), consolidado | **done · in review** |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | cartera, sigo, cartera vacía, registrar movimiento (sheet + con teclado), rastreados, rastreados·buscar | **done · in review** |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (default/vacío), nueva regla (sheet), bandeja, confluencia | **done · in review** |
-| `flows/settings.pen` | Settings + admin | profile (password/prefs/currency), admin integrations/pool-keys/logs/settings | scaffold |
+| `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, integraciones, registros, estado y mantenimiento | **done · in review** |
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for
 structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit · **(3)** review/feel ·

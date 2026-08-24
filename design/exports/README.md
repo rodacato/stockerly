@@ -35,6 +35,10 @@ is worse than a missing one.
 | `reglas-nueva-regla.png` | `[Reglas] / Nueva regla / Sheet` |
 | `reglas-bandeja.png` | `[Reglas] / Bandeja / Default` |
 | `reglas-confluencia.png` | `[Reglas] / Confluencia / Default` |
+| `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
+| `ajustes-integraciones.png` | `[Ajustes] / Integraciones / Default` |
+| `ajustes-registros.png` | `[Ajustes] / Registros / Default` |
+| `ajustes-estado.png` | `[Ajustes] / Estado y mantenimiento / Default` |
 
 **Missing:** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention existed
 and have no exports yet. Both files must be open in Pencil to export them — do it on their next
