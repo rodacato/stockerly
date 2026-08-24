@@ -1,0 +1,30 @@
+# i18n-tasks config (ADR-011). `i18n-tasks health` gates CI.
+base_locale: es-MX
+locales: [es-MX]
+
+data:
+  read:
+    - config/locales/%{locale}.yml
+  write:
+    - config/locales/%{locale}.yml
+
+search:
+  paths:
+    - app/
+  relative_roots:
+    - app/controllers
+    - app/helpers
+    - app/mailers
+    - app/views
+    - app/contexts
+
+# Framework keys Rails resolves itself — present so `l()` renders es-MX, never
+# referenced by a t() call, so `unused` must not flag them.
+ignore_unused:
+  - date.*
+  - time.*
+  - number.*
+  - support.*
+  - errors.*
+  - activerecord.*
+  - helpers.*

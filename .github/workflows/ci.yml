@@ -115,3 +115,6 @@ jobs:
 
       - name: Lint code for consistent style
         run: bin/rubocop -f github
+
+      - name: Check the locale catalogue for missing, unused and unnormalized keys
+        run: bundle exec i18n-tasks health
