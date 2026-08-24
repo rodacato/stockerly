@@ -52,6 +52,14 @@ reflow. The kit's shell variant is included because it is what every desktop art
 | `activos-cartera-desktop.png` | `[Activos] / Cartera · Desktop / Default` |
 | `activos-registrar-movimiento-desktop.png` | `[Activos] / Registrar movimiento · Desktop / Dialog` |
 | `activos-rastreados-desktop.png` | `[Activos] / Rastreados · Desktop / Default` |
+| `ajustes-hub-desktop.png` | `[Ajustes] / Hub · Desktop / Default` |
+| `ajustes-integraciones-desktop.png` | `[Ajustes] / Integraciones · Desktop / Default` |
+| `ajustes-estado-desktop.png` | `[Ajustes] / Estado y mantenimiento · Desktop / Default` |
+
+Not drawn on desktop, on purpose: `Sigo`, `Cartera vacía`, the two `Rastreados · Buscar` and
+`Reglas` states, and `Registros` — each reflows into a pattern one of the ten above already
+settles. `Registros` would want a real log table, which is a new component and therefore a
+decision, not a redraw.
 
 **Missing:** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention existed
 and have no exports yet. Both files must be open in Pencil to export them — do it on their next
