@@ -83,14 +83,38 @@ now so the next flow with a modal (alerts rule create) cannot invent a second al
 **Vendored by:** `flows/assets.pen` and `flows/cockpit.pen` (kit-version-source `0.3.0`) — all seven
 inline copies were replaced with instances in the same pass.
 
-### Gaps to watch (candidates for 0.4.0)
+---
+
+## 0.4.0 — NavRow + SwitchRow (minor)
+
+Additive; no token values changed.
+
+**Components (+2, now 13):** `NavRow`, `SwitchRow`.
+
+Measured before promoting, both across two flows:
+
+| Promoted | Count | Where |
+|---|---|---|
+| `NavRow` (icon + title/desc + optional meta + chevron) | **10** | 6 instances in `flows/settings.pen`; 4 hand-built in `flows/assets.pen` — the Rastreados entry and the three paths of the empty state |
+| `SwitchRow` (label + description + toggle) | **8** | 5 instances in `flows/settings.pen`; 3 hand-built in `flows/alerts.pen` ("Cómo te aviso") |
+
+The forward reason, beyond tidiness: the ERB translation is next, and these ten sites become **one
+partial** in `app/views/components/` instead of three different markups.
+
+**Vendored by:** `flows/settings.pen` (kit-version-source `0.3.0`, its local copies are the same
+shape). `alerts.pen` and `assets.pen` keep hand-built copies — legal (behind, not diverging);
+re-vendor each when it is next opened for edits.
+
+### Gaps to watch (candidates for 0.5.0)
 
 | Need | Note |
 |---|---|
-| `PatrimonioStrip` | `flows/cockpit.pen` local, 3 instances (the three panorama states), 1 flow. The value + Δ + chevron shape is close to `assets.pen`'s Rastreados row — compare them when a third appears. |
+| `PatrimonioStrip` | `flows/cockpit.pen` local, 3 instances, 1 flow. Now that `NavRow` is promoted, check whether this is just a `NavRow` variant before promoting a second row component. |
 | `WatchRow` | `flows/assets.pen` local. `AssetRow`'s skeleton but carries price + Δ día + "sigues +X%". One flow — promote only if a second needs it. |
+| `ProviderCard` | `flows/settings.pen` local, 6 instances, 1 flow. Name + status dot + quota bar + key count. Nothing else needs a quota bar yet. |
+| `LogRow` | `flows/settings.pen` local, 6 instances, 1 flow. |
 | `TierChip` (Poseo / Sigo) | `flows/assets.pen` local, 2 artboards, 1 flow. Wait for `alerts.pen`. |
-| `OptionCard` (icon + title + desc + chevron) | Empty-state paths and the Rastreados entry row in `assets.pen`. `onboarding.pen` looks like it has the same shape — **verify against it before promoting**, it was not open during this pass. |
+| ~~`OptionCard`~~ | **Resolved into `NavRow` in 0.4.0** — it was the same shape. Still worth checking `onboarding.pen` for a third consumer when that file is next open. |
 | `TopBarBack` (back + title + action) | Two artboards in `assets.pen`; `cockpit.pen`'s asset-detail bar is close but stacks ticker + name. Similar, not identical — do not force one master over both. |
 | Categorical palette (allocation slices) | The Consolidado donut needed four non-semantic category colors and the kit has none — green/red are reserved for gain/loss, so it borrowed `primary`, `primary-hover`, `warning` and `fg-subtle`. `warning` on a crypto slice reads as a caution it does not mean. A real 4–6 colour categorical ramp is the fix. |
 | PriceChart tokens (axis, band fill, RSI line) | From 0.1.0, still open — the chart component may need its own color roles. Tokenize, don't hardcode. |

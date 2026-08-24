@@ -1928,6 +1928,177 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "IPwM0",
+      "x": 1260,
+      "y": 1672,
+      "name": "NavRow",
+      "reusable": true,
+      "width": 342,
+      "fill": "$bg-surface",
+      "cornerRadius": "$radius-lg",
+      "stroke": "$border-default",
+      "strokeWidth": 1,
+      "gap": "$space-3",
+      "padding": [
+        13,
+        15
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "e0hja",
+          "name": "IW",
+          "width": 34,
+          "height": 34,
+          "fill": "$bg-muted",
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "IHZSB",
+              "name": "i",
+              "width": 17,
+              "height": 17,
+              "icon": "settings",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "IpLXp",
+          "name": "TC",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "MDZlc",
+              "name": "l",
+              "fill": "$fg-default",
+              "content": "Sección",
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "SzTdw",
+              "name": "d",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Descripción de una línea",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "aMbcX",
+          "name": "m",
+          "fill": "$fg-subtle",
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "icon",
+          "id": "VoMnI",
+          "name": "c",
+          "width": 16,
+          "height": 16,
+          "icon": "chevron-right",
+          "library": "lucide",
+          "fill": "$fg-subtle"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zDscO",
+      "x": 1260,
+      "y": 1792,
+      "name": "SwitchRow",
+      "reusable": true,
+      "width": 342,
+      "gap": "$space-3",
+      "padding": [
+        12,
+        0
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "IaPRj",
+          "name": "TC",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "z1WHd",
+              "name": "l",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Etiqueta",
+              "lineHeight": 1.3,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "pbigg",
+              "name": "d",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Qué hace, en una línea.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "S2Ql0Y",
+          "name": "SW",
+          "width": 42,
+          "height": 24,
+          "fill": "$primary",
+          "cornerRadius": 99,
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "h8YVs",
+              "x": 21,
+              "y": 3,
+              "name": "k",
+              "fill": "$bg-surface",
+              "width": 18,
+              "height": 18
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
@@ -1939,7 +2110,7 @@
   "variables": {
     "kit-version": {
       "type": "string",
-      "value": "0.3.0"
+      "value": "0.4.0"
     },
     "font-display": {
       "type": "string",
