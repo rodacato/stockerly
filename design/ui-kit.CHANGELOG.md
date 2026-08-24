@@ -57,8 +57,9 @@ superseded by `AssetRow2`) and `AttentionItem` (the "atención hoy" band ended u
 
 **Vendored by:** `flows/assets.pen` (kit-version-source `0.2.0`).
 
-> `cockpit.pen` stays on `0.1.0` with its own local copies of the five. That is legal (being
-> behind is fine; diverging is not) — re-vendor it when it is next opened for edits.
+> `cockpit.pen` stayed on `0.1.0` at the time with its own local copies of the five; it was
+> re-vendored to `0.3.0` on 2026-08-24, when its `AssetRow2` was renamed `AssetRow` to match the kit
+> and the two dead components were deleted.
 
 ---
 
@@ -78,8 +79,8 @@ overrides `padding` and drops `fill_container` — same master, different sizing
 The `scrim` was tokenized flow-locally in `assets.pen` when the trade sheet needed it; promoted
 now so the next flow with a modal (alerts rule create) cannot invent a second alpha.
 
-**Vendored by:** `flows/assets.pen` (kit-version-source `0.3.0`) — its five inline copies were
-replaced with instances in the same pass.
+**Vendored by:** `flows/assets.pen` and `flows/cockpit.pen` (kit-version-source `0.3.0`) — all seven
+inline copies were replaced with instances in the same pass.
 
 ### Gaps to watch (candidates for 0.4.0)
 
