@@ -12,10 +12,10 @@ module Trading
     #   5. Inverse FxRate row (1 / reverse rate)
     #   6. Failure(:fx_rate_unavailable)
     #
-    # Important: this captures the FX rate *at resolution time*, not at trade
-    # execution time. The schema does not store historical FX (decision documented
-    # for #42, deferred to a future issue when beta usage demands it). For backdated
-    # trades requiring precision, callers may supply `override`.
+    # ADR-009 changed the order: `at_date` (or today) is looked up in
+    # FxRateHistory first, so a trade backdated to May is valued at May's rate.
+    # Before that store existed this captured the rate at *resolution* time,
+    # which is the residual #183 named.
     #
     # The cache + refresh + inverse-fallback logic lives in
     # MarketData::UseCases::EnsureFreshFxRate (ADR-002 supplier-side wrapper).
@@ -25,12 +25,18 @@ module Trading
     class FxRateResolver
       extend Dry::Monads[:result]
 
-      def self.call(trade_currency:, preferred_currency:, override: nil)
+      def self.call(trade_currency:, preferred_currency:, override: nil, at_date: nil)
         trade_currency = trade_currency.to_s.upcase
         preferred_currency = preferred_currency.to_s.upcase
 
         return Success(BigDecimal(1)) if trade_currency == preferred_currency
         return Success(override) if override
+
+        # Banxico's FIX first (#177): the rate a Mexican broker settles against,
+        # and for a backdated trade the only source that knows what the rate was
+        # THAT day rather than today.
+        historical = FxRateHistory.rate_on(base: trade_currency, quote: preferred_currency, date: at_date || Date.current)
+        return Success(historical) if historical
 
         # EnsureFreshFxRate already emits the canonical
         # Failure([:fx_rate_unavailable, "Could not determine FX rate: X -> Y"])

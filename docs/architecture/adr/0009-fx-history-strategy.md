@@ -1,6 +1,6 @@
 # ADR-009 — Historical FX rates for cross-currency snapshot revaluation
 
-- **Status:** Accepted
+- **Status:** Accepted · **implemented 2026-08-24** (slice 2b: `FxRateHistory`, Banxico FIX `SF43718`, `Portfolio#convert(at_date:)`, and `FxRateResolver` preferring the FIX for the trade's own date)
 - **Date:** 2026-06-27
 - **Author:** Adrian Castillo
 - **Supersedes:** —
