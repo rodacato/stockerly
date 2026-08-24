@@ -1,10 +1,11 @@
 <header class="hidden items-center justify-between gap-4 border-b border-border-default bg-bg-surface px-6 py-4 lg:flex">
   <div class="flex flex-col gap-0.5">
-    <%# Not an h1: every screen still owns its own heading. When a slice moves its
-        title up here, that screen drops its heading and this becomes the h1. %>
-    <p class="font-display text-xl font-bold tracking-tight text-fg-default">
+    <%# The h1 the 2.0 screens gave up when their titles moved into this bar.
+        Hidden below lg, where the layout emits an sr-only one instead — the
+        mobile TopBar is logo + bell and carries no title. %>
+    <h1 class="font-display text-xl font-bold tracking-tight text-fg-default">
       <%= content_for(:page_title) || t("nav.#{main_nav_items.find { |i| i[:active] }&.dig(:key) || "panorama"}") %>
-    </p>
+    </h1>
     <% if content_for?(:page_subtitle) %>
       <p class="font-mono text-[11px] uppercase tracking-wider text-fg-subtle"><%= yield :page_subtitle %></p>
     <% end %>
