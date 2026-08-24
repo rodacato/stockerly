@@ -145,6 +145,9 @@ es-MX:
       short: "%-d de %b %H:%M"
     pm: p.m.
   trades:
+    errores:
+      fecha_futura: La fecha del movimiento no puede ser futura.
+      fecha_invalida: Esa fecha no es válida.
     new:
       activo: Activo
       activo_ayuda: Ticker o nombre

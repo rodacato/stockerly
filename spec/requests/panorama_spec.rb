@@ -150,6 +150,28 @@ RSpec.describe "Panorama", type: :request do
     end
   end
 
+  describe "the patrimonio strip and late capture" do
+    # This screen rendered "+20.0% hoy" for a purchase recorded late.
+    it "does not report a backdated purchase as today's move" do
+      portfolio.update!(buying_power: 0)
+      held = mxn_asset(symbol: "HELD", current_price: 10, change_percent_24h: 0)
+      create(:position, portfolio: portfolio, asset: held, shares: 500, avg_cost: 10, status: :open)
+      portfolio.snapshots.create!(date: Date.yesterday, currency: "MXN",
+                                  total_value: 5_000, cash_value: 0, invested_value: 5_000)
+      mxn_asset(symbol: "NEW", current_price: 10, change_percent_24h: 0)
+
+      Trading::UseCases::ExecuteTrade.call(user: user, params: {
+        asset_symbol: "NEW", side: "buy", shares: 100,
+        price_per_share: 10, executed_at: Date.yesterday.to_s
+      })
+
+      get dashboard_path
+
+      expect(response.body).to include("+0.0% hoy")
+      expect(response.body).not_to include("+20.0% hoy")
+    end
+  end
+
   describe "the retired dashboard surface" do
     it "no longer routes the lazy sub-frames it used to" do
       %w[/dashboard/news_feed /dashboard/trending /dashboard/notable_observations].each do |path|
