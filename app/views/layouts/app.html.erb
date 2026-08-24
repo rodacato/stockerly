@@ -14,6 +14,9 @@
       </div>
 
       <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <h1 class="sr-only lg:hidden">
+          <%= content_for(:page_title) || t("nav.#{main_nav_items.find { |i| i[:active] }&.dig(:key) || "panorama"}") %>
+        </h1>
         <%= yield %>
       </main>
 

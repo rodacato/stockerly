@@ -44,6 +44,6 @@ RSpec.describe "App shell", type: :system do
   it "falls back to the section name when a screen sets no title" do
     visit alerts_path
 
-    expect(page).to have_css("header p", text: "Reglas")
+    expect(page).to have_css("header h1", text: "Reglas")
   end
 end
