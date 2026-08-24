@@ -64,16 +64,32 @@ class Portfolio < ApplicationRecord
   # Public so PortfolioSummary and PeriodReturnsCalculator can route through
   # the per-instance FX cache below — collapses what would otherwise be one
   # FxRate.find_by per position/snapshot into a single query per pair.
-  def convert(amount, from:, to:)
+  # `at_date` makes a historical figure honest (ADR-009): revaluing an old
+  # snapshot at today's rate reports FX movement on the principal as "no
+  # change". Without it the behaviour is unchanged — today's rate, from the
+  # single-row-per-pair `fx_rates`.
+  def convert(amount, from:, to:, at_date: nil)
     return amount.to_d if from == to
 
-    rate = fx_rate_cache[[ from, to ]] ||= FxRate.find_by(base_currency: from, quote_currency: to)&.rate
+    rate = at_date ? historical_rate(from, to, at_date) : current_rate(from, to)
     raise "Missing FX rate #{from}->#{to} (Portfolio##{id})" if rate.nil?
 
     amount.to_d * rate
   end
 
   private
+
+  def current_rate(from, to)
+    fx_rate_cache[[ from, to ]] ||= FxRate.find_by(base_currency: from, quote_currency: to)&.rate
+  end
+
+  # Falls back to today's rate when history has no entry on or before the date,
+  # which is what an instance sees before its first backfill. Better a current
+  # rate than a raised exception on a screen.
+  def historical_rate(from, to, date)
+    fx_rate_cache[[ from, to, date ]] ||=
+      FxRateHistory.rate_on(base: from, quote: to, date: date) || current_rate(from, to)
+  end
 
   def open_positions_with_assets
     open_positions.includes(:asset)

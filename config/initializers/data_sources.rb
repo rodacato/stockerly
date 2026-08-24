@@ -160,6 +160,20 @@ Rails.application.config.after_initialize do
     capabilities: %i[fx]
   )
 
+  DataSourceRegistry.register(:banxico_fx,
+    name: "Tipo de cambio — Banxico FIX",
+    icon: "currency_exchange",
+    color: "lime",
+    gateway_class: MarketData::Gateways::BanxicoGateway,
+    job_class: SyncFxHistoryJob,
+    job_args: [],
+    test_symbol: nil,
+    test_method: :fetch_fx_fixes,
+    integration_name: "Banxico",
+    circuit_breaker_key: "banxico",
+    capabilities: %i[fx_rates]
+  )
+
   DataSourceRegistry.register(:banxico_cetes,
     name: "CETES — Banxico",
     icon: "account_balance",

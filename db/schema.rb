@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_24_030000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_24_185559) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -212,6 +212,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_030000) do
     t.datetime "updated_at", null: false
     t.index ["asset_id", "statement_type", "period_type", "fiscal_date_ending"], name: "idx_fin_stmts_unique", unique: true
     t.index ["asset_id"], name: "index_financial_statements_on_asset_id"
+  end
+
+  create_table "fx_rate_histories", force: :cascade do |t|
+    t.string "base_currency", null: false
+    t.datetime "created_at", null: false
+    t.string "quote_currency", null: false
+    t.decimal "rate", precision: 15, scale: 6, null: false
+    t.date "rate_date", null: false
+    t.string "source", default: "unknown", null: false
+    t.datetime "updated_at", null: false
+    t.index ["base_currency", "quote_currency", "rate_date"], name: "index_fx_rate_histories_on_pair_and_date", unique: true
+    t.index ["rate_date"], name: "index_fx_rate_histories_on_rate_date"
   end
 
   create_table "fx_rates", force: :cascade do |t|
