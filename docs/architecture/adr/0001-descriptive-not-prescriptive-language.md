@@ -4,6 +4,7 @@
 - **Date:** 2026-05-14
 - **Author:** Adrian Castillo (with review from the expert panel)
 - **Supersedes:** —
+- **Amended by:** [ADR-013](./0013-action-labels-on-persisted-observations.md) — action verbs are allowed when a persisted `TechnicalObservation` backs them; everything else here stands
 - **Related:** [`docs/vision/audience.md`](../../vision/audience.md)
 
 ---
@@ -116,3 +117,8 @@ This audit runs in the **Sprint 1 code audit (Step 6)** and the concrete rewrite
 
 - This ADR can be revisited if Stockerly transitions from personal/friends beta to a monetized product with a CNBV license or equivalent. Until then, it is a hard rule.
 - The descriptive/prescriptive distinction is **of the product's language**, not the system's internal intelligence. The system can internally compute aggressive signals (e.g., "model says 87% probability of going up"); what changes is **how it's communicated to the user**.
+- **Amended 2026-08-24 by [ADR-013](./0013-action-labels-on-persisted-observations.md).** The revisit
+  clause above anticipated monetization with a CNBV licence. What actually happened was the opposite:
+  [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md) removed the friends beta, so the
+  audience whose losses this ADR protected stopped existing. ADR-013 narrows the ban to everything
+  except an action verb derived from a persisted observation.
