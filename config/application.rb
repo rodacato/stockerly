@@ -51,6 +51,12 @@ module Stockerly
       )
     end
 
+    # Single locale (ADR-011). Rails' built-in `en` backs the framework keys
+    # es-MX does not override — date/number formats, AR validation messages.
+    config.i18n.default_locale = :"es-MX"
+    config.i18n.available_locales = [ :"es-MX", :en ]
+    config.i18n.fallbacks = [ :en ]
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
