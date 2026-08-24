@@ -61,24 +61,8 @@ module Trading
 
       private
 
-      # What the snapshot could not have seen: every trade recorded after it was
-      # taken, whatever date the user typed on the form. Buys add capital, sells
-      # remove it; fees are excluded because they never entered market value.
       def external_flows_since(snapshot)
-        portfolio.trades.kept.where(created_at: snapshot.created_at..).sum do |trade|
-          amount = trade.shares * trade.price_per_share * flow_rate(trade)
-          trade.side == "sell" ? -amount : amount
-        end
-      end
-
-      def flow_rate(trade)
-        captured = trade.fx_rate_at_execution
-        return captured if captured
-
-        from = trade.currency
-        return 1 if from == currency
-
-        portfolio.convert(1, from: from, to: currency, at_date: trade.executed_at.to_date)
+        ExternalFlows.new(portfolio, currency: currency).since(snapshot.created_at)
       end
 
       # ADR-009: value the snapshot at ITS date, not today's. Revaluing
