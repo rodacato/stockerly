@@ -48,7 +48,7 @@ RSpec.describe "Dashboard sidebar revamp (S11 #143)", type: :request do
     it "renders the watchlist table with es-MX heading + Lumen surface tokens" do
       get dashboard_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Tus posiciones")
+      expect(response.body).to include("Sigo")
       expect(response.body).to include("WALMEX")
       expect(response.body).to include("bg-bg-surface")
       expect(response.body).to include("border-border-default")

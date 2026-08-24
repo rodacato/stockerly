@@ -28,6 +28,14 @@ module AssetsHelper
     "#{value.negative? ? "−" : "+"}#{number_with_precision(value.abs, precision: 1)}%"
   end
 
+  # D9's ladder, cheapest first: owning implies following implies tracked.
+  def tracked_tier(asset, held_ids:, followed_ids:)
+    return :held if held_ids.include?(asset.id)
+    return :followed if followed_ids.include?(asset.id)
+
+    :tracked
+  end
+
   def gain_color(value)
     value.to_f.negative? ? "text-negative" : "text-positive"
   end

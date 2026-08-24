@@ -20,6 +20,26 @@ es-MX:
       vacio_sigo_cuerpo: Sigue un activo y verás cómo se mueve desde que lo agregaste.
       vacio_sigo_titulo: No sigues ningún activo
       valor_de_mercado: VALOR DE MERCADO · %{currency}
+      ver_rastreados: Rastreados
+      ver_rastreados_desc: Lo que tu instancia sincroniza y cuánto presupuesto queda
+    tracked:
+      en_pausa: En pausa
+      intro: Los activos que tu instancia sincroniza a diario. Seguir uno o comprarlo
+        le da prioridad; pausarlo libera presupuesto.
+      no_encontrado: No encontré ese activo.
+      pausado: "%{symbol} en pausa. Su presupuesto queda libre."
+      pausar: Pausar
+      presupuesto_agotado: Agotado hasta mañana
+      presupuesto_detalle: "%{used} de %{limit} llamadas usadas"
+      presupuesto_titulo: Presupuesto de hoy
+      reanudado: "%{symbol} vuelve a sincronizarse."
+      reanudar: Reanudar
+      seguir: Seguir
+      tier_followed: Sigo
+      tier_held: Poseo
+      tier_tracked: Rastreado
+      titulo: Rastreados
+      vacio: Tu instancia aún no rastrea ningún activo.
   date:
     abbr_day_names:
     - dom

@@ -1,0 +1,33 @@
+<% content_for :page_title, t("assets.tracked.titulo") %>
+
+<div class="flex flex-col gap-5 lg:flex-row lg:items-start">
+  <div class="flex min-w-0 flex-1 flex-col gap-4">
+    <% if @assets.any? %>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <% @assets.each do |asset| %>
+          <%= render "assets/tracked_row",
+                     asset: asset,
+                     tier: tracked_tier(asset, held_ids: @held_ids, followed_ids: @followed_ids) %>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render "components/empty_state",
+                 icon: "radar",
+                 title: t("assets.tracked.titulo"),
+                 description: t("assets.tracked.vacio") %>
+    <% end %>
+  </div>
+
+  <aside class="flex w-full shrink-0 flex-col gap-3 rounded-2xl border border-border-default bg-bg-surface p-5 lg:w-80">
+    <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("assets.tracked.presupuesto_titulo") %></p>
+    <p class="font-display text-3xl font-bold tracking-tight text-fg-default"><%= @budget.remaining %></p>
+    <div class="h-2 overflow-hidden rounded-full bg-bg-muted">
+      <div class="h-full rounded-full <%= @budget.exhausted? ? "bg-negative" : "bg-primary" %>"
+           style="width: <%= @budget.used_percent %>%"></div>
+    </div>
+    <p class="text-xs text-fg-subtle">
+      <%= @budget.exhausted? ? t("assets.tracked.presupuesto_agotado") : t("assets.tracked.presupuesto_detalle", used: @budget.used, limit: @budget.limit) %>
+    </p>
+    <p class="text-xs text-fg-subtle"><%= t("assets.tracked.intro") %></p>
+  </aside>
+</div>
