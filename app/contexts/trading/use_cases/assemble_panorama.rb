@@ -118,11 +118,12 @@ module Trading
       end
 
       def entry_for(kind, record, maturity_days)
+        asset = record.asset
         RadarEntry.new(
           kind: kind,
           record: record,
-          asset: record.asset,
-          change: record.asset.change_percent_24h.to_f,
+          asset: asset,
+          change: asset.change_percent_24h.to_f,
           maturity_days: maturity_days
         )
       end
