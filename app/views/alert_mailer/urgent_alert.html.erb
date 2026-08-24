@@ -1,0 +1,10 @@
+<h1 style="font-family: sans-serif; font-size: 18px; margin: 0 0 6px;"><%= @notification.title %></h1>
+<% if @notification.body.present? %>
+  <p style="font-family: sans-serif; font-size: 14px; color: #64748B; margin: 0 0 20px;">
+    <%= @notification.body %>
+  </p>
+<% end %>
+
+<p style="font-family: sans-serif; font-size: 13px; color: #64748B; margin: 0;">
+  Recibes este correo porque marcaste esta regla como urgente. Puedes cambiarlo en Ajustes.
+</p>

@@ -73,3 +73,14 @@ with grep counts.
   top of that. Measure before building:
   `grep -rn "period_returns" app | wc -l` — every current consumer is a display of the
   money-weighted figure and stays valid; the new one is not a display, it is a claim.
+
+## 7. Delivery channels (D16) — DONE, except one leftover
+
+Landed on `fix/alerts-notification-copy`: `AlertMailer` (digest + urgent), `SendDailyDigestJob`
+scheduled at `30 0 * * *` (18:30 CDMX year-round — Mexico dropped DST in 2022),
+`Notifications::Handlers::SendUrgentEmail` on `NotificationCreated`, and both preference screens
+reduced to the two channels that actually deliver.
+
+**Leftover:** `alert_preferences.browser_push` is now unused — the in-app bell cannot be turned
+off, so the switch was removed rather than left lying. Drop the column when D16 settles whether a
+real push channel revives it; a migration to delete it now would have to be undone if it does.

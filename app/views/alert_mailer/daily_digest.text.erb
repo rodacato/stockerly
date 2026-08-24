@@ -1,0 +1,12 @@
+Tu resumen de hoy
+
+Esto es lo que pasó con lo que sigues. Nada aquí es una recomendación.
+
+<% @notifications.each do |notification| -%>
+- <%= notification.title %>
+<% if notification.body.present? -%>
+  <%= notification.body %>
+<% end -%>
+<% end -%>
+
+Abre Stockerly para ver el detalle. Puedes apagar este resumen en Ajustes.

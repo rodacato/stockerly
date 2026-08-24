@@ -28,6 +28,7 @@ Rails.application.config.after_initialize do
 
   # Notifications
   EventBus.subscribe(Notifications::Events::NotificationCreated, Notifications::Handlers::BroadcastNotification)
+  EventBus.subscribe(Notifications::Events::NotificationCreated, Notifications::Handlers::SendUrgentEmail)
 
   # Trading
   EventBus.subscribe(Trading::Events::TradeExecuted, Trading::Handlers::RecalculateAvgCostOnTrade)
