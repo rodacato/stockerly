@@ -122,6 +122,9 @@ GEM
       rexml
     crass (1.0.7)
     csv (3.3.6)
+    cuprite (0.17)
+      capybara (~> 3.0)
+      ferrum (~> 0.17.0)
     date (3.5.1)
     debug (1.11.1)
       irb (~> 1.10)
@@ -196,6 +199,12 @@ GEM
       net-http (~> 0.5)
     faraday-retry (2.4.0)
       faraday (~> 2.0)
+    ferrum (0.17.2)
+      addressable (~> 2.5)
+      base64 (~> 0.2)
+      concurrent-ruby (~> 1.1)
+      webrick (~> 1.7)
+      websocket-driver (~> 0.7)
     flay (2.14.4)
       erubi (~> 1.10)
       path_expander (~> 2.0)
@@ -561,6 +570,7 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    webrick (1.9.2)
     websocket-driver (0.8.2)
       base64
       websocket-extensions (>= 0.1.0)
@@ -606,6 +616,7 @@ DEPENDENCIES
   bundler-audit
   capybara
   csv
+  cuprite
   debug
   dotenv-rails
   dry-monads (~> 1.6)
