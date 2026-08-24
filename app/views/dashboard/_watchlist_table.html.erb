@@ -1,9 +1,10 @@
-<%# Tus posiciones — Stockerly-2.0 dashboard pass (S11 #143).
+<%# Sigo — this reads @watchlist_items, and titled itself "Tus posiciones"
+    until 2026-08-24 (the 🐞 in D9): real positions live in Activos › Cartera.
     Mockup: .local/design-mockups/Stockerly-2.0/dashboard/Dashboard.jsx · WatchlistTable.
     Reads @watchlist_items preloaded by Trading::UseCases::AssembleDashboard. %>
 <section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
   <header class="flex flex-wrap items-center gap-3 px-5 py-4">
-    <h2 class="text-base font-semibold tracking-tight text-fg-default">Tus posiciones</h2>
+    <h2 class="text-base font-semibold tracking-tight text-fg-default">Sigo</h2>
     <% if @watchlist_items.present? %>
       <span class="inline-flex items-center rounded-md bg-primary-muted px-2 py-0.5 font-mono text-[11px] font-medium text-primary">
         <%= pluralize(@watchlist_items.size, "activo") %>

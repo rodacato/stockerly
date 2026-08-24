@@ -34,7 +34,7 @@ RSpec.describe "Dashboard caching", type: :system do
     visit dashboard_path
 
     expect(page).to have_content("Cached Asset")
-    expect(page).to have_content("Tus posiciones")
+    expect(page).to have_content("Sigo")
   end
 
   it "renders lazy Turbo Frame placeholder for trending section" do

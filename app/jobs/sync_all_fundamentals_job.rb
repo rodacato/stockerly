@@ -4,7 +4,7 @@
 class SyncAllFundamentalsJob < ApplicationJob
   include SyncLogging
 
-  DAILY_BUDGET = 25
+  DAILY_BUDGET = MarketData::Domain::FundamentalsBudget::DAILY_LIMIT
   STAGGER_SECONDS = 15
 
   queue_as :default
@@ -47,9 +47,6 @@ class SyncAllFundamentalsJob < ApplicationJob
   end
 
   def calls_used_today
-    SystemLog.where("task_name LIKE ?", "Fundamentals: %")
-             .where(severity: :success)
-             .where(created_at: Date.current.all_day)
-             .count
+    MarketData::Domain::FundamentalsBudget.today.used
   end
 end

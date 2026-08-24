@@ -1,0 +1,29 @@
+<%# Locals: asset, tier (:held | :followed | :tracked) %>
+<div class="flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3 <%= "opacity-60" unless asset.active? %>">
+  <div class="min-w-0 flex-1">
+    <div class="flex items-center gap-2">
+      <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
+      <span class="rounded-full bg-bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-fg-subtle">
+        <%= t("assets.tracked.tier_#{tier}") %>
+      </span>
+      <% unless asset.active? %>
+        <span class="text-[10px] font-semibold uppercase tracking-wide text-warning-fg"><%= t("assets.tracked.en_pausa") %></span>
+      <% end %>
+    </div>
+    <p class="truncate text-xs text-fg-subtle"><%= asset.name %> · <%= asset_type_label_es(asset) %></p>
+  </div>
+
+  <% if tier == :tracked %>
+    <%= button_to watchlist_items_path(asset_id: asset.id),
+                  method: :post,
+                  class: "shrink-0 rounded-lg bg-primary-muted px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-fg-inverse" do %>
+      <%= t("assets.tracked.seguir") %>
+    <% end %>
+  <% end %>
+
+  <%= button_to toggle_sync_asset_path(asset),
+                method: :patch,
+                class: "shrink-0 rounded-lg border border-border-default px-3 py-1.5 text-xs font-semibold text-fg-subtle transition-colors hover:border-border-strong hover:text-fg-default" do %>
+    <%= asset.active? ? t("assets.tracked.pausar") : t("assets.tracked.reanudar") %>
+  <% end %>
+</div>

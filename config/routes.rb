@@ -48,7 +48,13 @@ Rails.application.routes.draw do
   get "market/:symbol/statements_tab", to: "market#statements_tab", as: :market_asset_statements_tab
   get "search",    to: "search#index"
 
-  get "assets", to: "assets#index"
+  # Propshaft owns the /assets prefix. It lets the exact path /assets through to
+  # the router, but swallows anything nested under it — /assets/tracked is
+  # recognised by the router and still 404s. Sub-screens of Activos therefore
+  # live at their own top-level paths.
+  get   "assets",                 to: "assets#index"
+  get   "tracked",                to: "assets#tracked",     as: :tracked_assets
+  patch "tracked/:id/toggle_sync", to: "assets#toggle_sync", as: :toggle_sync_asset
   resource  :portfolio, only: [ :show ]
   resources :alerts, only: [ :index, :create, :update, :destroy ] do
     member { patch :toggle }

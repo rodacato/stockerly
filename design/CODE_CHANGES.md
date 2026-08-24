@@ -99,6 +99,20 @@ pre-work, where it would have been infrastructure with no consumer.
   precisely to keep Node out of the asset chain; adding it through the test door pays for a whole
   build chain for a handful of controllers.
 
+### ⚠ Routing constraint found while building this (2026-08-24)
+
+**Propshaft owns `/assets`, and it only lets the exact path through.** `/assets` reaches the
+controller; `/assets/anything` is swallowed and 404s **even though the router recognises it** —
+verified: `recognize_path("/assets/tracked")` returns `{controller: "assets", action: "tracked"}`
+and the request still returns `404 Not found`.
+
+So D21's four tab paths are fine, but **no screen may nest under `/assets/`**. Rastreados lives at
+`/tracked`, and its toggle at `/tracked/:id/toggle_sync`. The trade sheet is unaffected — D11
+already puts it at `/trades/new`.
+
+The alternative — moving `config.assets.prefix` — was rejected: it changes every asset URL, and in
+production those sit behind a Cloudflare Tunnel whose cache rules key on the path.
+
 ## 5. Consolidado — "¿Valió la pena?" (D12)
 
 **Status:** pending — design done (`flows/cockpit.pen`), engine gated on a 4-filter card.
