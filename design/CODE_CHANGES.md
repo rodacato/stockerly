@@ -221,6 +221,12 @@ production those sit behind a Cloudflare Tunnel whose cache rules key on the pat
   `Portfolio#allocation_by_asset_type` / `#allocation_by_sector`, daily `portfolio_snapshots`.
 - Benchmark data needs **no new gateway**: `MarketData::Gateways::BanxicoGateway#fetch_auctions`
   already returns CETES rates per term (`CETES_SERIES`).
+- ✅ **D27 is fixed — both halves, on `fix/snapshot-history-alignment`.** `day_gain` subtracts the
+  day's external flows, `executed_at` is bounded at today, and `RebuildSnapshots` rewrites the
+  history from the trades whenever one is recorded, edited or discarded with a past date. So the
+  snapshot history and the trades now describe the same portfolio, which is what TWR needs. **D26
+  is still open** and is the remaining question here: `total_value = invested + buying_power`, and
+  nothing writes `buying_power`.
 - 🔴 **Two blockers, not one — measured 2026-08-24 (D26, D27).** The TWR problem below is real, and
   the remedy this section proposed for it is not: **nothing ever writes `buying_power`**, so
   `portfolio_snapshots.cash_value` is a constant and carries no flow information. The flows live in

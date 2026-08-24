@@ -33,8 +33,11 @@ Rails.application.config.after_initialize do
   # Trading
   EventBus.subscribe(Trading::Events::TradeExecuted, Trading::Handlers::RecalculateAvgCostOnTrade)
   EventBus.subscribe(Trading::Events::TradeExecuted, Trading::Handlers::LogTradeActivity)
+  EventBus.subscribe(Trading::Events::TradeExecuted, Trading::Handlers::RebuildSnapshotsOnBackdatedTrade)
   EventBus.subscribe(Trading::Events::TradeUpdated, Trading::Handlers::LogTradeUpdate)
   EventBus.subscribe(Trading::Events::TradeDeleted, Trading::Handlers::LogTradeDelete)
+  EventBus.subscribe(Trading::Events::TradeUpdated, Trading::Handlers::RebuildSnapshotsOnBackdatedTrade)
+  EventBus.subscribe(Trading::Events::TradeDeleted, Trading::Handlers::RebuildSnapshotsOnBackdatedTrade)
 
   # News
   EventBus.subscribe(MarketData::Events::NewsSynced, MarketData::Handlers::LogNewsSync)
