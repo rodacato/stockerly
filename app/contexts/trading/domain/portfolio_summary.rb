@@ -23,12 +23,17 @@ module Trading
         GainLoss.new(absolute: gain.to_f, percent: percent.to_f)
       end
 
+      # Capital put in or taken out is not a gain. A trade recorded after
+      # yesterday's snapshot is in today's total and absent from that snapshot,
+      # so without subtracting it a purchase reads as market movement — a
+      # backdated buy of 1,000 against a 5,000 portfolio reported "+20.0% hoy"
+      # while no price had moved.
       def day_gain
         yesterday = portfolio.yesterday_snapshot
         return GainLoss.new(absolute: 0.0, percent: 0.0) unless yesterday
 
         yesterday_total = total_value_of(yesterday)
-        diff = total_value - yesterday_total
+        diff = total_value - yesterday_total - external_flows_since(yesterday)
         percent = yesterday_total.positive? ? (diff / yesterday_total * 100) : 0.0
         GainLoss.new(absolute: diff.to_f, percent: percent.to_f)
       end
@@ -60,6 +65,23 @@ module Trading
       end
 
       private
+
+      # What the snapshot could not have seen: every trade recorded after it was
+      # taken, whatever date the user typed on the form. Buys add capital, sells
+      # remove it; fees are excluded because they never entered market value.
+      def external_flows_since(snapshot)
+        portfolio.trades.kept.where(created_at: snapshot.created_at..).sum do |trade|
+          amount = trade.shares * trade.price_per_share * flow_rate(trade)
+          trade.side == "sell" ? -amount : amount
+        end
+      end
+
+      def flow_rate(trade)
+        return trade.fx_rate_at_execution if trade.fx_rate_at_execution
+        return 1 if trade.currency == currency
+
+        portfolio.convert(1, from: trade.currency, to: currency, at_date: trade.executed_at.to_date)
+      end
 
       # ADR-009: value the snapshot at ITS date, not today's. Revaluing
       # yesterday at today's rate reports FX movement on the principal as no
