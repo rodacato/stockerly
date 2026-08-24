@@ -1,7 +1,10 @@
 <%# Locals: position, declared_currency
     No state chip and no confluence dots: the design draws both, the code backs
     neither — the chip's taxonomy does not exist and the semáforo is D3, whose
-    engine is gated on its discovery card. %>
+    engine is gated on its discovery card.
+    A fixed-income row about to mature reports that instead of a 24h move it
+    does not have. %>
+<% maturity_days = local_assigns[:maturity_days] %>
 <% asset = position.asset %>
 <% change = asset.change_percent_24h || 0 %>
 <% amount, amount_currency = position_amount(position, declared_currency) %>
@@ -15,13 +18,17 @@
   </div>
 
   <div class="w-20 shrink-0">
-    <%= render "components/sparkline", direction: change.negative? ? :down : :up %>
+    <%= render "components/sparkline", direction: change.negative? ? :down : :up, heights: sparkline_heights(asset) %>
   </div>
 
   <div class="shrink-0 text-right">
     <p class="font-mono text-sm font-bold text-fg-default">
       <%= money_cell(amount, currency: amount_currency, declared: declared_currency, precision: 0) %>
     </p>
-    <p class="font-mono text-xs <%= gain_color(change) %>"><%= signed_percent(change) %></p>
+    <% if maturity_days %>
+      <p class="font-mono text-xs text-warning-fg"><%= t("comun.vencimiento", count: maturity_days) %></p>
+    <% else %>
+      <p class="font-mono text-xs <%= gain_color(change) %>"><%= signed_percent(change) %></p>
+    <% end %>
   </div>
 <% end %>
