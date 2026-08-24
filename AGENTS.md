@@ -102,6 +102,11 @@ If a trigger isn't documented, push back instead of advancing.
 - Ship thin vertical slices end-to-end before building around them
 - **Descriptive language (ADR-001):** Stockerly observes, never prescribes —
   applies to all new copy
+- **Copy through I18n (ADR-011):** the UI is es-MX, the code is English **including
+  routes**. User-facing strings go to `config/locales/es-MX.yml` behind lazy
+  lookups (`t(".key")`), managed with `i18n-tasks`. Adopted surface by surface as
+  the 2.0 redesign lands — hardcoded es-MX in a view nobody has redesigned yet is
+  expected, not a defect. Supersedes ADR-007, which deferred it
 - **Security by default:** validation at the boundary (Contracts), authorization
   on every request, encrypted sensitive data
 - **Tests that matter:** Use Cases and Contracts thoroughly; request/system specs

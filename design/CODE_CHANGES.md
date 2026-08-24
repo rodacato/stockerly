@@ -8,6 +8,29 @@
 **Rule: consolidation/adoption decisions cite MEASURED usage, not impressions.** Lead each section
 with grep counts.
 
+## 0. Pre-work before the first slice (D21, D22)
+
+Four small changes that make every later slice cheaper, and one that must land before any view
+depends on the current structure. None of them is a refactor for its own sake.
+
+| # | What | Why it goes first |
+|---|---|---|
+| 0.1 | **Untangle `data-theme`** (ADR-012): it names the palette (`lumen`), the `dark` class carries the mode. Retire the `[data-theme="dark"]` selector. | Zero redesigned views exist yet, so the cost is one CSS file. After the first slice it is a sweep. |
+| 0.2 | **Expose the fonts as `@theme` tokens** (`--font-display / --font-sans / --font-mono`). The families already load from Google Fonts and already exist as CSS vars — they are just not Tailwind utilities. | Three lines; unblocks the typography that carries the whole visual change (D1: colour is a no-op, type and shape are the redesign). |
+| 0.3 | **Set up I18n + `i18n-tasks`** (ADR-011): `config/locales/es-MX.yml`, lazy-key convention, `i18n-tasks health` in CI. | Every slice writes copy. Adding the layer after the first slice means rewriting that slice's strings. |
+| 0.4 | **`lightweight-charts` via importmap** + a smoke Stimulus controller (D2). | Pure de-risking: two of the heaviest screens depend on it. Better to learn it misbehaves self-hosted now than mid-slice. |
+| 0.5 | **Component inventory**: cross the 19 existing `app/views/components/` partials against the kit's 13 components — 1:1, net-new, or dead. | This *is* the work order for the translation. |
+
+**Already done, verified rather than assumed:** the PWA is wired (manifest with maskable icons,
+`display: standalone`, service worker registered, `theme-color` already `#5B6CFF`) — only its
+pre-pivot name and description need rewriting. The pivot's subtraction also landed: `email_event`,
+`user_activity`, `invite_code` and `remember_token` are gone; only `api_key_pool` remains, and D18
+keeps it deliberately.
+
+**Not pre-work:** consolidating the layouts (it falls out of the shell slice) and any broader
+refactor — the suite is green at 94% coverage and moving code no screen has asked for is risk
+without payoff.
+
 ## 1. New `@theme` token values (D1)
 
 **Status:** pending — waiting on the approved identity pass.
