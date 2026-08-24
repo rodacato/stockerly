@@ -61,6 +61,15 @@ Not drawn on desktop, on purpose: `Sigo`, `Cartera vacía`, the two `Rastreados 
 settles. `Registros` would want a real log table, which is a new component and therefore a
 decision, not a redraw.
 
-**Missing:** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention existed
-and have no exports yet. Both files must be open in Pencil to export them — do it on their next
-touch.
+**Missing:** `flows/onboarding.pen` shipped before this convention existed and has no exports yet.
+The file must be open in Pencil to export it — do it on its next touch. (`flows/auth.pen` was
+caught up on 2026-08-24.)
+
+| File | Artboard |
+|---|---|
+| `auth-login.png` | `[Auth] / Login / Default` |
+| `auth-2fa.png` | `[Auth] / 2FA / Default` — ⚠ see D23, this screen has no code behind it |
+| `auth-forgot.png` | `[Auth] / Forgot / Default` |
+| `auth-email-sent.png` | `[Auth] / Email sent / Default` |
+| `auth-reset.png` | `[Auth] / Reset / Default` |
+| `auth-login-desktop.png` | `[Auth] / Login · Desktop / Default` |
