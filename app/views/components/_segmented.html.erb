@@ -1,0 +1,9 @@
+<%# Locals: options (Array of [label, url, active?]), label (String, aria-label) %>
+<div role="tablist" aria-label="<%= label %>" class="flex gap-1 rounded-xl bg-bg-muted p-1">
+  <% options.each do |text, url, active| %>
+    <%= link_to text, url,
+                role: "tab",
+                "aria-selected": active.to_s,
+                class: "flex-1 rounded-lg px-4 py-2.5 text-center text-sm transition-colors #{active ? 'bg-bg-surface font-semibold text-fg-default shadow-sm' : 'font-normal text-fg-subtle hover:text-fg-default'}" %>
+  <% end %>
+</div>

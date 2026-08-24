@@ -1,5 +1,25 @@
 ---
 es-MX:
+  assets:
+    index:
+      cartera: Cartera
+      invertido: Invertido %{amount}
+      no_realizada: No realizada %{amount}
+      sigo: Sigo
+      sigues: sigues %{percent}
+      sin_tc_cuerpo: Falta el tipo de cambio del día, así que no puedo sumar tu patrimonio
+        en una sola moneda. Cada posición se muestra en la suya.
+      sin_tc_titulo: Sin consolidar
+      titulo: Activos
+      titulos:
+        one: 1 título
+        other: "%{count} títulos"
+      vacio_cartera_cuerpo: Registra tu primer movimiento y tu patrimonio empieza
+        a contarse solo.
+      vacio_cartera_titulo: Aún no tienes posiciones
+      vacio_sigo_cuerpo: Sigue un activo y verás cómo se mueve desde que lo agregaste.
+      vacio_sigo_titulo: No sigues ningún activo
+      valor_de_mercado: VALOR DE MERCADO · %{currency}
   date:
     abbr_day_names:
     - dom

@@ -21,16 +21,16 @@ RSpec.describe "App shell", type: :system do
   end
 
   it "marks only the current destination" do
-    visit portfolio_path
+    visit assets_path
 
     current = page.all("a[aria-current='page']").map { |a| a[:href] }.uniq
-    expect(current).to eq([ portfolio_path ])
+    expect(current).to eq([ assets_path ])
   end
 
   it "keeps a tab lit across the screens it owns" do
     visit trades_path
 
-    expect(page.all("a[aria-current='page']").map { |a| a[:href] }.uniq).to eq([ portfolio_path ])
+    expect(page.all("a[aria-current='page']").map { |a| a[:href] }.uniq).to eq([ assets_path ])
   end
 
   it "labels the bell with the unread count so it is not just an icon" do

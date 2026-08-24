@@ -1,0 +1,66 @@
+<% content_for :page_title, t("assets.index.titulo") %>
+<%# Only declare the currency when the figures really are in it. %>
+<% content_for :page_subtitle, t("assets.index.valor_de_mercado", currency: @currency) if @summary %>
+
+<div class="flex flex-col gap-5">
+  <% if @summary %>
+    <section class="flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+      <div class="flex flex-col gap-2">
+        <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+          <%= t("assets.index.valor_de_mercado", currency: @currency) %>
+        </p>
+        <p class="font-display text-3xl font-bold tracking-tight text-fg-default">
+          <%= format_currency_mx(@summary.total_value, currency: @currency, precision: 0) %>
+        </p>
+        <p class="text-xs text-fg-subtle">
+          <%= t("assets.index.invertido", amount: format_currency_mx(@summary.total_invested, currency: @currency, precision: 0)) %>
+          ·
+          <%= t("assets.index.no_realizada", amount: format_currency_mx(@summary.unrealized_gain.absolute, currency: @currency, precision: 0)) %>
+        </p>
+      </div>
+    </section>
+  <% elsif @fx_unavailable %>
+    <section class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
+      <span class="material-symbols-outlined text-xl text-warning-fg" aria-hidden="true">currency_exchange</span>
+      <div>
+        <p class="text-sm font-semibold text-warning-fg"><%= t("assets.index.sin_tc_titulo") %></p>
+        <p class="mt-0.5 text-xs text-warning-fg"><%= t("assets.index.sin_tc_cuerpo") %></p>
+      </div>
+    </section>
+  <% end %>
+
+  <%= render "components/segmented",
+             label: t("assets.index.titulo"),
+             options: [
+               [ t("assets.index.cartera"), assets_path, @tab == "cartera" ],
+               [ t("assets.index.sigo"), assets_path(tab: "sigo"), @tab == "sigo" ]
+             ] %>
+
+  <% if @tab == "cartera" %>
+    <% if @positions.any? %>
+      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <% @positions.each do |position| %>
+          <%= render "components/asset_row", position: position, declared_currency: @currency %>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render "components/empty_state",
+                 icon: "account_balance_wallet",
+                 title: t("assets.index.vacio_cartera_titulo"),
+                 description: t("assets.index.vacio_cartera_cuerpo") %>
+    <% end %>
+  <% else %>
+    <% if @watchlist_items.any? %>
+      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <% @watchlist_items.each do |item| %>
+          <%= render "components/watch_row", item: item %>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render "components/empty_state",
+                 icon: "visibility",
+                 title: t("assets.index.vacio_sigo_titulo"),
+                 description: t("assets.index.vacio_sigo_cuerpo") %>
+    <% end %>
+  <% end %>
+</div>

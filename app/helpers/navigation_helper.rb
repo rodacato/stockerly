@@ -3,7 +3,7 @@ module NavigationHelper
   # them still point at the screens their slice has not rewritten yet.
   MAIN_NAV = [
     { key: "panorama", icon: "grid_view",     path: :dashboard_path, controllers: %w[dashboard] },
-    { key: "activos",  icon: "trending_up",   path: :portfolio_path, controllers: %w[portfolios trades positions watchlist_items market search earnings news] },
+    { key: "activos",  icon: "trending_up",   path: :assets_path,    controllers: %w[assets portfolios trades positions watchlist_items market search earnings news] },
     { key: "reglas",   icon: "notifications", path: :alerts_path,    controllers: %w[alerts notifications] },
     { key: "ajustes",  icon: "settings",      path: :profile_path,   controllers: %w[profiles] }
   ].freeze
