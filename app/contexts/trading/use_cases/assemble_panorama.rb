@@ -30,12 +30,8 @@ module Trading
 
       private
 
-      # Portfolio#convert fails loud on a missing rate, which is right for a
-      # calculation and a 500 for a screen. /dashboard raises here today with
-      # one USD position and no fx_rates row; LoadAssets already degrades and
-      # this follows it. Calling total_value inside the use case is the load-
-      # bearing part — the old AssembleDashboard built the summary lazily, so
-      # the raise landed in the template instead.
+      # Valuing here is the load-bearing part: AssembleDashboard built the
+      # summary lazily, so Portfolio#convert raised in the template instead.
       def consolidated_summary(portfolio, currency)
         return nil unless portfolio
 
