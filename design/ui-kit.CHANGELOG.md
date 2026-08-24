@@ -60,11 +60,34 @@ superseded by `AssetRow2`) and `AttentionItem` (the "atención hoy" band ended u
 > `cockpit.pen` stays on `0.1.0` with its own local copies of the five. That is legal (being
 > behind is fine; diverging is not) — re-vendor it when it is next opened for edits.
 
-### Gaps to watch (candidates for 0.3.0)
+---
+
+## 0.3.0 — Segmented + scrim (minor)
+
+Additive; no token values changed, so no consumer is forced to re-sync.
+
+**Component (+1, now 11):** `Segmented` — the two-tab pill.
+**Token (+1, now 38):** `scrim` — modal/sheet overlay (`#0F172A99` light, `#000000B3` dark).
+
+Measured before promoting: **7 hand-built copies across 2 flows** — 5 in `flows/assets.pen`
+(Cartera/Sigo on four artboards + Compra/Venta in the trade sheet) and 2 in `cockpit.pen`
+(the Análisis / Mi posición toggle on both asset-detail artboards). Active state is a
+per-instance override on the two segments; labels likewise. `cockpit.pen`'s compact variant
+overrides `padding` and drops `fill_container` — same master, different sizing.
+
+The `scrim` was tokenized flow-locally in `assets.pen` when the trade sheet needed it; promoted
+now so the next flow with a modal (alerts rule create) cannot invent a second alpha.
+
+**Vendored by:** `flows/assets.pen` (kit-version-source `0.3.0`) — its five inline copies were
+replaced with instances in the same pass.
+
+### Gaps to watch (candidates for 0.4.0)
 
 | Need | Note |
 |---|---|
-| `scrim` color token | Bottom-sheet overlay. Tokenized flow-locally in `flows/assets.pen` (`#0F172A99` light / `#000000B3` dark) — promote once a second flow needs a modal. |
-| `WatchRow` | `flows/assets.pen` local. Same skeleton as `AssetRow` but carries price + Δ día + "sigues +X%". Promote only if a second flow needs it; otherwise it stays a feature-local row. |
-| `Segmented` (2-tab pill) | Rebuilt inline in 4 artboards of `assets.pen` and again in `cockpit.pen`'s asset detail toggle. Cheapest real promotion of the next batch. |
-| `OptionCard` (icon + title + desc + chevron) | Empty-state paths in `assets.pen`; onboarding has a near-identical shape. Compare the two before promoting. |
+| `WatchRow` | `flows/assets.pen` local. `AssetRow`'s skeleton but carries price + Δ día + "sigues +X%". One flow — promote only if a second needs it. |
+| `TierChip` (Poseo / Sigo) | `flows/assets.pen` local, 2 artboards, 1 flow. Wait for `alerts.pen`. |
+| `OptionCard` (icon + title + desc + chevron) | Empty-state paths and the Rastreados entry row in `assets.pen`. `onboarding.pen` looks like it has the same shape — **verify against it before promoting**, it was not open during this pass. |
+| `TopBarBack` (back + title + action) | Two artboards in `assets.pen`; `cockpit.pen`'s asset-detail bar is close but stacks ticker + name. Similar, not identical — do not force one master over both. |
+| PriceChart tokens (axis, band fill, RSI line) | From 0.1.0, still open — the chart component may need its own color roles. Tokenize, don't hardcode. |
+| Semáforo "live vs próximamente" states | From 0.1.0, still open — needs a distinct treatment, not color alone (D3). |

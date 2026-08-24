@@ -1861,6 +1861,73 @@
           "fontWeight": "normal"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "L96eN",
+      "x": 1260,
+      "y": 1562,
+      "name": "Segmented",
+      "reusable": true,
+      "width": 342,
+      "fill": "$bg-muted",
+      "cornerRadius": "$radius-md",
+      "gap": 4,
+      "padding": 4,
+      "children": [
+        {
+          "type": "frame",
+          "id": "hBH4T",
+          "name": "S1",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-sm",
+          "padding": [
+            13,
+            12
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "fVMUr",
+              "name": "t",
+              "fill": "$fg-default",
+              "content": "Uno",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "VAKU5",
+          "name": "S2",
+          "width": "fill_container",
+          "fill": "#00000000",
+          "cornerRadius": "$radius-sm",
+          "padding": [
+            13,
+            12
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "l6tPTO",
+              "name": "t",
+              "fill": "$fg-subtle",
+              "content": "Dos",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
@@ -1872,7 +1939,7 @@
   "variables": {
     "kit-version": {
       "type": "string",
-      "value": "0.2.0"
+      "value": "0.3.0"
     },
     "font-display": {
       "type": "string",
@@ -2311,6 +2378,23 @@
         },
         {
           "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "scrim": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F172A99",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#000000B3",
           "theme": {
             "mode": "dark"
           }
