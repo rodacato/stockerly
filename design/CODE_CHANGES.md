@@ -221,6 +221,17 @@ production those sit behind a Cloudflare Tunnel whose cache rules key on the pat
   `Portfolio#allocation_by_asset_type` / `#allocation_by_sector`, daily `portfolio_snapshots`.
 - Benchmark data needs **no new gateway**: `MarketData::Gateways::BanxicoGateway#fetch_auctions`
   already returns CETES rates per term (`CETES_SERIES`).
+- 🔴 **Two blockers, not one — measured 2026-08-24 (D26, D27).** The TWR problem below is real, and
+  the remedy this section proposed for it is not: **nothing ever writes `buying_power`**, so
+  `portfolio_snapshots.cash_value` is a constant and carries no flow information. The flows live in
+  `trades` (no cash model ⇒ every buy is an inflow), already valued historically by
+  `fx_rate_at_execution`. **But underneath that: the snapshot history is never rebuilt.**
+  `TakeSnapshotsJob` writes only today's row, nothing backfills, and the trade sheet accepts any
+  `executed_at` — reproduced: a buy dated five days ago leaves that day's snapshot at
+  `total_value=0.0` while the portfolio holds 1,000 today. TWR compares `V_t` against
+  `V_{t-1} + flow`; both sides must describe the same portfolio. Fixing TWR alone only changes which
+  wrong number ships. This also collides with the 2.0's own data-entry plan, since importing history
+  *is* bulk-inserting backdated trades.
 - 🔴 **Do not reuse `PeriodReturnsCalculator` figures for the comparison cards.** They are
   money-weighted (current total vs an older snapshot), so a deposit inflates them. Derive TWR from
   `portfolio_snapshots.cash_value` / `invested_value` flows first; the two cards are only honest on
