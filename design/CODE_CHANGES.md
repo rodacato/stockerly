@@ -102,6 +102,20 @@ this container could not perform, listed so they are not mistaken for done.
   with grid, axes and a `timeScale`. Five canvases plus five `ResizeObserver`s for a sparkline is
   the wrong tool on the most-opened screen. It debuts in the asset detail, where
   `cockpit-asset-analisis` draws the chart it was written for.
+- 📸 **Two defects only a screenshot found**, both invisible to a green suite:
+  1. The desktop three-column layout **did not render** on the first capture. Cause: the local
+     `app/assets/builds/tailwind.css` predated the new template, so `lg:col-span-4`, `lg:order-*`,
+     `snap-x` and `stroke-positive` were simply absent — the sparklines were invisible for the same
+     reason. CI builds the CSS; a local cuprite run does not. **Run `bin/rails tailwindcss:build`
+     before trusting any local screenshot.**
+  2. The sparkline drew a **falling line painted green**. Its shape came from seven daily closes and
+     its colour from `change_percent_24h` — two windows that disagree whenever the week and the day
+     do. Colour now comes from the same closes that draw the shape.
+- ⬜ **Left as drawn, for Adrian to call:** in the Radar's narrow desktop column the inline
+  sparkline squeezes the asset name to an ellipsis (`Vanguard S&P 500 · 102 …`). The artboard puts
+  the sparkline on its own line beneath the name; `_asset_row` keeps it inline, which reads fine in
+  Activos' wide grid and truncates here. Restructuring the row touches slice 2's screen, so it did
+  not ride along.
 - ⬜ **Orphaned by this deletion, kept on purpose:** `Trading::Domain::WeeklyInsightCalculator` and
   the `RecentNews` / `TrendingAssets` / `MajorIndices` queries now have **zero production callers**
   (their specs still pass). Slice 4 and the asset detail may consume them; if they do not, they are
