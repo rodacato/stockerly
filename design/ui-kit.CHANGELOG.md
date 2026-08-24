@@ -119,3 +119,40 @@ re-vendor each when it is next opened for edits.
 | Categorical palette (allocation slices) | The Consolidado donut needed four non-semantic category colors and the kit has none — green/red are reserved for gain/loss, so it borrowed `primary`, `primary-hover`, `warning` and `fg-subtle`. `warning` on a crypto slice reads as a caution it does not mean. A real 4–6 colour categorical ramp is the fix. |
 | PriceChart tokens (axis, band fill, RSI line) | From 0.1.0, still open — the chart component may need its own color roles. Tokenize, don't hardcode. |
 | Semáforo "live vs próximamente" states | From 0.1.0, still open — needs a distinct treatment, not color alone (D3). |
+
+---
+
+## 0.5.0 — the desktop shell (minor)
+
+Additive; no token values changed, so no consumer is forced to re-sync.
+
+**Components (+3, now 16):** `SidebarNav`, `TopBarDesktop`, `AppShellDesktop`.
+
+D4 names the shell as the one component with two variants, and until now only the mobile one
+existed — the six flows are 22 mobile artboards and zero desktop. Adrian asked for the desktop
+pass across every flow before the shell slice is written in code, so the variant lands in the
+kit first and the flows instance it.
+
+| Component | Shape | Replaces on desktop |
+|---|---|---|
+| `SidebarNav` | 240 wide, brand + the same four destinations stacked, active row on `primary-muted` | `BottomNav` |
+| `TopBarDesktop` | screen title + context line on the left, bell on the right | `TopBar` |
+| `AppShellDesktop` | 1280×800 frame composing both, with a slot for the screen body | — |
+
+The four destinations, their icons and their labels are copied from `BottomNav`, not
+re-picked: the desktop variant is the same navigation in a different geometry. `SidebarNav`
+vendors the `Brand` group from `TopBar` rather than redrawing the glyph.
+
+**Why a third component rather than two:** every desktop artboard needs the same frame around
+its body, and drawing it per screen is how 22 near-copies drift. `AppShellDesktop` is that
+frame; a flow overrides the title, the active destination and the body.
+
+**Vendored by:** nothing yet — the flows re-vendor as each gets its desktop pass.
+
+### Gaps to watch (candidates for 0.6.0)
+
+| Need | Note |
+|---|---|
+| Master-detail body | D4 calls out cockpit/asset-detail as genuinely divergent. The split lives inside the shell's slot; whether it earns a component depends on how many screens use it. |
+| Desktop `Segmented` width | The mobile pill is `fill_container` at 342. On a 1040 body it stretches to something no one wants; a max width or a left-aligned variant is needed. |
+| Bell destination | The bell is drawn in both TopBar variants and still points nowhere (D14). |
