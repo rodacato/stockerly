@@ -2,19 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Stockerly · Lumen palette (in place until the redesign ships).
-   The design system source of truth now lives in the design/ folder
-   (Pencil-based). Light is the default; dark overrides land in
-   @layer base below.
-
-   Migration notes (S11 #142): this block was previously the pre-Lumen
-   palette (#005A98 corporate blue, #3BC175 accent, slate-cold bg).
-   Audit at S10 close (.local/design-mockups/Stockerly-2.0/AUDIT-*.md)
-   surfaced that every Stockerly-2.0 design pass since S07 rendered
-   against the wrong tokens. Lumen names from tokens.md §1.2 are now
-   the canonical set. Existing semantic names (success / error /
-   warning / info) kept as ALIASES for the new palette so the wide
-   view sweep stays small — see §4.1 WCAG -fg pattern. */
+/* Stockerly tokens. Two independent axes per ADR-012: `data-theme` names the
+   palette (`lumen`, the only one), the `dark` class carries the mode. Token
+   NAMES are the contract — a second palette is a new block of the two below,
+   never an edit to a view. Source of truth for the values: design/. */
 
 @theme {
   /* --- Brand accent ---------------------------------------------------- */
@@ -90,15 +81,15 @@
   --color-sentiment-5:       #10B981;
 
   /* --- Typography ------------------------------------------------------ */
-  --font-family-display: "Plus Jakarta Sans", sans-serif;
-  --font-family-body:    "Inter", sans-serif;
-  --font-family-mono:    "JetBrains Mono", monospace;
+  --font-display:            "Plus Jakarta Sans", sans-serif;
+  --font-sans:               "Inter", sans-serif;
+  --font-mono:               "JetBrains Mono", monospace;
 }
 
-/* Dark mode overrides — toggled via html.dark (Tailwind 4 darkMode: class).
-   Mirrors tokens.md §1.2 exactly. */
+/* Theme `lumen` — dark mode. Wins over @theme because @layer base is
+   declared after @layer theme, whatever the selector specificity. */
 @layer base {
-  :where(html.dark, [data-theme="dark"]) {
+  :where(html.dark) {
     --color-primary:           #7B89FF;
     --color-primary-hover:     #9098FF;
     --color-primary-muted:     #2A2E55;
@@ -163,13 +154,9 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Brand typography — Plus Jakarta Sans on all heading levels.
-   `font-body` (Inter) is already applied to <body> in application.html.erb
-   and inherited everywhere; this rule overrides for h1-h6 so the display
-   font hierarchy from tokens.md §2.1 is automatic, without per-heading
-   class repetition across ~200 view files. */
+/* Display font on every heading, so ~200 templates need no per-heading class. */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-family-display);
+  font-family: var(--font-display);
 }
 
 /* Print utilities */
