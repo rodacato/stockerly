@@ -1,0 +1,27 @@
+<%# Locals: position, declared_currency
+    No state chip and no confluence dots: the design draws both, the code backs
+    neither — the chip's taxonomy does not exist and the semáforo is D3, whose
+    engine is gated on its discovery card. %>
+<% asset = position.asset %>
+<% change = asset.change_percent_24h || 0 %>
+<% amount, amount_currency = position_amount(position, declared_currency) %>
+<%= link_to market_asset_path(asset.symbol),
+            class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
+  <div class="min-w-0 flex-1">
+    <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
+    <p class="truncate text-xs text-fg-subtle">
+      <%= asset.name %> · <%= t("assets.index.titulos", count: number_with_precision(position.shares, precision: position.shares.to_d.frac.zero? ? 0 : 4, delimiter: ",")) %>
+    </p>
+  </div>
+
+  <div class="w-20 shrink-0">
+    <%= render "components/sparkline", direction: change.negative? ? :down : :up %>
+  </div>
+
+  <div class="shrink-0 text-right">
+    <p class="font-mono text-sm font-bold text-fg-default">
+      <%= money_cell(amount, currency: amount_currency, declared: declared_currency, precision: 0) %>
+    </p>
+    <p class="font-mono text-xs <%= gain_color(change) %>"><%= signed_percent(change) %></p>
+  </div>
+<% end %>

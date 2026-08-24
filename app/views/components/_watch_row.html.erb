@@ -1,0 +1,23 @@
+<%# Locals: item (WatchlistItem)
+    Prices keep their ISO prefix: a watchlist mixes currencies and nothing here
+    is converted, so D10 says every value names its own. %>
+<% asset = item.asset %>
+<% change = asset.change_percent_24h || 0 %>
+<% followed = followed_since_percent(item) %>
+<%= link_to market_asset_path(asset.symbol),
+            class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
+  <div class="min-w-0 flex-1">
+    <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
+    <p class="truncate text-xs text-fg-subtle"><%= asset.name %></p>
+  </div>
+
+  <div class="shrink-0 text-right">
+    <p class="font-mono text-sm font-bold text-fg-default">
+      <%= format_currency_mx(asset.current_price, currency: asset.currency) %>
+    </p>
+    <p class="font-mono text-xs <%= gain_color(change) %>"><%= signed_percent(change) %></p>
+    <% if followed %>
+      <p class="mt-0.5 text-[11px] text-fg-subtle"><%= t("assets.index.sigues", percent: signed_percent(followed)) %></p>
+    <% end %>
+  </div>
+<% end %>

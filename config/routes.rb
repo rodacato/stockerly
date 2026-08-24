@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   get "market/:symbol/statements_tab", to: "market#statements_tab", as: :market_asset_statements_tab
   get "search",    to: "search#index"
 
+  get "assets", to: "assets#index"
   resource  :portfolio, only: [ :show ]
   resources :alerts, only: [ :index, :create, :update, :destroy ] do
     member { patch :toggle }

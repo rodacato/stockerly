@@ -70,7 +70,7 @@ RSpec.describe "Navigation", type: :system do
     it "navigates to the four shell destinations" do
       {
         "Panorama" => dashboard_path,
-        "Activos"  => portfolio_path,
+        "Activos"  => assets_path,
         "Reglas"   => alerts_path,
         "Ajustes"  => profile_path
       }.each do |label, path|
