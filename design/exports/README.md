@@ -61,9 +61,20 @@ Not drawn on desktop, on purpose: `Sigo`, `Cartera vacía`, the two `Rastreados 
 settles. `Registros` would want a real log table, which is a new component and therefore a
 decision, not a redraw.
 
-**Missing:** `flows/onboarding.pen` shipped before this convention existed and has no exports yet.
-The file must be open in Pencil to export it — do it on its next touch. (`flows/auth.pen` was
-caught up on 2026-08-24.)
+**Nothing missing.** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention
+existed; both were caught up on 2026-08-24. Every artboard in every flow now has a PNG here.
+
+| File | Artboard |
+|---|---|
+| `onboarding-setup.png` | `[Onboarding] / Setup / Default` |
+| `onboarding-setup-desktop.png` | `[Onboarding] / Setup / Desktop` |
+| `onboarding-integrations.png` | `[Onboarding] / Integrations / Default` |
+| `onboarding-assets.png` | `[Onboarding] / Assets / Default` |
+| `onboarding-complete.png` | `[Onboarding] / Complete / Default` |
+| `onboarding-welcome.png` | `[Onboarding] / Welcome / Default` |
+| `onboarding-integrations-desktop.png` | `[Onboarding] / Integrations / Desktop` |
+| `onboarding-assets-desktop.png` | `[Onboarding] / Assets / Desktop` |
+| `onboarding-welcome-desktop.png` | `[Onboarding] / Welcome / Desktop` |
 
 | File | Artboard |
 |---|---|

@@ -54,6 +54,27 @@ Working model per flow: **(1)** read the existing screens/copy from code (source
 structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit · **(3)** review/feel ·
 **(4)** land the ERB revamp to match, tracked in CODE_CHANGES.md.
 
+### Desktop pass (2026-08-24, kit 0.5.0)
+
+Every flow has been through it. D4 still governs **which** screens get an artboard: one is drawn
+only where the layout genuinely diverges, and the rest reflow — so 14 desktop artboards cover 6
+flows, not 30.
+
+| Flow | Desktop artboards | Not drawn, because |
+|---|---|---|
+| `auth` | Login | The other four are the same centered card; Login fixes its width (420) |
+| `onboarding` | Setup · Integrations · Assets · Welcome | Complete inherits the wizard frame exactly |
+| `cockpit` | Panorama · Asset·Análisis · Consolidado | — |
+| `assets` | Cartera · Registrar movimiento · Rastreados | Sigo, Cartera vacía and the search states reuse patterns above |
+| `alerts` | — | Its list and sheet are the patterns Cartera and Registrar movimiento settle |
+| `settings` | Hub · Integraciones · Estado | Registros reflows; a real log table is a new component, so a decision |
+
+The shell variant lives in the kit (`SidebarNav`, `TopBarDesktop`, `AppShellDesktop`, 0.5.0) and is
+vendored per flow like everything else. Two rules came out of the pass and hold for the ERB work:
+**components are not stretched to fill a column** (a wider screen buys more columns at native
+width, never wider rows), and **a control is not a container** (segmented controls and forms keep
+their own width whatever they are given).
+
 ## Design inputs (the redesign discovery)
 
 The hub `../redesign/` (gitignored, local) holds the thinking this design serves:
