@@ -1,0 +1,100 @@
+<% content_for :page_title, t("trades.new.titulo") %>
+
+<%# D11: a real page. The Activos list loads it into this frame inside a
+    <dialog>; on its own it renders as a normal screen and submits normally. %>
+<%= turbo_frame_tag "trade_sheet" do %>
+  <div class="mx-auto flex w-full max-w-lg flex-col"
+       data-controller="trade-sheet"
+       data-trade-sheet-fx-url-value="<%= fx_rate_path %>"
+       data-trade-sheet-preferred-currency-value="<%= @currency %>">
+
+    <%= form_with url: trades_path, scope: :trade, class: "flex min-h-0 flex-col" do |f| %>
+      <div class="flex flex-col gap-4 overflow-y-auto px-1 pb-4">
+        <div role="tablist" class="flex gap-1 rounded-xl bg-bg-muted p-1">
+          <% [ [ "buy", t("trades.new.compra") ], [ "sell", t("trades.new.venta") ] ].each do |value, label| %>
+            <label class="flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors has-[:checked]:bg-bg-surface has-[:checked]:text-fg-default text-fg-subtle">
+              <%= f.radio_button :side, value, checked: @side == value, class: "sr-only" %>
+              <%= label %>
+            </label>
+          <% end %>
+        </div>
+
+        <label class="flex flex-col gap-1.5">
+          <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.activo") %></span>
+          <%= f.text_field :asset_symbol, value: @symbol, required: true, autocomplete: "off",
+                           placeholder: t("trades.new.activo_ayuda"),
+                           class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
+        </label>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex flex-col gap-1.5">
+            <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.fecha") %></span>
+            <%= f.date_field :executed_at, value: Date.current,
+                             data: { trade_sheet_target: "date", action: "change->trade-sheet#refreshRate" },
+                             class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
+          </label>
+
+          <label class="flex flex-col gap-1.5">
+            <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.moneda") %></span>
+            <%= f.select :currency, Asset::SUPPORTED_CURRENCIES, { selected: @currency },
+                         data: { trade_sheet_target: "currency", action: "change->trade-sheet#refreshRate" },
+                         class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex flex-col gap-1.5">
+            <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.titulos") %></span>
+            <%= f.number_field :shares, step: "any", required: true, inputmode: "decimal",
+                               data: { trade_sheet_target: "shares", action: "input->trade-sheet#recalculate" },
+                               class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-right font-mono text-sm text-fg-default" %>
+          </label>
+
+          <label class="flex flex-col gap-1.5">
+            <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.precio") %></span>
+            <%= f.number_field :price_per_share, step: "any", required: true, inputmode: "decimal",
+                               data: { trade_sheet_target: "price", action: "input->trade-sheet#recalculate" },
+                               class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-right font-mono text-sm text-fg-default" %>
+          </label>
+        </div>
+
+        <label class="flex flex-col gap-1.5">
+          <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle">
+            <%= t("trades.new.comision") %> <span class="normal-case text-fg-subtle">(<%= t("trades.new.opcional") %>)</span>
+          </span>
+          <%= f.number_field :fee, step: "any", inputmode: "decimal",
+                             data: { trade_sheet_target: "fee", action: "input->trade-sheet#recalculate" },
+                             class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-right font-mono text-sm text-fg-default" %>
+        </label>
+
+        <div class="flex flex-col gap-2 rounded-xl border border-border-default bg-bg-muted p-3"
+             data-trade-sheet-target="fxCard">
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-xs font-semibold text-fg-default"
+                  data-trade-sheet-target="fxLabel"
+                  data-template="<%= t("trades.new.tc_titulo", base: "%{base}", target: "%{target}") %>"></span>
+            <%= f.text_field :fx_rate_at_execution, inputmode: "decimal",
+                             data: { trade_sheet_target: "fxRate", action: "input->trade-sheet#recalculate" },
+                             class: "w-28 rounded-lg border border-border-default bg-bg-surface px-2 py-1.5 text-right font-mono text-sm text-fg-default" %>
+          </div>
+          <%# Copy lives in the catalogue, not in the JS (ADR-011). %>
+          <p class="text-[11px] text-fg-subtle"
+             data-trade-sheet-target="fxNote"
+             data-banxico="<%= t("trades.new.tc_banxico", date: "%{date}") %>"
+             data-manual="<%= t("trades.new.tc_manual") %>"></p>
+        </div>
+      </div>
+
+      <%# Sticky by design (D11): on a phone the keyboard eats the lower half of
+          the sheet, and Total + Guardar are exactly what must survive that. %>
+      <div class="sticky bottom-0 flex flex-col gap-3 border-t border-border-default bg-bg-surface px-1 pb-[env(safe-area-inset-bottom)] pt-3">
+        <div class="flex items-baseline justify-between">
+          <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.total") %></span>
+          <span class="font-mono text-lg font-bold text-fg-default" data-trade-sheet-target="total">—</span>
+        </div>
+        <%= f.submit t("trades.new.guardar"),
+                     class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-fg-inverse" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

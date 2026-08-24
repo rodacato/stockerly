@@ -69,9 +69,18 @@ without payoff.
   shipped, never once displayed until now.
 - ✅ Money per D10; the 🐞 in `dashboard/_watchlist_table` ("Tus posiciones" over the watchlist)
   is fixed.
-- ⬜ **Trade sheet (D11) — slice 2c**, together with `cuprite`: it is the first JS that can
-  genuinely break. It also waits on the FX block, since auto-filling the rate *for the trade date*
-  is impossible until history exists.
+- ✅ **Trade sheet (D11) — slice 2c.** `/trades/new` is a real page inside a Turbo Frame,
+  presented as a native `<dialog>`: bottom-anchored on a phone, centred on desktop. Turbo drives
+  the navigation (`data-turbo-action="advance"` on the link, not the frame — setting `frame.src`
+  by hand skips the history push), so the back button closes it for free and the form still works
+  if the JS never runs. `max-height: min(85dvh, var(--sheet-viewport-height))`, sticky Total +
+  Guardar footer, `visualViewport` listener, `env(safe-area-inset-bottom)`, native
+  `<input type="date">`, `inputmode="decimal"`, no drag-to-dismiss. The FX field auto-fills with
+  the Banxico FIX **for the date entered** — the data-entry win and the correctness fix in one
+  field, which is only possible because slice 2b shipped the history.
+- ⬜ **"Guardar y registrar otro"** is drawn and not built. It is a real answer to the data-entry
+  fastidio, but it needs the submit to re-open the sheet cleanly; it did not ride along as a side
+  effect.
 - ⬜ **`/admin/assets` is only half absorbed.** Rastreados took the list, the tiers, the budget
   and pause/resume; creating, searching and deleting assets stayed behind. Both screens exist
   meanwhile, and the admin one is reachable only by URL.

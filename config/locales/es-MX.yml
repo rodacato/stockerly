@@ -107,3 +107,22 @@ es-MX:
       long: "%-d de %B de %Y %H:%M"
       short: "%-d de %b %H:%M"
     pm: p.m.
+  trades:
+    new:
+      activo: Activo
+      activo_ayuda: Ticker o nombre
+      cerrar: Cerrar
+      comision: Comisión
+      compra: Compra
+      fecha: Fecha
+      guardar: Guardar movimiento
+      moneda: Moneda
+      opcional: opcional
+      precio: Precio por título
+      tc_banxico: FIX de Banxico del %{date}
+      tc_manual: Sin FIX para esa fecha. Escríbelo si lo sabes.
+      tc_titulo: Tipo de cambio · %{base}/%{target}
+      titulo: Registrar movimiento
+      titulos: Títulos
+      total: Total
+      venta: Venta
