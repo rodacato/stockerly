@@ -87,7 +87,7 @@ RSpec.describe "Activos", type: :request do
     it "says it cannot consolidate rather than inventing a rate" do
       get assets_path
 
-      expect(response.body).to include(I18n.t("assets.index.sin_tc_titulo"))
+      expect(response.body).to include(I18n.t("comun.sin_tc_titulo"))
       expect(response.body).not_to include("VALOR DE MERCADO · MXN")
     end
 

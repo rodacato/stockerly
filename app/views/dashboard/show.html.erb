@@ -1,131 +1,79 @@
-<%# Dashboard — authenticated home page (Stockerly-2.0 design pass) %>
-<% if @watchlist_items.blank? && @summary.nil? %>
-  <%= render "components/empty_state", icon: "visibility", title: "Tu watchlist está vacía", description: "Comienza a seguir acciones y crypto agregándolas a tu watchlist.", cta_text: "Explorar mercado", cta_path: market_path %>
-<% else %>
+<%# Panorama (slice 3) — the daily cockpit. Mobile order: patrimonio, sentiment,
+    movements, radar. Desktop reorders into three columns at native width, so
+    the DOM stays in reading order and CSS does the rearranging. %>
+<% content_for :page_title, t(".titulo") %>
+<% content_for :page_subtitle, "#{l(Date.current, format: "%a · %d %b %Y").upcase} · CDMX" %>
 
-<%# 1 · Greeting band — hour-aware salutation + portfolio delta + date stamp %>
-<div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-  <div>
-    <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Panel de control</p>
-    <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-      <%= dashboard_greeting %>, <%= first_name_of(current_user) %>.
-    </h2>
-    <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
-      <% if @summary %>
-        <% dg = @summary.day_gain %>
-        Tu portafolio cambió
-        <span class="font-mono font-semibold <%= dg.positive? ? 'text-success-fg dark:text-success' : 'text-error-fg dark:text-error' %>"><%= dg.positive? ? "+" : "" %><%= number_to_percentage(dg.percent, precision: 2) %></span>
-        hoy. Esto es lo que pasó.
-      <% else %>
-        Esto es lo que pasó hoy en los mercados.
-      <% end %>
-    </p>
+<div class="flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:items-start">
+  <div class="lg:order-1 lg:col-span-12">
+    <%= render "dashboard/patrimonio_strip", summary: @summary, currency: @currency, fx_unavailable: @fx_unavailable %>
   </div>
-  <div class="flex flex-col items-start md:items-end gap-1.5">
-    <span class="font-mono text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
-      <%= I18n.l(Date.current, format: "%a · %d %b %Y").upcase %> · CDMX
-    </span>
-    <% if @market_status[:bmv] %>
-      <span class="inline-flex items-center gap-1.5 text-[11.5px] text-slate-500 dark:text-slate-400">
-        <span class="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_0_3px_rgba(16,185,129,0.18)]"></span>
-        Datos en vivo · BMV abierto
-      </span>
-    <% end %>
-  </div>
-</div>
 
-<%# 2 · KPI strip — 4 cards: Valor total / Ganancia del día / CETES por vencer / Saldo disponible %>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-  <% if @summary %>
-    <% dg = @summary.day_gain %>
-    <%= render "dashboard/kpi_card",
-        icon:   "account_balance_wallet",
-        title:  "Valor total",
-        value:  format_currency_mx(@summary.total_value, currency: @currency),
-        change: { sign: dg.positive? ? "+" : "−", amount: number_with_precision(dg.percent.abs, precision: 2), label: "hoy", positive: dg.positive? } %>
-    <%= render "dashboard/kpi_card",
-        icon:   "trending_up",
-        title:  "Ganancia del día",
-        value:  "#{dg.positive? ? '+' : '−'} #{format_currency_mx(dg.absolute.abs, currency: @currency)}",
-        tone:   (dg.positive? ? :positive : :default),
-        change: { sign: dg.positive? ? "+" : "−", amount: number_with_precision(dg.percent.abs, precision: 2), label: "", positive: dg.positive? } %>
-    <% if @cetes_summary && @cetes_summary[:count].positive? %>
-      <%= render "dashboard/kpi_card",
-          icon:    "event",
-          title:   "CETES por vencer",
-          value:   format_currency_mx(@cetes_summary[:total_value], currency: @currency, precision: 0),
-          caption: "#{@cetes_summary[:count]} en los próximos 30 días" %>
-    <% else %>
-      <%= render "dashboard/kpi_card",
-          icon:    "event",
-          title:   "CETES por vencer",
-          value:   format_currency_mx(0, currency: @currency, precision: 0),
-          caption: "Sin vencimientos próximos" %>
-    <% end %>
-    <%= render "dashboard/kpi_card",
-        icon:    "savings",
-        title:   "Saldo disponible",
-        value:   format_currency_mx(@summary.buying_power, currency: @currency),
-        caption: "Sin invertir" %>
-  <% else %>
-    <%= render "dashboard/kpi_card", icon: "account_balance_wallet", title: "Valor total",       value: format_currency_mx(0, currency: @currency || "MXN"), caption: "Sin posiciones" %>
-    <%= render "dashboard/kpi_card", icon: "trending_up",            title: "Ganancia del día",  value: format_currency_mx(0, currency: @currency || "MXN"), caption: "Sin movimiento" %>
-    <%= render "dashboard/kpi_card", icon: "event",                  title: "CETES por vencer",  value: format_currency_mx(0, currency: @currency || "MXN", precision: 0), caption: "Sin vencimientos" %>
-    <%= render "dashboard/kpi_card", icon: "savings",                title: "Saldo disponible",  value: format_currency_mx(0, currency: @currency || "MXN"), caption: "Sin invertir" %>
-  <% end %>
-</div>
-
-<%# 3 · Sentiment band — 3 cards %>
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
-  <%# Market Sentiment — watchlist-based %>
-  <div class="bg-bg-surface rounded-xl border border-border-default p-5 shadow-sm">
-    <div class="flex items-center justify-between mb-3">
-      <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-        <span class="material-symbols-outlined text-lg">monitoring</span>
-        <p class="text-sm font-semibold tracking-tight uppercase">Sentimiento de tu watchlist</p>
+  <%# Sentiment carousel — a horizontal snap strip on a phone, a column on a
+      desktop. No dots: they would need JS to follow the scroll, and a static
+      row of dots that never moves is worse than the peeking next card. %>
+  <% if @sentiment_cards.any? %>
+    <section class="lg:order-4 lg:col-span-4" aria-label="<%= t(".carrusel") %>">
+      <div class="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
+        <% @sentiment_cards.each do |card| %>
+          <%= render "dashboard/sentiment_card", card: card %>
+        <% end %>
       </div>
-    </div>
-    <% sentiment_value = @sentiment[:value] %>
-    <div class="flex flex-col items-center py-1 mb-4">
-      <span class="font-mono text-4xl font-bold text-slate-900 dark:text-white"><%= sentiment_value %></span>
-      <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400 mt-1"><%= @sentiment[:label] %></span>
-    </div>
-    <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
-      <div class="h-full bg-success" style="width: <%= sentiment_value %>%"></div>
-      <div class="h-full bg-warning" style="width: <%= [100 - sentiment_value, 20].min %>%"></div>
-      <div class="h-full bg-error" style="width: <%= [100 - sentiment_value - 20, 0].max %>%"></div>
-    </div>
-    <p class="mt-2 text-xs font-medium text-slate-400">Basado en tus activos</p>
-  </div>
+    </section>
+  <% end %>
 
-  <%# Crypto Fear & Greed %>
-  <%= render "dashboard/fear_greed_card", reading: @fear_greed[:crypto], label: "Crypto", history: @fear_greed[:crypto_history] %>
+  <section class="lg:order-3 lg:col-span-4">
+    <div class="flex items-baseline justify-between gap-4">
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".movimientos_titulo") %></h2>
+      <%= link_to market_path, class: "shrink-0 text-sm font-medium text-primary hover:underline" do %>
+        <%= t(".ver_mas") %> <span aria-hidden="true">→</span>
+      <% end %>
+    </div>
 
-  <%# Stocks Fear & Greed %>
-  <%= render "dashboard/fear_greed_card", reading: @fear_greed[:stocks], label: "Acciones", history: @fear_greed[:stocks_history] %>
+    <% if @movements.any? %>
+      <p class="mt-1 text-sm text-fg-subtle"><%= t(".movimientos_subtitulo") %></p>
+      <div class="mt-3 flex flex-col gap-3">
+        <% @movements.each do |observation| %>
+          <%= render "dashboard/movement_row", observation: observation %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="mt-3 flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-5">
+        <span class="material-symbols-outlined text-2xl text-fg-subtle" aria-hidden="true">local_cafe</span>
+        <p class="text-sm text-fg-subtle"><%= t(".movimientos_vacio") %></p>
+      </div>
+    <% end %>
+  </section>
+
+  <section class="lg:order-2 lg:col-span-4">
+    <div class="flex items-baseline justify-between gap-4">
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".radar_titulo") %></h2>
+      <%= link_to assets_path, class: "shrink-0 text-sm font-medium text-primary hover:underline" do %>
+        <%= t(".ver_todos") %> <span aria-hidden="true">→</span>
+      <% end %>
+    </div>
+
+    <% if @radar.any? %>
+      <p class="mt-1 text-sm text-fg-subtle"><%= t(".radar_subtitulo", currency: @currency) %></p>
+      <div class="mt-3 flex flex-col gap-3">
+        <% @radar.each do |entry| %>
+          <% if entry.kind == :position %>
+            <%= render "components/asset_row",
+                       position: entry.record,
+                       declared_currency: @currency,
+                       maturity_days: entry.maturity_days %>
+          <% else %>
+            <%= render "components/watch_row", item: entry.record %>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="mt-3">
+        <%= render "components/empty_state",
+                   icon: "bedtime",
+                   title: t(".radar_vacio"),
+                   description: t("assets.index.vacio_cartera_cuerpo") %>
+      </div>
+    <% end %>
+  </section>
 </div>
-
-<%# 4 · Main grid — 8 + 4 columns %>
-<div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
-  <%# Main Content Column %>
-  <div class="lg:col-span-8 space-y-8">
-    <%= render "dashboard/watchlist_table" %>
-    <%= turbo_frame_tag "dashboard_news_feed", src: dashboard_news_feed_path, loading: "lazy" do %>
-      <%= render "components/skeleton", type: "card", count: 3 %>
-    <% end %>
-  </div>
-
-  <%# Sidebar Column %>
-  <div class="lg:col-span-4 space-y-8">
-    <%= turbo_frame_tag "dashboard_trending", src: dashboard_trending_path, loading: "lazy" do %>
-      <%= render "components/skeleton", type: "card", count: 1 %>
-    <% end %>
-    <%= render "dashboard/upcoming_events" %>
-    <%= turbo_frame_tag "dashboard_notable_observations", src: dashboard_notable_observations_path, loading: "lazy" do %>
-      <%= render "components/skeleton", type: "card", count: 1 %>
-    <% end %>
-    <%= render "dashboard/weekly_insight" %>
-    <%= render "dashboard/market_status" %>
-  </div>
-</div>
-<% end %>

@@ -1,0 +1,33 @@
+<%# Locals: card (AssemblePanorama::SentimentCard) %>
+<% titles = {
+     crypto: t("dashboard.show.fear_greed_crypto"),
+     stocks: t("dashboard.show.fear_greed_stocks"),
+     watchlist: t("dashboard.show.sentimiento_watchlist")
+   } %>
+<% delta = sentiment_delta(card.delta) %>
+<article class="w-[85%] shrink-0 snap-center rounded-2xl border border-border-default bg-bg-surface p-5 lg:w-full">
+  <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= titles[card.key] %></p>
+
+  <div class="mt-2 flex items-center justify-between gap-3">
+    <p class="font-display text-4xl font-bold tracking-tight text-fg-default"><%= card.value %></p>
+    <span class="rounded-full bg-bg-muted px-3 py-1.5 text-xs font-semibold text-fg-default">
+      <%= sentiment_label(card.label_key) %>
+    </span>
+  </div>
+
+  <div class="relative mt-4">
+    <div class="flex gap-1">
+      <span class="h-1.5 flex-1 rounded-full bg-negative"></span>
+      <span class="h-1.5 flex-1 rounded-full bg-warning"></span>
+      <span class="h-1.5 flex-1 rounded-full bg-positive"></span>
+    </div>
+    <span class="absolute -top-1 size-3 -translate-x-1/2 rounded-full bg-fg-default"
+          style="left: <%= sentiment_offset(card.value) %>%"></span>
+  </div>
+
+  <% if delta %>
+    <p class="mt-3 font-mono text-xs text-fg-subtle">
+      <%= delta[:arrow] %> <%= t("dashboard.show.vs_ayer", delta: delta[:text]) %>
+    </p>
+  <% end %>
+</article>

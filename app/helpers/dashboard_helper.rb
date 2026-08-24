@@ -23,4 +23,27 @@ module DashboardHelper
   def first_name_of(user)
     user.full_name.to_s.split.first || user.email.split("@").first
   end
+
+  # ADR-013: the verb exists only as a lookup over a persisted observation.
+  # No row, no chip — this returns nil and the caller renders nothing.
+  def observation_action(observation)
+    MarketData::Domain::ObservationAction.for(observation.observation_type)
+  end
+
+  # The classification arrives from an external gateway, so an unmapped value
+  # renders as itself rather than raising on the whole screen.
+  def sentiment_label(key)
+    t("comun.clasificacion.#{key}", default: key.to_s.humanize)
+  end
+
+  # The dot's position on the 0-100 fear/greed track.
+  def sentiment_offset(value)
+    value.to_i.clamp(0, 100)
+  end
+
+  def sentiment_delta(delta)
+    return nil if delta.nil? || delta.zero?
+
+    { arrow: delta.positive? ? "▲" : "▼", text: "#{delta.positive? ? "+" : "−"}#{delta.abs}" }
+  end
 end

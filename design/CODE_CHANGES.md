@@ -59,13 +59,53 @@ this container could not perform, listed so they are not mistaken for done.
 - Add `lightweight-charts` via importmap; a `PriceChart` Stimulus controller fed by our existing
   close series (the same data behind RSI/Bollinger/SMA). No TradingView iframe.
 
-## 3. Cockpit components → ERB partials
+## 3. Panorama (slice 3) — DONE
 
-**Status:** pending — design first.
+**Status:** shipped. `/dashboard` renders the cockpit; the old surface is deleted, not left beside it.
 
-- The `cockpit.pen` components map 1:1 to `app/views/components/`. Translate after the flow is
-  approved (per README fidelity loop). Confluence engine (Light 2 + window) is NOT built here —
-  gated on its 4-filter card (D3).
+- ✅ **`Trading::UseCases::AssemblePanorama`** replaces `AssembleDashboard`. Four blocks:
+  `PatrimonioStrip`, the sentiment carousel, "Movimientos de interés", the Radar.
+- ✅ **The 🐞 is dead.** `/dashboard` raised `Missing FX rate USD->MXN` with one USD position,
+  `preferred_currency: "MXN"` and no `fx_rates` row — and it raised **in the template**
+  (`show.html.erb:44`), because the old use case built `PortfolioSummary` without ever valuing it.
+  The new one calls `total_value` and `day_gain` inside the use case and rescues there, exactly as
+  `LoadAssets#consolidated_summary` does. The strip degrades to "Sin consolidar"; the Radar still
+  renders, because only the consolidation was ever impossible.
+- ✅ **`compra` / `vende` chips ship** — under
+  [ADR-013](../docs/architecture/adr/0013-action-labels-on-persisted-observations.md), which amends
+  ADR-001 (D24). The verb comes from `MarketData::Domain::ObservationAction`, a lookup over a
+  persisted `TechnicalObservation` and the only place the mapping exists. A reading that is not
+  from today is dated on the row. Cross-context read goes through the new
+  `MarketData::Queries::NotableObservations`, so Trading no longer touches `TechnicalObservation`
+  directly the way the old controller did with an apology in a comment.
+- ✅ **"vs ayer" on all three sentiment cards.** F&G deltas come off the history the query already
+  returned (`RefreshFearGreedJob` runs daily, and the comparison skips today's rows so a re-run
+  cannot report "vs this morning"); the watchlist delta needed
+  `MarketSentiment.delta_for_user`, reading yesterday's trend scores.
+- ✅ **The sparkline is a line and carries real data.** It was a bar chart, and `_asset_row` called
+  it **without `heights`** — so Cartera drew an invented shape while `_watchlist_table` and
+  `_listings_table` passed real closes. Both fixed; `_watch_row` gained the sparkline the design
+  draws.
+- ✅ **The 2.0 shell has an `h1` again.** §6b planned for a screen to hand its title to the bar and
+  the bar to become the `h1`; the second half never happened, so **no 2.0 screen had one** — Activos
+  and Rastreados included. The desktop bar's title is now an `h1`, and the layout emits an `sr-only`
+  one below `lg`, where the mobile TopBar carries no title at all.
+- ✅ **Deleted with the old screen:** seven partials, three lazy sub-routes
+  (`news_feed`, `trending`, `notable_observations`) and their views, `AssembleDashboard`, and
+  ~50 examples across nine spec files that asserted the retired surface.
+- ⚠ **Not built, deliberately.** The state chip and the confluence dots (same reason as §4 — the
+  chip has no taxonomy in code, the semáforo is D3 and gated). The carousel's **dots**: they need JS
+  to follow the scroll, and a static row that never moves is a worse lie than the peeking next card.
+  The black-swan **market-event banner** — D25: nothing in `app/` or `lib/` computes breadth.
+- 🐞 **`lightweight-charts` did not get its debut here, and should not have.** The only chart on this
+  screen is a ~60×20px sparkline, five per view; `PriceChartController` is written for a 220px chart
+  with grid, axes and a `timeScale`. Five canvases plus five `ResizeObserver`s for a sparkline is
+  the wrong tool on the most-opened screen. It debuts in the asset detail, where
+  `cockpit-asset-analisis` draws the chart it was written for.
+- ⬜ **Orphaned by this deletion, kept on purpose:** `Trading::Domain::WeeklyInsightCalculator` and
+  the `RecentNews` / `TrendingAssets` / `MajorIndices` queries now have **zero production callers**
+  (their specs still pass). Slice 4 and the asset detail may consume them; if they do not, they are
+  the next §0.5 list and should be deleted then rather than accumulating quietly.
 
 ## 4. Activos tab — Cartera vs Sigo (D9, D10)
 
