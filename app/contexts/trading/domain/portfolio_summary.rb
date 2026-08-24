@@ -61,8 +61,12 @@ module Trading
 
       private
 
+      # ADR-009: value the snapshot at ITS date, not today's. Revaluing
+      # yesterday at today's rate reports FX movement on the principal as no
+      # movement at all — the gap #183 measured at 1,500 MXN on a 3,000 USD
+      # position over a single day.
       def total_value_of(snapshot)
-        portfolio.convert(snapshot.total_value, from: snapshot.currency, to: currency)
+        portfolio.convert(snapshot.total_value, from: snapshot.currency, to: currency, at_date: snapshot.date)
       end
     end
   end

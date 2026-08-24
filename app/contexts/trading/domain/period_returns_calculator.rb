@@ -64,7 +64,7 @@ module Trading
       # collapses what would otherwise be one FxRate.find_by per snapshot
       # into a single query per (snapshot.currency, @currency) pair.
       def snapshot_value(snapshot)
-        @portfolio.convert(snapshot.total_value, from: snapshot.currency, to: @currency)
+        @portfolio.convert(snapshot.total_value, from: snapshot.currency, to: @currency, at_date: snapshot.date)
       end
 
       def empty_results

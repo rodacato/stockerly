@@ -1,0 +1,37 @@
+module MarketData
+  module UseCases
+    # Fills FxRateHistory from Banxico's FIX (ADR-009 + #177). Banxico is the
+    # source because it is the rate a Mexican broker settles against — the
+    # generic provider behind `fx_rates` drifts 0.5-1% from it daily, which is
+    # the difference between a figure Adrian can check and one he cannot.
+    class SyncFxHistory < ApplicationUseCase
+      DEFAULT_LOOKBACK = 7
+
+      def call(from: nil, to: Date.current, gateway: nil)
+        from ||= to - DEFAULT_LOOKBACK
+        gateway ||= MarketData::Gateways::BanxicoGateway.new
+
+        fixes = yield gateway.fetch_fx_fixes(from: from, to: to)
+        stored = persist(fixes)
+
+        Success(stored: stored, from: from, to: to)
+      rescue MarketData::Gateways::ApiKeyNotConfiguredError => e
+        Failure([ :not_configured, e.message ])
+      end
+
+      private
+
+      def persist(fixes)
+        fixes.count do |fix|
+          FxRateHistory.record(
+            base: MarketData::Gateways::BanxicoGateway::FIX_PAIR[:base],
+            quote: MarketData::Gateways::BanxicoGateway::FIX_PAIR[:quote],
+            date: fix[:date],
+            rate: fix[:rate],
+            source: "banxico_fix"
+          )
+        end
+      end
+    end
+  end
+end

@@ -29,6 +29,11 @@ production:
     class: RefreshFxRatesJob
     schedule: every hour at minute 30
 
+  # Banxico publishes the FIX around noon CDMX; 13:00 CDMX is 19:00 UTC.
+  sync_fx_history:
+    class: SyncFxHistoryJob
+    schedule: every day at 19:00
+
   take_daily_snapshots:
     class: TakeSnapshotsJob
     schedule: at 11pm every day
