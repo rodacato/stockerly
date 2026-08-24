@@ -49,6 +49,17 @@ es-MX:
     - octubre
     - noviembre
     - diciembre
+  nav:
+    abrir_avisos: Abrir avisos
+    activos: Activos
+    ajustes: Ajustes
+    avisos_sin_leer:
+      one: 1 aviso sin leer
+      other: "%{count} avisos sin leer"
+    ir_al_panorama: Ir al Panorama
+    panorama: Panorama
+    principal: Navegación principal
+    reglas: Reglas
   time:
     am: a.m.
     formats:

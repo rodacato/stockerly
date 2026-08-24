@@ -1,7 +1,5 @@
 module Admin
   class BaseController < AuthenticatedController
-    layout "admin"
-
     before_action :require_admin
 
     private

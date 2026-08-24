@@ -16,7 +16,7 @@ exists today only as repetition inside page templates.
 
 | Kit component | Today in code | Verdict | Measured |
 |---|---|---|---|
-| `TopBar` | `shared/_app_navbar.html.erb` | **Revamp** — the closest thing to a 1:1 | 1 partial, used by `layouts/app` + `layouts/admin` |
+| `TopBar` | ~~`shared/_app_navbar.html.erb`~~ → `components/_top_bar` | ✅ **Shipped** (slice 1) | The old navbar is deleted |
 | `Card` | inline everywhere | **Net-new** | `bg-bg-surface` appears in 99 template lines |
 | `ButtonPrimary` | inline everywhere | **Net-new** | 35 inline primary-button class strings |
 | `ButtonSecondary` | inline everywhere | **Net-new** | same sites, secondary variants |
@@ -27,7 +27,7 @@ exists today only as repetition inside page templates.
 | `MarketCard` | — | **Net-new** | `components/_kpi_card` is the right shape but is dead (§B) |
 | `NavRow` | — | **Net-new** | nothing in code has this shape |
 | `SwitchRow` | — | **Net-new** | 20 templates mention a toggle; no shared partial |
-| `BottomNav` | — | **Net-new** | the app navigates from a top navbar; there is no bottom tab bar |
+| `BottomNav` | `components/_bottom_nav` | ✅ **Shipped** (slice 1) | Net-new, as measured |
 | `Stepper` | — | **Net-new** | onboarding has no step indicator partial |
 
 Two things follow. First, `TopBar` is the only genuine revamp, which is why the shell slice
@@ -52,8 +52,7 @@ shape before it shipped.
 | `_market_status_indicator` | 12 | Ditto. |
 | `_feature_card` | 8 | Public landing furniture; outside the six redesigned flows. |
 
-**Recommendation:** delete all seven in the shell slice, not now — deleting them in
-pre-work removes the reference the net-new partials want while they are being written.
+**✅ Deleted in the shell slice**, once the net-new partials had been written against them.
 
 ### Broken: renders into a target nothing mounts (1)
 
@@ -77,15 +76,17 @@ against a partial that has existed for a long time.
 | `_data_status` | 2 | Survives; freshness is still shown in the design. |
 | `_index_card` | 2 | Survives → Panorama market cards. Check against `MarketCard` before keeping both. |
 | `_asset_price` | broadcast | Survives — the live-price mechanism the design keeps. |
-| `_global_search` | 1 | **Open question.** Only consumer is `_app_navbar`, and the redesigned TopBar (`cockpit-panorama-default`) is logo + bell. Decide in the shell slice: keep search, move it, or drop it. |
-| `_notification_panel` | 1 | **Changes shape.** D13 makes the inbox a screen (`reglas-bandeja`), not a navbar dropdown. Rewrite, don't restyle. |
+| ~~`_global_search`~~ | — | **Deleted in the shell slice.** The redesigned TopBar is logo + bell, and search's new home is Activos › Rastreados, which slice 2 builds. `/search` stays routable with no entry point; a spec pins that. |
+| ~~`_notification_panel`~~ | — | **Deleted in the shell slice.** D13 made the inbox a screen, so the bell navigates to `/notifications` instead of opening a dropdown. |
 | `_back_to_top` | 1 | Survives. Used by `layouts/legal`, untouched by the redesign. |
 
 ## What this document does not decide
 
 - **Deletion order.** Everything above is measurement plus a recommendation; the deletions
   land inside their slice, so a net-new partial can be written with the dead one still open
-  in an editor.
+  in an editor. The shell slice took its own: eight files, plus the two Stimulus controllers
+  that only the old navbar used (`notification`, `search`). `mobile-menu` survives — the
+  public navbar still uses it.
 - **Kit gaps.** `PatrimonioStrip`, `WatchRow`, `ProviderCard`, `LogRow`, `TierChip` are
   flow-local by design (`ui-kit.CHANGELOG.md` 0.4.0). Promotion is a design call.
 - **The 3-segment `Segmented`.** `ajustes-hub` draws a three-way control (Claro · Oscuro ·

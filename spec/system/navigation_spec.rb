@@ -36,7 +36,7 @@ RSpec.describe "Navigation", type: :system do
       click_button "Iniciar sesión"
 
       expect(page).to have_current_path(dashboard_path)
-      expect(page).to have_content("Panel")
+      expect(page).to have_content("Panorama")
     end
 
     it "logs out and lands on login (via root redirect)" do
@@ -48,6 +48,9 @@ RSpec.describe "Navigation", type: :system do
       click_button "Iniciar sesión"
       expect(page).to have_current_path(dashboard_path)
 
+      # The 2.0 shell has no logout in the chrome: it lives inside Ajustes.
+      # The settings slice moves it to the hub's foot; today it is /profile.
+      visit profile_path
       click_button "Cerrar sesión"
       expect(page).to have_current_path(login_path)
     end
@@ -64,13 +67,12 @@ RSpec.describe "Navigation", type: :system do
       click_button "Iniciar sesión"
     end
 
-    it "navigates to all app pages via navbar" do
+    it "navigates to the four shell destinations" do
       {
-        "Mercado"   => market_path,
-        "Portafolio" => portfolio_path,
-        "Alertas"   => alerts_path,
-        "Reportes"  => earnings_path,
-        "Noticias"  => news_path
+        "Panorama" => dashboard_path,
+        "Activos"  => portfolio_path,
+        "Reglas"   => alerts_path,
+        "Ajustes"  => profile_path
       }.each do |label, path|
         visit dashboard_path
         click_link label, match: :first
@@ -78,10 +80,23 @@ RSpec.describe "Navigation", type: :system do
       end
     end
 
-    it "navigates to profile from avatar" do
+    it "reaches the notification inbox from the bell" do
       visit dashboard_path
-      find("a[href='#{profile_path}']", match: :first).click
-      expect(page).to have_current_path(profile_path)
+      find("a[href='#{notifications_path}']", match: :first).click
+      expect(page).to have_current_path(notifications_path)
+    end
+
+    # The nav went from six entries to four. /market, /earnings and /news stay
+    # routable but lose their entry point until their own slice decides where
+    # they belong — deliberate, so a spec pins it instead of it looking like rot.
+    it "no longer offers market, earnings or news in the nav" do
+      visit dashboard_path
+
+      within("nav[aria-label='Navegación principal']", match: :first) do
+        expect(page).not_to have_link(href: market_path)
+        expect(page).not_to have_link(href: earnings_path)
+        expect(page).not_to have_link(href: news_path)
+      end
     end
   end
 
@@ -116,15 +131,16 @@ RSpec.describe "Navigation", type: :system do
       click_button "Iniciar sesión"
     end
 
-    it "navigates to all admin pages via sidebar" do
+    # admin.html.erb and its sidebar are gone: the admin screens now render in
+    # the same shell as everything else, until D5 folds them into Ajustes.
+    it "renders admin screens inside the app shell" do
       visit admin_assets_path
-      expect(page).to have_content("Assets")
+      expect(page).to have_css("h1", text: "Activos")
+      expect(page).to have_css("nav[aria-label='Navegación principal']")
 
-      click_link "Logs"
+      visit admin_logs_path
       expect(page).to have_current_path(admin_logs_path)
-
-      click_link "Assets"
-      expect(page).to have_current_path(admin_assets_path)
+      expect(page).to have_css("nav[aria-label='Navegación principal']")
     end
   end
 end

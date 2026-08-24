@@ -25,7 +25,7 @@ RSpec.describe "Portfolio allocation breakdown", type: :request do
 
       get portfolio_path
 
-      expect(response.body).to include("Stocks")
+      expect(response.body).to include("Acción")
     end
 
     it "shows empty message when no positions" do

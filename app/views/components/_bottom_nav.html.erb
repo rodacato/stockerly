@@ -1,0 +1,11 @@
+<nav aria-label="<%= t("nav.principal") %>"
+     class="sticky bottom-0 z-40 flex items-center justify-around border-t border-border-default bg-bg-surface px-2 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
+  <% main_nav_items.each do |item| %>
+    <%= link_to item[:href],
+                "aria-current": (item[:active] ? "page" : nil),
+                class: "flex min-w-16 flex-col items-center gap-0.5 rounded-lg py-1 #{item[:active] ? 'text-primary' : 'text-fg-subtle'}" do %>
+      <span class="material-symbols-outlined text-[22px]" aria-hidden="true"><%= item[:icon] %></span>
+      <span class="text-[11px] <%= item[:active] ? "font-semibold" : "font-normal" %>"><%= t("nav.#{item[:key]}") %></span>
+    <% end %>
+  <% end %>
+</nav>
