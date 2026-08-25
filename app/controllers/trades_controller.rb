@@ -48,15 +48,14 @@ class TradesController < AuthenticatedController
 
     case result
     in Dry::Monads::Success(trade)
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.prepend("trade_history", partial: "trades/trade_row", locals: { trade: trade }),
-            turbo_stream.prepend("flash_messages", partial: FLASH_PARTIAL,
-              locals: { type: "notice", message: "#{trade.buy? ? 'Compra' : 'Venta'} registrada: #{trade.shares} títulos de #{trade.asset.symbol}" })
-          ]
-        end
-        format.html { redirect_to assets_path, notice: "Movimiento registrado." }
+      # Two destinations (D11's "Guardar y registrar otro"). Saving alone
+      # targets _top, so the response navigates and the sheet goes with it;
+      # saving-and-another stays in the frame and comes back empty, because
+      # the point is entering the next movement without re-opening anything.
+      if params[:and_another].present?
+        render_another(trade)
+      else
+        redirect_to assets_path, notice: trade_notice(trade)
       end
     in Dry::Monads::Failure[ :validation, errors ]
       error_msg = errors.values.flatten.first
@@ -177,6 +176,24 @@ class TradesController < AuthenticatedController
   end
 
   private
+
+  def trade_notice(trade)
+    "#{trade.buy? ? "Compra" : "Venta"} registrada: #{trade.shares} títulos de #{trade.asset.symbol}"
+  end
+
+  # A fresh sheet inside the frame, keeping the side the user was working in —
+  # someone recording several sells is not switching back to buy each time.
+  def render_another(trade)
+    @side = trade.side
+    @symbol = nil
+    @currency = current_user.preferred_currency
+    @saved_notice = trade_notice(trade)
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace("trade_sheet", template: "trades/new") }
+      format.html { redirect_to new_trade_path(side: trade.side), notice: @saved_notice }
+    end
+  end
 
   def trade_params
     raw = params.require(:trade).permit(:asset_symbol, :side, :shares, :price_per_share, :fee, :executed_at, :currency, :fx_rate_at_execution).to_h

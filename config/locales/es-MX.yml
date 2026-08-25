@@ -273,7 +273,9 @@ es-MX:
       comision: Comisión
       compra: Compra
       fecha: Fecha
+      guardado_otro: Guardado. Registra el siguiente.
       guardar: Guardar movimiento
+      guardar_y_otro: Guardar y registrar otro
       moneda: Moneda
       opcional: opcional
       precio: Precio por título

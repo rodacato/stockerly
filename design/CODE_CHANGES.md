@@ -177,9 +177,19 @@ only when you hold the asset.
   `<input type="date">`, `inputmode="decimal"`, no drag-to-dismiss. The FX field auto-fills with
   the Banxico FIX **for the date entered** — the data-entry win and the correctness fix in one
   field, which is only possible because slice 2b shipped the history.
-- ⬜ **"Guardar y registrar otro"** is drawn and not built. It is a real answer to the data-entry
-  fastidio, but it needs the submit to re-open the sheet cleanly; it did not ride along as a side
-  effect.
+- ✅ **"Guardar y registrar otro" is built.** Two submits with two destinations: `Guardar` targets
+  `_top`, so the response navigates and the dialog goes with it; the second stays in the frame and
+  comes back empty, keeping the side the user was working in. The confirmation renders **inside** the
+  sheet, because the flash lives behind the dialog and a sheet that stays open would otherwise look
+  like nothing happened.
+- 🐞 **Measuring it found that saving never closed the sheet.** Reproduced before touching anything:
+  record a movement and the dialog stayed open with the form still filled, at `/trades/new`, with
+  the flash behind it. Nothing confirmed, and pressing Guardar again recorded the same movement
+  twice. Fixed by the `_top` target above.
+- 🐞 **The success turbo_stream prepended to `#trade_history`, which nothing that could submit the
+  form mounts.** `/trades` and `/positions` have the tbody but no create form; the sheet lives on
+  Activos and Mi posición, which have neither. Same shape as `_asset_fundamentals` in §0.5 — a
+  stream into a target no page mounts, with a spec that passed by asserting the stream's body.
 - ⬜ **`/admin/assets` is only half absorbed.** Rastreados took the list, the tiers, the budget
   and pause/resume; creating, searching and deleting assets stayed behind. Both screens exist
   meanwhile, and the admin one is reachable only by URL.
