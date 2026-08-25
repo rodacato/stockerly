@@ -537,9 +537,35 @@ levanta, carga su primer activo y lee su primer indicador sin fastidio"*, and th
   *"Admin account created! Let's configure your instance."* — which violates D5's naming and
   ADR-001's voice in the same sentence.
 
-### Not yet decided
+### The 4-filter card
 
-The 4-filter card is **not written**. Trigger and JTBD are documented (the beta failed on *"no
-sabían qué hacer"*; the vision names the path), but the **usage metric and the DoD are Adrian's**,
-and so is D30 — whether the wizard ends at Welcome or Welcome dies. Nothing here is built until
-that card exists; this section is the discovery it rests on.
+**D30 is settled (2026-08-25): the wizard ends at Welcome.** The metric and the DoD below were
+proposed rather than supplied — Adrian delegated them and can correct any line.
+
+1. **Trigger.** The closed beta failed on first contact: friends did not know what to do, could not
+   read the indicators, and abandoned. That is documented in [[project-vision]] as the reason the
+   pivot happened, and this flow is the surface where it happened.
+2. **JTBD.** *When I boot a fresh instance, I want to reach a screen that tells me what to do next,
+   so that I do not land on an empty dashboard and close the tab.*
+3. **Usage metric (proposed).** A first boot reaches Welcome and leaves it through one of its three
+   cards — record a trade, add a watch, create a rule — rather than through "Ir al panel". The
+   instance already records the three; the check is whether the first one happens in the same
+   session as onboarding, not whether it ever happens.
+4. **Definition of Done (proposed).**
+   - [ ] `launch` lands on `/welcome`, not `admin_root_path`; *"Ir al panel"* goes to the Panorama.
+   - [ ] The `current_user.admin?` branch in `redirect_to_onboarding` is gone — one path, because
+         there is one kind of account.
+   - [ ] `Identity::UseCases::CompleteOnboarding` is retired; `CompleteSetup` is the only writer of
+         `onboarded_at`, and it keeps launching the initial sync.
+   - [ ] `welcome_spec` exercises the real route (wizard → Welcome) instead of requesting the path
+         with a `role: :user` the app cannot create.
+   - [ ] The wizard leaves `Admin::` — controller, routes and views — per D5.
+   - [ ] `/setup` renders under `layouts/auth`, the split panel §3c built, so both doors match.
+   - [ ] The four views are on Lumen tokens and `t(".key")` lookups; `i18n-tasks health` stays green.
+   - [ ] The three English flashes here are es-MX, and *"Admin account created"* loses the framing
+         D5 dropped and the exclamation mark ADR-001 forbids.
+   - [ ] **Negative:** a second `/setup` visit on a provisioned instance still refuses, and no route
+         in the flow is reachable once `onboarded_at` is set.
+
+Per [[project-working-method]] the card itself belongs in a GitHub issue, not here — this section is
+its discovery. The issue is not opened yet.
