@@ -55,6 +55,14 @@ module MarketHelper
   end
 
   # Relative-time label in es-MX: "hace 12 min", "hoy", "ayer", "hace 3 días".
+  # One series for the chart controller, from the closes we already sync.
+  # Replaces the TradingView widget, which shipped the symbol being viewed to
+  # a third party on every page load (D2).
+  def price_series_json(histories)
+    [ { data: histories.map { |row| { time: row.date.to_s, value: row.close.to_f } },
+        token: "--color-chart-1", width: 2 } ].to_json
+  end
+
   # Used for technical observations in the asset detail page.
   def observation_when(time)
     return "—" if time.nil?

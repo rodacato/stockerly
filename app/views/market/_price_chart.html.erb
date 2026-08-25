@@ -1,5 +1,5 @@
 <%# Asset price chart — SVG area chart using AssetPriceHistory data (30d).
-    Used as fallback when TradingView isn't applicable (e.g. fixed income).
+    Fixed income only: it charts a rate, and the min/max badges below suit that.
     Currency prefix in min/max badges matches the asset's native currency. %>
 <% chart = price_chart_data(@price_histories) %>
 

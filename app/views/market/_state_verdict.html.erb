@@ -1,0 +1,33 @@
+<%# ADR-014: the phrase comes from the catalogue keyed by state; this template
+    selects one and never builds it. The reading that produced the state stays
+    on screen beside it, and a state older than today says so. %>
+<% source = state_source %>
+<% rsi = source&.indicator_snapshot&.dig("rsi") %>
+<% stale = source && source.observed_at.to_date < Date.current %>
+<% tone = case state
+   when :stretched then "border-warning bg-warning-bg text-warning-fg"
+   when :oversold  then "border-positive bg-positive-bg text-positive-fg"
+   else "border-border-default bg-bg-surface text-fg-default"
+   end %>
+
+<section class="flex items-start gap-3 rounded-2xl border p-4 <%= tone %>">
+  <span class="material-symbols-outlined mt-0.5 shrink-0 text-xl" aria-hidden="true">
+    <%= state == :neutral ? "remove" : "info" %>
+  </span>
+
+  <div class="min-w-0">
+    <p class="font-display text-base font-semibold">
+      <%= t(MarketData::Domain::AssetState.label_key(state)) %>
+    </p>
+    <p class="mt-1 text-sm">
+      <%= t(MarketData::Domain::AssetState.phrase_key(state, holding: holding)) %>
+    </p>
+
+    <% if source %>
+      <p class="mt-2 font-mono text-[11px] uppercase tracking-wider opacity-80">
+        <%= observation_phrase(source) %><%= " · RSI #{rsi.to_f.round}" if rsi %>
+        <%= " · #{observation_when(source.observed_at)}" if stale %>
+      </p>
+    <% end %>
+  </div>
+</section>
