@@ -23,7 +23,7 @@
     </div>
 
     <%# Integration Cards %>
-    <%= form_with url: admin_onboarding_save_integrations_path, method: :patch, class: "space-y-3 mb-10" do |f| %>
+    <%= form_with url: onboarding_save_integrations_path, method: :patch, class: "space-y-3 mb-10" do |f| %>
       <% keyed, public_sources = @integrations.partition { |i| MarketData::Domain::ProviderDirectory.for(i.provider_name)&.requires_key } %>
 
       <%# Providers that need an API key — actionable %>
@@ -92,7 +92,7 @@
       <div class="flex items-center justify-between pt-6">
         <span></span>
         <div class="flex items-center gap-4">
-          <%= link_to admin_onboarding_assets_path, class: "text-sm font-medium text-slate-500 hover:text-primary transition-colors" do %>
+          <%= link_to onboarding_assets_path, class: "text-sm font-medium text-slate-500 hover:text-primary transition-colors" do %>
             Skip for now
           <% end %>
           <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-primary/25 flex items-center gap-2">

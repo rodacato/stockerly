@@ -11,14 +11,14 @@ class SetupController < ApplicationController
     if result.success?
       user = result.value!
       start_session(user)
-      redirect_to admin_onboarding_integrations_path, notice: "Admin account created! Let's configure your instance."
+      redirect_to onboarding_integrations_path, notice: t("setup.creada")
     else
       case result.failure
       in [ :validation, errors ]
         @errors = errors
         render :new, status: :unprocessable_content
       in [ :setup_complete, _ ]
-        redirect_to root_path, alert: "Setup already completed."
+        redirect_to root_path, alert: t("setup.ya_completado")
       end
     end
   end

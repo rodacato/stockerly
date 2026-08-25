@@ -31,6 +31,15 @@ Rails.application.routes.draw do
   patch "reset-password/:token", to: "password_resets#update"
 
   # --- Authenticated Zone ---
+  # The setup wizard (D5: one account, so no admin zone). It ends at /welcome,
+  # which is the step that marks the user onboarded (D30).
+  get   "onboarding/integrations", to: "onboarding#integrations", as: :onboarding_integrations
+  patch "onboarding/integrations", to: "onboarding#save_integrations", as: :onboarding_save_integrations
+  get   "onboarding/assets",       to: "onboarding#assets", as: :onboarding_assets
+  post  "onboarding/assets",       to: "onboarding#save_assets", as: :onboarding_save_assets
+  get   "onboarding/complete",     to: "onboarding#complete", as: :onboarding_complete
+  post  "onboarding/launch",       to: "onboarding#launch", as: :onboarding_launch
+
   get  "welcome",     to: "welcome#show",     as: :welcome
   post "welcome",     to: "welcome#complete", as: :complete_welcome
   get  "help",        to: "help#show",        as: :help
@@ -85,14 +94,6 @@ Rails.application.routes.draw do
     root "dashboard#show"
     post "refresh_fx_rates", to: "dashboard#refresh_fx_rates"
     post "trigger_data_source/:key", to: "dashboard#trigger_data_source", as: :trigger_data_source
-
-    # Admin Onboarding Wizard
-    get   "onboarding/integrations", to: "onboarding#integrations", as: :onboarding_integrations
-    patch "onboarding/integrations", to: "onboarding#save_integrations", as: :onboarding_save_integrations
-    get   "onboarding/assets",       to: "onboarding#assets", as: :onboarding_assets
-    post  "onboarding/assets",       to: "onboarding#save_assets", as: :onboarding_save_assets
-    get   "onboarding/complete",     to: "onboarding#complete", as: :onboarding_complete
-    post  "onboarding/launch",       to: "onboarding#launch", as: :onboarding_launch
 
     resources :assets, only: [ :index, :create, :update, :destroy ] do
       member do

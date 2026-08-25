@@ -1,0 +1,43 @@
+class OnboardingController < AuthenticatedController
+  skip_before_action :redirect_to_onboarding
+
+  before_action :require_not_onboarded
+
+  def integrations
+    @integrations = Integration.order(:provider_name)
+  end
+
+  def save_integrations
+    keys = params[:api_keys]&.to_unsafe_h || {}
+    Administration::UseCases::Onboarding::SaveApiKeys.call(keys: keys)
+    redirect_to onboarding_assets_path
+  end
+
+  def assets
+    @catalog = Administration::Domain::AssetCatalog.all
+  end
+
+  def save_assets
+    symbols = params[:symbols] || []
+    Administration::UseCases::Onboarding::SeedAssets.call(symbols: symbols)
+    redirect_to onboarding_complete_path
+  end
+
+  def complete
+    @integrations_configured = Integration.joins(:api_key_pools).where(api_key_pools: { enabled: true }).distinct.count
+    @integrations_total = Integration.count
+    @assets_count = Asset.count
+  end
+
+  def launch
+    launch_sync = params[:launch_sync] != "false"
+    Administration::UseCases::Onboarding::LaunchInitialSync.call(launch_sync: launch_sync)
+    redirect_to welcome_path
+  end
+
+  private
+
+  def require_not_onboarded
+    redirect_to dashboard_path if current_user.onboarded?
+  end
+end

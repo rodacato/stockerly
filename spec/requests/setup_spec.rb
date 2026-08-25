@@ -37,7 +37,7 @@ RSpec.describe "Setup", type: :request, setup_bypass: false do
         }.to change(User, :count).by(1)
 
         expect(User.last.admin?).to be true
-        expect(response).to redirect_to(admin_onboarding_integrations_path)
+        expect(response).to redirect_to(onboarding_integrations_path)
       end
 
       it "bootstraps platform data" do
