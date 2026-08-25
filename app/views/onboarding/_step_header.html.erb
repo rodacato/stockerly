@@ -1,0 +1,14 @@
+<%# Usage: render "onboarding/step_header", step: 1 %>
+<% total = OnboardingController::STEPS %>
+<% percent = (step * 100 / total) %>
+<div class="mb-10">
+  <div class="flex justify-between items-baseline mb-3">
+    <span class="font-mono text-xs uppercase tracking-widest text-fg-subtle">
+      <%= t(".paso", step: step, total: total) %>
+    </span>
+    <span class="font-mono text-xs text-fg-subtle"><%= percent %>%</span>
+  </div>
+  <div class="h-1.5 w-full bg-bg-muted rounded-full overflow-hidden">
+    <div class="h-full bg-primary rounded-full transition-all" style="width: <%= percent %>%"></div>
+  </div>
+</div>

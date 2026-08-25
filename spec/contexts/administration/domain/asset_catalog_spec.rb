@@ -39,9 +39,13 @@ RSpec.describe Administration::Domain::AssetCatalog do
   end
 
   describe ".category_label" do
-    it "returns human-readable label for known key" do
-      expect(described_class.category_label(:us_stocks)).to eq("US Stocks")
-      expect(described_class.category_label(:crypto)).to eq("Cryptocurrency")
+    it "returns the es-MX label for a known key" do
+      expect(described_class.category_label(:us_stocks)).to eq("Acciones · EE. UU.")
+      expect(described_class.category_label(:crypto)).to eq("Cripto")
+    end
+
+    it "falls back to the humanized key rather than an I18n error string" do
+      expect(described_class.category_label(:some_new_bucket)).to eq("Some new bucket")
     end
   end
 

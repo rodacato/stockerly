@@ -1,5 +1,5 @@
 class SetupController < ApplicationController
-  layout "public"
+  layout "auth"
 
   before_action :require_no_users
 

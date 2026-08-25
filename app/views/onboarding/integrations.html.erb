@@ -1,85 +1,60 @@
-<% content_for(:admin_page_title, "Setup — API Keys") %>
+<% content_for(:title, t(".titulo")) %>
 
 <main class="flex-1 flex flex-col items-center py-10 px-4">
-  <div class="w-full max-w-3xl">
-    <%# Progress %>
-    <div class="mb-10">
-      <div class="flex justify-between items-end mb-4">
-        <div>
-          <span class="text-xs font-bold uppercase tracking-widest text-primary">Admin Setup</span>
-          <h2 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Step 1 of 3</h2>
-        </div>
-        <span class="text-slate-400 text-xs font-semibold italic">33% complete</span>
-      </div>
-      <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-        <div class="h-full bg-primary w-1/3 rounded-full"></div>
-      </div>
-    </div>
+  <div class="w-full max-w-2xl">
+    <%= render "onboarding/step_header", step: 1 %>
 
-    <%# Title %>
     <div class="mb-8">
-      <h1 class="text-3xl font-black text-slate-900 dark:text-white leading-tight mb-3">Connect Your Data Sources</h1>
-      <p class="text-slate-500 dark:text-slate-400 text-lg">Add API keys for the market data providers you want to use. You can skip this and configure later from Admin > Integrations.</p>
+      <h1 class="font-display text-3xl font-bold text-fg-default leading-tight mb-2"><%= t(".titulo") %></h1>
+      <p class="text-fg-subtle"><%= t(".subtitulo") %></p>
     </div>
 
-    <%# Integration Cards %>
     <%= form_with url: onboarding_save_integrations_path, method: :patch, class: "space-y-3 mb-10" do |f| %>
       <% keyed, public_sources = @integrations.partition { |i| MarketData::Domain::ProviderDirectory.for(i.provider_name)&.requires_key } %>
 
-      <%# Providers that need an API key — actionable %>
       <% keyed.each do |integration| %>
         <% info = MarketData::Domain::ProviderDirectory.for(integration.provider_name) %>
         <div class="bg-bg-surface rounded-xl border border-border-default p-5">
           <div class="flex items-center gap-3 mb-3">
-            <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <span class="material-symbols-outlined text-xl text-primary">hub</span>
+            <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl text-primary">database</span>
             </div>
-            <div>
-              <p class="font-bold text-sm text-slate-900 dark:text-white"><%= integration.provider_name %></p>
-              <p class="text-xs text-slate-400 uppercase tracking-wider"><%= integration.provider_type %></p>
+            <div class="min-w-0">
+              <p class="font-semibold text-fg-default"><%= integration.provider_name %></p>
+              <p class="font-mono text-xs text-fg-subtle uppercase tracking-wider"><%= integration.provider_type %></p>
             </div>
           </div>
 
           <% if info&.description %>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mb-3"><%= info.description %></p>
+            <p class="text-sm text-fg-subtle mb-3"><%= info.description %></p>
           <% end %>
 
-          <input type="text" name="api_keys[<%= integration.id %>]" autocomplete="off"
-                 placeholder="Pega tu API key de <%= integration.provider_name %>"
-                 class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary">
+          <label class="block text-sm text-fg-subtle mb-1" for="api_key_<%= integration.id %>"><%= t(".api_key") %></label>
+          <input type="text" id="api_key_<%= integration.id %>" name="api_keys[<%= integration.id %>]" autocomplete="off"
+                 placeholder="<%= t('.api_key_placeholder', provider: integration.provider_name) %>"
+                 class="w-full px-3 py-2.5 text-sm bg-bg-canvas border border-border-default rounded-lg text-fg-default placeholder:text-fg-subtle outline-none focus:ring-2 focus:ring-primary">
           <% if info&.url %>
             <a href="<%= info.url %>" target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-primary hover:underline">
-              ¿Dónde consigo la API key?
+               class="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-primary hover:underline">
+              <%= t(".donde_consigo") %>
               <span class="material-symbols-outlined text-sm">open_in_new</span>
             </a>
           <% end %>
         </div>
       <% end %>
 
-      <%# Public sources — no key needed, nothing to configure %>
       <% if public_sources.any? %>
-        <div class="rounded-xl border border-border-default bg-bg-surface/60 p-5">
-          <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Fuentes públicas · listas para usar, sin API key</p>
+        <div class="rounded-xl bg-bg-muted p-5">
+          <p class="font-mono text-xs font-bold uppercase tracking-wider text-fg-subtle mb-4"><%= t(".publicas") %></p>
           <div class="space-y-4">
             <% public_sources.each do |integration| %>
               <% info = MarketData::Domain::ProviderDirectory.for(integration.provider_name) %>
               <div class="flex items-start gap-3">
-                <span class="material-symbols-outlined text-lg text-emerald-500 mt-0.5">check_circle</span>
+                <span class="material-symbols-outlined text-lg text-positive mt-0.5">check_circle</span>
                 <div class="min-w-0">
-                  <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                    <%= integration.provider_name %>
-                    <span class="ml-1 font-normal text-xs text-slate-400 uppercase tracking-wider"><%= integration.provider_type %></span>
-                  </p>
+                  <p class="text-sm font-semibold text-fg-default"><%= integration.provider_name %></p>
                   <% if info&.description %>
-                    <p class="text-xs text-slate-500 dark:text-slate-400"><%= info.description %></p>
-                  <% end %>
-                  <% if info&.url %>
-                    <a href="<%= info.url %>" target="_blank" rel="noopener noreferrer"
-                       class="inline-flex items-center gap-1 mt-1 text-xs font-medium text-slate-400 hover:text-primary">
-                      Ver fuente
-                      <span class="material-symbols-outlined text-xs">open_in_new</span>
-                    </a>
+                    <p class="text-sm text-fg-subtle"><%= info.description %></p>
                   <% end %>
                 </div>
               </div>
@@ -88,18 +63,11 @@
         </div>
       <% end %>
 
-      <%# Footer Navigation %>
       <div class="flex items-center justify-between pt-6">
-        <span></span>
-        <div class="flex items-center gap-4">
-          <%= link_to onboarding_assets_path, class: "text-sm font-medium text-slate-500 hover:text-primary transition-colors" do %>
-            Skip for now
-          <% end %>
-          <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-primary/25 flex items-center gap-2">
-            Continue
-            <span class="material-symbols-outlined text-lg">arrow_forward</span>
-          </button>
-        </div>
+        <%= link_to t(".omitir"), onboarding_assets_path, class: "text-sm font-medium text-fg-subtle hover:text-primary transition-colors" %>
+        <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-primary/25">
+          <%= t(".continuar") %>
+        </button>
       </div>
     <% end %>
   </div>

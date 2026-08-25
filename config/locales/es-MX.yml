@@ -208,6 +208,42 @@ es-MX:
     panorama: Panorama
     principal: Navegación principal
     reglas: Reglas
+  onboarding:
+    assets:
+      atras: Atrás
+      continuar: Continuar
+      omitir: Omitir por ahora
+      subtitulo: Acciones, cripto y renta fija que quieras monitorear. Puedes agregar
+        más después.
+      titulo: Elige los activos a seguir
+    categorias:
+      crypto: Cripto
+      etfs: ETFs
+      fixed_income: Renta fija MX · CETES
+      mexican_stocks: Acciones · México
+      us_stocks: Acciones · EE. UU.
+    complete:
+      activos: Activos listos para seguir
+      atras: Atrás
+      integraciones: Integraciones con API key
+      lanzar: Lanzar e ir al panel
+      listo: Listo
+      sin_sincronizar: Ir al panel sin sincronizar
+      subtitulo: Este es el resumen de tu configuración.
+      sync: El sync arranca en segundo plano
+      titulo: Todo listo
+    integrations:
+      api_key: API key
+      api_key_placeholder: Pega tu API key de %{provider}
+      continuar: Continuar
+      donde_consigo: "¿Dónde consigo la API key?"
+      omitir: Omitir por ahora
+      publicas: Fuentes públicas · sin API key
+      subtitulo: Agrega las API keys de los proveedores que quieras. Puedes omitir
+        y configurarlas luego.
+      titulo: Conecta tus fuentes de datos
+    step_header:
+      paso: Paso %{step} de %{total}
   portfolios:
     show:
       aportado: Lo que has aportado
@@ -296,6 +332,13 @@ es-MX:
       urgente_desc: Un correo aparte al disparar una regla.
   setup:
     creada: Cuenta creada. Ahora configura tu instancia.
+    new:
+      corrige: 'Corrige lo siguiente:'
+      nombre: Nombre
+      nombre_placeholder: Ej. Adrian
+      submit: Crear cuenta y continuar
+      subtitulo: Es la única cuenta de tu instancia. Con ella entras a tu tracker.
+      titulo: Crea tu cuenta
     ya_completado: Esta instancia ya está configurada.
   time:
     am: a.m.

@@ -1,69 +1,60 @@
-<% content_for(:admin_page_title, "Setup — Complete") %>
+<% content_for(:title, t(".titulo")) %>
 
 <main class="flex-1 flex flex-col items-center py-10 px-4">
-  <div class="w-full max-w-3xl">
-    <%# Progress %>
-    <div class="mb-10">
-      <div class="flex justify-between items-end mb-4">
-        <div>
-          <span class="text-xs font-bold uppercase tracking-widest text-primary">Admin Setup</span>
-          <h2 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Step 3 of 3</h2>
-        </div>
-        <span class="text-slate-400 text-xs font-semibold italic">100% complete</span>
-      </div>
-      <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-        <div class="h-full bg-primary w-full rounded-full"></div>
-      </div>
-    </div>
+  <div class="w-full max-w-2xl">
+    <%= render "onboarding/step_header", step: 3 %>
 
-    <%# Title %>
     <div class="mb-8 text-center">
-      <div class="size-16 rounded-full bg-success/10 dark:bg-success/20 flex items-center justify-center mx-auto mb-4">
-        <span class="material-symbols-outlined text-4xl text-success-fg dark:text-success" style="font-variation-settings: 'FILL' 1">check_circle</span>
+      <div class="size-16 rounded-full bg-positive/10 flex items-center justify-center mx-auto mb-4">
+        <span class="material-symbols-outlined text-4xl text-positive">check</span>
       </div>
-      <h1 class="text-3xl font-black text-slate-900 dark:text-white leading-tight mb-3">You're All Set!</h1>
-      <p class="text-slate-500 dark:text-slate-400 text-lg">Here's a summary of your configuration.</p>
+      <h1 class="font-display text-3xl font-bold text-fg-default leading-tight mb-2"><%= t(".titulo") %></h1>
+      <p class="text-fg-subtle"><%= t(".subtitulo") %></p>
     </div>
 
-    <%# Summary Cards %>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-      <div class="bg-bg-surface rounded-xl border border-border-default p-5 text-center">
-        <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-3">
-          <span class="material-symbols-outlined text-2xl text-primary">hub</span>
+    <div class="space-y-3 mb-10">
+      <div class="flex items-center gap-4 bg-bg-surface rounded-xl border border-border-default p-4">
+        <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-2xl text-primary">database</span>
         </div>
-        <p class="text-2xl font-black text-slate-900 dark:text-white"><%= @integrations_configured %><span class="text-slate-400 text-sm font-normal">/<%= @integrations_total %></span></p>
-        <p class="text-xs text-slate-500 mt-1">Integrations with API keys</p>
+        <div class="min-w-0">
+          <p class="font-mono text-xl font-bold text-fg-default"><%= @integrations_configured %>/<%= @integrations_total %></p>
+          <p class="text-sm text-fg-subtle"><%= t(".integraciones") %></p>
+        </div>
       </div>
-      <div class="bg-bg-surface rounded-xl border border-border-default p-5 text-center">
-        <div class="size-12 rounded-lg bg-success/10 dark:bg-success/20 flex items-center justify-center mx-auto mb-3">
-          <span class="material-symbols-outlined text-2xl text-success-fg dark:text-success">monitoring</span>
+
+      <div class="flex items-center gap-4 bg-bg-surface rounded-xl border border-border-default p-4">
+        <div class="size-12 rounded-lg bg-positive/10 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-2xl text-positive">monitoring</span>
         </div>
-        <p class="text-2xl font-black text-slate-900 dark:text-white"><%= @assets_count %></p>
-        <p class="text-xs text-slate-500 mt-1">Assets ready to track</p>
+        <div class="min-w-0">
+          <p class="font-mono text-xl font-bold text-fg-default"><%= @assets_count %></p>
+          <p class="text-sm text-fg-subtle"><%= t(".activos") %></p>
+        </div>
       </div>
-      <div class="bg-bg-surface rounded-xl border border-border-default p-5 text-center">
-        <div class="size-12 rounded-lg bg-warning/10 dark:bg-warning/20 flex items-center justify-center mx-auto mb-3">
-          <span class="material-symbols-outlined text-2xl text-warning-fg dark:text-warning">sync</span>
+
+      <div class="flex items-center gap-4 bg-bg-surface rounded-xl border border-border-default p-4">
+        <div class="size-12 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-2xl text-warning">sync</span>
         </div>
-        <p class="text-2xl font-black text-slate-900 dark:text-white">Ready</p>
-        <p class="text-xs text-slate-500 mt-1">Background sync will start</p>
+        <div class="min-w-0">
+          <p class="font-mono text-xl font-bold text-fg-default"><%= t(".listo") %></p>
+          <p class="text-sm text-fg-subtle"><%= t(".sync") %></p>
+        </div>
       </div>
     </div>
 
-    <%# Action Buttons %>
-    <div class="flex flex-col items-center gap-4">
-      <%= button_to onboarding_launch_path, method: :post, class: "w-full max-w-md h-14 px-10 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 group" do %>
-        <span>Launch & Go to Dashboard</span>
-        <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">rocket_launch</span>
+    <div class="flex flex-col items-center gap-3">
+      <%= button_to onboarding_launch_path, method: :post, form_class: "w-full",
+            class: "flex w-full h-14 items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all" do %>
+        <%= t(".lanzar") %>
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">rocket_launch</span>
       <% end %>
-
-      <%= button_to onboarding_launch_path(launch_sync: "false"), method: :post, class: "text-slate-500 dark:text-slate-400 hover:text-primary text-sm font-semibold transition-colors py-2" do %>
-        Go to Dashboard without syncing
-      <% end %>
-
-      <%= link_to onboarding_assets_path, class: "flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-primary transition-colors" do %>
-        <span class="material-symbols-outlined text-sm">arrow_back</span>
-        Back to assets
+      <%= button_to t(".sin_sincronizar"), onboarding_launch_path(launch_sync: "false"), method: :post,
+            class: "text-sm font-medium text-fg-subtle hover:text-primary transition-colors py-2" %>
+      <%= link_to onboarding_assets_path, class: "inline-flex items-center gap-1 text-sm font-medium text-fg-subtle hover:text-primary transition-colors" do %>
+        <span class="material-symbols-outlined text-base">arrow_back</span>
+        <%= t(".atras") %>
       <% end %>
     </div>
   </div>
