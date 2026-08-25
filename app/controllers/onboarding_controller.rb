@@ -1,4 +1,8 @@
 class OnboardingController < AuthenticatedController
+  layout "onboarding"
+
+  STEPS = 3
+
   skip_before_action :redirect_to_onboarding
 
   before_action :require_not_onboarded

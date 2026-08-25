@@ -6,7 +6,9 @@ RSpec.describe "Setup", type: :request, setup_bypass: false do
       it "renders the setup page" do
         get setup_path
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Create Admin Account")
+        expect(response.body).to include("Crea tu cuenta")
+        # D5: one account, so no "admin" anywhere the person can read it.
+        expect(response.body).not_to match(/admin/i)
       end
     end
 

@@ -1,0 +1,14 @@
+<%# The wizard has no chrome. Its artboards draw a progress bar and the step,
+    nothing else — offering the bottom nav mid-setup dangles four exits that
+    redirect_to_onboarding immediately undoes. Same principle as the auth
+    layout, without its card: a step is full-width, not a form on a panel. %>
+<% content_for(:body) do %>
+  <div class="flex min-h-screen flex-col bg-bg-canvas">
+    <div id="flash_messages" class="fixed right-4 top-4 z-50 flex max-w-sm flex-col gap-3" style="pointer-events: none;">
+      <%= render "shared/flash" %>
+    </div>
+
+    <%= yield %>
+  </div>
+<% end %>
+<%= render template: "layouts/application" %>

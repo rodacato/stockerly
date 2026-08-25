@@ -56,13 +56,7 @@ module Administration
       def self.find_by_symbols(symbols) = flat.select { |a| symbols.include?(a[:symbol]) }
 
       def self.category_label(key)
-        {
-          us_stocks: "US Stocks",
-          crypto: "Cryptocurrency",
-          etfs: "ETFs",
-          mexican_stocks: "Mexican Stocks",
-          fixed_income: "Fixed Income (CETES)"
-        }[key]
+        I18n.t("onboarding.categorias.#{key}", default: key.to_s.humanize)
       end
     end
   end

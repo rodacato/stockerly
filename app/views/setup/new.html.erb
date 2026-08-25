@@ -1,97 +1,40 @@
-<% content_for(:title, "Setup | Stockerly") %>
+<% content_for(:title, "#{t('setup.new.titulo')} | Stockerly") %>
 
-<main class="grow flex items-center justify-center p-4 py-12">
-  <div class="w-full max-w-4xl bg-bg-surface rounded-xl overflow-hidden shadow-xl flex flex-col md:flex-row min-h-[600px]">
-    <%# Left Side: Branding %>
-    <div class="hidden md:flex md:w-1/2 bg-primary relative overflow-hidden p-12 flex-col justify-between text-white">
-      <div class="relative z-10">
-        <div class="size-12 bg-white/20 rounded-lg flex items-center justify-center mb-8">
-          <span class="material-symbols-outlined text-white text-3xl">settings</span>
-        </div>
-        <h1 class="text-3xl font-bold leading-tight mb-4">Welcome to Stockerly</h1>
-        <p class="text-white/80 text-lg">Let's set up your instance. Create your admin account to get started.</p>
-      </div>
-      <div class="relative z-10">
-        <div class="space-y-3">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-success">check_circle</span>
-            <span class="text-sm text-white/80">Configure market data API keys</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-success">check_circle</span>
-            <span class="text-sm text-white/80">Choose assets to track</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-success">check_circle</span>
-            <span class="text-sm text-white/80">Launch your first data sync</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-success">check_circle</span>
-            <span class="text-sm text-white/80">100% free & open source</span>
-          </div>
-        </div>
-      </div>
-      <%# Background pattern %>
-      <div class="absolute inset-0 opacity-10 pointer-events-none">
-        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <path d="M0 100 L20 80 L40 90 L60 50 L80 70 L100 20 V100 H0 Z" fill="white"/>
-        </svg>
-      </div>
-    </div>
+<div class="flex flex-col gap-6">
+  <%= render "shared/auth_header", title: t("setup.new.titulo"), subtitle: t("setup.new.subtitulo") %>
 
-    <%# Right Side: Setup Form %>
-    <div class="w-full md:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-      <div class="space-y-6">
-        <div class="text-center md:text-left">
-          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Create Admin Account</h2>
-          <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">This will be the first user with full admin access.</p>
-        </div>
-
-        <%# Error Messages %>
-        <% if @errors.present? %>
-          <div class="p-3 rounded-lg bg-error/10 dark:bg-error/20 border border-error/20 dark:border-error/30 text-sm text-error-fg dark:text-error">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="material-symbols-outlined text-lg">error</span>
-              <span class="font-medium">Please fix the following errors:</span>
-            </div>
-            <ul class="list-disc pl-9 space-y-0.5">
-              <% @errors.each do |field, messages| %>
-                <% Array(messages).each do |message| %>
-                  <li><%= field.to_s.humanize %> <%= message %></li>
-                <% end %>
-              <% end %>
-            </ul>
-          </div>
+  <% if @errors.present? %>
+    <div class="rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
+      <p class="flex items-center gap-2 font-medium">
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">error</span>
+        <%= t("setup.new.corrige") %>
+      </p>
+      <ul class="mt-1 list-disc space-y-0.5 pl-9">
+        <% @errors.each do |field, messages| %>
+          <% Array(messages).each do |message| %>
+            <li><%= field.to_s.humanize %> <%= message %></li>
+          <% end %>
         <% end %>
-
-        <%# Setup Form %>
-        <%= form_with url: setup_path, method: :post, class: "space-y-4" do |f| %>
-          <div>
-            <label for="full_name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Full Name</label>
-            <input type="text" id="full_name" name="full_name" autocomplete="name" placeholder="John Doe" required
-                   class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
-          </div>
-          <div>
-            <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
-            <input type="email" id="email" name="email" autocomplete="email" placeholder="admin@yourcompany.com" required
-                   class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
-          </div>
-          <div>
-            <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
-            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Min. 8 characters" required
-                   class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
-          </div>
-          <div>
-            <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Confirm Password</label>
-            <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Repeat your password" required
-                   class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
-          </div>
-          <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2">
-            <span>Create Admin & Continue</span>
-            <span class="material-symbols-outlined text-lg">arrow_forward</span>
-          </button>
-        <% end %>
-      </div>
+      </ul>
     </div>
-  </div>
-</main>
+  <% end %>
+
+  <%= form_with url: setup_path, method: :post, class: "flex flex-col gap-4" do %>
+    <%= render "shared/auth_field", name: "full_name", type: "text", label: t("setup.new.nombre"),
+               placeholder: t("setup.new.nombre_placeholder"), autocomplete: "name", autofocus: true %>
+    <%= render "shared/auth_field", name: "email", type: "email", label: t("auth.correo"),
+               placeholder: t("auth.correo_placeholder"), autocomplete: "email" %>
+    <%= render "shared/auth_field", name: "password", type: "password", label: t("auth.contrasena"),
+               placeholder: t("auth.reset.nueva_placeholder"), autocomplete: "new-password" %>
+    <%= render "shared/auth_field", name: "password_confirmation", type: "password",
+               label: t("auth.reset.confirmar"), placeholder: t("auth.reset.confirmar_placeholder"),
+               autocomplete: "new-password" %>
+
+    <button type="submit"
+            class="mt-2 w-full rounded-xl bg-primary px-4 py-3.5 text-base font-semibold text-fg-inverse transition-colors hover:bg-primary-hover">
+      <%= t("setup.new.submit") %>
+    </button>
+  <% end %>
+
+  <p class="text-center font-mono text-xs text-fg-subtle"><%= t("auth.open_source") %></p>
+</div>
