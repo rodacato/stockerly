@@ -608,6 +608,12 @@ The green suite saw none of them, which is §3's lesson arriving on schedule.
 
 ### Found here, not fixed here
 
-- ⬜ **`content_for(:admin_page_title)` is written by five admin views and read by nobody.** The
-  layout that consumed it went with `admin.html.erb` in §6b. Same orphan shape as the ones §0.5
-  swept; it belongs to the four instance screens §8 deliberately left alone.
+- 🐞 **`content_for(:admin_page_title)` looked like an orphan and was a broken screen.** Five admin
+  views wrote it; the partial that read it went with `admin.html.erb` in §6b, and
+  `Admin::BaseController` started inheriting the 2.0 shell, which reads `:page_title`. Probed rather
+  than assumed: `/admin/logs` rendered **"Ajustes"** as its heading — the shell falls back to a nav
+  label when no page title is set — and its tab read *"Stockerly | Navigate the Markets with
+  Confidence"*, generic, English, and a tagline from before the pivot. **Converted, not deleted**:
+  each view sets `:page_title` for the bar and `:title` for the tab, and a spec pins both for all
+  five paths plus the absence of the dead key. Fixed 2026-08-25 with slice 7, since §6b is what
+  broke it.
