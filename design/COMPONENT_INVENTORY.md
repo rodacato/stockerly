@@ -9,6 +9,10 @@
 and an eighth renders only into a Turbo Stream target no page mounts. So the crossing is
 not 19 against 13 — it is 11 against 13, and the overlap is thinner still.
 
+**Re-measured 2026-08-25, after every slice landed: 17 partials, and every one of them is
+referenced.** The eight dead ones are gone (seven in the shell slice, `_asset_fundamentals` with
+this sweep) and the slices added their own. The same grep that found eight orphans now finds none.
+
 ## A. The kit's 13 — where each one lives in code today
 
 Reuse is the exception, not the rule. Nine of thirteen are net-new partials whose markup
@@ -54,16 +58,17 @@ shape before it shipped.
 
 **✅ Deleted in the shell slice**, once the net-new partials had been written against them.
 
-### Broken: renders into a target nothing mounts (1)
+### Broken: renders into a target nothing mounts (1) — ✅ resolved by deleting
 
-| Partial | What is wrong |
+| Partial | What was wrong |
 |---|---|
-| `_asset_fundamentals` | `MarketData::Handlers::BroadcastFundamentalsUpdate` replaces `#asset_fundamentals_<id>`. That id exists **only inside this partial**, and no view renders the partial — so the broadcast is a silent no-op. Its spec asserts the broadcast call was made, so it passes. Compare `_asset_price`, whose target really is mounted by two tables: same mechanism, wired. |
+| ~~`_asset_fundamentals`~~ | `MarketData::Handlers::BroadcastFundamentalsUpdate` replaced `#asset_fundamentals_<id>`. That id existed **only inside this partial**, and no view rendered the partial — so the broadcast was a silent no-op. Its spec asserted the broadcast call was made, so it passed. Compare `_asset_price`, whose target really is mounted by two tables: same mechanism, wired. |
 
-Decide in the asset-detail slice: either mount the frame or delete handler, partial and spec
-together. The `rescue ActionView::MissingTemplate` inside the handler is stale — it guards
-against a partial that has existed for a long time. (Slice 3 turned out to be Panorama, not the
-asset detail, so this is still open.)
+**Deleted 2026-08-25** — handler, partial, spec and the EventBus subscription. The choice this
+section left open was mount-or-delete; the asset-detail slice shipped `Análisis` / `Mi posición`
+without asking for the frame, so mounting it would have been building a component the design does
+not draw. `AssetFundamentalsUpdated` keeps its logging handler. The stale
+`rescue ActionView::MissingTemplate` went with it.
 
 ### Alive (11)
 
@@ -75,7 +80,7 @@ asset detail, so this is still open.)
 | `_skeleton` | 4 | Survives as-is. No kit equivalent and none needed. |
 | `_donut_chart` | 3 | Survives → Consolidado (slice 4). Kit gap: it needs a categorical ramp, still open. |
 | `_data_status` | 2 | Survives; freshness is still shown in the design. |
-| `_index_card` | 2 | ⚠ **Orphaned by slice 3.** Panorama has no market-index card in the design, and `MajorIndices` lost its last caller. Decide in slice 4: mount or delete. |
+| `_index_card` | 2 | ✅ **Not orphaned after all — this row was wrong.** Panorama has no market-index card, but `/market` renders the partial and feeds it from `ExploreAssets`, not from `MajorIndices`. The query died 2026-08-25; the partial stays. |
 | `_asset_price` | broadcast | Survives — the live-price mechanism the design keeps. |
 | ~~`_global_search`~~ | — | **Deleted in the shell slice.** The redesigned TopBar is logo + bell, and search's new home is Activos › Rastreados, which slice 2 builds. `/search` stays routable with no entry point; a spec pins that. |
 | ~~`_notification_panel`~~ | — | **Deleted in the shell slice.** D13 made the inbox a screen, so the bell navigates to `/notifications` instead of opening a dropdown. |
