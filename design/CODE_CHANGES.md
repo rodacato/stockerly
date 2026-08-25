@@ -44,20 +44,30 @@ this container could not perform, listed so they are not mistaken for done.
 
 ## 1. New `@theme` token values (D1)
 
-**Status:** pending — waiting on the approved identity pass.
+**Status:** shipped, and it turned out to be a no-op on colour. D1 converged the design on the
+code's Lumen values, so the `@theme` swap this section planned never had to happen; what did land
+is §0.2's three font tokens (`--font-display / --font-sans / --font-mono`), which carry the visual
+change on their own.
 
-- Swap the Lumen values in `app/assets/tailwind/application.css` `@theme { }` for the redesign's,
-  keeping the token **names** (contract) so views resolve unchanged. Add `--font-display /
-  --font-sans / --font-mono`.
-- Measure before landing: `grep -rc "bg-bg-\|text-fg-\|border-border-\|bg-positive\|bg-negative" app/views | ...`
-  — confirm the contract names in use, so a value swap is safe and a rename is not needed.
+- ✅ **The token contract held, so nothing was renamed.** The measurement this section asked for
+  (`grep -rc "bg-bg-\|text-fg-\|border-border-\|bg-positive\|bg-negative" app/views`) confirmed the
+  names in use, and D1 kept the values — so `app/assets/tailwind/application.css` `@theme { }` was
+  added to, not swapped.
+- ✅ **The three font tokens are the whole delta**, per §0.2.
 
 ## 2. Chart component (D2)
 
-**Status:** pending — design first.
+**Status:** shipped, in the Consolidado rather than here. `lightweight-charts` is pinned at 5.2.1
+and vendored; the controller generalized from `price_chart` to `chart`, taking an array of series,
+and the asset detail reuses it with one.
 
-- Add `lightweight-charts` via importmap; a `PriceChart` Stimulus controller fed by our existing
-  close series (the same data behind RSI/Bollinger/SMA). No TradingView iframe.
+- ✅ **No TradingView iframe.** `lightweight-charts` is pinned in `config/importmap.rb` and vendored
+  at `vendor/javascript/lightweight-charts.js`, fed by our own close series — the same data behind
+  RSI/Bollinger/SMA.
+- ✅ **`PriceChartController` became `ChartController`.** Written in §0.4 for one series, generalized
+  when the Consolidado needed two (portfolio vs CETES benchmark); the asset detail passes one.
+- 🐞 **It did not debut in the Panorama, and should not have** — see §3. A 60×20px sparkline is the
+  wrong job for a controller built around grid, axes and a `timeScale`.
 
 ## 3. Panorama (slice 3) — DONE
 
@@ -116,10 +126,12 @@ this container could not perform, listed so they are not mistaken for done.
   the sparkline on its own line beneath the name; `_asset_row` keeps it inline, which reads fine in
   Activos' wide grid and truncates here. Restructuring the row touches slice 2's screen, so it did
   not ride along.
-- ⬜ **Orphaned by this deletion, kept on purpose:** `Trading::Domain::WeeklyInsightCalculator` and
-  the `RecentNews` / `TrendingAssets` / `MajorIndices` queries now have **zero production callers**
-  (their specs still pass). Slice 4 and the asset detail may consume them; if they do not, they are
-  the next §0.5 list and should be deleted then rather than accumulating quietly.
+- ✅ **The orphan list came due, and it is deleted.** This bullet kept
+  `Trading::Domain::WeeklyInsightCalculator` and the `RecentNews` / `TrendingAssets` /
+  `MajorIndices` queries in case slices 4 and 5 consumed them. They did not, so all four are gone —
+  along with `NewsArticle.recent`, whose only production wrapper was `RecentNews`, and
+  `BroadcastFundamentalsUpdate` (see COMPONENT_INVENTORY.md). Deleted 2026-08-25 on
+  `chore/delete-dead-code`; 2671 examples, 0 failures.
 
 ## 3b. Asset detail (slice 5) — DONE, with the header left alone
 
@@ -184,7 +196,8 @@ stayed pre-2.0.
 
 ## 4. Activos tab — Cartera vs Sigo (D9, D10)
 
-**Status:** surface shipped (slice 2a). The trade sheet and the FX block are NOT in it — see below.
+**Status:** shipped, both halves. Slice 2a brought the surface; 2b brought the trade sheet at
+`/trades/new` and the historical-FX block (`fx_rate_at_execution`, auto-filled from Banxico).
 
 - ✅ `/assets` with the `Cartera | Sigo` segmented control, reading `open_positions` and
   `watchlist_items`. Never one merged list.
@@ -286,7 +299,8 @@ production those sit behind a Cloudflare Tunnel whose cache rules key on the pat
 
 ## 5. Consolidado — "¿Valió la pena?" (D12)
 
-**Status:** pending — design done (`flows/cockpit.pen`), engine gated on a 4-filter card.
+**Status:** shipped. `/portfolio` is the Consolidado. The engine is no longer gated — TWR and the
+CETES rate series both landed (D12, D28), and D26/D27 cleared the floor underneath them.
 
 - Reuse as-is: `Trading::Domain::PortfolioSummary`, `PeriodReturnsCalculator#chart_data`,
   `Portfolio#allocation_by_asset_type` / `#allocation_by_sector`, daily `portfolio_snapshots`.
@@ -347,6 +361,11 @@ production those sit behind a Cloudflare Tunnel whose cache rules key on the pat
 - ✅ `alert_preferences.sms_notifications` renamed to `urgent_email`. Nothing ever sent SMS —
   no Twilio, no gem, no code path — while the alerts screen already called the same boolean
   "Avisos urgentes por correo". Both screens now say the same true thing.
+- 🐞 **The rename missed `db/seeds.rb`, and nothing could have caught it.** The demo-user block
+  kept assigning `sms_notifications`, so `bin/rails db:seed` raised `UnknownAttributeError` —
+  invisible to a green suite, because the block is guarded by `Rails.env.development?` and CI never
+  runs `db:seed`. Fixed 2026-08-25. Worth remembering that a first boot with a seeded demo is
+  exactly what the 2.0 promises a self-hoster.
 - ✅ `Alerts::Handlers::CreateNotificationOnAlert` rewritten through
   `Alerts::Domain::TriggerNotice`: fact in the title, provenance in the body, never a bare
   amount. It lives in the domain because a background handler has no view context.
@@ -393,7 +412,8 @@ real push channel revives it; a migration to delete it now would have to be undo
 
 ## 8. Ajustes — one hub, and two switches that must start working (D17, D18)
 
-**Status:** pending — design done (`flows/settings.pen`), no code touched.
+**Status:** shipped. The hub is at `/settings` and both switches are wired (D17). What is left is
+visual: the four instance screens keep their admin styling.
 
 - Measure before landing: `grep -rn "auto_sync_enabled\|email_notifications_enabled" app lib | grep -v settings_controller`
   — today that returns **nothing outside the screen that sets them**. That is the bug.
