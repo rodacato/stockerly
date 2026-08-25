@@ -38,8 +38,8 @@ Lumen token contract; `t(...)` is ADR-011. A screen is 2.0 when the first column
 | `profiles` | 1 | 64 | 0 | ◐ mixed | no |
 | `components` | 27 | 30 | 15 | ◐ mixed | the kit |
 | `welcome` / `help` | 0 | 2 | 0 | ◐ no i18n | yes / no |
-| **`alerts`** | **64** | 3 | **0** | ✗ pre-2.0 | **yes — 3 artboards** |
-| **`notifications`** | **34** | 0 | **0** | ✗ pre-2.0 | **yes — 1 artboard** |
+| `alerts` | 0 | 49 | 36 | ✅ 2.0 | yes — closed 2026-08-25 |
+| `notifications` | 0 | 9 | 11 | ✅ 2.0 | yes — closed 2026-08-25 |
 | **`admin/assets`** | 66 | 2 | 0 | ✗ pre-2.0 | **yes** |
 | **`admin/logs`** | 55 | 2 | 0 | ✗ pre-2.0 | **yes** |
 | **`admin/dashboard`** | 55 | 0 | 0 | ✗ pre-2.0 | **yes** |
@@ -52,8 +52,8 @@ Lumen token contract; `t(...)` is ADR-011. A screen is 2.0 when the first column
 | `news` | 25 | 5 | 0 | ✗ pre-2.0 | no |
 | `shared` | 32 | 12 | 0 | ✗ pre-2.0 | mixed |
 
-**Exactly one directory is fully 2.0 by every measure and was built that way from the start:
-`onboarding`.** Everything else is either mixed or pre-2.0.
+**When this was first measured, exactly one directory was 2.0 by every measure: `onboarding`.**
+Reglas and the Bandeja joined it on 2026-08-25; the rest is still mixed or pre-2.0.
 
 The last column is what separates a defect from a decision. A pre-2.0 directory **with** an
 artboard is unfinished work. One **without** is a screen the redesign deliberately left routable
@@ -173,35 +173,33 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
 
 ## Migrate — a screen exists, its artboard exists, they do not match
 
-1. **Reglas (`/alerts`)** — the largest single gap. Table → cards, inline form → `+ Nueva` sheet
-   (D14), *Últimos disparos* wired to the inbox, channels as toggles, 64 slate → tokens, 0 → n i18n
-   keys. Resolve the `browser_push` conflict first; it changes the channel block.
-2. **Bandeja (`/notifications`)** — four typed filters (the data is already there), date grouping,
-   typed icons, *Borrar las leídas*, rename to *Bandeja*.
-3. **The four instance screens** (`admin/integrations`, `admin/logs`, `admin/settings`,
-   `admin/dashboard`) — §8's deferred pass, now with artboards.
-4. **`admin/assets`** — 66 slate. Half-absorbed already: Rastreados took the list and the budget;
-   create, search and delete still live here.
-5. **The asset-detail depth** — the seven partials below the tabs, worst first
-   (`_fixed_income_detail` at 39).
+1. ✅ **Reglas (`/alerts`)** — done 2026-08-25. Table → cards, inline form → `+ Nueva` sheet (D14),
+   *Últimos disparos* wired to the inbox, channels reusing Ajustes' real switches, 64 slate → 0,
+   0 → 36 i18n keys. Two conditions that were built and never offered
+   (`price_crosses_below`, `day_change_percent`) are reachable now. The `browser_push` toggle is
+   the one piece that could not ship — see item 9.
+2. ✅ **Bandeja (`/notifications`)** — done 2026-08-25. Four typed filters, date grouping, a tint
+   per type, *Borrar las leídas* rendered at last, renamed to *Bandeja*.
+3. ⬜ **The four instance screens** → [#289](https://github.com/rodacato/stockerly/issues/289)
+4. ⬜ **`admin/assets`** — 66 slate. Half-absorbed already: Rastreados took the list and the budget;
+   create, search and delete still live here. Rides #289.
+5. ⬜ **The asset-detail depth** → [#294](https://github.com/rodacato/stockerly/issues/294)
 
 ## Complete — designed, no code
 
-6. **`/discover`** — after Alpaca. Build *Calendario* first: it needs no credential and proves the
-   disposability contract cheaply.
-7. **§9 Alpaca** — promoted to prerequisite by D31; still needs its own 4-filter card.
-8. **The fifth nav destination** — `NavigationHelper`, both shell variants, and the kit 0.6.0
-   re-vendor D31 priced.
+6. ⬜ **`/discover`** → [#291](https://github.com/rodacato/stockerly/issues/291)
+7. ⬜ **§9 Alpaca** → [#290](https://github.com/rodacato/stockerly/issues/290)
+8. ⬜ **The fifth nav destination** → [#292](https://github.com/rodacato/stockerly/issues/292)
 
 ## Support — the design asks for something the code cannot do
 
-9. **`browser_push`** — drawn as a channel, deleted as plumbing. Decide: drop the toggle, or reopen
-   D16 and build push. **Blocks item 1.**
-10. **Fifteen basket ETFs** absent from the catalogue. **Blocks item 6.**
-11. **The *Trabajos* badge** — needs a way to count failed jobs without a cross-database query in
-    the hub's request path.
-12. **The *Olas* exposure chip** (*"ya vía NVDA"* / *"sin exposición"*) — a Trading read from inside
-    Descubrir. ADR-002 allows it through the public read API; it needs one.
+9. ⬜ **`browser_push`** → [#293](https://github.com/rodacato/stockerly/issues/293). Reglas shipped
+   two toggles rather than three; the design and the code disagree in writing until this is called.
+10. ⬜ **Fifteen basket ETFs** absent from the catalogue. Rides #290.
+11. ⬜ **The *Trabajos* badge** — needs a way to count failed jobs without a cross-database query in
+    the hub's request path. Rides #289.
+12. ⬜ **The *Olas* exposure chip** (*"ya vía NVDA"* / *"sin exposición"*) — a Trading read from
+    inside Descubrir. ADR-002 allows it through the public read API; it needs one. Rides #291.
 
 ## Clean — dead or misleading, found while measuring
 
@@ -216,7 +214,7 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
 ## Change — a decision to revisit, not a bug
 
 17. **The *Guardar* button in Ajustes** — the artboard implies auto-save. Pick one.
-18. **`/positions`, `/earnings`, `/search`, `/news`** — 155 slate utilities across four screens
-    with **no artboards**, routable and unlisted since §6b. Either they get designed, or they get
-    deleted, or the decision to leave them is written down with a date. Today they are simply
-    drifting, which is how the 22 phases started.
+18. **`/positions`, `/earnings`, `/search`, `/news`** → [#295](https://github.com/rodacato/stockerly/issues/295).
+    155 slate utilities across four screens with **no artboards**, routable and unlisted since §6b.
+    Either they get designed, or they get deleted, or the decision to leave them is written down
+    with a date. Today they are simply drifting, which is how the 22 phases started.
