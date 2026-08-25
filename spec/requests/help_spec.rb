@@ -14,12 +14,13 @@ RSpec.describe "Help", type: :request do
       expect(response.body).to include("Repórtalo aquí")
     end
 
-    it "renders for a user who has not completed onboarding (no redirect loop)" do
+    it "sends a user who has not finished onboarding back into the wizard" do
       onboarding_pending = create(:user, onboarded_at: nil)
       login_as_without_onboarding(onboarding_pending)
-      # The redirect_to_onboarding before_action sends them to /welcome — that's expected
+
       get help_path
-      expect(response).to redirect_to(welcome_path)
+
+      expect(response).to redirect_to(onboarding_integrations_path)
     end
 
     it "blocks anonymous users" do

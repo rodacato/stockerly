@@ -1,7 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Welcome", type: :request do
-  let(:user) { create(:user, onboarded_at: nil) }
+  # :admin, not the factory default. CreateFirstAdmin is the only path that
+  # makes a user and it hard-codes role: :admin, so a `role: :user` fixture
+  # describes a state this app cannot reach — which is how this spec used to
+  # pass while /welcome had no route leading to it.
+  let(:user) { create(:user, :admin, onboarded_at: nil) }
 
   describe "GET /welcome" do
     it "renders for a logged-in user who has not completed onboarding" do
@@ -28,6 +32,16 @@ RSpec.describe "Welcome", type: :request do
     it "blocks anonymous users" do
       get welcome_path
       expect(response).to redirect_to(login_path)
+    end
+  end
+
+  describe "arriving here" do
+    it "is where the wizard sends you when it finishes" do
+      login_as_without_onboarding(user)
+
+      post onboarding_launch_path
+
+      expect(response).to redirect_to(welcome_path)
     end
   end
 

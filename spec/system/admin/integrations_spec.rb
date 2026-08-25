@@ -33,7 +33,7 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
 
     expect(page).to have_content("No hay integraciones configuradas.")
     expect(page).to have_content("Agrega una desde el wizard inicial para empezar a sincronizar datos.")
-    expect(page).to have_link("Configurar integraciones", href: admin_onboarding_integrations_path)
+    expect(page).to have_link("Configurar integraciones", href: onboarding_integrations_path)
   end
 
   it "shows the Activa pill when the integration is connected with a default key" do

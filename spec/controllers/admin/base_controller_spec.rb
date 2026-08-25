@@ -29,7 +29,7 @@ RSpec.describe Admin::BaseController, type: :controller do
       it "redirects to root with alert" do
         get :index
         expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to eq("Not authorized.")
+        expect(flash[:alert]).to eq("No tienes acceso a esa sección.")
       end
     end
 

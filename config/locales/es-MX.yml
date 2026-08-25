@@ -1,5 +1,7 @@
 ---
 es-MX:
+  admin:
+    no_autorizado: No tienes acceso a esa sección.
   assets:
     index:
       cartera: Cartera
@@ -292,6 +294,9 @@ es-MX:
       unica_cuenta: única cuenta
       urgente: Avisos urgentes por correo
       urgente_desc: Un correo aparte al disparar una regla.
+  setup:
+    creada: Cuenta creada. Ahora configura tu instancia.
+    ya_completado: Esta instancia ya está configurada.
   time:
     am: a.m.
     formats:
