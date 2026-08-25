@@ -8,7 +8,6 @@ module Identity
 
         user.create_alert_preference!(
           email_digest: true,
-          browser_push: true,
           urgent_email: false
         )
       end

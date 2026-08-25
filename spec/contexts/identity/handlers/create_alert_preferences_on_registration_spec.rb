@@ -9,7 +9,6 @@ RSpec.describe Identity::Handlers::CreateAlertPreferencesOnRegistration do
     expect { described_class.call(event) }.to change(AlertPreference, :count).by(1)
     prefs = user.reload.alert_preference
     expect(prefs.email_digest).to be true
-    expect(prefs.browser_push).to be true
     expect(prefs.urgent_email).to be false
   end
 

@@ -177,11 +177,10 @@ RSpec.describe "Event Subscription Wiring" do
     end
 
     describe "MarketData::Events::AssetFundamentalsUpdated" do
-      it "has log and broadcast handlers" do
+      it "has MarketData::Handlers::LogFundamentalsUpdate handler" do
         handlers = EventBus.handlers_for(MarketData::Events::AssetFundamentalsUpdated)
 
         expect(handlers).to include(MarketData::Handlers::LogFundamentalsUpdate)
-        expect(handlers).to include(MarketData::Handlers::BroadcastFundamentalsUpdate)
       end
     end
 

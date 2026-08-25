@@ -5,10 +5,9 @@ RSpec.describe Alerts::UseCases::UpdatePreferences do
 
   describe ".call" do
     it "creates and updates the preference when none exists" do
-      pref = described_class.call(user: user, params: { email_digest: true, browser_push: false, urgent_email: true })
+      pref = described_class.call(user: user, params: { email_digest: true, urgent_email: true })
 
       expect(pref.email_digest).to be true
-      expect(pref.browser_push).to be false
       expect(pref.urgent_email).to be true
     end
 
@@ -22,6 +21,13 @@ RSpec.describe Alerts::UseCases::UpdatePreferences do
     it "ignores params not in the allowed slice (mass-assignment guard)" do
       pref = described_class.call(user: user, params: { email_digest: true, unknown_param: "hack" })
       expect(pref.email_digest).to be true
+    end
+
+    it "cannot be reassigned to another user through params" do
+      other = create(:user)
+      pref = described_class.call(user: user, params: { email_digest: true, user_id: other.id })
+
+      expect(pref.user_id).to eq(user.id)
     end
   end
 end
