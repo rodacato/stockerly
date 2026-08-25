@@ -1,5 +1,6 @@
 # Fetches latest news articles from Polygon.io and upserts into the database.
 class SyncNewsJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

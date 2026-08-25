@@ -2,6 +2,7 @@
 # Creates Dividend records and DividendPayment records for portfolios holding each asset.
 # Runs weekly to conserve FMP API budget (250 calls/day free tier).
 class SyncDividendsJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

@@ -1,6 +1,7 @@
 # Fetches all 3 financial statement types for 1 asset (3 API calls).
 # Triggered by SyncAllStatementsJob. Persists to FinancialStatement model.
 class SyncStatementsJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

@@ -2,6 +2,7 @@
 # Publishes Trading::Events::SplitDetected for new splits to trigger position adjustment.
 # Runs weekly to conserve FMP API budget.
 class SyncSplitsJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

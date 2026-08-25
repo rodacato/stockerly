@@ -2,6 +2,7 @@
 # respecting the Alpha Vantage daily budget (25 calls/day free tier).
 # Priority: portfolio assets > watchlist > rest.
 class SyncAllFundamentalsJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   DAILY_BUDGET = MarketData::Domain::FundamentalsBudget::DAILY_LIMIT

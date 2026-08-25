@@ -2,6 +2,7 @@
 # Shares the same daily API budget (25 calls) with SyncAllFundamentalsJob.
 # 3 API calls per asset (income + balance + cash flow).
 class SyncAllStatementsJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   DAILY_BUDGET = 25

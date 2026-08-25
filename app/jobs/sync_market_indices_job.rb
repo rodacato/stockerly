@@ -1,5 +1,6 @@
 # Fetches latest market index quotes from Yahoo Finance and updates MarketIndex records.
 class SyncMarketIndicesJob < ApplicationJob
+  include PausableSync
   include SyncLogging
   include AdaptiveScheduling
 

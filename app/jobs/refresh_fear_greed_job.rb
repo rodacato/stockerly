@@ -1,6 +1,7 @@
 # Fetches Fear & Greed indices from Alternative.me (crypto) and CNN (stocks).
 # Each source is fetched independently — one failure doesn't block the other.
 class RefreshFearGreedJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default
