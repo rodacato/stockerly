@@ -40,7 +40,10 @@ RSpec.describe "Ajustes", type: :request do
     get settings_path
 
     expect(response.body).to include(I18n.t("settings.show.avisos_campana"))
-    expect(response.body).not_to match(/browser_push/i)
+    # Two channels deliver, so two switches exist. Asserting the absence of
+    # "browser_push" stopped meaning anything once the column was dropped —
+    # a name for nothing cannot fail.
+    expect(response.body.scan(/data-toggle-field-value=/).size).to eq(2)
   end
 
   it "shows the currency control on the user's current choice" do

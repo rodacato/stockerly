@@ -105,9 +105,12 @@ RSpec.describe "Alert management", type: :system do
     expect(page).to have_selector("[data-toggle-url-value='#{update_preferences_path}']", count: 2, visible: :all)
   end
 
-  it "does not offer a bell switch, because the inbox cannot be turned off" do
+  it "offers a switch for each channel that delivers, and no others" do
     visit alerts_path
-    expect(page).to have_no_selector("[data-toggle-field-value='browser_push']", visible: :all)
+
+    # D16: the bell is not a channel you can turn off, and no push channel was
+    # ever built. Two deliver, so two switches. This fails if a third appears.
+    expect(page).to have_css("[data-toggle-field-value]", count: 2, visible: :all)
   end
 
   it "shows each rule as a card carrying its cooldown" do

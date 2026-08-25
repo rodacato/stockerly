@@ -66,7 +66,7 @@ RSpec.describe "Profile layout (S11 #146)", type: :system do
 
     it "offers no toggle for channels the app cannot send" do
       expect(page).to have_no_content("SMS")
-      expect(page).to have_no_css('[data-toggle-field-value="browser_push"]')
+      expect(page).to have_css("[data-toggle-field-value]", count: 2, visible: :all)
     end
 
     it "says the in-app bell is not optional instead of faking a switch for it" do

@@ -53,7 +53,7 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
       expect(response.body).to include("Resumen diario por correo")
       expect(response.body).to include("Avisos urgentes por correo")
       expect(response.body).not_to include("SMS")
-      expect(response.body).not_to include('data-toggle-field-value="browser_push"')
+      expect(response.body.scan(/data-toggle-field-value=/).size).to eq(2)
       # Theme picker
       expect(response.body).to include("Apariencia")
       expect(response.body).to include("Claro")
