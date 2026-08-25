@@ -49,6 +49,7 @@ screens; smaller ones may merge into a neighbor.
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | cartera, sigo, cartera vacía, registrar movimiento (sheet + con teclado), rastreados, rastreados·buscar | **done · in review** |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (default/vacío), nueva regla (sheet), bandeja, confluencia | **done · in review** |
 | `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, integraciones, registros, estado y mantenimiento | **done · in review** |
+| `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default, sin datos) + Olas desktop | **done · in review** |
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for
 structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit · **(3)** review/feel ·
@@ -68,6 +69,7 @@ flows, not 30.
 | `assets` | Cartera · Registrar movimiento · Rastreados | Sigo, Cartera vacía and the search states reuse patterns above |
 | `alerts` | — | Its list and sheet are the patterns Cartera and Registrar movimiento settle |
 | `settings` | Hub · Integraciones · Estado | Registros reflows; a real log table is a new component, so a decision |
+| `discover` | Olas | Sin datos reflows into the same two-column shell |
 
 The shell variant lives in the kit (`SidebarNav`, `TopBarDesktop`, `AppShellDesktop`, 0.5.0) and is
 vendored per flow like everything else. Two rules came out of the pass and hold for the ERB work:
