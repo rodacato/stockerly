@@ -7,60 +7,51 @@ RSpec.describe "Session timeout", type: :request do
 
   before { login_as(user) }
 
-  describe "inactivity timeout (30 minutes)" do
-    it "expires session after 30 minutes of inactivity" do
-      travel_to 31.minutes.from_now do
+  describe "inactivity timeout (14 days)" do
+    it "expires the session after 14 days of inactivity" do
+      travel_to 14.days.from_now + 1.minute do
         get dashboard_path
         expect(response).to redirect_to(login_path)
         follow_redirect!
-        expect(response.body).to include("inactivity")
+        expect(response.body).to include("inactividad")
       end
     end
 
-    it "keeps session alive when active within 30 minutes" do
-      travel_to 15.minutes.from_now do
-        get dashboard_path
-        expect(response).to have_http_status(:ok)
-      end
-
-      travel_to 40.minutes.from_now do
-        get dashboard_path
-        expect(response).to have_http_status(:ok)
+    it "survives a weekly visit, which is the cadence the product is built for" do
+      4.times do |week|
+        travel_to((week + 1).weeks.from_now) do
+          get dashboard_path
+          expect(response).to have_http_status(:ok)
+        end
       end
     end
   end
 
-  describe "absolute timeout (12 hours)" do
-    it "expires session after 12 hours regardless of activity" do
-      # Keep active every 20 minutes for 12 hours
-      36.times do |i|
-        travel_to((i * 20).minutes.from_now) do
-          get dashboard_path
-        end
+  describe "absolute timeout (30 days)" do
+    it "expires the session after 30 days regardless of activity" do
+      29.times do |day|
+        travel_to((day + 1).days.from_now) { get dashboard_path }
       end
 
-      # At 12 hours + 1 minute, session should be expired
-      travel_to 12.hours.from_now + 1.minute do
+      travel_to 30.days.from_now + 1.minute do
         get dashboard_path
         expect(response).to redirect_to(login_path)
         follow_redirect!
-        expect(response.body).to include("expired")
+        expect(response.body).to include("expiró")
       end
     end
   end
 
   describe "session refresh on activity" do
     it "updates last_activity_at on each request" do
-      get dashboard_path
-      expect(response).to have_http_status(:ok)
-
-      travel_to 29.minutes.from_now do
+      travel_to 13.days.from_now do
         get dashboard_path
         expect(response).to have_http_status(:ok)
       end
 
-      # 29 minutes after the refresh, should still be active
-      travel_to 58.minutes.from_now do
+      # 13 days after that refresh — 26 in total, past the inactivity window
+      # measured from login, but not from the last request.
+      travel_to 26.days.from_now do
         get dashboard_path
         expect(response).to have_http_status(:ok)
       end
@@ -70,7 +61,7 @@ RSpec.describe "Session timeout", type: :request do
   describe "unauthenticated requests" do
     it "does not trigger timeout check for public pages" do
       reset!
-      travel_to 31.minutes.from_now do
+      travel_to 31.days.from_now do
         get login_path
         expect(response).to have_http_status(:ok)
       end

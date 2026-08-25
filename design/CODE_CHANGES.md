@@ -192,7 +192,27 @@ stayed pre-2.0.
   declare `viewBox="0 0 130 40"`, and the text starts at `x="32"` at `font-size="22"` — roughly
   142px of artwork in a 130px box, so the final "y" was clipped everywhere the logo renders. Widened
   to 148. **Every screenshot this session showed it and I read past it each time.**
-- ⬜ **2FA is not built** (D23, still gated) and `auth-2fa.png` stays an artboard.
+- ⬜ **2FA is not built** (D23, still gated) and `auth-2fa.png` stays an artboard. The entry's
+  premise that the box "sits behind Cloudflare Tunnel and Tailscale" does not survive reading
+  `config/deploy.yml` — the tunnel publishes `stockerly.notdefined.dev` publicly and no Access
+  policy is recorded anywhere in the repo. Recommendation unchanged in outcome, changed in reason:
+  front the hostname with **Cloudflare Access** rather than building TOTP. Recovery then runs
+  through the Cloudflare account instead of an authenticator app on one device — which is the
+  permanent-lockout risk D23 identified, and the reason TOTP cannot ship alone.
+- ✅ **The session lasted 12 hours and idled out after 30 minutes** (D29). On a product whose north
+  star is a *weekly* visit, that logged Adrian out before every single one. Now 14 days idle, 30
+  days absolute, cookie at 31 so the app's check fires and says why. The old pair had a real bug
+  underneath: the cookie died at 12 hours too, so any longer app-level window was unreachable and
+  the expiry redirect arrived with no message at all.
+- 🐞 **Both expiry messages were English**, the only hardcoded strings left in
+  `ApplicationController` — `auth.session.*` now, under ADR-011.
+- ⬜ **Four more English flashes survive, all on surfaces this section named as pre-2.0.**
+  `setup_controller` (*"Admin account created! Let's configure your instance."*, *"Setup already
+  completed."*), `admin/onboarding_controller` (*"Setup complete! Your data is syncing."*) and
+  `admin/base_controller` (*"Not authorized."*). Left deliberately: ADR-011 adopts i18n **surface by
+  surface**, so writing keys for screens about to be redesigned is work the redesign would redo.
+  Worth carrying into the onboarding slice — the first two also carry exclamation marks ADR-001
+  forbids, and *"Admin account created"* is the admin framing D5 decided to drop.
 
 ## 4. Activos tab — Cartera vs Sigo (D9, D10)
 
