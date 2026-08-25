@@ -486,3 +486,60 @@ visual: the four instance screens keep their admin styling.
 - Use the **market-data API only**. Alpaca is a broker; trade execution is a project non-goal, and
   the key stored in this instance must not carry trading permissions.
 - No coverage for fundamentals, BMV equities or CETES — those stay where they are.
+
+## 10. Onboarding (slice 7) — the last designed flow with no code
+
+**Status:** measured 2026-08-25, not built. `flows/onboarding.pen` is **done · in review** with
+**9 artboards** (setup, integrations, assets, complete, welcome, plus 4 desktop) and this document
+had no section for it — the only entry in the design README without a row here.
+
+The four views are still pre-2.0, counted in utilities:
+
+| View | `slate-*` / `gray-*` | Lumen tokens | i18n keys |
+|---|---|---|---|
+| `admin/onboarding/assets` | 14 | 0 | 0 |
+| `admin/onboarding/complete` | 14 | 3 | 0 |
+| `admin/onboarding/integrations` | 15 | 2 | 0 |
+| `setup/new` | 10 | 1 | 0 |
+
+It matters beyond consistency: the vision's second success criterion is *"un tercero técnico lo
+levanta, carga su primer activo y lee su primer indicador sin fastidio"*, and this is that path.
+
+### What the measurement found
+
+- 🐞 **`/welcome` is unreachable, and it is already the artboard.**
+  [`authenticated_controller.rb:22-25`](../app/controllers/authenticated_controller.rb#L22-L25)
+  branches the onboarding on `current_user.admin?` — admins to the wizard, everyone else to
+  `/welcome`. **Nobody else can exist.** The only path that creates a user is
+  `Identity::UseCases::CreateFirstAdmin`, which hard-codes `role: :admin` and refuses once any user
+  exists; the pivot deleted registration and there is no other route. So the `else` branch is dead
+  and `/welcome` is orphaned — **while its view already matches `onboarding-welcome.png` copy for
+  copy** (S07 built it; the artboard was drawn from it, per the flow's own working model). The
+  slice does not build Welcome. It **connects** it.
+- 🐞 **`welcome_spec.rb` is green against a state production cannot reach.** It builds
+  `create(:user, onboarded_at: nil)` and the factory defaults to `role { :user }` — the role no
+  code path produces — then requests `/welcome` directly, so it never exercises the branch that
+  would have to send anyone there. The screen works; the route to it does not exist.
+- 🐞 **Two use cases complete onboarding, in two bounded contexts.**
+  `Administration::UseCases::Onboarding::CompleteSetup` and
+  `Identity::UseCases::CompleteOnboarding` both write `onboarded_at`; the first also enqueues the
+  initial sync jobs. The second is only reachable through the dead branch above.
+- ⚠ **The whole flow still lives in `Admin::`** — `Admin::OnboardingController < BaseController`,
+  `admin_onboarding_*` routes, views under `app/views/admin/onboarding/`, and `launch` landing on
+  `admin_root_path`. **D5 decided to drop the admin framing** and §6b already deleted the
+  `admin.html.erb` layout; this is what is left of the costume. The Welcome artboard's CTA reads
+  *"Ir al panel"* — the Panorama, not an admin dashboard.
+- ⚠ **`/setup` renders under `layout "public"`.** The design README pairs it with Login explicitly
+  (*"Same split-panel as Setup — the two doors match"*), and §3c already built `layouts/auth.html.erb`
+  with that split panel. The door to the instance and the door back into it should not look
+  different.
+- ⬜ **Three of the four English flashes recorded in §3c live here**, one of them
+  *"Admin account created! Let's configure your instance."* — which violates D5's naming and
+  ADR-001's voice in the same sentence.
+
+### Not yet decided
+
+The 4-filter card is **not written**. Trigger and JTBD are documented (the beta failed on *"no
+sabían qué hacer"*; the vision names the path), but the **usage metric and the DoD are Adrian's**,
+and so is D30 — whether the wizard ends at Welcome or Welcome dies. Nothing here is built until
+that card exists; this section is the discovery it rests on.
