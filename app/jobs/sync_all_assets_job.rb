@@ -1,6 +1,7 @@
 # Enqueues SyncSingleAssetJob for each active asset of the given type.
 # Spaces out individual jobs to respect API rate limits.
 class SyncAllAssetsJob < ApplicationJob
+  include PausableSync
   queue_as :default
 
   # @param asset_type [String] "stock" or "crypto"

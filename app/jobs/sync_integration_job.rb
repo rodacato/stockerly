@@ -1,6 +1,7 @@
 # Tests connectivity for an integration and updates its connection status.
 # Used by Administration::UseCases::Integrations::RefreshSync.
 class SyncIntegrationJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

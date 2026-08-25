@@ -1,6 +1,7 @@
 # Fetches 30 days of historical OHLCV data for a single asset and
 # upserts into AssetPriceHistory. Triggered by AssetCreated event.
 class BackfillPriceHistoryJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

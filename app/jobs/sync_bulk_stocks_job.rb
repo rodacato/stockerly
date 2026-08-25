@@ -3,6 +3,7 @@
 # Similar pattern to SyncBulkCryptoJob but uses Polygon's grouped endpoint
 # for a single API call covering all US stocks.
 class SyncBulkStocksJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

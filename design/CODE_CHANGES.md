@@ -359,10 +359,17 @@ real push channel revives it; a migration to delete it now would have to be undo
 - Merge `/profile` and the `/admin` zone into one `Ajustes` with sections. On a single-user
   instance the admin split is a costume (D5); the asset catalogue already left for Activos (D9)
   and the notification panel is down to two channels (D16).
-- 🔴 **Precondition for the `Estado y mantenimiento` screen:** wire the two dead toggles before
-  implementing it, or the redesign ships the same lie it documents. `auto_sync_enabled` guards the
-  recurring jobs; `email_notifications_enabled` guards `ApplicationMailer` — which means the digest
-  and the urgent alert from §7 must consult it too.
+- ✅ **The precondition is met: both toggles are wired** (D17). `auto_sync_enabled` guards the 24
+  jobs that go out to the network for market data, through a `PausableSync` concern — local
+  computation (trend scores, observations, snapshots) keeps running, because with no new data it is
+  a no-op and stopping it would make the switch mean more than its label says. Notification jobs are
+  out for the same reason.
+  `email_notifications_enabled` guards `AlertMailer`'s digest and urgent alert — **deliberately not
+  `ApplicationMailer`**: `UserMailer#password_reset` is the way back into an account, and a
+  single-user instance with no support desk cannot afford a settings switch that locks its owner
+  out. Both default to **on** when the row is absent, so an instance predating the wiring does not
+  go quiet; specs pin that default, which is the part that would have been catastrophic to get
+  wrong.
 - Keep the audit trail: `SiteConfigChange` already records who flipped what and when, and the
   design surfaces it as "Cambios recientes".
 - D18 is settled for now — pools stay, so the Integraciones screen keeps the per-provider key

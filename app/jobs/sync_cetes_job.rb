@@ -1,4 +1,5 @@
 class SyncCetesJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

@@ -2,6 +2,7 @@
 # after that. It asks for a week back, not just today, so a missed run or a
 # holiday gap heals itself on the next pass.
 class SyncFxHistoryJob < ApplicationJob
+  include PausableSync
   queue_as :default
 
   LOOKBACK_DAYS = 7

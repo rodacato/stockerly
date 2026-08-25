@@ -2,6 +2,7 @@
 # Uses MarketData::Gateways::YahooFinanceGateway#fetch_historical for OHLCV data.
 # Idempotent: skips existing records via unique index on [market_index_id, date].
 class SyncIndexHistoryJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

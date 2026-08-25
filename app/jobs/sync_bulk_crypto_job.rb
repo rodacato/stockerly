@@ -1,6 +1,7 @@
 # Fetches prices for multiple crypto assets in a single CoinGecko API call,
 # updates each Asset record, and publishes MarketData::Events::AssetPriceUpdated events.
 class SyncBulkCryptoJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

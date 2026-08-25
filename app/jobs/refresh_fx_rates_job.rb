@@ -3,6 +3,7 @@
 # audience for an FxRatesRefreshed event, so #35 removed the publish call
 # and dropped the event class.
 class RefreshFxRatesJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

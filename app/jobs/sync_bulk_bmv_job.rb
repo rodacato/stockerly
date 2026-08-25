@@ -1,6 +1,7 @@
 # Fetches prices for multiple BMV (Mexican) assets in a single Yahoo Finance
 # API call, updates each Asset record, and publishes MarketData::Events::AssetPriceUpdated events.
 class SyncBulkBmvJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default

@@ -3,6 +3,7 @@
 # API usage: high-priority assets sync more frequently, low-priority
 # less often, and nothing syncs when the market is closed.
 class SyncPriorityAssetsJob < ApplicationJob
+  include PausableSync
   queue_as :default
 
   # @param asset_type [String] "stock", "crypto", "etf", or "index"

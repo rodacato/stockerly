@@ -2,6 +2,7 @@
 # and enqueues BackfillPriceHistoryJob for each.
 # Runs Sunday 3am, max 50 assets, 5s stagger between jobs.
 class BackfillMissingHistoriesJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   MAX_ASSETS = 50

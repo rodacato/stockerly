@@ -2,6 +2,7 @@
 # (with fallback chain for US stocks), updates the Asset record, and
 # publishes MarketData::Events::AssetPriceUpdated if the price changed.
 class SyncSingleAssetJob < ApplicationJob
+  include PausableSync
   include SyncLogging
   include AdaptiveScheduling
 

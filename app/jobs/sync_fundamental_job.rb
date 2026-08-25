@@ -1,6 +1,7 @@
 # Syncs fundamental data for a single asset via GatewayChain (Alpha Vantage → FMP fallback).
 # 1 job = 1 API call (atomic, resilient). Triggered by SyncAllFundamentalsJob.
 class SyncFundamentalJob < ApplicationJob
+  include PausableSync
   include SyncLogging
 
   queue_as :default
