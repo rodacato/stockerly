@@ -419,6 +419,8 @@ CSS picks. `NavigationHelper` owns the four destinations so nothing is duplicate
   screen drops its heading and the bar's becomes the `h1`.
 - Copy goes through I18n (`nav.*`), the first surface to do so under ADR-011.
 
+- **The bell badge is a dot in code and a count in the design (D32.3).** [`components/_top_bar.html.erb`](../app/views/components/_top_bar.html.erb) renders a bare dot when `navbar_unread_count.positive?`; `alerts.pen` draws `BellWrap > Bell + Badge` with a number in it. Design leads per D8, so landing it means rendering `navbar_unread_count` inside the badge and deciding what happens past 9 (`9+` is the usual answer). `navbar_unread_count` already computes and memoises it, and both partials already call it twice — once for the `aria-label`, once for `.positive?` — so the **number is available and simply never painted**: this costs a span, not a query. It lands in **two** files, `_top_bar.html.erb` and `_top_bar_desktop.html.erb`. The kit's own `TopBar` has neither, which is the gap D32.3 leaves for the next promotion batch.
+
 ## 7. Delivery channels (D16) — DONE, except one leftover
 
 `AlertMailer` (digest + urgent), `SendDailyDigestJob` scheduled at `30 0 * * *` (18:30 CDMX
@@ -617,3 +619,35 @@ The green suite saw none of them, which is §3's lesson arriving on schedule.
   each view sets `:page_title` for the bar and `:title` for the tab, and a spec pins both for all
   five paths plus the absence of the dead key. Fixed 2026-08-25 with slice 7, since §6b is what
   broke it.
+
+
+## 10. Descubrir — the fifth destination (D31)
+
+**Status:** designed in `flows/discover.pen`, build pending. **Blocked on §9 (Alpaca)** — D31
+promotes it from optional to prerequisite, because three of the four blocks read it.
+
+**Do the A cleanup first.** Deleting `market#index`, `news`, `earnings` and folding `search` into
+Rastreados touches `spec/system/navigation_spec.rb`, and so does the fifth destination. Landing the
+cleanup first means that file is rewritten once instead of twice.
+
+| # | What | Notes |
+|---|---|---|
+| 10.1 | `NavigationHelper::MAIN_NAV` 4 → 5, new entry at **index 3** | Panorama / Activos / Reglas keep their position; only Ajustes shifts. Both nav partials iterate `main_nav_items`, so neither changes structurally |
+| 10.2 | `_bottom_nav` layout check | Five items at `min-w-16` inside a 390 viewport fit on paper (320 + padding). Verify on a real phone, not in a headless browser |
+| 10.3 | `nav.discover` in `config/locales/es-MX.yml` | ADR-011 |
+| 10.4 | `spec/system/navigation_spec.rb:73` | *"navigates to the four shell destinations"* → five |
+| 10.5 | `WarmDiscoverJob` + one entry in `config/recurring.yml`, every 4h | Writes with a **24h** TTL so a failed run serves stale data with "actualizado hace 6 h" rather than an empty screen |
+| 10.6 | Two YAMLs, not two Ruby constants | The 17-symbol basket and the Banxico/Fed calendar. C8 Bram: hardcoded in Ruby means a self-hoster edits code and loses it on the next pull |
+| 10.7 | `discover:last_seen` on each visit, surfaced in Ajustes › Estado | Three lines, no table. It is the evidence the kill criterion needs |
+
+**Zero migrations.** If this section ever grows a migration, the disposability contract broke and
+that is a finding, not a detail — see D31 clauses 1 and 5.
+
+**Deletion checklist** (what "disposable" means operationally): the `discover` folder, one route,
+one `MAIN_NAV` entry, one job file, one `recurring.yml` line, two YAMLs, one spec folder, one
+`nav.*` key. Nothing else in `app/` may reference it.
+
+**Kit:** the fifth destination currently lives **only** in `flows/discover.pen` as a local override.
+Landing this in code does not need the kit bump — but until `ui-kit.lib.pen` goes to 0.6.0 and the
+other five flows re-vendor, their artboards keep showing a four-tab bar. That re-vendor is its own
+pass and should not be interleaved with other design work (D31).

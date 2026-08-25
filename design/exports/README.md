@@ -35,6 +35,8 @@ is worse than a missing one.
 | `reglas-nueva-regla.png` | `[Reglas] / Nueva regla / Sheet` |
 | `reglas-bandeja.png` | `[Reglas] / Bandeja / Default` |
 | `reglas-confluencia.png` | `[Reglas] / Confluencia / Default` |
+| `descubrir-olas.png` | `[Descubrir] / Olas / Default` |
+| `descubrir-olas-sin-datos.png` | `[Descubrir] / Olas / Sin datos` |
 | `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
 | `ajustes-integraciones.png` | `[Ajustes] / Integraciones / Default` |
 | `ajustes-registros.png` | `[Ajustes] / Registros / Default` |
@@ -52,12 +54,14 @@ reflow. The kit's shell variant is included because it is what every desktop art
 | `activos-cartera-desktop.png` | `[Activos] / Cartera · Desktop / Default` |
 | `activos-registrar-movimiento-desktop.png` | `[Activos] / Registrar movimiento · Desktop / Dialog` |
 | `activos-rastreados-desktop.png` | `[Activos] / Rastreados · Desktop / Default` |
+| `descubrir-olas-desktop.png` | `[Descubrir] / Olas · Desktop / Default` |
 | `ajustes-hub-desktop.png` | `[Ajustes] / Hub · Desktop / Default` |
 | `ajustes-integraciones-desktop.png` | `[Ajustes] / Integraciones · Desktop / Default` |
 | `ajustes-estado-desktop.png` | `[Ajustes] / Estado y mantenimiento · Desktop / Default` |
 
 Not drawn on desktop, on purpose: `Sigo`, `Cartera vacía`, the two `Rastreados · Buscar` and
-`Reglas` states, and `Registros` — each reflows into a pattern one of the ten above already
+`Reglas` states, `Descubrir · Sin datos` (it reflows into the same two-column shell with the
+notice and the Calendario alone), and `Registros` — each reflows into a pattern one of the ones above already
 settles. `Registros` would want a real log table, which is a new component and therefore a
 decision, not a redraw.
 
