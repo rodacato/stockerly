@@ -15,7 +15,7 @@ RSpec.describe Notifications::UseCases::ListRecent do
       expect(data[:tipo]).to eq("todos")
       expect(data[:estado]).to eq("todos")
       expect(data[:shown_count]).to eq(3)
-      expect(data[:counts]).to eq(all: 3, alerts: 2, system: 1, unread: 1, read: 2)
+      expect(data[:counts]).to eq(alertas: 1, reportes: 1, cetes: 0, all: 3, unread: 1, read: 2)
     end
 
     it "returns zero unread count when all notifications are read" do
@@ -23,25 +23,23 @@ RSpec.describe Notifications::UseCases::ListRecent do
       expect(described_class.call(user: user)[:counts][:unread]).to eq(0)
     end
 
-    it "filters by tipo=alertas (alert_triggered + earnings + maturity reminders)" do
+    it "gives each bucket only its own type" do
       create(:notification, user: user, notification_type: :alert_triggered)
       create(:notification, user: user, notification_type: :earnings_reminder)
       create(:notification, user: user, notification_type: :maturity_reminder)
       create(:notification, user: user, notification_type: :system)
 
-      data = described_class.call(user: user, tipo: "alertas")
-
-      expect(data[:notifications].size).to eq(3)
-      expect(data[:shown_count]).to eq(3)
+      expect(described_class.call(user: user, tipo: "alertas")[:notifications].size).to eq(1)
+      expect(described_class.call(user: user, tipo: "reportes")[:notifications].size).to eq(1)
+      expect(described_class.call(user: user, tipo: "cetes")[:notifications].size).to eq(1)
     end
 
-    it "filters by tipo=sistema" do
-      create(:notification, user: user, notification_type: :alert_triggered)
+    it "leaves system notices reachable through the unfiltered list" do
       create(:notification, user: user, notification_type: :system)
 
-      data = described_class.call(user: user, tipo: "sistema")
-      expect(data[:notifications].size).to eq(1)
-      expect(data[:notifications].first.notification_type).to eq("system")
+      # No chip of their own — the artboard draws four buckets and system is
+      # not one of them — so "todos" is the only place they appear.
+      expect(described_class.call(user: user)[:notifications].size).to eq(1)
     end
 
     it "filters by estado=no_leidas" do
@@ -66,8 +64,9 @@ RSpec.describe Notifications::UseCases::ListRecent do
 
       data = described_class.call(user: user, tipo: "alertas")
       expect(data[:counts][:all]).to eq(2)
-      expect(data[:counts][:alerts]).to eq(1)
-      expect(data[:counts][:system]).to eq(1)
+      expect(data[:counts][:alertas]).to eq(1)
+      # A system notice has no chip, so it shows up in `all` and nowhere else.
+      expect(data[:counts][:reportes]).to eq(0)
     end
 
     describe "N+1 guard — notifiable + asset preloading is bounded by type, not by row" do

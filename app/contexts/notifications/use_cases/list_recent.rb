@@ -53,18 +53,13 @@ module Notifications
 
       def counts_for(scope)
         by_type = scope.group(:notification_type).count
-        alerts  = Notification::ALERTA_TYPES.sum  { |t| by_type[t] || 0 }
-        system  = Notification::SISTEMA_TYPES.sum { |t| by_type[t] || 0 }
-        all     = alerts + system
+        all     = by_type.values.sum
         unread  = scope.unread.count
 
-        {
-          all:    all,
-          alerts: alerts,
-          system: system,
-          unread: unread,
-          read:   all - unread
-        }
+        Notification::TIPO_SCOPES
+          .transform_values { |types| types.sum { |t| by_type[t] || 0 } }
+          .symbolize_keys
+          .merge(all: all, unread: unread, read: all - unread)
       end
     end
   end

@@ -4,6 +4,18 @@ class Notification < ApplicationRecord
 
   enum :notification_type, { alert_triggered: 0, earnings_reminder: 1, system: 2, maturity_reminder: 3 }
 
+  # `reglas-bandeja` filters by what the notice is about, not by whether the
+  # app or a rule produced it. The enum already drew that line; the inbox
+  # collapsed three of its four values into one "alertas" bucket and threw the
+  # distinction away.
+  TIPO_SCOPES = {
+    "alertas"  => %w[alert_triggered],
+    "reportes" => %w[earnings_reminder],
+    "cetes"    => %w[maturity_reminder]
+  }.freeze
+
+  # Kept: AlertsHelper and the mailer still ask "is this a rule firing or the
+  # instance talking?", which is a different question from the inbox filter.
   ALERTA_TYPES  = %w[alert_triggered earnings_reminder maturity_reminder].freeze
   SISTEMA_TYPES = %w[system].freeze
 
@@ -14,11 +26,8 @@ class Notification < ApplicationRecord
   scope :recent,  -> { order(created_at: :desc) }
 
   scope :by_tipo, ->(tipo) {
-    case tipo.to_s
-    when "alertas" then where(notification_type: ALERTA_TYPES)
-    when "sistema" then where(notification_type: SISTEMA_TYPES)
-    else all
-    end
+    types = TIPO_SCOPES[tipo.to_s]
+    types ? where(notification_type: types) : all
   }
 
   scope :by_estado, ->(estado) {

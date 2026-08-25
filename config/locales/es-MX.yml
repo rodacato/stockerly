@@ -255,6 +255,21 @@ es-MX:
     panorama: Panorama
     principal: Navegación principal
     reglas: Reglas
+  notifications:
+    index:
+      alertas: Alertas
+      borrar_leidas: Borrar las leídas
+      cetes: CETES
+      confirmar_borrado: "¿Borrar las notificaciones que ya leíste?"
+      descripcion: Todo lo que la app decidió contarte, reglas disparadas, reportes
+        que se acercan, CETES por vencer y avisos del sistema.
+      marcar_leida: Marcar como leída
+      marcar_todas: Marcar leídas
+      reportes: Reportes
+      sin_coincidencias: Nada en este filtro. Prueba otro.
+      titulo: Bandeja
+      todas: Todas
+      vacio: No hay nada en tu bandeja todavía.
   onboarding:
     assets:
       atras: Atrás
