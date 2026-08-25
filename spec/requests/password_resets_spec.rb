@@ -14,7 +14,7 @@ RSpec.describe "PasswordResets", type: :request do
     it "renders the forgot password page" do
       get forgot_password_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Recupera tu acceso")
+      expect(response.body).to include(I18n.t("auth.forgot.titulo"))
     end
   end
 

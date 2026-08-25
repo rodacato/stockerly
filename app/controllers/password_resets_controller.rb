@@ -1,5 +1,5 @@
 class PasswordResetsController < ApplicationController
-  layout "public"
+  layout "auth"
 
   rate_limit to: 3, within: 1.hour, only: :create
 

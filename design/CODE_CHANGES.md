@@ -155,6 +155,33 @@ only when you hold the asset.
 - ⬜ **Not built:** the confluence semáforo (D3, gated), "Cerrar posición" (an action the code does
   not have — a sell is already a movement), and the per-period `Rendimiento` block.
 
+## 3c. Auth (design-match pass) — DONE
+
+**Status:** shipped. The first screen brought to the artboards rather than built from them, after
+Adrian's read that the site does not look much like the designs — true, and worth saying: the
+slices built new screens against artboards while auth, onboarding, the market listing and alerts
+stayed pre-2.0.
+
+- ✅ **A real `auth` layout.** `layouts/auth.html.erb`: no public navbar, no footer, the card
+  centred on the canvas, and the artboard's **split panel on desktop** — brand left, form right.
+  Sessions and password resets moved off `layout "public"`.
+- ✅ **The five screens rebuilt on tokens and i18n.** They were `slate-*` utilities and hardcoded
+  es-MX; they are `border-border-default` / `text-fg-default` and `auth.*` keys now. Two shared
+  partials (`_auth_field`, `_auth_header`) mean the screens cannot drift apart again.
+- ⚠ **The "revisa tu correo" copy departs from the artboard on purpose.** The artboard reads *"te
+  enviamos un enlace a tu@correo.com"*; naming the address confirms it is registered to anyone who
+  can reach that page. The existing copy is deliberately identical whether or not the address
+  exists (S11 #147), and `RequestPasswordReset` does the silent no-op. **"Reenviar enlace" returns
+  to the form** rather than resending, for the same reason: a real resend needs the address held
+  somewhere.
+- ⚠ **Risk disclosure is no longer one click from login.** The auth layout has no public footer, and
+  the artboard's terms line carries two links. It stays reachable from the legal pages.
+- 🐞 **The wordmark has been cut off across the entire site.** `logo_light.svg` and `logo_dark.svg`
+  declare `viewBox="0 0 130 40"`, and the text starts at `x="32"` at `font-size="22"` — roughly
+  142px of artwork in a 130px box, so the final "y" was clipped everywhere the logo renders. Widened
+  to 148. **Every screenshot this session showed it and I read past it each time.**
+- ⬜ **2FA is not built** (D23, still gated) and `auth-2fa.png` stays an artboard.
+
 ## 4. Activos tab — Cartera vs Sigo (D9, D10)
 
 **Status:** surface shipped (slice 2a). The trade sheet and the FX block are NOT in it — see below.

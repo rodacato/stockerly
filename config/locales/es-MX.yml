@@ -37,6 +37,40 @@ es-MX:
       tier_tracked: Rastreado
       titulo: Rastreados
       vacio: Tu instancia aún no rastrea ningún activo.
+  auth:
+    contrasena: Contraseña
+    correo: Correo electrónico
+    correo_placeholder: tu@correo.com
+    forgot:
+      enviar: Enviar enlace
+      subtitulo: Ingresa tu correo y te enviamos un enlace para restablecerla.
+      titulo: "¿Olvidaste tu contraseña?"
+    login:
+      olvidaste: "¿Olvidaste tu contraseña?"
+      recuperala: Recupérala.
+      submit: Iniciar sesión
+      subtitulo: Accede a tu cuenta.
+      terminos_html: Al iniciar sesión aceptas los %{terms} y el %{privacy}.
+      titulo: Inicia sesión
+    open_source: 100% libre y open source
+    privacidad: Aviso de privacidad
+    reset:
+      confirmar: Confirmar contraseña
+      confirmar_placeholder: Repite tu contraseña
+      guardar: Guardar contraseña
+      nueva: Nueva contraseña
+      nueva_placeholder: Mínimo 8 caracteres
+      subtitulo: Elige una contraseña segura para tu cuenta.
+      titulo: Nueva contraseña
+    sent:
+      cuerpo: Si el correo está registrado, te enviamos un enlace para restablecer
+        tu contraseña. Revisa tu bandeja en los próximos minutos.
+      expira: El enlace expira en %{duration}.
+      reenviar: Reenviar enlace
+      spam: Recuerda revisar la carpeta de spam si no aparece.
+      titulo: Revisa tu correo
+    terminos: Términos
+    volver: Volver a iniciar sesión
   comun:
     accion:
       buy: compra

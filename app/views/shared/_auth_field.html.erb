@@ -1,0 +1,14 @@
+<%# Locals: name, label, type; value, placeholder, autocomplete, autofocus optional.
+    One shape for every auth input, so the four screens cannot drift apart. %>
+<label class="flex flex-col gap-1.5">
+  <span class="text-sm text-fg-subtle"><%= label %></span>
+  <%= tag.input type: type,
+                name: name,
+                id: name,
+                value: local_assigns[:value],
+                placeholder: local_assigns[:placeholder],
+                autocomplete: local_assigns[:autocomplete],
+                autofocus: local_assigns[:autofocus],
+                required: true,
+                class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 text-base text-fg-default placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+</label>
