@@ -489,7 +489,7 @@ visual: the four instance screens keep their admin styling.
 
 ## 10. Onboarding (slice 7) — the last designed flow with no code
 
-**Status:** measured 2026-08-25, not built. `flows/onboarding.pen` is **done · in review** with
+**Status:** shipped 2026-08-25. Measured first, and the measurement is kept below because it is what made the slice smaller than it looked. `flows/onboarding.pen` is **done · in review** with
 **9 artboards** (setup, integrations, assets, complete, welcome, plus 4 desktop) and this document
 had no section for it — the only entry in the design README without a row here.
 
@@ -568,4 +568,46 @@ proposed rather than supplied — Adrian delegated them and can correct any line
          in the flow is reachable once `onboarded_at` is set.
 
 Per [[project-working-method]] the card itself belongs in a GitHub issue, not here — this section is
-its discovery. The issue is not opened yet.
+its discovery. The issue was never opened; the slice was built directly from this card.
+
+### What shipped, against that DoD
+
+Eight of the nine as written. The third **inverted**, and it had to:
+
+- ✅ `launch` lands on `/welcome`; Welcome's CTA goes to the Panorama.
+- ✅ The `admin?` branch is gone. One account, one path.
+- ⚠ **`Identity::UseCases::CompleteOnboarding` is the single writer of `onboarded_at` — not
+  `CompleteSetup`, which is what this card asked for.** The two criteria could not both hold:
+  `WelcomeController` sends an onboarded user to the dashboard, so stamping the flag before the
+  redirect makes Welcome render never. Welcome cannot become a permanent page either, because
+  `/help` already renders the same `shared/_welcome_body`. So the write moved the other way, which
+  is the better boundary regardless — `CompleteSetup` was an Administration use case writing a
+  `User` attribute. It is `LaunchInitialSync` now and does only what it says.
+- ✅ `welcome_spec` uses `:admin` and asserts the wizard is what sends you there.
+- ✅ The wizard left `Admin::` — controller, routes, views. `/admin/onboarding/*` → `/onboarding/*`.
+- ✅ `/setup` renders under `layouts/auth`, reusing `_auth_header` and `_auth_field` so the two
+  doors share their parts rather than merely resembling each other.
+- ✅ Lumen tokens and `t(".key")` throughout; `i18n-tasks health` green at 262 keys, none unused.
+- ✅ The English flashes are gone. *"Setup complete! Your data is syncing."* was deleted rather than
+  translated — Welcome is the confirmation now.
+- ✅ The negative criterion holds, pinned by a spec that walks every step once `onboarded_at` is set.
+
+### Three defects only the screenshots found
+
+The green suite saw none of them, which is §3's lesson arriving on schedule.
+
+1. **The app shell rendered around the wizard** — TopBar and the four bottom-nav tabs, mid-setup,
+   offering exits that `redirect_to_onboarding` immediately undoes. The artboards draw no chrome.
+   Fixed with `layouts/onboarding`: auth's principle without auth's card, since a step is
+   full-width and not a form on a panel.
+2. **The primary CTA was shrink-wrapped with its label spilling out of the button.** `button_to`
+   puts `:class` on the button and wraps it in an inline-block form, so `w-full` measured against a
+   form that had already collapsed to its content. `form_class:` is the fix.
+3. **The category headings were English** — `AssetCatalog.category_label` returned "US Stocks" and
+   "Cryptocurrency" from Ruby, so translating the views alone would have left them on screen.
+
+### Found here, not fixed here
+
+- ⬜ **`content_for(:admin_page_title)` is written by five admin views and read by nobody.** The
+  layout that consumed it went with `admin.html.erb` in §6b. Same orphan shape as the ones §0.5
+  swept; it belongs to the four instance screens §8 deliberately left alone.
