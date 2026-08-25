@@ -38,7 +38,8 @@ class Position < ApplicationRecord
 
     missing = buys.count { |t| t.fx_rate_at_execution.nil? }
     if missing.positive?
-      raise "Position##{id}: #{missing} buy trade(s) missing fx_rate_at_execution; cannot derive cost basis in #{target_currency}"
+      raise Trading::Domain::MissingFxRate,
+              "Position##{id}: #{missing} buy trade(s) missing fx_rate_at_execution; cannot derive cost basis in #{target_currency}"
     end
 
     total_shares = buys.sum(&:shares)

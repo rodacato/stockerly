@@ -39,7 +39,7 @@ module Trading
         summary.total_value
         summary.day_gain
         summary
-      rescue RuntimeError
+      rescue Trading::Domain::MissingFxRate
         nil
       end
 
