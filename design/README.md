@@ -44,7 +44,7 @@ screens; smaller ones may merge into a neighbor.
 | File | Domain | Screens (from code) | Status |
 |---|---|---|---|
 | `flows/auth.pen` | Auth | login, 2FA/TOTP, forgot, email-sent, reset — no signup (account created in onboarding) | **done · in review** |
-| `flows/onboarding.pen` | Onboarding | setup, integrations, assets, complete, welcome (+ Setup desktop) | **done · in review** |
+| `flows/onboarding.pen` | Onboarding | setup, integrations, assets, complete, welcome (+ Setup desktop) | **done · in review** — the only flow whose ERB revamp has not landed; scoped as slice 7 in [CODE_CHANGES.md](CODE_CHANGES.md) §10 |
 | `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo/black swan), asset detail (Análisis · Mi posición), consolidado | **done · in review** |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | cartera, sigo, cartera vacía, registrar movimiento (sheet + con teclado), rastreados, rastreados·buscar | **done · in review** |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (default/vacío), nueva regla (sheet), bandeja, confluencia | **done · in review** |
