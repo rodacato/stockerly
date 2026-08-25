@@ -22,8 +22,8 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
     visit admin_integrations_path
 
     expect(page).to have_content("Integraciones")
-    expect(page).to have_content("Conectividad de mercado")
-    expect(page).to have_content("Gestiona conexiones a APIs, claves rotativas y verificaciones de salud.")
+    expect(page).to have_content("De dónde salen tus precios")
+    expect(page).to have_content("ese límite es el que reparte el presupuesto de Rastreados")
     expect(page).to have_content("Polygon.io")
   end
 
@@ -31,8 +31,8 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
     Integration.destroy_all
     visit admin_integrations_path
 
-    expect(page).to have_content("No hay integraciones configuradas.")
-    expect(page).to have_content("Agrega una desde el wizard inicial para empezar a sincronizar datos.")
+    expect(page).to have_content("No hay fuentes configuradas")
+    expect(page).to have_content("Agrégalas desde el wizard inicial")
     expect(page).to have_link("Configurar integraciones", href: onboarding_integrations_path)
   end
 
@@ -42,10 +42,10 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
     visit admin_integrations_path
 
     expect(page).to have_content("Activa")
-    expect(page).to have_content("Rate-limit")
-    expect(page).to have_content("5 req/min")
-    expect(page).to have_content("Pool")
-    expect(page).to have_content("Última verificación")
+    # The usage bar the artboard draws, over counters the table already had
+    # and no screen ever showed.
+    expect(page).to have_content("0 / 5 por minuto")
+    expect(page).to have_content("1 llave")
   end
 
   it "shows the Pausada pill and the add-key callout when no keys are configured" do
@@ -55,7 +55,7 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
     visit admin_integrations_path
 
     expect(page).to have_content("Pausada")
-    expect(page).to have_content("Sin claves configuradas.")
+    expect(page).to have_content("sin llave")
   end
 
   it "shows the Error pill when disconnected" do

@@ -22,16 +22,9 @@ module Administration
             request: request || { base_url: "", path: "", params: {}, cookie: nil }
           )
 
-          # The header chip displays the absolute "X registros" — semantically
-          # the total across all 90-day-windowed data, NOT the filtered count.
-          # SystemLog.count is acceptable while the table stays in the low
-          # millions (current beta is ~10k); migrate to a counter cache or
-          # PG_class.reltuples estimate when scale demands it.
-          Success({
-            pagy: pagy,
-            logs: logs,
-            total_count: SystemLog.count
-          })
+          # No unfiltered SystemLog.count: the header chip it fed is gone, and
+          # the footer reports the filtered total pagy already carries.
+          Success({ pagy: pagy, logs: logs })
         end
 
         private

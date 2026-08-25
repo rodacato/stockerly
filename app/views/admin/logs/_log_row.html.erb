@@ -1,101 +1,60 @@
-<%# Single log row + expandable payload panel. Locals: log %>
+<%# One entry as a card, per `ajustes-registros`: severity dot, task, message,
+    timestamp. The payload panel the artboard does not draw stays behind the
+    card — an error you cannot open is a log entry that tells you nothing.
+    Locals: log %>
 <%
   payload = admin_log_payload(log)
   has_details = log.error_message.present?
   message = admin_log_message(log)
   log_id = log.log_uid.presence || "log_#{log.id}"
 %>
-<tbody data-controller="reveal" class="border-t border-slate-100 dark:border-slate-800">
-  <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
-    <%# Severity dot %>
-    <td class="px-3 py-2.5 align-middle">
-      <span class="inline-block h-1.5 w-1.5 rounded-full <%= admin_log_severity_dot_classes(log.severity) %>"
-            title="<%= log.severity.to_s.capitalize %>"></span>
-    </td>
+<li data-controller="reveal" class="rounded-xl border border-border-default bg-bg-surface p-4">
+  <div class="flex items-start gap-3">
+    <span class="mt-1.5 size-2 shrink-0 rounded-full <%= admin_log_severity_dot_classes(log.severity) %>"
+          title="<%= log.severity.to_s.capitalize %>" aria-hidden="true"></span>
 
-    <%# Marca de tiempo %>
-    <td class="px-3 py-2.5 whitespace-nowrap font-mono text-[11.5px] font-medium text-slate-500 dark:text-slate-400">
-      <%= admin_log_timestamp(log) %>
-    </td>
-
-    <%# Módulo %>
-    <td class="px-3 py-2.5">
+    <div class="min-w-0 flex-1">
+      <div class="flex items-baseline justify-between gap-3">
+        <p class="truncate font-mono font-semibold text-fg-default"><%= log.task_name %></p>
+        <span class="shrink-0 font-mono text-xs text-fg-subtle"><%= admin_log_timestamp(log) %></span>
+      </div>
+      <p class="text-sm text-fg-subtle"><%= message %></p>
       <% if log.module_name.present? %>
-        <span class="inline-flex items-center rounded px-2 py-0.5 font-mono text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700">
-          <%= log.module_name %>
-        </span>
-      <% else %>
-        <span class="font-mono text-xs text-slate-400">—</span>
+        <span class="mt-1 inline-block rounded bg-bg-muted px-2 py-0.5 font-mono text-xs text-fg-subtle"><%= log.module_name %></span>
       <% end %>
-    </td>
+    </div>
 
-    <%# Tarea %>
-    <td class="px-3 py-2.5 max-w-[260px] truncate font-mono text-[11.5px] text-slate-700 dark:text-slate-200">
-      <%= log.task_name %>
-    </td>
-
-    <%# Mensaje %>
-    <td class="px-3 py-2.5 max-w-0 truncate text-xs text-slate-700 dark:text-slate-200" title="<%= message %>">
-      <%= message %>
-    </td>
-
-    <%# Chevron %>
-    <td class="px-3 py-2.5 text-right">
-      <% if has_details %>
-        <button type="button" data-action="reveal#toggle"
-                aria-label="Ver detalle"
-                class="inline-flex size-6 items-center justify-center rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/40">
-          <span class="material-symbols-outlined text-base">chevron_right</span>
-        </button>
-      <% else %>
-        <span class="inline-flex size-6 items-center justify-center text-slate-300 dark:text-slate-600">
-          <span class="material-symbols-outlined text-base">chevron_right</span>
-        </span>
-      <% end %>
-    </td>
-  </tr>
+    <% if has_details %>
+      <button type="button" data-action="reveal#toggle"
+              aria-label="<%= t("admin.logs.index.ver_detalle") %>"
+              class="flex size-8 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">expand_more</span>
+      </button>
+    <% end %>
+  </div>
 
   <% if has_details %>
-    <tr data-reveal-target="content" class="hidden">
-      <td colspan="6" class="px-0 py-0">
-        <div class="space-y-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-5 py-4">
-          <%# Meta row %>
-          <div class="flex flex-wrap items-center gap-x-6 gap-y-1 text-[11.5px]">
-            <span>
-              <span class="text-slate-500 dark:text-slate-400">ID · </span>
-              <span class="font-mono font-medium text-slate-900 dark:text-white"><%= log_id %></span>
-            </span>
-            <span>
-              <span class="text-slate-500 dark:text-slate-400">Severidad · </span>
-              <span class="font-mono font-semibold uppercase tracking-wider <%= admin_log_severity_text_classes(log.severity) %>"><%= log.severity %></span>
-            </span>
-            <% if log.duration_seconds.present? %>
-              <span>
-                <span class="text-slate-500 dark:text-slate-400">Duración · </span>
-                <span class="font-mono text-slate-900 dark:text-white"><%= log.duration_seconds %> s</span>
-              </span>
-            <% end %>
-          </div>
+    <div data-reveal-target="content" class="mt-4 hidden flex-col gap-3 border-t border-border-default pt-4">
+      <div class="flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs">
+        <span><span class="text-fg-subtle">ID · </span><span class="text-fg-default"><%= log_id %></span></span>
+        <span>
+          <span class="text-fg-subtle">Severidad · </span>
+          <span class="font-semibold uppercase <%= admin_log_severity_text_classes(log.severity) %>"><%= log.severity %></span>
+        </span>
+        <% if log.duration_seconds.present? %>
+          <span><span class="text-fg-subtle">Duración · </span><span class="text-fg-default"><%= log.duration_seconds %> s</span></span>
+        <% end %>
+      </div>
 
-          <%# Payload code block %>
-          <div class="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-bg-surface">
-            <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 px-3 py-1.5">
-              <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
-              <span class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Carga útil</span>
-            </div>
-            <pre class="overflow-x-auto px-3.5 py-3 font-mono text-xs leading-relaxed text-slate-700 dark:text-slate-200"><%= JSON.pretty_generate(payload) %></pre>
-          </div>
+      <div class="overflow-hidden rounded-lg bg-bg-muted">
+        <p class="px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t("admin.logs.index.carga_util") %></p>
+        <pre class="overflow-x-auto px-3 py-2 font-mono text-xs text-fg-default"><%= JSON.pretty_generate(payload) %></pre>
+      </div>
 
-          <%# Stack trace / error message %>
-          <div class="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-bg-surface">
-            <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 px-3 py-1.5">
-              <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
-              <span class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Detalle del error</span>
-            </div>
-            <pre class="overflow-x-auto whitespace-pre-wrap break-all px-3.5 py-3 font-mono text-xs leading-relaxed text-slate-700 dark:text-slate-200"><%= log.error_message %></pre>
-          </div>
-        </div>
-      </td>
-    </tr>
+      <div class="overflow-hidden rounded-lg bg-negative-bg">
+        <p class="px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-negative-fg"><%= t("admin.logs.index.detalle_error") %></p>
+        <pre class="overflow-x-auto whitespace-pre-wrap break-all px-3 py-2 font-mono text-xs text-negative-fg"><%= log.error_message %></pre>
+      </div>
+    </div>
   <% end %>
-</tbody>
+</li>

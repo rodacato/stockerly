@@ -22,7 +22,7 @@ RSpec.describe "Admin logs error details", type: :request do
       # Every row renders a chevron column; rows with error_message wire the
       # toggle action onto the icon.
       expect(response.body).to include('data-action="reveal#toggle"')
-      expect(response.body).to include("chevron_right")
+      expect(response.body).to include("expand_more")
     end
 
     it "does not wire the toggle action for success logs" do

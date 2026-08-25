@@ -146,14 +146,14 @@ RSpec.describe "Admin pages", type: :request do
       create(:system_log, task_name: "FX Rate Update", module_name: "Finance")
       get admin_logs_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Bitácora del sistema")
+      expect(response.body).to include("Registros")
       expect(response.body).to include("FX Rate Update")
     end
 
     it "renders the integrations page" do
       get admin_integrations_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Conectividad de mercado")
+      expect(response.body).to include("De dónde salen tus precios")
     end
   end
 end

@@ -1,30 +1,9 @@
-<%# Empty state — shown when filters return zero rows. %>
-<div class="flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-8 py-16 text-center shadow-sm">
-  <div class="mb-4 flex size-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 text-slate-400">
-    <span class="material-symbols-outlined text-2xl">filter_alt</span>
-  </div>
-  <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Sin registros que coincidan con los filtros.</h2>
+<div class="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border-default bg-bg-surface px-6 py-10 text-center">
+  <span class="material-symbols-outlined text-3xl text-fg-subtle" aria-hidden="true">description</span>
+  <p class="font-semibold text-fg-default">
+    <%= admin_logs_any_filter_active? ? t("admin.logs.index.sin_coincidencias") : t("admin.logs.index.vacio") %>
+  </p>
   <% if admin_logs_any_filter_active? %>
-    <%
-      # Build the chips as a safe_join of tag-helpers so each param value is
-      # escaped individually — never interpolate user-controlled params into
-      # an html_safe string (XSS). Fix for #139 CodeQL alert.
-      mono_chip = "font-mono text-slate-900 dark:text-white"
-      chips = []
-      chips << safe_join([ "búsqueda ", content_tag(:span, %("#{params[:search]}"), class: mono_chip) ]) if params[:search].present?
-      chips << safe_join([ "severidad ", content_tag(:span, params[:severity], class: mono_chip) ]) if params[:severity].present?
-      chips << safe_join([ "módulo ",   content_tag(:span, params[:module_name], class: mono_chip) ]) if params[:module_name].present?
-      chips << safe_join([ "rango ",    content_tag(:span, admin_logs_current_range_label.downcase, class: mono_chip) ]) if params[:range].present?
-    %>
-    <p class="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-      <%= safe_join(chips, " · ") %>.
-    </p>
-    <%= link_to admin_logs_path,
-          class: "mt-5 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90" do %>
-      <span class="material-symbols-outlined text-[15px]">filter_alt_off</span>
-      Limpiar filtros
-    <% end %>
-  <% else %>
-    <p class="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">Sin actividad en los últimos 90 días.</p>
+    <%= link_to t("admin.logs.index.limpiar"), admin_logs_path, class: "text-sm font-semibold text-primary hover:underline" %>
   <% end %>
 </div>
