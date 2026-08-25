@@ -638,6 +638,7 @@ cleanup first means that file is rewritten once instead of twice.
 | 10.4 | `spec/system/navigation_spec.rb:73` | *"navigates to the four shell destinations"* → five |
 | 10.5 | `WarmDiscoverJob` + one entry in `config/recurring.yml`, every 4h | Writes with a **24h** TTL so a failed run serves stale data with "actualizado hace 6 h" rather than an empty screen |
 | 10.6 | Two YAMLs, not two Ruby constants | The 17-symbol basket and the Banxico/Fed calendar. C8 Bram: hardcoded in Ruby means a self-hoster edits code and loses it on the next pull |
+| 10.6b | **⏳ D33 — decide the calendar's exhausted state before shipping this block** | The YAML is settled (no automatable source: Banxico's calendar is a non-machine-readable PDF grid, the Fed's dates are labelled *tentative*). What is not settled is what the block renders once the file runs out — today's design shows an empty block on the one surface that promises to work without a credential. Open on purpose; whoever builds 10.6 owns it |
 | 10.7 | `discover:last_seen` on each visit, surfaced in Ajustes › Estado | Three lines, no table. It is the evidence the kill criterion needs |
 
 **Zero migrations.** If this section ever grows a migration, the disposability contract broke and
