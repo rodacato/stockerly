@@ -152,6 +152,10 @@ es-MX:
         label: Estirado
         watching: Estirado — no es momento de entrar. El activo cotiza por encima
           de su rango habitual.
+    header:
+      agregar_watchlist: Agregar a watchlist
+      quitar_watchlist: Quitar de watchlist
+      sin_precio: Precio no disponible
     precio:
       titulo: Precio · %{currency} · cierre diario
   nav:

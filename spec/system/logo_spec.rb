@@ -59,7 +59,8 @@ RSpec.describe "Stockerly wordmark across surfaces", type: :system do
       fill_in "Correo electrónico", with: "logo@test.com"
       fill_in "Contraseña", with: "password123"
       click_button "Iniciar sesión"
-      visit market_asset_path(asset.symbol)
+      # The 2.0 asset header dropped the badge; the market listing still has it.
+      visit market_path
       expect(page.html).to include("onerror")
     end
   end

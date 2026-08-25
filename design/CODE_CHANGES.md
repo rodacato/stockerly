@@ -142,10 +142,14 @@ only when you hold the asset.
   answer and the block is absent rather than averaged from what survived.
 - ✅ **"VS. TU PLAN" became "VS. TUS REGLAS."** The artboard's `Meta: 200` has no `target_price`
   anywhere in the code; `alert_rules` does exist, and `alert_condition_summary` already renders it.
-- ⚠ **The asset header is not redesigned.** It still carries the pre-2.0 breadcrumb and three action
-  buttons, one of which duplicated the capture button this slice first added at the foot of Mi
-  posición — caught in a screenshot and removed. The artboard's header is `‹ NVDA Nvidia` plus a
-  bookmark, with no buttons. Reconciling them is its own pass.
+- ✅ **The header is redesigned.** 126 lines became a back link, the name, the price and a bookmark.
+  It gained `≈ MXN 3,684` — the price in the reader's own currency, which is the MXN-first point and
+  did not exist before; nil rather than approximated when no rate is stored. The capture button
+  moved to the foot of Mi posición, where the artboard puts it, so there is exactly one again.
+  **One chip the artboard does not draw is kept on purpose:** the asset type. Exchange and currency
+  were redundant (both appear below), but the type is only inferable from which blocks render, five
+  specs defended it, and dropping it would leave it visible only on Rastreados. The provenance
+  caption stays too — where a number came from is not decoration on a screen built to be checkable.
 - ⚠ **The fundamentals block keeps its sub-tabs** inside Análisis. The artboard flattens Resumen /
   Valoración / Estados into the scroll; that restructure was not attempted here.
 - ⬜ **Not built:** the confluence semáforo (D3, gated), "Cerrar posición" (an action the code does
