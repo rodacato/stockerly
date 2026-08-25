@@ -23,15 +23,18 @@ module NotificationsHelper
     end
   end
 
-  # Returns Tailwind classes for the icon tile background + foreground.
-  # Two visual families per the inbox mockup: "alerta" (green tint, covers
-  # alert_triggered + reminders) and "sistema" (primary tint).
+  # One tint per notification_type, matching `reglas-bandeja`. It used to be
+  # two families, which put a CETES maturity and a rule firing in the same
+  # colour — the collapse the inbox filter made everywhere else.
+  ICON_STYLES = {
+    "alert_triggered"   => "bg-primary/10 text-primary",
+    "earnings_reminder" => "bg-bg-muted text-fg-subtle",
+    "maturity_reminder" => "bg-warning/10 text-warning",
+    "system"            => "bg-bg-muted text-fg-subtle"
+  }.freeze
+
   def notification_icon_style(notification)
-    if notification.kind == "alerta"
-      "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400"
-    else
-      "bg-primary/8 dark:bg-primary/15 text-primary"
-    end
+    ICON_STYLES.fetch(notification.notification_type, "bg-bg-muted text-fg-subtle")
   end
 
   def notification_category_chip_classes(notification)
@@ -89,7 +92,12 @@ module NotificationsHelper
     elsif d == Date.current - 1
       "ayer · #{notification.created_at.in_time_zone('America/Mexico_City').strftime('%H:%M')} CDMX"
     else
-      "#{notification.created_at.strftime('%-d %b %Y')} · #{notification.created_at.in_time_zone('America/Mexico_City').strftime('%H:%M')} CDMX"
+      # strftime("%b") is English regardless of locale, so an older notice read
+      # "23 Aug 2026" on an es-MX screen. MONTHS_ES is what the date headers
+      # above this row already use.
+      date = notification.created_at.in_time_zone("America/Mexico_City")
+      month = DatetimeEsHelper::MONTHS_ES[date.month - 1]
+      "#{date.day} #{month} #{date.year} · #{date.strftime('%H:%M')} CDMX"
     end
   end
 

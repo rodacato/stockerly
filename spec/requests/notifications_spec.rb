@@ -21,19 +21,19 @@ RSpec.describe "Notifications", type: :request do
 
     it "renders the es-MX header" do
       get notifications_path
-      expect(response.body).to include("Notificaciones")
+      expect(response.body).to include("Bandeja")
       expect(response.body).to include("Bandeja")
     end
 
     it "shows the empty state when the user has no notifications" do
       get notifications_path
-      expect(response.body).to include("Sin notificaciones por ahora.")
+      expect(response.body).to include("No hay nada en tu bandeja todavía.")
     end
 
     it "honors the tipo filter and shows the empty-filter state when nothing matches" do
       create(:notification, user: user, notification_type: :alert_triggered, title: "Solo alerta")
-      get notifications_path(tipo: "sistema")
-      expect(response.body).to include("Sin coincidencias con tus filtros.")
+      get notifications_path(tipo: "cetes")
+      expect(response.body).to include("Nada en este filtro. Prueba otro.")
     end
 
     it "honors the estado filter" do

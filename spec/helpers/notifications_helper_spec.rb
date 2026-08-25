@@ -22,16 +22,27 @@ RSpec.describe NotificationsHelper, type: :helper do
   end
 
   describe "#notification_icon_style" do
-    it "returns the emerald 'alerta' tile for alert + reminder types" do
-      %i[alert_triggered earnings_reminder maturity_reminder].each do |type|
-        n = build(:notification, notification_type: type)
-        expect(helper.notification_icon_style(n)).to include("emerald")
-      end
+    it "gives a rule firing and a CETES maturity different tints" do
+      firing   = build(:notification, notification_type: :alert_triggered)
+      maturity = build(:notification, notification_type: :maturity_reminder)
+
+      expect(helper.notification_icon_style(firing)).to include("primary")
+      expect(helper.notification_icon_style(maturity)).to include("warning")
+      expect(helper.notification_icon_style(firing)).not_to eq(helper.notification_icon_style(maturity))
     end
 
-    it "returns the primary 'sistema' tile for system notifications" do
+    it "falls back to the muted tile for a type it does not know" do
       n = build(:notification, notification_type: :system)
-      expect(helper.notification_icon_style(n)).to include("primary")
+      expect(helper.notification_icon_style(n)).to include("bg-bg-muted")
+    end
+  end
+
+  describe "#format_notification_time" do
+    it "names an older notice's month in es-MX, not strftime's English" do
+      n = build(:notification, created_at: Time.zone.local(2026, 8, 23, 12, 0))
+
+      expect(helper.format_notification_time(n)).to include("AGO")
+      expect(helper.format_notification_time(n)).not_to include("Aug")
     end
   end
 

@@ -41,18 +41,25 @@ RSpec.describe Notification, type: :model do
       expect(Notification.read_only).to contain_exactly(r)
     end
 
-    it ".by_tipo('alertas') includes triggers + earnings + maturity reminders" do
+    # reglas-bandeja filters by what the notice is about. The buckets used to
+    # be "alertas" (three of the four types) and "sistema".
+    it ".by_tipo separates each thing the app has to say" do
       a = create(:notification, user: user, notification_type: :alert_triggered)
       e = create(:notification, user: user, notification_type: :earnings_reminder)
       m = create(:notification, user: user, notification_type: :maturity_reminder)
       create(:notification, user: user, notification_type: :system)
-      expect(Notification.by_tipo("alertas")).to contain_exactly(a, e, m)
+
+      expect(Notification.by_tipo("alertas")).to contain_exactly(a)
+      expect(Notification.by_tipo("reportes")).to contain_exactly(e)
+      expect(Notification.by_tipo("cetes")).to contain_exactly(m)
     end
 
-    it ".by_tipo('sistema') returns only system notifications" do
+    it ".by_tipo returns everything for an unknown bucket, system included" do
+      a = create(:notification, user: user, notification_type: :alert_triggered)
       s = create(:notification, user: user, notification_type: :system)
-      create(:notification, user: user, notification_type: :alert_triggered)
-      expect(Notification.by_tipo("sistema")).to contain_exactly(s)
+
+      expect(Notification.by_tipo("todos")).to contain_exactly(a, s)
+      expect(Notification.by_tipo("garbage")).to contain_exactly(a, s)
     end
 
     it ".by_estado('no_leidas') returns only unread" do
