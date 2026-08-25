@@ -1,38 +1,48 @@
-<%# /alerts — manage alert rules + live feed. Lumen + es-MX, mockup Stockerly-2.0. %>
+<% content_for :page_title, t(".titulo") %>
 
-<div class="mx-auto max-w-6xl space-y-6">
-  <%# Header band: eyebrow + h1 + subtitle + KPI mini-cards %>
-  <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-    <div>
-      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Alertas</p>
-      <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Tus alertas</h1>
-      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Recibe avisos cuando algo importante pase con tus activos.</p>
+<div class="mx-auto flex max-w-3xl flex-col gap-8">
+  <div class="grid grid-cols-2 gap-3">
+    <div class="rounded-xl border border-border-default bg-bg-surface px-4 py-3">
+      <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t(".disparadas_hoy") %></p>
+      <p class="mt-1 font-mono text-3xl font-bold text-fg-default"><%= @triggered_today %></p>
+      <p class="text-sm text-fg-subtle"><%= t(".de_reglas", count: @counts[:all]) %></p>
     </div>
-    <div class="flex gap-3">
-      <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3 shadow-sm min-w-[150px]">
-        <p class="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Disparadas hoy</p>
-        <p class="mt-1 font-mono text-2xl font-medium tracking-tight text-slate-900 dark:text-white">
-          <%= @triggered_today %>
-        </p>
-      </div>
-      <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3 shadow-sm min-w-[150px]">
-        <p class="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Reglas activas</p>
-        <p class="mt-1 font-mono text-2xl font-medium tracking-tight text-slate-900 dark:text-white">
-          <%= @counts[:active] %>
-        </p>
-      </div>
+    <div class="rounded-xl border border-border-default bg-bg-surface px-4 py-3">
+      <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t(".reglas_activas") %></p>
+      <p class="mt-1 font-mono text-3xl font-bold text-fg-default"><%= @counts[:active] %></p>
+      <p class="text-sm text-fg-subtle"><%= t(".en_pausa", count: @counts[:paused]) %></p>
     </div>
   </div>
 
-  <%# Main grid: 8/12 form + rules · 4/12 prefs + live feed %>
-  <div class="grid grid-cols-1 gap-5 lg:grid-cols-12">
-    <div class="space-y-5 lg:col-span-8 min-w-0">
-      <%= render "alerts/create_form" %>
-      <%= render "alerts/rules_table", rules: @rules, counts: @counts, filter: @filter %>
+  <%# ADR-0001 in one line, where the person decides what to create. %>
+  <p class="text-fg-subtle"><%= t(".descripcion") %></p>
+
+  <section class="flex flex-col gap-3">
+    <div class="flex items-center justify-between gap-3">
+      <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".tus_reglas") %></h2>
+      <div class="w-auto">
+        <%= render "components/sheet_dialog", frame_id: "rule_sheet",
+                   url: new_alert_path, label: t(".nueva") %>
+      </div>
     </div>
-    <div class="space-y-4 lg:col-span-4 min-w-0">
-      <%= render "alerts/delivery_preferences", preference: @preference %>
-      <%= render "alerts/live_feed", events: @events %>
-    </div>
-  </div>
+
+    <% if @rules.any? %>
+      <ul id="alert_rules" class="flex flex-col gap-3">
+        <% @rules.each do |rule| %>
+          <%= render "alerts/alert_rule", rule: rule %>
+        <% end %>
+      </ul>
+    <% else %>
+      <%= render "alerts/empty_rules" %>
+    <% end %>
+  </section>
+
+  <%= render "alerts/live_feed", events: @events %>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".como_te_aviso") %></h2>
+    <p class="text-sm text-fg-subtle"><%= t(".campana_siempre") %></p>
+    <%= render "settings/notification_switches", preferences: @preference %>
+    <p class="text-sm text-fg-subtle"><%= t(".smtp_nota") %></p>
+  </section>
 </div>

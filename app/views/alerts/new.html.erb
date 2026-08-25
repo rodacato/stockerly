@@ -1,0 +1,101 @@
+<% content_for :page_title, t(".titulo") %>
+
+<%# D14: a real route. Reglas loads it into this frame inside a <dialog>; on
+    its own it renders as a normal screen and submits normally. %>
+<%= turbo_frame_tag "rule_sheet" do %>
+  <div class="mx-auto flex w-full max-w-lg flex-col">
+    <%= form_with url: alerts_path, scope: :alert, method: :post,
+                  data: { controller: "alert-form" }, class: "flex min-h-0 flex-col" do |f| %>
+      <div class="flex flex-col gap-5 overflow-y-auto px-1 pb-4">
+        <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".titulo") %></h2>
+
+        <%# The chips write here; the direction control rewrites it for a price
+            cross, which is how one chip covers two enum values. %>
+        <%= f.hidden_field :condition, value: "price_crosses_above",
+              data: { alert_form_target: "conditionInput" } %>
+
+        <label class="flex flex-col gap-1.5">
+          <span class="text-sm text-fg-subtle"><%= t(".activo") %></span>
+          <%= f.text_field :asset_symbol, placeholder: t(".activo_placeholder"), autocomplete: "off",
+                data: { alert_form_target: "ticker", action: "input->alert-form#refreshPreview" },
+                class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base uppercase text-fg-default placeholder:font-sans placeholder:normal-case placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+        </label>
+
+        <div class="flex flex-col gap-3">
+          <span class="text-sm text-fg-subtle"><%= t(".condicion") %></span>
+          <% alert_condition_families.each do |family, options| %>
+            <div class="flex flex-col gap-2">
+              <span class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t(".familia.#{family}") %></span>
+              <div class="flex flex-wrap gap-2">
+                <% options.each do |slug, label| %>
+                  <% first = (slug == "price_crosses_above") %>
+                  <button type="button"
+                          data-alert-form-target="chip"
+                          data-condition="<%= slug %>"
+                          data-active="<%= first %>"
+                          data-action="click->alert-form#selectChip"
+                          class="rounded-full border px-4 py-2 text-sm transition-colors <%= first ? 'border-primary bg-primary/10 font-semibold text-primary' : 'border-border-default text-fg-default' %>">
+                    <%= label %>
+                  </button>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex flex-col gap-1.5">
+            <span class="text-sm text-fg-subtle" data-alert-form-target="thresholdLabel"><%= t(".umbral") %></span>
+            <%= f.number_field :threshold_value, step: "any", inputmode: "decimal", autocomplete: "off",
+                  placeholder: "200.00",
+                  data: { alert_form_target: "threshold", action: "input->alert-form#refreshPreview" },
+                  class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+          </label>
+
+          <label class="flex flex-col gap-1.5">
+            <span class="text-sm text-fg-subtle"><%= t(".espera") %></span>
+            <%= f.number_field :cooldown_minutes, step: 1, min: 1, inputmode: "numeric",
+                  value: AlertRule::DEFAULT_COOLDOWN_MINUTES,
+                  class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+          </label>
+        </div>
+
+        <div class="hidden flex flex-col gap-1.5"
+             data-alert-form-target="panel"
+             data-alert-form-conditions="dividend_ex_date bmv_holiday cete_auction">
+          <span class="text-sm text-fg-subtle"><%= t(".ventana") %></span>
+          <%= f.number_field :window_days, step: 1, min: 1, value: 7, inputmode: "numeric",
+                data: { alert_form_target: "windowDays", action: "input->alert-form#refreshPreview" },
+                class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+        </div>
+
+        <%# Only a price cross has a direction. The controller shows this when
+            the chip is one, and writes above/below into the hidden field. %>
+        <div role="tablist" class="hidden flex gap-1 rounded-xl bg-bg-muted p-1"
+             data-alert-form-target="panel direction"
+             data-alert-form-conditions="price_crosses_above price_crosses_below">
+          <% [ [ "price_crosses_above", t(".al_alza") ], [ "price_crosses_below", t(".a_la_baja") ] ].each_with_index do |(value, label), i| %>
+            <label class="flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors has-[:checked]:bg-bg-surface has-[:checked]:text-fg-default text-fg-subtle">
+              <input type="radio" name="direction" value="<%= value %>" <%= "checked" if i.zero? %>
+                     data-action="change->alert-form#selectDirection" class="sr-only">
+              <%= label %>
+            </label>
+          <% end %>
+        </div>
+
+        <div class="rounded-xl bg-primary/5 p-4">
+          <p class="font-mono text-xs uppercase tracking-widest text-primary"><%= t(".preview_label") %></p>
+          <p class="mt-1 text-base font-semibold text-fg-default" data-alert-form-target="preview">
+            <%= t(".preview_default") %>
+          </p>
+          <p class="mt-1 text-sm text-fg-subtle"><%= t(".preview_nota") %></p>
+        </div>
+
+        <button type="submit"
+                class="w-full rounded-xl bg-primary px-4 py-3.5 text-base font-semibold text-fg-inverse transition-colors hover:bg-primary-hover">
+          <%= t(".submit") %>
+        </button>
+      </div>
+    <% end %>
+  </div>
+<% end %>

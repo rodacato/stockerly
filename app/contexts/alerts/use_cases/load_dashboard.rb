@@ -3,8 +3,13 @@ module Alerts
     class LoadDashboard < ApplicationUseCase
       ALLOWED_FILTERS = %w[active paused all].freeze
 
-      def call(user:, filter: "active")
-        filter = ALLOWED_FILTERS.include?(filter.to_s) ? filter.to_s : "active"
+      # Defaults to every rule. The screen used to carry Activas/Pausadas/Todas
+      # tabs and default to active; `reglas-lista` draws one list where a paused
+      # rule sits among the rest wearing a "pausada" pill. Keeping the old
+      # default with the tabs gone would have hidden paused rules with no way
+      # to reach them. The filter stays for a URL that asks for one.
+      def call(user:, filter: "all")
+        filter = ALLOWED_FILTERS.include?(filter.to_s) ? filter.to_s : "all"
 
         all_rules = user.alert_rules.order(created_at: :desc)
         rules = case filter

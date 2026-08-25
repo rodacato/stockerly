@@ -2,6 +2,53 @@
 es-MX:
   admin:
     no_autorizado: No tienes acceso a esa sección.
+  alerts:
+    index:
+      activa: activa
+      activar: Activar regla
+      campana_siempre: Todo aviso llega a tu campana; eso no se apaga. El correo sí.
+      como_te_aviso: Cómo te aviso
+      confirmar_borrado: "¿Eliminar esta regla?"
+      de_reglas: de %{count} reglas
+      descripcion: Tus reglas te avisan cuando algo pasa. Describen el disparo — nunca
+        te dicen qué hacer con él.
+      disparadas_hoy: Disparadas hoy
+      disparo_hace: Se disparó hace %{when}
+      eliminar: Eliminar regla
+      en_pausa: "%{count} en pausa"
+      nueva: Nueva
+      nunca_disparo: Nunca se ha disparado
+      pausada: pausada
+      pausar: Pausar regla
+      reglas_activas: Reglas activas
+      sin_disparos: Todavía no se ha disparado ninguna regla.
+      smtp_nota: Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP,
+        sólo quedan los avisos en la app.
+      titulo: Reglas
+      tus_reglas: Tus reglas
+      ultimos_disparos: Últimos disparos
+      vacio_cuerpo: Una regla vigila un precio, una señal o una fecha y te avisa cuando
+        pasa. Puedes pausarla o borrarla cuando quieras.
+      vacio_titulo: Todavía no tienes reglas
+      ver_bandeja: Ver bandeja
+    new:
+      a_la_baja: A la baja
+      activo: Activo
+      activo_placeholder: NVDA, WALMEX.MX, BTC…
+      al_alza: Al alza
+      condicion: Condición
+      espera: Espera entre avisos
+      familia:
+        calendario: De calendario
+        precio: De precio
+        senal: De señal
+      preview_default: Te avisamos cuando se cumpla la condición.
+      preview_label: Así se va a leer
+      preview_nota: Te avisa cuando pase. No te dice qué hacer con ello.
+      submit: Crear regla
+      titulo: Nueva regla
+      umbral: Umbral
+      ventana: Días antes
   assets:
     index:
       cartera: Cartera

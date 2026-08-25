@@ -1,48 +1,51 @@
-<%# Single alert rule row for Turbo Stream operations. Mockup-aligned columns. %>
-<%# locals: (rule:) %>
+<%# One rule as a card, per `reglas-lista`. It was a <tr> in a six-column table
+    that overflowed a phone — the last column was cut mid-word.
+    locals: (rule:) %>
 <% is_active = rule.active? %>
-<%= tag.tr id: dom_id(rule), class: "group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 #{'opacity-60' unless is_active}" do %>
-  <td class="px-5 py-3.5">
-    <div class="flex items-center gap-2">
-      <span class="font-mono text-sm font-semibold text-slate-900 dark:text-white tracking-tight">
-        <%= rule.asset_symbol %>
-      </span>
-      <span class="rounded px-1.5 py-0.5 text-[10.5px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700/60">
-        <%= alert_rule_kind_label(rule) %>
-      </span>
+<%= tag.li id: dom_id(rule), class: "flex flex-col gap-1 rounded-xl border border-border-default bg-bg-surface p-4" do %>
+  <div class="flex items-start justify-between gap-3">
+    <div class="flex items-center gap-2 min-w-0">
+      <% if rule.asset_symbol.present? %>
+        <span class="font-mono font-bold text-fg-default"><%= rule.asset_symbol %></span>
+      <% else %>
+        <span class="text-fg-subtle" aria-hidden="true">—</span>
+      <% end %>
+      <span class="rounded-full bg-bg-muted px-2 py-0.5 text-xs text-fg-subtle"><%= alert_rule_kind_label(rule) %></span>
     </div>
-  </td>
-  <td class="px-5 py-3.5 text-sm text-slate-700 dark:text-slate-200">
-    <%= alert_condition_label(rule) %>
-  </td>
-  <td class="px-5 py-3.5 font-mono text-xs text-slate-500 dark:text-slate-400">
-    <%= alert_condition_summary(rule) %>
-  </td>
-  <td class="px-5 py-3.5 text-xs text-slate-500 dark:text-slate-400">
-    <% if rule.last_triggered_at %>
-      hace <%= time_ago_in_words(rule.last_triggered_at) %> · <%= rule.last_triggered_at.in_time_zone('America/Mexico_City').strftime('%H:%M') %> CDMX
-    <% else %>
-      nunca
-    <% end %>
-  </td>
-  <td class="px-5 py-3.5">
-    <div class="flex items-center justify-center">
-      <%= button_to toggle_alert_path(rule), method: :patch,
-            form_class: "inline-flex",
-            class: "relative inline-flex h-5 w-9 items-center rounded-full transition-colors #{is_active ? 'bg-primary' : 'bg-slate-200 dark:bg-slate-700'}",
-            aria: { label: is_active ? "Pausar alerta" : "Activar alerta" },
-            title: is_active ? "Pausar" : "Activar" do %>
-        <span class="inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform <%= is_active ? 'translate-x-4' : 'translate-x-0.5' %>"></span>
+
+    <div class="flex shrink-0 items-center gap-1">
+      <span class="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-semibold <%= is_active ? 'bg-positive/10 text-positive' : 'bg-bg-muted text-fg-subtle' %>">
+        <span class="size-1.5 rounded-full <%= is_active ? 'bg-positive' : 'bg-fg-subtle' %>" aria-hidden="true"></span>
+        <%= is_active ? t("alerts.index.activa") : t("alerts.index.pausada") %>
+      </span>
+
+      <%= button_to toggle_alert_path(rule), method: :patch, form_class: "inline-flex",
+            class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default",
+            aria: { label: is_active ? t("alerts.index.pausar") : t("alerts.index.activar") } do %>
+        <span class="material-symbols-outlined text-lg" aria-hidden="true"><%= is_active ? "pause" : "play_arrow" %></span>
+      <% end %>
+
+      <%= button_to alert_path(rule), method: :delete,
+            form: { data: { turbo_confirm: t("alerts.index.confirmar_borrado") } },
+            class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-negative",
+            aria: { label: t("alerts.index.eliminar") } do %>
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
       <% end %>
     </div>
-  </td>
-  <td class="px-5 py-3.5 text-right">
-    <%= button_to alert_path(rule), method: :delete,
-          form: { data: { turbo_confirm: "¿Eliminar esta alerta?" } },
-          class: "inline-flex items-center justify-center rounded-md p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-900/30",
-          aria: { label: "Eliminar alerta" },
-          title: "Eliminar" do %>
-      <span class="material-symbols-outlined text-[16px]">delete</span>
+  </div>
+
+  <p class="font-semibold text-fg-default"><%= alert_condition_label(rule) %></p>
+  <p class="text-sm text-fg-subtle"><%= alert_condition_summary(rule) %></p>
+
+  <%# The provenance line the artboard carries. cooldown_minutes has been on
+      the model since it was created and no screen ever showed it. %>
+  <p class="font-mono text-xs text-fg-subtle">
+    <% if rule.last_triggered_at %>
+      <%= t("alerts.index.disparo_hace", when: time_ago_in_words(rule.last_triggered_at)) %>
+    <% else %>
+      <%= t("alerts.index.nunca_disparo") %>
     <% end %>
-  </td>
+    ·
+    <%= alert_cooldown_label(rule) %>
+  </p>
 <% end %>

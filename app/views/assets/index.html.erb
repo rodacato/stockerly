@@ -29,7 +29,7 @@
     </section>
   <% end %>
 
-  <%= render "components/trade_sheet_dialog" %>
+  <%= render "components/sheet_dialog", frame_id: "trade_sheet", url: new_trade_path, label: t("trades.new.titulo") %>
 
   <%= render "components/segmented",
              label: t("assets.index.titulo"),

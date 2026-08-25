@@ -63,7 +63,7 @@ Rails.application.routes.draw do
   get   "fx_rate",                to: "fx_rates#show"
   patch "tracked/:id/toggle_sync", to: "assets#toggle_sync", as: :toggle_sync_asset
   resource  :portfolio, only: [ :show ]
-  resources :alerts, only: [ :index, :create, :update, :destroy ] do
+  resources :alerts, only: [ :index, :new, :create, :update, :destroy ] do
     member { patch :toggle }
   end
   resources :positions, only: [ :index, :update ]

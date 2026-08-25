@@ -1,34 +1,27 @@
-<%# Live feed of recent alert triggers. Descriptive es-MX copy per ADR-0001. %>
-<%# locals: (events:) %>
-<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
-  <div class="flex items-baseline gap-3 px-5 pt-5 pb-3">
-    <h2 class="text-base font-semibold tracking-tight text-slate-900 dark:text-white">Disparadas recientemente</h2>
-    <div class="flex-1"></div>
-    <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-      <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 ring-2 ring-emerald-500/20"></span>
-      Live
-    </span>
+<%# "Últimos disparos" per `reglas-lista`: what actually fired, linking to the
+    inbox that holds the rest. locals: (events:) %>
+<section class="flex flex-col gap-3">
+  <div class="flex items-baseline justify-between gap-3">
+    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t("alerts.index.ultimos_disparos") %></h2>
+    <%= link_to t("alerts.index.ver_bandeja"), notifications_path,
+                class: "text-sm font-semibold text-primary hover:underline" %>
   </div>
 
   <% if events.any? %>
-    <div class="divide-y divide-slate-100 dark:divide-slate-700">
+    <ul class="flex flex-col gap-3 rounded-xl border border-border-default bg-bg-surface p-4">
       <% events.each do |event| %>
-        <div class="grid grid-cols-[8px_1fr] gap-3 px-5 py-3">
-          <span class="mt-1.5 h-1.5 w-1.5 rounded-full <%= alert_event_accent(event) %>"></span>
+        <li class="grid grid-cols-[8px_1fr] gap-3">
+          <span class="mt-2 size-2 rounded-full <%= alert_event_accent(event) %>" aria-hidden="true"></span>
           <div class="min-w-0">
-            <p class="text-xs font-medium text-slate-500 dark:text-slate-400"><%= alert_event_when(event) %></p>
-            <p class="mt-0.5 text-sm text-slate-700 dark:text-slate-200">
-              <span class="font-mono font-semibold text-primary"><%= event.asset_symbol %></span>
-              <span class="text-slate-400"> · </span>
-              <%= event.message.sub(/\A#{Regexp.escape(event.asset_symbol)}[:\s·]*/, "") %>
-            </p>
+            <p class="text-sm text-fg-default"><%= event.message %></p>
+            <p class="font-mono text-xs text-fg-subtle"><%= alert_event_when(event) %></p>
           </div>
-        </div>
+        </li>
       <% end %>
-    </div>
+    </ul>
   <% else %>
-    <div class="px-5 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
-      Sin avisos recientes. Tus alertas activas están a la escucha.
-    </div>
+    <p class="rounded-xl border border-border-default bg-bg-surface p-4 text-sm text-fg-subtle">
+      <%= t("alerts.index.sin_disparos") %>
+    </p>
   <% end %>
 </section>

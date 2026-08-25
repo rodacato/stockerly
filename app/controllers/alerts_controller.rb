@@ -14,6 +14,13 @@ class AlertsController < AuthenticatedController
     @filter          = data[:filter]
   end
 
+  # D14: the rule form is a route rendered into a frame and presented as a
+  # sheet — the shape /trades/new settled in slice 2b.
+  def new
+    @rule = AlertRule.new(condition: :price_crosses_above,
+                          cooldown_minutes: AlertRule::DEFAULT_COOLDOWN_MINUTES)
+  end
+
   def create
     result = Alerts::UseCases::CreateRule.call(user: current_user, params: alert_params.to_h)
 
