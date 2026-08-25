@@ -69,6 +69,9 @@ es-MX:
       reenviar: Reenviar enlace
       spam: Recuerda revisar la carpeta de spam si no aparece.
       titulo: Revisa tu correo
+    session:
+      expirada: Tu sesión expiró. Inicia sesión de nuevo.
+      inactividad: Cerramos tu sesión por inactividad.
     terminos: Términos
     volver: Volver a iniciar sesión
   comun:

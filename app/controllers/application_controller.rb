@@ -56,8 +56,8 @@ class ApplicationController < ActionController::Base
     session[:last_activity_at] = Time.current.to_i
   end
 
-  INACTIVITY_TIMEOUT = 30.minutes.to_i
-  ABSOLUTE_TIMEOUT = 12.hours.to_i
+  INACTIVITY_TIMEOUT = 14.days.to_i
+  ABSOLUTE_TIMEOUT = 30.days.to_i
 
   def check_session_timeout
     return unless session[:user_id]
@@ -65,9 +65,9 @@ class ApplicationController < ActionController::Base
     now = Time.current.to_i
 
     if session[:session_started_at] && (now - session[:session_started_at]) > ABSOLUTE_TIMEOUT
-      expire_session("Your session has expired. Please sign in again.")
+      expire_session(t("auth.session.expirada"))
     elsif session[:last_activity_at] && (now - session[:last_activity_at]) > INACTIVITY_TIMEOUT
-      expire_session("You were signed out due to inactivity.")
+      expire_session(t("auth.session.inactividad"))
     else
       session[:last_activity_at] = now
     end
