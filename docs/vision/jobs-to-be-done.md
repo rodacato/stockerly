@@ -32,16 +32,16 @@
 - Historical snapshots (`portfolio_snapshots`) for chronological comparison
 
 **App surface:**
-- Main dashboard — "Total Patrimony" KPI in MXN (with visible USD→MXN conversion)
-- Portfolio page — consolidated totals at the top
+- Panorama (`/dashboard`) — the patrimonio strip, in MXN
+- Consolidado (`/portfolio`) — the total, its history, and the comparisons
 
 **Triggers:** none. It's data always visible when opening the app.
 
 **Usage metric:** Adrian opens the dashboard ≥1 time per week on weekends. If it drops below 1/month, the JTBD is not being fulfilled.
 
-**Blocked by:** `currency: "USD"` hardcoded in `app/contexts/trading/use_cases/execute_trade.rb:39,60`. Until this is resolved, consolidated patrimony in MXN is fiction. **Absolute P0.**
+**Blocked by:** nothing. The P0 is fixed — `ExecuteTrade` takes the currency from the trade or the asset and captures `fx_rate_at_execution` through `FxRateResolver`, and `PortfolioSummary#total_invested` derives cost basis at historical FX (ADR-009).
 
-**Current status:** UI implemented; math broken by the P0 bug. Friends cannot be invited to beta until this is fixed.
+**Current status:** delivered. The Consolidado (`/portfolio`) shows the total in MXN, its history, and how it compares against CETES; the Panorama's strip carries it daily. `day_gain` subtracts capital flows so a late-recorded purchase no longer reads as a gain (D27).
 
 ---
 
@@ -65,9 +65,9 @@
 
 **Usage metric:** Adrian opens the alert/badge within 24h of generation (proxy: click event). If he consistently ignores them, the JTBD isn't working.
 
-**Blocked by:** same P0 as JTBD #1. Without correct cost basis in MXN, the computed percentage lies.
+**Blocked by:** nothing. The same P0 fix that unblocked JTBD #1 gives this one its cost basis at historical FX.
 
-**Current status:** AlertRule exists with `price_below_pct` nearby; needs an "X% from MXN cost basis" variant and the currency fix.
+**Current status:** the currency fix landed, so the percentage is honest. The asset detail's Mi posición splits the drawdown into what the asset did and what the peso did. An AlertRule variant for "X% from MXN cost basis" is still missing.
 
 ---
 
@@ -91,7 +91,7 @@
 
 **Blocked by:** nothing structural blocks. CETES have been modeled since Phase 13.1 with the Mexican `YieldCalculator`.
 
-**Current status:** CETES listing exists, maturity alerts partially implemented. Verify in the code audit (Step 6) what's missing.
+**Current status:** working. `NotifyMaturitiesJob` runs daily and the Panorama's Radar keeps a fixed-income position visible when it matures within 30 days, even on a day it did not move.
 
 ---
 
@@ -115,7 +115,7 @@
 
 **Blocked by:** nothing. Implemented since Phase 14.4 (`Earnings::NotifyApproaching`).
 
-**Current status:** Working. Validate in the audit that the notification copy doesn't lapse into prescriptive language.
+**Current status:** working. Notification copy goes through `Alerts::Domain::TriggerNotice` — fact in the title, provenance in the body.
 
 ---
 
@@ -127,14 +127,13 @@
 - Ticker (with autocomplete against `assets`)
 - Shares
 - Price (in native currency)
-- **Currency (auto-detected from the asset)** — today hardcoded to USD ❌
+- **Currency (auto-detected from the asset)** ✅
 - Date (default: today; max: today; min: ¿1 year back?)
 - FX rate at the time of the trade (**missing**: auto-capture from Banxico if currency = USD)
 - Optional notes, optional labels
 
 **App surface:**
-- Portfolio page — "+ Add Trade" button opens inline form (Turbo Frame)
-- Dashboard — quick action "Add Trade"
+- Activos — the trade sheet at `/trades/new`, presented as a drawer (D11)
 
 **Friction points (to measure and reduce):**
 1. Ticker search — should be <300ms with debounce
@@ -144,9 +143,9 @@
 
 **Usage metric:** time from "open form" to "submitted". Target: P50 < 30s, P95 < 60s.
 
-**Blocked by:** the hardcoded currency from the P0 affects this JTBD too. Without FX-at-execution, the form omits that critical field.
+**Blocked by:** nothing. The sheet auto-fills the Banxico FIX for the date entered, which made the correctness fix and the data-entry win the same field.
 
-**Current status:** Form exists, works, but captures hardcoded currency and doesn't capture FX rate. Needs rework as part of the P0 fix.
+**Current status:** delivered as a drawer at `/trades/new` (D11) — native `<dialog>`, sticky total and save, `visualViewport` handling. `executed_at` is now bounded at today, which this section always specified and nothing enforced. **"Guardar y registrar otro" is still not built.**
 
 ---
 
@@ -177,9 +176,9 @@
 
 **Usage metric:** Adrian opens ≥1 asset detail per week from a surfaced notable observation. If he ignores them, the JTBD isn't working or the observations are too noisy.
 
-**Blocked by:** nothing directly (indicators are already computed). Missing: descriptive copy, surfacing as "notable observations", and threshold tuning to avoid noise.
+**Blocked by:** nothing. Dedup happens at write time (`persist_if_fresh`), and the copy lives in `MarketHelper::OBSERVATION_PHRASES`.
 
-**Current status:** Indicators computed (Phase 21.1). Missing descriptive surface + dedup + dedicated UI.
+**Current status:** delivered on three surfaces — the Panorama's "Movimientos de interés", the asset detail's verdict card, and its "Observaciones recientes". The verdict card reads a state out loud under [ADR-014](../architecture/adr/0014-state-phrases-from-a-closed-catalogue.md); the observations block stays purely descriptive. Threshold tuning is still untouched.
 
 ---
 

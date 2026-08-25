@@ -59,7 +59,7 @@
 | Formal SLA (uptime, response time) | This is a personal, self-hostable tool. Revisit only if Stockerly becomes monetized. |
 | Native mobile apps (iOS/Android) | PWA already covers installation and icons. Not worth maintaining two platforms. |
 | Multi-tenancy / shared accounts / team portfolios | Single-user by design (ADR-0010). The multi-user surface built for the failed beta is being deleted, not extended. |
-| Internationalization (i18n) | es-MX is the only language. A non-MX beta user would signal audience drift. |
+| ~~Internationalization (i18n)~~ | **No longer a non-goal.** [ADR-0011](../architecture/adr/0011-adopt-i18n-for-the-2.0-rewrite.md) adopted `i18n-tasks` with a single locale during the 2.0 rewrite: deferring was right while the alternative was rewriting working screens, and stopped being right once every string was being rewritten anyway. es-MX is still the only language — what changed is where the strings live. |
 | Social features: public sharing, comments, forums, leaderboards | Not a social product. Not a community product. |
 | Profile sharing / public profile privacy mode | Subset of the above. |
 | Real push notifications (browser/SMS) | Optional bonus, not core. Email + in-app is enough. |
