@@ -60,13 +60,13 @@ module Admin
     def integration_pill_meta(state)
       case state
       when :active
-        { label: "Activa",  fg: "text-emerald-700 dark:text-emerald-400", bg: "bg-emerald-500/15" }
+        { label: "Activa",     fg: "text-positive", bg: "bg-positive/10", dot: "bg-positive" }
       when :paused
-        { label: "Pausada", fg: "text-amber-700 dark:text-amber-400",     bg: "bg-amber-500/15" }
+        { label: "Pausada",    fg: "text-warning",  bg: "bg-warning/10",  dot: "bg-warning" }
       when :error
-        { label: "Error",   fg: "text-rose-700 dark:text-rose-400",       bg: "bg-rose-500/15" }
+        { label: "Error",      fg: "text-negative", bg: "bg-negative/10", dot: "bg-negative" }
       else
-        { label: "Sin estado", fg: "text-slate-500 dark:text-slate-400",  bg: "bg-slate-200/60 dark:bg-slate-700/50" }
+        { label: "Sin estado", fg: "text-fg-subtle", bg: "bg-bg-muted",   dot: "bg-fg-subtle" }
       end
     end
 
@@ -78,6 +78,27 @@ module Admin
       parts << "#{min} req/min" if min.present?
       parts << "#{number_with_delimiter(day)} req/día" if day.present?
       parts.join(" · ")
+    end
+
+    # `ajustes-integraciones` draws a usage bar the screen never showed, over
+    # counters the table has carried all along. Minute window when the
+    # provider is rate-limited per minute, daily otherwise.
+    def integration_usage(integration)
+      if integration.max_requests_per_minute.present?
+        [ integration.minute_calls, integration.max_requests_per_minute, :minuto ]
+      elsif integration.daily_call_limit.present?
+        [ integration.daily_api_calls, integration.daily_call_limit, :dia ]
+      end
+    end
+
+    def integration_usage_bar_classes(used, limit)
+      return "bg-fg-subtle" if limit.to_i.zero?
+
+      ratio = used.to_f / limit
+      return "bg-negative" if ratio >= 1
+      return "bg-warning"  if ratio >= 0.7
+
+      "bg-positive"
     end
 
     def integration_last_check_label(integration)

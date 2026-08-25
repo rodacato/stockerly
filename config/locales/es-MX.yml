@@ -1,7 +1,83 @@
 ---
 es-MX:
   admin:
+    integrations:
+      index:
+        activar: Activar
+        administrar: Administrar fuente
+        agregar_llave: Agregar llave
+        clave: Clave API
+        configurar: Configurar integraciones
+        confirmar_fuente: "¿Eliminar %{provider}? Se borran todas sus llaves."
+        confirmar_llave: "¿Eliminar esta llave del pool?"
+        descripcion: De dónde salen tus precios. Cada fuente trae su propio límite
+          gratuito, y ese límite es el que reparte el presupuesto de Rastreados.
+        dia: por día
+        eliminar_fuente: Eliminar fuente
+        eliminar_llave: Eliminar llave
+        etiqueta: Etiqueta
+        guardar: Guardar
+        limite_diario: Límite diario
+        limite_minuto: Por minuto
+        llaves:
+          one: 1 llave
+          other: "%{count} llaves"
+          zero: sin llave
+        minuto: por minuto
+        pausar: Pausar
+        pools_nota: Varias llaves de la misma fuente se rotan para estirar el límite
+          gratuito. Es la razón por la que existen los pools (D18).
+        resumen:
+          one: 1 fuente · %{problem} con problema
+          other: "%{count} fuentes · %{problem} con problema"
+        sin_llaves_activas: Sin llaves activas — agrega una para reanudar.
+        sin_respuesta: Conexión sin respuesta válida. Verifica las llaves y reintenta.
+        titulo: Integraciones
+        uso: "%{used} / %{limit} %{window}"
+        vacio_cuerpo: Agrégalas desde el wizard inicial para empezar a sincronizar
+          datos.
+        vacio_titulo: No hay fuentes configuradas
+        verificar: Verificar conexión
+    logs:
+      index:
+        buscar: Buscar por ID, tarea o palabra clave…
+        carga_util: Carga útil
+        descripcion: Lo que hizo tu instancia sola, sincronizaciones, avisos y errores
+          de los últimos 90 días.
+        detalle_error: Detalle del error
+        exportar: Exportar CSV
+        limpiar: Limpiar filtros
+        modulo: Módulo
+        mostrando: Mostrando %{shown} de %{total} registros
+        rango: Rango
+        sin_coincidencias: Nada con esos filtros.
+        titulo: Registros
+        vacio: Tu instancia no ha registrado nada todavía.
+        ver_detalle: Ver detalle
     no_autorizado: No tienes acceso a esa sección.
+    settings:
+      show:
+        abrir_jobs: Abrir Mission Control
+        banner_activo: La app está bloqueada y muestra un banner. Tu sesión sigue
+          viva.
+        cache: Caché
+        cambios: Cambios recientes
+        correo: Envío de correo
+        correo_desc: Permite que salgan digests, avisos urgentes y recuperación de
+          contraseña.
+        diagnostico: Diagnóstico
+        entorno: Entorno
+        entradas: "%{count} entradas"
+        interruptores: Interruptores de la instancia
+        mantenimiento: Modo mantenimiento
+        mantenimiento_desc: Bloquea la app y muestra un banner. Tu sesión sigue viva.
+        sin_cambios: Todavía no hay cambios registrados.
+        sync: Sincronización automática
+        sync_desc: Deja correr los jobs de precios, CETES, cripto y TC.
+        titulo: Estado y mantenimiento
+        trabajos: Trabajos
+        ver_todos: Ver todos en Registros
+        version: Versión
   alerts:
     index:
       activa: activa

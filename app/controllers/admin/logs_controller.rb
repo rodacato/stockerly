@@ -4,10 +4,9 @@ module Admin
       result = Administration::UseCases::Logs::ListLogs.call(params: filter_params, request: request)
 
       if result.success?
-        data         = result.value!
-        @pagy        = data[:pagy]
-        @logs        = data[:logs]
-        @total_count = data[:total_count]
+        data  = result.value!
+        @pagy = data[:pagy]
+        @logs = data[:logs]
       end
     end
 

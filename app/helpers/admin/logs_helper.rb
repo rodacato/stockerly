@@ -27,10 +27,10 @@ module Admin
 
     def admin_log_severity_dot_classes(severity)
       case severity.to_s
-      when "success" then "bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.18)]"
-      when "warning" then "bg-amber-500 shadow-[0_0_0_3px_rgba(245,158,11,0.18)]"
-      when "error"   then "bg-rose-500 shadow-[0_0_0_3px_rgba(244,63,94,0.18)]"
-      else                "bg-slate-400 opacity-60"
+      when "success" then "bg-positive"
+      when "warning" then "bg-warning"
+      when "error"   then "bg-negative"
+      else                "bg-fg-subtle opacity-60"
       end
     end
 
@@ -39,10 +39,10 @@ module Admin
     # otherwise duplicated as a ternary in the row partial.
     def admin_log_severity_text_classes(severity)
       case severity.to_s
-      when "success" then "text-emerald-600 dark:text-emerald-400"
-      when "warning" then "text-amber-600 dark:text-amber-400"
-      when "error"   then "text-rose-600 dark:text-rose-400"
-      else                "text-slate-600 dark:text-slate-400"
+      when "success" then "text-positive"
+      when "warning" then "text-warning"
+      when "error"   then "text-negative"
+      else                "text-fg-subtle"
       end
     end
 

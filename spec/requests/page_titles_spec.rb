@@ -11,10 +11,10 @@ RSpec.describe "Page titles", type: :request do
 
   {
     "/admin"              => "Panel general",
-    "/admin/logs"         => "Bitácora",
+    "/admin/logs"         => "Registros",
     "/admin/assets"       => "Activos",
     "/admin/integrations" => "Integraciones",
-    "/admin/settings"     => "Configuración"
+    "/admin/settings"     => "Estado y mantenimiento"
   }.each do |path, name|
     it "names #{path} in the tab and in the shell bar" do
       get path

@@ -1,127 +1,76 @@
-<%# /admin/settings — Ajustes del sistema. Lumen + es-MX, mockup Stockerly-2.0. %>
-<% content_for(:title, "Configuración | Stockerly") %>
-<% content_for(:page_title, "Configuración") %>
+<% content_for(:title, "#{t('.titulo')} | Stockerly") %>
+<% content_for(:page_title, t(".titulo")) %>
 
-<div class="space-y-6">
-  <%# Header band %>
-  <div>
-    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Configuración</p>
-    <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Ajustes del sistema</h1>
-    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Toggles globales que afectan toda la aplicación. Cambios surten efecto inmediato.</p>
-  </div>
-
-  <%= form_with url: admin_settings_path, method: :patch, class: "space-y-6" do %>
-    <%# Card 1 — Acceso %>
-    <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pt-4 pb-1 shadow-sm">
-      <header class="flex items-baseline gap-3 pb-1">
-        <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Acceso a la plataforma</h2>
-        <span class="text-xs text-slate-500 dark:text-slate-400">Modo mantenimiento</span>
-      </header>
-
-      <%= render "setting_row",
-          name: "maintenance_mode",
-          label: "Modo mantenimiento",
-          description: "Bloquea el acceso a la app y muestra un banner. Sesiones existentes continúan.",
-          first: true,
-          on: @maintenance_mode,
-          applied_at: @applied_at["maintenance_mode"] %>
-
-      <% if @maintenance_mode %>
-        <div class="pb-4 pt-1">
-          <div class="flex items-start gap-3 rounded-lg border border-amber-300/60 bg-amber-500/10 px-3 py-2.5">
-            <span class="material-symbols-outlined mt-0.5 text-[18px] text-amber-600 dark:text-amber-400">campaign</span>
-            <div class="flex-1 min-w-0">
-              <div class="text-[12px] font-bold uppercase tracking-[0.06em] text-amber-700 dark:text-amber-400">Banner activo</div>
-              <div class="mt-1 text-[13px] text-slate-900 dark:text-white">
-                Los usuarios verán:
-                <span class="ml-1 inline-flex items-center rounded border border-slate-200 dark:border-slate-700 bg-bg-surface px-1.5 py-0.5 font-mono text-[12.5px] text-slate-900 dark:text-white">
-                  "Stockerly está en mantenimiento. Volvemos pronto."
-                </span>
-              </div>
-            </div>
-          </div>
+<div class="mx-auto flex max-w-3xl flex-col gap-8">
+  <%# `ajustes-estado` puts the diagnosis first: what the instance is, before
+      what you can change about it. %>
+  <section class="flex flex-col gap-3">
+    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".diagnostico") %></h2>
+    <dl class="divide-y divide-border-default rounded-xl border border-border-default bg-bg-surface px-4">
+      <% [ [ t(".version"),     @diagnostics[:version] ],
+           [ "Ruby",            @diagnostics[:ruby] ],
+           [ "Rails",           @diagnostics[:rails] ],
+           [ t(".entorno"),     @diagnostics[:environment] ],
+           [ t(".trabajos"),    @diagnostics[:solid_queue] ],
+           [ t(".cache"),       @diagnostics[:cache_entries] ? t(".entradas", count: number_with_delimiter(@diagnostics[:cache_entries])) : "—" ] ].each do |label, value| %>
+        <div class="flex items-baseline justify-between gap-4 py-3">
+          <dt class="text-fg-subtle"><%= label %></dt>
+          <dd class="text-right font-mono text-sm text-fg-default"><%= value %></dd>
         </div>
       <% end %>
-    </section>
-
-    <%# Card 2 — Datos %>
-    <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pt-4 pb-1 shadow-sm">
-      <header class="flex items-baseline gap-3 pb-1">
-        <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Datos y sincronización</h2>
-        <span class="text-xs text-slate-500 dark:text-slate-400">Jobs recurrentes y correo</span>
-      </header>
-
-      <%= render "setting_row",
-          name: "auto_sync_enabled",
-          label: "Sincronización automática",
-          description: "Permite que los jobs recurrentes corran en background (precios, CETES, cripto, FX).",
-          on: @auto_sync_enabled,
-          applied_at: @applied_at["auto_sync_enabled"],
-          first: true %>
-
-      <%= render "setting_row",
-          name: "email_notifications_enabled",
-          label: "Notificaciones por correo",
-          description: "Permite envío de transactional emails (bienvenida, recuperación de contraseña, alertas).",
-          on: @email_notifications_enabled,
-          applied_at: @applied_at["email_notifications_enabled"] %>
-    </section>
-
-    <div class="flex justify-end">
-      <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90">
-        <span class="material-symbols-outlined text-[15px]">save</span>
-        Guardar ajustes
-      </button>
-    </div>
-  <% end %>
-
-  <%# Card 3 — Diagnóstico (read-only) %>
-  <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pt-4 pb-1 shadow-sm">
-    <header class="flex items-baseline gap-3 pb-1">
-      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Diagnóstico</h2>
-      <span class="text-xs text-slate-500 dark:text-slate-400">Estado de runtime · sólo lectura</span>
-    </header>
-
-    <% [
-        [ "Versión",     @diagnostics[:version] ],
-        [ "Ambiente",    @diagnostics[:environment] ],
-        [ "Ruby",        @diagnostics[:ruby] ],
-        [ "Rails",       @diagnostics[:rails] ],
-        [ "Solid Queue", @diagnostics[:solid_queue] ],
-        [ "Cache",       @diagnostics[:cache_entries] ? "#{number_with_delimiter(@diagnostics[:cache_entries])} entradas" : "—" ]
-      ].each_with_index do |(label, value), i| %>
-      <%= render "diagnostic_row", label: label, value: value, first: i.zero? %>
+    </dl>
+    <%= link_to "/admin/jobs", target: "_blank", rel: "noopener",
+          class: "inline-flex items-center gap-1.5 self-start text-sm font-semibold text-primary hover:underline" do %>
+      <%= t(".abrir_jobs") %>
+      <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
     <% end %>
-
-    <div class="mt-2 mb-3 border-t border-slate-200 dark:border-slate-700 pt-3">
-      <%= link_to "/admin/jobs", target: "_blank", rel: "noopener",
-            class: "inline-flex items-center gap-1.5 text-[12.5px] font-medium text-primary hover:underline" do %>
-        <span class="material-symbols-outlined text-[14px]">work_history</span>
-        Abrir panel de jobs (Mission Control)
-        <span class="material-symbols-outlined text-[12px]">open_in_new</span>
-      <% end %>
-    </div>
   </section>
 
-  <%# Card 4 — Cambios recientes %>
-  <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pt-4 pb-3 shadow-sm">
-    <header class="flex items-baseline gap-3 pb-1">
-      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Cambios recientes de configuración</h2>
-      <span class="text-xs text-slate-500 dark:text-slate-400">Últimos <%= @recent_changes.size %> cambios</span>
-    </header>
+  <section class="flex flex-col gap-3">
+    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".interruptores") %></h2>
 
-    <% if @recent_changes.any? %>
-      <% @recent_changes.each_with_index do |change, i| %>
-        <%= render "audit_entry", change: change, first: i.zero? %>
+    <%# No Guardar button: the artboard has none, and the controller already
+        accepts a partial payload, so each switch is its own PATCH. The audit
+        trail is unchanged — SiteConfigChange still records every flip. %>
+    <div class="divide-y divide-border-default rounded-xl border border-border-default bg-bg-surface px-4">
+      <% [ [ "auto_sync_enabled", t(".sync"), t(".sync_desc"), @auto_sync_enabled ],
+           [ "email_notifications_enabled", t(".correo"), t(".correo_desc"), @email_notifications_enabled ],
+           [ "maintenance_mode", t(".mantenimiento"), t(".mantenimiento_desc"), @maintenance_mode ] ].each do |key, label, description, on| %>
+        <div class="flex items-center gap-4 py-4">
+          <div class="min-w-0 flex-1">
+            <p class="font-semibold text-fg-default"><%= label %></p>
+            <p class="text-sm text-fg-subtle"><%= description %></p>
+          </div>
+          <%= button_to admin_settings_path, method: :patch, params: { key => on ? "0" : "1" },
+                form_class: "shrink-0",
+                aria: { label: label },
+                class: "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors #{on ? 'bg-primary' : 'bg-bg-muted'}" do %>
+            <span class="inline-block size-5 rounded-full bg-white shadow transition-transform <%= on ? 'translate-x-5' : 'translate-x-0.5' %>" aria-hidden="true"></span>
+          <% end %>
+        </div>
       <% end %>
-      <div class="mt-2 border-t border-slate-200 dark:border-slate-700 pt-3">
-        <%= link_to admin_logs_path(modulo: "admin"), class: "inline-flex items-center gap-1 text-[12.5px] font-medium text-primary hover:underline" do %>
-          Ver todos en bitácora
-          <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+    </div>
+
+    <% if @maintenance_mode %>
+      <p class="flex items-start gap-2 rounded-xl bg-warning/10 px-4 py-3 text-sm text-warning" role="status">
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">campaign</span>
+        <%= t(".banner_activo") %>
+      </p>
+    <% end %>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".cambios") %></h2>
+    <% if @recent_changes.any? %>
+      <ul class="flex flex-col gap-2">
+        <% @recent_changes.each do |change| %>
+          <%= render "audit_entry", change: change %>
         <% end %>
-      </div>
+      </ul>
+      <%= link_to t(".ver_todos"), admin_logs_path(module_name: "admin"),
+            class: "self-start text-sm font-semibold text-primary hover:underline" %>
     <% else %>
-      <p class="py-4 text-sm text-slate-500 dark:text-slate-400">Aún no hay cambios registrados.</p>
+      <p class="rounded-xl border border-border-default bg-bg-surface p-4 text-sm text-fg-subtle"><%= t(".sin_cambios") %></p>
     <% end %>
   </section>
 </div>

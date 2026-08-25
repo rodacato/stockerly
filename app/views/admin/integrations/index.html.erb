@@ -1,53 +1,33 @@
-<%# /admin/integrations — Conectividad de mercado. Lumen + es-MX, mockup Stockerly-2.0. %>
-<% content_for(:title, "Integraciones | Stockerly") %>
-<% content_for(:page_title, "Integraciones") %>
+<% content_for(:title, "#{t('.titulo')} | Stockerly") %>
+<% content_for(:page_title, t(".titulo")) %>
 
-<div class="space-y-6">
-  <%# Header band %>
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-    <div>
-      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Integraciones</p>
-      <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Conectividad de mercado</h1>
-      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Gestiona conexiones a APIs, claves rotativas y verificaciones de salud.</p>
-    </div>
-    <div class="text-[12.5px] text-slate-500 dark:text-slate-400">
-      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= @integrations.size %></span>
-      <%= @integrations.size == 1 ? "integración" : "integraciones" %> registradas
-    </div>
-  </div>
+<div class="mx-auto flex max-w-3xl flex-col gap-6">
+  <p class="text-fg-subtle"><%= t(".descripcion") %></p>
 
   <% if @integrations.any? %>
-    <%# Provider list %>
-    <div class="flex flex-col gap-3">
+    <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle">
+      <%= t(".resumen", count: @integrations.size, problem: @integrations.count { |i| integration_pill_state(i) == :error }) %>
+    </p>
+
+    <ul class="flex flex-col gap-3">
       <% @integrations.each do |integration| %>
         <%= render "provider_card", integration: integration %>
       <% end %>
+    </ul>
 
-      <%# Add-integration placeholder %>
-      <div class="flex items-center justify-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 px-6 py-6">
-        <span class="inline-flex items-center gap-2 text-[13.5px] font-medium text-slate-500 dark:text-slate-400">
-          <span class="material-symbols-outlined text-[16px]">add</span>
-          Agregar integración desde el seed inicial o el wizard de onboarding
-        </span>
-      </div>
-    </div>
+    <%# D18: the pools exist to stretch a free tier. Saying so here is why the
+        key count on each card is a number and not a yes/no. %>
+    <p class="flex items-start gap-2 rounded-xl bg-bg-muted px-4 py-3 text-sm text-fg-subtle">
+      <span class="material-symbols-outlined text-lg" aria-hidden="true">info</span>
+      <%= t(".pools_nota") %>
+    </p>
   <% else %>
-    <%# Empty state %>
-    <div class="flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-8 py-20 text-center shadow-sm">
-      <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 text-slate-400">
-        <span class="material-symbols-outlined text-3xl">hub</span>
-      </div>
-      <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">No hay integraciones configuradas.</h2>
-      <p class="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-        Agrega una desde el wizard inicial para empezar a sincronizar datos.
-      </p>
-      <%= link_to onboarding_integrations_path, class: "mt-5 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90" do %>
-        <span class="material-symbols-outlined text-[15px]">add</span>
-        Configurar integraciones
-      <% end %>
-      <p class="mt-4 text-[11.5px] text-slate-400">
-        Soportado: Polygon.io · Finnhub · CoinGecko · Yahoo Finance · Banxico · Alpha Vantage
-      </p>
+    <div class="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border-default bg-bg-surface px-6 py-10 text-center">
+      <span class="material-symbols-outlined text-3xl text-fg-subtle" aria-hidden="true">hub</span>
+      <p class="font-semibold text-fg-default"><%= t(".vacio_titulo") %></p>
+      <p class="max-w-sm text-sm text-fg-subtle"><%= t(".vacio_cuerpo") %></p>
+      <%= link_to t(".configurar"), onboarding_integrations_path,
+            class: "rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" %>
     </div>
   <% end %>
 </div>

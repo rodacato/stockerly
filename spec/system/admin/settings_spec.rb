@@ -17,54 +17,55 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "renders the header and card titles in es-MX" do
+  it "puts the diagnosis first, then what you can change about it" do
     visit admin_settings_path
 
-    expect(page).to have_content("Configuración")
-    expect(page).to have_content("Ajustes del sistema")
-    expect(page).to have_content("Toggles globales que afectan toda la aplicación. Cambios surten efecto inmediato.")
-    expect(page).to have_content("Acceso a la plataforma")
-    expect(page).to have_content("Datos y sincronización")
+    expect(page).to have_content("Estado y mantenimiento")
     expect(page).to have_content("Diagnóstico")
-    expect(page).to have_content("Cambios recientes de configuración")
+    expect(page).to have_content("Interruptores de la instancia")
+    expect(page).to have_content("Cambios recientes")
   end
 
-  it "labels the toggles in es-MX" do
+  it "labels the three switches in es-MX" do
     visit admin_settings_path
 
     expect(page).to have_content("Modo mantenimiento")
     expect(page).to have_content("Sincronización automática")
-    expect(page).to have_content("Notificaciones por correo")
+    expect(page).to have_content("Envío de correo")
+  end
+
+  it "has no Guardar button — each switch is its own PATCH" do
+    visit admin_settings_path
+    expect(page).to have_no_button("Guardar ajustes")
   end
 
   it "does not show the maintenance callout when maintenance is OFF" do
     SiteConfig.set("maintenance_mode", false)
     visit admin_settings_path
-    expect(page).not_to have_content("Banner activo")
+    expect(page).to have_no_content("La app está bloqueada")
   end
 
   it "shows the maintenance warning callout when maintenance is ON" do
     SiteConfig.set("maintenance_mode", true)
     visit admin_settings_path
 
-    expect(page).to have_content("Banner activo")
-    expect(page).to have_content("Stockerly está en mantenimiento. Volvemos pronto.")
+    expect(page).to have_content("La app está bloqueada y muestra un banner.")
   end
 
   it "links to the Mission Control jobs dashboard from Diagnóstico" do
     visit admin_settings_path
 
-    expect(page).to have_link("Abrir panel de jobs (Mission Control)", href: "/admin/jobs")
+    expect(page).to have_link("Abrir Mission Control", href: "/admin/jobs")
   end
 
   it "renders runtime diagnostic values (mono labels)" do
     visit admin_settings_path
 
     expect(page).to have_content("Versión")
-    expect(page).to have_content("Ambiente")
+    expect(page).to have_content("Entorno")
     expect(page).to have_content("Ruby")
     expect(page).to have_content("Rails")
-    expect(page).to have_content("Solid Queue")
+    expect(page).to have_content("Trabajos")
     expect(page).to have_content(RUBY_VERSION)
     expect(page).to have_content(Rails.version)
   end
@@ -80,13 +81,15 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
 
     expect(SiteConfig.maintenance_mode?).to be true
     visit admin_settings_path
-    expect(page).to have_content("adrian cambió")
+    # D5: one account, so naming who flipped it is a costume. The artboard
+    # shows what changed and when, and SiteConfigChange still records the actor.
     expect(page).to have_content("modo_mantenimiento")
+    expect(page).to have_no_content("adrian cambió")
   end
 
   it "renders the empty audit message when no changes are recorded" do
     visit admin_settings_path
-    expect(page).to have_content("Aún no hay cambios registrados.")
+    expect(page).to have_content("Todavía no hay cambios registrados.")
   end
 
   it "fetches the three toggle rows with a batched SELECT (regression: N+1)" do

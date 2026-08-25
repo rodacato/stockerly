@@ -1,53 +1,42 @@
-<%# Filter bar: search + severity segmented control + module dropdown + range dropdown %>
+<%# The artboard draws three severity chips and nothing else. Search, module
+    and range stay: a 90-day log you cannot search is a wall of text, and D8's
+    grounding caveat is what the artboard is drawn against. They wear the new
+    vocabulary rather than the old filter bar. %>
 <%= form_with(url: admin_logs_path, method: :get, data: { turbo_action: "replace" },
-      class: "flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3 shadow-sm") do |f| %>
+      class: "flex flex-col gap-3") do |f| %>
 
-  <%# Search %>
-  <div class="flex flex-1 min-w-[260px] items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 h-9">
-    <span class="material-symbols-outlined text-base text-slate-400">search</span>
+  <div class="flex items-center gap-2 rounded-xl border border-border-default bg-bg-surface px-4 py-3">
+    <span class="material-symbols-outlined text-lg text-fg-subtle" aria-hidden="true">search</span>
     <%= f.text_field :search, value: params[:search],
-        placeholder: "Buscar por ID, tarea o palabra clave…",
+        placeholder: t("admin.logs.index.buscar"),
         autocomplete: "off",
-        class: "w-full bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none" %>
+        class: "w-full bg-transparent text-sm text-fg-default placeholder:text-fg-subtle outline-none" %>
   </div>
 
-  <%# Hidden field — severity is set via link-based segmented control, so it
-      must ride along when the search form submits. module + range live in
-      f.select dropdowns below and self-serialize. %>
+  <%# Severity is a link-based control, so it rides along when search submits. %>
   <%= hidden_field_tag :severity, params[:severity] if params[:severity].present? %>
 
-  <%# Severity segmented control %>
-  <div class="inline-flex items-center gap-0.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-0.5 text-xs">
+  <div class="flex flex-wrap gap-2">
     <% Admin::LogsHelper::SEVERITY_OPTIONS.each do |slug, label, value| %>
       <% active = (params[:severity].presence || "todos") == slug %>
       <%= link_to admin_logs_path(search: params[:search], module_name: params[:module_name], range: params[:range], severity: value),
-            class: "rounded-md px-2.5 py-1 font-medium #{active ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}" do %>
+            class: "rounded-full border px-4 py-2 text-sm transition-colors #{active ? 'border-primary bg-primary/10 font-semibold text-primary' : 'border-border-default text-fg-default'}" do %>
         <%= label %>
       <% end %>
     <% end %>
   </div>
 
-  <%# Module dropdown %>
-  <%= f.select :module_name,
-        options_for_select(Admin::LogsHelper::MODULE_OPTIONS.map { |slug, label, value| [ "Módulo: #{label}", value.to_s ] }, params[:module_name].to_s),
-        {},
-        onchange: "this.form.requestSubmit()",
-        class: "rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-primary/40" %>
+  <div class="flex flex-wrap items-center gap-2">
+    <% [ [ :module_name, Admin::LogsHelper::MODULE_OPTIONS.map { |_s, label, value| [ "#{t('admin.logs.index.modulo')}: #{label}", value.to_s ] }, params[:module_name].to_s ],
+         [ :range, Admin::LogsHelper::RANGE_OPTIONS.map { |_s, label, value| [ "#{t('admin.logs.index.rango')}: #{label}", value ] }, (params[:range].presence || Admin::LogsHelper::DEFAULT_RANGE) ] ].each do |field, options, selected| %>
+      <%= f.select field, options_for_select(options, selected), {},
+            onchange: "this.form.requestSubmit()",
+            class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-sm text-fg-default outline-none focus:ring-2 focus:ring-primary/20" %>
+    <% end %>
 
-  <%# Range dropdown %>
-  <%= f.select :range,
-        options_for_select(Admin::LogsHelper::RANGE_OPTIONS.map { |slug, label, value| [ "Rango: #{label}", value ] }, (params[:range].presence || Admin::LogsHelper::DEFAULT_RANGE)),
-        {},
-        onchange: "this.form.requestSubmit()",
-        class: "rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-primary/40" %>
-
-  <% if admin_logs_any_filter_active? %>
-    <div class="ml-auto">
-      <%= link_to admin_logs_path,
-            class: "inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" do %>
-        <span class="material-symbols-outlined text-[14px]">filter_alt_off</span>
-        Limpiar filtros
-      <% end %>
-    </div>
-  <% end %>
+    <% if admin_logs_any_filter_active? %>
+      <%= link_to t("admin.logs.index.limpiar"), admin_logs_path,
+            class: "ml-auto text-sm font-medium text-fg-subtle transition-colors hover:text-fg-default" %>
+    <% end %>
+  </div>
 <% end %>

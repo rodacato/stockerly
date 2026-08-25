@@ -1,32 +1,18 @@
-<% content_for(:title, "Bitácora | Stockerly") %>
-<% content_for(:page_title, "Bitácora") %>
+<% content_for(:title, "#{t('.titulo')} | Stockerly") %>
+<% content_for(:page_title, t(".titulo")) %>
 
-<div class="space-y-6">
-  <%# Header band: eyebrow + h1 + subhead + count chip + export %>
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-    <div>
-      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Bitácora del sistema</p>
-      <h1 class="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Registros</h1>
-      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Eventos, errores y operaciones de los últimos 90 días.</p>
-    </div>
-    <div class="flex items-center gap-3">
-      <span class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
-        <span class="material-symbols-outlined text-[14px]">database</span>
-        <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= number_with_delimiter(@total_count) %></span>
-        registros
-      </span>
-      <%= link_to export_csv_admin_logs_path(severity: params[:severity], module_name: params[:module_name], search: params[:search], range: params[:range]),
-            class: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm font-medium text-slate-900 dark:text-white shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700/60" do %>
-        <span class="material-symbols-outlined text-[15px]">download</span>
-        Exportar CSV
-      <% end %>
-    </div>
+<div class="mx-auto flex max-w-3xl flex-col gap-6">
+  <div class="flex items-start justify-between gap-3">
+    <p class="text-fg-subtle"><%= t(".descripcion") %></p>
+    <%= link_to export_csv_admin_logs_path(severity: params[:severity], module_name: params[:module_name], search: params[:search], range: params[:range]),
+          class: "flex size-10 shrink-0 items-center justify-center rounded-lg text-primary transition-colors hover:bg-primary/10",
+          aria: { label: t(".exportar") }, title: t(".exportar") do %>
+      <span class="material-symbols-outlined text-xl" aria-hidden="true">download</span>
+    <% end %>
   </div>
 
-  <%# Filter bar %>
   <%= render "admin/logs/filters" %>
 
-  <%# Logs table or empty state %>
   <% if @logs.any? %>
     <%= render "admin/logs/logs_table", logs: @logs, pagy: @pagy %>
   <% else %>

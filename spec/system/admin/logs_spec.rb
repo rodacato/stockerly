@@ -46,14 +46,15 @@ RSpec.describe "Admin · Bitácora", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "renders the header band, count chip and CSV export action" do
+  it "names itself, says what it holds, and offers the export" do
     visit admin_logs_path
 
-    expect(page).to have_content("Bitácora del sistema")
     expect(page).to have_content("Registros")
-    expect(page).to have_content("Eventos, errores y operaciones de los últimos 90 días.")
-    expect(page).to have_content("5 registros")
-    expect(page).to have_link("Exportar CSV")
+    expect(page).to have_content("Lo que hizo tu instancia sola")
+    # The count moved out of a header chip and into the footer, next to the
+    # pagination it actually describes.
+    expect(page).to have_content("Mostrando")
+    expect(page).to have_link(href: export_csv_admin_logs_path(severity: nil, module_name: nil, search: nil, range: nil))
   end
 
   it "lists rows within the default 24h range with module chip and task" do
@@ -102,7 +103,7 @@ RSpec.describe "Admin · Bitácora", type: :system do
   it "renders the empty state when no logs match the filters" do
     visit admin_logs_path(severity: "error", module_name: "auth")
 
-    expect(page).to have_content("Sin registros que coincidan con los filtros.")
+    expect(page).to have_content("Nada con esos filtros.")
     expect(page).to have_link("Limpiar filtros", href: admin_logs_path)
   end
 
@@ -139,12 +140,15 @@ RSpec.describe "Admin · Bitácora", type: :system do
     expect(page).to have_field("severity", type: "hidden", with: "error")
   end
 
-  it "escapes user-controlled params in the empty-state filter description" do
-    # XSS regression for #139 — the empty-state used to interpolate params
-    # into html_safe. Pass a payload and assert it never reaches the DOM as
-    # a real element.
+  it "never puts a user-controlled param in the empty state at all" do
+    # XSS regression for #139 — the empty state used to interpolate params
+    # into html_safe, then escaped them. It no longer echoes the filters back,
+    # which removes the surface rather than sanitising it. The payload assertion
+    # stays: it is what would catch the echo coming back.
     visit admin_logs_path(severity: "error", module_name: "auth", search: "<svg/onload=alert(1)>")
-    expect(page).to have_content("Sin registros que coincidan con los filtros.")
-    expect(page).not_to have_css("svg[onload]")
+
+    expect(page).to have_content("Nada con esos filtros.")
+    expect(page).to have_no_css("svg[onload]")
+    expect(page).to have_no_content("svg/onload")
   end
 end

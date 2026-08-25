@@ -1,37 +1,19 @@
-<%# Logs table — dense rows, severity dot column, expand-row reveals payload. %>
-<%# Locals: logs (collection), pagy (Pagy object) %>
-<div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
-  <div class="overflow-x-auto">
-    <table class="w-full text-left">
-      <thead class="bg-slate-50 dark:bg-slate-900/40">
-        <tr>
-          <th class="w-7 px-3 py-3"><span class="sr-only">Severidad</span></th>
-          <th class="px-3 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Marca de tiempo</th>
-          <th class="px-3 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Módulo</th>
-          <th class="px-3 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Tarea</th>
-          <th class="px-3 py-3 text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Mensaje</th>
-          <th class="w-8 px-3 py-3"><span class="sr-only">Detalle</span></th>
-        </tr>
-      </thead>
-      <% logs.each do |log| %>
-        <%= render "admin/logs/log_row", log: log %>
-      <% end %>
-    </table>
-  </div>
+<%# Cards, per `ajustes-registros`. It was a six-column table with a header
+    row — the same shape Reglas had, and it overflowed a phone the same way.
+    Locals: logs, pagy %>
+<div class="flex flex-col gap-4">
+  <ul class="flex flex-col gap-3">
+    <% logs.each do |log| %>
+      <%= render "admin/logs/log_row", log: log %>
+    <% end %>
+  </ul>
 
-  <%# Pagination footer: "Mostrando N de M registros · filtros se conservan al paginar" %>
-  <div class="flex flex-col gap-2 border-t border-slate-200 dark:border-slate-700 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-    <div class="text-xs text-slate-500 dark:text-slate-400">
-      Mostrando
-      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= logs.length %></span>
-      de
-      <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= number_with_delimiter(pagy.count) %></span>
-      registros · filtros aplicados se conservan al paginar
-    </div>
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <p class="font-mono text-xs text-fg-subtle">
+      <%= t("admin.logs.index.mostrando", shown: logs.length, total: number_with_delimiter(pagy.count)) %>
+    </p>
     <% if pagy.pages > 1 %>
-      <div class="text-xs">
-        <%== pagy.series_nav %>
-      </div>
+      <div class="text-sm"><%== pagy.series_nav %></div>
     <% end %>
   </div>
 </div>
