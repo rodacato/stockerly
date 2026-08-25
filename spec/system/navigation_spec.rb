@@ -72,7 +72,7 @@ RSpec.describe "Navigation", type: :system do
         "Panorama" => dashboard_path,
         "Activos"  => assets_path,
         "Reglas"   => alerts_path,
-        "Ajustes"  => profile_path
+        "Ajustes"  => settings_path
       }.each do |label, path|
         visit dashboard_path
         click_link label, match: :first

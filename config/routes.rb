@@ -70,6 +70,7 @@ Rails.application.routes.draw do
       delete :destroy_read
     end
   end
+  resource :settings,  only: [ :show ]
   resource :profile,   only: [ :show, :update ]
   patch  "profile/password",    to: "profiles#change_password",    as: :change_password
   patch  "profile/preferences", to: "profiles#update_preferences", as: :update_preferences

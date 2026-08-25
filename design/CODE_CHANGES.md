@@ -356,6 +356,21 @@ real push channel revives it; a migration to delete it now would have to be undo
 
 - Measure before landing: `grep -rn "auto_sync_enabled\|email_notifications_enabled" app lib | grep -v settings_controller`
   — today that returns **nothing outside the screen that sets them**. That is the bug.
+- ✅ **The hub shipped at `/settings`**, and the nav's Ajustes points there. Sections: the account
+  card, Cuenta (name/email and password, linking to `/profile` which already holds those forms),
+  Apariencia y región (theme and currency), Avisos, Tu instancia, Tus datos, and sign-out.
+- ✅ **It links to the instance surfaces rather than reimplementing them** — Integraciones, Registros,
+  Estado y mantenimiento and Mission Control all keep their existing screens. D5's point was killing
+  the admin *framing*, not rewriting four working pages.
+- ⚠ **No failed-jobs badge.** The artboard shows a count beside Trabajos; `SolidQueue::FailedExecution`
+  lives in another database and counting it put a cross-database query in the hub's request path —
+  which aborted the transaction outright in test. Mission Control shows the real number on open.
+- 🐞 **Found by the screenshot: the currency control listed USD before MXN**, because
+  `Asset::SUPPORTED_CURRENCIES` is ordered for validation and the view iterated it. On an MXN-first
+  product the local currency reads first.
+- ⬜ **Left as they are:** `/profile` keeps its tabs and remains the destination for name, email and
+  password; the four instance screens keep their admin styling. Folding those into the hub's visual
+  language is a further pass.
 - Merge `/profile` and the `/admin` zone into one `Ajustes` with sections. On a single-user
   instance the admin split is a costume (D5); the asset catalogue already left for Activos (D9)
   and the notification panel is down to two channels (D16).

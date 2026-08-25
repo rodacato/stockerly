@@ -1,0 +1,39 @@
+<%# Locals: user. Theme lives in localStorage (per device); currency posts to
+    the dedicated endpoint that only writes preferred_currency. %>
+<section class="flex flex-col gap-3">
+  <h2 class="font-display text-lg font-bold tracking-tight text-fg-default">
+    <%= t("settings.show.tema") %>
+  </h2>
+
+  <div class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-4">
+    <div data-controller="theme" data-theme-storage-key-value="stockerly.theme"
+         class="flex gap-1 rounded-xl bg-bg-muted p-1">
+      <% [ [ "light", "Claro" ], [ "dark", "Oscuro" ], [ "system", "Sistema" ] ].each do |mode, label| %>
+        <button type="button" data-theme-target="option" data-theme-mode="<%= mode %>"
+                data-action="click->theme#select"
+                class="flex-1 rounded-lg px-3 py-2 text-sm font-medium text-fg-subtle data-[theme-active=true]:bg-bg-surface data-[theme-active=true]:text-fg-default data-[theme-active=true]:shadow-sm">
+          <%= label %>
+        </button>
+      <% end %>
+    </div>
+
+    <%= form_with url: update_currency_path, method: :patch, scope: :profile, class: "flex flex-col gap-2" do |f| %>
+      <p class="text-xs text-fg-subtle"><%= t("settings.show.moneda") %></p>
+      <div class="flex gap-1 rounded-xl bg-bg-muted p-1">
+        <%# MXN first: the product is MXN-first and the local currency reads
+            first. SUPPORTED_CURRENCIES is ordered for validation, not display. %>
+        <% [ "MXN", "USD" ].each do |code| %>
+          <% selected = user.preferred_currency == code %>
+          <label class="flex-1 cursor-pointer">
+            <%= tag.input type: "radio", name: "profile[preferred_currency]", value: code,
+                          checked: selected, class: "sr-only peer" %>
+            <span class="block rounded-lg px-3 py-2 text-center font-mono text-sm font-semibold <%= selected ? "bg-bg-surface text-fg-default shadow-sm" : "text-fg-subtle" %>">
+              <%= code %>
+            </span>
+          </label>
+        <% end %>
+      </div>
+      <%= f.submit "Guardar", class: "self-end rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-fg-inverse hover:bg-primary-hover cursor-pointer" %>
+    <% end %>
+  </div>
+</section>

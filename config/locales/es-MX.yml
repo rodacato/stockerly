@@ -217,6 +217,40 @@ es-MX:
     tab_posicion: Mi posición
     tu_posicion: TU POSICIÓN
     ver_todas: Ver todas
+  settings:
+    show:
+      avisos_campana: Todo aviso llega a tu campana; eso no se apaga. El correo sí.
+      avisos_titulo: Avisos
+      cerrar_sesion: Cerrar sesión
+      contrasena: Contraseña
+      contrasena_desc: Cámbiala cuando quieras
+      cuenta: Cuenta
+      datos_cuerpo: Tus movimientos, posiciones y reglas viven en la base de datos
+        de esta instancia. Nadie los sincroniza a ningún lado.
+      datos_eliminar: Eliminar mi cuenta y mis datos
+      datos_eliminar_desc: 'Hoy se hace por correo (procedimiento ARCO). En la app:
+        pendiente.'
+      datos_titulo: Tus datos
+      digest: Resumen diario por correo
+      digest_desc: Un solo correo a las 18:30 CDMX con lo que pasó.
+      estado: Estado y mantenimiento
+      estado_desc: Diagnóstico, modo mantenimiento y cambios recientes
+      instancia_cuerpo: 'Esto es tuyo: corre en tu servidor y nadie más lo ve.'
+      instancia_titulo: Tu instancia
+      integraciones: Integraciones
+      integraciones_desc: Fuentes de datos, llaves y salud
+      moneda: Moneda preferida · en la que se te muestra todo tu patrimonio
+      nombre_correo: Nombre y correo
+      nombre_correo_desc: Cómo te llamas y a dónde llegan los correos
+      registros: Registros
+      registros_desc: Eventos y errores de los últimos 90 días
+      tema: Apariencia y región
+      titulo: Ajustes
+      trabajos: Trabajos en segundo plano
+      trabajos_desc: 'Mission Control: colas, reintentos y fallos'
+      unica_cuenta: única cuenta
+      urgente: Avisos urgentes por correo
+      urgente_desc: Un correo aparte al disparar una regla.
   time:
     am: a.m.
     formats:

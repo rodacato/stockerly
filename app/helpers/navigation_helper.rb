@@ -5,7 +5,7 @@ module NavigationHelper
     { key: "panorama", icon: "grid_view",     path: :dashboard_path, controllers: %w[dashboard] },
     { key: "activos",  icon: "trending_up",   path: :assets_path,    controllers: %w[assets portfolios trades positions watchlist_items market search earnings news] },
     { key: "reglas",   icon: "notifications", path: :alerts_path,    controllers: %w[alerts notifications] },
-    { key: "ajustes",  icon: "settings",      path: :profile_path,   controllers: %w[profiles] }
+    { key: "ajustes",  icon: "settings",      path: :settings_path,  controllers: %w[settings profiles] }
   ].freeze
 
   def main_nav_items
