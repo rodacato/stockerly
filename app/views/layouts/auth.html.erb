@@ -1,0 +1,32 @@
+<%# The auth zone: no navbar, no footer, nothing to click but the card. On a
+    desktop the artboard splits it — brand panel left, form right — so the card
+    is what the layout centres and the panel is what it sits beside. %>
+<% content_for(:body) do %>
+  <div class="flex min-h-screen items-center justify-center bg-bg-canvas p-4">
+    <div id="flash_messages" class="fixed right-4 top-4 z-50 flex max-w-sm flex-col gap-3" style="pointer-events: none;">
+      <%= render "shared/flash" %>
+    </div>
+
+    <div class="grid w-full max-w-4xl overflow-hidden rounded-2xl border border-border-default bg-bg-surface shadow-sm lg:grid-cols-2">
+      <%# Brand panel: desktop only. On a phone the logo lives inside the card,
+          which is what the mobile artboard draws. %>
+      <aside class="hidden flex-col justify-between bg-primary p-8 lg:flex">
+        <%# The dark-mode wordmark is the light one, and this panel is always
+            indigo — so it is picked directly rather than through the partial,
+            whose job is following the theme. %>
+        <%= link_to root_path, class: "flex items-center" do %>
+          <%= image_tag "logo_dark.svg", alt: "Stockerly", class: "h-8 w-auto" %>
+        <% end %>
+        <p class="flex items-center gap-2 text-sm text-fg-inverse">
+          <span class="material-symbols-outlined text-lg" aria-hidden="true">check</span>
+          <%= t("auth.open_source") %>
+        </p>
+      </aside>
+
+      <main class="flex flex-col justify-center p-8 lg:p-10">
+        <%= yield %>
+      </main>
+    </div>
+  </div>
+<% end %>
+<%= render template: "layouts/application" %>

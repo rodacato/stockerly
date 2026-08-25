@@ -14,7 +14,7 @@ RSpec.describe "Password reset flow", type: :system do
     visit login_path
     click_link "Recupérala."
     expect(page).to have_current_path(forgot_password_path)
-    expect(page).to have_content("Recupera tu acceso")
+    expect(page).to have_content(I18n.t("auth.forgot.titulo"))
   end
 
   it "submits email and lands on the forgot-sent state (state 2)" do
@@ -34,16 +34,16 @@ RSpec.describe "Password reset flow", type: :system do
     visit reset_password_path(token)
 
     expect(page).to have_content("Nueva contraseña")
-    expect(page).to have_content("Elige una contraseña que recuerdes")
+    expect(page).to have_content(I18n.t("auth.reset.subtitulo"))
   end
 
   it "resets password with valid new password and lands on the success state (state 5)" do
     token = user.password_reset_token
     visit reset_password_path(token)
 
-    fill_in "Nueva contraseña", with: "newpassword456"
-    fill_in "Confirmar nueva contraseña", with: "newpassword456"
-    click_button "Actualizar contraseña"
+    fill_in I18n.t("auth.reset.nueva"), with: "newpassword456"
+    fill_in I18n.t("auth.reset.confirmar"), with: "newpassword456"
+    click_button I18n.t("auth.reset.guardar")
 
     expect(page).to have_content("Contraseña actualizada")
     expect(page).to have_link("Ir a iniciar sesión", href: login_path)

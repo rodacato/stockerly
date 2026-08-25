@@ -11,16 +11,19 @@ RSpec.describe "Navigation", type: :system do
       expect(page).to have_current_path(login_path)
     end
 
-    it "navigates to legal pages from login footer" do
+    it "navigates to legal pages from the login's terms line" do
       visit login_path
-      click_link "Privacy Policy", match: :first
+      click_link I18n.t("auth.privacidad"), match: :first
       expect(page).to have_current_path(privacy_path)
 
       visit login_path
-      click_link "Terms of Service", match: :first
+      click_link I18n.t("auth.terminos"), match: :first
       expect(page).to have_current_path(terms_path)
 
-      visit login_path
+      # The auth layout has no public footer, so risk disclosure is no longer
+      # one click from login — the artboard's terms line carries two links. It
+      # stays reachable from the legal pages, which keep that footer.
+      visit privacy_path
       click_link "Risk Disclosure"
       expect(page).to have_current_path(risk_disclosure_path)
     end

@@ -13,10 +13,10 @@ RSpec.describe "Password recovery revamp (S11 #147)", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "renders the centered-card eyebrow + h2 + sub" do
-      expect(response.body).to include("Recuperación")
-      expect(response.body).to include("Recupera tu acceso")
-      expect(response.body).to include("Te enviaremos un enlace al correo registrado")
+    # The 2.0 card drops the eyebrow; the artboard leads with the question.
+    it "renders the title and its subtitle" do
+      expect(response.body).to include(I18n.t("auth.forgot.titulo"))
+      expect(response.body).to include(I18n.t("auth.forgot.subtitulo"))
     end
 
     it "renders the es-MX form label + CTA" do
@@ -25,7 +25,7 @@ RSpec.describe "Password recovery revamp (S11 #147)", type: :request do
     end
 
     it "links back to /login" do
-      expect(response.body).to include("Inicia sesión.")
+      expect(response.body).to include(I18n.t("auth.volver"))
       expect(response.body).to include(login_path)
     end
 
@@ -66,16 +66,15 @@ RSpec.describe "Password recovery revamp (S11 #147)", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "renders the centered-card eyebrow + h2 + sub" do
-      expect(response.body).to include("Restablecer contraseña")
-      expect(response.body).to include("Nueva contraseña")
-      expect(response.body).to include("Elige una contraseña que recuerdes")
+    it "renders the title and its subtitle" do
+      expect(response.body).to include(I18n.t("auth.reset.titulo"))
+      expect(response.body).to include(I18n.t("auth.reset.subtitulo"))
     end
 
     it "renders the es-MX form labels + CTA" do
-      expect(response.body).to include("Nueva contraseña")
-      expect(response.body).to include("Confirmar nueva contraseña")
-      expect(response.body).to include("Actualizar contraseña")
+      expect(response.body).to include(I18n.t("auth.reset.nueva"))
+      expect(response.body).to include(I18n.t("auth.reset.confirmar"))
+      expect(response.body).to include(I18n.t("auth.reset.guardar"))
     end
   end
 

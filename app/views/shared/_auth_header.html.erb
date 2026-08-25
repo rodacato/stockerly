@@ -1,0 +1,14 @@
+<%# Locals: title; subtitle optional. The wordmark rides here on a phone, where
+    the layout's brand panel is hidden. %>
+<div class="flex flex-col gap-4">
+  <%= link_to root_path, class: "flex items-center lg:hidden" do %>
+    <%= render "shared/logo", height_class: "h-8" %>
+  <% end %>
+
+  <div>
+    <h1 class="font-display text-3xl font-bold tracking-tight text-fg-default"><%= title %></h1>
+    <% if local_assigns[:subtitle] %>
+      <p class="mt-1 text-base text-fg-subtle"><%= subtitle %></p>
+    <% end %>
+  </div>
+</div>
