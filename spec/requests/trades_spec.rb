@@ -38,7 +38,7 @@ RSpec.describe "Trades", type: :request do
 
       expect(response).to redirect_to(assets_path)
       follow_redirect!
-      expect(response.body).to include("Movimiento registrado.")
+      expect(response.body).to include("Compra registrada")
     end
 
     it "creates a sell trade when position has enough shares" do
@@ -66,12 +66,23 @@ RSpec.describe "Trades", type: :request do
     end
 
     context "with turbo_stream format" do
-      it "responds with turbo_stream on success" do
+      # Success redirects now: the sheet's Guardar targets _top so the page
+      # navigates and the dialog closes with it. The stream it used to render
+      # prepended to #trade_history, a target no surface that could submit the
+      # form ever mounted — /trades and /positions have the tbody but no create
+      # form, and the sheet lives on Activos and Mi posición, which have neither.
+      it "redirects on success rather than streaming into a target nothing mounts" do
         post trades_path, params: valid_buy_params, as: :turbo_stream
 
+        expect(response).to redirect_to(assets_path)
+      end
+
+      it "streams a fresh sheet when asked to record another" do
+        post trades_path, params: valid_buy_params.merge(and_another: "1"), as: :turbo_stream
+
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-        expect(response.body).to include("trade_history")
-        expect(response.body).to include("Compra registrada")
+        expect(response.body).to include("trade_sheet")
+        expect(response.body).to include(I18n.t("trades.new.guardado_otro"))
       end
 
       it "responds with turbo_stream error on failure" do

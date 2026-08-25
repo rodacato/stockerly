@@ -10,6 +10,14 @@
 
     <%= form_with url: trades_path, scope: :trade, class: "flex min-h-0 flex-col" do |f| %>
       <div class="flex flex-col gap-4 overflow-y-auto px-1 pb-4">
+        <%# The flash lives behind the dialog, so a sheet that stays open has to
+            confirm inside itself or the save looks like nothing happened. %>
+        <% if @saved_notice %>
+          <p class="rounded-lg bg-positive-bg px-3 py-2.5 text-sm text-positive-fg" role="status">
+            <%= t("trades.new.guardado_otro") %>
+          </p>
+        <% end %>
+
         <div role="tablist" class="flex gap-1 rounded-xl bg-bg-muted p-1">
           <% [ [ "buy", t("trades.new.compra") ], [ "sell", t("trades.new.venta") ] ].each do |value, label| %>
             <label class="flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors has-[:checked]:bg-bg-surface has-[:checked]:text-fg-default text-fg-subtle">
@@ -92,8 +100,14 @@
           <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.total") %></span>
           <span class="font-mono text-lg font-bold text-fg-default" data-trade-sheet-target="total">—</span>
         </div>
-        <%= f.submit t("trades.new.guardar"),
+        <%# Two destinations. Guardar targets _top, so the response navigates the
+            whole page and the dialog goes with it — today it stayed open with
+            the form still filled, which invited saving the same movement twice.
+            "y otro" stays in the frame and comes back empty. %>
+        <%= f.submit t("trades.new.guardar"), data: { turbo_frame: "_top" },
                      class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-fg-inverse" %>
+        <%= f.submit t("trades.new.guardar_y_otro"), name: "and_another",
+                     class: "w-full cursor-pointer rounded-lg border border-border-default bg-bg-surface px-4 py-3 text-sm font-semibold text-fg-default" %>
       </div>
     <% end %>
   </div>
