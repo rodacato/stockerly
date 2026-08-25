@@ -1,0 +1,67 @@
+<% content_for :page_title, t(".titulo") %>
+
+<div class="flex flex-col gap-8">
+  <section class="flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+    <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-bg font-display text-lg font-bold text-primary">
+      <%= @user.full_name.to_s.strip.first&.upcase || "?" %>
+    </span>
+    <span class="min-w-0 flex-1">
+      <span class="block font-display text-base font-semibold text-fg-default"><%= @user.full_name %></span>
+      <span class="block truncate text-sm text-fg-subtle"><%= @user.email %></span>
+    </span>
+    <span class="shrink-0 rounded-full bg-bg-muted px-3 py-1 text-xs text-fg-subtle"><%= t(".unica_cuenta") %></span>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".cuenta") %></h2>
+    <%= render "settings/nav_row", icon: "person", path: profile_path,
+               title: t(".nombre_correo"), description: t(".nombre_correo_desc") %>
+    <%= render "settings/nav_row", icon: "lock", path: profile_path(tab: "seguridad"),
+               title: t(".contrasena"), description: t(".contrasena_desc") %>
+  </section>
+
+  <%= render "settings/appearance", user: @user %>
+
+  <section class="flex flex-col gap-3">
+    <div>
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".avisos_titulo") %></h2>
+      <p class="mt-1 text-sm text-fg-subtle"><%= t(".avisos_campana") %></p>
+    </div>
+    <%= render "settings/notification_switches", preferences: @preferences %>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <div>
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".instancia_titulo") %></h2>
+      <p class="mt-1 text-sm text-fg-subtle"><%= t(".instancia_cuerpo") %></p>
+    </div>
+    <%= render "settings/nav_row", icon: "power", path: admin_integrations_path,
+               title: t(".integraciones"), description: t(".integraciones_desc"), badge: @integrations_count %>
+    <%= render "settings/nav_row", icon: "receipt_long", path: admin_logs_path,
+               title: t(".registros"), description: t(".registros_desc") %>
+    <%= render "settings/nav_row", icon: "monitor_heart", path: admin_settings_path,
+               title: t(".estado"), description: t(".estado_desc") %>
+    <%# No failed-jobs badge: it lives in another database, and counting it on
+        every hub load put a cross-database query in the request path for a
+        number Mission Control shows accurately the moment you open it. %>
+    <%= render "settings/nav_row", icon: "checklist", path: "/admin/jobs",
+               title: t(".trabajos"), description: t(".trabajos_desc") %>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".datos_titulo") %></h2>
+    <div class="rounded-2xl border border-border-default bg-bg-surface p-5">
+      <p class="text-sm text-fg-subtle"><%= t(".datos_cuerpo") %></p>
+      <%# Issue #176 builds this in the app; until then the honest thing is to
+          name the procedure that actually exists. %>
+      <p class="mt-3 text-sm font-semibold text-primary"><%= t(".datos_eliminar") %></p>
+      <p class="mt-1 text-xs text-fg-subtle"><%= t(".datos_eliminar_desc") %></p>
+    </div>
+  </section>
+
+  <%= button_to logout_path, method: :delete,
+                class: "flex w-full items-center justify-center gap-2 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 text-sm font-semibold text-fg-default transition-colors hover:border-border-strong" do %>
+    <span class="material-symbols-outlined text-lg" aria-hidden="true">logout</span>
+    <%= t(".cerrar_sesion") %>
+  <% end %>
+</div>

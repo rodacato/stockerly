@@ -1,0 +1,28 @@
+<%# Locals: preferences. Same toggle controller and endpoint the profile tab
+    used — only the framing changed. The bell is not offered because D16 left
+    the in-app inbox always on, and a switch that does nothing is the defect
+    this slice's precondition existed to remove. %>
+<% channels = [
+     [ "email_digest", t("settings.show.digest"), t("settings.show.digest_desc"), preferences&.email_digest != false ],
+     [ "urgent_email", t("settings.show.urgente"), t("settings.show.urgente_desc"), preferences&.urgent_email == true ]
+   ] %>
+
+<div class="divide-y divide-border-default rounded-2xl border border-border-default bg-bg-surface px-4">
+  <% channels.each do |field, label, description, on| %>
+    <div class="flex items-center gap-4 py-4"
+         data-controller="toggle"
+         data-toggle-url-value="<%= update_preferences_path %>"
+         data-toggle-field-value="<%= field %>">
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-semibold text-fg-default"><%= label %></p>
+        <p class="text-xs text-fg-subtle"><%= description %></p>
+      </div>
+      <button type="button" data-action="click->toggle#toggle"
+              aria-label="<%= label %>"
+              class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors">
+        <span data-toggle-target="track" class="pointer-events-none inline-block h-5 w-11 rounded-full transition-colors <%= on ? "bg-primary" : "bg-bg-muted" %>"></span>
+        <span data-toggle-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform <%= on ? "translate-x-5" : "translate-x-0" %>"></span>
+      </button>
+    </div>
+  <% end %>
+</div>
