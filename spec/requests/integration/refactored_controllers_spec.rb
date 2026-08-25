@@ -16,7 +16,9 @@ RSpec.describe "Refactored controller flows", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("AAPL")
-      expect(response.body).to include("200.0")
+      # The card states the condition in words; the bare number never meant
+      # anything to a reader.
+      expect(response.body).to include("cruza USD 200 al alza")
     end
 
     it "renders empty state when no alerts" do

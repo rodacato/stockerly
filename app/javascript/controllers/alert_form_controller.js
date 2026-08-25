@@ -11,6 +11,7 @@ export default class AlertFormController extends Controller {
   static targets = [
     "chip",
     "conditionInput",
+    "direction",
     "panel",
     "ticker",
     "threshold",
@@ -18,6 +19,10 @@ export default class AlertFormController extends Controller {
     "windowDays",
     "preview"
   ]
+
+  // price_crosses_above and price_crosses_below share one chip; the direction
+  // control picks between them, which is how the artboard draws it.
+  static DIRECTIONAL = ["price_crosses_above", "price_crosses_below"]
 
   connect() {
     this.refreshPanels()
@@ -29,21 +34,36 @@ export default class AlertFormController extends Controller {
     if (!value) return
 
     this.conditionInputTarget.value = value
-    this.chipTargets.forEach((chip) => {
-      const active = chip.dataset.condition === value
-      chip.dataset.active = active ? "true" : "false"
-      chip.classList.toggle("bg-primary/10", active)
-      chip.classList.toggle("border-primary/25", active)
-      chip.classList.toggle("text-primary", active)
-      chip.classList.toggle("font-semibold", active)
-      chip.classList.toggle("text-slate-500", !active)
-      chip.classList.toggle("dark:text-slate-400", !active)
-      chip.classList.toggle("font-medium", !active)
-      chip.classList.toggle("border-slate-200", !active)
-      chip.classList.toggle("dark:border-slate-700", !active)
-    })
+    this.paintChips()
     this.refreshPanels()
     this.refreshPreview()
+  }
+
+  // The radios carry the enum value directly, so the hidden field is just
+  // assigned. The chip stays lit because paintChips treats the pair as one.
+  selectDirection(event) {
+    this.conditionInputTarget.value = event.currentTarget.value
+    this.paintChips()
+    this.refreshPreview()
+  }
+
+  paintChips() {
+    const value = this.conditionInputTarget.value
+    this.chipTargets.forEach((chip) => {
+      const active = chip.dataset.condition === value || this.sameFamily(chip.dataset.condition, value)
+      chip.dataset.active = active ? "true" : "false"
+      chip.classList.toggle("border-primary", active)
+      chip.classList.toggle("bg-primary/10", active)
+      chip.classList.toggle("text-primary", active)
+      chip.classList.toggle("font-semibold", active)
+      chip.classList.toggle("border-border-default", !active)
+      chip.classList.toggle("text-fg-default", !active)
+    })
+  }
+
+  sameFamily(a, b) {
+    const pair = this.constructor.DIRECTIONAL
+    return pair.includes(a) && pair.includes(b)
   }
 
   refreshPanels() {

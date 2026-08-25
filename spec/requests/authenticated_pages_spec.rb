@@ -47,8 +47,8 @@ RSpec.describe "Authenticated pages", type: :request do
     it "renders the alerts page with rules and live feed" do
       get alerts_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Tus alertas")
-      expect(response.body).to include("Disparadas recientemente")
+      expect(response.body).to include("Tus reglas")
+      expect(response.body).to include("Últimos disparos")
     end
   end
 

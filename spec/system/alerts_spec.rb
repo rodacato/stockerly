@@ -16,31 +16,34 @@ RSpec.describe "Alert management", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "renders the Stockerly-2.0 header in es-MX with empty state" do
+  it "renders the list and its empty state in es-MX" do
     visit alerts_path
-    expect(page).to have_content("Tus alertas")
-    expect(page).to have_content("Crear una alerta")
-    expect(page).to have_content("Aún no tienes alertas configuradas")
+    expect(page).to have_content("Tus reglas")
+    expect(page).to have_content("Todavía no tienes reglas")
+    # D14: creating is a sheet behind a link, not a form sitting on the list.
+    expect(page).to have_link("Nueva", href: new_alert_path)
+    expect(page).to have_no_selector("form[action='#{alerts_path}'][method='post']")
   end
 
-  it "exposes the MX-aware rule type chips" do
-    visit alerts_path
-    expect(page).to have_content("Precio cruza umbral")
-    expect(page).to have_content("RSI sobrevendido")
-    expect(page).to have_content("RSI sobrecomprado")
-    expect(page).to have_content("Volumen anómalo")
-    expect(page).to have_content("Dividendo próximo")
+  it "offers every condition the evaluator supports, grouped as the design draws them" do
+    visit new_alert_path
+    expect(page).to have_content("De precio")
+    expect(page).to have_content("De señal")
+    expect(page).to have_content("De calendario")
+
+    # The two that used to be built and never offered.
+    expect(page).to have_content("% cambio en el día")
+    expect(page).to have_content("A la baja")
   end
 
-  it "creates an alert rule via the chip form" do
+  it "creates an alert rule from the sheet" do
     create(:asset, symbol: "NVDA", name: "NVIDIA Corp.", current_price: 900.0)
 
-    visit alerts_path
+    visit new_alert_path
     fill_in "alert[asset_symbol]", with: "NVDA"
     fill_in "alert[threshold_value]", with: "950"
-    click_button "Crear alerta"
+    click_button "Crear regla"
 
-    expect(page).to have_content("NVDA")
     expect(AlertRule.where(user: user, asset_symbol: "NVDA").count).to eq(1)
   end
 
@@ -86,28 +89,37 @@ RSpec.describe "Alert management", type: :system do
       triggered_at: 5.minutes.ago)
 
     visit alerts_path
-    expect(page).to have_content("Disparadas recientemente")
+    expect(page).to have_content("Últimos disparos")
     expect(page).to have_content("MSFT")
     expect(page).to have_content("cruzó USD 420.00 al alza")
   end
 
-  it "mirrors the delivery preferences in es-MX, read-only" do
+  it "carries the real switches, not a read-only mirror of them" do
     visit alerts_path
     expect(page).to have_content("Cómo te aviso")
-    expect(page).to have_content("Los avisos siempre llegan a tu campana.")
     expect(page).to have_content("Resumen diario por correo")
     expect(page).to have_content("Avisos urgentes por correo")
-    expect(page).to have_link("Cambiar en Ajustes →", href: profile_path)
+
+    # Same partial and endpoint Ajustes uses, so the two screens cannot drift
+    # into disagreeing about what is on.
+    expect(page).to have_selector("[data-toggle-url-value='#{update_preferences_path}']", count: 2, visible: :all)
   end
 
-  it "shows the tabs with active/paused/all counts" do
-    create(:alert_rule, user: user, asset_symbol: "AAPL", status: :active)
-    create(:alert_rule, user: user, asset_symbol: "NVDA", status: :paused)
+  it "does not offer a bell switch, because the inbox cannot be turned off" do
+    visit alerts_path
+    expect(page).to have_no_selector("[data-toggle-field-value='browser_push']", visible: :all)
+  end
+
+  it "shows each rule as a card carrying its cooldown" do
+    create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above,
+                        threshold_value: 200.0, status: :active, cooldown_minutes: 120)
 
     visit alerts_path
-    expect(page).to have_content("Activas")
-    expect(page).to have_content("Pausadas")
-    expect(page).to have_content("Todas")
+
+    expect(page).to have_content("espera 120 min entre avisos")
+    expect(page).to have_content("Nunca se ha disparado")
+    # The table it replaced overflowed a phone; nothing here is a table.
+    expect(page).to have_no_selector("table")
   end
 
   it "creates a dividend_ex_date rule with window_days" do

@@ -112,13 +112,35 @@ module AlertsHelper
   # Conditions offered in the create form, in display order. Derives labels
   # from CONDITION_LABELS so the copy lives in one place (the form, the rules
   # table, and the live feed stay in sync).
-  CONDITION_OPTION_ORDER = %w[
-    price_crosses_above rsi_oversold rsi_overbought
-    volume_spike dividend_ex_date bmv_holiday cete_auction
-  ].freeze
+  # Grouped the way `reglas-nueva-regla` draws them. `price_crosses_below` and
+  # `day_change_percent` were absent from the old flat list while the
+  # evaluator, the contract and TriggerNotice all handled them — two of the
+  # nine conditions were built and simply never offered. `below` is not a chip
+  # of its own: it shares "Precio cruza umbral" and the direction control picks
+  # the enum value, which is what the artboard draws.
+  CONDITION_FAMILIES = {
+    precio:    %w[price_crosses_above day_change_percent],
+    senal:     %w[rsi_overbought rsi_oversold volume_spike],
+    calendario: %w[dividend_ex_date cete_auction bmv_holiday]
+  }.freeze
+
+  DIRECTIONAL_CONDITIONS = %w[price_crosses_above price_crosses_below].freeze
+
+  def alert_condition_families
+    CONDITION_FAMILIES.transform_values do |conditions|
+      conditions.map { |condition| [ condition, CONDITION_LABELS.fetch(condition) ] }
+    end
+  end
 
   def alert_condition_options
-    CONDITION_OPTION_ORDER.map { |condition| [ condition, CONDITION_LABELS.fetch(condition) ] }
+    CONDITION_FAMILIES.values.flatten.map { |condition| [ condition, CONDITION_LABELS.fetch(condition) ] }
+  end
+
+  # "espera 60 min entre avisos" — the artboard surfaces the cooldown the
+  # model has carried since it was created and no screen ever showed.
+  def alert_cooldown_label(rule)
+    minutes = rule.cooldown_minutes || AlertRule::DEFAULT_COOLDOWN_MINUTES
+    "espera #{minutes} min entre avisos"
   end
 
   private
