@@ -34,11 +34,6 @@ RSpec.describe NewsArticle, type: :model do
   end
 
   describe "scopes" do
-    it ".recent returns 10 most recent articles" do
-      12.times { |i| create(:news_article, published_at: i.hours.ago) }
-      expect(NewsArticle.recent.count).to eq(10)
-    end
-
     it ".for_ticker filters by related_ticker" do
       aapl = create(:news_article, related_ticker: "AAPL")
       tsla = create(:news_article, related_ticker: "TSLA")

@@ -127,12 +127,12 @@ Current customer/supplier pair: **Trading → MarketData** (Trading reads, Marke
 EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
 
 # Reads: supplier's public API
-news     = MarketData::Queries::RecentNews.call
-trending = MarketData::Queries::TrendingAssets.call(limit: 5)
-fx_rate  = MarketData::UseCases::EnsureFreshFxRate.call(base: "USD", target: "MXN")
+sentiment    = MarketData::Queries::CurrentFearGreed.call
+observations = MarketData::Queries::NotableObservations.call(asset_ids: ids)
+fx_rate      = MarketData::UseCases::EnsureFreshFxRate.call(base: "USD", target: "MXN")
 ```
 
-Forbidden in Trading: direct AR model access (`NewsArticle.recent`, `MarketIndex.major`, `FearGreedReading.latest_*`) and direct gateway instantiation (`MarketData::Gateways::*.new`).
+Forbidden in Trading: direct AR model access (`MarketIndex.major`, `FearGreedReading.latest_*`, `TechnicalObservation`) and direct gateway instantiation (`MarketData::Gateways::*.new`).
 
 Key cross-context flows:
 - `MarketData::Events::AssetPriceUpdated` → `Alerts::Handlers::EvaluateAlertsOnPriceUpdate` (write event)

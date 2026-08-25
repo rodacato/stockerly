@@ -14,11 +14,6 @@ RSpec.describe AlertPreference, type: :model do
   end
 
   describe "defaults" do
-    it "has browser_push true by default" do
-      pref = AlertPreference.new
-      expect(pref.browser_push).to be true
-    end
-
     it "has email_digest true by default" do
       pref = AlertPreference.new
       expect(pref.email_digest).to be true

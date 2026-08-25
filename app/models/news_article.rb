@@ -4,7 +4,6 @@ class NewsArticle < ApplicationRecord
   validates :published_at, presence: true
   validates :url,          uniqueness: true, allow_blank: true
 
-  scope :recent, -> { order(published_at: :desc).limit(10) }
   scope :for_ticker, ->(ticker) { where(related_ticker: ticker) if ticker.present? }
   scope :for_tickers, ->(tickers) { where(related_ticker: tickers) if tickers.present? }
   scope :for_source, ->(source) { where(source: source) if source.present? }

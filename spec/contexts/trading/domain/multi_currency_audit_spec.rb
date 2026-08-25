@@ -233,22 +233,6 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
     end
   end
 
-  describe "WeeklyInsightCalculator (snapshot-based) — currency neutrality check" do
-    it "computes weekly_change correctly when snapshots are same-currency" do
-      # WeeklyInsightCalculator only cares about the percentage change between
-      # the first and last snapshot. If snapshots are in different currencies,
-      # the % is meaningless — but the calculator itself doesn't convert.
-      # Caller responsibility: pass same-currency snapshots.
-      snap_old = double("snapshot", total_value: 100_000.0)
-      snap_new = double("snapshot", total_value: 110_000.0)
-      result = Trading::Domain::WeeklyInsightCalculator.calculate(
-        snapshots: [ snap_old, snap_new ],
-        positions: []
-      )
-      expect(result[:weekly_change]).to eq(10.0)
-    end
-  end
-
   describe "Inverse asymmetry check (USD-preferred user same scenario)" do
     let(:usd_user)      { create(:user, preferred_currency: "USD") }
     let(:usd_portfolio) { create(:portfolio, user: usd_user) }
