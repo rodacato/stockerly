@@ -18,10 +18,14 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("AAPL")
     end
 
-    it "renders the price block with the native currency prefix" do
+    # The header names the currency beside a single price, so it reads as a
+    # suffix. D10's ISO prefix governs rows in a list that declared a different
+    # currency — a different problem.
+    it "renders the price with its currency" do
       get market_asset_path(asset.symbol)
 
-      expect(response.body).to match(/USD\s+227\.44/)
+      expect(response.body).to match(/227\.44/)
+      expect(response.body).to match(/>USD</)
     end
 
     it "renders the es-MX asset-type chip for an equity" do

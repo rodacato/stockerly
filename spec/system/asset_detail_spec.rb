@@ -21,20 +21,22 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
   describe "stock (equity)" do
     let!(:apple) { create(:asset, name: "Apple Inc.", symbol: "AAPL", asset_type: :stock, currency: "USD", current_price: 227.44, change_percent_24h: 1.5, exchange: "NASDAQ", country: "US") }
 
-    it "renders the Stockerly-2.0 header with native currency prefix and Acción chip" do
+    it "renders the 2.0 header: back link, name, price and type" do
       visit market_asset_path(apple.symbol)
 
       expect(page).to have_content("AAPL")
       expect(page).to have_content("Apple Inc.")
       expect(page).to have_content("Acción")
-      expect(page).to have_content(/USD\s+227\.44/)
+      expect(page).to have_content("227.44")
     end
 
     it "exposes the always-visible Resumen tab and the es-MX watchlist CTA" do
       visit market_asset_path(apple.symbol)
 
       expect(page).to have_button("Resumen")
-      expect(page).to have_button("Agregar a watchlist")
+      # The CTA became an icon button; Capybara only matches aria-label when
+      # enable_aria_label is on, so this asserts the attribute directly.
+      expect(page).to have_css(%(button[aria-label="#{I18n.t("market.header.agregar_watchlist")}"]))
     end
 
     it "shows Valoración + Estados financieros when fundamentals + statements exist" do

@@ -1,126 +1,69 @@
-<%# Asset detail header — Stockerly-2.0 (S10 #93). Breadcrumb → ticker block
-    (badge + name + chips) → price block with native currency prefix → actions.
-    All copy es-MX. Currency prefix style "USD 612.85" / "MXN 48.50" matches
-    the convention introduced in #92. %>
-<%
-  positive = (asset.change_percent_24h || 0) >= 0
-  change_pct = (asset.change_percent_24h || 0).to_f
-  price_precision = asset.asset_type_fixed_income? ? 4 : 2
-%>
+<%# Asset detail header, 2.0. The pre-2.0 version carried a three-level
+    breadcrumb, a badge, five chips and three action buttons; the artboard is a
+    back link, the name, the price and a bookmark. The capture button moved to
+    the foot of Mi posición, where the artboard puts it.
+    Locals: asset, is_watchlisted. %>
+<% change = asset.change_percent_24h || 0 %>
+<% approximate = approximate_in_preferred(asset, current_user) %>
 
-<%# 1 · Breadcrumb %>
-<nav class="mb-3 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-  <%= link_to "Mercados", market_path, class: "hover:text-primary transition-colors" %>
-  <span class="material-symbols-outlined text-sm">chevron_right</span>
-  <span class="font-medium text-slate-500 dark:text-slate-400"><%= asset.exchange.presence || "—" %></span>
-  <span class="material-symbols-outlined text-sm">chevron_right</span>
-  <span class="font-medium text-slate-900 dark:text-white font-mono"><%= asset.symbol %></span>
-</nav>
+<header class="flex flex-col gap-4">
+  <div class="flex items-start justify-between gap-4">
+    <%= link_to market_path, class: "flex min-w-0 items-center gap-2 text-fg-default transition-colors hover:text-primary" do %>
+      <span class="material-symbols-outlined shrink-0 text-xl" aria-hidden="true">chevron_left</span>
+      <span class="min-w-0">
+        <span class="font-display text-xl font-bold tracking-tight"><%= asset.symbol %></span>
+        <span class="ml-2 truncate text-base text-fg-subtle"><%= asset.name %></span>
+      </span>
+    <% end %>
 
-<%# 2 · Headline row: ticker block ← → price block %>
-<div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-  <%# Left: badge + ticker line + name + chips %>
-  <div class="flex items-start gap-4 min-w-0">
-    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 shadow-sm shrink-0">
-      <%= render "components/asset_badge", asset: asset, size: "xl" %>
-    </div>
-    <div class="min-w-0">
-      <div class="flex flex-wrap items-center gap-2">
-        <h1 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">
-          <%= asset.symbol %>
-        </h1>
-        <% if asset.exchange.present? %>
-          <span class="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-            <%= asset.exchange %>
-          </span>
+    <%# One chip the artboard does not draw, kept on purpose: the exchange and
+        currency chips are redundant (both appear below), but the type is only
+        inferable from which blocks the page renders, and five specs defended
+        it. Losing it would leave it visible only on Rastreados. %>
+    <span class="ml-auto shrink-0 rounded-md bg-bg-muted px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-fg-subtle">
+      <%= asset_type_label_es(asset) %>
+    </span>
+
+    <%= turbo_frame_tag "watchlist_button_#{asset.id}", class: "shrink-0" do %>
+      <% if is_watchlisted %>
+        <%= button_to watchlist_item_path(asset.watchlist_items.find_by(user: current_user)),
+                      method: :delete,
+                      "aria-label": t("market.header.quitar_watchlist"),
+                      class: "flex size-11 items-center justify-center rounded-lg text-primary transition-colors hover:bg-bg-muted" do %>
+          <span class="material-symbols-outlined text-xl" aria-hidden="true">bookmark_added</span>
         <% end %>
-        <span class="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-          <%= asset_type_label_es(asset) %>
-        </span>
-        <span class="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-          <%= asset.currency %>
-        </span>
-      </div>
-      <p class="mt-1.5 text-base text-slate-600 dark:text-slate-300 leading-tight"><%= asset.name %></p>
-
-      <%# Secondary chips (sector / country) — purely informational %>
-      <% if asset.sector.present? || asset.country.present? %>
-        <div class="mt-3 flex flex-wrap gap-1.5">
-          <% if asset.sector.present? %>
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-0.5 text-[11px] font-medium text-slate-600 dark:text-slate-400">
-              <span class="material-symbols-outlined text-[13px]">category</span>
-              <%= asset.sector %>
-            </span>
-          <% end %>
-          <% if asset.country.present? %>
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-0.5 text-[11px] font-medium text-slate-600 dark:text-slate-400">
-              <span class="material-symbols-outlined text-[13px]">public</span>
-              <%= asset.country %>
-            </span>
-          <% end %>
-        </div>
+      <% else %>
+        <%= button_to watchlist_items_path, params: { asset_id: asset.id },
+                      "aria-label": t("market.header.agregar_watchlist"),
+                      class: "flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:bg-bg-muted hover:text-primary" do %>
+          <span class="material-symbols-outlined text-xl" aria-hidden="true">bookmark_add</span>
+        <% end %>
       <% end %>
-    </div>
+    <% end %>
   </div>
 
-  <%# Right: native-currency price + 24h delta %>
-  <div class="flex flex-col items-start md:items-end gap-1">
+  <div>
     <% if asset.current_price %>
-      <p class="font-mono text-3xl font-medium tracking-tight text-slate-900 dark:text-white leading-none">
-        <%= asset_currency_price(asset, precision: price_precision) %>
+      <p class="font-display text-4xl font-bold tracking-tight text-fg-default">
+        <%= number_with_precision(asset.current_price, precision: asset.asset_type_fixed_income? ? 4 : 2, delimiter: ",") %>
+        <span class="font-mono text-lg font-medium text-fg-subtle"><%= asset.currency %></span>
       </p>
-      <div class="flex items-center gap-2 mt-1">
-        <span class="material-symbols-outlined text-base <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
-          <%= positive ? 'trending_up' : 'trending_down' %>
-        </span>
-        <span class="font-mono text-sm font-medium <%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
-          <%= positive ? '+' : '−' %><%= number_with_precision(change_pct.abs, precision: 2) %>%
-        </span>
+
+      <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
+        <% if approximate %>
+          <span class="text-fg-subtle">≈ <%= approximate %></span>
+        <% end %>
+        <span class="<%= gain_color(change) %>"><%= signed_percent(change) %> hoy</span>
         <% if asset.price_updated_at %>
-          <span class="text-[11px] text-slate-500 dark:text-slate-400">
-            actualizado <%= observation_when(asset.price_updated_at) %>
-          </span>
+          <span class="text-fg-subtle">act. <%= observation_when(asset.price_updated_at) %></span>
         <% end %>
       </div>
+
+      <%# The artboard has no provenance line. Keeping it: where a number came
+          from is not decoration on a screen whose job is being checkable. %>
+      <p class="mt-2 text-[11px] text-fg-subtle"><%= asset_data_source_caption(asset) %></p>
     <% else %>
-      <p class="text-sm text-slate-500 dark:text-slate-400">Precio no disponible</p>
+      <p class="text-sm text-fg-subtle"><%= t("market.header.sin_precio") %></p>
     <% end %>
   </div>
-</div>
-
-<%# 3 · Action row: watchlist (primary) + secondary actions + data-source caption %>
-<div class="mt-5 flex flex-wrap items-center gap-2.5">
-  <%= turbo_frame_tag "watchlist_button_#{asset.id}" do %>
-    <% if is_watchlisted %>
-      <%= button_to watchlist_item_path(asset.watchlist_items.find_by(user: current_user)),
-            method: :delete,
-            class: "inline-flex items-center gap-1.5 h-9 rounded-lg border border-primary/25 bg-primary/10 px-3.5 text-[13px] font-semibold text-primary hover:bg-primary/15 transition-colors" do %>
-        <span class="material-symbols-outlined text-base">star</span>
-        Quitar de watchlist
-      <% end %>
-    <% else %>
-      <%= button_to watchlist_items_path, params: { asset_id: asset.id },
-            class: "inline-flex items-center gap-1.5 h-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 text-[13px] font-medium text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm transition-colors" do %>
-        <span class="material-symbols-outlined text-base">add</span>
-        Agregar a watchlist
-      <% end %>
-    <% end %>
-  <% end %>
-
-  <%= link_to trades_path,
-        class: "inline-flex items-center gap-1.5 h-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 text-[13px] font-medium text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" do %>
-    <span class="material-symbols-outlined text-base">add_chart</span>
-    Registrar movimiento
-  <% end %>
-
-  <%= link_to alerts_path,
-        class: "inline-flex items-center gap-1.5 h-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 text-[13px] font-medium text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" do %>
-    <span class="material-symbols-outlined text-base">notifications_active</span>
-    Alerta de precio
-  <% end %>
-
-  <span class="ml-auto inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-    <span class="material-symbols-outlined text-[13px]">info</span>
-    <%= asset_data_source_caption(asset) %>
-  </span>
-</div>
+</header>

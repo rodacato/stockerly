@@ -55,6 +55,20 @@ module MarketHelper
   end
 
   # Relative-time label in es-MX: "hace 12 min", "hoy", "ayer", "hace 3 días".
+  # The price in the reader's own currency, which is the whole MXN-first point:
+  # a USD quote means little until you see what it is in pesos. Nil when the
+  # asset already quotes in it, or when no rate is stored — an approximation
+  # invented from a missing rate is worse than its absence.
+  def approximate_in_preferred(asset, user)
+    return nil if asset.current_price.blank? || asset.currency == user.preferred_currency
+
+    rate = FxRateHistory.rate_on(base: asset.currency, quote: user.preferred_currency, date: Date.current) ||
+           FxRate.find_by(base_currency: asset.currency, quote_currency: user.preferred_currency)&.rate
+    return nil if rate.blank?
+
+    format_currency_mx(asset.current_price * rate, currency: user.preferred_currency, precision: 0)
+  end
+
   # One series for the chart controller, from the closes we already sync.
   # Replaces the TradingView widget, which shipped the symbol being viewed to
   # a third party on every page load (D2).
