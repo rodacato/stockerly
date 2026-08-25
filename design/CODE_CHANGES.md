@@ -428,9 +428,26 @@ year-round — Mexico dropped DST in 2022), `Notifications::Handlers::SendUrgent
 `NotificationCreated`, and both preference screens reduced to the two channels that actually
 deliver.
 
-**Leftover:** `alert_preferences.browser_push` is now unused — the in-app bell cannot be turned
-off, so the switch was removed rather than left lying. Drop the column when D16 settles whether a
-real push channel revives it; a migration to delete it now would have to be undone if it does.
+**Leftover, now settled (2026-08-25).** `alert_preferences.browser_push` was unused — the in-app
+bell cannot be turned off, so the switch was removed rather than left lying, and this section kept
+the column pending D16. The Reglas rebuild forced the call, because `reglas-lista` draws a bell
+toggle: **the column is dropped.**
+
+What decided it was that the design already disagreed with itself. `ajustes-hub` writes *"Todo
+aviso llega a tu campana; **eso no se apaga**. El correo sí."* and draws two switches;
+`reglas-lista` draws three and gives the first one to the bell. Ajustes had it right, and the code
+had aligned with that half.
+
+Measured before dropping: no `web-push`-class gem, no VAPID pair, no `push_subscriptions` table,
+and the service worker's `push` listener is still the commented scaffold Rails generates. The
+"interrupt me" channel already exists and delivers — `AlertMailer#urgent_alert`, fired by
+`SendUrgentEmail` on `NotificationCreated`.
+
+**If push is revived**, the migration is reversible and Adrian's starting reference is
+[Joy of Rails — Web push notifications from Rails](https://joyofrails.com/articles/web-push-notifications-from-rails).
+Worth knowing going in: on iOS, Web Push only reaches a PWA installed to the home screen, so on a
+mobile-first product it is a channel that can fail silently on the primary device — which is the
+defect this section existed to remove. It needs its own 4-filter card.
 
 ## 8. Ajustes — one hub, and two switches that must start working (D17, D18)
 
