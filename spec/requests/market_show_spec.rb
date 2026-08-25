@@ -124,12 +124,14 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("Razón P/U histórica")
     end
 
-    it "renders the TradingView chart widget for stocks" do
+    it "charts from our own closes, with no third-party widget" do
+      3.times { |i| create(:asset_price_history, asset: asset, date: i.days.ago.to_date, close: 100 + i) }
+
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include('data-controller="tradingview"')
-      expect(response.body).to include('data-tradingview-symbol-value="NASDAQ:AAPL"')
+      expect(response.body).to include('data-controller="chart"')
+      expect(response.body).not_to include("tradingview")
     end
 
     it "renders the es-MX data-source caption" do

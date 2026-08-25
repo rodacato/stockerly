@@ -21,6 +21,11 @@ search:
 # Framework keys Rails resolves itself — present so `l()` renders es-MX, never
 # referenced by a t() call, so `unused` must not flag them.
 ignore_unused:
+  # ADR-014 puts the phrase catalogue in the domain, so these keys are built by
+  # AssetState.phrase_key rather than written literally — the scanner cannot see
+  # them by design. asset_state_spec asserts every state resolves in both
+  # readings, which is a stronger guarantee than the scan it replaces.
+  - market.estado.*
   - date.*
   - time.*
   - number.*

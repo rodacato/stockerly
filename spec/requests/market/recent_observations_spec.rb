@@ -36,13 +36,17 @@ RSpec.describe "Market detail — Recent Observations block (#40 JTBD #6)", type
       expect(response.body).not_to include("cruzó al alza su MA50")
     end
 
-    it "uses descriptive copy only (ADR-001)" do
+    # ADR-014 lets the verdict card read a state out loud, from a catalogue. The
+    # observations block is not that card: it stays descriptive, so the reading
+    # a phrase came from is always available in plain language.
+    it "keeps the observations block descriptive" do
       create(:technical_observation, asset: asset, observation_type: "bb_upper_breached", observed_at: 1.hour.ago)
 
       get market_asset_path(asset.symbol)
-      body = response.body
-      expect(body).to include("rompió la banda de Bollinger superior")
-      expect(body).not_to match(/\b(comprar|vender|rebalancear|considera|considere|deberías?|debes|es momento)\b/i)
+      block = response.body[/Observaciones recientes.*?<\/section>/m].to_s
+
+      expect(block).to include("rompió la banda de Bollinger superior")
+      expect(block).not_to match(/\b(comprar|vender|rebalancear|considera|considere|deberías?|debes|es momento)\b/i)
     end
   end
 end

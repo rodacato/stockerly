@@ -132,6 +132,28 @@ es-MX:
     - octubre
     - noviembre
     - diciembre
+  market:
+    precio:
+      titulo: Precio · %{currency} · cierre diario
+    estado:
+      neutral:
+        holding: Sin extremos técnicos hoy. Ni sobrecompra ni sobreventa en RSI ni
+          en las bandas.
+        label: Sin extremos
+        watching: Sin extremos técnicos hoy. Ni sobrecompra ni sobreventa en RSI ni
+          en las bandas.
+      oversold:
+        holding: Zona de sobreventa. Si ya tienes, es donde el activo ha caído más
+          de lo habitual, no una señal de vender.
+        label: Sobrevendido
+        watching: Zona de sobreventa. Es donde una compra ha entrado históricamente
+          más barata, con el riesgo de que siga bajando.
+      stretched:
+        holding: Estirado — no es momento de comprar. Si tienes, es zona de tomar
+          ganancias parciales, no de entrar.
+        label: Estirado
+        watching: Estirado — no es momento de entrar. El activo cotiza por encima
+          de su rango habitual.
   nav:
     abrir_avisos: Abrir avisos
     activos: Activos

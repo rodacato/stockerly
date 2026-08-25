@@ -29,6 +29,10 @@ class MarketController < AuthenticatedController
       @company_overview = data[:company_overview]
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
       @recent_observations = @asset.technical_observations.recent.within_last(30).limit(5)
+      # ADR-014: the state is derived, the phrase is selected, neither is composed here.
+      @state = MarketData::Domain::AssetState.for(@recent_observations)
+      @state_source = MarketData::Domain::AssetState.source(@recent_observations)
+      @holding = current_user.portfolio&.open_positions&.exists?(asset_id: @asset.id) || false
 
       trigger_fundamental_sync(@asset) unless @has_fundamentals
     in Dry::Monads::Failure[ :not_found, _ ]

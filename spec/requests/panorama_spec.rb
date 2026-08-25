@@ -118,8 +118,8 @@ RSpec.describe "Panorama", type: :request do
 
   describe "the sentiment carousel" do
     it "renders a card per index the instance has actually fetched" do
-      create(:fear_greed_reading, index_type: "crypto", value: 68, fetched_at: 1.day.ago)
-      create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: 1.hour.ago)
+      create(:fear_greed_reading, index_type: "crypto", value: 68, fetched_at: 2.days.ago.midday)
+      create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: Time.current)
 
       get dashboard_path
 

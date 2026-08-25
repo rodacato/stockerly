@@ -70,10 +70,16 @@ module Trading
         )
       end
 
-      # The last reading that is not from today. Comparing against the previous
-      # row would read "vs this morning" on a day the job ran twice.
+      # The last reading from a different day than the current one. Anchoring on
+      # the reading's own date rather than on Date.current matters after
+      # midnight, when the freshest reading is already "yesterday" and the naive
+      # filter compares it against itself.
       def previous_value(history)
-        history.to_a.reject { |fetched_at, _| fetched_at.to_date == Date.current }.last&.last
+        rows = history.to_a
+        return nil if rows.empty?
+
+        current_day = rows.last.first.to_date
+        rows.reject { |fetched_at, _| fetched_at.to_date == current_day }.last&.last
       end
 
       def watchlist_card(user)

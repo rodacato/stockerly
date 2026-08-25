@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Trading::UseCases::AssemblePanorama do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:user) { create(:user, preferred_currency: "MXN", onboarded_at: Time.current) }
   let(:portfolio) { user.portfolio || create(:portfolio, user: user) }
 
@@ -40,8 +42,8 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
 
   describe "the sentiment carousel" do
     it "carries the move since the previous reading, not since the previous row" do
-      create(:fear_greed_reading, index_type: "crypto", value: 68, fetched_at: 1.day.ago)
-      create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: 1.hour.ago)
+      create(:fear_greed_reading, index_type: "crypto", value: 68, fetched_at: 2.days.ago.midday)
+      create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: Time.current)
 
       card = described_class.call(user: user)[:sentiment_cards].find { |c| c.key == :crypto }
 
@@ -49,8 +51,23 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
       expect(card.delta).to eq(4)
     end
 
+    # Caught by a suite that happened to run at 00:15: with the comparison
+    # anchored on Date.current, the freshest reading is already "yesterday"
+    # after midnight and gets compared against itself.
+    it "compares against a different day, not against the calendar" do
+      travel_to(Time.utc(2026, 8, 25, 0, 15)) do
+        create(:fear_greed_reading, index_type: "crypto", value: 68, fetched_at: Time.utc(2026, 8, 23, 6, 0))
+        create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: Time.utc(2026, 8, 24, 6, 0))
+
+        card = described_class.call(user: user)[:sentiment_cards].find { |c| c.key == :crypto }
+
+        expect(card.value).to eq(72)
+        expect(card.delta).to eq(4)
+      end
+    end
+
     it "reports no delta when today is the only reading" do
-      create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: 1.hour.ago)
+      create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: Time.current)
 
       card = described_class.call(user: user)[:sentiment_cards].find { |c| c.key == :crypto }
 
@@ -58,7 +75,7 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
     end
 
     it "drops a card the instance has never fetched rather than inventing a 50" do
-      create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: 1.hour.ago)
+      create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: Time.current)
 
       keys = described_class.call(user: user)[:sentiment_cards].map(&:key)
 
