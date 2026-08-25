@@ -19,7 +19,7 @@ module AssetsHelper
     return [ native, declared ] if from == declared
 
     [ position.portfolio.convert(native, from: from, to: declared), declared ]
-  rescue RuntimeError
+  rescue Trading::Domain::MissingFxRate
     [ native, from ]
   end
 

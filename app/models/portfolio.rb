@@ -66,7 +66,7 @@ class Portfolio < ApplicationRecord
     return amount.to_d if from == to
 
     rate = at_date ? historical_rate(from, to, at_date) : current_rate(from, to)
-    raise "Missing FX rate #{from}->#{to} (Portfolio##{id})" if rate.nil?
+    raise Trading::Domain::MissingFxRate, "Missing FX rate #{from}->#{to} (Portfolio##{id})" if rate.nil?
 
     amount.to_d * rate
   end

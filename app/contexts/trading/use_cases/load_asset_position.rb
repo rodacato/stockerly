@@ -30,7 +30,7 @@ module Trading
         breakdown = Domain::PositionBreakdown.new(position, currency: currency)
         breakdown.total
         breakdown
-      rescue RuntimeError
+      rescue Trading::Domain::MissingFxRate
         nil
       end
     end

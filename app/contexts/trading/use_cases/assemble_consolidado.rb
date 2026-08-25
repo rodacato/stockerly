@@ -49,7 +49,7 @@ module Trading
       # fatal — the same call raises inside allocation as it does in the summary.
       def allocation_for(portfolio, currency)
         portfolio.allocation_by_asset_type(currency: currency)
-      rescue RuntimeError
+      rescue Trading::Domain::MissingFxRate
         {}
       end
 
@@ -71,7 +71,7 @@ module Trading
         summary.total_value
         summary.day_gain
         summary
-      rescue RuntimeError
+      rescue Trading::Domain::MissingFxRate
         nil
       end
 
@@ -93,7 +93,7 @@ module Trading
 
       def value_of(portfolio, currency, snapshot)
         portfolio.convert(snapshot.total_value, from: snapshot.currency, to: currency, at_date: snapshot.date)
-      rescue RuntimeError
+      rescue Trading::Domain::MissingFxRate
         0
       end
 
@@ -121,7 +121,7 @@ module Trading
       def value_today(portfolio, currency, held)
         held.sum do |asset, shares|
           portfolio.convert(shares * (asset.current_price || 0), from: asset.currency, to: currency)
-        rescue RuntimeError
+        rescue Trading::Domain::MissingFxRate
           0
         end
       end

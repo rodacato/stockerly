@@ -34,7 +34,7 @@ module Trading
         summary = Trading::Domain::PortfolioSummary.new(portfolio, currency: currency)
         summary.total_value
         summary
-      rescue RuntimeError
+      rescue Trading::Domain::MissingFxRate
         nil
       end
 

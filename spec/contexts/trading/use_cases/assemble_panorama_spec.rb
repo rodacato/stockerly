@@ -32,6 +32,19 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
       expect(data[:fx_unavailable]).to be(true)
     end
 
+    # The rescue used to be `RuntimeError`, which is what Portfolio#convert
+    # raised — and so is a NoMethodError's cousin from any bug inside the
+    # valuation. A broken summary reported itself as "Sin consolidar" and the
+    # screen looked fine.
+    it "lets a bug inside the valuation surface instead of reporting no rate" do
+      asset = mxn_asset(symbol: "WALMEX", current_price: 70)
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
+      allow_any_instance_of(Trading::Domain::PortfolioSummary)
+        .to receive(:total_value).and_raise(RuntimeError, "boom")
+
+      expect { described_class.call(user: user) }.to raise_error(RuntimeError, "boom")
+    end
+
     it "does not claim a missing rate when there is no portfolio at all" do
       user.portfolio&.destroy
       user.reload
