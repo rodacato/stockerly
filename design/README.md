@@ -41,6 +41,9 @@ One `.pen` per domain, derived from the app's routes (`config/routes.rb`), not i
 the app match is tracked in [CODE_CHANGES.md](CODE_CHANGES.md). A flow earns its own file at ~3+
 screens; smaller ones may merge into a neighbor.
 
+> **Status below is the `.pen` file's, not the ERB's.** How closely the code matches each flow
+> is measured in [FIDELITY_AUDIT.md](FIDELITY_AUDIT.md).
+
 | File | Domain | Screens (from code) | Status |
 |---|---|---|---|
 | `flows/auth.pen` | Auth | login, 2FA/TOTP, forgot, email-sent, reset — no signup (account created in onboarding) | **done · in review** |
