@@ -133,8 +133,6 @@ es-MX:
     - noviembre
     - diciembre
   market:
-    precio:
-      titulo: Precio · %{currency} · cierre diario
     estado:
       neutral:
         holding: Sin extremos técnicos hoy. Ni sobrecompra ni sobreventa en RSI ni
@@ -154,6 +152,8 @@ es-MX:
         label: Estirado
         watching: Estirado — no es momento de entrar. El activo cotiza por encima
           de su rango habitual.
+    precio:
+      titulo: Precio · %{currency} · cierre diario
   nav:
     abrir_avisos: Abrir avisos
     activos: Activos
