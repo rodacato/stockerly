@@ -121,6 +121,36 @@ this container could not perform, listed so they are not mistaken for done.
   (their specs still pass). Slice 4 and the asset detail may consume them; if they do not, they are
   the next §0.5 list and should be deleted then rather than accumulating quietly.
 
+## 3b. Asset detail (slice 5) — DONE, with the header left alone
+
+**Status:** shipped. `/market/:symbol` carries two tabs: `Análisis` and `Mi posición`, the second
+only when you hold the asset.
+
+- ✅ **The TradingView widget is gone.** It loaded a script from `s3.tradingview.com` and handed it
+  the symbol being viewed — D2 rejected the iframe for the redesign and nobody removed the one
+  already shipping. Our own closes render it now. A spec fails if any wiring reappears.
+- ✅ **The verdict card** reads the state out loud under
+  [ADR-014](../docs/architecture/adr/0014-state-phrases-from-a-closed-catalogue.md): a closed
+  catalogue keyed by a state derived from persisted observations, with the reading kept beside it.
+- ✅ **`PositionBreakdown` splits the gain between the asset and the peso** — the MXN-first
+  differentiator. The two parts reconstruct the total exactly, verified in a spec and visible on
+  screen (`+62.7%` + `+17.5%` = `+80.2%`).
+- ✅ **`PurchaseRetrospective` states how you entered and stops there.** The artboard's "buen timing"
+  is absent: ADR-001/013/014 all describe the market, and nothing covers the app grading its owner's
+  decisions. `RsiOnDates` recomputes RSI for past buy dates and omits those without 15 closes behind
+  them — `BackfillPriceHistoryJob` fetches 30 days, so a purchase predating the asset's sync has no
+  answer and the block is absent rather than averaged from what survived.
+- ✅ **"VS. TU PLAN" became "VS. TUS REGLAS."** The artboard's `Meta: 200` has no `target_price`
+  anywhere in the code; `alert_rules` does exist, and `alert_condition_summary` already renders it.
+- ⚠ **The asset header is not redesigned.** It still carries the pre-2.0 breadcrumb and three action
+  buttons, one of which duplicated the capture button this slice first added at the foot of Mi
+  posición — caught in a screenshot and removed. The artboard's header is `‹ NVDA Nvidia` plus a
+  bookmark, with no buttons. Reconciling them is its own pass.
+- ⚠ **The fundamentals block keeps its sub-tabs** inside Análisis. The artboard flattens Resumen /
+  Valoración / Estados into the scroll; that restructure was not attempted here.
+- ⬜ **Not built:** the confluence semáforo (D3, gated), "Cerrar posición" (an action the code does
+  not have — a sell is already a movement), and the per-period `Rendimiento` block.
+
 ## 4. Activos tab — Cartera vs Sigo (D9, D10)
 
 **Status:** surface shipped (slice 2a). The trade sheet and the FX block are NOT in it — see below.

@@ -198,6 +198,25 @@ es-MX:
         Tus compras y ventas restaron %{points} puntos.
       vs_hold_cuerpo_positivo: Si no hubieras movido nada desde el %{from}, hoy tendrías
         %{value}. Tus compras y ventas sumaron %{points} puntos.
+  posicion:
+    acciones: Acciones
+    costo_prom: Costo prom.
+    del_activo: DEL ACTIVO
+    del_peso: DEL PESO · TC
+    invertido: Invertido
+    no_realizado: No realizado · aún no vendes (todo en papel)
+    operaciones: Operaciones
+    plan_sin_reglas: No tienes reglas sobre este activo.
+    plan_titulo: VS. TUS REGLAS
+    retrospectiva_cuerpo: Tus %{count} compras promediaron %{price} con RSI ~%{rsi}.
+    retrospectiva_titulo: Cómo entraste
+    retrospectiva_una: Tu compra fue a %{price} con RSI ~%{rsi}.
+    sin_desglose: Falta el tipo de cambio del día, así que no puedo separar cuánto
+      viene del activo y cuánto del peso.
+    tab_analisis: Análisis
+    tab_posicion: Mi posición
+    tu_posicion: TU POSICIÓN
+    ver_todas: Ver todas
   time:
     am: a.m.
     formats:

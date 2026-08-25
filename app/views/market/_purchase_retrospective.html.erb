@@ -1,0 +1,16 @@
+<%# Locals: retrospective (PurchaseRetrospective::Summary)
+    States the facts and stops. Whether it was good timing is the reader's
+    call — nothing in ADR-001/013/014 covers the app grading its owner. %>
+<section class="rounded-2xl border border-border-default bg-bg-surface p-5">
+  <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
+    <%= t("posicion.retrospectiva_titulo") %>
+  </h3>
+  <p class="mt-2 text-sm text-fg-subtle">
+    <% price = format_currency_mx(retrospective.average_price, currency: retrospective.currency) %>
+    <% if retrospective.count == 1 %>
+      <%= t("posicion.retrospectiva_una", price: price, rsi: retrospective.average_rsi) %>
+    <% else %>
+      <%= t("posicion.retrospectiva_cuerpo", count: retrospective.count, price: price, rsi: retrospective.average_rsi) %>
+    <% end %>
+  </p>
+</section>

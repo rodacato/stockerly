@@ -1,0 +1,66 @@
+<%# Locals: data (LoadAssetPosition result) %>
+<% position = data[:position] %>
+<% currency = data[:currency] %>
+<% breakdown = data[:breakdown] %>
+
+<section class="rounded-2xl border border-border-default bg-bg-surface p-5">
+  <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("posicion.tu_posicion") %></p>
+
+  <% if breakdown %>
+    <p class="mt-2 font-display text-3xl font-bold tracking-tight text-fg-default">
+      <%= format_currency_mx(breakdown.market_value, currency: currency, precision: 0) %>
+    </p>
+    <p class="mt-1 font-mono text-sm font-semibold <%= gain_color(breakdown.total.amount) %>">
+      <%= breakdown.total.amount.negative? ? "−" : "+" %><%= format_currency_mx(breakdown.total.amount.abs, currency: currency, precision: 0) %>
+      · <%= signed_percent(breakdown.total.percent) %>
+    </p>
+    <p class="mt-1 text-xs text-fg-subtle"><%= t("posicion.no_realizado") %></p>
+
+    <%# The split this product exists for: the asset and the peso are different
+        stories, and the two parts reconstruct the total exactly. %>
+    <% unless breakdown.same_currency? %>
+      <div class="mt-4 flex divide-x divide-border-default rounded-xl bg-bg-muted">
+        <div class="flex-1 px-4 py-3">
+          <p class="font-mono text-[10px] uppercase tracking-wider text-fg-subtle"><%= t("posicion.del_activo") %></p>
+          <p class="mt-1 font-mono text-sm font-bold <%= gain_color(breakdown.from_asset.percent) %>">
+            <%= signed_percent(breakdown.from_asset.percent) %>
+          </p>
+        </div>
+        <div class="flex-1 px-4 py-3 text-right">
+          <p class="font-mono text-[10px] uppercase tracking-wider text-fg-subtle"><%= t("posicion.del_peso") %></p>
+          <p class="mt-1 font-mono text-sm font-bold <%= gain_color(breakdown.from_fx.percent) %>">
+            <%= signed_percent(breakdown.from_fx.percent) %>
+          </p>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="mt-2 text-sm text-warning-fg"><%= t("posicion.sin_desglose") %></p>
+  <% end %>
+
+  <%# No capture button here: the asset header already carries one, and a
+      screenshot showed both. The artboard puts it at the foot of this tab and
+      has no header button — reconciling that means redesigning the header,
+      which this slice did not do. "Cerrar posición" is drawn beside it and not
+      built either: closing out is an action the code does not have. %>
+  <div class="mt-4 grid grid-cols-3 gap-3 border-t border-border-default pt-4">
+    <div>
+      <p class="text-[11px] text-fg-subtle"><%= t("posicion.acciones") %></p>
+      <p class="font-mono text-sm font-semibold text-fg-default">
+        <%= number_with_precision(position.shares, precision: position.shares.to_d.frac.zero? ? 0 : 4, delimiter: ",") %>
+      </p>
+    </div>
+    <div>
+      <p class="text-[11px] text-fg-subtle"><%= t("posicion.costo_prom") %></p>
+      <p class="font-mono text-sm font-semibold text-fg-default">
+        <%= format_currency_mx(position.avg_cost, currency: position.asset.currency) %>
+      </p>
+    </div>
+    <div>
+      <p class="text-[11px] text-fg-subtle"><%= t("posicion.invertido") %></p>
+      <p class="font-mono text-sm font-semibold text-fg-default">
+        <%= breakdown ? format_currency_mx(breakdown.cost_basis, currency: currency, precision: 0) : "—" %>
+      </p>
+    </div>
+  </div>
+</section>

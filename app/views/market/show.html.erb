@@ -9,78 +9,39 @@
 <div class="mx-auto max-w-6xl space-y-6">
   <%= render "market/asset_header", asset: @asset, presenter: @presenter, is_watchlisted: @is_watchlisted %>
 
-  <%= render "market/state_verdict", state: @state, state_source: @state_source, holding: @holding %>
-
-  <%= render "market/recent_observations", asset: @asset, observations: @recent_observations %>
-
-  <% if @asset.asset_type_fixed_income? %>
-    <%# Fixed income charts a rate, which the SVG already renders with its own
-        min/max badges. Unifying the two is not this slice's job. %>
-    <%= render "market/price_chart" %>
-  <% elsif @price_histories.size >= 2 %>
-    <section class="rounded-2xl border border-border-default bg-bg-surface p-5">
-      <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
-        <%= t("market.precio.titulo", currency: @asset.currency) %>
-      </h3>
-      <div class="mt-4" data-controller="chart" data-chart-height-value="260"
-           data-chart-series-value="<%= price_series_json(@price_histories) %>"></div>
-    </section>
-  <% end %>
-
-  <% if @asset.asset_type_fixed_income? %>
-    <%# CETE / fixed income: yield card replaces the tab system %>
-    <%= render "market/fixed_income_detail", asset: @asset, yield_data: @yield_data %>
-  <% else %>
-    <%
-      tabs = asset_detail_tabs(
-        @asset,
-        has_fundamentals: @has_fundamentals,
-        has_dividends:    @dividends.present?,
-        has_statements:   @has_statements
-      )
-    %>
-
-    <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-bg-surface shadow-sm overflow-hidden" data-controller="tabs">
-      <div class="border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
-        <div class="flex gap-1 min-w-max px-4">
-          <%# Initial tab classes match what tabs_controller.js toggles
-              (border-primary/border-transparent · text-primary/text-slate-400 ·
-              font-bold/font-medium). The controller re-applies the active set
-              on connect via showTab(0), so what we render here is just the
-              first-paint state before Stimulus mounts. %>
-          <% tabs.each_with_index do |tab, idx| %>
-            <% active = idx.zero? %>
-            <button data-tabs-target="tab" data-action="tabs#switch"
-                    class="px-3.5 py-3 text-sm border-b-2 -mb-px transition-colors <%= active ? 'font-bold text-primary border-primary' : 'font-medium text-slate-400 border-transparent hover:text-slate-900 dark:hover:text-slate-100' %>">
-              <%= tab[:label] %>
-            </button>
-          <% end %>
-        </div>
+  <%# Two tabs (D8's asset-detail shape). "Mi posición" only exists when you
+      hold the asset, so a watched asset shows Análisis alone rather than an
+      empty second tab. %>
+  <% if @position_data %>
+    <div data-controller="tabs" class="space-y-6">
+      <div class="flex gap-1 rounded-xl bg-bg-muted p-1">
+        <button data-tabs-target="tab" data-action="tabs#switch"
+                class="flex-1 rounded-lg px-4 py-2 text-sm font-bold text-fg-default">
+          <%= t("posicion.tab_analisis") %>
+        </button>
+        <button data-tabs-target="tab" data-action="tabs#switch"
+                class="flex-1 rounded-lg px-4 py-2 text-sm font-medium text-fg-subtle">
+          <%= t("posicion.tab_posicion") %>
+        </button>
       </div>
 
-      <% tabs.each_with_index do |tab, idx| %>
-        <div data-tabs-target="panel" class="<%= 'hidden' unless idx.zero? %> px-5 py-6">
-          <% case tab[:key] %>
-          <% when :resumen %>
-            <%= render "market/summary_tab" %>
-          <% when :valoracion %>
-            <%= render "market/category_tab", category: :valuation %>
-          <% when :mercado %>
-            <%= render "market/category_tab", category: :crypto_market %>
-          <% when :dividendos %>
-            <%= render "market/dividend_history" %>
-          <% when :estados %>
-            <%= turbo_frame_tag "asset_statements_tab", src: market_asset_statements_tab_path(@asset.symbol), loading: "lazy" do %>
-              <%= render "components/skeleton", type: "table_row", count: 5 %>
-            <% end %>
-          <% end %>
-        </div>
-      <% end %>
-    </section>
+      <div data-tabs-target="panel" class="space-y-6">
+        <%= render "market/analysis", asset: @asset %>
+      </div>
 
-    <%# P/E history shown below tabs for stocks only (visual evidence next to fundamentals) %>
-    <%= render "market/pe_chart" if @asset.asset_type_stock? %>
+      <div data-tabs-target="panel" class="hidden space-y-6">
+        <%= render "market/position_summary", data: @position_data %>
+        <% if @position_data[:retrospective] %>
+          <%= render "market/purchase_retrospective", retrospective: @position_data[:retrospective] %>
+        <% end %>
+        <%= render "market/asset_rules", rules: @asset_rules %>
+        <%= render "market/position_trades", trades: @position_data[:trades], asset: @asset %>
+        <% if @dividends.present? %>
+          <%= render "market/dividend_history" %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <%= render "market/analysis", asset: @asset %>
   <% end %>
-
-  <%= render "market/disclaimer" %>
 </div>
