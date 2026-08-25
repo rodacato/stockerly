@@ -304,7 +304,7 @@
         {
           "type": "frame",
           "id": "pthuH",
-          "name": "Ajustes",
+          "name": "Descubrir",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -315,13 +315,43 @@
               "name": "i",
               "width": 22,
               "height": 22,
-              "icon": "settings",
+              "icon": "compass",
               "library": "lucide",
               "fill": "$primary"
             },
             {
               "type": "text",
               "id": "nLtlB",
+              "name": "t",
+              "fill": "$primary",
+              "content": "Descubrir",
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "zNd4q",
+          "name": "Ajustes",
+          "layout": "vertical",
+          "gap": 3,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "Q5Zrt",
+              "name": "i",
+              "width": 22,
+              "height": 22,
+              "icon": "settings",
+              "library": "lucide",
+              "fill": "$primary"
+            },
+            {
+              "type": "text",
+              "id": "NXLgt",
               "name": "t",
               "fill": "$primary",
               "content": "Ajustes",
@@ -3887,7 +3917,7 @@
             {
               "type": "frame",
               "id": "amfHA",
-              "name": "Ajustes",
+              "name": "Descubrir",
               "width": "fill_container",
               "fill": "$primary-muted",
               "cornerRadius": "$radius-sm",
@@ -3904,13 +3934,49 @@
                   "name": "i",
                   "width": 20,
                   "height": 20,
-                  "icon": "settings",
+                  "icon": "compass",
                   "library": "lucide",
                   "fill": "$primary"
                 },
                 {
                   "type": "text",
                   "id": "S32JT",
+                  "name": "t",
+                  "fill": "$primary",
+                  "content": "Descubrir",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ndKuJ",
+              "name": "Ajustes",
+              "width": "fill_container",
+              "fill": "$primary-muted",
+              "cornerRadius": "$radius-sm",
+              "gap": "$space-3",
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "u8OZVI",
+                  "name": "i",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "settings",
+                  "library": "lucide",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "EAxVV",
                   "name": "t",
                   "fill": "$primary",
                   "content": "Ajustes",
@@ -6520,7 +6586,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.5.0"
+      "value": "0.6.0"
     },
     "font-display": {
       "type": "string",
