@@ -156,3 +156,24 @@ frame; a flow overrides the title, the active destination and the body.
 | Master-detail body | D4 calls out cockpit/asset-detail as genuinely divergent. The split lives inside the shell's slot; whether it earns a component depends on how many screens use it. |
 | Desktop `Segmented` width | The mobile pill is `fill_container` at 342. On a 1040 body it stretches to something no one wants; a max width or a left-aligned variant is needed. |
 | Bell destination | The bell is drawn in both TopBar variants and still points nowhere (D14). |
+
+## 0.6.0 — the fifth destination (minor)
+
+**NOT additive — every consumer that draws the shell must re-sync.** `BottomNav` and `SidebarNav`
+changed shape, from four destinations to five, and the flows instance them. This is the re-vendor
+D31 priced in advance; it buys nothing for the screens it touches, it only keeps them from lying.
+
+**Components (0 new, still 16):** `BottomNav` and `SidebarNav` each gain **Descubrir** (lucide
+`compass`), inserted at **index 3**. `AppShellDesktop` inherits it for free — it instances
+`SidebarNav` by `ref` rather than carrying its own copy, so the desktop shell needed no edit.
+
+**Why index 3 and not the end.** Panorama / Activos / Reglas keep the position the thumb already
+knows; only Ajustes shifts. On a 390 viewport five items at the bar's current sizing occupy ~320 of
+the 374 available, so nothing shrinks — but that is arithmetic, not evidence. Verify on a real
+phone (CODE_CHANGES §10.2).
+
+**Consumers to re-sync:** `cockpit`, `assets`, `alerts`, `settings`, `discover`. `auth` and
+`onboarding` draw no shell, so they stay on 0.5.0 **behind but not diverging** — the state this
+file's own rules declare acceptable.
+
+Decided in D31.
