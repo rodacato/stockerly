@@ -323,7 +323,7 @@ if Rails.env.development? && (alex = User.find_by(email: "alex.thompson@example.
   end
 
   # --- Alert Preferences ---
-  alex.alert_preference.update!(browser_push: true, email_digest: true, sms_notifications: false)
+  alex.alert_preference.update!(email_digest: true, urgent_email: false)
 
 # --- Market Indices ---
 MarketIndex.find_or_create_by!(symbol: "SPX") do |i|
