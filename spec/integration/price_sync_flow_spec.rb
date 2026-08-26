@@ -8,8 +8,8 @@ RSpec.describe "Price Sync Flow (E2E)", type: :model do
   let!(:rule) { create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above, threshold_value: 180, status: :active) }
 
   before do
-    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
-    stub_polygon_price("AAPL", close: 189.43)
+    create(:integration, provider_name: "Finnhub", api_key_encrypted: "test_key")
+    stub_finnhub_quote("AAPL", current: 189.43)
   end
 
   it "syncs price → evaluates alerts → creates notification" do

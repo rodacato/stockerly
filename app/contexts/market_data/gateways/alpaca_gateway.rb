@@ -73,6 +73,30 @@ module MarketData
         Success(bars)
       end
 
+      # Latest confirmed close per symbol, in the shape PolygonGateway's
+      # grouped-daily endpoint returned, so the bulk job reads it unchanged.
+      # Returns Success([{ symbol:, price:, change_percent:, volume: }, ...])
+      def fetch_bulk_prices(symbols)
+        result = fetch_daily_bars(symbols, 7.days.ago.to_date, Time.current)
+        return result if result.failure?
+
+        prices = result.value!.filter_map do |symbol, bars|
+          bar = bars.max_by { |b| b[:date] }
+          next if bar.nil?
+
+          {
+            symbol: symbol,
+            price: bar[:close],
+            change_percent: change_percent(bar[:open], bar[:close]),
+            volume: bar[:volume]
+          }
+        end
+
+        return Failure([ :not_found, "No confirmed closes for #{Array(symbols).size} symbols" ]) if prices.empty?
+
+        Success(prices)
+      end
+
       # Returns Success([{ ex_date:, pay_date:, amount_per_share:, currency: }, ...])
       # Shape matches FmpGateway#fetch_dividends so the two are interchangeable.
       def fetch_dividends(symbol, from_date: 5.years.ago.to_date, to_date: Date.current)
@@ -154,6 +178,12 @@ module MarketData
           f.options.timeout = TIMEOUT
           f.options.open_timeout = TIMEOUT
         end
+      end
+
+      def change_percent(open, close)
+        return BigDecimal("0") if open.nil? || open.zero?
+
+        ((close - open) / open * 100).round(2)
       end
 
       def parse_bar(bar)

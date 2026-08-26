@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe BackfillPriceHistoryJob, type: :job do
   before do
-    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKID:secret")
     create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
   end
 
@@ -10,7 +10,10 @@ RSpec.describe BackfillPriceHistoryJob, type: :job do
     context "with a stock asset" do
       let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock) }
 
-      before { stub_polygon_historical("AAPL", days: 7) }
+      before do
+        bars = 7.times.map { |i| alpaca_bar(date: (7 - i).days.ago.to_date.to_s, close: 180.0 + i) }
+        stub_alpaca_bars({ "AAPL" => bars })
+      end
 
       it "creates AssetPriceHistory records" do
         expect {
@@ -53,7 +56,7 @@ RSpec.describe BackfillPriceHistoryJob, type: :job do
       let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock) }
 
       before do
-        stub_polygon_historical_empty("AAPL")
+        stub_alpaca_bars({})
         stub_yahoo_finance_not_found("AAPL")
       end
 

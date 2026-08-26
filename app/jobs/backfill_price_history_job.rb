@@ -36,11 +36,17 @@ class BackfillPriceHistoryJob < ApplicationJob
   def fetch_stock_history(symbol)
     from_date = 30.days.ago.to_date.to_s
     to_date   = Date.current.to_s
-    result = MarketData::Gateways::PolygonGateway.new.fetch_historical(symbol, from_date, to_date)
-    return result if result.success?
+    result = alpaca_history(symbol, from_date, to_date)
+    return result if result&.success?
 
-    # Fallback to Yahoo Finance when Polygon fails (e.g. no API key)
+    # Yahoo covers the Alpaca failures and BMV, which Alpaca does not serve at all
     MarketData::Gateways::YahooFinanceGateway.new.fetch_historical(symbol, days: 30)
+  end
+
+  def alpaca_history(symbol, from_date, to_date)
+    MarketData::Gateways::AlpacaGateway.new.fetch_historical(symbol, from_date, to_date)
+  rescue MarketData::Gateways::ApiKeyNotConfiguredError
+    nil
   end
 
   def upsert_bars(asset, bars)
