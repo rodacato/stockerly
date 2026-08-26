@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_26_190000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_26_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -67,16 +67,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_190000) do
   end
 
   create_table "asset_price_histories", force: :cascade do |t|
+    t.datetime "as_of"
     t.bigint "asset_id", null: false
     t.decimal "close", precision: 15, scale: 4, null: false
     t.datetime "created_at", null: false
     t.date "date", null: false
+    t.datetime "fetched_at"
     t.decimal "high", precision: 15, scale: 4
+    t.string "interval", default: "1d", null: false
     t.decimal "low", precision: 15, scale: 4
     t.decimal "open", precision: 15, scale: 4
+    t.string "source", null: false
+    t.string "status", default: "confirmed", null: false
     t.datetime "updated_at", null: false
     t.bigint "volume"
-    t.index ["asset_id", "date"], name: "index_asset_price_histories_on_asset_id_and_date", unique: true
+    t.index ["asset_id", "date", "interval"], name: "index_asset_price_histories_on_asset_id_and_date_and_interval", unique: true
     t.index ["asset_id"], name: "index_asset_price_histories_on_asset_id"
     t.index ["date"], name: "index_asset_price_histories_on_date"
   end
@@ -266,12 +271,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_190000) do
   end
 
   create_table "market_index_histories", force: :cascade do |t|
+    t.datetime "as_of"
     t.decimal "close_value", precision: 15, scale: 4, null: false
     t.datetime "created_at", null: false
     t.date "date", null: false
+    t.datetime "fetched_at"
+    t.string "interval", default: "1d", null: false
     t.bigint "market_index_id", null: false
+    t.string "source", null: false
+    t.string "status", default: "confirmed", null: false
     t.datetime "updated_at", null: false
-    t.index ["market_index_id", "date"], name: "index_market_index_histories_on_market_index_id_and_date", unique: true
+    t.index ["market_index_id", "date", "interval"], name: "idx_on_market_index_id_date_interval_87f16141b0", unique: true
     t.index ["market_index_id"], name: "index_market_index_histories_on_market_index_id"
   end
 

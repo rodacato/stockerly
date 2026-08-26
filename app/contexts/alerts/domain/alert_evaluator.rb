@@ -35,7 +35,7 @@ module Alerts
       end
 
       def self.average_volume(asset, days: 5)
-        asset.asset_price_histories.where("date >= ?", days.days.ago.to_date).average(:volume)&.to_i || 0
+        MarketData::Queries::PriceSeries.for(asset).average_volume(days)
       end
 
       private_class_method :triggered?, :average_volume

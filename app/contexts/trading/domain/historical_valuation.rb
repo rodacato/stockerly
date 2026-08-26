@@ -66,7 +66,7 @@ module Trading
       end
 
       def history(asset)
-        @closes[asset.id] ||= asset.asset_price_histories.order(:date).to_a
+        @closes[asset.id] ||= MarketData::Queries::PriceSeries.for(asset).all.to_a
       end
 
       def splits_for(asset)

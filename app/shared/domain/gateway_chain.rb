@@ -31,6 +31,7 @@ class GatewayChain
       if result.success?
         value = result.value!
         value[:data_source] = gateway.class.name
+        value[:source] ||= gateway.source_id
         return Success(value)
       end
 

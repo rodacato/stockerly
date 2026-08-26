@@ -24,6 +24,14 @@ module MarketData
         @token = api_key || resolve_api_key
       end
 
+      def self.source_id(exchange = DEFAULT_EXCHANGE)
+        "#{PROVIDER}/#{exchange.downcase}"
+      end
+
+      def source_id(exchange = DEFAULT_EXCHANGE)
+        self.class.source_id(exchange)
+      end
+
       # Returns Success({ symbol:, price:, change_percent:, volume:, as_of: })
       def fetch_price(symbol)
         result = fetch_bulk_prices([ symbol ])
@@ -119,6 +127,7 @@ module MarketData
 
         {
           symbol: symbol,
+          source: source_id(exchange),
           price: venue["u"].to_d,
           change_percent: venue["c"]&.to_d || BigDecimal("0"),
           volume: venue["v"]&.to_i,

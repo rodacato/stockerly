@@ -15,10 +15,12 @@ RSpec.describe MarketData::Gateways::DataBursatilGateway do
       result = gateway.fetch_bulk_prices(%w[WALMEX.MX GFNORTEO.MX])
 
       expect(result.value!).to eq([
-        { symbol: "WALMEX.MX", price: BigDecimal("68.1"), change_percent: BigDecimal("1.77"),
-          volume: 1_222_566, as_of: Time.zone.parse("2026-08-26 10:03:00") },
-        { symbol: "GFNORTEO.MX", price: BigDecimal("193.64"), change_percent: BigDecimal("1.77"),
-          volume: 1_222_566, as_of: Time.zone.parse("2026-08-26 10:03:00") }
+        { symbol: "WALMEX.MX", source: "DataBursatil/bmv", price: BigDecimal("68.1"),
+          change_percent: BigDecimal("1.77"), volume: 1_222_566,
+          as_of: Time.zone.parse("2026-08-26 10:03:00") },
+        { symbol: "GFNORTEO.MX", source: "DataBursatil/bmv", price: BigDecimal("193.64"),
+          change_percent: BigDecimal("1.77"), volume: 1_222_566,
+          as_of: Time.zone.parse("2026-08-26 10:03:00") }
       ])
     end
 
@@ -35,6 +37,17 @@ RSpec.describe MarketData::Gateways::DataBursatilGateway do
 
     # The same issuer trades on both venues at different prices and times, so
     # asking for one venue is what keeps a quote unambiguous.
+    # Provenance has to name the venue, not just the vendor: the two disagree.
+    it "records which venue produced the quote" do
+      stub_databursatil("/v2/cotizaciones", {
+        "AMXB" => { "biva" => databursatil_quote(last: 20.31) }
+      })
+
+      quote = gateway.fetch_bulk_prices(%w[AMXB.MX], exchange: "BIVA").value!.first
+
+      expect(quote[:source]).to eq("DataBursatil/biva")
+    end
+
     it "reads the requested venue and ignores the other" do
       stub_databursatil("/v2/cotizaciones", {
         "AMXB" => { "bmv" => databursatil_quote(last: 20.27), "biva" => databursatil_quote(last: 20.31) }

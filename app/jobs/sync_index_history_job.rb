@@ -24,8 +24,12 @@ class SyncIndexHistoryJob < ApplicationJob
       result.value!.each do |bar|
         next unless bar[:close]
 
-        index.market_index_histories.find_or_create_by!(date: bar[:date]) do |h|
+        index.market_index_histories.find_or_create_by!(date: bar[:date], interval: "1d") do |h|
           h.close_value = bar[:close]
+          h.source = MarketData::Gateways::YfinanceGateway.source_id
+          h.status = "confirmed"
+          h.as_of = bar[:date].end_of_day
+          h.fetched_at = Time.current
         end
         synced += 1
       rescue ActiveRecord::RecordNotUnique

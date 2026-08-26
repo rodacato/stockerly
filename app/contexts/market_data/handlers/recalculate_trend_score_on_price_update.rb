@@ -9,7 +9,7 @@ module MarketData
         asset = Asset.find_by(id: asset_id)
         return unless asset
 
-        histories = asset.asset_price_histories.recent(50)
+        histories = MarketData::Queries::PriceSeries.for(asset).recent(50)
         closes = histories.pluck(:close).map(&:to_f)
         volumes = histories.pluck(:volume).map(&:to_f)
 

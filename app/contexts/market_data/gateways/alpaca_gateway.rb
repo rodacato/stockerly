@@ -23,6 +23,12 @@ module MarketData
         raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "expected KEY_ID:SECRET") if @secret.blank?
       end
 
+      # feed=sip is always sent, and the response carries no field naming the
+      # feed that served it, so the request is the only record of which it was.
+      def self.source_id
+        "#{PROVIDER}/sip"
+      end
+
       def fetch_price(_symbol)
         Failure([ :no_entitlement, "#{PROVIDER} Basic cannot serve current prices; anything under 15 minutes is denied" ])
       end
