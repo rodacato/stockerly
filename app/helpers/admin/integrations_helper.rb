@@ -35,16 +35,10 @@ module Admin
       cetes:       "CETES"
     }.freeze
 
-    # Pulls capability labels from the DataSourceRegistry entries that map
-    # to this integration. Returns an es-MX uppercase string suitable as
-    # the provider-card "capability" subtitle.
-    def integration_capabilities_label(integration)
-      caps = DataSourceRegistry.all
-                               .select { |ds| ds.integration_name == integration.provider_name }
-                               .flat_map(&:capabilities)
-                               .uniq
-      return "—" if caps.empty?
-      caps.map { |c| CAPABILITY_LABELS[c] || c.to_s.upcase }.join(" · ")
+    def capabilities_label(capabilities)
+      return "—" if capabilities.empty?
+
+      capabilities.map { |c| CAPABILITY_LABELS[c] || c.to_s.upcase }.join(" · ")
     end
 
     def integration_website(integration)
@@ -57,68 +51,53 @@ module Admin
         t("admin.integrations.index.clave")
     end
 
-    # State for the Lumen status pill on a provider card.
-    # connected → :active · syncing → :active · disconnected (no key) → :error
-    def integration_pill_state(integration)
-      if integration.requires_api_key? && !integration.api_key_configured?
-        :paused
-      else
-        case integration.connection_status
-        when "connected", "syncing" then :active
-        when "disconnected"          then :error
-        else :paused
-        end
-      end
+    # D40's four states, and the token each paints with. `sin cuota` is our own
+    # counter and `bloqueada` is the provider refusing — different colours
+    # because they are different problems.
+    STATE_STYLES = {
+      connected: { dot: "bg-positive", fg: "text-positive", bar: "bg-positive" },
+      no_key:    { dot: "bg-fg-subtle", fg: "text-fg-subtle", bar: "bg-fg-subtle" },
+      no_quota:  { dot: "bg-warning",  fg: "text-warning",  bar: "bg-warning" },
+      blocked:   { dot: "bg-negative", fg: "text-negative", bar: "bg-negative" }
+    }.freeze
+
+    STATE_REASONS = {
+      no_key:   { key: "sin_llave_razon", icon: "key",   bg: "bg-bg-muted",     fg: "text-fg-subtle" },
+      no_quota: { key: "sin_cuota_razon", icon: "hourglass_top", bg: "bg-warning-bg", fg: "text-warning-fg" },
+      blocked:  { key: "bloqueada_razon", icon: "gpp_maybe", bg: "bg-negative-bg", fg: "text-negative-fg" }
+    }.freeze
+
+    def source_state_style(state)
+      STATE_STYLES.fetch(state, STATE_STYLES[:no_key])
     end
 
-    # Paused counts too: a source without its key is not serving data either,
-    # and the summary that ignored it read as healthier than the list below it.
-    def integrations_with_problems(integrations)
-      integrations.count { |i| integration_pill_state(i) != :active }
+    def source_state_reason(state)
+      STATE_REASONS[state]
     end
 
-    def integration_pill_meta(state)
-      case state
-      when :active
-        { label: "Activa",     fg: "text-positive", bg: "bg-positive/10", dot: "bg-positive" }
-      when :paused
-        { label: "Pausada",    fg: "text-warning",  bg: "bg-warning/10",  dot: "bg-warning" }
-      when :error
-        { label: "Error",      fg: "text-negative", bg: "bg-negative/10", dot: "bg-negative" }
-      else
-        { label: "Sin estado", fg: "text-fg-subtle", bg: "bg-bg-muted",   dot: "bg-fg-subtle" }
-      end
+    def source_state_label(state)
+      t("admin.integrations.index.estado.#{state}")
     end
 
-    def integration_rate_limit_label(integration)
-      min  = integration.max_requests_per_minute
-      day  = integration.daily_call_limit
-      return "—" if min.blank? && day.blank?
-      parts = []
-      parts << "#{min} req/min" if min.present?
-      parts << "#{number_with_delimiter(day)} req/día" if day.present?
-      parts.join(" · ")
+    def source_role_label(role)
+      t("admin.integrations.index.rol.#{role}")
     end
 
-    # `ajustes-integraciones` draws a usage bar the screen never showed, over
-    # counters the table has carried all along. Minute window when the
-    # provider is rate-limited per minute, daily otherwise.
-    def integration_usage(integration)
-      if integration.max_requests_per_minute.present?
-        [ integration.minute_calls, integration.max_requests_per_minute, :minuto ]
-      elsif integration.daily_call_limit.present?
-        [ integration.daily_api_calls, integration.daily_call_limit, :dia ]
-      end
+    # A near-limit source is still connected; the bar is what warns, so it
+    # carries the warning colour rather than the state's.
+    def source_bar_classes(entry)
+      return "bg-warning" if entry.state == :connected && entry.quota.near_limit?
+
+      source_state_style(entry.state)[:bar]
     end
 
-    def integration_usage_bar_classes(used, limit)
-      return "bg-fg-subtle" if limit.to_i.zero?
+    def source_quota_label(quota)
+      return t("admin.integrations.index.cuota_desconocida") unless quota.known?
 
-      ratio = used.to_f / limit
-      return "bg-negative" if ratio >= 1
-      return "bg-warning"  if ratio >= 0.7
-
-      "bg-positive"
+      t("admin.integrations.index.uso",
+        used: number_with_delimiter(quota.used),
+        limit: number_with_delimiter(quota.limit),
+        unit: t("admin.integrations.index.unidad.#{quota.unit}"))
     end
 
     def integration_last_check_label(integration)

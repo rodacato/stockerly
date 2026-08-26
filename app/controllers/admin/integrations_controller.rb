@@ -3,7 +3,8 @@ module Admin
     rate_limit to: 5, within: 1.minute, only: :refresh_sync
 
     def index
-      @integrations = Integration.order(:provider_name)
+      @sources = MarketData::Domain::SourceCatalogue.all
+      @integrations = Integration.where(provider_name: @sources.map(&:provider)).index_by(&:provider_name)
     end
 
     def create

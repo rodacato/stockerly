@@ -1,21 +1,23 @@
-<%# One source, per `ajustes-integraciones`: a state dot, what it brings, and
-    how much of its free limit is spent. It was a three-zone grid that only
-    resolved on a wide screen. Locals: integration %>
+<%# One source per `ajustes-integraciones`: what it brings, in what role, how
+    much of its own quota is left, and — when it is not working — whose problem
+    that is. Locals: entry (SourceCatalogue::Entry), integration %>
 <%
-  state = integration_pill_state(integration)
-  pill  = integration_pill_meta(state)
-  used, limit, window = integration_usage(integration)
-  keys  = integration.api_key_configured? ? 1 : 0
+  style  = source_state_style(entry.state)
+  reason = source_state_reason(entry.state)
 %>
 <li data-controller="reveal" class="flex flex-col gap-3 rounded-xl border border-border-default bg-bg-surface p-4">
   <div class="flex items-start gap-3">
-    <span class="mt-1.5 size-2 shrink-0 rounded-full <%= pill[:dot] || 'bg-fg-subtle' %>"
-          title="<%= pill[:label] %>" aria-hidden="true"></span>
+    <span class="mt-1.5 size-2 shrink-0 rounded-full <%= style[:dot] %>" aria-hidden="true"></span>
     <div class="min-w-0 flex-1">
-      <p class="font-semibold text-fg-default"><%= integration.provider_name %></p>
-      <p class="text-sm text-fg-subtle"><%= integration_capabilities_label(integration) %></p>
+      <div class="flex flex-wrap items-center gap-2">
+        <p class="font-semibold text-fg-default"><%= entry.provider %></p>
+        <span class="rounded-full bg-bg-muted px-2 py-0.5 text-[10px] font-semibold text-fg-subtle">
+          <%= source_role_label(entry.role) %>
+        </span>
+      </div>
+      <p class="text-sm text-fg-subtle"><%= entry.description || capabilities_label(entry.capabilities) %></p>
     </div>
-    <span class="shrink-0 font-mono text-xs uppercase <%= pill[:fg] %>"><%= pill[:label] %></span>
+    <span class="shrink-0 font-mono text-xs uppercase <%= style[:fg] %>"><%= source_state_label(entry.state) %></span>
     <%# The artboard puts a chevron here, to a per-source detail screen that
         does not exist. Rather than draw a dead affordance, it opens in place. %>
     <button type="button" data-action="reveal#toggle"
@@ -25,34 +27,38 @@
     </button>
   </div>
 
-  <% if used && limit.to_i.positive? %>
-    <div class="flex flex-col gap-1.5">
-      <div class="flex items-baseline justify-between gap-3">
-        <span class="font-mono text-sm text-fg-default">
-          <%= t("admin.integrations.index.uso", used: number_with_delimiter(used), limit: number_with_delimiter(limit), window: t("admin.integrations.index.#{window}")) %>
-        </span>
-        <span class="font-mono text-xs text-fg-subtle">
-          <%= t("admin.integrations.index.llaves", count: keys) %> · <%= integration_last_check_label(integration) %>
-        </span>
-      </div>
-      <div class="h-1.5 w-full overflow-hidden rounded-full bg-bg-muted">
-        <div class="h-full rounded-full <%= integration_usage_bar_classes(used, limit) %>"
-             style="width: <%= [ (used.to_f / limit * 100).round, 100 ].min %>%"></div>
-      </div>
+  <div class="flex flex-col gap-1.5">
+    <div class="flex items-baseline justify-between gap-3">
+      <span class="font-mono text-sm <%= entry.quota.known? ? "text-fg-default" : "text-fg-subtle" %>">
+        <%= source_quota_label(entry.quota) %>
+      </span>
+      <span class="font-mono text-xs text-fg-subtle"><%= integration_last_check_label(integration) %></span>
     </div>
-  <% else %>
-    <p class="font-mono text-xs text-fg-subtle">
-      <%= t("admin.integrations.index.llaves", count: keys) %> · <%= integration_last_check_label(integration) %>
+    <%# No track where there is no reading: an empty bar reads as 0% used,
+        which is a number we do not have. %>
+    <% if entry.quota.known? %>
+      <div class="h-1.5 w-full overflow-hidden rounded-full bg-bg-muted">
+        <div class="h-full rounded-full <%= source_bar_classes(entry) %>"
+             style="width: <%= (entry.quota.ratio * 100).round %>%"></div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if reason %>
+    <p class="flex items-start gap-2 rounded-lg <%= reason[:bg] %> px-3 py-2 text-sm <%= reason[:fg] %>">
+      <span class="material-symbols-outlined text-base" aria-hidden="true"><%= reason[:icon] %></span>
+      <%= t("admin.integrations.index.#{reason[:key]}") %>
+    </p>
+  <% end %>
+
+  <% if entry.maintainer_only %>
+    <p class="flex items-start gap-2 rounded-lg bg-warning-bg px-3 py-2 text-sm text-warning-fg">
+      <span class="material-symbols-outlined text-base" aria-hidden="true">lock_clock</span>
+      <%= t("admin.integrations.index.solo_maintainer") %>
     </p>
   <% end %>
 
   <div data-reveal-target="content" class="hidden flex-col gap-3 border-t border-border-default pt-3">
-    <% if state == :error %>
-      <p class="rounded-lg bg-negative-bg px-3 py-2 text-sm text-negative-fg"><%= t("admin.integrations.index.sin_respuesta") %></p>
-    <% elsif state == :paused && integration.requires_api_key? && !integration.api_key_configured? %>
-      <p class="rounded-lg bg-warning/10 px-3 py-2 text-sm text-warning"><%= t("admin.integrations.index.sin_llave") %></p>
-    <% end %>
-
     <div class="flex flex-wrap items-center gap-2">
       <%= button_to t("admin.integrations.index.verificar"), refresh_sync_admin_integration_path(integration), method: :post,
             form_class: "inline-flex",
@@ -78,7 +84,7 @@
               class: "cursor-pointer rounded-lg border border-border-default px-3 py-2 text-sm font-medium text-fg-default" %>
       <% end %>
       <%= button_to admin_integration_path(integration), method: :delete,
-            form: { class: "inline-flex", data: { turbo_confirm: t("admin.integrations.index.confirmar_fuente", provider: integration.provider_name) } },
+            form: { class: "inline-flex", data: { turbo_confirm: t("admin.integrations.index.confirmar_fuente", provider: entry.provider) } },
             class: "flex size-10 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-negative",
             aria: { label: t("admin.integrations.index.eliminar_fuente") } do %>
         <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>

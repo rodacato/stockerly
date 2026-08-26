@@ -36,32 +36,31 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
     expect(page).to have_link("Configurar integraciones", href: onboarding_integrations_path)
   end
 
-  it "shows the Activa pill when the integration is connected with a default key" do
+  it "shows a connected source with its quota in the provider's own unit" do
     create(:integration, provider_name: "Alpaca", provider_type: "Stocks",
                          connection_status: :connected, daily_call_limit: 500, max_requests_per_minute: 5)
     visit admin_integrations_path
 
-    expect(page).to have_content("Activa")
-    # The usage bar the artboard draws, over counters the table already had
-    # and no screen ever showed.
+    expect(page).to have_content("Conectada")
     expect(page).to have_content("0 / 5 por minuto")
-    expect(page).to have_content("1 llave")
   end
 
-  it "shows the Pausada pill and the add-key callout when no keys are configured" do
+  it "says a missing key is the instance's problem, not the provider's" do
     integration = create(:integration, :keyless, provider_name: "Finnhub", provider_type: "Sentiment")
     integration.update!(requires_api_key: true)
     visit admin_integrations_path
 
-    expect(page).to have_content("Pausada")
-    expect(page).to have_content("sin llave")
+    expect(page).to have_content("Sin llave")
+    expect(page).to have_content("Es tu instancia")
   end
 
-  it "shows the Error pill when disconnected" do
+  # The state the screen had no way to show, and the reason the work exists.
+  it "shows a source the provider is refusing as blocked, and says so" do
     create(:integration, :disconnected, provider_name: "Yahoo Finance", provider_type: "Backup")
     visit admin_integrations_path
 
-    expect(page).to have_content("Error")
+    expect(page).to have_content("Bloqueada")
+    expect(page).to have_content("Es el proveedor")
   end
 
   it "offers the masked last-4 as the key field's placeholder" do
