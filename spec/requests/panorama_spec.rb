@@ -149,6 +149,28 @@ RSpec.describe "Panorama", type: :request do
     end
   end
 
+  # Every link on this screen pointed at Activos, under three labels, because
+  # each was written while its real destination was unbuilt or deleted.
+  describe "where its links go" do
+    before do
+      asset = mxn_asset(symbol: "HELD", current_price: 10)
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 8, status: :open)
+      get dashboard_path
+    end
+
+    it "sends the patrimonio strip to the Consolidado" do
+      expect(response.body).to include("href=\"#{portfolio_path}\"")
+    end
+
+    it "sends the Radar to Activos" do
+      expect(response.body).to include("href=\"#{assets_path}\"")
+    end
+
+    it "offers no link out of Movimientos, which has no screen to reach" do
+      expect(response.body).not_to include("Ver más")
+    end
+  end
+
   describe "the patrimonio strip and late capture" do
     # This screen rendered "+20.0% hoy" for a purchase recorded late.
     it "does not report a backdated purchase as today's move" do
