@@ -311,20 +311,20 @@ RSpec.describe GatewayChain do
   describe "#fetch_overview" do
     let(:overview_data) { { symbol: "AAPL", name: "Apple Inc.", eps: 6.42.to_d, market_cap: 3_100_000_000_000.to_d } }
     let(:av_gateway) { instance_double(MarketData::Gateways::AlphaVantageGateway) }
-    let(:fmp_gateway) { instance_double(MarketData::Gateways::FmpGateway) }
+    let(:secondary_gateway) { instance_double(MarketData::Gateways::FundamentalsGateway) }
 
     before do
       allow(av_gateway).to receive_messages(class: MarketData::Gateways::AlphaVantageGateway)
-      allow(fmp_gateway).to receive_messages(class: MarketData::Gateways::FmpGateway)
+      allow(secondary_gateway).to receive_messages(class: MarketData::Gateways::FundamentalsGateway)
     end
 
     context "when primary gateway succeeds" do
       it "returns the result with data_source" do
         allow(av_gateway).to receive(:respond_to?).with(:fetch_overview).and_return(true)
         allow(av_gateway).to receive(:fetch_overview).and_return(Success(overview_data.dup))
-        allow(fmp_gateway).to receive(:respond_to?).with(:fetch_overview).and_return(true)
+        allow(secondary_gateway).to receive(:respond_to?).with(:fetch_overview).and_return(true)
 
-        chain = described_class.new(gateways: [ av_gateway, fmp_gateway ])
+        chain = described_class.new(gateways: [ av_gateway, secondary_gateway ])
         result = chain.fetch_overview("AAPL")
 
         expect(result).to be_success
@@ -336,14 +336,14 @@ RSpec.describe GatewayChain do
       it "returns fallback result with correct data_source" do
         allow(av_gateway).to receive(:respond_to?).with(:fetch_overview).and_return(true)
         allow(av_gateway).to receive(:fetch_overview).and_return(Failure([ :rate_limited, "Rate limited" ]))
-        allow(fmp_gateway).to receive(:respond_to?).with(:fetch_overview).and_return(true)
-        allow(fmp_gateway).to receive(:fetch_overview).and_return(Success(overview_data.dup))
+        allow(secondary_gateway).to receive(:respond_to?).with(:fetch_overview).and_return(true)
+        allow(secondary_gateway).to receive(:fetch_overview).and_return(Success(overview_data.dup))
 
-        chain = described_class.new(gateways: [ av_gateway, fmp_gateway ])
+        chain = described_class.new(gateways: [ av_gateway, secondary_gateway ])
         result = chain.fetch_overview("AAPL")
 
         expect(result).to be_success
-        expect(result.value![:data_source]).to eq("MarketData::Gateways::FmpGateway")
+        expect(result.value![:data_source]).to eq("MarketData::Gateways::FundamentalsGateway")
       end
     end
   end

@@ -26,7 +26,15 @@
           </div>
 
           <% if info&.description %>
-            <p class="text-sm text-fg-subtle mb-3"><%= info.description %></p>
+            <p class="text-sm text-fg-subtle mb-2"><%= info.description %></p>
+          <% end %>
+
+          <%# The key is skippable, so the screen has to say what skipping costs. %>
+          <% if info&.without %>
+            <p class="flex items-start gap-2 rounded-lg bg-bg-muted px-3 py-2 mb-3 text-sm text-fg-subtle">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">block</span>
+              <span><%= t(".sin_esta_llave") %> <%= info.without %></span>
+            </p>
           <% end %>
 
           <label class="block text-sm text-fg-subtle mb-1" for="api_key_<%= integration.id %>"><%= t(".api_key") %></label>

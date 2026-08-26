@@ -1,13 +1,14 @@
 require "rails_helper"
 
 RSpec.describe SyncDividendsJob, type: :job do
-  let(:gateway) { instance_double(MarketData::Gateways::FmpGateway) }
+  let(:gateway) { instance_double(MarketData::Gateways::AlpacaGateway) }
   let(:asset) { create(:asset, :stock) }
   let(:portfolio) { create(:portfolio) }
   let!(:position) { create(:position, portfolio: portfolio, asset: asset, status: :open) }
 
   before do
-    allow(MarketData::Gateways::FmpGateway).to receive(:new).and_return(gateway)
+    create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKID:secret")
+    allow(MarketData::Gateways::AlpacaGateway).to receive(:new).and_return(gateway)
   end
 
   it "syncs dividends for assets with open positions" do
@@ -22,9 +23,11 @@ RSpec.describe SyncDividendsJob, type: :job do
       .and change(DividendPayment, :count).by(1)
   end
 
-  it "skips assets when gateway returns failure" do
+  it "skips assets when the chain has nothing to offer" do
     allow(gateway).to receive(:fetch_dividends)
-      .and_return(Dry::Monads::Failure([ :gateway_error, "FMP error" ]))
+      .and_return(Dry::Monads::Failure([ :not_found, "no dividends" ]))
+    allow(PythonRunner).to receive(:call)
+      .and_return(Dry::Monads::Failure([ :not_found, "no dividends" ]))
 
     expect { described_class.perform_now }.not_to change(Dividend, :count)
   end

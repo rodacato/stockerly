@@ -1,6 +1,5 @@
-# Syncs dividend data from FMP for assets with open positions.
-# Creates Dividend records and DividendPayment records for portfolios holding each asset.
-# Runs weekly to conserve FMP API budget (250 calls/day free tier).
+# Syncs dividends for assets with open positions, from whichever source serves
+# the asset's market: Alpaca for US, the yfinance bridge for the BMV (#312).
 class SyncDividendsJob < ApplicationJob
   include PausableSync
   include SyncLogging
@@ -8,12 +7,11 @@ class SyncDividendsJob < ApplicationJob
   queue_as :default
 
   def perform
-    gateway = MarketData::Gateways::FmpGateway.new
     asset_count = 0
     dividend_count = 0
 
     assets_with_open_positions.each do |asset|
-      result = gateway.fetch_dividends(asset.symbol)
+      result = chain_for(asset).fetch_dividends(asset.gateway_symbols)
       next if result.failure?
 
       synced = sync_dividends_for(asset, result.value!)
@@ -32,6 +30,10 @@ class SyncDividendsJob < ApplicationJob
   end
 
   private
+
+  def chain_for(asset)
+    GatewayChain.for_capability(:dividends, market: asset.market, asset_type: asset.asset_type)
+  end
 
   def assets_with_open_positions
     Asset.where(id: Position.open.select(:asset_id).distinct)

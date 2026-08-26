@@ -78,6 +78,9 @@ RSpec.describe SyncFundamentalJob, type: :job do
         stub_alpha_vantage_rate_limited
       end
 
+      # Real coverage on a 25-call budget where the key predates the gate, and
+      # a declared nothing where it does not — which is why the source stays
+      # and the card says who it works for (#312).
       it "falls back to FMP when available" do
         stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/AAPL})
           .to_return(
@@ -95,8 +98,7 @@ RSpec.describe SyncFundamentalJob, type: :job do
         expect { described_class.perform_now(asset.id) }
           .to change(AssetFundamental, :count).by(1)
 
-        fundamental = AssetFundamental.last
-        expect(fundamental.source).to include("FmpGateway")
+        expect(AssetFundamental.last.source).to include("FmpGateway")
       end
     end
 
