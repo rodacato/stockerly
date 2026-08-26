@@ -237,7 +237,7 @@ RSpec.describe MarketData::Gateways::FmpGateway do
   describe "API key resolution" do
     context "when Integration record exists with valid key" do
       before do
-        create(:integration, provider_name: "FMP", pool_key_value: "db_key")
+        create(:integration, provider_name: "FMP", api_key_encrypted: "db_key")
       end
 
       it "uses the database key" do

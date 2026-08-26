@@ -23,13 +23,10 @@ RSpec.describe Administration::UseCases::Integrations::DeleteProvider do
         described_class.call(admin: admin, params: { id: integration.id })
       end
 
-      it "cascades deletion to pool keys" do
-        create(:api_key_pool, integration: integration)
-        create(:api_key_pool, integration: integration)
-
+      it "takes the provider's key with it" do
         expect {
           described_class.call(admin: admin, params: { id: integration.id })
-        }.to change(ApiKeyPool, :count).by(-3)
+        }.to change(Integration, :count).by(-1)
       end
     end
 

@@ -3,7 +3,7 @@ module Admin
     rate_limit to: 5, within: 1.minute, only: :refresh_sync
 
     def index
-      @integrations = Integration.includes(:api_key_pools).order(:provider_name)
+      @integrations = Integration.order(:provider_name)
     end
 
     def create
@@ -62,7 +62,7 @@ module Admin
     end
 
     def update_params
-      params.require(:integration).permit(:daily_call_limit, :max_requests_per_minute)
+      params.require(:integration).permit(:daily_call_limit, :max_requests_per_minute, :api_key_encrypted)
     end
   end
 end

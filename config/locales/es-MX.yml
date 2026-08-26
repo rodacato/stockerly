@@ -3,19 +3,14 @@ es-MX:
   admin:
     integrations:
       index:
-        activar: Activar
         administrar: Administrar fuente
-        agregar_llave: Agregar llave
         clave: Clave API
         configurar: Configurar integraciones
-        confirmar_fuente: "¿Eliminar %{provider}? Se borran todas sus llaves."
-        confirmar_llave: "¿Eliminar esta llave del pool?"
+        confirmar_fuente: "¿Eliminar %{provider}? Se borra también su llave."
         descripcion: De dónde salen tus precios. Cada fuente trae su propio límite
           gratuito, y ese límite es el que reparte el presupuesto de Rastreados.
         dia: por día
         eliminar_fuente: Eliminar fuente
-        eliminar_llave: Eliminar llave
-        etiqueta: Etiqueta
         guardar: Guardar
         limite_diario: Límite diario
         limite_minuto: Por minuto
@@ -24,13 +19,12 @@ es-MX:
           other: "%{count} llaves"
           zero: sin llave
         minuto: por minuto
-        pausar: Pausar
-        pools_nota: Varias llaves de la misma fuente se rotan para estirar el límite
-          gratuito. Es la razón por la que existen los pools (D18).
+        llave_nota: Una llave por fuente. Si una se queda sin cuota o falla, el respaldo
+          es otra fuente que cubra el mismo dato — no otra llave de la misma.
         resumen:
           one: 1 fuente · %{problem} con problema
           other: "%{count} fuentes · %{problem} con problema"
-        sin_llaves_activas: Sin llaves activas — agrega una para reanudar.
+        sin_llave: Sin llave — agrega una para reanudar.
         sin_respuesta: Conexión sin respuesta válida. Verifica las llaves y reintenta.
         titulo: Integraciones
         uso: "%{used} / %{limit} %{window}"

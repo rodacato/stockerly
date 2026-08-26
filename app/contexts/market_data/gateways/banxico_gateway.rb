@@ -37,6 +37,9 @@ module MarketData
     # Returns Success([{ date:, rate: }, ...]) — a range so history can be
     # backfilled in one call instead of one request per day (ADR-009).
     def fetch_fx_fixes(from: Date.current, to: Date.current)
+      check = RateLimiter.check!(PROVIDER)
+      return check if check.failure?
+
       path = "series/#{FIX_SERIES}/datos/#{format_date(from)}/#{format_date(to)}"
       response = connection.get(path)
 
@@ -74,7 +77,7 @@ module MarketData
     private
 
     def resolve_api_key
-      key = KeyRotation.next_key_for(PROVIDER)
+      key = ApiKeyResolver.for(PROVIDER)
       raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
       key
     rescue ActiveRecord::Encryption::Errors::Decryption
@@ -97,6 +100,9 @@ module MarketData
     def auctions_for(term, path_segment)
       series_id = CETES_SERIES[term.to_s]
       return Failure([ :not_found, "Unknown CETES term: #{term}" ]) unless series_id
+
+      check = RateLimiter.check!(PROVIDER)
+      return check if check.failure?
 
       response = connection.get("series/#{series_id}/datos/#{path_segment}")
 

@@ -27,7 +27,7 @@ module Administration
           update_attrs = attrs.except(:id, :api_key_encrypted).compact
 
           if api_key_value.present?
-            upsert_default_pool_key(integration, api_key_value)
+            integration.update!(api_key_encrypted: api_key_value)
             if integration.connection_status != "connected"
               update_attrs[:connection_status] = :connected
               update_attrs[:last_sync_at] = Time.current
@@ -44,20 +44,6 @@ module Administration
 
           integration.update!(update_attrs) if update_attrs.present?
           Success(changes)
-        end
-
-        def upsert_default_pool_key(integration, api_key_value)
-          default_key = integration.api_key_pools.find_by(is_default: true)
-          if default_key
-            default_key.update!(api_key_encrypted: api_key_value)
-          else
-            integration.api_key_pools.create!(
-              name: "Default",
-              api_key_encrypted: api_key_value,
-              is_default: true,
-              enabled: true
-            )
-          end
         end
       end
     end

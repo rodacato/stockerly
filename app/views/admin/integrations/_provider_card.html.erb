@@ -5,9 +5,7 @@
   state = integration_pill_state(integration)
   pill  = integration_pill_meta(state)
   used, limit, window = integration_usage(integration)
-  # Sorted in Ruby to reuse the pools preloaded by the controller's
-  # `includes(:api_key_pools)`; .order would issue a query per card.
-  keys  = integration.api_key_pools.sort_by { |k| [ k.is_default? ? 0 : 1, k.name.to_s ] }
+  keys  = integration.api_key_configured? ? 1 : 0
 %>
 <li data-controller="reveal" class="flex flex-col gap-3 rounded-xl border border-border-default bg-bg-surface p-4">
   <div class="flex items-start gap-3">
@@ -19,8 +17,7 @@
     </div>
     <span class="shrink-0 font-mono text-xs uppercase <%= pill[:fg] %>"><%= pill[:label] %></span>
     <%# The artboard puts a chevron here, to a per-source detail screen that
-        does not exist. Rather than draw a dead affordance or drop the pool
-        management that lived on this card, it opens in place. %>
+        does not exist. Rather than draw a dead affordance, it opens in place. %>
     <button type="button" data-action="reveal#toggle"
             aria-label="<%= t("admin.integrations.index.administrar") %>"
             class="flex size-8 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
@@ -35,7 +32,7 @@
           <%= t("admin.integrations.index.uso", used: number_with_delimiter(used), limit: number_with_delimiter(limit), window: t("admin.integrations.index.#{window}")) %>
         </span>
         <span class="font-mono text-xs text-fg-subtle">
-          <%= t("admin.integrations.index.llaves", count: keys.size) %> · <%= integration_last_check_label(integration) %>
+          <%= t("admin.integrations.index.llaves", count: keys) %> · <%= integration_last_check_label(integration) %>
         </span>
       </div>
       <div class="h-1.5 w-full overflow-hidden rounded-full bg-bg-muted">
@@ -45,7 +42,7 @@
     </div>
   <% else %>
     <p class="font-mono text-xs text-fg-subtle">
-      <%= t("admin.integrations.index.llaves", count: keys.size) %> · <%= integration_last_check_label(integration) %>
+      <%= t("admin.integrations.index.llaves", count: keys) %> · <%= integration_last_check_label(integration) %>
     </p>
   <% end %>
 
@@ -53,49 +50,18 @@
     <% if state == :error %>
       <p class="rounded-lg bg-negative-bg px-3 py-2 text-sm text-negative-fg"><%= t("admin.integrations.index.sin_respuesta") %></p>
     <% elsif state == :paused && integration.requires_api_key? && !integration.api_key_configured? %>
-      <p class="rounded-lg bg-warning/10 px-3 py-2 text-sm text-warning"><%= t("admin.integrations.index.sin_llaves_activas") %></p>
-    <% end %>
-
-    <% if keys.any? %>
-      <ul class="flex flex-col gap-2">
-        <% keys.each do |pool_key| %>
-          <li class="flex items-center gap-2">
-            <span class="size-1.5 shrink-0 rounded-full <%= pool_key_dot_class(pool_key_status(pool_key)) %>" aria-hidden="true"></span>
-            <span class="font-mono text-sm text-fg-default">••••<%= pool_key_short_id(pool_key) %></span>
-            <% if pool_key.is_default? %>
-              <span class="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-xs text-primary">DEFAULT</span>
-            <% end %>
-            <span class="flex-1"></span>
-            <%= button_to pool_key.enabled? ? t("admin.integrations.index.pausar") : t("admin.integrations.index.activar"),
-                  toggle_admin_integration_pool_key_path(integration, pool_key), method: :patch,
-                  form_class: "inline-flex",
-                  class: "rounded px-2 py-1 text-sm text-fg-subtle transition-colors hover:text-primary" %>
-            <%= button_to admin_integration_pool_key_path(integration, pool_key), method: :delete,
-                  form: { class: "inline-flex", data: { turbo_confirm: t("admin.integrations.index.confirmar_llave") } },
-                  class: "flex size-8 items-center justify-center rounded text-fg-subtle transition-colors hover:text-negative",
-                  aria: { label: t("admin.integrations.index.eliminar_llave") } do %>
-              <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
-            <% end %>
-          </li>
-        <% end %>
-      </ul>
-    <% end %>
-
-    <%= form_with url: admin_integration_pool_keys_path(integration), method: :post,
-          class: "flex flex-wrap items-center gap-2" do |f| %>
-      <%= f.text_field :name, name: "api_key_pool[name]", placeholder: t("admin.integrations.index.etiqueta"),
-            class: "min-w-[140px] flex-1 rounded-lg border border-border-default bg-bg-canvas px-3 py-2 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary/20" %>
-      <%= f.text_field :api_key_encrypted, name: "api_key_pool[api_key_encrypted]", placeholder: t("admin.integrations.index.clave"),
-            class: "min-w-[160px] flex-[2] rounded-lg border border-border-default bg-bg-canvas px-3 py-2 font-mono text-sm text-fg-default placeholder:font-sans placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary/20" %>
-      <%= f.submit t("admin.integrations.index.agregar_llave"),
-            class: "cursor-pointer rounded-lg border border-border-default px-3 py-2 text-sm font-medium text-fg-default" %>
+      <p class="rounded-lg bg-warning/10 px-3 py-2 text-sm text-warning"><%= t("admin.integrations.index.sin_llave") %></p>
     <% end %>
 
     <div class="flex flex-wrap items-center gap-2">
       <%= button_to t("admin.integrations.index.verificar"), refresh_sync_admin_integration_path(integration), method: :post,
             form_class: "inline-flex",
             class: "rounded-lg bg-primary/10 px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/15" %>
-      <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex items-center gap-2" do |f| %>
+      <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex flex-wrap items-center gap-2" do |f| %>
+        <%= f.password_field :api_key_encrypted, name: "integration[api_key_encrypted]", value: nil,
+              placeholder: integration.masked_api_key || t("admin.integrations.index.clave"),
+              autocomplete: "off",
+              class: "min-w-[160px] flex-1 rounded-lg border border-border-default bg-bg-canvas px-3 py-2 font-mono text-sm text-fg-default placeholder:font-sans placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary/20" %>
         <%= f.number_field :daily_call_limit, name: "integration[daily_call_limit]", value: integration.daily_call_limit,
               title: t("admin.integrations.index.limite_diario"),
               class: "w-24 rounded-lg border border-border-default bg-bg-canvas px-2 py-2 font-mono text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-primary/20" %>

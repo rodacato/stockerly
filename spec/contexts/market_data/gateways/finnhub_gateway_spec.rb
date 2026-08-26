@@ -334,7 +334,7 @@ RSpec.describe MarketData::Gateways::FinnhubGateway do
   describe "API key resolution" do
     context "when Integration record exists with valid key" do
       before do
-        create(:integration, provider_name: "Finnhub", pool_key_value: "db_key")
+        create(:integration, provider_name: "Finnhub", api_key_encrypted: "db_key")
       end
 
       it "uses the database key" do

@@ -202,7 +202,7 @@ module MarketData
     end
 
     def resolve_api_key
-      key = KeyRotation.next_key_for(PROVIDER)
+      key = ApiKeyResolver.for(PROVIDER)
       raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
       key
     rescue ActiveRecord::Encryption::Errors::Decryption
