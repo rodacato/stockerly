@@ -56,7 +56,7 @@ Lumen token contract; `t(...)` is ADR-011. A screen is 2.0 when the first column
 | `admin/logs` | 0 | 24 | 14 | ✅ 2.0 | yes — closed 2026-08-26 |
 | `admin/integrations` | 0 | 27 | 26 | ✅ 2.0 | yes — closed 2026-08-26 |
 | `admin/settings` | 0 | 17 | 18 | ✅ 2.0 | yes — closed 2026-08-26 |
-| `market` | 159 | 68 | 24 | ✗ pre-2.0 | the detail, yes |
+| `market` | 0 | 175 | 83 | ✅ 2.0 | yes — closed 2026-08-26 |
 | `positions` | 33 | 1 | 1 | ✗ pre-2.0 | no — kept, reviewed at #294 (D35) |
 | `shared` | 32 | 12 | 0 | ✗ pre-2.0 | mixed |
 | ~~`admin/dashboard`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D34) |
@@ -97,12 +97,13 @@ Slice 7. The only directory that is 2.0 on all three measures.
 `assets` is clean. `trades` is mixed at 26 slate: the sheet at `/trades/new` was redesigned, the
 older `_trade_form` / `_trade_row` / `_edit_row` around it were not.
 
-### Cockpit — ◐ the screens are faithful, the depth behind them is not
+### Cockpit — ✅ faithful, depth included
 
 Panorama, Consolidado and the asset detail's two tabs all match. What does not: the partials the
 asset detail renders *below* those tabs, which no slice touched.
 
-`market/` holds 159 slate lines, and they are not spread evenly:
+**Closed 2026-08-26.** `market/` is at zero on all three measures. What follows is the state that
+produced #294, kept because the partial table is still the map of what the detail renders:
 
 | Partial | slate | Reachable from |
 |---|---:|---|
@@ -113,10 +114,10 @@ asset detail renders *below* those tabs, which no slice touched.
 | `_statement_table` / `_statements_tab` | 20 | asset detail |
 | `_analyst_target` | 10 | asset detail |
 
-**Every one now hangs off a screen that is designed** — `_listings_table` and `_filters` went with
-the listing (D31), so nothing left in `market/` belongs to a screen without an artboard. Open a
-CETES asset and the header is 2.0 while the body underneath it is 2019. That is #294, and it is the
-next piece of work that needs no decision first.
+**Every one hung off a screen that is designed** — `_listings_table` and `_filters` went with the
+listing (D31). Opening a CETES asset used to show a 2.0 header over a 2019 body; the two heaviest
+partials were rewritten rather than tokenised, `_summary_tab` and `_category_tab` were deleted when
+the scroll absorbed them, and `Señales` is the one block the data cannot support ([#306](https://github.com/rodacato/stockerly/issues/306)).
 
 ### Reglas — ✗ the largest gap in the app
 
@@ -215,7 +216,15 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
    the two capabilities that had nowhere else to go.
 4. ✅ **`admin/assets`** — deleted with the above. `toggle_status` turned out to be the same action
    as `assets#toggle_sync`, already on Rastreados.
-5. ◐ **The asset-detail depth** → [#294](https://github.com/rodacato/stockerly/issues/294).
+5. ✅ **The asset-detail depth** → [#294](https://github.com/rodacato/stockerly/issues/294).
+   Done 2026-08-26. `market/` went 159 slate → 0 and 1 i18n key → 83; the sub-tabs flattened into
+   the artboard's scroll with the glossary's tail behind one control; Contexto de mercado and the
+   confluence semaphore are built. Two bugs were found by screenshotting it and fixed with it —
+   six of the ten Resumen cards rendered "—" on data that had arrived, and every percentage was
+   100× too small. **`Señales` and `Más análisis` could not be built** → [#306](https://github.com/rodacato/stockerly/issues/306):
+   `TechnicalObservation` stores events, not state, and nothing persists today's RSI. See D37.
+
+   The original scoping line, kept because it explains what was decided before the work started:
    Scoped 2026-08-26 to the **Análisis tab only**, with four decisions taken: the sub-tabs flatten
    into the artboard's scroll with *"Ver todos los fundamentales"* opening an accordion in place;
    the confluence semaphore ships lights 1 and 3 real and light 2 as *próximamente*; the 36-metric
