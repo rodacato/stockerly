@@ -22,6 +22,21 @@ RSpec.describe "stockerly:sync rake task" do
       end
     end
 
+    it "names an integration the registry no longer defines" do
+      create(:integration, provider_name: "AI Intelligence", provider_type: "LLM")
+
+      expect {
+        Rake::Task["stockerly:sync"].invoke
+      }.to output(/No longer in the registry.*AI Intelligence/m).to_stdout
+    end
+
+    it "keeps quiet when every integration is still registered" do
+      Rake::Task["stockerly:sync"].invoke
+
+      expect(Integration.pluck(:provider_name))
+        .to match_array(DataSourceRegistry.all.map(&:integration_name).uniq)
+    end
+
     it "is idempotent — running twice does not duplicate records" do
       Rake::Task["stockerly:sync"].invoke
       count_after_first = Integration.count

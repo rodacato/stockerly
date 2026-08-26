@@ -51,6 +51,17 @@ namespace :stockerly do
     existing = provider_names.size - created
     puts "Integrations: #{created} created, #{existing} already exist, #{Integration.count} total"
     report_limit_drift(provider_names)
+    report_orphans(provider_names)
+  end
+
+  # Sync only ever creates, so a provider retired from the registry keeps its
+  # row -- and its card in the admin -- long after the code that used it is gone.
+  def report_orphans(provider_names)
+    orphans = Integration.where.not(provider_name: provider_names).order(:provider_name)
+    return if orphans.empty?
+
+    puts "\nNo longer in the registry (delete from Admin > Integrations if retired):"
+    orphans.each { |i| puts "  #{i.provider_name} -- #{i.provider_type}" }
   end
 
   # Defaults apply on create only, so an existing row keeps whatever it had.
