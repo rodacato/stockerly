@@ -76,21 +76,17 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("Agregar a watchlist")
     end
 
-    it "renders the always-visible Resumen tab" do
+    # D36 flattened the sub-tabs into the artboard's single scroll. What used to
+    # be a tab strip is now a section that is present or absent.
+    it "omits the fundamentals and statements sections when their data is absent" do
       get market_asset_path(asset.symbol)
 
-      expect(response.body).to match(/>\s*Resumen\s*</)
+      expect(response.body).not_to include(I18n.t("market.fundamentals_block.titulo"))
+      expect(response.body).not_to include(I18n.t("market.statements_tab.titulo"))
+      expect(response.body).not_to include(I18n.t("market.dividend_history.titulo"))
     end
 
-    it "drops 4-letter tabs when fundamentals/dividends/statements are absent" do
-      get market_asset_path(asset.symbol)
-
-      expect(response.body).not_to match(/>\s*Valoración\s*</)
-      expect(response.body).not_to match(/>\s*Dividendos\s*</)
-      expect(response.body).not_to match(/>\s*Estados financieros\s*</)
-    end
-
-    it "renders Valoración + Estados financieros tabs when data exists" do
+    it "renders the fundamentals and statements sections when data exists" do
       create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
         metrics: { "pe_ratio" => "31.25" })
       create(:financial_statement, asset: asset,
@@ -100,8 +96,20 @@ RSpec.describe "Market Asset Detail", type: :request do
 
       get market_asset_path(asset.symbol)
 
-      expect(response.body).to match(/>\s*Valoración\s*</)
-      expect(response.body).to match(/>\s*Estados financieros\s*</)
+      expect(response.body).to include(I18n.t("market.fundamentals_block.titulo"))
+      expect(response.body).to include(I18n.t("market.statements_tab.titulo"))
+    end
+
+    it "offers the rest of the glossary behind one control rather than a screen" do
+      # forward_pe and gross_margin sit outside the extract, so they are what
+      # the accordion has to hold.
+      create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
+        metrics: { "pe_ratio" => "31.25", "forward_pe" => "28.4", "gross_margin" => "0.46" })
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include(I18n.t("market.fundamentals_block.ver_todos"))
+      expect(response.body).to include("data-reveal-target=\"content\"")
     end
 
     it "shows the GAAP label inside the statements tab" do

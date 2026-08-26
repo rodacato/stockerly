@@ -329,9 +329,18 @@ es-MX:
     - noviembre
     - diciembre
   market:
-    category_tab:
-      vacio_cuerpo: Los datos fundamentales aún no se han sincronizado para este activo.
-      vacio_titulo: Sin datos disponibles
+    acciones:
+      crear_regla: Crear regla
+      registrar: Registrar operación
+    categorias:
+      crypto_market: Mercado cripto
+      dividends: Dividendos
+      growth: Crecimiento
+      health: Salud financiera
+      identity: Ficha
+      profitability: Rentabilidad
+      risk: Riesgo
+      valuation: Valuación
     chips:
       como_el_mercado: se mueve como el mercado
       cubre_corto_plazo: cubre el corto plazo
@@ -339,6 +348,26 @@ es-MX:
       liquidez_corta: liquidez corta
       sobre_utilidades: paga más de lo que gana
       volatil: volátil
+    confluence:
+      confirmacion: Señal de confirmación
+      confirmacion_pendiente: En camino — próximamente.
+      extension_detalle: Lectura de RSI y bandas de Bollinger sobre los últimos 30
+        días.
+      extension_neutral: Sin extremos
+      extension_oversold: Sobreventa activa
+      extension_stretched: Sobrecompra activa
+      subtitulo: Tres señales, leídas por separado
+      tendencia: Cambio de tendencia
+      tendencia_bearish: El precio cruzó su media a la baja · %{when}
+      tendencia_bullish: El precio cruzó su media al alza · %{when}
+      tendencia_sin_datos: Sin cruces de medias en los últimos 30 días.
+      titulo: Semáforo de confluencia
+    divergencia:
+      aligned: "%{symbol} se movió %{asset_change} hoy, en línea con %{index} (%{index_change})."
+      asset_led: "%{symbol} se movió %{asset_change} hoy contra %{index_change} de
+        %{index}: el movimiento es sobre todo del activo, no del mercado."
+      market_led: "%{index} se movió %{index_change} hoy y %{symbol} %{asset_change}:
+        el movimiento es sobre todo del mercado, no del activo."
     dividend_history:
       col_ex: Ex-dividendo
       col_monto: Monto / acción
@@ -423,10 +452,19 @@ es-MX:
         other: Vence el %{date} · faltan %{count} días.
       vencimiento: Vencimiento
       via_cetes_directo: vía Cetes Directo
+    fundamentals_block:
+      titulo: Fundamentales
+      ver_todos: Ver todos los fundamentales
     header:
       agregar_watchlist: Agregar a watchlist
       quitar_watchlist: Quitar de watchlist
       sin_precio: Precio no disponible
+    market_context:
+      abierto: abierto
+      cerrado: cerrado
+      fear_greed: Fear & Greed
+      hoy: hoy
+      titulo: Contexto de mercado
     metricas:
       ath_price:
         desc: El precio más alto jamás registrado
@@ -630,6 +668,7 @@ es-MX:
       sin_balance: Sin datos del balance general.
       sin_flujo: Sin datos del flujo de efectivo.
       sin_resultados: Sin datos del estado de resultados.
+      titulo: Estados financieros
       vacio_cuerpo: Aún no tenemos estados financieros para este activo. Los datos
         se actualizan semanalmente.
       vacio_titulo: Sin estados financieros
