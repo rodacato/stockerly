@@ -50,7 +50,8 @@ class SyncBulkCryptoJob < ApplicationJob
         asset_id: asset.id,
         symbol: asset.symbol,
         old_price: (old_price || 0).to_s,
-        new_price: data[:price].to_s
+        new_price: data[:price].to_s,
+        source: data[:source] || MarketData::Gateways::CoingeckoGateway.source_id
       ))
     end
   end

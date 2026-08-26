@@ -192,17 +192,34 @@ module MarketHelper
     include_year ? "#{base} #{date.year}" : base
   end
 
-  # Es-MX caption shown below the chart card depending on data source.
+  # Es-MX caption shown below the chart card. It reads the provenance actually
+  # recorded rather than asserting one from the asset type, which is how it came
+  # to name Yahoo for BMV prices that arrive from DataBursatil.
   def asset_data_source_caption(asset)
-    if asset.asset_type_crypto?
-      "Fuente: CoinGecko · #{asset.currency}"
-    elsif asset.asset_type_fixed_income?
-      "Fuente: Banxico · MXN"
-    elsif asset.exchange == "BMV"
-      "Fuente: Yahoo Finance · BMV · #{asset.currency}"
-    else
-      "Fuente: Alpha Vantage · #{asset.exchange || '—'} · #{asset.currency}"
-    end
+    source = MarketData::Queries::PriceSeries.for(asset).latest(1).first&.source
+    label = source_label(source) || fallback_source_label(asset)
+    venue = asset.asset_type_crypto? ? nil : asset.exchange.presence
+    venue = nil if venue && label.end_with?(venue)
+
+    [ "Fuente: #{label}", venue, asset.currency ].compact.join(" · ")
+  end
+
+  # Provenance is stored as provider/sub-source (Alpaca/sip, DataBursatil/biva)
+  # because the sub-source decides the number. The reader is shown the venue
+  # only where it names a real market.
+  def source_label(source)
+    return nil if source.blank? || source.start_with?("legacy:") || source == "unknown"
+
+    provider, sub_source = source.split("/", 2)
+    sub_source.in?(%w[bmv biva]) ? "#{provider} · #{sub_source.upcase}" : provider
+  end
+
+  # Nothing recorded yet -- a freshly added asset before its first sync.
+  def fallback_source_label(asset)
+    return "CoinGecko" if asset.asset_type_crypto?
+    return "Banxico" if asset.asset_type_fixed_income?
+
+    asset.data_source.presence || "sin registrar"
   end
 
   # Returns the visible tab list for an asset, in es-MX. Adaptive per #93:

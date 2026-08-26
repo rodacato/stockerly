@@ -28,6 +28,10 @@ module MarketData
         "^VIX"  => "VIX"
       }.freeze
 
+      def self.source_id
+        "#{PROVIDER}/yfinance"
+      end
+
       def fetch_price(symbol)
         run("quote", symbol).fmap do |data|
           {

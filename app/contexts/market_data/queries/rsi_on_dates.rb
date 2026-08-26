@@ -15,7 +15,7 @@ module MarketData
         dates = Array(dates).compact.uniq
         return {} if dates.empty?
 
-        closes = asset.asset_price_histories.order(:date).pluck(:date, :close)
+        closes = PriceSeries.for(asset).closes_by_date.to_a
         return {} if closes.size < PERIOD + 1
 
         dates.index_with { |date| rsi_upto(closes, date) }.compact

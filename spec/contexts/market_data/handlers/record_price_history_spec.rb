@@ -96,4 +96,69 @@ RSpec.describe MarketData::Handlers::RecordPriceHistory do
       end
     end
   end
+
+  describe "provenance" do
+    let(:asset) { create(:asset, symbol: "AAPL") }
+
+    def price_event(source: nil)
+      MarketData::Events::AssetPriceUpdated.new(
+        asset_id: asset.id, symbol: "AAPL", old_price: "185.0", new_price: "189.43", source: source
+      )
+    end
+
+    it "records which provider produced the row" do
+      described_class.call(price_event(source: "Finnhub"))
+
+      row = AssetPriceHistory.find_by(asset_id: asset.id, date: Date.current)
+      expect(row.source).to eq("Finnhub")
+      expect(row.interval).to eq("1d")
+      expect(row.status).to eq("confirmed")
+    end
+
+    # as_of is when the number was true; fetched_at is when we asked. ADR-016
+    # keeps them apart because two sources disagreeing and one being stale are
+    # otherwise indistinguishable.
+    it "keeps as_of and fetched_at as separate stamps" do
+      described_class.call(price_event(source: "Finnhub"))
+
+      row = AssetPriceHistory.find_by(asset_id: asset.id, date: Date.current)
+      expect(row.as_of).to be_present
+      expect(row.fetched_at).to be_present
+    end
+
+    it "says unknown rather than inventing a source for a publisher that omitted one" do
+      described_class.call(price_event)
+
+      expect(AssetPriceHistory.find_by(asset_id: asset.id, date: Date.current).source).to eq("unknown")
+    end
+
+    context "when a different source overwrites the row" do
+      before do
+        create(:asset_price_history, asset: asset, date: Date.current, source: "Alpaca/sip",
+                                     open: 180.0, high: 192.0, low: 178.0, close: 185.0)
+      end
+
+      # Storing only the winner is only acceptable while replacements are
+      # visible -- that record is what would decide whether multi-source is
+      # worth having at all.
+      it "does not replace it silently" do
+        expect { described_class.call(price_event(source: "Finnhub")) }
+          .to change { SystemLog.where(severity: :warning).count }.by(1)
+
+        log = SystemLog.where(severity: :warning).last
+        expect(log.error_message).to eq("Alpaca/sip → Finnhub")
+      end
+
+      it "stays quiet when the same source updates its own row" do
+        expect { described_class.call(price_event(source: "Alpaca/sip")) }
+          .not_to change { SystemLog.where(severity: :warning).count }
+      end
+
+      it "still records the new source" do
+        described_class.call(price_event(source: "Finnhub"))
+
+        expect(AssetPriceHistory.find_by(asset_id: asset.id, date: Date.current).source).to eq("Finnhub")
+      end
+    end
+  end
 end

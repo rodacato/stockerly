@@ -17,11 +17,11 @@ module MarketData
         fundamental = resolve_fundamental(asset)
         presenter = Domain::FundamentalPresenter.new(asset: asset, fundamental: fundamental)
 
-        price_histories = asset.asset_price_histories.where("date >= ?", 30.days.ago.to_date).order(:date)
+        price_histories = MarketData::Queries::PriceSeries.for(asset).since(30.days.ago.to_date)
 
         pe_history = if asset.asset_type_stock?
                        eps = fundamental&.metrics&.dig("eps")&.to_d
-                       pe_histories = asset.asset_price_histories.where("date >= ?", 90.days.ago.to_date).order(:date)
+                       pe_histories = MarketData::Queries::PriceSeries.for(asset).since(90.days.ago.to_date)
                        Domain::PeHistoryCalculator.calculate(price_histories: pe_histories, eps: eps)
         end
 

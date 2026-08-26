@@ -7,5 +7,10 @@ FactoryBot.define do
     low { 147.0 }
     close { 150.0 }
     volume { 50_000_000 }
+    source { "Alpaca/sip" }
+    interval { "1d" }
+    status { "confirmed" }
+    as_of { Time.current }
+    fetched_at { Time.current }
   end
 end
