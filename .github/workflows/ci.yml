@@ -98,6 +98,25 @@ jobs:
       - name: Scan for security vulnerabilities in JavaScript dependencies
         run: bin/importmap audit
 
+  resolve_python:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up the Python the production image runs
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+
+      # The image resolves these in a venv with no compiler, so the gate does too:
+      # a bad pin fails here rather than halfway through a Kamal deploy.
+      - name: Resolve the Python requirements the way the image builds them
+        run: |
+          python -m venv --upgrade-deps /tmp/gate
+          /tmp/gate/bin/pip install --dry-run --only-binary=:all: -r lib/python/requirements.txt
+
   # Trivy moved to the shared rodacato/sector-7g security workflow (pinned, called
   # from quality.yml). Brakeman + bundler-audit stay here — they're Rails-specific.
 
