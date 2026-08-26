@@ -38,20 +38,43 @@ module MarketData
       (fcf / market_cap).round(4)
     end
 
-    # Accessor for any stored metric by key
+    # The gateways and the statement calculator name the same quantity
+    # differently — Alpha Vantage and FMP persist `return_on_equity`, the
+    # calculator writes `roe_calculated`, and the UI asks for `roe`. Without
+    # this map six of the ten Resumen cards render "—" on data that did arrive.
+    ALIASES = {
+      "roe"              => %w[return_on_equity roe_calculated],
+      "roa"              => %w[return_on_assets roa_calculated],
+      "net_margin"       => %w[profit_margin],
+      "ev_ebitda"        => %w[ev_to_ebitda],
+      "ps_ratio"         => %w[price_to_sales],
+      "pb_ratio"         => %w[price_to_book],
+      "revenue_growth"   => %w[quarterly_revenue_growth],
+      "eps_growth"       => %w[quarterly_earnings_growth],
+      "total_volume_24h" => %w[total_volume]
+    }.freeze
+
+    # Accessor for any stored metric by key, canonical name first.
     def metric(key)
-      @metrics[key.to_s]
+      name = key.to_s
+      return @metrics[name] if @metrics[name].present?
+
+      ALIASES.fetch(name, []).each do |alt|
+        return @metrics[alt] if @metrics[alt].present?
+      end
+      nil
     end
 
-    # Delegate unknown methods to stored metrics
+    # Delegate unknown methods to stored metrics, aliases included.
     def method_missing(name, *args)
-      key = name.to_s
-      return @metrics[key] if @metrics.key?(key)
+      value = metric(name)
+      return value unless value.nil?
       super
     end
 
     def respond_to_missing?(name, include_private = false)
-      @metrics.key?(name.to_s) || super
+      key = name.to_s
+      @metrics.key?(key) || ALIASES.fetch(key, []).any? { |alt| @metrics.key?(alt) } || super
     end
 
     private
