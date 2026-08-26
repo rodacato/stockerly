@@ -14,13 +14,13 @@ es-MX:
         guardar: Guardar
         limite_diario: Límite diario
         limite_minuto: Por minuto
+        llave_nota: Una llave por fuente. Si una se queda sin cuota o falla, el respaldo
+          es otra fuente que cubra el mismo dato — no otra llave de la misma.
         llaves:
           one: 1 llave
           other: "%{count} llaves"
           zero: sin llave
         minuto: por minuto
-        llave_nota: Una llave por fuente. Si una se queda sin cuota o falla, el respaldo
-          es otra fuente que cubra el mismo dato — no otra llave de la misma.
         resumen:
           one: 1 fuente · %{problem} con problema
           other: "%{count} fuentes · %{problem} con problema"
