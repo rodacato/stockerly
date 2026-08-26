@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SyncBulkStocksJob, type: :job do
   before do
-    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKID:secret")
     SyncSingleAssetJob::CIRCUIT_BREAKERS.each_value(&:reset!)
   end
 
@@ -10,22 +10,14 @@ RSpec.describe SyncBulkStocksJob, type: :job do
     let!(:aapl) { create(:asset, symbol: "AAPL", asset_type: :stock, current_price: 180.00, price_updated_at: 10.minutes.ago) }
     let!(:msft) { create(:asset, symbol: "MSFT", asset_type: :stock, current_price: 400.00, price_updated_at: 10.minutes.ago) }
 
-    context "when Polygon returns grouped daily data" do
+    context "when Alpaca returns confirmed daily closes" do
       before do
-        stub_request(:get, %r{api\.polygon\.io/v2/aggs/grouped/locale/us/market/stocks/})
-          .with(query: hash_including("apiKey"))
-          .to_return(
-            status: 200,
-            headers: { "Content-Type" => "application/json" },
-            body: {
-              results: [
-                { "T" => "AAPL", "o" => 180.0, "c" => 189.43, "h" => 191.0, "l" => 179.0, "v" => 58_000_000 },
-                { "T" => "MSFT", "o" => 400.0, "c" => 420.10, "h" => 425.0, "l" => 398.0, "v" => 30_000_000 },
-                { "T" => "UNKNOWN", "o" => 50.0, "c" => 55.0, "h" => 56.0, "l" => 49.0, "v" => 1000 }
-              ],
-              resultsCount: 3
-            }.to_json
-          )
+        today = Date.current.to_s
+        stub_alpaca_bars({
+          "AAPL" => [ alpaca_bar(date: today, open: 180.0, close: 189.43, volume: 58_000_000) ],
+          "MSFT" => [ alpaca_bar(date: today, open: 400.0, close: 420.10, volume: 30_000_000) ],
+          "UNKNOWN" => [ alpaca_bar(date: today, open: 50.0, close: 55.0, volume: 1000) ]
+        })
       end
 
       it "updates stock asset prices" do
@@ -68,11 +60,8 @@ RSpec.describe SyncBulkStocksJob, type: :job do
       end
     end
 
-    context "when Polygon is rate limited" do
-      before do
-        stub_request(:get, %r{api\.polygon\.io/v2/aggs/grouped/locale/us/market/stocks/})
-          .to_return(status: 429, body: "Rate limited")
-      end
+    context "when Alpaca is rate limited" do
+      before { stub_alpaca_rate_limited }
 
       it "logs a warning" do
         described_class.perform_now([ aapl.id ])

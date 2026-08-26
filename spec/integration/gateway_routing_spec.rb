@@ -6,28 +6,32 @@ require "rails_helper"
 # boundary so a re-route fails loudly instead of silently changing provider.
 RSpec.describe "Gateway routing", type: :job do
   before do
-    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Finnhub", api_key_encrypted: "test_key")
     create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKID:secret")
     SyncSingleAssetJob::CIRCUIT_BREAKERS.each_value(&:reset!)
   end
 
-  def polygon_prev(symbol) = %r{api\.polygon\.io/v2/aggs/ticker/#{symbol}/prev}
+  def finnhub_quote = %r{finnhub\.io/api/v1/quote}
+  def alpaca_bars = %r{data\.alpaca\.markets/v2/stocks/bars}
   def yahoo_chart(symbol) = %r{query\d\.finance\.yahoo\.com/v8/finance/chart/#{symbol}}
 
   describe "SyncSingleAssetJob" do
-    it "sends US stocks to Polygon first" do
+    # Alpaca cannot serve a current price on a Basic key, so the live-quote
+    # role went to Finnhub rather than following the history to Alpaca.
+    it "sends US stock quotes to Finnhub first" do
       asset = create(:asset, symbol: "AAPL", asset_type: :stock, price_updated_at: 10.minutes.ago)
-      stub_polygon_price("AAPL", close: 189.43)
+      stub_finnhub_quote("AAPL", current: 189.43)
 
       SyncSingleAssetJob.perform_now(asset.id)
 
-      expect(a_request(:get, polygon_prev("AAPL"))).to have_been_made
-      expect(asset.reload.data_source).to eq("MarketData::Gateways::PolygonGateway")
+      expect(a_request(:get, finnhub_quote)).to have_been_made
+      expect(asset.reload.data_source).to eq("MarketData::Gateways::FinnhubGateway")
     end
 
-    it "falls back to Yahoo when Polygon fails" do
+    it "falls back to Yahoo when Finnhub fails" do
       asset = create(:asset, symbol: "AAPL", asset_type: :stock, price_updated_at: 10.minutes.ago)
-      stub_polygon_not_found("AAPL")
+      stub_finnhub_quote_not_found("AAPL")
       stub_yahoo_finance_price("AAPL", price: 190.00)
 
       SyncSingleAssetJob.perform_now(asset.id)
@@ -36,23 +40,25 @@ RSpec.describe "Gateway routing", type: :job do
       expect(asset.reload.data_source).to eq("MarketData::Gateways::YahooFinanceGateway")
     end
 
-    it "sends crypto to CoinGecko and never to Polygon" do
+    it "sends crypto to CoinGecko and never to the stock chain" do
       asset = create(:asset, :crypto, symbol: "BTC", price_updated_at: 10.minutes.ago)
       stub_coingecko_prices
 
       SyncSingleAssetJob.perform_now(asset.id)
 
-      expect(a_request(:get, polygon_prev("BTC"))).not_to have_been_made
+      expect(a_request(:get, finnhub_quote)).not_to have_been_made
     end
 
-    it "sends US ETFs and indices through the Polygon chain" do
+    it "sends US ETFs and indices through the same chain as stocks" do
       %i[etf index].each do |type|
         asset = create(:asset, type, symbol: "SPY#{type}", price_updated_at: 10.minutes.ago)
-        stub_polygon_price("SPY#{type}", close: 500.00)
+        stub_finnhub_quote("SPY#{type}", current: 500.00)
 
         SyncSingleAssetJob.perform_now(asset.id)
 
-        expect(a_request(:get, polygon_prev("SPY#{type}"))).to have_been_made
+        expect(
+          a_request(:get, finnhub_quote).with(query: hash_including("symbol" => "SPY#{type}"))
+        ).to have_been_made
       end
     end
 
@@ -98,15 +104,14 @@ RSpec.describe "Gateway routing", type: :job do
   end
 
   describe "bulk paths" do
-    it "sends US stocks to Polygon's grouped daily endpoint" do
+    it "sends US stocks to Alpaca's daily bars in one call" do
       asset = create(:asset, symbol: "AAPL", asset_type: :stock)
-      stub_request(:get, %r{api\.polygon\.io/v2/aggs/grouped/})
-        .to_return(status: 200, headers: { "Content-Type" => "application/json" },
-                   body: { results: [ { "T" => "AAPL", "c" => 200.0, "o" => 198.0, "v" => 1_000 } ] }.to_json)
+      stub_alpaca_bars({ "AAPL" => [ alpaca_bar(date: Date.current.to_s, close: 200.0, open: 198.0) ] })
 
       SyncBulkStocksJob.perform_now([ asset.id ])
 
-      expect(a_request(:get, %r{api\.polygon\.io/v2/aggs/grouped/})).to have_been_made
+      expect(a_request(:get, alpaca_bars).with(query: hash_including("feed" => "sip"))).to have_been_made
+      expect(asset.reload.current_price.to_f).to eq(200.0)
     end
 
     it "sends BMV assets to Yahoo in bulk" do
@@ -129,13 +134,13 @@ RSpec.describe "Gateway routing", type: :job do
       expect(a_request(:get, %r{api\.coingecko\.com})).to have_been_made
     end
 
-    it "sends US stocks to Polygon's range endpoint" do
+    it "sends US stocks to Alpaca" do
       asset = create(:asset, symbol: "AAPL", asset_type: :stock)
-      stub_polygon_historical("AAPL", days: 30)
+      stub_alpaca_bars({ "AAPL" => [ alpaca_bar(date: 3.days.ago.to_date.to_s) ] })
 
       BackfillPriceHistoryJob.perform_now(asset.id)
 
-      expect(a_request(:get, %r{api\.polygon\.io/v2/aggs/ticker/AAPL/range})).to have_been_made
+      expect(a_request(:get, alpaca_bars)).to have_been_made
     end
 
     it "refuses fixed income outright" do

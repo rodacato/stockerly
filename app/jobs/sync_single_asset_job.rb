@@ -61,22 +61,34 @@ class SyncSingleAssetJob < ApplicationJob
   end
 
   def gateway_for(asset)
-    return GatewayChain.new(gateways: [ MarketData::Gateways::YahooFinanceGateway.new ]) if asset.country == "MX"
+    return build_chain([ MarketData::Gateways::YahooFinanceGateway ]) if asset.country == "MX"
 
     case asset.asset_type
     when "stock", "index", "etf"
-      GatewayChain.new(
-        gateways: [ MarketData::Gateways::PolygonGateway.new, MarketData::Gateways::YahooFinanceGateway.new ],
-        circuit_breakers: {
-          "MarketData::Gateways::PolygonGateway" => self.class.circuit_breaker_for("stock"),
+      build_chain(
+        [ MarketData::Gateways::FinnhubGateway, MarketData::Gateways::YahooFinanceGateway ],
+        {
+          "MarketData::Gateways::FinnhubGateway" => self.class.circuit_breaker_for("finnhub"),
           "MarketData::Gateways::YahooFinanceGateway" => self.class.circuit_breaker_for("yahoo_us")
         }
       )
     when "crypto"
-      GatewayChain.new(gateways: [ MarketData::Gateways::CoingeckoGateway.new ])
+      build_chain([ MarketData::Gateways::CoingeckoGateway ])
     else
       raise ArgumentError, "Unknown asset type: #{asset.asset_type}"
     end
+  end
+
+  # An unconfigured provider is skipped rather than raised, so a missing key
+  # degrades to the next gateway instead of failing the job outright.
+  def build_chain(gateway_classes, circuit_breakers = {})
+    gateways = gateway_classes.filter_map do |klass|
+      klass.new
+    rescue MarketData::Gateways::ApiKeyNotConfiguredError
+      nil
+    end
+
+    GatewayChain.new(gateways: gateways, circuit_breakers: circuit_breakers)
   end
 
   def update_asset(asset, data)

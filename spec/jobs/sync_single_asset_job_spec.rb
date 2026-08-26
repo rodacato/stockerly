@@ -2,17 +2,17 @@ require "rails_helper"
 
 RSpec.describe SyncSingleAssetJob, type: :job do
   before do
-    create(:integration, provider_name: "Polygon.io", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "Finnhub", api_key_encrypted: "test_key")
     create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
     # Reset class-level circuit breakers between tests to avoid cross-test contamination
     described_class::CIRCUIT_BREAKERS.each_value(&:reset!)
   end
 
   describe "#perform" do
-    context "with a stock asset (Polygon succeeds)" do
+    context "with a stock asset (Finnhub succeeds)" do
       let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 180.00, price_updated_at: 10.minutes.ago) }
 
-      before { stub_polygon_price("AAPL", close: 189.43) }
+      before { stub_finnhub_quote("AAPL", current: 189.43) }
 
       it "updates the asset price" do
         described_class.perform_now(asset.id)
@@ -26,7 +26,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
         described_class.perform_now(asset.id)
 
         asset.reload
-        expect(asset.data_source).to eq("MarketData::Gateways::PolygonGateway")
+        expect(asset.data_source).to eq("MarketData::Gateways::FinnhubGateway")
       end
 
       it "creates a success SystemLog entry" do
@@ -58,7 +58,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
       let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 180.00, price_updated_at: 10.minutes.ago) }
 
       before do
-        stub_polygon_server_error
+        stub_finnhub_server_error
         stub_yahoo_finance_price("AAPL", price: 190.00)
       end
 
@@ -83,7 +83,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
       let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, price_updated_at: 10.minutes.ago) }
 
       before do
-        stub_polygon_server_error
+        stub_finnhub_server_error
         stub_yahoo_finance_server_error
       end
 
@@ -105,7 +105,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
       let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 180.00, price_updated_at: 10.minutes.ago) }
 
       before do
-        stub_polygon_rate_limited
+        stub_finnhub_rate_limited
         stub_yahoo_finance_price("AAPL", price: 191.50)
       end
 
@@ -156,7 +156,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
       before { stub_yahoo_finance_price("IVVPESO.MX", price: 48.30) }
 
-      it "routes to YahooFinanceGateway, not PolygonGateway" do
+      it "routes to YahooFinanceGateway, not the US chain" do
         described_class.perform_now(asset.id)
 
         asset.reload
@@ -187,7 +187,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
     context "when asset has never been synced" do
       let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, price_updated_at: nil, current_price: 180.00) }
 
-      before { stub_polygon_price("AAPL", close: 189.43) }
+      before { stub_finnhub_quote("AAPL", current: 189.43) }
 
       it "proceeds with sync" do
         expect {

@@ -1,7 +1,7 @@
-# Fetches prices for multiple US stock assets using Polygon's grouped daily endpoint,
-# updates each Asset record, and publishes MarketData::Events::AssetPriceUpdated events.
-# Similar pattern to SyncBulkCryptoJob but uses Polygon's grouped endpoint
-# for a single API call covering all US stocks.
+# Fetches confirmed daily closes for multiple US stock assets in one Alpaca
+# call, updates each Asset record, and publishes MarketData::Events::AssetPriceUpdated
+# events. Alpaca serves the SIP consolidated tape on the free plan, which
+# Polygon's retiring free tier did not.
 class SyncBulkStocksJob < ApplicationJob
   include PausableSync
   include SyncLogging
@@ -16,7 +16,7 @@ class SyncBulkStocksJob < ApplicationJob
     assets = Asset.where(id: asset_ids, sync_status: :active).index_by(&:symbol)
     return if assets.empty?
 
-    result = breaker.call { MarketData::Gateways::PolygonGateway.new.fetch_grouped_daily }
+    result = breaker.call { MarketData::Gateways::AlpacaGateway.new.fetch_bulk_prices(assets.keys) }
 
     if result.success?
       updated = update_assets(assets, result.value!)
@@ -31,7 +31,7 @@ class SyncBulkStocksJob < ApplicationJob
   private
 
   def breaker
-    SyncSingleAssetJob.circuit_breaker_for("stock")
+    SyncSingleAssetJob.circuit_breaker_for("alpaca")
   end
 
   def update_assets(assets_by_symbol, results)
