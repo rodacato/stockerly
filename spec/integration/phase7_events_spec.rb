@@ -48,9 +48,9 @@ RSpec.describe "Phase 7 Domain Events" do
 
   describe Administration::Events::IntegrationConnected do
     it "has required attributes" do
-      event = described_class.new(integration_id: 1, provider_name: "Polygon.io")
+      event = described_class.new(integration_id: 1, provider_name: "Alpaca")
 
-      expect(event.provider_name).to eq("Polygon.io")
+      expect(event.provider_name).to eq("Alpaca")
     end
   end
 end

@@ -66,24 +66,15 @@ RSpec.describe Administration::UseCases::Assets::CreateAsset do
       expect(result.value!.logo_url).to eq(custom_url)
     end
 
-    it "sets data_source to Polygon.io for US stocks" do
-      result = described_class.call(admin: admin, params: valid_params.merge(country: "US"))
+    # Provenance is what the first sync records, not what the country implies.
+    # Guessing it here is how the asset detail came to name a provider that had
+    # not served the asset in months.
+    it "leaves data_source for the first sync to record" do
+      %w[US MX].each do |country|
+        result = described_class.call(admin: admin, params: valid_params.merge(symbol: "T#{country}", country: country))
 
-      expect(result.value!.data_source).to eq("Polygon.io")
-    end
-
-    it "sets data_source to Yahoo Finance for MX stocks" do
-      result = described_class.call(admin: admin, params: valid_params.merge(country: "MX"))
-
-      expect(result.value!.data_source).to eq("Yahoo Finance")
-    end
-
-    it "sets data_source to CoinGecko API for crypto" do
-      result = described_class.call(admin: admin, params: valid_params.merge(
-        symbol: "ETH", name: "Ethereum", asset_type: "crypto"
-      ))
-
-      expect(result.value!.data_source).to eq("CoinGecko API")
+        expect(result.value!.data_source).to be_nil
+      end
     end
 
     it "returns Failure for validation errors" do

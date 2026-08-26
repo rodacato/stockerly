@@ -4,38 +4,12 @@ namespace :stockerly do
     sync_integrations
   end
 
-  # Integration defaults keyed by provider_name.
-  # Only applied when CREATING a new record — existing records are never overwritten.
-  INTEGRATION_DEFAULTS = {
-    # Alpaca publishes 200 req/min and no daily cap; the daily figure is our own guardrail.
-    # Quota is 200,000 credits a month at one credit per KiB; the provider reports
-    # the balance itself, so the daily figure here is only a guardrail.
-    "DataBursatil"   => { provider_type: "Mexican Stocks (BMV/BIVA)", requires_api_key: true, max_requests_per_minute: nil, daily_call_limit: 5_000 },
-    "Alpaca"         => { provider_type: "US Stocks & Corporate Actions", requires_api_key: true, max_requests_per_minute: 200, daily_call_limit: 50_000 },
-    "Polygon.io"     => { provider_type: "Stocks & Forex",       requires_api_key: true,  max_requests_per_minute: 5,   daily_call_limit: 500   },
-    "Finnhub"        => { provider_type: "Stocks & Market Data",  requires_api_key: true,  max_requests_per_minute: 60,  daily_call_limit: 500   },
-    "CoinGecko"      => { provider_type: "Cryptocurrency",        requires_api_key: false, max_requests_per_minute: 30,  daily_call_limit: 10_000, settings: { "pro_tier" => false } },
-    # Yahoo publishes no limit and blocks by TLS fingerprint. The per-minute
-    # ceiling is our own restraint; the daily one is nil because inventing a
-    # number Yahoo never stated would be the same defect A2 deleted.
-    "Yahoo Finance"  => { provider_type: "Indices & BMV Corporate Actions", requires_api_key: false, max_requests_per_minute: 5, daily_call_limit: nil },
-    "Alternative.me" => { provider_type: "Sentiment",             requires_api_key: false, max_requests_per_minute: nil, daily_call_limit: 100   },
-    "Alpha Vantage"  => { provider_type: "Fundamentals",          requires_api_key: true,  max_requests_per_minute: 5,   daily_call_limit: 25    },
-    "FMP"            => { provider_type: "Dividends & Splits",    requires_api_key: true,  max_requests_per_minute: 10,  daily_call_limit: 250   },
-    "ExchangeRate"   => { provider_type: "FX Rates",              requires_api_key: true,  max_requests_per_minute: 10,  daily_call_limit: 1_500 },
-    "Banxico"        => { provider_type: "CETES & Fixed Income",  requires_api_key: true,  max_requests_per_minute: nil, daily_call_limit: 1_000 }
-  }.freeze
-
   def sync_integrations
     provider_names = DataSourceRegistry.all.map(&:integration_name).uniq
     created = 0
 
     provider_names.each do |name|
-      defaults = INTEGRATION_DEFAULTS[name] || {
-        provider_type: "External API",
-        requires_api_key: true,
-        daily_call_limit: 500
-      }
+      defaults = MarketData::Domain::ProviderDefaults.for(name)
 
       Integration.find_or_create_by!(provider_name: name) do |i|
         i.provider_type          = defaults[:provider_type]
@@ -69,7 +43,7 @@ namespace :stockerly do
   # provider ends up throttled to a number nobody chose.
   def report_limit_drift(provider_names)
     drifted = provider_names.filter_map do |name|
-      defaults = INTEGRATION_DEFAULTS[name]
+      defaults = MarketData::Domain::ProviderDefaults::ALL[name]
       next if defaults.nil?
 
       integration = Integration.find_by(provider_name: name)

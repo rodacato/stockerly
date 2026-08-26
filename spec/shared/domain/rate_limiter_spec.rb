@@ -30,7 +30,7 @@ RSpec.describe RateLimiter do
     context "when under both limits" do
       let!(:integration) do
         create(:integration,
-          provider_name: "Polygon.io",
+          provider_name: "Alpaca",
           max_requests_per_minute: 5,
           minute_calls: 2,
           minute_reset_at: Time.current,
@@ -40,12 +40,12 @@ RSpec.describe RateLimiter do
       end
 
       it "returns Success(:allowed)" do
-        result = described_class.check!("Polygon.io")
+        result = described_class.check!("Alpaca")
         expect(result).to be_success
       end
 
       it "increments both minute and daily counters" do
-        described_class.check!("Polygon.io")
+        described_class.check!("Alpaca")
         integration.reload
         expect(integration.minute_calls).to eq(3)
         expect(integration.daily_api_calls).to eq(101)
@@ -55,7 +55,7 @@ RSpec.describe RateLimiter do
     context "when minute limit is exhausted" do
       let!(:integration) do
         create(:integration,
-          provider_name: "Polygon.io",
+          provider_name: "Alpaca",
           max_requests_per_minute: 5,
           minute_calls: 5,
           minute_reset_at: Time.current,
@@ -65,14 +65,14 @@ RSpec.describe RateLimiter do
       end
 
       it "returns Failure with rate_limited" do
-        result = described_class.check!("Polygon.io")
+        result = described_class.check!("Alpaca")
         expect(result).to be_failure
         expect(result.failure.first).to eq(:rate_limited)
         expect(result.failure.last).to include("minute limit reached")
       end
 
       it "does not increment any counters" do
-        described_class.check!("Polygon.io")
+        described_class.check!("Alpaca")
         integration.reload
         expect(integration.minute_calls).to eq(5)
         expect(integration.daily_api_calls).to eq(100)

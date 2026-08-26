@@ -126,7 +126,7 @@ RSpec.describe CheckSyncHealthJob, type: :job do
 
     context "dedup via Solid Cache" do
       before do
-        make_log("Market Indices Sync", severity: :error, at: 1.hour.ago, message: "Polygon 502")
+        make_log("Market Indices Sync", severity: :error, at: 1.hour.ago, message: "Yahoo Finance 502")
       end
 
       it "fires only once across two consecutive runs within the 6h dedup window" do

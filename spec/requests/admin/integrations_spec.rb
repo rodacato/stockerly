@@ -6,7 +6,7 @@ RSpec.describe "Admin Integrations", type: :request do
   before { login_as(admin) }
 
   describe "PATCH /admin/integrations/:id" do
-    let!(:integration) { create(:integration, provider_name: "Polygon.io", daily_call_limit: 500) }
+    let!(:integration) { create(:integration, provider_name: "Alpaca", daily_call_limit: 500) }
 
     it "updates the integration rate limits" do
       patch admin_integration_path(integration), params: {

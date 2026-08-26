@@ -48,12 +48,12 @@ RSpec.describe "stockerly:sync rake task" do
     end
 
     it "does not overwrite existing Integration attributes" do
-      create(:integration, provider_name: "Polygon.io", provider_type: "Custom Type",
+      create(:integration, provider_name: "Alpaca", provider_type: "Custom Type",
              daily_call_limit: 999, max_requests_per_minute: 99)
 
       Rake::Task["stockerly:sync"].invoke
 
-      polygon = Integration.find_by(provider_name: "Polygon.io")
+      polygon = Integration.find_by(provider_name: "Alpaca")
       expect(polygon.provider_type).to eq("Custom Type")
       expect(polygon.daily_call_limit).to eq(999)
       expect(polygon.max_requests_per_minute).to eq(99)

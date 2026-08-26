@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Administration::UseCases::Integrations::RefreshSync do
   describe "#call" do
-    let!(:integration) { create(:integration, provider_name: "Polygon.io") }
+    let!(:integration) { create(:integration, provider_name: "Alpaca") }
 
     it "enqueues SyncIntegrationJob" do
       expect {

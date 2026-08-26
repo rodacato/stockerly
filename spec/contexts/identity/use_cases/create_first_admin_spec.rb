@@ -25,7 +25,7 @@ RSpec.describe Identity::UseCases::CreateFirstAdmin do
       it "bootstraps integrations" do
         expect {
           described_class.call(params: valid_params)
-        }.to change(Integration, :count).by(8)
+        }.to change(Integration, :count).by(MarketData::Domain::ProviderDefaults::ALL.size)
       end
 
       it "bootstraps market indices" do

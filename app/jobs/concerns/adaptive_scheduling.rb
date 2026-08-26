@@ -10,14 +10,14 @@
 #   def perform
 #     result = gateway.fetch(...)
 #     if result.success?
-#       adaptive_reset("polygon")
+#       adaptive_reset("alpaca")
 #     else
-#       adaptive_backoff("polygon")
+#       adaptive_backoff("alpaca")
 #     end
 #   end
 #
 #   # Check current delay multiplier:
-#   adaptive_multiplier("polygon")  # => 1, 2, or 4
+#   adaptive_multiplier("alpaca")  # => 1, 2, or 4
 #
 module AdaptiveScheduling
   extend ActiveSupport::Concern

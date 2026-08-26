@@ -20,21 +20,6 @@ Rails.application.config.after_initialize do
     capabilities: %i[historical news]
   )
 
-  DataSourceRegistry.register(:polygon_stocks,
-    name: "US Stocks — Polygon.io",
-    icon: "show_chart",
-    color: "indigo",
-    gateway_class: MarketData::Gateways::PolygonGateway,
-    job_class: SyncPriorityAssetsJob,
-    job_args: %w[stock high],
-    test_symbol: "AAPL",
-    test_method: :fetch_price,
-    integration_name: "Polygon.io",
-    health_check: true,
-    circuit_breaker_key: "stock",
-    capabilities: %i[prices historical indices]
-  )
-
   DataSourceRegistry.register(:finnhub_stocks,
     name: "US Stocks — Finnhub",
     icon: "show_chart",
@@ -91,20 +76,6 @@ Rails.application.config.after_initialize do
     capabilities: %i[sentiment]
   )
 
-  DataSourceRegistry.register(:polygon_news,
-    name: "News — Polygon.io",
-    icon: "newspaper",
-    color: "slate",
-    gateway_class: MarketData::Gateways::PolygonGateway,
-    job_class: SyncNewsJob,
-    job_args: [],
-    test_symbol: nil,
-    test_method: :fetch_price,
-    integration_name: "Polygon.io",
-    circuit_breaker_key: "polygon_news",
-    capabilities: %i[news]
-  )
-
   DataSourceRegistry.register(:yfinance_bridge,
     name: "Yahoo Finance — via the yfinance bridge",
     icon: "monitoring",
@@ -134,20 +105,6 @@ Rails.application.config.after_initialize do
     integration_name: "Alpha Vantage",
     circuit_breaker_key: "alpha_vantage",
     capabilities: %i[fundamentals]
-  )
-
-  DataSourceRegistry.register(:polygon_earnings,
-    name: "Earnings — Polygon.io",
-    icon: "event_note",
-    color: "violet",
-    gateway_class: MarketData::Gateways::PolygonGateway,
-    job_class: SyncEarningsJob,
-    job_args: [],
-    test_symbol: "AAPL",
-    test_method: :fetch_price,
-    integration_name: "Polygon.io",
-    circuit_breaker_key: "polygon_earnings",
-    capabilities: %i[earnings]
   )
 
   DataSourceRegistry.register(:fx_rates,

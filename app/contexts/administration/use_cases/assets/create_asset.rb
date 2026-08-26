@@ -42,16 +42,12 @@ module Administration
           attrs.merge(logo_url: logo)
         end
 
+        # Left blank on purpose: data_source records which gateway last served
+        # this asset's price, and the first sync is what knows that. Guessing it
+        # from the country is how the asset detail came to name a provider that
+        # had not served it in months.
         def resolve_data_source(attrs)
-          source = if attrs[:country] == "MX"
-                     "Yahoo Finance"
-          elsif attrs[:asset_type] == "crypto"
-                     "CoinGecko API"
-          else
-                     "Polygon.io"
-          end
-
-          attrs.merge(data_source: source)
+          attrs.merge(data_source: nil)
         end
 
         def persist(attrs)

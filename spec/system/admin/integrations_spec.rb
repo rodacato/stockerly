@@ -18,13 +18,13 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
   end
 
   it "renders the header in es-MX" do
-    create(:integration, provider_name: "Polygon.io", provider_type: "Stocks")
+    create(:integration, provider_name: "Alpaca", provider_type: "Stocks")
     visit admin_integrations_path
 
     expect(page).to have_content("Integraciones")
     expect(page).to have_content("De dónde salen tus precios")
     expect(page).to have_content("ese límite es el que reparte el presupuesto de Rastreados")
-    expect(page).to have_content("Polygon.io")
+    expect(page).to have_content("Alpaca")
   end
 
   it "renders the empty state when no integrations exist" do
@@ -37,7 +37,7 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
   end
 
   it "shows the Activa pill when the integration is connected with a default key" do
-    create(:integration, provider_name: "Polygon.io", provider_type: "Stocks",
+    create(:integration, provider_name: "Alpaca", provider_type: "Stocks",
                          connection_status: :connected, daily_call_limit: 500, max_requests_per_minute: 5)
     visit admin_integrations_path
 
@@ -65,7 +65,7 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
   end
 
   it "offers the masked last-4 as the key field's placeholder" do
-    create(:integration, provider_name: "Polygon.io", provider_type: "Stocks", api_key_encrypted: "abcdefghij9999")
+    create(:integration, provider_name: "Alpaca", provider_type: "Stocks", api_key_encrypted: "abcdefghij9999")
     visit admin_integrations_path
 
     expect(page).to have_field("integration[api_key_encrypted]", placeholder: "••••••••••••9999", visible: :all)

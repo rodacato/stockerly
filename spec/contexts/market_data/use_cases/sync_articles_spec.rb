@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe MarketData::UseCases::SyncArticles do
   include ActiveJob::TestHelper
 
-  let(:gateway) { instance_double(MarketData::Gateways::PolygonGateway) }
+  let(:gateway) { instance_double(MarketData::Gateways::AlpacaGateway) }
 
   before do
-    allow(MarketData::Gateways::PolygonGateway).to receive(:new).and_return(gateway)
+    allow(MarketData::Gateways::AlpacaGateway).to receive(:new).and_return(gateway)
   end
 
   DISTINCT_TITLES = [

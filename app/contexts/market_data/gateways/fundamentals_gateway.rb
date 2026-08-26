@@ -2,7 +2,7 @@ module MarketData
   module Gateways
     # Base class defining the interface for fundamental data providers.
     # Concrete implementations: AlphaVantageGateway (Phase 10.0).
-    # Designed for provider swap (FMP, Polygon) without touching domain.
+    # Designed for provider swap without touching domain.
     class FundamentalsGateway
       include Dry::Monads[:result]
 

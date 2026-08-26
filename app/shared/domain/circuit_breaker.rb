@@ -2,7 +2,7 @@
 # States: closed (normal) → open (failing) → half_open (testing recovery).
 #
 # Usage:
-#   breaker = CircuitBreaker.new(name: "polygon", threshold: 5, timeout: 60)
+#   breaker = CircuitBreaker.new(name: "alpaca", threshold: 5, timeout: 60)
 #   breaker.call { gateway.fetch_price("AAPL") }
 #
 class CircuitBreaker

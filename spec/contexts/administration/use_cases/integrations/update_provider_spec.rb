@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Administration::UseCases::Integrations::UpdateProvider do
   let(:admin) { create(:user, :admin) }
-  let!(:integration) { create(:integration, provider_name: "Polygon.io", daily_call_limit: 500) }
+  let!(:integration) { create(:integration, provider_name: "Alpaca", daily_call_limit: 500) }
 
   describe ".call" do
     context "with valid params" do

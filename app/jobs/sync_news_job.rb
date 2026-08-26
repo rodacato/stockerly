@@ -1,4 +1,4 @@
-# Fetches latest news articles from Polygon.io and upserts into the database.
+# Fetches latest news articles from the news chain and upserts into the database.
 class SyncNewsJob < ApplicationJob
   include PausableSync
   include SyncLogging

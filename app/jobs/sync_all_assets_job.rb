@@ -16,7 +16,7 @@ class SyncAllAssetsJob < ApplicationJob
 
   private
 
-  # Polygon free tier: 5 req/min → 12s spacing
+  # Spaced for the slowest free tier in the chain
   # Yahoo Finance: generous limits → 2s spacing
   # CoinGecko: bulk endpoint used in SyncSingleAssetJob, so less critical
   def spacing_seconds(asset)

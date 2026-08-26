@@ -44,7 +44,7 @@ RSpec.describe "Setup", type: :request, setup_bypass: false do
 
       it "bootstraps platform data" do
         post setup_path, params: valid_params
-        expect(Integration.count).to eq(8)
+        expect(Integration.count).to eq(MarketData::Domain::ProviderDefaults::ALL.size)
         expect(MarketIndex.count).to eq(6)
         expect(FxRate.count).to eq(3)
       end

@@ -1,37 +1,33 @@
 require "rails_helper"
 
 RSpec.describe "Gateway RateLimiter integration" do
-  describe "MarketData::Gateways::PolygonGateway" do
-    subject(:gateway) { MarketData::Gateways::PolygonGateway.new(api_key: "test_key") }
+  describe "MarketData::Gateways::AlpacaGateway" do
+    subject(:gateway) { MarketData::Gateways::AlpacaGateway.new(api_key: "PKID:secret") }
 
     let!(:integration) do
       create(:integration,
-        provider_name: "Polygon.io",
-        max_requests_per_minute: 5,
-        minute_calls: 5,
+        provider_name: "Alpaca",
+        max_requests_per_minute: 200,
+        minute_calls: 200,
         minute_reset_at: Time.current,
-        daily_call_limit: 500,
+        daily_call_limit: 50_000,
         daily_api_calls: 0,
         calls_reset_at: Time.current)
     end
 
-    it "blocks fetch_price when minute limit is exhausted" do
-      result = gateway.fetch_price("AAPL")
-      expect(result).to be_failure
+    it "blocks fetch_daily_bars when minute limit is exhausted" do
+      result = gateway.fetch_daily_bars(%w[AAPL], 7.days.ago.to_date, 2.days.ago.to_date)
+
       expect(result.failure.first).to eq(:rate_limited)
       expect(result.failure.last).to include("minute limit reached")
     end
 
     it "blocks fetch_news when minute limit is exhausted" do
-      result = gateway.fetch_news(ticker: "AAPL")
-      expect(result).to be_failure
-      expect(result.failure.first).to eq(:rate_limited)
+      expect(gateway.fetch_news(ticker: "AAPL").failure.first).to eq(:rate_limited)
     end
 
-    it "blocks fetch_grouped_daily when minute limit is exhausted" do
-      result = gateway.fetch_grouped_daily
-      expect(result).to be_failure
-      expect(result.failure.first).to eq(:rate_limited)
+    it "blocks fetch_dividends when minute limit is exhausted" do
+      expect(gateway.fetch_dividends("AAPL").failure.first).to eq(:rate_limited)
     end
   end
 

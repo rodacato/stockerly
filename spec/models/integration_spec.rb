@@ -12,8 +12,8 @@ RSpec.describe Integration, type: :model do
     end
 
     it "requires unique provider_name" do
-      create(:integration, provider_name: "Polygon.io")
-      integration.provider_name = "Polygon.io"
+      create(:integration, provider_name: "Alpaca")
+      integration.provider_name = "Alpaca"
       expect(integration).not_to be_valid
     end
 

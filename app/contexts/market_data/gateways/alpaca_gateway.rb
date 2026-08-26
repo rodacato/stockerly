@@ -78,8 +78,7 @@ module MarketData
         Success(bars)
       end
 
-      # Latest confirmed close per symbol, in the shape PolygonGateway's
-      # grouped-daily endpoint returned, so the bulk job reads it unchanged.
+      # Latest confirmed close per symbol, in the shape the bulk job reads.
       # Returns Success([{ symbol:, price:, change_percent:, volume: }, ...])
       def fetch_bulk_prices(symbols)
         result = fetch_daily_bars(symbols, 7.days.ago.to_date, Time.current)

@@ -5,12 +5,12 @@ RSpec.describe MarketData::Events::AllGatewaysFailed do
     event = described_class.new(
       asset_id: 1,
       symbol: "AAPL",
-      attempted_gateways: %w[MarketData::Gateways::PolygonGateway MarketData::Gateways::YfinanceGateway]
+      attempted_gateways: %w[MarketData::Gateways::AlpacaGateway MarketData::Gateways::YfinanceGateway]
     )
 
     expect(event.asset_id).to eq(1)
     expect(event.symbol).to eq("AAPL")
-    expect(event.attempted_gateways).to eq(%w[MarketData::Gateways::PolygonGateway MarketData::Gateways::YfinanceGateway])
+    expect(event.attempted_gateways).to eq(%w[MarketData::Gateways::AlpacaGateway MarketData::Gateways::YfinanceGateway])
     expect(event.occurred_at).to be_present
   end
 
