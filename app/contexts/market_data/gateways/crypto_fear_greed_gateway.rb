@@ -1,7 +1,7 @@
 module MarketData
   module Gateways
     # Fetches the Crypto Fear & Greed Index from Alternative.me.
-    # Free, no auth required. Rate limit: ~50 req/day.
+    # Free, no auth required.
     # Docs: https://alternative.me/crypto/fear-and-greed-index/
     class CryptoFearGreedGateway
     include Dry::Monads[:result]

@@ -400,33 +400,8 @@ module WebmockHelpers
 
   # --- Stock Fear & Greed (CNN) ---
 
-  def stub_stock_fear_greed(score: 62, rating: "Greed")
-    stub_request(:get, %r{production\.dataviz\.cnn\.io/index/fearandgreed/graphdata/})
-      .to_return(
-        status: 200,
-        headers: { "Content-Type" => "application/json" },
-        body: {
-          fear_and_greed: { "score" => score, "rating" => rating },
-          market_momentum_sp500: { "score" => 71.2, "rating" => "Greed" },
-          stock_price_strength: { "score" => 55.0, "rating" => "Neutral" },
-          stock_price_breadth: { "score" => 48.3, "rating" => "Neutral" },
-          put_call_options: { "score" => 65.1, "rating" => "Greed" },
-          market_volatility_vix: { "score" => 80.0, "rating" => "Extreme Greed" },
-          junk_bond_demand: { "score" => 52.0, "rating" => "Neutral" },
-          safe_haven_demand: { "score" => 60.5, "rating" => "Greed" }
-        }.to_json
-      )
-  end
 
-  def stub_stock_fear_greed_rate_limited
-    stub_request(:get, %r{production\.dataviz\.cnn\.io/index/fearandgreed/graphdata/})
-      .to_return(status: 429, body: "Rate limit exceeded")
-  end
 
-  def stub_stock_fear_greed_server_error
-    stub_request(:get, %r{production\.dataviz\.cnn\.io/index/fearandgreed/graphdata/})
-      .to_return(status: 500, body: "Internal Server Error")
-  end
 
   # --- ExchangeRate API ---
 

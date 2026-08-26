@@ -17,8 +17,7 @@ module MarketData
 
         # Public — no key needed
         "Yahoo Finance"  => Info.new("Precios de acciones y ETFs de la BMV (México).", "https://finance.yahoo.com", false),
-        "Alternative.me" => Info.new("Índice de miedo y codicia de cripto (sentimiento).", "https://alternative.me/crypto/fear-and-greed-index/", false),
-        "CNN"            => Info.new("Índice de miedo y codicia del mercado de acciones (sentimiento).", "https://www.cnn.com/markets/fear-and-greed", false)
+        "Alternative.me" => Info.new("Índice de miedo y codicia de cripto (sentimiento).", "https://alternative.me/crypto/fear-and-greed-index/", false)
       }.freeze
 
       def self.for(provider_name)

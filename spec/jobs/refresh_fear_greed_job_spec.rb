@@ -2,100 +2,64 @@ require "rails_helper"
 
 RSpec.describe RefreshFearGreedJob, type: :job do
   describe "#perform" do
-    context "when both APIs succeed" do
-      before do
-        stub_crypto_fear_greed
-        stub_stock_fear_greed
-      end
+    context "when the API succeeds" do
+      before { stub_crypto_fear_greed }
 
-      it "creates two FearGreedReading records" do
+      it "creates a crypto reading" do
         expect {
           described_class.perform_now
-        }.to change(FearGreedReading, :count).by(2)
+        }.to change(FearGreedReading, :count).by(1)
+
+        reading = FearGreedReading.crypto.last
+        expect(reading.value).to eq(25)
+        expect(reading.classification).to eq("Extreme Fear")
+        expect(reading.source).to eq("alternative.me")
       end
 
-      it "creates crypto and stocks readings" do
+      it "never creates a stocks reading — CNN's index is retired" do
         described_class.perform_now
 
-        crypto = FearGreedReading.crypto.last
-        expect(crypto.value).to eq(25)
-        expect(crypto.classification).to eq("Extreme Fear")
-        expect(crypto.source).to eq("alternative.me")
-
-        stocks = FearGreedReading.stocks.last
-        expect(stocks.value).to eq(62)
-        expect(stocks.classification).to eq("Greed")
-        expect(stocks.source).to eq("cnn")
+        expect(FearGreedReading.stocks).to be_empty
       end
 
-      it "publishes FearGreedUpdated events" do
+      it "publishes a FearGreedUpdated event" do
         events = []
         EventBus.subscribe(MarketData::Events::FearGreedUpdated, ->(event) { events << event })
 
         described_class.perform_now
 
-        expect(events.size).to eq(2)
-        expect(events.map { |e| e.is_a?(Hash) ? e[:index_type] : e.index_type }).to contain_exactly("crypto", "stocks")
+        expect(events.size).to eq(1)
+        expect(events.map { |e| e.is_a?(Hash) ? e[:index_type] : e.index_type }).to contain_exactly("crypto")
       end
 
-      it "logs success for each source" do
+      it "logs the success" do
         expect {
           described_class.perform_now
-        }.to change(SystemLog, :count).by(2)
+        }.to change(SystemLog, :count).by(1)
       end
     end
 
-    context "when crypto API fails but stocks succeeds" do
-      before do
-        stub_crypto_fear_greed_server_error
-        stub_stock_fear_greed
-      end
+    context "when the API fails" do
+      before { stub_crypto_fear_greed_server_error }
 
-      it "still creates a stocks reading" do
+      it "creates no reading and logs the failure as an error" do
         expect {
           described_class.perform_now
-        }.to change(FearGreedReading, :count).by(1)
+        }.not_to change(FearGreedReading, :count)
 
-        expect(FearGreedReading.last.index_type).to eq("stocks")
-      end
-
-      it "logs failure for crypto and success for stocks" do
-        described_class.perform_now
-
-        logs = SystemLog.order(:created_at).last(2)
-        expect(logs.first.task_name).to eq("Fear & Greed: crypto")
-        expect(logs.first.severity).to eq("error")
-        expect(logs.last.task_name).to eq("Fear & Greed: stocks")
-        expect(logs.last.severity).to eq("success")
-      end
-    end
-
-    context "when stocks API fails but crypto succeeds" do
-      before do
-        stub_crypto_fear_greed
-        stub_stock_fear_greed_server_error
-      end
-
-      it "still creates a crypto reading" do
-        expect {
-          described_class.perform_now
-        }.to change(FearGreedReading, :count).by(1)
-
-        expect(FearGreedReading.last.index_type).to eq("crypto")
+        log = SystemLog.order(:created_at).last
+        expect(log.task_name).to eq("Fear & Greed: crypto")
+        expect(log.severity).to eq("error")
       end
     end
 
     context "when rate limited" do
-      before do
-        stub_crypto_fear_greed_rate_limited
-        stub_stock_fear_greed_rate_limited
-      end
+      before { stub_crypto_fear_greed_rate_limited }
 
-      it "logs with warning severity" do
+      it "logs with warning severity rather than error" do
         described_class.perform_now
 
-        logs = SystemLog.last(2)
-        expect(logs).to all(have_attributes(severity: "warning"))
+        expect(SystemLog.order(:created_at).last.severity).to eq("warning")
       end
     end
   end

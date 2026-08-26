@@ -6,7 +6,6 @@ module Admin
       "CoinGecko"      => "coingecko.com",
       "Yahoo Finance"  => "finance.yahoo.com",
       "Alternative.me" => "alternative.me",
-      "CNN"            => "cnn.com/markets/fear-and-greed",
       "Alpha Vantage"  => "alphavantage.co",
       "FMP"            => "financialmodelingprep.com",
       "ExchangeRate"   => "exchangerate-api.com",
