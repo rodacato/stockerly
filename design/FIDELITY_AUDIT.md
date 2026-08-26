@@ -24,30 +24,36 @@ the `.pen` file and says nothing about the ERB.
 `slate-*`/`gray-*` utilities are the pre-2.0 palette; `bg-bg-*`/`text-fg-*`/`border-border-*` are the
 Lumen token contract; `t(...)` is ADR-011. A screen is 2.0 when the first column is zero.
 
+> 🐞 **The first pass of this table counted wrong, and the numbers below are the corrected ones.**
+> The pattern `slate-` matches inside `translate-`, so transform utilities were being counted as
+> pre-2.0 palette. Quantified on master before fixing: **13 of 1510 matches, 0.86%** — small enough
+> that every conclusion held, large enough that some rows were off by one or two. The counts use
+> `\b(slate|gray)-` now. Re-measured 2026-08-26.
+
 | View dir | slate | tokens | i18n | | Has an artboard? |
 |---|---:|---:|---:|---|---|
 | `onboarding` | 0 | 39 | 26 | ✅ 2.0 | yes |
 | `setup` | 0 | 2 | 12 | ✅ 2.0 | yes |
 | `sessions` | 0 | 2 | 10 | ✅ 2.0 | yes |
 | `password_resets` | 0 | 14 | 20 | ✅ 2.0 | yes |
-| `assets` | 0 | 21 | 26 | ✅ 2.0 | yes |
-| `settings` | 1 | 33 | 22 | ◐ mixed | yes |
-| `portfolios` | 1 | 16 | 23 | ◐ mixed | yes |
-| `dashboard` | 5 | 21 | 19 | ◐ mixed | yes |
+| `assets` | 0 | 21 | 27 | ✅ 2.0 | yes |
+| `settings` | 0 | 33 | 22 | ◐ mixed | yes |
+| `portfolios` | 0 | 16 | 23 | ◐ mixed | yes |
+| `dashboard` | 4 | 21 | 19 | ◐ mixed | yes |
 | `trades` | 26 | 71 | 16 | ◐ mixed | yes |
-| `profiles` | 1 | 64 | 0 | ◐ mixed | no |
+| `profiles` | 0 | 64 | 0 | ◐ mixed | no |
 | `components` | 27 | 30 | 15 | ◐ mixed | the kit |
 | `welcome` / `help` | 0 | 2 | 0 | ◐ no i18n | yes / no |
 | `alerts` | 0 | 49 | 36 | ✅ 2.0 | yes — closed 2026-08-25 |
 | `notifications` | 0 | 9 | 11 | ✅ 2.0 | yes — closed 2026-08-25 |
-| **`admin/assets`** | 66 | 2 | 0 | ✗ pre-2.0 | **yes** |
-| **`admin/logs`** | 55 | 2 | 0 | ✗ pre-2.0 | **yes** |
-| **`admin/dashboard`** | 55 | 0 | 0 | ✗ pre-2.0 | **yes** |
-| **`admin/integrations`** | 35 | 4 | 0 | ✗ pre-2.0 | **yes** |
-| **`admin/settings`** | 34 | 1 | 0 | ✗ pre-2.0 | **yes** |
-| `market` | 195 | 71 | 21 | ✗ pre-2.0 | partly |
+| **`admin/assets`** | 66 | 2 | 0 | ✗ pre-2.0 | **no** — see #289 |
+| `admin/logs` | 0 | 24 | 14 | ✅ 2.0 | yes — closed 2026-08-26 |
+| **`admin/dashboard`** | 55 | 0 | 0 | ✗ pre-2.0 | **no** — see #289 |
+| `admin/integrations` | 0 | 27 | 26 | ✅ 2.0 | yes — closed 2026-08-26 |
+| `admin/settings` | 0 | 14 | 16 | ✅ 2.0 | yes — closed 2026-08-26 |
+| `market` | 193 | 71 | 22 | ✗ pre-2.0 | partly |
 | `positions` | 33 | 1 | 1 | ✗ pre-2.0 | no |
-| `earnings` | 66 | 5 | 0 | ✗ pre-2.0 | no |
+| `earnings` | 65 | 5 | 0 | ✗ pre-2.0 | no |
 | `search` | 31 | 3 | 0 | ✗ pre-2.0 | no |
 | `news` | 25 | 5 | 0 | ✗ pre-2.0 | no |
 | `shared` | 32 | 12 | 0 | ✗ pre-2.0 | mixed |
@@ -56,8 +62,13 @@ Lumen token contract; `t(...)` is ADR-011. A screen is 2.0 when the first column
 Reglas and the Bandeja joined it on 2026-08-25; the rest is still mixed or pre-2.0.
 
 The last column is what separates a defect from a decision. A pre-2.0 directory **with** an
-artboard is unfinished work. One **without** is a screen the redesign deliberately left routable
-and unlisted (§6b), and it stays that way until a trigger says otherwise.
+artboard is unfinished work. One **without** is either a screen the redesign deliberately left
+routable and unlisted (§6b) or one nobody has drawn yet — and migrating an undrawn screen means
+inventing design, which is why `admin/dashboard` and `admin/assets` stay open in #289 rather than
+riding along with the three that had artboards.
+
+**Corrected 2026-08-26:** the first pass credited those two with artboards. They have none — the
+`ajustes-*` set covers the hub, Integraciones, Registros and Estado, and nothing else.
 
 ## Flow by flow
 
@@ -130,13 +141,14 @@ someone builds a push channel. **It cannot ship as drawn.**
 `earnings_reminder`, `maturity_reminder`, `system`. The screen's own filter collapses them into two
 buckets and throws the distinction away. Restoring it is a scope change, not a data change.
 
-### Ajustes — ◐ the hub is faithful, the four screens behind it are not
+### Ajustes — ✅ the hub and three of the four behind it; two screens have no artboard
 
 `/settings` is close to 1:1. Deltas: the `Tema` label is missing, the code adds a **Guardar** button
 the artboard has none of (it implies auto-save), and the *Trabajos* badge is absent — which §8
 explains, a cross-database count aborted the request transaction.
 
-Behind it, all five `admin/*` directories are pre-2.0 at 34–66 slate each. §8 named this and left it:
+**Registros, Estado and Integraciones closed 2026-08-26**, all three at zero. What follows is the
+state that produced #289, kept because it explains why two are still open. §8 named this and left it:
 *"the four instance screens keep their admin styling. Folding those into the hub's visual language
 is a further pass."* **That pass now has artboards it did not have then** — `ajustes-integraciones`,
 `ajustes-registros`, `ajustes-estado`.
@@ -180,9 +192,11 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
    the one piece that could not ship — see item 9.
 2. ✅ **Bandeja (`/notifications`)** — done 2026-08-25. Four typed filters, date grouping, a tint
    per type, *Borrar las leídas* rendered at last, renamed to *Bandeja*.
-3. ⬜ **The four instance screens** → [#289](https://github.com/rodacato/stockerly/issues/289)
-4. ⬜ **`admin/assets`** — 66 slate. Half-absorbed already: Rastreados took the list and the budget;
-   create, search and delete still live here. Rides #289.
+3. ◐ **The four instance screens** → [#289](https://github.com/rodacato/stockerly/issues/289).
+   Registros, Estado and Integraciones closed 2026-08-26, all three at zero. `admin/dashboard`
+   stays open because it has **no artboard** — migrating it would mean inventing design.
+4. ⬜ **`admin/assets`** — 66 slate, and **no artboard** either. Half-absorbed already: Rastreados
+   took the list and the budget; create, search and delete still live here. Rides #289.
 5. ⬜ **The asset-detail depth** → [#294](https://github.com/rodacato/stockerly/issues/294)
 
 ## Complete — designed, no code
