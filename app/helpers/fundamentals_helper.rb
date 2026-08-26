@@ -1,10 +1,54 @@
 module FundamentalsHelper
+  # D36: an interpretive chip is only built where the threshold is part of the
+  # metric's own definition, never where it varies by industry. Beta is scaled
+  # against the market by construction; a payout above 100% pays more than it
+  # earns; a current ratio below 1.0 does not cover the near term. P/E "caro vs
+  # su historia" is deliberately absent — it needs the asset's own P/E history,
+  # which this partial is not given.
+  METRIC_CHIPS = {
+    beta: ->(v) {
+      return :volatil    if v > 1.3
+      return :defensivo  if v < 0.7
+      :como_el_mercado
+    },
+    payout_ratio: ->(v) { :sobre_utilidades if v > 1.0 },
+    current_ratio: ->(v) { v < 1.0 ? :liquidez_corta : :cubre_corto_plazo }
+  }.freeze
+
+  CHIP_TONES = {
+    volatil:           "bg-warning/10 text-warning",
+    defensivo:         "bg-bg-muted text-fg-subtle",
+    como_el_mercado:   "bg-bg-muted text-fg-subtle",
+    sobre_utilidades:  "bg-negative-bg text-negative-fg",
+    liquidez_corta:    "bg-warning/10 text-warning",
+    cubre_corto_plazo: "bg-positive-bg text-positive-fg"
+  }.freeze
+
+  def metric_name(definition)     = t("market.metricas.#{definition.key}.nombre")
+  def metric_desc(definition)     = t("market.metricas.#{definition.key}.desc")
+  def metric_guidance(definition) = t("market.metricas.#{definition.key}.guia")
+
+  # Returns [label, classes] or nil when the metric has no defensible threshold.
+  def metric_chip(definition, value)
+    return if value.nil?
+    rule = METRIC_CHIPS[definition.key]
+    return unless rule
+
+    key = rule.call(value.to_f)
+    return unless key
+
+    [ t("market.chips.#{key}"), CHIP_TONES.fetch(key) ]
+  end
+
   def format_metric_value(value, format_type)
     return "—" if value.nil?
 
     case format_type
     when :ratio      then number_with_precision(value.to_f, precision: 2)
-    when :percentage then "#{number_with_precision(value.to_f, precision: 1)}%"
+    # Every producer stores a percentage as a decimal ratio — Alpha Vantage and
+    # FMP persist ProfitMargin as 0.2461, and FundamentalCalculator rounds
+    # net/revenue to 4 places. Printing it raw showed a 24.6% margin as "0.2%".
+    when :percentage then "#{number_with_precision(value.to_f * 100, precision: 1)}%"
     when :currency   then format_large_currency(value)
     when :number     then number_with_delimiter(value.to_i)
     when :text       then value.to_s

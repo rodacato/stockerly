@@ -39,8 +39,7 @@ RSpec.describe "Market Asset Metric Tooltips", type: :request do
     end
 
     it "renders metric definition context guidance" do
-      pe_def = MarketData::Domain::MetricDefinitions.find(:pe_ratio)
-      expect(response.body).to include(pe_def.context_guidance)
+      expect(response.body).to include(I18n.t("market.metricas.pe_ratio.guia"))
     end
 
     it "renders school icon in tooltip header" do

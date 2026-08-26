@@ -17,9 +17,9 @@ RSpec.describe "Market Asset Detail Tabs", type: :request do
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("P/E Ratio")
-      expect(response.body).to include("EV/EBITDA")
-      expect(response.body).to include("Market Cap")
+      expect(response.body).to include(I18n.t("market.metricas.pe_ratio.nombre"))
+      expect(response.body).to include(I18n.t("market.metricas.ev_ebitda.nombre"))
+      expect(response.body).to include(I18n.t("market.metricas.market_cap.nombre"))
     end
 
     it "renders profitability-style metrics on the Resumen tab via the summary metric set" do
@@ -29,8 +29,8 @@ RSpec.describe "Market Asset Detail Tabs", type: :request do
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Return on Equity")
-      expect(response.body).to include("Net Margin")
+      expect(response.body).to include(I18n.t("market.metricas.roe.nombre"))
+      expect(response.body).to include(I18n.t("market.metricas.net_margin.nombre"))
     end
 
     it "renders the es-MX empty state when no fundamentals" do

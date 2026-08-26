@@ -326,6 +326,13 @@ es-MX:
     - noviembre
     - diciembre
   market:
+    chips:
+      como_el_mercado: se mueve como el mercado
+      cubre_corto_plazo: cubre el corto plazo
+      defensivo: defensivo
+      liquidez_corta: liquidez corta
+      sobre_utilidades: paga más de lo que gana
+      volatil: volátil
     estado:
       neutral:
         holding: Sin extremos técnicos hoy. Ni sobrecompra ni sobreventa en RSI ni
@@ -349,6 +356,196 @@ es-MX:
       agregar_watchlist: Agregar a watchlist
       quitar_watchlist: Quitar de watchlist
       sin_precio: Precio no disponible
+    metricas:
+      ath_price:
+        desc: El precio más alto jamás registrado
+        guia: Referencia del pico histórico. La distancia contra el máximo puede leerse
+          como potencial de recuperación o como sobrevaluación.
+        nombre: Máximo histórico
+      beta:
+        desc: Volatilidad frente al mercado
+        guia: Una beta de 1.0 significa volatilidad igual a la del mercado. Arriba
+          de 1.0 indica más volatilidad; abajo, menos.
+        nombre: Beta
+      circulating_supply:
+        desc: Monedas actualmente en circulación
+        guia: El número de monedas disponibles y circulando. Compáralo con la oferta
+          máxima para entender qué tan escasa es.
+        nombre: Oferta en circulación
+      current_ratio:
+        desc: Activo circulante frente al pasivo circulante
+        guia: Mide la liquidez de corto plazo. Por arriba de 1.0 indica capacidad
+          de cubrir las obligaciones próximas.
+        nombre: Razón circulante
+      debt_to_equity:
+        desc: Deuda total frente al capital contable
+        guia: Mide el apalancamiento financiero. Razones más altas indican una operación
+          más financiada con deuda, y más riesgo.
+        nombre: Deuda / Capital
+      dividend_per_share:
+        desc: Pago anual de dividendo por cada acción
+        guia: El monto absoluto que se paga al año por acción. Vale la pena seguir
+          su consistencia y su crecimiento en el tiempo.
+        nombre: Dividendo por acción
+      dividend_yield:
+        desc: Dividendo anual frente al precio de la acción
+        guia: Indica el retorno por ingreso sobre la inversión. Rendimientos muy altos
+          pueden señalar pagos insostenibles o un precio que viene cayendo.
+        nombre: Rendimiento por dividendo
+      ebitda:
+        desc: Utilidad antes de intereses, impuestos, depreciación y amortización
+        guia: Aproximación a la generación de efectivo operativo. Útil para comparar
+          empresas con estructuras de capital distintas.
+        nombre: EBITDA
+      eps:
+        desc: Utilidad por acción sobre base diluida
+        guia: Utilidad neta entre las acciones diluidas en circulación. Es la medida
+          de rentabilidad por acción que usa el cálculo del P/U.
+        nombre: UPA (diluida)
+      eps_growth:
+        desc: Cambio en la utilidad por acción contra el trimestre anterior
+        guia: Mide el impulso de las utilidades. Una UPA que acelera suele empujar
+          el precio de la acción.
+        nombre: Crecimiento de UPA
+      ev_ebitda:
+        desc: Valor de la empresa entre su utilidad operativa
+        guia: Valuación neutral a la estructura de capital. Suele ser más comparable
+          entre empresas que el P/U.
+        nombre: VE/EBITDA
+      exchange:
+        desc: Bolsa donde cotiza el activo
+        guia: La bolsa principal de este instrumento. Determina el horario de operación
+          y el marco regulatorio que aplica.
+        nombre: Bolsa
+      fcf_yield:
+        desc: Flujo de efectivo libre frente al valor de mercado
+        guia: Indica cuánto efectivo genera el negocio en relación con su precio.
+          Un rendimiento más alto puede señalar mejor valor.
+        nombre: Rendimiento del flujo libre
+      fifty_two_week_high:
+        desc: Precio más alto del último año
+        guia: Referencia del techo reciente. Estar cerca del máximo de 52 semanas
+          puede indicar impulso o resistencia.
+        nombre: Máximo 52 sem
+      fifty_two_week_low:
+        desc: Precio más bajo del último año
+        guia: Referencia del piso reciente. Estar cerca del mínimo de 52 semanas puede
+          indicar debilidad o soporte.
+        nombre: Mínimo 52 sem
+      forward_pe:
+        desc: Precio entre la utilidad esperada a 12 meses
+        guia: Usa el consenso de analistas para la UPA de los próximos 12 meses. Compáralo
+          con el P/U actual para leer qué crecimiento espera el mercado.
+        nombre: P/U estimado
+      fully_diluted_valuation:
+        desc: Valuación totalmente diluida
+        guia: El valor de mercado si todas las monedas posibles estuvieran en circulación.
+          Una brecha grande contra el valor de mercado puede indicar dilución futura.
+        nombre: FDV
+      gross_margin:
+        desc: Utilidad bruta como porcentaje de los ingresos
+        guia: Indica poder de fijación de precios y eficiencia productiva. Márgenes
+          altos suelen señalar ventajas competitivas.
+        nombre: Margen bruto
+      market_cap:
+        desc: Valor total de las acciones en circulación
+        guia: Indica el tamaño de la empresa. Las de gran capitalización (más de 10
+          mil millones de USD) suelen ser más estables que las pequeñas (menos de
+          2 mil millones).
+        nombre: Valor de mercado
+      net_margin:
+        desc: Utilidad neta como porcentaje de los ingresos
+        guia: Indica qué parte de los ingresos queda como utilidad después de todos
+          los gastos. Compáralo dentro de la misma industria para que signifique algo.
+        nombre: Margen neto
+      operating_margin:
+        desc: Utilidad de operación como porcentaje de los ingresos
+        guia: Refleja la rentabilidad del negocio central, antes de intereses e impuestos.
+          Le afectan menos las decisiones de financiamiento que al margen neto.
+        nombre: Margen operativo
+      payout_ratio:
+        desc: Dividendos como porcentaje de las utilidades
+        guia: Muestra qué parte de las utilidades se reparte. Por arriba de 100% significa
+          que los dividendos exceden lo que la empresa gana.
+        nombre: Razón de pago
+      pb_ratio:
+        desc: Precio entre el valor en libros por acción
+        guia: Compara el precio de mercado con el valor contable neto. Las industrias
+          intensivas en activos suelen tener P/VL más bajos.
+        nombre: P/VL
+      pe_ratio:
+        desc: Precio entre la utilidad por acción
+        guia: Compara el precio actual con las utilidades. Un P/U alto suele reflejar
+          expectativas de crecimiento; uno bajo puede indicar subvaluación o utilidades
+          a la baja.
+        nombre: P/U
+      peg_ratio:
+        desc: P/U ajustado por el crecimiento de utilidades
+        guia: Un PEG cercano a 1.0 sugiere un precio razonable frente al crecimiento.
+          Por debajo de 1.0 puede indicar subvaluación.
+        nombre: PEG
+      ps_ratio:
+        desc: Precio entre las ventas por acción
+        guia: Útil para empresas sin utilidades. Valores bajos pueden indicar subvaluación
+          frente a los ingresos que genera.
+        nombre: P/V
+      quick_ratio:
+        desc: Activos líquidos frente al pasivo circulante
+        guia: 'Medida de liquidez más estricta: excluye inventarios. Suele ser más
+          relevante en empresas de servicios.'
+        nombre: Prueba del ácido
+      revenue_growth:
+        desc: Cambio en ingresos contra el trimestre anterior
+        guia: Indica el impulso del negocio. Un crecimiento sostenido puede señalar
+          más participación de mercado o productos nuevos que funcionan.
+        nombre: Crecimiento de ingresos
+      revenue_ttm:
+        desc: Ingresos totales de los últimos doce meses
+        guia: Los ingresos de los últimos doce meses dan una vista suavizada del tamaño
+          del negocio, sin las distorsiones de la estacionalidad.
+        nombre: Ingresos (U12M)
+      roa:
+        desc: Utilidad neta frente al total de activos
+        guia: Mide qué tan eficientemente los activos generan utilidad. Las industrias
+          intensivas en activos suelen tener ROA más bajo.
+        nombre: ROA
+      roe:
+        desc: Utilidad neta frente al capital contable
+        guia: Mide qué tan bien se aprovecha el capital de los accionistas. Un ROE
+          alto y sostenido puede indicar ventaja competitiva, pero valores muy altos
+          a veces señalan apalancamiento excesivo.
+        nombre: ROE
+      sector:
+        desc: Clasificación por industria
+        guia: El sector económico en el que opera la empresa. El contexto del sector
+          importa para que las razones financieras sean comparables.
+        nombre: Sector
+      shares_outstanding:
+        desc: Total de acciones en manos de los accionistas
+        guia: Se usa para calcular el valor de mercado y las métricas por acción.
+          Sus cambios pueden indicar recompras o dilución.
+        nombre: Acciones en circulación
+      total_supply:
+        desc: Total de monedas que existen, incluidas las bloqueadas
+        guia: Incluye todas las monedas emitidas. La diferencia con la oferta en circulación
+          indica monedas bloqueadas, en staking o reservadas.
+        nombre: Oferta total
+      total_volume_24h:
+        desc: Volumen total operado en las últimas 24 horas
+        guia: Un volumen alto indica operación activa y liquidez. Con volumen bajo,
+          el precio se mueve más de golpe.
+        nombre: Volumen 24 h
+      volume_market_cap_ratio:
+        desc: Volumen de 24 h frente al valor de mercado
+        guia: 'Indicador de liquidez. Razones más altas sugieren operación más activa
+          en relación con el tamaño del activo. Rango típico: 1 a 10%.'
+        nombre: Volumen / Valor de mercado
+    metricas_cerrar: Cerrar
+    metricas_como_leerlo: Cómo interpretarlo
+    metricas_detalle: Ver detalle de %{metric}
+    metricas_que_mide: Qué mide
+    metricas_referencial: Información referencial. El desempeño pasado no garantiza
+      resultados futuros.
     precio:
       titulo: Precio · %{currency} · cierre diario
   nav:

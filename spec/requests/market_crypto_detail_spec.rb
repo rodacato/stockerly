@@ -43,11 +43,11 @@ RSpec.describe "Market Crypto Asset Detail", type: :request do
     it "renders crypto-specific metrics in the summary tab" do
       get market_asset_path(crypto_asset.symbol)
 
-      expect(response.body).to include("Circulating Supply")
+      expect(response.body).to include(I18n.t("market.metricas.circulating_supply.nombre"))
       expect(response.body).to include("FDV")
-      expect(response.body).to include("24h Volume")
-      expect(response.body).to include("All-Time High")
-      expect(response.body).to include("Vol / Market Cap")
+      expect(response.body).to include(I18n.t("market.metricas.total_volume_24h.nombre"))
+      expect(response.body).to include(I18n.t("market.metricas.ath_price.nombre"))
+      expect(response.body).to include(I18n.t("market.metricas.volume_market_cap_ratio.nombre"))
     end
 
     it "shows the CoinGecko source attribution (es-MX)" do

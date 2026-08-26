@@ -42,7 +42,7 @@ RSpec.describe "Market Asset Detail", type: :request do
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("P/E Ratio")
+      expect(response.body).to include(I18n.t("market.metricas.pe_ratio.nombre"))
       expect(response.body).to include("Beta")
     end
 
