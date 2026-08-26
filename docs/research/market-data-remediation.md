@@ -7,12 +7,11 @@
 > **This document dissolves into GitHub Issues.** It exists so nothing is lost between the audit and
 > the board; delete a row once its issue is open, and delete the file once all of them are.
 >
-> **Status 2026-08-26, third pass:** eleven of the eighteen findings are closed —
-> group A, all of C except C2 and C9, both of group D, B2, and now **B1** with
-> [#318](https://github.com/rodacato/stockerly/issues/318). Verified against the
-> code rather than assumed; each closure names what did it. What remains is
-> listed at the bottom under **Still open**, and every row there is now a GitHub
-> issue.
+> **Status 2026-08-26, fourth pass:** thirteen of the eighteen findings are
+> closed — group A, **all of C**, both of group D, B1 and B2. Verified against
+> the code rather than assumed; each closure names what did it. **What remains
+> is B3 and B4, and both are
+> [#320](https://github.com/rodacato/stockerly/issues/320).**
 >
 > **Done 2026-08-26:** multi-key rotation retired per
 > [ADR-015](../architecture/adr/0015-one-api-key-per-provider.md), and **all of group A with it**.
@@ -51,14 +50,14 @@ Fixing them now means fixing them twice. Each is listed with what it is waiting 
 | # | Finding | Waiting on |
 |---|---|---|
 | ✅ C1 | **Closed.** `source`, `interval`, `status`, `as_of` and `fetched_at` exist on both tables; `GatewayChain` records the winner instead of discarding it. |
-| C2 | Registry decorative on the main path — `for_capability` has 2 call sites while prices route through a hardcoded `case` (`sync_single_asset_job.rb:63`) | `Source` as a domain object |
+| ✅ C2 | **Closed by [#319](https://github.com/rodacato/stockerly/issues/319).** The registry lacked the dimension that decides routing, not a method: `for_capability(:prices)` returned the same four sources for every asset. Sources now declare `markets` and `asset_types`, and the three sites that disagreed about Mexico resolve through one. `MarketData::Domain::SourceCatalogue` is the `Source` domain object this row asked for. |
 | ✅ C3 | **Closed.** Banxico answers `:not_yet_published` before 12:00 CDMX, which is now distinguishable from an outage. |
 | ✅ C4 | **Closed.** The 403 maps to `:no_entitlement`, and `CircuitBreaker` opens on the first permanent failure for an hour rather than retrying it every minute forever. |
 | ✅ C5 | **Closed.** `FundamentalsBudget` reads the per-call counter `RateLimiter` maintains, and the limit comes from the same row the screen shows. |
 | ✅ C6 | **Closed.** BMV earnings go through the bridge, which reaches what `quoteSummary` could not. |
 | ✅ C7 | **Closed with the gateway.** ⚠️ `CoingeckoGateway` still carries the same `bars.uniq! { |b| b[:date] }`, harmless while it only requests daily data — worth remembering before any intraday request lands there. |
 | ✅ C8 | **Closed.** Polygon is retired: gateway, registrations, directory entry, seeded stamps, the comments that used it as the canonical example, and its `Integration` row. |
-| C9 | FMP `/api/v3/` is legacy-gated to pre-2025-08-31 accounts — **works on the maintainer's key, 403s for every new self-hoster** | **Unblocked 2026-08-26.** Alpaca's `/v1/corporate-actions` is free on Basic and returns dividends and splits with `ex_date`, `payable_date`, `record_date` and `rate` — more fields than FMP. FMP drops to a fallback, and Integraciones has to **say** it only works on pre-existing keys; an unlabelled fallback that fails for everyone but the maintainer is the defect, not the dependency. |
+| ✅ C9 | **Closed by [#312](https://github.com/rodacato/stockerly/issues/312).** Dividends and splits route by market — Alpaca for US, the bridge for BMV. **FMP was not deleted, and the first attempt to delete it was wrong:** it is still the fallback behind Alpha Vantage's 25 calls a day, and on a key that predates the gate that is real coverage. This row's own last sentence had it right — *an unlabelled fallback is the defect, not the dependency* — so it is scoped to `:fundamentals` and carries `maintainer_only`, which the card renders. |
 
 ---
 
@@ -104,9 +103,7 @@ decision is needed, names whose it is.
 |---|---|---|
 | B3 | CoinGecko is asked in USD in four places although it quotes MXN natively — we convert a number the source could have given us. | [#320](https://github.com/rodacato/stockerly/issues/320) |
 | B4 | The CETES curve costs four calls where Banxico allows twenty series in one, against the provider most at risk of a day-long block. | [#320](https://github.com/rodacato/stockerly/issues/320) |
-| C2 | **The registry is still decorative.** `for_capability` has two call sites; twenty places instantiate a gateway by name. | [#319](https://github.com/rodacato/stockerly/issues/319) |
-| C9 | **FMP is legacy-gated** and still serves dividends, splits *and* fundamentals fallback — it works on the maintainer's key and 403s for every new self-hoster. | [#312](https://github.com/rodacato/stockerly/issues/312) |
 
-**Delete this file when the remaining four are closed.** It has done its job:
-eighteen findings reached the board without any being lost between the audit and
-the work.
+**Both remaining rows are [#320](https://github.com/rodacato/stockerly/issues/320).
+Delete this file when it closes.** It has done its job: eighteen findings reached
+the board without any being lost between the audit and the work.
