@@ -870,7 +870,8 @@
                   "fill": "$fg-subtle",
                   "content": "Activos",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -899,7 +900,8 @@
                   "fill": "$fg-subtle",
                   "content": "Reglas",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -928,7 +930,8 @@
                   "fill": "$fg-subtle",
                   "content": "Descubrir",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -957,7 +960,8 @@
                   "fill": "$fg-subtle",
                   "content": "Ajustes",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -2000,7 +2004,8 @@
                   "fill": "$fg-subtle",
                   "content": "Activos",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2029,7 +2034,8 @@
                   "fill": "$fg-subtle",
                   "content": "Reglas",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2058,7 +2064,8 @@
                   "fill": "$fg-subtle",
                   "content": "Descubrir",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2087,7 +2094,8 @@
                   "fill": "$fg-subtle",
                   "content": "Ajustes",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -2967,7 +2975,8 @@
                   "fill": "$fg-subtle",
                   "content": "Activos",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2996,7 +3005,8 @@
                   "fill": "$fg-subtle",
                   "content": "Reglas",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -3025,7 +3035,8 @@
                   "fill": "$fg-subtle",
                   "content": "Descubrir",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -3054,7 +3065,8 @@
                   "fill": "$fg-subtle",
                   "content": "Ajustes",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -8228,7 +8240,8 @@
                   "fill": "$fg-subtle",
                   "content": "Activos",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -8257,7 +8270,8 @@
                   "fill": "$fg-subtle",
                   "content": "Reglas",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -8286,7 +8300,8 @@
                   "fill": "$fg-subtle",
                   "content": "Descubrir",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -8315,7 +8330,8 @@
                   "fill": "$fg-subtle",
                   "content": "Ajustes",
                   "fontFamily": "$font-sans",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             }
