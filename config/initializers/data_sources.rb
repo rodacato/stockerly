@@ -136,6 +136,23 @@ Rails.application.config.after_initialize do
     capabilities: %i[fx_history]
   )
 
+  # Its /api/v3 is gated to pre-2025-08-31 accounts, so an unlabelled fallback
+  # is a lie for every self-hoster but the maintainer (#312 removes it).
+  DataSourceRegistry.register(:fmp_corporate_actions,
+    name: "Dividendos y splits — FMP",
+    icon: "paid",
+    color: "slate",
+    gateway_class: MarketData::Gateways::FmpGateway,
+    job_class: SyncDividendsJob,
+    job_args: [],
+    test_symbol: "AAPL",
+    test_method: :fetch_dividends,
+    integration_name: "FMP",
+    circuit_breaker_key: "fmp",
+    maintainer_only: true,
+    capabilities: %i[dividends splits]
+  )
+
   DataSourceRegistry.register(:banxico_cetes,
     name: "CETES — Banxico",
     icon: "account_balance",
