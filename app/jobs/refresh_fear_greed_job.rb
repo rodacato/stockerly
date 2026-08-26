@@ -1,5 +1,6 @@
-# Fetches Fear & Greed indices from Alternative.me (crypto) and CNN (stocks).
-# Each source is fetched independently — one failure doesn't block the other.
+# Fetches the crypto Fear & Greed index from Alternative.me.
+# The stocks index went with CNN's gateway: its endpoint blocks datacenter
+# IPs outright and no sanctioned equivalent exists (ADR-015's audit).
 class RefreshFearGreedJob < ApplicationJob
   include PausableSync
   include SyncLogging
@@ -8,7 +9,6 @@ class RefreshFearGreedJob < ApplicationJob
 
   def perform
     fetch_crypto
-    fetch_stocks
   end
 
   private
@@ -20,16 +20,6 @@ class RefreshFearGreedJob < ApplicationJob
       save_reading("crypto", "alternative.me", result.value!)
     else
       log_sync_failure("Fear & Greed: crypto", result.failure[1], severity: failure_severity(result))
-    end
-  end
-
-  def fetch_stocks
-    result = stocks_breaker.call { MarketData::Gateways::StockFearGreedGateway.new.fetch_index }
-
-    if result.success?
-      save_reading("stocks", "cnn", result.value!)
-    else
-      log_sync_failure("Fear & Greed: stocks", result.failure[1], severity: failure_severity(result))
     end
   end
 
@@ -58,9 +48,5 @@ class RefreshFearGreedJob < ApplicationJob
 
   def crypto_breaker
     SyncSingleAssetJob.circuit_breaker_for("crypto_fear_greed")
-  end
-
-  def stocks_breaker
-    SyncSingleAssetJob.circuit_breaker_for("stock_fear_greed")
   end
 end

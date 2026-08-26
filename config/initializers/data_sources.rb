@@ -76,20 +76,6 @@ Rails.application.config.after_initialize do
     capabilities: %i[sentiment]
   )
 
-  DataSourceRegistry.register(:stock_fear_greed,
-    name: "Stock F&G — CNN",
-    icon: "psychology",
-    color: "rose",
-    gateway_class: MarketData::Gateways::StockFearGreedGateway,
-    job_class: RefreshFearGreedJob,
-    job_args: [],
-    test_symbol: nil,
-    test_method: :fetch_price,
-    integration_name: "CNN",
-    circuit_breaker_key: "stock_fear_greed",
-    capabilities: %i[sentiment]
-  )
-
   DataSourceRegistry.register(:polygon_news,
     name: "News — Polygon.io",
     icon: "newspaper",
@@ -157,7 +143,7 @@ Rails.application.config.after_initialize do
     test_method: :fetch_price,
     integration_name: "ExchangeRate",
     circuit_breaker_key: "fx",
-    capabilities: %i[fx]
+    capabilities: %i[fx_current]
   )
 
   DataSourceRegistry.register(:banxico_fx,
@@ -171,7 +157,7 @@ Rails.application.config.after_initialize do
     test_method: :fetch_fx_fixes,
     integration_name: "Banxico",
     circuit_breaker_key: "banxico",
-    capabilities: %i[fx_rates]
+    capabilities: %i[fx_history]
   )
 
   DataSourceRegistry.register(:banxico_cetes,

@@ -5,7 +5,7 @@ class SyncAllStatementsJob < ApplicationJob
   include PausableSync
   include SyncLogging
 
-  DAILY_BUDGET = 25
+  DAILY_BUDGET = MarketData::Domain::FundamentalsBudget::DAILY_LIMIT
   CALLS_PER_ASSET = 3
   STAGGER_SECONDS = 15
 

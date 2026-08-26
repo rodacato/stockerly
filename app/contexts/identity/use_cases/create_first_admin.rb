@@ -48,7 +48,6 @@ module Identity
           { provider_name: "CoinGecko", provider_type: "Cryptocurrency", max_requests_per_minute: 30, daily_call_limit: 10_000, settings: { "pro_tier" => false } },
           { provider_name: "Yahoo Finance", provider_type: "Mexican Stocks & ETFs", daily_call_limit: 2_000 },
           { provider_name: "Alternative.me", provider_type: "Sentiment", daily_call_limit: 100 },
-          { provider_name: "CNN", provider_type: "Sentiment", daily_call_limit: 100 },
           { provider_name: "Alpha Vantage", provider_type: "Fundamentals", max_requests_per_minute: 5, daily_call_limit: 25 },
           { provider_name: "FMP", provider_type: "Dividends & Splits", max_requests_per_minute: 10, daily_call_limit: 250 },
           { provider_name: "ExchangeRate", provider_type: "FX Rates", max_requests_per_minute: 10, daily_call_limit: 1_500 },

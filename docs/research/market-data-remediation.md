@@ -7,22 +7,24 @@
 > **This document dissolves into GitHub Issues.** It exists so nothing is lost between the audit and
 > the board; delete a row once its issue is open, and delete the file once all of them are.
 >
-> **Agreed next step (2026-08-26):** remove multi-key rotation support per
-> [ADR-015](../architecture/adr/0015-one-api-key-per-provider.md). Everything below queues behind it.
+> **Done 2026-08-26:** multi-key rotation retired per
+> [ADR-015](../architecture/adr/0015-one-api-key-per-provider.md), and **all of group A with it**.
+> Two of those five turned out not to be what this document said they were — recorded below rather
+> than quietly corrected, because the mis-triage is the useful part.
 
 ---
 
-## A — Fix now: engine-independent, low risk
+## A — Done (2026-08-26)
 
-Nothing in the engine work changes these. They are wins available today.
+Nothing in the engine work changed these, and they are landed.
 
 | # | Fix | Where | Note |
 |---|---|---|---|
-| A1 | **Add a `RateLimiter` to Banxico** | `banxico_gateway.rb` | The only gateway without one, against a provider that blocks the token for a **full calendar day** — and that token serves FX *and* CETES. Purely additive. Highest value-per-line in the list. |
-| A2 | **Delete the unsourced rate-limit comment** | `crypto_fear_greed_gateway.rb:4` | `# Rate limit: ~50 req/day` has no source and throttles a source that returns 3,125 daily points free. One line. |
-| A3 | **Read `FundamentalsBudget::DAILY_LIMIT` instead of the literal** | `sync_all_statements_job.rb:8` | One number, two sources of truth. One line. |
-| A4 | **Unify the FX capability name** | `config/initializers/data_sources.rb` | `fx_rates` registers `%i[fx]`, `banxico_fx` registers `%i[fx_rates]` — two names for one capability. Harmless today only because nothing reads them; a trap the moment something does. |
-| A5 | **Retire the CNN Fear & Greed gateway** | `stock_fear_greed_gateway.rb` | Dead: HTTP 418 on every User-Agent, IP-reputation based, unlicensed, no sanctioned equivalent. Deleting the gateway is easy; **what the screen shows instead is a design decision** — it feeds Contexto de mercado and the Panorama sentiment carousel. Split the issue in two. |
+| ✅ A1 | **Add a `RateLimiter` to Banxico** | `banxico_gateway.rb` | The only gateway without one, against a provider that blocks the token for a **full calendar day** — and that token serves FX *and* CETES. Purely additive. Highest value-per-line in the list. |
+| ✅ A2 | **Delete the unsourced rate-limit comment** | `crypto_fear_greed_gateway.rb:4` | `# Rate limit: ~50 req/day` has no source and throttles a source that returns 3,125 daily points free. One line. |
+| ✅ A3 | **Read `FundamentalsBudget::DAILY_LIMIT` instead of the literal** | `sync_all_statements_job.rb:8` | One number, two sources of truth. One line. |
+| ⚠️ A4 | **This document was wrong: they are not one capability.** The fix was to *distinguish* them, not unify them | `config/initializers/data_sources.rb` | `FxRatesGateway#refresh_rates(base:, targets:)` and `BanxicoGateway#fetch_fx_fixes(from:, to:)` have different signatures and are **not substitutable in a chain** — merging their capability name would have built a fallback that cannot fall back, which is worse than the ambiguity it removed. Renamed to say what each is: **`:fx_current`** (many pairs, now) and **`:fx_history`** (the FIX series over a range), matching their jobs. |
+| ✅ A5 | **Retire the CNN Fear & Greed gateway** | `stock_fear_greed_gateway.rb` | Gateway, registration, seeded integration, provider-directory entry and the job's stocks half are gone. Both readers degrade cleanly — the carousel omits the card, the asset detail omits the sentiment. 🐞 **It exposed a second defect, fixed with it:** `FearGreedReading#stale?` existed and **nothing called it**, so the last stored value rendered as if it were today's; `latest_crypto`/`latest_stocks` now go through a `fresh` scope, which protects crypto against the same failure. **The design half is logged as [D38](../../design/DECISIONS.md), still open:** the artboards draw a stocks block no source can fill. |
 
 ## B — Fix now, but they are not as small as they look
 
