@@ -71,7 +71,9 @@
               form_class: "inline-flex",
               class: "inline-flex items-center gap-1.5 rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-sm font-medium text-fg-default transition-colors hover:border-primary hover:text-primary" do %>
           <span class="material-symbols-outlined text-base" aria-hidden="true"><%= source.icon %></span>
-          <%= source.name.split(" — ").first %>
+          <%# The full registry name, not its first half: two sources are both
+              "US Stocks" and only the provider after the dash tells them apart. %>
+          <%= source.name %>
         <% end %>
       <% end %>
     </div>
