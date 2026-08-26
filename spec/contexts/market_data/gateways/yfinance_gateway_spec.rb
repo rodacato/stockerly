@@ -60,6 +60,37 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
     end
   end
 
+  describe "#fetch_earnings" do
+    it "returns the estimate and the actual, which quoteSummary never could" do
+      stub_bridge([ { "date" => 5.days.from_now.to_date.to_s, "hour" => 16,
+                      "estimated_eps" => 0.72, "actual_eps" => nil },
+                    { "date" => 20.days.ago.to_date.to_s, "hour" => 3,
+                      "estimated_eps" => 0.65, "actual_eps" => 0.68 } ])
+
+      events = gateway.fetch_earnings("WALMEX.MX").value!
+
+      expect(events.first).to include(report_date: 5.days.from_now.to_date,
+                                      timing: :after_market_close,
+                                      estimated_eps: BigDecimal("0.72"),
+                                      actual_eps: nil)
+      expect(events.last).to include(timing: :before_market_open,
+                                     actual_eps: BigDecimal("0.68"))
+    end
+
+    it "drops quarters beyond the history window rather than flooding the table" do
+      stub_bridge([ { "date" => 2.years.ago.to_date.to_s, "hour" => 16,
+                      "estimated_eps" => 0.5, "actual_eps" => 0.5 } ])
+
+      expect(gateway.fetch_earnings("WALMEX.MX").value!).to be_empty
+    end
+
+    it "surfaces a ticker the bridge has no earnings for" do
+      stub_bridge_failure(:not_found)
+
+      expect(gateway.fetch_earnings("GENIUSSACV.MX").failure.first).to eq(:not_found)
+    end
+  end
+
   describe "#fetch_dividends" do
     it "returns the BMV dividends no sanctioned provider serves" do
       stub_bridge([ { "date" => "2025-12-16", "amount" => 0.58 } ])
