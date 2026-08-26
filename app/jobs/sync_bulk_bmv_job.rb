@@ -11,7 +11,8 @@ class SyncBulkBmvJob < ApplicationJob
   retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
 
   def perform(asset_ids)
-    assets = Asset.where(id: asset_ids, sync_status: :active).index_by(&:symbol)
+    provider = MarketData::Gateways::DataBursatilGateway::PROVIDER
+    assets = Asset.where(id: asset_ids, sync_status: :active).index_by { |asset| asset.symbol_for(provider) }
     return if assets.empty?
 
     result = breaker.call { MarketData::Gateways::DataBursatilGateway.new.fetch_bulk_prices(assets.keys) }

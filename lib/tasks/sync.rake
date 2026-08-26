@@ -15,7 +15,10 @@ namespace :stockerly do
     "Polygon.io"     => { provider_type: "Stocks & Forex",       requires_api_key: true,  max_requests_per_minute: 5,   daily_call_limit: 500   },
     "Finnhub"        => { provider_type: "Stocks & Market Data",  requires_api_key: true,  max_requests_per_minute: 60,  daily_call_limit: 500   },
     "CoinGecko"      => { provider_type: "Cryptocurrency",        requires_api_key: false, max_requests_per_minute: 30,  daily_call_limit: 10_000, settings: { "pro_tier" => false } },
-    "Yahoo Finance"  => { provider_type: "Mexican Stocks & ETFs", requires_api_key: false, max_requests_per_minute: nil, daily_call_limit: 2_000 },
+    # Yahoo publishes no limit and blocks by TLS fingerprint. These numbers are
+    # our own restraint, not its policy: enough for indices and dividends on a
+    # weekly cadence, low enough to stay uninteresting.
+    "Yahoo Finance"  => { provider_type: "Indices & BMV Corporate Actions", requires_api_key: false, max_requests_per_minute: 6, daily_call_limit: 200 },
     "Alternative.me" => { provider_type: "Sentiment",             requires_api_key: false, max_requests_per_minute: nil, daily_call_limit: 100   },
     "Alpha Vantage"  => { provider_type: "Fundamentals",          requires_api_key: true,  max_requests_per_minute: 5,   daily_call_limit: 25    },
     "FMP"            => { provider_type: "Dividends & Splits",    requires_api_key: true,  max_requests_per_minute: 10,  daily_call_limit: 250   },

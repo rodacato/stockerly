@@ -1,4 +1,7 @@
-# Fetches latest market index quotes from Yahoo Finance and updates MarketIndex records.
+# Fetches latest market index quotes and updates MarketIndex records.
+# Index levels come through the yfinance bridge because no sanctioned provider
+# serves them: Alpaca has none, Massive charges for them, and DataBursatil's
+# index feed has been frozen since 2026-06-26.
 class SyncMarketIndicesJob < ApplicationJob
   include PausableSync
   include SyncLogging
@@ -8,7 +11,7 @@ class SyncMarketIndicesJob < ApplicationJob
 
   def perform
     chain = GatewayChain.new(
-      gateways: [ MarketData::Gateways::YahooFinanceGateway.new, MarketData::Gateways::PolygonGateway.new ]
+      gateways: [ MarketData::Gateways::YfinanceGateway.new ]
     )
     result = chain.fetch_index_quotes
 

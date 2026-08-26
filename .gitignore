@@ -78,3 +78,6 @@ design/references/
 
 # Pencil editor stray at repo root
 /base.pen
+
+# Python venv for the yfinance bridge
+/.venv

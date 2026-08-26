@@ -105,7 +105,10 @@ module MarketData
 
       private
 
-      # Assets carry Yahoo's suffix; the BMV wants the issuer and its serie.
+      # The BMV addresses an instrument by issuer and serie (WALMEX*), which is
+      # mandatory: WALMEX alone is rejected outright, and one unknown name fails
+      # the whole batch. Assets carry the mapping in provider_symbols; stripping
+      # Yahoo's suffix is only the fallback for tickers that already embed it.
       def bmv_symbol(symbol)
         symbol.to_s.upcase.delete_suffix(".MX")
       end
