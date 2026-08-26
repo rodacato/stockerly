@@ -215,7 +215,17 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
    the two capabilities that had nowhere else to go.
 4. ✅ **`admin/assets`** — deleted with the above. `toggle_status` turned out to be the same action
    as `assets#toggle_sync`, already on Rastreados.
-5. ⬜ **The asset-detail depth** → [#294](https://github.com/rodacato/stockerly/issues/294)
+5. ◐ **The asset-detail depth** → [#294](https://github.com/rodacato/stockerly/issues/294).
+   Scoped 2026-08-26 to the **Análisis tab only**, with four decisions taken: the sub-tabs flatten
+   into the artboard's scroll with *"Ver todos los fundamentales"* opening an accordion in place;
+   the confluence semaphore ships lights 1 and 3 real and light 2 as *próximamente*; the 36-metric
+   glossary moves to i18n and interpretive chips are built **only where a threshold can be written
+   and defended**; Mi posición splits off to [#301](https://github.com/rodacato/stockerly/issues/301).
+   **`considera vender` is dropped from the artboard** — ADR-0001 forbids buy/sell advice, and
+   *"Estirado — no es momento de comprar"* is descriptive without crossing that line.
+6. ⬜ **Mi posición's two gaps** → [#301](https://github.com/rodacato/stockerly/issues/301) —
+   the `Rendimiento` block (no per-window return series exists) and `Cerrar posición` (a write
+   flow, not a restyle). Discovery deliberately incomplete: no documented trigger yet.
 
 ## Complete — designed, no code
 
@@ -224,6 +234,14 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
 8. ⬜ **The fifth nav destination** → [#292](https://github.com/rodacato/stockerly/issues/292)
 
 ## Support — the design asks for something the code cannot do
+
+0. ⬜ **Domain-layer copy reaching the UI in English** → [#302](https://github.com/rodacato/stockerly/issues/302).
+   Found twice the same day in unrelated places, which is what makes it a pattern:
+   `DataSourceRegistry`'s thirteen source names render raw on Estado, and `MetricDefinitions`'
+   36 metrics × 3 fields do the same on the asset detail. The second half is inside #294; the
+   first is deferred. The decision is not *whether* to translate but where the boundary sits —
+   a provider name (`Polygon.io`) is a proper noun, a capability label (`Market Indices`) is UI
+   copy that happens to live in code.
 
 9. ⬜ **`browser_push`** → [#293](https://github.com/rodacato/stockerly/issues/293). Reglas shipped
    two toggles rather than three; the design and the code disagree in writing until this is called.
