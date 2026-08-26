@@ -61,7 +61,12 @@ class SyncSingleAssetJob < ApplicationJob
   end
 
   def gateway_for(asset)
-    return build_chain([ MarketData::Gateways::YahooFinanceGateway ]) if asset.country == "MX"
+    if asset.country == "MX"
+      return build_chain(
+        [ MarketData::Gateways::DataBursatilGateway, MarketData::Gateways::YahooFinanceGateway ],
+        { "MarketData::Gateways::DataBursatilGateway" => self.class.circuit_breaker_for("databursatil") }
+      )
+    end
 
     case asset.asset_type
     when "stock", "index", "etf"

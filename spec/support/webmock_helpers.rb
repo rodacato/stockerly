@@ -972,6 +972,18 @@ module WebmockHelpers
       )
   end
 
+  # --- DataBursatil ---
+
+  def stub_databursatil(path, body, status: 200)
+    stub_request(:get, "https://api.databursatil.com#{path}")
+      .with(query: hash_including("token"))
+      .to_return(status: status, headers: { "Content-Type" => "application/json" }, body: body.to_json)
+  end
+
+  def databursatil_quote(last:, change: 1.77, volume: 1_222_566, at: "2026-08-26 10:03:00")
+    { "u" => last, "c" => change, "v" => volume, "f" => at }
+  end
+
   # --- Alpaca ---
 
   def stub_alpaca_bars(bars_by_symbol, next_page_token: nil)

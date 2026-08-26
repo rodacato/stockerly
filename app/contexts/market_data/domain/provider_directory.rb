@@ -8,6 +8,7 @@ module MarketData
 
       ENTRIES = {
         # Need an API key (or token)
+        "DataBursatil"   => Info.new("Precios, histórico e intradía de la BMV y BIVA. La cuota se mide en KiB transmitidos, no en llamadas.", "https://databursatil.com", true),
         "Alpaca"         => Info.new("Cierres confirmados e histórico de acciones de EE. UU., más dividendos y titulares. La llave se guarda como ID:SECRETO.", "https://app.alpaca.markets/signup", true),
         "Finnhub"        => Info.new("Cotización actual de acciones de EE. UU., reportes trimestrales y búsqueda.", "https://finnhub.io/register", true),
         "Polygon.io"     => Info.new("Precios e histórico de acciones de EE. UU.", "https://polygon.io/dashboard/signup", true),

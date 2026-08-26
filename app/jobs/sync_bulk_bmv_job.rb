@@ -1,5 +1,7 @@
-# Fetches prices for multiple BMV (Mexican) assets in a single Yahoo Finance
-# API call, updates each Asset record, and publishes MarketData::Events::AssetPriceUpdated events.
+# Fetches prices for multiple BMV (Mexican) assets in a single DataBursatil
+# call, updates each Asset record, and publishes MarketData::Events::AssetPriceUpdated
+# events. DataBursatil is the sanctioned source; Yahoo answers 429 to everything
+# we can send it, so it is no longer a dependency here.
 class SyncBulkBmvJob < ApplicationJob
   include PausableSync
   include SyncLogging
@@ -12,7 +14,7 @@ class SyncBulkBmvJob < ApplicationJob
     assets = Asset.where(id: asset_ids, sync_status: :active).index_by(&:symbol)
     return if assets.empty?
 
-    result = breaker.call { MarketData::Gateways::YahooFinanceGateway.new.fetch_bulk_prices(assets.keys) }
+    result = breaker.call { MarketData::Gateways::DataBursatilGateway.new.fetch_bulk_prices(assets.keys) }
 
     if result.success?
       update_assets(assets, result.value!)
@@ -27,7 +29,7 @@ class SyncBulkBmvJob < ApplicationJob
   private
 
   def breaker
-    SyncSingleAssetJob.circuit_breaker_for("bmv")
+    SyncSingleAssetJob.circuit_breaker_for("databursatil")
   end
 
   def update_assets(assets_by_symbol, results)

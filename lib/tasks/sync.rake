@@ -8,6 +8,9 @@ namespace :stockerly do
   # Only applied when CREATING a new record — existing records are never overwritten.
   INTEGRATION_DEFAULTS = {
     # Alpaca publishes 200 req/min and no daily cap; the daily figure is our own guardrail.
+    # Quota is 200,000 credits a month at one credit per KiB; the provider reports
+    # the balance itself, so the daily figure here is only a guardrail.
+    "DataBursatil"   => { provider_type: "Mexican Stocks (BMV/BIVA)", requires_api_key: true, max_requests_per_minute: nil, daily_call_limit: 5_000 },
     "Alpaca"         => { provider_type: "US Stocks & Corporate Actions", requires_api_key: true, max_requests_per_minute: 200, daily_call_limit: 50_000 },
     "Polygon.io"     => { provider_type: "Stocks & Forex",       requires_api_key: true,  max_requests_per_minute: 5,   daily_call_limit: 500   },
     "Finnhub"        => { provider_type: "Stocks & Market Data",  requires_api_key: true,  max_requests_per_minute: 60,  daily_call_limit: 500   },
