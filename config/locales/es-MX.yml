@@ -283,7 +283,6 @@ es-MX:
       radar_vacio: Ninguno de tus activos tuvo movimientos notables.
       sentimiento_watchlist: SENTIMIENTO · TU WATCHLIST
       titulo: Panorama
-      ver_mas: Ver más
       ver_todos: Ver todos
       vs_ayer: "%{delta} vs ayer"
   date:

@@ -1,9 +1,9 @@
 <%# Locals: summary, currency, fx_unavailable
-    The chevron goes to Activos, not to the Consolidado: that screen is slice 4
-    and its comparison cards are gated on D12 (TWR). Activos is where the
-    breakdown of this number actually lives today. %>
+    The chevron goes to the Consolidado — the screen that answers what this
+    number did. It pointed at Activos while slice 4 was unbuilt and D12 gated
+    its comparison cards; both shipped. %>
 <% if summary %>
-  <%= link_to assets_path,
+  <%= link_to portfolio_path,
               class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-5 py-4 transition-colors hover:border-border-strong" do %>
     <div class="min-w-0 flex-1">
       <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">

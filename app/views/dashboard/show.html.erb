@@ -23,12 +23,10 @@
   <% end %>
 
   <section class="lg:order-3 lg:col-span-4">
-    <div class="flex items-baseline justify-between gap-4">
-      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".movimientos_titulo") %></h2>
-      <%= link_to assets_path, class: "shrink-0 text-sm font-medium text-primary hover:underline" do %>
-        <%= t(".ver_mas") %> <span aria-hidden="true">→</span>
-      <% end %>
-    </div>
+    <%# The artboard's "Ver más" is absent until something lists observations:
+        no screen does, and they never reach the Bandeja either, so it pointed
+        at Activos — the Radar's destination, under a different label. %>
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".movimientos_titulo") %></h2>
 
     <% if @movements.any? %>
       <p class="mt-1 text-sm text-fg-subtle"><%= t(".movimientos_subtitulo") %></p>
