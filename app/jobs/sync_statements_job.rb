@@ -28,7 +28,7 @@ class SyncStatementsJob < ApplicationJob
       if result.success?
         persist_statements(asset, result.value!, TYPE_MAP[function])
         synced_types << TYPE_MAP[function]
-        log_sync_success("Fundamentals: #{asset.symbol}")
+        log_sync_success("Statements: #{asset.symbol} (#{function})")
       else
         log_sync_failure("Statements: #{asset.symbol} (#{function})", result.failure[1],
           severity: result.failure[0] == :rate_limited ? :warning : :error)
