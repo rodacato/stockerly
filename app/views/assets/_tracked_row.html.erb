@@ -7,7 +7,7 @@
         <%= t("assets.tracked.tier_#{tier}") %>
       </span>
       <% unless asset.active? %>
-        <span class="text-[10px] font-semibold uppercase tracking-wide text-warning-fg"><%= t("assets.tracked.en_pausa") %></span>
+        <span class="whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-warning-fg"><%= t("assets.tracked.en_pausa") %></span>
       <% end %>
     </div>
     <p class="truncate text-xs text-fg-subtle"><%= asset.name %> · <%= asset_type_label_es(asset) %></p>
