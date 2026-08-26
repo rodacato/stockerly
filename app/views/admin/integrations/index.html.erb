@@ -4,19 +4,20 @@
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
   <p class="text-fg-subtle"><%= t(".descripcion") %></p>
 
-  <% if @integrations.any? %>
+  <% if @sources.any? %>
     <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle">
-      <%= t(".resumen", count: @integrations.size, problem: integrations_with_problems(@integrations)) %>
+      <%= t(".resumen",
+            count: @sources.size,
+            near: @sources.count { |s| s.state == :connected && s.quota.near_limit? },
+            blocked: @sources.count { |s| s.state == :blocked }) %>
     </p>
 
     <ul class="flex flex-col gap-3">
-      <% @integrations.each do |integration| %>
-        <%= render "provider_card", integration: integration %>
+      <% @sources.each do |entry| %>
+        <%= render "provider_card", entry: entry, integration: @integrations[entry.provider] %>
       <% end %>
     </ul>
 
-    <%# D18: the pools exist to stretch a free tier. Saying so here is why the
-        key count on each card is a number and not a yes/no. %>
     <p class="flex items-start gap-2 rounded-xl bg-bg-muted px-4 py-3 text-sm text-fg-subtle">
       <span class="material-symbols-outlined text-lg" aria-hidden="true">info</span>
       <%= t(".llave_nota") %>

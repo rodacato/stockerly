@@ -39,14 +39,47 @@ RSpec.describe "Admin Integrations", type: :request do
       expect(response.body).to include("KEY_ID:SECRET")
     end
 
-    it "counts a paused source as a problem, not only a failed one" do
-      create(:integration, provider_name: "Needs a key", api_key_encrypted: nil)
-      create(:integration, :disconnected, provider_name: "Failed")
-      create(:integration, provider_name: "Healthy")
+    # The registry is the one list. A row in `integrations` that no source
+    # claims is not a source, and drawing it invited the second list the
+    # screen exists to remove.
+    it "lists only what the registry claims" do
+      create(:integration, provider_name: "Finnhub")
+      create(:integration, provider_name: "Ghost provider")
 
       get admin_integrations_path
 
-      expect(response.body).to include("2 con problema")
+      expect(response.body).to include("Finnhub")
+      expect(response.body).not_to include("Ghost provider")
+    end
+
+    it "says a source is missing its key, and that the instance owns that" do
+      create(:integration, provider_name: "Alpaca", api_key_encrypted: nil, requires_api_key: true)
+
+      get admin_integrations_path
+
+      expect(response.body).to include("Sin llave")
+      expect(response.body).to include("Es tu instancia")
+    end
+
+    # The distinction the screen exists for: our counter versus their refusal.
+    it "separates our exhausted quota from the provider refusing us" do
+      create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "k", requires_api_key: true,
+                           daily_call_limit: 25, daily_api_calls: 25, calls_reset_at: Time.current)
+      create(:integration, provider_name: "Yahoo Finance", requires_api_key: false,
+                           last_failure_tag: "rate_limited", last_failure_at: 1.hour.ago)
+
+      get admin_integrations_path
+
+      expect(response.body).to include("Es tu cuota")
+      expect(response.body).to include("Es el proveedor")
+    end
+
+    it "labels the source that only works on the maintainer's key" do
+      create(:integration, provider_name: "FMP", api_key_encrypted: "k")
+
+      get admin_integrations_path
+
+      expect(response.body).to include("31 de agosto de 2025")
     end
 
     it "shows the masked key instead of the format once Alpaca has one" do

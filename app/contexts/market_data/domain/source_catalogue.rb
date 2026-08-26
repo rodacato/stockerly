@@ -105,7 +105,7 @@ module MarketData
       def state_for(integration)
         return :no_key   if integration.requires_api_key? && !integration.api_key_configured?
         return :no_quota if integration.budget_exhausted? || integration.minute_budget_exhausted?
-        return :blocked  if refused?(integration)
+        return :blocked  if integration.disconnected? || refused?(integration)
 
         :connected
       end

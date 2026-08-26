@@ -4,31 +4,43 @@ es-MX:
     integrations:
       index:
         administrar: Administrar fuente
+        bloqueada_razon: 'Es el proveedor: está rechazando las llamadas, no es tu
+          cuota. Lo que sirve esta fuente no se actualiza mientras dure.'
         clave: Clave API
         configurar: Configurar integraciones
         confirmar_fuente: "¿Eliminar %{provider}? Se borra también su llave."
+        cuota_desconocida: Sin lectura de cuota
         descripcion: De dónde salen tus precios. Cada fuente trae su propio límite
           gratuito, y ese límite es el que reparte el presupuesto de Rastreados.
-        dia: por día
         eliminar_fuente: Eliminar fuente
+        estado:
+          blocked: Bloqueada
+          connected: Conectada
+          no_key: Sin llave
+          no_quota: Sin cuota
         guardar: Guardar
         limite_diario: Límite diario
         limite_minuto: Por minuto
         llave_nota: Una llave por fuente. Si una se queda sin cuota o falla, el respaldo
           es otra fuente que cubra el mismo dato — no otra llave de la misma.
-        llaves:
-          one: 1 llave
-          other: "%{count} llaves"
-          zero: sin llave
-        minuto: por minuto
-        resumen:
-          one: 1 fuente · %{problem} con problema
-          other: "%{count} fuentes · %{problem} con problema"
+        resumen: "%{count} fuentes · %{near} cerca del límite · %{blocked} bloqueada(s)"
+        rol:
+          fallback: respaldo
+          only: única fuente
+          primary: primaria
+        sin_cuota_razon: 'Es tu cuota: tu instancia agotó su límite. Se reanuda al
+          abrir la siguiente ventana; lo que falte se queda como estaba.'
         sin_limite: Sin límite
-        sin_llave: Sin llave — agrega una para reanudar.
-        sin_respuesta: Conexión sin respuesta válida. Verifica las llaves y reintenta.
+        sin_llave_razon: 'Es tu instancia: falta pegar la llave. Mientras, lo que
+          sirve esta fuente lo cubre su respaldo — o nada, si es la única.'
+        solo_maintainer: Solo funciona con llaves de cuentas creadas antes del 31
+          de agosto de 2025. Si la tuya es nueva, esta fuente responde 403.
         titulo: Integraciones
-        uso: "%{used} / %{limit} %{window}"
+        unidad:
+          calls_per_day: hoy
+          calls_per_minute: por minuto
+          kib_per_month: KiB este mes
+        uso: "%{used} / %{limit} %{unit}"
         vacio_cuerpo: Agrégalas desde el wizard inicial para empezar a sincronizar
           datos.
         vacio_titulo: No hay fuentes configuradas
