@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe SyncSingleAssetJob, type: :job do
   before do
     create(:integration, provider_name: "Finnhub", api_key_encrypted: "test_key")
+    create(:integration, provider_name: "DataBursatil", api_key_encrypted: "test_token")
     create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
     # Reset class-level circuit breakers between tests to avoid cross-test contamination
     described_class::CIRCUIT_BREAKERS.each_value(&:reset!)
@@ -59,7 +60,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
       before do
         stub_finnhub_server_error
-        stub_yahoo_finance_price("AAPL", price: 190.00)
+        stub_yfinance_quote("AAPL", price: 190.00)
       end
 
       it "falls back to Yahoo Finance and updates the price" do
@@ -67,7 +68,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
         asset.reload
         expect(asset.current_price.to_f).to eq(190.0)
-        expect(asset.data_source).to eq("MarketData::Gateways::YahooFinanceGateway")
+        expect(asset.data_source).to eq("MarketData::Gateways::YfinanceGateway")
       end
 
       it "creates a success SystemLog entry" do
@@ -84,8 +85,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
       before do
         stub_finnhub_server_error
-        stub_yahoo_finance_server_error
-      end
+              end
 
       it "publishes AllGatewaysFailed event" do
         described_class.perform_now(asset.id)
@@ -106,7 +106,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
       before do
         stub_finnhub_rate_limited
-        stub_yahoo_finance_price("AAPL", price: 191.50)
+        stub_yfinance_quote("AAPL", price: 191.50)
       end
 
       it "falls back to Yahoo Finance" do
@@ -114,7 +114,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
         asset.reload
         expect(asset.current_price.to_f).to eq(191.5)
-        expect(asset.data_source).to eq("MarketData::Gateways::YahooFinanceGateway")
+        expect(asset.data_source).to eq("MarketData::Gateways::YfinanceGateway")
       end
     end
 
@@ -128,10 +128,13 @@ RSpec.describe SyncSingleAssetJob, type: :job do
       end
     end
 
-    context "with a Mexican (BMV) stock" do
+    context "with a Mexican (BMV) stock, when DataBursatil has nothing" do
       let!(:asset) { create(:asset, :mexican, symbol: "GENIUSSACV.MX", asset_type: :stock, sync_status: :active, current_price: 20.00, price_updated_at: 10.minutes.ago) }
 
-      before { stub_yahoo_finance_price("GENIUSSACV.MX", price: 25.50) }
+      before do
+        stub_databursatil("/v2/cotizaciones", {})
+        stub_yfinance_quote("GENIUSSACV.MX", price: 25.50)
+      end
 
       it "updates the asset price from Yahoo Finance" do
         described_class.perform_now(asset.id)
@@ -154,9 +157,12 @@ RSpec.describe SyncSingleAssetJob, type: :job do
     context "with a Mexican ETF" do
       let!(:asset) { create(:asset, :mexican, :etf, symbol: "IVVPESO.MX", sync_status: :active, current_price: 40.00, price_updated_at: 10.minutes.ago) }
 
-      before { stub_yahoo_finance_price("IVVPESO.MX", price: 48.30) }
+      before do
+        stub_databursatil("/v2/cotizaciones", {})
+        stub_yfinance_quote("IVVPESO.MX", price: 48.30)
+      end
 
-      it "routes to YahooFinanceGateway, not the US chain" do
+      it "routes down the BMV chain, not the US one" do
         described_class.perform_now(asset.id)
 
         asset.reload

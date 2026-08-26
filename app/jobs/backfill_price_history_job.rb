@@ -39,8 +39,8 @@ class BackfillPriceHistoryJob < ApplicationJob
     result = alpaca_history(symbol, from_date, to_date)
     return result if result&.success?
 
-    # Yahoo covers the Alpaca failures and BMV, which Alpaca does not serve at all
-    MarketData::Gateways::YahooFinanceGateway.new.fetch_historical(symbol, days: 30)
+    # Yahoo, through the bridge, covers Alpaca's failures and BMV, which it does not serve
+    MarketData::Gateways::YfinanceGateway.new.fetch_historical(symbol, days: 30)
   end
 
   def alpaca_history(symbol, from_date, to_date)

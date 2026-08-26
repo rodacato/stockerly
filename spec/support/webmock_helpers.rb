@@ -972,6 +972,27 @@ module WebmockHelpers
       )
   end
 
+  # --- Yahoo via the yfinance bridge ---
+
+  def stub_yfinance_quote(symbol, price:, change_percent: 0.0, volume: 1_000)
+    allow(PythonRunner).to receive(:call).with("yahoo.py", "quote", symbol)
+      .and_return(Dry::Monads::Success({ "price" => price, "change_percent" => change_percent, "volume" => volume }))
+  end
+
+  def stub_yfinance_history(symbol, days: 7, close: 180.0)
+    bars = days.times.map do |i|
+      { "date" => (days - i).days.ago.to_date.to_s, "open" => close - 1, "high" => close + 1,
+        "low" => close - 2, "close" => close + i, "volume" => 1_000 }
+    end
+    allow(PythonRunner).to receive(:call).with("yahoo.py", "history", symbol, anything)
+      .and_return(Dry::Monads::Success(bars))
+  end
+
+  def stub_yfinance_not_found(symbol)
+    allow(PythonRunner).to receive(:call).with("yahoo.py", anything, symbol, *any_args)
+      .and_return(Dry::Monads::Failure([ :not_found, "no data for #{symbol}" ]))
+  end
+
   # --- DataBursatil ---
 
   def stub_databursatil(path, body, status: 200)
