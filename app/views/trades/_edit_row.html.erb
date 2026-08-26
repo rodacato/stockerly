@@ -3,12 +3,12 @@
   <%= form_with(url: trade_path(trade), scope: :trade, method: :patch, class: "contents") do |f| %>
     <td class="px-6 py-3">
       <%= f.datetime_local_field :executed_at, value: trade.executed_at.strftime("%Y-%m-%dT%H:%M"),
-          class: "w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary" %>
+          class: "w-full px-2 py-1.5 rounded-lg border border-border-default bg-bg-surface text-xs text-fg-default focus:ring-2 focus:ring-primary focus:border-primary" %>
     </td>
     <td class="px-6 py-3">
       <div class="flex items-center gap-2">
         <%= render "components/asset_badge", asset: trade.asset, size: "sm" %>
-        <span class="font-mono text-sm font-bold text-slate-900 dark:text-white"><%= trade.asset.symbol %></span>
+        <span class="font-mono text-sm font-bold text-fg-default"><%= trade.asset.symbol %></span>
       </div>
     </td>
     <td class="px-6 py-3 text-center">
@@ -18,22 +18,22 @@
     </td>
     <td class="px-6 py-3 text-right">
       <%= f.number_field :shares, value: trade.shares, step: "any", min: "0.000001",
-          class: "w-24 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-right text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary" %>
+          class: "w-24 px-2 py-1.5 rounded-lg border border-border-default bg-bg-surface text-xs text-right text-fg-default focus:ring-2 focus:ring-primary focus:border-primary" %>
     </td>
     <td class="px-6 py-3 text-right">
       <%= f.number_field :price_per_share, value: trade.price_per_share, step: "any", min: "0.0001",
-          class: "w-24 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-right text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary" %>
+          class: "w-24 px-2 py-1.5 rounded-lg border border-border-default bg-bg-surface text-xs text-right text-fg-default focus:ring-2 focus:ring-primary focus:border-primary" %>
     </td>
-    <td class="px-6 py-3 text-right text-xs text-slate-400">auto</td>
+    <td class="px-6 py-3 text-right text-xs text-fg-subtle">auto</td>
     <td class="px-6 py-3 text-right">
       <%= f.number_field :fee, value: trade.fee, step: "any", min: "0",
-          class: "w-20 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-right text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary" %>
+          class: "w-20 px-2 py-1.5 rounded-lg border border-border-default bg-bg-surface text-xs text-right text-fg-default focus:ring-2 focus:ring-primary focus:border-primary" %>
     </td>
     <td class="px-6 py-3 text-right">
       <div class="flex items-center justify-end gap-1">
         <%= f.submit "Guardar",
             class: "px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors cursor-pointer" %>
-        <%= link_to trades_path, class: "px-3 py-1.5 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-500 rounded-lg hover:bg-slate-50 transition-colors" do %>
+        <%= link_to trades_path, class: "px-3 py-1.5 border border-border-default text-xs font-bold text-fg-subtle rounded-lg hover:bg-bg-muted transition-colors" do %>
           Cancelar
         <% end %>
       </div>
