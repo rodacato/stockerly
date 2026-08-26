@@ -24,7 +24,9 @@ module Administration
 
         def update(integration, attrs)
           api_key_value = attrs[:api_key_encrypted]
-          update_attrs = attrs.except(:id, :api_key_encrypted).compact
+          # Not .compact: a cleared field arrives as nil, and dropping it made
+          # "no limit" impossible to express.
+          update_attrs = attrs.except(:id, :api_key_encrypted)
 
           if api_key_value.present?
             integration.update!(api_key_encrypted: api_key_value)

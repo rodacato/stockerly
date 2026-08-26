@@ -24,6 +24,7 @@ es-MX:
         resumen:
           one: 1 fuente · %{problem} con problema
           other: "%{count} fuentes · %{problem} con problema"
+        sin_limite: Sin límite
         sin_llave: Sin llave — agrega una para reanudar.
         sin_respuesta: Conexión sin respuesta válida. Verifica las llaves y reintenta.
         titulo: Integraciones

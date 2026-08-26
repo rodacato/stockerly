@@ -6,7 +6,7 @@
 
   <% if @integrations.any? %>
     <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle">
-      <%= t(".resumen", count: @integrations.size, problem: @integrations.count { |i| integration_pill_state(i) == :error }) %>
+      <%= t(".resumen", count: @integrations.size, problem: integrations_with_problems(@integrations)) %>
     </p>
 
     <ul class="flex flex-col gap-3">
