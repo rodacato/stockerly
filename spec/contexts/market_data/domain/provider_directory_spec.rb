@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe MarketData::Domain::ProviderDirectory do
   describe ".for" do
     it "marks a key-requiring provider with an https site and requires_key: true" do
-      info = described_class.for("Polygon.io")
+      info = described_class.for("Alpaca")
       expect(info.description).to be_present
       expect(info.url).to start_with("https://")
       expect(info.requires_key).to be(true)

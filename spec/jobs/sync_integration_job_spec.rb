@@ -17,13 +17,13 @@ RSpec.describe SyncIntegrationJob, type: :job do
       end
     end
 
-    context "with Polygon.io integration" do
+    context "with a keyed integration" do
       let!(:integration) do
-        create(:integration, provider_name: "Polygon.io", connection_status: :connected, api_key_encrypted: "test_key")
+        create(:integration, provider_name: "Alpaca", connection_status: :connected, api_key_encrypted: "PKID:secret")
       end
 
       context "when connectivity test succeeds" do
-        before { stub_polygon_price("AAPL") }
+        before { stub_alpaca_bars({ "AAPL" => [ alpaca_bar(date: 3.days.ago.to_date.to_s) ] }) }
 
         it "sets status to connected and updates last_sync_at" do
           described_class.perform_now(integration.id)
@@ -43,7 +43,7 @@ RSpec.describe SyncIntegrationJob, type: :job do
       end
 
       context "when connectivity test fails" do
-        before { stub_polygon_server_error }
+        before { stub_alpaca_recent_denied }
 
         it "sets status to disconnected" do
           described_class.perform_now(integration.id)

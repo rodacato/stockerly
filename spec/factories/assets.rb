@@ -27,7 +27,7 @@ FactoryBot.define do
       asset_type { :etf }
       sector { nil }
       exchange { "NASDAQ" }
-      data_source { "Polygon.io" }
+      data_source { "Alpaca" }
     end
 
     trait :fixed_income do

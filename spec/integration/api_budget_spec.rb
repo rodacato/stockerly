@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "API Budget Enforcement (E2E)", type: :model do
   let!(:integration) do
     create(:integration,
-      provider_name: "Polygon.io",
+      provider_name: "Alpaca",
       daily_api_calls: 0,
       daily_call_limit: 5,
       calls_reset_at: Time.current)

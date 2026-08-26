@@ -2,9 +2,9 @@ require "rails_helper"
 
 RSpec.describe MarketData::Gateways::ApiKeyNotConfiguredError do
   it "includes provider name in message" do
-    error = described_class.new("Polygon.io")
+    error = described_class.new("Alpaca")
 
-    expect(error.message).to include("Polygon.io")
+    expect(error.message).to include("Alpaca")
     expect(error.message).to include("not configured")
   end
 

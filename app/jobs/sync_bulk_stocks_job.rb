@@ -1,7 +1,6 @@
 # Fetches confirmed daily closes for multiple US stock assets in one Alpaca
 # call, updates each Asset record, and publishes MarketData::Events::AssetPriceUpdated
-# events. Alpaca serves the SIP consolidated tape on the free plan, which
-# Polygon's retiring free tier did not.
+# events. Alpaca serves the SIP consolidated tape on the free plan.
 class SyncBulkStocksJob < ApplicationJob
   include PausableSync
   include SyncLogging

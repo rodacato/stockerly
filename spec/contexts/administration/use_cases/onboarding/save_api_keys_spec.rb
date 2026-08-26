@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
   describe ".call" do
-    let!(:polygon) { create(:integration, :keyless, provider_name: "Polygon.io") }
+    let!(:polygon) { create(:integration, :keyless, provider_name: "Alpaca") }
     let!(:coingecko) { create(:integration, :keyless, provider_name: "CoinGecko") }
 
     it "updates integrations with provided keys" do

@@ -3,7 +3,7 @@ module MarketData
     # Syncs upcoming earnings for stock assets. Routes by exchange:
     # BMV emisoras go through the yfinance bridge (the only source covering MX
     # earnings); everything else goes through the GatewayChain for the
-    # :earnings capability (Finnhub primary, Polygon fallback).
+    # :earnings capability.
     #
     # Routing is explicit rather than chained because Finnhub returns
     # Success([]) for unknown tickers (instead of a Failure), so the chain

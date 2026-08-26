@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe ApiKeyResolver do
   describe ".for" do
     it "returns the key the provider is configured with" do
-      create(:integration, provider_name: "Polygon.io", api_key_encrypted: "polygon_key_123")
+      create(:integration, provider_name: "Alpaca", api_key_encrypted: "polygon_key_123")
 
-      expect(described_class.for("Polygon.io")).to eq("polygon_key_123")
+      expect(described_class.for("Alpaca")).to eq("polygon_key_123")
     end
 
     it "returns nil for an unknown provider" do
@@ -19,7 +19,7 @@ RSpec.describe ApiKeyResolver do
     end
 
     it "does not leak one provider's key to another" do
-      create(:integration, provider_name: "Polygon.io", api_key_encrypted: "polygon_key_123")
+      create(:integration, provider_name: "Alpaca", api_key_encrypted: "polygon_key_123")
       create(:integration, provider_name: "Banxico", api_key_encrypted: "banxico_key_456")
 
       expect(described_class.for("Banxico")).to eq("banxico_key_456")

@@ -6,18 +6,18 @@ RSpec.describe "Onboarding", type: :request do
   before { login_as_without_onboarding(user) }
 
   describe "GET /onboarding/integrations" do
-    let!(:integration) { create(:integration, :keyless, provider_name: "Polygon.io") }
+    let!(:integration) { create(:integration, :keyless, provider_name: "Alpaca") }
 
     it "renders the integrations step" do
       get onboarding_integrations_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Polygon.io")
+      expect(response.body).to include("Alpaca")
     end
   end
 
   describe "PATCH /onboarding/integrations" do
-    let!(:integration) { create(:integration, :keyless, provider_name: "Polygon.io") }
+    let!(:integration) { create(:integration, :keyless, provider_name: "Alpaca") }
 
     it "saves API keys and moves to the assets step" do
       patch onboarding_save_integrations_path, params: {

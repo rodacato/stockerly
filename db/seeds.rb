@@ -65,7 +65,6 @@ aapl = Asset.find_or_create_by!(symbol: "AAPL") do |a|
   a.sector = "Technology"
   a.exchange = "NASDAQ"
   a.country = "US"
-  a.data_source = "Polygon.io"
   a.current_price = 189.43
   a.change_percent_24h = 2.45
   a.market_cap = 2_940_000_000_000
@@ -82,7 +81,6 @@ tsla = Asset.find_or_create_by!(symbol: "TSLA") do |a|
   a.sector = "Consumer Cyclical"
   a.exchange = "NASDAQ"
   a.country = "US"
-  a.data_source = "Polygon.io"
   a.current_price = 176.54
   a.change_percent_24h = -1.12
   a.market_cap = 561_000_000_000
@@ -98,7 +96,6 @@ msft = Asset.find_or_create_by!(symbol: "MSFT") do |a|
   a.sector = "Technology"
   a.exchange = "NASDAQ"
   a.country = "US"
-  a.data_source = "Polygon.io"
   a.current_price = 420.50
   a.change_percent_24h = 0.81
   a.market_cap = 3_120_000_000_000
@@ -115,7 +112,6 @@ nvda = Asset.find_or_create_by!(symbol: "NVDA") do |a|
   a.sector = "Technology"
   a.exchange = "NASDAQ"
   a.country = "US"
-  a.data_source = "Polygon.io"
   a.current_price = 894.52
   a.change_percent_24h = 3.82
   a.market_cap = 2_210_000_000_000
@@ -132,7 +128,6 @@ oke = Asset.find_or_create_by!(symbol: "OKE") do |a|
   a.sector = "Energy"
   a.exchange = "NYSE"
   a.country = "US"
-  a.data_source = "Polygon.io"
   a.current_price = 87.42
   a.change_percent_24h = 1.24
   a.market_cap = 51_200_000_000
@@ -145,61 +140,49 @@ end
 
 # New US stocks
 googl = Asset.find_or_create_by!(symbol: "GOOGL") do |a|
-  a.name = "Alphabet Inc."; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "NASDAQ"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 174.98; a.change_percent_24h = 1.05; a.market_cap = 2_180_000_000_000
+  a.name = "Alphabet Inc."; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "NASDAQ"; a.country = "US"; a.current_price = 174.98; a.change_percent_24h = 1.05; a.market_cap = 2_180_000_000_000
   a.pe_ratio = 25.10; a.volume = 28_400_000; a.price_updated_at = 2.minutes.ago
 end
 meta = Asset.find_or_create_by!(symbol: "META") do |a|
-  a.name = "Meta Platforms"; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "NASDAQ"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 502.30; a.change_percent_24h = -0.68; a.market_cap = 1_280_000_000_000
+  a.name = "Meta Platforms"; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "NASDAQ"; a.country = "US"; a.current_price = 502.30; a.change_percent_24h = -0.68; a.market_cap = 1_280_000_000_000
   a.pe_ratio = 33.20; a.volume = 18_600_000; a.price_updated_at = 2.minutes.ago
 end
 amzn = Asset.find_or_create_by!(symbol: "AMZN") do |a|
-  a.name = "Amazon.com Inc."; a.asset_type = :stock; a.sector = "Consumer Cyclical"; a.exchange = "NASDAQ"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 186.49; a.change_percent_24h = 2.15; a.market_cap = 1_940_000_000_000
+  a.name = "Amazon.com Inc."; a.asset_type = :stock; a.sector = "Consumer Cyclical"; a.exchange = "NASDAQ"; a.country = "US"; a.current_price = 186.49; a.change_percent_24h = 2.15; a.market_cap = 1_940_000_000_000
   a.pe_ratio = 60.75; a.volume = 35_200_000; a.price_updated_at = 2.minutes.ago
 end
 jpm = Asset.find_or_create_by!(symbol: "JPM") do |a|
-  a.name = "JPMorgan Chase"; a.asset_type = :stock; a.sector = "Finance"; a.exchange = "NYSE"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 198.72; a.change_percent_24h = 0.54; a.market_cap = 571_000_000_000
+  a.name = "JPMorgan Chase"; a.asset_type = :stock; a.sector = "Finance"; a.exchange = "NYSE"; a.country = "US"; a.current_price = 198.72; a.change_percent_24h = 0.54; a.market_cap = 571_000_000_000
   a.pe_ratio = 11.80; a.div_yield = 2.32; a.volume = 9_800_000; a.price_updated_at = 2.minutes.ago
 end
 jnj = Asset.find_or_create_by!(symbol: "JNJ") do |a|
-  a.name = "Johnson & Johnson"; a.asset_type = :stock; a.sector = "Healthcare"; a.exchange = "NYSE"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 156.12; a.change_percent_24h = -0.22; a.market_cap = 375_000_000_000
+  a.name = "Johnson & Johnson"; a.asset_type = :stock; a.sector = "Healthcare"; a.exchange = "NYSE"; a.country = "US"; a.current_price = 156.12; a.change_percent_24h = -0.22; a.market_cap = 375_000_000_000
   a.pe_ratio = 22.40; a.div_yield = 3.05; a.volume = 7_100_000; a.price_updated_at = 2.minutes.ago
 end
 ko = Asset.find_or_create_by!(symbol: "KO") do |a|
-  a.name = "Coca-Cola Co."; a.asset_type = :stock; a.sector = "Consumer"; a.exchange = "NYSE"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 60.85; a.change_percent_24h = 0.33; a.market_cap = 263_000_000_000
+  a.name = "Coca-Cola Co."; a.asset_type = :stock; a.sector = "Consumer"; a.exchange = "NYSE"; a.country = "US"; a.current_price = 60.85; a.change_percent_24h = 0.33; a.market_cap = 263_000_000_000
   a.pe_ratio = 24.90; a.div_yield = 3.10; a.volume = 12_500_000; a.price_updated_at = 2.minutes.ago
 end
 pg = Asset.find_or_create_by!(symbol: "PG") do |a|
-  a.name = "Procter & Gamble"; a.asset_type = :stock; a.sector = "Consumer"; a.exchange = "NYSE"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 162.40; a.change_percent_24h = 0.18; a.market_cap = 382_000_000_000
+  a.name = "Procter & Gamble"; a.asset_type = :stock; a.sector = "Consumer"; a.exchange = "NYSE"; a.country = "US"; a.current_price = 162.40; a.change_percent_24h = 0.18; a.market_cap = 382_000_000_000
   a.pe_ratio = 26.10; a.div_yield = 2.45; a.volume = 6_800_000; a.price_updated_at = 2.minutes.ago
 end
 
 # US ETFs
 qqq = Asset.find_or_create_by!(symbol: "QQQ") do |a|
-  a.name = "Invesco QQQ Trust"; a.asset_type = :etf; a.exchange = "NASDAQ"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 438.20; a.change_percent_24h = 1.42; a.volume = 42_100_000; a.price_updated_at = 2.minutes.ago
+  a.name = "Invesco QQQ Trust"; a.asset_type = :etf; a.exchange = "NASDAQ"; a.country = "US"; a.current_price = 438.20; a.change_percent_24h = 1.42; a.volume = 42_100_000; a.price_updated_at = 2.minutes.ago
 end
 spy = Asset.find_or_create_by!(symbol: "SPY") do |a|
-  a.name = "SPDR S&P 500 ETF"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 521.45; a.change_percent_24h = 0.58; a.volume = 65_300_000; a.price_updated_at = 2.minutes.ago
+  a.name = "SPDR S&P 500 ETF"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"; a.current_price = 521.45; a.change_percent_24h = 0.58; a.volume = 65_300_000; a.price_updated_at = 2.minutes.ago
 end
 voo = Asset.find_or_create_by!(symbol: "VOO") do |a|
-  a.name = "Vanguard S&P 500"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 479.10; a.change_percent_24h = 0.55; a.volume = 4_200_000; a.price_updated_at = 2.minutes.ago
+  a.name = "Vanguard S&P 500"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"; a.current_price = 479.10; a.change_percent_24h = 0.55; a.volume = 4_200_000; a.price_updated_at = 2.minutes.ago
 end
 vti = Asset.find_or_create_by!(symbol: "VTI") do |a|
-  a.name = "Vanguard Total Stock"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 262.80; a.change_percent_24h = 0.48; a.volume = 3_500_000; a.price_updated_at = 2.minutes.ago
+  a.name = "Vanguard Total Stock"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"; a.current_price = 262.80; a.change_percent_24h = 0.48; a.volume = 3_500_000; a.price_updated_at = 2.minutes.ago
 end
 arkk = Asset.find_or_create_by!(symbol: "ARKK") do |a|
-  a.name = "ARK Innovation ETF"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"
-  a.data_source = "Polygon.io"; a.current_price = 49.25; a.change_percent_24h = -1.85; a.volume = 8_900_000; a.price_updated_at = 2.minutes.ago
+  a.name = "ARK Innovation ETF"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"; a.current_price = 49.25; a.change_percent_24h = -1.85; a.volume = 8_900_000; a.price_updated_at = 2.minutes.ago
 end
 
 # Mexico (BMV) — prices via Yahoo Finance
@@ -374,7 +357,7 @@ end
 # Run: CalculateTrendScoresJob.perform_now after seeding to populate initial scores.
 
 # --- Earnings Events ---
-# Earnings are synced weekly from Polygon.io via SyncEarningsJob.
+# Earnings are synced weekly via SyncEarningsJob.
 # Run: SyncEarningsJob.perform_now after seeding to populate initial data.
 
 # --- Fixed Income (CETES) ---
@@ -455,7 +438,7 @@ end
   # --- Audit Logs ---
   unless AuditLog.exists?
     AuditLog.create!(user: alex, action: "admin.assets.create", auditable: aapl, changes_data: { after: { symbol: "AAPL" } }, ip_address: "127.0.0.1")
-    AuditLog.create!(user: alex, action: "admin.integrations.connect", auditable: Integration.first, changes_data: { after: { provider: "Polygon.io" } }, ip_address: "127.0.0.1")
+    AuditLog.create!(user: alex, action: "admin.integrations.connect", auditable: Integration.first, changes_data: { after: { provider: "Alpaca" } }, ip_address: "127.0.0.1")
   end
 end # Rails.env.development? (alex demo data)
 

@@ -3,8 +3,8 @@
 # Returns Success(:allowed) or Failure([:rate_limited, message]).
 #
 # Usage:
-#   RateLimiter.check!("Polygon.io")  # => Success(:allowed)
-#   RateLimiter.check!("Polygon.io")  # => Failure([:rate_limited, "..."])
+#   RateLimiter.check!("Alpaca")  # => Success(:allowed)
+#   RateLimiter.check!("Alpaca")  # => Failure([:rate_limited, "..."])
 #
 class RateLimiter
   include Dry::Monads[:result]

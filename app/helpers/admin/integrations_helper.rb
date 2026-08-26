@@ -1,7 +1,6 @@
 module Admin
   module IntegrationsHelper
     PROVIDER_WEBSITES = {
-      "Polygon.io"     => "polygon.io",
       "Finnhub"        => "finnhub.io",
       "CoinGecko"      => "coingecko.com",
       "Yahoo Finance"  => "finance.yahoo.com",

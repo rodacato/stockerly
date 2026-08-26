@@ -35,10 +35,10 @@ RSpec.describe MarketHelper, type: :helper do
     # Rows that predate provenance carry an explicit sentinel; showing it to a
     # reader would be worse than showing nothing.
     it "does not show the legacy sentinel" do
-      asset = create(:asset, symbol: "OLD", currency: "USD", exchange: "NASDAQ", data_source: "Polygon.io")
+      asset = create(:asset, symbol: "OLD", currency: "USD", exchange: "NASDAQ", data_source: "Alpaca")
       create(:asset_price_history, asset: asset, date: Date.current, source: "legacy:unknown")
 
-      expect(helper.asset_data_source_caption(asset)).to eq("Fuente: Polygon.io · NASDAQ · USD")
+      expect(helper.asset_data_source_caption(asset)).to eq("Fuente: Alpaca · NASDAQ · USD")
     end
   end
 end
