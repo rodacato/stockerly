@@ -30,17 +30,17 @@ RSpec.describe "Market Crypto Asset Detail", type: :request do
       expect(response.body).to match(/>\s*Cripto\s*</)
     end
 
-    it "renders only Resumen and Mercado tabs" do
+    # D36 replaced the tab strip with one scroll: a crypto asset shows its
+    # fundamentals section and never the equity-only ones.
+    it "shows the fundamentals section and never the statement sections" do
       get market_asset_path(crypto_asset.symbol)
 
-      expect(response.body).to match(/>\s*Resumen\s*</)
-      expect(response.body).to match(/>\s*Mercado\s*</)
-      expect(response.body).not_to match(/>\s*Valoración\s*</)
-      expect(response.body).not_to match(/>\s*Dividendos\s*</)
-      expect(response.body).not_to match(/>\s*Estados financieros\s*</)
+      expect(response.body).to include(I18n.t("market.fundamentals_block.titulo"))
+      expect(response.body).not_to include(I18n.t("market.statements_tab.titulo"))
+      expect(response.body).not_to include(I18n.t("market.dividend_history.titulo"))
     end
 
-    it "renders crypto-specific metrics in the summary tab" do
+    it "renders crypto-specific metrics" do
       get market_asset_path(crypto_asset.symbol)
 
       expect(response.body).to include(I18n.t("market.metricas.circulating_supply.nombre"))
@@ -59,15 +59,11 @@ RSpec.describe "Market Crypto Asset Detail", type: :request do
   end
 
   describe "GET /market/:symbol for stocks (regression)" do
-    it "renders the trimmed equity tab set" do
+    it "renders the equity type chip and no crypto-only metrics" do
       get market_asset_path(stock_asset.symbol)
 
       expect(response.body).to match(/>\s*Acción\s*</)
-      expect(response.body).to match(/>\s*Resumen\s*</)
-      # Mercado the navbar link is fine; only the Mercado *tab button* is
-      # crypto-only. Assert that no `data-tabs-target="tab"` button carries
-      # the Mercado label.
-      expect(response.body).not_to match(/data-tabs-target="tab"[^>]*>\s*Mercado\s*</)
+      expect(response.body).not_to include(I18n.t("market.metricas.circulating_supply.nombre"))
     end
   end
 end

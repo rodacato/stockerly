@@ -51,3 +51,41 @@ RSpec.describe FundamentalsHelper, type: :helper do
     end
   end
 end
+
+RSpec.describe FundamentalsHelper, "#remaining_metrics_by_category", type: :helper do
+  def presenter_for(asset, metrics)
+    MarketData::Domain::FundamentalPresenter.new(
+      asset: asset, fundamental: build(:asset_fundamental, metrics: metrics)
+    )
+  end
+
+  it "never offers crypto categories on an equity" do
+    asset = build(:asset, :stock, current_price: 100)
+    rest = helper.remaining_metrics_by_category(asset, presenter_for(asset, "circulating_supply" => "19000000"))
+
+    expect(rest).not_to have_key(:crypto_market)
+  end
+
+  it "never offers dividend categories on a crypto asset" do
+    asset = build(:asset, :crypto, current_price: 100)
+    rest = helper.remaining_metrics_by_category(asset, presenter_for(asset, "dividend_yield" => "0.02"))
+
+    expect(rest).not_to have_key(:dividends)
+  end
+
+  # Twenty cards reading "—" is not depth. A metric no producer filled is left out.
+  it "drops a metric with no value rather than rendering an empty card" do
+    asset = build(:asset, :stock, current_price: 100)
+    rest = helper.remaining_metrics_by_category(asset, presenter_for(asset, "gross_margin" => "0.46"))
+
+    expect(rest[:profitability].map(&:key)).to eq([ :gross_margin ])
+  end
+
+  it "leaves out what the extract already shows" do
+    asset = build(:asset, :stock, current_price: 100)
+    rest = helper.remaining_metrics_by_category(asset, presenter_for(asset, "beta" => "1.4", "forward_pe" => "28.4"))
+
+    expect(rest.values.flatten.map(&:key)).to include(:forward_pe)
+    expect(rest.values.flatten.map(&:key)).not_to include(:beta)
+  end
+end

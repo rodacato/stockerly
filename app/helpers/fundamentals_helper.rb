@@ -87,6 +87,20 @@ module FundamentalsHelper
     asset.asset_type_crypto? ? CRYPTO_SUMMARY_METRICS : SUMMARY_METRICS
   end
 
+  # What the "Ver todos" accordion shows: every metric the extract left out,
+  # grouped by category. Crypto categories are dropped for an equity and the
+  # reverse, and a metric with no value is dropped entirely — twenty cards
+  # reading "—" is not depth, it is noise.
+  def remaining_metrics_by_category(asset, presenter)
+    shown = summary_metrics_for(asset)
+    excluded = asset.asset_type_crypto? ? %i[identity dividends] : %i[identity crypto_market]
+
+    MarketData::Domain::MetricDefinitions.all
+      .reject { |d| shown.include?(d.key) || excluded.include?(d.category) }
+      .select { |d| resolve_metric_value(presenter, d.key).present? }
+      .group_by(&:category)
+  end
+
   def resolve_metric_value(presenter, key)
     # Try computed methods first (pe_ratio, pb_ratio, etc.)
     if presenter.respond_to?(key)

@@ -30,40 +30,40 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
       expect(page).to have_content("227.44")
     end
 
-    it "exposes the always-visible Resumen tab and the es-MX watchlist CTA" do
+    it "exposes the es-MX watchlist CTA" do
       visit market_asset_path(apple.symbol)
 
-      expect(page).to have_button("Resumen")
       # The CTA became an icon button; Capybara only matches aria-label when
       # enable_aria_label is on, so this asserts the attribute directly.
       expect(page).to have_css(%(button[aria-label="#{I18n.t("market.header.agregar_watchlist")}"]))
     end
 
-    it "shows Valoración + Estados financieros when fundamentals + statements exist" do
+    it "shows the fundamentals and statements sections when their data exists" do
       create(:asset_fundamental, asset: apple, period_label: "OVERVIEW",
-        metrics: { "pe_ratio" => "31.25" })
+        metrics: { "pe_ratio" => "31.25", "forward_pe" => "28.4", "gross_margin" => "0.46" })
       create(:financial_statement, asset: apple, statement_type: :income_statement,
         period_type: :annual, fiscal_date_ending: Date.new(2024, 9, 28),
         fiscal_year: 2024, data: { "totalRevenue" => "394328000000" })
 
       visit market_asset_path(apple.symbol)
 
-      expect(page).to have_button("Valoración")
-      expect(page).to have_button("Estados financieros")
+      expect(page).to have_content(I18n.t("market.fundamentals_block.titulo"))
+      expect(page).to have_content(I18n.t("market.statements_tab.titulo"))
+      # The rest of the glossary is behind one control, not a screen (D36).
+      expect(page).to have_button(I18n.t("market.fundamentals_block.ver_todos"))
     end
   end
 
   describe "ETF" do
     let!(:voo) { create(:asset, :etf, name: "Vanguard S&P 500 ETF", symbol: "VOO", currency: "USD", current_price: 540.12, change_percent_24h: 0.45) }
 
-    it "renders the ETF chip and trims tabs to Resumen only when no data" do
+    it "renders the ETF chip and omits the sections it has no data for" do
       visit market_asset_path(voo.symbol)
 
       expect(page).to have_content("VOO")
       expect(page).to have_content("ETF")
-      expect(page).to have_button("Resumen")
-      expect(page).not_to have_button("Valoración")
-      expect(page).not_to have_button("Estados financieros")
+      expect(page).not_to have_content(I18n.t("market.statements_tab.titulo"))
+      expect(page).not_to have_content(I18n.t("market.dividend_history.titulo"))
     end
 
     it "shows the es-MX empty state when no fundamentals are available" do
@@ -81,15 +81,13 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
         metrics: { "market_cap" => "1310000000000", "total_volume_24h" => "28400000000" })
     end
 
-    it "renders the Cripto chip and the Mercado tab, never the financial-statement tabs" do
+    it "renders the Cripto chip and never the financial-statement sections" do
       visit market_asset_path(btc.symbol)
 
       expect(page).to have_content("Cripto")
-      expect(page).to have_button("Resumen")
-      expect(page).to have_button("Mercado")
-      expect(page).not_to have_button("Valoración")
-      expect(page).not_to have_button("Dividendos")
-      expect(page).not_to have_button("Estados financieros")
+      expect(page).to have_content(I18n.t("market.fundamentals_block.titulo"))
+      expect(page).not_to have_content(I18n.t("market.statements_tab.titulo"))
+      expect(page).not_to have_content(I18n.t("market.dividend_history.titulo"))
     end
 
     it "shows the CoinGecko data source caption (es-MX)" do

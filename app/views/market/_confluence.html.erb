@@ -1,0 +1,38 @@
+<%# Semáforo de confluencia. Locals: state, trend.
+    Ships two of the three lights the artboard draws. The confirmation signal
+    is net-new and says so rather than rendering an empty row (D36/D3). %>
+<%
+  trend_direction = MarketData::Domain::AssetState.trend_direction(trend)
+  lights = [
+    { key: :extension,
+      on: state != :neutral,
+      dot: state == :stretched ? "bg-warning" : (state == :oversold ? "bg-positive" : "bg-fg-subtle"),
+      title: t(".extension_#{state}"),
+      body: t(".extension_detalle") },
+    { key: :confirmacion, on: false, dot: "bg-bg-muted",
+      title: t(".confirmacion"), body: t(".confirmacion_pendiente") },
+    { key: :tendencia,
+      on: trend_direction.present?,
+      dot: trend_direction == :bullish ? "bg-positive" : (trend_direction == :bearish ? "bg-negative" : "bg-fg-subtle"),
+      title: t(".tendencia"),
+      body: trend ? t(".tendencia_#{trend_direction}", when: observation_when(trend.observed_at)) : t(".tendencia_sin_datos") }
+  ]
+%>
+<section class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+  <div class="flex flex-wrap items-baseline gap-2">
+    <h3 class="font-display text-base font-semibold tracking-tight text-fg-default"><%= t(".titulo") %></h3>
+    <span class="text-xs text-fg-subtle"><%= t(".subtitulo") %></span>
+  </div>
+
+  <ul class="flex flex-col gap-3">
+    <% lights.each do |light| %>
+      <li class="flex items-start gap-3 <%= "opacity-60" unless light[:on] %>">
+        <span class="mt-1.5 size-2.5 shrink-0 rounded-full <%= light[:dot] %>" aria-hidden="true"></span>
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-fg-default"><%= light[:title] %></p>
+          <p class="text-sm text-fg-subtle"><%= light[:body] %></p>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</section>

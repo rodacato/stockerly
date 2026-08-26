@@ -1,0 +1,51 @@
+<%# Fundamentales, flattened out of the sub-tabs the artboard does not draw.
+    The extract is what the artboard shows; "Ver todos" opens the remaining
+    categories in place rather than on a screen nobody designed (D36). %>
+<% if @has_fundamentals %>
+  <%
+    summary = summary_metrics_for(@asset)
+    rest = remaining_metrics_by_category(@asset, @presenter)
+  %>
+  <section data-controller="reveal" class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+    <h3 class="font-display text-base font-semibold tracking-tight text-fg-default"><%= t(".titulo") %></h3>
+  
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <% summary.each do |key| %>
+        <% defn = MarketData::Domain::MetricDefinitions.find(key) rescue nil %>
+        <% next unless defn %>
+        <%= render "market/metric_card", definition: defn, value: resolve_metric_value(@presenter, key) %>
+      <% end %>
+    </div>
+  
+    <% if @asset.asset_type_stock? %>
+      <%= render "market/analyst_target" %>
+    <% end %>
+  
+    <% if rest.any? %>
+      <button type="button" data-action="reveal#toggle"
+              class="inline-flex items-center gap-1 self-start text-sm font-semibold text-primary hover:underline">
+        <%= t(".ver_todos") %>
+        <span class="material-symbols-outlined text-base" aria-hidden="true">expand_more</span>
+      </button>
+  
+      <div data-reveal-target="content" class="hidden flex-col gap-6 border-t border-border-default pt-4">
+        <% rest.each do |category, defns| %>
+          <div class="flex flex-col gap-3">
+            <h4 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+              <%= t("market.categorias.#{category}") %>
+            </h4>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <% defns.each do |defn| %>
+                <%= render "market/metric_card", definition: defn, value: resolve_metric_value(@presenter, defn.key) %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+<% else %>
+  <%= render "components/empty_state", icon: "analytics",
+             title: t("market.summary_tab.vacio_titulo"),
+             description: t("market.summary_tab.vacio_cuerpo") %>
+<% end %>

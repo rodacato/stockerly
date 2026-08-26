@@ -17,8 +17,10 @@ class AlertsController < AuthenticatedController
   # D14: the rule form is a route rendered into a frame and presented as a
   # sheet — the shape /trades/new settled in slice 2b.
   def new
+    # The asset detail's "Crear regla" arrives with a symbol; /alerts does not.
     @rule = AlertRule.new(condition: :price_crosses_above,
-                          cooldown_minutes: AlertRule::DEFAULT_COOLDOWN_MINUTES)
+                          cooldown_minutes: AlertRule::DEFAULT_COOLDOWN_MINUTES,
+                          asset_symbol: params[:asset_symbol].presence&.upcase)
   end
 
   def create

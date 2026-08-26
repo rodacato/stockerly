@@ -1,0 +1,41 @@
+<%# Contexto de mercado. Locals: asset, context.
+    The divergence phrase is selected by key, never composed here (ADR-014). %>
+<% if context[:index] || context[:sentiment] %>
+  <section class="flex flex-col gap-3 rounded-2xl border border-border-default bg-bg-surface p-5">
+  <h3 class="font-display text-base font-semibold tracking-tight text-fg-default"><%= t(".titulo") %></h3>
+
+  <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+    <% if context[:index] %>
+      <div class="flex items-center gap-2">
+        <span class="size-1.5 rounded-full <%= context[:market_open] ? "bg-positive" : "bg-fg-subtle" %>" aria-hidden="true"></span>
+        <span class="text-sm font-semibold text-fg-default"><%= context[:index].name %></span>
+        <span class="text-xs text-fg-subtle"><%= context[:market_open] ? t(".abierto") : t(".cerrado") %></span>
+        <% if context[:index_change] %>
+          <span class="font-mono text-sm font-semibold <%= context[:index_change].to_f.negative? ? "text-negative-fg" : "text-positive-fg" %>">
+            <%= number_to_percentage(context[:index_change], precision: 1, format: "%n%") %> <%= t(".hoy") %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if context[:sentiment] %>
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-semibold text-fg-default"><%= t(".fear_greed") %></span>
+        <span class="rounded-full bg-bg-muted px-2 py-0.5 font-mono text-xs text-fg-default">
+          <%= context[:sentiment].value %> · <%= context[:sentiment].classification %>
+        </span>
+      </div>
+    <% end %>
+  </div>
+
+  <% if context[:divergence] %>
+    <p class="text-sm leading-snug text-fg-subtle">
+      <%= t("market.divergencia.#{context[:divergence]}",
+            symbol: asset.symbol,
+            asset_change: number_to_percentage(context[:asset_change], precision: 1, format: "%n%"),
+            index_change: number_to_percentage(context[:index_change], precision: 1, format: "%n%"),
+            index: context[:index].name) %>
+    </p>
+  <% end %>
+  </section>
+<% end %>

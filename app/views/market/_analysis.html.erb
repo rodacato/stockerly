@@ -1,77 +1,61 @@
-<%# Locals: asset. The analysis side of the detail: state, chart, observations
-    and the fundamentals block, which keeps its own sub-tabs for now — flattening
-    those into the scroll the artboard draws is not this slice's job. %>
+<%# The Análisis side of the asset detail. `cockpit-asset-analisis` draws one
+    continuous scroll, so the sub-tabs that used to hold the fundamentals are
+    gone (D36): Estados financieros keeps its lazy frame at the foot, and the
+    rest reads top to bottom. Locals: asset. %>
 <%= render "market/state_verdict", state: @state, state_source: @state_source, holding: @holding %>
 
-  <%= render "market/recent_observations", asset: @asset, observations: @recent_observations %>
+<% if @asset.asset_type_fixed_income? %>
+  <%# Fixed income charts a rate, which the SVG already renders with its own
+      min/max badges. %>
+  <%= render "market/price_chart" %>
+<% elsif @price_histories.size >= 2 %>
+  <section class="rounded-2xl border border-border-default bg-bg-surface p-5">
+    <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
+      <%= t("market.precio.titulo", currency: @asset.currency) %>
+    </h3>
+    <div class="mt-4" data-controller="chart" data-chart-height-value="260"
+         data-chart-series-value="<%= price_series_json(@price_histories) %>"></div>
+  </section>
+<% end %>
 
-  <% if @asset.asset_type_fixed_income? %>
-    <%# Fixed income charts a rate, which the SVG already renders with its own
-        min/max badges. Unifying the two is not this slice's job. %>
-    <%= render "market/price_chart" %>
-  <% elsif @price_histories.size >= 2 %>
+<% if @asset.asset_type_fixed_income? %>
+  <%= render "market/fixed_income_detail", asset: @asset, yield_data: @yield_data %>
+<% else %>
+  <%= render "market/market_context", asset: @asset, context: @market_context %>
+  <%= render "market/confluence", state: @state, trend: @trend_source %>
+  <%= render "market/recent_observations", asset: @asset, observations: @recent_observations %>
+  <%= render "market/fundamentals_block" %>
+  <%= render "market/pe_chart" if @asset.asset_type_stock? %>
+  <%= render "market/company_facts", asset: @asset, company_overview: @company_overview %>
+
+  <% if @dividends.present? %>
     <section class="rounded-2xl border border-border-default bg-bg-surface p-5">
-      <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
-        <%= t("market.precio.titulo", currency: @asset.currency) %>
-      </h3>
-      <div class="mt-4" data-controller="chart" data-chart-height-value="260"
-           data-chart-series-value="<%= price_series_json(@price_histories) %>"></div>
+      <%= render "market/dividend_history" %>
     </section>
   <% end %>
 
-  <% if @asset.asset_type_fixed_income? %>
-    <%# CETE / fixed income: yield card replaces the tab system %>
-    <%= render "market/fixed_income_detail", asset: @asset, yield_data: @yield_data %>
-  <% else %>
-    <%
-      tabs = asset_detail_tabs(
-        @asset,
-        has_fundamentals: @has_fundamentals,
-        has_dividends:    @dividends.present?,
-        has_statements:   @has_statements
-      )
-    %>
-
-    <section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden" data-controller="tabs">
-      <div class="border-b border-border-default overflow-x-auto">
-        <div class="flex gap-1 min-w-max px-4">
-          <%# Initial tab classes match what tabs_controller.js toggles
-              (border-primary/border-transparent · text-primary/text-fg-subtle ·
-              font-bold/font-medium). The controller re-applies the active set
-              on connect via showTab(0), so what we render here is just the
-              first-paint state before Stimulus mounts. %>
-          <% tabs.each_with_index do |tab, idx| %>
-            <% active = idx.zero? %>
-            <button data-tabs-target="tab" data-action="tabs#switch"
-                    class="px-3.5 py-3 text-sm border-b-2 -mb-px transition-colors <%= active ? 'font-bold text-primary border-primary' : 'font-medium text-fg-subtle border-transparent hover:text-fg-default' %>">
-              <%= tab[:label] %>
-            </button>
-          <% end %>
-        </div>
-      </div>
-
-      <% tabs.each_with_index do |tab, idx| %>
-        <div data-tabs-target="panel" class="<%= 'hidden' unless idx.zero? %> px-5 py-6">
-          <% case tab[:key] %>
-          <% when :resumen %>
-            <%= render "market/summary_tab" %>
-          <% when :valoracion %>
-            <%= render "market/category_tab", category: :valuation %>
-          <% when :mercado %>
-            <%= render "market/category_tab", category: :crypto_market %>
-          <% when :dividendos %>
-            <%= render "market/dividend_history" %>
-          <% when :estados %>
-            <%= turbo_frame_tag "asset_statements_tab", src: market_asset_statements_tab_path(@asset.symbol), loading: "lazy" do %>
-              <%= render "components/skeleton", type: "table_row", count: 5 %>
-            <% end %>
-          <% end %>
-        </div>
+  <% if @has_statements %>
+    <section class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+      <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
+        <%= t("market.statements_tab.titulo") %>
+      </h3>
+      <%= turbo_frame_tag "asset_statements_tab", src: market_asset_statements_tab_path(@asset.symbol), loading: "lazy" do %>
+        <%= render "components/skeleton", type: "table_row", count: 5 %>
       <% end %>
     </section>
-
-    <%# P/E history shown below tabs for stocks only (visual evidence next to fundamentals) %>
-    <%= render "market/pe_chart" if @asset.asset_type_stock? %>
   <% end %>
+<% end %>
 
-  <%= render "market/disclaimer" %>
+<%# The artboard closes on two actions. Registrar operación is the sheet the
+    Consolidado already mounts; Crear regla lands on the rule form with the
+    symbol filled in. %>
+<div class="flex flex-wrap gap-3">
+  <%= link_to new_alert_path(asset_symbol: @asset.symbol),
+        class: "flex-1 rounded-lg border border-border-default px-4 py-2.5 text-center text-sm font-semibold text-fg-default transition-colors hover:border-primary hover:text-primary" do %>
+    <%= t("market.acciones.crear_regla") %>
+  <% end %>
+  <%= render "components/sheet_dialog", frame_id: "trade_sheet", url: new_trade_path(symbol: @asset.symbol),
+             label: t("market.acciones.registrar") %>
+</div>
+
+<%= render "market/disclaimer" %>
