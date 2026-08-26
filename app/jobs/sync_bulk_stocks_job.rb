@@ -30,7 +30,7 @@ class SyncBulkStocksJob < ApplicationJob
   private
 
   def breaker
-    SyncSingleAssetJob.circuit_breaker_for("alpaca")
+    GatewayChain.breaker_for("alpaca")
   end
 
   def update_assets(assets_by_symbol, results)

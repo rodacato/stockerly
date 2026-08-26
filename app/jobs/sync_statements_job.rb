@@ -77,6 +77,6 @@ class SyncStatementsJob < ApplicationJob
   end
 
   def breaker
-    SyncSingleAssetJob.circuit_breaker_for("alpha_vantage")
+    GatewayChain.breaker_for("alpha_vantage")
   end
 end

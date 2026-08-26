@@ -27,7 +27,7 @@ class SyncBulkCryptoJob < ApplicationJob
   private
 
   def breaker
-    SyncSingleAssetJob.circuit_breaker_for("crypto")
+    GatewayChain.breaker_for("crypto")
   end
 
   def update_assets(assets_by_symbol, results)

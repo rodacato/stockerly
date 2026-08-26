@@ -150,11 +150,23 @@ class GatewayChain
     symbol[provider] || symbol["default"]
   end
 
-  # Builds a GatewayChain from DataSourceRegistry for the given capability.
-  # Sources are tried in registration order (first registered = primary).
-  # Deduplicates by gateway class and skips unconfigured gateways.
-  def self.for_capability(capability)
-    sources = DataSourceRegistry.for_capability(capability)
+  # Breakers are memoized per key, not built per call: a breaker rebuilt on
+  # every fetch is always closed, which is a breaker that never opens.
+  BREAKERS = {}
+
+  def self.breaker_for(key)
+    BREAKERS[key] ||= CircuitBreaker.new(name: "#{key}_gateway", threshold: 5, timeout: 60)
+  end
+
+  def self.reset_breakers!
+    BREAKERS.each_value(&:reset!)
+  end
+
+  # Builds a GatewayChain from DataSourceRegistry for the given capability,
+  # narrowed by the market and asset type when the caller knows them. Sources
+  # are tried in registration order (first registered = primary).
+  def self.for_capability(capability, market: nil, asset_type: nil)
+    sources = DataSourceRegistry.for_capability(capability, market: market, asset_type: asset_type)
     return new(gateways: []) if sources.empty?
 
     seen = Set.new
@@ -172,11 +184,7 @@ class GatewayChain
         next
       end
 
-      breakers[klass.name] = CircuitBreaker.new(
-        name: "#{source.circuit_breaker_key}_gateway",
-        threshold: 5,
-        timeout: 60
-      )
+      breakers[klass.name] = breaker_for(source.circuit_breaker_key)
     end
 
     new(gateways: gateways, circuit_breakers: breakers)

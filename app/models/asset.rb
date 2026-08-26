@@ -43,6 +43,12 @@ class Asset < ApplicationRecord
 
   scope :by_country,  ->(country) { where(country: country) if country.present? }
 
+  # Which market routes this asset. Country is the only signal the catalogue
+  # carries, and everything not Mexican is priced by a US-market source.
+  def market
+    country == "MX" ? :mx : :us
+  end
+
   scope :high_priority, -> {
     watched = WatchlistItem.select(:asset_id)
     held = Position.where(status: :open).select(:asset_id)

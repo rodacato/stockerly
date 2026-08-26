@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe SyncBulkStocksJob, type: :job do
   before do
     create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKID:secret")
-    SyncSingleAssetJob::CIRCUIT_BREAKERS.each_value(&:reset!)
+    GatewayChain.reset_breakers!
   end
 
   describe "#perform" do

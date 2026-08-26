@@ -6,7 +6,7 @@ RSpec.describe SyncSingleAssetJob, type: :job do
     create(:integration, provider_name: "DataBursatil", api_key_encrypted: "test_token")
     create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
     # Reset class-level circuit breakers between tests to avoid cross-test contamination
-    described_class::CIRCUIT_BREAKERS.each_value(&:reset!)
+    GatewayChain.reset_breakers!
   end
 
   describe "#perform" do

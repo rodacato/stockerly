@@ -73,7 +73,7 @@ module MarketData
           name: provider,
           description: info&.description,
           capabilities: capabilities,
-          role: role_for(capabilities, provider),
+          role: role_for(sources, provider),
           state: state_for(integration),
           quota: quota_for(integration, sources.first),
           last_sync_at: integration.last_sync_at,
@@ -82,15 +82,24 @@ module MarketData
         )
       end
 
-      # Read off the registry rather than declared, so a re-ordering cannot
-      # leave the label behind.
-      def role_for(capabilities, provider)
-        peers = capabilities.map { |capability| DataSourceRegistry.for_capability(capability).map(&:integration_name).uniq }
+      # Asked inside each source's own declared scope, because an unscoped
+      # question answers wrong: CoinGecko is one of four for :prices overall
+      # and the only one for crypto.
+      def role_for(sources, provider)
+        peers = sources.flat_map { |source| peers_for(source) }
 
         return :only    if peers.any? { |names| names == [ provider ] }
         return :primary if peers.any? { |names| names.first == provider }
 
         :fallback
+      end
+
+      def peers_for(source)
+        source.capabilities.map do |capability|
+          DataSourceRegistry
+            .for_capability(capability, market: source.markets&.first, asset_type: source.asset_types&.first)
+            .map(&:integration_name).uniq
+        end
       end
 
       def state_for(integration)

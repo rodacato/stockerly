@@ -30,7 +30,7 @@ class SyncBulkBmvJob < ApplicationJob
   private
 
   def breaker
-    SyncSingleAssetJob.circuit_breaker_for("databursatil")
+    GatewayChain.breaker_for("databursatil")
   end
 
   def update_assets(assets_by_symbol, results)

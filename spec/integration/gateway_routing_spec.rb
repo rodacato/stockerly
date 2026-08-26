@@ -1,16 +1,16 @@
 require "rails_helper"
 
-# Characterization of which provider each sync path actually calls today.
-# Routing lives in nine hardcoded sites, not one, and the Alpaca and
-# DataBursatil migrations move four of them. These specs assert at the HTTP
-# boundary so a re-route fails loudly instead of silently changing provider.
+# Characterization of which provider each sync path actually calls. Routing
+# used to live in three disagreeing sites; it now resolves through
+# DataSourceRegistry. These specs assert at the HTTP boundary so a re-route
+# fails loudly instead of silently changing provider.
 RSpec.describe "Gateway routing", type: :job do
   before do
     create(:integration, provider_name: "Finnhub", api_key_encrypted: "test_key")
     create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
     create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKID:secret")
     create(:integration, provider_name: "DataBursatil", api_key_encrypted: "test_token")
-    SyncSingleAssetJob::CIRCUIT_BREAKERS.each_value(&:reset!)
+    GatewayChain.reset_breakers!
   end
 
   def finnhub_quote = %r{finnhub\.io/api/v1/quote}
@@ -75,17 +75,17 @@ RSpec.describe "Gateway routing", type: :job do
         expect(asset.reload.data_source).to eq("MarketData::Gateways::DataBursatilGateway")
       end
 
-      # The country check precedes the asset_type case, so country wins over
-      # type for every Mexican asset. Pinned as-is: this is the current
-      # behaviour, not an endorsement of it.
-      it "sends Mexican crypto down the BMV chain rather than to CoinGecko" do
-        asset = create(:asset, :crypto, :mexican, symbol: "BTCMX", price_updated_at: 10.minutes.ago)
-        stub_databursatil("/v2/cotizaciones", {})
+      # Asset type outranks market, which reverses what the country-first case
+      # statement did: crypto is global, so a Mexican crypto goes to the
+      # crypto source rather than to an exchange that cannot price it.
+      it "sends Mexican crypto to CoinGecko, not down the BMV chain" do
+        asset = create(:asset, :crypto, symbol: "BTC", country: "MX", price_updated_at: 10.minutes.ago)
+        stub_coingecko_prices
 
         SyncSingleAssetJob.perform_now(asset.id)
 
-        expect(a_request(:get, %r{api\.databursatil\.com/v2/cotizaciones})).to have_been_made
-        expect(a_request(:get, %r{api\.coingecko\.com})).not_to have_been_made
+        expect(a_request(:get, %r{api\.coingecko\.com})).to have_been_made
+        expect(a_request(:get, %r{api\.databursatil\.com/v2/cotizaciones})).not_to have_been_made
       end
 
       it "sends Mexican fixed income down the BMV chain, which cannot price it" do
@@ -98,11 +98,15 @@ RSpec.describe "Gateway routing", type: :job do
       end
     end
 
-    it "raises for a non-Mexican asset type it has no route for" do
+    # "Nobody serves this" is now data, not a programming error: the registry
+    # answers with an empty chain and the job records the failure instead of
+    # raising, which is what a source being dropped should look like.
+    it "records a failure for an asset type no source claims" do
       asset = create(:asset, :fixed_income, symbol: "TBILL", country: "US", sync_status: :active, price_updated_at: 10.minutes.ago)
 
-      expect { SyncSingleAssetJob.perform_now(asset.id) }
-        .to raise_error(ArgumentError, /Unknown asset type/)
+      expect { SyncSingleAssetJob.perform_now(asset.id) }.not_to raise_error
+
+      expect(asset.reload.last_sync_error).to be_present
     end
   end
 
@@ -147,6 +151,18 @@ RSpec.describe "Gateway routing", type: :job do
       BackfillPriceHistoryJob.perform_now(asset.id)
 
       expect(a_request(:get, alpaca_bars)).to have_been_made
+    end
+
+    # The bug the consolidation fixed: this used to route by asset_type alone,
+    # so a BMV asset asked Alpaca and then Yahoo and never DataBursatil.
+    it "sends BMV history to DataBursatil, which the old route skipped" do
+      asset = create(:asset, :mexican, symbol: "WALMEX.MX")
+      stub_databursatil("/v2/historicos", { "WALMEX" => [] })
+
+      BackfillPriceHistoryJob.perform_now(asset.id)
+
+      expect(a_request(:get, %r{api\.databursatil\.com/v2/historicos})).to have_been_made
+      expect(a_request(:get, alpaca_bars)).not_to have_been_made
     end
 
     it "refuses fixed income outright" do

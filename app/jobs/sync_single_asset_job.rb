@@ -50,50 +50,10 @@ class SyncSingleAssetJob < ApplicationJob
     asset.price_updated_at > min_interval.ago
   end
 
-  CIRCUIT_BREAKERS = {}
-
-  def self.circuit_breaker_for(key)
-    CIRCUIT_BREAKERS[key] ||= CircuitBreaker.new(
-      name: "#{key}_gateway",
-      threshold: 5,
-      timeout: 60
-    )
-  end
-
+  # The chain is the registry's answer, not a case statement here: the same
+  # question asked by the backfill and by Integraciones has to get one answer.
   def gateway_for(asset)
-    if asset.country == "MX"
-      return build_chain(
-        [ MarketData::Gateways::DataBursatilGateway, MarketData::Gateways::YfinanceGateway ],
-        { "MarketData::Gateways::DataBursatilGateway" => self.class.circuit_breaker_for("databursatil") }
-      )
-    end
-
-    case asset.asset_type
-    when "stock", "index", "etf"
-      build_chain(
-        [ MarketData::Gateways::FinnhubGateway, MarketData::Gateways::YfinanceGateway ],
-        {
-          "MarketData::Gateways::FinnhubGateway" => self.class.circuit_breaker_for("finnhub"),
-          "MarketData::Gateways::YfinanceGateway" => self.class.circuit_breaker_for("yfinance")
-        }
-      )
-    when "crypto"
-      build_chain([ MarketData::Gateways::CoingeckoGateway ])
-    else
-      raise ArgumentError, "Unknown asset type: #{asset.asset_type}"
-    end
-  end
-
-  # An unconfigured provider is skipped rather than raised, so a missing key
-  # degrades to the next gateway instead of failing the job outright.
-  def build_chain(gateway_classes, circuit_breakers = {})
-    gateways = gateway_classes.filter_map do |klass|
-      klass.new
-    rescue MarketData::Gateways::ApiKeyNotConfiguredError
-      nil
-    end
-
-    GatewayChain.new(gateways: gateways, circuit_breakers: circuit_breakers)
+    GatewayChain.for_capability(:prices, market: asset.market, asset_type: asset.asset_type)
   end
 
   def update_asset(asset, data)

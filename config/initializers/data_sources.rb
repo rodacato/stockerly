@@ -17,6 +17,8 @@ Rails.application.config.after_initialize do
     test_method: :fetch_historical,
     integration_name: "Alpaca",
     circuit_breaker_key: "alpaca",
+    markets: %i[us],
+    asset_types: %i[stock etf index],
     capabilities: %i[historical news]
   )
 
@@ -31,7 +33,11 @@ Rails.application.config.after_initialize do
     test_method: :fetch_price,
     integration_name: "Finnhub",
     circuit_breaker_key: "finnhub",
-    capabilities: %i[prices historical search news earnings]
+    markets: %i[us],
+    asset_types: %i[stock etf index],
+    # :historical is gone — /stock/candle is premium, so it was a link in the
+    # chain that answers 403 forever (C4).
+    capabilities: %i[prices search news earnings]
   )
 
   DataSourceRegistry.register(:coingecko_crypto,
@@ -45,6 +51,7 @@ Rails.application.config.after_initialize do
     test_method: :fetch_price,
     integration_name: "CoinGecko",
     circuit_breaker_key: "crypto",
+    asset_types: %i[crypto],
     capabilities: %i[prices historical market_data]
   )
 
@@ -59,6 +66,11 @@ Rails.application.config.after_initialize do
     test_method: :fetch_price,
     integration_name: "DataBursatil",
     circuit_breaker_key: "databursatil",
+    # Crypto is in the list so a Mexican crypto CoinGecko does not carry can
+    # still be quoted here, under a different ticker (BTCMXN). Fixed income
+    # is not: CETES rates come from Banxico, not from an exchange.
+    markets: %i[mx],
+    asset_types: %i[stock etf index crypto],
     capabilities: %i[prices historical intraday]
   )
 
@@ -87,6 +99,9 @@ Rails.application.config.after_initialize do
     test_method: :fetch_price,
     integration_name: "Yahoo Finance",
     circuit_breaker_key: "yfinance",
+    # Both markets, no crypto: ADR-017 quarantines the bridge to what no
+    # sanctioned provider serves, and CoinGecko serves crypto.
+    asset_types: %i[stock etf index],
     # BMV earnings are served through an explicit route in SyncEarnings, not
     # through a chain: declaring :earnings here would put the bridge in the US
     # chain too, where Finnhub and Polygon already answer.

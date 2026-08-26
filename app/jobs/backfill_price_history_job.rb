@@ -6,6 +6,8 @@ class BackfillPriceHistoryJob < ApplicationJob
 
   queue_as :default
 
+  DAYS = 30
+
   def perform(asset_id)
     asset = Asset.find_by(id: asset_id)
     return unless asset&.active?
@@ -22,40 +24,61 @@ class BackfillPriceHistoryJob < ApplicationJob
 
   private
 
-  # @source records which provider actually answered, since the fallback means
-  # the winner is not knowable from the call site.
+  # This used to route by asset_type alone, so a BMV asset asked Alpaca and
+  # then Yahoo and never DataBursatil, which is the source that serves it.
   def fetch_history(asset)
-    case asset.asset_type
-    when "crypto"
-      @source = MarketData::Gateways::CoingeckoGateway.source_id
-      MarketData::Gateways::CoingeckoGateway.new.fetch_historical(asset.symbol, days: 30)
-    when "stock", "index", "etf"
-      fetch_stock_history(asset.symbol)
-    else
-      Dry::Monads::Failure([ :not_supported, "Backfill not supported for #{asset.asset_type}" ])
-    end
+    sources = DataSourceRegistry.for_capability(:historical, market: asset.market, asset_type: asset.asset_type)
+    return Dry::Monads::Failure([ :not_supported, "Backfill not supported for #{asset.asset_type}" ]) if sources.empty?
+
+    attempt(sources, asset)
   end
 
-  def fetch_stock_history(symbol)
-    from_date = 30.days.ago.to_date.to_s
-    to_date   = Date.current.to_s
-    result = alpaca_history(symbol, from_date, to_date)
+  # @source records which provider actually answered, since the fallback means
+  # the winner is not knowable from the call site.
+  def attempt(sources, asset)
+    last = nil
 
-    if result&.success?
-      @source = MarketData::Gateways::AlpacaGateway.source_id
+    sources.each do |source|
+      result = fetch_from(source.gateway_class, asset)
+      next if result.nil?
+
+      last = result
+      next unless result.success?
+
+      @source = source.gateway_class.source_id
       return result
     end
 
-    @source = MarketData::Gateways::YfinanceGateway.source_id
-
-    # Yahoo, through the bridge, covers Alpaca's failures and BMV, which it does not serve
-    MarketData::Gateways::YfinanceGateway.new.fetch_historical(symbol, days: 30)
+    last || Dry::Monads::Failure([ :not_configured, "No configured source for #{asset.symbol}" ])
   end
 
-  def alpaca_history(symbol, from_date, to_date)
-    MarketData::Gateways::AlpacaGateway.new.fetch_historical(symbol, from_date, to_date)
+  # An unconfigured provider is skipped rather than raised, so a missing key
+  # degrades to the next source instead of failing the job outright.
+  def fetch_from(klass, asset)
+    gateway = klass.new
+    symbol = symbol_for(klass, asset)
+
+    if accepts_days?(gateway)
+      gateway.fetch_historical(symbol, days: DAYS)
+    else
+      gateway.fetch_historical(symbol, DAYS.days.ago.to_date, Date.current)
+    end
   rescue MarketData::Gateways::ApiKeyNotConfiguredError
     nil
+  end
+
+  # The five gateways take two shapes — (symbol, from, to) and (symbol, days:)
+  # — so ask the method rather than branch on the class.
+  def accepts_days?(gateway)
+    gateway.method(:fetch_historical).parameters.any? { |_type, name| name == :days }
+  end
+
+  # The BMV addresses an issuer differently from Yahoo, and the asset carries
+  # the mapping already.
+  def symbol_for(klass, asset)
+    return asset.symbol unless klass.const_defined?(:PROVIDER)
+
+    asset.symbol_for(klass::PROVIDER)
   end
 
   def upsert_bars(asset, bars, source)
