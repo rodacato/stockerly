@@ -8,14 +8,18 @@ class Integration < ApplicationRecord
 
   def increment_api_calls!
     reset_daily_counter! if calls_reset_at.nil? || calls_reset_at < Time.current.beginning_of_day
-    return false if daily_api_calls >= daily_call_limit
+    return false if daily_call_limit.present? && daily_api_calls >= daily_call_limit
 
     self.class.update_counters(id, daily_api_calls: 1)
     reload
     true
   end
 
+  # A nil daily limit means unlimited, matching how max_requests_per_minute
+  # already reads. Providers that publish no daily cap should not carry an
+  # invented one.
   def budget_exhausted?
+    return false if daily_call_limit.nil?
     return false if calls_reset_at.nil? || calls_reset_at < Time.current.beginning_of_day
 
     daily_api_calls >= daily_call_limit

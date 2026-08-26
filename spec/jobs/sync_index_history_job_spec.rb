@@ -5,9 +5,9 @@ RSpec.describe SyncIndexHistoryJob do
   let!(:ndx) { create(:market_index, symbol: "NDX", name: "NASDAQ 100") }
 
   describe "#perform" do
-    context "when Yahoo returns historical data" do
+    context "when the bridge returns historical data" do
       before do
-        allow_any_instance_of(MarketData::Gateways::YahooFinanceGateway).to receive(:fetch_historical)
+        allow_any_instance_of(MarketData::Gateways::YfinanceGateway).to receive(:fetch_historical)
           .and_return(Dry::Monads::Success([
             { date: 3.days.ago.to_date, close: 5200.0.to_d, open: 5180.0.to_d, high: 5220.0.to_d, low: 5170.0.to_d, volume: 100_000 },
             { date: 2.days.ago.to_date, close: 5250.0.to_d, open: 5200.0.to_d, high: 5260.0.to_d, low: 5190.0.to_d, volume: 110_000 },
@@ -44,7 +44,7 @@ RSpec.describe SyncIndexHistoryJob do
 
     context "when Yahoo gateway fails" do
       before do
-        allow_any_instance_of(MarketData::Gateways::YahooFinanceGateway).to receive(:fetch_historical)
+        allow_any_instance_of(MarketData::Gateways::YfinanceGateway).to receive(:fetch_historical)
           .and_return(Dry::Monads::Failure([ :gateway_error, "Connection timeout" ]))
       end
 

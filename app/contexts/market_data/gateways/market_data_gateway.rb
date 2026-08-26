@@ -1,7 +1,8 @@
 module MarketData
   module Gateways
     # Interface (Output Port) for market data providers.
-    # Concrete adapters: PolygonGateway (stocks), CoingeckoGateway (crypto), YahooFinanceGateway (BMV).
+    # Concrete adapters: AlpacaGateway (US history), FinnhubGateway (US quotes),
+    # DataBursatilGateway (BMV), CoingeckoGateway (crypto), YfinanceGateway (indices).
     class MarketDataGateway
       def fetch_price(_symbol)
         raise NotImplementedError, "#{self.class}#fetch_price not implemented"

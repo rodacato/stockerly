@@ -30,15 +30,16 @@ RSpec.describe "Gateway routing", type: :job do
       expect(asset.reload.data_source).to eq("MarketData::Gateways::FinnhubGateway")
     end
 
-    it "falls back to Yahoo when Finnhub fails" do
+    # Yahoo is reachable only through the bridge now, and only ever as the last
+    # link: it covers both markets, which no sanctioned provider does.
+    it "falls back to Yahoo through the bridge when Finnhub fails" do
       asset = create(:asset, symbol: "AAPL", asset_type: :stock, price_updated_at: 10.minutes.ago)
       stub_finnhub_quote_not_found("AAPL")
-      stub_yahoo_finance_price("AAPL", price: 190.00)
+      stub_yfinance_quote("AAPL", price: 190.00)
 
       SyncSingleAssetJob.perform_now(asset.id)
 
-      expect(a_request(:get, yahoo_chart("AAPL"))).to have_been_made
-      expect(asset.reload.data_source).to eq("MarketData::Gateways::YahooFinanceGateway")
+      expect(asset.reload.data_source).to eq("MarketData::Gateways::YfinanceGateway")
     end
 
     it "sends crypto to CoinGecko and never to the stock chain" do
