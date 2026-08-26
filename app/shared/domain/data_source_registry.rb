@@ -14,14 +14,15 @@ class DataSourceRegistry
     :test_method,       # Gateway method for connectivity test, e.g. :fetch_price
     :integration_name,  # Matches Integration#provider_name, e.g. "Polygon.io"
     :circuit_breaker_key, # Key for CircuitBreaker lookup, e.g. "stock"
-    :capabilities       # Array of capability symbols, e.g. [:prices, :news, :earnings]
+    :capabilities,      # Array of capability symbols, e.g. [:prices, :news, :earnings]
+    :health_check       # True when this source is the one that answers for its integration
   )
 
   @sources = {}
 
   class << self
-    def register(key, **attrs)
-      @sources[key] = DataSource.new(key: key, **attrs)
+    def register(key, health_check: false, **attrs)
+      @sources[key] = DataSource.new(key: key, health_check: health_check, **attrs)
     end
 
     def find(key)
@@ -32,8 +33,11 @@ class DataSourceRegistry
       @sources.values
     end
 
+    # An integration can front several sources. Without a marked one the answer
+    # is whichever registered first, which is an accident rather than a choice.
     def for_integration(provider_name)
-      @sources.values.find { |ds| ds.integration_name == provider_name }
+      matches = @sources.values.select { |ds| ds.integration_name == provider_name }
+      matches.find(&:health_check) || matches.first
     end
 
     def for_capability(capability)

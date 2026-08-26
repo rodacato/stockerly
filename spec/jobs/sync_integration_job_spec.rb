@@ -2,6 +2,21 @@ require "rails_helper"
 
 RSpec.describe SyncIntegrationJob, type: :job do
   describe "#perform" do
+    context "with an integration fronting several sources" do
+      let!(:integration) { create(:integration, :keyless, provider_name: "Yahoo Finance") }
+
+      it "checks the source marked for it, not whichever registered first" do
+        allow(PythonRunner).to receive(:call).and_return(
+          Dry::Monads::Success({ "price" => 1234.5, "currency" => "MXN" })
+        )
+
+        described_class.perform_now(integration.id)
+
+        expect(PythonRunner).to have_received(:call)
+        expect(integration.reload.connection_status).to eq("connected")
+      end
+    end
+
     context "with Polygon.io integration" do
       let!(:integration) do
         create(:integration, provider_name: "Polygon.io", connection_status: :connected, api_key_encrypted: "test_key")
