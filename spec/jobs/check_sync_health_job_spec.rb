@@ -170,4 +170,62 @@ RSpec.describe CheckSyncHealthJob, type: :job do
       end
     end
   end
+  describe "telling the owner" do
+    let!(:owner) { create(:user) }
+
+    before do
+      make_log("Bulk BMV Sync", severity: :error, at: 2.hours.ago, message: "DataBursatil: rate_limited (HTTP 429)")
+    end
+
+    # Sentry serves whoever wrote the code. On a self-hosted single-user
+    # instance that is not the person whose data went stale.
+    it "creates one notification for the owner, in their own terms" do
+      expect { described_class.perform_now }.to change(Notification, :count).by(1)
+
+      notification = Notification.last
+      expect(notification.notification_type).to eq("system")
+      expect(notification.title).to eq("Tus acciones mexicanas no se han actualizado en más de un día")
+      expect(notification.body).to include("HTTP 429").and include("Registros")
+    end
+
+    # The individual errors are already in Registros; this row is the pattern
+    # over them, which is what the notification points back to.
+    it "records the pattern as its own log entry" do
+      described_class.perform_now
+
+      entry = SystemLog.where(module_name: "health").last
+      expect(entry.task_name).to eq("Bulk BMV Sync")
+      expect(entry.severity).to eq("error")
+    end
+
+    it "rides the existing dedup rather than re-notifying every hour" do
+      described_class.perform_now
+
+      expect { described_class.perform_now }.not_to change(Notification, :count)
+    end
+
+    it "still alerts Sentry — the two readers are not duplicates" do
+      allow(Sentry).to receive(:capture_message)
+
+      described_class.perform_now
+
+      expect(Sentry).to have_received(:capture_message).with(/Bulk BMV Sync/, anything)
+    end
+
+    # A failure in the owner-facing half must not swallow the maintainer's.
+    it "keeps alerting Sentry when the notification cannot be created" do
+      allow(Notifications::UseCases::CreateNotification).to receive(:call).and_raise(StandardError, "boom")
+      allow(Sentry).to receive(:capture_message)
+
+      described_class.perform_now
+
+      expect(Sentry).to have_received(:capture_message)
+    end
+
+    it "says nothing when setup never ran and there is no owner" do
+      User.delete_all
+
+      expect { described_class.perform_now }.not_to change(Notification, :count)
+    end
+  end
 end
