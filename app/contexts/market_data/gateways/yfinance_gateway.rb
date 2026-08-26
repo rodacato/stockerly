@@ -14,6 +14,9 @@ module MarketData
 
       PROVIDER = "Yahoo Finance"
       SCRIPT = "yahoo.py".freeze
+      # Far enough back to catch the quarter that just reported -- and its
+      # actual EPS -- without pouring six years of history into the table.
+      HISTORY_WINDOW_DAYS = 180
       PERIODS = { 7 => "5d", 30 => "1mo", 90 => "3mo", 365 => "1y" }.freeze
       INDEX_SYMBOL_MAP = YahooFinanceGateway::INDEX_SYMBOL_MAP
 
@@ -71,6 +74,22 @@ module MarketData
         end
       end
 
+      # Yahoo's quoteSummary endpoint answers 401 without a session crumb, which
+      # is what left BMV earnings unsynced; yfinance carries the crumb itself.
+      # Returns Success([{ report_date:, timing:, estimated_eps:, actual_eps: }, ...])
+      def fetch_earnings(symbol)
+        floor = Date.current - HISTORY_WINDOW_DAYS
+        run("earnings", symbol).fmap do |entries|
+          entries.filter_map do |entry|
+            date = Date.parse(entry["date"])
+            next if date < floor
+
+            { report_date: date, timing: timing_for(entry["hour"]),
+              estimated_eps: entry["estimated_eps"]&.to_d, actual_eps: entry["actual_eps"]&.to_d }
+          end
+        end
+      end
+
       # Index levels have no sanctioned source: Alpaca has none, Massive charges
       # for them, and DataBursatil's feed has been frozen since 2026-06-26.
       # Returns Success([{ symbol:, value:, change_percent:, is_open: }, ...])
@@ -100,6 +119,12 @@ module MarketData
         return check if check.failure?
 
         PythonRunner.call(SCRIPT, command, symbol, *extra)
+      end
+
+      # The hour Yahoo publishes is the only signal separating a pre-open report
+      # from a post-close one, and it arrives in the exchange's own timezone.
+      def timing_for(hour)
+        hour.to_i < 12 ? :before_market_open : :after_market_close
       end
 
       def period_for(days)

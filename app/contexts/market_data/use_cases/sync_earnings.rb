@@ -1,7 +1,7 @@
 module MarketData
   module UseCases
     # Syncs upcoming earnings for stock assets. Routes by exchange:
-    # BMV emisoras hit Yahoo Finance directly (the only source covering MX
+    # BMV emisoras go through the yfinance bridge (the only source covering MX
     # earnings); everything else goes through the GatewayChain for the
     # :earnings capability (Finnhub primary, Polygon fallback).
     #
@@ -30,7 +30,7 @@ module MarketData
       end
 
       def sync_bmv(cutoff_date)
-        gateway = MarketData::Gateways::YahooFinanceGateway.new
+        gateway = MarketData::Gateways::YfinanceGateway.new
         assets  = Asset.where(asset_type: :stock, sync_status: :active, exchange: "BMV")
         sync_with(assets, cutoff_date) { |symbol| gateway.fetch_earnings(symbol) }
       end

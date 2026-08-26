@@ -58,9 +58,28 @@ def actions(series, value_key):
     ]
 
 
+def earnings(ticker):
+    frame = ticker.get_earnings_dates(limit=24)
+    if frame is None or frame.empty:
+        return []
+
+    def number(value):
+        return None if value is None or value != value else round(float(value), 6)
+
+    return [
+        {
+            "date": index.date().isoformat(),
+            "hour": int(index.hour),
+            "estimated_eps": number(row.get("EPS Estimate")),
+            "actual_eps": number(row.get("Reported EPS")),
+        }
+        for index, row in frame.iterrows()
+    ]
+
+
 def main():
     if len(sys.argv) < 3:
-        fail("usage: yahoo.py <quote|history|dividends|splits> <symbol> [period]", "invalid_request")
+        fail("usage: yahoo.py <quote|history|dividends|splits|earnings> <symbol> [period]", "invalid_request")
 
     command, symbol = sys.argv[1], sys.argv[2]
     period = sys.argv[3] if len(sys.argv) > 3 else "1mo"
@@ -81,6 +100,8 @@ def main():
             payload = actions(ticker.dividends, "amount")
         elif command == "splits":
             payload = actions(ticker.splits, "ratio")
+        elif command == "earnings":
+            payload = earnings(ticker)
         else:
             fail(f"unknown command: {command}", "invalid_request")
 

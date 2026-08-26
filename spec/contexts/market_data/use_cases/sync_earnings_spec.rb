@@ -89,38 +89,56 @@ RSpec.describe MarketData::UseCases::SyncEarnings do
       expect(schedule).to eq("at 9am every day")
     end
 
-    describe "BMV path (Yahoo Finance)" do
+    describe "BMV path (yfinance bridge)" do
       let!(:walmex) { create(:asset, :stock, symbol: "WALMEX.MX", exchange: "BMV", currency: "MXN") }
 
-      it "routes .MX assets to Yahoo and bypasses the US chain" do
+      def upcoming(date:, hour: 16, estimate: 1.24, actual: nil)
+        [ { "date" => date.to_s, "hour" => hour, "estimated_eps" => estimate, "actual_eps" => actual } ]
+      end
+
+      it "routes .MX assets to the bridge and bypasses the US chain" do
         stub_polygon_earnings_empty("AAPL")
-        stub_yahoo_earnings("WALMEX.MX", dates: [ 3.days.from_now.to_date ], estimate: 1.24)
+        stub_yfinance_earnings("WALMEX.MX", upcoming(date: 3.days.from_now.to_date))
 
         result = described_class.call
         expect(result).to be_success
-        expect(EarningsEvent.where(asset: walmex).count).to eq(1)
 
         event = EarningsEvent.find_by(asset: walmex)
         expect(event.estimated_eps.to_f).to eq(1.24)
-        expect(event.confirmed).to be true
+        expect(event.report_date).to eq(3.days.from_now.to_date)
       end
 
-      it "persists confirmed=false when Yahoo returns a date range" do
+      it "stores the actual EPS the old endpoint could never return" do
         stub_polygon_earnings_empty("AAPL")
-        stub_yahoo_earnings("WALMEX.MX",
-          dates: [ 3.days.from_now.to_date, 7.days.from_now.to_date ],
-          estimate: 1.24
-        )
+        stub_yfinance_earnings("WALMEX.MX",
+          upcoming(date: 10.days.ago.to_date, estimate: 0.70, actual: 0.72))
 
         described_class.call
-        event = EarningsEvent.find_by(asset: walmex)
-        expect(event.confirmed).to be false
-        expect(event.report_date).to eq(7.days.from_now.to_date)
+
+        expect(EarningsEvent.find_by(asset: walmex).actual_eps.to_f).to eq(0.72)
       end
 
-      it "skips BMV assets when Yahoo errors" do
+      it "reads the publishing hour as the session the report lands in" do
         stub_polygon_earnings_empty("AAPL")
-        stub_yahoo_earnings_error("WALMEX.MX", status: 500)
+        stub_yfinance_earnings("WALMEX.MX", upcoming(date: 3.days.from_now.to_date, hour: 3))
+
+        described_class.call
+
+        expect(EarningsEvent.find_by(asset: walmex).timing).to eq("before_market_open")
+      end
+
+      it "drops quarters older than the bridge's history window" do
+        stub_polygon_earnings_empty("AAPL")
+        stub_yfinance_earnings("WALMEX.MX", upcoming(date: 2.years.ago.to_date, actual: 0.5))
+
+        described_class.call
+
+        expect(EarningsEvent.where(asset: walmex).count).to eq(0)
+      end
+
+      it "skips BMV assets when the bridge errors" do
+        stub_polygon_earnings_empty("AAPL")
+        stub_yfinance_earnings_error("WALMEX.MX")
 
         result = described_class.call
         expect(result).to be_success
@@ -128,7 +146,7 @@ RSpec.describe MarketData::UseCases::SyncEarnings do
       end
 
       it "does NOT route BMV tickers through the Polygon/Finnhub chain" do
-        stub_yahoo_earnings("WALMEX.MX", dates: [ 3.days.from_now.to_date ], estimate: 1.24)
+        stub_yfinance_earnings("WALMEX.MX", upcoming(date: 3.days.from_now.to_date))
         stub_polygon_earnings_empty("AAPL")
         # No Polygon stub for WALMEX.MX — if the use case mistakenly routed
         # BMV through the US chain, WebMock would raise on the unstubbed call.
