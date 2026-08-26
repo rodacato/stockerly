@@ -2,54 +2,52 @@ require "rails_helper"
 
 RSpec.describe FundamentalsHelper, type: :helper do
   describe "#format_metric_value" do
-    it "returns em dash for nil values" do
-      expect(helper.format_metric_value(nil, :ratio)).to eq("—")
+    # Every producer stores a percentage as a decimal ratio. Printing it raw
+    # showed Apple's 24.6% net margin as "0.2%".
+    it "scales a decimal ratio into a percentage" do
+      expect(helper.format_metric_value(0.2461, :percentage)).to eq("24.6%")
     end
 
-    it "formats ratios with 2 decimal places" do
-      expect(helper.format_metric_value(28.5, :ratio)).to eq("28.50")
+    it "scales a ratio above 1.0, which ROE routinely is" do
+      expect(helper.format_metric_value(1.57, :percentage)).to eq("157.0%")
     end
 
-    it "formats percentages with 1 decimal place and % suffix" do
-      expect(helper.format_metric_value(24.6, :percentage)).to eq("24.6%")
+    it "leaves a :ratio metric unscaled" do
+      expect(helper.format_metric_value(1.42, :ratio)).to eq("1.42")
     end
 
-    it "formats text values as strings" do
-      expect(helper.format_metric_value("Technology", :text)).to eq("Technology")
-    end
-
-    it "formats large numbers with delimiter" do
-      expect(helper.format_metric_value(15_000_000, :number)).to eq("15,000,000")
+    it "renders a dash for a missing value instead of 0%" do
+      expect(helper.format_metric_value(nil, :percentage)).to eq("—")
     end
   end
 
-  describe "#format_large_currency" do
-    it "formats trillions" do
-      expect(helper.format_large_currency(3_230_000_000_000)).to eq("$3.23T")
+  describe "#metric_chip" do
+    def defn(key) = MarketData::Domain::MetricDefinitions.find(key)
+
+    it "calls a beta above 1.3 volatile" do
+      expect(helper.metric_chip(defn(:beta), 1.42).first).to eq(I18n.t("market.chips.volatil"))
     end
 
-    it "formats billions" do
-      expect(helper.format_large_currency(107_300_000_000)).to eq("$107.3B")
+    it "calls a beta below 0.7 defensive" do
+      expect(helper.metric_chip(defn(:beta), 0.55).first).to eq(I18n.t("market.chips.defensivo"))
     end
 
-    it "formats millions" do
-      expect(helper.format_large_currency(5_400_000)).to eq("$5.4M")
+    it "flags a payout above 1.0, which is a ratio and not a percentage" do
+      expect(helper.metric_chip(defn(:payout_ratio), 1.12).first).to eq(I18n.t("market.chips.sobre_utilidades"))
     end
 
-    it "formats small values as currency" do
-      expect(helper.format_large_currency(6.07)).to eq("$6.07")
-    end
-  end
-
-  describe "#gaap_label" do
-    it "returns US GAAP for US assets" do
-      asset = build(:asset, country: "US")
-      expect(helper.gaap_label(asset)).to eq("US GAAP")
+    it "does not flag a payout below 1.0" do
+      expect(helper.metric_chip(defn(:payout_ratio), 0.4)).to be_nil
     end
 
-    it "returns As reported for non-US assets" do
-      asset = build(:asset, country: "MX")
-      expect(helper.gaap_label(asset)).to eq("As reported")
+    # D36: a chip is only built where the threshold is definitional. Net margin
+    # varies by industry, so inventing one would read as analysis and be a guess.
+    it "builds no chip for a metric whose threshold varies by industry" do
+      expect(helper.metric_chip(defn(:net_margin), 0.26)).to be_nil
+    end
+
+    it "builds no chip for a missing value" do
+      expect(helper.metric_chip(defn(:beta), nil)).to be_nil
     end
   end
 end

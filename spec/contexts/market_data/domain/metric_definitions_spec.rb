@@ -16,7 +16,6 @@ RSpec.describe MarketData::Domain::MetricDefinitions do
     it "returns a definition by key" do
       definition = described_class.find(:pe_ratio)
       expect(definition.key).to eq(:pe_ratio)
-      expect(definition.display_name).to eq("P/E Ratio")
       expect(definition.category).to eq(:valuation)
     end
 
@@ -50,14 +49,25 @@ RSpec.describe MarketData::Domain::MetricDefinitions do
     end
   end
 
+  # The copy moved to `market.metricas.<key>.*` (D36), so completeness now means
+  # every registered metric has its three keys — a metric added without them
+  # would render a raw `translation missing` string on the asset detail.
+  describe "every metric has its es-MX copy" do
+    it "carries a nombre, a desc and a guia" do
+      described_class.all.each do |defn|
+        %w[nombre desc guia].each do |field|
+          key = "market.metricas.#{defn.key}.#{field}"
+          expect(I18n.exists?(key, :"es-MX")).to be(true), "Missing #{key}"
+        end
+      end
+    end
+  end
+
   describe "definition completeness" do
     it "every definition has all required fields" do
       described_class.all.each do |defn|
         expect(defn.key).to be_a(Symbol), "Missing key for #{defn.inspect}"
         expect(defn.category).to be_a(Symbol), "Missing category for #{defn.key}"
-        expect(defn.display_name).to be_present, "Missing display_name for #{defn.key}"
-        expect(defn.short_desc).to be_present, "Missing short_desc for #{defn.key}"
-        expect(defn.context_guidance).to be_present, "Missing context_guidance for #{defn.key}"
         expect(defn.format_type).to be_present, "Missing format_type for #{defn.key}"
         expect(defn.display_order).to be_a(Integer), "Missing display_order for #{defn.key}"
         expect(defn.icon).to be_present, "Missing icon for #{defn.key}"
