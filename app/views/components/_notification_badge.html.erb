@@ -1,0 +1,11 @@
+<%# The bell's unread state, in both top bars and in the Turbo Stream that
+    updates them. The accessible name lives here rather than on the link so a
+    live update carries it too. Locals: unread_count. %>
+<span class="js-notification-badge">
+  <% if unread_count.positive? %>
+    <span class="absolute right-2.5 top-2.5 size-2 rounded-full bg-negative" aria-hidden="true"></span>
+  <% end %>
+  <span class="sr-only">
+    <%= unread_count.zero? ? t("nav.abrir_avisos") : t("nav.avisos_sin_leer", count: unread_count) %>
+  </span>
+</span>

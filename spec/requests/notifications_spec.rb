@@ -88,4 +88,27 @@ RSpec.describe "Notifications", type: :request do
       expect(response).to redirect_to(login_path)
     end
   end
+
+  # BroadcastNotification aimed at two targets no page mounted, so a live
+  # notice reached nobody while its handler spec stayed green on the mock.
+  # These pin the DOM half of that contract.
+  describe "the Turbo Stream targets BroadcastNotification writes to" do
+    it "mounts the badge target in the shell" do
+      get dashboard_path
+      expect(response.body).to include("js-notification-badge")
+    end
+
+    it "mounts the list target on the first group of the inbox" do
+      create(:notification, user: user, title: "Alerta NVDA disparada")
+      get notifications_path
+      expect(response.body).to include('id="notifications_list"')
+    end
+
+    it "does not mount the list target twice when notices span several days" do
+      create(:notification, user: user, created_at: 1.day.ago)
+      create(:notification, user: user, created_at: 4.days.ago)
+      get notifications_path
+      expect(response.body.scan('id="notifications_list"').size).to eq(1)
+    end
+  end
 end

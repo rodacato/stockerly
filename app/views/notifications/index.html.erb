@@ -28,12 +28,14 @@
 
   <% if @notifications.any? %>
     <div id="notifications" class="flex flex-col gap-6">
-      <% group_notifications_by_date(@notifications).each do |heading, notices| %>
+      <%# The first group is the newest, so a live arrival belongs at its head —
+          that is why it, and only it, carries the Turbo Stream target. %>
+      <% group_notifications_by_date(@notifications).each_with_index do |(heading, notices), index| %>
         <section class="flex flex-col gap-3">
           <h2 class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= heading %></h2>
-          <ul class="flex flex-col gap-3">
+          <%= tag.ul id: ("notifications_list" if index.zero?), class: "flex flex-col gap-3" do %>
             <%= render partial: "notifications/notification_row", collection: notices, as: :notification %>
-          </ul>
+          <% end %>
         </section>
       <% end %>
     </div>
