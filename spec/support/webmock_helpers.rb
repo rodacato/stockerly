@@ -683,6 +683,16 @@ module WebmockHelpers
       .and_return(Dry::Monads::Failure([ tag, "#{symbol} unavailable" ]))
   end
 
+  def stub_yfinance_dividends(symbol, entries)
+    allow(PythonRunner).to receive(:call).with("yahoo.py", "dividends", symbol)
+      .and_return(Dry::Monads::Success(entries))
+  end
+
+  def stub_yfinance_splits(symbol, entries)
+    allow(PythonRunner).to receive(:call).with("yahoo.py", "splits", symbol)
+      .and_return(Dry::Monads::Success(entries))
+  end
+
   def stub_yfinance_not_found(symbol)
     allow(PythonRunner).to receive(:call).with("yahoo.py", anything, symbol, *any_args)
       .and_return(Dry::Monads::Failure([ :not_found, "no data for #{symbol}" ]))

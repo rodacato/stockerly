@@ -1,4 +1,4 @@
-# Syncs fundamental data for a single asset via GatewayChain (Alpha Vantage → FMP fallback).
+# Syncs fundamental data for a single asset through the registry's chain.
 # 1 job = 1 API call (atomic, resilient). Triggered by SyncAllFundamentalsJob.
 class SyncFundamentalJob < ApplicationJob
   include PausableSync
@@ -46,16 +46,10 @@ class SyncFundamentalJob < ApplicationJob
     ))
   end
 
+  # FMP was the fallback here, and its /api/v3 is gated the same way its
+  # dividend routes are — a fallback that 403s for every new key is worse than
+  # none, because it spends a call to hide the real state (#312).
   def fundamentals_chain
-    GatewayChain.new(
-      gateways: [
-        MarketData::Gateways::AlphaVantageGateway.new,
-        MarketData::Gateways::FmpGateway.new
-      ],
-      circuit_breakers: {
-        "MarketData::Gateways::AlphaVantageGateway" => GatewayChain.breaker_for("alpha_vantage"),
-        "MarketData::Gateways::FmpGateway" => GatewayChain.breaker_for("fmp")
-      }
-    )
+    GatewayChain.for_capability(:fundamentals)
   end
 end

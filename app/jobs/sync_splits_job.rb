@@ -1,6 +1,6 @@
-# Syncs stock split data from FMP for assets with open positions.
-# Publishes Trading::Events::SplitDetected for new splits to trigger position adjustment.
-# Runs weekly to conserve FMP API budget.
+# Syncs splits for assets with open positions, from whichever source serves the
+# asset's market: Alpaca for US, the yfinance bridge for the BMV (#312).
+# Publishes Trading::Events::SplitDetected so positions are adjusted.
 class SyncSplitsJob < ApplicationJob
   include PausableSync
   include SyncLogging
@@ -8,11 +8,10 @@ class SyncSplitsJob < ApplicationJob
   queue_as :default
 
   def perform
-    gateway = MarketData::Gateways::FmpGateway.new
     detected = 0
 
     assets_with_open_positions.each do |asset|
-      result = gateway.fetch_splits(asset.symbol)
+      result = chain_for(asset).fetch_splits(asset.gateway_symbols)
       next if result.failure?
 
       result.value!.each do |data|
@@ -40,6 +39,10 @@ class SyncSplitsJob < ApplicationJob
   end
 
   private
+
+  def chain_for(asset)
+    GatewayChain.for_capability(:splits, market: asset.market, asset_type: asset.asset_type)
+  end
 
   def assets_with_open_positions
     Asset.where(id: Position.open.select(:asset_id).distinct)

@@ -19,7 +19,7 @@ Rails.application.config.after_initialize do
     circuit_breaker_key: "alpaca",
     markets: %i[us],
     asset_types: %i[stock etf index],
-    capabilities: %i[historical news]
+    capabilities: %i[historical news dividends splits]
   )
 
   DataSourceRegistry.register(:finnhub_stocks,
@@ -151,21 +151,24 @@ Rails.application.config.after_initialize do
     capabilities: %i[fx_history]
   )
 
-  # Its /api/v3 is gated to pre-2025-08-31 accounts, so an unlabelled fallback
-  # is a lie for every self-hoster but the maintainer (#312 removes it).
-  DataSourceRegistry.register(:fmp_corporate_actions,
-    name: "Dividendos y splits — FMP",
+  # Kept for fundamentals only, and labelled. Its /api/v3 is gated to accounts
+  # created before 2025-08-31, so it answers for the maintainer and 403s for
+  # everyone else — real coverage on a 25-call Alpha Vantage budget where the
+  # key predates the gate, and a declared nothing where it does not. Dividends
+  # and splits left for sources every self-hoster can reach (#312).
+  DataSourceRegistry.register(:fmp_fundamentals,
+    name: "Fundamentales (respaldo) — FMP",
     icon: "paid",
     color: "slate",
     gateway_class: MarketData::Gateways::FmpGateway,
-    job_class: SyncDividendsJob,
+    job_class: SyncAllFundamentalsJob,
     job_args: [],
     test_symbol: "AAPL",
-    test_method: :fetch_dividends,
+    test_method: :fetch_overview,
     integration_name: "FMP",
     circuit_breaker_key: "fmp",
     maintainer_only: true,
-    capabilities: %i[dividends splits]
+    capabilities: %i[fundamentals]
   )
 
   DataSourceRegistry.register(:banxico_cetes,

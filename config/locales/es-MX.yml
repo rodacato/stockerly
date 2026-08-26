@@ -740,6 +740,7 @@ es-MX:
       donde_consigo: "¿Dónde consigo la API key?"
       omitir: Omitir por ahora
       publicas: Fuentes públicas · sin API key
+      sin_esta_llave: 'Sin esta llave:'
       subtitulo: Agrega las API keys de los proveedores que quieras. Puedes omitir
         y configurarlas luego.
       titulo: Conecta tus fuentes de datos

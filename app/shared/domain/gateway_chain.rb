@@ -141,6 +141,36 @@ class GatewayChain
     Failure([ :all_gateways_failed, "All gateways failed for index quotes" ])
   end
 
+  def fetch_dividends(symbol) = first_answer(:fetch_dividends, symbol)
+
+  def fetch_splits(symbol) = first_answer(:fetch_splits, symbol)
+
+  # The five methods above each spell this loop out; these two share it. The
+  # older five differ in what they stamp on the value, which is why they stay.
+  def first_answer(method, symbol)
+    attempted = []
+
+    @gateways.each do |gateway|
+      next unless gateway.respond_to?(method)
+
+      breaker = @circuit_breakers[gateway.class.name]
+
+      if breaker&.state == :open
+        attempted << gateway.class.name
+        next
+      end
+
+      wanted = symbol_for(gateway, symbol)
+      result = breaker ? breaker.call { gateway.public_send(method, wanted) } : gateway.public_send(method, wanted)
+
+      return result if result.success?
+
+      attempted << gateway.class.name
+    end
+
+    Failure([ :all_gateways_failed, "All gateways failed for #{method}: #{symbol}", attempted ])
+  end
+
   # Callers may pass a plain symbol or a provider => symbol map, so each
   # gateway in the chain receives the name its provider actually answers to.
   def symbol_for(gateway, symbol)

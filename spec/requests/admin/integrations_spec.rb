@@ -52,13 +52,23 @@ RSpec.describe "Admin Integrations", type: :request do
       expect(response.body).not_to include("Ghost provider")
     end
 
-    it "says a source is missing its key, and that the instance owns that" do
+    # The defect C9 named was that this was unlabelled, not that it existed.
+    it "labels the source that only works on the maintainer's key" do
+      create(:integration, provider_name: "FMP", api_key_encrypted: "k")
+
+      get admin_integrations_path
+
+      expect(response.body).to include("31 de agosto de 2025")
+    end
+
+    it "says a source is missing its key, that the instance owns that, and what it costs" do
       create(:integration, provider_name: "Alpaca", api_key_encrypted: nil, requires_api_key: true)
 
       get admin_integrations_path
 
       expect(response.body).to include("Sin llave")
       expect(response.body).to include("Es tu instancia")
+      expect(response.body).to include("dividendos y splits de tus posiciones estadounidenses")
     end
 
     # The distinction the screen exists for: our counter versus their refusal.
@@ -74,13 +84,7 @@ RSpec.describe "Admin Integrations", type: :request do
       expect(response.body).to include("Es el proveedor")
     end
 
-    it "labels the source that only works on the maintainer's key" do
-      create(:integration, provider_name: "FMP", api_key_encrypted: "k")
 
-      get admin_integrations_path
-
-      expect(response.body).to include("31 de agosto de 2025")
-    end
 
     it "shows the masked key instead of the format once Alpaca has one" do
       create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKTEST123:secret9999")

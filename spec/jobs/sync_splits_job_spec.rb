@@ -1,16 +1,17 @@
 require "rails_helper"
 
 RSpec.describe SyncSplitsJob, type: :job do
-  let(:gateway) { instance_double(MarketData::Gateways::FmpGateway) }
+  let(:gateway) { instance_double(MarketData::Gateways::AlpacaGateway) }
   let(:asset) { create(:asset, :stock) }
   let(:portfolio) { create(:portfolio) }
   let!(:position) { create(:position, portfolio: portfolio, asset: asset, status: :open) }
 
   before do
-    allow(MarketData::Gateways::FmpGateway).to receive(:new).and_return(gateway)
+    create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKID:secret")
+    allow(MarketData::Gateways::AlpacaGateway).to receive(:new).and_return(gateway)
   end
 
-  it "creates stock splits from FMP data" do
+  it "creates stock splits from the corporate-actions feed" do
     split_data = [
       { date: Date.new(2026, 2, 15), numerator: 4, denominator: 1 }
     ]
