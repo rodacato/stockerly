@@ -11,11 +11,6 @@ FactoryBot.define do
       source { "alternative.me" }
     end
 
-    trait :stocks do
-      index_type { "stocks" }
-      source { "cnn" }
-    end
-
     trait :extreme_fear do
       value { 15 }
       classification { "Extreme Fear" }

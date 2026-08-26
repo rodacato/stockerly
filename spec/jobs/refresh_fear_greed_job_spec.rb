@@ -19,7 +19,7 @@ RSpec.describe RefreshFearGreedJob, type: :job do
       it "never creates a stocks reading — CNN's index is retired" do
         described_class.perform_now
 
-        expect(FearGreedReading.stocks).to be_empty
+        expect(FearGreedReading.where(index_type: "stocks")).to be_empty
       end
 
       it "publishes a FearGreedUpdated event" do

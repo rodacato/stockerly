@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile.\n\nEntry: login → /dashboard (main authenticated home).\nScreens: Panorama (Default · Tranquilo · Black swan) → Asset detail (Análisis · Mi posición) → Consolidado (the portfolio lens: patrimonio, equity curve, '¿Valió la pena?', allocation). Desktop (1280, kit 0.5.0): three artboards. Panorama and Consolidado fit without scroll; the asset detail drops from 3048pt to 1400pt.\n\nConsolidado entry points: the Panorama patrimonio hero and Cartera's summary card in assets.pen — one screen, two doors. Its two comparison cards are designed in full but their engine is build-gated and needs TWR, not the money-weighted period returns (D12).\n\nBlocks: PatrimonioStrip (MXN total + Δ día, the door to Consolidado — it was promised by this brief but missing from the artboards until 2026-08-24) + sentiment carousel · 'atención hoy' band · holdings list with semáforo + freshness · (detail) price chart (D2) + confluence semáforo (D3) + señales (RSI/MA/Bollinger) + observations + fundamentals.\n\nGrounding: real data — portfolio value, P&L (MXN, FX at trade), trend-score, RSI/SMA/Bollinger, technical_observations, fundamentals. Confluence engine (Light 2 + window) is design-only, build-gated (D3).\n\nMoney follows D10: the Radar subtitle declares MXN once and rows drop the symbol; anything in another currency carries its ISO prefix (USD 137.00) — including the position grid, which genuinely mixes MXN and USD.\n\nThe Activos tab lives in flows/assets.pen: this file's rows link into it, and the three-tier ladder (Poseo / Sigo / Rastreado) is defined there (D9).\n\nDesktop findings (2026-08-24, panel C5/C1/C4): (a) the sentiment carousel dies on desktop — three columns at the components' native ~309 width show all three cards at once, so nothing is stretched and nothing is cut; (b) the asset detail has NO master list — the Radar is the Panorama's editorialised selection ('con actividad hoy'), not an asset navigator, and reading it beside a 1400pt detail is what made it feel out of place. The master-detail D4 asks for belongs in flows/assets.pen, where the list IS the screen; (c) the reading chain veredicto → chart → semáforo stays in one column, with Señales adjacent — they are the same reading at two resolutions.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2, the controller carries a ResizeObserver) — do not copy the pinned width into the ERB.\n\nCopy: es-MX. kit-version-source 0.5.0.",
+          "content": "The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile.\n\nEntry: login → /dashboard (main authenticated home).\nScreens: Panorama (Default · Tranquilo · Black swan) → Asset detail (Análisis · Mi posición) → Consolidado (the portfolio lens: patrimonio, equity curve, '¿Valió la pena?', allocation). Desktop (1280, kit 0.5.0): three artboards. Panorama and Consolidado fit without scroll; the asset detail drops from 3048pt to 1400pt.\n\nConsolidado entry points: the Panorama patrimonio hero and Cartera's summary card in assets.pen — one screen, two doors. Its two comparison cards are designed in full but their engine is build-gated and needs TWR, not the money-weighted period returns (D12).\n\nBlocks: PatrimonioStrip (MXN total + Δ día, the door to Consolidado — it was promised by this brief but missing from the artboards until 2026-08-24) + sentiment carousel · 'atención hoy' band · holdings list with semáforo + freshness · (detail) price chart (D2) + confluence semáforo (D3) + señales (RSI/MA/Bollinger) + observations + fundamentals.\n\nGrounding: real data — portfolio value, P&L (MXN, FX at trade), trend-score, RSI/SMA/Bollinger, technical_observations, fundamentals. Confluence engine (Light 2 + window) is design-only, build-gated (D3).\n\nMoney follows D10: the Radar subtitle declares MXN once and rows drop the symbol; anything in another currency carries its ISO prefix (USD 137.00) — including the position grid, which genuinely mixes MXN and USD.\n\nThe Activos tab lives in flows/assets.pen: this file's rows link into it, and the three-tier ladder (Poseo / Sigo / Rastreado) is defined there (D9).\n\nDesktop findings (2026-08-24, panel C5/C1/C4): (a) the sentiment carousel dies on desktop — the cards stack in ColC at their native ~309 width, so nothing is stretched and nothing is cut; (b) the asset detail has NO master list — the Radar is the Panorama's editorialised selection ('con actividad hoy'), not an asset navigator, and reading it beside a 1400pt detail is what made it feel out of place. The master-detail D4 asks for belongs in flows/assets.pen, where the list IS the screen; (c) the reading chain veredicto → chart → semáforo stays in one column, with Señales adjacent — they are the same reading at two resolutions.\n\n⚠ The stocks Fear & Greed block is GONE (2026-08-26, D38). CNN's index answers HTTP 418 to every User-Agent by IP reputation, it is a proprietary composite with no equivalent source, and swapping in a different indicator under the same label would be a lie the artboard tells. The carousel keeps crypto + watchlist; Contexto de mercado keeps the index quote and the divergence sentence, which explain today's move with the user's own asset in them — a better version of the job the gauge was doing vaguely. If equity sentiment is ever wanted, VIX is already seeded as a MarketIndex and needs its own 4-filter card, because it is a different indicator, not a replacement source.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2, the controller carries a ResizeObserver) — do not copy the pinned width into the ERB.\n\nCopy: es-MX. kit-version-source 0.5.0.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -268,33 +268,6 @@
                         },
                         "io1Zb": {
                           "content": "▲ +4 vs ayer"
-                        }
-                      }
-                    },
-                    {
-                      "id": "Q0TLn",
-                      "type": "ref",
-                      "ref": "k1C47",
-                      "name": "FEAR & GREED · ACCIONES",
-                      "descendants": {
-                        "i7Yql": {
-                          "content": "FEAR & GREED · ACCIONES"
-                        },
-                        "BwULv": {
-                          "content": "55"
-                        },
-                        "KyE67": {
-                          "fill": "$bg-muted"
-                        },
-                        "wC9Hm": {
-                          "content": "Neutral",
-                          "fill": "$fg-subtle"
-                        },
-                        "OLpJD": {
-                          "width": 133
-                        },
-                        "io1Zb": {
-                          "content": "▼ −2 vs ayer"
                         }
                       }
                     },
@@ -1628,33 +1601,6 @@
                       }
                     },
                     {
-                      "id": "QMyUI",
-                      "type": "ref",
-                      "ref": "k1C47",
-                      "name": "FEAR & GREED · ACCIONES",
-                      "descendants": {
-                        "i7Yql": {
-                          "content": "FEAR & GREED · ACCIONES"
-                        },
-                        "BwULv": {
-                          "content": "55"
-                        },
-                        "KyE67": {
-                          "fill": "$bg-muted"
-                        },
-                        "wC9Hm": {
-                          "content": "Neutral",
-                          "fill": "$fg-subtle"
-                        },
-                        "OLpJD": {
-                          "width": 133
-                        },
-                        "io1Zb": {
-                          "content": "▼ −2 vs ayer"
-                        }
-                      }
-                    },
-                    {
                       "id": "PzFPY",
                       "type": "ref",
                       "ref": "k1C47",
@@ -2370,34 +2316,6 @@
                         },
                         "io1Zb": {
                           "content": "▼ −40 vs ayer",
-                          "fill": "$negative-fg"
-                        }
-                      }
-                    },
-                    {
-                      "id": "OB5eC",
-                      "type": "ref",
-                      "ref": "k1C47",
-                      "name": "FEAR & GREED · ACCIONES",
-                      "descendants": {
-                        "i7Yql": {
-                          "content": "FEAR & GREED · ACCIONES"
-                        },
-                        "BwULv": {
-                          "content": "12"
-                        },
-                        "KyE67": {
-                          "fill": "$negative-bg"
-                        },
-                        "wC9Hm": {
-                          "content": "Miedo",
-                          "fill": "$negative-fg"
-                        },
-                        "OLpJD": {
-                          "width": 25
-                        },
-                        "io1Zb": {
-                          "content": "▼ −35 vs ayer",
                           "fill": "$negative-fg"
                         }
                       }
@@ -4249,49 +4167,6 @@
                       "fontFamily": "$font-mono",
                       "fontSize": 13,
                       "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "HCqRx",
-                  "name": "FgRow",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "uhcNo",
-                      "name": "n",
-                      "fill": "$fg-default",
-                      "content": "Fear & Greed · Acciones",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "eDHcm",
-                      "name": "c",
-                      "fill": "$negative-bg",
-                      "cornerRadius": 99,
-                      "padding": [
-                        3,
-                        10
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "izGKy",
-                          "name": "t",
-                          "fill": "$negative-fg",
-                          "content": "42 · Miedo",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
                     }
                   ]
                 },
@@ -9415,34 +9290,6 @@
                                   }
                                 },
                                 {
-                                  "id": "FNyxq",
-                                  "type": "ref",
-                                  "ref": "k1C47",
-                                  "name": "FEAR & GREED · ACCIONES",
-                                  "width": "fill_container",
-                                  "descendants": {
-                                    "i7Yql": {
-                                      "content": "FEAR & GREED · ACCIONES"
-                                    },
-                                    "BwULv": {
-                                      "content": "55"
-                                    },
-                                    "KyE67": {
-                                      "fill": "$bg-muted"
-                                    },
-                                    "wC9Hm": {
-                                      "content": "Neutral",
-                                      "fill": "$fg-subtle"
-                                    },
-                                    "OLpJD": {
-                                      "width": 133
-                                    },
-                                    "io1Zb": {
-                                      "content": "▼ −2 vs ayer"
-                                    }
-                                  }
-                                },
-                                {
                                   "id": "xxyEy",
                                   "type": "ref",
                                   "ref": "k1C47",
@@ -11460,49 +11307,6 @@
                                       "fontFamily": "$font-mono",
                                       "fontSize": 13,
                                       "fontWeight": "600"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "SsFm9",
-                                  "name": "FgRow",
-                                  "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "S3MDB",
-                                      "name": "n",
-                                      "fill": "$fg-default",
-                                      "content": "Fear & Greed · Acciones",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "vlSaN",
-                                      "name": "c",
-                                      "fill": "$negative-bg",
-                                      "cornerRadius": 99,
-                                      "padding": [
-                                        3,
-                                        10
-                                      ],
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "VG3Pe",
-                                          "name": "t",
-                                          "fill": "$negative-fg",
-                                          "content": "42 · Miedo",
-                                          "fontFamily": "$font-sans",
-                                          "fontSize": 12,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
                                     }
                                   ]
                                 },

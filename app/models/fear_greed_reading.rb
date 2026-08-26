@@ -12,19 +12,17 @@ class FearGreedReading < ApplicationRecord
   # would otherwise have kept rendering as if it were fresh.
   FRESHNESS_WINDOW = 25.hours
 
-  validates :index_type, presence: true, inclusion: { in: %w[crypto stocks] }
+  validates :index_type, presence: true, inclusion: { in: %w[crypto stocks] } # "stocks" persists for rows CNN wrote before D38
   validates :value, presence: true, numericality: { in: 0..100 }
   validates :classification, presence: true
   validates :source, presence: true
   validates :fetched_at, presence: true
 
   scope :crypto, -> { where(index_type: "crypto") }
-  scope :stocks, -> { where(index_type: "stocks") }
   scope :recent, -> { order(fetched_at: :desc).limit(30) }
   scope :fresh, -> { where(fetched_at: FRESHNESS_WINDOW.ago..) }
 
   def self.latest_crypto = crypto.fresh.order(fetched_at: :desc).first
-  def self.latest_stocks = stocks.fresh.order(fetched_at: :desc).first
 
   def stale?
     fetched_at < FRESHNESS_WINDOW.ago

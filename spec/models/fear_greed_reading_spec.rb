@@ -39,22 +39,13 @@ RSpec.describe FearGreedReading, type: :model do
 
   describe "scopes" do
     let!(:crypto_reading) { create(:fear_greed_reading, :crypto, fetched_at: 1.hour.ago) }
-    let!(:stocks_reading) { create(:fear_greed_reading, :stocks, fetched_at: 2.hours.ago) }
 
     it ".crypto returns only crypto readings" do
       expect(described_class.crypto).to contain_exactly(crypto_reading)
     end
 
-    it ".stocks returns only stocks readings" do
-      expect(described_class.stocks).to contain_exactly(stocks_reading)
-    end
-
     it ".latest_crypto returns most recent crypto reading" do
       expect(described_class.latest_crypto).to eq(crypto_reading)
-    end
-
-    it ".latest_stocks returns most recent stocks reading" do
-      expect(described_class.latest_stocks).to eq(stocks_reading)
     end
   end
 
