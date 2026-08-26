@@ -4,7 +4,13 @@
 <div data-reveal-target="content" class="hidden">
   <%= form_with url: track_asset_path, scope: :asset, method: :post,
         class: "flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5",
-        data: { controller: "ticker-search", ticker_search_url_value: search_tickers_path } do |f| %>
+        data: {
+          controller: "ticker-search",
+          ticker_search_url_value: search_tickers_path,
+          ticker_search_empty_text_value: t("assets.tracked.buscar_vacio"),
+          ticker_search_loading_text_value: t("assets.tracked.buscar_cargando"),
+          ticker_search_error_text_value: t("assets.tracked.buscar_error")
+        } do |f| %>
     <div class="relative">
       <label for="ticker_query" class="mb-1.5 block font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
         <%= t("assets.tracked.buscar") %>

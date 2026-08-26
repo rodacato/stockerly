@@ -11,9 +11,11 @@ export default class ToggleController extends Controller {
     const knob = this.knobTarget
     const isActive = track.classList.contains("bg-primary")
 
+    // bg-bg-muted is what the server renders for the off state. Toggling a
+    // different off-class (bg-slate-200) left both on the element, so a switch
+    // turned off by hand did not match one rendered off.
     track.classList.toggle("bg-primary", !isActive)
-    track.classList.toggle("bg-slate-200", isActive)
-    track.classList.toggle("dark:bg-slate-700", isActive)
+    track.classList.toggle("bg-bg-muted", isActive)
     knob.classList.toggle("translate-x-5", !isActive)
     knob.classList.toggle("translate-x-0", isActive)
 
