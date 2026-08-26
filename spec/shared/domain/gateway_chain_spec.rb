@@ -5,7 +5,7 @@ RSpec.describe GatewayChain do
 
   let(:success_data) { { symbol: "AAPL", price: 189.43.to_d, change_percent: 2.4, volume: 58_000_000 } }
   let(:primary_gateway) { instance_double(MarketData::Gateways::PolygonGateway) }
-  let(:fallback_gateway) { instance_double(MarketData::Gateways::YahooFinanceGateway) }
+  let(:fallback_gateway) { instance_double(MarketData::Gateways::YfinanceGateway) }
 
   describe "#fetch_price" do
     context "when primary gateway succeeds" do
@@ -24,7 +24,7 @@ RSpec.describe GatewayChain do
       it "does not call the fallback gateway" do
         allow(primary_gateway).to receive_messages(class: MarketData::Gateways::PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
-        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YahooFinanceGateway)
+        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YfinanceGateway)
 
         chain = described_class.new(gateways: [ primary_gateway, fallback_gateway ])
         chain.fetch_price("AAPL")
@@ -37,7 +37,7 @@ RSpec.describe GatewayChain do
       before do
         allow(primary_gateway).to receive_messages(class: MarketData::Gateways::PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).and_return(Failure([ :gateway_error, "Server error" ]))
-        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YahooFinanceGateway)
+        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YfinanceGateway)
         allow(fallback_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
       end
 
@@ -46,7 +46,7 @@ RSpec.describe GatewayChain do
         result = chain.fetch_price("AAPL")
 
         expect(result).to be_success
-        expect(result.value![:data_source]).to eq("MarketData::Gateways::YahooFinanceGateway")
+        expect(result.value![:data_source]).to eq("MarketData::Gateways::YfinanceGateway")
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe GatewayChain do
       before do
         allow(primary_gateway).to receive_messages(class: MarketData::Gateways::PolygonGateway)
         allow(primary_gateway).to receive(:fetch_price).and_return(Failure([ :gateway_error, "Error 1" ]))
-        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YahooFinanceGateway)
+        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YfinanceGateway)
         allow(fallback_gateway).to receive(:fetch_price).and_return(Failure([ :gateway_error, "Error 2" ]))
       end
 
@@ -64,7 +64,7 @@ RSpec.describe GatewayChain do
 
         expect(result).to be_failure
         expect(result.failure[0]).to eq(:all_gateways_failed)
-        expect(result.failure[2]).to contain_exactly("MarketData::Gateways::PolygonGateway", "MarketData::Gateways::YahooFinanceGateway")
+        expect(result.failure[2]).to contain_exactly("MarketData::Gateways::PolygonGateway", "MarketData::Gateways::YfinanceGateway")
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe GatewayChain do
         breaker.call { Failure([ :gateway_error, "fail" ]) }
         expect(breaker.state).to eq(:open)
 
-        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YahooFinanceGateway)
+        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YfinanceGateway)
         allow(fallback_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
         allow(primary_gateway).to receive_messages(class: MarketData::Gateways::PolygonGateway)
 
@@ -88,7 +88,7 @@ RSpec.describe GatewayChain do
         result = chain.fetch_price("AAPL")
 
         expect(result).to be_success
-        expect(result.value![:data_source]).to eq("MarketData::Gateways::YahooFinanceGateway")
+        expect(result.value![:data_source]).to eq("MarketData::Gateways::YfinanceGateway")
       end
     end
 

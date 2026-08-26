@@ -81,7 +81,6 @@ RSpec.describe "Gateway routing", type: :job do
       it "sends Mexican crypto down the BMV chain rather than to CoinGecko" do
         asset = create(:asset, :crypto, :mexican, symbol: "BTCMX", price_updated_at: 10.minutes.ago)
         stub_databursatil("/v2/cotizaciones", {})
-        stub_yahoo_finance_not_found("BTCMX")
 
         SyncSingleAssetJob.perform_now(asset.id)
 
@@ -92,7 +91,6 @@ RSpec.describe "Gateway routing", type: :job do
       it "sends Mexican fixed income down the BMV chain, which cannot price it" do
         asset = create(:asset, :fixed_income, symbol: "CETES28", sync_status: :active, price_updated_at: 10.minutes.ago)
         stub_databursatil("/v2/cotizaciones", {})
-        stub_yahoo_finance_not_found("CETES28")
 
         SyncSingleAssetJob.perform_now(asset.id)
 

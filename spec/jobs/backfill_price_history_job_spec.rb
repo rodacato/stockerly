@@ -57,7 +57,6 @@ RSpec.describe BackfillPriceHistoryJob, type: :job do
 
       before do
         stub_alpaca_bars({})
-        stub_yahoo_finance_not_found("AAPL")
       end
 
       it "logs failure" do

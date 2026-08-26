@@ -2,11 +2,11 @@ module MarketData
   module Gateways
     # Driven adapter: Yahoo Finance through the yfinance Python library.
     #
-    # Yahoo's HTTP surface answers 429 to every request a Ruby client can make,
-    # including from a residential connection — the block is on the TLS
-    # fingerprint, so YahooFinanceGateway cannot reach it and this can. It
-    # covers the three capabilities no sanctioned provider serves: index
-    # levels, BMV dividends and BMV splits.
+    # The only way in: a plain Ruby client is blocked on its TLS fingerprint,
+    # and the endpoints that survive that still answer 401 without a session
+    # crumb. yfinance handles both, which is why this is now the whole of
+    # Yahoo Finance here — prices, history, index levels, BMV dividends,
+    # BMV splits and BMV earnings.
     #
     # It is deliberately rate limited well below anything Yahoo would notice.
     class YfinanceGateway < MarketDataGateway
@@ -18,7 +18,15 @@ module MarketData
       # actual EPS -- without pouring six years of history into the table.
       HISTORY_WINDOW_DAYS = 180
       PERIODS = { 7 => "5d", 30 => "1mo", 90 => "3mo", 365 => "1y" }.freeze
-      INDEX_SYMBOL_MAP = YahooFinanceGateway::INDEX_SYMBOL_MAP
+      # Yahoo's own tickers on the left, the symbols MarketIndex stores on the right.
+      INDEX_SYMBOL_MAP = {
+        "^GSPC" => "SPX",
+        "^IXIC" => "NDX",
+        "^DJI"  => "DJI",
+        "^FTSE" => "UKX",
+        "^MXX"  => "IPC",
+        "^VIX"  => "VIX"
+      }.freeze
 
       def fetch_price(symbol)
         run("quote", symbol).fmap do |data|

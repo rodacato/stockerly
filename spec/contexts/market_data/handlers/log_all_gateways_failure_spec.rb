@@ -8,7 +8,7 @@ RSpec.describe MarketData::Handlers::LogAllGatewaysFailure do
       event = MarketData::Events::AllGatewaysFailed.new(
         asset_id: asset.id,
         symbol: "AAPL",
-        attempted_gateways: %w[MarketData::Gateways::PolygonGateway MarketData::Gateways::YahooFinanceGateway]
+        attempted_gateways: %w[MarketData::Gateways::PolygonGateway MarketData::Gateways::YfinanceGateway]
       )
 
       expect {
@@ -19,7 +19,7 @@ RSpec.describe MarketData::Handlers::LogAllGatewaysFailure do
       expect(log.severity).to eq("error")
       expect(log.task_name).to eq("All Gateways Failed: AAPL")
       expect(log.error_message).to include("MarketData::Gateways::PolygonGateway")
-      expect(log.error_message).to include("MarketData::Gateways::YahooFinanceGateway")
+      expect(log.error_message).to include("MarketData::Gateways::YfinanceGateway")
     end
 
     it "does not change the asset's status" do
