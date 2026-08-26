@@ -39,10 +39,10 @@ class SyncIntegrationJob < ApplicationJob
     end
 
     gateway = source.gateway_class.new
-    test_symbol = source.test_symbol
 
-    return Dry::Monads::Success(:ok) unless test_symbol
-
-    gateway.public_send(source.test_method, test_symbol)
+    # Returning Success for a symbol-less source is what let three providers
+    # report connected without ever being reached. Probe methods default their args.
+    args = [ source.test_symbol ].compact
+    gateway.public_send(source.test_method, *args)
   end
 end

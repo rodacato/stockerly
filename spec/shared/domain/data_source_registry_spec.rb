@@ -81,6 +81,27 @@ RSpec.describe DataSourceRegistry do
     end
   end
 
+  # These run against the real registry rather than the fixtures above: the
+  # defect they catch is a source declaring a probe its gateway cannot answer.
+  describe "the registered sources" do
+    before { load Rails.root.join("config/initializers/data_sources.rb") }
+
+    it "name a probe method their gateway actually implements" do
+      broken = described_class.all.reject { |s| s.gateway_class.instance_methods.include?(s.test_method) }
+
+      expect(broken.map { |s| "#{s.key}##{s.test_method}" }).to be_empty
+    end
+
+    it "pass their probe enough arguments to call it" do
+      underfed = described_class.all.reject do |s|
+        required = s.gateway_class.instance_method(s.test_method).parameters.count { |type, _| type == :req }
+        required <= [ s.test_symbol ].compact.size
+      end
+
+      expect(underfed.map(&:key)).to be_empty
+    end
+  end
+
   describe ".clear!" do
     it "removes all registered sources" do
       described_class.register(:test_source, **attrs)

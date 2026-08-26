@@ -17,6 +17,32 @@ RSpec.describe SyncIntegrationJob, type: :job do
       end
     end
 
+    context "with a source that takes no test symbol" do
+      let!(:integration) { create(:integration, :keyless, provider_name: "Alternative.me") }
+
+      it "still calls the gateway rather than reporting connected on faith" do
+        gateway = instance_double(MarketData::Gateways::CryptoFearGreedGateway)
+        allow(MarketData::Gateways::CryptoFearGreedGateway).to receive(:new).and_return(gateway)
+        allow(gateway).to receive(:fetch_index).and_return(Dry::Monads::Success({ value: 25 }))
+
+        described_class.perform_now(integration.id)
+
+        expect(gateway).to have_received(:fetch_index).with(no_args)
+        expect(integration.reload.connection_status).to eq("connected")
+      end
+
+      it "reports disconnected when that call fails" do
+        gateway = instance_double(MarketData::Gateways::CryptoFearGreedGateway)
+        allow(MarketData::Gateways::CryptoFearGreedGateway).to receive(:new).and_return(gateway)
+        allow(gateway).to receive(:fetch_index)
+          .and_return(Dry::Monads::Failure([ :gateway_error, "unreachable" ]))
+
+        described_class.perform_now(integration.id)
+
+        expect(integration.reload.connection_status).to eq("disconnected")
+      end
+    end
+
     context "with a keyed integration" do
       let!(:integration) do
         create(:integration, provider_name: "Alpaca", connection_status: :connected, api_key_encrypted: "PKID:secret")
