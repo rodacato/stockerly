@@ -18,13 +18,32 @@
 ## 1. Per-provider findings
 
 **DataBursatil** — Mexican market (BMV + BIVA), token-authenticated, explicitly non-profit. The only
-sanctioned MX source found. Covers what nothing else in the stack covers: **financial statements for
-BMV issuers** (`get_financieros`, by quarter), **intraday bars** at 1m/5m/1h, **batch quotes up to 50
-issuers**, the IPC index, TIIE rates, individual trades by time window, and symbol-anchored MX news.
-Quota is **200,000 credits/month where one credit is 1 KiB transmitted — not one request** — resetting
-on the 1st at 00:01 CDMX. ⚠️ Endpoint shapes below come from a community MCP server's README
-(`angel7i/databursatil-mcp`), not the vendor's docs, which return **403** to automated fetching; its
-**terms of service are unread**.
+sanctioned MX source found. **Verified live 2026-08-26** (`redesign/probes/probe.rb`): base
+`https://api.databursatil.com`, auth is `?token=` in the query string and **nothing else** — header
+auth is rejected. Errors come back as a **map keyed by parameter** (`{"Error": {"concepto": [...]}}`),
+which makes failures diagnosable without parsing prose, and **failed requests cost no credits**.
+
+Confirmed working: `/v2/cotizaciones` (batch quotes, `*` series wildcard, returns **BMV and BIVA
+separately with their own timestamps**), `/v2/historicos` (EOD, `{"date": [close, importe]}` — **close
+and traded amount only, no OHLC**; `concepto` is rejected here), `/v2/intradia` (1m/5m/1h bars),
+`/v2/creditos` (reports `disponibles`), `/v2/emisoras` (catalogue incl. `isin`,
+`acciones_en_circulacion`, and per-issuer `rango_historicos` / `rango_financieros` / `dividendos`).
+
+**The credit model is measured, not cited: 1 credit = 1 KiB (base 1024), rounded up, out of 200,000
+a month.** A 9,791-byte response cost 10 credits. Two consequences the code must respect: querying
+the balance **itself costs a credit**, so it has to be cached rather than polled; and `/v2/emisoras`
+unfiltered returns **2.23 MB ≈ 2,181 credits — about 1% of the monthly quota in one call** — with no
+filter parameter found, so the catalogue is a rare, cached fetch. `concepto` selects which fields are
+returned, making payload size **caller-controlled**: one field cost 65 bytes against 184 for eleven,
+a 2.8× difference. No other provider in the stack has that lever.
+
+⚠️ **Three documented capabilities did not work.** `/v2/indices` answers, but the IPC came back
+stamped `2026-06-26` — **two months stale, byte-identical across calls minutes apart** — while
+`/v2/cotizaciones` served same-day data, so it cannot replace `^MXX`. `/v1/dividendos` **404s**
+although the docs table lists it, and so does `/v2/dividendos`. `/v2/descargas` with `archivo=guber`
+never rejected the archive name but returned *"La fecha ingresada no esta disponible"* on three
+separate dates, leaving Q-8 unresolved. `/v2/financieros` remains blocked on an unknown emisora key
+(the period format `1T_2026` is correct; the lookup lives in the 2,181-credit catalogue).
 
 **Banxico SIE** — the Mexican backbone and the least replaceable provider. Publishes the FIX in **two
 series carrying the same numbers one banking day apart**: `SF43718` (*fecha de determinación*) and
@@ -38,14 +57,17 @@ banxico.org.mx URL. *C1 Lucía: the FIX is the settlement reference — it recon
 and CFDIs and reproduces forever; a market mid-rate does neither. It is a valuation basis, not the rate
 Adrian actually converted at.*
 
-**Alpaca** — free Basic plan's **historical** endpoint serves **SIP consolidated tape**, subject only to
-a 15-minute recency restriction: *"For historical queries, the `end` parameter must be at least 15
-minutes old to query SIP data without a subscription."* The IEX-only limit governs the real-time
-**stream**, a separate surface. A daily bar is always older than 15 minutes, so **the official
-consolidated close is free** — but only if the request sends `feed=sip`; the default resolves to `iex`
-for a Basic key and silently degrades the data. 200 req/min, history since 2016. A **paper account opens
-globally with an email** — no funding, no KYC, no US residency — and issues the same keys the data
-endpoints use. **Zero BMV coverage.**
+**Alpaca** — **verified live 2026-08-26 against a Basic key.** `feed` **already defaults to `sip`**;
+what the free plan loses is recency, not venue — every surface inside 15 minutes returns
+`403 {"message":"subscription does not permit querying recent SIP data"}`, identically for
+`/v2/stocks/{sym}/bars/latest`, `/v2/stocks/snapshots` and a recent bars window. **So Alpaca serves
+confirmed EOD history and cannot serve a current price at all.** `feed=iex` does return a degraded
+series — 3% of the volume — in a **response shape identical to SIP with no field naming the feed**.
+Daily bars are multi-symbol in one call with `next_page_token` pagination, reach 2016, and
+`adjustment=all` yields split-adjusted series natively. `/v1beta1/news` (Benzinga) and
+`/v1/corporate-actions` (dividends and splits with `ex_date`, `payable_date`, `record_date`, `rate`)
+are both free on Basic. 200 req/min via `X-RateLimit-*`. **No earnings, no indices, zero BMV** — and
+an unknown symbol returns `{"bars":{}}` with HTTP **200**, so absence reads as success.
 
 **Yahoo Finance** (unofficial `query1`/`query2`) — irreplaceable and unsanctioned at once. Verified live:
 `WALMEX.MX` returns **390 × 1m bars and 78 × 5m bars**, in MXN, keyless, no crumb; lookback 1m = 7d,
@@ -96,9 +118,9 @@ unifies.*
 
 | Provider | Free limit | History | Intraday | MX coverage | Redistribution |
 |---|---|---|---|---|---|
-| **DataBursatil** | 200k credits/mo (**1 KiB = 1 credit**) | ? | ✅ 1m/5m/1h | ⭐ **BMV + BIVA + statements** | ⚠️ unread |
+| **DataBursatil** | 200k credits/mo — **1 credit = 1 KiB, measured** | since ~2015 (`historicos`) | ✅ 1m/5m/1h | ⭐ **BMV + BIVA**, close-only EOD | ⚠️ unread |
 | **Banxico** | generous, blocks token **1 full day** on breach | deep | n/a | ⭐ FIX, CETES, TIIE | ✅ with attribution |
-| **Alpaca** | 200 req/min | since 2016 | ✅ but ≥15 min old | ❌ none | ❌ |
+| **Alpaca** | 200 req/min | since 2016 | ❌ anything <15 min is 403 | ❌ none | ❌ |
 | **Yahoo** | none stated — **429 from datacenter IPs** | deep | ✅ 1m (7d) / 5m (60d) | ⭐ `.MX`, `^MXX`, div/split | ⚠️ unofficial |
 | **Alpha Vantage** | 25/day — **unlimited for OSS** | 20+ yr | premium | reported `.MEX` | silent |
 | **Massive** (ex-Polygon) | 5 req/min | 2 yr | ❌ free | ❌ | ❌ |
@@ -166,40 +188,59 @@ cannot tell a permanent denial from a transient failure will retry the denial an
 
 ## 5. Role assignment
 
-| Capability | Primary | Fallback |
-|---|---|---|
-| BMV prices (EOD) | DataBursatil | Yahoo |
-| BMV intraday / provisional | DataBursatil | Yahoo `chart` |
-| BMV fundamentals + statements | DataBursatil | — *(impossible before)* |
-| IPC / MX indices | DataBursatil | Yahoo |
-| MX rates (TIIE) | DataBursatil | — |
-| MX news | DataBursatil (`get_cables`) | — |
-| US prices (EOD, confirmed) | Alpaca (SIP, `feed=sip`) | Finnhub |
-| US intraday / provisional | Yahoo `chart` | — |
-| US fundamentals + statements | Alpha Vantage | — |
-| US news + earnings | Finnhub | Massive *(retiring)* |
-| Crypto | CoinGecko *(request MXN)* | — |
-| FX — valuation basis | **Banxico FIX `SF60653`** | — |
-| CETES | Banxico | DataBursatil `guber`? |
-| Sentiment — crypto | alternative.me | — |
-| Sentiment — stocks | **none — CNN is dead** | — |
+Rewritten 2026-08-26 from live probes rather than documentation. Rows that **changed** against the
+first draft are marked; two of them changed because a documented capability did not work.
 
-Nothing here is redundant. Two rows that were single points of failure gained a fallback: **Alpaca
-replaces Massive** for confirmed US closes, and **DataBursatil ends BMV's sole dependency on an
-unsanctioned endpoint**.
+| Capability | Primary | Fallback | |
+|---|---|---|---|
+| BMV quotes + EOD + intraday | **DataBursatil** | Yahoo | ✅ verified |
+| BMV fundamentals + statements | DataBursatil `/v2/financieros` | — | ⚠️ blocked on the emisora key |
+| **IPC / MX indices** | **Yahoo** | — | ⚠️ **changed** — DataBursatil's index feed is frozen at 2026-06-26 |
+| **BMV dividends** | **Yahoo** `events=div,split` | — | ⚠️ **changed** — `/v1/dividendos` and `/v2/dividendos` both 404 |
+| MX rates (TIIE) | DataBursatil | — | not probed |
+| MX news | DataBursatil (`get_cables`) | — | not probed |
+| **US prices — confirmed EOD** | **Alpaca** (`feed=sip`) | Finnhub | ✅ verified |
+| **US quote — current** | **Finnhub** | — | ⚠️ **changed** — Alpaca 403s on every recent surface |
+| **US indices (SPX/DJI)** | **Yahoo** | — | ⚠️ **changed** — no free source anywhere else |
+| US intraday / provisional | Yahoo `chart` | — | unchanged |
+| US fundamentals + statements | Alpha Vantage | — | pending the OSS grant |
+| **Dividends + splits (US)** | **Alpaca** `/v1/corporate-actions` | FMP *(pre-2025-08-31 keys only)* | ✅ verified |
+| Earnings | **Finnhub** | — | ⚠️ Alpaca has none; this is D-5's over-commitment |
+| News | Alpaca `/v1beta1/news` | Finnhub | ✅ verified free on Basic |
+| Crypto | CoinGecko *(request MXN)* | — | unchanged |
+| FX — valuation basis | **Banxico FIX `SF60653`** | — | unchanged |
+| CETES | Banxico | ~~DataBursatil `guber`~~ | ❌ three dates, none available |
+
+**The correction that matters: Yahoo carries more weight after this research, not less.** The first
+draft concluded that DataBursatil ends BMV's sole dependency on an unsanctioned endpoint. It ends it
+for **prices** — quotes, EOD and now sanctioned intraday — and **not** for indices or dividends, two
+of the three capabilities that were credited to it. Alpaca has no indices either, and Massive's are a
+paid product. So Yahoo is now the only source of indices for **both** markets and the only source of
+BMV corporate actions.
+
+That promotes the question of whether Yahoo answers **from the production host** back to the top of
+the list. It was downgraded on the assumption this table has just falsified.
 
 ---
 
-## 6. Not verified
+## 6. Verified, and what is still open
 
-- **DataBursatil, almost entirely** — its site and docs return 403 to automated fetching, so §1's
-  endpoint shapes and credit model come from a community MCP README and search snippets. **Its terms
-  are unread.** The account exists; this is a docs read, not further research.
-- Whether Yahoo's endpoints work **from the production host**. Everything reports as
-  `:gateway_error`, so a live outage would be invisible.
-- Whether Alpha Vantage's open-source grant applies to Stockerly. It would remove the 25-call/day
-  budget the tier ladder is built to ration.
+**Settled by live probes on 2026-08-26** (`redesign/probes/probe.rb`, output under `out/`):
+DataBursatil's base URL, auth shape, error format, working endpoints and **credit model** (1 KiB,
+rounded up — a 9,791-byte response cost 10); Alpaca's feed default, its hard 403 inside 15 minutes,
+its absent indices and earnings, and its free news and corporate actions.
+
+Still open:
+
+- **DataBursatil's terms of service.** Unread, and five providers in this stack forbid
+  redistribution. Unchanged since the first draft and still the load-bearing legal unknown.
+- **`/v2/emisoras` filtering.** No filter parameter was found and the unfiltered call costs ~2,181
+  credits, which is what blocks `/v2/financieros`. The docs section for it has not been read.
+- **Whether Yahoo's endpoints work from the production host.** Now urgent — see §5.
+- **Q-8, `descargas` with `archivo=guber`.** The archive name was never rejected, only the dates.
+- Whether Alpha Vantage's open-source grant applies.
 - Alpha Vantage's BMV coverage via `.MEX` — reported, not probed.
-- Alpaca's earnings and news coverage.
-- Whether any **sanctioned alternative to Yahoo** exists for `.MX` beyond DataBursatil. The agent
-  tasked with that research died mid-run and returned nothing.
+- DataBursatil's `tasas`, `divisas`, `cables` and `noticias` endpoints — not probed.
+- Whether any **sanctioned alternative to Yahoo** exists for MX indices and corporate actions. The
+  first draft left this open for prices; the probes make it open for the two capabilities Yahoo now
+  solely owns.
