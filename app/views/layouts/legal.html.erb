@@ -9,15 +9,15 @@
       <%= render "shared/breadcrumbs", crumbs: @breadcrumbs %>
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-2"><%= @page_title %></h1>
-          <p class="text-slate-500 dark:text-slate-400"><%= @page_subtitle %></p>
+          <h1 class="text-4xl md:text-5xl font-black tracking-tight text-fg-default mb-2"><%= @page_title %></h1>
+          <p class="text-fg-subtle"><%= @page_subtitle %></p>
         </div>
         <div class="flex items-center gap-4 no-print">
           <div class="flex flex-col items-end">
-            <span class="text-xs uppercase tracking-widest font-bold text-slate-400">Última actualización</span>
+            <span class="text-xs uppercase tracking-widest font-bold text-fg-subtle">Última actualización</span>
             <span class="text-sm font-semibold text-primary"><%= @last_updated %></span>
           </div>
-          <button class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors" onclick="window.print()">
+          <button class="flex items-center gap-2 bg-bg-surface border border-border-default px-4 py-2 rounded-lg text-sm font-bold hover:bg-bg-muted transition-colors" onclick="window.print()">
             <span class="material-symbols-outlined text-lg">print</span>
             Imprimir
           </button>
