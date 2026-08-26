@@ -32,7 +32,7 @@ ENV RAILS_ENV="production" \
 # Yahoo blocks HTTP clients by TLS fingerprint; yfinance is the only maintained
 # way through, and it is Python. PythonRunner shells out to this interpreter.
 COPY lib/python/requirements.txt /tmp/python-requirements.txt
-RUN python3 -m venv /rails/.venv && \
+RUN python3 -m venv --upgrade-deps /rails/.venv && \
     /rails/.venv/bin/pip install --no-cache-dir -q -r /tmp/python-requirements.txt && \
     rm /tmp/python-requirements.txt
 
