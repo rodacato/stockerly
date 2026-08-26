@@ -7,13 +7,14 @@ module MarketData
     include Dry::Monads[:result]
 
     BASE_URL = "https://api.alternative.me"
+
+    PROVIDER = "Alternative.me"
     TIMEOUT  = 5
 
     def fetch_index
       response = connection.get("/fng/", limit: 1)
 
-      return Failure([ :rate_limited, "Alternative.me rate limit exceeded" ]) if response.status == 429
-      return Failure([ :gateway_error, "Alternative.me returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse(response.body)
     rescue Faraday::Error => e

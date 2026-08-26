@@ -129,4 +129,58 @@ RSpec.describe CircuitBreaker do
       end
     end
   end
+
+  describe "permanent failures" do
+    subject(:breaker) { described_class.new(name: "finnhub", threshold: 5, timeout: 60, permanent_timeout: 3600) }
+
+    def denial
+      Dry::Monads::Failure([ :no_entitlement, "Finnhub: your plan does not include candles" ])
+    end
+
+    # A free key hitting a premium endpoint used to fail five times, open, and
+    # then be retried every 60 seconds forever -- spending quota to be told no.
+    it "opens on the first denial instead of the fifth" do
+      breaker.call { denial }
+
+      expect(breaker.state).to eq(:open)
+    end
+
+    it "stays open past the ordinary timeout" do
+      breaker.call { denial }
+
+      travel_to(2.minutes.from_now) do
+        expect(breaker.call { Dry::Monads::Success(:ok) }.failure[0]).to eq(:circuit_open)
+      end
+    end
+
+    # It must still expire: entitlements change, and a misclassified failure
+    # cannot strand a working provider until the process restarts.
+    it "lets the provider back in once the longer window passes" do
+      breaker.call { denial }
+
+      travel_to(61.minutes.from_now) do
+        expect(breaker.call { Dry::Monads::Success(:ok) }).to be_success
+        expect(breaker.state).to eq(:closed)
+      end
+    end
+
+    it "returns to the ordinary window after recovering" do
+      breaker.call { denial }
+
+      travel_to(61.minutes.from_now) do
+        breaker.call { Dry::Monads::Success(:ok) }
+        5.times { breaker.call { Dry::Monads::Failure([ :gateway_error, "timeout" ]) } }
+      end
+
+      travel_to(63.minutes.from_now) do
+        expect(breaker.call { Dry::Monads::Success(:ok) }).to be_success
+      end
+    end
+
+    it "does not open early for a transient failure" do
+      3.times { breaker.call { Dry::Monads::Failure([ :rate_limited, "slow down" ]) } }
+
+      expect(breaker.state).to eq(:closed)
+    end
+  end
 end
