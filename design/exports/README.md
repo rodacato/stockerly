@@ -39,6 +39,7 @@ is worse than a missing one.
 | `descubrir-olas-sin-datos.png` | `[Descubrir] / Olas / Sin datos` |
 | `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
 | `ajustes-integraciones.png` | `[Ajustes] / Integraciones / Default` |
+| `ajustes-integraciones-estados.png` | `[Ajustes] / Integraciones · Estados / Default` |
 | `ajustes-registros.png` | `[Ajustes] / Registros / Default` |
 | `ajustes-estado.png` | `[Ajustes] / Estado y mantenimiento / Default` |
 
