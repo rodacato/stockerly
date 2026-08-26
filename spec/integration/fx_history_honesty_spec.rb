@@ -94,3 +94,65 @@ RSpec.describe "A backdated trade", type: :model do
     expect(result.value!.fx_rate_at_execution).to eq(16.5)
   end
 end
+
+# Real Banxico numbers around Día del Trabajo 2026: the determination series
+# publishes nothing on 1–3 May, the settlement series carries 17.4948 across it.
+RSpec.describe "A trade dated when the determination series is silent", type: :model do
+  let(:user) { create(:user, preferred_currency: "MXN") }
+  let!(:asset) { create(:asset, :stock, symbol: "AAPL", currency: "USD", current_price: 200) }
+
+  let(:holiday) { Date.new(2026, 5, 1) }
+  let(:monday) { Date.new(2026, 5, 4) }
+
+  before do
+    user.portfolio || create(:portfolio, user: user)
+    {
+      Date.new(2026, 4, 29) => 17.3838,
+      Date.new(2026, 4, 30) => 17.4030,
+      holiday => 17.4948,
+      Date.new(2026, 5, 2) => 17.4948,
+      Date.new(2026, 5, 3) => 17.4948,
+      monday => 17.4948
+    }.each do |date, rate|
+      FxRateHistory.record(
+        base: "USD", quote: "MXN", date: date, rate: rate,
+        source: MarketData::Gateways::BanxicoGateway::FIX_SOURCE_ID
+      )
+    end
+  end
+
+  it "resolves a banking holiday by direct lookup, not by walking backwards" do
+    quote = FxRateHistory.quote_on(base: "USD", quote: "MXN", date: holiday)
+
+    expect(quote.rate_date).to eq(holiday)
+    expect(quote.rate).to eq(17.4948)
+  end
+
+  it "resolves a Monday by direct lookup" do
+    quote = FxRateHistory.quote_on(base: "USD", quote: "MXN", date: monday)
+
+    expect(quote.rate_date).to eq(monday)
+    expect(quote.rate).to eq(17.4948)
+  end
+
+  it "books a holiday-dated trade at that day's own rate" do
+    result = Trading::UseCases::ExecuteTrade.call(
+      user: user,
+      params: {
+        asset_symbol: "AAPL", side: "buy", shares: 10,
+        price_per_share: 150, executed_at: holiday.to_s
+      }
+    )
+
+    expect(result).to be_success
+    expect(result.value!.fx_rate_at_execution).to eq(17.4948)
+  end
+
+  # The negative the issue asks for: a reader gets provenance off the row it
+  # used, so nothing downstream has to know which series produced it.
+  it "hands the reader the row's own provenance instead of a hardcoded label" do
+    quote = FxRateHistory.quote_on(base: "USD", quote: "MXN", date: monday)
+
+    expect(quote.source).to eq("Banxico/SF60653")
+  end
+end

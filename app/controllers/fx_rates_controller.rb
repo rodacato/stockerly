@@ -6,14 +6,14 @@ class FxRatesController < AuthenticatedController
     target = current_user.preferred_currency
     date = parsed_date
 
-    rate = FxRateHistory.rate_on(base: base, quote: target, date: date)
+    quote = FxRateHistory.quote_on(base: base, quote: target, date: date)
 
     render json: {
-      rate: rate&.to_f,
+      rate: quote&.rate&.to_f,
       base: base,
       target: target,
-      date: date.to_s,
-      source: rate ? "banxico_fix" : nil
+      date: (quote&.rate_date || date).to_s,
+      source: quote&.source
     }
   end
 

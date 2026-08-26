@@ -9,10 +9,11 @@ module MarketData
     PROVIDER = "Banxico"
     TIMEOUT  = 10
 
-    # The official FIX — the rate Banxico publishes each business day and the one
-    # a Mexican broker settles against (#177). SF43718 is its SIE series id;
-    # the issue calls it TC_TC002, which is the portal's table, not the series.
-    FIX_SERIES = "SF43718"
+    # The FIX in its settlement series, not determination (SF43718): a broker
+    # settles two banking days later, and this one has a row for every date.
+    FIX_SERIES = "SF60653"
+    FIX_SOURCE_ID = "Banxico/#{FIX_SERIES}".freeze
+    FIX_SERIES_START = Date.new(1991, 11, 14)
     FIX_PAIR   = { base: "USD", quote: "MXN" }.freeze
 
     # Banxico series IDs for CETES by term (days)

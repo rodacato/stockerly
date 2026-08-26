@@ -8,9 +8,8 @@ RSpec.describe FxRateHistory do
       expect(described_class.rate_on(base: "USD", quote: "MXN", date: Date.new(2026, 5, 12))).to eq(17.0)
     end
 
-    # A trade executed on a Saturday has no fix of its own: Banxico does not
-    # publish on weekends or Mexican holidays. Friday's rate is the honest
-    # answer; today's is not.
+    # A safety net, not the normal path: the settlement series has a row for
+    # every date, so this only fires for a gap the sync has not filled.
     it "falls back to the most recent rate before the date" do
       described_class.record(base: "USD", quote: "MXN", date: Date.new(2026, 5, 8), rate: 17.0)
       described_class.record(base: "USD", quote: "MXN", date: Date.new(2026, 5, 15), rate: 18.0)
@@ -36,6 +35,39 @@ RSpec.describe FxRateHistory do
       expect(described_class).not_to receive(:for_pair)
 
       expect(described_class.rate_on(base: "MXN", quote: "MXN", date: Date.current)).to eq(1)
+    end
+  end
+
+  describe ".record_all" do
+    let(:source) { MarketData::Gateways::BanxicoGateway::FIX_SOURCE_ID }
+
+    def rows(*pairs)
+      pairs.map do |date, rate|
+        { base_currency: "USD", quote_currency: "MXN", rate_date: date, rate: rate, source: source }
+      end
+    end
+
+    it "inserts a whole series in one statement" do
+      inserted = described_class.record_all(rows([ Date.new(2026, 5, 11), 17.0 ], [ Date.new(2026, 5, 12), 17.2 ]))
+
+      expect(inserted).to eq(2)
+      expect(described_class.for_pair("USD", "MXN").pluck(:rate_date, :rate))
+        .to contain_exactly([ Date.new(2026, 5, 11), 17.0 ], [ Date.new(2026, 5, 12), 17.2 ])
+    end
+
+    # What makes the backfill safe to re-run, and what lets it overwrite the
+    # determination-dated rows already in the table without deleting anything.
+    it "corrects an existing date rather than duplicating it" do
+      described_class.record(base: "USD", quote: "MXN", date: Date.new(2026, 5, 12), rate: 17.0, source: "banxico_fix")
+
+      described_class.record_all(rows([ Date.new(2026, 5, 12), 17.4948 ]))
+
+      expect(described_class.count).to eq(1)
+      expect(described_class.first).to have_attributes(rate: 17.4948, source: source)
+    end
+
+    it "does nothing on an empty batch" do
+      expect { described_class.record_all([]) }.not_to change(described_class, :count)
     end
   end
 
