@@ -8,6 +8,8 @@ module MarketData
 
       ENTRIES = {
         # Need an API key (or token)
+        "Alpaca"         => Info.new("Cierres confirmados e histórico de acciones de EE. UU., más dividendos y titulares. La llave se guarda como ID:SECRETO.", "https://app.alpaca.markets/signup", true),
+        "Finnhub"        => Info.new("Cotización actual de acciones de EE. UU., reportes trimestrales y búsqueda.", "https://finnhub.io/register", true),
         "Polygon.io"     => Info.new("Precios e histórico de acciones de EE. UU.", "https://polygon.io/dashboard/signup", true),
         "Alpha Vantage"  => Info.new("Fundamentales de empresas (EPS, razones financieras).", "https://www.alphavantage.co/support/#api-key", true),
         "FMP"            => Info.new("Dividendos y splits de tus posiciones.", "https://site.financialmodelingprep.com/developer/docs", true),

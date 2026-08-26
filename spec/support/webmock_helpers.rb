@@ -963,6 +963,55 @@ module WebmockHelpers
         }.to_json
       )
   end
+
+  # --- Alpaca ---
+
+  def stub_alpaca_bars(bars_by_symbol, next_page_token: nil)
+    stub_request(:get, "https://data.alpaca.markets/v2/stocks/bars")
+      .with(query: hash_including("feed" => "sip"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { bars: bars_by_symbol, next_page_token: next_page_token }.to_json
+      )
+  end
+
+  def alpaca_bar(date:, close: 100.0, open: 99.0, volume: 1_000_000)
+    { "t" => "#{date}T04:00:00Z", "o" => open, "h" => close + 1, "l" => open - 1, "c" => close, "v" => volume, "n" => 500 }
+  end
+
+  def stub_alpaca_recent_denied
+    stub_request(:get, %r{data\.alpaca\.markets/v2/stocks})
+      .to_return(
+        status: 403,
+        headers: { "Content-Type" => "application/json" },
+        body: { message: "subscription does not permit querying recent SIP data" }.to_json
+      )
+  end
+
+  def stub_alpaca_rate_limited
+    stub_request(:get, %r{data\.alpaca\.markets/})
+      .to_return(status: 429, headers: { "Content-Type" => "application/json" }, body: {}.to_json)
+  end
+
+  def stub_alpaca_dividends(symbol, entries)
+    stub_request(:get, "https://data.alpaca.markets/v1/corporate-actions")
+      .with(query: hash_including("symbols" => symbol))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { corporate_actions: { cash_dividends: entries } }.to_json
+      )
+  end
+
+  def stub_alpaca_news(items)
+    stub_request(:get, %r{data\.alpaca\.markets/v1beta1/news})
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { news: items, next_page_token: nil }.to_json
+      )
+  end
 end
 
 RSpec.configure do |config|

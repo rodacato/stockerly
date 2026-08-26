@@ -6,6 +6,20 @@
 # the first source registered for a capability is the primary provider.
 
 Rails.application.config.after_initialize do
+  DataSourceRegistry.register(:alpaca_us,
+    name: "US Stocks — Alpaca",
+    icon: "candlestick_chart",
+    color: "amber",
+    gateway_class: MarketData::Gateways::AlpacaGateway,
+    job_class: SyncPriorityAssetsJob,
+    job_args: %w[stock high],
+    test_symbol: "AAPL",
+    test_method: :fetch_historical,
+    integration_name: "Alpaca",
+    circuit_breaker_key: "alpaca",
+    capabilities: %i[historical news]
+  )
+
   DataSourceRegistry.register(:polygon_stocks,
     name: "US Stocks — Polygon.io",
     icon: "show_chart",
