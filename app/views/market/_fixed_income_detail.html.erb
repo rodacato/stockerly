@@ -1,156 +1,124 @@
-<%# CETE / fixed income detail — Stockerly-2.0 (S10 #93). Replaces the tab
-    system: yield hero + 2x2 fact grid + maturity progress + investment
-    calculator. All copy es-MX; native currency prefix throughout. %>
+<%# CETE / fixed income detail. Replaces the tab system: yield hero + fact grid
+    + maturity progress + investment simulation. Locals: asset, yield_data. %>
 <%
   # `total_days` only comes from the symbol pattern (CETES_28D / CETES_91D / ...).
   # No `issue_date` on Asset yet, so for non-CETES fixed-income instruments
-  # we can't compute progress — leave it nil and hide the maturity-progress
-  # block. Storing issue_date is a separate enhancement (#XX follow-up).
+  # we can't compute progress — leave it nil and hide the maturity-progress block.
   parsed_term     = asset.symbol.to_s.match(/CETES?_(\d+)D/i)
   total_days      = parsed_term ? parsed_term[1].to_i : nil
   days_remaining  = yield_data[:days_to_maturity].to_i
   days_elapsed    = total_days ? [ total_days - days_remaining, 0 ].max : nil
   progress_pct    = total_days ? (days_elapsed.to_f / total_days * 100).clamp(0, 100) : nil
   show_progress   = total_days.present? && asset.maturity_date.present?
+  label_class     = "font-mono text-[10.5px] uppercase tracking-widest text-fg-subtle"
+  figure_class    = "mt-1 font-mono text-lg font-medium text-fg-default"
 %>
 
-<%# 1 · Yield hero + facts grid %>
-<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-bg-surface p-6 shadow-sm">
-  <div class="flex flex-wrap items-baseline gap-2 mb-5">
-    <h2 class="font-display text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
-      Detalle de la emisión
-    </h2>
-    <span class="text-xs text-slate-500 dark:text-slate-400">
-      Cifras con base en la última subasta · Banxico
-    </span>
+<section class="flex flex-col gap-5 rounded-2xl border border-border-default bg-bg-surface p-6">
+  <div class="flex flex-wrap items-baseline gap-2">
+    <h2 class="font-display text-lg font-semibold tracking-tight text-fg-default"><%= t(".titulo") %></h2>
+    <span class="text-xs text-fg-subtle"><%= t(".fuente") %></span>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6 lg:gap-8 lg:items-center">
-    <%# Yield hero %>
-    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40 px-5 py-5 flex flex-col gap-1.5">
-      <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-        Tasa <%= total_days.present? ? "#{total_days}D" : "anualizada" %>
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-[300px_1fr] lg:items-center lg:gap-8">
+    <div class="flex flex-col gap-1.5 rounded-xl border border-border-default bg-bg-muted px-5 py-5">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+        <%= total_days.present? ? t(".tasa_plazo", days: total_days) : t(".tasa_anual") %>
       </p>
-      <p class="font-mono text-5xl font-medium tracking-tight text-slate-900 dark:text-white leading-none">
+      <p class="font-mono text-5xl font-medium leading-none tracking-tight text-fg-default">
         <%= number_with_precision(asset.yield_rate || 0, precision: 2) %>%
       </p>
-      <p class="text-xs text-slate-500 dark:text-slate-400">
-        Rendimiento anualizado · antes de ISR
-      </p>
+      <p class="text-xs text-fg-subtle"><%= t(".antes_isr") %></p>
     </div>
 
-    <%# 2x2 fact grid %>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div class="border-t border-slate-200 dark:border-slate-700 pt-3">
-        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Plazo</p>
-        <p class="mt-1 font-mono text-lg font-medium text-slate-900 dark:text-white">
-          <%= total_days.present? ? "#{total_days} días" : "—" %>
-        </p>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div class="border-t border-border-default pt-3">
+        <p class="<%= label_class %>"><%= t(".plazo") %></p>
+        <p class="<%= figure_class %>"><%= total_days.present? ? t(".dias", count: total_days) : "—" %></p>
       </div>
 
-      <div class="border-t border-slate-200 dark:border-slate-700 pt-3">
-        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Vencimiento</p>
-        <p class="mt-1 font-mono text-lg font-medium text-slate-900 dark:text-white">
-          <%= short_date_upper_es(asset.maturity_date) %>
-        </p>
+      <div class="border-t border-border-default pt-3">
+        <p class="<%= label_class %>"><%= t(".vencimiento") %></p>
+        <p class="<%= figure_class %>"><%= short_date_upper_es(asset.maturity_date) %></p>
         <% if days_remaining.positive? %>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">faltan <%= days_remaining %> días</p>
+          <p class="text-[11px] text-fg-subtle"><%= t(".faltan", count: days_remaining) %></p>
         <% end %>
       </div>
 
-      <div class="border-t border-slate-200 dark:border-slate-700 pt-3">
-        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Valor nominal</p>
-        <p class="mt-1 font-mono text-lg font-medium text-slate-900 dark:text-white">
-          MXN <%= number_with_precision(asset.face_value || 0, precision: 2, delimiter: ",") %>
-        </p>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400">por título</p>
+      <div class="border-t border-border-default pt-3">
+        <p class="<%= label_class %>"><%= t(".valor_nominal") %></p>
+        <p class="<%= figure_class %>">MXN <%= number_with_precision(asset.face_value || 0, precision: 2, delimiter: ",") %></p>
+        <p class="text-[11px] text-fg-subtle"><%= t(".por_titulo") %></p>
       </div>
 
-      <div class="border-t border-slate-200 dark:border-slate-700 pt-3">
-        <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Precio con descuento</p>
-        <p class="mt-1 font-mono text-lg font-medium text-slate-900 dark:text-white">
-          <% if yield_data[:discount_price] %>
-            MXN <%= number_with_precision(yield_data[:discount_price], precision: 4, delimiter: ",") %>
-          <% else %>
-            —
-          <% end %>
+      <div class="border-t border-border-default pt-3">
+        <p class="<%= label_class %>"><%= t(".precio_descuento") %></p>
+        <p class="<%= figure_class %>">
+          <%= yield_data[:discount_price] ? "MXN #{number_with_precision(yield_data[:discount_price], precision: 4, delimiter: ",")}" : "—" %>
         </p>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400">vía Cetes Directo</p>
+        <p class="text-[11px] text-fg-subtle"><%= t(".via_cetes_directo") %></p>
       </div>
     </div>
   </div>
 </section>
 
-<%# 2 · Maturity progress %>
-<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-bg-surface p-6 shadow-sm">
-  <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-    <span class="material-symbols-outlined text-base text-primary">calendar_today</span>
-    Avance al vencimiento
+<section class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-6">
+  <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
+    <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">calendar_today</span>
+    <%= t(".avance") %>
   </h3>
 
   <% if show_progress %>
-    <div class="flex justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-2">
-      <span>Emisión</span>
-      <span>Vencimiento</span>
-    </div>
-    <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
-      <div class="bg-primary h-full rounded-full transition-all" style="width: <%= number_with_precision(progress_pct, precision: 1) %>%"></div>
-    </div>
-    <div class="flex justify-between mt-2 text-[11px] font-medium">
-      <span class="text-slate-500 dark:text-slate-400"><%= days_elapsed %> días transcurridos</span>
-      <span class="text-primary"><%= days_remaining %> días restantes</span>
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between text-[11px] font-medium text-fg-subtle">
+        <span><%= t(".emision") %></span>
+        <span><%= t(".vencimiento") %></span>
+      </div>
+      <div class="h-2.5 w-full overflow-hidden rounded-full bg-bg-muted">
+        <div class="h-full rounded-full bg-primary transition-all"
+             style="width: <%= number_with_precision(progress_pct, precision: 1) %>%"></div>
+      </div>
+      <div class="flex justify-between text-[11px] font-medium">
+        <span class="text-fg-subtle"><%= t(".transcurridos", count: days_elapsed) %></span>
+        <span class="text-primary"><%= t(".restantes", count: days_remaining) %></span>
+      </div>
     </div>
   <% elsif asset.maturity_date.present? %>
-    <p class="text-sm text-slate-500 dark:text-slate-400">
-      Vence el <%= short_date_upper_es(asset.maturity_date) %> · faltan <%= days_remaining %> días.
-    </p>
-    <p class="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
-      Avance no disponible: el instrumento no expone el plazo original de emisión.
-    </p>
+    <div class="flex flex-col gap-1">
+      <p class="text-sm text-fg-subtle">
+        <%= t(".vence_el", date: short_date_upper_es(asset.maturity_date), count: days_remaining) %>
+      </p>
+      <p class="text-[11px] text-fg-subtle"><%= t(".sin_avance") %></p>
+    </div>
   <% else %>
-    <p class="text-sm text-slate-500 dark:text-slate-400">Fecha de vencimiento no disponible.</p>
+    <p class="text-sm text-fg-subtle"><%= t(".sin_vencimiento") %></p>
   <% end %>
 </section>
 
-<%# 3 · Investment calculator %>
-<section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-bg-surface p-6 shadow-sm">
-  <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
-    <span class="material-symbols-outlined text-base text-primary">calculate</span>
-    Simulación de inversión
-  </h3>
-  <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Ejemplo con 100 títulos CETES</p>
+<section class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-6">
+  <div class="flex flex-col gap-1">
+    <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
+      <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">calculate</span>
+      <%= t(".simulacion") %>
+    </h3>
+    <p class="text-sm text-fg-subtle"><%= t(".simulacion_base") %></p>
+  </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40 p-4 text-center">
-      <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Inversión inicial</p>
-      <p class="mt-1 font-mono text-xl font-medium text-slate-900 dark:text-white">
-        <% if yield_data[:investment_cost_100] %>
-          MXN <%= number_with_precision(yield_data[:investment_cost_100], precision: 2, delimiter: ",") %>
-        <% else %>—<% end %>
-      </p>
-    </div>
-    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40 p-4 text-center">
-      <p class="text-[10.5px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Valor al vencimiento</p>
-      <p class="mt-1 font-mono text-xl font-medium text-slate-900 dark:text-white">
-        <% if yield_data[:face_value_100] %>
-          MXN <%= number_with_precision(yield_data[:face_value_100], precision: 2, delimiter: ",") %>
-        <% else %>—<% end %>
-      </p>
-    </div>
-    <div class="rounded-xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/70 dark:bg-emerald-900/20 p-4 text-center">
-      <p class="text-[10.5px] font-semibold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">Rendimiento estimado</p>
-      <p class="mt-1 font-mono text-xl font-medium text-emerald-700 dark:text-emerald-400">
-        <% if yield_data[:total_return_100] %>
-          +MXN <%= number_with_precision(yield_data[:total_return_100], precision: 2, delimiter: ",") %>
-        <% else %>—<% end %>
-      </p>
-    </div>
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <% [ [ t(".inversion_inicial"), yield_data[:investment_cost_100], false ],
+         [ t(".valor_vencimiento"), yield_data[:face_value_100], false ],
+         [ t(".rendimiento_estimado"), yield_data[:total_return_100], true ] ].each do |label, amount, positive| %>
+      <div class="rounded-xl border p-4 text-center <%= positive ? "border-positive-fg/25 bg-positive-bg" : "border-border-default bg-bg-muted" %>">
+        <p class="font-mono text-[10.5px] uppercase tracking-widest <%= positive ? "text-positive-fg" : "text-fg-subtle" %>"><%= label %></p>
+        <p class="mt-1 font-mono text-xl font-medium <%= positive ? "text-positive-fg" : "text-fg-default" %>">
+          <%= amount ? "#{"+" if positive}MXN #{number_with_precision(amount, precision: 2, delimiter: ",")}" : "—" %>
+        </p>
+      </div>
+    <% end %>
   </div>
 </section>
 
-<aside class="rounded-xl border border-amber-200 dark:border-amber-900/40 bg-amber-50/70 dark:bg-amber-900/20 px-4 py-3 flex items-start gap-2">
-  <span class="material-symbols-outlined text-base text-amber-700 dark:text-amber-400">info</span>
-  <p class="text-xs text-amber-800 dark:text-amber-300 leading-snug">
-    Datos de CETES provistos por Banxico. Los rendimientos pasados no garantizan resultados futuros.
-  </p>
+<aside class="flex items-start gap-2 rounded-xl border border-warning/25 bg-warning/10 px-4 py-3">
+  <span class="material-symbols-outlined text-base text-warning" aria-hidden="true">info</span>
+  <p class="text-xs leading-snug text-warning"><%= t(".aviso") %></p>
 </aside>

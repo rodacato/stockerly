@@ -1,63 +1,42 @@
 <%# Financial statements — sub-tabs for income statement / balance sheet /
-    cash flow. es-MX surface (S10 #93). Line-item labels in StatementsHelper
-    are now BMV-emisora es-MX after #148. %>
-<% has_statements = @asset.financial_statements.exists? %>
-
-<% if has_statements %>
-  <div data-controller="tabs">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-      <div class="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-1">
-        <% [ [ "Estado de resultados", :income_statement ], [ "Balance general", :balance_sheet ], [ "Flujo de efectivo", :cash_flow ] ].each_with_index do |(label, _type), idx| %>
+    cash flow. Line-item labels live in StatementsHelper (BMV-emisora es-MX). %>
+<% if @asset.financial_statements.exists? %>
+  <%
+    panels = [
+      [ t(".resultados"), :income_statement, t(".sin_resultados") ],
+      [ t(".balance"),    :balance_sheet,    t(".sin_balance") ],
+      [ t(".flujo"),      :cash_flow,        t(".sin_flujo") ]
+    ]
+  %>
+  <div data-controller="tabs" class="flex flex-col gap-6">
+    <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <div class="inline-flex items-center gap-1 rounded-lg border border-border-default bg-bg-muted p-1">
+        <% panels.each_with_index do |(label, _type, _empty), idx| %>
           <% active = idx.zero? %>
-          <button data-tabs-target="tab" data-action="tabs#switch"
-                  class="rounded-md px-3.5 py-1.5 text-xs font-medium <%= active ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200' %>">
+          <button type="button" data-tabs-target="tab" data-action="tabs#switch"
+                  class="rounded-md px-3.5 py-1.5 text-xs font-medium <%= active ? "bg-bg-surface text-fg-default shadow-sm" : "text-fg-subtle hover:text-fg-default" %>">
             <%= label %>
           </button>
         <% end %>
       </div>
-      <p class="text-[10.5px] uppercase font-semibold tracking-widest text-slate-500 dark:text-slate-400">
-        Fuente: Alpha Vantage · <%= gaap_label(@asset) %> · <%= @asset.currency %> · base anual
+      <p class="font-mono text-[10.5px] uppercase tracking-widest text-fg-subtle">
+        <%= t(".fuente", gaap: gaap_label(@asset), currency: @asset.currency) %>
       </p>
     </div>
 
-    <%# Estado de resultados %>
-    <div data-tabs-target="panel">
-      <% stmts = @asset.financial_statements.where(statement_type: :income_statement, period_type: :annual).order(fiscal_date_ending: :desc).limit(5) %>
-      <% if stmts.any? %>
-        <%= render "market/statement_table", statements: stmts, asset: @asset, statement_type: :income_statement %>
-      <% else %>
-        <p class="text-sm text-slate-500 dark:text-slate-400 py-8 text-center">Sin datos del estado de resultados.</p>
-      <% end %>
-    </div>
-
-    <%# Balance general %>
-    <div data-tabs-target="panel" class="hidden">
-      <% stmts = @asset.financial_statements.where(statement_type: :balance_sheet, period_type: :annual).order(fiscal_date_ending: :desc).limit(5) %>
-      <% if stmts.any? %>
-        <%= render "market/statement_table", statements: stmts, asset: @asset, statement_type: :balance_sheet %>
-      <% else %>
-        <p class="text-sm text-slate-500 dark:text-slate-400 py-8 text-center">Sin datos del balance general.</p>
-      <% end %>
-    </div>
-
-    <%# Flujo de efectivo %>
-    <div data-tabs-target="panel" class="hidden">
-      <% stmts = @asset.financial_statements.where(statement_type: :cash_flow, period_type: :annual).order(fiscal_date_ending: :desc).limit(5) %>
-      <% if stmts.any? %>
-        <%= render "market/statement_table", statements: stmts, asset: @asset, statement_type: :cash_flow %>
-      <% else %>
-        <p class="text-sm text-slate-500 dark:text-slate-400 py-8 text-center">Sin datos del flujo de efectivo.</p>
-      <% end %>
-    </div>
+    <% panels.each_with_index do |(_label, type, empty_copy), idx| %>
+      <div data-tabs-target="panel" class="<%= "hidden" unless idx.zero? %>">
+        <% stmts = @asset.financial_statements.where(statement_type: type, period_type: :annual)
+                         .order(fiscal_date_ending: :desc).limit(5) %>
+        <% if stmts.any? %>
+          <%= render "market/statement_table", statements: stmts, asset: @asset, statement_type: type %>
+        <% else %>
+          <p class="py-8 text-center text-sm text-fg-subtle"><%= empty_copy %></p>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 <% else %>
-  <div class="flex flex-col items-center justify-center py-12 text-center">
-    <div class="mb-4 flex size-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400">
-      <span class="material-symbols-outlined text-3xl">description</span>
-    </div>
-    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Sin estados financieros</h3>
-    <p class="mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
-      Aún no tenemos estados financieros para este activo. Los datos se actualizan semanalmente.
-    </p>
-  </div>
+  <%= render "components/empty_state", icon: "description",
+             title: t(".vacio_titulo"), description: t(".vacio_cuerpo") %>
 <% end %>
