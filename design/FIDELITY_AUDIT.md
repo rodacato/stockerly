@@ -1,6 +1,8 @@
 # Fidelity audit — how far the code is from the design
 
 > Measured 2026-08-25 against the export batch of the same day, after slice 7 merged.
+> Re-measured 2026-08-26 after the D31/D34/D35 deletions — five view directories are gone, and
+> **no screen without an artboard is still drifting**: each was drawn, deleted, or kept with a date.
 > Companion to [CODE_CHANGES.md](CODE_CHANGES.md), which tracks execution. This one asks a
 > narrower question: **for each flow, does the code look like the artboard?**
 >
@@ -29,6 +31,11 @@ Lumen token contract; `t(...)` is ADR-011. A screen is 2.0 when the first column
 > pre-2.0 palette. Quantified on master before fixing: **13 of 1510 matches, 0.86%** — small enough
 > that every conclusion held, large enough that some rows were off by one or two. The counts use
 > `\b(slate|gray)-` now. Re-measured 2026-08-26.
+>
+> **The unit is a matching line, not a match.** `grep -rcE` over the directory, summed. Stated
+> because the two differ by roughly 2× — `market` reads 159 by line and 322 by occurrence — and a
+> later pass counting the other way would read a regression that is not there. Re-measured after
+> the D31/D34/D35 deletions on 2026-08-26.
 
 | View dir | slate | tokens | i18n | | Has an artboard? |
 |---|---:|---:|---:|---|---|
@@ -36,27 +43,27 @@ Lumen token contract; `t(...)` is ADR-011. A screen is 2.0 when the first column
 | `setup` | 0 | 2 | 12 | ✅ 2.0 | yes |
 | `sessions` | 0 | 2 | 10 | ✅ 2.0 | yes |
 | `password_resets` | 0 | 14 | 20 | ✅ 2.0 | yes |
-| `assets` | 0 | 21 | 27 | ✅ 2.0 | yes |
+| `assets` | 0 | 34 | 39 | ✅ 2.0 | yes |
 | `settings` | 0 | 33 | 22 | ◐ mixed | yes |
 | `portfolios` | 0 | 16 | 23 | ◐ mixed | yes |
 | `dashboard` | 4 | 21 | 19 | ◐ mixed | yes |
 | `trades` | 26 | 71 | 16 | ◐ mixed | yes |
 | `profiles` | 0 | 64 | 0 | ◐ mixed | no |
-| `components` | 27 | 30 | 15 | ◐ mixed | the kit |
+| `components` | 27 | 30 | 13 | ◐ mixed | the kit |
 | `welcome` / `help` | 0 | 2 | 0 | ◐ no i18n | yes / no |
 | `alerts` | 0 | 49 | 36 | ✅ 2.0 | yes — closed 2026-08-25 |
 | `notifications` | 0 | 9 | 11 | ✅ 2.0 | yes — closed 2026-08-25 |
-| **`admin/assets`** | 66 | 2 | 0 | ✗ pre-2.0 | **no** — see #289 |
 | `admin/logs` | 0 | 24 | 14 | ✅ 2.0 | yes — closed 2026-08-26 |
-| **`admin/dashboard`** | 55 | 0 | 0 | ✗ pre-2.0 | **no** — see #289 |
 | `admin/integrations` | 0 | 27 | 26 | ✅ 2.0 | yes — closed 2026-08-26 |
-| `admin/settings` | 0 | 14 | 16 | ✅ 2.0 | yes — closed 2026-08-26 |
-| `market` | 193 | 71 | 22 | ✗ pre-2.0 | partly |
-| `positions` | 33 | 1 | 1 | ✗ pre-2.0 | no |
-| `earnings` | 65 | 5 | 0 | ✗ pre-2.0 | no |
-| `search` | 31 | 3 | 0 | ✗ pre-2.0 | no |
-| `news` | 25 | 5 | 0 | ✗ pre-2.0 | no |
+| `admin/settings` | 0 | 17 | 18 | ✅ 2.0 | yes — closed 2026-08-26 |
+| `market` | 159 | 68 | 24 | ✗ pre-2.0 | the detail, yes |
+| `positions` | 33 | 1 | 1 | ✗ pre-2.0 | no — kept, reviewed at #294 (D35) |
 | `shared` | 32 | 12 | 0 | ✗ pre-2.0 | mixed |
+| ~~`admin/dashboard`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D34) |
+| ~~`admin/assets`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D34) |
+| ~~`earnings`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D31) |
+| ~~`news`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D31) |
+| ~~`search`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D35) |
 
 **When this was first measured, exactly one directory was 2.0 by every measure: `onboarding`.**
 Reglas and the Bandeja joined it on 2026-08-25; the rest is still mixed or pre-2.0.
@@ -68,7 +75,11 @@ inventing design, which is why `admin/dashboard` and `admin/assets` stay open in
 riding along with the three that had artboards.
 
 **Corrected 2026-08-26:** the first pass credited those two with artboards. They have none — the
-`ajustes-*` set covers the hub, Integraciones, Registros and Estado, and nothing else.
+`ajustes-*` set covers the hub, Integraciones, Registros and Estado, and nothing else. **Both were
+then deleted rather than drawn** (D34): every card they carried already had a 2.0 home, and the two
+capabilities that did not — the manual source triggers, and adding/removing an asset — moved to
+Estado and Rastreados. The five struck-through rows are kept in the table on purpose: a row that
+vanishes reads as a screen that was migrated.
 
 ## Flow by flow
 
@@ -91,20 +102,21 @@ older `_trade_form` / `_trade_row` / `_edit_row` around it were not.
 Panorama, Consolidado and the asset detail's two tabs all match. What does not: the partials the
 asset detail renders *below* those tabs, which no slice touched.
 
-`market/` holds 195 slate utilities, and they are not spread evenly:
+`market/` holds 159 slate lines, and they are not spread evenly:
 
 | Partial | slate | Reachable from |
 |---|---:|---|
 | `_fixed_income_detail` | 39 | asset detail, a CETES asset |
 | `_earnings_tab` | 24 | asset detail |
-| `_listings_table` | 20 | `/market` listing |
 | `_dividend_history` | 17 | asset detail |
 | `_metric_card` | 16 | asset detail |
 | `_statement_table` / `_statements_tab` | 20 | asset detail |
 | `_analyst_target` | 10 | asset detail |
 
-Seven of the nine hang off a screen that **is** designed. Open a CETES asset and the header is 2.0
-while the body underneath it is 2019.
+**Every one now hangs off a screen that is designed** — `_listings_table` and `_filters` went with
+the listing (D31), so nothing left in `market/` belongs to a screen without an artboard. Open a
+CETES asset and the header is 2.0 while the body underneath it is 2019. That is #294, and it is the
+next piece of work that needs no decision first.
 
 ### Reglas — ✗ the largest gap in the app
 
@@ -141,17 +153,21 @@ someone builds a push channel. **It cannot ship as drawn.**
 `earnings_reminder`, `maturity_reminder`, `system`. The screen's own filter collapses them into two
 buckets and throws the distinction away. Restoring it is a scope change, not a data change.
 
-### Ajustes — ✅ the hub and three of the four behind it; two screens have no artboard
+### Ajustes — ✅ every screen behind the hub, now that two of them were deleted instead
 
 `/settings` is close to 1:1. Deltas: the `Tema` label is missing, the code adds a **Guardar** button
 the artboard has none of (it implies auto-save), and the *Trabajos* badge is absent — which §8
 explains, a cross-database count aborted the request transaction.
 
-**Registros, Estado and Integraciones closed 2026-08-26**, all three at zero. What follows is the
-state that produced #289, kept because it explains why two are still open. §8 named this and left it:
-*"the four instance screens keep their admin styling. Folding those into the hub's visual language
-is a further pass."* **That pass now has artboards it did not have then** — `ajustes-integraciones`,
+**Registros, Estado and Integraciones closed 2026-08-26**, all three at zero. §8 named this and
+left it: *"the four instance screens keep their admin styling. Folding those into the hub's visual
+language is a further pass."* **That pass had artboards §8 did not have** — `ajustes-integraciones`,
 `ajustes-registros`, `ajustes-estado`.
+
+**`admin/dashboard` and `admin/assets` had none, and were deleted rather than drawn** (D34). Estado
+gained one section it was not drawn with: the manual source triggers, kept because a failed source
+otherwise has no way back before its next scheduled run. That is the audit's own rule applied —
+when the artboard draws less than the screen does, keep the capability and write it down.
 
 ### Descubrir — ✗ designed, zero code
 
@@ -192,11 +208,13 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
    the one piece that could not ship — see item 9.
 2. ✅ **Bandeja (`/notifications`)** — done 2026-08-25. Four typed filters, date grouping, a tint
    per type, *Borrar las leídas* rendered at last, renamed to *Bandeja*.
-3. ◐ **The four instance screens** → [#289](https://github.com/rodacato/stockerly/issues/289).
-   Registros, Estado and Integraciones closed 2026-08-26, all three at zero. `admin/dashboard`
-   stays open because it has **no artboard** — migrating it would mean inventing design.
-4. ⬜ **`admin/assets`** — 66 slate, and **no artboard** either. Half-absorbed already: Rastreados
-   took the list and the budget; create, search and delete still live here. Rides #289.
+3. ✅ **The four instance screens** — [#289](https://github.com/rodacato/stockerly/issues/289)
+   closed 2026-08-26. Registros, Estado and Integraciones migrated; `admin/dashboard` and
+   `admin/assets` were **deleted instead of drawn** (D34), because every card they carried already
+   had a 2.0 home. The manual source triggers moved to Estado and asset add/remove to Rastreados —
+   the two capabilities that had nowhere else to go.
+4. ✅ **`admin/assets`** — deleted with the above. `toggle_status` turned out to be the same action
+   as `assets#toggle_sync`, already on Rastreados.
 5. ⬜ **The asset-detail depth** → [#294](https://github.com/rodacato/stockerly/issues/294)
 
 ## Complete — designed, no code
@@ -222,13 +240,20 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
     audit: the record was accurate and still misled.
 14. **The design README's `done · in review`** should say what is done — the `.pen`, not the ERB.
 15. **`docs/pivot-self-hosted-tracker`** — 112 commits behind, its content already on master by
-    another route.
+    another route. So is `design/discover` (5 commits, its remote gone). Both are Adrian's to
+    delete.
 16. **`welcome` / `help`** — on tokens, zero i18n keys, and they share `_welcome_body`.
 
 ## Change — a decision to revisit, not a bug
 
 17. **The *Guardar* button in Ajustes** — the artboard implies auto-save. Pick one.
-18. **`/positions`, `/earnings`, `/search`, `/news`** → [#295](https://github.com/rodacato/stockerly/issues/295).
-    155 slate utilities across four screens with **no artboards**, routable and unlisted since §6b.
-    Either they get designed, or they get deleted, or the decision to leave them is written down
-    with a date. Today they are simply drifting, which is how the 22 phases started.
+18. ✅ **`/positions`, `/earnings`, `/search`, `/news`** — [#295](https://github.com/rodacato/stockerly/issues/295)
+    closed 2026-08-26 (D35). `/earnings`, `/news` and `/market`'s listing deleted per D31;
+    `/search` deleted, `GlobalSearch` kept for the TopBar search the artboards draw. **`/positions`
+    kept, with a date**: it is reached from the asset detail, it is the only home for global trades
+    and dividends, and its review is #294 — if it has no artboard when that closes, it goes then.
+
+    **The framing was wrong and measuring fixed it.** The issue read four equally-adrift screens;
+    only `/search` was actually orphaned. `/market`'s listing had six inbound links, two of them
+    from screens already closed against their artboards, so deleting it meant *choosing a
+    destination* (Activos) rather than removing dead code.

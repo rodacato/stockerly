@@ -250,9 +250,12 @@ stayed pre-2.0.
   form mounts.** `/trades` and `/positions` have the tbody but no create form; the sheet lives on
   Activos and Mi posición, which have neither. Same shape as `_asset_fundamentals` in §0.5 — a
   stream into a target no page mounts, with a spec that passed by asserting the stream's body.
-- ⬜ **`/admin/assets` is only half absorbed.** Rastreados took the list, the tiers, the budget
-  and pause/resume; creating, searching and deleting assets stayed behind. Both screens exist
-  meanwhile, and the admin one is reachable only by URL.
+- ✅ **`/admin/assets` is fully absorbed — 2026-08-26 (D34).** Rastreados had the list, the tiers,
+  the budget and pause/resume; adding and removing an asset landed there too, with the same ticker
+  typeahead, and the admin screen was deleted. Measured before moving rather than assumed:
+  `assets#toggle_sync` already called `Administration::UseCases::Assets::ToggleStatus`, so
+  `toggle_status` was the same action drawn twice. `trigger_sync`, `UpdateAsset` and the catalogue
+  filters were dropped on the record — see D34 for why each.
 - ⚠ **Not drawn, deliberately: the state chip and the confluence dots.** The chip's taxonomy
   ("neutral", "estirado") exists nowhere in code — `trend_strength_label` measures trend strength,
   a different thing — and the semáforo is D3, whose engine is gated.
@@ -270,8 +273,9 @@ stayed pre-2.0.
 - Split the surface the way the design does: one `Activos` route with a segmented control —
   `Cartera` reads `portfolio.open_positions`, `Sigo` reads `watchlist_items`. Never one merged list.
 - Third tier `Rastreados` = `Asset.syncing`, its own screen (not a peer tab). It absorbs
-  `/admin/assets` — same list, same `toggle_status`/`trigger_sync` actions, minus the admin costume
-  (D5 killed that framing for a single-user instance). Surface the priority ladder honestly: the
+  `/admin/assets` — same list, same `toggle_status` action, minus the admin costume
+  (D5 killed that framing for a single-user instance; D34 finished the absorption and deleted the
+  screen). Surface the priority ladder honestly: the
   `DAILY_BUDGET = 25` split across positions → watchlist → rest, straight from
   `SyncAllFundamentalsJob#prioritized_assets`.
 - Tier transitions are one tap in both directions and name what they buy (following → watchlist
@@ -410,10 +414,13 @@ CSS picks. `NavigationHelper` owns the four destinations so nothing is duplicate
 - **Routes are the ones that exist today.** Activos → `/portfolio` and Ajustes → `/profile`;
   slices 2 and 6 move them to `/assets` and `/settings`. A tab lights up per *controller*, not per
   path, so `/trades` keeps Activos lit.
-- **The nav went from six entries to four.** `/market`, `/earnings` and `/news` stay routable with
-  no entry point, per Adrian's call; `/search` joins them, because the redesigned TopBar has no
-  search and Activos › Rastreados (its new home) is not built. Three specs pin this so it reads as
-  a decision rather than rot.
+- **The nav went from six entries to four.** `/market`, `/earnings` and `/news` stayed routable
+  with no entry point, per Adrian's call; `/search` joined them, because the redesigned TopBar has
+  no search and Activos › Rastreados (its new home) is not built. Three specs pinned this so it
+  read as a decision rather than rot.
+  **Settled 2026-08-26 (D31/D35):** routable-and-unlisted was a holding pattern, not a destination.
+  `/earnings`, `/news`, `/market`'s listing and `/search` are deleted; `/market/:symbol` stays and
+  its back arrow now points at Activos. The specs that pinned "no entry point" now pin "no route".
 - **The shell title is not an `h1`.** Every screen still owns its heading, and two `h1`s per page
   is a defect — the first draft shipped one. When a slice moves its title into the bar, that
   screen drops its heading and the bar's becomes the `h1`.
