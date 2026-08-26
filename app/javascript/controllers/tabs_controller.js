@@ -19,7 +19,7 @@ export default class TabsController extends Controller {
       tab.classList.toggle("text-primary", i === index)
       tab.classList.toggle("font-bold", i === index)
       tab.classList.toggle("border-transparent", i !== index)
-      tab.classList.toggle("text-slate-400", i !== index)
+      tab.classList.toggle("text-fg-subtle", i !== index)
       tab.classList.toggle("font-medium", i !== index)
     })
     this.panelTargets.forEach((panel, i) => {
