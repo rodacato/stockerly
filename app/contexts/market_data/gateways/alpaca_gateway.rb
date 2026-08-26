@@ -11,7 +11,6 @@ module MarketData
 
       BASE_URL = "https://data.alpaca.markets"
       PROVIDER = "Alpaca"
-      RATE_LIMITED_MESSAGE = "#{PROVIDER} rate limit exceeded"
       RECENCY_WALL = 15.minutes
       MAX_PAGES = 20
       TIMEOUT = 8
@@ -185,9 +184,8 @@ module MarketData
       def get(path, params)
         response = connection.get(path) { |req| req.params.update(params.transform_keys(&:to_s)) }
 
-        return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
         return Failure([ :no_entitlement, entitlement_message(response) ]) if response.status == 403
-        return Failure([ :gateway_error, "#{PROVIDER} returned #{response.status}" ]) unless response.success?
+        return GatewayFailure.from(response, PROVIDER) unless response.success?
 
         Success(response.body)
       rescue Faraday::Error => e

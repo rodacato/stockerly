@@ -85,7 +85,8 @@ RSpec.describe SyncSingleAssetJob, type: :job do
 
       before do
         stub_finnhub_server_error
-              end
+        stub_yfinance_not_found("AAPL")
+      end
 
       it "publishes AllGatewaysFailed event" do
         described_class.perform_now(asset.id)

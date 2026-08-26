@@ -8,7 +8,6 @@ module MarketData
     BASE_URL = "https://api.polygon.io"
     PROVIDER = "Polygon.io"
     TIMEOUT  = 5
-    RATE_LIMITED_MESSAGE = "#{PROVIDER} rate limit exceeded"
 
     def initialize(api_key: nil)
       @api_key = api_key || resolve_api_key
@@ -24,8 +23,7 @@ module MarketData
         req.params["apiKey"] = @api_key
       end
 
-      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
-      return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_single(symbol, response.body)
     rescue Faraday::Error => e
@@ -44,8 +42,7 @@ module MarketData
         req.params["sort"] = "asc"
       end
 
-      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
-      return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_historical(response.body)
     rescue Faraday::Error => e
@@ -66,8 +63,7 @@ module MarketData
         req.params["ticker"] = ticker if ticker.present?
       end
 
-      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
-      return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_news(response.body)
     rescue Faraday::Error => e
@@ -84,8 +80,7 @@ module MarketData
         req.params["apiKey"] = @api_key
       end
 
-      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
-      return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_earnings(response.body)
     rescue Faraday::Error => e
@@ -143,8 +138,7 @@ module MarketData
         req.params["adjusted"] = "true"
       end
 
-      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
-      return Failure([ :gateway_error, "Polygon.io returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       results = (response.body["results"] || []).map do |bar|
         {

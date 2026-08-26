@@ -7,7 +7,6 @@ module MarketData
 
     BASE_URL = "https://financialmodelingprep.com"
     PROVIDER = "FMP"
-    RATE_LIMITED_MESSAGE = "#{PROVIDER} rate limit exceeded"
     TIMEOUT  = 10
 
     def initialize(api_key: nil)
@@ -24,8 +23,7 @@ module MarketData
         req.params["apikey"] = @api_key
       end
 
-      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
-      return Failure([ :gateway_error, "FMP returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_overview(response.body)
     rescue Faraday::Error => e
@@ -42,8 +40,7 @@ module MarketData
         req.params["apikey"] = @api_key
       end
 
-      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
-      return Failure([ :gateway_error, "FMP returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_dividends(response.body)
     rescue Faraday::Error => e
@@ -60,8 +57,7 @@ module MarketData
         req.params["apikey"] = @api_key
       end
 
-      return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
-      return Failure([ :gateway_error, "FMP returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_splits(response.body)
     rescue Faraday::Error => e

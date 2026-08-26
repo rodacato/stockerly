@@ -43,8 +43,7 @@ module MarketData
       path = "series/#{FIX_SERIES}/datos/#{format_date(from)}/#{format_date(to)}"
       response = connection.get(path)
 
-      return Failure([ :rate_limited, "Banxico rate limit exceeded" ]) if response.status == 429
-      return Failure([ :gateway_error, "Banxico returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_fixes(response.body)
     rescue Faraday::Error => e
@@ -106,8 +105,7 @@ module MarketData
 
       response = connection.get("series/#{series_id}/datos/#{path_segment}")
 
-      return Failure([ :rate_limited, "Banxico rate limit exceeded" ]) if response.status == 429
-      return Failure([ :gateway_error, "Banxico returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_auctions(response.body, term.to_s)
     rescue Faraday::Error => e
@@ -136,9 +134,12 @@ module MarketData
       auctions.any? ? Success(auctions) : Failure([ :not_found, "No valid auction data for CETES #{term}D" ])
     end
 
+    # The FIX for a given day does not exist before it is determined, from
+    # 12:00 CDMX. That is a normal daily condition and was indistinguishable
+    # from an outage while both returned :not_found.
     def parse_fixes(body)
       datos = body.dig("bmx", "series", 0, "datos")
-      return Failure([ :not_found, "No FIX data for USD/MXN" ]) if datos.blank?
+      return empty_fixes_failure if datos.blank?
 
       # Banxico marks non-publication days as "N/E"; they are holidays, not errors.
       fixes = datos.filter_map do |dato|
@@ -157,6 +158,16 @@ module MarketData
 
     def calculate_discount_price(face_value, annual_yield, days)
       (face_value / (1 + annual_yield / 100.0 * days / 360.0)).round(6)
+    end
+
+    def empty_fixes_failure
+      return Failure([ :not_yet_published, "#{PROVIDER}: the FIX is determined from 12:00 CDMX" ]) if before_fix_publication?
+
+      Failure([ :not_found, "No FIX data for USD/MXN" ])
+    end
+
+    def before_fix_publication?
+      Time.current.in_time_zone("America/Mexico_City").hour < 12
     end
 
     def parse_date(fecha_str)

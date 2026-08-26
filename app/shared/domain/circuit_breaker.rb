@@ -12,13 +12,25 @@ class CircuitBreaker
 
   attr_reader :name, :state, :failure_count
 
-  def initialize(name:, threshold: 5, timeout: 60)
+  # A permanent failure opens the breaker on the first occurrence rather than
+  # the fifth, and holds it open far longer. Retrying "your plan does not
+  # include this" every 60 seconds spends quota to be told no again — which is
+  # what a free Finnhub key hitting the premium candles endpoint did forever.
+  #
+  # It still expires. Entitlements change when someone upgrades a plan or fixes
+  # a key, and a misclassified failure must not strand a working provider until
+  # the process restarts.
+  PERMANENT_TIMEOUT = 1.hour.to_i
+
+  def initialize(name:, threshold: 5, timeout: 60, permanent_timeout: PERMANENT_TIMEOUT)
     @name = name
     @threshold = threshold
     @timeout = timeout
+    @permanent_timeout = permanent_timeout
     @state = :closed
     @failure_count = 0
     @last_failure_at = nil
+    @open_for = timeout
   end
 
   def call(&block)
@@ -41,6 +53,7 @@ class CircuitBreaker
     @state = :closed
     @failure_count = 0
     @last_failure_at = nil
+    @open_for = @timeout
   end
 
   private
@@ -49,7 +62,7 @@ class CircuitBreaker
     result = block.call
 
     if result.is_a?(Dry::Monads::Result) && result.failure?
-      record_failure
+      GatewayFailure.permanent?(failure_tag(result)) ? record_permanent_failure : record_failure
     else
       record_success
     end
@@ -63,21 +76,34 @@ class CircuitBreaker
   def record_failure
     @failure_count += 1
     @last_failure_at = Time.current
+    @open_for = @timeout
 
-    if @failure_count >= @threshold
-      transition_to(:open)
-    end
+    transition_to(:open) if @failure_count >= @threshold
+  end
+
+  def record_permanent_failure
+    @failure_count = @threshold
+    @last_failure_at = Time.current
+    @open_for = @permanent_timeout
+
+    transition_to(:open)
   end
 
   def record_success
-    if @state == :half_open
-      transition_to(:closed)
-      @failure_count = 0
-    end
+    return unless @state == :half_open
+
+    transition_to(:closed)
+    @failure_count = 0
+    @open_for = @timeout
+  end
+
+  def failure_tag(result)
+    failure = result.failure
+    failure.is_a?(Array) ? failure.first : failure
   end
 
   def timeout_elapsed?
-    @last_failure_at && Time.current - @last_failure_at >= @timeout
+    @last_failure_at && Time.current - @last_failure_at >= @open_for
   end
 
   def transition_to(new_state)

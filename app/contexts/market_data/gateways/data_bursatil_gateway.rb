@@ -13,7 +13,6 @@ module MarketData
 
       BASE_URL = "https://api.databursatil.com"
       PROVIDER = "DataBursatil"
-      RATE_LIMITED_MESSAGE = "#{PROVIDER} rate limit exceeded"
       DEFAULT_EXCHANGE = "BMV"
       QUOTE_FIELDS = "u,c,v,f".freeze
       CREDITS_CACHE_KEY = "databursatil:credits".freeze
@@ -140,7 +139,6 @@ module MarketData
           req.params.update(params.transform_keys(&:to_s).merge("token" => @token))
         end
 
-        return Failure([ :rate_limited, RATE_LIMITED_MESSAGE ]) if response.status == 429
         return failure_from(response) unless response.success?
 
         Success(response.body)
@@ -148,11 +146,12 @@ module MarketData
         Failure([ :gateway_error, e.message ])
       end
 
-      # Errors arrive as a map keyed by the parameter at fault, so an invalid
-      # token is distinguishable from a malformed query without reading prose.
+      # Errors arrive as a map keyed by the parameter at fault, which says more
+      # than the status alone: this provider answers 400 for both a bad
+      # credential and a malformed query. The status mapping is the floor.
       def failure_from(response)
         errors = response.body.is_a?(Hash) ? response.body["Error"] : nil
-        return Failure([ :gateway_error, "#{PROVIDER} returned #{response.status}" ]) if errors.blank?
+        return GatewayFailure.from(response, PROVIDER) if errors.blank?
 
         return Failure([ :unauthorized, "#{PROVIDER}: #{Array(errors['token']).first}" ]) if errors.is_a?(Hash) && errors["token"].present?
 

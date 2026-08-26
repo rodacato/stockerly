@@ -26,7 +26,7 @@ module MarketData
         req.params["apikey"] = @api_key
       end
 
-      return Failure([ :gateway_error, "Alpha Vantage returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       body = response.body
       return Failure([ :rate_limited, body["Note"] ]) if body.key?("Note")
@@ -67,7 +67,7 @@ module MarketData
         req.params["apikey"] = @api_key
       end
 
-      return Failure([ :gateway_error, "Alpha Vantage returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       body = response.body
       return Failure([ :rate_limited, body["Note"] ]) if body.key?("Note")
@@ -119,7 +119,7 @@ module MarketData
         req.params["apikey"] = @api_key
       end
 
-      return Failure([ :gateway_error, "Alpha Vantage returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       body = response.body
       return Failure([ :rate_limited, body["Note"] ]) if body.key?("Note")

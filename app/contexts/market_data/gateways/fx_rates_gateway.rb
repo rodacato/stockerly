@@ -22,8 +22,7 @@ module MarketData
 
       response = connection.get("/v6/#{@api_key}/latest/#{base}")
 
-      return Failure([ :rate_limited, "ExchangeRate API rate limit exceeded" ]) if response.status == 429
-      return Failure([ :gateway_error, "ExchangeRate API returned #{response.status}" ]) unless response.success?
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
 
       parse_and_upsert(base, targets, response.body)
     rescue Faraday::Error => e
