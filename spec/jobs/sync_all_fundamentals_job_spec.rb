@@ -38,18 +38,26 @@ RSpec.describe SyncAllFundamentalsJob, type: :job do
         .not_to have_enqueued_job(SyncFundamentalJob).with(stock1.id)
     end
 
+    # The budget reads the calls RateLimiter actually made, so spending it is
+    # what stops the job -- not how many log lines happen to carry a prefix.
     it "respects daily budget limit" do
-      25.times do |i|
-        SystemLog.create!(
-          task_name: "Fundamentals: STOCK#{i}",
-          module_name: "sync",
-          severity: :success,
-          duration_seconds: 0
-        )
-      end
+      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 25,
+                           daily_call_limit: 25, calls_reset_at: Time.current)
 
       expect { described_class.perform_now }
         .not_to have_enqueued_job(SyncFundamentalJob)
+    end
+
+    it "is not fooled by log lines that spent no quota" do
+      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 0,
+                           daily_call_limit: 25, calls_reset_at: Time.current)
+      25.times do |i|
+        SystemLog.create!(task_name: "Fundamentals: STOCK#{i}", module_name: "sync",
+                          severity: :success, duration_seconds: 0)
+      end
+
+      expect { described_class.perform_now }
+        .to have_enqueued_job(SyncFundamentalJob).exactly(3).times
     end
 
     it "staggers enqueued jobs with #{SyncAllFundamentalsJob::STAGGER_SECONDS}-second intervals" do

@@ -8,7 +8,8 @@ RSpec.describe "Activos › Rastreados", type: :request do
 
   describe "GET /tracked" do
     it "shows the daily budget the sync job actually spends" do
-      create_list(:system_log, 3, task_name: "Fundamentals: AAPL", severity: :success)
+      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 3,
+                           daily_call_limit: 25, calls_reset_at: Time.current)
 
       get tracked_assets_path
 
@@ -108,10 +109,30 @@ RSpec.describe "Activos › Rastreados", type: :request do
 
   describe "the budget the screen shows and the job spends" do
     it "is one calculation, not two" do
-      create_list(:system_log, 4, task_name: "Fundamentals: X", severity: :success)
+      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 4,
+                           daily_call_limit: 25, calls_reset_at: Time.current)
 
       expect(MarketData::Domain::FundamentalsBudget.today.used).to eq(4)
       expect(SyncAllFundamentalsJob::DAILY_BUDGET).to eq(MarketData::Domain::FundamentalsBudget::DAILY_LIMIT)
+    end
+
+    # A statements sync spends three calls and logs one, and failures spend
+    # quota without logging success at all. Counting logs missed both.
+    it "counts the calls made, not the successes logged" do
+      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 9,
+                           daily_call_limit: 25, calls_reset_at: Time.current)
+      create_list(:system_log, 3, task_name: "Fundamentals: X", severity: :success)
+
+      expect(MarketData::Domain::FundamentalsBudget.today.used).to eq(9)
+    end
+
+    # The counter resets lazily on the next call, so a stale stamp would
+    # otherwise carry yesterday's spend into today's headroom.
+    it "ignores a counter that was never reset today" do
+      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 25,
+                           daily_call_limit: 25, calls_reset_at: 2.days.ago)
+
+      expect(MarketData::Domain::FundamentalsBudget.today.used).to eq(0)
     end
 
     it "never reports negative headroom" do
