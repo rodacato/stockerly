@@ -1,5 +1,6 @@
 class AssetsController < AuthenticatedController
-  rate_limit to: 10, within: 1.minute, only: :toggle_sync
+  rate_limit to: 10, within: 1.minute, only: [ :toggle_sync, :track ]
+  rate_limit to: 15, within: 1.minute, only: :search_ticker
 
   def index
     data = Trading::UseCases::LoadAssets.call(user: current_user, tab: params[:tab])
@@ -22,11 +23,53 @@ class AssetsController < AuthenticatedController
     @budget       = data[:budget]
   end
 
+  def track
+    result = Administration::UseCases::Assets::CreateAsset.call(admin: current_user, params: asset_params.to_h)
+
+    case result
+    in Dry::Monads::Success(asset)
+      redirect_to tracked_assets_path, notice: t("assets.tracked.agregado", symbol: asset.symbol)
+    in Dry::Monads::Failure[ _, errors ]
+      redirect_to tracked_assets_path, alert: first_error(errors)
+    end
+  end
+
+  def untrack
+    result = Administration::UseCases::Assets::DeleteAsset.call(asset_id: params[:id], admin: current_user)
+
+    case result
+    in Dry::Monads::Success(symbol)
+      redirect_to tracked_assets_path, notice: t("assets.tracked.eliminado", symbol: symbol)
+    in Dry::Monads::Failure
+      redirect_to tracked_assets_path, alert: t("assets.tracked.no_encontrado")
+    end
+  end
+
+  def search_ticker
+    result = Administration::UseCases::Assets::SearchTicker.call(query: params[:q])
+
+    if result.success?
+      render json: result.value!
+    else
+      render json: { error: result.failure.last }, status: :unprocessable_content
+    end
+  end
+
   def toggle_sync
     asset = Administration::UseCases::Assets::ToggleStatus.call(asset_id: params[:id])
     redirect_to tracked_assets_path,
                 notice: t("assets.tracked.#{asset.active? ? "reanudado" : "pausado"}", symbol: asset.symbol)
   rescue ActiveRecord::RecordNotFound
     redirect_to tracked_assets_path, alert: t("assets.tracked.no_encontrado")
+  end
+
+  private
+
+  def asset_params
+    params.require(:asset).permit(:symbol, :name, :asset_type, :country, :exchange, :sector, :logo_url)
+  end
+
+  def first_error(errors)
+    errors.is_a?(Hash) ? errors.values.flatten.first : errors
   end
 end

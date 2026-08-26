@@ -49,9 +49,9 @@ module Admin
       result = Administration::UseCases::Integrations::RefreshSync.call(integration_id: params[:id])
 
       if result.success?
-        redirect_back fallback_location: admin_assets_path, notice: "Sincronización de la integración programada."
+        redirect_back fallback_location: admin_integrations_path, notice: "Sincronización de la integración programada."
       else
-        redirect_back fallback_location: admin_assets_path, alert: result.failure.last
+        redirect_back fallback_location: admin_integrations_path, alert: result.failure.last
       end
     end
 

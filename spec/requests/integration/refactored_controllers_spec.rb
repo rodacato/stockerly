@@ -60,35 +60,25 @@ RSpec.describe "Refactored controller flows", type: :request do
     end
   end
 
-  describe "Admin assets list via Use Case" do
-    let!(:admin) { create(:user, :admin, email: "admin_ref@example.com", password: "password123") }
+  describe "Rastreados lists the catalogue via Use Case" do
+    let!(:user) { create(:user, email: "tracked_ref@example.com", password: "password123") }
 
     before do
       delete logout_path
-      login_as(admin)
+      login_as(user)
     end
 
-    it "lists assets with filtering by type" do
+    # /admin/assets filtered by type, market and status. Rastreados does not:
+    # a self-hosted catalogue capped by a 25-call daily budget fits on a screen.
+    it "lists every tracked asset without a filter to reach them" do
       create(:asset, symbol: "AAPL", name: "Apple Inc.", asset_type: :stock)
       create(:asset, symbol: "BTC", name: "Bitcoin", asset_type: :crypto)
 
-      get admin_assets_path
+      get tracked_assets_path
+
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("AAPL")
       expect(response.body).to include("BTC")
-
-      get admin_assets_path(type: "stock")
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("AAPL")
-    end
-
-    it "searches assets by name" do
-      create(:asset, symbol: "AAPL", name: "Apple Inc.", asset_type: :stock)
-      create(:asset, symbol: "BTC", name: "Bitcoin", asset_type: :crypto)
-
-      get admin_assets_path(search: "apple")
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("AAPL")
     end
   end
 

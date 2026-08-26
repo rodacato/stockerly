@@ -59,6 +59,24 @@
     <% end %>
   </section>
 
+  <%# The manual triggers the deleted admin dashboard carried. `ajustes-estado`
+      does not draw them, but losing them leaves a failed source with no way
+      back before its next scheduled run. %>
+  <section class="flex flex-col gap-3">
+    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".manual") %></h2>
+    <p class="text-sm text-fg-subtle"><%= t(".manual_desc") %></p>
+    <div class="flex flex-wrap gap-2">
+      <% @data_sources.each do |source| %>
+        <%= button_to admin_trigger_data_source_path(key: source.key), method: :post,
+              form_class: "inline-flex",
+              class: "inline-flex items-center gap-1.5 rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-sm font-medium text-fg-default transition-colors hover:border-primary hover:text-primary" do %>
+          <span class="material-symbols-outlined text-base" aria-hidden="true"><%= source.icon %></span>
+          <%= source.name.split(" — ").first %>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".cambios") %></h2>
     <% if @recent_changes.any? %>

@@ -65,6 +65,47 @@ RSpec.describe "Activos › Rastreados", type: :request do
     end
   end
 
+  describe "POST /tracked" do
+    it "adds an asset to the catalogue and says so" do
+      expect {
+        post track_asset_path, params: {
+          asset: { symbol: "GOOGL", name: "Alphabet Inc.", asset_type: "stock",
+                   country: "US", exchange: "NASDAQ", sector: "Technology" }
+        }
+      }.to change(Asset, :count).by(1)
+
+      expect(response).to redirect_to(tracked_assets_path)
+      expect(flash[:notice]).to eq("GOOGL se agregó a Rastreados.")
+    end
+
+    it "reports the validation error instead of creating a half-formed asset" do
+      expect {
+        post track_asset_path, params: { asset: { symbol: "", name: "", asset_type: "" } }
+      }.not_to change(Asset, :count)
+
+      expect(response).to redirect_to(tracked_assets_path)
+      expect(flash[:alert]).to be_present
+    end
+  end
+
+  describe "DELETE /tracked/:id" do
+    it "drops the asset out of the catalogue" do
+      asset = create(:asset, :stock, symbol: "GONE", currency: "USD")
+
+      expect { delete untrack_asset_path(asset) }.to change(Asset, :count).by(-1)
+
+      expect(response).to redirect_to(tracked_assets_path)
+      expect(flash[:notice]).to eq("GONE se quitó del catálogo.")
+    end
+
+    it "reports a missing asset instead of raising" do
+      delete untrack_asset_path(id: 0)
+
+      expect(response).to redirect_to(tracked_assets_path)
+      expect(flash[:alert]).to eq("No encontré ese activo.")
+    end
+  end
+
   describe "the budget the screen shows and the job spends" do
     it "is one calculation, not two" do
       create_list(:system_log, 4, task_name: "Fundamentals: X", severity: :success)

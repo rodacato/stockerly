@@ -1,0 +1,55 @@
+<%# Adding to the catalogue, the last thing /admin/assets still owned. The
+    typeahead fills the rest of the fields from the gateway, so the only field
+    anyone types is the search box. %>
+<div data-reveal-target="content" class="hidden">
+  <%= form_with url: track_asset_path, scope: :asset, method: :post,
+        class: "flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5",
+        data: { controller: "ticker-search", ticker_search_url_value: search_tickers_path } do |f| %>
+    <div class="relative">
+      <label for="ticker_query" class="mb-1.5 block font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+        <%= t("assets.tracked.buscar") %>
+      </label>
+      <input type="text" id="ticker_query" autocomplete="off"
+             placeholder="<%= t("assets.tracked.buscar_placeholder") %>"
+             data-ticker-search-target="input"
+             data-action="input->ticker-search#search keydown->ticker-search#navigate"
+             class="w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2.5 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary/20" />
+      <div data-ticker-search-target="results"
+           class="absolute left-0 right-0 top-full z-50 mt-1 hidden max-h-64 overflow-y-auto rounded-lg border border-border-default bg-bg-surface shadow-xl"></div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <% [ [ :symbol, "AAPL", true ], [ :name, "Apple Inc.", false ],
+           [ :exchange, "NASDAQ · BMV", true ], [ :country, "US · MX", true ],
+           [ :sector, "Technology", false ] ].each do |field, placeholder, mono| %>
+        <div>
+          <label for="asset_<%= field %>" class="mb-1.5 block font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+            <%= t("assets.tracked.campo_#{field}") %>
+          </label>
+          <%= f.text_field field, placeholder: placeholder,
+                data: { ticker_search_target: field.to_s.camelize(:lower) },
+                class: "w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary/20 #{"font-mono uppercase" if mono}" %>
+        </div>
+      <% end %>
+      <div>
+        <label for="asset_asset_type" class="mb-1.5 block font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+          <%= t("assets.tracked.campo_asset_type") %>
+        </label>
+        <%= f.select :asset_type,
+              options_for_select(Asset.asset_types.keys.map { |k| [ t("assets.tracked.tipo_#{k}"), k ] }),
+              { prompt: t("assets.tracked.selecciona") },
+              data: { ticker_search_target: "assetType" },
+              class: "w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2 text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-2">
+      <button type="button" data-action="reveal#toggle"
+              class="rounded-lg px-3 py-2 text-sm font-medium text-fg-subtle transition-colors hover:text-fg-default">
+        <%= t("assets.tracked.cancelar") %>
+      </button>
+      <%= f.submit t("assets.tracked.agregar"),
+            class: "cursor-pointer rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" %>
+    </div>
+  <% end %>
+</div>
