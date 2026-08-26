@@ -20,7 +20,9 @@ module MarketData
         "Alpaca"         => { provider_type: "US Stocks & Corporate Actions", requires_api_key: true, max_requests_per_minute: 200, daily_call_limit: 50_000 },
         "Finnhub"        => { provider_type: "Stocks & Market Data", requires_api_key: true, max_requests_per_minute: 60, daily_call_limit: 500 },
         "CoinGecko"      => { provider_type: "Cryptocurrency", requires_api_key: false, max_requests_per_minute: 30, daily_call_limit: 10_000, settings: { "pro_tier" => false } },
-        "Yahoo Finance"  => { provider_type: "Indices & BMV Corporate Actions", requires_api_key: false, max_requests_per_minute: 5, daily_call_limit: nil },
+        # ADR-017 caps this at 6/min and 200/day. The daily half was never set,
+        # so the restraint that ADR promised on an unsanctioned surface did not exist.
+        "Yahoo Finance"  => { provider_type: "Indices & BMV Corporate Actions", requires_api_key: false, max_requests_per_minute: 6, daily_call_limit: 200 },
         "Alternative.me" => { provider_type: "Sentiment", requires_api_key: false, max_requests_per_minute: nil, daily_call_limit: 100 },
         "Alpha Vantage"  => { provider_type: "Fundamentals", requires_api_key: true, max_requests_per_minute: 5, daily_call_limit: 25 },
         "FMP"            => { provider_type: "Dividends & Splits", requires_api_key: true, max_requests_per_minute: 10, daily_call_limit: 250 },
