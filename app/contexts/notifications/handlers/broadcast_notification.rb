@@ -10,17 +10,19 @@ module Notifications
 
         unread_count = Notification.where(user_id: user_id, read: false).count
 
+        # `targets`, not `target`: both top bars are in the DOM at once and CSS
+        # picks which one shows, so the badge has to update in both.
         Turbo::StreamsChannel.broadcast_replace_to(
           "notifications_#{user_id}",
-          target: "notification_badge",
-          partial: "shared/notification_badge",
+          targets: ".js-notification-badge",
+          partial: "components/notification_badge",
           locals: { unread_count: unread_count }
         )
 
         Turbo::StreamsChannel.broadcast_prepend_to(
           "notifications_#{user_id}",
           target: "notifications_list",
-          partial: "shared/notification_item",
+          partial: "notifications/notification_row",
           locals: { notification: notification }
         )
       end

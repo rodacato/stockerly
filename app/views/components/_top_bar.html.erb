@@ -3,12 +3,8 @@
     <%= render "shared/logo", height_class: "h-7" %>
   <% end %>
 
-  <%= link_to notifications_path,
-              "aria-label": navbar_unread_count.zero? ? t("nav.abrir_avisos") : t("nav.avisos_sin_leer", count: navbar_unread_count),
-              class: "relative -mr-2 flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary" do %>
+  <%= link_to notifications_path, class: "relative -mr-2 flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary" do %>
     <span class="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>
-    <% if navbar_unread_count.positive? %>
-      <span class="absolute right-2.5 top-2.5 size-2 rounded-full bg-negative"></span>
-    <% end %>
+    <%= render "components/notification_badge", unread_count: navbar_unread_count %>
   <% end %>
 </header>

@@ -15,8 +15,8 @@ RSpec.describe Notifications::Handlers::BroadcastNotification do
 
       expect(Turbo::StreamsChannel).to have_received(:broadcast_replace_to).with(
         "notifications_#{user.id}",
-        target: "notification_badge",
-        partial: "shared/notification_badge",
+        targets: ".js-notification-badge",
+        partial: "components/notification_badge",
         locals: { unread_count: 1 }
       )
     end
@@ -27,7 +27,7 @@ RSpec.describe Notifications::Handlers::BroadcastNotification do
       expect(Turbo::StreamsChannel).to have_received(:broadcast_prepend_to).with(
         "notifications_#{user.id}",
         target: "notifications_list",
-        partial: "shared/notification_item",
+        partial: "notifications/notification_row",
         locals: { notification: notification }
       )
     end

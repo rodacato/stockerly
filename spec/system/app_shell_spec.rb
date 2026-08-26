@@ -38,7 +38,9 @@ RSpec.describe "App shell", type: :system do
     visit dashboard_path
 
     expect(page).to have_link(href: notifications_path, count: 2)
-    expect(page.first("a[href='#{notifications_path}']")[:"aria-label"]).to eq("2 avisos sin leer")
+    # The name is text inside the link rather than an aria-label so the Turbo
+    # Stream that replaces the badge carries it too.
+    expect(page.first("a[href='#{notifications_path}']").text(:all)).to include("2 avisos sin leer")
   end
 
   it "falls back to the section name when a screen sets no title" do
