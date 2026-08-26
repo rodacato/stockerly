@@ -62,6 +62,20 @@ Rails.application.config.after_initialize do
     capabilities: %i[prices historical market_data]
   )
 
+  DataSourceRegistry.register(:databursatil_bmv,
+    name: "Mexican Stocks — DataBursatil",
+    icon: "account_balance",
+    color: "rose",
+    gateway_class: MarketData::Gateways::DataBursatilGateway,
+    job_class: SyncPriorityAssetsJob,
+    job_args: %w[stock high],
+    test_symbol: "GFNORTEO.MX",
+    test_method: :fetch_price,
+    integration_name: "DataBursatil",
+    circuit_breaker_key: "databursatil",
+    capabilities: %i[prices historical intraday]
+  )
+
   DataSourceRegistry.register(:yahoo_bmv,
     name: "Mexican Stocks — Yahoo Finance",
     icon: "language",

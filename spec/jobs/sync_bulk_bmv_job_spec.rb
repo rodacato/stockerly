@@ -1,16 +1,18 @@
 require "rails_helper"
 
 RSpec.describe SyncBulkBmvJob, type: :job do
+  before { create(:integration, provider_name: "DataBursatil", api_key_encrypted: "test_token") }
+
   describe "#perform" do
     let!(:genius) { create(:asset, :mexican, symbol: "GENIUSSACV.MX", current_price: 20.00, price_updated_at: 10.minutes.ago) }
     let!(:ivv) { create(:asset, :mexican, :etf, symbol: "IVVPESO.MX", current_price: 40.00, price_updated_at: 10.minutes.ago) }
 
-    context "when Yahoo Finance returns valid data" do
+    context "when DataBursatil returns valid data" do
       before do
-        stub_yahoo_finance_bulk(
-          "GENIUSSACV.MX" => { price: 25.50, change_percent: 1.25, volume: 500_000 },
-          "IVVPESO.MX" => { price: 48.30, change_percent: 0.75, volume: 200_000 }
-        )
+        stub_databursatil("/v2/cotizaciones", {
+          "GENIUSSACV" => { "bmv" => databursatil_quote(last: 25.50, change: 1.25, volume: 500_000) },
+          "IVVPESO" => { "bmv" => databursatil_quote(last: 48.30, change: 0.75, volume: 200_000) }
+        })
       end
 
       it "updates all BMV asset prices in a single API call" do
@@ -46,8 +48,8 @@ RSpec.describe SyncBulkBmvJob, type: :job do
       end
     end
 
-    context "when Yahoo Finance is rate limited" do
-      before { stub_yahoo_finance_rate_limited }
+    context "when DataBursatil is rate limited" do
+      before { stub_databursatil("/v2/cotizaciones", {}, status: 429) }
 
       it "creates a warning SystemLog entry" do
         described_class.perform_now([ genius.id, ivv.id ])

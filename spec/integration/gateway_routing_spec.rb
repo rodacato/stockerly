@@ -9,6 +9,7 @@ RSpec.describe "Gateway routing", type: :job do
     create(:integration, provider_name: "Finnhub", api_key_encrypted: "test_key")
     create(:integration, provider_name: "CoinGecko", api_key_encrypted: "test_key")
     create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKID:secret")
+    create(:integration, provider_name: "DataBursatil", api_key_encrypted: "test_token")
     SyncSingleAssetJob::CIRCUIT_BREAKERS.each_value(&:reset!)
   end
 
@@ -63,34 +64,37 @@ RSpec.describe "Gateway routing", type: :job do
     end
 
     context "when the asset is Mexican" do
-      it "sends BMV stocks to Yahoo" do
+      it "sends BMV stocks to DataBursatil first" do
         asset = create(:asset, :mexican, symbol: "WALMEX.MX", price_updated_at: 10.minutes.ago)
-        stub_yahoo_finance_price("WALMEX.MX", price: 68.10)
+        stub_databursatil("/v2/cotizaciones", { "WALMEX" => { "bmv" => databursatil_quote(last: 68.10) } })
 
         SyncSingleAssetJob.perform_now(asset.id)
 
-        expect(a_request(:get, yahoo_chart("WALMEX\\.MX"))).to have_been_made
+        expect(a_request(:get, %r{api\.databursatil\.com/v2/cotizaciones})).to have_been_made
+        expect(asset.reload.data_source).to eq("MarketData::Gateways::DataBursatilGateway")
       end
 
       # The country check precedes the asset_type case, so country wins over
       # type for every Mexican asset. Pinned as-is: this is the current
       # behaviour, not an endorsement of it.
-      it "sends Mexican crypto to Yahoo rather than CoinGecko" do
+      it "sends Mexican crypto down the BMV chain rather than to CoinGecko" do
         asset = create(:asset, :crypto, :mexican, symbol: "BTCMX", price_updated_at: 10.minutes.ago)
-        stub_yahoo_finance_price("BTCMX", price: 1_200_000.00)
+        stub_databursatil("/v2/cotizaciones", {})
+        stub_yahoo_finance_not_found("BTCMX")
 
         SyncSingleAssetJob.perform_now(asset.id)
 
-        expect(a_request(:get, yahoo_chart("BTCMX"))).to have_been_made
+        expect(a_request(:get, %r{api\.databursatil\.com/v2/cotizaciones})).to have_been_made
+        expect(a_request(:get, %r{api\.coingecko\.com})).not_to have_been_made
       end
 
-      it "sends Mexican fixed income to Yahoo, which cannot price it" do
+      it "sends Mexican fixed income down the BMV chain, which cannot price it" do
         asset = create(:asset, :fixed_income, symbol: "CETES28", sync_status: :active, price_updated_at: 10.minutes.ago)
+        stub_databursatil("/v2/cotizaciones", {})
         stub_yahoo_finance_not_found("CETES28")
 
         SyncSingleAssetJob.perform_now(asset.id)
 
-        expect(a_request(:get, yahoo_chart("CETES28"))).to have_been_made
         expect(asset.reload.last_sync_error).to be_present
       end
     end
@@ -114,13 +118,16 @@ RSpec.describe "Gateway routing", type: :job do
       expect(asset.reload.current_price.to_f).to eq(200.0)
     end
 
-    it "sends BMV assets to Yahoo in bulk" do
+    # Yahoo answers 429 to every request we can construct, from every network
+    # tested, so the BMV bulk path no longer goes there.
+    it "sends BMV assets to DataBursatil in bulk" do
       asset = create(:asset, :mexican, symbol: "WALMEX.MX")
-      stub_yahoo_finance_bulk("WALMEX.MX" => { price: 68.10, change_percent: 0.5 })
+      stub_databursatil("/v2/cotizaciones", { "WALMEX" => databursatil_quote(last: 68.10) && { "bmv" => databursatil_quote(last: 68.10) } })
 
       SyncBulkBmvJob.perform_now([ asset.id ])
 
-      expect(a_request(:get, %r{query\d\.finance\.yahoo\.com})).to have_been_made
+      expect(a_request(:get, %r{api\.databursatil\.com/v2/cotizaciones})).to have_been_made
+      expect(asset.reload.current_price.to_f).to eq(68.1)
     end
   end
 
