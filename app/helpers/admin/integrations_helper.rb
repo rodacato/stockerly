@@ -9,7 +9,15 @@ module Admin
       "Alpha Vantage"  => "alphavantage.co",
       "FMP"            => "financialmodelingprep.com",
       "ExchangeRate"   => "exchangerate-api.com",
-      "Banxico"        => "banxico.org.mx"
+      "Banxico"        => "banxico.org.mx",
+      "Alpaca"         => "alpaca.markets",
+      "DataBursatil"   => "databursatil.com"
+    }.freeze
+
+    # Alpaca is the only provider whose credential is two values. The gateway
+    # splits the stored key on the colon, so the field has to ask for both.
+    PROVIDER_KEY_FORMATS = {
+      "Alpaca" => "KEY_ID:SECRET"
     }.freeze
 
     CAPABILITY_LABELS = {
@@ -19,6 +27,8 @@ module Admin
       search:      "BÚSQUEDA",
       news:        "NOTICIAS",
       earnings:    "REPORTES",
+      dividends:   "DIVIDENDOS",
+      splits:      "SPLITS",
       sentiment:   "SENTIMIENTO",
       market_data: "MARKETCAP",
       fundamentals: "FUNDAMENTALES",
@@ -42,6 +52,12 @@ module Admin
       PROVIDER_WEBSITES[integration.provider_name]
     end
 
+    def integration_key_placeholder(integration)
+      integration.masked_api_key ||
+        PROVIDER_KEY_FORMATS[integration.provider_name] ||
+        t("admin.integrations.index.clave")
+    end
+
     # State for the Lumen status pill on a provider card.
     # connected → :active · syncing → :active · disconnected (no key) → :error
     def integration_pill_state(integration)
@@ -54,6 +70,12 @@ module Admin
         else :paused
         end
       end
+    end
+
+    # Paused counts too: a source without its key is not serving data either,
+    # and the summary that ignored it read as healthier than the list below it.
+    def integrations_with_problems(integrations)
+      integrations.count { |i| integration_pill_state(i) != :active }
     end
 
     def integration_pill_meta(state)
