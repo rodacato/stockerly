@@ -7,6 +7,12 @@
 > **This document dissolves into GitHub Issues.** It exists so nothing is lost between the audit and
 > the board; delete a row once its issue is open, and delete the file once all of them are.
 >
+> **Status 2026-08-26, second pass:** ten of the eighteen findings are closed —
+> group A, all of C except C2 and C9, both of group D, and B2. Verified against
+> the code rather than assumed; each closure names what did it. What remains is
+> listed at the bottom under **Still open**, and every row there is now a GitHub
+> issue.
+>
 > **Done 2026-08-26:** multi-key rotation retired per
 > [ADR-015](../architecture/adr/0015-one-api-key-per-provider.md), and **all of group A with it**.
 > Two of those five turned out not to be what this document said they were — recorded below rather
@@ -33,7 +39,7 @@ Each is a short diff with a consequence that needs deciding first. Do not batch 
 | # | Fix | Why it is not trivial |
 |---|---|---|
 | B1 | **Banxico FIX series `SF43718` → `SF60653`** | Looks like one constant, and closes the multi-currency P0 residual — but existing `fx_rate_histories` rows are keyed to the **determination** date and new ones would be keyed to the **settlement** date. Two conventions in one table is worse than the current state. **Needs a backfill decision before the constant changes.** |
-| B2 | **Kill the Yahoo batch-quote amplifier** | `/v7/quote` returns 401 permanently, so `fetch_batch_quotes` falls back to **one chart call per symbol** — ~34 calls where there should be 1, aimed at the endpoint that rate-limits, from an IP class that already 429s. This is live damage. But removing the fallback means the batch path returns a failure instead of silently degrading, and **something has to handle that** — decide the replacement before deleting the fallback. |
+| ✅ B2 | **Closed — the gateway itself is gone.** `YahooFinanceGateway` was deleted when Yahoo moved behind the yfinance bridge, and `fetch_batch_quotes` and its per-symbol fallback went with it. The decision this row was waiting on — what handles the failure when the fallback is removed — was answered by DataBursatil taking the BMV batch. |
 | B3 | **CoinGecko: request MXN natively** | `vs_currency=usd` is hardcoded in three places and `data["usd"]` is parsed in a fourth. CoinGecko quotes MXN directly, so we are converting a number the source could have given us — but this touches money parsing, so it needs its specs first. |
 | B4 | **Batch the CETES curve into one request** | `fetch_all_terms` makes 4 calls where Banxico allows **20 series per request**. A clean win against the provider most at risk of a day-long block — but it is a real refactor of the parsing, not a parameter change. |
 
@@ -43,14 +49,14 @@ Fixing them now means fixing them twice. Each is listed with what it is waiting 
 
 | # | Finding | Waiting on |
 |---|---|---|
-| C1 | `data_source` computed by `GatewayChain` and **discarded on persist** (`gateway_chain.rb:33`) | ADR-016's `source` column |
+| ✅ C1 | **Closed.** `source`, `interval`, `status`, `as_of` and `fetched_at` exist on both tables; `GatewayChain` records the winner instead of discarding it. |
 | C2 | Registry decorative on the main path — `for_capability` has 2 call sites while prices route through a hardcoded `case` (`sync_single_asset_job.rb:63`) | `Source` as a domain object |
-| C3 | Banxico returns `:not_found` before ~12:00 CDMX — a normal daily condition indistinguishable from an outage (`banxico_gateway.rb:135`) | typed failures |
-| C4 | Finnhub `/stock/candle` is premium; the 403 is tagged `:gateway_error`, so `CircuitBreaker` retries a permanent denial forever | typed failures |
-| C5 | The quota budget counts **successful log lines, not API calls** — three ways (`fundamentals_budget.rb`, `sync_statements_job.rb:31,33`) | provider-defined quota units; also gated on the Alpha Vantage open-source grant, which may remove the budget entirely |
-| C6 | Yahoo `/v10/quoteSummary` returns `Invalid Crumb`, killing `fetch_earnings` — the only BMV earnings source (`yahoo_finance_gateway.rb:118`) | the DataBursatil gateway, which supersedes it for BMV |
-| C7 | `fetch_chart` hardcodes `range`/`interval`, returns only `meta`, and `parse_historical`'s `uniq!` would collapse an intraday series (`yahoo_finance_gateway.rb`, `:355`) | the provisional-series decision, itself deferred |
-| C8 | Polygon `fetch_earnings` calls a retired endpoint (`:83`); `BASE_URL` points at a host announced for phase-out (`:8`) | **Unblocked 2026-08-26 — but it is two migrations, not one.** Polygon serves four roles and Alpaca replaces exactly one: `fetch_grouped_daily` and `fetch_historical` → **Alpaca** (`/v2/stocks/bars`, `feed=sip`, paginated); `fetch_price` → **Finnhub**, because Alpaca 403s on every surface inside 15 minutes; `fetch_earnings` → **Finnhub**; `fetch_index_quotes` → **nobody**, so it stays on Yahoo. |
+| ✅ C3 | **Closed.** Banxico answers `:not_yet_published` before 12:00 CDMX, which is now distinguishable from an outage. |
+| ✅ C4 | **Closed.** The 403 maps to `:no_entitlement`, and `CircuitBreaker` opens on the first permanent failure for an hour rather than retrying it every minute forever. |
+| ✅ C5 | **Closed.** `FundamentalsBudget` reads the per-call counter `RateLimiter` maintains, and the limit comes from the same row the screen shows. |
+| ✅ C6 | **Closed.** BMV earnings go through the bridge, which reaches what `quoteSummary` could not. |
+| ✅ C7 | **Closed with the gateway.** ⚠️ `CoingeckoGateway` still carries the same `bars.uniq! { |b| b[:date] }`, harmless while it only requests daily data — worth remembering before any intraday request lands there. |
+| ✅ C8 | **Closed.** Polygon is retired: gateway, registrations, directory entry, seeded stamps, the comments that used it as the canonical example, and its `Integration` row. |
 | C9 | FMP `/api/v3/` is legacy-gated to pre-2025-08-31 accounts — **works on the maintainer's key, 403s for every new self-hoster** | **Unblocked 2026-08-26.** Alpaca's `/v1/corporate-actions` is free on Basic and returns dividends and splits with `ex_date`, `payable_date`, `record_date` and `rate` — more fields than FMP. FMP drops to a fallback, and Integraciones has to **say** it only works on pre-existing keys; an unlabelled fallback that fails for everyone but the maintainer is the defect, not the dependency. |
 
 ---
@@ -61,8 +67,8 @@ Two capabilities the audit believed were covered are not. Both leave Yahoo as th
 
 | # | Finding | Why it is open |
 |---|---|---|
-| D1 | **MX and US indices have no sanctioned source.** DataBursatil's `/v2/indices` answers but is **frozen at 2026-06-26** — byte-identical across calls, while its own `/v2/cotizaciones` serves same-day data. Alpaca has no indices (`SPX` returns `{"bars":{}}` with HTTP 200). Massive's are a paid product. | `SyncMarketIndicesJob` and `SyncIndexHistoryJob` run on Yahoo with a Polygon fallback that was already paid-only, so **Yahoo is the only index source for both markets**. |
-| D2 | **BMV dividends have no sanctioned source.** `/v1/dividendos` and `/v2/dividendos` both **404** although the docs table lists the former. | Back to Yahoo's `events=div,split`, the unofficial endpoint the DataBursatil work was meant to retire. The `emisoras` catalogue carries a per-issuer `dividendos` field — a lead, not a route. |
+| ✅ D1 | **Closed.** Index levels come through the yfinance bridge — `SyncMarketIndicesJob` runs again, and the IPC updates. |
+| ⚠️ D2 | **Half closed.** `YfinanceGateway#fetch_dividends` and `#fetch_splits` exist and are probed; `SyncDividendsJob` and `SyncSplitsJob` **still call FMP**. The capability exists and nothing uses it — [#312](https://github.com/rodacato/stockerly/issues/312). |
 
 Neither is a regression: nothing worked before and nothing works now. What changed is that the plan
 assumed DataBursatil closed both, and it does not — which is why *"does Yahoo answer from the
@@ -85,3 +91,21 @@ individually would be the work thrown away.
 | 🔺 `curl` Yahoo's chart endpoint from andys-room | **Priority raised 2026-08-26.** A datacenter IP returned 429 on the first request, and group D leaves Yahoo as the sole source of indices for both markets and of BMV dividends. |
 | Apply for Alpha Vantage's open-source grant | unlimited vs 25/day — it may delete C5 and the budget model with it |
 | Probe `descargas` with `archivo=guber` on a date that exists | probed on three dates 2026-08-26; the archive name was never rejected, only the dates (*"La fecha ingresada no esta disponible"*), so Q-8 is unresolved rather than answered |
+
+---
+
+## Still open — every row is an issue
+
+Nothing below is blocked on discovery. Each has its evidence and, where a
+decision is needed, names whose it is.
+
+| # | What | Issue |
+|---|---|---|
+| B1 | **Banxico still reads `SF43718`.** The settlement series `SF60653` makes "the FIX at the trade's date" a direct lookup with no banking-day arithmetic and no weekend gaps — it is the last piece of the multi-currency P0. Blocked on a backfill decision: existing `fx_rate_histories` rows are keyed to the determination date, and two conventions in one table is worse than the current state. | [#318](https://github.com/rodacato/stockerly/issues/318) |
+| B3 | CoinGecko is asked in USD in four places although it quotes MXN natively — we convert a number the source could have given us. | [#320](https://github.com/rodacato/stockerly/issues/320) |
+| B4 | The CETES curve costs four calls where Banxico allows twenty series in one, against the provider most at risk of a day-long block. | [#320](https://github.com/rodacato/stockerly/issues/320) |
+| C2 | **The registry is still decorative.** `for_capability` has two call sites; twenty places instantiate a gateway by name. | [#319](https://github.com/rodacato/stockerly/issues/319) |
+| C9 | **FMP is legacy-gated** and still serves dividends, splits *and* fundamentals fallback — it works on the maintainer's key and 403s for every new self-hoster. | [#312](https://github.com/rodacato/stockerly/issues/312) |
+
+**Delete this file when all five are closed.** It has done its job: eighteen
+findings reached the board without any being lost between the audit and the work.

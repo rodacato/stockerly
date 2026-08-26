@@ -79,6 +79,31 @@ Plus a rule of conduct: **when a different source overwrites an existing row, it
 Even while only the winner is stored, knowing that a replacement occurred is the evidence that tells
 us whether multi-source is worth having.
 
+## Amendment, 2026-08-26 — provenance needs sub-provider granularity
+
+The decision above says `source` records **which provider produced the row**. That is not enough,
+and two live probes found it independently on the same day:
+
+- **Alpaca serves `sip` and `iex` in byte-identical shapes, with no field naming the feed.** The
+  same query returns 38,414,225 shares of AAPL volume on `sip` and 1,160,745 on `iex` — 3% — and
+  nothing in the payload says which one answered. A row recorded as `"Alpaca"` cannot be told apart
+  later from a row that is 3% of the market.
+- **DataBursatil quotes the same issuer on BMV and BIVA at different prices and different
+  timestamps.** AMXB came back at 20.27 on one and 20.31 on the other, twenty minutes apart.
+
+In both cases the sub-source is what decides the number, so recording only the vendor loses exactly
+the distinction the `source` column exists to preserve — and it would poison the multi-source
+migration this ADR is written to keep reachable: two rows both labelled `"Alpaca"` would be
+indistinguishable while disagreeing.
+
+**Amended:** `source` records **provider and sub-source**, formatted `provider/sub-source` —
+`Alpaca/sip`, `DataBursatil/bmv`, `Yahoo Finance/yfinance`. A provider with no meaningful sub-source
+records its name alone (`Finnhub`, `CoinGecko`). Gateways answer for their own provenance through
+`source_id`, so the format is theirs to state rather than the chain's to guess.
+
+Rows written before provenance existed carry the sentinel `legacy:unknown`, which is an explicit
+"we do not know" rather than a null that could later be read as "nobody set this".
+
 ## Consequences
 
 - The future migration is: drop the unique index on `(asset_id, date, interval)`, create it on
