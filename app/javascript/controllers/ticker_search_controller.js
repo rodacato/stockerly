@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class TickerSearchController extends Controller {
   static targets = ["input", "results", "symbol", "name", "assetType", "exchange", "country", "sector"]
-  static values = { url: String }
+  static values = { url: String, emptyText: String, loadingText: String, errorText: String }
 
   connect() {
     this.debounceTimer = null
@@ -51,7 +51,7 @@ export default class TickerSearchController extends Controller {
   renderResults(results) {
     if (results.length === 0) {
       this.resultsTarget.innerHTML = `
-        <div class="px-4 py-3 text-sm text-slate-400 text-center">No results found</div>`
+        <div class="px-4 py-3 text-center text-sm text-fg-subtle">${this.escapeHtml(this.emptyTextValue)}</div>`
       this.showResults()
       return
     }
@@ -72,15 +72,15 @@ export default class TickerSearchController extends Controller {
         data-asset-type="${r.asset_type}"
         data-exchange="${this.escapeAttr(r.exchange || '')}"
         data-country="${this.escapeAttr(r.country || '')}"
-        class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left cursor-pointer">
+        class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-bg-muted transition-colors text-left cursor-pointer">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
-            <span class="font-semibold text-sm text-slate-900 dark:text-white">${this.escapeHtml(r.symbol)}</span>
+            <span class="font-semibold text-sm text-fg-default">${this.escapeHtml(r.symbol)}</span>
             <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${typeColors[r.asset_type] || typeColors.stock}">${r.asset_type.toUpperCase()}</span>
           </div>
-          <p class="text-xs text-slate-500 truncate">${this.escapeHtml(r.name)}</p>
+          <p class="text-xs text-fg-subtle truncate">${this.escapeHtml(r.name)}</p>
         </div>
-        <span class="text-xs text-slate-400 shrink-0">${this.escapeHtml(r.exchange || '')}</span>
+        <span class="text-xs text-fg-subtle shrink-0">${this.escapeHtml(r.exchange || '')}</span>
       </button>
     `).join("")
 
@@ -146,13 +146,13 @@ export default class TickerSearchController extends Controller {
 
   showLoading() {
     this.resultsTarget.innerHTML = `
-      <div class="px-4 py-3 text-sm text-slate-400 text-center">Searching...</div>`
+      <div class="px-4 py-3 text-center text-sm text-fg-subtle">${this.escapeHtml(this.loadingTextValue)}</div>`
     this.showResults()
   }
 
   showError() {
     this.resultsTarget.innerHTML = `
-      <div class="px-4 py-3 text-sm text-red-400 text-center">Search unavailable. Fill fields manually.</div>`
+      <div class="px-4 py-3 text-center text-sm text-negative-fg">${this.escapeHtml(this.errorTextValue)}</div>`
     this.showResults()
   }
 
