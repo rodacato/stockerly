@@ -20,10 +20,12 @@ class GatewayChain
         next
       end
 
+      wanted = symbol_for(gateway, symbol)
+
       result = if breaker
-                 breaker.call { gateway.fetch_price(symbol) }
+                 breaker.call { gateway.fetch_price(wanted) }
       else
-                 gateway.fetch_price(symbol)
+                 gateway.fetch_price(wanted)
       end
 
       if result.success?
@@ -136,6 +138,15 @@ class GatewayChain
     end
 
     Failure([ :all_gateways_failed, "All gateways failed for index quotes" ])
+  end
+
+  # Callers may pass a plain symbol or a provider => symbol map, so each
+  # gateway in the chain receives the name its provider actually answers to.
+  def symbol_for(gateway, symbol)
+    return symbol unless symbol.is_a?(Hash)
+
+    provider = gateway.class.const_defined?(:PROVIDER) ? gateway.class::PROVIDER : nil
+    symbol[provider] || symbol["default"]
   end
 
   # Builds a GatewayChain from DataSourceRegistry for the given capability.

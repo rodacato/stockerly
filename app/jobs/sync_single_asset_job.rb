@@ -15,7 +15,7 @@ class SyncSingleAssetJob < ApplicationJob
     return unless asset&.active?
     return if recently_synced?(asset)
 
-    result = gateway_for(asset).fetch_price(asset.symbol)
+    result = gateway_for(asset).fetch_price(asset.gateway_symbols)
 
     if result.success?
       update_asset(asset, result.value!)

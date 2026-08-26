@@ -118,6 +118,20 @@ Rails.application.config.after_initialize do
     capabilities: %i[news]
   )
 
+  DataSourceRegistry.register(:yfinance_bridge,
+    name: "Indices & BMV Dividends — Yahoo (yfinance)",
+    icon: "monitoring",
+    color: "teal",
+    gateway_class: MarketData::Gateways::YfinanceGateway,
+    job_class: SyncMarketIndicesJob,
+    job_args: [],
+    test_symbol: "^MXX",
+    test_method: :fetch_price,
+    integration_name: "Yahoo Finance",
+    circuit_breaker_key: "yfinance",
+    capabilities: %i[indices dividends splits]
+  )
+
   DataSourceRegistry.register(:yahoo_indices,
     name: "Market Indices — Yahoo Finance",
     icon: "monitoring",

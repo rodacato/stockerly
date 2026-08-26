@@ -30,6 +30,17 @@ class Asset < ApplicationRecord
   scope :syncing,     -> { where(sync_status: :active) }
   scope :with_sync_error, -> { where.not(last_sync_error: nil) }
   scope :by_sector,   ->(sector) { where(sector: sector) if sector.present? }
+  # Providers disagree on how to name the same instrument: Yahoo says
+  # WALMEX.MX, the BMV says WALMEX*, Alpaca says AAPL. `symbol` stays what the
+  # user reads; overrides live here, keyed by the gateway's PROVIDER.
+  def symbol_for(provider)
+    provider_symbols[provider.to_s].presence || symbol
+  end
+
+  def gateway_symbols
+    provider_symbols.merge("default" => symbol)
+  end
+
   scope :by_country,  ->(country) { where(country: country) if country.present? }
 
   scope :high_priority, -> {
