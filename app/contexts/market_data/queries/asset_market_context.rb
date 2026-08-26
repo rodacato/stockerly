@@ -36,8 +36,11 @@ module MarketData
       end
       private_class_method :reference_index_for
 
+      # Only crypto has a sentiment gauge left. Equities keep the index quote
+      # and the divergence sentence, which say more about today's move than a
+      # market-wide gauge did (D38).
       def self.sentiment_for(asset)
-        asset.asset_type_crypto? ? FearGreedReading.latest_crypto : FearGreedReading.latest_stocks
+        asset.asset_type_crypto? ? FearGreedReading.latest_crypto : nil
       end
       private_class_method :sentiment_for
 

@@ -63,18 +63,16 @@ RSpec.describe MarketData::Queries::AssetMarketContext do
   end
 
   describe "sentiment" do
-    it "reads a crypto asset against the crypto index, not the stocks one" do
+    it "reads a crypto asset against the crypto gauge" do
       create(:fear_greed_reading, :crypto, value: 20, classification: "Miedo extremo")
-      create(:fear_greed_reading, :stocks, value: 80, classification: "Codicia")
 
       expect(context_for(create(:asset, :crypto))[:sentiment].value).to eq(20)
     end
 
-    it "reads an equity against the stocks index" do
+    it "gives an equity no gauge — the stocks index went with CNN (D38)" do
       create(:fear_greed_reading, :crypto, value: 20, classification: "Miedo extremo")
-      create(:fear_greed_reading, :stocks, value: 80, classification: "Codicia")
 
-      expect(context_for(create(:asset, :stock))[:sentiment].value).to eq(80)
+      expect(context_for(create(:asset, :stock))[:sentiment]).to be_nil
     end
   end
 end

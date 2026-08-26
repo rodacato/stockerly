@@ -54,7 +54,6 @@ module Trading
 
         [
           fear_greed_card(:crypto, fear_greed[:crypto], fear_greed[:crypto_history]),
-          fear_greed_card(:stocks, fear_greed[:stocks], fear_greed[:stocks_history]),
           watchlist_card(user)
         ].compact
       end
