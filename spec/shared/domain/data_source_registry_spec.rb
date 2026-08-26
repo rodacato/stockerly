@@ -145,4 +145,57 @@ RSpec.describe DataSourceRegistry do
       expect(result.map(&:key)).to eq([ :first, :second, :third ])
     end
   end
+
+  describe "routing by market and asset type" do
+    let(:base) do
+      attrs.except(:integration_name, :capabilities).merge(name: "Scoped", circuit_breaker_key: "scoped")
+    end
+
+    before do
+      described_class.clear!
+      described_class.register(:us_quotes, integration_name: "Finnhub", markets: %i[us],
+                                           asset_types: %i[stock etf index], capabilities: %i[prices],
+                                           **base)
+      described_class.register(:crypto, integration_name: "CoinGecko", asset_types: %i[crypto],
+                                        capabilities: %i[prices], **base)
+      described_class.register(:bmv, integration_name: "DataBursatil", markets: %i[mx],
+                                     asset_types: %i[stock etf index crypto], capabilities: %i[prices],
+                                     **base)
+      described_class.register(:bridge, integration_name: "Yahoo Finance",
+                                        asset_types: %i[stock etf index], capabilities: %i[prices],
+                                        **base)
+    end
+
+    def providers(market:, asset_type:)
+      described_class.for_capability(:prices, market: market, asset_type: asset_type).map(&:integration_name)
+    end
+
+    it "keeps a Mexican equity on the Mexican source" do
+      expect(providers(market: :mx, asset_type: :stock)).to eq(%w[DataBursatil Yahoo\ Finance])
+    end
+
+    it "keeps a US equity off the Mexican source" do
+      expect(providers(market: :us, asset_type: :stock)).to eq(%w[Finnhub Yahoo\ Finance])
+    end
+
+    # Asset type outranks market: crypto is global, so a Mexican crypto leads
+    # with the crypto source rather than with the exchange.
+    it "sends a Mexican crypto to the crypto source first" do
+      expect(providers(market: :mx, asset_type: :crypto)).to eq(%w[CoinGecko DataBursatil])
+    end
+
+    it "leaves the exchange out for a crypto that is not Mexican" do
+      expect(providers(market: :us, asset_type: :crypto)).to eq(%w[CoinGecko])
+    end
+
+    it "serves anything when a source declares no scope" do
+      described_class.register(:anything, integration_name: "Wildcard", capabilities: %i[prices], **base)
+
+      expect(providers(market: :mx, asset_type: :crypto)).to include("Wildcard")
+    end
+
+    it "answers with nothing rather than guessing for a type nobody claims" do
+      expect(providers(market: :us, asset_type: :fixed_income)).to be_empty
+    end
+  end
 end

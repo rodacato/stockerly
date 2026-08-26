@@ -47,6 +47,6 @@ class RefreshFearGreedJob < ApplicationJob
   end
 
   def crypto_breaker
-    SyncSingleAssetJob.circuit_breaker_for("crypto_fear_greed")
+    GatewayChain.breaker_for("crypto_fear_greed")
   end
 end

@@ -53,8 +53,8 @@ class SyncFundamentalJob < ApplicationJob
         MarketData::Gateways::FmpGateway.new
       ],
       circuit_breakers: {
-        "MarketData::Gateways::AlphaVantageGateway" => SyncSingleAssetJob.circuit_breaker_for("alpha_vantage"),
-        "MarketData::Gateways::FmpGateway" => SyncSingleAssetJob.circuit_breaker_for("fmp")
+        "MarketData::Gateways::AlphaVantageGateway" => GatewayChain.breaker_for("alpha_vantage"),
+        "MarketData::Gateways::FmpGateway" => GatewayChain.breaker_for("fmp")
       }
     )
   end

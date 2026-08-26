@@ -17,6 +17,8 @@ class DataSourceRegistry
     :integration_name,  # Matches Integration#provider_name, e.g. "Alpaca"
     :circuit_breaker_key, # Key for CircuitBreaker lookup, e.g. "stock"
     :capabilities,      # Array of capability symbols, e.g. [:prices, :news, :earnings]
+    :markets,           # Markets served, e.g. [:mx]. nil serves any.
+    :asset_types,       # Asset types served, e.g. [:stock]. nil serves any.
     :health_check,      # True when this source is the one that answers for its integration
     :maintainer_only    # True when the credential only works for pre-existing accounts
   )
@@ -24,8 +26,11 @@ class DataSourceRegistry
   @sources = {}
 
   class << self
-    def register(key, health_check: false, maintainer_only: false, **attrs)
-      @sources[key] = DataSource.new(key: key, health_check: health_check, maintainer_only: maintainer_only, **attrs)
+    def register(key, health_check: false, maintainer_only: false, markets: nil, asset_types: nil, **attrs)
+      @sources[key] = DataSource.new(
+        key: key, health_check: health_check, maintainer_only: maintainer_only,
+        markets: markets, asset_types: asset_types, **attrs
+      )
     end
 
     def find(key)
@@ -47,12 +52,22 @@ class DataSourceRegistry
         raise(AmbiguousHealthCheck, "#{provider_name} has #{matches.size} sources and none sets health_check")
     end
 
-    def for_capability(capability)
-      @sources.values.select { |ds| ds.capabilities.include?(capability) }
+    # Asset type is applied before market, which is the precedence Adrian
+    # chose: crypto is global, so a Mexican crypto goes to the crypto source
+    # rather than down the BMV chain. A nil declaration serves anything.
+    def for_capability(capability, market: nil, asset_type: nil)
+      sources = @sources.values.select { |ds| ds.capabilities.include?(capability) }
+      sources = sources.select { |ds| serves?(ds.asset_types, asset_type) } if asset_type
+      sources = sources.select { |ds| serves?(ds.markets, market) } if market
+      sources
     end
 
     def keys
       @sources.keys
+    end
+
+    def serves?(declared, wanted)
+      declared.nil? || declared.include?(wanted.to_sym)
     end
 
     def clear!
