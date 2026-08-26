@@ -124,6 +124,14 @@ After the first deploy, visit `https://stockerly.notdefined.dev/setup` to run th
 
 > **Note:** Seeds (`db/seeds.rb`) are **not** run in production — the Setup Wizard handles all bootstrapping. Registration is disabled by default and can be enabled from the admin panel.
 
+Once the Banxico key is configured, seed the FX history so a backdated trade values at its own day's rate:
+
+```bash
+bin/kamal app exec 'bin/rails data:backfill_fx_history'
+```
+
+It is one free request for the whole USD/MXN FIX back to 1991, and it is idempotent — re-run it any time a gap appears.
+
 ## 6. Subsequent Deploys (automatic)
 
 Every push to `master` triggers `.github/workflows/deploy.yml` which runs `kamal deploy`.

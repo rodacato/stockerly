@@ -46,7 +46,8 @@ separate dates, leaving Q-8 unresolved. `/v2/financieros` remains blocked on an 
 (the period format `1T_2026` is correct; the lookup lives in the 2,181-credit catalogue).
 
 **Banxico SIE** — the Mexican backbone and the least replaceable provider. Publishes the FIX in **two
-series carrying the same numbers one banking day apart**: `SF43718` (*fecha de determinación*) and
+series carrying the same numbers two banking days apart** — measured 2026-08-26, 663 of 666 points over
+2024–2026 match at an offset of exactly two publication days: `SF43718` (*fecha de determinación*) and
 `SF60653` (*fecha de liquidación*). The FIX is determined on day D from quotes settling D+2, announced
 from 12:00 on D, published in the DOF the next banking day; obligations settle at the rate published
 *"el día hábil bancario inmediato anterior"*. **For valuing a trade at its own date, `SF60653` is
@@ -160,7 +161,7 @@ Findings against `app/contexts/market_data/gateways/` and its callers, 2026-08-2
 
 | # | Finding | Location |
 |---|---|---|
-| 1 | Wrong FIX series — uses `SF43718` while the adjacent comment states the goal is what a broker settles against | `banxico_gateway.rb:13-15` |
+| ✅ 1 | Wrong FIX series — uses `SF43718` while the adjacent comment states the goal is what a broker settles against. **Closed by [#318](https://github.com/rodacato/stockerly/issues/318).** | `banxico_gateway.rb:13-15` |
 | 2 | FIX absent before ~12:00 CDMX returns `:not_found` — indistinguishable from an outage | `banxico_gateway.rb:135` |
 | 3 | **No `RateLimiter`** — the only gateway without one, against a provider that blocks the token for a full calendar day and serves both FX and CETES | `banxico_gateway.rb` |
 | 4 | `fetch_all_terms` makes 4 calls for one CETES curve; Banxico allows 20 series per request | `banxico_gateway.rb` |

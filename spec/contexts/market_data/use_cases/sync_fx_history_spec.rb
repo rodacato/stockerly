@@ -21,12 +21,12 @@ RSpec.describe MarketData::UseCases::SyncFxHistory do
       .to contain_exactly([ Date.new(2026, 5, 11), 17.0 ], [ Date.new(2026, 5, 12), 17.2 ])
   end
 
-  it "attributes the rate to Banxico, so a later source swap is visible" do
+  it "names the series, not just Banxico — the two FIX series disagree by date" do
     allow(gateway).to receive(:fetch_fx_fixes).and_return(fixes([ Date.new(2026, 5, 12), 17.0 ]))
 
     described_class.call(gateway: gateway)
 
-    expect(FxRateHistory.last.source).to eq("banxico_fix")
+    expect(FxRateHistory.last.source).to eq("Banxico/SF60653")
   end
 
   it "re-running a day corrects the rate instead of duplicating it" do

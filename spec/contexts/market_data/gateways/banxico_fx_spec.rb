@@ -13,6 +13,23 @@ RSpec.describe MarketData::Gateways::BanxicoGateway, "FIX rates" do
     { bmx: { series: [ { idSerie: described_class::FIX_SERIES, datos: datos } ] } }.to_json
   end
 
+  # Deriving the URL from the constant cannot catch a revert to SF43718, which
+  # would silently move every rate two banking days.
+  it "asks for the settlement series, spelled out" do
+    settlement = stub_request(
+      :get,
+      "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF60653/datos/2026-05-11/2026-05-15"
+    ).to_return(
+      status: 200,
+      body: banxico_response([ { "fecha" => "11/05/2026", "dato" => "17.0100" } ]),
+      headers: { "Content-Type" => "application/json" }
+    )
+
+    gateway.fetch_fx_fixes(from: from, to: to)
+
+    expect(settlement).to have_been_requested
+  end
+
   it "returns the published fixes oldest first" do
     stub_request(:get, url).to_return(
       status: 200,
@@ -32,9 +49,7 @@ RSpec.describe MarketData::Gateways::BanxicoGateway, "FIX rates" do
     ])
   end
 
-  # Banxico marks days it does not publish as "N/E". Those are holidays and
-  # weekends, not failures — dropping them is what lets rate_on fall back to
-  # the previous business day.
+  # Banxico marks days it does not publish as "N/E" — a holiday, not a failure.
   it "skips non-publication days without failing the batch" do
     stub_request(:get, url).to_return(
       status: 200,

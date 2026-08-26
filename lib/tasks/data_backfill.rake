@@ -45,3 +45,20 @@ namespace :data do
     Rake::Task["data:backfill_fundamentals"].invoke
   end
 end
+
+namespace :data do
+  desc "Seed FxRateHistory with Banxico's full settlement FIX series (#318)"
+  task backfill_fx_history: :environment do
+    from = MarketData::Gateways::BanxicoGateway::FIX_SERIES_START
+    before = FxRateHistory.count
+
+    puts "Fetching the USD/MXN FIX from #{from} — one ranged request."
+
+    case MarketData::UseCases::SyncFxHistory.call(from: from, to: Date.current)
+    in Dry::Monads::Success(stored:, **)
+      puts "Upserted #{stored} row(s); FxRateHistory went from #{before} to #{FxRateHistory.count}."
+    in Dry::Monads::Failure[ _, message ]
+      abort "Backfill failed: #{message}"
+    end
+  end
+end

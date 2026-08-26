@@ -1,6 +1,6 @@
 # ADR-009 — Historical FX rates for cross-currency snapshot revaluation
 
-- **Status:** Accepted · **implemented 2026-08-24** (slice 2b: `FxRateHistory`, Banxico FIX `SF43718`, `Portfolio#convert(at_date:)`, and `FxRateResolver` preferring the FIX for the trade's own date)
+- **Status:** Accepted · **implemented 2026-08-24** (slice 2b: `FxRateHistory`, `Portfolio#convert(at_date:)`, and `FxRateResolver` preferring the FIX for the trade's own date) · **amended 2026-08-26** ([#318](https://github.com/rodacato/stockerly/issues/318)): the series is `SF60653`, and history is seeded from 1991 rather than collected forward
 - **Date:** 2026-06-27
 - **Author:** Adrian Castillo
 - **Supersedes:** —
@@ -58,10 +58,45 @@ B is rejected because it still needs the same FX history to be precise, while ad
 **Negative / risk**
 - New schema (`FxRateHistory`) plus a daily refresh job — more surface to keep healthy (the existing `CheckSyncHealthJob` stale-sync alerting should cover it).
 - Every historical-revaluation callsite must pass `at_date:`; missing one silently reintroduces the today's-FX gap. Mitigated by the cross-currency cases in `multi_currency_audit_spec.rb` asserting honest values.
-- Backfill: history only exists from the day the table starts collecting. Snapshots older than the first stored rate fall back to the nearest available rate; this is documented and acceptable for a beta with little history.
+- ~~Backfill: history only exists from the day the table starts collecting.~~ **Resolved by the 2026-08-26 amendment** — the whole series is seeded, so no snapshot predates the store.
 
 **Operational requirement**
 - The daily FX-history refresh runs after Banxico publishes (~11 AM CDMX, per #177). A missed run leaves a gap day; the calculators fall back to the nearest available rate and the sync-health check flags the staleness.
+
+## Amendment, 2026-08-26 — the settlement series, and a seeded history
+
+The FIX was read from `SF43718`, the series keyed to the day a rate is
+**determined**. A broker settles two banking days later, against `SF60653`. They
+are the same numbers on different dates: on 2026-05-04 the determination series
+says 17.5157 and the settlement series says 17.4948 — a trade valued against the
+first reconciles with nothing.
+
+`SF60653` also **carries every calendar day forward**, where `SF43718` is simply
+absent on weekends and holidays. Measured on 2026-08-26: over 2026 the
+determination series has 164 rows and no weekend rows; the settlement series has
+238 and 68. So *"the rate at the trade's date"* stops being banking-day
+arithmetic and becomes `series[date]`.
+
+**Two conventions in one table would have been worse than one wrong one**, so
+the switch came with a decision on the ~8 determination-dated rows already
+stored. Three ways out were considered — backfill, a column recording the series,
+or re-fetching forward only. **Backfill won, and it is not the expensive option
+the framing assumed:** the full series is 12,705 rows from 1991-11-14, returned
+in a single free 493 KB request in 0.19 s. A column recording the series would
+have made the ambiguity permanent to avoid overwriting eight rows.
+
+**No delete was needed.** Because the settlement series covers every calendar
+day, every determination-dated row falls inside it and the upsert corrects it in
+place. `rake data:backfill_fx_history` is therefore idempotent and safe to
+re-run.
+
+Provenance follows [ADR-016](./0016-canonical-market-data-observations.md)'s
+amendment: rows record `Banxico/SF60653`, not `Banxico`, because the sub-source
+is what decides the number. `FxRateHistory.quote_on` returns the rate **with the
+date and source of the row it used**, so no reader has to know which series
+produced it — the FX endpoint used to hardcode the label and echo the date it was
+asked for, which made the sheet's *"FIX de Banxico del …"* untrue on any
+fallback.
 
 ## Revisit triggers
 

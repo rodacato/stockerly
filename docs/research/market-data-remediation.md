@@ -7,9 +7,10 @@
 > **This document dissolves into GitHub Issues.** It exists so nothing is lost between the audit and
 > the board; delete a row once its issue is open, and delete the file once all of them are.
 >
-> **Status 2026-08-26, second pass:** ten of the eighteen findings are closed —
-> group A, all of C except C2 and C9, both of group D, and B2. Verified against
-> the code rather than assumed; each closure names what did it. What remains is
+> **Status 2026-08-26, third pass:** eleven of the eighteen findings are closed —
+> group A, all of C except C2 and C9, both of group D, B2, and now **B1** with
+> [#318](https://github.com/rodacato/stockerly/issues/318). Verified against the
+> code rather than assumed; each closure names what did it. What remains is
 > listed at the bottom under **Still open**, and every row there is now a GitHub
 > issue.
 >
@@ -38,7 +39,7 @@ Each is a short diff with a consequence that needs deciding first. Do not batch 
 
 | # | Fix | Why it is not trivial |
 |---|---|---|
-| B1 | **Banxico FIX series `SF43718` → `SF60653`** | Looks like one constant, and closes the multi-currency P0 residual — but existing `fx_rate_histories` rows are keyed to the **determination** date and new ones would be keyed to the **settlement** date. Two conventions in one table is worse than the current state. **Needs a backfill decision before the constant changes.** |
+| ✅ B1 | **Closed 2026-08-26.** `FIX_SERIES` is `SF60653` and the backfill decision was **full backfill** — the whole series, 12,705 rows from 1991-11-14, is one free 493 KB request. No delete was needed: the settlement series covers every calendar day, so the upsert corrects the determination-dated rows in place. Recorded as an amendment to [ADR-009](../architecture/adr/0009-fx-history-strategy.md). |
 | ✅ B2 | **Closed — the gateway itself is gone.** `YahooFinanceGateway` was deleted when Yahoo moved behind the yfinance bridge, and `fetch_batch_quotes` and its per-symbol fallback went with it. The decision this row was waiting on — what handles the failure when the fallback is removed — was answered by DataBursatil taking the BMV batch. |
 | B3 | **CoinGecko: request MXN natively** | `vs_currency=usd` is hardcoded in three places and `data["usd"]` is parsed in a fourth. CoinGecko quotes MXN directly, so we are converting a number the source could have given us — but this touches money parsing, so it needs its specs first. |
 | B4 | **Batch the CETES curve into one request** | `fetch_all_terms` makes 4 calls where Banxico allows **20 series per request**. A clean win against the provider most at risk of a day-long block — but it is a real refactor of the parsing, not a parameter change. |
@@ -101,11 +102,11 @@ decision is needed, names whose it is.
 
 | # | What | Issue |
 |---|---|---|
-| B1 | **Banxico still reads `SF43718`.** The settlement series `SF60653` makes "the FIX at the trade's date" a direct lookup with no banking-day arithmetic and no weekend gaps — it is the last piece of the multi-currency P0. Blocked on a backfill decision: existing `fx_rate_histories` rows are keyed to the determination date, and two conventions in one table is worse than the current state. | [#318](https://github.com/rodacato/stockerly/issues/318) |
 | B3 | CoinGecko is asked in USD in four places although it quotes MXN natively — we convert a number the source could have given us. | [#320](https://github.com/rodacato/stockerly/issues/320) |
 | B4 | The CETES curve costs four calls where Banxico allows twenty series in one, against the provider most at risk of a day-long block. | [#320](https://github.com/rodacato/stockerly/issues/320) |
 | C2 | **The registry is still decorative.** `for_capability` has two call sites; twenty places instantiate a gateway by name. | [#319](https://github.com/rodacato/stockerly/issues/319) |
 | C9 | **FMP is legacy-gated** and still serves dividends, splits *and* fundamentals fallback — it works on the maintainer's key and 403s for every new self-hoster. | [#312](https://github.com/rodacato/stockerly/issues/312) |
 
-**Delete this file when all five are closed.** It has done its job: eighteen
-findings reached the board without any being lost between the audit and the work.
+**Delete this file when the remaining four are closed.** It has done its job:
+eighteen findings reached the board without any being lost between the audit and
+the work.

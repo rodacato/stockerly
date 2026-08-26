@@ -22,15 +22,19 @@ module MarketData
       private
 
       def persist(fixes)
-        fixes.count do |fix|
-          FxRateHistory.record(
-            base: MarketData::Gateways::BanxicoGateway::FIX_PAIR[:base],
-            quote: MarketData::Gateways::BanxicoGateway::FIX_PAIR[:quote],
-            date: fix[:date],
-            rate: fix[:rate],
-            source: "banxico_fix"
-          )
-        end
+        pair = MarketData::Gateways::BanxicoGateway::FIX_PAIR
+
+        FxRateHistory.record_all(
+          fixes.map do |fix|
+            {
+              base_currency: pair[:base],
+              quote_currency: pair[:quote],
+              rate_date: fix[:date],
+              rate: fix[:rate],
+              source: MarketData::Gateways::BanxicoGateway::FIX_SOURCE_ID
+            }
+          end
+        )
       end
     end
   end
