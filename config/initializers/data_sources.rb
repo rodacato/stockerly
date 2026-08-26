@@ -70,7 +70,7 @@ Rails.application.config.after_initialize do
     job_class: RefreshFearGreedJob,
     job_args: [],
     test_symbol: nil,
-    test_method: :fetch_price,
+    test_method: :fetch_index,
     integration_name: "Alternative.me",
     circuit_breaker_key: "crypto_fear_greed",
     capabilities: %i[sentiment]
@@ -115,7 +115,7 @@ Rails.application.config.after_initialize do
     job_class: RefreshFxRatesJob,
     job_args: [],
     test_symbol: nil,
-    test_method: :fetch_price,
+    test_method: :refresh_rates,
     integration_name: "ExchangeRate",
     circuit_breaker_key: "fx",
     capabilities: %i[fx_current]
@@ -144,7 +144,7 @@ Rails.application.config.after_initialize do
     job_class: SyncCetesJob,
     job_args: [],
     test_symbol: nil,
-    test_method: :fetch_price,
+    test_method: :fetch_auctions,
     integration_name: "Banxico",
     circuit_breaker_key: "banxico",
     capabilities: %i[cetes]
