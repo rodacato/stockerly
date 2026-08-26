@@ -17,6 +17,20 @@ module MarketData
       QUOTE_FIELDS = "u,c,v,f".freeze
       CREDITS_CACHE_KEY = "databursatil:credits".freeze
       CREDITS_TTL = 1.hour
+      MONTHLY_CREDITS = 200_000
+
+      # The one provider that reports its own balance. A nil balance draws no
+      # bar rather than a zero: unknown and unused are different readings.
+      def self.quota(_integration)
+        remaining = new.remaining_credits
+        MarketData::Domain::SourceCatalogue::Quota.new(
+          used: remaining ? MONTHLY_CREDITS - remaining : 0,
+          limit: remaining ? MONTHLY_CREDITS : nil,
+          unit: :kib_per_month
+        )
+      rescue ApiKeyNotConfiguredError
+        MarketData::Domain::SourceCatalogue::Quota.new(used: 0, limit: nil, unit: :kib_per_month)
+      end
       TIMEOUT = 8
 
       def initialize(api_key: nil)

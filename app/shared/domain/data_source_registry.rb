@@ -17,14 +17,15 @@ class DataSourceRegistry
     :integration_name,  # Matches Integration#provider_name, e.g. "Alpaca"
     :circuit_breaker_key, # Key for CircuitBreaker lookup, e.g. "stock"
     :capabilities,      # Array of capability symbols, e.g. [:prices, :news, :earnings]
-    :health_check       # True when this source is the one that answers for its integration
+    :health_check,      # True when this source is the one that answers for its integration
+    :maintainer_only    # True when the credential only works for pre-existing accounts
   )
 
   @sources = {}
 
   class << self
-    def register(key, health_check: false, **attrs)
-      @sources[key] = DataSource.new(key: key, health_check: health_check, **attrs)
+    def register(key, health_check: false, maintainer_only: false, **attrs)
+      @sources[key] = DataSource.new(key: key, health_check: health_check, maintainer_only: maintainer_only, **attrs)
     end
 
     def find(key)

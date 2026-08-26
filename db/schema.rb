@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_26_210000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_26_222345) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -247,6 +247,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_210000) do
     t.datetime "created_at", null: false
     t.integer "daily_api_calls", default: 0, null: false
     t.integer "daily_call_limit", default: 500
+    t.datetime "last_failure_at"
+    t.string "last_failure_tag"
     t.datetime "last_sync_at"
     t.integer "max_requests_per_minute"
     t.integer "minute_calls", default: 0, null: false

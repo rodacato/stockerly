@@ -21,10 +21,14 @@ class SyncIntegrationJob < ApplicationJob
     result = test_connectivity(integration)
 
     if result.success?
-      integration.update!(connection_status: :connected, last_sync_at: Time.current)
+      integration.update!(connection_status: :connected, last_sync_at: Time.current,
+                          last_failure_tag: nil, last_failure_at: nil)
       log_sync_success("Integration Sync: #{integration.provider_name}")
     else
-      integration.update!(connection_status: :disconnected)
+      # The tag, not just the message: "disconnected" cannot say whether the
+      # provider refused us or we simply have no key.
+      integration.update!(connection_status: :disconnected,
+                          last_failure_tag: result.failure[0].to_s, last_failure_at: Time.current)
       log_sync_failure("Integration Sync: #{integration.provider_name}", result.failure[1])
     end
   end
