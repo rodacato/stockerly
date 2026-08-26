@@ -21,7 +21,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
   <% [
     { icon: "add_chart",            title: "Registra tu primer movimiento", body: "Carga una compra o venta para empezar a calcular tu rendimiento.", href: portfolio_path },
-    { icon: "visibility",           title: "Crea una watchlist",            body: "Sigue los activos que te interesan sin tenerlos en cartera.",     href: market_path },
+    { icon: "visibility",           title: "Crea una watchlist",            body: "Sigue los activos que te interesan sin tenerlos en cartera.",     href: assets_path },
     { icon: "notifications_active", title: "Configura una alerta",          body: "Recibe avisos cuando un precio o métrica cruce un umbral.",       href: alerts_path }
   ].each do |card| %>
     <%= link_to card[:href], class: "group flex flex-col p-5 rounded-2xl bg-bg-surface border border-border-default hover:border-primary/30 hover:bg-bg-muted transition-colors no-underline text-fg-default" do %>

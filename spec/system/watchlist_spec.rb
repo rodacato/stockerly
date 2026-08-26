@@ -20,8 +20,8 @@ RSpec.describe "Watchlist management", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "shows assets on market page" do
-    visit market_path
+  it "shows assets on Rastreados" do
+    visit tracked_assets_path
     expect(page).to have_content("Apple Inc.")
     expect(page).to have_content("Tesla, Inc.")
   end

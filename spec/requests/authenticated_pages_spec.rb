@@ -18,15 +18,6 @@ RSpec.describe "Authenticated pages", type: :request do
     end
   end
 
-  describe "GET /market" do
-    it "renders the market explorer with listings" do
-      create(:asset, name: "Apple Inc.", symbol: "AAPL")
-      get market_path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Listado de mercado")
-    end
-  end
-
   describe "GET /portfolio" do
     it "renders the Consolidado, with the lists at their own route" do
       portfolio = create(:portfolio, user: user)
@@ -78,56 +69,6 @@ RSpec.describe "Authenticated pages", type: :request do
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
       expect(response.body).to include("Alerta eliminada")
-    end
-  end
-
-  describe "GET /earnings" do
-    it "renders the earnings calendar header in es-MX" do
-      get earnings_path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Calendario de reportes")
-      expect(response.body).to include("Reportes trimestrales")
-    end
-
-    it "filters by watchlist via watchlist_only param" do
-      get earnings_path(watchlist_only: "true")
-      expect(response).to have_http_status(:ok)
-    end
-
-    it "filters by mercado" do
-      get earnings_path(mercado: "BMV")
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
-  describe "GET /news" do
-    it "renders the news page" do
-      create(:news_article, title: "Test Article", published_at: 1.hour.ago)
-      get news_path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Market News")
-      expect(response.body).to include("Test Article")
-    end
-
-    it "renders empty state when no articles" do
-      get news_path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("No news articles yet")
-    end
-  end
-
-  describe "GET /search" do
-    it "returns search results for a query" do
-      create(:asset, name: "Apple Inc.", symbol: "AAPL")
-      get search_path(q: "apple")
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Apple Inc.")
-    end
-
-    it "shows empty state for no results" do
-      get search_path(q: "zzzzz")
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("No results found")
     end
   end
 

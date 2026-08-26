@@ -64,13 +64,4 @@ RSpec.describe "Market Asset Detail Tabs", type: :request do
       expect(response.body).to include("Sin estados financieros")
     end
   end
-
-  describe "navigation links" do
-    it "market listings link to the asset detail page" do
-      get market_path
-
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include(market_asset_path(asset.symbol))
-    end
-  end
 end

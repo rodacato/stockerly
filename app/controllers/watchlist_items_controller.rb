@@ -24,7 +24,7 @@ class WatchlistItemsController < AuthenticatedController
           render turbo_stream: turbo_stream.prepend("flash_messages",
             partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
-        format.html { redirect_back fallback_location: market_path, alert: message }
+        format.html { redirect_back fallback_location: assets_path, alert: message }
       end
     in Dry::Monads::Failure[ :not_found, message ]
       respond_to do |format|
@@ -32,7 +32,7 @@ class WatchlistItemsController < AuthenticatedController
           render turbo_stream: turbo_stream.prepend("flash_messages",
             partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
-        format.html { redirect_back fallback_location: market_path, alert: message }
+        format.html { redirect_back fallback_location: assets_path, alert: message }
       end
     end
   end

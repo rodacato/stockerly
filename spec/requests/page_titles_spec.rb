@@ -10,9 +10,7 @@ RSpec.describe "Page titles", type: :request do
   before { post login_path, params: { email: user.email, password: "password123" } }
 
   {
-    "/admin"              => "Panel general",
     "/admin/logs"         => "Registros",
-    "/admin/assets"       => "Activos",
     "/admin/integrations" => "Integraciones",
     "/admin/settings"     => "Estado y mantenimiento"
   }.each do |path, name|
