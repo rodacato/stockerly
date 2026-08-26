@@ -2,6 +2,8 @@
 # Follows the same pattern as EventBus — boot-time registration,
 # class-level accessor, and clear! for tests.
 class DataSourceRegistry
+  AmbiguousHealthCheck = Class.new(StandardError)
+
   DataSource = Data.define(
     :key,               # Symbol, e.g. :polygon_stocks
     :name,              # Human label, e.g. "US Stocks — Polygon.io"
@@ -33,11 +35,15 @@ class DataSourceRegistry
       @sources.values
     end
 
-    # An integration can front several sources. Without a marked one the answer
-    # is whichever registered first, which is an accident rather than a choice.
+    # An integration fronting several sources has to name the one that answers
+    # for it; falling back on registration order would make file position the
+    # decision. One source needs no marker, since there is nothing to choose.
     def for_integration(provider_name)
       matches = @sources.values.select { |ds| ds.integration_name == provider_name }
-      matches.find(&:health_check) || matches.first
+      return matches.first if matches.size <= 1
+
+      matches.find(&:health_check) ||
+        raise(AmbiguousHealthCheck, "#{provider_name} has #{matches.size} sources and none sets health_check")
     end
 
     def for_capability(capability)

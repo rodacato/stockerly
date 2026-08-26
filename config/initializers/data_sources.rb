@@ -30,6 +30,7 @@ Rails.application.config.after_initialize do
     test_symbol: "AAPL",
     test_method: :fetch_price,
     integration_name: "Polygon.io",
+    health_check: true,
     circuit_breaker_key: "stock",
     capabilities: %i[prices historical indices]
   )
@@ -76,20 +77,6 @@ Rails.application.config.after_initialize do
     capabilities: %i[prices historical intraday]
   )
 
-  DataSourceRegistry.register(:yahoo_bmv,
-    name: "Mexican Stocks — Yahoo Finance",
-    icon: "language",
-    color: "sky",
-    gateway_class: MarketData::Gateways::YahooFinanceGateway,
-    job_class: SyncPriorityAssetsJob,
-    job_args: %w[stock high],
-    test_symbol: "GENIUSSACV.MX",
-    test_method: :fetch_price,
-    integration_name: "Yahoo Finance",
-    circuit_breaker_key: "bmv",
-    capabilities: %i[prices historical search indices]
-  )
-
   DataSourceRegistry.register(:crypto_fear_greed,
     name: "Crypto F&G — Alternative.me",
     icon: "psychology",
@@ -119,7 +106,7 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:yfinance_bridge,
-    name: "Indices & BMV Dividends — Yahoo (yfinance)",
+    name: "Yahoo Finance — via the yfinance bridge",
     icon: "monitoring",
     color: "teal",
     gateway_class: MarketData::Gateways::YfinanceGateway,
@@ -128,23 +115,11 @@ Rails.application.config.after_initialize do
     test_symbol: "^MXX",
     test_method: :fetch_price,
     integration_name: "Yahoo Finance",
-    health_check: true,
     circuit_breaker_key: "yfinance",
-    capabilities: %i[indices dividends splits]
-  )
-
-  DataSourceRegistry.register(:yahoo_indices,
-    name: "Market Indices — Yahoo Finance",
-    icon: "monitoring",
-    color: "teal",
-    gateway_class: MarketData::Gateways::YahooFinanceGateway,
-    job_class: SyncMarketIndicesJob,
-    job_args: [],
-    test_symbol: nil,
-    test_method: :fetch_price,
-    integration_name: "Yahoo Finance",
-    circuit_breaker_key: "yahoo_indices",
-    capabilities: %i[indices]
+    # BMV earnings are served through an explicit route in SyncEarnings, not
+    # through a chain: declaring :earnings here would put the bridge in the US
+    # chain too, where Finnhub and Polygon already answer.
+    capabilities: %i[prices historical indices dividends splits]
   )
 
   DataSourceRegistry.register(:alpha_vantage_fundamentals,
@@ -199,6 +174,7 @@ Rails.application.config.after_initialize do
     test_symbol: nil,
     test_method: :fetch_fx_fixes,
     integration_name: "Banxico",
+    health_check: true,
     circuit_breaker_key: "banxico",
     capabilities: %i[fx_history]
   )
