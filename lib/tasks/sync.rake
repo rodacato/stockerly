@@ -7,12 +7,13 @@ namespace :stockerly do
   # Integration defaults keyed by provider_name.
   # Only applied when CREATING a new record — existing records are never overwritten.
   INTEGRATION_DEFAULTS = {
+    # Alpaca publishes 200 req/min and no daily cap; the daily figure is our own guardrail.
+    "Alpaca"         => { provider_type: "US Stocks & Corporate Actions", requires_api_key: true, max_requests_per_minute: 200, daily_call_limit: 50_000 },
     "Polygon.io"     => { provider_type: "Stocks & Forex",       requires_api_key: true,  max_requests_per_minute: 5,   daily_call_limit: 500   },
     "Finnhub"        => { provider_type: "Stocks & Market Data",  requires_api_key: true,  max_requests_per_minute: 60,  daily_call_limit: 500   },
     "CoinGecko"      => { provider_type: "Cryptocurrency",        requires_api_key: false, max_requests_per_minute: 30,  daily_call_limit: 10_000, settings: { "pro_tier" => false } },
     "Yahoo Finance"  => { provider_type: "Mexican Stocks & ETFs", requires_api_key: false, max_requests_per_minute: nil, daily_call_limit: 2_000 },
     "Alternative.me" => { provider_type: "Sentiment",             requires_api_key: false, max_requests_per_minute: nil, daily_call_limit: 100   },
-    "CNN"            => { provider_type: "Sentiment",             requires_api_key: false, max_requests_per_minute: nil, daily_call_limit: 100   },
     "Alpha Vantage"  => { provider_type: "Fundamentals",          requires_api_key: true,  max_requests_per_minute: 5,   daily_call_limit: 25    },
     "FMP"            => { provider_type: "Dividends & Splits",    requires_api_key: true,  max_requests_per_minute: 10,  daily_call_limit: 250   },
     "ExchangeRate"   => { provider_type: "FX Rates",              requires_api_key: true,  max_requests_per_minute: 10,  daily_call_limit: 1_500 },
