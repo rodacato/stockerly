@@ -128,6 +128,7 @@ Rails.application.config.after_initialize do
     test_symbol: "^MXX",
     test_method: :fetch_price,
     integration_name: "Yahoo Finance",
+    health_check: true,
     circuit_breaker_key: "yfinance",
     capabilities: %i[indices dividends splits]
   )
