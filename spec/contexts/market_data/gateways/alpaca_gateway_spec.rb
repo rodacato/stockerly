@@ -136,6 +136,34 @@ RSpec.describe MarketData::Gateways::AlpacaGateway do
     end
   end
 
+  describe "#fetch_splits" do
+    # Payload taken verbatim from a live probe: AAPL's 2020 4:1 and NVDA's 2024 10:1.
+    it "parses forward splits into the shape FmpGateway returns" do
+      stub_alpaca_splits("AAPL", forward: [
+        { "ex_date" => "2020-08-31", "new_rate" => 4, "old_rate" => 1,
+          "payable_date" => "2020-08-28", "record_date" => "2020-08-24", "symbol" => "AAPL" }
+      ])
+
+      expect(gateway.fetch_splits("AAPL").value!)
+        .to eq([ { date: Date.new(2020, 8, 31), numerator: 4, denominator: 1 } ])
+    end
+
+    it "merges reverse splits into the same series, oldest first" do
+      stub_alpaca_splits("XYZ",
+        forward: [ { "ex_date" => "2024-06-10", "new_rate" => 10, "old_rate" => 1 } ],
+        reverse: [ { "ex_date" => "2021-03-01", "new_rate" => 1, "old_rate" => 20 } ])
+
+      expect(gateway.fetch_splits("XYZ").value!.map { |s| s[:date] })
+        .to eq([ Date.new(2021, 3, 1), Date.new(2024, 6, 10) ])
+    end
+
+    it "skips entries missing either side of the ratio" do
+      stub_alpaca_splits("AAPL", forward: [ { "ex_date" => "2020-08-31", "new_rate" => 4 } ])
+
+      expect(gateway.fetch_splits("AAPL").value!).to be_empty
+    end
+  end
+
   describe "#fetch_news" do
     it "parses articles and takes the first image" do
       stub_alpaca_news([

@@ -1012,6 +1012,16 @@ module WebmockHelpers
       )
   end
 
+  def stub_alpaca_splits(symbol, forward: [], reverse: [])
+    stub_request(:get, "https://data.alpaca.markets/v1/corporate-actions")
+      .with(query: hash_including("symbols" => symbol, "types" => "forward_split,reverse_split"))
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: { corporate_actions: { forward_splits: forward, reverse_splits: reverse } }.to_json
+      )
+  end
+
   def stub_alpaca_news(items)
     stub_request(:get, %r{data\.alpaca\.markets/v1beta1/news})
       .to_return(

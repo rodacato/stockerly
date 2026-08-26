@@ -119,6 +119,30 @@ module MarketData
         Success(dividends)
       end
 
+      # Returns Success([{ date:, numerator:, denominator: }, ...])
+      # Shape matches FmpGateway#fetch_splits, so the two are interchangeable.
+      def fetch_splits(symbol, from_date: 10.years.ago.to_date, to_date: Date.current)
+        result = corporate_actions(symbol, "forward_split,reverse_split", from_date, to_date)
+        return result if result.failure?
+
+        actions = result.value!
+        entries = Array(actions["forward_splits"]) + Array(actions["reverse_splits"])
+
+        splits = entries.filter_map do |entry|
+          next if entry["ex_date"].blank? || entry["new_rate"].blank? || entry["old_rate"].blank?
+
+          {
+            date: Date.parse(entry["ex_date"]),
+            numerator: entry["new_rate"].to_i,
+            denominator: entry["old_rate"].to_i
+          }
+        rescue Date::Error
+          next
+        end
+
+        Success(splits.sort_by { |split| split[:date] })
+      end
+
       # Returns Success([{ title:, summary:, source:, url:, image_url:, published_at:, related_ticker: }, ...])
       def fetch_news(ticker: nil, limit: 20)
         check = RateLimiter.check!(PROVIDER)
