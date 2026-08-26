@@ -25,7 +25,7 @@ RSpec.describe "Onboarding", type: :request do
       }
 
       expect(response).to redirect_to(onboarding_assets_path)
-      expect(integration.reload.api_key_pools.default_key.first.api_key_encrypted).to eq("my_api_key")
+      expect(integration.reload.api_key_encrypted).to eq("my_api_key")
     end
   end
 

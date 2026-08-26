@@ -50,7 +50,6 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
 
   it "shows the Pausada pill and the add-key callout when no keys are configured" do
     integration = create(:integration, :keyless, provider_name: "Finnhub", provider_type: "Sentiment")
-    integration.api_key_pools.destroy_all
     integration.update!(requires_api_key: true)
     visit admin_integrations_path
 
@@ -65,13 +64,11 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
     expect(page).to have_content("Error")
   end
 
-  it "renders the masked last-4 of pool keys" do
-    integration = create(:integration, provider_name: "Polygon.io", provider_type: "Stocks")
-    integration.api_key_pools.create!(name: "alt", api_key_encrypted: "abcdefghij9999", is_default: false)
+  it "offers the masked last-4 as the key field's placeholder" do
+    create(:integration, provider_name: "Polygon.io", provider_type: "Stocks", api_key_encrypted: "abcdefghij9999")
     visit admin_integrations_path
 
-    expect(page).to have_content("••••9999")
-    expect(page).to have_content("DEFAULT")
+    expect(page).to have_field("integration[api_key_encrypted]", placeholder: "••••••••••••9999", visible: :all)
   end
 
   it "deletes an integration with the trash icon" do

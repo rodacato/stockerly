@@ -13,7 +13,7 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
 
       expect(result).to be_success
       expect(result.value![:updated]).to eq(2)
-      default_key = polygon.reload.api_key_pools.default_key.first
+      default_key = polygon.reload
       expect(default_key.api_key_encrypted).to eq("poly_key_123")
       expect(polygon.connection_status).to eq("connected")
     end

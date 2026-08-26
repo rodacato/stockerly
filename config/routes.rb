@@ -98,9 +98,6 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :integrations, only: [ :index, :create, :update, :destroy ] do
       member { post :refresh_sync }
-      resources :pool_keys, only: [ :create, :destroy ], controller: "pool_keys" do
-        member { patch :toggle }
-      end
     end
     resources :logs, only: [ :index ] do
       collection { get :export_csv }

@@ -32,15 +32,15 @@ RSpec.describe Integration, type: :model do
   end
 
   describe "#masked_api_key" do
-    it "returns masked key when pool key present" do
-      integration = create(:integration, pool_key_value: "test_key_abc123xyz789")
+    it "returns the masked key when one is configured" do
+      integration = create(:integration, api_key_encrypted: "test_key_abc123xyz789")
       result = integration.masked_api_key
       expect(result).to start_with("••••••••••••")
       expect(result).to end_with("z789")
     end
 
-    it "returns nil when no pool keys" do
-      integration = create(:integration, pool_key_value: nil)
+    it "returns nil when no key is configured" do
+      integration = create(:integration, api_key_encrypted: nil)
       expect(integration.masked_api_key).to be_nil
     end
   end
@@ -129,37 +129,34 @@ RSpec.describe Integration, type: :model do
   end
 
   describe "#active_api_key" do
-    it "returns default pool key when present" do
-      integration = create(:integration, pool_key_value: "default_key_123")
-      create(:api_key_pool, integration: integration, api_key_encrypted: "other_key_456")
+    it "returns the configured key" do
+      integration = create(:integration, api_key_encrypted: "default_key_123")
 
       expect(integration.active_api_key).to eq("default_key_123")
     end
 
-    it "returns least-used enabled pool key when no default" do
-      integration = create(:integration, pool_key_value: nil)
-      create(:api_key_pool, integration: integration, api_key_encrypted: "key_a", daily_calls: 10)
-      create(:api_key_pool, integration: integration, api_key_encrypted: "key_b", daily_calls: 2)
+    it "returns nil when the key is blank rather than an empty string" do
+      integration = create(:integration, api_key_encrypted: "")
 
-      expect(integration.active_api_key).to eq("key_b")
+      expect(integration.active_api_key).to be_nil
     end
 
-    it "returns nil when no pool keys" do
-      integration = create(:integration, pool_key_value: nil)
+    it "returns nil when no key is configured" do
+      integration = create(:integration, api_key_encrypted: nil)
 
       expect(integration.active_api_key).to be_nil
     end
   end
 
   describe "#api_key_configured?" do
-    it "returns true with enabled pool keys" do
+    it "returns true when a key is configured" do
       integration = create(:integration)
 
       expect(integration.api_key_configured?).to be true
     end
 
-    it "returns false when no pool keys" do
-      integration = create(:integration, pool_key_value: nil)
+    it "returns false when no key is configured" do
+      integration = create(:integration, api_key_encrypted: nil)
 
       expect(integration.api_key_configured?).to be false
     end

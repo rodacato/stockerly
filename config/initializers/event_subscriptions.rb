@@ -67,7 +67,4 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(Administration::Events::IntegrationConnected, Administration::Handlers::LogIntegrationConnected)
   EventBus.subscribe(Administration::Events::IntegrationUpdated, Administration::Handlers::LogIntegrationUpdated)
   EventBus.subscribe(Administration::Events::IntegrationDeleted, Administration::Handlers::LogIntegrationDeleted)
-  EventBus.subscribe(Administration::Events::PoolKeyAdded, Administration::Handlers::LogPoolKeyChange)
-  EventBus.subscribe(Administration::Events::PoolKeyToggled, Administration::Handlers::LogPoolKeyChange)
-  EventBus.subscribe(Administration::Events::PoolKeyRemoved, Administration::Handlers::LogPoolKeyChange)
 end

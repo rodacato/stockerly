@@ -114,23 +114,5 @@ module Admin
     end
 
     # Returns the last 4 chars of the api key (visible).
-    def pool_key_short_id(pool_key)
-      key = pool_key.api_key_encrypted.to_s
-      key.length >= 4 ? key.last(4) : key
-    end
-
-    def pool_key_status(pool_key)
-      return :off unless pool_key.enabled?
-      :ok
-    end
-
-    def pool_key_dot_class(status)
-      case status
-      when :ok   then "bg-emerald-500"
-      when :warn then "bg-amber-500"
-      when :err  then "bg-rose-500"
-      else            "bg-slate-300 dark:bg-slate-600"
-      end
-    end
   end
 end

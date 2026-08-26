@@ -79,30 +79,6 @@ RSpec.describe "Event Subscription Wiring" do
         expect(handlers).to include(Administration::Handlers::LogIntegrationDeleted)
       end
     end
-
-    describe "Administration::Events::PoolKeyAdded" do
-      it "has Administration::Handlers::LogPoolKeyChange handler" do
-        handlers = EventBus.handlers_for(Administration::Events::PoolKeyAdded)
-
-        expect(handlers).to include(Administration::Handlers::LogPoolKeyChange)
-      end
-    end
-
-    describe "Administration::Events::PoolKeyToggled" do
-      it "has Administration::Handlers::LogPoolKeyChange handler" do
-        handlers = EventBus.handlers_for(Administration::Events::PoolKeyToggled)
-
-        expect(handlers).to include(Administration::Handlers::LogPoolKeyChange)
-      end
-    end
-
-    describe "Administration::Events::PoolKeyRemoved" do
-      it "has Administration::Handlers::LogPoolKeyChange handler" do
-        handlers = EventBus.handlers_for(Administration::Events::PoolKeyRemoved)
-
-        expect(handlers).to include(Administration::Handlers::LogPoolKeyChange)
-      end
-    end
   end
 
   # ---------------------------------------------------------------------------

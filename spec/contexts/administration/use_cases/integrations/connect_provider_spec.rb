@@ -29,7 +29,7 @@ RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
 
       expect(result).to be_success
       integration = result.value!
-      default_key = integration.api_key_pools.default_key.first
+      default_key = integration
       expect(default_key).to be_present
       expect(default_key.api_key_encrypted).to eq("sk-123")
     end

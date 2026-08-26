@@ -281,7 +281,7 @@ RSpec.describe MarketData::Gateways::AlphaVantageGateway do
   describe "API key resolution" do
     context "when Integration record exists with valid key" do
       before do
-        create(:integration, provider_name: "Alpha Vantage", pool_key_value: "db_key")
+        create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "db_key")
       end
 
       it "uses the database key" do

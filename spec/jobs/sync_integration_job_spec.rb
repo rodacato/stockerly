@@ -4,7 +4,7 @@ RSpec.describe SyncIntegrationJob, type: :job do
   describe "#perform" do
     context "with Polygon.io integration" do
       let!(:integration) do
-        create(:integration, provider_name: "Polygon.io", connection_status: :connected, pool_key_value: "test_key")
+        create(:integration, provider_name: "Polygon.io", connection_status: :connected, api_key_encrypted: "test_key")
       end
 
       context "when connectivity test succeeds" do
@@ -47,7 +47,7 @@ RSpec.describe SyncIntegrationJob, type: :job do
 
     context "with Alpha Vantage integration (fundamentals gateway)" do
       let!(:integration) do
-        create(:integration, provider_name: "Alpha Vantage", connection_status: :connected, pool_key_value: "test_key")
+        create(:integration, provider_name: "Alpha Vantage", connection_status: :connected, api_key_encrypted: "test_key")
       end
 
       context "when connectivity test succeeds" do
@@ -75,7 +75,7 @@ RSpec.describe SyncIntegrationJob, type: :job do
     end
 
     context "when integration requires API key but has none" do
-      let!(:unconfigured) { create(:integration, provider_name: "Alpha Vantage", requires_api_key: true, pool_key_value: nil) }
+      let!(:unconfigured) { create(:integration, provider_name: "Alpha Vantage", requires_api_key: true, api_key_encrypted: nil) }
 
       it "sets status to disconnected" do
         described_class.perform_now(unconfigured.id)
