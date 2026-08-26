@@ -116,6 +116,11 @@ code is left loose. Remaining items below are working-code reworks / cosmetic �
 - Dead `welcome` mailer + its view/spec.
 - `seeds.rb` single-user rewrite.
 - Rename `FirstAdminCreated` → `AccountCreated`.
+- `SyncDividendsJob` records **projected**, not received, income — two defects found 2026-08-26 while
+  scoping FIBRA support. `create_payments` multiplies `position.shares` *as of today* instead of the
+  shares held at the dividend's `ex_date`, so a position opened after the ex-date gets a payment it
+  never received; and `received_at` is only ever set in `seeds.rb`. Harmless while the dividends tab
+  is display-only — wrong data the moment income feeds a return calculation.
 
 ## Phase 4 — Minimum viable to production
 
@@ -132,3 +137,20 @@ code is left loose. Remaining items below are working-code reworks / cosmetic �
 - Plan new designs (Claude Design prototypes, mobile-first cockpit) → discuss → decide how to continue.
 - Open decisions parked in the `redesign/` hub: event-log fork (Q1), plugin seam (Q3), evaluators, Q5
   comparativas. NOT this phase.
+- **Income as a domain fact (dividends / FIBRA distributions).** No documented trigger yet — parked on
+  purpose, not forgotten. Today the portfolio measures price appreciation only: `portfolio_snapshots`
+  carries `invested_value` + `total_value` and nothing else, and `DividendPayment` never reaches a
+  return calculation. Scoped 2026-08-26:
+  - **Already there:** Yahoo covers BMV (`.MX`), so a FIBRA registered as a `stock` in MXN prices
+    correctly today with historical FX. The `dividends` + `dividend_payments` tables exist.
+  - **The feature is income, not FIBRAs.** Captured payment (amount, currency, FX at pay date,
+    withholding, shares at `ex_date`), `income_received` on the snapshot, and yield-on-cost /
+    current-yield / total-return. That serves every dividend-paying holding, not just FIBRAs.
+  - **The expensive part is the MX tax treatment.** A FIBRA's *reembolso de capital* reduces the
+    position's cost basis, so a distribution mutates `Position#avg_cost` — a second position-mutating
+    event alongside splits, on the seam the multi-currency P0 just stabilised.
+  - **The blocker:** no configured gateway returns FIBRA distributions. Only FMP implements
+    `fetch_dividends` and its BMV coverage is poor; Yahoo exposes them via `events=div`, unimplemented.
+    Manual capture is the data-entry fastidio that killed the beta.
+  - **Cheapest path to a real trigger:** buy one small FIBRA position, register it as a `stock` in MXN,
+    and wait for the first distribution to become annoying. Then the discovery card writes itself.
