@@ -154,7 +154,10 @@ es-MX:
       agregado: "%{symbol} se agregó a Rastreados."
       agregar: Agregar activo
       buscar: Buscar activo
+      buscar_cargando: Buscando…
+      buscar_error: La búsqueda no responde. Llena los campos a mano.
       buscar_placeholder: Símbolo o nombre — AAPL, Apple, Bitcoin…
+      buscar_vacio: Sin resultados
       campo_asset_type: Tipo
       campo_country: País
       campo_exchange: Mercado
@@ -326,6 +329,9 @@ es-MX:
     - noviembre
     - diciembre
   market:
+    category_tab:
+      vacio_cuerpo: Los datos fundamentales aún no se han sincronizado para este activo.
+      vacio_titulo: Sin datos disponibles
     chips:
       como_el_mercado: se mueve como el mercado
       cubre_corto_plazo: cubre el corto plazo
@@ -333,6 +339,32 @@ es-MX:
       liquidez_corta: liquidez corta
       sobre_utilidades: paga más de lo que gana
       volatil: volátil
+    dividend_history:
+      col_ex: Ex-dividendo
+      col_monto: Monto / acción
+      col_pago: Fecha de pago
+      por_accion: por acción
+      titulo: Historial de dividendos
+      vacio_cuerpo: Este activo no ha pagado dividendos en el período disponible.
+      vacio_titulo: Sin dividendos registrados
+    earnings_tab:
+      cierre: cierre
+      col_estimado: EPS estimado
+      col_fecha: Fecha del reporte
+      col_real: EPS real
+      col_resultado: Resultado
+      col_sorpresa: Sorpresa
+      estimado: Estimado
+      estimado_valor: 'Estimado: %{value}'
+      historial: Historial de EPS
+      pendiente: Pendiente
+      por_debajo: Por debajo
+      por_reportar: Por reportar
+      pre_apertura: pre-apertura
+      real_valor: 'Real: %{value}'
+      supero: Superó
+      vacio_cuerpo: Aún no tenemos histórico de reportes trimestrales para este activo.
+      vacio_titulo: Sin reportes disponibles
     estado:
       neutral:
         holding: Sin extremos técnicos hoy. Ni sobrecompra ni sobreventa en RSI ni
@@ -352,6 +384,45 @@ es-MX:
         label: Estirado
         watching: Estirado — no es momento de entrar. El activo cotiza por encima
           de su rango habitual.
+    fixed_income_detail:
+      antes_isr: Rendimiento anualizado · antes de ISR
+      avance: Avance al vencimiento
+      aviso: Datos de CETES provistos por Banxico. Los rendimientos pasados no garantizan
+        resultados futuros.
+      dias:
+        one: 1 día
+        other: "%{count} días"
+      emision: Emisión
+      faltan:
+        one: falta 1 día
+        other: faltan %{count} días
+      fuente: Cifras con base en la última subasta · Banxico
+      inversion_inicial: Inversión inicial
+      plazo: Plazo
+      por_titulo: por título
+      precio_descuento: Precio con descuento
+      rendimiento_estimado: Rendimiento estimado
+      restantes:
+        one: 1 día restante
+        other: "%{count} días restantes"
+      simulacion: Simulación de inversión
+      simulacion_base: Ejemplo con 100 títulos CETES
+      sin_avance: 'Avance no disponible: el instrumento no expone el plazo original
+        de emisión.'
+      sin_vencimiento: Fecha de vencimiento no disponible.
+      tasa_anual: Tasa anualizada
+      tasa_plazo: Tasa %{days}D
+      titulo: Detalle de la emisión
+      transcurridos:
+        one: 1 día transcurrido
+        other: "%{count} días transcurridos"
+      valor_nominal: Valor nominal
+      valor_vencimiento: Valor al vencimiento
+      vence_el:
+        one: Vence el %{date} · falta 1 día.
+        other: Vence el %{date} · faltan %{count} días.
+      vencimiento: Vencimiento
+      via_cetes_directo: vía Cetes Directo
     header:
       agregar_watchlist: Agregar a watchlist
       quitar_watchlist: Quitar de watchlist
@@ -548,6 +619,24 @@ es-MX:
       resultados futuros.
     precio:
       titulo: Precio · %{currency} · cierre diario
+    statement_table:
+      concepto: Concepto
+      margen: Margen %
+    statements_tab:
+      balance: Balance general
+      flujo: Flujo de efectivo
+      fuente: 'Fuente: Alpha Vantage · %{gaap} · %{currency} · base anual'
+      resultados: Estado de resultados
+      sin_balance: Sin datos del balance general.
+      sin_flujo: Sin datos del flujo de efectivo.
+      sin_resultados: Sin datos del estado de resultados.
+      vacio_cuerpo: Aún no tenemos estados financieros para este activo. Los datos
+        se actualizan semanalmente.
+      vacio_titulo: Sin estados financieros
+    summary_tab:
+      vacio_cuerpo: Aún no tenemos información financiera para este activo. Los datos
+        se sincronizan a diario — vuelve más tarde.
+      vacio_titulo: Sin datos fundamentales
   nav:
     abrir_avisos: Abrir avisos
     activos: Activos

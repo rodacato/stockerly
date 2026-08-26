@@ -17,23 +17,23 @@
     position_pct = range.positive? ? ((current - low_52w) / range * 100).clamp(0, 100).round : 50
     target_pct   = range.positive? ? ((target - low_52w) / range * 100).clamp(0, 100).round : 50
   %>
-  <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-bg-surface p-6 shadow-sm">
+  <div class="rounded-2xl border border-border-default bg-bg-surface p-6 shadow-sm">
     <div class="flex items-center gap-2 mb-4">
       <span class="material-symbols-outlined text-lg text-primary">target</span>
-      <h4 class="text-sm font-semibold text-slate-900 dark:text-white">Precio objetivo de analistas</h4>
+      <h4 class="text-sm font-semibold text-fg-default">Precio objetivo de analistas</h4>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-5">
       <div>
-        <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Precio actual</p>
-        <p class="font-mono text-xl font-medium text-slate-900 dark:text-white"><%= ccy %> <%= number_with_precision(current, precision: 2, delimiter: ",") %></p>
+        <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Precio actual</p>
+        <p class="font-mono text-xl font-medium text-fg-default"><%= ccy %> <%= number_with_precision(current, precision: 2, delimiter: ",") %></p>
       </div>
       <div>
-        <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Objetivo de analistas</p>
+        <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Objetivo de analistas</p>
         <p class="font-mono text-xl font-medium text-primary"><%= ccy %> <%= number_with_precision(target, precision: 2, delimiter: ",") %></p>
       </div>
       <div>
-        <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Diferencia</p>
+        <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Diferencia</p>
         <p class="font-mono text-xl font-medium <%= positive_diff ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %>">
           <%= positive_diff ? "+" : "" %><%= diff_pct %>%
         </p>
@@ -42,11 +42,11 @@
 
     <% if high_52w.positive? && low_52w.positive? && range.positive? %>
       <div class="mb-1">
-        <div class="flex justify-between text-[10.5px] font-medium text-slate-500 dark:text-slate-400 mb-2">
+        <div class="flex justify-between text-[10.5px] font-medium text-fg-subtle mb-2">
           <span>Mín. 52s: <%= ccy %> <%= number_with_precision(low_52w, precision: 2, delimiter: ",") %></span>
           <span>Máx. 52s: <%= ccy %> <%= number_with_precision(high_52w, precision: 2, delimiter: ",") %></span>
         </div>
-        <div class="relative h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full">
+        <div class="relative h-2 w-full bg-bg-muted rounded-full">
           <div class="absolute top-0 h-full bg-primary/30 rounded-full" style="width: <%= position_pct %>%"></div>
           <div class="absolute -top-1 w-3 h-4 bg-primary rounded-sm transform -translate-x-1/2"
                style="left: <%= position_pct %>%" title="Actual: <%= ccy %> <%= number_with_precision(current, precision: 2, delimiter: ",") %>"></div>

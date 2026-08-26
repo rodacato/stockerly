@@ -1,95 +1,91 @@
 <%# Reportes trimestrales — historical EPS results, lazy-loaded into a
-    turbo_frame. es-MX (S10 #93). Kept reachable via the lazy endpoint
-    even though it's no longer surfaced as a tab on the show page. %>
+    turbo_frame. Reachable via the lazy endpoint even though it is no longer
+    surfaced as a tab on the show page. %>
 <% if @earnings_events.present? %>
   <% reported = @earnings_events.select { |e| e.actual_eps.present? }.reverse %>
   <% if reported.size >= 2 %>
-    <div class="mb-8">
-      <h4 class="text-sm font-semibold text-slate-900 dark:text-white mb-4">Historial de EPS</h4>
-      <div class="flex items-end gap-3 h-40">
+    <div class="mb-8 flex flex-col gap-4">
+      <h4 class="text-sm font-semibold text-fg-default"><%= t(".historial") %></h4>
+
+      <div class="flex h-40 items-end gap-3">
         <% max_eps = reported.map { |e| [ e.actual_eps.to_f.abs, e.estimated_eps.to_f.abs ].max }.max %>
         <% max_eps = 1.0 if max_eps.zero? %>
         <% reported.each do |event| %>
-          <div class="flex-1 flex flex-col items-center gap-1">
-            <div class="w-full flex gap-0.5 items-end h-28">
+          <div class="flex flex-1 flex-col items-center gap-1">
+            <div class="flex h-28 w-full items-end gap-0.5">
               <% est_h = max_eps.positive? ? (event.estimated_eps.to_f.abs / max_eps * 100).round : 0 %>
-              <div class="flex-1 bg-slate-200 dark:bg-slate-700 rounded-t" style="height: <%= est_h %>%" title="Estimado: <%= event.estimated_eps %>"></div>
+              <div class="flex-1 rounded-t bg-bg-muted" style="height: <%= est_h %>%"
+                   title="<%= t(".estimado_valor", value: event.estimated_eps) %>"></div>
               <% act_h = max_eps.positive? ? (event.actual_eps.to_f.abs / max_eps * 100).round : 0 %>
-              <% beat = event.beat_miss == :beat %>
-              <div class="flex-1 rounded-t <%= beat ? 'bg-emerald-500' : 'bg-rose-500' %>" style="height: <%= act_h %>%" title="Real: <%= event.actual_eps %>"></div>
+              <div class="flex-1 rounded-t <%= event.beat_miss == :beat ? "bg-positive" : "bg-negative" %>"
+                   style="height: <%= act_h %>%" title="<%= t(".real_valor", value: event.actual_eps) %>"></div>
             </div>
-            <span class="text-[10px] text-slate-500 dark:text-slate-400"><%= event.report_date.strftime("%b %y") %></span>
+            <span class="text-[10px] text-fg-subtle"><%= short_month_year_es(event.report_date) %></span>
           </div>
         <% end %>
       </div>
-      <div class="flex items-center gap-4 mt-3">
-        <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-sm bg-slate-200 dark:bg-slate-700"></span>
-          <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Estimado</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span>
-          <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Superó</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-sm bg-rose-500"></span>
-          <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Por debajo</span>
-        </div>
+
+      <div class="flex items-center gap-4">
+        <% [ [ "bg-bg-muted", t(".estimado") ], [ "bg-positive", t(".supero") ],
+             [ "bg-negative", t(".por_debajo") ] ].each do |swatch, label| %>
+          <div class="flex items-center gap-1.5">
+            <span class="size-2.5 rounded-sm <%= swatch %>" aria-hidden="true"></span>
+            <span class="text-[10px] font-medium text-fg-subtle"><%= label %></span>
+          </div>
+        <% end %>
       </div>
     </div>
   <% end %>
 
-  <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+  <div class="overflow-x-auto rounded-xl border border-border-default">
     <table class="w-full text-sm">
-      <thead class="bg-slate-50 dark:bg-slate-800/40">
+      <thead class="bg-bg-muted">
         <tr>
-          <th class="text-left py-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Fecha del reporte</th>
-          <th class="text-right py-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">EPS estimado</th>
-          <th class="text-right py-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">EPS real</th>
-          <th class="text-right py-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Sorpresa</th>
-          <th class="text-center py-3 px-4 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Resultado</th>
+          <% [ [ t(".col_fecha"), "text-left" ], [ t(".col_estimado"), "text-right" ],
+               [ t(".col_real"), "text-right" ], [ t(".col_sorpresa"), "text-right" ],
+               [ t(".col_resultado"), "text-center" ] ].each do |label, align| %>
+            <th class="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-fg-subtle <%= align %>"><%= label %></th>
+          <% end %>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+      <tbody class="divide-y divide-border-default">
         <% @earnings_events.each do |event| %>
-          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
-            <td class="py-3 px-4 text-slate-900 dark:text-white font-medium">
+          <tr>
+            <td class="px-4 py-3 font-medium text-fg-default">
               <%= short_date_es(event.report_date) %>
-              <span class="text-[10px] text-slate-500 dark:text-slate-400 ml-1">
-                <%= event.before_market_open? ? "pre-apertura" : "cierre" %>
+              <span class="ml-1 text-[10px] text-fg-subtle">
+                <%= event.before_market_open? ? t(".pre_apertura") : t(".cierre") %>
               </span>
             </td>
-            <td class="py-3 px-4 text-right font-mono text-slate-600 dark:text-slate-300">
-              <%= event.estimated_eps ? "#{event.asset.currency} #{number_with_precision(event.estimated_eps, precision: 2, delimiter: ',')}" : "—" %>
+            <td class="px-4 py-3 text-right font-mono text-fg-subtle">
+              <%= event.estimated_eps ? "#{event.asset.currency} #{number_with_precision(event.estimated_eps, precision: 2, delimiter: ",")}" : "—" %>
             </td>
-            <td class="py-3 px-4 text-right font-mono font-semibold text-slate-900 dark:text-white">
-              <%= event.actual_eps ? "#{event.asset.currency} #{number_with_precision(event.actual_eps, precision: 2, delimiter: ',')}" : "Por reportar" %>
+            <td class="px-4 py-3 text-right font-mono font-semibold text-fg-default">
+              <%= event.actual_eps ? "#{event.asset.currency} #{number_with_precision(event.actual_eps, precision: 2, delimiter: ",")}" : t(".por_reportar") %>
             </td>
-            <td class="py-3 px-4 text-right font-mono">
+            <td class="px-4 py-3 text-right font-mono">
               <% if event.eps_surprise_percent %>
                 <% positive = event.eps_surprise_percent >= 0 %>
-                <span class="<%= positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' %> font-semibold">
-                  <%= positive ? "+" : "" %><%= event.eps_surprise_percent %>%
+                <span class="font-semibold <%= positive ? "text-positive-fg" : "text-negative-fg" %>">
+                  <%= "+" if positive %><%= event.eps_surprise_percent %>%
                 </span>
               <% else %>
-                <span class="text-slate-400">—</span>
+                <span class="text-fg-subtle">—</span>
               <% end %>
             </td>
-            <td class="py-3 px-4 text-center">
-              <% case event.beat_miss %>
-              <% when :beat %>
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400">
-                  <span class="material-symbols-outlined text-xs">trending_up</span> Superó
-                </span>
-              <% when :miss %>
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400">
-                  <span class="material-symbols-outlined text-xs">trending_down</span> Por debajo
-                </span>
-              <% else %>
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
-                  <span class="material-symbols-outlined text-xs">schedule</span> Pendiente
-                </span>
-              <% end %>
+            <td class="px-4 py-3 text-center">
+              <%
+                icon, label, tone =
+                  case event.beat_miss
+                  when :beat then [ "trending_up",   t(".supero"),     "bg-positive-bg text-positive-fg" ]
+                  when :miss then [ "trending_down", t(".por_debajo"), "bg-negative-bg text-negative-fg" ]
+                  else            [ "schedule",      t(".pendiente"),  "bg-warning/10 text-warning" ]
+                  end
+              %>
+              <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold <%= tone %>">
+                <span class="material-symbols-outlined text-xs" aria-hidden="true"><%= icon %></span>
+                <%= label %>
+              </span>
             </td>
           </tr>
         <% end %>
@@ -97,13 +93,6 @@
     </table>
   </div>
 <% else %>
-  <div class="flex flex-col items-center justify-center py-12 text-center">
-    <div class="mb-4 flex size-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400">
-      <span class="material-symbols-outlined text-3xl">event_note</span>
-    </div>
-    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Sin reportes disponibles</h3>
-    <p class="mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
-      Aún no tenemos histórico de reportes trimestrales para este activo.
-    </p>
-  </div>
+  <%= render "components/empty_state", icon: "event_note",
+             title: t(".vacio_titulo"), description: t(".vacio_cuerpo") %>
 <% end %>

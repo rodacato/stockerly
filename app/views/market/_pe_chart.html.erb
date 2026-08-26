@@ -1,9 +1,9 @@
 <%# Historical P/E Ratio chart — 90-day SVG polyline with value/neutral/expensive
     bands. es-MX labels (S10 #93). %>
 <% if @pe_history.present? && @pe_history.size >= 2 %>
-  <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-bg-surface shadow-sm overflow-hidden">
-    <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/30">
-      <h3 class="text-sm font-semibold flex items-center gap-2 text-slate-900 dark:text-white">
+  <section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+    <div class="px-5 py-4 border-b border-border-default bg-bg-muted">
+      <h3 class="text-sm font-semibold flex items-center gap-2 text-fg-default">
         <span class="material-symbols-outlined text-base text-primary">analytics</span>
         Razón P/U histórica · últimos 90 días
       </h3>
@@ -98,8 +98,8 @@
         <span class="text-amber-600 dark:text-amber-400">Neutral (15-25)</span>
         <span class="text-rose-600 dark:text-rose-400">Cara (&gt;25)</span>
       </div>
-      <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-        P/U actual: <span class="font-mono font-semibold text-slate-900 dark:text-white"><%= last_pe.round(2) %></span>
+      <p class="mt-2 text-xs text-fg-subtle">
+        P/U actual: <span class="font-mono font-semibold text-fg-default"><%= last_pe.round(2) %></span>
       </p>
     </div>
   </section>

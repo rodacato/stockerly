@@ -5,19 +5,19 @@
 
 <% if chart %>
   <% ccy = @asset.currency %>
-  <section class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-bg-surface p-5 shadow-sm">
+  <section class="rounded-2xl border border-border-default bg-bg-surface p-5 shadow-sm">
     <div class="flex items-baseline justify-between mb-3">
       <div class="flex items-baseline gap-2">
-        <h3 class="font-display text-base font-semibold tracking-tight text-slate-900 dark:text-white">
+        <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
           <%= @asset.asset_type_fixed_income? ? "Tasa" : "Precio" %>
         </h3>
-        <span class="text-xs text-slate-500 dark:text-slate-400">
+        <span class="text-xs text-fg-subtle">
           <%= ccy %> · últimos 30 días · cierre diario
         </span>
       </div>
-      <div class="flex items-baseline gap-2 font-mono text-xs text-slate-500 dark:text-slate-400">
+      <div class="flex items-baseline gap-2 font-mono text-xs text-fg-subtle">
         <span><%= ccy %> <%= number_with_precision(chart[:min_price], precision: 2, delimiter: ',') %></span>
-        <span class="text-slate-300 dark:text-slate-600">—</span>
+        <span class="text-fg-subtle">—</span>
         <span><%= ccy %> <%= number_with_precision(chart[:max_price], precision: 2, delimiter: ',') %></span>
       </div>
     </div>
@@ -48,10 +48,10 @@
       </svg>
 
       <div data-chart-tooltip-target="tooltip"
-           class="hidden absolute -top-8 text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 shadow-sm pointer-events-none whitespace-nowrap"></div>
+           class="hidden absolute -top-8 text-[11px] font-medium text-fg-default bg-bg-surface border border-border-default rounded px-2 py-1 shadow-sm pointer-events-none whitespace-nowrap"></div>
     </div>
 
-    <div class="flex justify-between mt-2 text-[10.5px] font-medium text-slate-500 dark:text-slate-400">
+    <div class="flex justify-between mt-2 text-[10.5px] font-medium text-fg-subtle">
       <span><%= short_date_es(chart[:first_date], include_year: false) %></span>
       <span><%= short_date_es(chart[:last_date], include_year: false) %></span>
     </div>

@@ -8,13 +8,6 @@
     <% end %>
   </div>
 <% else %>
-  <div class="flex flex-col items-center justify-center py-12 text-center">
-    <div class="mb-4 flex size-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400">
-      <span class="material-symbols-outlined text-3xl">analytics</span>
-    </div>
-    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Sin datos disponibles</h3>
-    <p class="mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
-      Los datos fundamentales aún no se han sincronizado para este activo.
-    </p>
-  </div>
+  <%= render "components/empty_state", icon: "analytics",
+             title: t(".vacio_titulo"), description: t(".vacio_cuerpo") %>
 <% end %>
