@@ -1,18 +1,4 @@
 class MarketController < AuthenticatedController
-  def index
-    result = MarketData::UseCases::ExploreAssets.call(params: filter_params, request: request)
-
-    case result
-    in Dry::Monads::Success(data)
-      @pagy    = data[:pagy]
-      @assets  = data[:assets]
-      @indices = data[:indices]
-      @vix     = data[:vix]
-      @market_status = build_market_status
-      @watchlisted_asset_ids = current_user.watchlist_items.pluck(:asset_id).to_set
-    end
-  end
-
   def show
     result = MarketData::UseCases::LoadAssetDetail.call(symbol: params[:symbol])
 
@@ -38,7 +24,7 @@ class MarketController < AuthenticatedController
 
       trigger_fundamental_sync(@asset) unless @has_fundamentals
     in Dry::Monads::Failure[ :not_found, _ ]
-      redirect_to market_path, alert: "Activo no encontrado"
+      redirect_to assets_path, alert: "Activo no encontrado"
     end
   end
 
@@ -54,14 +40,6 @@ class MarketController < AuthenticatedController
   end
 
   private
-
-  def filter_params
-    params.permit(:type, :sector, :search, :page, :country, :exchange).to_h.symbolize_keys
-  end
-
-  def build_market_status
-    { us: MarketHours.us_market_open?, bmv: MarketHours.bmv_market_open?, crypto: true }
-  end
 
   def trigger_fundamental_sync(asset)
     return unless asset.asset_type_stock? || asset.asset_type_etf?

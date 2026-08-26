@@ -44,7 +44,7 @@ RSpec.describe "The asset detail header", type: :request do
     get market_asset_path(asset.symbol)
 
     expect(response.body).not_to include("Mercados")
-    expect(response.body).to include(%(href="#{market_path}"))
+    expect(response.body).to include(%(href="#{assets_path}"))
   end
 
   it "keeps the bookmark, which is the one action the artboard has" do

@@ -96,9 +96,9 @@ RSpec.describe "Navigation", type: :system do
       visit dashboard_path
 
       within("nav[aria-label='Navegación principal']", match: :first) do
-        expect(page).not_to have_link(href: market_path)
-        expect(page).not_to have_link(href: earnings_path)
-        expect(page).not_to have_link(href: news_path)
+        expect(page).not_to have_link(href: "/market")
+        expect(page).not_to have_link(href: "/earnings")
+        expect(page).not_to have_link(href: "/news")
       end
     end
   end

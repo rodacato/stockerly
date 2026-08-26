@@ -53,10 +53,10 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("Sin datos fundamentales")
     end
 
-    it "redirects to market index with an es-MX alert when asset not found" do
+    it "redirects to Activos with an es-MX alert when asset not found" do
       get market_asset_path("INVALID")
 
-      expect(response).to redirect_to(market_path)
+      expect(response).to redirect_to(assets_path)
       follow_redirect!
       expect(flash[:alert]).to eq("Activo no encontrado")
     end

@@ -15,11 +15,6 @@ RSpec.describe "Disabled button placeholders removed", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "news page does not show disabled Subscribe Now button" do
-    visit news_path
-    expect(page).not_to have_button("Subscribe Now")
-  end
-
   it "profile page does not show disabled Share Profile button" do
     visit profile_path
     expect(page).not_to have_button("Share Profile")

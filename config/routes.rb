@@ -46,13 +46,13 @@ Rails.application.routes.draw do
   get  "report-bug",  to: "bug_reports#new",  as: :new_bug_report
   post "report-bug",  to: "bug_reports#create", as: :bug_reports
 
-  get "news",      to: "news#index"
   get "dashboard",           to: "dashboard#show"
-  get "market",                        to: "market#index"
+  # D31 deleted /market's listing, /news and /earnings: all three read the
+  # instance's own catalogue, which is the bubble Descubrir exists to leave.
+  # The asset detail below is a different screen and stays.
   get "market/:symbol",                to: "market#show",           as: :market_asset
   get "market/:symbol/earnings_tab",   to: "market#earnings_tab",   as: :market_asset_earnings_tab
   get "market/:symbol/statements_tab", to: "market#statements_tab", as: :market_asset_statements_tab
-  get "search",    to: "search#index"
 
   # Propshaft owns the /assets prefix. It lets the exact path /assets through to
   # the router, but swallows anything nested under it — /assets/tracked is
@@ -76,7 +76,6 @@ Rails.application.routes.draw do
   resources :trades,    only: [ :index, :new, :create, :edit, :update, :destroy ] do
     member { get :confirm_destroy }
   end
-  resources :earnings,  only: [ :index, :show ]
   resources :watchlist_items, only: [ :create, :destroy ]
   resources :notifications, only: [ :index ] do
     member { patch :mark_as_read }

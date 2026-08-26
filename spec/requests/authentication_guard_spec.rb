@@ -6,11 +6,6 @@ RSpec.describe "Authentication guard", type: :request do
     expect(response).to redirect_to(login_path)
   end
 
-  it "redirects /market to login when not authenticated" do
-    get market_path
-    expect(response).to redirect_to(login_path)
-  end
-
   it "redirects /portfolio to login when not authenticated" do
     get portfolio_path
     expect(response).to redirect_to(login_path)
@@ -18,11 +13,6 @@ RSpec.describe "Authentication guard", type: :request do
 
   it "redirects /alerts to login when not authenticated" do
     get alerts_path
-    expect(response).to redirect_to(login_path)
-  end
-
-  it "redirects /earnings to login when not authenticated" do
-    get earnings_path
     expect(response).to redirect_to(login_path)
   end
 
