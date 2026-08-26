@@ -64,6 +64,21 @@ RSpec.describe DataSourceRegistry do
     it "returns nil when no match" do
       expect(described_class.for_integration("Unknown")).to be_nil
     end
+
+    it "answers with the source that claims the integration" do
+      described_class.register(:first, **attrs.merge(name: "First"))
+      described_class.register(:second, **attrs.merge(name: "Second"), health_check: true)
+
+      expect(described_class.for_integration("Test Provider").key).to eq(:second)
+    end
+
+    it "refuses to pick by registration order when several sources match" do
+      described_class.register(:first, **attrs.merge(name: "First"))
+      described_class.register(:second, **attrs.merge(name: "Second"))
+
+      expect { described_class.for_integration("Test Provider") }
+        .to raise_error(DataSourceRegistry::AmbiguousHealthCheck, /2 sources/)
+    end
   end
 
   describe ".clear!" do
