@@ -1,16 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "Admin pages", type: :request do
-  let(:admin_paths) { [ admin_root_path, admin_assets_path, admin_logs_path ] }
-
   describe "authentication guard" do
-    it "redirects /admin to login when not authenticated" do
-      get admin_root_path
-      expect(response).to redirect_to(login_path)
-    end
-
-    it "redirects /admin/assets to login when not authenticated" do
-      get admin_assets_path
+    it "redirects /admin/settings to login when not authenticated" do
+      get admin_settings_path
       expect(response).to redirect_to(login_path)
     end
 
@@ -27,14 +20,8 @@ RSpec.describe "Admin pages", type: :request do
       login_as(user)
     end
 
-    it "redirects /admin to root for non-admin users" do
-      get admin_root_path
-      expect(response).to redirect_to(root_path)
-      expect(flash[:alert]).to eq("No tienes acceso a esa sección.")
-    end
-
-    it "redirects /admin/assets to root for non-admin users" do
-      get admin_assets_path
+    it "redirects /admin/settings to root for non-admin users" do
+      get admin_settings_path
       expect(response).to redirect_to(root_path)
       expect(flash[:alert]).to eq("No tienes acceso a esa sección.")
     end
@@ -52,64 +39,11 @@ RSpec.describe "Admin pages", type: :request do
       login_as(admin)
     end
 
-    it "renders the admin dashboard page" do
-      create(:system_log, task_name: "Test Log", module_name: "sync")
-      create(:integration, provider_name: "Polygon.io", provider_type: "Stocks & Forex")
-      get admin_root_path
+    it "offers every registered source as a manual trigger on Estado" do
+      get admin_settings_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Panel general")
-      expect(response.body).to include("Activos totales")
-      expect(response.body).to include("Usuarios")
-      expect(response.body).to include("Fuentes de datos")
-      expect(response.body).to include("Actividad reciente")
-    end
-
-    it "renders the admin dashboard with sync operations panel" do
-      create(:system_log, task_name: "Sync Error", module_name: "sync", severity: :error, error_message: "Timeout")
-      get admin_root_path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Operaciones de sincronización")
-      expect(response.body).to include("Exitosas")
-      expect(response.body).to include("Fallidas")
+      expect(response.body).to include("Sincronización manual")
       expect(response.body).to include("FX Rates")
-    end
-
-    it "renders the asset management page" do
-      create(:asset)
-      get admin_assets_path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Catálogo de activos")
-      expect(response.body).to include("Nuevo activo")
-    end
-
-    it "creates a new asset from admin" do
-      expect {
-        post admin_assets_path, params: {
-          asset: { symbol: "NVDA", name: "NVIDIA Corporation", asset_type: "stock", country: "US" }
-        }
-      }.to change(Asset, :count).by(1)
-
-      expect(response).to redirect_to(admin_assets_path)
-      follow_redirect!
-      expect(response.body).to include("NVDA")
-    end
-
-    it "rejects invalid asset creation" do
-      post admin_assets_path, params: {
-        asset: { symbol: "", name: "", asset_type: "" }
-      }
-
-      expect(response).to redirect_to(admin_assets_path)
-      follow_redirect!
-      expect(response.body).to include("Activos")
-    end
-
-    it "enqueues RefreshFxRatesJob on refresh_fx_rates" do
-      expect {
-        post admin_refresh_fx_rates_path
-      }.to have_enqueued_job(RefreshFxRatesJob)
-
-      expect(response).to redirect_to(admin_root_path)
     end
 
     it "triggers a data source sync via registry" do
@@ -117,29 +51,17 @@ RSpec.describe "Admin pages", type: :request do
         post admin_trigger_data_source_path(key: "fx_rates")
       }.to have_enqueued_job(RefreshFxRatesJob)
 
-      expect(response).to redirect_to(admin_root_path)
+      expect(response).to redirect_to(admin_settings_path)
       follow_redirect!
-      expect(response.body).to include("Sincronización de FX Rates programada.")
+      expect(response.body).to include("Sincronización de FX Rates encolada.")
     end
 
     it "returns alert for unknown data source" do
       post admin_trigger_data_source_path(key: "nonexistent")
 
-      expect(response).to redirect_to(admin_root_path)
+      expect(response).to redirect_to(admin_settings_path)
       follow_redirect!
       expect(response.body).to include("Fuente de datos desconocida.")
-    end
-
-    it "deletes an asset from admin" do
-      asset = create(:asset, symbol: "TEST")
-
-      expect {
-        delete admin_asset_path(asset)
-      }.to change(Asset, :count).by(-1)
-
-      expect(response).to redirect_to(admin_assets_path)
-      follow_redirect!
-      expect(response.body).to include("eliminado")
     end
 
     it "renders the system logs page" do

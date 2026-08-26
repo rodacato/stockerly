@@ -2,6 +2,8 @@ module Admin
   class SettingsController < BaseController
     TOGGLE_KEYS = %w[maintenance_mode auto_sync_enabled email_notifications_enabled].freeze
 
+    rate_limit to: 5, within: 1.minute, only: :trigger_data_source
+
     def show
       configs = SiteConfig.where(key: TOGGLE_KEYS).index_by(&:key)
 
@@ -12,6 +14,15 @@ module Admin
       @applied_at     = TOGGLE_KEYS.index_with { |key| configs[key]&.updated_at }
       @recent_changes = SiteConfigChange.recent.includes(:admin).limit(8)
       @diagnostics    = build_diagnostics
+      @data_sources   = DataSourceRegistry.all
+    end
+
+    def trigger_data_source
+      source = DataSourceRegistry.find(params[:key].to_sym)
+      source.job_class.perform_later(*source.job_args)
+      redirect_to admin_settings_path, notice: t(".encolada", source: source.name)
+    rescue KeyError
+      redirect_to admin_settings_path, alert: t(".desconocida")
     end
 
     def update

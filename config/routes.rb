@@ -58,10 +58,16 @@ Rails.application.routes.draw do
   # the router, but swallows anything nested under it — /assets/tracked is
   # recognised by the router and still 404s. Sub-screens of Activos therefore
   # live at their own top-level paths.
-  get   "assets",                 to: "assets#index"
-  get   "tracked",                to: "assets#tracked",     as: :tracked_assets
-  get   "fx_rate",                to: "fx_rates#show"
-  patch "tracked/:id/toggle_sync", to: "assets#toggle_sync", as: :toggle_sync_asset
+  get    "assets",                  to: "assets#index"
+  get    "tracked",                 to: "assets#tracked",      as: :tracked_assets
+  get    "fx_rate",                 to: "fx_rates#show"
+  # Rastreados absorbed the last of /admin/assets (D9): the catalogue is added
+  # to and removed from here, not from an admin console. `search` is declared
+  # before `:id` so a literal segment is not read as an identifier.
+  get    "tracked/search",          to: "assets#search_ticker", as: :search_tickers
+  post   "tracked",                 to: "assets#track",         as: :track_asset
+  delete "tracked/:id",             to: "assets#untrack",       as: :untrack_asset
+  patch  "tracked/:id/toggle_sync", to: "assets#toggle_sync",   as: :toggle_sync_asset
   resource  :portfolio, only: [ :show ]
   resources :alerts, only: [ :index, :new, :create, :update, :destroy ] do
     member { patch :toggle }
@@ -91,20 +97,6 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    root "dashboard#show"
-    post "refresh_fx_rates", to: "dashboard#refresh_fx_rates"
-    post "trigger_data_source/:key", to: "dashboard#trigger_data_source", as: :trigger_data_source
-
-    resources :assets, only: [ :index, :create, :update, :destroy ] do
-      member do
-        patch :toggle_status
-        post  :trigger_sync
-      end
-      collection do
-        post :trigger_sync_all
-        get  :search
-      end
-    end
     resources :integrations, only: [ :index, :create, :update, :destroy ] do
       member { post :refresh_sync }
       resources :pool_keys, only: [ :create, :destroy ], controller: "pool_keys" do
@@ -115,5 +107,8 @@ Rails.application.routes.draw do
       collection { get :export_csv }
     end
     resource :settings, only: [ :show, :update ]
+    # `refresh_fx_rates` used to be its own route; :fx_rates is a registered
+    # source whose job_class is RefreshFxRatesJob, so the two collapse into one.
+    post "trigger_data_source/:key", to: "settings#trigger_data_source", as: :trigger_data_source
   end
 end

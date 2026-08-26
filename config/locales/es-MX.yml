@@ -71,6 +71,9 @@ es-MX:
         interruptores: Interruptores de la instancia
         mantenimiento: Modo mantenimiento
         mantenimiento_desc: Bloquea la app y muestra un banner. Tu sesión sigue viva.
+        manual: Sincronización manual
+        manual_desc: Encola ahora la fuente que elijas, sin esperar a su siguiente
+          corrida. Respeta el límite de llamadas configurado.
         sin_cambios: Todavía no hay cambios registrados.
         sync: Sincronización automática
         sync_desc: Deja correr los jobs de precios, CETES, cripto y TC.
@@ -78,6 +81,9 @@ es-MX:
         trabajos: Trabajos
         ver_todos: Ver todos en Registros
         version: Versión
+      trigger_data_source:
+        desconocida: Fuente de datos desconocida.
+        encolada: Sincronización de %{source} encolada.
   alerts:
     index:
       activa: activa
@@ -145,6 +151,25 @@ es-MX:
       ver_rastreados: Rastreados
       ver_rastreados_desc: Lo que tu instancia sincroniza y cuánto presupuesto queda
     tracked:
+      agregado: "%{symbol} se agregó a Rastreados."
+      agregar: Agregar activo
+      buscar: Buscar activo
+      buscar_placeholder: Símbolo o nombre — AAPL, Apple, Bitcoin…
+      campo_asset_type: Tipo
+      campo_country: País
+      campo_exchange: Mercado
+      campo_name: Nombre
+      campo_sector: Sector
+      campo_symbol: Símbolo
+      cancelar: Cancelar
+      confirmar_eliminar: "¿Dejar de rastrear %{symbol}? Se borra del catálogo con
+        su historial de precios."
+      conteo:
+        one: 1 activo rastreado
+        other: "%{count} activos rastreados"
+        zero: Ningún activo rastreado
+      eliminado: "%{symbol} se quitó del catálogo."
+      eliminar: Dejar de rastrear
       en_pausa: En pausa
       intro: Los activos que tu instancia sincroniza a diario. Seguir uno o comprarlo
         le da prioridad; pausarlo libera presupuesto.
@@ -157,9 +182,15 @@ es-MX:
       reanudado: "%{symbol} vuelve a sincronizarse."
       reanudar: Reanudar
       seguir: Seguir
+      selecciona: Selecciona…
       tier_followed: Sigo
       tier_held: Poseo
       tier_tracked: Rastreado
+      tipo_crypto: Cripto
+      tipo_etf: ETF
+      tipo_fixed_income: Renta fija
+      tipo_index: Índice
+      tipo_stock: Acción
       titulo: Rastreados
       vacio: Tu instancia aún no rastrea ningún activo.
   auth:

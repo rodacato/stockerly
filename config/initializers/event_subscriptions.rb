@@ -12,7 +12,6 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::SyncAssetOnCreation)
   EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::BackfillHistoryOnAssetCreation)
   EventBus.subscribe(MarketData::Events::AssetDeleted, Administration::Handlers::CreateAuditLogOnAssetDeletion)
-  EventBus.subscribe(Administration::Events::AssetUpdated, Administration::Handlers::CreateAuditLogOnAssetUpdate)
   EventBus.subscribe(Administration::Events::CsvExported, Administration::Handlers::CreateAuditLogOnCsvExport)
 
   # Market Data

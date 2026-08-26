@@ -117,7 +117,7 @@ RSpec.describe "Navigation", type: :system do
       fill_in "Contraseña", with: "password123"
       click_button "Iniciar sesión"
 
-      visit admin_assets_path
+      visit admin_logs_path
       # Admin guard redirects to root; route redirect bounces to /login; SessionsController
       # sees the user is logged in and forwards to /dashboard. Flash carries through.
       expect(page).to have_current_path(dashboard_path)
@@ -134,11 +134,10 @@ RSpec.describe "Navigation", type: :system do
       click_button "Iniciar sesión"
     end
 
-    # admin.html.erb and its sidebar are gone: the admin screens now render in
-    # the same shell as everything else, until D5 folds them into Ajustes.
+    # admin.html.erb and its sidebar are gone: the instance screens render in
+    # the same shell as everything else, reached from Ajustes.
     it "renders admin screens inside the app shell" do
-      visit admin_assets_path
-      expect(page).to have_css("h1", text: "Activos")
+      visit admin_settings_path
       expect(page).to have_css("nav[aria-label='Navegación principal']")
 
       visit admin_logs_path
