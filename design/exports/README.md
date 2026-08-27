@@ -23,6 +23,7 @@ is worse than a missing one.
 | `cockpit-asset-analisis.png` | `[Cockpit] / Asset · Análisis / Default` |
 | `cockpit-asset-mi-posicion.png` | `[Cockpit] / Asset · Mi posición / Default` |
 | `cockpit-consolidado.png` | `[Cockpit] / Consolidado / Default` |
+| `cockpit-movimientos.png` | `[Cockpit] / Movimientos / Default` — ⚠ see D42, designed but the build is gated |
 | `activos-cartera.png` | `[Activos] / Cartera / Default` |
 | `activos-sigo.png` | `[Activos] / Sigo / Default` |
 | `activos-cartera-vacia.png` | `[Activos] / Cartera / Vacío` |
