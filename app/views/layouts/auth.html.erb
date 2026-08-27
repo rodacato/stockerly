@@ -11,11 +11,9 @@
       <%# Brand panel: desktop only. On a phone the logo lives inside the card,
           which is what the mobile artboard draws. %>
       <aside class="hidden flex-col justify-between bg-primary p-8 lg:flex">
-        <%# The dark-mode wordmark is the light one, and this panel is always
-            indigo — so it is picked directly rather than through the partial,
-            whose job is following the theme. %>
+        <%# Always-indigo panel, so the variant is fixed rather than themed. %>
         <%= link_to root_path, class: "flex items-center" do %>
-          <%= image_tag "logo_dark.svg", alt: "Stockerly", class: "h-8 w-auto" %>
+          <%= image_tag brand_logo(:dark), alt: "Stockerly", class: "h-8 w-auto" %>
         <% end %>
         <p class="flex items-center gap-2 text-sm text-fg-inverse">
           <span class="material-symbols-outlined text-lg" aria-hidden="true">check</span>

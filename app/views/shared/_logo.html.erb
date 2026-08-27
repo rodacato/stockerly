@@ -1,14 +1,8 @@
-<%# Canonical Stockerly wordmark. Single source of truth for the logo render.
-    Locals:
-      height_class:  Tailwind height class (default "h-9"). Use:
-                       "h-6"  → footer / small chrome
-                       "h-7"  → admin sidebar
-                       "h-9"  → app + public navbar (default)
-      alt_text:      String (default "Stockerly")
-    SVGs live in app/assets/images so Propshaft fingerprints the URL — when
-    brand content changes the URL changes, defeating any upstream caching
-    (browsers, Cloudflare). Light/dark variants swap via dark: variants. %>
+<%# Canonical Stockerly wordmark for themed chrome: it follows light/dark.
+    Surfaces that need a fixed variant call `brand_logo(:light | :dark)`
+    directly — this partial owns the render, the helper owns the filenames.
+    Locals: height_class (default "h-9"), alt_text (default "Stockerly"). %>
 <% height_class = local_assigns.fetch(:height_class, "h-9") %>
 <% alt_text     = local_assigns.fetch(:alt_text, "Stockerly") %>
-<%= image_tag "logo_light.svg", alt: alt_text, class: "#{height_class} w-auto dark:hidden" %>
-<%= image_tag "logo_dark.svg",  alt: alt_text, class: "#{height_class} w-auto hidden dark:block" %>
+<%= image_tag brand_logo(:light), alt: alt_text, class: "#{height_class} w-auto dark:hidden" %>
+<%= image_tag brand_logo(:dark),  alt: alt_text, class: "#{height_class} w-auto hidden dark:block" %>
