@@ -691,7 +691,7 @@ all seven flows carry the mark; `design/exports/` was regenerated.
 | 11.5 | `public/manifest.json` copy → es-MX | Done, plus **`id: "/dashboard"` added** — without it PWA identity derives from `start_url`, so changing that later would strand users with two installed apps |
 | 11.6 | `?v=2` → `?v=3` | Done in **three** files, not the two this section predicted — see below |
 | 11.7 | Specs | `logo_spec.rb` green and unedited — filenames held. **But it was not the only spec that mattered:** `spec/requests/pwa_spec.rb` pinned `?v=2` literally and went red in CI. Rewritten to pin the layout, manifest and service worker **to each other** instead of to a constant, so the next brand bump fails only if it misses a file. Two regression nets added: the maskable icon must not share a `src` with the plain one, and every `PRECACHE_URLS` entry must exist on disk |
-| 11.8 | Two surfaces bypass `shared/_logo` | **Still open.** `layouts/auth.html.erb:18` and `layouts/mailer.html.erb:16` still call `image_tag` directly. They render correctly because the filenames did not move, but the partial's "single source of truth" comment is still a lie |
+| 11.8 | Two surfaces bypass `shared/_logo` | **Done, and the diagnosis was wrong.** The bypass was never the defect: the auth panel is always indigo so it wants a fixed variant rather than a themed one, and the mailer needs an absolute URL because mail clients cannot resolve relative ones. Both had said so in comments. What was false was the partial's claim to be the single source of truth while three files named the SVGs. `brand_logo(:light | :dark)` owns the filenames now; each caller keeps the rendering its surface needs |
 
 **Two things this section did not predict.**
 

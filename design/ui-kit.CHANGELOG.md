@@ -211,11 +211,19 @@ from `TopBar` rather than redrawing the glyph" — **it does not**. It carries i
 own `WM`. And every `Brand` group painted raw hex (`#5B6CFF`, `#0F172A`) instead of `$primary` /
 `$fg-default`, against this kit's own tokens-only rule. Fixed.
 
-**Consumers to re-sync:** every flow that draws the shell — `cockpit`, `assets`, `alerts`,
-`settings`, `discover` — plus `auth` and `onboarding` **if** they draw the logo standalone, which
-the code says they do (`shared/_auth_header`, and the auth layout's direct `image_tag`). Which
-`.pen` files actually carry it is **still unverified**: Pencil reads only the active editor, so each
-file has to be opened to audit it. Do not assume this list is complete.
+**Consumers re-synced — all seven, audited rather than assumed.** 23 glyphs and 21 lockups
+replaced: `auth` 5/5 and `onboarding` 6/4 (both were on **0.1.0**, six versions back from
+before this work), `cockpit` 5/5, `assets` 2/2, `alerts` 1/1, `settings` 2/2, `discover` 2/2.
+Every file is on 0.7.0.
+
+**Two hazards the audit found, worth knowing before the next sweep.** A `.pen` must be **open**
+for a path to reach it — otherwise the path is silently ignored and the operation lands in a
+different open file, with no error. And **node ids are shared across flow files**, because flows
+were created by duplicating their neighbour: two files returning the same id is normal, and an
+id is never proof of which file you are in. Verify by artboard name before writing.
+
+**`_playground.pen` was not audited** — it was not open during the sweep, so whether it still
+draws the old glyph is unknown. It is the one file this bump did not reach.
 
 The code-side change (the SVGs under `app/assets/images/` and `public/`, the manifest, the cache
 bust) is tracked separately in CODE_CHANGES.md — the kit is ahead of the code until that ships.
