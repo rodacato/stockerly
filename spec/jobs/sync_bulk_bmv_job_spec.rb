@@ -48,6 +48,40 @@ RSpec.describe SyncBulkBmvJob, type: :job do
       end
     end
 
+    # Measured 2026-08-27 against the real provider: a name it does not
+    # recognise is simply absent from the response and the batch still answers
+    # 200 with the rest. #311 assumed the whole call failed; it does not. What
+    # it does is go quiet, which is worse — the job logged "2 assets" having
+    # priced one.
+    context "when the provider has no quote for one of the issuers" do
+      before do
+        stub_databursatil("/v2/cotizaciones", {
+          "GENIUSSACV" => { "bmv" => databursatil_quote(last: 21.50) }
+        })
+      end
+
+      it "prices the one it can" do
+        described_class.perform_now([ genius.id, ivv.id ])
+
+        expect(genius.reload.current_price.to_f).to eq(21.50)
+      end
+
+      it "leaves the one it cannot alone rather than guessing" do
+        described_class.perform_now([ genius.id, ivv.id ])
+
+        expect(ivv.reload.current_price.to_f).to eq(40.00)
+      end
+
+      it "stops claiming it synced what it did not" do
+        described_class.perform_now([ genius.id, ivv.id ])
+
+        log = SystemLog.where(task_name: "Bulk BMV Sync").last
+        expect(log.severity).to eq("warning")
+        expect(log.error_message).to include("Priced 1 of 2").and include("IVVPESO")
+        expect(log.error_message).to include("resolve_bmv_symbols")
+      end
+    end
+
     context "when DataBursatil is rate limited" do
       before { stub_databursatil("/v2/cotizaciones", {}, status: 429) }
 

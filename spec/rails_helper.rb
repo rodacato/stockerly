@@ -91,6 +91,9 @@ RSpec.configure do |config|
 
   config.before(:each) do
     EventBus.clear!
+    # Breakers are memoized per process so they can actually accumulate
+    # failures, which means one example's outage leaks into the next.
+    GatewayChain.reset_breakers!
     SiteConfig.set("registration_open", "true")
     SiteConfig.set("maintenance_mode", "false")
   end
