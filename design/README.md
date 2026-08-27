@@ -58,10 +58,10 @@ screens; smaller ones may merge into a neighbor.
 > reading `sigo` / `rastreados` has not been migrated yet. `assets.pen` is done; the other six are
 > not.
 >
-> Adrian extended the rename to the segmented control itself, so the first tab reads **Holdings**
-> where the code still says `assets.index.cartera: Cartera` — the one string the design now leads
-> ([CODE_CHANGES.md](CODE_CHANGES.md) §13). **Lowercase `cartera` in prose is not the tier**; it
-> means the portfolio and stays.
+> Adrian extended the rename to the segmented control itself, so the first tab reads **Holdings**.
+> The code caught up the same day ([CODE_CHANGES.md](CODE_CHANGES.md) §13) — the design leads the
+> code on nothing here now. **Lowercase `cartera` in prose is not the tier**; it means the portfolio
+> and stays.
 
 | File | Domain | Screens (from code) | Status |
 |---|---|---|---|
