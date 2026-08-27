@@ -30,7 +30,11 @@ The following files contain or reference secrets and **must never be committed**
 
 ## What Is Already Protected
 
-- **`.gitignore`** excludes `config/*.key`, `.env*` files, and `/storage/*`
+- **`.gitignore`** excludes `/config/*.key` (the master key), `/config/credentials/*.key` (the
+  per-environment keys), `/.env*` except `/.env.example`, and `/storage/*` except `/storage/.keep`.
+  All of these patterns are **anchored to the repository root** — `/config/*.key` alone does not
+  match a key nested under `config/credentials/`, which is why both key patterns are listed.
+  Verify any pattern you rely on with `git check-ignore -v <path>` rather than assuming.
 - **Rails credentials** are encrypted at rest (`config/credentials.yml.enc`)
 - **Deployment secrets** are stored in GitHub Actions Secrets and injected at deploy time — never hardcoded
 - **Container images** are stored in GitHub Container Registry (ghcr.io) as private packages

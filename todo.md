@@ -10,6 +10,13 @@ integrations + api keys**). `stockerly.notdefined.dev` runs the single-user 2.0.
 **Next phase = the actual point of the pivot: the NEW DESIGN.** Everything below "phase rule" is the
 now-finished cleanup; the design work lives in the gitignored `redesign/` hub.
 
+> **How to read the unchecked boxes.** The *phase* is done; the boxes still open are deferred
+> follow-ups, not blockers, and this file is a personal scratchpad — **GitHub Issues remain the
+> single source of truth for backlog items** (`docs/ops/github-workflow.md`). Two open items are real
+> work that should be filed as issues rather than living here: the `SyncDividendsJob` projected-vs-
+> received defect (see "Deferred") and the User-model column slim. Anything not filed there is a
+> note, not a commitment.
+
 **Adrian's first prod observation (2026-08-23):** the **assets / sync / how market data is shown**
 feels confusing — a UX/product area to fix, likely folded into the design phase.
 
@@ -24,7 +31,8 @@ feels confusing — a UX/product area to fix, likely folded into the design phas
 - [ ] Append highlights to `BITACORA_2_0.md` as milestones happen (for the AI-slop blog post).
 - [ ] `redesign/` is gitignored — discovery hub, kept local. Do NOT commit it, do NOT work in it this phase.
 - [ ] Commit locally per logical step; **never push / deploy without Adrian's explicit ok.**
-- [ ] Long-lived branch: `evolve_2_0_pre` (tag `pre-2.0-evolve` marks the start).
+- [x] ~~Long-lived branch: `evolve_2_0_pre`~~ — merged to `master` and **deleted**. The tag
+      `pre-2.0-evolve` still marks the baseline; work from `master`.
 - [ ] Do NOT build the seam ahead of the screen (panel veto): no pluggable-registry framework, no
       event-table/persistence, no net-new evaluators this phase. Those wait for the design phase.
 
@@ -64,18 +72,18 @@ feels confusing — a UX/product area to fix, likely folded into the design phas
       `email_verified_at`). Keep `role` (admin zone still gates provider config).
 - [ ] Tidy dead `welcome` mailer (caller deleted with registration) + its view/spec.
 - [ ] `seeds.rb` single-user rewrite.
-- NOTE: `api_key_pool` is NOT a delete — it's MarketData plumbing (7 gateways). See Phase 3.
+- NOTE: `api_key_pool` was never a multi-user delete — it was MarketData plumbing. Resolved
+  separately by ADR-015 (see Phase 3).
 - NOTE: consider renaming `FirstAdminCreated` → `AccountCreated` (no "admin" in single-user) — later.
 
 ## Phase 3 — Fix only the simplest needed to continue (problems.md §F + api_key_pool)
 
 - [x] Fix the 2 `Notification.create!` bypasses (earnings/maturities never broadcast live). `4f51805`.
       Green 2505. Added a broadcast regression test to each.
-- [ ] `api_key_pool` → collapse to a single key per provider. **RE-ASSESSED: lower value than it looked.**
-      The pool is *working plumbing* — it already holds 1 key per provider for single-user; nothing is
-      broken. The rework is pure simplification of working code, touching KeyRotation + 7 gateway
-      call-sites + the admin pool_keys UI — real risk for elegance, not a bug fix. Defer to a focused
-      session per cost-justified-tech.
+- [x] `api_key_pool` → collapse to a single key per provider. **SHIPPED 2026-08-26 as
+      [ADR-015](docs/architecture/adr/0015-one-api-key-per-provider.md)** — not for elegance, but
+      because four providers' terms prohibit multi-credential free-tier stacking. `KeyRotation` →
+      `ApiKeyResolver`.
 - [ ] Dead `AlertPreference` flags — **decorative UI, not a bug** (toggles that don't gate anything;
       no email/SMS channel exists). Group with the User-column slim as cosmetic cleanup, deferred.
 
@@ -88,8 +96,11 @@ feels confusing — a UX/product area to fix, likely folded into the design phas
   (Alternative.me, CNN); news is a capability of Polygon/Finnhub, not a standalone source.
   **Needs first:** a real per-provider enable/disable on `Integration` (only `connection_status`
   exists, which is sync-state not preference) + onboarding persistence + sync respecting it. The
-  onboarding save path sits on `api_key_pool` → **build this AFTER the api_key_pool rework**, not
-  bolted onto code we're about to change. Transparency half (show + link each source) already shipped.
+  onboarding save path sat on `api_key_pool`; that rework **shipped** as ADR-015, so this is no
+  longer blocked. Transparency half (show + link each source) already shipped.
+  ⚠️ Stale as written: CNN and Polygon are both **retired**
+  (`db/migrate/20260826210000_remove_retired_integrations.rb`). The editorial sources today are
+  Alternative.me (sentiment) and news as a capability of Alpaca and Finnhub.
 
 ## Tier 1 dead-code cleanup — DONE (2026-08-23)
 
@@ -106,12 +117,13 @@ code is left loose. Remaining items below are working-code reworks / cosmetic �
 ## Deferred (working code / cosmetic — focused follow-up sessions, not this marathon)
 
 - User model column slim (`status`/`is_verified`/`email_verified_at`) — ~40 spec files, dead columns.
-- ~~`api_key_pool` → single-key simplification~~ **CANCELLED (2026-08-23).** Adrian wants to KEEP the
-  multi-key pool: several keys per provider is a deliberate **rate-limit workaround** (rotate across
-  keys to multiply free-tier limits — the "key buckets" mechanism from the vision). No rework; the
-  pool + rotation + admin UI stay as-is. Keys live encrypted in the DB, managed via the admin UI
-  ("deploy and forget"). ⚠️ Update `project_decision` memory (still says "rework to single-key") on
-  next `apu save`.
+- ~~`api_key_pool` → single-key simplification — CANCELLED (2026-08-23), keep the multi-key pool~~
+  **REVERSED AND SHIPPED (2026-08-26).**
+  [ADR-015](docs/architecture/adr/0015-one-api-key-per-provider.md) retired multi-key rotation: the
+  2026-08 provider audit found that Alpaca, Massive (ex-Polygon), Finnhub and CoinGecko all
+  **explicitly prohibit** using multiple credentials to exceed a free tier. The "rate-limit
+  workaround" was adopted before those terms were read. `KeyRotation` is gone, replaced by
+  `app/shared/domain/api_key_resolver.rb`; there is one key per provider. Nothing left to do here.
 - `AlertPreference` decorative flags.
 - Dead `welcome` mailer + its view/spec.
 - `seeds.rb` single-user rewrite.

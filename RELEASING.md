@@ -26,8 +26,10 @@ Examples: `v0.1.0-alpha`, `v0.2.0-beta`, `v1.0.0-rc.1`, `v1.0.0`
 
 ### What counts as 1.0.0?
 
-Stockerly reaches `v1.0.0` when:
-- Deployed to production with real users
+Stockerly is a self-hosted single-user tracker ([ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)),
+so "real users" is not the bar. It reaches `v1.0.0` when:
+- Running in production as the maintainer's daily driver
+- A third party can clone, stand it up, and load their first asset without a manual
 - Database schema is stable (migrations are additive, not destructive)
 - All 6 bounded contexts are battle-tested
 - SSL end-to-end is configured
@@ -58,7 +60,11 @@ module Stockerly
 end
 ```
 
-This version is used by Honeybadger to track releases in error reporting.
+Error tracking is **Sentry** (`sentry-ruby` / `sentry-rails` in the `Gemfile`), not Honeybadger.
+Note that Sentry's release marker does **not** come from this constant:
+`.github/workflows/deploy.yml` creates the release with `version: ${{ github.sha }}` after a
+successful production deploy. `lib/stockerly/version.rb` is the human-facing version used for
+tags and the changelog.
 
 ### 3. Update CHANGELOG.md
 
@@ -130,8 +136,9 @@ There is no fixed schedule. Releases happen when a meaningful set of changes is 
 
 | Version | Roadmap Phases | Theme |
 |---------|---------------|-------|
-| `v0.1.0-alpha` | 0-22 | All core features: DDD architecture, trading, alerts, market data, AI intelligence |
-| `v0.2.0-alpha` | TBD | Next phase |
+| `v0.1.0-alpha` | 0-22 | All core features: DDD architecture, trading, alerts, market data |
+| `v0.1.0-rc1` | — | Hardening for public deployment (current `lib/stockerly/version.rb`) |
+| `v0.2.0` | — | The 2.0 pivot: self-hosted single-user tracker (see the `[Unreleased]` section of the changelog) |
 
 ## Hotfix Process
 

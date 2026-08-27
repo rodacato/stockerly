@@ -28,7 +28,7 @@ Open-source, self-hosted single-user asset tracker for stocks (USD), crypto, and
 - **Alerts** — Price thresholds, sentiment conditions, volume spikes, portfolio concentration risk (HHI). Configurable cooldown system.
 - **Earnings** — Beat/miss history, EPS bar charts and analyst targets, on each asset's own page.
 - **Dividends & Splits** — Automatic tracking and position adjustment on stock splits.
-- **Multi-Provider Data** — Polygon.io, Alpha Vantage, CoinGecko, FMP, Banxico. Gateway chains with circuit breakers and adaptive scheduling.
+- **Multi-Provider Data** — 10 market-data gateways (Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Alpha Vantage, FMP, Banxico, ExchangeRate, Alternative.me). Gateway chains with circuit breakers and adaptive scheduling.
 - **PWA** — Installable as a mobile app with offline support.
 - **Discover** — Market-wide waves, five basket-filtered headlines, and the macro calendar. Read without holding a position.
 - **Instance Operations** — Integration monitoring with rate-limit bars, sync logs with CSV export, background-job dashboard, and instance settings.
@@ -64,10 +64,12 @@ Cross-context communication via domain events only. See [CLAUDE.md](CLAUDE.md) f
 ## Getting Started
 
 The fastest path is the Dev Container (`Reopen in Container` → `bin/dev`). On bare metal
-(Ruby 3.3.6 + PostgreSQL 16), `bin/setup` does the whole thing — gems, databases, demo data,
-server. Then open **`http://localhost:4100`**. The seeded demo login is
-`demo@stockerly.com` / `password123`; a fresh, unseeded instance opens the Setup Wizard
-instead, which creates the single account. No Node.js needed.
+(Ruby 3.3.6 + PostgreSQL 16), `bin/setup` does the whole thing — gems, databases, server —
+and seeds demo data when it creates the database. Then open **`http://localhost:4100`**. The
+seeded demo login is `demo@stockerly.com` / `password123` (a regular user, not an admin). An
+instance with **no** users opens the Setup Wizard instead, which creates the single account;
+because the dev seeds always create users, reaching the wizard takes an empty database. No
+Node.js needed.
 
 **See [GETTING_STARTED.md](GETTING_STARTED.md) for the full guide** (both run paths, the
 four-database setup, background jobs via `bin/jobs`, first-run check, and troubleshooting).
@@ -76,22 +78,27 @@ four-database setup, background jobs via `bin/jobs`, first-run check, and troubl
 
 ### API Keys
 
-Stockerly integrates with external market data providers. API keys are configured during the Setup Wizard, later under Integrations, or via Rails credentials:
+Stockerly ships **10 market-data gateways** (concrete providers — `app/contexts/market_data/gateways/` holds 13 files: 12 classes, of which 2 are base classes, plus 1 error class). API keys are configured during the Setup Wizard, later under Integrations, or via Rails credentials. The registrations below are the source of truth in [`config/initializers/data_sources.rb`](config/initializers/data_sources.rb):
 
-| Provider | Free Tier | Data |
-|----------|-----------|------|
-| [Polygon.io](https://polygon.io/) | 5 calls/min | US stocks, news, earnings |
-| [Alpha Vantage](https://www.alphavantage.co/) | 25 calls/day | Fundamentals, financial statements |
-| [CoinGecko](https://www.coingecko.com/) | 30 calls/min | Crypto prices and market data |
-| [FMP](https://financialmodelingprep.com/) | 250 calls/day | Fundamentals fallback |
-| [Banxico](https://www.banxico.org.mx/SieAPIRest/) | Free | CETES rates (Mexican treasury) |
+| Provider | Data it serves |
+|----------|----------------|
+| [Alpaca](https://alpaca.markets/) | US stocks/ETFs/indices — history, news, dividends, splits |
+| [Finnhub](https://finnhub.io/) | US prices, symbol search, news, earnings |
+| [CoinGecko](https://www.coingecko.com/) | Crypto prices, history, market data |
+| [DataBursatil](https://databursatil.com/) | BMV (Mexican market) prices, history, intraday |
+| [Yahoo Finance](https://finance.yahoo.com/) | Prices, history, indices, dividends, splits (Python bridge, [ADR-017](docs/architecture/adr/0017-python-bridge-for-yahoo-finance.md)) |
+| [Alpha Vantage](https://www.alphavantage.co/) | Fundamentals |
+| [FMP](https://financialmodelingprep.com/) | Fundamentals — maintainer-only; its `/api/v3` is gated to accounts created before 2025-08-31 |
+| [Banxico](https://www.banxico.org.mx/SieAPIRest/) | Historical FX fixes and CETES rates |
+| [ExchangeRate](https://www.exchangerate-api.com/) | Current FX rates |
+| [Alternative.me](https://alternative.me/crypto/fear-and-greed-index/) | Crypto Fear & Greed sentiment |
 
-All providers are optional. The app works without any API keys configured — you just won't get live market data.
+All providers are optional, and several need no key at all. The app works without any API keys configured — you just won't get live market data. Rate limits are per-provider settings stored on each `Integration` record, not hardcoded, so consult the provider's current terms rather than this table.
 
 ## Running Tests
 
 ```bash
-# Full suite (~2,600 specs)
+# Full suite (2,690 examples as of 2026-08-27)
 bundle exec rspec
 
 # Single file
@@ -113,7 +120,8 @@ bin/brakeman
 # Dependency vulnerabilities
 bin/bundler-audit
 
-# Full CI pipeline (rubocop + bundler-audit + importmap audit + brakeman + rspec)
+# CI pipeline (setup + rubocop + bundler-audit + importmap audit + brakeman)
+# Note: bin/ci has no test step — run `bundle exec rspec` separately.
 bin/ci
 ```
 
@@ -158,7 +166,8 @@ If you find a bug or have a question, open an [issue](https://github.com/rodacat
 <details>
 <summary>More screenshots</summary>
 
-_Captured before the 2.0 mark landed; they show the retired logo._
+_Captured before the 2.0 mark landed; they show the retired logo, and some screens no longer
+exist — the standalone market listing was deleted in the 2.0 cleanup._
 
 ![Market Listings](docs/screenshots/market.png)
 ![Asset Detail](docs/screenshots/asset-detail.png)

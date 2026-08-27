@@ -2,11 +2,20 @@
 
 ## Purpose
 
-Stockerly is Adrian's personal tool for understanding his investment patrimony
-across MXN and USD, with correct multi-currency tracking. Built AI-first, but
-**discipline beats delivery here**: the project drifted across 22 phases before
-the 2026-05-14 reset. Agents maximize useful shipping *within* the guardrails
-below — nothing gets built without a documented personal trigger.
+Stockerly is a **self-hosted, single-user** asset tracker — Adrian's personal tool
+for understanding his investment patrimony across MXN and USD, with correct
+multi-currency tracking, packaged so any technically capable person can stand it
+up. Built AI-first, but **discipline beats delivery here**: the project drifted
+across 22 phases before the 2026-05-14 reset, and the multi-user closed beta that
+followed was run and **failed** on UX grounds. The audience was dropped and the
+multi-user surface deleted in place — [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md).
+There is **one account**, created by the first-boot Setup Wizard.
+
+"Self-hosted for anyone" is packaging discipline, **not** a mandate to build for
+hypothetical users — building for a community that does not exist is the same
+persona-fantasma mistake the beta already made. Agents maximize useful shipping
+*within* the guardrails below — nothing gets built without a documented personal
+trigger.
 
 ---
 
@@ -61,15 +70,15 @@ evaporates.
 | Source | Purpose |
 |---|---|
 | [`docs/vision/README.md`](docs/vision/README.md) | North star + the 3 hard rules |
-| [`docs/vision/audience.md`](docs/vision/audience.md) | Primary / beta / non-users |
+| [`docs/vision/audience.md`](docs/vision/audience.md) | Primary user / packaging target / non-users |
 | [`docs/vision/non-goals.md`](docs/vision/non-goals.md) | What we explicitly are NOT |
 | [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | The 6 canonical JTBDs |
-| [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions (ADR-001 active) |
+| [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions — 14 ADRs, numbered to 0017. Read before deciding; ADR-0007 is superseded by ADR-0011 |
 | [`docs/sprints/README.md`](docs/sprints/README.md) | Sprint operating manual |
 | [`docs/research/experts.md`](docs/research/experts.md) | The advisory panel |
 | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | Issues + Projects v2 + Milestones |
 | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare |
-| [`docs/design/`](docs/design/) | Tokens, components, brand |
+| [`design/`](design/) | The design system — Pencil `.pen` files, ui-kit, brand, `DECISIONS.md`. **This is the source of truth**; `docs/design/` is an empty leftover |
 
 **Stack:** Rails 8 + Ruby 3.3.6, dry-rb (Contracts at the boundary, monads in
 Use Cases), Hotwire (Turbo + Stimulus), Tailwind 4, PostgreSQL. Deploy via Kamal

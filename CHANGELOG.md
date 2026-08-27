@@ -17,11 +17,16 @@ and [docs/1.0-retrospective.md](docs/1.0-retrospective.md).
 #### Changed
 - Reframed the product as a self-hosted single-user tracker (MXN/USD correct, no aggregators). `Identity` collapsed to single-user login/setup; `Notifications` shrank to in-app only.
 
+- Multi-key API rotation retired in favour of one key per provider ([ADR-015](docs/architecture/adr/0015-one-api-key-per-provider.md)): four providers' terms prohibit using multiple credentials to exceed a free tier. `KeyRotation` → `ApiKeyResolver`.
+- Copy moved into Rails I18n (`config/locales/es-MX.yml`, single locale, managed with `i18n-tasks`), adopted surface by surface with the redesign ([ADR-0011](docs/architecture/adr/0011-adopt-i18n-for-the-2.0-rewrite.md), superseding ADR-0007).
+
 #### Removed
-- Multi-user surface: public registration, email verification, and first-admin bootstrap.
+- Multi-user surface: public registration and email verification. **The first-boot Setup Wizard stays** — `Identity::UseCases::CreateFirstAdmin` is now the only way the single account is created, and `Identity::Events::FirstAdminCreated` replaced `UserRegistered` as the trigger for portfolio and alert-preference creation.
 - Most of the `Administration` multi-user surface: invite-by-code system and user management.
-- The "AI Intelligence" LLM integration seed (multi-provider gateway) — dropped, never a real feature.
+- The "AI Intelligence" LLM integration seed (multi-provider gateway) — dropped, never a real feature. No LLM code remains in the tree.
 - Models backing the deleted surface (invite codes, remember tokens, email events, user activity).
+- Retired data providers Polygon.io and CNN, gateway and integration rows together (`db/migrate/20260826210000_remove_retired_integrations.rb`). Ten concrete gateways remain.
+- The standalone `/market` listing, `/news` and `/earnings` screens (D31) and `/admin/assets` (D9) — earnings moved to a tab on each asset page, and the catalogue is managed from `/tracked`.
 
 ## [0.1.0-rc1] - 2026-03-07
 
