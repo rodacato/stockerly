@@ -1,33 +1,32 @@
 # Orchestrator: enqueues SyncFundamentalJob for each eligible asset,
-# respecting the Alpha Vantage daily budget (25 calls/day free tier).
+# respecting the Alpha Vantage daily budget through FundamentalsBudget — both
+# the calls already spent and the limit the integration declares.
 # Priority: portfolio assets > watchlist > rest.
 class SyncAllFundamentalsJob < ApplicationJob
   include PausableSync
   include SyncLogging
 
-  DAILY_BUDGET = MarketData::Domain::FundamentalsBudget::DAILY_LIMIT
   STAGGER_SECONDS = 15
 
   queue_as :default
 
   def perform
-    used_today = calls_used_today
-    remaining = DAILY_BUDGET - used_today
+    budget = MarketData::Domain::FundamentalsBudget.today
 
-    if remaining <= 0
+    if budget.exhausted?
       log_sync_failure("Fundamentals: all",
-        "Daily budget exhausted (#{used_today}/#{DAILY_BUDGET})", severity: :warning)
+        "Daily budget exhausted (#{budget.used}/#{budget.limit})", severity: :warning)
       return
     end
 
-    assets = prioritized_assets.limit(remaining)
+    assets = budget.unlimited? ? prioritized_assets : prioritized_assets.limit(budget.remaining)
 
     assets.each_with_index do |asset, index|
       SyncFundamentalJob.set(wait: index * STAGGER_SECONDS.seconds).perform_later(asset.id)
     end
 
     log_sync_success("Fundamentals: all",
-      message: "Enqueued #{assets.size} assets (budget: #{remaining}/#{DAILY_BUDGET})")
+      message: "Enqueued #{assets.size} assets (budget: #{budget.remaining}/#{budget.limit})")
   end
 
   private
@@ -45,9 +44,5 @@ class SyncAllFundamentalsJob < ApplicationJob
              fundamentals_synced_at ASC NULLS FIRST
            SQL
          )
-  end
-
-  def calls_used_today
-    MarketData::Domain::FundamentalsBudget.today.used
   end
 end
