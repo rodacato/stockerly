@@ -19,7 +19,7 @@ class SyncBulkBmvJob < ApplicationJob
 
     if result.success?
       update_assets(assets, result.value!)
-      log_sync_success("Bulk BMV Sync: #{assets.size} assets")
+      report(assets, result.value!)
     elsif result.failure[0] == :rate_limited || result.failure[0] == :circuit_open
       log_sync_failure("Bulk BMV Sync", result.failure[1], severity: :warning)
     else
@@ -28,6 +28,26 @@ class SyncBulkBmvJob < ApplicationJob
   end
 
   private
+
+  # A name DataBursatil does not recognise is simply absent from the response —
+  # measured 2026-08-27, a mixed batch answers 200 with the rest. So a partial
+  # answer used to log "N assets" and leave the missing one stale with nothing
+  # said, which is the quietest way to be wrong.
+  def report(assets, quotes)
+    missing = assets.keys - quotes.map { |quote| quote[:symbol] }
+
+    if missing.empty?
+      log_sync_success("Bulk BMV Sync: #{quotes.size} assets")
+      return
+    end
+
+    log_sync_failure(
+      "Bulk BMV Sync",
+      "Priced #{quotes.size} of #{assets.size}. No quote for: #{missing.join(', ')} — " \
+      "the serie is probably missing. Run `rake data:resolve_bmv_symbols`.",
+      severity: :warning
+    )
+  end
 
   def breaker
     GatewayChain.breaker_for("databursatil")
