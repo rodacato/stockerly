@@ -427,6 +427,28 @@ module WebmockHelpers
 
   # --- Banxico SIE API (CETES) ---
 
+  # The whole curve in one request. Banxico answers in its own order, so the
+  # blocks are deliberately shuffled here: a positional parser would pass with
+  # them sorted and mislabel every term in production.
+  def stub_banxico_curve(rates: { "364" => 7.06, "28" => 6.13, "91" => 6.60, "182" => 6.72 }, date: "27/08/2026")
+    series_map = MarketData::Gateways::BanxicoGateway::CETES_SERIES
+    ids = series_map.values.join(",")
+
+    stub_request(:get, "#{MarketData::Gateways::BanxicoGateway::BASE_URL}series/#{ids}/datos/oportuno")
+      .to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: {
+          bmx: {
+            series: rates.map do |term, rate|
+              { "idSerie" => series_map[term], "titulo" => "Valores gubernamentales",
+                "datos" => [ { "fecha" => date, "dato" => rate.to_s } ] }
+            end
+          }
+        }.to_json
+      )
+  end
+
   def stub_banxico_auctions(term: "28", yield_rate: 11.15, date: "25/02/2026")
     series_id = MarketData::Gateways::BanxicoGateway::CETES_SERIES[term.to_s]
     stub_request(:get, "#{MarketData::Gateways::BanxicoGateway::BASE_URL}series/#{series_id}/datos/oportuno")

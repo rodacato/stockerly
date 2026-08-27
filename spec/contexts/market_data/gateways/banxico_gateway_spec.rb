@@ -127,21 +127,37 @@ RSpec.describe MarketData::Gateways::BanxicoGateway do
   end
 
   describe "#fetch_all_terms" do
-    context "when multiple terms return data" do
-      before do
-        stub_banxico_auctions(term: "28", yield_rate: 11.15, date: "25/02/2026")
-        stub_banxico_auctions(term: "91", yield_rate: 11.20, date: "25/02/2026")
-        stub_banxico_auctions(term: "182", yield_rate: 11.30, date: "25/02/2026")
-        stub_banxico_auctions(term: "364", yield_rate: 11.45, date: "25/02/2026")
+    context "when the whole curve comes back" do
+      before { stub_banxico_curve }
+
+      it "asks for every term in a single request" do
+        gateway.fetch_all_terms
+
+        expect(a_request(:get, %r{series/SF43936,SF43939,SF43942,SF43945/datos/oportuno})).to have_been_made.once
       end
 
       it "returns Success with combined auction data" do
         result = gateway.fetch_all_terms
 
         expect(result).to be_success
-        data = result.value!
-        expect(data.size).to eq(4)
-        expect(data.map { |d| d[:term] }).to contain_exactly("28", "91", "182", "364")
+        expect(result.value!.map { |d| d[:term] }).to contain_exactly("28", "91", "182", "364")
+      end
+
+      # Banxico answers in its own order. Matching by position rather than by
+      # idSerie would put the 364-day rate on the 28-day row and say nothing.
+      it "matches each rate to its own term, not to its position" do
+        result = gateway.fetch_all_terms
+
+        rates = result.value!.to_h { |a| [ a[:term], a[:yield_rate] ] }
+        expect(rates).to eq("28" => 6.13, "91" => 6.60, "182" => 6.72, "364" => 7.06)
+      end
+
+      it "spends one call against the provider, not four" do
+        allow(RateLimiter).to receive(:check!).and_call_original
+
+        gateway.fetch_all_terms
+
+        expect(RateLimiter).to have_received(:check!).with("Banxico").once
       end
     end
   end
