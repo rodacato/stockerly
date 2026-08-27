@@ -72,6 +72,11 @@ es-MX:
         correo: Envío de correo
         correo_desc: Permite que salgan digests, avisos urgentes y recuperación de
           contraseña.
+        descubrir: Descubrir
+        descubrir_semanas:
+          one: abierto 1 de las últimas %{window} semanas
+          other: abierto %{count} de las últimas %{window} semanas
+          zero: sin abrir en %{window} semanas
         diagnostico: Diagnóstico
         entorno: Entorno
         entradas: "%{count} entradas"

@@ -12,7 +12,9 @@
            [ "Rails",           @diagnostics[:rails] ],
            [ t(".entorno"),     @diagnostics[:environment] ],
            [ t(".trabajos"),    @diagnostics[:solid_queue] ],
-           [ t(".cache"),       @diagnostics[:cache_entries] ? t(".entradas", count: number_with_delimiter(@diagnostics[:cache_entries])) : "—" ] ].each do |label, value| %>
+           [ t(".cache"),       @diagnostics[:cache_entries] ? t(".entradas", count: number_with_delimiter(@diagnostics[:cache_entries])) : "—" ],
+           [ t(".descubrir"),   t(".descubrir_semanas", count: @diagnostics[:discover_weeks],
+                                  window: @diagnostics[:discover_window]) ] ].each do |label, value| %>
         <div class="flex items-baseline justify-between gap-4 py-3">
           <dt class="text-fg-subtle"><%= label %></dt>
           <dd class="text-right font-mono text-sm text-fg-default"><%= value %></dd>

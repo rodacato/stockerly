@@ -19,9 +19,7 @@ class DiscoverController < AuthenticatedController
     # still has nothing to say, and should say so.
     @has_world_data = @waves.any?
 
-    # The evidence D31's kill criterion needs, at the cost of a cache key: if
-    # this screen goes unvisited, the decision to delete it has a number behind
-    # it. Not surfaced in Ajustes yet.
-    Rails.cache.write("discover:last_seen", Time.current)
+    # The evidence D31's kill criterion needs, surfaced on Ajustes › Estado.
+    MarketData::Discover::VisitLog.record
   end
 end
