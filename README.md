@@ -26,12 +26,12 @@ Open-source, self-hosted single-user asset tracker for stocks (USD), crypto, and
 - **Portfolio Management** — Track trades, positions, gain/loss, allocation by sector and asset type. Period returns (1D to ALL), TWR benchmarking against S&P 500/NASDAQ/Dow Jones, risk metrics (volatility, Sharpe ratio, max drawdown).
 - **Market Intelligence** — 5-factor TrendScore (RSI, Momentum, MACD, Volume, EMA), Fear & Greed Index, market indices with sparklines, asset detail pages with adaptive tabs for stocks and crypto.
 - **Alerts** — Price thresholds, sentiment conditions, volume spikes, portfolio concentration risk (HHI). Configurable cooldown system.
-- **Earnings Calendar** — Upcoming earnings with beat/miss tracking, EPS bar charts, analyst target prices, and earnings narrative generation.
-- **News Feed** — Aggregated financial news with watchlist filtering.
+- **Earnings** — Beat/miss history, EPS bar charts and analyst targets, on each asset's own page.
 - **Dividends & Splits** — Automatic tracking and position adjustment on stock splits.
 - **Multi-Provider Data** — Polygon.io, Alpha Vantage, CoinGecko, FMP, Banxico. Gateway chains with circuit breakers and adaptive scheduling.
 - **PWA** — Installable as a mobile app with offline support.
-- **Admin Panel** — Asset management, integration monitoring with rate limit bars, API key pools, system health dashboard, sync logs.
+- **Discover** — Market-wide waves and the macro calendar, read without holding a position.
+- **Instance Operations** — Integration monitoring with rate-limit bars, sync logs with CSV export, background-job dashboard, and instance settings.
 
 ## Architecture
 
@@ -42,8 +42,8 @@ Pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts:
 | **Identity** | Single-user auth, profile, onboarding |
 | **Trading** | Trades, portfolios, watchlists, dashboard |
 | **Alerts** | Rule management, evaluation, triggering |
-| **Market Data** | External data: prices, fundamentals, news, earnings |
-| **Administration** | Admin ops, integrations, logs, settings |
+| **Market Data** | External data: prices, fundamentals, earnings, FX |
+| **Administration** | Integrations, sync logs, instance settings |
 | **Notifications** | Notification creation and delivery |
 
 Cross-context communication via domain events only. See [CLAUDE.md](CLAUDE.md) for detailed architecture docs.
@@ -65,8 +65,9 @@ Cross-context communication via domain events only. See [CLAUDE.md](CLAUDE.md) f
 
 The fastest path is the Dev Container (`Reopen in Container` → `bin/dev`). On bare metal
 (Ruby 3.3.6 + PostgreSQL 16), `bin/setup` does the whole thing — gems, databases, demo data,
-server. Then open **`http://localhost:4100`**. The seeded admin login is
-`admin@stockerly.com` / `password123`. No Node.js needed.
+server. Then open **`http://localhost:4100`**. The seeded demo login is
+`demo@stockerly.com` / `password123`; a fresh, unseeded instance opens the Setup Wizard
+instead, which creates the single account. No Node.js needed.
 
 **See [GETTING_STARTED.md](GETTING_STARTED.md) for the full guide** (both run paths, the
 four-database setup, background jobs via `bin/jobs`, first-run check, and troubleshooting).
@@ -75,7 +76,7 @@ four-database setup, background jobs via `bin/jobs`, first-run check, and troubl
 
 ### API Keys
 
-Stockerly integrates with external market data providers. API keys are configured through the admin panel after the Setup Wizard, or via Rails credentials:
+Stockerly integrates with external market data providers. API keys are configured during the Setup Wizard, later under Integrations, or via Rails credentials:
 
 | Provider | Free Tier | Data |
 |----------|-----------|------|
@@ -90,7 +91,7 @@ All providers are optional. The app works without any API keys configured — yo
 ## Running Tests
 
 ```bash
-# Full suite (~2080 specs)
+# Full suite (~2,600 specs)
 bundle exec rspec
 
 # Single file
@@ -157,12 +158,12 @@ If you find a bug or have a question, open an [issue](https://github.com/rodacat
 <details>
 <summary>More screenshots</summary>
 
+_Captured before the 2.0 mark landed; they show the retired logo._
+
 ![Market Listings](docs/screenshots/market.png)
 ![Asset Detail](docs/screenshots/asset-detail.png)
 ![Portfolio](docs/screenshots/portfolio.png)
 ![Alerts](docs/screenshots/alerts.png)
-![Admin — Assets](docs/screenshots/admin-assets.png)
-![News](docs/screenshots/news.png)
 ![Admin — Integrations](docs/screenshots/admin-integrations.png)
 ![Admin — Settings](docs/screenshots/admin-settings.png)
 ![Admin — Logs](docs/screenshots/admin-logs.png)
