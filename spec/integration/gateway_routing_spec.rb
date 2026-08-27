@@ -158,6 +158,7 @@ RSpec.describe "Gateway routing", type: :job do
     it "sends BMV history to DataBursatil, which the old route skipped" do
       asset = create(:asset, :mexican, symbol: "WALMEX.MX")
       stub_databursatil("/v2/historicos", { "WALMEX" => [] })
+      stub_yfinance_not_found("WALMEX.MX")
 
       BackfillPriceHistoryJob.perform_now(asset.id)
 

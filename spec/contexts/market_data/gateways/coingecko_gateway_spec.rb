@@ -228,4 +228,18 @@ RSpec.describe MarketData::Gateways::CoingeckoGateway do
       end
     end
   end
+  # The audit asked for MXN here. Measured 2026-08-26, CoinGecko does not quote
+  # MXN — it computes it: the implied rate was identical across coins (16.9454)
+  # and 0.11% off Banxico's FIX. Asking for it would move the FX hop somewhere
+  # unauditable and relabel every stored row, since asset_price_histories has no
+  # currency column of its own.
+  it "quotes against USD, and every request says so" do
+    stub_coingecko_prices
+
+    gateway.fetch_bulk_prices([ "BTC" ])
+
+    expect(described_class::QUOTE_CURRENCY).to eq("usd")
+    expect(a_request(:get, %r{api\.coingecko\.com/api/v3/simple/price})
+      .with(query: hash_including("vs_currencies" => "usd"))).to have_been_made
+  end
 end

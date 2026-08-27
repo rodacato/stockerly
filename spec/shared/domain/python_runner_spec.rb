@@ -1,6 +1,8 @@
 require "rails_helper"
 
-RSpec.describe PythonRunner do
+# Runs the real subprocess on purpose: probe.py has no dependency and no
+# network, which is what makes exercising the runner for real safe.
+RSpec.describe PythonRunner, :real_subprocess do
   describe ".call" do
     # probe.py has no third-party dependency and touches no network, so this
     # exercises the runner itself rather than whatever the image has installed.

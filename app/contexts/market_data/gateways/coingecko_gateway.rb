@@ -9,6 +9,13 @@ module MarketData
     DEMO_URL = "https://api.coingecko.com"
     PRO_URL  = "https://pro-api.coingecko.com"
     PROVIDER = "CoinGecko"
+
+    # Crypto is quoted against USD everywhere, and CoinGecko's MXN is that
+    # number times an FX rate it does not publish — measured 2026-08-26, the
+    # implied rate was identical across coins (16.9454) and 0.11% off Banxico's
+    # FIX. Converting here would hide the hop, not remove it, and would trade an
+    # auditable settlement reference for an undisclosed one.
+    QUOTE_CURRENCY = "usd".freeze
     TIMEOUT  = 5
 
     # CoinGecko uses lowercase IDs, not ticker symbols.
@@ -52,7 +59,7 @@ module MarketData
       return check if check.failure?
 
       response = connection.get("/api/v3/coins/#{coin_id}/market_chart") do |req|
-        req.params["vs_currency"] = "usd"
+        req.params["vs_currency"] = QUOTE_CURRENCY
         req.params["days"] = days.to_s
         req.params["interval"] = "daily"
         apply_auth(req)
@@ -76,7 +83,7 @@ module MarketData
 
       response = connection.get("/api/v3/simple/price") do |req|
         req.params["ids"] = ids.join(",")
-        req.params["vs_currencies"] = "usd"
+        req.params["vs_currencies"] = QUOTE_CURRENCY
         req.params["include_24hr_change"] = "true"
         req.params["include_market_cap"] = "true"
         apply_auth(req)
@@ -99,7 +106,7 @@ module MarketData
       return check if check.failure?
 
       response = connection.get("/api/v3/coins/markets") do |req|
-        req.params["vs_currency"] = "usd"
+        req.params["vs_currency"] = QUOTE_CURRENCY
         req.params["ids"] = ids.join(",")
         req.params["order"] = "market_cap_desc"
         req.params["sparkline"] = "false"
@@ -141,7 +148,7 @@ module MarketData
 
         {
           symbol: symbol.upcase,
-          price: data["usd"].to_d,
+          price: data[QUOTE_CURRENCY].to_d,
           change_percent: data["usd_24h_change"]&.to_d&.round(4) || 0,
           market_cap: data["usd_market_cap"]&.to_d
         }

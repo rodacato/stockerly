@@ -7,11 +7,11 @@
 > **This document dissolves into GitHub Issues.** It exists so nothing is lost between the audit and
 > the board; delete a row once its issue is open, and delete the file once all of them are.
 >
-> **Status 2026-08-26, fourth pass:** thirteen of the eighteen findings are
-> closed — group A, **all of C**, both of group D, B1 and B2. Verified against
-> the code rather than assumed; each closure names what did it. **What remains
-> is B3 and B4, and both are
-> [#320](https://github.com/rodacato/stockerly/issues/320).**
+> **Status 2026-08-26, final pass: all eighteen are resolved.** Group A, all of
+> C, both of D, and all of B. Verified against the code rather than assumed;
+> each closure names what did it. **Two rows turned out to be wrong** — A4 and
+> B3 — and both are recorded as mis-triages rather than quietly corrected,
+> because being wrong in an audit is the useful part to keep.
 >
 > **Done 2026-08-26:** multi-key rotation retired per
 > [ADR-015](../architecture/adr/0015-one-api-key-per-provider.md), and **all of group A with it**.
@@ -40,8 +40,8 @@ Each is a short diff with a consequence that needs deciding first. Do not batch 
 |---|---|---|
 | ✅ B1 | **Closed 2026-08-26.** `FIX_SERIES` is `SF60653` and the backfill decision was **full backfill** — the whole series, 12,705 rows from 1991-11-14, is one free 493 KB request. No delete was needed: the settlement series covers every calendar day, so the upsert corrects the determination-dated rows in place. Recorded as an amendment to [ADR-009](../architecture/adr/0009-fx-history-strategy.md). |
 | ✅ B2 | **Closed — the gateway itself is gone.** `YahooFinanceGateway` was deleted when Yahoo moved behind the yfinance bridge, and `fetch_batch_quotes` and its per-symbol fallback went with it. The decision this row was waiting on — what handles the failure when the fallback is removed — was answered by DataBursatil taking the BMV batch. |
-| B3 | **CoinGecko: request MXN natively** | `vs_currency=usd` is hardcoded in three places and `data["usd"]` is parsed in a fourth. CoinGecko quotes MXN directly, so we are converting a number the source could have given us — but this touches money parsing, so it needs its specs first. |
-| B4 | **Batch the CETES curve into one request** | `fetch_all_terms` makes 4 calls where Banxico allows **20 series per request**. A clean win against the provider most at risk of a day-long block — but it is a real refactor of the parsing, not a parameter change. |
+| ⚠️ B3 | **This row was wrong, and measuring is what showed it.** CoinGecko does not *quote* MXN — it computes it. Probed 2026-08-26: the implied USD/MXN was **identical across coins** (16.9454 for BTC, 16.9456 for ETH), which a real MXN order book would not produce, and it sat **0.11% off Banxico's FIX** of 16.9647. So asking for MXN does not remove an FX hop; it **moves the hop inside CoinGecko**, where it cannot be audited, and trades the settlement reference this project deliberately chose for an undisclosed one. Worse, `asset_price_histories` has **no currency column** — the currency is implied by `assets.currency` — so switching the request would silently relabel every stored crypto row. **Fixed the part that was real:** the four `"usd"` literals are one named constant carrying the measurement as its reason. |
+| ✅ B4 | **Closed by [#320](https://github.com/rodacato/stockerly/issues/320).** One request for the whole curve, against the provider that blocks a token for a full calendar day on a token that also serves FX. It was a real refactor: Banxico answers a multi-series request **in its own order, not the one asked for** (probed: `SF43945` came back first), so rows are matched by `idSerie`. Parsing them positionally would have put the 364-day rate on the 28-day row and never said so — the spec shuffles the stub deliberately for that reason. |
 
 ## C — Defer: the engine will reshape these
 
@@ -96,14 +96,10 @@ individually would be the work thrown away.
 
 ## Still open — every row is an issue
 
-Nothing below is blocked on discovery. Each has its evidence and, where a
-decision is needed, names whose it is.
+*(none — B3 was answered by measuring it, and B4 is closed)*
 
-| # | What | Issue |
-|---|---|---|
-| B3 | CoinGecko is asked in USD in four places although it quotes MXN natively — we convert a number the source could have given us. | [#320](https://github.com/rodacato/stockerly/issues/320) |
-| B4 | The CETES curve costs four calls where Banxico allows twenty series in one, against the provider most at risk of a day-long block. | [#320](https://github.com/rodacato/stockerly/issues/320) |
-
-**Both remaining rows are [#320](https://github.com/rodacato/stockerly/issues/320).
-Delete this file when it closes.** It has done its job: eighteen findings reached
-the board without any being lost between the audit and the work.
+**Every row is now resolved, and this file can go.** It did its job: eighteen
+findings reached the board without one being lost between the audit and the
+work — including the two the audit got wrong, which is the part that would have
+been lost quietest. Delete it once
+[#320](https://github.com/rodacato/stockerly/issues/320) merges.

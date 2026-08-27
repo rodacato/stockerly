@@ -59,17 +59,20 @@ module MarketData
       auctions_for(term, "#{format_date(from)}/#{format_date(to)}")
     end
 
-    # Fetch latest auctions for all CETES terms.
+    # The whole curve in one request. Banxico allows twenty series per call and
+    # blocks an abusing token for a full calendar day — and this token serves FX
+    # as well, so four calls where one suffices is the least affordable waste in
+    # the stack.
     # Returns Success([{ term:, yield_rate:, price:, auction_date: }, ...])
     def fetch_all_terms
-      results = []
+      check = RateLimiter.check!(PROVIDER)
+      return check if check.failure?
 
-      CETES_SERIES.each_key do |term|
-        result = fetch_auctions(term: term)
-        results.concat(result.value!) if result.success?
-      end
+      response = connection.get("series/#{CETES_SERIES.values.join(',')}/datos/oportuno")
 
-      results.any? ? Success(results) : Failure([ :not_found, "No CETES data available" ])
+      return GatewayFailure.from(response, PROVIDER) unless response.success?
+
+      parse_curve(response.body)
     rescue Faraday::Error => e
       Failure([ :gateway_error, e.message ])
     end
@@ -117,12 +120,29 @@ module MarketData
       series = body.dig("bmx", "series", 0)
       return Failure([ :not_found, "No series data for CETES #{term}D" ]) unless series
 
-      datos = series["datos"]
-      return Failure([ :not_found, "No auction data for CETES #{term}D" ]) if datos.blank?
+      auctions = auctions_from(series["datos"], term)
 
-      auctions = datos.filter_map do |dato|
+      auctions.any? ? Success(auctions) : Failure([ :not_found, "No valid auction data for CETES #{term}D" ])
+    end
+
+    # Banxico answers a multi-series request in its own order, not the one asked
+    # for, so each block is matched by idSerie. Reading them positionally would
+    # mislabel every term and never say so.
+    def parse_curve(body)
+      terms_by_series = CETES_SERIES.invert
+
+      auctions = Array(body.dig("bmx", "series")).flat_map do |series|
+        term = terms_by_series[series["idSerie"]]
+        term ? auctions_from(series["datos"], term) : []
+      end
+
+      auctions.any? ? Success(auctions) : Failure([ :not_found, "No CETES data available" ])
+    end
+
+    def auctions_from(datos, term)
+      Array(datos).filter_map do |dato|
         yield_rate = dato["dato"]&.gsub(",", "")&.to_f
-        next unless yield_rate && yield_rate > 0
+        next unless yield_rate&.positive?
 
         {
           term: term,
@@ -131,8 +151,6 @@ module MarketData
           auction_date: parse_date(dato["fecha"])
         }
       end
-
-      auctions.any? ? Success(auctions) : Failure([ :not_found, "No valid auction data for CETES #{term}D" ])
     end
 
     # The FIX for a given day does not exist before it is determined, from

@@ -55,8 +55,12 @@ RSpec.describe BackfillPriceHistoryJob, type: :job do
     context "when all gateways fail" do
       let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock) }
 
+      # Both links, or the chain falls through to the bridge for real: a
+      # subprocess bypasses WebMock, which is how this spec was reaching Yahoo
+      # from CI until the guard caught it.
       before do
         stub_alpaca_bars({})
+        stub_yfinance_not_found("AAPL")
       end
 
       it "logs failure" do
