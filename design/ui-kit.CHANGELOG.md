@@ -11,6 +11,16 @@ version it vendored in `kit-version-source`.
 major = breaking rename/removal. Additive bumps don't force re-syncs. A changed token VALUE forces
 every consumer.
 
+**Current: 0.7.0.** Entries below are historical and are not rewritten when a later version
+supersedes them — read the newest entry that mentions a component, not the first.
+
+> **Vocabulary, renamed 2026-08-27 (D48).** The tier ladder moved to the industry-standard English
+> names: **Poseo → Holdings · Sigo → Watchlist · Rastreado(s) → Tracked**. The observation sense of
+> *movimiento* is now **Señales**; *movimiento* alone means a trade. Older entries below still carry
+> the pre-D48 names because they record what was true when written — `TierChip (Poseo / Sigo)` in
+> the 0.4.0 gap list is the ladder D48 renames. The `.pen` masters and the ERB copy migrate
+> separately; this note exists so the old names are not read as current.
+
 ---
 
 ## 0.1.0 — initial
@@ -226,4 +236,10 @@ id is never proof of which file you are in. Verify by artboard name before writi
 draws the old glyph is unknown. It is the one file this bump did not reach.
 
 The code-side change (the SVGs under `app/assets/images/` and `public/`, the manifest, the cache
-bust) is tracked separately in CODE_CHANGES.md — the kit is ahead of the code until that ships.
+bust) is tracked separately in CODE_CHANGES.md §11.
+
+**Shipped 2026-08-27 — the kit is no longer ahead here.** Verified on disk rather than assumed:
+`app/assets/images/logo_light.svg` and `logo_dark.svg`, `public/favicon.svg`, `icon.svg`,
+`icon-192.svg`, `icon-512.svg`, `icon-maskable-512.svg` and their PNG rasters, plus
+`app/views/shared/_logo_mark.html.erb` — the `LogoMark` this version added. The sentence this
+paragraph replaced said the kit led the code, and it stopped being true the day §11 landed.
