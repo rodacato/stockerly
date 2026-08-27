@@ -59,7 +59,7 @@
           "type": "frame",
           "id": "r7JVGz",
           "name": "Brand",
-          "gap": "$space-2",
+          "gap": 4,
           "alignItems": "center",
           "children": [
             {
@@ -72,110 +72,48 @@
               "children": [
                 {
                   "type": "path",
-                  "id": "ACVqn",
+                  "id": "gdfEJ",
                   "x": 0,
                   "y": 0,
-                  "name": "Bk",
-                  "geometry": "M10 22v-12h12",
+                  "name": "Mark",
+                  "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                  "fillRule": "evenodd",
                   "viewBox": [
                     0,
                     0,
                     64,
                     64
                   ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "ErQig",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M42 10h12v12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "mvQa7",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M10 42v12h12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "Ke4Oz",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M42 54h12v-12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "ellipse",
-                  "id": "hxfdO",
-                  "x": 9.5,
-                  "y": 9.5,
-                  "name": "Fc",
                   "fill": "$primary",
-                  "width": 5,
-                  "height": 5
+                  "width": 24,
+                  "height": 24
                 }
               ]
             },
             {
-              "type": "text",
-              "id": "uYG7d",
-              "name": "WM",
-              "fill": "$fg-default",
-              "content": "stockerly",
-              "fontFamily": "$font-display",
-              "fontSize": 17,
-              "fontWeight": "700",
-              "letterSpacing": -0.4
+              "type": "frame",
+              "id": "E9h5gv",
+              "name": "WMWrap",
+              "layout": "vertical",
+              "padding": [
+                0,
+                0,
+                3.9,
+                0
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "QKGKp",
+                  "name": "WM",
+                  "fill": "$fg-default",
+                  "content": "stockerly",
+                  "fontFamily": "$font-display",
+                  "fontSize": 17,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                }
+              ]
             }
           ]
         },
@@ -3720,7 +3658,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.6.0"
+      "value": "0.7.0"
     },
     "font-display": {
       "type": "string",

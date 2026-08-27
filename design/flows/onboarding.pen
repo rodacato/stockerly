@@ -147,7 +147,7 @@
               "type": "frame",
               "id": "q1YpZ",
               "name": "Brand",
-              "gap": "$space-3",
+              "gap": 5,
               "alignItems": "center",
               "children": [
                 {
@@ -160,110 +160,48 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "vg18M",
+                      "id": "r8lKDH",
                       "x": 0,
                       "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 22v-12h12",
+                      "name": "Mark",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "#00000000",
-                      "width": 30,
-                      "height": 30,
-                      "stroke": "$fg-default",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "gZobV",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 10h12v12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 30,
-                      "height": 30,
-                      "stroke": "$fg-default",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "jCjIz",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 42v12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 30,
-                      "height": 30,
-                      "stroke": "$fg-default",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "K8xSgx",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 54h12v-12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 30,
-                      "height": 30,
-                      "stroke": "$fg-default",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "HrFrz",
-                      "x": 12.5,
-                      "y": 12.5,
-                      "name": "Focus",
                       "fill": "$primary",
-                      "width": 5,
-                      "height": 5
+                      "width": 30,
+                      "height": 30
                     }
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "uYL21",
-                  "name": "Wordmark",
-                  "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "type": "frame",
+                  "id": "noRii",
+                  "name": "WMWrap",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    0,
+                    4.6,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qsr4a",
+                      "name": "WM",
+                      "fill": "$fg-default",
+                      "content": "stockerly",
+                      "fontFamily": "$font-display",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.4
+                    }
+                  ]
                 }
               ]
             },
@@ -445,7 +383,7 @@
                       "type": "frame",
                       "id": "qcyEB",
                       "name": "Brand",
-                      "gap": "$space-3",
+                      "gap": 5,
                       "alignItems": "center",
                       "children": [
                         {
@@ -458,110 +396,48 @@
                           "children": [
                             {
                               "type": "path",
-                              "id": "y1FT0N",
+                              "id": "HkmI2",
                               "x": 0,
                               "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M10 22v-12h12",
+                              "name": "Mark",
+                              "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                              "fillRule": "evenodd",
                               "viewBox": [
                                 0,
                                 0,
                                 64,
                                 64
                               ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "path",
-                              "id": "qCSVR",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M42 10h12v12",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "path",
-                              "id": "KdYBd",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M10 42v12h12",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "path",
-                              "id": "aoLiL",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M42 54h12v-12",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "ellipse",
-                              "id": "e3EUt",
-                              "x": 11.5,
-                              "y": 11.5,
-                              "name": "Focus",
                               "fill": "$fg-inverse",
-                              "width": 5,
-                              "height": 5
+                              "width": 28,
+                              "height": 28
                             }
                           ]
                         },
                         {
-                          "type": "text",
-                          "id": "oakvY",
-                          "name": "Wordmark",
-                          "fill": "$fg-inverse",
-                          "content": "stockerly",
-                          "fontFamily": "$font-display",
-                          "fontSize": 20,
-                          "fontWeight": "700",
-                          "letterSpacing": -0.4
+                          "type": "frame",
+                          "id": "Caclc",
+                          "name": "WMWrap",
+                          "layout": "vertical",
+                          "padding": [
+                            0,
+                            0,
+                            4.6,
+                            0
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "vNgZY",
+                              "name": "WM",
+                              "fill": "$fg-inverse",
+                              "content": "stockerly",
+                              "fontFamily": "$font-display",
+                              "fontSize": 20,
+                              "fontWeight": "700",
+                              "letterSpacing": -0.4
+                            }
+                          ]
                         }
                       ]
                     },
@@ -2466,97 +2342,21 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "jYR4C",
+                      "id": "qDfzw",
                       "x": 0,
                       "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 22v-12h12",
+                      "name": "Mark",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "#00000000",
-                      "width": 28,
-                      "height": 28,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "ewD9s",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 10h12v12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 28,
-                      "height": 28,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "eSlNi",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 42v12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 28,
-                      "height": 28,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "pBfbl",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 54h12v-12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 28,
-                      "height": 28,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "z0lEn1",
-                      "x": 11.5,
-                      "y": 11.5,
-                      "name": "Focus",
                       "fill": "$primary",
-                      "width": 5,
-                      "height": 5
+                      "width": 28,
+                      "height": 28
                     }
                   ]
                 },
@@ -2910,7 +2710,7 @@
                       "type": "frame",
                       "id": "jZXXG",
                       "name": "Brand",
-                      "gap": "$space-3",
+                      "gap": 5,
                       "alignItems": "center",
                       "children": [
                         {
@@ -2923,110 +2723,48 @@
                           "children": [
                             {
                               "type": "path",
-                              "id": "JAxxQ",
+                              "id": "kAcBI",
                               "x": 0,
                               "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M10 22v-12h12",
+                              "name": "Mark",
+                              "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                              "fillRule": "evenodd",
                               "viewBox": [
                                 0,
                                 0,
                                 64,
                                 64
                               ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "path",
-                              "id": "T73NXe",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M42 10h12v12",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "path",
-                              "id": "KMagX",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M10 42v12h12",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "path",
-                              "id": "V1c3Nh",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M42 54h12v-12",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "ellipse",
-                              "id": "DXSmA",
-                              "x": 11.5,
-                              "y": 11.5,
-                              "name": "Focus",
                               "fill": "$fg-inverse",
-                              "width": 5,
-                              "height": 5
+                              "width": 28,
+                              "height": 28
                             }
                           ]
                         },
                         {
-                          "type": "text",
-                          "id": "hdLkt",
-                          "name": "Wordmark",
-                          "fill": "$fg-inverse",
-                          "content": "stockerly",
-                          "fontFamily": "$font-display",
-                          "fontSize": 20,
-                          "fontWeight": "700",
-                          "letterSpacing": -0.4
+                          "type": "frame",
+                          "id": "g08Gs",
+                          "name": "WMWrap",
+                          "layout": "vertical",
+                          "padding": [
+                            0,
+                            0,
+                            4.6,
+                            0
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "B4hbi",
+                              "name": "WM",
+                              "fill": "$fg-inverse",
+                              "content": "stockerly",
+                              "fontFamily": "$font-display",
+                              "fontSize": 20,
+                              "fontWeight": "700",
+                              "letterSpacing": -0.4
+                            }
+                          ]
                         }
                       ]
                     },
@@ -3649,7 +3387,7 @@
                       "type": "frame",
                       "id": "OGQ3E",
                       "name": "Brand",
-                      "gap": "$space-3",
+                      "gap": 5,
                       "alignItems": "center",
                       "children": [
                         {
@@ -3662,110 +3400,48 @@
                           "children": [
                             {
                               "type": "path",
-                              "id": "r4JmF7",
+                              "id": "POl21",
                               "x": 0,
                               "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M10 22v-12h12",
+                              "name": "Mark",
+                              "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                              "fillRule": "evenodd",
                               "viewBox": [
                                 0,
                                 0,
                                 64,
                                 64
                               ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "path",
-                              "id": "oXcPV",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M42 10h12v12",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "path",
-                              "id": "Y7WDcK",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M10 42v12h12",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "path",
-                              "id": "LdClv",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Bracket",
-                              "geometry": "M42 54h12v-12",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "#00000000",
-                              "width": 28,
-                              "height": 28,
-                              "stroke": "$fg-inverse",
-                              "strokeWidth": 5,
-                              "strokeLinejoin": "round",
-                              "strokeLinecap": "round"
-                            },
-                            {
-                              "type": "ellipse",
-                              "id": "MHt2q",
-                              "x": 11.5,
-                              "y": 11.5,
-                              "name": "Focus",
                               "fill": "$fg-inverse",
-                              "width": 5,
-                              "height": 5
+                              "width": 28,
+                              "height": 28
                             }
                           ]
                         },
                         {
-                          "type": "text",
-                          "id": "KChrZ",
-                          "name": "Wordmark",
-                          "fill": "$fg-inverse",
-                          "content": "stockerly",
-                          "fontFamily": "$font-display",
-                          "fontSize": 20,
-                          "fontWeight": "700",
-                          "letterSpacing": -0.4
+                          "type": "frame",
+                          "id": "nQJMf",
+                          "name": "WMWrap",
+                          "layout": "vertical",
+                          "padding": [
+                            0,
+                            0,
+                            4.6,
+                            0
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "J77WJq",
+                              "name": "WM",
+                              "fill": "$fg-inverse",
+                              "content": "stockerly",
+                              "fontFamily": "$font-display",
+                              "fontSize": 20,
+                              "fontWeight": "700",
+                              "letterSpacing": -0.4
+                            }
+                          ]
                         }
                       ]
                     },
@@ -4690,97 +4366,21 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "UQ2S0",
+                      "id": "ECZ2o",
                       "x": 0,
                       "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 22v-12h12",
+                      "name": "Mark",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "#00000000",
-                      "width": 28,
-                      "height": 28,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "qRJhg",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 10h12v12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 28,
-                      "height": 28,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "opoz1",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 42v12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 28,
-                      "height": 28,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "Y8o0CR",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 54h12v-12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 28,
-                      "height": 28,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "fbbmW",
-                      "x": 11.5,
-                      "y": 11.5,
-                      "name": "Focus",
                       "fill": "$primary",
-                      "width": 5,
-                      "height": 5
+                      "width": 28,
+                      "height": 28
                     }
                   ]
                 },
@@ -5101,7 +4701,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.1.0"
+      "value": "0.7.0"
     },
     "font-display": {
       "type": "string",

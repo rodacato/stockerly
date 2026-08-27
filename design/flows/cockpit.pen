@@ -67,7 +67,7 @@
               "type": "frame",
               "id": "PkWZ8",
               "name": "Brand",
-              "gap": "$space-2",
+              "gap": 4,
               "alignItems": "center",
               "children": [
                 {
@@ -80,110 +80,48 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "gTiIr",
+                      "id": "m4sJs5",
                       "x": 0,
                       "y": 0,
-                      "name": "Bk",
-                      "geometry": "M10 22v-12h12",
+                      "name": "Mark",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "EK6wC",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M42 10h12v12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "s0Ph4",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M10 42v12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "LRaOL",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M42 54h12v-12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "SZdaf",
-                      "x": 9.5,
-                      "y": 9.5,
-                      "name": "Fc",
                       "fill": "$primary",
-                      "width": 5,
-                      "height": 5
+                      "width": 24,
+                      "height": 24
                     }
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "zRWzc",
-                  "name": "WM",
-                  "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 17,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "type": "frame",
+                  "id": "vsTMY",
+                  "name": "WMWrap",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    0,
+                    3.9,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "myu94",
+                      "name": "WM",
+                      "fill": "$fg-default",
+                      "content": "stockerly",
+                      "fontFamily": "$font-display",
+                      "fontSize": 17,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.4
+                    }
+                  ]
                 }
               ]
             },
@@ -1393,7 +1331,7 @@
               "type": "frame",
               "id": "KWWcK",
               "name": "Brand",
-              "gap": "$space-2",
+              "gap": 4,
               "alignItems": "center",
               "children": [
                 {
@@ -1406,110 +1344,48 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "y6WL6K",
+                      "id": "p38thi",
                       "x": 0,
                       "y": 0,
-                      "name": "Bk",
-                      "geometry": "M10 22v-12h12",
+                      "name": "Mark",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "RjIXC",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M42 10h12v12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "X09Au",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M10 42v12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "N8OWjR",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M42 54h12v-12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "fA8AT",
-                      "x": 9.5,
-                      "y": 9.5,
-                      "name": "Fc",
                       "fill": "$primary",
-                      "width": 5,
-                      "height": 5
+                      "width": 24,
+                      "height": 24
                     }
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "Zgff0",
-                  "name": "WM",
-                  "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 17,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "type": "frame",
+                  "id": "M7Eu58",
+                  "name": "WMWrap",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    0,
+                    3.9,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "zRrnr",
+                      "name": "WM",
+                      "fill": "$fg-default",
+                      "content": "stockerly",
+                      "fontFamily": "$font-display",
+                      "fontSize": 17,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.4
+                    }
+                  ]
                 }
               ]
             },
@@ -2077,7 +1953,7 @@
               "type": "frame",
               "id": "Q4F8I",
               "name": "Brand",
-              "gap": "$space-2",
+              "gap": 4,
               "alignItems": "center",
               "children": [
                 {
@@ -2090,110 +1966,48 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "e7p4Iv",
+                      "id": "FDPY2",
                       "x": 0,
                       "y": 0,
-                      "name": "Bk",
-                      "geometry": "M10 22v-12h12",
+                      "name": "Mark",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "ydgfb",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M42 10h12v12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "cOA2A",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M10 42v12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "K0Fee",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M42 54h12v-12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "N5TbR5",
-                      "x": 9.5,
-                      "y": 9.5,
-                      "name": "Fc",
                       "fill": "$primary",
-                      "width": 5,
-                      "height": 5
+                      "width": 24,
+                      "height": 24
                     }
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "kkQGN",
-                  "name": "WM",
-                  "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 17,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "type": "frame",
+                  "id": "H1MQv1",
+                  "name": "WMWrap",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    0,
+                    3.9,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "g10CQq",
+                      "name": "WM",
+                      "fill": "$fg-default",
+                      "content": "stockerly",
+                      "fontFamily": "$font-display",
+                      "fontSize": 17,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.4
+                    }
+                  ]
                 }
               ]
             },
@@ -6907,7 +6721,7 @@
               "type": "frame",
               "id": "OEuPz",
               "name": "Brand",
-              "gap": "$space-2",
+              "gap": 4,
               "alignItems": "center",
               "children": [
                 {
@@ -6920,110 +6734,48 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "L9o8q",
+                      "id": "Y4cJRX",
                       "x": 0,
                       "y": 0,
-                      "name": "Bk",
-                      "geometry": "M10 22v-12h12",
+                      "name": "Mark",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "PCLzK",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M42 10h12v12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "H1FGpI",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M10 42v12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "HO72z",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bk",
-                      "geometry": "M42 54h12v-12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 24,
-                      "height": 24,
-                      "stroke": "$primary",
-                      "strokeWidth": 5,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "LHtWL",
-                      "x": 9.5,
-                      "y": 9.5,
-                      "name": "Fc",
                       "fill": "$primary",
-                      "width": 5,
-                      "height": 5
+                      "width": 24,
+                      "height": 24
                     }
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "RVaOg",
-                  "name": "WM",
-                  "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 17,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "type": "frame",
+                  "id": "vgD3X",
+                  "name": "WMWrap",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    0,
+                    3.9,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YoZem",
+                      "name": "WM",
+                      "fill": "$fg-default",
+                      "content": "stockerly",
+                      "fontFamily": "$font-display",
+                      "fontSize": 17,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.4
+                    }
+                  ]
                 }
               ]
             },
@@ -8334,7 +8086,7 @@
           "type": "frame",
           "id": "Ni53Y",
           "name": "Brand",
-          "gap": "$space-2",
+          "gap": 4,
           "alignItems": "center",
           "children": [
             {
@@ -8347,110 +8099,48 @@
               "children": [
                 {
                   "type": "path",
-                  "id": "bY9lP",
+                  "id": "ATanC",
                   "x": 0,
                   "y": 0,
-                  "name": "Bk",
-                  "geometry": "M10 22v-12h12",
+                  "name": "Mark",
+                  "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                  "fillRule": "evenodd",
                   "viewBox": [
                     0,
                     0,
                     64,
                     64
                   ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "Jny4q",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M42 10h12v12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "vfYjo",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M10 42v12h12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "yqx1h",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M42 54h12v-12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "ellipse",
-                  "id": "Ob2vG",
-                  "x": 9.5,
-                  "y": 9.5,
-                  "name": "Fc",
                   "fill": "$primary",
-                  "width": 5,
-                  "height": 5
+                  "width": 24,
+                  "height": 24
                 }
               ]
             },
             {
-              "type": "text",
-              "id": "R595JM",
-              "name": "WM",
-              "fill": "$fg-default",
-              "content": "stockerly",
-              "fontFamily": "$font-display",
-              "fontSize": 17,
-              "fontWeight": "700",
-              "letterSpacing": -0.4
+              "type": "frame",
+              "id": "KCo2b",
+              "name": "WMWrap",
+              "layout": "vertical",
+              "padding": [
+                0,
+                0,
+                3.9,
+                0
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "F1TD8",
+                  "name": "WM",
+                  "fill": "$fg-default",
+                  "content": "stockerly",
+                  "fontFamily": "$font-display",
+                  "fontSize": 17,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                }
+              ]
             }
           ]
         },
@@ -13523,7 +13213,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.6.0"
+      "value": "0.7.0"
     },
     "font-display": {
       "type": "string",
