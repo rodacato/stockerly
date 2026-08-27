@@ -383,15 +383,15 @@
                       "type": "frame",
                       "id": "qcyEB",
                       "name": "Brand",
-                      "gap": 5,
+                      "gap": 9,
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "frame",
                           "id": "trKG3",
                           "name": "Glyph",
-                          "width": 28,
-                          "height": 28,
+                          "width": 56,
+                          "height": 56,
                           "layout": "none",
                           "children": [
                             {
@@ -409,8 +409,8 @@
                                 64
                               ],
                               "fill": "$fg-inverse",
-                              "width": 28,
-                              "height": 28
+                              "width": 56,
+                              "height": 56
                             }
                           ]
                         },
@@ -422,7 +422,7 @@
                           "padding": [
                             0,
                             0,
-                            4.6,
+                            9.2,
                             0
                           ],
                           "children": [
@@ -433,9 +433,9 @@
                               "fill": "$fg-inverse",
                               "content": "stockerly",
                               "fontFamily": "$font-display",
-                              "fontSize": 20,
+                              "fontSize": 40,
                               "fontWeight": "700",
-                              "letterSpacing": -0.4
+                              "letterSpacing": -1
                             }
                           ]
                         }
@@ -2355,8 +2355,8 @@
                         64
                       ],
                       "fill": "$primary",
-                      "width": 28,
-                      "height": 28
+                      "width": 56,
+                      "height": 56
                     }
                   ]
                 },
@@ -2710,15 +2710,15 @@
                       "type": "frame",
                       "id": "jZXXG",
                       "name": "Brand",
-                      "gap": 5,
+                      "gap": 9,
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "frame",
                           "id": "wznWs",
                           "name": "Glyph",
-                          "width": 28,
-                          "height": 28,
+                          "width": 56,
+                          "height": 56,
                           "layout": "none",
                           "children": [
                             {
@@ -2736,8 +2736,8 @@
                                 64
                               ],
                               "fill": "$fg-inverse",
-                              "width": 28,
-                              "height": 28
+                              "width": 56,
+                              "height": 56
                             }
                           ]
                         },
@@ -2749,7 +2749,7 @@
                           "padding": [
                             0,
                             0,
-                            4.6,
+                            9.2,
                             0
                           ],
                           "children": [
@@ -2760,9 +2760,9 @@
                               "fill": "$fg-inverse",
                               "content": "stockerly",
                               "fontFamily": "$font-display",
-                              "fontSize": 20,
+                              "fontSize": 40,
                               "fontWeight": "700",
-                              "letterSpacing": -0.4
+                              "letterSpacing": -1
                             }
                           ]
                         }
@@ -3387,15 +3387,15 @@
                       "type": "frame",
                       "id": "OGQ3E",
                       "name": "Brand",
-                      "gap": 5,
+                      "gap": 9,
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "frame",
                           "id": "G29M1",
                           "name": "Glyph",
-                          "width": 28,
-                          "height": 28,
+                          "width": 56,
+                          "height": 56,
                           "layout": "none",
                           "children": [
                             {
@@ -3426,7 +3426,7 @@
                           "padding": [
                             0,
                             0,
-                            4.6,
+                            9.2,
                             0
                           ],
                           "children": [
@@ -3437,9 +3437,9 @@
                               "fill": "$fg-inverse",
                               "content": "stockerly",
                               "fontFamily": "$font-display",
-                              "fontSize": 20,
+                              "fontSize": 40,
                               "fontWeight": "700",
-                              "letterSpacing": -0.4
+                              "letterSpacing": -1
                             }
                           ]
                         }
