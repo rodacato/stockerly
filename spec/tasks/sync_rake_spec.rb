@@ -70,6 +70,26 @@ RSpec.describe "stockerly:sync rake task" do
       expect(finnhub.connection_status).to eq("disconnected")
     end
 
+    # This registration used to outlive the example. The registry is global, so
+    # every later spec asking for the :prices chain got a source whose gateway
+    # is the abstract base class, and four of them failed under --seed 111 with
+    # NotImplementedError raised from inside GatewayChain.
+    it "leaves the registry as it found it" do
+      before_keys = DataSourceRegistry.keys
+
+      DataSourceRegistry.register(:leaky_source, icon: "x", color: "gray",
+        gateway_class: MarketData::Gateways::MarketDataGateway, job_class: nil,
+        job_args: [], test_symbol: nil, test_method: :fetch_price,
+        integration_name: "Leaky", circuit_breaker_key: "leaky", capabilities: %i[prices])
+
+      expect(DataSourceRegistry.keys).to include(:leaky_source)
+      expect(before_keys).not_to include(:leaky_source)
+    end
+
+    it "does not carry the previous example's source into this one" do
+      expect(DataSourceRegistry.keys).not_to include(:leaky_source)
+    end
+
     it "applies fallback defaults for unknown providers" do
       DataSourceRegistry.register(:test_source,
         icon: "test", color: "gray",

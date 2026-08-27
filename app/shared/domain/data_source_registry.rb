@@ -82,5 +82,14 @@ class DataSourceRegistry
     def clear!
       @sources = {}
     end
+
+    # The registry is global and filled once at boot, so a spec that registers
+    # a source hands it to every spec that runs after it. `clear!` cannot undo
+    # that — it would empty what the initializer put there.
+    def snapshot = @sources.dup
+
+    def restore(snapshot)
+      @sources = snapshot.dup
+    end
   end
 end
