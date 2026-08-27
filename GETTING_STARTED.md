@@ -3,9 +3,11 @@
 Run Stockerly locally. For what it is, see [docs/vision/](docs/vision/); for how it's built,
 [CLAUDE.md](CLAUDE.md) and [docs/architecture/](docs/architecture/).
 
-`bin/setup` is idempotent and does the whole local setup: install gems, create + migrate the
-databases, seed demo data, and start the server. No LLM key or market-data API key is needed
-to run — the app is fully functional without them.
+`bin/setup` is idempotent and does the whole local setup: install gems, prepare the databases,
+and start the server. It runs `bin/rails db:prepare`, which **seeds only when it creates the
+database** — on an existing database it migrates and leaves the data alone. Use
+`bin/setup --reset` to drop, recreate and reseed. No market-data API key is needed to run — the
+app is fully functional without one.
 
 ## Prerequisites
 
@@ -21,8 +23,8 @@ Works in VS Code or GitHub Codespaces.
 
 1. Clone, open the folder in VS Code, and run **Dev Containers: Reopen in Container**.
 2. `.devcontainer/post-create.sh` runs automatically: `bundle install`, then
-   `bin/setup --skip-server` (creates + migrates all databases and seeds demo data), then
-   installs git hooks.
+   `bin/setup --skip-server` (creates + migrates all databases, seeding them on first
+   creation), then installs git hooks.
 3. Start the app:
    ```bash
    bin/dev
@@ -37,7 +39,7 @@ Requires Ruby 3.3.6 and a PostgreSQL 16 reachable on `localhost` with a `postgre
 ```bash
 git clone https://github.com/rodacato/stockerly.git
 cd stockerly
-bin/setup        # installs gems, prepares the databases, seeds demo data, starts the server
+bin/setup        # installs gems, prepares the databases (seeding on first creation), starts the server
 ```
 
 Open **`http://localhost:4100`**.
@@ -65,27 +67,59 @@ bin/jobs
 
 ## First login
 
-`bin/setup` seeds demo data, including an admin account:
+When `bin/setup` creates the database it seeds four demo users (`db/seeds.rb`, development
+only). Sign in as:
 
 ```
-admin@stockerly.com / password123
+demo@stockerly.com / password123
 ```
 
-A fresh, unseeded instance instead shows the **Setup Wizard** at first visit, which creates
-the first admin account and initializes the app.
+All four seeded users have `role: :user` — **none of them is an admin.** The seeds deliberately
+do not create an admin (`db/seeds.rb`); the Setup Wizard does.
+
+### Reaching the Setup Wizard
+
+The wizard at `/setup` creates the single account and bootstraps the instance, but
+`SetupController#require_no_users` redirects away as soon as **any** user exists. Because the
+seeded dev path always creates four, the wizard is not reachable after a normal `bin/setup`.
+To walk the first-boot experience a self-hoster gets, delete the users:
+
+```bash
+bin/rails runner 'AuditLog.delete_all; SiteConfigChange.delete_all; User.destroy_all'
+bin/dev
+```
+
+`User` declares `dependent: :destroy` for portfolios, alert preferences, alert rules, alert
+events, notifications and watchlist items, but **not** for `audit_logs` or
+`site_config_changes` (`admin_id`) — both hold a foreign key to `users`, so clearing them first
+is what keeps `destroy_all` from raising.
+
+Then open `http://localhost:4100`. `ApplicationController#redirect_to_setup` sends every
+request to `/setup` while no user exists, so the wizard runs. (This mirrors what the 2.0
+production cutover did: drop the user-dependent rows, keep the accumulated market data.)
+
+Don't reach for `db:drop db:create db:migrate` to get an empty instance — the Solid Cache,
+Queue and Cable databases load from `db/*_schema.rb` via `db:prepare`, not from migrations, so
+plain `db:migrate` leaves them without tables.
+
+To exercise the admin-only screens (Integrations, Logs, Settings, Jobs) on a seeded database,
+promote a seeded user instead:
+
+```bash
+bin/rails runner 'User.find_by!(email: "demo@stockerly.com").update!(role: :admin)'
+```
 
 ## Optional configuration
 
-- **Market-data API keys** (Polygon.io, Alpha Vantage, CoinGecko, FMP, Banxico) — all
-  optional, configured in **Admin → Integrations** after setup. Without them the app runs
-  but shows no live market data.
-- **AI Intelligence** (Anthropic / OpenAI / any compatible endpoint) — optional, configured
-  in **Admin → AI Intelligence**.
+**Market-data API keys** are all optional and are configured in the Setup Wizard or later under
+**Admin → Integrations**. Without them the app runs but shows no live market data. The
+registered sources are in `config/initializers/data_sources.rb`; several need no key at all.
 
 ## First-run check
 
 1. `bin/dev` logs the Puma server listening on port **4100**.
-2. `http://localhost:4100` loads — the dashboard (demo admin) or the Setup Wizard.
+2. `http://localhost:4100` loads — the login page on a seeded database, or the Setup Wizard on
+   an empty one.
 3. For live alerts/notifications, confirm `bin/jobs` is running in another terminal.
 
 ## Troubleshooting

@@ -32,12 +32,14 @@ Thank you for your interest in contributing! Stockerly is 100% open source and w
 bin/dev                # Rails server + Tailwind CSS watcher
 ```
 
-Visit `http://localhost:3000`. The seed creates an admin user: `admin@stockerly.com` / `password123`.
+Visit `http://localhost:4100` (`Procfile.dev` binds 4100, not Rails' default 3000). The seeds
+create four demo users, all non-admin; sign in as `demo@stockerly.com` / `password123`. See
+[GETTING_STARTED.md](GETTING_STARTED.md) for how to reach the Setup Wizard or get an admin.
 
 ### Running Tests
 
 ```bash
-bundle exec rspec                                    # Full suite (~2080 specs)
+bundle exec rspec                                    # Full suite (2,690 examples as of 2026-08-27)
 bundle exec rspec spec/contexts/trading/             # One context
 bundle exec rspec spec/contexts/trading/use_cases/execute_trade_spec.rb      # One file
 bundle exec rspec spec/contexts/trading/use_cases/execute_trade_spec.rb:15   # One example
@@ -47,8 +49,13 @@ bundle exec rspec spec/contexts/trading/use_cases/execute_trade_spec.rb:15   # O
 
 ```bash
 bin/rubocop           # Linting (auto-correct with -A)
-bin/ci                # Full CI pipeline (rubocop + bundler-audit + importmap audit + brakeman + rspec)
+bin/ci                # setup + rubocop + bundler-audit + importmap audit + brakeman
 ```
+
+**`bin/ci` does not run the tests.** `config/ci.rb` declares no RSpec step, so run
+`bundle exec rspec` yourself alongside it. (The GitHub Actions workflow
+`.github/workflows/ci.yml` is a different pipeline and *does* run RSpec — plus
+`i18n-tasks health`, which fails on missing, unused, or unnormalized locale keys.)
 
 ### Background Jobs
 
@@ -92,9 +99,10 @@ See [CLAUDE.md](CLAUDE.md) for the complete architecture reference.
    - Request specs go in `spec/requests/`
    - System specs go in `spec/system/`
 
-3. Run the full CI check:
+3. Run the full check — both commands, since `bin/ci` has no test step:
    ```bash
    bin/ci
+   bundle exec rspec
    ```
 
 4. Commit with a clear message and push:

@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Stockerly is a fintech platform for market trends, portfolios, alerts, and earnings built with Rails 8.1.2, PostgreSQL 16, Hotwire, and Tailwind CSS 4. It uses a pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts: Identity, Trading (includes Watchlist), Alerts, Market Data, Administration, Notifications.
+Stockerly is a **self-hosted, single-user** asset tracker — stocks (USD), crypto, and Mexican fixed income (CETES) — with correct MXN/USD multi-currency tracking. Built with Rails 8.1.2, PostgreSQL 16, Hotwire, and Tailwind CSS 4. It uses a pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts: Identity, Trading (includes Watchlist), Alerts, Market Data, Administration, Notifications.
+
+The multi-user closed beta was run and failed on UX grounds; the audience was dropped and the multi-user surface deleted in place — see [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) and [docs/1.0-retrospective.md](docs/1.0-retrospective.md). There is one account, created by the first-boot Setup Wizard. "Self-hosted for anyone" is packaging discipline, not a mandate to build for hypothetical users.
 
 100% open source — no pricing tiers, no premium features.
 
@@ -37,7 +39,8 @@ bin/bundler-audit       # gem vulnerabilities
 bin/quality             # RubyCritic on Ruby files changed vs origin/master
 bin/quality app lib     # whole-repo baseline (noise tuned in .reek.yml)
 
-# Full CI pipeline (setup + rubocop + bundler-audit + importmap audit + brakeman)
+# Local CI pipeline (setup + rubocop + bundler-audit + importmap audit + brakeman)
+# config/ci.rb declares NO rspec step — run the suite separately.
 bin/ci
 
 # Database
@@ -80,7 +83,7 @@ Turbo Stream / HTML response                                           Handlers 
 | **Trading** | `Trading::` | Trade execution, portfolio management, watchlists, dashboard, trends |
 | **Alerts** | `Alerts::` | Alert rule management, evaluation, triggering |
 | **Market Data** | `MarketData::` | External data: prices, fundamentals, news, earnings, indices, gateways |
-| **Administration** | `Administration::` | Admin ops: asset CRUD, integrations, logs, settings |
+| **Administration** | `Administration::` | Instance ops: integrations, sync logs, instance settings (asset CRUD moved to `/tracked` per D9) |
 | **Notifications** | `Notifications::` | Notification creation and delivery |
 
 Each context has this structure:
@@ -101,17 +104,23 @@ Cross-cutting code with **no namespace change** — available everywhere:
 | Path | Contents |
 |------|----------|
 | `app/shared/base/` | `ApplicationUseCase`, `ApplicationContract` |
-| `app/shared/domain/` | `CircuitBreaker`, `RateLimiter`, `GatewayChain`, `KeyRotation`, `DataSourceRegistry`, `MarketHours`, `GainLoss`, `DataFreshness`, `HealthMetrics`, `ActivityRecorder` |
+| `app/shared/domain/` | `ApiKeyResolver`, `CircuitBreaker`, `DataFreshness`, `DataSourceRegistry`, `GainLoss`, `GatewayChain`, `GatewayFailure`, `HealthMetrics`, `MarketHours`, `PythonRunner`, `RateLimiter`, `SourceChange` |
 | `app/shared/events/` | `BaseEvent`, `EventBus` |
 | `app/shared/types/` | `Types` (Dry::Types definitions) |
+
+`ApiKeyResolver` replaced `KeyRotation`: [ADR-015](docs/architecture/adr/0015-one-api-key-per-provider.md) retired multi-key pools, so there is one key per provider. `ActivityRecorder` was deleted with the `user_activity` telemetry in the 2.0 cleanup.
+
+### Market Data Gateways
+
+`app/contexts/market_data/gateways/` holds **10 concrete provider gateways** — Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Alpha Vantage, FMP, Banxico, ExchangeRate (`FxRatesGateway`), and Alternative.me (`CryptoFearGreedGateway`). That is 13 files: 12 classes minus the 2 base classes (`MarketDataGateway`, `FundamentalsGateway`), plus 1 error class (`ApiKeyNotConfiguredError`). Registration and fallback priority live in `config/initializers/data_sources.rb`. **Polygon.io and CNN are retired** (`db/migrate/20260826210000_remove_retired_integrations.rb`) — do not cite them as sources.
 
 ### Autoloading (Zeitwerk)
 
 Configured in `config/application.rb`. Context subdirectories map to explicit Ruby modules:
 
 - `app/contexts/alerts/domain/alert_evaluator.rb` → `Alerts::Domain::AlertEvaluator`
-- `app/contexts/market_data/gateways/polygon_gateway.rb` → `MarketData::Gateways::PolygonGateway`
-- `app/contexts/identity/events/user_registered.rb` → `Identity::Events::UserRegistered`
+- `app/contexts/market_data/gateways/banxico_gateway.rb` → `MarketData::Gateways::BanxicoGateway`
+- `app/contexts/identity/events/first_admin_created.rb` → `Identity::Events::FirstAdminCreated`
 
 Shared infrastructure uses Zeitwerk collapse — no namespace prefix:
 - `app/shared/domain/circuit_breaker.rb` → `CircuitBreaker` (no prefix)
@@ -137,7 +146,7 @@ Forbidden in Trading: direct AR model access (`MarketIndex.major`, `FearGreedRea
 Key cross-context flows:
 - `MarketData::Events::AssetPriceUpdated` → `Alerts::Handlers::EvaluateAlertsOnPriceUpdate` (write event)
 - `Trading::Events::SplitDetected` → `Trading::Handlers::AdjustPositionsOnSplit` (write event)
-- `Identity::Events::UserRegistered` → `Identity::Handlers::CreatePortfolioOnRegistration` (write event)
+- `Identity::Events::FirstAdminCreated` → `Identity::Handlers::CreatePortfolioOnRegistration` (write event) — public registration is gone; the single account is created by the Setup Wizard
 - `MarketData::Queries::*` consumed by Trading (read API per ADR-002)
 
 ### Use Case Base Classes
@@ -178,7 +187,7 @@ Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUs
 
 ### Models
 
-37 ActiveRecord models. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
+34 files in `app/models/` — 33 models plus `ApplicationRecord`. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
 
 ### Frontend Stack
 
@@ -189,14 +198,17 @@ Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUs
 
 ### Layouts
 
-6 layout files in `app/views/layouts/`: `application` (base), `public`, `auth`, `app`, `admin`, `legal`.
+8 layout files in `app/views/layouts/`: `application` (base), `app`, `auth`, `legal`, `onboarding`, `public`, plus `mailer.html.erb` / `mailer.text.erb`. There is **no** `admin` layout — the admin screens render under `app`.
 
 ### Access Zones
 
-- **Public:** `/`, `/privacy`, `/terms`, `/risk-disclosure`, `/login`
-- **Authenticated:** `/dashboard`, `/market`, `/portfolio`, `/alerts`, `/earnings`, `/profile`
+- **Public:** `/` (302 → `/login`), `/privacy`, `/terms`, `/risk-disclosure`, `/login`
+- **First boot:** `/setup` — `ApplicationController#redirect_to_setup` sends every request here while no user exists; `SetupController#require_no_users` redirects away once one does. Then `/onboarding/*` → `/welcome`.
+- **Authenticated:** `/dashboard`, `/discover`, `/portfolio`, `/alerts`, `/assets`, `/tracked`, `/market/:symbol`, `/profile`, `/help`, `/report-bug`
 - **Password Reset:** `/forgot-password`, `/reset-password/:token`
-- **Admin:** `/admin/assets`, `/admin/logs`, `/admin/integrations`
+- **Admin:** `/admin/integrations`, `/admin/logs`, `/admin/settings`, `/admin/jobs` (Mission Control)
+
+The standalone `/market` listing, `/news` and `/earnings` were deleted in the 2.0 cleanup (D31 — see the comment in `config/routes.rb`); earnings now live in a tab on each asset's own page. `/admin/assets` is gone (D9): the catalogue is managed from `/tracked`.
 
 ## Test Structure
 
@@ -218,7 +230,7 @@ spec/
 └── factories/        # FactoryBot definitions
 ```
 
-Coverage: ~88% line in Sonar, branch coverage enabled via SimpleCov.
+**2,690 examples** (`bundle exec rspec --dry-run`, measured 2026-08-27). Coverage on the same date: **95.33% line** (6726/7055) and **79.27% branch** (1985/2504) via SimpleCov, with branch coverage enabled. Re-measure rather than quoting this figure once it ages — the `coverage/` report is regenerated on every run, and Sonar reads `coverage/coverage.json`.
 
 ## Environment Gotchas
 
@@ -231,7 +243,7 @@ Coverage: ~88% line in Sonar, branch coverage enabled via SimpleCov.
 
 ## Conventions
 
-### Language (3 zones, no Rails I18n)
+### Language (3 zones, Rails I18n adopted)
 
 | Zone | Language |
 |---|---|

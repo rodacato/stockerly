@@ -44,6 +44,8 @@
 
 # Ignore key files for decrypting credentials and more.
 /config/*.key
+# Anchored above, so it misses the per-environment keys Rails nests here.
+/config/credentials/*.key
 
 
 /app/assets/builds/*
