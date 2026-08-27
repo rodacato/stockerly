@@ -22,14 +22,16 @@ Stockerly has **6 bounded contexts** under `app/contexts/`. Each owns its contra
 
 | Context | Path | Responsibility |
 |---|---|---|
-| **Identity** | `app/contexts/identity/` | Registration, authentication, profile, password reset, email verification, audit logging |
-| **Trading** | `app/contexts/trading/` | Trades, positions, portfolios, watchlists, splits, snapshots, dashboard |
+| **Identity** | `app/contexts/identity/` | Single-user lifecycle: first-admin setup, login, profile, password change and reset, onboarding, audit logging |
+| **Trading** | `app/contexts/trading/` | Trades, positions, portfolios, watchlists, splits, snapshots, panorama and consolidado screens |
 | **Alerts** | `app/contexts/alerts/` | Alert rules, evaluation, triggering (price, sentiment, volume, concentration) |
-| **MarketData** | `app/contexts/market_data/` | External gateways, sync of prices/fundamentals/news/earnings, indices, F&G |
-| **Administration** | `app/contexts/administration/` | Asset CRUD, integration management, API key pools, system logs, health |
-| **Notifications** | `app/contexts/notifications/` | In-app notification creation and delivery |
+| **MarketData** | `app/contexts/market_data/` | External gateways, sync of prices/fundamentals/news/earnings, indices, F&G, the `Queries::*` read API |
+| **Administration** | `app/contexts/administration/` | Asset CRUD, provider-symbol mapping, integration management, system logs, health |
+| **Notifications** | `app/contexts/notifications/` | Notification creation, in-app delivery, daily digest |
 
 > **Historical note:** early documentation said "5 bounded contexts". `Notifications` appeared in code later and the doc was never updated. The truth is 6, not 5.
+>
+> **Corrected 2026-08-27.** Identity no longer owns registration or email verification: [ADR-0010](./adr/0010-pivot-to-self-hosted-single-user-tracker.md) removed the multi-user surface and Identity collapsed to single-user login/setup. Administration no longer owns "API key pools": [ADR-015](./adr/0015-one-api-key-per-provider.md) retired them in favour of one key per provider.
 
 ---
 
@@ -42,8 +44,13 @@ app/contexts/{context_name}/
 ├── events/        # dry-struct: immutable domain events
 ├── gateways/      # Faraday HTTP adapters (MarketData only)
 ├── handlers/      # Reactions to events (sync or async)
+├── queries/       # Read API exposed to customer contexts (MarketData only, ADR-002)
 └── use_cases/     # Orchestration with dry-monads (Success/Failure)
 ```
+
+A context has the folders it needs, not all of them: Identity and Notifications have no `domain/`,
+Notifications has no `contracts/`, and `gateways/` and `queries/` exist only in MarketData, which
+also carries a `discover/` folder for the Descubrir surface.
 
 ---
 
@@ -54,9 +61,11 @@ Under `app/shared/` (Zeitwerk autoload without namespace prefix):
 | Path | Contains |
 |---|---|
 | `shared/base/` | `ApplicationUseCase`, `ApplicationContract` |
-| `shared/domain/` | `CircuitBreaker`, `RateLimiter`, `GatewayChain`, `KeyRotation`, `DataSourceRegistry`, `MarketHours`, `GainLoss`, `DataFreshness`, `HealthMetrics`, `ActivityRecorder` |
+| `shared/domain/` | `ApiKeyResolver`, `CircuitBreaker`, `DataFreshness`, `DataSourceRegistry`, `GainLoss`, `GatewayChain`, `GatewayFailure`, `HealthMetrics`, `MarketHours`, `PythonRunner`, `RateLimiter`, `SourceChange` |
 | `shared/events/` | `BaseEvent`, `EventBus` |
 | `shared/types/` | `Types` (dry-types) |
+
+> `KeyRotation` was replaced by `ApiKeyResolver` when [ADR-015](./adr/0015-one-api-key-per-provider.md) retired multi-key pools; `ActivityRecorder` was deleted with the multi-user surface ([ADR-0010](./adr/0010-pivot-to-self-hosted-single-user-tracker.md)) and has no remaining callers. `PythonRunner` arrived with [ADR-017](./adr/0017-python-bridge-for-yahoo-finance.md).
 
 ---
 
@@ -86,41 +95,103 @@ Turbo Stream / HTML response
 
 ## Cross-context communication
 
-**Rule:** contexts communicate **only via Domain Events**. No direct imports across contexts.
+**Rule:** cross-context **writes** flow exclusively through domain events. Cross-context **reads**
+follow the customer/supplier pattern of [ADR-002](./adr/0002-trading-marketdata-boundary.md): the
+customer calls the supplier's published read API — `Queries::*`, use cases, and domain services
+explicitly marked as read API — and never touches the supplier's ActiveRecord models or gateways.
+
+The one adopted pair is **Trading → MarketData** (Trading reads, MarketData does not read Trading).
+Another pair adopts the pattern by writing its own ADR, not by precedent.
 
 ```ruby
-# Example: MarketData publishes → Alerts subscribes
+# Writes: events
 EventBus.subscribe(
   MarketData::Events::AssetPriceUpdated,
   Alerts::Handlers::EvaluateAlertsOnPriceUpdate
 )
+
+# Reads: the supplier's published API
+MarketData::Queries::CurrentFearGreed.call
+MarketData::Queries::NotableObservations.call(asset_ids: ids)
 ```
 
 Subscriptions are wired in `config/initializers/event_subscriptions.rb`.
 
-> **Known current leaks** (to be documented in the Sprint 1 code audit, Step 6):
-> 1. `Trading::UseCases::AssembleDashboard` calls models in MarketData directly (not via event). "God-dashboard use case" anti-pattern.
-> 2. `MarketData::UseCases::GeneratePortfolioInsight` calls `Trading::Domain::ConcentrationAnalyzer` directly.
-> 3. `Alerts::Handlers::CreateNotificationOnAlert` invokes a Notifications use case directly (defensible but breaks the rule).
->
-> These leaks will be evaluated for resolution in subsequent sprints (not P0).
+> **Amended 2026-08-27.** This section used to read *"contexts communicate only via Domain Events"*.
+> ADR-002, accepted 2026-05-15, lists that exact sentence under its **Negative** consequences —
+> *"the line is too absolute; it must be qualified"*. The qualification was made in `CLAUDE.md` and
+> in `conventions.md` and missed here for three months.
+
+**Known deviations.** One remains, and it is deliberate rather than pending:
+
+- `Alerts::Handlers::CreateNotificationOnAlert` calls `Notifications::UseCases::CreateNotification`
+  directly. This is a cross-context *write* that does not go through an event. It is defensible —
+  Notifications is closer to a library than a peer context — but the Alerts ↔ Notifications pair has
+  no ADR, so the deviation is recorded rather than blessed.
+
+The three leaks this section listed until 2026-08-27 are otherwise gone, and not because they were
+fixed as leaks: `Trading::UseCases::AssembleDashboard` was split into `assemble_panorama.rb` and
+`assemble_consolidado.rb` reading through `MarketData::Queries::*`, and both
+`MarketData::UseCases::GeneratePortfolioInsight` and `Trading::Domain::ConcentrationAnalyzer` were
+deleted in Sprint 3.
 
 ---
 
 ## Architecture decisions
 
-Immutable decisions live in [`adr/`](./adr/) as ADRs (Architecture Decision Records).
+Decisions live in [`adr/`](./adr/) as ADRs (Architecture Decision Records). An ADR is never edited
+to read as though it was always right — a reversal is recorded as a dated amendment or a
+`Superseded by` header, because the reasoning is the part worth keeping.
 
 | ADR | Title | Status |
 |---|---|---|
-| [0001](./adr/0001-descriptive-not-prescriptive-language.md) | Descriptive, never prescriptive language | Accepted (2026-05-14) |
+| [001](./adr/0001-descriptive-not-prescriptive-language.md) | Descriptive language, never prescriptive | Accepted 2026-05-14 · amended by 013, then 014 |
+| [002](./adr/0002-trading-marketdata-boundary.md) | Trading reads MarketData via a formalized read API | Accepted 2026-05-15 |
+| [006](./adr/0006-simple-use-case-criterion.md) | `SimpleUseCase`: when NOT to use `ApplicationUseCase` | Accepted 2026-05-15 |
+| [007](./adr/0007-defer-i18n-adoption.md) | Defer I18n until multi-locale is real | **Superseded by 011** (2026-08-24) |
+| [008](./adr/0008-privacy-notice-domicile-disclosure.md) | Privacy notice omits the full domicile inline | Accepted 2026-05-18 · premise outdated by 010 |
+| [009](./adr/0009-fx-history-strategy.md) | Historical FX rates for cross-currency revaluation | Accepted 2026-06-27 · implemented and amended 2026-08-26 |
+| [010](./adr/0010-pivot-to-self-hosted-single-user-tracker.md) | Pivot to a self-hosted, single-user asset tracker | Accepted 2026-08-20 · addendum 2026-08-22 |
+| [011](./adr/0011-adopt-i18n-for-the-2.0-rewrite.md) | Adopt Rails I18n (single locale, es-MX) | Accepted 2026-08-24 · supersedes 007 |
+| [012](./adr/0012-token-contract-and-themes.md) | Separate the token contract from theme values | Accepted 2026-08-24 |
+| [013](./adr/0013-action-labels-on-persisted-observations.md) | Action verbs allowed when an observation backs them | Accepted 2026-08-24 · amends 001 · amended by 014 |
+| [014](./adr/0014-state-phrases-from-a-closed-catalogue.md) | Reading a state out loud, from a closed catalogue | Accepted 2026-08-25 · amends 013 |
+| [015](./adr/0015-one-api-key-per-provider.md) | One API key per provider; retire multi-key rotation | Accepted 2026-08-26 |
+| [016](./adr/0016-canonical-market-data-observations.md) | Canonical observations, multi-source kept reachable | Accepted 2026-08-26 |
+| [017](./adr/0017-python-bridge-for-yahoo-finance.md) | A Python bridge for Yahoo Finance, run as a subprocess | Accepted 2026-08-26 |
 
-> Future ADRs to consider (not yet written):
-> - ADR on dry-monads: when to use, when NOT (trivial CRUD)
-> - ADR on EventBus sync vs async
-> - ADR on ActiveRecord as driven adapter (no Repository pattern)
-> - ADR on when to create a new bounded context vs subfolder
-> - ADR on cross-context rule "events only" + documented exceptions
+Fourteen ADRs: **0001, 0002 and 0006–0017**. The gap is explained below.
+
+**ADR-018 (TOTP with recovery codes)** is written but lives on an unmerged branch, so it has no row
+yet and is deliberately not linked from here — a link would dangle. It reverses design decision D23,
+ships TOTP with recovery codes, and puts email OTP explicitly out of scope. **Add its row when the
+branch lands.**
+
+**Why a table rather than a pointer to the directory.** The filenames already give number and title,
+so a pointer would carry those for free. What it cannot carry is the **status column** — which ADR
+is superseded, which amends which — and that chain is the one thing a reader needs before trusting
+any single file. 001 → 013 → 014 in particular is invisible from a directory listing, and reading
+001 alone gets the language rule wrong.
+
+The cost is that this table goes stale, which is exactly what happened: from 2026-05 to 2026-08-27 it
+listed ADR-001 and nothing else, while thirteen more were written around it. **Adding an ADR means
+adding its row here in the same commit.** A row that disagrees with its file is worse than no row.
+
+### The 0003–0005 numbering gap
+
+**ADR-003, ADR-004 and ADR-005 were never written and never will be. The numbers are burned, not
+reserved.** Verified 2026-08-27 against the full history — no file with those numbers was ever added
+on any branch.
+
+They exist as citations because [ADR-002](./adr/0002-trading-marketdata-boundary.md) reserved them
+forward for work it deferred — Administration as a non-BC, and foreign-event publishing from
+`Administration::UseCases::Assets::*`. Neither was ever written, and **ADR-007, one of the three
+numbers ADR-002 spent, was later allocated to the I18n deferral** — an unrelated topic. So ADR-002's
+*"Pending ADR-007 — Administration may not be a real BC"* now points at a document about Spanish
+copy. Both deferrals are still open; they were only un-numbered.
+
+The rule that follows: **cite an ADR number only once the file exists.** Deferred work is named as
+deferred work, or gets an issue; a number is assigned by writing the ADR, never by promising one.
 
 ---
 
@@ -141,9 +212,10 @@ If a new bounded context is created, its namespace must be registered in `applic
 
 Steps (manual today; generator pending as a future improvement):
 
-1. Create `app/contexts/{name}/` with the 5-6 standard subfolders
+1. Create `app/contexts/{name}/` with the subfolders it actually needs
 2. Register autoload in `config/application.rb`
 3. Create the first use case + contract + tests
 4. Wire subscriptions to events in `config/initializers/event_subscriptions.rb`
 5. Update the "Bounded Contexts" table in this README
-6. Consider whether the decision warrants an ADR (likely yes — a new BC is a significant decision)
+6. Consider whether the decision warrants an ADR (likely yes — a new BC is a significant decision).
+   If it does, write it and add its row to the ADR table in the same commit — do not reserve a number.

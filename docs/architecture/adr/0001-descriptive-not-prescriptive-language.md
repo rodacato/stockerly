@@ -4,7 +4,7 @@
 - **Date:** 2026-05-14
 - **Author:** Adrian Castillo (with review from the expert panel)
 - **Supersedes:** —
-- **Amended by:** [ADR-013](./0013-action-labels-on-persisted-observations.md) — action verbs are allowed when a persisted `TechnicalObservation` backs them; everything else here stands
+- **Amended by:** [ADR-013](./0013-action-labels-on-persisted-observations.md) — action verbs are allowed when a persisted `TechnicalObservation` backs them; everything else here stands — then by [ADR-014](./0014-state-phrases-from-a-closed-catalogue.md), which extends the same allowance to state sentences drawn from a closed catalogue. **Read all three, or read the summary in [conventions.md](../conventions.md).**
 - **Related:** [`docs/vision/audience.md`](../../vision/audience.md)
 
 ---
@@ -109,7 +109,7 @@ This audit runs in the **Sprint 1 code audit (Step 6)** and the concrete rewrite
 
 - **Code review checklist:** a specific bullet for ADR-001.
 - **Sprint QA:** one of the pre-close questions for each sprint is *"any new copy violates ADR-001?"*.
-- **Beta onboarding:** explicitly communicate to invited friends that Stockerly describes, doesn't recommend; the system is not an investment advisor.
+- ~~**Beta onboarding:** explicitly communicate to invited friends that Stockerly describes, doesn't recommend; the system is not an investment advisor.~~ **Moot since 2026-08-20** — [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md) dropped the friends beta; there is nobody to onboard. The disclaimer's audience is now a self-hoster, who is their own responsible party. *(Struck 2026-08-27.)*
 
 ---
 

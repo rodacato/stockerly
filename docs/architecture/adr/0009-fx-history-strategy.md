@@ -44,7 +44,9 @@ Four options were considered (from issue #183):
 
 We take **option A**: a daily `FxRateHistory` store keyed by `(base, quote, date)`, and a date-aware `Portfolio#convert(amount, from:, to:, at_date:)`. `day_gain` and `PeriodReturnsCalculator` use the historical rate whenever a snapshot's currency differs from the target currency; same-currency reads stay on the existing zero-conversion fast path.
 
-This is the only option that keeps the consolidated MXN view honest across a currency switch, and it composes with **#177 (Banxico FX as primary USD/MXN source)**: Banxico's `TC_TC002` series publishes the official daily fix for free, which is exactly the history `FxRateHistory` needs. The two are therefore implemented as **one coherent block** over the FX layer rather than two PRs that would otherwise contend on the same gateway and resolver code.
+This is the only option that keeps the consolidated MXN view honest across a currency switch, and it composes with **#177 (Banxico FX as primary USD/MXN source)**: Banxico's `TC_TC002` series[^series] publishes the official daily fix for free, which is exactly the history `FxRateHistory` needs. The two are therefore implemented as **one coherent block** over the FX layer rather than two PRs that would otherwise contend on the same gateway and resolver code.
+
+[^series]: **`TC_TC002` is not the series that shipped, and was never a Banxico SIE series ID.** The implementation first used `SF43718` (determination) and the [2026-08-26 amendment](#amendment-2026-08-26--the-settlement-series-and-a-seeded-history) moved it to **`SF60653`** (settlement), which is what `banxico_gateway.rb` reads today. Footnote added 2026-08-27: the amendment already said this twenty lines further down, but a reader who stops at the Decision section takes the wrong series away.
 
 B is rejected because it still needs the same FX history to be precise, while adding a destructive in-place rewrite of snapshots. C is rejected because it breaks an already-shipped UI to avoid the problem rather than solve it. D is rejected because it knowingly reports FX-neutral numbers in a product whose north star is honest multi-currency consolidation.
 
@@ -101,5 +103,5 @@ fallback.
 ## Revisit triggers
 
 - A second non-USD/MXN currency pair becomes first-class (the resolver and history schema assume the USD/MXN axis is dominant).
-- Backfill precision on pre-history snapshots becomes a real complaint (would justify importing a historical Banxico series instead of collecting forward only).
-- The per-callsite `at_date:` discipline proves error-prone in practice (would justify pushing the date into a value object rather than a bare argument).
+- ~~Backfill precision on pre-history snapshots becomes a real complaint (would justify importing a historical Banxico series instead of collecting forward only).~~ **Fired and resolved 2026-08-26** — the trigger's own remedy was taken: `rake data:backfill_fx_history` seeds all 12,705 rows of `SF60653` from 1991-11-14, so no snapshot predates the store and there is no pre-history to be imprecise about. Retire this trigger rather than waiting on it. *(Struck 2026-08-27.)*
+- The per-callsite `at_date:` discipline proves error-prone in practice (would justify pushing the date into a value object rather than a bare argument). **Still open.**
