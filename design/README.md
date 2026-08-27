@@ -53,17 +53,22 @@ screens; smaller ones may merge into a neighbor.
 
 > **Vocabulary renamed 2026-08-27 (D48).** The tier ladder is now **Holdings** (was Poseo),
 > **Watchlist** (was Sigo) and **Tracked** (was Rastreados), and the observation sense of
-> *movimiento* is **Señales** — *movimiento* alone means a trade. The screen names in the table
-> below are the artboards' current ones and still read `Sigo` / `Rastreados`; they change when the
-> `.pen` files and the es-MX copy are migrated, which is a separate change. Nothing below should be
-> read as the ladder's settled vocabulary.
+> *movimiento* is **Señales** — *movimiento* alone means a trade. The es-MX copy shipped in #364.
+> **Migration is per-`.pen`, and the table below says where each file stands** — a row still
+> reading `sigo` / `rastreados` has not been migrated yet. `assets.pen` is done; the other six are
+> not.
+>
+> Adrian extended the rename to the segmented control itself, so the first tab reads **Holdings**
+> where the code still says `assets.index.cartera: Cartera` — the one string the design now leads
+> ([CODE_CHANGES.md](CODE_CHANGES.md) §13). **Lowercase `cartera` in prose is not the tier**; it
+> means the portfolio and stays.
 
 | File | Domain | Screens (from code) | Status |
 |---|---|---|---|
 | `flows/auth.pen` | Auth | login, 2FA/TOTP, forgot, email-sent, reset — no signup (account created in onboarding) | **done · in review** |
 | `flows/onboarding.pen` | Onboarding | setup, integrations, assets, complete, welcome (+ Setup desktop) | **done · in review** — its ERB revamp **landed 2026-08-25** as slice 7 ([CODE_CHANGES.md](CODE_CHANGES.md) §9b). The wizard left `Admin::` and `app/views/onboarding/` is 2.0 on every measure |
 | `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo/black swan), movimientos, asset detail (Análisis · Mi posición), consolidado | **done · in review** |
-| `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | cartera, sigo, cartera vacía, historial, registrar movimiento (sheet + con teclado), rastreados, rastreados·buscar | **done · in review** |
+| `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings, watchlist, holdings vacía, historial, registrar movimiento (sheet + con teclado), tracked, tracked·buscar | **done · in review** — **migrated to kit 0.8.0 and D48 on 2026-08-27**: the ladder renamed, the TopBar's 19px growth absorbed, all twelve exports re-shot |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (default/vacío), nueva regla (sheet), bandeja, confluencia | **done · in review** |
 | `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, integraciones, registros, estado y mantenimiento | **done · in review** |
 | `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default, sin datos) + Olas desktop | **done · in review** |
@@ -85,7 +90,7 @@ plus the kit's own `ui-kit-shell-desktop`.
 | `auth` | Login | Same split-panel as Setup — the two doors match. The other four keep the centered card |
 | `onboarding` | Setup · Integrations · Assets · Welcome | Complete inherits the wizard frame exactly |
 | `cockpit` | Panorama · Asset·Análisis · Consolidado | — |
-| `assets` | Cartera · Registrar movimiento · Rastreados | Sigo, Cartera vacía and the search states reuse patterns above |
+| `assets` | Holdings · Registrar movimiento · Tracked | Watchlist, Holdings vacía and the search states reuse patterns above |
 | `alerts` | — | Its list and sheet are the patterns Cartera and Registrar movimiento settle |
 | `settings` | Hub · Integraciones · Estado | Registros reflows; a real log table is a new component, so a decision |
 | `discover` | Olas | Sin datos reflows into the same two-column shell |

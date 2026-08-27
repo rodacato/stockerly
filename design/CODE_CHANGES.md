@@ -819,3 +819,33 @@ and these need form controls.
 **Kit note.** `Segmented3` exists in `ui-kit.lib.pen` 0.8.0 as a second master because Pencil
 instances cannot add children. **Do not mirror that split into the ERB** — the code correctly has
 one component taking an `options` array of any length, and that is the better design.
+
+---
+
+## 13. The first tab is Holdings, not Cartera (D48, extended) — pending
+
+**Status:** pending — decided 2026-08-27 while migrating `flows/assets.pen`. One string.
+
+#364 moved the tier ladder to industry-standard English and renamed the second tab
+(`assets.index.watchlist: Watchlist`) but left the first as `assets.index.cartera: Cartera`. That
+was a faithful reading of D48, which names the ladder — and it leaves the screen saying **Cartera**
+on the tab while the row chip beside it says **Holdings**, for the same set of assets.
+
+Asked directly, Adrian took the ladder all the way: **the tab adopts the tier name.** One word per
+concept, everywhere.
+
+**What changes**
+
+- `assets.index.cartera: Cartera` → `Holdings`.
+- Nothing else. The key name stays `cartera` — key names are code artifacts and renaming this one
+  would touch every lazy lookup for no reader's benefit.
+
+**What deliberately does NOT change: `cartera` in lowercase prose.** It means the portfolio, not
+the tier, and the code uses it that way in strings this decision does not reach —
+`radar_subtitulo: "De tu cartera y watchlist"`, `vacio_cartera_titulo`, and the legal pages. A
+sweep for the word would break copy that is already correct. The tier is a labelled control; the
+portfolio is a thing you own.
+
+**Already done in the design.** `flows/assets.pen` reads `Holdings | Watchlist` on all six
+segmented instances, and the artboards, the exports and the brief are renamed to match. Until this
+lands, the design leads the code on exactly one string.

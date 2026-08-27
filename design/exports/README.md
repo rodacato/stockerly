@@ -20,7 +20,7 @@ has a row — checked by listing the directory against the tables, not by readin
 
 ⚠ **One file on disk is not in this index: `ZHvbW.png`, untracked.** It is an un-renamed export
 still carrying its node id — `[Activos] / Rastreados / Sin fuente`, whose renamed twin
-`activos-rastreados-sin-fuente.png` is already committed and indexed below. It is left in place
+`activos-tracked-sin-fuente.png` (renamed from `activos-rastreados-sin-fuente.png` by D48) is already committed and indexed below. It is left in place
 deliberately: **deleting an export is the owner's call**, and an untracked file cannot be indexed
 without first deciding whether it is a duplicate to remove or a re-shoot to keep. Whichever it is,
 it should not survive as `ZHvbW.png` — the rename step above exists precisely because a node id
@@ -41,14 +41,14 @@ tells a reviewer nothing.
 | `cockpit-asset-mi-posicion.png` | `[Cockpit] / Asset · Mi posición / Default` |
 | `cockpit-consolidado.png` | `[Cockpit] / Consolidado / Default` |
 | `cockpit-movimientos.png` | `[Cockpit] / Movimientos / Default` — ⚠ see D42, designed but the build is gated |
-| `activos-cartera.png` | `[Activos] / Cartera / Default` |
-| `activos-sigo.png` | `[Activos] / Sigo / Default` |
-| `activos-cartera-vacia.png` | `[Activos] / Cartera / Vacío` |
+| `activos-holdings.png` | `[Activos] / Holdings / Default` |
+| `activos-watchlist.png` | `[Activos] / Watchlist / Default` |
+| `activos-holdings-vacia.png` | `[Activos] / Holdings / Vacío` |
 | `activos-registrar-movimiento.png` | `[Activos] / Registrar movimiento / Sheet` |
 | `activos-registrar-con-teclado.png` | `[Activos] / Registrar movimiento / Con teclado` |
-| `activos-rastreados.png` | `[Activos] / Rastreados / Default` |
-| `activos-rastreados-sin-fuente.png` | `[Activos] / Rastreados / Sin fuente` |
-| `activos-rastreados-buscar.png` | `[Activos] / Rastreados · Buscar / Default` |
+| `activos-tracked.png` | `[Activos] / Tracked / Default` |
+| `activos-tracked-sin-fuente.png` | `[Activos] / Tracked / Sin fuente` |
+| `activos-tracked-buscar.png` | `[Activos] / Tracked · Buscar / Default` |
 | `activos-historial.png` | `[Activos] / Historial / Default` — ⚠ see D43, designed after /positions hit its D35 deadline |
 | `reglas-lista.png` | `[Reglas] / Reglas / Default` |
 | `reglas-vacio.png` | `[Reglas] / Reglas / Vacío` |
@@ -72,9 +72,9 @@ reflow. The kit's shell variant is included because it is what every desktop art
 | `cockpit-panorama-desktop.png` | `[Cockpit] / Panorama · Desktop / Default` |
 | `cockpit-asset-analisis-desktop.png` | `[Cockpit] / Asset · Análisis · Desktop / Default` |
 | `cockpit-consolidado-desktop.png` | `[Cockpit] / Consolidado · Desktop / Default` |
-| `activos-cartera-desktop.png` | `[Activos] / Cartera · Desktop / Default` |
+| `activos-holdings-desktop.png` | `[Activos] / Holdings · Desktop / Default` |
 | `activos-registrar-movimiento-desktop.png` | `[Activos] / Registrar movimiento · Desktop / Dialog` |
-| `activos-rastreados-desktop.png` | `[Activos] / Rastreados · Desktop / Default` |
+| `activos-tracked-desktop.png` | `[Activos] / Tracked · Desktop / Default` |
 | `descubrir-olas-desktop.png` | `[Descubrir] / Olas · Desktop / Default` |
 | `ajustes-hub-desktop.png` | `[Ajustes] / Hub · Desktop / Default` |
 | `ajustes-integraciones-desktop.png` | `[Ajustes] / Integraciones · Desktop / Default` |
@@ -130,3 +130,12 @@ artboards.
 readable. `brand-escala-1x.png` is a *measurement*: at 2× a "16 px" sample renders 32 px wide and
 flatters itself. At true 1× it shows the honest floor — the wicks close at 24 px and below, and
 only the candle bodies survive. Re-export it at 1× or do not re-export it at all.
+
+> **Renamed and re-shot 2026-08-27 — the whole `activos` set.** D48 moved the tier ladder to
+> Holdings · Watchlist · Tracked, so eight of the twelve filenames changed with their artboards.
+> All twelve were re-exported regardless of rename, because kit 0.8.0 grew the TopBar from 57 to
+> 76 and every screen in the flow moved its content down 19px. An `activos-cartera*` or
+> `activos-rastreados*` file referenced anywhere else in the repo is a stale link.
+>
+> **Export writes relative to the repo root, not to the `.pen`.** `Export(..., "./exports")` from
+> `design/flows/assets.pen` lands in `/exports`, not `design/exports/`. Move them after exporting.

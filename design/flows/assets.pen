@@ -118,14 +118,37 @@
           ]
         },
         {
-          "type": "icon",
-          "id": "HWFMD",
-          "name": "Bell",
-          "width": 20,
-          "height": 20,
-          "icon": "bell",
-          "library": "lucide",
-          "fill": "$fg-subtle"
+          "type": "frame",
+          "id": "QMjfc",
+          "name": "BellWrap",
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "O0CmQ",
+              "name": "Bell",
+              "width": 20,
+              "height": 20,
+              "icon": "bell",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "ellipse",
+              "id": "SsdUh",
+              "layoutPosition": "absolute",
+              "x": 26,
+              "y": 10,
+              "name": "UnreadDot",
+              "fill": "$negative",
+              "width": 8,
+              "height": 8
+            }
+          ]
         }
       ]
     },
@@ -576,7 +599,7 @@
       "id": "i99C8F",
       "x": 460,
       "y": 0,
-      "name": "[Activos] / Cartera / Default",
+      "name": "[Activos] / Holdings / Default",
       "clip": true,
       "width": 390,
       "fill": "$bg-canvas",
@@ -776,10 +799,10 @@
               "width": "fill_container",
               "descendants": {
                 "WBLya": {
-                  "content": "Cartera · 5"
+                  "content": "Holdings · 5"
                 },
                 "sBvk9": {
-                  "content": "Sigo · 6"
+                  "content": "Watchlist · 6"
                 }
               }
             },
@@ -1403,7 +1426,7 @@
       "id": "nJCsX",
       "x": 920,
       "y": 0,
-      "name": "[Activos] / Sigo / Default",
+      "name": "[Activos] / Watchlist / Default",
       "clip": true,
       "width": 390,
       "fill": "$bg-canvas",
@@ -1504,7 +1527,7 @@
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Los otros 3 están en rango: nada que hacer hoy. Aquí no tienes dinero invertido; cuando compres, el activo pasa a Cartera.",
+                  "content": "Los otros 3 están en rango: nada que hacer hoy. Aquí no tienes dinero invertido; cuando compres, el activo pasa a Holdings.",
                   "lineHeight": 1.4,
                   "fontFamily": "$font-sans",
                   "fontSize": 12,
@@ -1523,7 +1546,7 @@
                   "fill": "#00000000"
                 },
                 "WBLya": {
-                  "content": "Cartera · 5",
+                  "content": "Holdings · 5",
                   "fill": "$fg-subtle",
                   "fontWeight": "normal"
                 },
@@ -1531,7 +1554,7 @@
                   "fill": "$bg-surface"
                 },
                 "sBvk9": {
-                  "content": "Sigo · 6",
+                  "content": "Watchlist · 6",
                   "fill": "$fg-default",
                   "fontWeight": "600"
                 }
@@ -2028,7 +2051,7 @@
                       "id": "jxycD",
                       "name": "T",
                       "fill": "$fg-default",
-                      "content": "Rastreados · 34",
+                      "content": "Tracked · 34",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "600"
@@ -2076,7 +2099,7 @@
       "id": "YRpOv",
       "x": 1380,
       "y": 0,
-      "name": "[Activos] / Cartera / Vacío",
+      "name": "[Activos] / Holdings / Vacío",
       "clip": true,
       "width": 390,
       "height": 844,
@@ -2113,10 +2136,10 @@
               "width": "fill_container",
               "descendants": {
                 "WBLya": {
-                  "content": "Cartera · 0"
+                  "content": "Holdings · 0"
                 },
                 "sBvk9": {
-                  "content": "Sigo · 0"
+                  "content": "Watchlist · 0"
                 }
               }
             },
@@ -2488,7 +2511,7 @@
                       "fill": "$fg-subtle",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "¿Solo quieres observar? Agrega activos a Sigo sin registrar ninguna compra.",
+                      "content": "¿Solo quieres observar? Agrega activos a Watchlist sin registrar ninguna compra.",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
@@ -2611,10 +2634,10 @@
                   "width": "fill_container",
                   "descendants": {
                     "WBLya": {
-                      "content": "Cartera · 5"
+                      "content": "Holdings · 5"
                     },
                     "sBvk9": {
-                      "content": "Sigo · 6"
+                      "content": "Watchlist · 6"
                     }
                   }
                 },
@@ -3078,7 +3101,7 @@
       "id": "ZNKgJ",
       "x": 2300,
       "y": 0,
-      "name": "[Activos] / Rastreados · Buscar / Default",
+      "name": "[Activos] / Tracked · Buscar / Default",
       "clip": true,
       "width": 390,
       "height": 844,
@@ -3184,7 +3207,7 @@
               "id": "GI2Zx",
               "name": "Lab",
               "fill": "$fg-subtle",
-              "content": "3 DE TUS 34 RASTREADOS",
+              "content": "3 DE TUS 34 EN TRACKED",
               "fontFamily": "$font-mono",
               "fontSize": 11,
               "fontWeight": "normal",
@@ -3257,7 +3280,7 @@
                               "id": "O5IVY",
                               "name": "t",
                               "fill": "$fg-default",
-                              "content": "Sigo",
+                              "content": "Watchlist",
                               "fontFamily": "$font-sans",
                               "fontSize": 10,
                               "fontWeight": "600"
@@ -3586,7 +3609,7 @@
       "id": "w5Lco",
       "x": 2760,
       "y": 0,
-      "name": "[Activos] / Rastreados / Default",
+      "name": "[Activos] / Tracked / Default",
       "clip": true,
       "width": 390,
       "fill": "$bg-canvas",
@@ -3626,7 +3649,7 @@
               "fill": "$fg-default",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Rastreados",
+              "content": "Tracked",
               "fontFamily": "$font-display",
               "fontSize": 18,
               "fontWeight": "700"
@@ -3728,7 +3751,7 @@
                           "id": "Y1UutN",
                           "name": "CT",
                           "fill": "$warning-fg",
-                          "content": "34 rastreados",
+                          "content": "34 activos en Tracked",
                           "fontFamily": "$font-sans",
                           "fontSize": 12,
                           "fontWeight": "600"
@@ -3802,7 +3825,7 @@
                           "id": "eYswt",
                           "name": "t",
                           "fill": "$fg-subtle",
-                          "content": "5 en cartera",
+                          "content": "5 en Holdings",
                           "fontFamily": "$font-sans",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -3829,7 +3852,7 @@
                           "id": "t79U82",
                           "name": "t",
                           "fill": "$fg-subtle",
-                          "content": "6 que sigues",
+                          "content": "6 en Watchlist",
                           "fontFamily": "$font-sans",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -3913,7 +3936,7 @@
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Buscar entre tus 34 rastreados",
+                  "content": "Buscar entre tus 34 activos",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
                   "fontWeight": "normal"
@@ -3996,7 +4019,7 @@
                                   "id": "rQ8WW",
                                   "name": "t",
                                   "fill": "$primary",
-                                  "content": "Poseo",
+                                  "content": "Holdings",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 10,
                                   "fontWeight": "600"
@@ -4099,7 +4122,7 @@
                                   "id": "n7UtP",
                                   "name": "t",
                                   "fill": "$primary",
-                                  "content": "Poseo",
+                                  "content": "Holdings",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 10,
                                   "fontWeight": "600"
@@ -4202,7 +4225,7 @@
                                   "id": "iay5M",
                                   "name": "t",
                                   "fill": "$fg-default",
-                                  "content": "Sigo",
+                                  "content": "Watchlist",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 10,
                                   "fontWeight": "600"
@@ -4305,7 +4328,7 @@
                                   "id": "S325vM",
                                   "name": "t",
                                   "fill": "$fg-default",
-                                  "content": "Sigo",
+                                  "content": "Watchlist",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 10,
                                   "fontWeight": "600"
@@ -5707,7 +5730,7 @@
               "id": "NJ1Zg",
               "name": "Sub",
               "fill": "$fg-subtle",
-              "content": "CARTERA · MXN",
+              "content": "HOLDINGS · MXN",
               "fontFamily": "$font-sans",
               "fontSize": 11,
               "fontWeight": "normal",
@@ -5723,14 +5746,37 @@
           "alignItems": "center",
           "children": [
             {
-              "type": "icon",
-              "id": "FGg6c",
-              "name": "Bell",
-              "width": 20,
-              "height": 20,
-              "icon": "bell",
-              "library": "lucide",
-              "fill": "$fg-subtle"
+              "type": "frame",
+              "id": "GT2RH",
+              "name": "BellWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "dWCBQ",
+                  "name": "Bell",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "CFLSy",
+                  "layoutPosition": "absolute",
+                  "x": 26,
+                  "y": 10,
+                  "name": "UnreadDot",
+                  "fill": "$negative",
+                  "width": 8,
+                  "height": 8
+                }
+              ]
             }
           ]
         }
@@ -5741,7 +5787,7 @@
       "id": "OdCyr",
       "x": 655,
       "y": 2107,
-      "name": "[Activos] / Cartera · Desktop / Default",
+      "name": "[Activos] / Holdings · Desktop / Default",
       "clip": true,
       "width": 1280,
       "height": 800,
@@ -5767,7 +5813,12 @@
               "type": "ref",
               "ref": "iVSB3",
               "name": "TopBarDesktop",
-              "width": "fill_container"
+              "width": "fill_container",
+              "descendants": {
+                "NJ1Zg": {
+                  "content": "HOLDINGS · MXN"
+                }
+              }
             },
             {
               "type": "frame",
@@ -5969,10 +6020,10 @@
                           "width": 342,
                           "descendants": {
                             "WBLya": {
-                              "content": "Cartera · 5"
+                              "content": "Holdings · 5"
                             },
                             "sBvk9": {
-                              "content": "Sigo · 6"
+                              "content": "Watchlist · 6"
                             }
                           }
                         },
@@ -6442,7 +6493,12 @@
               "type": "ref",
               "ref": "iVSB3",
               "name": "TopBarDesktop",
-              "width": "fill_container"
+              "width": "fill_container",
+              "descendants": {
+                "NJ1Zg": {
+                  "content": "HOLDINGS · MXN"
+                }
+              }
             },
             {
               "type": "frame",
@@ -6644,10 +6700,10 @@
                           "width": 342,
                           "descendants": {
                             "WBLya": {
-                              "content": "Cartera · 5"
+                              "content": "Holdings · 5"
                             },
                             "sBvk9": {
-                              "content": "Sigo · 6"
+                              "content": "Watchlist · 6"
                             }
                           }
                         },
@@ -7445,7 +7501,7 @@
       "id": "mqd0l",
       "x": 655,
       "y": 4241,
-      "name": "[Activos] / Rastreados · Desktop / Default",
+      "name": "[Activos] / Tracked · Desktop / Default",
       "clip": true,
       "width": 1280,
       "height": 800,
@@ -7474,7 +7530,7 @@
               "width": "fill_container",
               "descendants": {
                 "O4lFy4": {
-                  "content": "Rastreados"
+                  "content": "Tracked"
                 },
                 "NJ1Zg": {
                   "content": "ACTIVOS QUE TU INSTANCIA SINCRONIZA"
@@ -7539,7 +7595,7 @@
                               "fill": "$fg-subtle",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Buscar entre tus 34 rastreados",
+                              "content": "Buscar entre tus 34 activos",
                               "fontFamily": "$font-sans",
                               "fontSize": 14,
                               "fontWeight": "normal"
@@ -7621,7 +7677,7 @@
                                               "id": "Y00QC",
                                               "name": "t",
                                               "fill": "$primary",
-                                              "content": "Poseo",
+                                              "content": "Holdings",
                                               "fontFamily": "$font-sans",
                                               "fontSize": 10,
                                               "fontWeight": "600"
@@ -7724,7 +7780,7 @@
                                               "id": "b1vgTu",
                                               "name": "t",
                                               "fill": "$primary",
-                                              "content": "Poseo",
+                                              "content": "Holdings",
                                               "fontFamily": "$font-sans",
                                               "fontSize": 10,
                                               "fontWeight": "600"
@@ -7836,7 +7892,7 @@
                                               "id": "fC7yX",
                                               "name": "t",
                                               "fill": "$fg-default",
-                                              "content": "Sigo",
+                                              "content": "Watchlist",
                                               "fontFamily": "$font-sans",
                                               "fontSize": 10,
                                               "fontWeight": "600"
@@ -7939,7 +7995,7 @@
                                               "id": "O4A2c",
                                               "name": "t",
                                               "fill": "$fg-default",
-                                              "content": "Sigo",
+                                              "content": "Watchlist",
                                               "fontFamily": "$font-sans",
                                               "fontSize": 10,
                                               "fontWeight": "600"
@@ -8252,7 +8308,7 @@
                                       "id": "T6Nxn",
                                       "name": "CT",
                                       "fill": "$warning-fg",
-                                      "content": "34 rastreados",
+                                      "content": "34 activos en Tracked",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 12,
                                       "fontWeight": "600"
@@ -8326,7 +8382,7 @@
                                       "id": "YS0iC",
                                       "name": "t",
                                       "fill": "$fg-subtle",
-                                      "content": "5 en cartera",
+                                      "content": "5 en Holdings",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 11,
                                       "fontWeight": "normal"
@@ -8353,7 +8409,7 @@
                                       "id": "IZHuh",
                                       "name": "t",
                                       "fill": "$fg-subtle",
-                                      "content": "6 que sigues",
+                                      "content": "6 en Watchlist",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 11,
                                       "fontWeight": "normal"
@@ -8821,7 +8877,7 @@
       "id": "NWdKM",
       "x": 4490,
       "y": 0,
-      "name": "[Activos] / Rastreados / Sin fuente",
+      "name": "[Activos] / Tracked / Sin fuente",
       "clip": true,
       "width": 390,
       "fill": "$bg-canvas",
@@ -8861,7 +8917,7 @@
               "fill": "$fg-default",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Rastreados",
+              "content": "Tracked",
               "fontFamily": "$font-display",
               "fontSize": 18,
               "fontWeight": "700"
@@ -8963,7 +9019,7 @@
                           "id": "k4mfEY",
                           "name": "CT",
                           "fill": "$warning-fg",
-                          "content": "34 rastreados",
+                          "content": "34 activos en Tracked",
                           "fontFamily": "$font-sans",
                           "fontSize": 12,
                           "fontWeight": "600"
@@ -9037,7 +9093,7 @@
                           "id": "WusVO",
                           "name": "t",
                           "fill": "$fg-subtle",
-                          "content": "5 en cartera",
+                          "content": "5 en Holdings",
                           "fontFamily": "$font-sans",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -9064,7 +9120,7 @@
                           "id": "Oo4o8",
                           "name": "t",
                           "fill": "$fg-subtle",
-                          "content": "6 que sigues",
+                          "content": "6 en Watchlist",
                           "fontFamily": "$font-sans",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -9148,7 +9204,7 @@
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Buscar entre tus 34 rastreados",
+                  "content": "Buscar entre tus 34 activos",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
                   "fontWeight": "normal"
@@ -9231,7 +9287,7 @@
                                   "id": "RcU0J",
                                   "name": "t",
                                   "fill": "$primary",
-                                  "content": "Poseo",
+                                  "content": "Holdings",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 10,
                                   "fontWeight": "600"
@@ -9334,7 +9390,7 @@
                                   "id": "dfN1l",
                                   "name": "t",
                                   "fill": "$primary",
-                                  "content": "Poseo",
+                                  "content": "Holdings",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 10,
                                   "fontWeight": "600"
@@ -9437,7 +9493,7 @@
                                   "id": "ZCEDh",
                                   "name": "t",
                                   "fill": "$fg-default",
-                                  "content": "Sigo",
+                                  "content": "Watchlist",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 10,
                                   "fontWeight": "600"
@@ -9540,7 +9596,7 @@
                                   "id": "VfeEm",
                                   "name": "t",
                                   "fill": "$fg-default",
-                                  "content": "Sigo",
+                                  "content": "Watchlist",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 10,
                                   "fontWeight": "600"
@@ -9898,7 +9954,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.7.0"
+      "value": "0.8.0"
     },
     "font-display": {
       "type": "string",
@@ -10354,6 +10410,244 @@
         },
         {
           "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#38BDF8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#5CC8F5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-6": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#7C6CF0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#A78BFA",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-7": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F97316",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB923C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-8": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#06B6D4",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#22D3EE",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-neutral": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCD34D",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#A3E635",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#BEF264",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
           "theme": {
             "mode": "dark"
           }
