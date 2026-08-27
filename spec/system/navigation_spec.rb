@@ -70,12 +70,13 @@ RSpec.describe "Navigation", type: :system do
       click_button "Iniciar sesión"
     end
 
-    it "navigates to the four shell destinations" do
+    it "navigates to the five shell destinations" do
       {
-        "Panorama" => dashboard_path,
-        "Activos"  => assets_path,
-        "Reglas"   => alerts_path,
-        "Ajustes"  => settings_path
+        "Panorama"  => dashboard_path,
+        "Activos"   => assets_path,
+        "Reglas"    => alerts_path,
+        "Descubrir" => discover_path,
+        "Ajustes"   => settings_path
       }.each do |label, path|
         visit dashboard_path
         click_link label, match: :first
@@ -89,7 +90,8 @@ RSpec.describe "Navigation", type: :system do
       expect(page).to have_current_path(notifications_path)
     end
 
-    # The nav went from six entries to four. /market, /earnings and /news stay
+    # The nav went from six entries to four, then to five when Descubrir
+    # landed (D31). /market, /earnings and /news stay
     # routable but lose their entry point until their own slice decides where
     # they belong — deliberate, so a spec pins it instead of it looking like rot.
     it "no longer offers market, earnings or news in the nav" do

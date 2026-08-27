@@ -122,7 +122,7 @@ RSpec.describe "Consolidado", type: :request do
     end
 
     # Slice 1's precedent: routable, with no nav entry, as a decision.
-    it "has no entry in the four-destination nav" do
+    it "has no entry in the shell nav" do
       get portfolio_path
 
       expect(response.body).not_to include(%(href="#{positions_path}"))

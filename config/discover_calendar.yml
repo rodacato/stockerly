@@ -1,0 +1,37 @@
+# Descubrir · Calendario — the one block that needs no credential.
+#
+# Hand-maintained on purpose (D33): Banxico publishes its eight yearly dates as
+# a PDF grid that is not machine-readable, and the Fed labels its own schedule
+# tentative, so there is no automatable path for either half.
+#
+# `horizon` is the year this file claims to cover. Past it the screen says the
+# calendar ran out and links to the source, rather than rendering an empty block
+# on the one surface that promises to work without a credential.
+#
+# Fed dates are the decision day (the second day of a two-day meeting) and carry
+# `tentative: true` because that is how the Fed itself publishes them.
+horizon: 2026
+
+sources:
+  banxico: https://www.banxico.org.mx/publicaciones-y-prensa/anuncios-de-las-decisiones-de-politica-monetaria/anuncios-politica-monetaria-t.html
+  fed: https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm
+
+events:
+  - date: 2026-09-16
+    source: Fed
+    title: FOMC y proyecciones
+    tentative: true
+  - date: 2026-09-24
+    source: Banxico
+    title: decisión de tasa
+  - date: 2026-10-28
+    source: Fed
+    title: FOMC
+    tentative: true
+  - date: 2026-12-09
+    source: Fed
+    title: FOMC y proyecciones
+    tentative: true
+  - date: 2026-12-17
+    source: Banxico
+    title: decisión de tasa
