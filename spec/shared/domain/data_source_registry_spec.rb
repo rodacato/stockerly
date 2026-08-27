@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DataSourceRegistry do
+RSpec.describe DataSourceRegistry, :manages_registry do
   let(:test_gateway) { Class.new }
   let(:test_job) { Class.new }
 
@@ -19,11 +19,14 @@ RSpec.describe DataSourceRegistry do
     }
   end
 
+  # This group is the one place that owns the registry's contents, so the
+  # suite-wide restore steps aside for it — otherwise it would put the boot
+  # sources back in the middle of an example that just cleared them.
   around do |example|
-    saved = described_class.instance_variable_get(:@sources).dup
+    saved = described_class.snapshot
     described_class.clear!
     example.run
-    described_class.instance_variable_set(:@sources, saved)
+    described_class.restore(saved)
   end
 
   describe ".register and .find" do
