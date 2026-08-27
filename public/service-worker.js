@@ -18,7 +18,8 @@ const PRECACHE_URLS = [
   "/icon-512.png?v=3",
   "/icon-512.svg?v=3",
   "/icon-maskable-512.svg?v=3",
-  "/apple-touch-icon.png?v=3"
+  "/apple-touch-icon.png?v=3",
+  "/og-image.png?v=3"
 ];
 
 // Install: pre-cache offline page and icons
