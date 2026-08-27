@@ -1,5 +1,5 @@
 <%# Locals: options (Array of [label, url, active?]), label (String, aria-label) %>
-<div role="tablist" aria-label="<%= label %>" class="flex gap-1 rounded-xl bg-bg-muted p-1">
+<div role="tablist" aria-label="<%= label %>" class="flex w-full gap-1 rounded-xl bg-bg-muted p-1 sm:w-fit">
   <% options.each do |text, url, active| %>
     <%= link_to text, url,
                 role: "tab",

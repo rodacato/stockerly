@@ -20,7 +20,7 @@ RSpec.describe "Activos", type: :request do
       expect(response.media_type).to eq("text/javascript")
     end
 
-    it "shows open positions under Cartera" do
+    it "shows open positions under Holdings" do
       asset = mxn_asset(symbol: "WALMEX", name: "Walmart de México", current_price: 70)
       create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
 
@@ -51,7 +51,7 @@ RSpec.describe "Activos", type: :request do
       expect(response.body).to include("sigues +20.0%")
     end
 
-    it "falls back to Cartera for an unknown tab" do
+    it "falls back to Holdings for an unknown tab" do
       get assets_path(tab: "../../etc/passwd")
 
       expect(response).to have_http_status(:ok)
