@@ -1,9 +1,9 @@
 module Trading
   module UseCases
     # The Activos tab (D9): two of the three tiers, the two daily questions.
-    # Rastreados is its own screen because it is a budget, not a peer tab.
+    # Tracked is its own screen because it is a budget, not a peer tab.
     class LoadAssets < SimpleUseCase
-      TABS = %w[cartera sigo].freeze
+      TABS = %w[cartera watchlist].freeze
 
       def call(user:, tab: nil)
         tab = TABS.include?(tab) ? tab : TABS.first
@@ -18,7 +18,7 @@ module Trading
           summary: summary,
           fx_unavailable: portfolio.present? && summary.nil?,
           positions: (tab == "cartera" ? positions_for(portfolio) : []),
-          watchlist_items: (tab == "sigo" ? watchlist_for(user) : [])
+          watchlist_items: (tab == "watchlist" ? watchlist_for(user) : [])
         }
       end
 

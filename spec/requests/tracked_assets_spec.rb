@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Activos › Rastreados", type: :request do
+RSpec.describe "Activos › Tracked", type: :request do
   let(:user) { create(:user, onboarded_at: Time.current, preferred_currency: "MXN") }
   let(:portfolio) { user.portfolio || create(:portfolio, user: user) }
 
@@ -25,7 +25,7 @@ RSpec.describe "Activos › Rastreados", type: :request do
 
       get tracked_assets_path
 
-      expect(response.body).to include("Poseo", "Sigo", "Rastreado")
+      expect(response.body).to include("Holdings", "Watchlist", "Tracked")
     end
 
     it "offers Seguir only on the tier that has not crossed yet" do
@@ -76,7 +76,7 @@ RSpec.describe "Activos › Rastreados", type: :request do
       }.to change(Asset, :count).by(1)
 
       expect(response).to redirect_to(tracked_assets_path)
-      expect(flash[:notice]).to eq("GOOGL se agregó a Rastreados.")
+      expect(flash[:notice]).to eq("GOOGL se agregó a Tracked.")
     end
 
     it "reports the validation error instead of creating a half-formed asset" do

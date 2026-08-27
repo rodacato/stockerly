@@ -6,7 +6,7 @@ class DashboardController < AuthenticatedController
     @summary         = data[:summary]
     @fx_unavailable  = data[:fx_unavailable]
     @sentiment_cards = data[:sentiment_cards]
-    @movements       = data[:movements]
+    @signals         = data[:signals]
     @radar           = data[:radar]
   end
 end

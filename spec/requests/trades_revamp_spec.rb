@@ -18,7 +18,7 @@ RSpec.describe "Trades revamp (S09 #98 + S11 #145)", type: :request do
     it "renders the es-MX header" do
       get trades_path
       expect(response.body).to include("Movimientos")
-      expect(response.body).to include("Volver al portafolio")
+      expect(response.body).to include("Volver a Cartera")
     end
 
     it "renders the es-MX empty state when no trades exist" do

@@ -30,13 +30,13 @@ RSpec.describe "Activos", type: :request do
       expect(response.body).to include("Walmart de México")
     end
 
-    it "shows the watchlist under Sigo, not the portfolio" do
+    it "shows the watchlist under Watchlist, not the portfolio" do
       held = mxn_asset(symbol: "HELD", current_price: 10)
       watched = mxn_asset(symbol: "WATCHED", current_price: 10)
       create(:position, portfolio: portfolio, asset: held, shares: 1, avg_cost: 10, status: :open)
       create(:watchlist_item, user: user, asset: watched, entry_price: 8)
 
-      get assets_path(tab: "sigo")
+      get assets_path(tab: "watchlist")
 
       expect(response.body).to include("WATCHED")
       expect(response.body).not_to include("HELD")
@@ -46,7 +46,7 @@ RSpec.describe "Activos", type: :request do
       asset = mxn_asset(symbol: "NVDA", current_price: 120)
       create(:watchlist_item, user: user, asset: asset, entry_price: 100)
 
-      get assets_path(tab: "sigo")
+      get assets_path(tab: "watchlist")
 
       expect(response.body).to include("sigues +20.0%")
     end

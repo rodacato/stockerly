@@ -33,7 +33,7 @@ module AlertsHelper
     "stock"        => "Acción",
     "crypto"       => "Cripto",
     "etf"          => "ETF",
-    "index"        => "Mercado",
+    "index"        => "Índice",
     "fixed_income" => "CETE"
   }.freeze
 
@@ -165,7 +165,7 @@ module AlertsHelper
     case symbol
     when /\ACETES?_/i, /\ACETE\b/i then "CETE"
     when /\.MX\z/i                 then "Acción MX"
-    when "BMV", "IPC", /\AIPC\b/i  then "Mercado"
+    when "BMV", "IPC", /\AIPC\b/i  then "Índice"
     else                                "Acción"
     end
   end

@@ -42,7 +42,7 @@
           <%= t("assets.tracked.campo_asset_type") %>
         </label>
         <%= f.select :asset_type,
-              options_for_select(Asset.asset_types.keys.map { |k| [ t("assets.tracked.tipo_#{k}"), k ] }),
+              options_for_select(Asset.asset_types.keys.map { |k| [ t("comun.tipo_activo.#{k}"), k ] }),
               { prompt: t("assets.tracked.selecciona") },
               data: { ticker_search_target: "assetType" },
               class: "w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2 text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-primary/20" %>

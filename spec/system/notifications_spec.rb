@@ -48,7 +48,7 @@ RSpec.describe "Notifications inbox", type: :system do
     # The row action is a dot, so it is reachable by its accessible name only.
     find("form[action='#{Rails.application.routes.url_helpers.mark_as_read_notification_path(Notification.last)}'] button").click
 
-    expect(page).to have_content("Notificación marcada como leída.")
+    expect(page).to have_content("Aviso marcado como leído.")
   end
 
   it "marks all unread as read via the header bulk action" do
@@ -57,7 +57,7 @@ RSpec.describe "Notifications inbox", type: :system do
     visit notifications_path
     click_button "Marcar leídas"
 
-    expect(page).to have_content("Todas las notificaciones marcadas como leídas.")
+    expect(page).to have_content("Todos los avisos marcados como leídos.")
     expect(user.notifications.unread.count).to eq(0)
   end
 
@@ -87,7 +87,7 @@ RSpec.describe "Notifications inbox", type: :system do
     visit notifications_path
     click_button "Borrar las leídas"
 
-    expect(page).to have_content("2 notificaciones eliminadas")
+    expect(page).to have_content("2 avisos eliminados")
     expect(user.notifications.count).to eq(1)
   end
 end

@@ -32,7 +32,7 @@ module Alerts
       # Descriptive (not prescriptive) per ADR-0001 — the message reports what
       # happened in es-MX; never tells the user what to do.
       def self.build_message(rule, symbol, value, context = nil)
-        return "#{symbol}: alerta disparada" unless rule
+        return "#{symbol}: regla disparada" unless rule
 
         ctx = (context || {}).to_h
 
@@ -59,7 +59,7 @@ module Alerts
           days = ctx[:days_until] || rule.window_days
           "Próxima subasta Banxico de CETES en #{days} día(s)."
         else
-          "#{symbol}: alerta disparada."
+          "#{symbol}: regla disparada."
         end
       end
 

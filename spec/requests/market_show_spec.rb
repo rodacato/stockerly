@@ -201,7 +201,7 @@ RSpec.describe "Market Asset Detail", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Detalle de la emisión")
-      expect(response.body).to match(/>\s*CETE\s*</)
+      expect(response.body).to match(/>\s*Renta fija\s*</)
       expect(response.body).to include("Banxico")
       expect(response.body).to include("Avance al vencimiento")
     end

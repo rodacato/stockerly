@@ -39,7 +39,7 @@ RSpec.describe "Profile layout (S11 #146)", type: :system do
     it "renders the lightweight stats list (counts only)" do
       expect(page).to have_content("Posiciones abiertas")
       expect(page).to have_content("Activos en watchlist")
-      expect(page).to have_content("Alertas activas")
+      expect(page).to have_content("Reglas activas")
     end
   end
 

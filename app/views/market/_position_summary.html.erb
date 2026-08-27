@@ -49,7 +49,7 @@
 
   <div class="mt-4 grid grid-cols-3 gap-3 border-t border-border-default pt-4">
     <div>
-      <p class="text-[11px] text-fg-subtle"><%= t("posicion.acciones") %></p>
+      <p class="text-[11px] text-fg-subtle"><%= t("posicion.titulos") %></p>
       <p class="font-mono text-sm font-semibold text-fg-default">
         <%= number_with_precision(position.shares, precision: position.shares.to_d.frac.zero? ? 0 : 4, delimiter: ",") %>
       </p>

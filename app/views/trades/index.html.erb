@@ -7,14 +7,14 @@
   <%# Header band: eyebrow + h1 + subtitle + back link %>
   <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
     <div>
-      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle">Tu portafolio</p>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle">Tu cartera</p>
       <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-fg-default">Movimientos</h1>
       <p class="mt-1 text-sm text-fg-subtle">Auditar, editar o eliminar cualquier compra o venta registrada (≤30 días).</p>
     </div>
     <%= link_to portfolio_path,
         class: "inline-flex items-center gap-2 rounded-lg border border-border-default bg-bg-surface px-4 py-2.5 text-sm font-bold text-fg-default shadow-sm hover:bg-bg-muted transition-colors" do %>
       <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-      Volver al portafolio
+      Volver a Cartera
     <% end %>
   </div>
 
@@ -155,13 +155,13 @@
         </table>
       </div>
     <% elsif @total_count.zero? %>
-      <%# Estado A: cuenta sin movimientos — CTA al portafolio (donde vive el form). %>
+      <%# Estado A: cuenta sin movimientos — CTA a Cartera (donde vive el form). %>
       <div class="flex flex-col items-center justify-center px-8 py-20 text-center">
         <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-bg-muted text-fg-subtle">
           <span class="material-symbols-outlined text-3xl">history</span>
         </div>
         <h2 class="text-lg font-semibold tracking-tight text-fg-default">Aún no hay movimientos registrados.</h2>
-        <p class="mt-2 max-w-md text-sm text-fg-subtle">Registra tu primera compra desde el portafolio para empezar.</p>
+        <p class="mt-2 max-w-md text-sm text-fg-subtle">Registra tu primera compra desde Cartera para empezar.</p>
         <%= link_to portfolio_path,
               class: "mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary-hover transition-colors" do %>
           <span class="material-symbols-outlined text-[18px]">add</span>

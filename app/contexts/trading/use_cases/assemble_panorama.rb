@@ -2,10 +2,10 @@ module Trading
   module UseCases
     # The Panorama (slice 3) — the daily cockpit that replaces /dashboard.
     # Four blocks: the patrimonio strip, the sentiment carousel, the
-    # movements that carry a verb (ADR-013), and the radar.
+    # signals that carry a verb (ADR-013), and the radar.
     class AssemblePanorama < SimpleUseCase
       RADAR_LIMIT = 6
-      MOVEMENTS_LIMIT = 3
+      SIGNALS_LIMIT = 3
       MATURITY_WINDOW_DAYS = 30
 
       SentimentCard = Data.define(:key, :value, :label_key, :delta)
@@ -23,7 +23,7 @@ module Trading
           summary: summary,
           fx_unavailable: portfolio.present? && summary.nil?,
           sentiment_cards: sentiment_cards(user),
-          movements: movements(positions, watched),
+          signals: signals(positions, watched),
           radar: radar(positions, watched)
         }
       end
@@ -95,10 +95,10 @@ module Trading
 
       def normalize(label) = label.to_s.parameterize(separator: "_")
 
-      def movements(positions, watched)
+      def signals(positions, watched)
         MarketData::Queries::NotableObservations.call(
           asset_ids: asset_ids_of(positions, watched),
-          limit: MOVEMENTS_LIMIT
+          limit: SIGNALS_LIMIT
         )
       end
 

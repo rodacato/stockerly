@@ -66,7 +66,7 @@ RSpec.describe "Admin Integrations", type: :request do
 
       get admin_integrations_path
 
-      expect(response.body).to include("Sin llave")
+      expect(response.body).to include("Sin API key")
       expect(response.body).to include("Es tu instancia")
       expect(response.body).to include("dividendos y splits de tus posiciones estadounidenses")
     end

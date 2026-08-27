@@ -15,7 +15,7 @@ class PositionsController < AuthenticatedController
       @upcoming_dividends = data[:upcoming_dividends]
       @currency           = data[:currency]
     else
-      redirect_to portfolio_path, alert: "Portafolio no encontrado."
+      redirect_to portfolio_path, alert: "Cartera no encontrada."
     end
   end
 

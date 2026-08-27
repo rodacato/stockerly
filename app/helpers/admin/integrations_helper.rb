@@ -48,7 +48,7 @@ module Admin
     def integration_key_placeholder(integration)
       integration.masked_api_key ||
         PROVIDER_KEY_FORMATS[integration.provider_name] ||
-        t("admin.integrations.index.clave")
+        t("admin.integrations.index.api_key")
     end
 
     # D40's four states, and the token each paints with. `sin cuota` is our own
@@ -62,7 +62,7 @@ module Admin
     }.freeze
 
     STATE_REASONS = {
-      no_key:   { key: "sin_llave_razon", icon: "key",   bg: "bg-bg-muted",     fg: "text-fg-subtle" },
+      no_key:   { key: "sin_api_key_razon", icon: "key",   bg: "bg-bg-muted",     fg: "text-fg-subtle" },
       no_quota: { key: "sin_cuota_razon", icon: "hourglass_top", bg: "bg-warning-bg", fg: "text-warning-fg" },
       blocked:  { key: "bloqueada_razon", icon: "gpp_maybe", bg: "bg-negative-bg", fg: "text-negative-fg" }
     }.freeze

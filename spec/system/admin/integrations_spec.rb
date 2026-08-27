@@ -23,7 +23,7 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
 
     expect(page).to have_content("Integraciones")
     expect(page).to have_content("De dónde salen tus precios")
-    expect(page).to have_content("ese límite es el que reparte el presupuesto de Rastreados")
+    expect(page).to have_content("ese límite es el que reparte el presupuesto de Tracked")
     expect(page).to have_content("Alpaca")
   end
 
@@ -50,7 +50,7 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
     integration.update!(requires_api_key: true)
     visit admin_integrations_path
 
-    expect(page).to have_content("Sin llave")
+    expect(page).to have_content("Sin API key")
     expect(page).to have_content("Es tu instancia")
   end
 

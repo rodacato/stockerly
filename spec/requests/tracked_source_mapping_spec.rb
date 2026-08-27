@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Rastreados · the row for an asset no source can name", type: :request do
+RSpec.describe "Tracked · the row for an asset no source can name", type: :request do
   let(:user) { create(:user, preferred_currency: "MXN", onboarded_at: Time.current) }
   let!(:asset) { create(:asset, :mexican, symbol: "WALMEX.MX", name: "Walmart de México", sync_status: :active) }
 

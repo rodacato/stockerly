@@ -48,7 +48,7 @@ RSpec.describe "Authenticated pages", type: :request do
       post alerts_path, params: { alert: { asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200.0 } }
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
-      expect(response.body).to include("Alerta creada")
+      expect(response.body).to include("Regla creada")
     end
   end
 
@@ -58,7 +58,7 @@ RSpec.describe "Authenticated pages", type: :request do
       patch alert_path(rule), params: { alert: { asset_symbol: "TSLA", condition: "price_crosses_below", threshold_value: 150.0 } }
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
-      expect(response.body).to include("Alerta actualizada")
+      expect(response.body).to include("Regla actualizada")
     end
   end
 
@@ -68,7 +68,7 @@ RSpec.describe "Authenticated pages", type: :request do
       delete alert_path(rule)
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
-      expect(response.body).to include("Alerta eliminada")
+      expect(response.body).to include("Regla eliminada")
     end
   end
 
