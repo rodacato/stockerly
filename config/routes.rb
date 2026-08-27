@@ -64,7 +64,7 @@ Rails.application.routes.draw do
   get    "assets",                  to: "assets#index"
   get    "tracked",                 to: "assets#tracked",      as: :tracked_assets
   get    "fx_rate",                 to: "fx_rates#show"
-  # Rastreados absorbed the last of /admin/assets (D9): the catalogue is added
+  # Tracked absorbed the last of /admin/assets (D9): the catalogue is added
   # to and removed from here, not from an admin console. `search` is declared
   # before `:id` so a literal segment is not read as an identifier.
   get    "tracked/search",          to: "assets#search_ticker", as: :search_tickers
