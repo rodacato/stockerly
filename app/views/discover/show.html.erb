@@ -1,7 +1,14 @@
 <% content_for :page_title, t(".titulo") %>
+<% content_for :own_heading, true %>
 
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
-  <p class="text-fg-subtle"><%= @alpaca_connected ? t(".descripcion") : t(".sin_datos") %></p>
+  <%# Both artboards head this screen with its own name — unlike Panorama and
+      Activos, whose first block introduces itself. It is hidden at lg, where the
+      desktop bar already carries the title. %>
+  <div class="flex flex-col gap-0.5">
+    <h1 class="font-display text-3xl font-bold tracking-tight text-fg-default lg:hidden"><%= t(".titulo") %></h1>
+    <p class="text-fg-subtle"><%= @alpaca_connected ? t(".descripcion") : t(".sin_datos") %></p>
+  </div>
 
   <%# Olas, reportes and titulares all read Alpaca (D31). Until it is connected
       the screen says which block needs what, rather than showing four empty
