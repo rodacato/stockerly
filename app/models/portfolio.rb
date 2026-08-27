@@ -62,6 +62,16 @@ class Portfolio < ApplicationRecord
   # snapshot at today's rate reports FX movement on the principal as "no
   # change". Without it the behaviour is unchanged — today's rate, from the
   # single-row-per-pair `fx_rates`.
+  # Shares of one asset held at the end of `date`, derived from the trades
+  # rather than read off the position — which only ever knows today. Trades are
+  # already rewritten into post-split terms by SplitAdjuster, so this is
+  # directly comparable to Position#shares.
+  def shares_held_on(asset, date)
+    held = trades.kept.where(asset: asset).where(executed_at: ..date.end_of_day)
+
+    held.buys.sum(:shares) - held.sells.sum(:shares)
+  end
+
   def convert(amount, from:, to:, at_date: nil)
     return amount.to_d if from == to
 

@@ -12,6 +12,8 @@ RSpec.describe SyncDividendsJob, type: :job do
   end
 
   it "syncs dividends for assets with open positions" do
+    create(:trade, portfolio: portfolio, asset: asset, side: :buy, shares: 10,
+                   executed_at: Date.new(2026, 3, 1))
     dividend_data = [
       { ex_date: Date.new(2026, 3, 15), pay_date: Date.new(2026, 3, 30),
         amount_per_share: 0.50, currency: "USD" }
@@ -46,6 +48,53 @@ RSpec.describe SyncDividendsJob, type: :job do
     described_class.perform_now
 
     expect(handler).to have_received(:call).with(an_instance_of(MarketData::Events::DividendsSynced))
+  end
+
+  # Entitlement is settled on the ex-date. The job used to read the open
+  # position, which is the holding as it stands now — wrong in both directions
+  # (#305), and these are the two sides of it.
+  describe "who is entitled" do
+    # Dates are relative: the job only asks about assets closed inside its
+    # 90-day window, so fixed dates would pass today and rot by next year.
+    let(:ex_date) { 30.days.ago.to_date }
+    let(:dividend_data) do
+      [ { ex_date: ex_date, pay_date: ex_date + 15.days,
+          amount_per_share: 0.50, currency: "USD" } ]
+    end
+
+    before do
+      allow(gateway).to receive(:fetch_dividends).and_return(Dry::Monads::Success(dividend_data))
+    end
+
+    it "pays nothing for shares bought after the ex-date" do
+      create(:trade, portfolio: portfolio, asset: asset, side: :buy, shares: 10,
+                     executed_at: ex_date + 5.days)
+
+      expect { described_class.perform_now }.not_to change(DividendPayment, :count)
+    end
+
+    it "pays a position that held through the ex-date and has since closed" do
+      create(:trade, portfolio: portfolio, asset: asset, side: :buy, shares: 10,
+                     executed_at: ex_date - 10.days)
+      create(:trade, portfolio: portfolio, asset: asset, side: :sell, shares: 10,
+                     executed_at: ex_date + 5.days)
+      position.update!(status: :closed, shares: 0, closed_at: ex_date + 5.days)
+
+      expect { described_class.perform_now }.to change(DividendPayment, :count).by(1)
+      expect(DividendPayment.last.shares_held).to eq(10)
+    end
+
+    it "counts only the shares held on the ex-date, not the ones added after" do
+      create(:trade, portfolio: portfolio, asset: asset, side: :buy, shares: 10,
+                     executed_at: ex_date - 10.days)
+      create(:trade, portfolio: portfolio, asset: asset, side: :buy, shares: 40,
+                     executed_at: ex_date + 5.days)
+
+      described_class.perform_now
+
+      expect(DividendPayment.last.shares_held).to eq(10)
+      expect(DividendPayment.last.total_amount).to eq(5.00)
+    end
   end
 
   it "does not duplicate existing dividends" do
