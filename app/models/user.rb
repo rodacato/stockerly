@@ -13,7 +13,10 @@ class User < ApplicationRecord
   has_many :alert_rules,       dependent: :destroy
   has_many :alert_events,      dependent: :destroy
   has_many :notifications,     dependent: :destroy
-  has_many :audit_logs
+  # The audit trail goes with the account: both columns are `null: false`
+  # behind foreign keys, so there is no nullify to fall back on.
+  has_many :audit_logs, dependent: :destroy
+  has_many :site_config_changes, foreign_key: :admin_id, inverse_of: :admin, dependent: :destroy
 
   # --- Validations ---
   validates :full_name, presence: true, length: { minimum: 2 }
