@@ -26,7 +26,7 @@ class MarketController < AuthenticatedController
 
       trigger_fundamental_sync(@asset) unless @has_fundamentals
     in Dry::Monads::Failure[ :not_found, _ ]
-      redirect_to assets_path, alert: "Activo no encontrado"
+      redirect_to assets_path, alert: t("market.flash.no_encontrado")
     end
   end
 

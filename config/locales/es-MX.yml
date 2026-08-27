@@ -92,6 +92,13 @@ es-MX:
         desconocida: Fuente de datos desconocida.
         encolada: Sincronización de %{source} encolada.
   alerts:
+    flash:
+      activada: Alerta activada.
+      actualizada: Alerta actualizada.
+      creada: Alerta creada.
+      eliminada: Alerta eliminada.
+      no_encontrada: Regla de alerta no encontrada.
+      pausada: Alerta pausada.
     index:
       activa: activa
       activar: Activar regla
@@ -473,6 +480,8 @@ es-MX:
         other: Vence el %{date} · faltan %{count} días.
       vencimiento: Vencimiento
       via_cetes_directo: vía Cetes Directo
+    flash:
+      no_encontrado: Activo no encontrado
     fundamentals_block:
       titulo: Fundamentales
       ver_todos: Ver todos los fundamentales
@@ -710,6 +719,12 @@ es-MX:
     principal: Navegación principal
     reglas: Reglas
   notifications:
+    flash:
+      eliminadas:
+        one: 1 notificación eliminada.
+        other: "%{count} notificaciones eliminadas."
+      marcada_leida: Notificación marcada como leída.
+      todas_leidas: Todas las notificaciones marcadas como leídas.
     index:
       alertas: Alertas
       borrar_leidas: Borrar las leídas
@@ -888,3 +903,8 @@ es-MX:
       titulos: Títulos
       total: Total
       venta: Venta
+  watchlist_items:
+    flash:
+      agregado: Agregado a tu watchlist.
+      eliminado: Eliminado de tu watchlist.
+      no_encontrado: No encontramos ese elemento.

@@ -15,7 +15,7 @@ class WatchlistItemsController < AuthenticatedController
               partial: FLASH_PARTIAL, locals: { type: "notice", message: "Agregado a tu watchlist." })
           ]
         end
-        format.html { redirect_back fallback_location: dashboard_path, notice: "Agregado a tu watchlist." }
+        format.html { redirect_back fallback_location: dashboard_path, notice: t("watchlist_items.flash.agregado") }
       end
     in Dry::Monads::Failure[ :validation, errors ]
       message = errors.values.flatten.first
@@ -41,9 +41,9 @@ class WatchlistItemsController < AuthenticatedController
     item = Trading::UseCases::RemoveFromWatchlist.call(user: current_user, watchlist_item_id: params[:id])
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.remove(item) }
-      format.html { redirect_back fallback_location: profile_path, notice: "Eliminado de tu watchlist." }
+      format.html { redirect_back fallback_location: profile_path, notice: t("watchlist_items.flash.eliminado") }
     end
   rescue ActiveRecord::RecordNotFound
-    redirect_back fallback_location: profile_path, alert: "No encontramos ese elemento."
+    redirect_back fallback_location: profile_path, alert: t("watchlist_items.flash.no_encontrado")
   end
 end
