@@ -8,6 +8,17 @@
 **Rule: consolidation/adoption decisions cite MEASURED usage, not impressions.** Lead each section
 with grep counts.
 
+**Section statuses re-read against the tree 2026-08-27.** Every `**Status:**` line below was checked
+against the code it describes, not against the last thing written about it. Three were false — §8's
+D18 clause, §9 and §10 — and each carries a dated note saying what it used to claim. A status line
+here is only as current as its own date, so date the correction rather than overwriting the claim.
+
+> **Vocabulary renamed 2026-08-27 (D48).** The tier ladder is **Holdings** (was Poseo),
+> **Watchlist** (was Sigo) and **Tracked** (was Rastreados); the observation sense of *movimiento*
+> is **Señales**, and *movimiento* alone means a trade. Sections below still read `Sigo` and
+> `Rastreados` because that is what the code and the artboards still say — the rename lands as its
+> own change. Do not read the old names here as the settled vocabulary.
+
 ## 0. Pre-work before the first slice (D21, D22)
 
 Four small changes that make every later slice cheaper, and one that must land before any view
@@ -24,12 +35,18 @@ depends on the current structure. None of them is a refactor for its own sake.
 **Already done, verified rather than assumed:** the PWA is wired (manifest with maskable icons,
 `display: standalone`, service worker registered, `theme-color` already `#5B6CFF`) — only its
 pre-pivot name and description need rewriting. The pivot's subtraction also landed: `email_event`,
-`user_activity`, `invite_code` and `remember_token` are gone; only `api_key_pool` remains, and D18
-keeps it deliberately.
+`user_activity`, `invite_code` and `remember_token` are gone.
+
+**Updated 2026-08-27:** this paragraph ended *"only `api_key_pool` remains, and D18 keeps it
+deliberately"*. D18 reversed on 2026-08-26 under
+[ADR-015](../docs/architecture/adr/0015-one-api-key-per-provider.md) and the model is gone —
+neither `api_key_pool` nor `KeyRotation` exists in the tree. See §8.
 
 **Not pre-work:** consolidating the layouts (it falls out of the shell slice) and any broader
-refactor — the suite is green at 94% coverage and moving code no screen has asked for is risk
-without payoff.
+refactor — the suite is green and moving code no screen has asked for is risk without payoff.
+(A coverage percentage stood here and was removed 2026-08-27: this document does not measure
+coverage, so a number it copied once could only rot. The suite's real figure is whatever the
+current run reports.)
 
 ## 0b. Verifications owed — none of these are code, all of them are real
 
@@ -403,9 +420,15 @@ CETES rate series both landed (D12, D28), and D26/D27 cleared the floor undernea
 ## 6b. The shell (slice 1) — DONE
 
 **Status:** shipped. `app.html.erb` composes four partials: `components/_top_bar` (mobile: logo +
-bell), `components/_sidebar_nav` (desktop: the four destinations), `components/_top_bar_desktop`
-(desktop: screen title + bell) and `components/_bottom_nav` (mobile tabs). Both variants render;
-CSS picks. `NavigationHelper` owns the four destinations so nothing is duplicated between them.
+bell), `components/_sidebar_nav` (desktop nav), `components/_top_bar_desktop` (desktop: screen
+title + bell) and `components/_bottom_nav` (mobile tabs). Both variants render; CSS picks.
+`NavigationHelper` owns the destination list so nothing is duplicated between them.
+
+> **Count corrected 2026-08-27.** This section said "the four destinations" twice, and
+> [`navigation_helper.rb`](../app/helpers/navigation_helper.rb) has carried **five** since §10
+> landed — Panorama · Activos · Reglas · **Descubrir** · Ajustes, with Descubrir at index 3 per
+> D31. Four was true when the shell shipped; nothing re-read it when the fifth arrived. The rest
+> of this section is left as written.
 
 - **`admin.html.erb` is gone**, with `_admin_sidebar` and `_admin_header`. `Admin::BaseController`
   dropped its `layout` line and inherits `app`, so the admin screens render in the same shell as
@@ -414,7 +437,8 @@ CSS picks. `NavigationHelper` owns the four destinations so nothing is duplicate
 - **Routes are the ones that exist today.** Activos → `/portfolio` and Ajustes → `/profile`;
   slices 2 and 6 move them to `/assets` and `/settings`. A tab lights up per *controller*, not per
   path, so `/trades` keeps Activos lit.
-- **The nav went from six entries to four.** `/market`, `/earnings` and `/news` stayed routable
+- **The nav went from six entries to four** — and to five on 2026-08-27, see the note above.
+  `/market`, `/earnings` and `/news` stayed routable
   with no entry point, per Adrian's call; `/search` joined them, because the redesigned TopBar has
   no search and Activos › Rastreados (its new home) is not built. Three specs pinned this so it
   read as a decision rather than rot.
@@ -494,12 +518,35 @@ visual: the four instance screens keep their admin styling.
   wrong.
 - Keep the audit trail: `SiteConfigChange` already records who flipped what and when, and the
   design surfaces it as "Cambios recientes".
-- D18 is settled for now — pools stay, so the Integraciones screen keeps the per-provider key
-  count and the rotation note. Revisit only with measured quota evidence.
+- ~~D18 is settled for now — pools stay, so the Integraciones screen keeps the per-provider key
+  count and the rotation note. Revisit only with measured quota evidence.~~
 
-## 9. Alpaca as a data source (D19)
+  **Reversed 2026-08-26 — [ADR-015](../docs/architecture/adr/0015-one-api-key-per-provider.md):
+  one API key per provider.** The line above is kept struck rather than deleted because the
+  reversal did not arrive on the axis D18 named. D18 said *delete if the quotas turn out
+  comfortable*; what actually decided it was the 2026-08 provider audit reading the terms —
+  **Alpaca, Massive (ex-Polygon), Finnhub and CoinGecko each prohibit using multiple accounts or
+  credentials to exceed a free tier.** The pool bought Alpha Vantage 25 → 50 calls a day and risked
+  account termination in a product other people run on their own credentials.
 
-**Status:** pending — designed in `flows/settings.pen`, needs its own 4-filter card before build.
+  **Implication for this screen, reversing the sentence above: Integraciones loses the per-provider
+  key count and the rotation note, and shows one key per provider.** Verified in the tree
+  2026-08-27 — `api_key_pool` and `KeyRotation` are gone, and
+  `admin/integrations/_provider_card.html.erb` renders a single `api_key_encrypted` field with no
+  count and no rotation copy. Renaming the mechanism to "primary + fallback key" was considered and
+  rejected: the terms bind conduct, not labels. The artboard is the side still to catch up.
+
+## 9. Alpaca as a data source (D19) — SHIPPED
+
+**Status:** shipped, [#290](https://github.com/rodacato/stockerly/issues/290) closed. This section
+read *"pending — needs its own 4-filter card before build"* until 2026-08-27, by which point the
+gateway had been in the tree long enough for §10 to be built on top of it and for FIDELITY_AUDIT to
+already record #290 as closed. Verified rather than assumed:
+[`app/contexts/market_data/gateways/alpaca_gateway.rb`](../app/contexts/market_data/gateways/alpaca_gateway.rb)
+exists and `config/initializers/data_sources.rb` registers `:alpaca_us` with
+`gateway_class: MarketData::Gateways::AlpacaGateway` and `circuit_breaker_key: "alpaca"`. Six jobs
+call it. The constraints below are the build's contract and are kept as the record of what it must
+keep doing.
 
 - New gateway alongside the existing ones, following `MarketData::Gateways::*` and registered
   through `DataSourceRegistry` like the rest. Measure first:
@@ -513,19 +560,30 @@ visual: the four instance screens keep their admin styling.
   the key stored in this instance must not carry trading permissions.
 - No coverage for fundamentals, BMV equities or CETES — those stay where they are.
 
-## 10. Onboarding (slice 7) — the last designed flow with no code
+## 9b. Onboarding (slice 7) — SHIPPED
+
+> **Renumbered 2026-08-27.** This section and Descubrir were **both numbered §10**, so every
+> reference to "§10" was ambiguous — including the design README's pointer here. Descubrir keeps
+> §10 because DECISIONS.md D33 and `ui-kit.CHANGELOG.md` both cite `§10.x` sub-items by number and
+> neither is this document's to edit. This one takes **§9b**, which is the file's own convention
+> for a section inserted later (§0b, §3b, §3c, §6b are all that, and none is a sub-part of its
+> parent number).
 
 **Status:** shipped 2026-08-25. Measured first, and the measurement is kept below because it is what made the slice smaller than it looked. `flows/onboarding.pen` is **done · in review** with
 **9 artboards** (setup, integrations, assets, complete, welcome, plus 4 desktop) and this document
 had no section for it — the only entry in the design README without a row here.
 
-The four views are still pre-2.0, counted in utilities:
+The four views **were** pre-2.0 when this was written, counted in utilities. The paths in the first
+column no longer exist: the wizard left `Admin::` with this slice, and the views live at
+`app/views/onboarding/` now (`setup/new` stayed put). Re-measured 2026-08-27, `onboarding` is
+0 slate / 40 tokens / 27 i18n and `setup` is 0 / 2 / 12 — the table below is the **before**, kept
+because "what shipped" further down is scored against it.
 
-| View | `slate-*` / `gray-*` | Lumen tokens | i18n keys |
+| View (path as of 2026-08-24) | `slate-*` / `gray-*` | Lumen tokens | i18n keys |
 |---|---|---|---|
-| `admin/onboarding/assets` | 14 | 0 | 0 |
-| `admin/onboarding/complete` | 14 | 3 | 0 |
-| `admin/onboarding/integrations` | 15 | 2 | 0 |
+| `admin/onboarding/assets` → `onboarding/assets` | 14 | 0 | 0 |
+| `admin/onboarding/complete` → `onboarding/complete` | 14 | 3 | 0 |
+| `admin/onboarding/integrations` → `onboarding/integrations` | 15 | 2 | 0 |
 | `setup/new` | 10 | 1 | 0 |
 
 It matters beyond consistency: the vision's second success criterion is *"un tercero técnico lo
@@ -645,14 +703,30 @@ The green suite saw none of them, which is §3's lesson arriving on schedule.
   broke it.
 
 
-## 10. Descubrir — the fifth destination (D31)
+## 10. Descubrir — the fifth destination (D31) — SHIPPED
 
-**Status:** designed in `flows/discover.pen`, build pending. **Blocked on §9 (Alpaca)** — D31
-promotes it from optional to prerequisite, because three of the four blocks read it.
+**Status:** shipped 2026-08-27, [#291](https://github.com/rodacato/stockerly/issues/291) and
+[#292](https://github.com/rodacato/stockerly/issues/292). This section said *"build pending,
+blocked on §9 (Alpaca)"* until 2026-08-27; §9 had shipped and so had this. Verified in the tree:
+`config/routes.rb:52` routes `/discover`, `app/controllers/discover_controller.rb` and
+`app/views/discover/show.html.erb` (142 lines) exist, `app/jobs/warm_discover_job.rb` runs
+`every 4 hours` from `config/recurring.yml`, and `NavigationHelper::MAIN_NAV` carries five entries
+with `discover` at index 3.
+
+**Three blocks, not four.** The screen ships **Olas · Titulares · Calendario**. *Reportes* was
+dropped from the product and from the artboards by D47 (2026-08-27) — Alpaca serves `historical`,
+`news`, `dividends` and `splits`, never earnings, so the block would have put a third provider on
+the screen for the least valuable of the four. It returns only with its own 4-filter card.
 
 **Do the A cleanup first.** Deleting `market#index`, `news`, `earnings` and folding `search` into
 Rastreados touches `spec/system/navigation_spec.rb`, and so does the fifth destination. Landing the
 cleanup first means that file is rewritten once instead of twice.
+
+**All seven landed.** The rows are kept as the contract the build has to keep holding, not as open
+work. Two worth re-reading: **10.5** is live in `config/recurring.yml` at `every 4 hours` with the
+24 h TTL the row asked for, and **10.6b** was answered — `discover/show.html.erb` renders a
+`calendario_agotado` string when the file runs out, which is D33's candidate answer adopted rather
+than the empty block it warned about.
 
 | # | What | Notes |
 |---|---|---|
@@ -672,10 +746,13 @@ that is a finding, not a detail — see D31 clauses 1 and 5.
 one `MAIN_NAV` entry, one job file, one `recurring.yml` line, two YAMLs, one spec folder, one
 `nav.*` key. Nothing else in `app/` may reference it.
 
-**Kit:** the fifth destination currently lives **only** in `flows/discover.pen` as a local override.
-Landing this in code does not need the kit bump — but until `ui-kit.lib.pen` goes to 0.6.0 and the
-other five flows re-vendor, their artboards keep showing a four-tab bar. That re-vendor is its own
-pass and should not be interleaved with other design work (D31).
+**Kit — both halves paid, corrected 2026-08-27.** This paragraph said the fifth destination lived
+*"only in `flows/discover.pen` as a local override"*, waiting on a 0.6.0 bump and a re-vendor. Both
+happened: `ui-kit.CHANGELOG.md` records **0.6.0** putting Descubrir into `BottomNav` and
+`SidebarNav` at index 3 (`AppShellDesktop` inherited it by `ref`), and **0.7.0** re-synced all
+seven flows for the new mark. The kit is at 0.7.0. Left uncorrected, this sent a reader to redo
+design work that was already done — which is the failure mode FIDELITY_AUDIT's last TODO group
+exists to name.
 
 ## 11. The new mark (D45) — SHIPPED
 

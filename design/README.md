@@ -23,14 +23,20 @@ being "ahead" and becomes a 1:1 mirror again.
 
 ## What's here
 
+_Listing verified against the directory 2026-08-27._
+
 | Path | What it is |
 |---|---|
-| `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract, fresh values) + components |
+| `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Currently **0.7.0, 18 components** |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed |
-| `flows/*.pen` | **One file per domain**. First: `cockpit.pen` (panorama → detalle → confluencia) |
+| `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
+| `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section |
+| `brand/` | The exported identity assets the repo consumes: `glyph.svg`, `wordmark.svg`, `wordmark.png` |
 | `_playground.pen` | Experiments — inside the system (vendors the kit like any flow) |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |
 | `CODE_CHANGES.md` | Work order for landing the redesign in code |
+| `COMPONENT_INVENTORY.md` | The kit crossed against `app/views/components/` — the translation work order |
+| `FIDELITY_AUDIT.md` | Per-flow measurement of how far the code is from the artboards |
 | `exports/` | Canvas PNGs for review — **committed** (they must travel) |
 | `references/` | Local-only device captures — **never commit: real data** (gitignored) |
 
@@ -42,12 +48,20 @@ the app match is tracked in [CODE_CHANGES.md](CODE_CHANGES.md). A flow earns its
 screens; smaller ones may merge into a neighbor.
 
 > **Status below is the `.pen` file's, not the ERB's.** How closely the code matches each flow
-> is measured in [FIDELITY_AUDIT.md](FIDELITY_AUDIT.md).
+> is measured in [FIDELITY_AUDIT.md](FIDELITY_AUDIT.md) — read that before taking **done · in
+> review** as "the screen looks like this".
+
+> **Vocabulary renamed 2026-08-27 (D48).** The tier ladder is now **Holdings** (was Poseo),
+> **Watchlist** (was Sigo) and **Tracked** (was Rastreados), and the observation sense of
+> *movimiento* is **Señales** — *movimiento* alone means a trade. The screen names in the table
+> below are the artboards' current ones and still read `Sigo` / `Rastreados`; they change when the
+> `.pen` files and the es-MX copy are migrated, which is a separate change. Nothing below should be
+> read as the ladder's settled vocabulary.
 
 | File | Domain | Screens (from code) | Status |
 |---|---|---|---|
 | `flows/auth.pen` | Auth | login, 2FA/TOTP, forgot, email-sent, reset — no signup (account created in onboarding) | **done · in review** |
-| `flows/onboarding.pen` | Onboarding | setup, integrations, assets, complete, welcome (+ Setup desktop) | **done · in review** — the only flow whose ERB revamp has not landed; scoped as slice 7 in [CODE_CHANGES.md](CODE_CHANGES.md) §10 |
+| `flows/onboarding.pen` | Onboarding | setup, integrations, assets, complete, welcome (+ Setup desktop) | **done · in review** — its ERB revamp **landed 2026-08-25** as slice 7 ([CODE_CHANGES.md](CODE_CHANGES.md) §9b). The wizard left `Admin::` and `app/views/onboarding/` is 2.0 on every measure |
 | `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo/black swan), movimientos, asset detail (Análisis · Mi posición), consolidado | **done · in review** |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | cartera, sigo, cartera vacía, historial, registrar movimiento (sheet + con teclado), rastreados, rastreados·buscar | **done · in review** |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (default/vacío), nueva regla (sheet), bandeja, confluencia | **done · in review** |
@@ -58,11 +72,13 @@ Working model per flow: **(1)** read the existing screens/copy from code (source
 structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit · **(3)** review/feel ·
 **(4)** land the ERB revamp to match, tracked in CODE_CHANGES.md.
 
-### Desktop pass (2026-08-24, kit 0.5.0)
+### Desktop pass (2026-08-24, kit 0.5.0 — counts re-checked 2026-08-27)
 
 Every flow has been through it. D4 still governs **which** screens get an artboard: one is drawn
-only where the layout genuinely diverges, and the rest reflow — so 14 desktop artboards cover 6
-flows, not 30.
+only where the layout genuinely diverges, and the rest reflow — so **15 desktop artboards cover
+six of the seven flows**, not 30. `alerts` draws none, which is why the table has seven rows and
+six of them are non-empty. Counted against `design/exports/*-desktop.png`, which holds those 15
+plus the kit's own `ui-kit-shell-desktop`.
 
 | Flow | Desktop artboards | Not drawn, because |
 |---|---|---|

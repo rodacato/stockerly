@@ -15,6 +15,23 @@ Files land as `<nodeId>.png` and are renamed to `<flow>-<screen>[-<state>].png` 
 mean nothing to a reviewer. Re-export a flow whenever its artboards change materially; a stale PNG
 is worse than a missing one.
 
+**Index verified 2026-08-27.** All 62 rows below resolve to a file on disk, and every committed PNG
+has a row — checked by listing the directory against the tables, not by reading them.
+
+⚠ **One file on disk is not in this index: `ZHvbW.png`, untracked.** It is an un-renamed export
+still carrying its node id — `[Activos] / Rastreados / Sin fuente`, whose renamed twin
+`activos-rastreados-sin-fuente.png` is already committed and indexed below. It is left in place
+deliberately: **deleting an export is the owner's call**, and an untracked file cannot be indexed
+without first deciding whether it is a duplicate to remove or a re-shoot to keep. Whichever it is,
+it should not survive as `ZHvbW.png` — the rename step above exists precisely because a node id
+tells a reviewer nothing.
+
+> **Artboard names here are the `.pen` masters', pre-D48.** D48 (2026-08-27) renames the tier
+> ladder — **Poseo → Holdings · Sigo → Watchlist · Rastreado(s) → Tracked** — and makes *Señales*
+> the observation sense of *movimiento*. The rows below still read `Sigo` and `Rastreados` because
+> that is what the artboards are still called; they change when the `.pen` files are renamed and
+> re-exported, and this index follows rather than leads. Filenames will change with them.
+
 | File | Artboard |
 |---|---|
 | `cockpit-panorama-default.png` | `[Cockpit] / Panorama / Default` |
