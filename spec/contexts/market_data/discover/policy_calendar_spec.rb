@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::Domain::PolicyCalendar do
+RSpec.describe MarketData::Discover::PolicyCalendar do
   describe ".upcoming" do
     it "returns the next events in date order, skipping the past" do
       events = described_class.upcoming(limit: 2, today: Date.new(2026, 9, 20))

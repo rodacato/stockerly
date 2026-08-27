@@ -1,5 +1,5 @@
 module MarketData
-  module Domain
+  module Discover
     # Read API: the Banxico and Fed dates the Descubrir calendar renders.
     #
     # Backed by a hand-maintained YAML rather than a gateway (D33) and by no

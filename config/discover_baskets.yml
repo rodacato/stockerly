@@ -1,0 +1,87 @@
+# Descubrir · Olas — the fixed 17-ETF basket D31 settled.
+#
+# A basket is the wave: a 200-row screener is what this deliberately is not.
+# The list lives here rather than in a Ruby constant so a self-hoster can keep
+# their own baskets across a pull (C8 Bram).
+#
+# `baseline` is the ruler every other basket is measured against, and is not
+# itself a wave.
+#
+# `referents` are the well-known holdings the exposure chip reads: hold one and
+# the screen says "ya vía NVDA" instead of "sin exposición". They are a
+# convenience, not an index definition — edit them freely. GLD and TLT have
+# none because they hold metal and bonds, not companies.
+baseline: SPY
+
+baskets:
+  # Geography
+  - symbol: EWW
+    name: México
+    group: geografia
+    referents: [WALMEX.MX, GFNORTEO.MX, AMXB.MX]
+  - symbol: VGK
+    name: Europa
+    group: geografia
+    referents: [ASML, NVO]
+  - symbol: EWJ
+    name: Japón
+    group: geografia
+    referents: [TM, SONY]
+  - symbol: INDA
+    name: India
+    group: geografia
+    referents: [INFY, HDB]
+  - symbol: MCHI
+    name: China
+    group: geografia
+    referents: [BABA, PDD]
+
+  # US sectors
+  - symbol: XLK
+    name: Tecnología
+    group: sectores
+    referents: [AAPL, MSFT, NVDA]
+  - symbol: SMH
+    name: Semiconductores
+    group: sectores
+    referents: [NVDA, TSM, AVGO]
+  - symbol: XLE
+    name: Energía
+    group: sectores
+    referents: [XOM, CVX]
+  - symbol: XLF
+    name: Financiero
+    group: sectores
+    referents: [JPM, BAC]
+  - symbol: XLV
+    name: Salud
+    group: sectores
+    referents: [LLY, UNH, JNJ]
+
+  # Themes
+  - symbol: ARKK
+    name: Innovación disruptiva
+    group: temas
+    referents: [TSLA, COIN]
+  - symbol: URA
+    name: Uranio y nuclear
+    group: temas
+    referents: [CCJ]
+  - symbol: COPX
+    name: Cobre
+    group: temas
+    referents: [FCX]
+  - symbol: BOTZ
+    name: Robótica e IA
+    group: temas
+    referents: [NVDA, ISRG]
+
+  # Thermometers
+  - symbol: GLD
+    name: Oro
+    group: termometros
+    referents: []
+  - symbol: TLT
+    name: Bonos del Tesoro a 20 años
+    group: termometros
+    referents: []
