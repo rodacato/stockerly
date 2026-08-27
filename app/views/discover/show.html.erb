@@ -7,13 +7,13 @@
       desktop bar already carries the title. %>
   <div class="flex flex-col gap-0.5">
     <h1 class="font-display text-3xl font-bold tracking-tight text-fg-default lg:hidden"><%= t(".titulo") %></h1>
-    <p class="text-fg-subtle"><%= @alpaca_connected ? t(".descripcion") : t(".sin_datos") %></p>
+    <p class="text-fg-subtle"><%= @has_world_data ? t(".descripcion") : t(".sin_datos") %></p>
   </div>
 
   <%# Olas, reportes and titulares all read Alpaca (D31). Until it is connected
       the screen says which block needs what, rather than showing four empty
       cards that look broken. %>
-  <% unless @alpaca_connected %>
+  <% unless @has_world_data %>
     <%# The artboard sets the body copy in primary over primary-muted, which
         measures 3.68:1 in light and 4.22:1 in dark — under the AA floor for
         body text. The accent stays on the heading and the link, where large
@@ -24,6 +24,54 @@
       <%= link_to admin_integrations_path, class: "font-semibold text-primary hover:underline" do %>
         <%= t(".conecta_cta") %> <span aria-hidden="true">→</span>
       <% end %>
+    </section>
+  <% end %>
+
+  <%# Olas — the baskets ranked over the window since your last visit (D31).
+      Shown only when the warm job has something: an empty list here means the
+      job has not run or Alpaca is not connected, and the notice above already
+      says which. %>
+  <% if @waves.any? %>
+    <section class="flex flex-col gap-3">
+      <div class="flex items-baseline justify-between gap-4">
+        <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".olas_titulo") %></h2>
+        <p class="font-mono text-xs text-fg-subtle"><%= t(".olas_desde", since: l(@waves_since, format: :short)) %></p>
+      </div>
+
+      <ul class="flex flex-col gap-3">
+        <% @waves.first(5).each do |wave| %>
+          <li class="flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3">
+            <div class="min-w-0 flex-1">
+              <p class="font-display text-sm font-bold text-fg-default"><%= wave.symbol %></p>
+              <p class="text-xs text-fg-subtle"><%= wave.name %></p>
+              <%# Neutral in both states by design: colouring "sin exposición"
+                  would read as act here, which ADR-0001 forbids (D31). %>
+              <span class="mt-1 inline-flex rounded-full bg-bg-muted px-2 py-0.5 font-mono text-[10px] text-fg-subtle">
+                <%= wave_exposure(wave, @owned_symbols) %>
+              </span>
+            </div>
+
+            <%= render "components/sparkline", direction: nil,
+                  heights: wave_sparkline_heights(wave.closes) %>
+
+            <div class="shrink-0 text-right">
+              <p class="font-mono text-sm font-bold <%= wave.change_percent.negative? ? "text-negative" : "text-positive" %>">
+                <%= number_to_percentage(wave.change_percent, precision: 1, format: "%n%") %>
+              </p>
+              <% if wave.vs_baseline %>
+                <p class="font-mono text-xs text-fg-subtle">
+                  <%= t(".olas_vs", baseline: MarketData::Discover::BasketCatalogue.baseline,
+                        value: number_with_precision(wave.vs_baseline, precision: 1)) %>
+                </p>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+
+      <%# The artboard links to "las 17 canastas"; there is no screen behind
+          that yet, so the count is stated rather than linked. %>
+      <p class="text-xs text-fg-subtle"><%= t(".olas_total", count: @waves.size) %></p>
     </section>
   <% end %>
 

@@ -28,12 +28,14 @@ RSpec.describe "Descubrir", type: :request do
       expect(response.body).to include(admin_integrations_path)
     end
 
-    it "does not offer the Alpaca notice once the integration is connected" do
+    # A connected credential whose job has not run yet still has nothing to
+    # show, so what retires the notice is world data, not the integration row.
+    it "keeps the notice while there is no world data, connected or not" do
       create(:integration, provider_name: "Alpaca", connection_status: :connected)
 
       get discover_path
 
-      expect(response.body).not_to include("Conecta Alpaca")
+      expect(response.body).to include("Conecta Alpaca")
     end
   end
 
@@ -74,6 +76,62 @@ RSpec.describe "Descubrir", type: :request do
       delete logout_path
       get discover_path
       expect(response).to redirect_to(login_path)
+    end
+  end
+
+  describe "Olas" do
+    # :null_store is the test default and this screen's only storage is the
+    # cache, so without a real one these would assert against nothing.
+    let(:memory) { ActiveSupport::Cache::MemoryStore.new }
+    let(:wave) do
+      MarketData::Discover::WaveRanking::Wave.new(
+        symbol: "SMH", name: "Semiconductores", group: "sectores",
+        change_percent: 8.4, vs_baseline: 5.2, closes: [ 100.0, 104.0, 108.0 ],
+        referents: [ "NVDA" ]
+      )
+    end
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory)
+      memory.write(WarmDiscoverJob::CACHE_KEY,
+                   { waves: [ wave ], since: 8.days.ago.to_date, generated_at: Time.current })
+    end
+
+    it "ranks the basket with its move and its distance from the baseline" do
+      get discover_path
+
+      expect(response.body).to include("SMH", "Semiconductores", "8.4%", "5.2")
+    end
+
+    it "says there is no exposure when none of the referents is held" do
+      get discover_path
+
+      expect(response.body).to include("sin exposición")
+    end
+
+    it "names the holding that already gives exposure" do
+      portfolio = user.portfolio || create(:portfolio, user: user)
+      nvda = create(:asset, symbol: "NVDA")
+      create(:position, portfolio: portfolio, asset: nvda, status: :open)
+
+      get discover_path
+
+      expect(response.body).to include("ya vía NVDA")
+      expect(response.body).not_to include("sin exposición")
+    end
+
+    it "retires the Alpaca notice once there are waves to show" do
+      get discover_path
+
+      expect(response.body).not_to include("Conecta Alpaca")
+    end
+
+    it "shows no Olas block at all when the job has not run" do
+      memory.delete(WarmDiscoverJob::CACHE_KEY)
+
+      get discover_path
+
+      expect(response.body).not_to include("Olas")
     end
   end
 
