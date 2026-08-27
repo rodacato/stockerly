@@ -71,6 +71,7 @@ Rails.application.routes.draw do
   post   "tracked",                 to: "assets#track",         as: :track_asset
   delete "tracked/:id",             to: "assets#untrack",       as: :untrack_asset
   patch  "tracked/:id/toggle_sync", to: "assets#toggle_sync",   as: :toggle_sync_asset
+  patch  "tracked/:id/source_symbol", to: "assets#map_source_symbol", as: :map_source_symbol_asset
   resource  :portfolio, only: [ :show ]
   resources :alerts, only: [ :index, :new, :create, :update, :destroy ] do
     member { patch :toggle }
