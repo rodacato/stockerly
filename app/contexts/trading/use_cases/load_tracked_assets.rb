@@ -1,6 +1,6 @@
 module Trading
   module UseCases
-    # Rastreados — the third tier (D9). Not a peer tab: it is where the daily
+    # Tracked — the third tier (D9). Not a peer tab: it is where the daily
     # sync budget is visible and where syncing can be paused. Absorbs the list
     # /admin/assets used to show, minus the admin costume (D5).
     class LoadTrackedAssets < SimpleUseCase

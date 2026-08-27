@@ -77,7 +77,7 @@ RSpec.describe "Notifications", type: :request do
       expect { delete destroy_read_notifications_path }
         .to change { user.notifications.count }.from(3).to(1)
       expect(response).to redirect_to(notifications_path)
-      expect(flash[:notice]).to include("2 notificaciones eliminadas")
+      expect(flash[:notice]).to include("2 avisos eliminados")
     end
   end
 

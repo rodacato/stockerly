@@ -41,7 +41,7 @@
       <%= form_with url: update_currency_path, method: :patch, scope: :profile, class: "flex items-center gap-4 py-3.5" do |f| %>
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-fg-default">Moneda preferida</p>
-          <p class="text-xs text-fg-subtle">Define cómo se muestran tus totales consolidados en el panel.</p>
+          <p class="text-xs text-fg-subtle">Define cómo se muestran tus totales consolidados en el Panorama.</p>
         </div>
         <div class="inline-flex items-center rounded-lg border border-border-default bg-bg-muted p-1">
           <% ["MXN", "USD"].each do |code| %>
@@ -71,15 +71,15 @@
     </div>
   </section>
 
-  <%# Notificaciones — 3 channel toggles wired to alert_preferences.
+  <%# Avisos — 3 channel toggles wired to alert_preferences.
       Backend gap: per-notification-type granularity (matrix) needs a new
       schema; today these 3 channels apply to *all* notification types.
       Flagged in PR body of #146. %>
   <section>
-    <h3 class="text-base font-semibold tracking-tight text-fg-default">Notificaciones</h3>
+    <h3 class="text-base font-semibold tracking-tight text-fg-default">Avisos</h3>
     <p class="mt-1 text-sm text-fg-subtle">
       Todo aviso llega a tu campana en la app; eso no se apaga. El correo sí:
-      estos dos canales aplican a todas tus alertas por igual.
+      estos dos canales aplican a todas tus reglas por igual.
     </p>
 
     <%

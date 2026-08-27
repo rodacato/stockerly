@@ -60,7 +60,7 @@ RSpec.describe "Refactored controller flows", type: :request do
     end
   end
 
-  describe "Rastreados lists the catalogue via Use Case" do
+  describe "Tracked lists the catalogue via Use Case" do
     let!(:user) { create(:user, email: "tracked_ref@example.com", password: "password123") }
 
     before do
@@ -68,7 +68,7 @@ RSpec.describe "Refactored controller flows", type: :request do
       login_as(user)
     end
 
-    # /admin/assets filtered by type, market and status. Rastreados does not:
+    # /admin/assets filtered by type, market and status. Tracked does not:
     # a self-hosted catalogue capped by a 25-call daily budget fits on a screen.
     it "lists every tracked asset without a filter to reach them" do
       create(:asset, symbol: "AAPL", name: "Apple Inc.", asset_type: :stock)

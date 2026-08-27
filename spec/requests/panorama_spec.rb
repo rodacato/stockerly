@@ -18,7 +18,7 @@ RSpec.describe "Panorama", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("PATRIMONIO · MXN")
       expect(response.body).to include(I18n.t("dashboard.show.radar_titulo"))
-      expect(response.body).to include(I18n.t("dashboard.show.movimientos_titulo"))
+      expect(response.body).to include(I18n.t("dashboard.show.senales_titulo"))
       expect(response.body).to include("WALMEX")
     end
 
@@ -97,7 +97,7 @@ RSpec.describe "Panorama", type: :request do
       get dashboard_path
 
       expect(response.body).not_to include(I18n.t("comun.accion.buy"))
-      expect(response.body).to include(I18n.t("dashboard.show.movimientos_vacio"))
+      expect(response.body).to include(I18n.t("dashboard.show.senales_vacio"))
     end
 
     it "dates a reading that is not from today rather than passing it off as now" do
@@ -112,7 +112,7 @@ RSpec.describe "Panorama", type: :request do
     it "says the day was quiet when nothing was observed" do
       get dashboard_path
 
-      expect(response.body).to include(I18n.t("dashboard.show.movimientos_vacio"))
+      expect(response.body).to include(I18n.t("dashboard.show.senales_vacio"))
     end
   end
 

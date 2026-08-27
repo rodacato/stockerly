@@ -1,5 +1,5 @@
 <%# Panorama (slice 3) — the daily cockpit. Mobile order: patrimonio, sentiment,
-    movements, radar. Desktop reorders into three columns at native width, so
+    signals, radar. Desktop reorders into three columns at native width, so
     the DOM stays in reading order and CSS does the rearranging. %>
 <% content_for :page_title, t(".titulo") %>
 <% content_for :page_subtitle, "#{l(Date.current, format: "%a · %d %b %Y").upcase} · CDMX" %>
@@ -26,19 +26,19 @@
     <%# The artboard's "Ver más" is absent until something lists observations:
         no screen does, and they never reach the Bandeja either, so it pointed
         at Activos — the Radar's destination, under a different label. %>
-    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".movimientos_titulo") %></h2>
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".senales_titulo") %></h2>
 
-    <% if @movements.any? %>
-      <p class="mt-1 text-sm text-fg-subtle"><%= t(".movimientos_subtitulo") %></p>
+    <% if @signals.any? %>
+      <p class="mt-1 text-sm text-fg-subtle"><%= t(".senales_subtitulo") %></p>
       <div class="mt-3 flex flex-col gap-3">
-        <% @movements.each do |observation| %>
-          <%= render "dashboard/movement_row", observation: observation %>
+        <% @signals.each do |observation| %>
+          <%= render "dashboard/signal_row", observation: observation %>
         <% end %>
       </div>
     <% else %>
       <div class="mt-3 flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-5">
         <span class="material-symbols-outlined text-2xl text-fg-subtle" aria-hidden="true">local_cafe</span>
-        <p class="text-sm text-fg-subtle"><%= t(".movimientos_vacio") %></p>
+        <p class="text-sm text-fg-subtle"><%= t(".senales_vacio") %></p>
       </div>
     <% end %>
   </section>

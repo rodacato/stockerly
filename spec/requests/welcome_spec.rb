@@ -18,7 +18,7 @@ RSpec.describe "Welcome", type: :request do
       expect(response.body).to include("Software en desarrollo")
       expect(response.body).to include("Registra tu primer movimiento")
       expect(response.body).to include("Crea una watchlist")
-      expect(response.body).to include("Configura una alerta")
+      expect(response.body).to include("Configura una regla")
     end
 
     it "redirects to dashboard for an already-onboarded user" do

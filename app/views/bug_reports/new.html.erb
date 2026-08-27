@@ -11,7 +11,7 @@
         </div>
         <p class="text-base text-fg-default leading-relaxed">Gracias. Lo voy a revisar lo antes posible y te respondo al correo con el que te registraste.</p>
         <div class="flex items-center gap-4 pt-2">
-          <%= link_to "Volver al dashboard", dashboard_path,
+          <%= link_to "Volver al Panorama", dashboard_path,
                 class: "inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors" %>
           <%= link_to "Reportar otro bug", new_bug_report_path,
                 class: "text-sm text-fg-subtle hover:text-primary transition-colors border-b border-transparent hover:border-primary" %>
@@ -31,7 +31,7 @@
         <div>
           <%= label_tag :title, "Resumen", class: "block text-sm font-medium text-fg-default mb-1.5" %>
           <%= text_field_tag :title, @bug_report.title,
-                placeholder: "p. ej. La gráfica de mi portafolio no carga.",
+                placeholder: "p. ej. La gráfica de mi cartera no carga.",
                 class: "w-full px-3 py-2.5 rounded-lg border #{has_title_err ? 'border-negative bg-negative-bg' : 'border-border-default bg-bg-surface'} text-fg-default focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" %>
           <% if has_title_err %>
             <p class="text-xs text-negative-fg dark:text-negative mt-1.5">Este campo es obligatorio (mínimo 3 caracteres).</p>

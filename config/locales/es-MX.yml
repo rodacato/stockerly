@@ -4,36 +4,37 @@ es-MX:
     integrations:
       index:
         administrar: Administrar fuente
+        api_key: API key
+        api_key_nota: Una API key por fuente. Si una se queda sin cuota o falla, el
+          respaldo es otra fuente que cubra el mismo dato — no otra API key de la
+          misma.
         bloqueada_razon: 'Es el proveedor: está rechazando las llamadas, no es tu
           cuota. Lo que sirve esta fuente no se actualiza mientras dure.'
-        clave: Clave API
         configurar: Configurar integraciones
-        confirmar_fuente: "¿Eliminar %{provider}? Se borra también su llave."
+        confirmar_fuente: "¿Eliminar %{provider}? Se borra también su API key."
         cuota_desconocida: Sin lectura de cuota
         descripcion: De dónde salen tus precios. Cada fuente trae su propio límite
-          gratuito, y ese límite es el que reparte el presupuesto de Rastreados.
+          gratuito, y ese límite es el que reparte el presupuesto de Tracked.
         eliminar_fuente: Eliminar fuente
         estado:
           blocked: Bloqueada
           connected: Conectada
-          no_key: Sin llave
+          no_key: Sin API key
           no_quota: Sin cuota
         guardar: Guardar
         limite_diario: Límite diario
         limite_minuto: Por minuto
-        llave_nota: Una llave por fuente. Si una se queda sin cuota o falla, el respaldo
-          es otra fuente que cubra el mismo dato — no otra llave de la misma.
         resumen: "%{count} fuentes · %{near} cerca del límite · %{blocked} bloqueada(s)"
         rol:
           fallback: respaldo
           only: única fuente
           primary: primaria
+        sin_api_key_razon: 'Es tu instancia: falta pegar la API key. Mientras, lo
+          que sirve esta fuente lo cubre su respaldo — o nada, si es la única.'
         sin_cuota_razon: 'Es tu cuota: tu instancia agotó su límite. Se reanuda al
           abrir la siguiente ventana; lo que falte se queda como estaba.'
         sin_limite: Sin límite
-        sin_llave_razon: 'Es tu instancia: falta pegar la llave. Mientras, lo que
-          sirve esta fuente lo cubre su respaldo — o nada, si es la única.'
-        solo_maintainer: Solo funciona con llaves de cuentas creadas antes del 31
+        solo_maintainer: Solo funciona con API keys de cuentas creadas antes del 31
           de agosto de 2025. Si la tuya es nueva, esta fuente responde 403.
         titulo: Integraciones
         unidad:
@@ -98,12 +99,12 @@ es-MX:
         encolada: Sincronización de %{source} encolada.
   alerts:
     flash:
-      activada: Alerta activada.
-      actualizada: Alerta actualizada.
-      creada: Alerta creada.
-      eliminada: Alerta eliminada.
-      no_encontrada: Regla de alerta no encontrada.
-      pausada: Alerta pausada.
+      activada: Regla activada.
+      actualizada: Regla actualizada.
+      creada: Regla creada.
+      eliminada: Regla eliminada.
+      no_encontrada: Regla no encontrada.
+      pausada: Regla pausada.
     index:
       activa: activa
       activar: Activar regla
@@ -155,7 +156,6 @@ es-MX:
       cartera: Cartera
       invertido: Invertido %{amount}
       no_realizada: No realizada %{amount}
-      sigo: Sigo
       sigues: sigues %{percent}
       titulo: Activos
       titulos:
@@ -164,13 +164,14 @@ es-MX:
       vacio_cartera_cuerpo: Registra tu primer movimiento y tu patrimonio empieza
         a contarse solo.
       vacio_cartera_titulo: Aún no tienes posiciones
-      vacio_sigo_cuerpo: Sigue un activo y verás cómo se mueve desde que lo agregaste.
-      vacio_sigo_titulo: No sigues ningún activo
+      vacio_watchlist_cuerpo: Sigue un activo y verás cómo se mueve desde que lo agregaste.
+      vacio_watchlist_titulo: Tu watchlist está vacía
       valor_de_mercado: VALOR DE MERCADO · %{currency}
-      ver_rastreados: Rastreados
-      ver_rastreados_desc: Lo que tu instancia sincroniza y cuánto presupuesto queda
+      ver_tracked: Tracked
+      ver_tracked_desc: Lo que tu instancia sincroniza y cuánto presupuesto queda
+      watchlist: Watchlist
     tracked:
-      agregado: "%{symbol} se agregó a Rastreados."
+      agregado: "%{symbol} se agregó a Tracked."
       agregar: Agregar activo
       buscar: Buscar activo
       buscar_cargando: Buscando…
@@ -179,7 +180,7 @@ es-MX:
       buscar_vacio: Sin resultados
       campo_asset_type: Tipo
       campo_country: País
-      campo_exchange: Mercado
+      campo_exchange: Bolsa
       campo_name: Nombre
       campo_sector: Sector
       campo_symbol: Símbolo
@@ -187,9 +188,9 @@ es-MX:
       confirmar_eliminar: "¿Dejar de rastrear %{symbol}? Se borra del catálogo con
         su historial de precios."
       conteo:
-        one: 1 activo rastreado
-        other: "%{count} activos rastreados"
-        zero: Ningún activo rastreado
+        one: 1 activo en Tracked
+        other: "%{count} activos en Tracked"
+        zero: Ningún activo en Tracked
       eliminado: "%{symbol} se quitó del catálogo."
       eliminar: Dejar de rastrear
       en_pausa: En pausa
@@ -214,15 +215,10 @@ es-MX:
       sin_fuente_detalle: "%{provider} no reconoce «%{symbol}». La BMV nombra a cada
         emisora con su serie, y Yahoo la omite cuando es un asterisco."
       sin_fuente_promesa: Guardamos el nombre solo si la fuente contesta con él.
-      tier_followed: Sigo
-      tier_held: Poseo
-      tier_tracked: Rastreado
-      tipo_crypto: Cripto
-      tipo_etf: ETF
-      tipo_fixed_income: Renta fija
-      tipo_index: Índice
-      tipo_stock: Acción
-      titulo: Rastreados
+      tier_followed: Watchlist
+      tier_held: Holdings
+      tier_tracked: Tracked
+      titulo: Tracked
       vacio: Tu instancia aún no rastrea ningún activo.
   auth:
     contrasena: Contraseña
@@ -286,8 +282,8 @@ es-MX:
       crypto: Cripto
       etf: ETF
       fixed_income: Renta fija
-      index: Índices
-      stock: Acciones
+      index: Índice
+      stock: Acción
     vencimiento:
       one: vence mañana
       other: vence en %{count} días
@@ -297,15 +293,14 @@ es-MX:
       carrusel: Sentimiento del mercado
       fear_greed_crypto: FEAR & GREED · CRIPTO
       fear_greed_stocks: FEAR & GREED · ACCIONES
-      movimientos_subtitulo: Oportunidades de compra y venta hoy
-      movimientos_titulo: Movimientos de interés
-      movimientos_vacio: Nada que destaque hoy. Tus reglas están tranquilas — vuelve
-        mañana.
       patrimonio: PATRIMONIO · %{currency}
       radar_subtitulo: De tu cartera y watchlist · con actividad hoy · valores en
         %{currency}
       radar_titulo: Radar
-      radar_vacio: Ninguno de tus activos tuvo movimientos notables.
+      radar_vacio: Ninguno de tus activos tuvo actividad hoy.
+      senales_subtitulo: Oportunidades de compra y venta hoy
+      senales_titulo: Señales de interés
+      senales_vacio: Nada que destaque hoy. Tus reglas están tranquilas — vuelve mañana.
       sentimiento_watchlist: SENTIMIENTO · TU WATCHLIST
       titulo: Panorama
       ver_todos: Ver todos
@@ -316,7 +311,7 @@ es-MX:
     banxico_cetes: CETES — Banxico
     banxico_fx: Tipo de cambio — Banxico FIX
     coingecko_crypto: Cripto — CoinGecko
-    crypto_fear_greed: Miedo y codicia cripto — Alternative.me
+    crypto_fear_greed: Fear & Greed cripto — Alternative.me
     databursatil_bmv: Acciones BMV — DataBursatil
     finnhub_stocks: Acciones EE. UU. — Finnhub
     fmp_fundamentals: Fundamentales (respaldo) — FMP
@@ -437,9 +432,8 @@ es-MX:
       titulares_titulo: Titulares
       titulo: Descubrir
   market:
-    acciones:
+    actions:
       crear_regla: Crear regla
-      registrar: Registrar operación
     categorias:
       crypto_market: Mercado cripto
       dividends: Dividendos
@@ -473,9 +467,9 @@ es-MX:
     divergencia:
       aligned: "%{symbol} se movió %{asset_change} hoy, en línea con %{index} (%{index_change})."
       asset_led: "%{symbol} se movió %{asset_change} hoy contra %{index_change} de
-        %{index}: el movimiento es sobre todo del activo, no del mercado."
+        %{index}: el cambio es sobre todo del activo, no del mercado."
       market_led: "%{index} se movió %{index_change} hoy y %{symbol} %{asset_change}:
-        el movimiento es sobre todo del mercado, no del activo."
+        el cambio es sobre todo del mercado, no del activo."
     dividend_history:
       col_ex: Ex-dividendo
       col_monto: Monto / acción
@@ -801,15 +795,15 @@ es-MX:
   notifications:
     flash:
       eliminadas:
-        one: 1 notificación eliminada.
-        other: "%{count} notificaciones eliminadas."
-      marcada_leida: Notificación marcada como leída.
-      todas_leidas: Todas las notificaciones marcadas como leídas.
+        one: 1 aviso eliminado.
+        other: "%{count} avisos eliminados."
+      marcada_leida: Aviso marcado como leído.
+      todas_leidas: Todos los avisos marcados como leídos.
     index:
       alertas: Alertas
       borrar_leidas: Borrar las leídas
       cetes: CETES
-      confirmar_borrado: "¿Borrar las notificaciones que ya leíste?"
+      confirmar_borrado: "¿Borrar los avisos que ya leíste?"
       descripcion: Todo lo que la app decidió contarte, reglas disparadas, reportes
         que se acercan, CETES por vencer y avisos del sistema.
       marcar_leida: Marcar como leída
@@ -837,9 +831,9 @@ es-MX:
       activos: Activos listos para seguir
       atras: Atrás
       integraciones: Integraciones con API key
-      lanzar: Lanzar e ir al panel
+      lanzar: Lanzar e ir al Panorama
       listo: Listo
-      sin_sincronizar: Ir al panel sin sincronizar
+      sin_sincronizar: Ir al Panorama sin sincronizar
       subtitulo: Este es el resumen de tu configuración.
       sync: El sync arranca en segundo plano
       titulo: Todo listo
@@ -850,7 +844,7 @@ es-MX:
       donde_consigo: "¿Dónde consigo la API key?"
       omitir: Omitir por ahora
       publicas: Fuentes públicas · sin API key
-      sin_esta_llave: 'Sin esta llave:'
+      sin_esta_api_key: 'Sin esta API key:'
       subtitulo: Agrega las API keys de los proveedores que quieras. Puedes omitir
         y configurarlas luego.
       titulo: Conecta tus fuentes de datos
@@ -890,13 +884,12 @@ es-MX:
       vs_hold_cuerpo_positivo: Si no hubieras movido nada desde el %{from}, hoy tendrías
         %{value}. Tus compras y ventas sumaron %{points} puntos.
   posicion:
-    acciones: Acciones
     costo_prom: Costo prom.
     del_activo: DEL ACTIVO
     del_peso: DEL PESO · TC
     invertido: Invertido
+    movimientos: Movimientos
     no_realizado: No realizado · aún no vendes (todo en papel)
-    operaciones: Operaciones
     plan_sin_reglas: No tienes reglas sobre este activo.
     plan_titulo: VS. TUS REGLAS
     retrospectiva_cuerpo: Tus %{count} compras promediaron %{price} con RSI ~%{rsi}.
@@ -906,6 +899,7 @@ es-MX:
       viene del activo y cuánto del peso.
     tab_analisis: Análisis
     tab_posicion: Mi posición
+    titulos: Títulos
     tu_posicion: TU POSICIÓN
     ver_todas: Ver todas
   settings:
@@ -929,7 +923,7 @@ es-MX:
       instancia_cuerpo: 'Esto es tuyo: corre en tu servidor y nadie más lo ve.'
       instancia_titulo: Tu instancia
       integraciones: Integraciones
-      integraciones_desc: Fuentes de datos, llaves y salud
+      integraciones_desc: Fuentes de datos, API keys y salud
       moneda: Moneda preferida · en la que se te muestra todo tu patrimonio
       nombre_correo: Nombre y correo
       nombre_correo_desc: Cómo te llamas y a dónde llegan los correos

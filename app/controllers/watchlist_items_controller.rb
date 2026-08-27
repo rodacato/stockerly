@@ -12,7 +12,7 @@ class WatchlistItemsController < AuthenticatedController
             turbo_stream.replace("watchlist_button_#{item.asset_id}",
               partial: "watchlist_items/watchlist_button", locals: { asset_id: item.asset_id }),
             turbo_stream.prepend("flash_messages",
-              partial: FLASH_PARTIAL, locals: { type: "notice", message: "Agregado a tu watchlist." })
+              partial: FLASH_PARTIAL, locals: { type: "notice", message: t("watchlist_items.flash.agregado") })
           ]
         end
         format.html { redirect_back fallback_location: dashboard_path, notice: t("watchlist_items.flash.agregado") }

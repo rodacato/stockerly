@@ -39,7 +39,7 @@ module Alerts
 
       rule(:window_days, :condition) do
         if DATE_BASED_CONDITIONS.include?(values[:condition]) && values[:window_days].to_i < 1
-          key(:window_days).failure("debe ser al menos 1 día para alertas por fecha")
+          key(:window_days).failure("debe ser al menos 1 día para reglas por fecha")
         end
       end
     end

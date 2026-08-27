@@ -20,7 +20,7 @@ RSpec.describe "Watchlist management", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "shows assets on Rastreados" do
+  it "shows assets on Tracked" do
     visit tracked_assets_path
     expect(page).to have_content("Apple Inc.")
     expect(page).to have_content("Tesla, Inc.")
@@ -55,10 +55,10 @@ RSpec.describe "Watchlist management", type: :system do
   end
 
   # The watchlist left the cockpit with the redesign: Panorama's Radar mixes
-  # held and watched, and the list itself lives under Activos > Sigo.
+  # held and watched, and the list itself lives under Activos > Watchlist.
   it "shows the empty watchlist state under Activos" do
-    visit assets_path(tab: "sigo")
+    visit assets_path(tab: "watchlist")
 
-    expect(page).to have_content(I18n.t("assets.index.vacio_sigo_titulo"))
+    expect(page).to have_content(I18n.t("assets.index.vacio_watchlist_titulo"))
   end
 end
