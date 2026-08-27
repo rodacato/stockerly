@@ -26,7 +26,7 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 |---|---|---|---|
 | `ui-kit.lib.pen` | **0.8.0** | ✅ merged | — |
 | `flows/assets.pen` | **0.8.0** | ✅ PR #368 | — |
-| `flows/cockpit.pen` | 0.7.0 | — | the largest job; one artboard is deleted (D51) |
+| `flows/cockpit.pen` | **0.8.0** | tokens · D51 · D54 | the shell: 7 TopBar + 5 BottomNav copies, and the brief |
 | `flows/auth.pen` | 0.7.0 | — | TOTP is real (ADR-018); three artboards to draw |
 | `flows/alerts.pen` | 0.7.0 | — | one artboard is dangerous to build from |
 | `flows/settings.pen` | 0.7.0 | — | a reversed decision still drawn, plus a `Seguridad` section (D52) |
@@ -43,7 +43,8 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 BottomNav copies**, so the 57 → 76 change is six edits here against one anywhere else. D32.1 logged
 this as waiting for "a batch someone asks for". This is that batch — consolidate while it is open.
 
-- **Remove the `Evento de mercado · caídas generalizadas hoy` banner** — D25 cancelled.
+- ✅ **Banner removed and the artboard deleted** (2026-08-27). Measured first: the banner text existed on
+  `Black swan` and nowhere else, which is D51's premise confirmed rather than assumed.
 - **Delete `Panorama / Black swan`** (D51, answered 2026-08-27). The banner was the only thing
   separating it from `Default`, so it goes in the same pass — one fewer artboard to re-vendor,
   and one fewer of the six local TopBar copies.
@@ -52,7 +53,9 @@ this as waiting for "a batch someone asks for". This is that batch — consolida
   confirmation step, confirmed against `exports/README.md`'s complete inventory.
 - **`Señales` / `Más análisis` need the reading's date**, per #306's DoD and ADR-013 — a stale
   reading may not be presented as today's state. Whether the artboard has a date slot is unknown.
-- Verify `considera vender` really left the artboard (D36 decided it; execution unrecorded).
+- ✅ **`considera vender` stays** — D36 was wrong and is reversed by **D54**: ADR-014 lists the phrase in its
+  allowed catalogue, and D36 judged it against ADR-001 a day after ADR-014 amended that. Read the ADR chain
+  (001 → 013 → 014) forward before executing anything that rests on ADR-001.
 
 ## `flows/auth.pen` + `_playground.pen` — the only pair that must be open together
 
