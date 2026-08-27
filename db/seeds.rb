@@ -426,7 +426,7 @@ end
   # --- Dividends ---
   unless Dividend.exists?
     aapl_div = Dividend.create!(asset: aapl, ex_date: 1.month.ago.to_date, pay_date: 3.weeks.ago.to_date, amount_per_share: 0.24, currency: "USD")
-    DividendPayment.create!(portfolio: portfolio, dividend: aapl_div, shares_held: 50, total_amount: 12.00, received_at: 3.weeks.ago)
+    DividendPayment.create!(portfolio: portfolio, dividend: aapl_div, shares_held: 50, total_amount: 12.00)
   end
 
   # --- Notifications for Alex ---

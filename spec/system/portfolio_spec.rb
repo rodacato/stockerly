@@ -43,7 +43,7 @@ RSpec.describe "Portfolio tabs", type: :system do
 
   it "shows dividend history tab" do
     dividend = create(:dividend, asset: aapl, amount_per_share: 0.24, ex_date: 1.month.ago, pay_date: 3.weeks.ago)
-    create(:dividend_payment, portfolio: portfolio, dividend: dividend, shares_held: 10, total_amount: 2.40, received_at: 3.weeks.ago)
+    create(:dividend_payment, portfolio: portfolio, dividend: dividend, shares_held: 10, total_amount: 2.40)
 
     visit positions_path(tab: "dividends")
     expect(page).to have_content("Dividendos")
