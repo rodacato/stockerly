@@ -1,7 +1,7 @@
 // Stockerly Service Worker — cache-first for static assets, network-first for pages
 // Bump CACHE_VERSION whenever brand assets change; the activate handler purges
 // older `stockerly-*` caches so stale logos can't survive across deploys.
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
 const STATIC_CACHE = `stockerly-static-${CACHE_VERSION}`;
 const FONT_CACHE = `stockerly-fonts-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
@@ -12,12 +12,13 @@ const OFFLINE_URL = "/offline.html";
 // shell never falls back to a missing logo.
 const PRECACHE_URLS = [
   OFFLINE_URL,
-  "/favicon.svg?v=2",
-  "/icon.svg?v=2",
-  "/icon-192.png?v=2",
-  "/icon-512.png?v=2",
-  "/icon-512.svg?v=2",
-  "/apple-touch-icon.png?v=2"
+  "/favicon.svg?v=3",
+  "/icon.svg?v=3",
+  "/icon-192.png?v=3",
+  "/icon-512.png?v=3",
+  "/icon-512.svg?v=3",
+  "/icon-maskable-512.svg?v=3",
+  "/apple-touch-icon.png?v=3"
 ];
 
 // Install: pre-cache offline page and icons
