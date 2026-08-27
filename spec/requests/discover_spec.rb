@@ -135,6 +135,44 @@ RSpec.describe "Descubrir", type: :request do
     end
   end
 
+  describe "Titulares" do
+    let(:memory) { ActiveSupport::Cache::MemoryStore.new }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory)
+      memory.write(WarmDiscoverJob::HEADLINES_KEY, { headlines: [
+        { title: "TSMC eleva su guía anual", source: "Reuters", url: "https://example.com/1",
+          published_at: 3.hours.ago, related_ticker: "SMH" }
+      ], generated_at: Time.current })
+    end
+
+    it "shows the headline with the basket it belongs to and its source" do
+      get discover_path
+
+      expect(response.body).to include("TSMC eleva su guía anual", "SMH", "Reuters")
+    end
+
+    it "links out to the article" do
+      get discover_path
+
+      expect(response.body).to include("https://example.com/1")
+    end
+
+    it "counts as world data, so the Alpaca notice steps aside" do
+      get discover_path
+
+      expect(response.body).not_to include("Conecta Alpaca")
+    end
+
+    it "shows no block when the job has not run" do
+      memory.delete(WarmDiscoverJob::HEADLINES_KEY)
+
+      get discover_path
+
+      expect(response.body).not_to include("Titulares")
+    end
+  end
+
   # D31's disposability contract, pinned: this screen owns no table, so
   # deleting it must never require a migration.
   it "reads no ActiveRecord model of its own" do
