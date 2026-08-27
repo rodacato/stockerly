@@ -7,9 +7,10 @@ module ApplicationHelper
   def brand_logo(variant)
     LOGO_ASSETS.fetch(variant)
   end
-  # Renders a duration in es-MX human form: "2 horas", "1 hora", "30 minutos",
-  # "24 horas". Avoids relying on Rails' `distance_of_time_in_words` since
-  # the project does not yet have an es-MX locale wired (see issue #113).
+
+  # Renders a duration in es-MX human form: "2 horas", "1 hora", "30 minutos".
+  # Rails' `distance_of_time_in_words` rounds ("about 1 day"); these are exact,
+  # because they state a configured limit rather than an elapsed time.
   def duration_in_words_es(duration)
     seconds = duration.to_i
     if seconds % 1.hour.to_i == 0
