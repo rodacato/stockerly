@@ -1,4 +1,13 @@
 module ApplicationHelper
+
+  # The two logo files, named for the theme each is drawn for. Callers needing a
+  # fixed variant (an always-indigo panel, an email that cannot swap) ask here
+  # instead of hardcoding a filename.
+  LOGO_ASSETS = { light: "logo_light.svg", dark: "logo_dark.svg" }.freeze
+
+  def brand_logo(variant)
+    LOGO_ASSETS.fetch(variant)
+  end
   # Renders a duration in es-MX human form: "2 horas", "1 hora", "30 minutos",
   # "24 horas". Avoids relying on Rails' `distance_of_time_in_words` since
   # the project does not yet have an es-MX locale wired (see issue #113).

@@ -1,0 +1,6 @@
+<%# The symbol alone, inline so it inherits currentColor — an image_tag cannot
+    be tinted. Mirrors `LogoMark` in design/ui-kit.lib.pen 0.7.0.
+    Locals: size_class (default "w-7 h-7"). %>
+<svg viewBox="0 0 64 64" class="<%= local_assigns.fetch(:size_class, "w-7 h-7") %>" aria-hidden="true">
+  <path fill="currentColor" fill-rule="evenodd" d="M4 32 A28 28 0 1 0 60 32 A28 28 0 1 0 4 32 ZM17 24h11v16h-11ZM20.75 19h3.5v5h-3.5ZM20.75 40h3.5v5h-3.5ZM36 18h11v12h-11ZM39.75 14h3.5v4h-3.5ZM39.75 30h3.5v15h-3.5Z" />
+</svg>
