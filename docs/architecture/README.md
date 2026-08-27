@@ -159,13 +159,17 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [015](./adr/0015-one-api-key-per-provider.md) | One API key per provider; retire multi-key rotation | Accepted 2026-08-26 |
 | [016](./adr/0016-canonical-market-data-observations.md) | Canonical observations, multi-source kept reachable | Accepted 2026-08-26 |
 | [017](./adr/0017-python-bridge-for-yahoo-finance.md) | A Python bridge for Yahoo Finance, run as a subprocess | Accepted 2026-08-26 |
+| [018](./adr/0018-totp-with-recovery-codes.md) | TOTP with recovery codes, for an audience of more than one | Accepted 2026-08-27 · reverses design decision D23 |
 
-Fourteen ADRs: **0001, 0002 and 0006–0017**. The gap is explained below.
+Fifteen ADRs: **0001, 0002 and 0006–0018**. The gap is explained below.
 
-**ADR-018 (TOTP with recovery codes)** is written but lives on an unmerged branch, so it has no row
-yet and is deliberately not linked from here — a link would dangle. It reverses design decision D23,
-ships TOTP with recovery codes, and puts email OTP explicitly out of scope. **Add its row when the
-branch lands.**
+**ADR-018 is the newest, and it is the only one that reverses a decision this project had already
+published.** Design decision D23 recommended *against* building TOTP, and it was right for the
+audience it was written for: one person, who could put Cloudflare Access in front of his own tunnel.
+ADR-010 retired that audience. Access cannot be prescribed to a self-hoster who does not have it, so
+the recommendation expired with its premise rather than being overruled — and recovery codes ship in
+the same scope, because the permanent-lockout risk D23 identified is multiplied by every self-hoster,
+none of whom a maintainer can recover.
 
 **Why a table rather than a pointer to the directory.** The filenames already give number and title,
 so a pointer would carry those for free. What it cannot carry is the **status column** — which ADR
