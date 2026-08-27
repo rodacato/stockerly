@@ -98,7 +98,7 @@ Rails.application.config.after_initialize do
     asset_types: %i[stock etf index],
     # BMV earnings are served through an explicit route in SyncEarnings, not
     # through a chain: declaring :earnings here would put the bridge in the US
-    # chain too, where Finnhub and Polygon already answer.
+    # chain too, where Finnhub already answers.
     capabilities: %i[prices historical indices dividends splits]
   )
 
