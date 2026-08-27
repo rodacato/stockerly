@@ -94,7 +94,7 @@
           "fill": "$fg-default",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The four blocks",
+          "content": "The three blocks",
           "fontFamily": "$font-display",
           "fontSize": 13,
           "fontWeight": "700"
@@ -106,7 +106,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Olas — fixed 17-basket ranked by the move SINCE THE LAST VISIT (capped at 90 days), not a fixed 30-day window. A weekly visitor is not served by a month-long ruler, and `discover:last_seen` is already stored for the kill criterion, so the window costs nothing (C5 Renata, cap by S2 Adriana).\nCalendario — next Banxico + Fed announcements, from a YAML in the repo. The ONLY block that needs no credential (C8 Bram).\nReportan pronto — upcoming earnings for the baskets' bellwethers.\nTitulares — five headlines FILTERED to the baskets' symbols. Unfiltered it is a news river, stale at a weekly cadence; anchored to the baskets it stops being \"news\" and becomes why SMH moved (C1 Lucía).",
+          "content": "Olas — fixed 17-basket ranked by the move SINCE THE LAST VISIT (capped at 90 days), not a fixed 30-day window. A weekly visitor is not served by a month-long ruler, and `discover:last_seen` is already stored for the kill criterion, so the window costs nothing (C5 Renata, cap by S2 Adriana).\nCalendario — next Banxico + Fed announcements, from a YAML in the repo. The ONLY block that needs no credential (C8 Bram).\nTitulares — five headlines FILTERED to the baskets' symbols. Unfiltered it is a news river, stale at a weekly cadence; anchored to the baskets it stops being \"news\" and becomes why SMH moved (C1 Lucía).\n\nReportan pronto is GONE (D46, 2026-08-27). D31 committed three blocks to Alpaca; read against the gateway, Alpaca serves historical, news, dividends and splits — not earnings — so that promise was never true. Finnhub could serve it in one call (/calendar/earnings takes from/to without symbol), which is the recipe if it returns; it goes because it is the weakest of the four, the only one needing a third provider, and the earnings that matter — for assets actually held — are already covered by NotifyEarningsJob.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -206,7 +206,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "N1 — WaveRow derives from the kit's AssetRow minus its confluence block. \"oportunidad\" is advice and ADR-0001 forbids it on a screen about symbols the user does not hold.\nN2 — \"vs SPY\" separates a real wave from a rising tide. Groundable, SPY is in the basket.\nN3 — the sparkline needs a ~30-point daily series per basket symbol. One batched bars call, not 17.\nN4 — \"referentes de las canastas\" needs a bellwether map (SMH -> NVDA, XLE -> XOM, URA -> CCJ). Same YAML as the basket.\nN5 — the calendar dates drawn here are placeholders. The real ones come from the repo YAML.\nN6 — the Activos brief this file was seeded from was deleted before it was read, so this brief follows design/README's spec rather than that file's exact shape.\nN7 — the exposure chip is the panel's real finding (C6 Esther): without it the screen answers \"what moved?\", which is trivia, instead of \"am I missing something?\", which is the reason the tab exists. The chips are drawn against the real AssetCatalog — NVDA and OKE are seeded, so SMH and XLE read as covered.\nN8 — the chip is styled NEUTRALLY in both states, on purpose. Colouring \"sin exposición\" would read as \"act here\", which is the advice ADR-0001 forbids. The information is in the words, not in the fill.\nN9 — OPEN, see D33. The Calendario block has no exhausted state. Measured 2026-08-25: the Fed publishes 8 meetings ~16 months ahead but calls them TENTATIVE, and Banxico publishes 8 a year as a PDF GRID that is not machine-readable — its announcements page carries only past decisions. So no automatable path exists and a YAML is the only sensible option for 16 rows a year; that part is settled. What is NOT designed is the YAML running out: the block renders empty and says nothing, on the one block that promises to work without a credential. Unscheduled meetings (March 2020) will never be in it either. Left open on purpose, to decide when the block is built rather than guessed at now.",
+          "content": "N1 — WaveRow derives from the kit's AssetRow minus its confluence block. \"oportunidad\" is advice and ADR-0001 forbids it on a screen about symbols the user does not hold.\nN2 — \"vs SPY\" separates a real wave from a rising tide. Groundable, SPY is in the basket.\nN3 — the sparkline needs a ~30-point daily series per basket symbol. One batched bars call, not 17.\nN4 — the bellwether map (SMH -> NVDA, XLE -> XOM, URA -> CCJ) lives in the basket YAML. It was drawn for \"Reportan pronto\"; with that block gone (D46) it serves the exposure chip, which is the better use — it answers \"does this touch me?\" rather than \"who reports on Thursday?\".\nN5 — the calendar dates drawn here are placeholders. The real ones come from the repo YAML.\nN6 — the Activos brief this file was seeded from was deleted before it was read, so this brief follows design/README's spec rather than that file's exact shape.\nN7 — the exposure chip is the panel's real finding (C6 Esther): without it the screen answers \"what moved?\", which is trivia, instead of \"am I missing something?\", which is the reason the tab exists. The chips are drawn against the real AssetCatalog — NVDA and OKE are seeded, so SMH and XLE read as covered.\nN8 — the chip is styled NEUTRALLY in both states, on purpose. Colouring \"sin exposición\" would read as \"act here\", which is the advice ADR-0001 forbids. The information is in the words, not in the fill.\nN9 — CLOSED 2026-08-27, when the block was built. D33 was decided by its builder as it asked to be: the YAML declares the year it covers, the block renders it (\"Banxico · Fed · 2026\"), and past that horizon the screen says the calendar ran out and links to both sources instead of rendering nothing. Original finding, kept for the reasoning: The Calendario block has no exhausted state. Measured 2026-08-25: the Fed publishes 8 meetings ~16 months ahead but calls them TENTATIVE, and Banxico publishes 8 a year as a PDF GRID that is not machine-readable — its announcements page carries only past decisions. So no automatable path exists and a YAML is the only sensible option for 16 rows a year; that part is settled. What is NOT designed is the YAML running out: the block renders empty and says nothing, on the one block that promises to work without a credential. Unscheduled meetings (March 2020) will never be in it either. Left open on purpose, to decide when the block is built rather than guessed at now.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -1380,211 +1380,6 @@
             },
             {
               "type": "frame",
-              "id": "cMd5J",
-              "name": "Reportan pronto",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "MD1o5",
-                  "name": "SecHdr",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "end",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "JyTyk",
-                      "name": "T",
-                      "fill": "$fg-default",
-                      "content": "Reportan pronto",
-                      "fontFamily": "$font-display",
-                      "fontSize": 17,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "text",
-                      "id": "DtKCR",
-                      "name": "M",
-                      "fill": "$fg-subtle",
-                      "content": "referentes de las canastas",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "pSmDI",
-                  "name": "Card",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "gap": "$space-4",
-                  "padding": [
-                    14,
-                    16
-                  ],
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "d9z2mp",
-                      "name": "NVDA",
-                      "width": "fill_container",
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "umcXF",
-                          "name": "L",
-                          "layout": "vertical",
-                          "gap": 1,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "y3KVQu",
-                              "name": "Tk",
-                              "fill": "$fg-default",
-                              "content": "NVDA",
-                              "fontFamily": "$font-display",
-                              "fontSize": 14,
-                              "fontWeight": "700"
-                            },
-                            {
-                              "type": "text",
-                              "id": "vrHls",
-                              "name": "Wv",
-                              "fill": "$fg-subtle",
-                              "content": "referente de SMH",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "text",
-                          "id": "CiOrt",
-                          "name": "D",
-                          "fill": "$fg-subtle",
-                          "content": "jue 27 ago",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "vQvtx",
-                      "name": "XOM",
-                      "width": "fill_container",
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "y3W6k",
-                          "name": "L",
-                          "layout": "vertical",
-                          "gap": 1,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "CwQjj",
-                              "name": "Tk",
-                              "fill": "$fg-default",
-                              "content": "XOM",
-                              "fontFamily": "$font-display",
-                              "fontSize": 14,
-                              "fontWeight": "700"
-                            },
-                            {
-                              "type": "text",
-                              "id": "Lskrf",
-                              "name": "Wv",
-                              "fill": "$fg-subtle",
-                              "content": "referente de XLE",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "text",
-                          "id": "mxq7w",
-                          "name": "D",
-                          "fill": "$fg-subtle",
-                          "content": "vie 28 ago",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "hxpxG",
-                      "name": "CCJ",
-                      "width": "fill_container",
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "GsD3k",
-                          "name": "L",
-                          "layout": "vertical",
-                          "gap": 1,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "rtpLk",
-                              "name": "Tk",
-                              "fill": "$fg-default",
-                              "content": "CCJ",
-                              "fontFamily": "$font-display",
-                              "fontSize": 14,
-                              "fontWeight": "700"
-                            },
-                            {
-                              "type": "text",
-                              "id": "ybrK9",
-                              "name": "Wv",
-                              "fill": "$fg-subtle",
-                              "content": "referente de URA",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "text",
-                          "id": "H04gI",
-                          "name": "D",
-                          "fill": "$fg-subtle",
-                          "content": "mar 1 sep",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "g56t7",
               "name": "Titulares",
               "width": "fill_container",
@@ -1904,7 +1699,7 @@
                   "fill": "$info-fg",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Las olas, los reportes y los titulares vienen de ahí. El calendario de Banxico y la Fed funciona sin credencial.",
+                  "content": "Las olas y los titulares vienen de ahí. El calendario de Banxico y la Fed funciona sin credencial.",
                   "lineHeight": 1.5,
                   "fontFamily": "$font-sans",
                   "fontSize": 12,
@@ -2528,211 +2323,6 @@
                                   "content": "Banxico — informe trimestral",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 13,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "FMjlE",
-                      "name": "Reportan pronto",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": "$space-3",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "Tzd6J",
-                          "name": "SecHdr",
-                          "width": "fill_container",
-                          "justifyContent": "space_between",
-                          "alignItems": "end",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "Hb23x",
-                              "name": "T",
-                              "fill": "$fg-default",
-                              "content": "Reportan pronto",
-                              "fontFamily": "$font-display",
-                              "fontSize": 17,
-                              "fontWeight": "700"
-                            },
-                            {
-                              "type": "text",
-                              "id": "dlvvD",
-                              "name": "M",
-                              "fill": "$fg-subtle",
-                              "content": "referentes de las canastas",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "spnaK",
-                          "name": "Card",
-                          "width": "fill_container",
-                          "fill": "$bg-surface",
-                          "cornerRadius": "$radius-lg",
-                          "stroke": "$border-default",
-                          "strokeWidth": 1,
-                          "layout": "vertical",
-                          "gap": "$space-4",
-                          "padding": [
-                            14,
-                            16
-                          ],
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "Pe963",
-                              "name": "NVDA",
-                              "width": "fill_container",
-                              "justifyContent": "space_between",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "wSgP1",
-                                  "name": "L",
-                                  "layout": "vertical",
-                                  "gap": 1,
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "yRccL",
-                                      "name": "Tk",
-                                      "fill": "$fg-default",
-                                      "content": "NVDA",
-                                      "fontFamily": "$font-display",
-                                      "fontSize": 14,
-                                      "fontWeight": "700"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "M8SqBD",
-                                      "name": "Wv",
-                                      "fill": "$fg-subtle",
-                                      "content": "referente de SMH",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "Y2aCfs",
-                                  "name": "D",
-                                  "fill": "$fg-subtle",
-                                  "content": "jue 27 ago",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "M0uaW",
-                              "name": "XOM",
-                              "width": "fill_container",
-                              "justifyContent": "space_between",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "Lpefh",
-                                  "name": "L",
-                                  "layout": "vertical",
-                                  "gap": 1,
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "sL0JX",
-                                      "name": "Tk",
-                                      "fill": "$fg-default",
-                                      "content": "XOM",
-                                      "fontFamily": "$font-display",
-                                      "fontSize": 14,
-                                      "fontWeight": "700"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "TTmCX",
-                                      "name": "Wv",
-                                      "fill": "$fg-subtle",
-                                      "content": "referente de XLE",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "VIK1R",
-                                  "name": "D",
-                                  "fill": "$fg-subtle",
-                                  "content": "vie 28 ago",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "IqhiU",
-                              "name": "CCJ",
-                              "width": "fill_container",
-                              "justifyContent": "space_between",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "k4QZVy",
-                                  "name": "L",
-                                  "layout": "vertical",
-                                  "gap": 1,
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "qUIMx",
-                                      "name": "Tk",
-                                      "fill": "$fg-default",
-                                      "content": "CCJ",
-                                      "fontFamily": "$font-display",
-                                      "fontSize": 14,
-                                      "fontWeight": "700"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "rpqWa",
-                                      "name": "Wv",
-                                      "fill": "$fg-subtle",
-                                      "content": "referente de URA",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "FXw3J",
-                                  "name": "D",
-                                  "fill": "$fg-subtle",
-                                  "content": "mar 1 sep",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
                               ]
