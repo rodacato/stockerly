@@ -8,6 +8,12 @@ module ApplicationHelper
     LOGO_ASSETS.fetch(variant)
   end
 
+  # The one asset-type glossary (D48) — four surfaces name a kind, and the
+  # copies of it used to disagree on two of its five values.
+  def asset_type_label_es(asset_type)
+    t("comun.tipo_activo.#{asset_type}", default: asset_type.to_s.humanize)
+  end
+
   # Renders a duration in es-MX human form: "2 horas", "1 hora", "30 minutos".
   # Rails' `distance_of_time_in_words` rounds ("about 1 day"); these are exact,
   # because they state a configured limit rather than an elapsed time.

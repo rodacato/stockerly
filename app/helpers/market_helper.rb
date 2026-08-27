@@ -43,12 +43,6 @@ module MarketHelper
       .first&.integration_name
   end
 
-  # The asset detail header chip and the Tracked row read the one glossary
-  # (D48); four copies of it used to disagree on two of the five values.
-  def asset_type_label_es(asset)
-    t("comun.tipo_activo.#{asset.asset_type}", default: asset.asset_type.to_s.humanize)
-  end
-
   # Native-currency price prefix used on the asset detail header and price
   # chart. Per ADR / S09 convention: "MXN 48.50" / "USD 612.85".
   def asset_currency_price(asset, precision: 2)

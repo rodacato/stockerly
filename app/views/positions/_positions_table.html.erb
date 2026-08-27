@@ -127,7 +127,6 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-border-default">
-            <% type_labels = { "stock" => "Acción", "crypto" => "Cripto", "index" => "Índice", "etf" => "ETF", "fixed_income" => "CETE" } %>
             <% positions.each do |pos| %>
               <% gain = pos.total_gain %>
               <% positive = gain >= 0 %>
@@ -154,7 +153,7 @@
                 </td>
                 <td class="px-6 py-4 text-center">
                   <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-bg-muted text-fg-subtle">
-                    <%= type_labels[pos.asset.asset_type.to_s] || pos.asset.asset_type.to_s.titleize %>
+                    <%= asset_type_label_es(pos.asset.asset_type) %>
                   </span>
                 </td>
                 <td class="px-6 py-4 text-center text-sm font-mono text-fg-default"><%= pos.shares %></td>

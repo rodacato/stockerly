@@ -29,14 +29,6 @@ module AlertsHelper
     "cete_auction"        => "bg-primary"
   }.freeze
 
-  ASSET_TYPE_KIND_LABELS = {
-    "stock"        => "Acción",
-    "crypto"       => "Cripto",
-    "etf"          => "ETF",
-    "index"        => "Índice",
-    "fixed_income" => "CETE"
-  }.freeze
-
   # Kind chip shown next to the ticker. The asset decides when we still have
   # one; the symbol heuristic is the fallback for rules that outlived their
   # asset, where guessing from `.MX` is all that is left.
@@ -157,16 +149,16 @@ module AlertsHelper
   end
 
   def kind_label_for(asset)
-    label = ASSET_TYPE_KIND_LABELS.fetch(asset.asset_type, "Acción")
-    label == "Acción" && asset.symbol.to_s.match?(/\.MX\z/i) ? "Acción MX" : label
+    label = asset_type_label_es(asset.asset_type)
+    asset.asset_type_stock? && asset.symbol.to_s.match?(/\.MX\z/i) ? "#{label} MX" : label
   end
 
   def kind_label_from_symbol(symbol)
     case symbol
-    when /\ACETES?_/i, /\ACETE\b/i then "CETE"
-    when /\.MX\z/i                 then "Acción MX"
-    when "BMV", "IPC", /\AIPC\b/i  then "Índice"
-    else                                "Acción"
+    when /\ACETES?_/i, /\ACETE\b/i then asset_type_label_es(:fixed_income)
+    when /\.MX\z/i                 then "#{asset_type_label_es(:stock)} MX"
+    when "BMV", "IPC", /\AIPC\b/i  then asset_type_label_es(:index)
+    else                                asset_type_label_es(:stock)
     end
   end
 end
