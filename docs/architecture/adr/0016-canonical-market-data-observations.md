@@ -9,8 +9,10 @@
 
 ## Context
 
-Market data arrives from thirteen gateways and lands in tables that record **what** the value was and
+Market data arrives from thirteen gateways[^count] and lands in tables that record **what** the value was and
 nothing about **where it came from or what kind of reading it is**.
+
+[^count]: **Ten concrete gateways**, verified 2026-08-27 — "thirteen" counts the files in `app/contexts/market_data/gateways/`, of which `MarketDataGateway` and `FundamentalsGateway` are base classes and `ApiKeyNotConfiguredError` is an error class. The ten that talk to a provider: Alpaca, AlphaVantage, Banxico, Coingecko, CryptoFearGreed, DataBursatil, Finnhub, Fmp, FxRates, Yfinance. Ten is the canonical figure across the docs; [ADR-0010](./0010-pivot-to-self-hosted-single-user-tracker.md)'s "14" is a third count of the same directory at an earlier date. Nothing in this ADR's reasoning turns on the number.
 
 `GatewayChain` already computes the winning provider per fetch — `value[:data_source] =
 gateway.class.name` — and the value is **discarded on persist**, because `asset_price_histories` and

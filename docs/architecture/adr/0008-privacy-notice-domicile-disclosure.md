@@ -48,3 +48,29 @@ This is a knowing departure from a literal reading of Art. 16 Fracción I in exc
 - Adrian acquires a non-personal commercial address (coworking, mailroom, business location) and finds the cost acceptable.
 
 When any of these fires, switch to option 1 or 2 and remove the disclosure language from the privacy notice.
+
+---
+
+## Amendment, 2026-08-27 — the beta this ADR reasons about no longer exists
+
+**The decision still holds; its stated justification and its first revisit trigger do not.**
+
+This ADR weighs personal safety against *"monthly recurring cost for a beta product with ≤20 users
+and no revenue"*, and its first revisit trigger is *"Beta opens beyond invited friends (public
+sign-up or paid tier)."* [ADR-0010](./0010-pivot-to-self-hosted-single-user-tracker.md) ran that
+beta, found it failed, and dropped the audience on 2026-08-20. **There is no beta to open, so that
+trigger can never fire.** The same goes for the "if the beta expands beyond a closed circle" line
+under Operational requirement, and for the note about beta invitees finding the omission notable.
+
+The conclusion survives the change of premise, and arrives at it more directly: Stockerly is now a
+self-hosted single-user tracker with one user, who is the maintainer. There is no user base to weigh
+against personal safety at all, and no revenue to fund a postal box. Option 3 is if anything more
+clearly right than it was in 2026-05.
+
+**Revised revisit triggers**, replacing the first bullet above:
+
+- Stockerly is offered as a hosted service to anyone other than its maintainer — a public instance,
+  paid or free — which reintroduces a data subject who is not Adrian. Self-hosters running their own
+  instance do **not** fire this: they are their own responsible party, not Stockerly's data subjects.
+- A regulator formally requests the domicile. *(unchanged)*
+- Adrian acquires a non-personal commercial address and finds the cost acceptable. *(unchanged)*

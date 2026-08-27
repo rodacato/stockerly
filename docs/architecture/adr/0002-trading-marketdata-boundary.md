@@ -29,7 +29,9 @@ The right framing is the DDD **customer/supplier** pattern (sometimes called "su
 2. **The dashboard is a read-side composition.** It mixes user state (positions, portfolio summary) with external state (news, indices, market sentiment, fear & greed). That mix is the whole point of the dashboard; eliminating it would mean not having a dashboard.
 3. **Read APIs are easier to evolve than read models.** A use case `MarketData::UseCases::RecentNews` can be swapped (e.g., add caching, change source) without touching Trading. A materialized view (option C) would require coordinated migrations.
 4. **Performance is not currently a constraint.** Adrian's portfolio is ~5-15 positions; the dashboard renders in <200ms with the current `portfolio.convert` cache (Sprint 3 retro). A read model is premature optimization.
-5. **The audit also flagged Administration as a non-BC** and Notifications as a library. Those are separate ADRs (ADR-004, ADR-007). This ADR is **scoped strictly to Trading↔MarketData**.
+5. **The audit also flagged Administration as a non-BC** and Notifications as a library. Those are separate ADRs (ADR-004, ADR-007).[^phantom] This ADR is **scoped strictly to Trading↔MarketData**.
+
+[^phantom]: **ADR-004 and ADR-005 were never written, and ADR-007 became something else.** See the [amendment of 2026-08-27](#amendment-2026-08-27--the-adr-numbers-this-document-reserved) at the end of this file. The three citations in this document — here, and at "waits for ADR-005", and at "Pending ADR-007" — point at nothing.
 
 ---
 
@@ -110,7 +112,7 @@ This is the DDD **customer/supplier (supporting subdomain)** pattern, applied to
 ### Deferred (separate issues if useful)
 
 - `Identity::UseCases::GlobalSearch` reads `NewsArticle` directly — same pattern as above; out of #33 scope.
-- `Administration::UseCases::Assets::*` publishes `MarketData::Events::Asset*` — different problem (foreign-event publishing), waits for ADR-005.
+- `Administration::UseCases::Assets::*` publishes `MarketData::Events::Asset*` — different problem (foreign-event publishing), waits for ADR-005.[^phantom]
 - Top-level `Asset` and `FxRate` models — future ADR on shared kernel layout.
 - Splitting `MarketData::Domain::MarketSentiment` into `Domain::*` (internal) vs `ReadApi::*` (public surface) — premature; do when the public surface grows past 5 entries.
 
@@ -120,7 +122,7 @@ This ADR codifies the customer/supplier pattern for **Trading → MarketData** s
 
 - **Alerts → Trading?** Alerts already reads Trading state via events (price updates trigger evaluation). May need a read API for current portfolio state when alert rules reference position-level facts (future).
 - **Trading → Identity?** Currently uses associations (`user.portfolio`). The User<->Portfolio relationship is too entangled to ADR-002-ify without bigger surgery.
-- **Administration → everything?** Pending ADR-007 — Administration may not be a real BC.
+- **Administration → everything?** Pending ADR-007 — Administration may not be a real BC.[^phantom]
 
 The pattern itself (read via supplier's public API, write via events) is reusable; each adopter pair gets its own ADR if non-trivial.
 
@@ -131,3 +133,32 @@ The pattern itself (read via supplier's public API, write via events) is reusabl
 - This ADR can be revisited if the read API surface bloats past ~10 entries (signal: maybe a real "Composition" BC is justified) or if performance forces a materialized read model.
 - The decision is explicitly **pragmatic, not purist**. A strict DDD reading would object to grandfathering `MarketSentiment.for_user` as read API; a pragmatic reading recognizes that the call already works, doesn't violate any invariant, and rewriting it as a use case adds zero value.
 - This ADR closes the architectural question for #33 (which can now move from `blocked` to `ready` for S05).
+
+---
+
+## Amendment, 2026-08-27 — the ADR numbers this document reserved
+
+This ADR cites **ADR-004**, **ADR-005** and **ADR-007** for work it deferred. Verified against the
+full repository history on 2026-08-27: **no file numbered 0003, 0004 or 0005 was ever added, on any
+branch.** Those two decisions — Administration as a non-BC, and foreign-event publishing — were
+never written down anywhere.
+
+Worse than absent: **ADR-007 was later allocated to an unrelated topic**, the I18n deferral
+(subsequently superseded by ADR-011). So the sentence *"Pending ADR-007 — Administration may not be
+a real BC"* now points at a document about Spanish copy. Nothing was renumbered and nothing was
+lost; the number was simply taken by whoever wrote next, because a reservation held in prose is not
+a reservation.
+
+**The lesson, recorded in [`../README.md`](../README.md#the-00030005-numbering-gap): cite an ADR
+number only once the file exists.** Deferred work is named as deferred work or gets an issue. 0003,
+0004 and 0005 are burned — never allocate them to anything, so that this document's citations stay
+readable as the mistake they were rather than resolving to a stranger.
+
+The **deferrals themselves are still open and still unwritten** as of 2026-08-27. Administration
+remains a context in `app/contexts/`; `Administration::UseCases::Assets::*` still publishes
+`MarketData::Events::Asset*`. Neither has been decided — only un-numbered.
+
+One consequence this ADR listed *was* eventually honoured, though it took until 2026-08-27 to land
+everywhere: the "CLAUDE.md needs an amendment" item under **Negative**. `CLAUDE.md` and
+`conventions.md` were qualified; `docs/architecture/README.md` kept the absolute *"contexts
+communicate only via Domain Events"* line for three months after this ADR was accepted.

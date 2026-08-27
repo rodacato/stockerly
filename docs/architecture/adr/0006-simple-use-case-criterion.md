@@ -4,7 +4,7 @@
 - **Date:** 2026-05-15
 - **Author:** Adrian Castillo (with synthesis from the documented expert panel — C2 Hiroto, C6 Esther)
 - **Supersedes:** —
-- **Related:** [Issue #38](https://github.com/rodacato/stockerly/issues/38), [1.0 retrospective](../../1.0-retrospective.md), [`CLAUDE.md` — ApplicationUseCase Base Class](../../../CLAUDE.md#applicationusecase-base-class)
+- **Related:** [Issue #38](https://github.com/rodacato/stockerly/issues/38), [1.0 retrospective](../../1.0-retrospective.md), [`CLAUDE.md` — Use Case Base Classes](../../../CLAUDE.md#use-case-base-classes), [conventions.md](../conventions.md)
 
 ---
 
@@ -164,3 +164,26 @@ That's it. The base class provides only `.call` delegation; no monads, no valida
 
 - This ADR closes the issue #38 blocker. The "blocked" label removes when ADR-006 lands.
 - The interaction with ADR-002 is intentional: both ADRs encode "rules should match the problem, not the other way around." S05 is the architectural sprint by design; these two ADRs together carry the bulk of the structural cleanup.
+
+---
+
+## Amendment, 2026-08-27 — three of the nine migrated use cases no longer exist
+
+**The decision stands unchanged.** `SimpleUseCase` exists, the criterion holds, and six of the nine
+use cases migrated under this ADR are still in the code.
+
+The three that are gone are all Identity's — `LoadAssetCatalog`, `LoadProgress` and `LoadProfile` —
+deleted with the multi-user surface under [ADR-0010](./0010-pivot-to-self-hosted-single-user-tracker.md).
+They are left in the "Required for #38" list above because that list records what the sprint did, and
+a sprint's record is not corrected by later deletions.
+
+**They should not be used as examples**, which is what actually went wrong: `conventions.md` kept
+`LoadProfile` as its canonical pure-read illustration after the file was deleted. That file now
+shows `Notifications::UseCases::ListRecent` and `Alerts::UseCases::ToggleRule`, both of which exist.
+Live examples belong in `conventions.md`; this ADR keeps the historical list.
+
+Surviving from the nine: `ListRecent`, `UpdatePreferences`, `ToggleRule`, `DestroyRule`,
+`RemoveFromWatchlist`, `Assets::ToggleStatus`.
+
+The "Deferred" items above were never picked up: `EnsureFreshFxRate` is still an
+`ApplicationUseCase`, and the follow-up audit of other trivial use cases has not been run.

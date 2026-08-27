@@ -56,7 +56,8 @@ verified open-source projects**, and DataBursatil supplies 200,000 credits a mon
 
 - **This is a rework, not a delete.** `KeyRotation.next_key_for` currently feeds **seven gateways**,
   including Banxico, which serves both FX and CETES. Removing it carelessly dark-fails all external
-  sourcing. The single-key path must replace it before the pool is dropped.
+  sourcing. The single-key path must replace it before the pool is dropped. **Done — see the
+  implementation note below.**
 - **Integraciones changes.** The "2 llaves" affordance and the explanatory copy go. The screen shows
   one key per provider.
 - **The quota ceiling becomes real**, which the interface must now state honestly. With no pooling,
@@ -67,3 +68,22 @@ verified open-source projects**, and DataBursatil supplies 200,000 credits a mon
   against a scarce budget (D9) remains correct; only the size of the budget is in question, pending
   the open-source grant.
 - D18 is superseded. `design/DECISIONS.md` records the reversal.
+
+---
+
+## Implementation note, 2026-08-27
+
+The Consequences above are written in the future tense of the day the ADR was accepted. The rework
+they describe has since landed, so read them as done:
+
+- **`ApiKeyPool` and `KeyRotation` no longer exist** in the codebase — zero references in `app/` and
+  no table in `db/schema.rb`.
+- **`ApiKeyResolver`** (`app/shared/domain/api_key_resolver.rb`) replaced them: it returns the single
+  key an `Integration` is configured with, and `nil` when the provider is unknown or unconfigured.
+  There is nothing to rotate, so there is no rotation code.
+- The dark-fail risk this section flagged did not materialise — the single-key path went in before
+  the pool came out, which is what the warning asked for.
+
+Still open from the Consequences: the **provider-defined quota unit** for Integraciones (limits are
+not comparable across providers — calls per minute, calls per day, KiB per month), and the Alpha
+Vantage open-source grant that would restore the headroom pooling used to buy.

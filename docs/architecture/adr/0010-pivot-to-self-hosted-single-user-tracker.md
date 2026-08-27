@@ -15,7 +15,9 @@ The 2026-05-14 reset set the audience as **Adrian (dogfood) + a closed beta of �
 - Friends did not adopt it. Concretely: they did not know what to do inside the app, could not read the indicators (RSI, MA200, F&G), and abandoned it quickly.
 - Loading trades / tokens was reported as a *fastidio* (an annoying chore).
 
-These are **product and UX failures — empty first-run, indicator illiteracy, data-entry friction — not architecture or code-quality failures.** The codebase is healthy: ~2,760 passing specs, 14 working market-data gateways, correct hexagonal boundaries, a working Kamal self-host path. The `[[feedback-anti-patterns]]` #7 audit ("did anyone actually use it?") finally ran, and its answer is what drives this ADR.
+These are **product and UX failures — empty first-run, indicator illiteracy, data-entry friction — not architecture or code-quality failures.** The codebase is healthy: ~2,760 passing specs, 14 working market-data gateways,[^count] correct hexagonal boundaries, a working Kamal self-host path.
+
+[^count]: **The canonical count is 10 concrete gateways** (verified 2026-08-27): `app/contexts/market_data/gateways/` holds 13 files defining 12 classes, of which `MarketDataGateway` and `FundamentalsGateway` are base classes and `ApiKeyNotConfiguredError` is an error class. The remaining ten — Alpaca, AlphaVantage, Banxico, Coingecko, CryptoFearGreed, DataBursatil, Finnhub, Fmp, FxRates, Yfinance — are the drivers that talk to a provider. "14" here and "thirteen" in [ADR-016](./0016-canonical-market-data-observations.md) both count files at their respective dates; neither is the number of providers reachable. The `[[feedback-anti-patterns]]` #7 audit ("did anyone actually use it?") finally ran, and its answer is what drives this ADR.
 
 Two options were on the table when re-scoping:
 
@@ -34,7 +36,9 @@ Concretely:
 
 1. **Audience** drops the closed-beta secondary. The primary user is Adrian; "self-hosted for a technical third party" is a *packaging discipline*, not a managed audience. Building for a hypothetical self-hosting community is the next audience-fantasma and is explicitly rejected (`[[feedback-anti-patterns]]` #2).
 
-2. **Aggressive subtraction.** The 2.0 begins by deleting what the multi-user/beta framing required and the single-user product does not: most of the `Administration` context (invites, user management, `pool_keys`), the multi-user surface of `Identity` (registration, email verification, first-admin bootstrap), and the models `invite_code`, `api_key_pool`, `remember_token`, `email_event`, `user_activity`. `Identity` collapses to a single-user login/setup. `Notifications` shrinks to in-app only. `MarketData` and `Trading` are kept and reinvested in. The hexagonal boundaries make this deletion clean.
+2. **Aggressive subtraction.** The 2.0 begins by deleting what the multi-user/beta framing required and the single-user product does not: most of the `Administration` context (invites, user management, `pool_keys`), the multi-user surface of `Identity` (registration, email verification, first-admin bootstrap), and the models `invite_code`, `api_key_pool`,[^pool] `remember_token`, `email_event`, `user_activity`.
+
+[^pool]: **`api_key_pool` was wrongly on this list** — see the [2026-08-22 addendum](#addendum--2026-08-22-evidence-from-the-code-audit) below, which reclassifies it as rework, and [ADR-015](./0015-one-api-key-per-provider.md), which did that rework. Footnote added 2026-08-27 so the reversal is visible at the instruction, not only 25 lines later. `Identity` collapses to a single-user login/setup. `Notifications` shrinks to in-app only. `MarketData` and `Trading` are kept and reinvested in. The hexagonal boundaries make this deletion clean.
 
 3. **No aggregators, ever, at this scale.** Plaid/Yodlee/SnapTrade and equivalents are a permanent non-goal. They are a cost trap that helped kill a same-stack competitor and have thin, expensive Mexican coverage. (Pluggy.ai / Belvo are the only LatAm-native aggregators with real MX coverage, and even they are gated behind a documented trigger, not adopted now.)
 
@@ -62,3 +66,18 @@ A 5-stage parallel code audit + a 7-expert panel confirmed the "subtract, don't 
 - **`api_key_pool` must NOT be deleted with the multi-user models.** It is MarketData plumbing — `KeyRotation.next_key_for` feeds 7 gateways (incl. Banxico). Deleting it as-is dark-fails all external data sourcing. Reclassify as **rework** (collapse the pool to a single key per provider), not deletion. The multi-user delete list is otherwise correct and FK-clean.
 
 The EVOLVE execution runs on branch `evolve_2_0_pre` (baseline tag `pre-2.0-evolve`).
+
+## Addendum — 2026-08-27 (where the work actually landed)
+
+- **`evolve_2_0_pre` is gone.** The 2.0 work landed on `master` slice by slice rather than
+  accumulating on a long-lived branch. The baseline tag `pre-2.0-evolve` still marks the pre-2.0
+  state and is the thing to diff against; the branch name above is historical.
+- **`api_key_pool` was reworked, not deleted, and the rework is done.** [ADR-015](./0015-one-api-key-per-provider.md)
+  carried it: `ApiKeyPool` and `KeyRotation` are gone from the codebase, replaced by
+  `ApiKeyResolver` — one key per provider, resolved from `Integration`. The 2026-08-22 addendum's
+  correction was applied, and its reason has been overtaken: pools were retired because four
+  providers' terms prohibit them, not only because single-user needs one key.
+- **The multi-user delete is done** and was FK-clean as predicted. Identity is single-user
+  (`create_first_admin`, `login`, password reset, profile, onboarding); registration and email
+  verification are gone. Its handlers still carry `_on_registration` in their names, which is now
+  a misnomer — they fire on `FirstAdminCreated`.

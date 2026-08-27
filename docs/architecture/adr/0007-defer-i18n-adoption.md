@@ -49,7 +49,9 @@ This ADR codifies the position so that future reviews can be redirected here in 
 
 ### Triggers for revisit
 
-This decision is revisited (and an ADR-008 may overturn it) when **any one** of the following becomes real:
+This decision is revisited (and a later ADR may overturn it)[^overturned] when **any one** of the following becomes real:
+
+[^overturned]: The original text said *"an ADR-008 may overturn it"*, guessing at the next free number. It guessed wrong twice: ADR-008 went to the privacy notice, and the ADR that actually overturned this one is [ADR-011](./0011-adopt-i18n-for-the-2.0-rewrite.md), on 2026-08-24, via trigger 4 below. Corrected 2026-08-27 — naming a number before the file exists is the same mistake ADR-002 made with 004/005/007; see [`../README.md`](../README.md#the-00030005-numbering-gap).
 
 1. **A second locale exists in production.** A real user base or invite cohort in a different language requires the platform to render. Not a hypothetical "we might want English someday".
 2. **A translator workflow is in place.** A non-developer needs to update copy without touching ERB files. This implies YAML or a CMS, and YAML is the lower-friction choice in a Rails app.
