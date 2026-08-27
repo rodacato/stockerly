@@ -1,5 +1,4 @@
 module ApplicationHelper
-
   # The two logo files, named for the theme each is drawn for. Callers needing a
   # fixed variant (an always-indigo panel, an email that cannot swap) ask here
   # instead of hardcoding a filename.
