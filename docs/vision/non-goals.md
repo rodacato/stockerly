@@ -2,7 +2,8 @@
 
 > What Stockerly explicitly **is NOT**. As important as what we ARE.
 > Each non-goal here is a conscious decision with a reason. Changing one requires an ADR.
-> Last updated: **2026-08-20** (pivot to self-hosted single-user — see [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)).
+> Last updated: **2026-08-27** (provider rationales re-verified against the code; pivot to
+> self-hosted single-user is [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md), 2026-08-20).
 
 ---
 
@@ -38,7 +39,7 @@
 
 | Not built | Why |
 |---|---|
-| Prescriptive recommendations: "buy X", "sell Y" | Moral liability with friends beta; empirical evidence that retail TA rarely generates alpha; wrong signal about what the product is. |
+| Prescriptive recommendations: "buy X", "sell Y" | Moral liability toward anyone reading it (the original reason, argued when a friends beta was still planned); empirical evidence that retail TA rarely generates alpha; wrong signal about what the product is. |
 | Probabilistic predictions: "73% chance of going up" | Same. Detail: see ADR-001. |
 | Implicit timing recommendations: "now is a good time to...", "worth considering..." | Same. |
 | Confidence-weighted action forecasts | Same. |
@@ -58,7 +59,7 @@
 |---|---|
 | Formal SLA (uptime, response time) | This is a personal, self-hostable tool. Revisit only if Stockerly becomes monetized. |
 | Native mobile apps (iOS/Android) | PWA already covers installation and icons. Not worth maintaining two platforms. |
-| Multi-tenancy / shared accounts / team portfolios | Single-user by design (ADR-0010). The multi-user surface built for the failed beta is being deleted, not extended. |
+| Multi-tenancy / shared accounts / team portfolios | Single-user by design (ADR-0010). The multi-user surface built for the failed beta was deleted in the 2.0 cleanup, not extended. |
 | ~~Internationalization (i18n)~~ | **No longer a non-goal.** [ADR-0011](../architecture/adr/0011-adopt-i18n-for-the-2.0-rewrite.md) adopted `i18n-tasks` with a single locale during the 2.0 rewrite: deferring was right while the alternative was rewriting working screens, and stopped being right once every string was being rewritten anyway. es-MX is still the only language — what changed is where the strings live. |
 | Social features: public sharing, comments, forums, leaderboards | Not a social product. Not a community product. |
 | Profile sharing / public profile privacy mode | Subset of the above. |
@@ -81,8 +82,8 @@
 
 | Not built | Why |
 |---|---|
-| Tick-level WebSocket for live prices | Polygon WebSocket is a paid tier; daily polling is enough for weekly cadence. |
-| Deep historical data (>5 years) | Polygon free tier limits this; enough for current JTBDs. If Adrian needs more depth, evaluate. |
+| Tick-level WebSocket for live prices | No configured provider streams on a free tier — Alpaca's free plan refuses anything inside 15 minutes at all — and daily polling is enough for a weekly cadence. |
+| Deep historical data (>5 years) | Alpaca reaches 2016 and CoinGecko's free tier walls off at 365 days; the exception is Banxico, whose full FIX series was backfilled to 1991 because it is one free request (ADR-009). Enough for current JTBDs; if Adrian needs more depth, evaluate. |
 | Strategy backtesting | A TA backtesting product is a different thing. Stockerly observes the present, it doesn't simulate the past. |
 
 ### Performance

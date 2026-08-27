@@ -35,14 +35,14 @@
 The 2.0 is packaged so **any technically capable person can stand it up with one command and understand it without a manual**. This is a **discipline on how we build**, not an audience we build features for.
 
 - We build for Adrian. The self-hoster is served by keeping **setup and onboarding clean** — a one-command deploy, a seeded demo, inline indicator explanations.
-- We do **NOT** build features for a hypothetical self-hosting community. That is the next audience-fantasma, and it is the same mistake the failed ≤20-friend beta made ([`ADR-0010`](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md), `[[feedback-anti-patterns]]` #2).
+- We do **NOT** build features for a hypothetical self-hosting community. That is the next audience-fantasma, and it is the same mistake the failed ≤20-friend beta made ([`ADR-0010`](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)) — building for a persona nobody is, the second entry on the maintainer's own anti-pattern list.
 - If real self-hosters ever show up with repeated, documented needs, revisit via ADR — don't pre-build for them.
 
 **What a self-hoster gets:** open-source code (AGPL/MIT as decided), a documented one-command deploy, their own data on their own server. **What they do NOT get:** an SLA, support, or advance notice of breaking changes. It's a personal tool you're welcome to run.
 
 ## Why the closed beta was dropped
 
-The 2026-05-14 vision added a secondary audience of ≤20 invited friends. It was tried and **failed**: friends didn't know what to do in the app, couldn't read the indicators, and found loading trades a chore, so they abandoned it. The correct response is not to double down on the beta but to **remove the fake audience** and refocus on the one real user plus clean packaging. The invite-code system, multi-user identity surface, and admin user management built for that beta are being **deleted** (see ADR-0010).
+The 2026-05-14 vision added a secondary audience of ≤20 invited friends. It was tried and **failed**: friends didn't know what to do in the app, couldn't read the indicators, and found loading trades a chore, so they abandoned it. The correct response is not to double down on the beta but to **remove the fake audience** and refocus on the one real user plus clean packaging. The invite-code system, multi-user identity surface, and admin user management built for that beta were **deleted** in the 2.0 cleanup that shipped 2026-08-23 (see ADR-0010).
 
 ## Non-users (what we explicitly are NOT)
 

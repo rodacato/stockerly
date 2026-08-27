@@ -4,7 +4,22 @@
 >
 > Inspired by the "expert panel" practice from the Mi Feria project. Replaces an original flat list of 10 experts (removed in the 2.0 cleanup; recoverable from git history).
 >
-> **Last updated:** 2026-05-14 (Sprint 1 — Step 4).
+> **Written:** 2026-05-14 (Sprint 1 — Step 4). **Triggers retargeted:** 2026-08-27.
+>
+> ⚠️ **Most of this document predates the 2026-08-20 pivot**
+> ([ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)) and was
+> written for a multi-user product with a closed beta of ≤20 invited friends. **That beta was run
+> and failed; the multi-user surface — registration, email verification, invite codes, user
+> management — was deleted in the 2.0 cleanup.** The panel itself survives the pivot: the sixteen
+> experts, their domains and the operating principles are unchanged and still correct.
+>
+> What was corrected on 2026-08-27 is only the **triggers** — the "when to consult" lines that
+> routed on things that no longer exist (beta invites, beta friends, registration, email
+> verification, the multi-currency P0, retired providers, a use case that was renamed). The
+> **biographies were left as written**, including references to work that has since shipped; they
+> are character, not state. Where an expert's background still names a retired provider, read it
+> as experience, not as the current stack — that lives in
+> `config/initializers/data_sources.rb`.
 
 ---
 
@@ -12,7 +27,7 @@
 
 | ID | Name | Specialty | Type | When to activate |
 |---|---|---|---|---|
-| **C1** | Lucía Ramírez | Mexican financial domain (CETES, multi-currency, dividend withholding) | Core | Trading, MarketData::Domain, money, currency, fiscal |
+| **C1** | Lucía Ramírez | Mexican financial domain (CETES, multi-currency, historical FX) | Core | Trading, MarketData::Domain, money, currency, FX |
 | **C2** | Hiroto Watanabe | DDD + Hexagonal + Event-Driven in Rails monolith | Core | New BC, use case, event handler, boundary change |
 | **C3** | Sven Kowalski | Rails 8 backend (AR, dry-rb, contracts, Use Cases) | Core | Server-side implementation, migrations, controllers |
 | **C4** | Marisol Aguirre | Hotwire (Turbo + Stimulus) + Tailwind 4 | Core | Views, layouts, partials, interactivity |
@@ -43,7 +58,7 @@
 
 | Domain | Primary consultation |
 |---|---|
-| Money, currency, FX, fiscal, MX-specific domain | Lucía (C1) |
+| Money, currency, FX, MX-specific domain (fiscal is a non-goal — she is who says so) | Lucía (C1) |
 | Bounded contexts, events, ports & adapters, use case design | Hiroto (C2) |
 | Rails implementation: AR, dry-rb, contracts, migrations | Sven (C3) |
 | Views, Turbo, Stimulus, Tailwind | Marisol (C4) |
@@ -82,7 +97,8 @@
 **When to consult her:**
 - Before modifying `app/contexts/trading/` or `app/contexts/market_data/domain/`
 - When any `currency` or `fx_rate` field appears
-- When designing the P0 fix (`execute_trade.rb` hardcoded "USD")
+- When touching FX capture — the multi-currency P0 is **fixed and tested** (`fx_rate_at_execution`
+  from the Banxico FIX settlement series, ADR-009); what remains is the backdated-trade refinement
 - When modeling a new asset type (different CETE, bond, Mexican ETF)
 - When a financial calculation seems correct but "feels off"
 
@@ -98,7 +114,7 @@
 **Background:** 14 years in software engineering, the last 8 focused on DDD applied pragmatically to monoliths. Came to DDD from Java enterprise, then Ruby on Rails since 2018. Has implemented bounded contexts in 5+ year old Rails monoliths without rewriting from scratch. Knows dry-rb since its initial adoption. Has strong opinions on when NOT to use event sourcing.
 
 **What he brings:**
-- Honest identification of leaks between bounded contexts (e.g., the current `AssembleDashboard` that crosses Trading → MarketData)
+- Honest identification of leaks between bounded contexts (e.g. `AssemblePanorama`, which crosses Trading → MarketData under the read contract of ADR-002)
 - Distinction between Aggregate Root, Entity, Value Object — and when each is the correct one
 - Event design: when synchronous, when async, when not to use an event
 - When `ApplicationUseCase` with dry-monads is overkill and when it's justified (anti-pattern #3)
@@ -107,7 +123,7 @@
 **When to consult him:**
 - Before creating a new bounded context or use case that crosses two
 - When refactoring trivial use cases (Toggle, MarkAsRead, etc.) — he proposes `SimpleUseCase`
-- When reviewing `event_subscriptions.rb` (78 flat subscriptions today)
+- When reviewing `event_subscriptions.rb` (39 flat subscriptions today)
 - When there's doubt about where logic belongs (model vs use case vs domain service)
 - When designing cross-context communication (event vs direct call)
 
@@ -204,7 +220,7 @@
 **What she brings:**
 - The 4-filter (trigger + JTBD + metric + DoD) — becomes the guard of every proposal
 - Early identification of scope creep: when "it would be cool to add..." appears, she asks "what JTBD would justify this?"
-- When a beta feedback signal indicates a real shift vs isolated noise
+- When a signal from Adrian's own use indicates a real shift vs isolated noise
 - Honest prioritization: pain × frequency × strategic value, not by gut
 - Phase boundary decision: what differentiates this sprint from the next beyond "more features"
 - Application of anti-pattern #1 (Next phase = next thing to build) — she pushes back against it
@@ -212,7 +228,8 @@
 **When to consult her:**
 - Before each sprint planning — validates that the goal and items align with vision
 - When a new idea appears that's not in `docs/vision/jobs-to-be-done.md`
-- When a beta friend asks for something and Adrian feels the temptation to implement "for friendship"
+- When a hypothetical self-hoster is invoked as the reason to build something — the audience
+  after the one that already failed
 - Sprint retro: measures whether what was built was the priority
 - When "it's just adding this small thing" — she measures the real cost
 
@@ -231,17 +248,18 @@
 - Use Case audit for IDOR (Insecure Direct Object Reference): every query filtered by `current_user`
 - Secure configuration of `has_secure_password` + sessions (cookie httponly, secure, samesite)
 - API key encryption with Rails `encrypts`
-- Rate limiting on sensitive endpoints (login, registration, password reset)
+- Rate limiting on sensitive endpoints (login, password reset, first-run setup)
 - Audit logging for sensitive actions
 - Security headers (CSP, HSTS, X-Frame-Options)
 - LFPDPPP (MX compliance) in collaboration with S5 Ileana
 
 **When to consult her:**
 - Any new controller that touches user data
-- Implementation of auth, password reset, email verification
+- Implementation of auth, password reset, single-account setup
 - Sensitive data handling (API keys, tokens, PII)
-- Before the first beta invite (full IDOR audit)
-- Integration with any third party (Polygon, FMP, etc.) — credential handling
+- Before exposing any new route or admin surface — single-user removes the IDOR blast radius, not
+  the unauthenticated-route class of bug
+- Integration with any third party (Alpaca, DataBursatil, Banxico, etc.) — credential handling
 - Brakeman warnings
 
 **Style:** Specific: risk + exploitability + fix + why urgent. No catastrophizing, with concrete remediation and example code. Cites CVEs or real examples when applicable.
@@ -258,14 +276,17 @@
 **What he brings:**
 - README that does the right things in the right order (what it is, why it exists, how to run it locally in <5min, how to contribute, license)
 - Discipline about what to expose in a public repo (no API keys, no real data, no PII in commits)
-- Decision on when to open PRs to the community (in Stockerly: not before v1.0 — it's in `docs/vision/audience.md`)
+- Decision on when to open PRs to the community. ⚠️ **Unresolved contradiction:**
+  `docs/vision/non-goals.md` says PRs are not accepted before v1.0, while `CONTRIBUTING.md`
+  welcomes contributions of all kinds. Neither was reconciled at the pivot; Adrian decides which
+  one is current before this trigger can be answered.
 - Release process: semver, changelog, GitHub releases, tagging
 - Issue templates that surface information without bullying the contributor
 - Knows **when to close issues without losing the contributor** — and when a PR forces a scope reconsideration
 
 **When to consult him:**
 - README updates
-- CONTRIBUTING.md (when it exists — Stockerly v1.0)
+- CONTRIBUTING.md — it exists, and it is one half of the contradiction above
 - Before making the repo "more visible" (Twitter announcement, HN post)
 - When an external dev opens an issue/PR
 - Release notes / changelog hygiene
@@ -299,7 +320,7 @@
 
 > *"Each gateway is an external failure point; each job is a time commitment."*
 
-**Background:** 9 years in financial API integrations. Knows Polygon, CoinGecko, Alpha Vantage, FMP, Banxico closely. Designed GatewayChain + CircuitBreaker patterns for fintech apps.
+**Background:** 9 years in financial API integrations. Knows the free-tier landscape closely — today's stack is Alpaca, Finnhub, DataBursatil, CoinGecko, Alpha Vantage, Banxico and the yfinance bridge. Designed GatewayChain + CircuitBreaker patterns for fintech apps.
 
 **Brings:** Gateway design following hexagonal pattern (already established in Stockerly); proactive rate limit handling (`RateLimiter.check!` before HTTP); adaptive scheduling (backoff when approaching rate limit); when to add another provider to `GatewayChain` and when not.
 
@@ -346,9 +367,9 @@
 
 **Background:** 13 years in privacy law for fintech in EU and LATAM. Knows LFPDPPP (Federal Law for the Protection of Personal Data Held by Private Parties) in practice, not just in letter. Based in Mexico City.
 
-**Brings:** LFPDPPP-compliant privacy notice for Stockerly beta; personal data classification (personal data vs sensitive personal data); right to deletion / export (required mechanisms); third-party ToS (Polygon, FMP, Anthropic LLM) — relevant clauses.
+**Brings:** LFPDPPP-compliant privacy notice for a deployed instance; personal data classification (personal data vs sensitive personal data); right to deletion / export (required mechanisms); third-party ToS — the redistribution and multi-key clauses of the configured providers, which already produced two build-changing findings (see [the provider audit](market-data-providers-2026-08.md) §3).
 
-**Consult when:** before the first beta invite (mandatory privacy notice); when a new personal data field is added; integration with a third party that receives user data; user request for export/deletion; "is this legal in Mexico?" question.
+**Consult when:** before any public deployment of an instance (privacy notice); when a new personal data field is added; before adopting a provider, to read its terms rather than its docs; user request for export/deletion; "is this legal in Mexico?" question.
 
 **Style:** Plain language, no legalese. Names the real risk and real obligation.
 
