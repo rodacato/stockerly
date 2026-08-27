@@ -113,7 +113,12 @@ RSpec.describe "Activos › Rastreados", type: :request do
                            daily_call_limit: 25, calls_reset_at: Time.current)
 
       expect(MarketData::Domain::FundamentalsBudget.today.used).to eq(4)
-      expect(SyncAllFundamentalsJob::DAILY_BUDGET).to eq(MarketData::Domain::FundamentalsBudget::DAILY_LIMIT)
+
+      # Neither orchestrator carries a budget number of its own any more. Two
+      # constants were two sources of truth, and the statements one drifted
+      # into counting log lines instead of calls.
+      expect(SyncAllFundamentalsJob.const_defined?(:DAILY_BUDGET, false)).to be false
+      expect(SyncAllStatementsJob.const_defined?(:DAILY_BUDGET, false)).to be false
     end
 
     # A statements sync spends three calls and logs one, and failures spend
