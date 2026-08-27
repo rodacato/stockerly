@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-MX">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Stockerly — Offline</title>
+  <title>Stockerly — Sin conexión</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -30,7 +30,7 @@
       font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
-      color: #005A98;
+      color: #5B6CFF;
     }
     p {
       color: #64748b;
@@ -40,7 +40,7 @@
     .retry-btn {
       display: inline-block;
       padding: 0.625rem 1.5rem;
-      background: #005A98;
+      background: #5B6CFF;
       color: #fff;
       border: none;
       border-radius: 0.5rem;
@@ -49,18 +49,27 @@
       cursor: pointer;
       text-decoration: none;
     }
-    .retry-btn:hover { background: #004A80; }
+    .retry-btn:hover { background: #4757E3; }
+    .logo { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 2.5rem; }
+    .logo-icon { background: #5B6CFF; color: #fff; padding: 0.5rem; border-radius: 0.5rem; display: flex; }
+    .logo-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.04em; color: #0f172a; }
+    @media (prefers-color-scheme: dark) { .logo-text { color: #f8fafc; } }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
+    <div class="logo">
+      <div class="logo-icon"><svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M4 32 A28 28 0 1 0 60 32 A28 28 0 1 0 4 32 ZM17 24h11v16h-11ZM20.75 19h3.5v5h-3.5ZM20.75 40h3.5v5h-3.5ZM36 18h11v12h-11ZM39.75 14h3.5v4h-3.5ZM39.75 30h3.5v15h-3.5Z"/></svg></div>
+      <span class="logo-text">stockerly</span>
+    </div>
     <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
       <path stroke-linecap="round" stroke-linejoin="round"
         d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
     </svg>
-    <h1>You're Offline</h1>
-    <p>It looks like you've lost your internet connection. Check your network and try again.</p>
-    <button class="retry-btn" onclick="window.location.reload()">Try Again</button>
+    <h1>Sin conexión</h1>
+    <p>Parece que no hay conexión. Revisa tu red e intenta de nuevo.</p>
+    <button class="retry-btn" onclick="window.location.reload()">Intentar de nuevo</button>
   </div>
 </body>
 </html>

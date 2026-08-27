@@ -79,8 +79,11 @@ RSpec.describe "PWA", type: :request do
       get "/offline.html"
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Offline")
-      expect(response.body).to include("Stockerly")
+
+      # Static files come back ASCII-8BIT, so accented copy needs the tag fixed.
+      body = response.body.dup.force_encoding(Encoding::UTF_8)
+      expect(body).to include("Sin conexión")
+      expect(body).to include("stockerly")
     end
   end
 
