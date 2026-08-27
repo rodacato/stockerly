@@ -37,6 +37,29 @@ RSpec.describe "Descubrir", type: :request do
     end
   end
 
+  # The mobile bar carries no title, so the shell emits an sr-only h1 for the
+  # screens whose artboard has none. This one's does, so it renders its own —
+  # and the shell must stand down, because two h1s on a page is a defect.
+  describe "its heading" do
+    # Two h1s sit in the DOM on every screen — the desktop bar's and the
+    # mobile one — and CSS picks. What must not happen is a third.
+    it "adds no h1 beyond what a screen without its own heading has" do
+      get dashboard_path
+      baseline = response.body.scan("<h1").size
+
+      get discover_path
+
+      expect(response.body.scan("<h1").size).to eq(baseline)
+    end
+
+    it "is the screen's own, visible below lg rather than the shell's sr-only" do
+      get discover_path
+
+      expect(response.body).to match(/<h1[^>]*lg:hidden[^>]*>\s*Descubrir/)
+      expect(response.body).not_to include('<h1 class="sr-only lg:hidden">')
+    end
+  end
+
   describe "the nav" do
     it "is reachable as the fifth destination" do
       get dashboard_path
