@@ -317,6 +317,7 @@ es-MX:
     - viernes
     - sábado
     formats:
+      calendar: "%a %-d %b"
       default: "%d/%m/%Y"
       long: "%-d de %B de %Y"
       short: "%-d de %b"
@@ -334,6 +335,20 @@ es-MX:
     - octubre
     - noviembre
     - diciembre
+  discover:
+    show:
+      calendario_agotado: El calendario de %{horizon} se terminó. Carga el del año
+        siguiente desde la fuente.
+      calendario_meta: Banxico · Fed · %{horizon}
+      calendario_titulo: Calendario
+      conecta_cta: Ir a Integraciones
+      conecta_cuerpo: Las olas, los reportes y los titulares vienen de ahí. El calendario
+        de Banxico y la Fed funciona sin credencial.
+      conecta_titulo: Conecta Alpaca
+      descripcion: Lo que se mueve afuera, no en tu cartera
+      sin_datos: Todavía no hay datos del mundo
+      tentativa: tentativa
+      titulo: Descubrir
   market:
     acciones:
       crear_regla: Crear regla
@@ -689,6 +704,7 @@ es-MX:
     avisos_sin_leer:
       one: 1 aviso sin leer
       other: "%{count} avisos sin leer"
+    discover: Descubrir
     ir_al_panorama: Ir al Panorama
     panorama: Panorama
     principal: Navegación principal

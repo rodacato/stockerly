@@ -1,0 +1,59 @@
+<% content_for :page_title, t(".titulo") %>
+
+<div class="mx-auto flex max-w-3xl flex-col gap-6">
+  <p class="text-fg-subtle"><%= @alpaca_connected ? t(".descripcion") : t(".sin_datos") %></p>
+
+  <%# Olas, reportes and titulares all read Alpaca (D31). Until it is connected
+      the screen says which block needs what, rather than showing four empty
+      cards that look broken. %>
+  <% unless @alpaca_connected %>
+    <%# The artboard sets the body copy in primary over primary-muted, which
+        measures 3.68:1 in light and 4.22:1 in dark — under the AA floor for
+        body text. The accent stays on the heading and the link, where large
+        text and UI components only owe 3:1 (D41). %>
+    <section class="flex flex-col items-start gap-2 rounded-2xl bg-primary-muted p-5">
+      <h2 class="font-display text-lg font-bold tracking-tight text-primary"><%= t(".conecta_titulo") %></h2>
+      <p class="text-fg-default"><%= t(".conecta_cuerpo") %></p>
+      <%= link_to admin_integrations_path, class: "font-semibold text-primary hover:underline" do %>
+        <%= t(".conecta_cta") %> <span aria-hidden="true">→</span>
+      <% end %>
+    </section>
+  <% end %>
+
+  <section class="flex flex-col gap-3">
+    <div class="flex items-baseline justify-between gap-4">
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".calendario_titulo") %></h2>
+      <p class="font-mono text-xs text-fg-subtle"><%= t(".calendario_meta", horizon: @calendar_horizon) %></p>
+    </div>
+
+    <% if @calendar_exhausted %>
+      <%# D33: a calendar that runs out says so. Rendering nothing here would
+          leave the one credential-free block looking as broken as the others. %>
+      <div class="flex flex-col items-start gap-2 rounded-2xl border border-border-default bg-bg-surface p-5">
+        <p class="text-sm text-fg-subtle"><%= t(".calendario_agotado", horizon: @calendar_horizon) %></p>
+        <div class="flex gap-4">
+          <% @calendar_sources.each do |name, url| %>
+            <%= link_to name.to_s.titleize, url, class: "text-sm font-semibold text-primary hover:underline",
+                  target: "_blank", rel: "noopener" %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <ul class="flex flex-col gap-1 rounded-2xl border border-border-default bg-bg-surface px-5 py-4">
+        <% @calendar.each do |event| %>
+          <li class="flex items-baseline gap-4 py-1.5">
+            <time datetime="<%= event.date.iso8601 %>" class="shrink-0 font-mono text-sm text-fg-subtle">
+              <%= l(event.date, format: :calendar) %>
+            </time>
+            <p class="text-fg-default">
+              <%= event.source %> — <%= event.title %>
+              <% if event.tentative %>
+                <span class="font-mono text-xs text-fg-subtle"><%= t(".tentativa") %></span>
+              <% end %>
+            </p>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </section>
+</div>

@@ -194,6 +194,15 @@ D31 already priced this: it is not an additive bump. `AppShell`, `AppShellDeskto
 all change, forcing kit 0.6.0, a re-vendor across all six flows, and a re-shoot of every export
 showing the bar.
 
+**Corrected 2026-08-27 — the design half of that price was already paid.** Read from the kit
+rather than assumed: `kit-version` is **0.6.0**, `BottomNav` and `SidebarNav` both carry five
+destinations with `Descubrir` at index 3 on lucide `compass`, and `AppShellDesktop` instances
+`SidebarNav` by `ref`, so it inherited them without an edit. The flows re-vendored and the
+exports were re-shot in the same pass — `cockpit-panorama-default`, `reglas-confluencia` and
+`ui-kit-shell-desktop` all draw five tabs. **Only the code is outstanding**, which is the
+opposite of what this section said and the reason it is corrected rather than deleted: the
+paragraph above sent a reader to redo design work that was done.
+
 ---
 
 # TODO
