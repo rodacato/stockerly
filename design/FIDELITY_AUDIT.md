@@ -285,7 +285,7 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
 17. **The *Guardar* button in Ajustes** — the artboard implies auto-save. Pick one.
 18. ✅ **`/positions`, `/earnings`, `/search`, `/news`** — [#295](https://github.com/rodacato/stockerly/issues/295)
     closed 2026-08-26 (D35). `/earnings`, `/news` and `/market`'s listing deleted per D31;
-    `/search` deleted, `GlobalSearch` kept for the TopBar search the artboards draw. **`/positions`
+    `/search` deleted. `GlobalSearch` was kept alongside it *"for the TopBar search the artboards draw"* — **checked 2026-08-27 and the artboards draw none**: `ui-kit-shell-desktop` and every mobile TopBar are brand plus bell. The one search the design does draw is Rastreados·Buscar, served by `assets#search_ticker`. The use case was deleted. **`/positions`
     kept, with a date**: it is reached from the asset detail, it is the only home for global trades
     and dividends, and its review is #294 — if it has no artboard when that closes, it goes then.
 
