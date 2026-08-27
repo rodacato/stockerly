@@ -1927,887 +1927,6 @@
     },
     {
       "type": "frame",
-      "id": "By0Sx",
-      "x": 1440,
-      "y": 0,
-      "name": "[Cockpit] / Panorama / Black swan",
-      "clip": true,
-      "width": 390,
-      "fill": "$bg-canvas",
-      "layout": "vertical",
-      "children": [
-        {
-          "type": "frame",
-          "id": "iKeAe",
-          "name": "TopBar",
-          "width": "fill_container",
-          "fill": "$bg-surface",
-          "padding": [
-            16,
-            20
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "Q4F8I",
-              "name": "Brand",
-              "gap": 4,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "agvii",
-                  "name": "Glyph",
-                  "width": 24,
-                  "height": 24,
-                  "layout": "none",
-                  "children": [
-                    {
-                      "type": "path",
-                      "id": "FDPY2",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Mark",
-                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                      "fillRule": "evenodd",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "$primary",
-                      "width": 24,
-                      "height": 24
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "H1MQv1",
-                  "name": "WMWrap",
-                  "layout": "vertical",
-                  "padding": [
-                    0,
-                    0,
-                    3.9,
-                    0
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "g10CQq",
-                      "name": "WM",
-                      "fill": "$fg-default",
-                      "content": "stockerly",
-                      "fontFamily": "$font-display",
-                      "fontSize": 17,
-                      "fontWeight": "700",
-                      "letterSpacing": -0.4
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "icon",
-              "id": "AxRDg",
-              "name": "Bell",
-              "width": 20,
-              "height": 20,
-              "icon": "bell",
-              "library": "lucide",
-              "fill": "$fg-subtle"
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "pPqGh",
-          "name": "Content",
-          "width": "fill_container",
-          "layout": "vertical",
-          "gap": "$space-6",
-          "padding": [
-            24,
-            20
-          ],
-          "children": [
-            {
-              "type": "frame",
-              "id": "EuUWq",
-              "name": "Alert",
-              "width": "fill_container",
-              "fill": "$negative-bg",
-              "cornerRadius": "$radius-md",
-              "gap": "$space-2",
-              "padding": [
-                10,
-                14
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "dbI9v",
-                  "name": "i",
-                  "width": 18,
-                  "height": 18,
-                  "icon": "triangle-alert",
-                  "library": "lucide",
-                  "fill": "$negative-fg"
-                },
-                {
-                  "type": "text",
-                  "id": "Sd8cf",
-                  "name": "t",
-                  "fill": "$negative-fg",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Evento de mercado · caídas generalizadas hoy",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                }
-              ]
-            },
-            {
-              "id": "lm84H",
-              "type": "ref",
-              "ref": "Z35Ip",
-              "name": "PatrimonioStrip",
-              "width": "fill_container",
-              "descendants": {
-                "XMrCc": {
-                  "content": "219,400"
-                },
-                "l3O7te": {
-                  "fill": "$negative-bg"
-                },
-                "l1LAF6": {
-                  "content": "−7.4% hoy",
-                  "fill": "$negative-fg"
-                }
-              }
-            },
-            {
-              "type": "frame",
-              "id": "qkSwy",
-              "name": "Hero",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "Ivdai",
-                  "name": "Carousel",
-                  "gap": "$space-3",
-                  "children": [
-                    {
-                      "id": "DIB8B",
-                      "type": "ref",
-                      "ref": "k1C47",
-                      "name": "FEAR & GREED · CRIPTO",
-                      "descendants": {
-                        "i7Yql": {
-                          "content": "FEAR & GREED · CRIPTO"
-                        },
-                        "BwULv": {
-                          "content": "8"
-                        },
-                        "KyE67": {
-                          "fill": "$negative-bg"
-                        },
-                        "wC9Hm": {
-                          "content": "Miedo extremo",
-                          "fill": "$negative-fg"
-                        },
-                        "OLpJD": {
-                          "width": 15
-                        },
-                        "io1Zb": {
-                          "content": "▼ −40 vs ayer",
-                          "fill": "$negative-fg"
-                        }
-                      }
-                    },
-                    {
-                      "id": "vq5Dh",
-                      "type": "ref",
-                      "ref": "k1C47",
-                      "name": "SENTIMIENTO · TU WATCHLIST",
-                      "descendants": {
-                        "i7Yql": {
-                          "content": "SENTIMIENTO · TU WATCHLIST"
-                        },
-                        "BwULv": {
-                          "content": "19"
-                        },
-                        "KyE67": {
-                          "fill": "$negative-bg"
-                        },
-                        "wC9Hm": {
-                          "content": "Pánico",
-                          "fill": "$negative-fg"
-                        },
-                        "OLpJD": {
-                          "width": 43
-                        },
-                        "io1Zb": {
-                          "content": "▼ −38 vs ayer",
-                          "fill": "$negative-fg"
-                        }
-                      }
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "msETY",
-                  "name": "Dots",
-                  "width": "fill_container",
-                  "gap": "$space-2",
-                  "justifyContent": "center",
-                  "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "YlejD",
-                      "name": "d0",
-                      "fill": "$primary",
-                      "width": 7,
-                      "height": 7
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "P6sMJ3",
-                      "name": "d1",
-                      "fill": "$border-strong",
-                      "width": 7,
-                      "height": 7
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "EhZlb",
-                      "name": "d2",
-                      "fill": "$border-strong",
-                      "width": 7,
-                      "height": 7
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "zXTDf",
-              "name": "MovimientosInteres",
-              "width": "fill_container",
-              "fill": "#00000000",
-              "cornerRadius": "$radius-card",
-              "stroke": "$border-default",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "CjRyW",
-                  "name": "MH",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "Vwnq3",
-                      "name": "MT",
-                      "fill": "$fg-default",
-                      "content": "Movimientos de interés",
-                      "fontFamily": "$font-display",
-                      "fontSize": 16,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "GoHRV",
-                      "name": "VerMas",
-                      "gap": 2,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "TShm1",
-                          "name": "VMt",
-                          "fill": "$primary",
-                          "content": "Ver más",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon",
-                          "id": "UVR5O",
-                          "name": "VMi",
-                          "width": 14,
-                          "height": 14,
-                          "icon": "arrow-right",
-                          "library": "lucide",
-                          "fill": "$primary"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "QQ1TO",
-                  "name": "MovSub",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Oportunidades de compra y venta hoy",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                },
-                {
-                  "id": "gzVhF",
-                  "type": "ref",
-                  "ref": "ZibzW",
-                  "name": "AAPL",
-                  "width": "fill_container",
-                  "descendants": {
-                    "MDgGR": {
-                      "icon": "arrow-down-right",
-                      "fill": "$negative-fg"
-                    },
-                    "pvAwU": {
-                      "content": "BTC"
-                    },
-                    "jvGCP": {
-                      "content": "−28% · pánico, RSI 12 (sobreventa extrema)"
-                    },
-                    "mUFJF": {
-                      "fill": "$positive-bg"
-                    },
-                    "qBB4x": {
-                      "content": "compra",
-                      "fill": "$positive-fg"
-                    }
-                  }
-                },
-                {
-                  "id": "Q5BzV",
-                  "type": "ref",
-                  "ref": "ZibzW",
-                  "name": "NVDA",
-                  "width": "fill_container",
-                  "descendants": {
-                    "MDgGR": {
-                      "icon": "arrow-down-right",
-                      "fill": "$negative-fg"
-                    },
-                    "pvAwU": {
-                      "content": "NVDA"
-                    },
-                    "jvGCP": {
-                      "content": "−22% · RSI 18, sobreventa fuerte"
-                    },
-                    "mUFJF": {
-                      "fill": "$positive-bg"
-                    },
-                    "qBB4x": {
-                      "content": "compra",
-                      "fill": "$positive-fg"
-                    }
-                  }
-                },
-                {
-                  "id": "RK13O",
-                  "type": "ref",
-                  "ref": "ZibzW",
-                  "name": "BTC",
-                  "width": "fill_container",
-                  "descendants": {
-                    "MDgGR": {
-                      "icon": "arrow-down-right",
-                      "fill": "$negative-fg"
-                    },
-                    "pvAwU": {
-                      "content": "AAPL"
-                    },
-                    "jvGCP": {
-                      "content": "−15% · RSI 22, cerca de piso"
-                    },
-                    "mUFJF": {
-                      "fill": "$positive-bg"
-                    },
-                    "qBB4x": {
-                      "content": "compra",
-                      "fill": "$positive-fg"
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "bQ1xG",
-              "name": "MisActivos",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "JLIqV",
-                  "name": "LH",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "DGKKF",
-                      "name": "LT",
-                      "fill": "$fg-default",
-                      "content": "Radar",
-                      "fontFamily": "$font-display",
-                      "fontSize": 16,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "vxPdT",
-                      "name": "VerTodos",
-                      "gap": 2,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "rMhKn",
-                          "name": "t",
-                          "fill": "$primary",
-                          "content": "Ver todos",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon",
-                          "id": "q3zWns",
-                          "name": "i",
-                          "width": 14,
-                          "height": 14,
-                          "icon": "arrow-right",
-                          "library": "lucide",
-                          "fill": "$primary"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "MYSuU",
-                  "name": "RadarSub",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "De tu cartera y watchlist · con actividad hoy · valores en MXN",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                },
-                {
-                  "id": "EqmC4",
-                  "type": "ref",
-                  "ref": "r16WM",
-                  "name": "AAPL",
-                  "width": "fill_container",
-                  "descendants": {
-                    "eG3WE": {
-                      "content": "AAPL"
-                    },
-                    "uvrOY": {
-                      "content": "Apple"
-                    },
-                    "w2FQh": {
-                      "content": "32,300"
-                    },
-                    "QrM6I": {
-                      "content": "−15.0%",
-                      "fill": "$negative-fg"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 6 L11 9 L20 7 L29 13 L38 11 L47 16 L54 18",
-                      "stroke": "$negative"
-                    },
-                    "zSCE5": {
-                      "fill": "$positive-bg"
-                    },
-                    "rD21s": {
-                      "content": "oportunidad",
-                      "fill": "$positive-fg"
-                    },
-                    "sFBnt": {
-                      "fill": "$positive"
-                    },
-                    "S40qP": {
-                      "fill": "$positive"
-                    },
-                    "E60Udm": {
-                      "fill": "$positive"
-                    }
-                  }
-                },
-                {
-                  "id": "Z9uwdy",
-                  "type": "ref",
-                  "ref": "r16WM",
-                  "name": "NVDA",
-                  "width": "fill_container",
-                  "descendants": {
-                    "eG3WE": {
-                      "content": "NVDA"
-                    },
-                    "uvrOY": {
-                      "content": "Nvidia"
-                    },
-                    "w2FQh": {
-                      "content": "40,560"
-                    },
-                    "QrM6I": {
-                      "content": "−22.0%",
-                      "fill": "$negative-fg"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 6 L11 9 L20 7 L29 13 L38 11 L47 16 L54 18",
-                      "stroke": "$negative"
-                    },
-                    "zSCE5": {
-                      "fill": "$positive-bg"
-                    },
-                    "rD21s": {
-                      "content": "oportunidad",
-                      "fill": "$positive-fg"
-                    },
-                    "sFBnt": {
-                      "fill": "$positive"
-                    },
-                    "S40qP": {
-                      "fill": "$positive"
-                    },
-                    "E60Udm": {
-                      "fill": "$positive"
-                    }
-                  }
-                },
-                {
-                  "id": "DPoAg",
-                  "type": "ref",
-                  "ref": "r16WM",
-                  "name": "BTC",
-                  "width": "fill_container",
-                  "descendants": {
-                    "eG3WE": {
-                      "content": "BTC"
-                    },
-                    "uvrOY": {
-                      "content": "Bitcoin"
-                    },
-                    "w2FQh": {
-                      "content": "15,120"
-                    },
-                    "QrM6I": {
-                      "content": "−28.0%",
-                      "fill": "$negative-fg"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 6 L11 9 L20 7 L29 13 L38 11 L47 16 L54 18",
-                      "stroke": "$negative"
-                    },
-                    "zSCE5": {
-                      "fill": "$positive-bg"
-                    },
-                    "rD21s": {
-                      "content": "oportunidad",
-                      "fill": "$positive-fg"
-                    },
-                    "sFBnt": {
-                      "fill": "$positive"
-                    },
-                    "S40qP": {
-                      "fill": "$positive"
-                    },
-                    "E60Udm": {
-                      "fill": "$positive"
-                    }
-                  }
-                },
-                {
-                  "id": "JzeBp",
-                  "type": "ref",
-                  "ref": "r16WM",
-                  "name": "VOO",
-                  "width": "fill_container",
-                  "descendants": {
-                    "eG3WE": {
-                      "content": "VOO"
-                    },
-                    "uvrOY": {
-                      "content": "Vanguard S&P 500"
-                    },
-                    "w2FQh": {
-                      "content": "55,510"
-                    },
-                    "QrM6I": {
-                      "content": "−9.0%",
-                      "fill": "$negative-fg"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 6 L11 9 L20 7 L29 13 L38 11 L47 16 L54 18",
-                      "stroke": "$negative"
-                    },
-                    "zSCE5": {
-                      "fill": "$positive-bg"
-                    },
-                    "rD21s": {
-                      "content": "oportunidad",
-                      "fill": "$positive-fg"
-                    },
-                    "sFBnt": {
-                      "fill": "$positive"
-                    },
-                    "S40qP": {
-                      "fill": "$positive"
-                    },
-                    "E60Udm": {
-                      "fill": "$border-strong"
-                    }
-                  }
-                },
-                {
-                  "id": "FAJzj",
-                  "type": "ref",
-                  "ref": "r16WM",
-                  "name": "CETES",
-                  "width": "fill_container",
-                  "descendants": {
-                    "eG3WE": {
-                      "content": "CETES"
-                    },
-                    "uvrOY": {
-                      "content": "Cetes 28d"
-                    },
-                    "w2FQh": {
-                      "content": "90,000"
-                    },
-                    "QrM6I": {
-                      "content": "vence en 3 días",
-                      "fill": "$warning-fg"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
-                      "stroke": "$border-strong"
-                    },
-                    "zSCE5": {
-                      "fill": "$bg-muted"
-                    },
-                    "rD21s": {
-                      "content": "renta fija",
-                      "fill": "$fg-subtle"
-                    },
-                    "sFBnt": {
-                      "fill": "$border-strong"
-                    },
-                    "S40qP": {
-                      "fill": "$border-strong"
-                    },
-                    "E60Udm": {
-                      "fill": "$border-strong"
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "CdDSn",
-          "name": "BottomNav",
-          "width": "fill_container",
-          "fill": "$bg-surface",
-          "stroke": "$border-default",
-          "strokeWidth": {
-            "top": 1
-          },
-          "padding": [
-            12,
-            8
-          ],
-          "justifyContent": "space_around",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "MGjCF",
-              "name": "Panorama",
-              "layout": "vertical",
-              "gap": 3,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "hRyhn",
-                  "name": "i",
-                  "width": 22,
-                  "height": 22,
-                  "icon": "layout-grid",
-                  "library": "lucide",
-                  "fill": "$primary"
-                },
-                {
-                  "type": "text",
-                  "id": "t0Diu",
-                  "name": "t",
-                  "fill": "$primary",
-                  "content": "Panorama",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 11,
-                  "fontWeight": "600"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "W5dlU",
-              "name": "Activos",
-              "layout": "vertical",
-              "gap": 3,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "MqMNW",
-                  "name": "i",
-                  "width": 22,
-                  "height": 22,
-                  "icon": "trending-up",
-                  "library": "lucide",
-                  "fill": "$fg-subtle"
-                },
-                {
-                  "type": "text",
-                  "id": "GvI2T",
-                  "name": "t",
-                  "fill": "$fg-subtle",
-                  "content": "Activos",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "fFut5",
-              "name": "Reglas",
-              "layout": "vertical",
-              "gap": 3,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "RaPQA",
-                  "name": "i",
-                  "width": 22,
-                  "height": 22,
-                  "icon": "bell",
-                  "library": "lucide",
-                  "fill": "$fg-subtle"
-                },
-                {
-                  "type": "text",
-                  "id": "ujRPO",
-                  "name": "t",
-                  "fill": "$fg-subtle",
-                  "content": "Reglas",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "VEP1M",
-              "name": "Descubrir",
-              "layout": "vertical",
-              "gap": 3,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "kX2sZ",
-                  "name": "i",
-                  "width": 22,
-                  "height": 22,
-                  "icon": "compass",
-                  "library": "lucide",
-                  "fill": "$fg-subtle"
-                },
-                {
-                  "type": "text",
-                  "id": "a1IfsJ",
-                  "name": "t",
-                  "fill": "$fg-subtle",
-                  "content": "Descubrir",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "KINx9",
-              "name": "Ajustes",
-              "layout": "vertical",
-              "gap": 3,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "jT1nZ",
-                  "name": "i",
-                  "width": 22,
-                  "height": 22,
-                  "icon": "settings",
-                  "library": "lucide",
-                  "fill": "$fg-subtle"
-                },
-                {
-                  "type": "text",
-                  "id": "iXEtq",
-                  "name": "t",
-                  "fill": "$fg-subtle",
-                  "content": "Ajustes",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
       "id": "e8CjG",
       "x": 1930,
       "y": 0,
@@ -4061,7 +3180,7 @@
                     },
                     {
                       "type": "frame",
-                      "id": "dRPql",
+                      "id": "aW0x3",
                       "name": "VC",
                       "fill": "$warning-bg",
                       "cornerRadius": 99,
@@ -4072,7 +3191,7 @@
                       "children": [
                         {
                           "type": "text",
-                          "id": "G3Y4gE",
+                          "id": "UKiiA",
                           "name": "t",
                           "fill": "$warning-fg",
                           "content": "considera vender",
@@ -10039,7 +9158,7 @@
                                     },
                                     {
                                       "type": "frame",
-                                      "id": "dMh5W",
+                                      "id": "o4uzaU",
                                       "name": "VC",
                                       "fill": "$warning-bg",
                                       "cornerRadius": 99,
@@ -10050,7 +9169,7 @@
                                       "children": [
                                         {
                                           "type": "text",
-                                          "id": "m65wek",
+                                          "id": "DE2TY",
                                           "name": "t",
                                           "fill": "$warning-fg",
                                           "content": "considera vender",
@@ -13213,7 +12332,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.7.0"
+      "value": "0.8.0"
     },
     "font-display": {
       "type": "string",
@@ -13669,6 +12788,244 @@
         },
         {
           "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#38BDF8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#5CC8F5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-6": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#7C6CF0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#A78BFA",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-7": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F97316",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB923C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-8": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#06B6D4",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#22D3EE",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-neutral": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCD34D",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#A3E635",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#BEF264",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
           "theme": {
             "mode": "dark"
           }
