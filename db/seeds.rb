@@ -257,10 +257,23 @@ Asset.where(logo_url: nil).find_each do |asset|
   asset.update!(logo_url: logo) if logo
 end
 
+# --- FX Rates ---
+# Before any demo portfolio, not after: valuing a mixed-currency portfolio
+# converts, and Portfolio#convert raises rather than guessing. Both directions
+# of USD/MXN are seeded because the lookup is by exact pair — it does not
+# invert one into the other.
+{ [ "USD", "EUR" ] => 0.92, [ "USD", "MXN" ] => 17.25, [ "MXN", "USD" ] => 0.058,
+  [ "USD", "GBP" ] => 0.79 }.each do |(base, quote), rate|
+  FxRate.find_or_create_by!(base_currency: base, quote_currency: quote) do |r|
+    r.rate = rate
+    r.fetched_at = 1.hour.ago
+  end
+end
+
 # --- Demo data for Alex (development only) ---
 if Rails.env.development? && (alex = User.find_by(email: "alex.thompson@example.com"))
   portfolio = alex.portfolio
-  portfolio.update!(buying_power: 8_240.15, inception_date: Date.new(2023, 1, 12))
+  portfolio.update!(inception_date: Date.new(2023, 1, 12))
 
   unless Position.where(portfolio: portfolio).exists?
     [
@@ -272,7 +285,7 @@ if Rails.env.development? && (alex = User.find_by(email: "alex.thompson@example.
     ].each do |t|
       position = Position.create!(
         portfolio: portfolio, asset: t[:asset], shares: t[:shares],
-        avg_cost: t[:price], currency: t[:currency], status: :open, opened_at: t[:date]
+        avg_cost: t[:price], status: :open, opened_at: t[:date]
       )
       Trade.create!(
         portfolio: portfolio, asset: t[:asset], position: position,
@@ -413,12 +426,14 @@ end
   # --- Portfolio Snapshots for Alex ---
   unless PortfolioSnapshot.where(portfolio: portfolio).exists?
     5.downto(1).each do |days_ago|
+      # The currency is part of the reading, not decoration: a snapshot without
+      # one cannot be compared to the next.
       PortfolioSnapshot.create!(
         portfolio: portfolio,
         date: days_ago.days.ago.to_date,
+        currency: alex.preferred_currency,
         total_value: portfolio.total_value + rand(-500.0..500.0).round(2),
-        cash_value: portfolio.buying_power,
-        invested_value: (portfolio.total_value - portfolio.buying_power + rand(-300.0..300.0)).round(2)
+        invested_value: (portfolio.total_value + rand(-300.0..300.0)).round(2)
       )
     end
   end
@@ -441,20 +456,6 @@ end
     AuditLog.create!(user: alex, action: "admin.integrations.connect", auditable: Integration.first, changes_data: { after: { provider: "Alpaca" } }, ip_address: "127.0.0.1")
   end
 end # Rails.env.development? (alex demo data)
-
-# --- FX Rates ---
-FxRate.find_or_create_by!(base_currency: "USD", quote_currency: "EUR") do |r|
-  r.rate = 0.92
-  r.fetched_at = 1.hour.ago
-end
-FxRate.find_or_create_by!(base_currency: "USD", quote_currency: "MXN") do |r|
-  r.rate = 17.25
-  r.fetched_at = 1.hour.ago
-end
-FxRate.find_or_create_by!(base_currency: "USD", quote_currency: "GBP") do |r|
-  r.rate = 0.79
-  r.fetched_at = 1.hour.ago
-end
 
 # --- Integrations ---
 # Synced from DataSourceRegistry definitions. Defaults defined in lib/tasks/sync.rake.
