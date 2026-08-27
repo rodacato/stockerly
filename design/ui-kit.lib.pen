@@ -83,110 +83,48 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "U2Vck",
+                      "id": "nwsB4",
                       "x": 0,
                       "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 22v-12h12",
+                      "name": "Mark",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "#00000000",
-                      "width": 48,
-                      "height": 48,
-                      "stroke": "$fg-default",
-                      "strokeWidth": 4,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "ff4nm",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 10h12v12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 48,
-                      "height": 48,
-                      "stroke": "$fg-default",
-                      "strokeWidth": 4,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "ADRAL",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M10 42v12h12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 48,
-                      "height": 48,
-                      "stroke": "$fg-default",
-                      "strokeWidth": 4,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "path",
-                      "id": "qUIwa",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Bracket",
-                      "geometry": "M42 54h12v-12",
-                      "viewBox": [
-                        0,
-                        0,
-                        64,
-                        64
-                      ],
-                      "fill": "#00000000",
-                      "width": 48,
-                      "height": 48,
-                      "stroke": "$fg-default",
-                      "strokeWidth": 4,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "GzI9K",
-                      "x": 20,
-                      "y": 20,
-                      "name": "Focus",
                       "fill": "$primary",
-                      "width": 8,
-                      "height": 8
+                      "width": 48,
+                      "height": 48
                     }
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "HpRzf",
-                  "name": "Wordmark",
-                  "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 28,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.5
+                  "type": "frame",
+                  "id": "H6ILsd",
+                  "name": "WMWrap",
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    0,
+                    6.5,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "nUguB",
+                      "name": "WM",
+                      "fill": "$fg-default",
+                      "content": "stockerly",
+                      "fontFamily": "$font-display",
+                      "fontSize": 28,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.5
+                    }
+                  ]
                 }
               ]
             },
@@ -1165,7 +1103,7 @@
           "type": "frame",
           "id": "I3Jrb",
           "name": "Brand",
-          "gap": "$space-2",
+          "gap": 4,
           "alignItems": "center",
           "children": [
             {
@@ -1178,110 +1116,48 @@
               "children": [
                 {
                   "type": "path",
-                  "id": "l9LqvA",
+                  "id": "lRtpZ",
                   "x": 0,
                   "y": 0,
-                  "name": "Bk",
-                  "geometry": "M10 22v-12h12",
+                  "name": "Mark",
+                  "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                  "fillRule": "evenodd",
                   "viewBox": [
                     0,
                     0,
                     64,
                     64
                   ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "lTL7N",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M42 10h12v12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "u0x429",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M10 42v12h12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "yoM72",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M42 54h12v-12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "ellipse",
-                  "id": "j72nJ",
-                  "x": 9.5,
-                  "y": 9.5,
-                  "name": "Fc",
                   "fill": "$primary",
-                  "width": 5,
-                  "height": 5
+                  "width": 24,
+                  "height": 24
                 }
               ]
             },
             {
-              "type": "text",
-              "id": "GnLX0",
-              "name": "WM",
-              "fill": "$fg-default",
-              "content": "stockerly",
-              "fontFamily": "$font-display",
-              "fontSize": 17,
-              "fontWeight": "700",
-              "letterSpacing": -0.4
+              "type": "frame",
+              "id": "kDZ0b",
+              "name": "WMWrap",
+              "layout": "vertical",
+              "padding": [
+                0,
+                0,
+                3.9,
+                0
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "sviCQ",
+                  "name": "WM",
+                  "fill": "$fg-default",
+                  "content": "stockerly",
+                  "fontFamily": "$font-display",
+                  "fontSize": 17,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                }
+              ]
             }
           ]
         },
@@ -2155,7 +2031,7 @@
           "type": "frame",
           "id": "wsvkd",
           "name": "Brand",
-          "gap": "$space-2",
+          "gap": 4,
           "alignItems": "center",
           "children": [
             {
@@ -2168,110 +2044,48 @@
               "children": [
                 {
                   "type": "path",
-                  "id": "DwPgM",
+                  "id": "NtVAw",
                   "x": 0,
                   "y": 0,
-                  "name": "Bk",
-                  "geometry": "M10 22v-12h12",
+                  "name": "Mark",
+                  "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                  "fillRule": "evenodd",
                   "viewBox": [
                     0,
                     0,
                     64,
                     64
                   ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "gqRR0",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M42 10h12v12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "AAC4W",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M10 42v12h12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "path",
-                  "id": "E3jVD8",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Bk",
-                  "geometry": "M42 54h12v-12",
-                  "viewBox": [
-                    0,
-                    0,
-                    64,
-                    64
-                  ],
-                  "fill": "#00000000",
-                  "width": 24,
-                  "height": 24,
-                  "stroke": "$primary",
-                  "strokeWidth": 5,
-                  "strokeLinejoin": "round",
-                  "strokeLinecap": "round"
-                },
-                {
-                  "type": "ellipse",
-                  "id": "cK7uI",
-                  "x": 9.5,
-                  "y": 9.5,
-                  "name": "Fc",
                   "fill": "$primary",
-                  "width": 5,
-                  "height": 5
+                  "width": 24,
+                  "height": 24
                 }
               ]
             },
             {
-              "type": "text",
-              "id": "sgQVH",
-              "name": "WM",
-              "fill": "$fg-default",
-              "content": "stockerly",
-              "fontFamily": "$font-display",
-              "fontSize": 17,
-              "fontWeight": "700",
-              "letterSpacing": -0.4
+              "type": "frame",
+              "id": "sQFAJ",
+              "name": "WMWrap",
+              "layout": "vertical",
+              "padding": [
+                0,
+                0,
+                3.9,
+                0
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "wt2oJ",
+                  "name": "WM",
+                  "fill": "$fg-default",
+                  "content": "stockerly",
+                  "fontFamily": "$font-display",
+                  "fontSize": 17,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                }
+              ]
             }
           ]
         },
@@ -2596,6 +2410,102 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "C637Af",
+      "x": 880,
+      "y": 1912,
+      "name": "Logo",
+      "reusable": true,
+      "gap": 7,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "hwidK",
+          "name": "Mark",
+          "width": 44,
+          "height": 44,
+          "layout": "none",
+          "children": [
+            {
+              "type": "path",
+              "id": "ws3Pz",
+              "x": 0,
+              "y": 0,
+              "name": "Form",
+              "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+              "fillRule": "evenodd",
+              "viewBox": [
+                0,
+                0,
+                64,
+                64
+              ],
+              "fill": "$primary",
+              "width": 44,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OjrUv",
+          "name": "WMWrap",
+          "layout": "vertical",
+          "padding": [
+            0,
+            0,
+            7.4,
+            0
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "RB6ME",
+              "name": "WM",
+              "fill": "$fg-default",
+              "content": "stockerly",
+              "fontFamily": "$font-display",
+              "fontSize": 32,
+              "fontWeight": "700",
+              "letterSpacing": -0.8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "m0gPaJ",
+      "x": 1131,
+      "y": 1912,
+      "name": "LogoMark",
+      "reusable": true,
+      "width": 64,
+      "height": 64,
+      "layout": "none",
+      "children": [
+        {
+          "type": "path",
+          "id": "nUjyL",
+          "x": 0,
+          "y": 0,
+          "name": "Form",
+          "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+          "fillRule": "evenodd",
+          "viewBox": [
+            0,
+            0,
+            64,
+            64
+          ],
+          "fill": "$primary",
+          "width": 64,
+          "height": 64
+        }
+      ]
     }
   ],
   "themes": {
@@ -2607,7 +2517,7 @@
   "variables": {
     "kit-version": {
       "type": "string",
-      "value": "0.6.0"
+      "value": "0.7.0"
     },
     "font-display": {
       "type": "string",

@@ -177,3 +177,45 @@ phone (CODE_CHANGES §10.2).
 file's own rules declare acceptable.
 
 Decided in D31.
+
+---
+
+## 0.7.0 — the new mark (minor, partly breaking)
+
+**NOT additive for the brand — every consumer that draws the logo must re-sync.** The symbol
+changed from the four-bracket focal frame plus dot to a **counterform disc with two carved
+candles**. Nothing about the palette or the type moved; D1 still holds. Decided in D45.
+
+**Why the old one had to go.** Four separated strokes at 15.6% inset and 6/64 weight have no mass:
+below 24px the brackets lose continuity and the centre dot closes, so the favicon and every
+small-chrome instance rendered a smudge. Measured across a size ladder, not eyeballed. The
+counterform inverts the failure — a stroke thins as it shrinks, a void does not.
+
+**Components (2 new, 18 total):** `Logo` (horizontal lockup, symbol 44 + wordmark 32, gap 7) and
+`LogoMark` (symbol alone, 64). Both additive; nothing is forced to adopt them.
+
+**Changed in place — three copies of the glyph, not one.** `TopBar` › `Brand` › `Glyph`,
+`SidebarNav` › `Brand` › `Glyph`, and `Foundations` › `Brand` › `Lockup` › `Glyph`. Each had five
+nodes (4 stroke paths + 1 ellipse) replaced by a single `evenodd` path. Brand gap 8 → 4, which is
+the lockup rule (separation = 1/6 of the symbol) applied at chrome scale.
+
+**Optical alignment of the wordmark (the fix Adrian caught).** Centring the symbol on the text's
+*box* is wrong: the box includes the descender of the "y", so the word hangs low. Measured at
+fontSize 32 the word's ink runs 9.4 → 42 inside a 44-tall lockup — 9.4px of air above, 2px below.
+The rule is now **shift the wordmark up by 0.115 × fontSize**, implemented as a `WMWrap` frame with
+bottom padding of `0.231 × fontSize`. Applied to all four lockups (the three above plus the new
+`Logo`). It scales, so any future size gets it for free.
+
+**Two corrections while in there.** The 0.5.0 entry claims `SidebarNav` "vendors the `Brand` group
+from `TopBar` rather than redrawing the glyph" — **it does not**. It carries its own `Glyph` and its
+own `WM`. And every `Brand` group painted raw hex (`#5B6CFF`, `#0F172A`) instead of `$primary` /
+`$fg-default`, against this kit's own tokens-only rule. Fixed.
+
+**Consumers to re-sync:** every flow that draws the shell — `cockpit`, `assets`, `alerts`,
+`settings`, `discover` — plus `auth` and `onboarding` **if** they draw the logo standalone, which
+the code says they do (`shared/_auth_header`, and the auth layout's direct `image_tag`). Which
+`.pen` files actually carry it is **still unverified**: Pencil reads only the active editor, so each
+file has to be opened to audit it. Do not assume this list is complete.
+
+The code-side change (the SVGs under `app/assets/images/` and `public/`, the manifest, the cache
+bust) is tracked separately in CODE_CHANGES.md — the kit is ahead of the code until that ships.

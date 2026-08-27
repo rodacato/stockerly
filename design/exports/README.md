@@ -91,3 +91,24 @@ existed; both were caught up on 2026-08-24. Every artboard in every flow now has
 | `auth-email-sent.png` | `[Auth] / Email sent / Default` |
 | `auth-reset.png` | `[Auth] / Reset / Default` |
 | `auth-login-desktop.png` | `[Auth] / Login · Desktop / Default` |
+
+## Brand (`brand.pen`)
+
+Not a flow — an identity sheet (D44), so the rows are sheets rather than `[Flow] / Screen / State`
+artboards.
+
+| File | Artboard |
+|---|---|
+| `brand-brief.png` | `Brand / Brief` — the five findings and where each one stands |
+| `brand-actual.png` | `Actual / Símbolo` — the mark being replaced, kept deliberately as the before |
+| `brand-exploracion.png` | `C1 / Asimetría sin alargar` — F1 / F2 / F3, the three that survived the cull |
+| `brand-simbolo-color.png` | `F2 / Símbolo y color` — construction, optical ladder, the six valid contrast pairs |
+| `brand-wordmark-lockup.png` | `F2 / Wordmark y lockup` |
+| `brand-usos.png` | `F2 / Usos` — correct, and the seven incorrect |
+| `brand-pwa.png` | `F2 / PWA y aplicaciones` |
+| `brand-escala-1x.png` | `F2 / Símbolo y color › Escala` — **exported at `scale: 1`, not 2** |
+
+**Why one file breaks the scale-2 rule.** Every other PNG here is a review artifact and 2× makes it
+readable. `brand-escala-1x.png` is a *measurement*: at 2× a "16 px" sample renders 32 px wide and
+flatters itself. At true 1× it shows the honest floor — the wicks close at 24 px and below, and
+only the candle bodies survive. Re-export it at 1× or do not re-export it at all.
