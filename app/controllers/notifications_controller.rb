@@ -16,7 +16,7 @@ class NotificationsController < AuthenticatedController
     result = Notifications::UseCases::MarkAsRead.call(user: current_user, notification_id: params[:id])
 
     if result.success?
-      redirect_to notifications_path, notice: "Notificación marcada como leída."
+      redirect_to notifications_path, notice: t("notifications.flash.marcada_leida")
     else
       redirect_to notifications_path, alert: result.failure.last
     end
@@ -24,11 +24,11 @@ class NotificationsController < AuthenticatedController
 
   def mark_all_read
     Notifications::UseCases::MarkAsRead.call(user: current_user)
-    redirect_to notifications_path, notice: "Todas las notificaciones marcadas como leídas."
+    redirect_to notifications_path, notice: t("notifications.flash.todas_leidas")
   end
 
   def destroy_read
     deleted = Notifications::UseCases::DestroyRead.call(user: current_user)
-    redirect_to notifications_path, notice: "#{deleted} #{deleted == 1 ? 'notificación eliminada' : 'notificaciones eliminadas'}."
+    redirect_to notifications_path, notice: t("notifications.flash.eliminadas", count: deleted)
   end
 end
