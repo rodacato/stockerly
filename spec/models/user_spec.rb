@@ -153,5 +153,42 @@ RSpec.describe User, type: :model do
       create(:notification, user: user)
       expect { user.destroy }.to change(Notification, :count).by(-1)
     end
+
+    it "destroys the audit trail on user destroy" do
+      user = create(:user)
+      create(:audit_log, user: user)
+      expect { user.destroy }.to change(AuditLog, :count).by(-1)
+    end
+
+    it "destroys the config changes it made as admin on user destroy" do
+      admin = create(:user, :admin)
+      create(:site_config_change, admin: admin)
+      expect { admin.destroy }.to change(SiteConfigChange, :count).by(-1)
+    end
+
+    it "destroys a fully populated account without tripping a foreign key" do
+      user = create(:user, :admin)
+      portfolio = create(:portfolio, user: user)
+      asset = create(:asset)
+      create(:position, portfolio: portfolio, asset: asset)
+      create(:trade, portfolio: portfolio, asset: asset)
+      create(:alert_rule, user: user)
+      create(:notification, user: user)
+      create(:watchlist_item, user: user, asset: asset)
+      create(:audit_log, user: user)
+      create(:site_config_change, admin: user)
+
+      expect { user.destroy }.not_to raise_error
+      expect(User.exists?(user.id)).to be(false)
+    end
+
+    it "leaves the market alone: destroying the user does not touch its assets" do
+      user = create(:user)
+      asset = create(:asset)
+      create(:watchlist_item, user: user, asset: asset)
+
+      expect { user.destroy }.not_to change(Asset, :count)
+      expect(asset.reload).to be_persisted
+    end
   end
 end
