@@ -30,7 +30,7 @@ Open-source, self-hosted single-user asset tracker for stocks (USD), crypto, and
 - **Dividends & Splits** — Automatic tracking and position adjustment on stock splits.
 - **Multi-Provider Data** — Polygon.io, Alpha Vantage, CoinGecko, FMP, Banxico. Gateway chains with circuit breakers and adaptive scheduling.
 - **PWA** — Installable as a mobile app with offline support.
-- **Discover** — Market-wide waves and the macro calendar, read without holding a position.
+- **Discover** — Market-wide waves, five basket-filtered headlines, and the macro calendar. Read without holding a position.
 - **Instance Operations** — Integration monitoring with rate-limit bars, sync logs with CSV export, background-job dashboard, and instance settings.
 
 ## Architecture
