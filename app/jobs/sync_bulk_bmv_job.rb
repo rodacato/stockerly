@@ -10,6 +10,9 @@ class SyncBulkBmvJob < ApplicationJob
 
   retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
 
+  # The one failure a reader can act on: the provider does not know this name.
+  UNNAMED = "sin_fuente".freeze
+
   def perform(asset_ids)
     provider = MarketData::Gateways::DataBursatilGateway::PROVIDER
     assets = Asset.where(id: asset_ids, sync_status: :active).index_by { |asset| asset.symbol_for(provider) }
@@ -41,6 +44,12 @@ class SyncBulkBmvJob < ApplicationJob
       return
     end
 
+    # The log says it once for the run; the asset carries it so its own row can
+    # say it too, and so the reader learns which one is stale from the screen
+    # they were already on.
+    Asset.where(id: missing.map { |symbol| assets[symbol].id })
+         .update_all(last_sync_error: UNNAMED, last_synced_at: Time.current)
+
     log_sync_failure(
       "Bulk BMV Sync",
       "Priced #{quotes.size} of #{assets.size}. No quote for: #{missing.join(', ')} — " \
@@ -64,7 +73,8 @@ class SyncBulkBmvJob < ApplicationJob
         current_price: data[:price],
         change_percent_24h: data[:change_percent],
         volume: data[:volume] || asset.volume,
-        price_updated_at: Time.current
+        price_updated_at: Time.current,
+        last_sync_error: nil
       )
 
       next unless price_changed?(old_price, data[:price])

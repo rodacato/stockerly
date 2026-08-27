@@ -63,6 +63,28 @@ class AssetsController < AuthenticatedController
     redirect_to tracked_assets_path, alert: t("assets.tracked.no_encontrado")
   end
 
+  # The name a provider answers to, saved only if it answers. The use case does
+  # the probing; a wrong mapping fails the sync on a name the owner believes is
+  # right, so nothing is stored on faith.
+  def map_source_symbol
+    result = Administration::UseCases::Assets::MapProviderSymbol.call(
+      asset_id: params[:id],
+      provider: params[:provider].to_s,
+      symbol: params[:symbol].to_s
+    )
+
+    case result
+    in Dry::Monads::Success(asset)
+      redirect_to tracked_assets_path, notice: t("assets.tracked.fuente_mapeada", symbol: asset.symbol)
+    in Dry::Monads::Failure[ :unconfirmed, candidate ]
+      redirect_to tracked_assets_path, alert: t("assets.tracked.fuente_no_reconoce", provider: params[:provider], symbol: candidate)
+    in Dry::Monads::Failure[ _, _ ]
+      redirect_to tracked_assets_path, alert: t("assets.tracked.fuente_no_mapeada")
+    end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to tracked_assets_path, alert: t("assets.tracked.no_encontrado")
+  end
+
   private
 
   def asset_params

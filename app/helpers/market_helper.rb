@@ -37,6 +37,14 @@ module MarketHelper
 
   # es-MX label for the asset detail header chip ("Acción", "ETF", "Cripto",
   # "CETE", "Índice"). Used in the new Stockerly-2.0 /market/:symbol header.
+  # Which source leads this asset's price chain, by name. The registry already
+  # answers it, so the row cannot offer a provider that was never in the chain.
+  def tracked_price_source(asset)
+    DataSourceRegistry
+      .for_capability(:prices, market: asset.market, asset_type: asset.asset_type)
+      .first&.integration_name
+  end
+
   def asset_type_label_es(asset)
     case asset.asset_type
     when "stock"         then "Acción"

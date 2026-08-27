@@ -72,6 +72,28 @@ RSpec.describe SyncBulkBmvJob, type: :job do
         expect(ivv.reload.current_price.to_f).to eq(40.00)
       end
 
+      # The log says it once for the run; the asset carries it so its own row
+      # can say it too, and the reader learns which one is stale from the
+      # screen they were already on.
+      it "marks the asset the provider could not name" do
+        described_class.perform_now([ genius.id, ivv.id ])
+
+        expect(ivv.reload.last_sync_error).to eq(described_class::UNNAMED)
+        expect(genius.reload.last_sync_error).to be_nil
+      end
+
+      it "clears the mark once the asset is priced again" do
+        ivv.update!(last_sync_error: described_class::UNNAMED)
+        stub_databursatil("/v2/cotizaciones", {
+          "GENIUSSACV" => { "bmv" => databursatil_quote(last: 21.50) },
+          "IVVPESO" => { "bmv" => databursatil_quote(last: 41.00) }
+        })
+
+        described_class.perform_now([ genius.id, ivv.id ])
+
+        expect(ivv.reload.last_sync_error).to be_nil
+      end
+
       it "stops claiming it synced what it did not" do
         described_class.perform_now([ genius.id, ivv.id ])
 
