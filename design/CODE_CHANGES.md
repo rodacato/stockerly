@@ -677,31 +677,31 @@ Landing this in code does not need the kit bump — but until `ui-kit.lib.pen` g
 other five flows re-vendor, their artboards keep showing a four-tab bar. That re-vendor is its own
 pass and should not be interleaved with other design work (D31).
 
-## 11. The new mark (D45) — designed, nothing shipped
+## 11. The new mark (D45) — SHIPPED
 
-**Status:** `brand.pen` is done and the kit ships it at 0.7.0. **No app file has changed yet.** The
-design is ahead of the code until this section lands, which is the state D44 priced in.
+Landed as one commit with the artwork, the manifest and every cache bust together. Kit 0.7.0 and
+all seven flows carry the mark; `design/exports/` was regenerated.
 
-**Land it as one commit.** The artwork and the cache bust have to move together — a bumped icon
-with a stale `?v=` is a browser serving the old mark indefinitely, and half a bump is worse than
-none.
-
-| # | What | Notes |
+| # | What | Result |
 |---|---|---|
-| 11.1 | `app/assets/images/logo_light.svg` + `logo_dark.svg` | New lockup geometry: symbol `1.375 ×` the type size, gap `1/6` of the symbol, wordmark raised `0.115 ×` the type size. Source of truth is `design/brand/wordmark.svg` |
-| 11.2 | `public/favicon.svg`, `icon.svg`, `icon-192.svg`, `icon-512.svg` | Flat `#5B6CFF` plate, white mark at **70%**, delivered square — every platform applies its own rounding |
-| 11.3 | **NEW** `public/icon-maskable-512.svg`, and point the manifest's `purpose: maskable` entry at it | This is the 🐞. Today that entry serves `icon-512.svg`, the same artwork as `any`. A maskable's safe zone is the centre circle at 66.6%; the mark goes at **52%**, full-bleed plate, no rounding |
-| 11.4 | Raster: `icon-192.png`, `icon-512.png`, `apple-touch-icon.png` (180, **opaque** — iOS does not composite transparency) | |
-| 11.5 | `public/manifest.json` copy → es-MX | `name`, `short_name`, `description`. Today's strings are 1.0 multi-user marketing in English, on the surface a user reads while installing. Replacements drafted in the PWA sheet |
-| 11.6 | `?v=2` → `?v=3` in **both** files | `app/views/layouts/application.html.erb` (4 links) **and** `public/manifest.json` (4 icons). Bumping one and not the other is the failure mode |
-| 11.7 | `spec/system/logo_spec.rb` — verify, do not rewrite | It asserts `src*='logo_light'` / `logo_dark`, so keeping the filenames keeps it green. If it goes red, the filenames moved and that was not the plan |
-| 11.8 | Two surfaces bypass `shared/_logo` | `layouts/auth.html.erb:18` and `layouts/mailer.html.erb:16` call `image_tag` directly. The partial's own comment claims it is the "single source of truth for the logo render" and it is not. Route them through it, or delete the claim |
+| 11.1 | `app/assets/images/logo_light.svg` + `logo_dark.svg` | Done. Symbol `1.375 x` the type size, gap `1/6` of the symbol, wordmark baseline raised so the ink block centres against the disc rather than the text box |
+| 11.2 | `public/favicon.svg`, `icon.svg`, `icon-192.svg`, `icon-512.svg` | Done. Flat `#5B6CFF` plate, white mark at 70% |
+| 11.3 | **NEW** `public/icon-maskable-512.svg`, manifest `purpose: maskable` repointed | Done — this was the 🐞. Full-bleed plate, no rounding, mark at 52% inside the 66.6% safe circle |
+| 11.4 | `icon-192.png`, `icon-512.png`, `apple-touch-icon.png` (180, opaque, unrounded) | Done, rasterised from the SVGs with headless chromium at 1x |
+| 11.5 | `public/manifest.json` copy → es-MX | Done, plus **`id: "/dashboard"` added** — without it PWA identity derives from `start_url`, so changing that later would strand users with two installed apps |
+| 11.6 | `?v=2` → `?v=3` | Done in **three** files, not the two this section predicted — see below |
+| 11.7 | `spec/system/logo_spec.rb` | Green, 6 examples, unedited. Filenames held |
+| 11.8 | Two surfaces bypass `shared/_logo` | **Still open.** `layouts/auth.html.erb:18` and `layouts/mailer.html.erb:16` still call `image_tag` directly. They render correctly because the filenames did not move, but the partial's "single source of truth" comment is still a lie |
 
-**Not a defect, do not "fix" it later.** The favicon runs white-on-`primary` at **4.17:1** — above
-the 3:1 floor for graphics, never usable for text. Adrian chose colour recognition in a tab strip
-over the 18:1 that an ink plate would give. Recorded in D45; a future reader finding 4.17:1 is
-looking at a decision, not an oversight.
+**Two things this section did not predict.**
 
-**The honest floor.** At true 1× (`design/exports/brand-escala-1x.png`) the wicks close at 24 px and
-below; only the candle bodies survive. The mark keeps a distinctive silhouette there — a disc with
-two light bars — but it no longer reads as candles. Do not write copy that claims otherwise.
+`public/service-worker.js` **also pinned `?v=2`** — it pre-caches every brand asset, so bumping only
+the layout and the manifest would have left the SW serving the old logo from `stockerly-static-v4`
+forever. Its `CACHE_VERSION` went `v4` → `v5` so the activate handler purges the old cache, and the
+maskable icon joined `PRECACHE_URLS`. Note `cache.addAll` rejects the whole install if any URL 404s:
+all eight entries were verified to exist. **The lesson generalises — grep the whole repo for the
+bust token, do not trust a list.**
+
+`app/views/pwa/manifest.json.erb` **was dead and had already drifted** — no route referenced it, not
+even a commented one, and its `start_url` said `/` while the served `public/manifest.json` said
+`/dashboard`. Deleted rather than updated; two manifests that disagree is worse than one.
