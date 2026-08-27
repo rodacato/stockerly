@@ -782,3 +782,40 @@ bust token, do not trust a list.**
 `app/views/pwa/manifest.json.erb` **was dead and had already drifted** — no route referenced it, not
 even a commented one, and its `start_url` said `/` while the served `public/manifest.json` said
 `/dashboard`. Deleted rather than updated; two manifests that disagree is worse than one.
+
+---
+
+## 12. The segmented control keeps its own width (D49) — pending
+
+**Status:** pending — decided 2026-08-27, kit at 0.8.0, code unchanged.
+
+`components/_segmented.html.erb` gives every option `flex-1` inside a container with no width of
+its own, so the control is exactly as wide as whatever it is handed. On a phone that is right. On
+a 1040px desktop column it stretches a two-option pill across the whole content area, which the
+2026-08-24 desktop pass had already ruled out in writing: **a control is not a container** — a
+wider screen buys more columns at native width, never wider rows.
+
+D49 resolved this design-led (D8): the kit keeps the control's own width and the code changes to
+match, rather than the kit bending to the code.
+
+**What changes**
+
+- The wrapper stops being width-less. It carries the control's own width and, in a wider parent,
+  aligns left instead of filling — the same treatment forms already get.
+- The options keep `flex-1` **relative to the control**, not to the page. Equal segments inside a
+  control that has stopped growing is the whole point; this is not a switch to intrinsic sizing.
+- Nothing changes on mobile. The rendered width there is already the control's own width, which is
+  why no artboard moves.
+
+**Both current render sites** — `portfolios/show.html.erb:40` and `assets/index.html.erb:34` — sit
+in mobile-first containers today, so this is invisible until a desktop layout puts one in a wide
+column. That is also why it is safe to land ahead of the desktop ERB work rather than with it.
+
+**Not in scope:** the theme and currency pickers in `settings/_appearance.html.erb` hand-roll the
+same pill with buttons and radios instead of using the partial. They inherit the same defect and
+the same fix, but folding them into the partial is a separate change — the partial takes links,
+and these need form controls.
+
+**Kit note.** `Segmented3` exists in `ui-kit.lib.pen` 0.8.0 as a second master because Pencil
+instances cannot add children. **Do not mirror that split into the ERB** — the code correctly has
+one component taking an `options` array of any length, and that is the better design.

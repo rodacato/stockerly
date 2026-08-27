@@ -27,7 +27,7 @@ _Listing verified against the directory 2026-08-27._
 
 | Path | What it is |
 |---|---|
-| `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Currently **0.7.0, 18 components** |
+| `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Currently **0.8.0, 19 components** |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed |
 | `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
 | `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section |

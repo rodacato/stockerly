@@ -864,7 +864,7 @@
       "y": -374,
       "name": "KitLabel",
       "fill": "$fg-subtle",
-      "content": "COMPONENTES · v0.5.0",
+      "content": "COMPONENTES · v0.8.0",
       "fontFamily": "$font-mono",
       "fontSize": 12,
       "fontWeight": "normal",
@@ -1162,14 +1162,37 @@
           ]
         },
         {
-          "type": "icon",
-          "id": "pWrVy",
-          "name": "Bell",
-          "width": 20,
-          "height": 20,
-          "icon": "bell",
-          "library": "lucide",
-          "fill": "$fg-subtle"
+          "type": "frame",
+          "id": "PkokQ",
+          "name": "BellWrap",
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "BqS0q",
+              "name": "Bell",
+              "width": 20,
+              "height": 20,
+              "icon": "bell",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "ellipse",
+              "id": "lIZuj",
+              "layoutPosition": "absolute",
+              "x": 26,
+              "y": 10,
+              "name": "UnreadDot",
+              "fill": "$negative",
+              "width": 8,
+              "height": 8
+            }
+          ]
         }
       ]
     },
@@ -1774,6 +1797,7 @@
       "x": 1260,
       "y": 1562,
       "name": "Segmented",
+      "context": "Own width, never fill_container. A control is not a container: on desktop it keeps this width and aligns left instead of stretching the column (D8 + the 2026-08-24 desktop pass). The code fills its parent today and is revamped to match — CODE_CHANGES.",
       "reusable": true,
       "width": 342,
       "fill": "$bg-muted",
@@ -2335,14 +2359,37 @@
           "alignItems": "center",
           "children": [
             {
-              "type": "icon",
-              "id": "Am3CH",
-              "name": "Bell",
-              "width": 20,
-              "height": 20,
-              "icon": "bell",
-              "library": "lucide",
-              "fill": "$fg-subtle"
+              "type": "frame",
+              "id": "n3lsBQ",
+              "name": "BellWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ZwIDD",
+                  "name": "Bell",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "wRAJC",
+                  "layoutPosition": "absolute",
+                  "x": 26,
+                  "y": 10,
+                  "name": "UnreadDot",
+                  "fill": "$negative",
+                  "width": 8,
+                  "height": 8
+                }
+              ]
             }
           ]
         }
@@ -2506,6 +2553,100 @@
           "height": 64
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "N72YrP",
+      "x": 1260,
+      "y": 1891,
+      "name": "Segmented3",
+      "context": "Three-segment variant. The code has ONE N-ary component taking an options array; Pencil instances cannot add children, so the kit carries a master per arity. Same width rule as Segmented.",
+      "reusable": true,
+      "width": 342,
+      "fill": "$bg-muted",
+      "cornerRadius": "$radius-md",
+      "gap": 4,
+      "padding": 4,
+      "children": [
+        {
+          "type": "frame",
+          "id": "nnBCi",
+          "name": "S1",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-sm",
+          "padding": [
+            13,
+            12
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "H1MW86",
+              "name": "t",
+              "fill": "$fg-default",
+              "content": "Uno",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "tLadJ",
+          "name": "S2",
+          "width": "fill_container",
+          "fill": "#00000000",
+          "cornerRadius": "$radius-sm",
+          "padding": [
+            13,
+            12
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "TRXsG",
+              "name": "t",
+              "fill": "$fg-subtle",
+              "content": "Dos",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ytgJx",
+          "name": "S3",
+          "width": "fill_container",
+          "fill": "#00000000",
+          "cornerRadius": "$radius-sm",
+          "padding": [
+            13,
+            12
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "tGHW4",
+              "name": "t",
+              "fill": "$fg-subtle",
+              "content": "Tres",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
@@ -2517,7 +2658,7 @@
   "variables": {
     "kit-version": {
       "type": "string",
-      "value": "0.7.0"
+      "value": "0.8.0"
     },
     "font-display": {
       "type": "string",
@@ -2973,6 +3114,244 @@
         },
         {
           "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#38BDF8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#5CC8F5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-6": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#7C6CF0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#A78BFA",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-7": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F97316",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB923C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-8": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#06B6D4",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#22D3EE",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-neutral": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCD34D",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#A3E635",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#BEF264",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
           "theme": {
             "mode": "dark"
           }

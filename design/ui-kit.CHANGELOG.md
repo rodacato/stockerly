@@ -11,7 +11,7 @@ version it vendored in `kit-version-source`.
 major = breaking rename/removal. Additive bumps don't force re-syncs. A changed token VALUE forces
 every consumer.
 
-**Current: 0.7.0.** Entries below are historical and are not rewritten when a later version
+**Current: 0.8.0.** Entries below are historical and are not rewritten when a later version
 supersedes them — read the newest entry that mentions a component, not the first.
 
 > **Vocabulary, renamed 2026-08-27 (D48).** The tier ladder moved to the industry-standard English
@@ -233,7 +233,8 @@ were created by duplicating their neighbour: two files returning the same id is 
 id is never proof of which file you are in. Verify by artboard name before writing.
 
 **`_playground.pen` was not audited** — it was not open during the sweep, so whether it still
-draws the old glyph is unknown. It is the one file this bump did not reach.
+draws the old glyph is unknown. It is the one file this bump did not reach. ~~*Answered in 0.8.0:
+it draws nothing.*~~
 
 The code-side change (the SVGs under `app/assets/images/` and `public/`, the manifest, the cache
 bust) is tracked separately in CODE_CHANGES.md §11.
@@ -243,3 +244,88 @@ bust) is tracked separately in CODE_CHANGES.md §11.
 `icon-192.svg`, `icon-512.svg`, `icon-maskable-512.svg` and their PNG rasters, plus
 `app/views/shared/_logo_mark.html.erb` — the `LogoMark` this version added. The sentence this
 paragraph replaced said the kit led the code, and it stopped being true the day §11 landed.
+
+
+---
+
+## 0.8.0 — the six logged gaps, three of which were not gaps
+
+Every gap this kit had accumulated since 0.1.0, worked in one batch so the seven flows re-vendor
+once instead of six times. **Three of the six needed no work at all** — the code had already
+answered them, which is the finding worth keeping.
+
+### Tokens (+14, 38 → 52) — mirrored, not designed
+
+`chart-1` … `chart-8` plus `chart-neutral`, and the Fear & Greed scale `sentiment-1` … `sentiment-5`,
+light and dark, lifted verbatim from `app/assets/tailwind/application.css`.
+
+The gap list called this "a 4–6 colour categorical ramp for the Consolidado donut", as though it
+were a design task. It was not: the code ships a closed eight-colour ramp in an `@theme static`
+block and `components/_donut_chart.html.erb` already renders its conic-gradient from it. The kit
+was simply behind. **The `sentiment` scale was in neither the gap list nor any ledger** — found by
+reading the file the ramp lives in.
+
+The donut complaint that motivated the gap ("`warning` on a crypto slice reads as a caution it does
+not mean") describes the artboards, not the app. The code stopped borrowing semantic colours when
+the ramp landed.
+
+### Two gaps closed by evidence
+
+**`PriceChart` tokens (axis, band fill, RSI line) — not needed.** Open since 0.1.0.
+`app/javascript/controllers/chart_controller.js` reads `--color-fg-subtle` for axis text,
+`--color-border-default` for grid lines and scale borders, and `--color-chart-1` for the series.
+The chart is built, it is on `lightweight-charts` per D2, and it needs nothing this kit lacks. Band
+fill and an RSI line have no tokens because no band and no RSI series are drawn yet — when they
+are, they are a decision, not a backfill.
+
+**Semáforo `live` vs `próximamente` — not a token, and not a kit component.** `market/_confluence.html.erb`
+renders a pending light as a `bg-muted` dot with `opacity-60` on its row (D36 ships light 2 that
+way). Both are already available — one existing token and a node property. The semáforo is drawn
+flow-locally and is not in this kit, so there was nothing here to add. Recorded so flows stop
+inventing a treatment that is already settled.
+
+### TopBar · TopBarDesktop — the unread badge, and the touch target nobody noticed
+
+`BellWrap` on both bars: a 44×44 target, the bell centred, and an 8px `negative` dot inset 10px
+from the top-right. Mirrored from `components/_notification_badge.html.erb`, whose badge sits at
+`right-2.5 top-2.5 size-2` inside a `size-11` link. Offsets derived from those numbers, not placed
+by eye. **It is a dot, not a count** — the number exists only in the screen-reader text.
+
+**The badge was the logged gap; the touch target was the real defect.** The bell was a bare 20×20
+icon, so the kit had been failing its own 44pt accessibility floor since 0.5.0 while the code met
+it. Fixing it is what makes this bump expensive:
+
+> ⚠️ **TopBar grows 57 → 76** (`py-4` + `size-11`, which is what the code always measured).
+> **TopBarDesktop grows 78 → 80.** Every artboard that vendored the mobile bar moves its content
+> down 19px. This is additive in the changelog's sense — nothing renamed, nothing removed — but it
+> is not free, and it is the reason the kit went first in this pass.
+
+### Segmented3 (+1 component, 18 → 19)
+
+Three equal segments in the same pill. **The code has one N-ary component**, not a family:
+`components/_segmented.html.erb` takes an `options` array and gives each entry `flex-1`. Pencil
+instances cannot add children, so the kit needs a master per arity — a limitation of the tool, not
+a claim about the code. Recorded on the component itself so nobody mirrors the wrong thing back.
+
+### Segmented keeps its own width — D49
+
+The master was pinned at `width: 342`, a number derived from the phone (390 minus 2×24) and
+matching neither the code (fills its parent) nor the desktop pass's own rule (*a control is not a
+container*). Resolved as **the design rule wins**: the control keeps its width and aligns left on
+desktop rather than stretching a 1040 column. The width is unchanged, but it is now a stated
+constraint on the component instead of an accident, and the code revamp is tracked in
+CODE_CHANGES.md.
+
+### Corrections found while in here
+
+**The canvas label read `COMPONENTES · v0.5.0` while `kit-version` said `0.7.0`** — two minors
+stale. The label is what a designer reads on opening the file; the variable is what the install
+script pins. They now agree, and the label is part of the bump.
+
+**`_playground.pen` is empty**, settled by reading it: one 800×600 frame, **zero variables, zero
+components**. It is not "behind on 0.6.0" and it cannot be drawing the retired mark — it has never
+had the kit installed at all. The 0.7.0 entry's open question is answered, and the work it implies
+is an install, not a re-vendor.
+
+**Consumers: none re-synced yet.** All seven flows remain on `kit-version-source` 0.7.0 and must
+re-vendor for the TopBar height and the new tokens. That is the next session's work, flow by flow.
