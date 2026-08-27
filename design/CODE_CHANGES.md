@@ -785,9 +785,9 @@ even a commented one, and its `start_url` said `/` while the served `public/mani
 
 ---
 
-## 12. The segmented control keeps its own width (D49) — pending
+## 12. The segmented control keeps its own width (D49) — SHIPPED
 
-**Status:** pending — decided 2026-08-27, kit at 0.8.0, code unchanged.
+**Status:** shipped 2026-08-27. `components/_segmented.html.erb` carries `w-full sm:w-fit`: full width on the phone, where the column already *is* the control's width, and its own width from `sm` up, left-aligned because the wrapper is a block box that no longer fills. `flex-1` stays on the options, so the segments remain equal — inside a control that has stopped growing, which is the point.
 
 `components/_segmented.html.erb` gives every option `flex-1` inside a container with no width of
 its own, so the control is exactly as wide as whatever it is handed. On a phone that is right. On
@@ -822,9 +822,9 @@ one component taking an `options` array of any length, and that is the better de
 
 ---
 
-## 13. The first tab is Holdings, not Cartera (D48, extended) — pending
+## 13. The first tab is Holdings, not Cartera (D48, extended) — SHIPPED
 
-**Status:** pending — decided 2026-08-27 while migrating `flows/assets.pen`. One string.
+**Status:** shipped 2026-08-27. One string: `assets.index.cartera` now reads `Holdings`. The design no longer leads the code anywhere.
 
 #364 moved the tier ladder to industry-standard English and renamed the second tab
 (`assets.index.watchlist: Watchlist`) but left the first as `assets.index.cartera: Cartera`. That
@@ -847,5 +847,11 @@ sweep for the word would break copy that is already correct. The tier is a label
 portfolio is a thing you own.
 
 **Already done in the design.** `flows/assets.pen` reads `Holdings | Watchlist` on all six
-segmented instances, and the artboards, the exports and the brief are renamed to match. Until this
-lands, the design leads the code on exactly one string.
+segmented instances, and the artboards, the exports and the brief are renamed to match.
+
+**Landed with it: the last two asset-type glossaries.** `alerts_helper::ASSET_TYPE_KIND_LABELS` and
+an inline hash in `positions/_positions_table.html.erb` survived #364's sweep, and a third copy hid
+in `alerts_helper#kind_label_from_symbol`. All three now read `comun.tipo_activo` through
+`ApplicationHelper#asset_type_label_es`, which moved out of `MarketHelper` because four unrelated
+surfaces call it. One visible consequence, logged as **D50**: a fixed-income alert rule's chip reads
+*Renta fija* instead of *CETE*.

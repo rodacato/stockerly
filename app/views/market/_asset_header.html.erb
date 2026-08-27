@@ -23,7 +23,7 @@
         inferable from which blocks the page renders, and five specs defended
         it. Losing it would leave it visible only on Tracked. %>
     <span class="ml-auto shrink-0 rounded-md bg-bg-muted px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-fg-subtle">
-      <%= asset_type_label_es(asset) %>
+      <%= asset_type_label_es(asset.asset_type) %>
     </span>
 
     <%= turbo_frame_tag "watchlist_button_#{asset.id}", class: "shrink-0" do %>

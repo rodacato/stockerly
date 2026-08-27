@@ -18,7 +18,7 @@
       <%# Wraps rather than truncates: the state phrase is longer than a date,
           and a clipped explanation is worse than a taller row. %>
       <p class="text-xs <%= unnamed ? "text-warning" : "text-fg-subtle" %>">
-        <%= asset.name %> · <%= asset_type_label_es(asset) %><%= " · #{t('assets.tracked.sin_fuente')}" if unnamed %>
+        <%= asset.name %> · <%= asset_type_label_es(asset.asset_type) %><%= " · #{t('assets.tracked.sin_fuente')}" if unnamed %>
       </p>
     </div>
 
