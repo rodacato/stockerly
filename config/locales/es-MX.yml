@@ -292,6 +292,18 @@ es-MX:
       titulo: Panorama
       ver_todos: Ver todos
       vs_ayer: "%{delta} vs ayer"
+  data_sources:
+    alpaca_us: Acciones EE. UU. — Alpaca
+    alpha_vantage_fundamentals: Fundamentales — Alpha Vantage
+    banxico_cetes: CETES — Banxico
+    banxico_fx: Tipo de cambio — Banxico FIX
+    coingecko_crypto: Cripto — CoinGecko
+    crypto_fear_greed: Miedo y codicia cripto — Alternative.me
+    databursatil_bmv: Acciones BMV — DataBursatil
+    finnhub_stocks: Acciones EE. UU. — Finnhub
+    fmp_fundamentals: Fundamentales (respaldo) — FMP
+    fx_rates: Tipo de cambio (respaldo) — ExchangeRate
+    yfinance_bridge: Yahoo Finance — vía el puente yfinance
   date:
     abbr_day_names:
     - dom
