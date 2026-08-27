@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The 'Activos' tab — three tiers of interest in a symbol, drawn as a ladder (D9).\n\nRastreado (assets.sync_status active) → Sigo (watchlist_items) → Poseo (open positions). The tier is not taxonomy, it is BUDGET: SyncAllFundamentalsJob orders positions → watchlist → rest against DAILY_BUDGET = 25 calls/day, and only open positions get dividends + splits synced at all. The segmented control stays at two (the two daily questions); Rastreados is a foot-of-list entry with its own screen.\n\nEntry: bottom-nav 'Activos'. Rows link to the asset detail in cockpit.pen.\nScreens: Cartera · Sigo · Cartera vacía (first run) · Registrar movimiento (sheet) · Registrar movimiento con teclado (the real mobile spec, D11) · Rastreados · Rastreados·Buscar.\n\nGrounding: positions (shares, avg_cost, market_value, total_gain, cost_basis_in(MXN) via fx_rate_at_execution) · watchlist_items.entry_price captured on add → 'sigues +X%' (nothing renders it today) · assets (current_price, change_percent_24h, currency, exchange, asset_type, price_updated_at, sync_status) · latest_trend_score → the semáforo dots. You can only follow what is already rastreado: search hits `assets`, so the search screen IS the catalogue browser.\n\nCETES rows drop the sparkline and the semáforo — technical lights don't apply to fixed income — and carry days-to-maturity + annual rate instead (C1 Lucía).\n\nMoney per D10: the section header declares the currency, rows drop the symbol; off-currency values keep the ISO prefix (USD 172.40).\n\nDesktop (1280, kit 0.5.0): three artboards — Cartera, Registrar movimiento (the same <dialog>, centered) and Rastreados. Rastreados earns one because it absorbs /admin/assets: curating a catalogue against a daily call budget is desk work, and desktop is where the budget sits beside the list instead of above it.\n\n⚠ Touch targets: segmented controls, rows and the keypad clear 44pt; filter chips sit at ~35pt + 8pt gap — below the floor, accepted for a secondary control, flagged rather than hidden.\n\nFlow-local components (kit candidates, not promoted): WatchRow, Segmented, OptionCard, TierChip, and the `scrim` token — see ui-kit.CHANGELOG 0.3.0 gaps.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the position list becomes a GRID of cards at their native ~309 width, never one stretched column — measured first: the list is grouped by asset type, not ranked by value (BTC at 61,200 sits third), so a grid breaks no ranking; (b) the Resumen became a bar — patrimonio left, freshness and 'Ver mi consolidado' right — because a stacked card stretched to 976 is the same 'river of air' mistake as a stretched AssetRow; (c) CETES is the only card with no sparkline and no semáforo, carrying maturity and annual rate instead. A grid makes that difference more visible, not less, which is the correct outcome (C1).\n\nThe dialog measures 480x649 inside 800 — it FITS. None of D11's mobile machinery applies on desktop: no 85dvh, no internal scroll, no sticky footer, no visualViewport listener. Those exist because the iOS keyboard covers a bottom-anchored sheet; a centered desktop dialog has no such problem. Do not port them for symmetry.\n\nCopy: es-MX. kit-version-source 0.5.0.",
+          "content": "The 'Activos' tab — three tiers of interest in a symbol, drawn as a ladder (D9).\n\nRastreado (assets.sync_status active) → Sigo (watchlist_items) → Poseo (open positions). The tier is not taxonomy, it is BUDGET: SyncAllFundamentalsJob orders positions → watchlist → rest against DAILY_BUDGET = 25 calls/day, and only open positions get dividends + splits synced at all. The segmented control stays at two (the two daily questions); Rastreados is a foot-of-list entry with its own screen.\n\nEntry: bottom-nav 'Activos'. Rows link to the asset detail in cockpit.pen.\nScreens: Cartera · Sigo · Cartera vacía (first run) · Historial · Registrar movimiento (sheet) · Registrar movimiento con teclado (the real mobile spec, D11) · Rastreados · Rastreados·Buscar.\n\nGrounding: positions (shares, avg_cost, market_value, total_gain, cost_basis_in(MXN) via fx_rate_at_execution) · watchlist_items.entry_price captured on add → 'sigues +X%' (nothing renders it today) · assets (current_price, change_percent_24h, currency, exchange, asset_type, price_updated_at, sync_status) · latest_trend_score → the semáforo dots. You can only follow what is already rastreado: search hits `assets`, so the search screen IS the catalogue browser.\n\nCETES rows drop the sparkline and the semáforo — technical lights don't apply to fixed income — and carry days-to-maturity + annual rate instead (C1 Lucía).\n\nMoney per D10: the section header declares the currency, rows drop the symbol; off-currency values keep the ISO prefix (USD 172.40).\n\nDesktop (1280, kit 0.5.0): three artboards — Cartera, Registrar movimiento (the same <dialog>, centered) and Rastreados. Rastreados earns one because it absorbs /admin/assets: curating a catalogue against a daily call budget is desk work, and desktop is where the budget sits beside the list instead of above it.\n\n⚠ Touch targets: segmented controls, rows and the keypad clear 44pt; filter chips sit at ~35pt + 8pt gap — below the floor, accepted for a secondary control, flagged rather than hidden.\n\nFlow-local components (kit candidates, not promoted): WatchRow, Segmented, OptionCard, TierChip, and the `scrim` token — see ui-kit.CHANGELOG 0.3.0 gaps.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the position list becomes a GRID of cards at their native ~309 width, never one stretched column — measured first: the list is grouped by asset type, not ranked by value (BTC at 61,200 sits third), so a grid breaks no ranking; (b) the Resumen became a bar — patrimonio left, freshness and 'Ver mi consolidado' right — because a stacked card stretched to 976 is the same 'river of air' mistake as a stretched AssetRow; (c) CETES is the only card with no sparkline and no semáforo, carrying maturity and annual rate instead. A grid makes that difference more visible, not less, which is the correct outcome (C1).\n\nThe dialog measures 480x649 inside 800 — it FITS. None of D11's mobile machinery applies on desktop: no 85dvh, no internal scroll, no sticky footer, no visualViewport listener. Those exist because the iOS keyboard covers a bottom-anchored sheet; a centered desktop dialog has no such problem. Do not port them for symmetry.\n\nHistorial (2026-08-27): the depth /positions never had. D35 kept that route with a date — an artboard by the time #294 closed, or it goes — and #294 closed on 2026-08-26 with none. Measured before drawing: it has ONE inbound link from outside itself (market/_position_trades to the trades tab), and three of its four tabs have none at all. It cannot be deleted the way admin/dashboard and admin/assets were (D34), because that deletion only worked when every card already had a 2.0 home: closed positions, the dividend history and the trade log have none. So the screen keeps those three and DROPS 'posiciones abiertas', which duplicated Cartera and is the likeliest reason nobody linked to it.\n\nNo tab control: the three stack as sections in the scroll, which is what #294 decided for the asset detail's sub-tabs and what the Bandeja does with its date groups. Rows are MovementItem, promoted in kit 0.2.0 for exactly this ('reused for trade log rows'). Money per D10 — each section header declares its currency, the trade rows keep the ISO prefix because they genuinely mix.\n\n⚠ 'Movimiento' now means three things in this product: a trade (Registrar movimiento, this screen), a technical observation (Movimientos de interés, cockpit.pen) and the cockpit screen named after it. The trade sense is the one the code carries (trades). See D43.\n\nCopy: es-MX. kit-version-source 0.6.0 — the five-destination shell (D31); this file's BottomNav master already carries Descubrir.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -8548,6 +8548,395 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Y6vkn",
+      "x": 4020,
+      "y": -720,
+      "name": "[Activos] / Historial / Default",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "xwkbf",
+          "name": "TopBar",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "padding": [
+            16,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "V6URuN",
+              "name": "TL",
+              "gap": "$space-2",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "mSZsR",
+                  "name": "Back",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "chevron-left",
+                  "library": "lucide",
+                  "fill": "$fg-default"
+                },
+                {
+                  "type": "text",
+                  "id": "eWrvn",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Historial",
+                  "fontFamily": "$font-display",
+                  "fontSize": 17,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lbEWF",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "#00000000",
+          "layout": "vertical",
+          "gap": "$space-5",
+          "padding": "$space-5",
+          "children": [
+            {
+              "type": "frame",
+              "id": "yFcmd",
+              "name": "S Movimientos",
+              "width": "fill_container",
+              "fill": "#00000000",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "l2QWL0",
+                  "name": "H",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 1,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "WBQV5",
+                      "name": "HT",
+                      "fill": "$fg-default",
+                      "content": "Movimientos",
+                      "fontFamily": "$font-display",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Wmx9J",
+                      "name": "HM",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Valores en la moneda de cada operación",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "nZ0JY",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "AAPL",
+                  "width": "fill_container",
+                  "descendants": {
+                    "vgg8M": {
+                      "icon": "arrow-down-right",
+                      "fill": "$positive-fg"
+                    },
+                    "aSq0g": {
+                      "content": "AAPL"
+                    },
+                    "DVcPe": {
+                      "content": "24 ago · compra 12 títulos · USD 172.40"
+                    },
+                    "k9DgTC": {
+                      "fill": "$positive-bg"
+                    },
+                    "h36Qxf": {
+                      "content": "compra",
+                      "fill": "$positive-fg"
+                    }
+                  }
+                },
+                {
+                  "id": "P2zF7Z",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "NVDA",
+                  "width": "fill_container",
+                  "descendants": {
+                    "vgg8M": {
+                      "icon": "arrow-up-right",
+                      "fill": "$warning-fg"
+                    },
+                    "aSq0g": {
+                      "content": "NVDA"
+                    },
+                    "DVcPe": {
+                      "content": "21 ago · venta 4 títulos · USD 118.90"
+                    },
+                    "k9DgTC": {
+                      "fill": "$warning-bg"
+                    },
+                    "h36Qxf": {
+                      "content": "venta",
+                      "fill": "$warning-fg"
+                    }
+                  }
+                },
+                {
+                  "id": "DcOWN",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "WALMEX",
+                  "width": "fill_container",
+                  "descendants": {
+                    "vgg8M": {
+                      "icon": "arrow-down-right",
+                      "fill": "$positive-fg"
+                    },
+                    "aSq0g": {
+                      "content": "WALMEX"
+                    },
+                    "DVcPe": {
+                      "content": "18 ago · compra 200 títulos · MXN 62.10"
+                    },
+                    "k9DgTC": {
+                      "fill": "$positive-bg"
+                    },
+                    "h36Qxf": {
+                      "content": "compra",
+                      "fill": "$positive-fg"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Y7nBah",
+              "name": "S Dividendos cobrados",
+              "width": "fill_container",
+              "fill": "#00000000",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Sd0cm",
+                  "name": "H",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 1,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "eduWm",
+                      "name": "HT",
+                      "fill": "$fg-default",
+                      "content": "Dividendos cobrados",
+                      "fontFamily": "$font-display",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "hIP8R",
+                      "name": "HM",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Valores en MXN",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "K9InHq",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "VOO",
+                  "width": "fill_container",
+                  "descendants": {
+                    "vgg8M": {
+                      "icon": "coins",
+                      "fill": "$positive-fg"
+                    },
+                    "aSq0g": {
+                      "content": "VOO"
+                    },
+                    "DVcPe": {
+                      "content": "22 ago · 4 títulos · 1.42 por título"
+                    },
+                    "k9DgTC": {
+                      "fill": "$positive-bg"
+                    },
+                    "h36Qxf": {
+                      "content": "MXN 98",
+                      "fill": "$positive-fg"
+                    }
+                  }
+                },
+                {
+                  "id": "dL0wZ",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "WALMEX",
+                  "width": "fill_container",
+                  "descendants": {
+                    "vgg8M": {
+                      "icon": "coins",
+                      "fill": "$positive-fg"
+                    },
+                    "aSq0g": {
+                      "content": "WALMEX"
+                    },
+                    "DVcPe": {
+                      "content": "8 ago · 200 títulos · 0.88 por título"
+                    },
+                    "k9DgTC": {
+                      "fill": "$positive-bg"
+                    },
+                    "h36Qxf": {
+                      "content": "MXN 176",
+                      "fill": "$positive-fg"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "a0DrxB",
+              "name": "S Posiciones cerradas",
+              "width": "fill_container",
+              "fill": "#00000000",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "r15wS",
+                  "name": "H",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 1,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YAE6J",
+                      "name": "HT",
+                      "fill": "$fg-default",
+                      "content": "Posiciones cerradas",
+                      "fontFamily": "$font-display",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "nLefy",
+                      "name": "HM",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Ganancia realizada, en MXN",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "C4LSG",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "TSLA",
+                  "width": "fill_container",
+                  "descendants": {
+                    "vgg8M": {
+                      "icon": "check",
+                      "fill": "$positive-fg"
+                    },
+                    "aSq0g": {
+                      "content": "TSLA"
+                    },
+                    "DVcPe": {
+                      "content": "cerrada el 12 ago · 6 títulos"
+                    },
+                    "k9DgTC": {
+                      "fill": "$positive-bg"
+                    },
+                    "h36Qxf": {
+                      "content": "+4,210",
+                      "fill": "$positive-fg"
+                    }
+                  }
+                },
+                {
+                  "id": "wGqEv",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "MELI",
+                  "width": "fill_container",
+                  "descendants": {
+                    "vgg8M": {
+                      "icon": "check",
+                      "fill": "$negative-fg"
+                    },
+                    "aSq0g": {
+                      "content": "MELI"
+                    },
+                    "DVcPe": {
+                      "content": "cerrada el 3 ago · 2 títulos"
+                    },
+                    "k9DgTC": {
+                      "fill": "$negative-bg"
+                    },
+                    "h36Qxf": {
+                      "content": "−1,180",
+                      "fill": "$negative-fg"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "gYF8m",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container"
         }
       ]
     }

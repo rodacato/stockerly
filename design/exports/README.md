@@ -31,6 +31,7 @@ is worse than a missing one.
 | `activos-registrar-con-teclado.png` | `[Activos] / Registrar movimiento / Con teclado` |
 | `activos-rastreados.png` | `[Activos] / Rastreados / Default` |
 | `activos-rastreados-buscar.png` | `[Activos] / Rastreados · Buscar / Default` |
+| `activos-historial.png` | `[Activos] / Historial / Default` — ⚠ see D43, designed after /positions hit its D35 deadline |
 | `reglas-lista.png` | `[Reglas] / Reglas / Default` |
 | `reglas-vacio.png` | `[Reglas] / Reglas / Vacío` |
 | `reglas-nueva-regla.png` | `[Reglas] / Nueva regla / Sheet` |
