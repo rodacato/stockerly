@@ -327,5 +327,19 @@ components**. It is not "behind on 0.6.0" and it cannot be drawing the retired m
 had the kit installed at all. The 0.7.0 entry's open question is answered, and the work it implies
 is an install, not a re-vendor.
 
-**Consumers: none re-synced yet.** All seven flows remain on `kit-version-source` 0.7.0 and must
-re-vendor for the TopBar height and the new tokens. That is the next session's work, flow by flow.
+**Consumers: `flows/assets.pen` re-synced 2026-08-27**, the first onto this version. The remaining
+six are still on 0.7.0 and must re-vendor for the TopBar height and the new tokens — flow by flow.
+
+### Gap found while re-vendoring — for the next bump
+
+**`NavRow` has no recommended/primary state.** Vendoring it into `assets.pen` turned up four
+hand-built copies, and measuring them before replacing changed what the job was. Three had drifted
+about 6% larger (36px icon wrap, 18px icon, padding 14/16, description at 12) and snapped back to
+the kit's numbers — that part is the whole point of vendoring. But the fourth, *Captura lo que ya
+tienes*, carried a deliberate accent: `$primary` stroke at 1.5, a `$primary-muted` wrap and a
+`$primary` icon, because it is the recommended path out of an empty portfolio. Replacing all four
+with the plain row would have flattened a real hierarchy while calling it consistency.
+
+It ships as an instance override, not a new variant — the method says do not promote unasked. If a
+second flow needs the same accent, that override has earned a variant and this is the entry that
+says so.
