@@ -42,7 +42,7 @@ class WarmDiscoverJob < ApplicationJob
   # A visitor who came yesterday still deserves a readable window, so the floor
   # is a week — below that a daily basket move is noise, not a wave.
   def window_start
-    last_seen = Rails.cache.read("discover:last_seen")
+    last_seen = MarketData::Discover::VisitLog.last_seen
     return MAX_WINDOW.ago.to_date if last_seen.blank?
 
     [ [ last_seen.to_date, MIN_WINDOW.ago.to_date ].min, MAX_WINDOW.ago.to_date ].max

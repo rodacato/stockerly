@@ -59,7 +59,12 @@ module Admin
         rails:       Rails.version,
         environment: Rails.env,
         solid_queue: solid_queue_summary,
-        cache_entries: HealthMetrics.cache_entries
+        cache_entries: HealthMetrics.cache_entries,
+        # D31 gave Descubrir a kill criterion with a date. Reading it needs the
+        # number on screen, not in a console.
+        discover_weeks: MarketData::Discover::VisitLog.weeks_seen,
+        discover_window: MarketData::Discover::VisitLog.window,
+        discover_last_seen: MarketData::Discover::VisitLog.last_seen
       }
     end
 
