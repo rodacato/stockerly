@@ -1,6 +1,11 @@
 # Jobs to be Done — Stockerly
 
-> The 6 JTBDs that justify Stockerly's existence as of 2026-05-14.
+> The 6 JTBDs that justify Stockerly's existence. Written 2026-05-14; **reviewed against the
+> 2026-08-20 pivot** ([ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)),
+> which changed the audience and not these six — JTBD #5 (fast capture) and #6 (readable
+> indicators) were promoted to central, since data-entry friction and indicator illiteracy are two
+> of the three failures that ended the closed beta. Statuses last verified against the code
+> **2026-08-27**.
 > Each JTBD here is the **expansion** of the lines that appear in [`audience.md`](./audience.md).
 > A new feature in the backlog must map to one of these (or propose a new JTBD via an edit to this file).
 
@@ -26,9 +31,11 @@
 
 **Required data:**
 - Current positions (`positions` table)
-- Current prices (gateways: Polygon equities, CoinGecko crypto, Banxico CETES)
-- Current USD→MXN FX rate (FxRatesGateway or Banxico)
-- USD→MXN FX rate at the moment of each purchase (**blocker**: doesn't exist today)
+- Current prices (gateways: Alpaca and Finnhub for US equities, DataBursatil for BMV, CoinGecko
+  for crypto, Banxico for CETES)
+- Current USD→MXN FX rate (`FxRatesGateway`, capability `:fx_current`)
+- USD→MXN FX rate at the moment of each purchase — **exists**: captured as
+  `fx_rate_at_execution` from the Banxico FIX settlement series (`SF60653`, ADR-009)
 - Historical snapshots (`portfolio_snapshots`) for chronological comparison
 
 **App surface:**
@@ -51,7 +58,8 @@
 
 **Required data:**
 - `position.avg_cost` in the currency of acquisition
-- `position.cost_basis_mxn` computed with historical FX (**blocker**: doesn't exist)
+- Cost basis at historical FX — **exists**: `PortfolioSummary#total_invested` and
+  `Position#avg_cost_in` derive it from `fx_rate_at_execution` (ADR-009)
 - Current price (USD for equities, MXN for CETES)
 - Current FX rate
 - Threshold X (user-configurable; suggested default: -10% for warning, -15% for alert)
@@ -100,7 +108,8 @@
 **Statement:** *When an earnings event is coming for something I hold, I want to know 2 days ahead, so I don't find out after the fact.*
 
 **Required data:**
-- Earnings calendar (Polygon gateway, exists)
+- Earnings calendar — Finnhub for US, the yfinance bridge for BMV emisoras
+  ([ADR-017](../architecture/adr/0017-python-bridge-for-yahoo-finance.md))
 - User's current holdings (active positions)
 - Match between holding tickers and tickers in earnings calendar
 
@@ -129,7 +138,8 @@
 - Price (in native currency)
 - **Currency (auto-detected from the asset)** ✅
 - Date (default: today; max: today; min: ¿1 year back?)
-- FX rate at the time of the trade (**missing**: auto-capture from Banxico if currency = USD)
+- FX rate at the time of the trade — **built**: the sheet auto-fills the Banxico FIX for the
+  date entered
 - Optional notes, optional labels
 
 **App surface:**
