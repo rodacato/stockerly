@@ -72,7 +72,7 @@ RSpec.describe "stockerly:sync rake task" do
 
     it "applies fallback defaults for unknown providers" do
       DataSourceRegistry.register(:test_source,
-        name: "Test", icon: "test", color: "gray",
+        icon: "test", color: "gray",
         gateway_class: MarketData::Gateways::MarketDataGateway,
         job_class: nil, job_args: [], test_symbol: nil, test_method: :fetch_price,
         integration_name: "NewProvider", circuit_breaker_key: "test",

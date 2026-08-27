@@ -43,7 +43,8 @@ RSpec.describe "Admin pages", type: :request do
       get admin_settings_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Sincronización manual")
-      expect(response.body).to include("FX Rates")
+      # The label comes from the locale now, not from the registry (#302).
+      expect(response.body).to include("Tipo de cambio (respaldo) — ExchangeRate")
     end
 
     it "triggers a data source sync via registry" do
@@ -53,7 +54,7 @@ RSpec.describe "Admin pages", type: :request do
 
       expect(response).to redirect_to(admin_settings_path)
       follow_redirect!
-      expect(response.body).to include("Sincronización de FX Rates encolada.")
+      expect(response.body).to include("Sincronización de Tipo de cambio (respaldo) — ExchangeRate encolada.")
     end
 
     it "returns alert for unknown data source" do

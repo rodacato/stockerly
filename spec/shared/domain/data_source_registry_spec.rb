@@ -6,7 +6,6 @@ RSpec.describe DataSourceRegistry do
 
   let(:attrs) do
     {
-      name: "Test Source",
       icon: "sync",
       color: "blue",
       gateway_class: test_gateway,
@@ -33,8 +32,19 @@ RSpec.describe DataSourceRegistry do
       source = described_class.find(:test_source)
 
       expect(source.key).to eq(:test_source)
-      expect(source.name).to eq("Test Source")
       expect(source.gateway_class).to eq(test_gateway)
+    end
+  end
+
+  # The label is not stored on the source: it is copy, so it comes from the
+  # locale by key (#302). Asserted against a real registration, because a made
+  # up key has no translation and would only prove the lookup raises.
+  describe "#name" do
+    it "reads the es-MX label the locale holds for its key" do
+      described_class.clear!
+      load Rails.root.join("config/initializers/data_sources.rb")
+
+      expect(described_class.find(:banxico_cetes).name).to eq("CETES — Banxico")
     end
   end
 
@@ -46,10 +56,10 @@ RSpec.describe DataSourceRegistry do
 
   describe ".all" do
     it "returns all registered sources" do
-      described_class.register(:source_a, **attrs.merge(name: "A"))
-      described_class.register(:source_b, **attrs.merge(name: "B"))
+      described_class.register(:source_a, **attrs)
+      described_class.register(:source_b, **attrs)
 
-      expect(described_class.all.map(&:name)).to contain_exactly("A", "B")
+      expect(described_class.all.map(&:key)).to contain_exactly(:source_a, :source_b)
     end
   end
 
@@ -66,15 +76,15 @@ RSpec.describe DataSourceRegistry do
     end
 
     it "answers with the source that claims the integration" do
-      described_class.register(:first, **attrs.merge(name: "First"))
-      described_class.register(:second, **attrs.merge(name: "Second"), health_check: true)
+      described_class.register(:first, **attrs)
+      described_class.register(:second, **attrs.merge(health_check: true))
 
       expect(described_class.for_integration("Test Provider").key).to eq(:second)
     end
 
     it "refuses to pick by registration order when several sources match" do
-      described_class.register(:first, **attrs.merge(name: "First"))
-      described_class.register(:second, **attrs.merge(name: "Second"))
+      described_class.register(:first, **attrs)
+      described_class.register(:second, **attrs)
 
       expect { described_class.for_integration("Test Provider") }
         .to raise_error(DataSourceRegistry::AmbiguousHealthCheck, /2 sources/)
@@ -114,7 +124,7 @@ RSpec.describe DataSourceRegistry do
   describe ".keys" do
     it "returns all registered keys" do
       described_class.register(:source_a, **attrs)
-      described_class.register(:source_b, **attrs.merge(name: "B"))
+      described_class.register(:source_b, **attrs)
 
       expect(described_class.keys).to contain_exactly(:source_a, :source_b)
     end
@@ -123,8 +133,8 @@ RSpec.describe DataSourceRegistry do
   describe ".for_capability" do
     it "returns sources that have the requested capability" do
       described_class.register(:source_a, **attrs.merge(capabilities: %i[prices news]))
-      described_class.register(:source_b, **attrs.merge(name: "B", capabilities: %i[news earnings]))
-      described_class.register(:source_c, **attrs.merge(name: "C", capabilities: %i[earnings]))
+      described_class.register(:source_b, **attrs.merge(capabilities: %i[news earnings]))
+      described_class.register(:source_c, **attrs.merge(capabilities: %i[earnings]))
 
       result = described_class.for_capability(:news)
       expect(result.map(&:key)).to eq([ :source_a, :source_b ])
@@ -137,9 +147,9 @@ RSpec.describe DataSourceRegistry do
     end
 
     it "preserves registration order" do
-      described_class.register(:first, **attrs.merge(name: "First", capabilities: %i[prices]))
-      described_class.register(:second, **attrs.merge(name: "Second", capabilities: %i[prices]))
-      described_class.register(:third, **attrs.merge(name: "Third", capabilities: %i[prices]))
+      described_class.register(:first, **attrs.merge(capabilities: %i[prices]))
+      described_class.register(:second, **attrs.merge(capabilities: %i[prices]))
+      described_class.register(:third, **attrs.merge(capabilities: %i[prices]))
 
       result = described_class.for_capability(:prices)
       expect(result.map(&:key)).to eq([ :first, :second, :third ])
@@ -148,7 +158,7 @@ RSpec.describe DataSourceRegistry do
 
   describe "routing by market and asset type" do
     let(:base) do
-      attrs.except(:integration_name, :capabilities).merge(name: "Scoped", circuit_breaker_key: "scoped")
+      attrs.except(:integration_name, :capabilities).merge(circuit_breaker_key: "scoped")
     end
 
     before do

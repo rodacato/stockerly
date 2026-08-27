@@ -6,7 +6,6 @@ class DataSourceRegistry
 
   DataSource = Data.define(
     :key,               # Symbol, e.g. :alpaca_us
-    :name,              # Human label, e.g. "US Stocks — Alpaca"
     :icon,              # Material Symbol name, e.g. "show_chart"
     :color,             # Tailwind color prefix, e.g. "indigo"
     :gateway_class,     # String class name, e.g. "AlpacaGateway"
@@ -22,6 +21,16 @@ class DataSourceRegistry
     :health_check,      # True when this source is the one that answers for its integration
     :maintainer_only    # True when the credential only works for pre-existing accounts
   )
+
+  # The label is not a member: it is copy a person reads, so it lives in the
+  # locale under `data_sources.<key>` like every other such string (#302,
+  # ADR-011). Provider proper nouns — Alpaca, Banxico, CoinGecko — read the
+  # same in any locale and simply sit inside that string.
+  class DataSource
+    def name
+      I18n.t("data_sources.#{key}")
+    end
+  end
 
   @sources = {}
 

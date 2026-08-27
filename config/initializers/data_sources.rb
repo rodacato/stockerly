@@ -7,7 +7,6 @@
 
 Rails.application.config.after_initialize do
   DataSourceRegistry.register(:alpaca_us,
-    name: "US Stocks — Alpaca",
     icon: "candlestick_chart",
     color: "amber",
     gateway_class: MarketData::Gateways::AlpacaGateway,
@@ -23,7 +22,6 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:finnhub_stocks,
-    name: "US Stocks — Finnhub",
     icon: "show_chart",
     color: "cyan",
     gateway_class: MarketData::Gateways::FinnhubGateway,
@@ -41,7 +39,6 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:coingecko_crypto,
-    name: "Crypto — CoinGecko",
     icon: "currency_bitcoin",
     color: "emerald",
     gateway_class: MarketData::Gateways::CoingeckoGateway,
@@ -56,7 +53,6 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:databursatil_bmv,
-    name: "Mexican Stocks — DataBursatil",
     icon: "account_balance",
     color: "rose",
     gateway_class: MarketData::Gateways::DataBursatilGateway,
@@ -75,7 +71,6 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:crypto_fear_greed,
-    name: "Crypto F&G — Alternative.me",
     icon: "psychology",
     color: "purple",
     gateway_class: MarketData::Gateways::CryptoFearGreedGateway,
@@ -89,7 +84,6 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:yfinance_bridge,
-    name: "Yahoo Finance — via the yfinance bridge",
     icon: "monitoring",
     color: "teal",
     gateway_class: MarketData::Gateways::YfinanceGateway,
@@ -109,7 +103,6 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:alpha_vantage_fundamentals,
-    name: "Fundamentals — Alpha Vantage",
     icon: "analytics",
     color: "orange",
     gateway_class: MarketData::Gateways::AlphaVantageGateway,
@@ -123,7 +116,6 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:fx_rates,
-    name: "FX Rates",
     icon: "currency_exchange",
     color: "amber",
     gateway_class: MarketData::Gateways::FxRatesGateway,
@@ -137,7 +129,6 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:banxico_fx,
-    name: "Tipo de cambio — Banxico FIX",
     icon: "currency_exchange",
     color: "lime",
     gateway_class: MarketData::Gateways::BanxicoGateway,
@@ -157,7 +148,6 @@ Rails.application.config.after_initialize do
   # key predates the gate, and a declared nothing where it does not. Dividends
   # and splits left for sources every self-hoster can reach (#312).
   DataSourceRegistry.register(:fmp_fundamentals,
-    name: "Fundamentales (respaldo) — FMP",
     icon: "paid",
     color: "slate",
     gateway_class: MarketData::Gateways::FmpGateway,
@@ -172,7 +162,6 @@ Rails.application.config.after_initialize do
   )
 
   DataSourceRegistry.register(:banxico_cetes,
-    name: "CETES — Banxico",
     icon: "account_balance",
     color: "lime",
     gateway_class: MarketData::Gateways::BanxicoGateway,
