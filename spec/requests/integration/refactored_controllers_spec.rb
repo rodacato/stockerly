@@ -81,17 +81,4 @@ RSpec.describe "Refactored controller flows", type: :request do
       expect(response.body).to include("BTC")
     end
   end
-
-  describe "Search with real results via Use Case" do
-    # /search was deleted with #295; GlobalSearch was kept for the TopBar
-    # search the artboards draw, so it is exercised directly.
-    it "returns search results from database" do
-      create(:asset, symbol: "AAPL", name: "Apple Inc.")
-
-      result = Identity::UseCases::GlobalSearch.call(query: "AAPL", user: user)
-
-      expect(result).to be_success
-      expect(result.value![:assets].map(&:symbol)).to include("AAPL")
-    end
-  end
 end
