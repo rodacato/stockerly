@@ -418,8 +418,8 @@ es-MX:
       calendario_meta: Banxico · Fed · %{horizon}
       calendario_titulo: Calendario
       conecta_cta: Ir a Integraciones
-      conecta_cuerpo: Las olas, los reportes y los titulares vienen de ahí. El calendario
-        de Banxico y la Fed funciona sin credencial.
+      conecta_cuerpo: Las olas y los titulares vienen de ahí. El calendario de Banxico
+        y la Fed funciona sin credencial.
       conecta_titulo: Conecta Alpaca
       descripcion: Lo que se mueve afuera, no en tu cartera
       olas_desde: desde tu última visita · %{since}
