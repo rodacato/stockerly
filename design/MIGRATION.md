@@ -26,12 +26,12 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 |---|---|---|---|
 | `ui-kit.lib.pen` | **0.8.0** | ✅ merged | — |
 | `flows/assets.pen` | **0.8.0** | ✅ PR #368 | — |
-| `flows/cockpit.pen` | 0.7.0 | — | the largest job; see below |
-| `flows/auth.pen` | 0.7.0 | — | TOTP is now real (ADR-018) |
+| `flows/cockpit.pen` | 0.7.0 | — | the largest job; one artboard is deleted (D51) |
+| `flows/auth.pen` | 0.7.0 | — | TOTP is real (ADR-018); three artboards to draw |
 | `flows/alerts.pen` | 0.7.0 | — | one artboard is dangerous to build from |
-| `flows/settings.pen` | 0.7.0 | — | a reversed decision still drawn |
+| `flows/settings.pen` | 0.7.0 | — | a reversed decision still drawn, plus a `Seguridad` section (D52) |
 | `flows/discover.pen` | 0.7.0 | — | the artboard is behind the code here |
-| `flows/onboarding.pen` | 0.7.0 | — | nearly clean, unless TOTP lands in the wizard |
+| `flows/onboarding.pen` | 0.7.0 | — | TOTP lands in the wizard (D52): nine artboards move |
 | `_playground.pen` | **none** | — | it is empty; this is an install, not a re-vendor |
 | `brand.pen` | n/a | — | hygiene only |
 
@@ -44,9 +44,9 @@ BottomNav copies**, so the 57 → 76 change is six edits here against one anywhe
 this as waiting for "a batch someone asks for". This is that batch — consolidate while it is open.
 
 - **Remove the `Evento de mercado · caídas generalizadas hoy` banner** — D25 cancelled.
-- ❓ **Does `Panorama / Black swan` survive without it?** The banner may be the only thing that
-  distinguished it from `Default`. If so the artboard is redundant and goes in the same pass.
-  **Owner's call, blocking.**
+- **Delete `Panorama / Black swan`** (D51, answered 2026-08-27). The banner was the only thing
+  separating it from `Default`, so it goes in the same pass — one fewer artboard to re-vendor,
+  and one fewer of the six local TopBar copies.
 - **Un-gate `Movimientos`** (D42) and rename it per D48 — the observation sense is **Señales**.
 - **Draw the `Cerrar posición` confirmation.** It does not exist. A destructive write flow with no
   confirmation step, confirmed against `exports/README.md`'s complete inventory.
@@ -65,8 +65,10 @@ this as waiting for "a batch someone asks for". This is that batch — consolida
   puts email OTP explicitly out of scope.** Its Tunnel/Tailscale premise was also disproved.
 - **Three artboards that do not exist:** TOTP enrollment (QR + secret + verify), the one-time
   recovery-code display, and recovery-code entry at login.
-- ❓ **Where does the product *ask* for enrollment** — Ajustes, or a first-boot wizard step? A
-  wizard step adds a `Stepper` stage and touches all nine onboarding artboards. **Owner's call.**
+- **Both** (D52, answered 2026-08-27): the wizard **offers** enrollment and lets the reader skip it,
+  and Ajustes is where it is turned on later and the codes are regenerated. So the answer that
+  costs the most: `onboarding.pen` gains a skippable `Stepper` stage across nine artboards and
+  `settings.pen` gains its `Seguridad` section.
 - Per D4 none of the new auth screens needs a desktop variant.
 
 ## `flows/alerts.pen`
@@ -88,7 +90,8 @@ this as waiting for "a batch someone asks for". This is that batch — consolida
 - ❓ The `Trabajos` badge: drop it, or give the count a source that is not a cross-database query in
   the hub's request path.
 - ❓ `Guardar` button or auto-save on the hub — the artboard implies one, the code does the other.
-- A `Seguridad` section, **if** TOTP enrollment lives in Ajustes.
+- **A `Seguridad` section** — no longer conditional: D52 put enrollment in Ajustes as well as the
+  wizard.
 
 ## `flows/discover.pen`
 
@@ -102,7 +105,8 @@ this as waiting for "a batch someone asks for". This is that batch — consolida
 ## `flows/onboarding.pen`
 
 - Check for a third `OptionCard` → `NavRow` consumer (kit 0.4.0 parked this for "when next open").
-- Only large if TOTP enrollment becomes a wizard step — see the auth question.
+- **It became the large one.** D52 puts a skippable TOTP step in the wizard, so the `Stepper`
+  gains a stage and all nine artboards move.
 
 ## `brand.pen`
 
