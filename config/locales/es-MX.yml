@@ -247,6 +247,10 @@ es-MX:
       inactividad: Cerramos tu sesión por inactividad.
     terminos: Términos
     volver: Volver a iniciar sesión
+  brand:
+    description: 'Tracker self-hosted de patrimonio invertido: acciones, cripto y
+      renta fija MX, con multi-divisa MXN/USD correcta.'
+    title: Stockerly — Tu patrimonio invertido, en una pantalla
   comun:
     accion:
       buy: compra

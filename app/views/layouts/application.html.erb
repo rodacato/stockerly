@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es-MX" data-theme="lumen" class="<%= content_for(:html_class) %>">
   <head>
+    <% page_title       = content_for(:title)       || t("brand.title") %>
+    <% page_description = content_for(:description) || t("brand.description") %>
     <meta charset="utf-8">
-    <title><%= content_for(:title) || "Stockerly | Navigate the Markets with Confidence" %></title>
+    <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="<%= content_for(:description) || "Open Source Market Intelligence Platform. Data-driven trends, portfolios, alerts, and earnings for the modern investor." %>">
+    <meta name="description" content="<%= page_description %>">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="application-name" content="Stockerly">
@@ -13,13 +15,16 @@
     <%# Open Graph / Social Sharing %>
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Stockerly">
-    <meta property="og:title" content="<%= content_for(:title) || "Stockerly | Navigate the Markets with Confidence" %>">
-    <meta property="og:description" content="<%= content_for(:description) || "Open Source Market Intelligence Platform. Data-driven trends, portfolios, alerts, and earnings for the modern investor." %>">
-    <%# TODO: generate og_image.png from SVG brand assets %>
+    <meta property="og:title" content="<%= page_title %>">
+    <meta property="og:description" content="<%= page_description %>">
+    <meta property="og:image" content="<%= "#{request.base_url}/og-image.png?v=3" %>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Stockerly">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<%= content_for(:title) || "Stockerly | Navigate the Markets with Confidence" %>">
-    <meta name="twitter:description" content="<%= content_for(:description) || "Open Source Market Intelligence Platform. Data-driven trends, portfolios, alerts, and earnings for the modern investor." %>">
-    <%# TODO: generate twitter card image from SVG brand assets %>
+    <meta name="twitter:title" content="<%= page_title %>">
+    <meta name="twitter:description" content="<%= page_description %>">
+    <meta name="twitter:image" content="<%= "#{request.base_url}/og-image.png?v=3" %>">
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
