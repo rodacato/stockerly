@@ -1,28 +1,31 @@
 require "rails_helper"
 
 RSpec.describe MarketData::Handlers::BroadcastPriceUpdate do
+  include ActionCable::TestHelper
+
   describe ".call" do
-    let(:asset) { create(:asset, symbol: "AAPL", current_price: 150) }
+    let!(:owner) { create(:user, preferred_currency: "MXN") }
+    let(:asset)  { create(:asset, symbol: "AAPL", currency: "USD", current_price: 150, change_percent_24h: 2.5) }
 
-    it "broadcasts replace via Turbo Streams" do
-      allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
-
+    it "broadcasts the rendered price block to the asset's stream" do
       described_class.call(asset_id: asset.id)
 
-      expect(Turbo::StreamsChannel).to have_received(:broadcast_replace_to).with(
-        "asset_#{asset.id}",
-        target: "asset_price_#{asset.id}",
-        partial: "components/asset_price",
-        locals: { asset: asset }
-      )
+      payload = ActiveSupport::JSON.decode(broadcasts("asset_#{asset.id}").last)
+      expect(payload).to include(%(target="asset_price_#{asset.id}"))
+      expect(payload).to include("150")
+      expect(payload).to include("+2.5")
     end
 
     it "does nothing when asset not found" do
-      allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
+      expect { described_class.call(asset_id: -1) }
+        .not_to change { broadcasts("asset_#{asset.id}").size }
+    end
 
-      described_class.call(asset_id: -1)
+    it "does nothing before setup has created the account" do
+      owner.destroy
 
-      expect(Turbo::StreamsChannel).not_to have_received(:broadcast_replace_to)
+      expect { described_class.call(asset_id: asset.id) }
+        .not_to change { broadcasts("asset_#{asset.id}").size }
     end
   end
 end

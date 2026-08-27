@@ -3,9 +3,6 @@
     back link, the name, the price and a bookmark. The capture button moved to
     the foot of Mi posición, where the artboard puts it.
     Locals: asset, is_watchlisted. %>
-<% change = asset.change_percent_24h || 0 %>
-<% approximate = approximate_in_preferred(asset, current_user) %>
-
 <header class="flex flex-col gap-4">
   <div class="flex items-start justify-between gap-4">
     <%# Back to Activos: the listing this used to return to was deleted with D31,
@@ -44,28 +41,5 @@
     <% end %>
   </div>
 
-  <div>
-    <% if asset.current_price %>
-      <p class="font-display text-4xl font-bold tracking-tight text-fg-default">
-        <%= number_with_precision(asset.current_price, precision: asset.asset_type_fixed_income? ? 4 : 2, delimiter: ",") %>
-        <span class="font-mono text-lg font-medium text-fg-subtle"><%= asset.currency %></span>
-      </p>
-
-      <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
-        <% if approximate %>
-          <span class="text-fg-subtle">≈ <%= approximate %></span>
-        <% end %>
-        <span class="<%= gain_color(change) %>"><%= signed_percent(change) %> hoy</span>
-        <% if asset.price_updated_at %>
-          <span class="text-fg-subtle">act. <%= observation_when(asset.price_updated_at) %></span>
-        <% end %>
-      </div>
-
-      <%# The artboard has no provenance line. Keeping it: where a number came
-          from is not decoration on a screen whose job is being checkable. %>
-      <p class="mt-2 text-[11px] text-fg-subtle"><%= asset_data_source_caption(asset) %></p>
-    <% else %>
-      <p class="text-sm text-fg-subtle"><%= t("market.header.sin_precio") %></p>
-    <% end %>
-  </div>
+  <%= render "components/asset_price", asset: asset, user: current_user %>
 </header>
