@@ -19,14 +19,18 @@
 
 ---
 
-## Current setup (2026-05-14)
+## Current setup
 
 ### Repo
 
 - **URL:** [github.com/rodacato/stockerly](https://github.com/rodacato/stockerly)
 - **Visibility:** public
-- **Audience:** closed beta with ≤20 friends (we don't accept external PRs until v1.0)
-- **CI:** GitHub Actions (test, security, deploy)
+- **Audience:** one real user (Adrian), packaged so a technical self-hoster can run it. The closed
+  beta with ≤20 friends was run and failed; [ADR-010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)
+  dropped it as an audience on 2026-08-20. Nothing in this repo is gated on inviting anyone.
+- **CI:** GitHub Actions — `ci.yml` (gate on PR and `master`), `quality.yml` (report-only, plus
+  manual Sonar), `deploy.yml` (push to `production`). See
+  [`security-checklist.md`](./security-checklist.md) for which checks actually block a merge.
 
 ### Project v2
 
@@ -40,16 +44,28 @@
 
 ### Milestones (sprints)
 
-| # | Milestone | Sprint goal (summary) |
-|---|---|---|
-| 1 | `2026-S02-truth-foundation` | P0 multi-currency phase 1 + kill fake landing + Brand Discovery parallel |
-| 2 | `2026-S03-jtbd-alignment` | Currency-aware calculators + deprecate LLM + non-JTBD analytics cleanup |
-| 3 | `2026-S04-jtbd-gap-fill` | CETES maturity + JTBD #6 "Notable Observations" |
-| 4 | `2026-S05-architectural` | ADR-002 + events cleanup + SimpleUseCase |
-| 5 | `2026-S06-visual-coherence` | Landing/login with brand v2 + final tokens migration |
-| 6 | `2026-S07-beta-prep` | LFPDPPP + invite codes + minimal onboarding |
+| # | Milestone | State | Sprint goal (summary) |
+|---|---|---|---|
+| 1 | `2026-S02-truth-foundation` | closed | P0 multi-currency phase 1 + kill fake landing + Brand Discovery parallel |
+| 2 | `2026-S03-jtbd-alignment` | closed | Currency-aware calculators + deprecate LLM + non-JTBD analytics cleanup |
+| 3 | `2026-S04-jtbd-gap-fill` | closed | CETES maturity + JTBD #6 "Notable Observations" |
+| 4 | `2026-S05-architectural` | closed | ADR-002 + events cleanup + SimpleUseCase |
+| 5 | `2026-S06-visual-coherence` | closed | Landing/login with brand v2 + final tokens migration |
+| 6 | `2026-S07-beta-prep` | closed | LFPDPPP + invite codes + minimal onboarding |
+| 7 | `2026-S08-beta-readiness` | closed | — |
+| 8 | `2026-S09-design-pass` | closed | — |
+| 9 | `2026-S10-design-completion-and-invite-readiness` | open | — |
+
+This table drifts every sprint. The authoritative list is one command, so prefer it over reading
+the table:
+
+```bash
+gh api 'repos/rodacato/stockerly/milestones?state=all' --jq '.[] | "[\(.number)] \(.title) — \(.state)"'
+```
 
 Full goal for each milestone is in its description on GitHub (visible when opening the milestone).
+Milestones 7–9 predate this table and their summaries were never written down here; their
+descriptions on GitHub are the only record.
 
 ### Labels (taxonomy)
 
@@ -65,7 +81,7 @@ Full goal for each milestone is in its description on GitHub (visible when openi
 - `ctx:trading`, `ctx:market-data`, `ctx:alerts`, `ctx:identity`, `ctx:notifications`, `ctx:admin`
 
 **Priority**:
-- `P0` — beta-blocker or breaks core JTBD
+- `P0` — breaks a core JTBD or blocks a release
 - `P1` — cleanup/refactor before new features
 - `P2` — quality / polish
 
@@ -76,9 +92,11 @@ Full goal for each milestone is in its description on GitHub (visible when openi
 
 **Special**:
 - `discovery-needed` — missing one or more discovery card fields
-- `beta-blocker` — no friends invited until resolved
 - `design` — design / visual / UX work
 - `parallel` — parallel axis in a sprint whose main goal is different
+
+**Retired:** `beta-blocker` ("no friends invited until resolved") still exists in the repo's label
+set but means nothing since ADR-010 dropped the closed beta. Don't apply it to new issues; use `P0`.
 
 ---
 
@@ -160,6 +178,11 @@ Full goal for each milestone is in its description on GitHub (visible when openi
 - [ ] Retro answers: what worked / what didn't / what to change / which of the 6 alignment axes improved?
 - [ ] Closed issues have status `Done` in the project
 
+> **No retro or QA file currently exists in the repo.** They were written for S01–S09 and then
+> deleted together by commit `cf54285` at the pivot. Read the banner on
+> [`docs/sprints/README.md`](../sprints/README.md) before ticking either box — whether the practice
+> resumes for S10 is undecided.
+
 **Hard rule:** no new sprint opens while the previous one is open. If issues remain unclosed at the end, decide:
 - Move to backlog (no milestone) if no longer urgent
 - Re-assign to the next milestone if still alive
@@ -195,7 +218,7 @@ gh project item-add 6 --owner rodacato --url https://github.com/rodacato/stocker
 1. **Creating an issue without a complete discovery card** → stays in `triage` with `discovery-needed`. Doesn't advance to `ready` until completed. Not worked on.
 2. **Duplicating info between issue and `docs/`** → docs are for evergreen (vision, ADR, design system, research notes); issues are for state-ful work. If the issue describes architecture, link to the ADR, don't copy it.
 3. **Issues with sensitive info** → repo is public. Do NOT include amounts, account numbers, real personal data screenshots. Use synthetic examples.
-4. **Co-author in commits** → forbidden by project convention (memory file `feedback_no_coauthor.md`).
+4. **Co-author in commits** → forbidden; see [`AGENTS.md`](../../AGENTS.md). Adrian is the sole author of every artifact in this repo, commits and issues included.
 5. **Opening a new sprint with the previous one open** → don't do it.
 6. **Skipping QA before closing a sprint** → don't do it. The most common trap is "tests pass, ship it" without manually validating ADR-001 / non-goals.
 
@@ -219,4 +242,5 @@ Currently required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `r
 - [ADR-001](../architecture/adr/0001-descriptive-not-prescriptive-language.md) — product language
 - [1.0 retrospective](../1.0-retrospective.md) — historical backlog input
 - [Expert Panel](../research/experts.md) — structured consultations
-- [Working method memory](../../.kwik-e/memory/project_working_method.md) — AI assistant's persistent version
+- [IDENTITY.md](../../IDENTITY.md) — the AI assistant's role, commitments and 7 anti-patterns
+- [Sprint protocol](../sprints/README.md) — read its banner first; most of it is no longer practiced

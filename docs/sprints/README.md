@@ -1,8 +1,25 @@
 # Sprints — Stockerly
 
-> Operational sprint protocol. This folder contains **one subfolder per sprint** with GOAL, scope, log, QA, and retro. Template at [`_template/`](./_template/).
+> Operational sprint protocol, established in Sprint 1 (2026-05-14). Template at [`_template/`](./_template/).
+
+> ## ⚠️ This folder contains a template and nothing else.
 >
-> Established in Sprint 1 (2026-05-14).
+> The protocol below describes one subfolder per sprint holding GOAL, scope, log, QA and retro.
+> **No such subfolder exists today** — but not because the protocol was ignored. It was followed:
+> S01 through S09 each got the full set, retro included. Commit `cf54285` (2026-08-23) then deleted
+> all nine folders in one sweep, as part of removing pre-pivot documentation.
+>
+> So the honest state is: a protocol that was practiced for nine sprints, whose entire output was
+> judged disposable at the pivot, and whose deletion nobody recorded a reason for. S10 is open and
+> has no folder yet.
+>
+> Two things follow. **The structure diagram below reflects the folder as it is now**, not as the
+> protocol assumes. And **whether this folder should exist at all is an open question** — if sprint
+> artifacts are deleted at each strategic reset, the retro's value is the session that writes it,
+> not the file, and that is worth deciding on purpose rather than by omission. The parts of the
+> protocol that are unambiguously live — discovery card, 7-item WIP limit, commit prefixes — also
+> live in [`../ops/github-workflow.md`](../ops/github-workflow.md), which is the document to trust
+> when the two disagree.
 
 ---
 
@@ -11,22 +28,21 @@
 ```
 docs/sprints/
 ├── README.md                  ← This file (protocol)
-├── _template/                 ← Template to copy at the start of each sprint
-│   ├── GOAL.md
-│   ├── scope.md
-│   ├── log.md
-│   ├── qa.md
-│   └── retro.md
-├── 2026-S01-reset/            ← Sprint 1 (created retroactively)
-│   └── retro.md
-├── 2026-S02-truth-foundation/ ← Sprint 2 (to be created at start)
-│   └── ...
-└── ...
+└── _template/                 ← Template to copy at the start of each sprint
+    ├── GOAL.md
+    ├── scope.md
+    ├── log.md
+    ├── qa.md
+    └── retro.md
 ```
 
-Each sprint corresponds to a **GitHub Milestone** of the same name. The sprint lives in two places:
+As designed, each sprint corresponds to a **GitHub Milestone** of the same name and lives in two
+places:
 - **GitHub:** Milestone (goal in description), assigned issues, Project board
 - **docs/sprints/<n>/:** GOAL.md, scope.md, log.md, qa.md, retro.md (long-form, persistent)
+
+Both halves were kept through S09. Only the GitHub half survives today — the long-form half was
+deleted wholesale at the pivot (see the banner), and S10 has not restarted it.
 
 Hard rule: **one source of truth per type, never duplicate.** State-ful work lives in GitHub; long-form (retro, post-mortem, mid-sprint decisions) lives in `docs/sprints/<n>/`.
 
@@ -87,7 +103,7 @@ Write `retro.md` following the template. Minimum:
   5. Architecture without cross-context leaks
   6. Docs reflect code
 - **Real vs estimated time** (calibration for future sprints)
-- **Anti-pattern violated, if any** (reference `.kwik-e/memory/feedback_anti_patterns.md`)
+- **Anti-pattern violated, if any** — the 7 are listed in [`IDENTITY.md`](../../IDENTITY.md)
 
 #### Formal close
 
@@ -125,13 +141,22 @@ No `Co-Authored-By` (project rule).
 
 ---
 
-## Hard rules (non-negotiable)
+## Hard rules
 
-1. **No new sprint while previous is open.** The previous is closed only when `retro.md` exists and the milestone is closed.
+All six were honored through S09. Rules 4 and 5 are now **unverifiable from the repo**, because the
+artifacts that evidenced them were deleted — a different failure from being ignored, and flagged
+here rather than quietly dropped.
+
+1. **No new sprint while previous is open.** The previous is closed when its milestone is closed
+   (originally: *"and `retro.md` exists"* — see rule 5).
 2. **No issue without a discovery card.** Issues with `discovery-needed` are not eligible to enter a sprint.
 3. **No more than 7 simultaneous `In Progress` issues.** If the limit is hit, no new ones open; existing ones close.
 4. **No skipping QA before close.** The QA pass is not optional, even when "looks easy to close".
-5. **Retro written or sprint not closed.** Without a retro, you don't advance.
+   *(No `qa.md` survives in the repo. Its automated half — rspec, rubocop, brakeman, bundler-audit —
+   runs on every PR regardless.)*
+5. **Retro written or sprint not closed.** *(No `retro.md` survives either. Decide explicitly
+   whether retros resume for S10 or the rule is dropped; an unenforceable "hard rule" is the kind of
+   aspiration [anti-pattern #7](../../IDENTITY.md) is about.)*
 6. **Parallel work max 30% of effort.** If a sprint has more parallel effort than main, it's badly scoped.
 
 ---
@@ -140,6 +165,9 @@ No `Co-Authored-By` (project rule).
 
 - [Vision README](../vision/README.md) — the north star
 - [JTBDs](../vision/jobs-to-be-done.md) — the 6 canonical
-- [Working method memory](../../.kwik-e/memory/project_working_method.md) — AI assistant's version
-- [GitHub workflow](../ops/github-workflow.md) — manual for using GitHub
-- [Anti-patterns](../../.kwik-e/memory/feedback_anti_patterns.md) — what to avoid
+- [GitHub workflow](../ops/github-workflow.md) — manual for using GitHub, and the live half of this protocol
+- [IDENTITY.md](../../IDENTITY.md) — the AI assistant's role and the 7 anti-patterns
+
+> Earlier revisions linked `.kwik-e/memory/…` here. Those paths are gitignored private working
+> memory that exists on one machine; they resolve for nobody reading this repo, so they are not
+> references. Anything a reader needs has to be tracked in `docs/` or at the repo root.

@@ -46,7 +46,7 @@
 
 ## Anti-patterns I committed (if any)
 
-> Review against `.claude/memory/feedback_anti_patterns.md`. If I fell into one, name it here (not to self-flagellate, but to correct).
+> Review against the 7 anti-patterns in [`IDENTITY.md`](../../../IDENTITY.md). If I fell into one, name it here (not to self-flagellate, but to correct).
 
 - ...
 
