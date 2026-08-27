@@ -28,6 +28,10 @@ ignore_unused:
   - market.estado.*
   - date.*
   - time.*
+  # Rails resolves these itself from time_ago_in_words; the scanner only
+  # sees literal t() calls, so it reads the whole framework namespace as
+  # unused.
+  - datetime.*
   - number.*
   - support.*
   - errors.*

@@ -17,6 +17,44 @@ RSpec.describe WarmDiscoverJob, type: :job do
     allow(MarketData::Gateways::AlpacaGateway).to receive(:new).and_return(gateway)
     allow(gateway).to receive(:fetch_daily_bars)
       .and_return(Dry::Monads::Success(bars_for(MarketData::Discover::BasketCatalogue.symbols)))
+    allow(gateway).to receive(:fetch_news).and_return(Dry::Monads::Success([
+      { title: "TSMC eleva su guía anual", source: "Reuters", url: "https://example.com/1",
+        published_at: 3.hours.ago, related_ticker: "SMH" }
+    ]))
+  end
+
+  describe "Titulares" do
+    it "asks only about the baskets, so the block explains the waves" do
+      described_class.perform_now
+
+      expect(gateway).to have_received(:fetch_news)
+        .with(ticker: MarketData::Discover::BasketCatalogue.symbols.join(","), limit: 5)
+    end
+
+    it "caches the headlines it got" do
+      described_class.perform_now
+
+      cached = Rails.cache.read(described_class::HEADLINES_KEY)
+      expect(cached[:headlines].first[:title]).to eq("TSMC eleva su guía anual")
+    end
+
+    # Five and never a feed (D31): a weekly reader cannot use a river.
+    it "never keeps more than five" do
+      many = Array.new(20) { |i| { title: "Titular #{i}", source: "Reuters", published_at: 1.hour.ago } }
+      allow(gateway).to receive(:fetch_news).and_return(Dry::Monads::Success(many))
+
+      described_class.perform_now
+
+      expect(Rails.cache.read(described_class::HEADLINES_KEY)[:headlines].size).to eq(5)
+    end
+
+    it "keeps the waves when only the news call fails" do
+      allow(gateway).to receive(:fetch_news).and_return(Dry::Monads::Failure([ :rate_limited, "slow down" ]))
+
+      described_class.perform_now
+
+      expect(Rails.cache.read(described_class::CACHE_KEY)[:waves]).to be_present
+    end
   end
 
   it "asks for every basket and the baseline in one call" do

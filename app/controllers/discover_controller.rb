@@ -9,6 +9,9 @@ class DiscoverController < AuthenticatedController
     @waves_since = cached&.dig(:since)
     @waves_generated_at = cached&.dig(:generated_at)
 
+    cached_headlines = Rails.cache.read(WarmDiscoverJob::HEADLINES_KEY)
+    @headlines = cached_headlines&.dig(:headlines) || []
+
     # The chip is crossed here rather than inside MarketData::Discover: ADR-002
     # pairs Trading as MarketData's customer, not the reverse, so the world does
     # not read the instance — the screen does, through Trading's own door.
@@ -17,7 +20,7 @@ class DiscoverController < AuthenticatedController
     # What decides the empty state is whether there is world data to show, not
     # whether a credential exists: a connected Alpaca whose job has not run yet
     # still has nothing to say, and should say so.
-    @has_world_data = @waves.any?
+    @has_world_data = @waves.any? || @headlines.any?
 
     # The evidence D31's kill criterion needs, surfaced on Ajustes › Estado.
     MarketData::Discover::VisitLog.record

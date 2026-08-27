@@ -75,6 +75,34 @@
     </section>
   <% end %>
 
+  <%# Titulares — five and never a feed (D31). Filtered to the baskets, so it
+      reads as why a wave moved rather than as a news river. %>
+  <% if @headlines.any? %>
+    <section class="flex flex-col gap-3">
+      <div class="flex items-baseline justify-between gap-4">
+        <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".titulares_titulo") %></h2>
+        <p class="font-mono text-xs text-fg-subtle"><%= t(".titulares_meta") %></p>
+      </div>
+
+      <ul class="flex flex-col divide-y divide-border-default rounded-2xl border border-border-default bg-bg-surface px-4">
+        <% @headlines.each do |headline| %>
+          <li class="flex flex-col gap-1 py-3">
+            <% if headline[:url].present? %>
+              <%= link_to headline[:title], headline[:url], target: "_blank", rel: "noopener",
+                    class: "font-semibold text-fg-default hover:text-primary" %>
+            <% else %>
+              <p class="font-semibold text-fg-default"><%= headline[:title] %></p>
+            <% end %>
+            <p class="font-mono text-xs text-fg-subtle">
+              <%= [ headline[:related_ticker], headline[:source],
+                    (t(".titulares_hace", time: time_ago_in_words(headline[:published_at])) if headline[:published_at]) ].compact.join(" · ") %>
+            </p>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
   <section class="flex flex-col gap-3">
     <div class="flex items-baseline justify-between gap-4">
       <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".calendario_titulo") %></h2>

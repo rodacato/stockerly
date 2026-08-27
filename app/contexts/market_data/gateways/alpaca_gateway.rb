@@ -235,11 +235,24 @@ module MarketData
             url: item["url"],
             image_url: item["images"]&.first&.dig("url"),
             published_at: item["created_at"].present? ? Time.parse(item["created_at"]) : nil,
-            related_ticker: ticker.presence || item["symbols"]&.first
+            related_ticker: matching_ticker(item, ticker)
           }
         end
 
         Success(articles)
+      end
+
+      # Which symbol this headline is about. Asking for one ticker answers with
+      # that ticker; asking for several — as Descubrir does, one call for the
+      # whole basket — has to answer with the one the article is actually
+      # tagged with, not with the list that was requested.
+      def matching_ticker(item, requested)
+        symbols = Array(item["symbols"])
+        wanted = requested.to_s.split(",").map(&:strip).reject(&:empty?)
+
+        return symbols.first if wanted.empty?
+
+        (symbols & wanted).first || wanted.first
       end
 
       def resolve_api_key

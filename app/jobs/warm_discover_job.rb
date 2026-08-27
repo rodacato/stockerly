@@ -14,6 +14,10 @@ class WarmDiscoverJob < ApplicationJob
 
   TASK_NAME = "Descubrir: olas".freeze
   CACHE_KEY = "discover:waves".freeze
+  HEADLINES_KEY = "discover:headlines".freeze
+  # Five headlines and never a feed: at a weekly cadence a news river is always
+  # stale or repeated (D31, C1 Lucía).
+  HEADLINES = 5
   TTL = 24.hours
   # The window is "since your last visit", capped so a long absence does not
   # make the job's cost unpredictable (S2 Adriana).
@@ -34,10 +38,25 @@ class WarmDiscoverJob < ApplicationJob
     waves = MarketData::Discover::WaveRanking.call(bars: result.value!)
     Rails.cache.write(CACHE_KEY, { waves: waves, since: from, generated_at: Time.current }, expires_in: TTL)
 
-    log_sync_success(TASK_NAME, message: "#{waves.size} baskets since #{from}")
+    headlines = warm_headlines(catalogue)
+
+    log_sync_success(TASK_NAME, message: "#{waves.size} baskets since #{from}, #{headlines} headlines")
   end
 
   private
+
+  # Filtered to the baskets, which is what stops it being news and makes it
+  # *why SMH moved*. A failure here leaves the previous headlines in place
+  # rather than blanking the block — the waves above already landed.
+  def warm_headlines(catalogue)
+    result = MarketData::Gateways::AlpacaGateway.new
+                                                .fetch_news(ticker: catalogue.symbols.join(","), limit: HEADLINES)
+    return 0 if result.failure?
+
+    headlines = result.value!.first(HEADLINES)
+    Rails.cache.write(HEADLINES_KEY, { headlines: headlines, generated_at: Time.current }, expires_in: TTL)
+    headlines.size
+  end
 
   # A visitor who came yesterday still deserves a readable window, so the floor
   # is a week — below that a daily basket move is noise, not a wave.
