@@ -3,6 +3,9 @@
 > Measured 2026-08-25 against the export batch of the same day, after slice 7 merged.
 > Re-measured 2026-08-26 after the D31/D34/D35 deletions — five view directories are gone, and
 > **no screen without an artboard is still drifting**: each was drawn, deleted, or kept with a date.
+> Re-measured again 2026-08-27: **the pre-2.0 palette is gone from `app/views` entirely** and the
+> fifth destination shipped, so the two findings this document led with are closed. What remains
+> is i18n on four directories, and the Alpaca-dependent half of Descubrir.
 > Companion to [CODE_CHANGES.md](CODE_CHANGES.md), which tracks execution. This one asks a
 > narrower question: **for each flow, does the code look like the artboard?**
 >
@@ -39,26 +42,27 @@ Lumen token contract; `t(...)` is ADR-011. A screen is 2.0 when the first column
 
 | View dir | slate | tokens | i18n | | Has an artboard? |
 |---|---:|---:|---:|---|---|
-| `onboarding` | 0 | 39 | 26 | ✅ 2.0 | yes |
+| `onboarding` | 0 | 40 | 27 | ✅ 2.0 | yes |
 | `setup` | 0 | 2 | 12 | ✅ 2.0 | yes |
 | `sessions` | 0 | 2 | 10 | ✅ 2.0 | yes |
 | `password_resets` | 0 | 14 | 20 | ✅ 2.0 | yes |
-| `assets` | 0 | 34 | 39 | ✅ 2.0 | yes |
+| `assets` | 0 | 34 | 42 | ✅ 2.0 | yes |
 | `settings` | 0 | 33 | 22 | ◐ mixed | yes |
-| `portfolios` | 0 | 16 | 23 | ◐ mixed | yes |
-| `dashboard` | 4 | 21 | 19 | ◐ mixed | yes |
-| `trades` | 26 | 71 | 16 | ◐ mixed | yes |
-| `profiles` | 0 | 64 | 0 | ◐ mixed | no |
-| `components` | 27 | 30 | 13 | ◐ mixed | the kit |
+| `portfolios` | 0 | 16 | 27 | ◐ mixed | yes |
+| `dashboard` | 0 | 20 | 20 | ✅ 2.0 | yes |
+| `trades` | 0 | 76 | 16 | ◐ mixed | yes |
+| `profiles` | 0 | 64 | 0 | ◐ no i18n | no |
+| `components` | 0 | 50 | 17 | ✅ 2.0 | the kit |
 | `welcome` / `help` | 0 | 2 | 0 | ◐ no i18n | yes / no |
-| `alerts` | 0 | 49 | 36 | ✅ 2.0 | yes — closed 2026-08-25 |
+| `discover` | 0 | 11 | 10 | ✅ 2.0 | yes — built 2026-08-27 (#292) |
+| `alerts` | 0 | 49 | 37 | ✅ 2.0 | yes — closed 2026-08-25 |
 | `notifications` | 0 | 9 | 11 | ✅ 2.0 | yes — closed 2026-08-25 |
-| `admin/logs` | 0 | 24 | 14 | ✅ 2.0 | yes — closed 2026-08-26 |
-| `admin/integrations` | 0 | 27 | 26 | ✅ 2.0 | yes — closed 2026-08-26 |
+| `admin/logs` | 0 | 24 | 16 | ✅ 2.0 | yes — closed 2026-08-26 |
+| `admin/integrations` | 0 | 24 | 19 | ✅ 2.0 | yes — closed 2026-08-26 |
 | `admin/settings` | 0 | 17 | 18 | ✅ 2.0 | yes — closed 2026-08-26 |
-| `market` | 0 | 175 | 83 | ✅ 2.0 | yes — closed 2026-08-26 |
-| `positions` | 33 | 1 | 1 | ✗ pre-2.0 | no — kept, reviewed at #294 (D35) |
-| `shared` | 32 | 12 | 0 | ✗ pre-2.0 | mixed |
+| `market` | 0 | 192 | 108 | ✅ 2.0 | yes — closed 2026-08-26 |
+| `positions` | 0 | 30 | 1 | ◐ no i18n | yes — drawn 2026-08-27 (D43) |
+| `shared` | 0 | 40 | 0 | ◐ no i18n | mixed |
 | ~~`admin/dashboard`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D34) |
 | ~~`admin/assets`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D34) |
 | ~~`earnings`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D31) |
@@ -66,7 +70,14 @@ Lumen token contract; `t(...)` is ADR-011. A screen is 2.0 when the first column
 | ~~`search`~~ | — | — | — | 🗑 deleted 2026-08-26 | never had one (D35) |
 
 **When this was first measured, exactly one directory was 2.0 by every measure: `onboarding`.**
-Reglas and the Bandeja joined it on 2026-08-25; the rest is still mixed or pre-2.0.
+Reglas and the Bandeja joined it on 2026-08-25.
+
+**Re-measured 2026-08-27, and the first column is now zero everywhere.** The pre-2.0 palette is
+gone from `app/views` entirely: `grep -rcE '\b(slate|gray)-[0-9]+' app/views` returns nothing.
+123 occurrences went — 28 deleted with the files nobody rendered, 95 migrated to the token
+contract. What is left in the third column is i18n, not palette: `profiles`, `shared`, `welcome`
+and `positions` carry copy that is still hardcoded es-MX, which ADR-011 permits surface by surface
+and this table should stop reading as though it were the same debt as a slate utility.
 
 The last column is what separates a defect from a decision. A pre-2.0 directory **with** an
 artboard is unfinished work. One **without** is either a screen the redesign deliberately left
@@ -170,18 +181,23 @@ gained one section it was not drawn with: the manual source triggers, kept becau
 otherwise has no way back before its next scheduled run. That is the audit's own rule applied —
 when the artboard draws less than the screen does, keep the capability and write it down.
 
-### Descubrir — ✗ designed, zero code
+### Descubrir — ◐ built in the state the design drew for an instance without Alpaca
 
-Three artboards, no route, no controller, no view. D31 defines it and its disposability contract.
+**Shipped 2026-08-27 (#292).** `/discover` exists, with the Alpaca notice and the Calendario — the
+walking skeleton this section recommended, and it did prove the disposability contract: zero tables,
+one YAML, one domain class, and a spec that pins the absence of a migration.
 
-Two facts that set its order:
+What is drawn and not built is the half that reads Alpaca:
 
-- **Alpaca is a prerequisite** (D31 promotes D19/§9). There are 13 gateways today and none is
-  Alpaca; §9 still needs its own 4-filter card.
-- **Of the 17-ETF basket, only `SPY` and `ARKK` exist in the catalogue.** Fifteen are new.
-- The *Calendario* block is the only one D31 marks as needing no credential. **It can be built
-  before Alpaca**, as the walking skeleton that proves the disposability contract — zero tables, one
-  job, 24h TTL — before the gateway is paid for.
+- **Olas, Reportes and Titulares** wait on #290. The screen names the credential they need rather
+  than drawing empty cards, which is the `descubrir-olas-sin-datos` artboard.
+- **Of the 17-ETF basket, only `SPY` and `ARKK` exist in the catalogue.** Fifteen are new, and the
+  basket YAML rides with them.
+- `WarmDiscoverJob` and its `recurring.yml` entry are absent on purpose: with no Alpaca there is
+  nothing to warm.
+- **The Calendario is real but half-loaded.** The Fed's 2026 dates are in; Banxico publishes its own
+  as a non-machine-readable PDF (D33), so the rest is hand-entered and the block declares the year
+  it covers.
 
 ## The cross-cutting change: a fifth destination
 
@@ -202,6 +218,10 @@ exports were re-shot in the same pass — `cockpit-panorama-default`, `reglas-co
 `ui-kit-shell-desktop` all draw five tabs. **Only the code is outstanding**, which is the
 opposite of what this section said and the reason it is corrected rather than deleted: the
 paragraph above sent a reader to redo design work that was done.
+
+**Closed 2026-08-27 (#292/#334).** `NavigationHelper` carries five destinations, `/discover`
+exists, and the specs that pinned four were updated rather than deleted. This section stops being
+the cross-cutting gap and stays only as the record of how it was priced, mis-recorded, and paid.
 
 ---
 
@@ -247,22 +267,22 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
 
 ## Complete — designed, no code
 
-6. ⬜ **`/discover`** → [#291](https://github.com/rodacato/stockerly/issues/291)
-7. ⬜ **§9 Alpaca** → [#290](https://github.com/rodacato/stockerly/issues/290)
-8. ⬜ **The fifth nav destination** → [#292](https://github.com/rodacato/stockerly/issues/292)
+6. ◐ **`/discover`** → [#291](https://github.com/rodacato/stockerly/issues/291). Built
+   2026-08-27 in its sin-datos state: the screen, the Alpaca notice and the Calendario are live;
+   Olas, Reportes and Titulares wait on the gateway.
+7. ✅ **§9 Alpaca** → [#290](https://github.com/rodacato/stockerly/issues/290) closed.
+8. ✅ **The fifth nav destination** → [#292](https://github.com/rodacato/stockerly/issues/292)
+   closed 2026-08-27. Five destinations, `/discover` routed, the four-entry specs updated.
 
 ## Support — the design asks for something the code cannot do
 
-0. ⬜ **Domain-layer copy reaching the UI in English** → [#302](https://github.com/rodacato/stockerly/issues/302).
-   Found twice the same day in unrelated places, which is what makes it a pattern:
-   `DataSourceRegistry`'s thirteen source names render raw on Estado, and `MetricDefinitions`'
-   36 metrics × 3 fields do the same on the asset detail. The second half is inside #294; the
-   first is deferred. The decision is not *whether* to translate but where the boundary sits —
-   a provider name (`Polygon.io`) is a proper noun, a capability label (`Market Indices`) is UI
-   copy that happens to live in code.
+0. ✅ **Domain-layer copy reaching the UI in English** → [#302](https://github.com/rodacato/stockerly/issues/302)
+   closed 2026-08-27. `MetricDefinitions` went with #294; the registry's labels moved to
+   `data_sources.<key>` in the locale, and the boundary the issue asked for is written into the
+   registry itself — a provider proper noun reads the same in any locale, a capability label is
+   copy.
 
-9. ⬜ **`browser_push`** → [#293](https://github.com/rodacato/stockerly/issues/293). Reglas shipped
-   two toggles rather than three; the design and the code disagree in writing until this is called.
+9. ✅ **`browser_push`** → [#293](https://github.com/rodacato/stockerly/issues/293) closed.
 10. ⬜ **Fifteen basket ETFs** absent from the catalogue. Rides #290.
 11. ⬜ **The *Trabajos* badge** — needs a way to count failed jobs without a cross-database query in
     the hub's request path. Rides #289.
@@ -274,11 +294,29 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
 13. **Retire the "DONE" convention in `CODE_CHANGES.md`,** or qualify it. Nine sections say shipped
     while five directories with artboards are pre-2.0. This is the defect that produced the whole
     audit: the record was accurate and still misled.
+
+    **Reinforced 2026-08-27, three times in one day, and the pattern is sharper than "DONE".** The
+    record is written when a decision is taken and never revisited when reality moves: this file
+    said the kit still had four destinations after it had been bumped to five and re-vendored;
+    two flow briefs still read `kit-version-source 0.5.0` while their own `BottomNav` carried
+    Descubrir; and `GlobalSearch` was kept for a TopBar search the artboards do not draw. None was
+    wrong when written. **What is missing is not a better verb — it is a habit of re-reading the
+    record against the thing it describes**, which is what this section is for and why each of
+    those was corrected in place rather than deleted.
 14. **The design README's `done · in review`** should say what is done — the `.pen`, not the ERB.
 15. **`docs/pivot-self-hosted-tracker`** — 112 commits behind, its content already on master by
     another route. So is `design/discover` (5 commits, its remote gone). Both are Adrian's to
     delete.
 16. **`welcome` / `help`** — on tokens, zero i18n keys, and they share `_welcome_body`.
+19. **The Confluencia artboard is out of date.** `reglas-confluencia` still carries the notice *"El
+    semáforo está diseñado, no construido"*, and lights 1 and 3 were built in #294 as readings. It
+    also describes a mechanism that does not exist: nothing combines the three lights inside a
+    window, and there is no confluence window in code at all. **Building that screen as drawn would
+    describe a mechanism the instance does not have** — the D13/D16/D23/D25 pattern. Fix the
+    artboard before anyone builds from it.
+20. **"Watchlist" and "Sigo" are the same tier under two names.** `watchlist_items.flash.*` says
+    *"Agregado a tu watchlist"* while the Activos artboard labels that tier **Sigo** (D9). Three
+    keys, and it is a product-vocabulary call.
 
 ## Change — a decision to revisit, not a bug
 
@@ -288,6 +326,11 @@ Grouped as Adrian framed it. Ordered within each group by what unblocks the most
     `/search` deleted. `GlobalSearch` was kept alongside it *"for the TopBar search the artboards draw"* — **checked 2026-08-27 and the artboards draw none**: `ui-kit-shell-desktop` and every mobile TopBar are brand plus bell. The one search the design does draw is Rastreados·Buscar, served by `assets#search_ticker`. The use case was deleted. **`/positions`
     kept, with a date**: it is reached from the asset detail, it is the only home for global trades
     and dividends, and its review is #294 — if it has no artboard when that closes, it goes then.
+    **That date came due**: #294 closed 2026-08-26 with no artboard, and rather than delete the
+    route, `[Activos] / Historial / Default` was drawn 2026-08-27 (D43). Measuring decided it —
+    one inbound link from outside the screen, three of its four tabs with none, and three lists
+    with no other home. The "posiciones abiertas" tab was dropped: it duplicated Cartera, which is
+    the likeliest reason nobody ever linked to the screen.
 
     **The framing was wrong and measuring fixed it.** The issue read four equally-adrift screens;
     only `/search` was actually orphaned. `/market`'s listing had six inbound links, two of them
