@@ -79,8 +79,15 @@ Token divergence across the ten `.pen` files is **zero** — verified by hashing
 
 # Where the migration stands
 
-Two tables. **Both were re-run on 2026-08-28** against `46a95aa` — the commands are printed so the
-next pass counts the same way, and so re-measuring is always cheaper than trusting the numbers.
+Two tables. **Both re-run on 2026-08-28 against `423425f`**, after TOTP and the Historial rebuild
+landed (the ADR-019 commit between them touches no `app/views`, and re-running returned the same numbers) — the commands are printed so the next pass counts the same way, and so re-measuring is
+always cheaper than trusting the numbers.
+
+**What moved since the first pass:** `positions` went from 1 i18n key to 16 and from the pre-redesign
+table to the drawn screen; `trades` went 76 → 36 token uses as its index was deleted, and 16 → 33
+keys; `two_factor` and `totp_enrollments` are new and were 2.0 from birth. **The list of directories
+still carrying hardcoded copy did not change**: `profiles`, `shared`, `welcome`/`help`,
+`bug_reports`, `legal` and the mailers.
 
 ## 1. Is each screen on the 2.0 contract?
 
@@ -101,22 +108,24 @@ grep -rcE '\bt\('                          app/views/<dir> | awk -F: '{x+=$NF} E
 |---|---:|---:|---:|---|---|
 | `admin` (logs · integrations · settings) | 0 | 65 | 52 | ✅ 2.0 | yes |
 | `alerts` | 0 | 49 | 36 | ✅ 2.0 | yes |
-| `assets` | 0 | 35 | 47 | ✅ 2.0 | yes |
+| `assets` | 0 | 40 | 49 | ✅ 2.0 | yes |
 | `components` | 0 | 56 | 13 | ✅ 2.0 | the kit |
 | `dashboard` | 0 | 20 | 18 | ✅ 2.0 | yes |
 | `discover` | 0 | 25 | 17 | ✅ 2.0 | yes |
 | `layouts` | 0 | 10 | 4 | ✅ 2.0 | the shell |
 | `market` | 0 | 186 | 100 | ✅ 2.0 | yes |
 | `notifications` | 0 | 9 | 11 | ✅ 2.0 | yes |
-| `onboarding` | 0 | 40 | 27 | ✅ 2.0 | yes |
+| `onboarding` | 0 | 47 | 34 | ✅ 2.0 | yes — gained the Seguridad step |
 | `password_resets` | 0 | 14 | 20 | ✅ 2.0 | 3 of 5 |
 | `portfolios` | 0 | 16 | 23 | ✅ 2.0 | yes |
+| `positions` | 0 | 13 | 16 | ✅ 2.0 | **yes — rebuilt as Historial 2026-08-28** |
 | `sessions` | 0 | 2 | 10 | ✅ 2.0 | yes |
-| `settings` | 0 | 33 | 22 | ✅ 2.0 | yes |
+| `settings` | 0 | 32 | 24 | ✅ 2.0 | yes |
 | `setup` | 0 | 2 | 12 | ✅ 2.0 | yes |
-| `trades` | 0 | 76 | 16 | ◐ copy | **no** — ACT-3 |
-| `positions` | 0 | 30 | **1** | ◐ copy | drawn, not built — ACT-2 |
-| `profiles` | 0 | 64 | **0** | ◐ copy | **no** — AJU-1 |
+| `totp_enrollments` | 0 | 15 | 12 | ✅ 2.0 | yes — new 2026-08-28 |
+| `trades` | 0 | 36 | 33 | ✅ 2.0 | the sheet; the index is gone |
+| `two_factor` | 0 | 8 | 13 | ✅ 2.0 | yes — new 2026-08-28 |
+| `profiles` | 0 | 64 | **0** | ◐ copy | **no** — AJU-1, the last big one |
 | `shared` | 0 | 40 | **0** | ◐ copy | mixed |
 | `welcome` · `help` | 0 | 2 · 2 | **0** | ◐ copy | yes · no — ONB-3 |
 | `bug_reports` | 0 | 11 | **0** | ◐ copy | **no** |
@@ -143,14 +152,48 @@ ls app/views/components/*.html.erb                        # the partials
 grep -rc "components/<name>" app lib spec                 # render sites, per partial
 ```
 
-**20 kit components (0.9.0) against 16 partials, and all 16 are referenced** — lowest is 1 file,
-highest is `_empty_state` at 9. Unchanged from the 2026-08-27 crossing, which is the first time this
-table has been re-run without moving.
+**20 kit components (0.9.0) against 15 partials, and all 15 are referenced** — lowest is 1 file,
+highest is `_empty_state` at 9. It was 16 until 2026-08-28: `_asset_badge` lost every render site
+when the trade rows became cards and went with them (X6).
+
+The inline primitives moved the wrong way again, which is KIT-1's whole argument: `bg-bg-surface` is
+at **123 template lines** (99 when first counted, 121 a day ago) and `bg-primary` at 60.
 
 The full crossing lives in the *Kit → code* section below; four rows are open and the other sixteen
 are shipped.
 
 ---
+
+## Where this stands — 2026-08-28
+
+Counted from this file, never incremented — the command is printed for the same reason the other
+two tables print theirs.
+
+```sh
+grep -cE '^### '                design/V2_REMAINING.md   # every finding heading
+grep -oE '^### [^ ]+ [✅🔴🟡⚪]' design/V2_REMAINING.md | awk '{print $NF}' | sort | uniq -c
+```
+
+| | Findings | |
+|---|---:|---|
+| ✅ closed | **19** | shipped or measured away |
+| 🔴 open | **4** | ACT-1 · CKP-1 · ALR-1 · AJU-1 |
+| 🟡 open | **16** | a real gap inside a working screen |
+| ⚪ open | **12** | debt and hygiene, mostly `.pen` edits |
+| — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
+
+**51 headings carry a glyph and 53 findings exist**, which is the count [#386](https://github.com/rodacato/stockerly/pull/386)
+opened this file with. The two outside the tally are `TD2` (hardcoded controller strings, a real
+finding of its own) and `TD5` (a pointer to `CKP-7`, not an independent one). **Assigning them a
+severity is a call, not a count** — so they are shown rather than absorbed, and the tally stays
+something the command above reproduces.
+
+**`DECISIONS.md`: 60 entries · 55 resolved · 5 open** — D3, D15, D33, D55, D57.
+
+**What the four reds are.** `ACT-1` (the empty state's CSV and demo doors — two 4-filter cards owed),
+`CKP-1` (`Movimientos`, the last drawn screen with no code — un-gated by D42), `ALR-1` (`Confluencia`
+as a screen, gated on D3's engine), and `AJU-1` (retire `/profile` into the hub — needs a design pass
+before a slice).
 
 ## Severity
 
@@ -210,7 +253,7 @@ screen have **no fill at all**.
 **Fixed:** both now read `bg-primary-muted`, the token the pair was reaching for. It was listed
 first because it is invisible in review and visible on screen.
 
-### X3 🟡 Four screens are drawn and have no code at all
+### X3 🟡 Drawn screens with no code — one left of six
 
 Counted across flows, so it does not read as four separate small gaps:
 
@@ -285,7 +328,7 @@ The original entry, kept:
 
 ####  `PortfolioChartHelper` deleted 2026-08-28 — dead code with a passing spec
 
-[`portfolio_chart_helper.rb`](../app/helpers/portfolio_chart_helper.rb) is one method, **zero
+`portfolio_chart_helper.rb` is one method, **zero
 render sites**. It hand-computes SVG polyline coordinates and hardcodes `#10b981` / `#ef4444` — the
 pre-2.0 green and red, as raw hex. D2 replaced it with `lightweight-charts`.
 
@@ -380,7 +423,7 @@ idiom and drop the four rows from the kit's expectations.
 
 **Nothing else in this file depends on the answer**, which is why it sits at 🟡 rather than blocking.
 
-### KIT-2 ⚪ `MarketCard` is built — the old inventory was measuring one directory
+### KIT-2 ✅ `MarketCard` is built — the old inventory was measuring one directory
 
 Recorded as *"Net-new, not built"*. It is `app/views/dashboard/_sentiment_card.html.erb`, rendered
 from `dashboard/show.html.erb:19`: the uppercase mono label, the 4xl value, the delta line — the
@@ -958,7 +1001,7 @@ two briefs that record it disagree about which decision did it — `discover.pen
 the decision that dropped it was **D47**. `DECISIONS.md`'s D46 is the BMV `Tracked · Sin fuente`
 finding, so the brief is mis-citing by one.
 
-### DSC-3 ⚪ D56 should be closed as *not a defect* — both its measurements read the wrong token
+### DSC-3 ⚪ D56 should be closed as *not a defect* — Adrian's call, and it removes work
 
 D56 is the open finding that says two pairs fall below AA and that fixing them ripples across the
 kit and the ERB. **Re-measured 2026-08-28 against the token values and the nodes themselves, both

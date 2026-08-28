@@ -55,7 +55,12 @@ screens; smaller ones may merge into a neighbor.
 
 > **Status below is the `.pen` file's, not the ERB's.** How closely the code matches each flow
 > is measured in [V2_REMAINING.md](V2_REMAINING.md) — read that before taking **done · in
-> review** as "the screen looks like this".
+> review** as "the screen looks like this". That file also carries the running count: as of
+> 2026-08-28, **19 findings closed and 33 open, four of them red**.
+>
+> **The code caught up on three flows on 2026-08-28.** `auth` gained its three TOTP screens and the
+> second factor at login; `onboarding` gained the Seguridad step and went to four; `assets` gained
+> `Historial`, which absorbed `/trades`. What is left per flow is in `V2_REMAINING.md`, not here.
 
 > **Vocabulary renamed 2026-08-27 (D48).** The tier ladder is now **Holdings** (was Poseo),
 > **Watchlist** (was Sigo) and **Tracked** (was Rastreados), and the observation sense of
