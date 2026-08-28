@@ -961,6 +961,13 @@ es-MX:
     errores:
       fecha_futura: La fecha del movimiento no puede ser futura.
       fecha_invalida: Esa fecha no es válida.
+    flash:
+      actualizado: Movimiento actualizado.
+      eliminado: Movimiento eliminado.
+      no_encontrado: Movimiento no encontrado.
+      registrado: "%{side} registrada: %{shares} títulos de %{symbol}"
+      side_compra: Compra
+      side_venta: Venta
     new:
       activo: Activo
       activo_ayuda: Ticker o nombre

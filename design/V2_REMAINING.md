@@ -468,23 +468,48 @@ Two drifts inside it, found while reading:
   side; the code is `max-w-2xl` (672px). The three cards do go side by side at `sm:`, so the
   intent survives — the width does not.
 
-### ONB-4 🟡 Two copy divergences between artboard and code
+### ONB-4 ✅ Copy divergences — six, not two, all aligned 2026-08-28
 
 | | Artboard | Code |
 |---|---|---|
 | Welcome CTA | *Ir al panel* | *Ir al Panorama* |
 | Third guide card | *Configura una alerta* | *Configura una regla* |
 
-The second is the more interesting one: **the code is right and the artboard is behind**. The tab
-is *Reglas*, D13 settled the vocabulary, and *alerta* is the word the 1.0 used. Fix the artboard.
+**Applied — and reading the locale turned two divergences into six.** Every one has the same shape:
+the code names the destination and the artboard says a generic *panel*, or the artboard uses the
+1.0's word. The code is right in all six.
+
+| Artboard said | Code says | Where |
+|---|---|---|
+| *Configura una alerta* | *Configura una regla* | Welcome ×2 |
+| *Ir al panel* | *Ir al Panorama* | Welcome CTA ×2 |
+| *Lanzar e ir al panel* | *Lanzar e ir al Panorama* | Complete |
+| *Ir al panel sin sincronizar* | *Ir al Panorama sin sincronizar* | Complete |
+
+The tab is *Reglas*, D13 settled that vocabulary, and *alerta* is the word the 1.0 used. This is the
+artboard following the code — the documented exception `assets.pen` already took for D48, and
+correct for the same reason: the copy shipped first and reads better.
+
+Exports re-shot for Welcome, Welcome · Desktop and Complete.
 
 ### ONB-5 ⚪ The Assets step draws four categories against the code's five
 
 `Administration::Domain::AssetCatalog::CATALOG` has five keys and `onboarding.categorias` in the
 locale has five entries — `us_stocks`, `crypto`, `etfs`, `mexican_stocks`, `fixed_income`. The
-`Assets` artboard draws four; **`Acciones · México` is missing**. The brief already records this
-category split as *"not a design call — the code had already made it"*, so the artboard simply
-did not finish catching up.
+`Assets` artboard draws four; **`Acciones · México` is missing**.
+
+**Measured 2026-08-28 rather than deferred on a hunch, and the measurement found a product question
+underneath.** The mobile artboard is 390×844 with its `Col` already at 793, and a two-item group
+costs ~119px (what `CRIPTO` costs), so the artboard has to grow past 844 — allowed, since D7 is a
+floor and `Welcome` is already 915, but it is an artboard resize plus the desktop `Form Panel`, not
+a copy fix.
+
+**The real blocker is what the group would show.** The catalogue's only two MX entries are
+`GENIUSSACV.MX` (Genius Sports) and `IVVPESO.MX` (iShares S&P 500 in MXN) — a sports-betting
+company and a repackaged US index. Featuring those as *Acciones · México* on the screen that shapes
+a first run is a product call in C1 Lucía's lane, not a catch-up edit. **Either the catalogue's MX
+entries change or the group does; drawing what is there today would ship a recommendation nobody
+made.**
 
 ### ONB-6 ✅ D59 — applied 2026-08-28: it stays a promise, and lost its checkmarks
 
@@ -847,10 +872,10 @@ The screen drops from **three** commit models to two: instant-local (theme) and 
 (currency, switches). The artboard draws no `Guardar`, so design and code converged with no artboard
 edit.
 
-**One thing the new controller does that `toggle` does not: it reverts on a rejected value.** The
-pill is the only place the choice is visible, so leaving it on a value the server refused would
-report a state the instance does not have. `toggle` should do the same and does not — its own
-item, not this one's.
+**The new controller reverts on a rejected value**, because the pill is the only place the choice is
+visible and leaving it on a value the server refused would report a state the instance does not
+have. `toggle` did not do this; **it does now** — same contract, fixed 2026-08-28 in the same pass
+that found it.
 
 ### AJU-4 ⚪ The `Estado y mantenimiento` artboard still carries a warning its own brief retired
 
@@ -1010,10 +1035,11 @@ not `create` / `update` / `destroy`, which is where all six blocks live.
 ADR-011 puts controller error strings on i18n. `sessions_controller` already does it
 (`t("auth.flash.…")`), so the pattern is established and these two controllers are the holdouts.
 
-**Split 2026-08-28, and neither half was done.** `positions_controller`'s four strings go with
-ACT-2's rebuild, so writing keys for them now is work for a screen being replaced.
-`trades_controller`'s six survive D60 and are genuinely owed — they were kept out of this batch so it
-stayed a refactor with no copy changes, which is what let the suite prove it.
+**Split 2026-08-28. `trades_controller`'s half is paid; `positions_controller`'s is not.** The six
+that survive D60 are now `trades.flash.*` keys — including `trade_notice`, whose *Compra*/*Venta*
+resolves through `side_compra`/`side_venta` rather than an inline ternary. `i18n-tasks` reports no
+missing and no unused keys. `positions_controller`'s four go with ACT-2's rebuild: writing keys for
+a screen being replaced is the same waste TD3 and TD4 are deferred for.
 
 ### TD3 ⏸ — deferred to ACT-2, deliberately
 
