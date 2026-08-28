@@ -27,8 +27,12 @@ leaves this list by shipping or by being declined on the record.
 | **No `transparent` token** | The consistency sweep, 2026-08-27 | `cockpit.pen` carries 44 `#00000000` literals — transparency, not colour. `README.md` says *"tokens only — zero hex in a flow"*, and the kit gives no way to spell "no fill", so **the rule currently forbids its own only spelling**. Either a token or a sentence in the rule |
 
 
-**Current: 0.8.0.** Entries below are historical and are not rewritten when a later version
-supersedes them — read the newest entry that mentions a component, not the first.
+**The version lives in the `kit-version` variable inside `ui-kit.lib.pen`** — that is the only
+place it is true. This file deliberately no longer restates it: a mirrored number went stale three
+times (this line said 0.8.0 while the kit was at 0.9.0; the canvas label said 0.5.0 and 0.8.0 while
+the variable said 0.7.0 and 0.9.0). Entries below are historical and are not rewritten when a later
+version supersedes them — **read the newest entry that mentions a component, not the first**, and
+keep them in ascending order so "newest" means "last".
 
 > **Vocabulary, renamed 2026-08-27 (D48).** The tier ladder moved to the industry-standard English
 > names: **Poseo → Holdings · Sigo → Watchlist · Rastreado(s) → Tracked**. The observation sense of
@@ -264,90 +268,6 @@ paragraph replaced said the kit led the code, and it stopped being true the day 
 
 ---
 
-## 0.9.0 — HeaderBar (minor)
-
-**+1 component, 19 → 20.** Nothing renamed, nothing removed.
-
-### HeaderBar — the back-header two flows had already built five times
-
-`flows/settings.pen` hand-built it **four** times (Integraciones, Registros, Estado y mantenimiento,
-Integraciones · Estados) and `flows/alerts.pen` **twice** (Bandeja, Confluencia). The 0.8.0 gap note
-set the bar explicitly — *"if any of them needs the same bar, that is the second consumer and the
-promotion is earned"* — and it fired.
-
-**Measured before promoting**, because the same note nearly caused a false match. This is **not**
-cockpit's `TopBarDetail`: that one carries a two-line ticker title and a bookmark; this one an 18px
-display title and an optional action. Different components, and `TopBarDetail` stays local to
-`cockpit.pen` until it finds a second consumer of its own.
-
-| Slot | |
-|---|---|
-| `BackWrap` | 44×44, `$radius-md` — every hand-built copy had a bare 20px icon |
-| `T` | `fill_container`, 18px/700 `$font-display` |
-| `Accion` | `fit_content` × 44, icon + label. Icon-only consumers disable the label and pin the wrap to 44 — Pencil instances cannot add children, so the master carries both and instances subtract |
-
-Height 68 at rest, 44 of it the touch target.
-
-### Consumers
-
-`flows/settings.pen` (4 instances) and `flows/alerts.pen` (1 master replaced by the kit's shape).
-`cockpit.pen` is untouched — its detail bar is a different component.
-
-## 0.8.1 — accent text on a muted surface (patch)
-
-**No components added or renamed. One token value moves, one component treatment changes, and the
-consumers re-vendor.** Raised by D41's own trigger firing, and found by measuring rather than by eye.
-
-### The rule
-
-> **Accent *text* on a muted surface uses `primary-hover`, never `primary`. Accent *icons* keep
-> `primary`.**
-
-Text owes 4.5:1 and `primary` on `primary-muted` does not reach it in either theme — **3.68:1 light**
-(`#5B6CFF` on `#EEF0FF`) and **4.24:1 dark** (`#7B89FF` on `#2A2E55`). `primary-hover` does, in both:
-**4.96:1** and **5.01:1**. Icons owe 3:1 under non-text contrast, which 3.68:1 already clears, so they
-do not move — that is what keeps this a text rule instead of a palette change.
-
-**No background moves**, so surface separation is untouched: `primary-muted` on `bg-canvas` stays at
-1.32:1 in dark. And `primary-hover` already existed in the kit and in `application.css`, so the rule
-costs zero new tokens.
-
-### Token
-
-**`info-fg` dark `#7B89FF` → `#9098FF`.** In dark the `info` pair was token-identical to the
-`primary` pair the rule just rejected — the same 4.24:1 failure under a different name, on the token
-whose entire job is being readable on `info-bg`. Light was already fine at 4.96:1 and does not move.
-
-### Component
-
-`SidebarNav`'s active item: its label and its icon were both `$primary` on `$primary-muted`. The
-label is `$primary-hover` now; the icon moved too, because it sits inside the same pill as the label
-and splitting them read as a defect rather than a rule.
-
-### Why this is a patch and not a minor
-
-Nothing is added, renamed or removed, and no consumer's layout moves — the change is a colour on
-existing text. Re-vendoring is a token update plus a fill swap, not a re-layout.
-
-### Consumers re-vendored 2026-08-27
-
-| File | Text nodes moved |
-|---|---|
-| `flows/assets.pen` | **16** — filter chips, the FX notes, the `Seguir` CTAs, five `Holdings` chips, the nav |
-| `flows/cockpit.pen` | **9** — the period segments, `VS. TU PLAN`, `1.3× prom.`, the nav |
-| `flows/discover.pen` | **2** — the nav, and the `Ir a Integraciones →` link D41 measured and left |
-| `flows/auth.pen` · `_playground.pen` | 0 — neither uses the pair; token updated for parity |
-
-`flows/settings.pen`, `flows/alerts.pen` and `flows/onboarding.pen` are still on 0.7.0 and pick this
-up when they migrate.
-
-### What this says about D41
-
-D41 resolved one card and wrote *"no other screen uses `primary-muted` that way today. Worth a look
-if a second one wants to."* Measured: **27 text nodes across three flows and six call sites in the
-ERB** — the nav, `/trades`' three filter chips, the profile identity badge and the Tracked row's
-button. The trigger had already fired when the sentence was written. Recorded as **D56**.
-
 ## 0.8.0 — the six logged gaps, three of which were not gaps
 
 Every gap this kit had accumulated since 0.1.0, worked in one batch so the seven flows re-vendor
@@ -443,3 +363,91 @@ with the plain row would have flattened a real hierarchy while calling it consis
 It ships as an instance override, not a new variant — the method says do not promote unasked. If a
 second flow needs the same accent, that override has earned a variant and this is the entry that
 says so.
+
+---
+
+## 0.8.1 — accent text on a muted surface (patch)
+
+**No components added or renamed. One token value moves, one component treatment changes, and the
+consumers re-vendor.** Raised by D41's own trigger firing, and found by measuring rather than by eye.
+
+### The rule
+
+> **Accent *text* on a muted surface uses `primary-hover`, never `primary`. Accent *icons* keep
+> `primary`.**
+
+Text owes 4.5:1 and `primary` on `primary-muted` does not reach it in either theme — **3.68:1 light**
+(`#5B6CFF` on `#EEF0FF`) and **4.24:1 dark** (`#7B89FF` on `#2A2E55`). `primary-hover` does, in both:
+**4.96:1** and **5.01:1**. Icons owe 3:1 under non-text contrast, which 3.68:1 already clears, so they
+do not move — that is what keeps this a text rule instead of a palette change.
+
+**No background moves**, so surface separation is untouched: `primary-muted` on `bg-canvas` stays at
+1.32:1 in dark. And `primary-hover` already existed in the kit and in `application.css`, so the rule
+costs zero new tokens.
+
+### Token
+
+**`info-fg` dark `#7B89FF` → `#9098FF`.** In dark the `info` pair was token-identical to the
+`primary` pair the rule just rejected — the same 4.24:1 failure under a different name, on the token
+whose entire job is being readable on `info-bg`. Light was already fine at 4.96:1 and does not move.
+
+### Component
+
+`SidebarNav`'s active item: its label and its icon were both `$primary` on `$primary-muted`. The
+label is `$primary-hover` now; the icon moved too, because it sits inside the same pill as the label
+and splitting them read as a defect rather than a rule.
+
+### Why this is a patch and not a minor
+
+Nothing is added, renamed or removed, and no consumer's layout moves — the change is a colour on
+existing text. Re-vendoring is a token update plus a fill swap, not a re-layout.
+
+### Consumers re-vendored 2026-08-27
+
+| File | Text nodes moved |
+|---|---|
+| `flows/assets.pen` | **16** — filter chips, the FX notes, the `Seguir` CTAs, five `Holdings` chips, the nav |
+| `flows/cockpit.pen` | **9** — the period segments, `VS. TU PLAN`, `1.3× prom.`, the nav |
+| `flows/discover.pen` | **2** — the nav, and the `Ir a Integraciones →` link D41 measured and left |
+| `flows/auth.pen` · `_playground.pen` | 0 — neither uses the pair; token updated for parity |
+
+`flows/settings.pen`, `flows/alerts.pen` and `flows/onboarding.pen` are still on 0.7.0 and pick this
+up when they migrate.
+
+### What this says about D41
+
+D41 resolved one card and wrote *"no other screen uses `primary-muted` that way today. Worth a look
+if a second one wants to."* Measured: **27 text nodes across three flows and six call sites in the
+ERB** — the nav, `/trades`' three filter chips, the profile identity badge and the Tracked row's
+button. The trigger had already fired when the sentence was written. Recorded as **D56**.
+
+---
+
+## 0.9.0 — HeaderBar (minor)
+
+**+1 component, 19 → 20.** Nothing renamed, nothing removed.
+
+### HeaderBar — the back-header two flows had already built five times
+
+`flows/settings.pen` hand-built it **four** times (Integraciones, Registros, Estado y mantenimiento,
+Integraciones · Estados) and `flows/alerts.pen` **twice** (Bandeja, Confluencia). The 0.8.0 gap note
+set the bar explicitly — *"if any of them needs the same bar, that is the second consumer and the
+promotion is earned"* — and it fired.
+
+**Measured before promoting**, because the same note nearly caused a false match. This is **not**
+cockpit's `TopBarDetail`: that one carries a two-line ticker title and a bookmark; this one an 18px
+display title and an optional action. Different components, and `TopBarDetail` stays local to
+`cockpit.pen` until it finds a second consumer of its own.
+
+| Slot | |
+|---|---|
+| `BackWrap` | 44×44, `$radius-md` — every hand-built copy had a bare 20px icon |
+| `T` | `fill_container`, 18px/700 `$font-display` |
+| `Accion` | `fit_content` × 44, icon + label. Icon-only consumers disable the label and pin the wrap to 44 — Pencil instances cannot add children, so the master carries both and instances subtract |
+
+Height 68 at rest, 44 of it the touch target.
+
+### Consumers
+
+`flows/settings.pen` (4 instances) and `flows/alerts.pen` (1 master replaced by the kit's shape).
+`cockpit.pen` is untouched — its detail bar is a different component.

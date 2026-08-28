@@ -858,19 +858,6 @@
       ]
     },
     {
-      "type": "text",
-      "id": "SjucV",
-      "x": 880,
-      "y": -374,
-      "name": "KitLabel",
-      "fill": "$fg-subtle",
-      "content": "COMPONENTES · v0.8.0",
-      "fontFamily": "$font-mono",
-      "fontSize": 12,
-      "fontWeight": "normal",
-      "letterSpacing": 1.5
-    },
-    {
       "type": "frame",
       "id": "tnaC8",
       "x": 880,
@@ -2738,6 +2725,20 @@
           ]
         }
       ]
+    },
+    {
+      "type": "text",
+      "id": "aFAXR",
+      "x": 880,
+      "y": -374,
+      "name": "KitLabel",
+      "context": "Mirrors the kit-version variable and must be updated with it. It has drifted three times (read 0.5.0 and 0.8.0 while the variable said 0.7.0 and 0.9.0). Binding it with content: \"$kit-version\" does NOT work — a text node renders the reference literally.",
+      "fill": "$fg-subtle",
+      "content": "COMPONENTES · v0.9.0",
+      "fontFamily": "$font-mono",
+      "fontSize": 12,
+      "fontWeight": "normal",
+      "letterSpacing": 1.5
     }
   ],
   "themes": {
