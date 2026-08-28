@@ -28,7 +28,7 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 | `flows/assets.pen` | **0.8.0** | ✅ PR #368 | — |
 | `flows/cockpit.pen` | **0.8.0** | ✅ shell · tokens · brief · exports | 3 items, one of them an owner's call |
 | `flows/auth.pen` | **0.8.0** | ✅ done | — |
-| `flows/alerts.pen` | 0.7.0 | — | one artboard is dangerous to build from |
+| `flows/alerts.pen` | **0.8.1** | ✅ done | — |
 | `flows/settings.pen` | 0.7.0 | — | a reversed decision still drawn, plus a `Seguridad` section (D52) |
 | `flows/discover.pen` | **0.8.0** | ✅ done | — |
 | `flows/onboarding.pen` | 0.7.0 | — | TOTP lands in the wizard (D52): nine artboards move |
@@ -98,14 +98,37 @@ delete lands and the insert has not is how exploration disappears.
 **Found here, logged as D55:** the argument that kills email OTP also applies to
 `/forgot-password`, which this flow already ships.
 
-## `flows/alerts.pen`
+## `flows/alerts.pen` — done 2026-08-27, on 0.8.1
 
-- **`Confluencia` is dangerous to build from.** It still carries *"el semáforo está diseñado, no
-  construido"* (lights 1 and 3 shipped), **and it describes a mechanism that does not exist** —
-  nothing combines the three lights inside a window, and there is no confluence window in code.
-- **Drop the third channel toggle.** Its first channel is `browser_push`, whose column and plumbing
-  were deleted 2026-08-25 (#293). D16: *"Ajustes had it right"* — two switches, not three.
-- **Re-vendor `SwitchRow`** — 3 hand-built copies.
+- ✅ 14 tokens · `info-fg` · `kit-version-source` **0.8.1** · `TopBar` 57 → 76 · the accent-on-muted
+  rule applied to 8 text nodes.
+- ✅ 🐞 **The bell's badge was clipped.** `BellWrap` was 26×22 with the count badge at `x=11`,
+  spilling out of its own box — the file's one reported layout problem. It is 44×44 now, which also
+  buys the touch target. **The count badge stays**: this is the flow that owns the inbox, and a
+  number is more informative than the kit's `UnreadDot`. Logged below as a kit gap.
+- ✅ **Two channels, not three (D16).** The brief grounded on
+  `alert_preferences (browser_push, email_digest, sms_notifications)`. `db/schema.rb` has exactly
+  **two** booleans — `email_digest` and `urgent_email`. `browser_push` went with #293 and
+  `sms_notifications` never existed. The `Avisos en la app` switch is gone, and the block's footer
+  stopped promising it — it named a toggle that no longer exists.
+- ✅ **`SwitchRow` re-vendored.** Two hand-built rows had drifted to a 13px label against the kit's
+  14 and had lost the row padding. The OFF state on `Avisos urgentes` was **deliberate**
+  (`$border-strong`, knob at `x:3`) and survives as an instance override — the `NavRow` lesson again.
+- ✅ **`Confluencia`: the warning was half stale and half live.** STALE — *"el semáforo está
+  diseñado, no construido"* is false: lights 1 and 3 shipped and render at
+  `market/_confluence.html.erb`, reached from `_analysis`. **LIVE** — the shipped subtitle reads
+  *"Tres señales, leídas por separado"*, which is the honest description: nothing combines them.
+  The artboard promised *"cuando las tres se prenden dentro de la misma ventana"* and drew a
+  `Ventana de confluencia · 5 días` control nothing computes. The window keeps its artboard (D8) and
+  now carries the `motor pendiente` treatment light 2 already had.
+- ✅ **Luz 3 stopped claiming MACD.** It exists only as a 20 %-weighted factor inside
+  `TrendScoreCalculator`, not as a signal; the light reads `ma50/ma200_crossed_*`.
+- ✅ **`HeaderBar` consolidated, and it is NOT `TopBarDetail`.** Bandeja and Confluencia each
+  hand-built the same back-header. Measured before promoting anything: cockpit's detail bar has a
+  two-line ticker title and a bookmark, this one an 18px display title and an optional text action —
+  different components. Both back buttons were 20px and are 44 now.
+- ✅ Brief rewritten. **Sixth of six** found contradicting its own file: it claimed
+  `kit-version-source 0.3.0` against a variable reading 0.7.0.
 
 ## `flows/settings.pen`
 
@@ -156,6 +179,10 @@ component update rather than a consolidation.
 ---
 
 ## Kit gaps found while migrating — for the next bump
+
+- **`TopBar` has no count badge.** The kit ships `UnreadDot`, an 8px dot. `alerts.pen` draws a
+  numbered badge because it is the flow that owns the inbox, and a count says more than a dot. It
+  stays local. If a second flow wants the number, the variant is earned.
 
 - **`NavRow` has no recommended/primary state.** Found vendoring it into `assets.pen`: three copies
   had drifted ~6% larger and snapped back, but a fourth carried a deliberate `$primary` accent

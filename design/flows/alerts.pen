@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The 'Reglas' tab plus the inbox behind the TopBar bell — reglas duras sin corazón, and everything the app decides to tell you.\n\nWhy one file: rules are only ONE of four notification producers (alert_triggered · earnings_reminder · maturity_reminder · system). The bandeja is where all four land, and the bell that opens it lives in the shared TopBar. Splitting them would re-vendor the kit for two screens.\n\nScreens: Reglas (Default · Vacío) · Nueva regla (sheet, D11 route-as-drawer) · Bandeja · Confluencia (D3, design-only).\n\nBandeja/Vacío is deliberately NOT an artboard: it is the same layout with the list replaced by one line (\"Nada por ahora. Aquí caen tus reglas disparadas, los reportes que se acercan y los CETES por vencer.\") — a pure string swap belongs in the brief, not on canvas. Reglas/Vacío IS an artboard because it carries different content: suggested rules derived from what you already own.\n\nGrounding: alert_rules (condition enum of 9, threshold_value, window_days, cooldown_minutes default 60, status active/paused, last_triggered_at) · alert_events (message, triggered_at, event_status) · notifications (notification_type enum of 4, read/read_at, notifiable) · alert_preferences (browser_push, email_digest, sms_notifications). Condition labels and the descriptive summary come verbatim from app/helpers/alerts_helper.rb — ADR-0001: describe the trigger, never tell the user what to do.\n\nThree conditions are date-based (dividend_ex_date, bmv_holiday, cete_auction) and the last two are marketwide — they carry no asset. The design keeps that distinction visible instead of forcing every rule to pick a ticker.\n\nCopy: es-MX. kit-version-source 0.3.0.",
+          "content": "The 'Reglas' tab plus the inbox behind the TopBar bell — reglas duras sin corazón, and everything the app decides to tell you.\n\nWhy one file: rules are only ONE of four notification producers (alert_triggered · earnings_reminder · maturity_reminder · system). The bandeja is where all four land, and the bell that opens it lives in the shared TopBar. Splitting them would re-vendor the kit for two screens.\n\nScreens: Reglas (Default · Vacío) · Nueva regla (sheet, D11 route-as-drawer) · Bandeja · Confluencia (D3, engine still design-only).\n\nBandeja/Vacío is deliberately NOT an artboard: it is the same layout with the list replaced by one line — a pure string swap belongs in the brief, not on canvas. Reglas/Vacío IS an artboard because it carries different content: suggested rules derived from what you already own.\n\nGrounding: alert_rules (condition enum of 9, threshold_value, window_days, cooldown_minutes default 60, status active/paused, last_triggered_at) · alert_events (message, triggered_at, event_status) · notifications (notification_type enum of 4, read/read_at, notifiable) · alert_preferences. Condition labels and the descriptive summary come verbatim from app/helpers/alerts_helper.rb.\n\n⚠ Two channels, not three (D16, corrected 2026-08-27). This brief used to ground on alert_preferences (browser_push, email_digest, sms_notifications). Read against db/schema.rb the table has exactly TWO booleans — email_digest and urgent_email. browser_push and its plumbing were deleted 2026-08-25 (#293) and sms_notifications never existed. The 'Avisos en la app' switch is gone from Cómo te aviso, and the block's footer stopped promising it: it now names the bandeja, which is real and is not a channel you toggle.\n\n⚠ Confluencia: the ledger's warning was half stale and half live, and both halves matter. STALE — 'el semáforo está diseñado, no construido' is false: lights 1 and 3 shipped and render at market/_confluence, reached from _analysis. LIVE — the code's own subtitle reads 'Tres señales, leídas por separado', which is the honest description of what it does: nothing combines them. The artboard promised 'cuando las tres se prenden dentro de la misma ventana' and drew a 'Ventana de confluencia · 5 días' control that nothing computes — the D13/D16/D25 pattern of a UI offering what the instance cannot do. The window keeps its artboard (design leads, D8) but now carries the same 'motor pendiente' treatment light 2 already had.\n\nLuz 3 no longer claims MACD. MACD exists only as a 20%-weighted factor inside TrendScoreCalculator, not as a separate signal; the light reads moving-average crosses (ma50/ma200_crossed_*, the observation types that actually exist).\n\nThree conditions are date-based (dividend_ex_date, bmv_holiday, cete_auction) and the last two are marketwide — they carry no asset. The design keeps that distinction visible instead of forcing every rule to pick a ticker.\n\nVendored here: TopBar and BottomNav from the kit; SwitchRow re-vendored 2026-08-27 (two hand-built rows had drifted to a 13px label against the kit's 14 and had lost the row padding — the OFF state on 'Avisos urgentes' was deliberate and survives as an instance override). HeaderBar is LOCAL: Bandeja and Confluencia each hand-built the same back-header, and it is NOT cockpit's TopBarDetail — measured, and they differ in structure (an 18px display title and an optional text action, against a two-line ticker title and a bookmark). Both back buttons were 20px and are 44 now.\n\nPer D4 this flow draws no desktop artboards: its list and sheet are the patterns Holdings and Registrar movimiento already settle.\n\nCopy: es-MX. kit-version-source 0.8.1 (the brief claimed 0.3.0 against a variable reading 0.7.0 — the sixth brief in a row found contradicting its own file, which is what D53 is parked about).",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -121,15 +121,16 @@
           "type": "frame",
           "id": "o2vgpN",
           "name": "BellWrap",
-          "width": 26,
-          "height": 22,
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
           "layout": "none",
           "children": [
             {
               "type": "icon",
               "id": "EIfs7",
-              "x": 0,
-              "y": 1,
+              "x": 12,
+              "y": 12,
               "name": "Bell",
               "width": 20,
               "height": 20,
@@ -140,8 +141,8 @@
             {
               "type": "frame",
               "id": "iskR5",
-              "x": 11,
-              "y": 0,
+              "x": 23,
+              "y": 9,
               "name": "Badge",
               "fill": "$negative",
               "cornerRadius": 99,
@@ -855,7 +856,7 @@
                       "type": "text",
                       "id": "yWvby",
                       "name": "t",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "content": "Nueva",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
@@ -1194,190 +1195,40 @@
                   "fontWeight": "700"
                 },
                 {
-                  "type": "frame",
-                  "id": "YOSoA",
-                  "name": "Avisos en la app",
-                  "width": "fill_container",
-                  "gap": "$space-3",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "dsUwl",
-                      "name": "TC",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "TjrlV",
-                          "name": "l",
-                          "fill": "$fg-default",
-                          "content": "Avisos en la app",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "cUxqm",
-                          "name": "s",
-                          "fill": "$fg-subtle",
-                          "content": "Campana y push del navegador",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "KoqJW",
-                      "name": "SW",
-                      "width": 42,
-                      "height": 24,
-                      "fill": "$primary",
-                      "cornerRadius": 99,
-                      "layout": "none",
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "YS6y1",
-                          "x": 21,
-                          "y": 3,
-                          "name": "k",
-                          "fill": "$bg-surface",
-                          "width": 18,
-                          "height": 18
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "NnRKN",
+                  "id": "NCX3s",
+                  "type": "ref",
+                  "ref": "a8AyYs",
                   "name": "Resumen diario por correo",
                   "width": "fill_container",
-                  "gap": "$space-3",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "JgfEw",
-                      "name": "TC",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "g3j1F",
-                          "name": "l",
-                          "fill": "$fg-default",
-                          "content": "Resumen diario por correo",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "wmoYw",
-                          "name": "s",
-                          "fill": "$fg-subtle",
-                          "content": "Un solo correo a las 18:30 CDMX",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
+                  "descendants": {
+                    "L5wrZr": {
+                      "content": "Resumen diario por correo"
                     },
-                    {
-                      "type": "frame",
-                      "id": "tCDu3",
-                      "name": "SW",
-                      "width": 42,
-                      "height": 24,
-                      "fill": "$primary",
-                      "cornerRadius": 99,
-                      "layout": "none",
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "fwOr5",
-                          "x": 21,
-                          "y": 3,
-                          "name": "k",
-                          "fill": "$bg-surface",
-                          "width": 18,
-                          "height": 18
-                        }
-                      ]
+                    "uv9qf": {
+                      "content": "Un solo correo a las 18:30 CDMX"
                     }
-                  ]
+                  }
                 },
                 {
-                  "type": "frame",
-                  "id": "UJBTk",
+                  "id": "oVcDa",
+                  "type": "ref",
+                  "ref": "a8AyYs",
                   "name": "Avisos urgentes por correo",
                   "width": "fill_container",
-                  "gap": "$space-3",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "H4BmXe",
-                      "name": "TC",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "WSAEx",
-                          "name": "l",
-                          "fill": "$fg-default",
-                          "content": "Avisos urgentes por correo",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "vTuyJ",
-                          "name": "s",
-                          "fill": "$fg-subtle",
-                          "content": "Solo al disparar una regla",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
+                  "descendants": {
+                    "L5wrZr": {
+                      "content": "Avisos urgentes por correo"
                     },
-                    {
-                      "type": "frame",
-                      "id": "aCfaO",
-                      "name": "SW",
-                      "width": 42,
-                      "height": 24,
-                      "fill": "$border-strong",
-                      "cornerRadius": 99,
-                      "layout": "none",
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "QL6px",
-                          "x": 3,
-                          "y": 3,
-                          "name": "k",
-                          "fill": "$bg-surface",
-                          "width": 18,
-                          "height": 18
-                        }
-                      ]
+                    "uv9qf": {
+                      "content": "Solo al disparar una regla"
+                    },
+                    "xGqrS": {
+                      "fill": "$border-strong"
+                    },
+                    "hNhAm": {
+                      "x": 3
                     }
-                  ]
+                  }
                 },
                 {
                   "type": "text",
@@ -1386,7 +1237,7 @@
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP, sólo quedan los avisos en la app.",
+                  "content": "Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP, los avisos sólo llegan a la bandeja.",
                   "lineHeight": 1.4,
                   "fontFamily": "$font-sans",
                   "fontSize": 11,
@@ -1514,74 +1365,16 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "G5UCd",
+          "id": "W6JCmS",
+          "type": "ref",
+          "ref": "jVzSz",
           "name": "Header",
           "width": "fill_container",
-          "fill": "$bg-surface",
-          "stroke": "$border-default",
-          "strokeWidth": {
-            "bottom": 1
-          },
-          "gap": "$space-3",
-          "padding": [
-            16,
-            20
-          ],
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "icon",
-              "id": "ZVjUC",
-              "name": "Back",
-              "width": 20,
-              "height": 20,
-              "icon": "arrow-left",
-              "library": "lucide",
-              "fill": "$fg-default"
-            },
-            {
-              "type": "text",
-              "id": "QhK5k",
-              "name": "T",
-              "fill": "$fg-default",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Bandeja",
-              "fontFamily": "$font-display",
-              "fontSize": 18,
-              "fontWeight": "700"
-            },
-            {
-              "type": "frame",
-              "id": "w7aySJ",
-              "name": "Marcar",
-              "gap": 5,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "MmylY",
-                  "name": "i",
-                  "width": 15,
-                  "height": 15,
-                  "icon": "check-check",
-                  "library": "lucide",
-                  "fill": "$primary"
-                },
-                {
-                  "type": "text",
-                  "id": "c05bWy",
-                  "name": "t",
-                  "fill": "$primary",
-                  "content": "Marcar leídas",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "600"
-                }
-              ]
+          "descendants": {
+            "N5SoFK": {
+              "content": "Bandeja"
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -1637,7 +1430,7 @@
                       "type": "text",
                       "id": "lHKLu",
                       "name": "t",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "content": "Todas",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
@@ -1647,7 +1440,7 @@
                       "type": "text",
                       "id": "j34cRK",
                       "name": "n",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "content": "12",
                       "fontFamily": "$font-mono",
                       "fontSize": 10,
@@ -2335,7 +2128,7 @@
                           "type": "text",
                           "id": "js6rW",
                           "name": "t",
-                          "fill": "$primary",
+                          "fill": "$primary-hover",
                           "content": "Precio cruza umbral",
                           "fontFamily": "$font-sans",
                           "fontSize": 11,
@@ -2645,7 +2438,7 @@
                   "type": "text",
                   "id": "qiLnm",
                   "name": "L",
-                  "fill": "$primary",
+                  "fill": "$primary-hover",
                   "content": "ASÍ SE VA A LEER",
                   "fontFamily": "$font-mono",
                   "fontSize": 9,
@@ -2882,7 +2675,7 @@
                       "type": "text",
                       "id": "pHcyF",
                       "name": "t",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "content": "Crear",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
@@ -2970,7 +2763,7 @@
                       "type": "text",
                       "id": "obPCA",
                       "name": "t",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "content": "Crear",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
@@ -3058,7 +2851,7 @@
                       "type": "text",
                       "id": "JI3O5",
                       "name": "t",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "content": "Crear",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
@@ -3142,45 +2935,19 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "jPvZG",
+          "id": "dHeq6",
+          "type": "ref",
+          "ref": "jVzSz",
           "name": "Header",
           "width": "fill_container",
-          "fill": "$bg-surface",
-          "stroke": "$border-default",
-          "strokeWidth": {
-            "bottom": 1
-          },
-          "gap": "$space-3",
-          "padding": [
-            16,
-            20
-          ],
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "icon",
-              "id": "MO2H3",
-              "name": "Back",
-              "width": 20,
-              "height": 20,
-              "icon": "arrow-left",
-              "library": "lucide",
-              "fill": "$fg-default"
+          "descendants": {
+            "N5SoFK": {
+              "content": "Confluencia"
             },
-            {
-              "type": "text",
-              "id": "tYBmp",
-              "name": "T",
-              "fill": "$fg-default",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Confluencia",
-              "fontFamily": "$font-display",
-              "fontSize": 18,
-              "fontWeight": "700"
+            "ZMFXA": {
+              "enabled": false
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -3203,7 +2970,7 @@
               "fill": "$fg-subtle",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Tres condiciones duras que rara vez coinciden. Cuando las tres se prenden dentro de la misma ventana, el semáforo lo marca en el activo. Es una descripción de lo que pasó — no una orden de compra.",
+              "content": "Tres condiciones duras que rara vez coinciden. Hoy se leen por separado: nada las combina todavía, y la ventana de abajo es diseño, no motor.",
               "lineHeight": 1.5,
               "fontFamily": "$font-sans",
               "fontSize": 13,
@@ -3480,7 +3247,7 @@
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Cruce de medias móviles o giro del MACD en la misma dirección.",
+                  "content": "Cruce de medias móviles (MA50 · MA200) en la misma dirección.",
                   "lineHeight": 1.4,
                   "fontFamily": "$font-sans",
                   "fontSize": 12,
@@ -3540,7 +3307,7 @@
                       "id": "OKW7Q",
                       "name": "s",
                       "fill": "$fg-subtle",
-                      "content": "Cuántos días cuentan como “a la vez”",
+                      "content": "Cuántos días contarían como “a la vez”",
                       "fontFamily": "$font-sans",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -3603,7 +3370,7 @@
                   "fill": "$warning-fg",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "El semáforo está diseñado, no construido. Antes de escribirlo tiene que pasar el filtro de 4 — disparador, JTBD, métrica de uso y DoD (D3).",
+                  "content": "Las luces 1 y 3 ya se construyen y se ven en el detalle del activo. Falta la luz 2 y la ventana que las combina: eso es el motor, y antes de escribirlo pasa el filtro de 4 (D3).",
                   "lineHeight": 1.4,
                   "fontFamily": "$font-sans",
                   "fontSize": 11,
@@ -3647,6 +3414,173 @@
           "width": "fill_container"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "a8AyYs",
+      "x": 0,
+      "y": -920,
+      "name": "SwitchRow",
+      "reusable": true,
+      "width": 342,
+      "gap": "$space-3",
+      "padding": [
+        12,
+        0
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "S81VMF",
+          "name": "TC",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "L5wrZr",
+              "name": "l",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Etiqueta",
+              "lineHeight": 1.3,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "uv9qf",
+              "name": "d",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Qué hace, en una línea.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "xGqrS",
+          "name": "SW",
+          "width": 42,
+          "height": 24,
+          "fill": "$primary",
+          "cornerRadius": 99,
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "hNhAm",
+              "x": 21,
+              "y": 3,
+              "name": "k",
+              "fill": "$bg-surface",
+              "width": 18,
+              "height": 18
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "jVzSz",
+      "x": 0,
+      "y": -1090,
+      "name": "HeaderBar",
+      "reusable": true,
+      "width": 390,
+      "fill": "$bg-surface",
+      "stroke": "$border-default",
+      "strokeWidth": {
+        "bottom": 1
+      },
+      "gap": "$space-3",
+      "padding": [
+        12,
+        20
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "vsy6z",
+          "name": "BackWrap",
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "gQohT",
+              "name": "Back",
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "$fg-default"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "N5SoFK",
+          "name": "T",
+          "fill": "$fg-default",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Título",
+          "fontFamily": "$font-display",
+          "fontSize": 18,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "ZMFXA",
+          "name": "Accion",
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "gap": 5,
+          "padding": [
+            0,
+            8
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "eKmkv",
+              "name": "i",
+              "width": 15,
+              "height": 15,
+              "icon": "check-check",
+              "library": "lucide",
+              "fill": "$primary"
+            },
+            {
+              "type": "text",
+              "id": "bDy6I",
+              "name": "t",
+              "fill": "$primary",
+              "content": "Marcar leídas",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
@@ -3658,7 +3592,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.7.0"
+      "value": "0.8.1"
     },
     "font-display": {
       "type": "string",
@@ -4096,7 +4030,7 @@
           }
         },
         {
-          "value": "#7B89FF",
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }
@@ -4114,6 +4048,244 @@
         },
         {
           "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#38BDF8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#5CC8F5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-6": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#7C6CF0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#A78BFA",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-7": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F97316",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB923C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-8": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#06B6D4",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#22D3EE",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-neutral": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCD34D",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#A3E635",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#BEF264",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
           "theme": {
             "mode": "dark"
           }
