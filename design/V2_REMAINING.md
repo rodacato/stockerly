@@ -221,8 +221,9 @@ The briefs in `cockpit`, `assets`, `auth` and `discover` all close with
 This is D53's exact shape — a number mirrored into prose that the artifact already owns. The brief
 should stop restating it, the way `ui-kit.CHANGELOG.md` already stopped.
 
-⚠ **`assets.pen`'s row may already be fixed on a branch that never merged** — see X7. This audit read
-the brief as it stands on `master`.
+`assets.pen`'s row is genuinely stale on `master`: its brief closes with `0.8.0` against a variable
+reading `0.8.1`. An earlier draft of this file blamed an unmerged branch for it; that was wrong, and
+X7 records why.
 
 ### X5 ⚪ Three component masters carry a default that is residue from where the file was seeded
 
@@ -266,17 +267,24 @@ Three concrete instances remain, none of them a `DONE`:
   `done · in review`, which is true of the design file and says nothing about the code. The banner
   above it now points here, which is the honest version — but the column itself still invites the
   wrong read.
-- **A one-line `assets.pen` fix has been sitting unmerged on `origin/design/assets-brief` since
-  2026-08-27, and it is not branch clutter — it is a fix.** Its own commit message says the Activos
-  brief rewrite *"had not reached disk when #366 was committed, so the merged file carries the old
-  brief while every other change in that PR landed correctly"*. Verified by hash: the working tree's
-  `assets.pen` is byte-identical to `master`'s and differs from that branch's, **so this audit read
-  the old brief**. One line, and by its author's account it is *"the line that explains the rest"*.
-  It wants merging, not deleting.
+- **`origin/design/assets-brief` is superseded, not pending — and getting that wrong is the fourth
+  instance of the pattern this section is about.** It carries one unique commit whose message says
+  the Activos brief rewrite *"had not reached disk when #366 was committed, so the merged file
+  carries the old brief"*. A hash comparison agrees: the working tree's `assets.pen` matches
+  `master`'s and differs from that branch's. **Both facts are true and the conclusion drawn from
+  them was wrong.** [PR #367](https://github.com/rodacato/stockerly/pull/367) was closed on
+  2026-08-27 — *"wrong base … superseded by the new PR, which carries the migration, this brief, and
+  the NavRow vendoring together"* — and that PR merged. `master`'s `assets.pen` contains `Holdings`
+  and `D48`, so the brief there is the rewritten one; the branch's differs because its base is
+  older, not because it is ahead.
+
+  **The lesson is the section's own:** a commit message describes the world when it was written, and
+  a hash proves difference, not direction. Neither is a substitute for reading what happened next.
+  The branch is safe to delete.
 
   Its sibling `design/kit-0-8-0` was fully merged by patch-id and was deleted on 2026-08-28, along
   with `docs/reduce-footprint`. The two the old item named — `docs/pivot-self-hosted-tracker` and
-  `design/discover` — were already gone. What remains besides the fix above is
+  `design/discover` — were already gone. What remains is
   `chore/35-cleanup-zombie-ghost-events`, unmerged since 2026-05-15 with a single unique commit that
   edits a memory file, and two Dependabot branches. **Verify before deleting any of them.**
 
