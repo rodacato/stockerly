@@ -81,7 +81,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source 0.6.0. The fifth destination is CANONICAL in the kit now (BottomNav + SidebarNav, ui-kit 0.6.0), not the local override this file carried while it was drafted. All four shell-drawing flows re-vendored on 2026-08-25; auth and onboarding draw no shell and needed no re-sync. AppShellDesktop took the change for free — it instances SidebarNav by ref instead of copying it.",
+          "content": "kit-version-source 0.8.0 (re-vendored 2026-08-27; the brief said 0.6.0 against a variable reading 0.7.0 — the fifth brief in a row found contradicting its own file, which is what D53 is parked about). The fifth destination is CANONICAL in the kit (BottomNav + SidebarNav, ui-kit 0.6.0), not the local override this file carried while it was drafted. This flow vendors the whole shell and had no hand-built copies, so 0.8.0 was a component update rather than a consolidation: TopBar 57 → 76 and TopBarDesktop 76 → 80, both because the kit had been missing the 44pt touch target on the bell since 0.5.0 while the code always had it. The two mobile artboards move their content down 19px.\n\n🐞 TopBarDesktop's master read 'Activos / CARTERA · MXN' — residue from this file being seeded off assets.pen. The single instance overrode it to 'Descubrir', so nothing rendered wrong, but the default was meaningless here. Master and instance now agree and the override is gone.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -206,7 +206,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "N1 — WaveRow derives from the kit's AssetRow minus its confluence block. \"oportunidad\" is advice and ADR-0001 forbids it on a screen about symbols the user does not hold.\nN2 — \"vs SPY\" separates a real wave from a rising tide. Groundable, SPY is in the basket.\nN3 — the sparkline needs a ~30-point daily series per basket symbol. One batched bars call, not 17.\nN4 — the bellwether map (SMH -> NVDA, XLE -> XOM, URA -> CCJ) lives in the basket YAML. It was drawn for \"Reportan pronto\"; with that block gone (D46) it serves the exposure chip, which is the better use — it answers \"does this touch me?\" rather than \"who reports on Thursday?\".\nN5 — the calendar dates drawn here are placeholders. The real ones come from the repo YAML.\nN6 — the Activos brief this file was seeded from was deleted before it was read, so this brief follows design/README's spec rather than that file's exact shape.\nN7 — the exposure chip is the panel's real finding (C6 Esther): without it the screen answers \"what moved?\", which is trivia, instead of \"am I missing something?\", which is the reason the tab exists. The chips are drawn against the real AssetCatalog — NVDA and OKE are seeded, so SMH and XLE read as covered.\nN8 — the chip is styled NEUTRALLY in both states, on purpose. Colouring \"sin exposición\" would read as \"act here\", which is the advice ADR-0001 forbids. The information is in the words, not in the fill.\nN9 — CLOSED 2026-08-27, when the block was built. D33 was decided by its builder as it asked to be: the YAML declares the year it covers, the block renders it (\"Banxico · Fed · 2026\"), and past that horizon the screen says the calendar ran out and links to both sources instead of rendering nothing. Original finding, kept for the reasoning: The Calendario block has no exhausted state. Measured 2026-08-25: the Fed publishes 8 meetings ~16 months ahead but calls them TENTATIVE, and Banxico publishes 8 a year as a PDF GRID that is not machine-readable — its announcements page carries only past decisions. So no automatable path exists and a YAML is the only sensible option for 16 rows a year; that part is settled. What is NOT designed is the YAML running out: the block renders empty and says nothing, on the one block that promises to work without a credential. Unscheduled meetings (March 2020) will never be in it either. Left open on purpose, to decide when the block is built rather than guessed at now.",
+          "content": "N1 — WaveRow derives from the kit's AssetRow minus its confluence block. \"oportunidad\" is advice and ADR-0001 forbids it on a screen about symbols the user does not hold. Note ADR-013 and ADR-014 have since amended ADR-001, but only for action verbs and state phrases backed by a persisted TechnicalObservation — nothing here is, so this finding stands unchanged.\nN2 — \"vs SPY\" separates a real wave from a rising tide. Groundable, SPY is in the basket.\nN3 — the sparkline needs a ~30-point daily series per basket symbol. One batched bars call, not 17.\nN4 — the bellwether map (SMH -> NVDA, XLE -> XOM, URA -> CCJ) lives in the basket YAML. It was drawn for \"Reportan pronto\"; with that block gone (D46) it serves the exposure chip, which is the better use.\nN5 — the calendar dates drawn here are placeholders. The real ones come from the repo YAML.\nN6 — the Activos brief this file was seeded from was deleted before it was read, so this brief follows design/README's spec rather than that file's exact shape.\nN7 — the exposure chip is the panel's real finding (C6 Esther): without it the screen answers \"what moved?\", which is trivia, instead of \"am I missing something?\", which is the reason the tab exists.\nN8 — the chip is styled NEUTRALLY in both states, on purpose. Colouring \"sin exposición\" would read as \"act here\", which is the advice ADR-0001 forbids. The information is in the words, not in the fill.\nN9 — CLOSED 2026-08-27, when the block was built. D33 was decided by its builder as it asked to be: the YAML declares the year it covers, the block renders it (\"Banxico · Fed · 2026\"), and past that horizon the screen says the calendar ran out and links to both sources instead of rendering nothing.\nN10 — D41 was applied here 2026-08-27, and measuring it turned up two things D41 got wrong. The Aviso card had already been moved off the primary pair onto info; its paragraph is now $fg-default as D41 decided, which was the one part never executed. But (a) D41 calls the heading \"18px bold\" and therefore large text owing 3:1 — the artboard draws it at 15px/700, which is NOT large text under WCAG (that floor is 18.66px bold), so it owes 4.5:1 and measures 4.24:1 in dark, because info-fg/info-bg in dark are token-identical to the primary pair D41 rejected. And (b) D41 states \"no other screen uses primary on primary-muted that way today\" — the SidebarNav's active item is exactly that pair, in the kit, in the code (_sidebar_nav.html.erb:10, bg-primary-muted text-primary) and in every desktop artboard of four flows, measuring 3.68:1 in light. Neither is fixed here: both are token-level and would ripple across the kit and the ERB. Logged as D56.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -293,14 +293,37 @@
           ]
         },
         {
-          "type": "icon",
-          "id": "HWFMD",
-          "name": "Bell",
-          "width": 20,
-          "height": 20,
-          "icon": "bell",
-          "library": "lucide",
-          "fill": "$fg-subtle"
+          "type": "frame",
+          "id": "n1HmyI",
+          "name": "BellWrap",
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "HWFMD",
+              "name": "Bell",
+              "width": 20,
+              "height": 20,
+              "icon": "bell",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "ellipse",
+              "id": "MixjR",
+              "layoutPosition": "absolute",
+              "x": 26,
+              "y": 10,
+              "name": "UnreadDot",
+              "fill": "$negative",
+              "width": 8,
+              "height": 8
+            }
+          ]
         }
       ]
     },
@@ -621,8 +644,8 @@
     {
       "type": "frame",
       "id": "KBG5l",
-      "x": 0,
-      "y": 1307,
+      "x": 827,
+      "y": 1019,
       "name": "SidebarNav",
       "reusable": true,
       "width": 240,
@@ -892,8 +915,8 @@
     {
       "type": "frame",
       "id": "iVSB3",
-      "x": 0,
-      "y": 2167,
+      "x": 827,
+      "y": 2146,
       "name": "TopBarDesktop",
       "reusable": true,
       "width": 1040,
@@ -921,7 +944,7 @@
               "id": "O4lFy4",
               "name": "Title",
               "fill": "$fg-default",
-              "content": "Activos",
+              "content": "Descubrir",
               "fontFamily": "$font-display",
               "fontSize": 20,
               "fontWeight": "700",
@@ -932,7 +955,7 @@
               "id": "NJ1Zg",
               "name": "Sub",
               "fill": "$fg-subtle",
-              "content": "CARTERA · MXN",
+              "content": "17 CANASTAS · DESDE TU ÚLTIMA VISITA",
               "fontFamily": "$font-sans",
               "fontSize": 11,
               "fontWeight": "normal",
@@ -948,14 +971,37 @@
           "alignItems": "center",
           "children": [
             {
-              "type": "icon",
-              "id": "FGg6c",
-              "name": "Bell",
-              "width": 20,
-              "height": 20,
-              "icon": "bell",
-              "library": "lucide",
-              "fill": "$fg-subtle"
+              "type": "frame",
+              "id": "YodVT",
+              "name": "BellWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "FGg6c",
+                  "name": "Bell",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "Thcza",
+                  "layoutPosition": "absolute",
+                  "x": 26,
+                  "y": 10,
+                  "name": "UnreadDot",
+                  "fill": "$negative",
+                  "width": 8,
+                  "height": 8
+                }
+              ]
             }
           ]
         }
@@ -1696,7 +1742,7 @@
                   "type": "text",
                   "id": "HVsDR",
                   "name": "B",
-                  "fill": "$info-fg",
+                  "fill": "$fg-default",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
                   "content": "Las olas y los titulares vienen de ahí. El calendario de Banxico y la Fed funciona sin credencial.",
@@ -2567,7 +2613,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.7.0"
+      "value": "0.8.0"
     },
     "font-display": {
       "type": "string",
@@ -3023,6 +3069,244 @@
         },
         {
           "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#38BDF8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#5CC8F5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-6": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#7C6CF0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#A78BFA",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-7": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F97316",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB923C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-8": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#06B6D4",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#22D3EE",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-neutral": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCD34D",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#A3E635",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#BEF264",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
           "theme": {
             "mode": "dark"
           }

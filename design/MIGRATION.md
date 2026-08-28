@@ -30,7 +30,7 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 | `flows/auth.pen` | **0.8.0** | ✅ done | — |
 | `flows/alerts.pen` | 0.7.0 | — | one artboard is dangerous to build from |
 | `flows/settings.pen` | 0.7.0 | — | a reversed decision still drawn, plus a `Seguridad` section (D52) |
-| `flows/discover.pen` | 0.7.0 | — | the artboard is behind the code here |
+| `flows/discover.pen` | **0.8.0** | ✅ done | — |
 | `flows/onboarding.pen` | 0.7.0 | — | TOTP lands in the wizard (D52): nine artboards move |
 | `_playground.pen` | **0.8.0** | ✅ installed + Panel · V1…V4 | — |
 | `brand.pen` | n/a | — | hygiene only |
@@ -120,14 +120,25 @@ delete lands and the insert has not is how exploration disappears.
 - **A `Seguridad` section** — no longer conditional: D52 put enrollment in Ajustes as well as the
   wizard.
 
-## `flows/discover.pen`
+## `flows/discover.pen` — done 2026-08-27
 
-- Confirm the *Reportes* block is gone from all three artboards (D47; commit `63f4051` suggests yes).
-- **D41's contrast fix** was resolved *in code* — `primary` on `primary-muted` measured 3.68:1 light
-  and 4.22:1 dark, both under 4.5:1. Whether the artboard was corrected is unrecorded.
-- **D33 — here the code is ahead of the design.** The candidate answer was never marked adopted, but
-  it shipped: `PolicyCalendar.horizon`, the `calendario_agotado` copy and `tentative` rows all exist.
-  The artboard should catch up, and D33 should be closed.
+The only flow whose shell was **already fully vendored** — no hand-built copies — so 0.8.0 was a
+component update rather than a consolidation.
+
+- ✅ 14 tokens · `kit-version-source` 0.6.0 (claimed by the brief) / 0.7.0 (actual) → **0.8.0**.
+- ✅ `TopBar` 57 → 76 and `TopBarDesktop` 76 → 80, both from the same cause: the kit's 44pt bell
+  target. The two mobile artboards absorbed 19px; `Sin datos` is fixed-height and its Content took it.
+- ✅ 🐞 `TopBarDesktop`'s master read *"Activos / CARTERA · MXN"* — residue from this file being
+  seeded off `assets.pen`. Its single instance overrode it, so nothing rendered wrong, but the
+  default was meaningless here. Master and instance agree now and the override is gone.
+- ✅ **D47/D46 confirmed by query:** `Reportan pronto` is gone from all three artboards; the only
+  remaining occurrences are the brief's own prose explaining the removal.
+- ✅ **D33 closed.** The brief's N9 has read CLOSED since the block was built, while the registry row
+  stayed open — `PolicyCalendar.horizon`, `calendario_agotado` and the `tentative` rows all exist.
+- ✅ **D41 applied**, and applying it produced **D56**: its decided change (the `Aviso` paragraph to
+  `$fg-default`) had never been executed, and two of its supporting claims do not survive
+  measurement. Neither of those is fixed here — both are token-level.
+- ✅ Brief rewritten. Fifth of five found contradicting its own file.
 
 ## `flows/onboarding.pen`
 
