@@ -26,6 +26,10 @@ ignore_unused:
   # them by design. asset_state_spec asserts every state resolves in both
   # readings, which is a stronger guarantee than the scan it replaces.
   - market.estado.*
+  # Same shape: the preview builds this key from the Failure tag ImportTrades
+  # returned, so the scanner cannot see them either. trade_imports_spec asserts
+  # every tag the use case can emit resolves to a phrase.
+  - trade_imports.preview.rechazo.*
   - date.*
   - time.*
   # Rails resolves these itself from time_ago_in_words; the scanner only

@@ -16,6 +16,11 @@ module Trading
       # relative to a setting is wrong the moment the setting changes.
       REFERENCE_CURRENCY = "MXN".freeze
 
+      # The four values every step below needs. They were threaded as four
+      # parameters through five methods; naming the tuple is what that was
+      # asking for.
+      Batch = Data.define(:portfolio, :rows, :assets, :rates)
+
       def call(user:, rows:, dry_run: true)
         portfolio = user.portfolio
         return Failure([ :not_found, "Portfolio not found" ]) unless portfolio
@@ -28,8 +33,9 @@ module Trading
         report = build_report(fresh, skipped, dry_run)
         return Success(report) if dry_run
 
-        commit(portfolio, fresh, assets, rates)
-        after_commit(portfolio, user, fresh)
+        batch = Batch.new(portfolio: portfolio, rows: fresh, assets: assets, rates: rates)
+        commit(batch)
+        after_commit(batch, user)
 
         Success(report)
       end
@@ -38,12 +44,12 @@ module Trading
 
       def validate_rows(rows)
         contract = Trading::Contracts::ImportTradeRowContract.new
-        results = rows.each_with_index.map { |row, i| [ i + 1, contract.call(row) ] }
-        invalid = results.reject { |_, r| r.success? }
+        results = rows.each_with_index.map { |row, index| [ index + 1, contract.call(row) ] }
+        invalid = results.reject { |_, result| result.success? }
 
-        return Failure([ :invalid_rows, invalid.map { |n, r| { row: n, errors: r.errors.to_h } } ]) if invalid.any?
+        return Failure([ :invalid_rows, invalid.map { |number, result| { row: number, errors: result.errors.to_h } } ]) if invalid.any?
 
-        Success(results.map { |_, r| r.to_h }.sort_by { |a| a[:executed_at] })
+        Success(results.map { |_, result| result.to_h }.sort_by { |row| row[:executed_at] })
       end
 
       # Phase 0 refuses rather than inventing catalogue entries: the row carries
@@ -65,7 +71,7 @@ module Trading
       # fails the batch instead of silently valuing a December trade at today's
       # rate — which is what a plain resolver call would do.
       def resolve_fx_rates(parsed)
-        pairs = parsed.map { |r| [ currency_of(r), executed_on(r) ] }.uniq
+        pairs = parsed.map { |row| [ currency_of(row), executed_on(row) ] }.uniq
         rates = {}
         missing = []
 
@@ -78,39 +84,51 @@ module Trading
       end
 
       def partition_already_imported(portfolio, parsed)
-        ids = parsed.filter_map { |r| r[:external_id].presence }
+        ids = parsed.filter_map { |row| row[:external_id].presence }
         taken = ids.any? ? portfolio.trades.where(external_id: ids).pluck(:external_id).to_set : Set.new
 
-        parsed.partition { |r| r[:external_id].blank? || !taken.include?(r[:external_id]) }
+        parsed.partition { |row| row[:external_id].blank? || !taken.include?(row[:external_id]) }
       end
 
-      def commit(portfolio, rows, assets, rates)
+      # A batch whose every row was already imported is the normal outcome of
+      # confirming twice, not an error — there is simply nothing to open a
+      # transaction for.
+      def commit(batch)
+        return if batch.rows.empty?
+
         ActiveRecord::Base.transaction do
-          rows.group_by { |r| r[:asset_symbol].upcase }.each do |symbol, asset_rows|
-            replay_asset(portfolio, assets.fetch(symbol), asset_rows, rates)
+          batch.rows.group_by { |row| row[:asset_symbol].upcase }.each do |symbol, asset_rows|
+            replay_asset(batch, batch.assets.fetch(symbol), asset_rows)
           end
 
-          backdate_inception(portfolio, rows)
+          backdate_inception(batch)
         end
       end
 
-      def replay_asset(portfolio, asset, rows, rates)
-        position = portfolio.positions.find_by(asset: asset, status: :open) ||
-                   portfolio.positions.new(asset: asset, shares: 0, avg_cost: rows.first[:price_per_share], status: :open)
-
-        position.opened_at = [ position.opened_at, rows.first[:executed_at] ].compact.map { |t| t.is_a?(String) ? Time.zone.parse(t) : t }.min
-        position.save!
-
-        rows.each { |row| create_trade(portfolio, asset, position, row, rates) }
+      def replay_asset(batch, asset, rows)
+        position = open_position_for(batch, asset, rows)
+        rows.each { |row| create_trade(batch, asset, position, row) }
 
         apply_share_movement(position, rows)
         position.recalculate_avg_cost!
       end
 
-      def create_trade(portfolio, asset, position, row, rates)
+      # opened_at comes from the earliest trade, never from import day.
+      def open_position_for(batch, asset, rows)
+        positions = batch.portfolio.positions
+        position = positions.find_by(asset: asset, status: :open) ||
+                   positions.new(asset: asset, shares: 0, avg_cost: rows.first[:price_per_share], status: :open)
+
+        earliest = Time.zone.parse(rows.first[:executed_at])
+        position.opened_at = [ position.opened_at, earliest ].compact.min
+        position.save!
+        position
+      end
+
+      def create_trade(batch, asset, position, row)
         currency = currency_of(row)
 
-        portfolio.trades.create!(
+        batch.portfolio.trades.create!(
           asset: asset,
           position: position,
           side: row[:side],
@@ -118,14 +136,14 @@ module Trading
           price_per_share: row[:price_per_share],
           fee: row[:fee] || 0,
           currency: currency,
-          fx_rate_at_execution: rates.fetch([ currency, executed_on(row) ]),
+          fx_rate_at_execution: batch.rates.fetch([ currency, executed_on(row) ]),
           external_id: row[:external_id].presence,
           executed_at: Time.zone.parse(row[:executed_at])
         )
       end
 
       def apply_share_movement(position, rows)
-        delta = rows.sum { |r| r[:side] == "buy" ? r[:shares] : -r[:shares] }
+        delta = rows.sum { |row| row[:side] == "buy" ? row[:shares] : -row[:shares] }
         remaining = position.shares + delta
         raise ActiveRecord::RecordInvalid, position if remaining.negative?
 
@@ -139,40 +157,45 @@ module Trading
       # RebuildSnapshots clamps to the portfolio's inception, so a portfolio
       # created after its own trades would silently drop every snapshot before
       # that date.
-      def backdate_inception(portfolio, rows)
-        earliest = rows.map { |r| executed_on(r) }.min
-        return if portfolio.inception_date && portfolio.inception_date <= earliest
+      def backdate_inception(batch)
+        earliest = earliest_date(batch.rows)
+        inception = batch.portfolio.inception_date
+        return if inception && inception <= earliest
 
-        portfolio.update!(inception_date: earliest)
+        batch.portfolio.update!(inception_date: earliest)
       end
 
       # Outside the transaction on purpose: a rolled-back import must not leave
       # published events or rewritten snapshots behind.
-      def after_commit(portfolio, user, rows)
-        return if rows.empty?
+      def after_commit(batch, user)
+        return if batch.rows.empty?
 
-        earliest = rows.map { |r| executed_on(r) }.min
-        Trading::UseCases::RebuildSnapshots.call(portfolio: portfolio, from: earliest)
+        earliest = earliest_date(batch.rows)
+        Trading::UseCases::RebuildSnapshots.call(portfolio: batch.portfolio, from: earliest)
 
         publish(Events::TradesImported.new(
-          portfolio_id: portfolio.id,
+          portfolio_id: batch.portfolio.id,
           user_id: user.id,
-          trade_count: rows.size,
+          trade_count: batch.rows.size,
           earliest_executed_on: earliest.to_s
         ))
       end
 
       def build_report(fresh, skipped, dry_run)
+        dates = fresh.map { |row| executed_on(row) }
+
         {
           dry_run: dry_run,
           imported: fresh.size,
-          skipped: skipped.map { |r| { asset_symbol: r[:asset_symbol], external_id: r[:external_id] } },
-          invested: fresh.sum { |r| r[:shares] * r[:price_per_share] },
-          symbols: fresh.map { |r| r[:asset_symbol].upcase }.uniq.sort,
-          earliest_on: fresh.map { |r| executed_on(r) }.min,
-          latest_on: fresh.map { |r| executed_on(r) }.max
+          skipped: skipped.map { |row| { asset_symbol: row[:asset_symbol], external_id: row[:external_id] } },
+          invested: fresh.sum { |row| row[:shares] * row[:price_per_share] },
+          symbols: fresh.map { |row| row[:asset_symbol].upcase }.uniq.sort,
+          earliest_on: dates.min,
+          latest_on: dates.max
         }
       end
+
+      def earliest_date(rows) = rows.map { |row| executed_on(row) }.min
 
       def currency_of(row) = row[:currency].presence || "USD"
 

@@ -189,6 +189,8 @@ es-MX:
   assets:
     index:
       cartera: Holdings
+      importar: Importar movimientos
+      importar_desc: Sube el CSV de tu broker o pega su contenido.
       invertido: Invertido %{amount}
       no_realizada: No realizada %{amount}
       sigues: sigues %{percent}
@@ -1064,6 +1066,68 @@ es-MX:
       ya_los_guarde: Ya los guardé, continuar
       ya_no_disponibles: Los códigos solo se muestran una vez. Genera unos nuevos
         si los necesitas.
+  trade_imports:
+    create:
+      listo:
+        one: Se importó 1 movimiento.
+        other: Se importaron %{count} movimientos.
+      rechazado: No pude importar el archivo. Revísalo y vuelve a intentar.
+      vacio: No recibí ningún movimiento.
+    new:
+      arrastra: o arrástralo aquí
+      columnas: Columnas que necesito
+      ejemplo: |-
+        asset_symbol,side,shares,price_per_share,executed_at
+        VT,buy,0.070436076,141.9727,2025-12-08
+      elegir: Elegir archivo CSV
+      intro: Sube el archivo que te da tu broker, o pega su contenido. Antes de guardar
+        nada te muestro qué encontré.
+      nada_aun: Nada se guarda hasta que confirmes.
+      o_pega: o pega el contenido
+      opcionales: 'Opcionales: fee · currency · external_id · net_amount'
+      revisar: Revisar
+      titulo: Importar movimientos
+      volver: Volver a tu cartera
+    preview:
+      cancelar: Cancelar
+      confirmar:
+        one: Importar 1 movimiento
+        other: Importar %{count} movimientos
+      duplicados:
+        one: 1 movimiento ya estaba importado. Lo omito.
+        other: "%{count} movimientos ya estaban importados. Los omito."
+      invertido: Invertido
+      movimientos: Movimientos
+      nada_guardado: Nada se ha guardado todavía. Esto es lo que encontré.
+      rango:
+        one: "%{desde} → %{hasta} · 1 símbolo"
+        other: "%{desde} → %{hasta} · %{count} símbolos"
+      rechazo:
+        dar_alta: Darlos de alta en Tracked
+        faltan: Faltan en Tracked
+        invalid_rows:
+          one: 'Hay 1 fila que no puedo leer:'
+          other: 'Hay %{count} filas que no puedo leer:'
+        missing_fx_history:
+          one: 'Me falta el tipo de cambio de 1 fecha:'
+          other: 'Me faltan los tipos de cambio de %{count} fechas:'
+        not_found: No encontré tu cartera.
+        otro_archivo: Elegir otro archivo
+        porque: 'No los doy de alta solo: el CSV trae el ticker y nada más. Un activo
+          creado así queda sin tipo, sin mercado y sin país, y un dedazo se te vuelve
+          un activo basura que se sincroniza para siempre.'
+        titulo: No puedo importar todavía
+        unknown_symbols:
+          one: 1 de tus símbolos no está en tu catálogo. Sin él tu cartera quedaría
+            incompleta sin avisarte, así que no importo nada.
+          other: "%{count} de tus símbolos no están en tu catálogo. Sin ellos tu cartera
+            quedaría incompleta sin avisarte, así que no importo nada."
+        unsupported_asset_type:
+          one: 'La renta fija necesita su fecha de vencimiento, y el CSV no la trae:'
+          other: 'La renta fija necesita su fecha de vencimiento, y el CSV no la trae:'
+      simbolos: Símbolos
+      titulo: Revisión
+      volver: Elegir otro archivo
   trades:
     errores:
       fecha_futura: La fecha del movimiento no puede ser futura.
