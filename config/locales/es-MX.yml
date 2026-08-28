@@ -1,6 +1,36 @@
 ---
 es-MX:
   admin:
+    errors:
+      desactivado: Activa el modo desarrollador en Ajustes para ver esta sección.
+      destroy:
+        eliminado: Error borrado del registro.
+      index:
+        buscar: Buscar por clase, mensaje, ruta o referencia…
+        descripcion: Fallos que tu instancia registró sola en los últimos %{days}
+          días, agrupados por error.
+        limpiar: Limpiar filtros
+        mostrando: Mostrando %{shown} de %{total} errores
+        sin_coincidencias: Nada con esos filtros.
+        titulo: Errores
+        vacio: Tu instancia no ha registrado ningún error.
+        veces:
+          one: 1 vez
+          other: "%{count} veces"
+      show:
+        borrar: Borrar del registro
+        confirmar_borrado: "¿Borrar este error del registro?"
+        contexto: Contexto
+        no_encontrado: Ese error ya no está en el registro.
+        origen: Origen
+        parametros: Parámetros
+        parametros_filtrados: Las contraseñas, tokens y correos se guardan como [FILTERED].
+        primera: Primera vez
+        referencia: Referencia
+        titulo: Detalle del error
+        traza: Traza
+        ultima: Última vez
+        veces: Ocurrencias
     integrations:
       index:
         administrar: Administrar fuente
@@ -65,6 +95,7 @@ es-MX:
     no_autorizado: No tienes acceso a esa sección.
     settings:
       show:
+        abrir_errores: Ver los errores registrados
         abrir_jobs: Abrir Mission Control
         banner_activo: La app está bloqueada y muestra un banner. Tu sesión sigue
           viva.
@@ -73,6 +104,9 @@ es-MX:
         correo: Envío de correo
         correo_desc: Permite que salgan digests, avisos urgentes y recuperación de
           contraseña.
+        desarrollador: Modo desarrollador
+        desarrollador_desc: Muestra la sección de errores con la traza completa de
+          cada fallo. No cambia lo que se registra.
         descubrir: Descubrir
         descubrir_semanas:
           one: abierto 1 de las últimas %{window} semanas
@@ -81,6 +115,7 @@ es-MX:
         diagnostico: Diagnóstico
         entorno: Entorno
         entradas: "%{count} entradas"
+        errores: Errores (24 h)
         interruptores: Interruptores de la instancia
         mantenimiento: Modo mantenimiento
         mantenimiento_desc: Bloquea la app y muestra un banner. Tu sesión sigue viva.
@@ -973,6 +1008,8 @@ es-MX:
       dos_pasos: Verificación en dos pasos
       dos_pasos_activa: Activa · te quedan %{count} códigos de recuperación
       dos_pasos_desc: TOTP y códigos de recuperación
+      errores: Errores
+      errores_desc: Qué falló, dónde y cuántas veces
       estado: Estado y mantenimiento
       estado_desc: Diagnóstico, modo mantenimiento y cambios recientes
       instancia_cuerpo: 'Esto es tuyo: corre en tu servidor y nadie más lo ve.'
@@ -983,7 +1020,7 @@ es-MX:
       nombre_correo: Nombre y correo
       nombre_correo_desc: Cómo te llamas y a dónde llegan los correos
       registros: Registros
-      registros_desc: Eventos y errores de los últimos 90 días
+      registros_desc: Sincronizaciones y avisos de los últimos 90 días
       tema: Apariencia y región
       titulo: Ajustes
       trabajos: Trabajos en segundo plano

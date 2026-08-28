@@ -1,0 +1,28 @@
+<%# Search plus origin. No range control: retention already bounds the table to
+    ErrorEvent::RETENTION, and the list is ordered by last seen. %>
+<%= form_with(url: admin_errors_path, method: :get, data: { turbo_action: "replace" },
+      class: "flex flex-col gap-3") do |f| %>
+
+  <div class="flex items-center gap-2 rounded-xl border border-border-default bg-bg-surface px-4 py-3">
+    <span class="material-symbols-outlined text-lg text-fg-subtle" aria-hidden="true">search</span>
+    <%= f.text_field :search, value: params[:search],
+        placeholder: t("admin.errors.index.buscar"),
+        autocomplete: "off",
+        class: "w-full bg-transparent text-sm text-fg-default placeholder:text-fg-subtle outline-none" %>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <% Admin::ErrorsHelper::SOURCE_OPTIONS.each do |slug, label, value| %>
+      <% active = (params[:source].presence || "todos") == slug %>
+      <%= link_to admin_errors_path(search: params[:search], source: value),
+            class: "rounded-full border px-4 py-2 text-sm transition-colors #{active ? 'border-primary bg-primary/10 font-semibold text-primary' : 'border-border-default text-fg-default'}" do %>
+        <%= label %>
+      <% end %>
+    <% end %>
+
+    <% if admin_errors_any_filter_active? %>
+      <%= link_to t("admin.errors.index.limpiar"), admin_errors_path,
+            class: "ml-auto text-sm font-medium text-fg-subtle transition-colors hover:text-fg-default" %>
+    <% end %>
+  </div>
+<% end %>

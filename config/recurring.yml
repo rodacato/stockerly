@@ -131,3 +131,9 @@ production:
   check_sync_health:
     class: CheckSyncHealthJob
     schedule: every hour at minute 45
+
+  # ADR-020: the error tracker bounds its own table. Nobody runs maintenance on
+  # a self-hosted box.
+  purge_error_events:
+    command: "ErrorEvent.purge_stale!"
+    schedule: at 4am every day

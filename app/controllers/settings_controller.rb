@@ -6,5 +6,6 @@ class SettingsController < AuthenticatedController
     @user = current_user
     @preferences = current_user.alert_preference
     @integrations_count = Integration.count
+    @developer_mode = SiteConfig.developer_mode?
   end
 end

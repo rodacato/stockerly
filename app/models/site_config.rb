@@ -24,4 +24,8 @@ class SiteConfig < ApplicationRecord
   def self.maintenance_mode?
     enabled?("maintenance_mode")
   end
+
+  def self.developer_mode?
+    enabled?("developer_mode")
+  end
 end

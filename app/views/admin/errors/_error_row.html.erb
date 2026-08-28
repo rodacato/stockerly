@@ -1,0 +1,29 @@
+<%# One distinct failure as a card: class, message, where it came from, and how
+    many times. The backtrace lives on the detail screen. Locals: event %>
+<li class="rounded-xl border border-border-default bg-bg-surface">
+  <%= link_to admin_error_path(event), class: "flex items-start gap-3 p-4" do %>
+    <span class="mt-1.5 size-2 shrink-0 rounded-full bg-negative" aria-hidden="true"></span>
+
+    <div class="min-w-0 flex-1">
+      <div class="flex items-baseline justify-between gap-3">
+        <p class="truncate font-mono font-semibold text-fg-default"><%= event.exception_class %></p>
+        <span class="shrink-0 font-mono text-xs text-fg-subtle"><%= admin_error_timestamp(event.last_seen_at) %></span>
+      </div>
+
+      <p class="mt-0.5 line-clamp-2 text-sm text-fg-subtle"><%= event.message %></p>
+
+      <div class="mt-2 flex flex-wrap items-center gap-2">
+        <span class="rounded px-2 py-0.5 font-mono text-xs <%= admin_error_source_classes(event.source) %>">
+          <%= admin_error_origin(event) %>
+        </span>
+        <% if event.occurrences > 1 %>
+          <span class="rounded bg-bg-muted px-2 py-0.5 font-mono text-xs text-fg-subtle">
+            <%= t("admin.errors.index.veces", count: event.occurrences) %>
+          </span>
+        <% end %>
+      </div>
+    </div>
+
+    <span class="material-symbols-outlined shrink-0 text-lg text-fg-subtle" aria-hidden="true">chevron_right</span>
+  <% end %>
+</li>

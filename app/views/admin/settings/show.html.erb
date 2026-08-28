@@ -16,6 +16,7 @@
            [ t(".entorno"),     @diagnostics[:environment] ],
            [ t(".trabajos"),    @diagnostics[:solid_queue] ],
            [ t(".cache"),       @diagnostics[:cache_entries] ? t(".entradas", count: number_with_delimiter(@diagnostics[:cache_entries])) : "—" ],
+           [ t(".errores"),     @diagnostics[:errors_last_24h] ],
            [ t(".descubrir"),   t(".descubrir_semanas", count: @diagnostics[:discover_weeks],
                                   window: @diagnostics[:discover_window]) ] ].each do |label, value| %>
         <div class="flex items-baseline justify-between gap-4 py-3">
@@ -24,6 +25,10 @@
         </div>
       <% end %>
     </dl>
+    <% if @developer_mode %>
+      <%= link_to t(".abrir_errores"), admin_errors_path,
+            class: "inline-flex items-center gap-1.5 self-start text-sm font-semibold text-primary hover:underline" %>
+    <% end %>
     <%= link_to "/admin/jobs", target: "_blank", rel: "noopener",
           class: "inline-flex items-center gap-1.5 self-start text-sm font-semibold text-primary hover:underline" do %>
       <%= t(".abrir_jobs") %>
@@ -40,7 +45,8 @@
     <div class="divide-y divide-border-default rounded-xl border border-border-default bg-bg-surface px-4">
       <% [ [ "auto_sync_enabled", t(".sync"), t(".sync_desc"), @auto_sync_enabled ],
            [ "email_notifications_enabled", t(".correo"), t(".correo_desc"), @email_notifications_enabled ],
-           [ "maintenance_mode", t(".mantenimiento"), t(".mantenimiento_desc"), @maintenance_mode ] ].each do |key, label, description, on| %>
+           [ "maintenance_mode", t(".mantenimiento"), t(".mantenimiento_desc"), @maintenance_mode ],
+           [ "developer_mode", t(".desarrollador"), t(".desarrollador_desc"), @developer_mode ] ].each do |key, label, description, on| %>
         <div class="flex items-center gap-4 py-4">
           <div class="min-w-0 flex-1">
             <p class="font-semibold text-fg-default"><%= label %></p>

@@ -1,0 +1,39 @@
+module Admin
+  module ErrorsHelper
+    SOURCE_OPTIONS = [
+      [ "todos",   "Todos",      nil ],
+      [ "request", "Peticiones", "request" ],
+      [ "job",     "Trabajos",   "job" ],
+      [ "other",   "Otros",      "other" ]
+    ].freeze
+
+    def admin_error_timestamp(time)
+      return "—" if time.blank?
+
+      date = time.to_date
+      mxn = time.in_time_zone("America/Mexico_City")
+      "#{date.day.to_s.rjust(2, '0')} #{DatetimeEsHelper::MONTHS_ES[date.month - 1]} #{date.year} · #{mxn.strftime('%H:%M:%S')}"
+    end
+
+    # What was running when it blew up, in the shape that identifies it: a verb
+    # and a path for a request, the class for a job.
+    def admin_error_origin(event)
+      return "#{event.request_method} #{event.request_path}" if event.request_path.present?
+      return event.job_class if event.job_class.present?
+
+      "—"
+    end
+
+    def admin_error_source_classes(source)
+      case source.to_s
+      when "request" then "bg-primary/10 text-primary"
+      when "job"     then "bg-warning/10 text-warning"
+      else                "bg-bg-muted text-fg-subtle"
+      end
+    end
+
+    def admin_errors_any_filter_active?
+      params[:search].present? || params[:source].present?
+    end
+  end
+end

@@ -1,0 +1,56 @@
+<% content_for(:title, "#{@error_event.exception_class} | Stockerly") %>
+<% content_for(:page_title, t(".titulo")) %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: admin_errors_path %>
+<% end %>
+
+<div class="mx-auto flex max-w-3xl flex-col gap-6">
+  <section class="flex flex-col gap-2 rounded-xl border border-border-default bg-bg-surface p-4">
+    <p class="font-mono text-lg font-semibold text-fg-default"><%= @error_event.exception_class %></p>
+    <p class="whitespace-pre-wrap break-words text-sm text-fg-subtle"><%= @error_event.message %></p>
+    <% if @error_event.app_line.present? %>
+      <p class="overflow-x-auto rounded-lg bg-bg-muted px-3 py-2 font-mono text-xs text-fg-default"><%= @error_event.app_line %></p>
+    <% end %>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="font-display text-lg font-bold text-fg-default"><%= t(".contexto") %></h2>
+    <dl class="divide-y divide-border-default rounded-xl border border-border-default bg-bg-surface px-4">
+      <% [ [ t(".origen"),     admin_error_origin(@error_event) ],
+           [ t(".veces"),      @error_event.occurrences ],
+           [ t(".primera"),    admin_error_timestamp(@error_event.first_seen_at) ],
+           [ t(".ultima"),     admin_error_timestamp(@error_event.last_seen_at) ],
+           [ t(".referencia"), @error_event.reference.presence || "—" ] ].each do |label, value| %>
+        <div class="flex items-baseline justify-between gap-4 py-3">
+          <dt class="text-fg-subtle"><%= label %></dt>
+          <dd class="break-all text-right font-mono text-sm text-fg-default"><%= value %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="font-display text-lg font-bold text-fg-default"><%= t(".traza") %></h2>
+    <div class="overflow-hidden rounded-xl bg-bg-muted">
+      <pre class="overflow-x-auto px-3 py-2 font-mono text-xs text-fg-default"><%= @error_event.backtrace.join("\n") %></pre>
+    </div>
+  </section>
+
+  <% if @error_event.request_params.present? %>
+    <section class="flex flex-col gap-3">
+      <h2 class="font-display text-lg font-bold text-fg-default"><%= t(".parametros") %></h2>
+      <div class="overflow-hidden rounded-xl bg-bg-muted">
+        <pre class="overflow-x-auto px-3 py-2 font-mono text-xs text-fg-default"><%= JSON.pretty_generate(@error_event.request_params) %></pre>
+      </div>
+      <p class="text-xs text-fg-subtle"><%= t(".parametros_filtrados") %></p>
+    </section>
+  <% end %>
+
+  <%= button_to admin_error_path(@error_event), method: :delete,
+        form_class: "self-start",
+        data: { turbo_confirm: t(".confirmar_borrado") },
+        class: "inline-flex items-center gap-1.5 rounded-lg border border-border-default px-3 py-2 text-sm font-medium text-negative transition-colors hover:bg-negative/10" do %>
+    <span class="material-symbols-outlined text-base" aria-hidden="true">delete</span>
+    <%= t(".borrar") %>
+  <% end %>
+</div>

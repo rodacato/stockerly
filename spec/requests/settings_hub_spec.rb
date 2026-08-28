@@ -26,6 +26,22 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).to include(%(href="/admin/jobs"))
   end
 
+  # ADR-020: the errors row is the developer surface, not a permanent part of
+  # the hub.
+  it "hides the errors row while developer mode is off" do
+    get settings_path
+
+    expect(response.body).not_to include(%(href="#{admin_errors_path}"))
+  end
+
+  it "shows the errors row once developer mode is on" do
+    SiteConfig.set("developer_mode", true)
+
+    get settings_path
+
+    expect(response.body).to include(%(href="#{admin_errors_path}"))
+  end
+
   it "offers both email switches, wired to the endpoint that persists them" do
     get settings_path
 

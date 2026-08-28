@@ -1,0 +1,40 @@
+<% content_for(:title, "#{t('.titulo')} | Stockerly") %>
+<% content_for(:page_title, t(".titulo")) %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: admin_settings_path %>
+<% end %>
+
+<div class="mx-auto flex max-w-3xl flex-col gap-6">
+  <p class="text-fg-subtle"><%= t(".descripcion", days: ErrorEvent::RETENTION.in_days.to_i) %></p>
+
+  <%= render "admin/errors/filters" %>
+
+  <% if @error_events.any? %>
+    <div class="flex flex-col gap-4">
+      <ul class="flex flex-col gap-3">
+        <% @error_events.each do |event| %>
+          <%= render "admin/errors/error_row", event: event %>
+        <% end %>
+      </ul>
+
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p class="font-mono text-xs text-fg-subtle">
+          <%= t(".mostrando", shown: @error_events.length, total: number_with_delimiter(@pagy.count)) %>
+        </p>
+        <% if @pagy.pages > 1 %>
+          <div class="text-sm"><%== @pagy.series_nav %></div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border-default bg-bg-surface px-6 py-10 text-center">
+      <span class="material-symbols-outlined text-3xl text-fg-subtle" aria-hidden="true">bug_report</span>
+      <p class="font-semibold text-fg-default">
+        <%= admin_errors_any_filter_active? ? t(".sin_coincidencias") : t(".vacio") %>
+      </p>
+      <% if admin_errors_any_filter_active? %>
+        <%= link_to t(".limpiar"), admin_errors_path, class: "text-sm font-semibold text-primary hover:underline" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
