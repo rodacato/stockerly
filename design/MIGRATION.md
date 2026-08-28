@@ -240,36 +240,46 @@ hygiene.
 
 ## Cross-flow consistency sweep — 2026-08-27
 
-Run after `settings` closed, against the rules `README.md` states rather than against the plan. Every
-line below was measured; nothing here was assumed.
+Run twice. **The first pass claimed more than it checked, and the second pass is why this section
+says so instead of only showing the clean result.**
 
-**Clean, verified:**
+**Pass 1** checked token **membership** on the migrated flows and value equality on `auth` alone. It
+found `auth` missing `scrim` and reported the flows consistent. **`brand.pen` was diverging on
+`info-fg` the whole time** — the old dark `#7B89FF` against the kit's `#9098FF` — and membership
+cannot see a wrong value. Neither can a count: 52 against 52 hides a missing token paired with an
+extra one.
+
+**Pass 2** compares every shared token's **value** against the kit, per file, by checksum:
+
+| File | Diverging | Missing |
+|---|---|---|
+| `flows/cockpit.pen` · `assets` · `auth` · `discover` · `alerts` · `settings` | **0** | **0** |
+| `brand.pen` · `_playground.pen` | **0** | **0** |
+| `flows/onboarding.pen` | **0** | the 14 tokens 0.8.0 added — *behind*, which the method allows |
+
+**Two gaps closed along the way, and they share a cause.** `auth.pen` and `onboarding.pen` were both
+missing `scrim` — a token the kit added in **0.3.0**, four minor versions back. They are the two
+files that never re-synced at that bump, and every migration since installed the *delta* rather than
+reconciling against the kit's list, so nothing ever asked whether an older token was absent.
+
+**The rule that comes out of it: reconcile against the kit's list, never against the diff — and
+compare values, not names.** Membership and equality are two checks, and running one of them and
+reporting "consistent" is how `brand` stayed wrong through a sweep designed to catch it.
+
+**Also clean, verified rather than assumed:**
 
 | Check | Result |
 |---|---|
-| Exports vs index | **64 PNGs on disk, 64 listed** — zero orphans, zero missing |
+| Exports vs index | **64 on disk, 64 listed** — no orphans, none missing |
 | *"Tokens only — zero hex in a flow"* | **zero real hex** in any flow |
-| D7's 390×844 floor | **zero** artboards under it (after `Movimientos` 733→844 and `Registros` 670→844) |
-| One active nav item per artboard | **zero** doubles left (after settings' master) |
-| Retired providers named in artboards | **zero** (after the `Polygon Sync` log row) |
-| Token set vs the kit, by membership | exact in `cockpit`, `assets`, `discover`, `alerts`, `settings`, `_playground` |
+| D7's 390×844 floor | **zero** artboards under it |
+| One active nav item per artboard | **zero** doubles |
+| Retired providers named in an artboard | **zero** |
+| Dangling `Dn` references across `design/*.md` | **zero** |
 
-**Found and fixed: `auth.pen` was missing `scrim`.** The only migrated flow short a kit token — and
-**the reason generalises, which is the real finding**: every migration in this pass installed the
-*delta* (0.8.0's 14 new tokens) and never reconciled against the kit's full set. A count check would
-not have caught it either, since 52 vs 52 hides a missing token paired with an extra one. Only set
-membership does. **Reconcile against the kit's list, never against the diff.**
-
-**Found, not fixed:**
-
-- **The hex rule has no token for its own exception.** `cockpit.pen` carries 44 literals and all 44
-  are `#00000000` — transparency, not colour. The kit has no `transparent` token, so a hex literal is
-  the only way to say "no fill", and the rule as written forbids the only available spelling. Worth a
-  token in a future bump, or a sentence in the rule.
-- `_playground.pen` sits at **0.8.1** against the kit's 0.9.0. Behind, not diverging: 0.9.0 added a
-  component and no tokens, and `_playground` has no back-header to vendor it into.
-- `brand.pen` sits at **0.6.0** without the 14 new tokens. Behind by design — the ledger has always
-  said hygiene only.
+**Logged, not fixed:** the hex rule has no token for its own exception. All 44 literals in
+`cockpit.pen` are `#00000000` — transparency, not colour — and the kit has no `transparent` token,
+so a hex literal is the only spelling available. The rule forbids the only way to say it.
 
 ## Method notes this migration paid for
 
