@@ -11,6 +11,22 @@ version it vendored in `kit-version-source`.
 major = breaking rename/removal. Additive bumps don't force re-syncs. A changed token VALUE forces
 every consumer.
 
+---
+
+## Open kit gaps
+
+**Live list, not history** — each entry is a gap a flow worked around, kept here so the next bump
+has its candidates in one place instead of scattered across the entries that found them. A gap
+leaves this list by shipping or by being declined on the record.
+
+| Gap | Found | Where it lives meanwhile |
+|---|---|---|
+| **`NavRow` has no recommended/primary state** | 0.8.0, vendoring into `assets.pen` — three copies had drifted and snapped back, a fourth carried a deliberate `$primary` accent because it is the recommended path out of an empty portfolio | An instance override in `assets.pen`. A second consumer earns the variant |
+| **No detail `TopBar`** | 0.8.0, `cockpit.pen` — the kit ships the root bar (`Brand`/`Bell`) only | `TopBarDetail` local to `cockpit.pen`: two-line ticker title plus a bookmark. **Measured against `HeaderBar` and they are different components**, so 0.9.0 did not absorb it. Its `Bookmark` slot is asset-specific and would come off in a kit version |
+| **`TopBar` has no count badge** | 0.8.1, `alerts.pen` — the kit ships `UnreadDot`, an 8px dot | A numbered badge local to `alerts.pen`, which is the flow that owns the inbox: a count says more than a dot. If a second flow wants the number, the variant is earned |
+| **No `transparent` token** | The consistency sweep, 2026-08-27 | `cockpit.pen` carries 44 `#00000000` literals — transparency, not colour. `README.md` says *"tokens only — zero hex in a flow"*, and the kit gives no way to spell "no fill", so **the rule currently forbids its own only spelling**. Either a token or a sentence in the rule |
+
+
 **Current: 0.8.0.** Entries below are historical and are not rewritten when a later version
 supersedes them — read the newest entry that mentions a component, not the first.
 
