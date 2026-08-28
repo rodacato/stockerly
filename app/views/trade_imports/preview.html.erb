@@ -1,0 +1,85 @@
+<% content_for :page_title, t(".titulo") %>
+
+<div class="mx-auto flex w-full max-w-lg flex-col gap-4">
+  <div class="flex items-center gap-3">
+    <%= link_to new_trade_import_path, class: "text-fg-default", aria: { label: t(".volver") } do %>
+      <span class="material-symbols-outlined text-xl">arrow_back</span>
+    <% end %>
+    <h1 class="font-display text-lg font-bold text-fg-default"><%= t(".titulo") %></h1>
+  </div>
+
+  <% if @reason.present? %>
+    <%# The batch is all-or-nothing: a partial import leaves the portfolio wrong
+        without saying so, which is worse than refusing the whole file. %>
+    <div class="flex flex-col gap-2 rounded-2xl bg-warning-bg px-4 py-3.5">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-base text-warning-fg">warning</span>
+        <span class="text-sm font-semibold text-warning-fg"><%= t(".rechazo.titulo") %></span>
+      </div>
+      <p class="text-xs leading-relaxed text-warning-fg"><%= t("trade_imports.preview.rechazo.#{@reason}", count: Array(@details).size) %></p>
+    </div>
+
+    <% if @reason == :unknown_symbols %>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-fg-subtle"><%= t(".rechazo.faltan") %></p>
+      <ul class="flex flex-wrap gap-2">
+        <% @details.each do |symbol| %>
+          <li class="rounded-lg border border-border-default bg-bg-surface px-2.5 py-1.5 font-mono text-xs font-semibold text-fg-default"><%= symbol %></li>
+        <% end %>
+      </ul>
+      <p class="rounded-2xl bg-bg-muted px-4 py-3.5 text-xs leading-relaxed text-fg-subtle"><%= t(".rechazo.porque") %></p>
+      <%= link_to t(".rechazo.dar_alta"), tracked_assets_path,
+                  class: "rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-fg-inverse" %>
+    <% else %>
+      <ul class="flex flex-col gap-1.5">
+        <% Array(@details).each do |detail| %>
+          <li class="rounded-lg bg-bg-muted px-3 py-2 font-mono text-[11px] text-fg-subtle"><%= detail.is_a?(Hash) ? detail.to_json : detail %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <%= link_to t(".rechazo.otro_archivo"), new_trade_import_path, class: "text-center text-sm font-semibold text-fg-subtle" %>
+  <% else %>
+    <p class="flex items-center gap-2 rounded-lg bg-info-bg px-3 py-2.5 text-xs text-info-fg" role="status">
+      <span class="material-symbols-outlined text-sm">visibility</span>
+      <%= t(".nada_guardado") %>
+    </p>
+
+    <div class="flex flex-col gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-4">
+      <div class="flex">
+        <div class="flex flex-1 flex-col gap-0.5">
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-fg-subtle"><%= t(".movimientos") %></span>
+          <span class="font-mono text-2xl font-bold text-fg-default"><%= @report[:imported] %></span>
+        </div>
+        <div class="flex flex-1 flex-col gap-0.5">
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-fg-subtle"><%= t(".invertido") %></span>
+          <span class="font-mono text-2xl font-bold text-fg-default"><%= number_with_precision(@report[:invested], precision: 2, delimiter: ",") %></span>
+        </div>
+      </div>
+      <span class="h-px bg-border-default"></span>
+      <p class="text-xs text-fg-subtle">
+        <%= t(".rango", desde: l(@report[:earliest_on]), hasta: l(@report[:latest_on]), count: @report[:symbols].size) %>
+      </p>
+    </div>
+
+    <% if @report[:skipped].any? %>
+      <p class="flex items-center gap-2 rounded-lg bg-bg-muted px-3 py-2.5 text-xs text-fg-subtle">
+        <span class="material-symbols-outlined text-sm">content_copy</span>
+        <%= t(".duplicados", count: @report[:skipped].size) %>
+      </p>
+    <% end %>
+
+    <p class="text-[10px] font-semibold uppercase tracking-widest text-fg-subtle"><%= t(".simbolos") %></p>
+    <ul class="flex flex-wrap gap-2">
+      <% @report[:symbols].each do |symbol| %>
+        <li class="rounded-lg border border-border-default bg-bg-surface px-2.5 py-1.5 font-mono text-xs font-semibold text-fg-default"><%= symbol %></li>
+      <% end %>
+    </ul>
+
+    <%= form_with url: trade_imports_path, class: "flex flex-col items-center gap-2 pt-1" do |f| %>
+      <%= f.hidden_field :contenido, value: @csv_text %>
+      <%= f.submit t(".confirmar", count: @report[:imported]),
+                   class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-fg-inverse" %>
+      <%= link_to t(".cancelar"), new_trade_import_path, class: "text-sm font-semibold text-fg-subtle" %>
+    <% end %>
+  <% end %>
+</div>

@@ -49,7 +49,9 @@
       <%= render "components/empty_state",
                  icon: "account_balance_wallet",
                  title: t("assets.index.vacio_cartera_titulo"),
-                 description: t("assets.index.vacio_cartera_cuerpo") %>
+                 description: t("assets.index.vacio_cartera_cuerpo"),
+                 cta_text: t("assets.index.importar"),
+                 cta_path: new_trade_import_path %>
     <% end %>
   <% else %>
     <% if @watchlist_items.any? %>
@@ -75,6 +77,19 @@
     <span class="min-w-0 flex-1">
       <span class="block text-sm font-semibold text-fg-default"><%= t("positions.index.titulo") %></span>
       <span class="block text-xs text-fg-subtle"><%= t("assets.index.ver_historial_desc") %></span>
+    </span>
+    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">chevron_right</span>
+  <% end %>
+
+  <%# The third door of Holdings/Vacío (ACT-1), as a foot-of-list row so it is
+      reachable once the portfolio has holdings too. It names no broker: D62 is
+      still open on the artboard's GBM/Kuspit/Binance claim. %>
+  <%= link_to new_trade_import_path,
+              class: "flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
+    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">upload_file</span>
+    <span class="min-w-0 flex-1">
+      <span class="block text-sm font-semibold text-fg-default"><%= t("assets.index.importar") %></span>
+      <span class="block text-xs text-fg-subtle"><%= t("assets.index.importar_desc") %></span>
     </span>
     <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">chevron_right</span>
   <% end %>

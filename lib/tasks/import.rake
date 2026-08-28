@@ -1,5 +1,3 @@
-require "csv"
-
 namespace :stockerly do
   desc "Import trades from a CSV (dry run by default; pass COMMIT=1 to write)"
   task :import_trades, [ :path ] => :environment do |_t, args|
@@ -25,13 +23,13 @@ end
 # Rake-only presentation. Lives here rather than in app/ because nothing else
 # renders an import to a terminal.
 module ImportTradesCli
-  KEYS = %i[asset_symbol side shares price_per_share fee currency executed_at external_id net_amount].freeze
-
   def self.read(path)
     abort "Usage: bin/rails stockerly:import_trades[path/to.csv]" if path.blank?
     abort "No such file: #{path}" unless File.exist?(path)
 
-    CSV.read(path, headers: true).map { |row| row.to_h.symbolize_keys.slice(*KEYS) }
+    Trading::Domain::CsvRows.call(text: File.read(path))
+  rescue Trading::Domain::CsvRows::MissingHeader => e
+    abort e.message
   end
 
   def self.user

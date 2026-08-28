@@ -95,6 +95,13 @@ Rails.application.routes.draw do
   # Historial. `update` went with the four-tab table: `notes` and `labels` were
   # written by an endpoint no view ever posted to, and no artboard draws them.
   resources :positions, only: [ :index ]
+  # Declared before `resources :trades` so /trades/import is never read as a
+  # member route. Preview and commit are separate verbs on purpose: the preview
+  # writes nothing, and confirming is its own deliberate act (#401).
+  get  "trades/import",         to: "trade_imports#new",     as: :new_trade_import
+  post "trades/import/preview", to: "trade_imports#preview", as: :preview_trade_import
+  post "trades/import",         to: "trade_imports#create",  as: :trade_imports
+
   # No `index` since D60 — Historial holds the trade log, and /trades had no
   # inbound link from anywhere in the app. The sheet and the inline row flows
   # stay.
