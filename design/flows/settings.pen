@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "One Ajustes, no admin zone. On a single-user instance the /admin split is a costume (D5): the same person owns the account and the box, so the design merges /profile and /admin into one hub with sections.\n\nThe scope shrank twice on its way here: D9 moved the asset catalogue to Activos › Rastreados, and D16 reduced the notification panel to the two channels that actually deliver. What is left: cuenta, apariencia y región, avisos, instancia, datos.\n\nScreens: Ajustes (hub) · Integraciones · Registros · Instancia.\n\nGrounding: /profile tabs (información, apariencia+región, notificaciones, seguridad, datos y sesión) · admin/integrations 'Conectividad de mercado' with one key per provider · admin/logs 'Registros · últimos 90 días' · admin/settings SiteConfig toggles audited through SiteConfigChange · Mission Control at /admin/jobs.\n\n⚠ Two of the three SiteConfig toggles are drawn as if they worked, and today they do not: auto_sync_enabled and email_notifications_enabled persist, are audited, and have no consumer — the jobs and the mailers never read them (D17). maintenance_mode is real, enforced in ApplicationController.\n\n⚠ D18 is REVERSED (2026-08-26 → ADR-015): one key per provider. The provider audit found that four sources — Alpaca, Massive (ex-Polygon), Finnhub and CoinGecko — explicitly prohibit using several credentials to exceed a free tier. The multi-key count and the rotation note are gone from this artboard; the fallback that remains is across sources, not across keys of one source, which is what GatewayChain already does.\n\nDesktop (1280, kit 0.5.0): Hub, Integraciones and Estado y mantenimiento. Registros is NOT drawn — it is a list and reflows; a real desktop log TABLE would be a new component, so it waits for a decision rather than being invented here.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the Hub splits into two semantic columns — cuenta y preferencias | instancia y datos — not an arbitrary half; (b) the Tema and Moneda segmented controls were stretching to the 476 column and are pinned to their native 342. A control is not a container: it should never absorb the width it is given. That is the kit gap logged in 0.5.0, and this is its first real case; (c) Integraciones as a 3x2 grid puts the quota bars side by side, so Alpha Vantage's 25 calls/day and Polygon's 5/min stop being isolated facts and become a comparable budget (C1) — the same argument that earns Rastreados its own desktop artboard in assets.pen.\n\n🔴 Desktop makes the D17 lie LOUDER, not quieter. On mobile the three toggles are a block you scroll past; here they get a column of their own, opposite the diagnostics, which reads as the control panel of the instance. Two of the three still do nothing. Wiring auto_sync_enabled and email_notifications_enabled was already a precondition for building this screen (CODE_CHANGES §8) — this layout raises the cost of ignoring it.\n\nCopy: es-MX. kit-version-source 0.5.0.\n\n⚠ INTEGRACIONES REBUILT 2026-08-26, against verified providers rather than the roster the screen inherited. Every claim below was probed live with a real key; see docs/research/market-data-providers-2026-08.md.\n\nOut: Polygon. It served four roles and free-tier kept none of them — index quotes and earnings became paid products, its host is announced for phase-out, and the code now routes US history to Alpaca and US quotes to Finnhub. Keeping a configurable key nobody calls is dead config on a screen whose job is configuration.\n\nIn: DataBursatil (BMV and BIVA — prices, history, intraday, sanctioned) and Yahoo Finance. Yahoo is drawn last on purpose and gets the full-width row on desktop: it is the ONLY source for index levels and BMV dividends, AND the last link in every other chain. If it goes, indices and Mexican corporate actions go with it — the chip says 'única fuente' for that reason, and the description carries the fallback duty.\n\nRoles are now drawn. Each card states primaria / única fuente, which is what the reader needs to know before deciding whether a missing key matters. 'nueva' was dropped: it is a launch-week affordance and the role is permanent.\n\nCopy that contradicted the code, fixed: Alpaca claimed crypto (the gateway has none), Finnhub said 'precios de acciones' when it is now the current-quote primary, and every card carried '1 llave ·' — noise since ADR-015 made one key per provider the rule, which the Nota already states.\n\n🐞 The quota bars were all fill_container, so 18/25 and 95/10,000 both rendered as a full bar. Every bar now carries a width derived from its own numbers. Fixed in the flow per the method (a flow painting what the code does not say is a bug, not a finding).\n\nDesktop finding (c) above is superseded: the 3x2 grid is now 3+3+1, and the comparison it earns is between Alpha Vantage's 25 calls/day and DataBursatil's 200,000 KiB/month — quota units are not comparable across providers, which is exactly what the side-by-side makes visible.\n\nStill not drawn, and deliberately: FMP, whose /api/v3 is gated to accounts created before 2025-08-31 — it works on the maintainer's key and 403s for every new self-hoster (#312 removes it). And the capability→source map: a provider serves several capabilities, so grouping by capability would list it three times on a screen where you paste one key per card.\n\n⚠ INTEGRACIONES · ESTADOS, 2026-08-26 (panel C5/S2/C6/C2/C1/C4). The rebuild fixed WHICH providers are drawn and left WHAT STATE they are in untouched: every card was drawn healthy, including Yahoo — the one source that actually 429'd for an unknown period, drawn at '3 / 5 por minuto'. A screen whose job is 'which source is at fault and whose problem is it' could not say either. The new [Ajustes] / Integraciones · Estados artboard is the reference: four states, one card each.\n\nThe four are conectada · sin llave · sin cuota · bloqueada, and the split that matters is the last two. Sin cuota is OUR counter stopping us and it resumes tomorrow; bloqueada is the PROVIDER refusing and no waiting fixes it. Drawn identically they would be the same generic error this whole engine exists to stop telling. Each card's strip names the owner in its first three words: 'Es tu instancia', 'Es tu cuota', 'Es el proveedor'.\n\nNo track where there is no reading. Sin llave and bloqueada drop the quota bar entirely rather than render an empty one — an empty bar reads as 0% used, which is a number we do not have. Same reason DataBursatil's bar has no honest rendering when remaining_credits itself fails.\n\nmaintainer-only is NOT a state, and that is a correction to #319's own DoD. It is a property of a credential, not a runtime condition — FMP works on the maintainer's key and 403s for everyone else whether it is idle, throttled or blocked. It belongs on a card as a permanent note, and with #312 removing FMP it currently has no occupant. Drawing a fifth state nobody is in would be the empty-bar mistake again.\n\nTwo live sources gained cards: ExchangeRate (:fx_current, requires a key, feeds RefreshFxRatesJob hourly) and Alternative.me (:sentiment, no key). ProviderDefaults seeds ten providers; the rebuild drew seven. FMP is out on purpose (#312) but these two were simply missed — and ExchangeRate is the sharp one: it asks for a key and had no card to paste it into, on the screen whose whole job is one key per card. Desktop goes 3+3+2+1; Yahoo keeps its full-width row for the reason the rebuild gave it.\n\n⏳ D39 — whether ExchangeRate survives at all is Adrian's call, not drawn here. Its own use case says the generic provider 'drifts 0.5-1% from Banxico daily', and #318 just seeded the Banxico FIX back to 1991-11-14 for USD/MXN. On a tracker whose only pairs are MXN and USD, the source that is worse on the only axis that matters may not earn a card. It is drawn because it is live today; deleting it later is a delete.\n\n🐞 Three quota numbers on this artboard disagree with the code, and the artboard is right in all three — it was rebuilt against live probes, provider_defaults.rb was not. Finnhub 3,600/day vs the seeded 500 (audit §90). DataBursatil 200,000 KiB/month vs a seeded 5,000 calls/day — the wrong unit, not the wrong number. Banxico's '200 hoy' vs a seeded 1,000, neither sourced. And separately: ADR-017 committed Yahoo to 6/min and 200/day, while provider_defaults sets 5/min and NO daily cap — the restraint that ADR promised on the one unsanctioned surface in the stack is not enforced anywhere.",
+          "content": "One Ajustes, no admin zone. On a single-user instance the /admin split is a costume (D5): the same person owns the account and the box, so the design merges /profile and /admin into one hub with sections.\n\nThe scope shrank twice on its way here: D9 moved the asset catalogue to Activos › Tracked, and D16 reduced the notification panel to the two channels that actually deliver. What is left: cuenta, apariencia y región, avisos, instancia, datos.\n\nScreens: Ajustes (hub) · Integraciones (+ Estados) · Registros · Estado y mantenimiento.\n\nGrounding: /profile tabs · admin/integrations 'Conectividad de mercado' with one key per provider · admin/logs 'Registros · últimos 90 días' · admin/settings SiteConfig toggles audited through SiteConfigChange · Mission Control at /admin/jobs.\n\n✅ D17 IS FIXED — this brief used to carry a ⚠ and a 🔴 saying two of the three SiteConfig toggles did nothing. Re-measured 2026-08-27: auto_sync_enabled is read by app/jobs/concerns/pausable_sync.rb and email_notifications_enabled by app/mailers/alert_mailer.rb, which disables delivery when the flag is off and deliberately does NOT guard UserMailer#password_reset — a single-user instance with no support desk cannot afford a switch that locks its owner out. maintenance_mode was always real. All three toggles now do what they say, and the desktop layout that 'made the lie louder' no longer has a lie to amplify.\n\n✅ D18 REVERSED (2026-08-26 → ADR-015): one key per provider. Four sources — Alpaca, Finnhub, CoinGecko and the ex-Polygon host — explicitly prohibit several credentials to beat a free tier. The multi-key count and the rotation note are gone from the artboard; the fallback that remains is across sources, not across keys of one source, which is what GatewayChain already does.\n\n✅ D52 (2026-08-27): a Seguridad row lives in Cuenta — 'Verificación en dos pasos · TOTP y códigos de recuperación'. ADR-018 builds TOTP with recovery codes, and D52 put the ask in BOTH the first-boot wizard and here: the wizard offers and lets you skip, Ajustes is where it is turned on later and the codes are regenerated. The three screens themselves live in flows/auth.pen.\n\n✅ The Trabajos badge question is ANSWERED, and the answer was already in the repo. CODE_CHANGES §8 records that counting SolidQueue::FailedExecution put a cross-database query in the hub's request path and aborted the transaction outright in test. The hub's row carried a hardcoded '0'; it now carries nothing and simply links to Mission Control. The real numbers are not lost — admin/settings/show.html.erb:14 already renders '<n> en proceso · <n> fallidos · <n> programados' on Estado y mantenimiento, a screen you open on purpose. The cost is paid where it is chosen.\n\n❓ Guardar vs auto-save: the code does BOTH, split by kind, and that split is not visible to the reader. Theme writes to localStorage and applies on click (data-controller=theme). The notification switches POST on toggle (data-controller=toggle). Currency is a form with an explicit 'Guardar' submit. Theme and Moneda are the SAME segmented pill drawn twice, and one commits instantly while the other waits for a button — that is the defect, not which behaviour is right. Recommendation, unbuilt: move Moneda to auto-save; update_currency_path already exists and only writes preferred_currency, so the toggle pattern applies directly. Owner's call, and the artboard draws today's behaviour until it is made.\n\nDesktop (1280): Hub, Integraciones and Estado y mantenimiento. Registros is NOT drawn — it is a list and reflows; a real desktop log TABLE would be a new component, so it waits for a decision rather than being invented here.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the Hub splits into two semantic columns — cuenta y preferencias | instancia y datos — not an arbitrary half; (b) the Tema and Moneda segmented controls were stretching to the 476 column and are pinned to their native 342. A control is not a container. That kit gap is now settled in code too: D49 shipped as w-full sm:w-fit on components/_segmented (CODE_CHANGES §12); (c) Integraciones as a 3x2 grid puts the quota bars side by side, so Alpha Vantage's 25 calls/day and Yahoo's 6/min stop being isolated facts and become a comparable budget (C1).\n\n⚠ INTEGRACIONES REBUILT 2026-08-26, against verified providers rather than the roster the screen inherited. Every claim was probed live with a real key; see docs/research/market-data-providers-2026-08.md.\n\nOut: Polygon. It served four roles and free-tier kept none — index quotes and earnings became paid products, its host is announced for phase-out, and the code routes US history to Alpaca and US quotes to Finnhub. Keeping a configurable key nobody calls is dead config on a screen whose job is configuration. 🐞 A Registros row still read 'Polygon Sync · Rate limit alcanzado · 5 llamadas por minuto' — sample data naming a retired provider, fixed 2026-08-27 to Yahoo Finance and its real 6/min cap from ProviderDefaults (ADR-017).\n\nIn: DataBursatil (BMV and BIVA — prices, history, intraday, sanctioned) and Yahoo Finance. Yahoo is drawn last on purpose and gets the full-width row on desktop: it is the ONLY source for index levels and BMV dividends, AND the last link in every other chain. If it goes, indices and Mexican corporate actions go with it — the chip says 'única fuente' for that reason.\n\nRoles are drawn. Each card states primaria / única fuente, which is what the reader needs before deciding whether a missing key matters. 'nueva' was dropped: it is a launch-week affordance and the role is permanent.\n\nCopy that contradicted the code, fixed: Alpaca claimed crypto (the gateway has none), Finnhub said 'precios de acciones' when it is the current-quote primary, and every card carried '1 llave ·' — noise since ADR-015 made one key per provider the rule.\n\n🐞 Found while migrating to 0.9.0 (2026-08-27): the vendored BottomNav had TWO active items baked into its master — Descubrir AND Ajustes, both in $primary, with no instance override hiding it. When Descubrir became the fifth destination (D31) the active state was set on it and never cleared from Ajustes, so every one of these eight artboards drew two highlighted tabs. Only Ajustes is active now.\n\nVendored here: TopBar (57 → 76), BottomNav, TopBarDesktop (76 → 80), SidebarNav, SwitchRow, NavRow — and HeaderBar, PROMOTED to the kit at 0.9.0. This flow hand-built the same back-header four times and flows/alerts.pen had built it twice; two consumers is the bar the 0.8.0 kit-gap note set for promotion, and measuring confirmed they are the same bar (an 18px display title with an optional action) rather than cockpit's TopBarDetail (a two-line ticker title with a bookmark). All four back buttons were 20px and are 44 now.\n\nRegistros grew 670 → 844 to meet D7's floor, a pre-existing breach.\n\nCopy: es-MX. kit-version-source 0.9.0 (the brief claimed 0.5.0 against a variable reading 0.7.0 — the SEVENTH brief in a row found contradicting its own file, which is now every brief in the system without a single exception. That is what D53 is parked about).",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -118,14 +118,37 @@
           ]
         },
         {
-          "type": "icon",
-          "id": "GTsDT",
-          "name": "Bell",
-          "width": 20,
-          "height": 20,
-          "icon": "bell",
-          "library": "lucide",
-          "fill": "$fg-subtle"
+          "type": "frame",
+          "id": "t2iym",
+          "name": "BellWrap",
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "GTsDT",
+              "name": "Bell",
+              "width": 20,
+              "height": 20,
+              "icon": "bell",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "ellipse",
+              "id": "vnzGJ",
+              "layoutPosition": "absolute",
+              "x": 26,
+              "y": 10,
+              "name": "UnreadDot",
+              "fill": "$negative",
+              "width": 8,
+              "height": 8
+            }
+          ]
         }
       ]
     },
@@ -255,13 +278,13 @@
               "height": 22,
               "icon": "compass",
               "library": "lucide",
-              "fill": "$primary"
+              "fill": "$fg-subtle"
             },
             {
               "type": "text",
               "id": "nLtlB",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$fg-subtle",
               "content": "Descubrir",
               "fontFamily": "$font-sans",
               "fontSize": 11,
@@ -532,7 +555,7 @@
                       "type": "text",
                       "id": "Ql0bE",
                       "name": "t",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "content": "A",
                       "fontFamily": "$font-display",
                       "fontSize": 18,
@@ -659,6 +682,27 @@
                     },
                     "uH4YA": {
                       "content": "Cámbiala cuando quieras"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                },
+                {
+                  "id": "obCLj",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Seguridad",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "shield-check"
+                    },
+                    "GueOK": {
+                      "content": "Verificación en dos pasos"
+                    },
+                    "uH4YA": {
+                      "content": "TOTP y códigos de recuperación"
                     },
                     "AgU5u": {
                       "content": ""
@@ -1125,7 +1169,7 @@
                       "content": "Mission Control: colas, reintentos y fallos"
                     },
                     "AgU5u": {
-                      "content": "0"
+                      "content": ""
                     }
                   }
                 }
@@ -1277,55 +1321,28 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "psX7Q",
+          "id": "JaeAP",
+          "type": "ref",
+          "ref": "B3jgA",
           "name": "Header",
           "width": "fill_container",
-          "fill": "$bg-surface",
-          "stroke": "$border-default",
-          "strokeWidth": {
-            "bottom": 1
-          },
-          "gap": "$space-3",
-          "padding": [
-            16,
-            20
-          ],
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "icon",
-              "id": "D7nPxS",
-              "name": "Back",
-              "width": 20,
-              "height": 20,
-              "icon": "arrow-left",
-              "library": "lucide",
-              "fill": "$fg-default"
+          "descendants": {
+            "rBnzV": {
+              "content": "Integraciones"
             },
-            {
-              "type": "text",
-              "id": "D3Kx8R",
-              "name": "T",
-              "fill": "$fg-default",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Integraciones",
-              "fontFamily": "$font-display",
-              "fontSize": 18,
-              "fontWeight": "700"
+            "bcqqH": {
+              "width": 44,
+              "padding": 0
             },
-            {
-              "type": "icon",
-              "id": "nvj4o",
-              "name": "Add",
-              "width": 20,
-              "height": 20,
+            "MEluP": {
               "icon": "plus",
-              "library": "lucide",
-              "fill": "$primary"
+              "width": 20,
+              "height": 20
+            },
+            "L00Xqd": {
+              "enabled": false
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -1731,7 +1748,7 @@
                       "type": "text",
                       "id": "V9pX68",
                       "name": "t",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Feed SIP consolidado: el cierre oficial, no el de una sola bolsa. Gratis mientras se pidan datos de hace más de 15 minutos — que es siempre en una gráfica diaria.",
@@ -2992,65 +3009,40 @@
       "name": "[Ajustes] / Registros / Default",
       "clip": true,
       "width": 390,
+      "height": 844,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "Tqkz9",
+          "id": "edl0f",
+          "type": "ref",
+          "ref": "B3jgA",
           "name": "Header",
           "width": "fill_container",
-          "fill": "$bg-surface",
-          "stroke": "$border-default",
-          "strokeWidth": {
-            "bottom": 1
-          },
-          "gap": "$space-3",
-          "padding": [
-            16,
-            20
-          ],
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "icon",
-              "id": "X3gLr",
-              "name": "Back",
-              "width": 20,
-              "height": 20,
-              "icon": "arrow-left",
-              "library": "lucide",
-              "fill": "$fg-default"
+          "descendants": {
+            "rBnzV": {
+              "content": "Registros"
             },
-            {
-              "type": "text",
-              "id": "j5owt",
-              "name": "T",
-              "fill": "$fg-default",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Registros",
-              "fontFamily": "$font-display",
-              "fontSize": 18,
-              "fontWeight": "700"
+            "bcqqH": {
+              "width": 44,
+              "padding": 0
             },
-            {
-              "type": "icon",
-              "id": "BV327",
-              "name": "Exp",
-              "width": 19,
-              "height": 19,
+            "MEluP": {
               "icon": "download",
-              "library": "lucide",
-              "fill": "$primary"
+              "width": 20,
+              "height": 20
+            },
+            "L00Xqd": {
+              "enabled": false
             }
-          ]
+          }
         },
         {
           "type": "frame",
           "id": "ktGIb",
           "name": "Content",
           "width": "fill_container",
+          "height": "fill_container",
           "layout": "vertical",
           "gap": "$space-3",
           "padding": [
@@ -3100,7 +3092,7 @@
                       "type": "text",
                       "id": "VWMBP",
                       "name": "t",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "content": "Todos",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
@@ -3110,7 +3102,7 @@
                       "type": "text",
                       "id": "FfHle",
                       "name": "n",
-                      "fill": "$primary",
+                      "fill": "$primary-hover",
                       "content": "318",
                       "fontFamily": "$font-mono",
                       "fontSize": 10,
@@ -3230,7 +3222,7 @@
                       "id": "uIebC",
                       "name": "t",
                       "fill": "$fg-default",
-                      "content": "Polygon Sync",
+                      "content": "Yahoo Finance Sync",
                       "fontFamily": "$font-mono",
                       "fontSize": 12,
                       "fontWeight": "600"
@@ -3242,7 +3234,7 @@
                       "fill": "$fg-subtle",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Rate limit alcanzado · 5 llamadas por minuto",
+                      "content": "Rate limit alcanzado · 6 llamadas por minuto",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-sans",
                       "fontSize": 11,
@@ -3625,45 +3617,19 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "Vlfxw",
+          "id": "JGGYE",
+          "type": "ref",
+          "ref": "B3jgA",
           "name": "Header",
           "width": "fill_container",
-          "fill": "$bg-surface",
-          "stroke": "$border-default",
-          "strokeWidth": {
-            "bottom": 1
-          },
-          "gap": "$space-3",
-          "padding": [
-            16,
-            20
-          ],
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "icon",
-              "id": "dsueK",
-              "name": "Back",
-              "width": 20,
-              "height": 20,
-              "icon": "arrow-left",
-              "library": "lucide",
-              "fill": "$fg-default"
+          "descendants": {
+            "rBnzV": {
+              "content": "Estado y mantenimiento"
             },
-            {
-              "type": "text",
-              "id": "Meezm",
-              "name": "T",
-              "fill": "$fg-default",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Estado y mantenimiento",
-              "fontFamily": "$font-display",
-              "fontSize": 18,
-              "fontWeight": "700"
+            "bcqqH": {
+              "enabled": false
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -4488,7 +4454,7 @@
                   "type": "text",
                   "id": "S32JT",
                   "name": "t",
-                  "fill": "$primary",
+                  "fill": "$primary-hover",
                   "content": "Descubrir",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -4524,7 +4490,7 @@
                   "type": "text",
                   "id": "EAxVV",
                   "name": "t",
-                  "fill": "$primary",
+                  "fill": "$primary-hover",
                   "content": "Ajustes",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -4595,14 +4561,37 @@
           "alignItems": "center",
           "children": [
             {
-              "type": "icon",
-              "id": "CUHpk",
-              "name": "Bell",
-              "width": 20,
-              "height": 20,
-              "icon": "bell",
-              "library": "lucide",
-              "fill": "$fg-subtle"
+              "type": "frame",
+              "id": "vV02T",
+              "name": "BellWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "CUHpk",
+                  "name": "Bell",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "pHi0Y",
+                  "layoutPosition": "absolute",
+                  "x": 26,
+                  "y": 10,
+                  "name": "UnreadDot",
+                  "fill": "$negative",
+                  "width": 8,
+                  "height": 8
+                }
+              ]
             }
           ]
         }
@@ -4679,7 +4668,7 @@
                           "type": "text",
                           "id": "hfBPv",
                           "name": "t",
-                          "fill": "$primary",
+                          "fill": "$primary-hover",
                           "content": "A",
                           "fontFamily": "$font-display",
                           "fontSize": 18,
@@ -5881,7 +5870,7 @@
                                   "type": "text",
                                   "id": "WQ2O6",
                                   "name": "t",
-                                  "fill": "$primary",
+                                  "fill": "$primary-hover",
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
                                   "content": "Feed SIP consolidado: el cierre oficial, no el de una sola bolsa. Gratis mientras se pidan datos de hace más de 15 minutos — que es siempre en una gráfica diaria.",
@@ -7822,55 +7811,28 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "ReB0V",
+          "id": "Voqi1",
+          "type": "ref",
+          "ref": "B3jgA",
           "name": "Header",
           "width": "fill_container",
-          "fill": "$bg-surface",
-          "stroke": "$border-default",
-          "strokeWidth": {
-            "bottom": 1
-          },
-          "gap": "$space-3",
-          "padding": [
-            16,
-            20
-          ],
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "icon",
-              "id": "jINv8",
-              "name": "Back",
-              "width": 20,
-              "height": 20,
-              "icon": "arrow-left",
-              "library": "lucide",
-              "fill": "$fg-default"
+          "descendants": {
+            "rBnzV": {
+              "content": "Integraciones"
             },
-            {
-              "type": "text",
-              "id": "p9caCR",
-              "name": "T",
-              "fill": "$fg-default",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Integraciones",
-              "fontFamily": "$font-display",
-              "fontSize": 18,
-              "fontWeight": "700"
+            "bcqqH": {
+              "width": 44,
+              "padding": 0
             },
-            {
-              "type": "icon",
-              "id": "Tx95d",
-              "name": "Add",
-              "width": 20,
-              "height": 20,
+            "MEluP": {
               "icon": "plus",
-              "library": "lucide",
-              "fill": "$primary"
+              "width": 20,
+              "height": 20
+            },
+            "L00Xqd": {
+              "enabled": false
             }
-          ]
+          }
         },
         {
           "type": "frame",
@@ -8716,6 +8678,97 @@
           "width": "fill_container"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "B3jgA",
+      "x": 0,
+      "y": -930,
+      "name": "HeaderBar",
+      "reusable": true,
+      "width": 390,
+      "fill": "$bg-surface",
+      "stroke": "$border-default",
+      "strokeWidth": {
+        "bottom": 1
+      },
+      "gap": "$space-3",
+      "padding": [
+        12,
+        20
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "zucRv",
+          "name": "BackWrap",
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "AnLwJ",
+              "name": "Back",
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "$fg-default"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "rBnzV",
+          "name": "T",
+          "fill": "$fg-default",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Título",
+          "fontFamily": "$font-display",
+          "fontSize": 18,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "bcqqH",
+          "name": "Accion",
+          "height": 44,
+          "gap": 5,
+          "padding": [
+            0,
+            8
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "MEluP",
+              "name": "i",
+              "width": 15,
+              "height": 15,
+              "icon": "check-check",
+              "library": "lucide",
+              "fill": "$primary"
+            },
+            {
+              "type": "text",
+              "id": "L00Xqd",
+              "name": "t",
+              "fill": "$primary",
+              "content": "Acción",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
@@ -8727,7 +8780,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.7.0"
+      "value": "0.9.0"
     },
     "font-display": {
       "type": "string",
@@ -9165,7 +9218,7 @@
           }
         },
         {
-          "value": "#7B89FF",
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }
@@ -9183,6 +9236,244 @@
         },
         {
           "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#38BDF8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#5CC8F5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-6": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#7C6CF0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#A78BFA",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-7": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F97316",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB923C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-8": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#06B6D4",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#22D3EE",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-neutral": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCD34D",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#A3E635",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#BEF264",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
           "theme": {
             "mode": "dark"
           }

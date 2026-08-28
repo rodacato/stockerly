@@ -28,8 +28,8 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 | `flows/assets.pen` | **0.8.0** | ✅ PR #368 | — |
 | `flows/cockpit.pen` | **0.8.0** | ✅ shell · tokens · brief · exports | 3 items, one of them an owner's call |
 | `flows/auth.pen` | **0.8.0** | ✅ done | — |
-| `flows/alerts.pen` | **0.8.1** | ✅ done | — |
-| `flows/settings.pen` | 0.7.0 | — | a reversed decision still drawn, plus a `Seguridad` section (D52) |
+| `flows/alerts.pen` | **0.9.0** | ✅ done | — |
+| `flows/settings.pen` | **0.9.0** | ✅ done | — |
 | `flows/discover.pen` | **0.8.0** | ✅ done | — |
 | `flows/onboarding.pen` | 0.7.0 | — | TOTP lands in the wizard (D52): nine artboards move |
 | `_playground.pen` | **0.8.0** | ✅ installed + Panel · V1…V4 | — |
@@ -130,18 +130,49 @@ delete lands and the insert has not is how exploration disappears.
 - ✅ Brief rewritten. **Sixth of six** found contradicting its own file: it claimed
   `kit-version-source 0.3.0` against a variable reading 0.7.0.
 
-## `flows/settings.pen`
+## `flows/settings.pen` — done 2026-08-27, on 0.9.0
 
-- **One API key per provider.** D18 voted to keep the pools; **ADR-015 retired them** and the table
-  was dropped. Four providers explicitly prohibit multiple credentials to beat a free tier. Drop the
-  per-provider key count and the rotation note. (`CODE_CHANGES.md` §8 still repeats the retired
-  verdict — fix it in the same pass.)
-- Does `ajustes-estado` surface `discover:last_seen`? It is the evidence D31's kill criterion needs.
-- ❓ The `Trabajos` badge: drop it, or give the count a source that is not a cross-database query in
-  the hub's request path.
-- ❓ `Guardar` button or auto-save on the hub — the artboard implies one, the code does the other.
-- **A `Seguridad` section** — no longer conditional: D52 put enrollment in Ajustes as well as the
-  wizard.
+- ✅ Tokens · `info-fg` · `TopBar` 57 → 76 · `TopBarDesktop` 76 → 80 · the accent-on-muted rule on
+  8 text nodes.
+- ✅ **`HeaderBar` promoted to the kit (0.9.0).** This flow hand-built it four times and `alerts`
+  twice — the second consumer the 0.8.0 gap note asked for. Measured before promoting: it is **not**
+  cockpit's `TopBarDetail`. All four back buttons were 20px and are 44 now.
+- ✅ 🐞 **The BottomNav master had TWO active items** — `Descubrir` and `Ajustes`, both `$primary`,
+  with no instance override hiding it. When Descubrir became the fifth destination (D31) the active
+  state was set on it and never cleared from Ajustes, so all eight artboards drew two highlighted
+  tabs. Only Ajustes is active now.
+- ✅ 🐞 **A Registros row read `Polygon Sync · Rate limit alcanzado · 5 llamadas por minuto`** —
+  sample data naming a retired provider, in the brief's own words *"dead config on a screen whose job
+  is configuration"*. Now Yahoo Finance and its real 6/min cap from `ProviderDefaults` (ADR-017).
+- ✅ `Registros` grew 670 → 844 to meet D7's floor, a pre-existing breach.
+- ✅ **D52's `Seguridad` row** added to Cuenta — *Verificación en dos pasos · TOTP y códigos de
+  recuperación*.
+- ✅ **The `Trabajos` badge question is answered, and the answer was already in the repo.**
+  `CODE_CHANGES.md` §8 records that counting `SolidQueue::FailedExecution` put a cross-database query
+  in the hub's request path and **aborted the transaction outright in test**. The row carried a
+  hardcoded `0`; it carries nothing now and links to Mission Control. The real numbers already render
+  on Estado y mantenimiento (`admin/settings/show.html.erb:14`), a screen you open on purpose.
+- ✅ **D17 is FIXED and the brief was two versions behind.** It carried a ⚠ and a 🔴 saying two of the
+  three SiteConfig toggles did nothing. Re-measured: `auto_sync_enabled` is read by
+  `pausable_sync.rb`, `email_notifications_enabled` by `alert_mailer.rb`. The desktop layout that
+  *"made the lie louder"* no longer has a lie to amplify.
+- ✅ **The ledger's own claim about `CODE_CHANGES.md` §8 was wrong**, and it is worth saying rather
+  than deleting quietly. This file used to read *"§8 still repeats the retired verdict — fix it in
+  the same pass."* It does not: §8 **strikes** the pools verdict through and records the reversal,
+  dated 2026-08-27, with the tree verified. What §8 *did* still owe was the failed-jobs badge note,
+  which said the artboard showed a count it should not — true for two months, fixed here.
+- ✅ Brief rewritten. **Seventh of seven** — every brief in the system, without one exception,
+  contradicted its own file. This one claimed `0.5.0` against a variable reading 0.7.0.
+
+### ❓ Still open — owner's call
+
+**Guardar vs auto-save.** The code does both, split by kind, and the split is invisible: theme writes
+to `localStorage` on click, the notification switches POST on toggle, and currency is a form with an
+explicit `Guardar`. **Tema and Moneda are the same segmented pill drawn twice**, and one commits
+instantly while the other waits for a button — that is the defect, not which behaviour is right.
+Recommendation, unbuilt: move Moneda to auto-save; `update_currency_path` already exists and writes
+only `preferred_currency`, so the toggle pattern applies directly. The artboard draws today's
+behaviour until the call is made.
 
 ## `flows/discover.pen` — done 2026-08-27
 

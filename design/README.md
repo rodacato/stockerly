@@ -27,7 +27,7 @@ _Listing verified against the directory 2026-08-27._
 
 | Path | What it is |
 |---|---|
-| `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Currently **0.8.0, 19 components** |
+| `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Currently **0.9.0, 20 components** |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed |
 | `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
 | `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section |
@@ -70,7 +70,7 @@ screens; smaller ones may merge into a neighbor.
 | `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo), movimientos, asset detail (Análisis · Mi posición), consolidado | **done · in review** — **migrated to kit 0.8.0 on 2026-08-27**: six TopBars and four BottomNavs consolidated into three vendored components, `Black swan` deleted (D51), the brief rewritten, all nine exports re-shot |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings, watchlist, holdings vacía, historial, registrar movimiento (sheet + con teclado), tracked, tracked·buscar | **done · in review** — **migrated to kit 0.8.0 and D48 on 2026-08-27**: the ladder renamed, the TopBar's 19px growth absorbed, all twelve exports re-shot |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (default/vacío), nueva regla (sheet), bandeja, confluencia | **done · in review** — **migrated to kit 0.8.1 on 2026-08-27**: the third channel toggle dropped against the schema's two booleans, `SwitchRow` and a local `HeaderBar` vendored, the clipped bell badge fixed, Confluencia's unbuilt window gated |
-| `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, integraciones, registros, estado y mantenimiento | **done · in review** |
+| `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, integraciones (+ estados), registros, estado y mantenimiento | **done · in review** — **migrated to kit 0.9.0 on 2026-08-27**: `HeaderBar` promoted from four hand-built copies, the BottomNav's double active state fixed, the `Trabajos` badge dropped against §8's documented reason, D52's `Seguridad` row added |
 | `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default, sin datos) + Olas desktop | **done · in review** — **migrated to kit 0.8.0 on 2026-08-27**: the only flow whose shell was already fully vendored, so both bars were updated rather than consolidated; D33 closed, D41 applied, D56 raised |
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for
