@@ -1,5 +1,7 @@
-<%# Locals: user. Theme lives in localStorage (per device); currency posts to
-    the dedicated endpoint that only writes preferred_currency. %>
+<%# Locals: user. Two segmented pills that now commit alike (D58): theme
+    applies from localStorage, currency PATCHes on select. Neither waits for a
+    button — the currency form used to, and a choice you can make and forget to
+    submit leaves you reading MXN while believing you switched. %>
 <section class="flex flex-col gap-3">
   <h2 class="font-display text-lg font-bold tracking-tight text-fg-default">
     <%= t("settings.show.tema") %>
@@ -17,23 +19,22 @@
       <% end %>
     </div>
 
-    <%= form_with url: update_currency_path, method: :patch, scope: :profile, class: "flex flex-col gap-2" do |f| %>
+    <div class="flex flex-col gap-2">
       <p class="text-xs text-fg-subtle"><%= t("settings.show.moneda") %></p>
-      <div class="flex gap-1 rounded-xl bg-bg-muted p-1">
+      <div data-controller="choice" data-choice-url-value="<%= update_currency_path %>"
+           data-choice-param-value="profile[preferred_currency]"
+           class="flex gap-1 rounded-xl bg-bg-muted p-1">
         <%# MXN first: the product is MXN-first and the local currency reads
             first. SUPPORTED_CURRENCIES is ordered for validation, not display. %>
         <% [ "MXN", "USD" ].each do |code| %>
-          <% selected = user.preferred_currency == code %>
-          <label class="flex-1 cursor-pointer">
-            <%= tag.input type: "radio", name: "profile[preferred_currency]", value: code,
-                          checked: selected, class: "sr-only peer" %>
-            <span class="block rounded-lg px-3 py-2 text-center font-mono text-sm font-semibold <%= selected ? "bg-bg-surface text-fg-default shadow-sm" : "text-fg-subtle" %>">
-              <%= code %>
-            </span>
-          </label>
+          <button type="button" data-choice-target="option" data-choice-value="<%= code %>"
+                  data-choice-active="<%= user.preferred_currency == code %>"
+                  data-action="click->choice#select"
+                  class="flex-1 rounded-lg px-3 py-2 text-center font-mono text-sm font-semibold text-fg-subtle data-[choice-active=true]:bg-bg-surface data-[choice-active=true]:text-fg-default data-[choice-active=true]:shadow-sm">
+            <%= code %>
+          </button>
         <% end %>
       </div>
-      <%= f.submit "Guardar", class: "self-end rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-fg-inverse hover:bg-primary-hover cursor-pointer" %>
-    <% end %>
+    </div>
   </div>
 </section>
