@@ -30,7 +30,7 @@ _Listing verified against the directory 2026-08-27._
 | `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Currently **0.9.0, 20 components** |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed |
 | `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
-| `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section |
+| `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 0.9.0 since 2026-08-27** |
 | `brand/` | The exported identity assets the repo consumes: `glyph.svg`, `wordmark.svg`, `wordmark.png` |
 | `_playground.pen` | Experiments — inside the system (kit installed at 0.8.0 on 2026-08-27; holds `Panel · V1…V4`, the login brand-panel exploration) |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |

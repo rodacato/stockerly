@@ -24,16 +24,27 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 
 | File | kit | Done | Pending |
 |---|---|---|---|
-| `ui-kit.lib.pen` | **0.8.0** | ✅ merged | — |
-| `flows/assets.pen` | **0.8.0** | ✅ PR #368 | — |
-| `flows/cockpit.pen` | **0.8.0** | ✅ shell · tokens · brief · exports | 3 items, one of them an owner's call |
-| `flows/auth.pen` | **0.8.0** | ✅ done | — |
-| `flows/alerts.pen` | **0.9.0** | ✅ done | — |
-| `flows/settings.pen` | **0.9.0** | ✅ done | — |
-| `flows/discover.pen` | **0.8.0** | ✅ done | — |
+| `ui-kit.lib.pen` | **0.9.0** | ✅ | — |
+| `flows/assets.pen` | **0.8.1** | ✅ | — |
+| `flows/cockpit.pen` | **0.8.1** | ✅ | 3 items, one an owner's call |
+| `flows/auth.pen` | **0.8.1** | ✅ | — |
+| `flows/alerts.pen` | **0.9.0** | ✅ | — |
+| `flows/settings.pen` | **0.9.0** | ✅ | — |
+| `flows/discover.pen` | **0.8.1** | ✅ | — |
 | `flows/onboarding.pen` | 0.7.0 | — | TOTP lands in the wizard (D52): nine artboards move |
-| `_playground.pen` | **0.8.0** | ✅ installed + Panel · V1…V4 | — |
-| `brand.pen` | n/a | — | hygiene only |
+| `_playground.pen` | **0.8.1** | ✅ | — |
+| `brand.pen` | **0.9.0** | ✅ | — |
+
+> **This table drifted, and it is worth naming rather than silently correcting.** Until 2026-08-27
+> it read `0.8.0` on six rows and `n/a` on `brand.pen`. The per-flow *Done* column was maintained
+> and the `kit` column was not: when the kit went 0.8.0 → 0.8.1 → 0.9.0, the consumers were
+> re-vendored and the table was not. **A registry that records a version has to be re-read from the
+> variable, not from what the last edit remembered** — the same failure D53 is parked about, in the
+> file that documents the failure. Every value above was read from `GetVariables()`.
+>
+> **Rows at different versions are not drift.** `0.8.1` was a token-and-treatment patch every
+> consumer took; `0.9.0` added `HeaderBar`, so only the two flows that vendor it moved. Behind is
+> allowed; diverging is not.
 
 ---
 
@@ -200,31 +211,32 @@ component update rather than a consolidation.
 - **It became the large one.** D52 puts a skippable TOTP step in the wizard, so the `Stepper`
   gains a stage and all nine artboards move.
 
-## `brand.pen`
+## `brand.pen` — done 2026-08-27, on 0.9.0
 
-- Hygiene only, and now unblocked: D45/D46/D47 were duplicated in the registry and are fixed.
-- `Actual / Símbolo` keeps the retired four-bracket mark **on purpose** — it is the "before".
-- If `F2 / … › Escala` is re-exported it must go at `scale: 1`. It is a measurement, not a review
-  artifact: at 2× a "16 px" sample renders 32 px and flatters itself.
+Billed as *"hygiene only"*. Measuring found a divergence and three stale claims, which is more than
+hygiene.
 
----
-
-## Kit gaps found while migrating — for the next bump
-
-- **`TopBar` has no count badge.** The kit ships `UnreadDot`, an 8px dot. `alerts.pen` draws a
-  numbered badge because it is the flow that owns the inbox, and a count says more than a dot. It
-  stays local. If a second flow wants the number, the variant is earned.
-
-- **`NavRow` has no recommended/primary state.** Found vendoring it into `assets.pen`: three copies
-  had drifted ~6% larger and snapped back, but a fourth carried a deliberate `$primary` accent
-  because it is the recommended path out of an empty portfolio. It ships as an instance override.
-  If a second flow needs it, that override has earned a variant.
-
-- **The kit has no detail `TopBar`.** It ships the root bar (`Brand`/`Bell`) only, so `cockpit.pen`
-  vendored `TopBarDetail` (`Back`/`Title`+`Sub`/`Bookmark`) locally. Not promoted — the method says
-  do not promote unasked. `auth.pen`, `alerts.pen` and `settings.pen` all have back-navigation
-  screens; if any of them needs the same bar, that is the second consumer and the promotion is
-  earned. Its `Bookmark` slot is asset-specific and would come off in a kit version.
+- ✅ 🐞 **It DIVERGED on `info-fg`**, holding the old dark `#7B89FF` against the kit's `#9098FF`. Not
+  "behind" — the method allows behind and forbids diverging — and the consistency sweep missed it,
+  because that sweep checked token **membership** on the migrated flows and value equality only on
+  `auth`. **`flows/onboarding.pen` had the same divergence** and was fixed with it although its own
+  migration has not run: a wrong value is a defect now, a missing one is only a schedule.
+- ✅ 🐞 **The row whose entire job is to state the version stated the wrong one.** `Brand / Brief ›
+  Meta › kit-version-source` read **0.7.0** while the variable read **0.6.0**. Both read 0.9.0 now.
+  That is the **eighth** self-contradiction this migration turned up, and the purest: not a brief
+  describing its file loosely, but a labelled field disagreeing with the value it labels.
+- ✅ 🐞 **The `Estado` row listed three pending items and all three were already done.** *"Pending:
+  scale-1 export, flow re-vendor, code change."* `brand-escala-1x.png` exists and measures 1236×222
+  — the frame's own size, so `scale: 1` confirmed rather than assumed; all seven flows carry the
+  mark; and the code change landed as `CODE_CHANGES.md` §11.
+- ✅ The 14 tokens installed. `F2 / Usos` is the only sheet touching the `info` pair and it
+  re-exported **byte-identical** — only `info-fg`'s dark value moved and exports render light. Two
+  PNGs changed, not eight.
+- ✅ 🐞 **Caught while writing this: `alerts.pen`'s brief said `kit-version-source 0.8.1` against a
+  variable reading 0.9.0** — created earlier the same day when `HeaderBar` was promoted and the
+  variable was bumped without the prose. Fixed. It would have been the ninth contradiction, and mine.
+- **`Actual / Símbolo` keeps the retired four-bracket mark on purpose** — it is the "before", and the
+  ledger was right about that one.
 
 ## Cross-flow consistency sweep — 2026-08-27
 
