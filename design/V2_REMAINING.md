@@ -257,7 +257,33 @@ adds inherits the wrong default.
 The third row is there because it is the precedent: the same bug was found and fixed in `discover`
 and never swept for elsewhere.
 
-### X6 ✅ `PortfolioChartHelper` deleted 2026-08-28 — dead code with a passing spec
+### X6 ✅ Dead code with a passing spec — four instances found and removed 2026-08-28
+
+**The pattern kept recurring, and twice the deletion created the next one.** Recorded together
+because the shape is the finding: a file nothing renders, kept green by a spec that asserts it
+works rather than that anything uses it.
+
+| | How it died |
+|---|---|
+| `PortfolioChartHelper` | zero render sites; D2 replaced it with `lightweight-charts` |
+| `TradesHelper#trades_summary_by_currency` | lost its only call site when `/trades` went (ACT-2) |
+| `components/_asset_badge` | lost **every** render site when the trade rows became cards (KIT-4) |
+| `Trading::UseCases::LoadPortfolio` + `UpcomingDividendsPresenter` | lost their only caller when Historial replaced `/positions` |
+
+`logo_spec`'s badge block went with the third, including an example that visited the asset detail and
+asserted the symbol appeared — **which passes whether the badge exists or not.**
+
+⚠ **Two near-misses, and they are the more useful half.** The same sweep almost took
+`PeriodReturnsCalculator` and `Position#total_gain`, both of which had lost their production callers.
+Neither is dead: `time_weighted_return_spec`'s *"diverges exactly where D12 said it would"* contrasts
+the money-weighted calculation against TWR, so the calculator is **the executable form of D12's
+argument**; and `multi_currency_audit_spec` uses `total_gain` to pin which methods are
+currency-aware. **A callerless object is not automatically dead — a spec that documents a decision
+is a consumer.** Both were restored before commit.
+
+The original entry, kept:
+
+####  `PortfolioChartHelper` deleted 2026-08-28 — dead code with a passing spec
 
 [`portfolio_chart_helper.rb`](../app/helpers/portfolio_chart_helper.rb) is one method, **zero
 render sites**. It hand-computes SVG polyline coordinates and hardcodes `#10b981` / `#ef4444` — the

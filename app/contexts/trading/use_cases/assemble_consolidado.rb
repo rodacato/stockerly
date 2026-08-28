@@ -4,8 +4,10 @@ module Trading
     # and whether moving it beat leaving it alone.
     #
     # Every figure that makes a claim uses TWR (D12). The money-weighted
-    # PeriodReturnsCalculator stays where it is — as a display of what the
-    # balance did it was never wrong, only unfit for a comparison.
+    # PeriodReturnsCalculator lost its last production caller when Historial
+    # replaced /positions, and is kept deliberately: `time_weighted_return_spec`
+    # contrasts the two to prove D12's claim, so it is the executable form of
+    # the argument rather than leftover code.
     class AssembleConsolidado < SimpleUseCase
       PERIODS = {
         "1M"  => -> { 1.month.ago.to_date },
