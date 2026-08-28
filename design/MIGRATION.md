@@ -95,10 +95,8 @@ delete lands and the insert has not is how exploration disappears.
 - **This flow vendors no shell**, so 0.8.0's 57 → 76 never reached it. The migration was tokens
   plus the new screens.
 
-**Found, not fixed:** ADR-018 rejects email OTP because *"mail is the single most likely thing to be
-wrong"* on a self-hosted box — and `/forgot-password` depends on exactly that mail. The reasoning
-that kills email OTP applies to a recovery path this flow already ships. Out of ADR-018's scope, but
-it is the same argument, and somebody should say so before a self-hoster finds it the hard way.
+**Found here, logged as D55:** the argument that kills email OTP also applies to
+`/forgot-password`, which this flow already ships.
 
 ## `flows/alerts.pen`
 

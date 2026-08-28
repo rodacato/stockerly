@@ -855,3 +855,38 @@ in `alerts_helper#kind_label_from_symbol`. All three now read `comun.tipo_activo
 `ApplicationHelper#asset_type_label_es`, which moved out of `MarketHelper` because four unrelated
 surfaces call it. One visible consequence, logged as **D50**: a fixed-income alert rule's chip reads
 *Renta fija* instead of *CETE*.
+
+---
+
+## 14. TOTP with recovery codes (ADR-018, D52) — pending
+
+**Status:** pending — approved 2026-08-27, four artboards drawn, zero lines of code. Written because
+ADR-018 lists its own consequences and nothing in this file carried them; four screens with no work
+order is the state D23 was raised about, the difference being that the build is now approved.
+
+**Verified before writing:** `grep -rn "otp\|two_factor\|2fa" app/ config/routes.rb -i` returns
+nothing. There is no gem, no column, no route.
+
+**What changes**
+
+- A TOTP gem (`rotp` or equivalent) and a QR renderer for the enrollment screen.
+- A migration: `otp_secret`, an enrolled-at timestamp, and recovery-code storage. **Recovery codes
+  are in scope, not a follow-up** — one account and no support desk means a lost authenticator locks
+  the owner out of their own server permanently. Generation, hashing, one-time consumption and
+  regeneration all ship together.
+- Routes and an enrollment flow the app has never had, plus a second factor in
+  `sessions_controller`, which today goes straight from `Login` to `dashboard_path`.
+- **Email OTP is out of scope** and no code should introduce it. The `2FA` artboard's
+  `Enviar código por correo` link is now `Usar un código de recuperación`.
+
+**Where the product asks for it — D52 answered both.** The first-boot wizard offers enrollment and
+lets the reader skip it (a `Stepper` stage, `flows/onboarding.pen`), and Ajustes is where it is
+turned on later and the codes are regenerated (a `Seguridad` section, `flows/settings.pen`). Neither
+of those two flows is migrated yet, so this section lands after them.
+
+**Artboards:** `auth-totp-alta.png`, `auth-codigos-recuperacion.png`, `auth-codigo-recuperacion.png`,
+and the existing `auth-2fa.png`. Per D4 none needs a desktop variant.
+
+**Owed before it ships:** the 4-filter discovery card and a GitHub issue. ADR-018 approves the
+decision; the project's own working method still wants trigger + JTBD + usage metric + DoD before
+a build starts.
