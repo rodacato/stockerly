@@ -119,5 +119,22 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
       expect(response.body).to include("Moneda no soportada.")
       expect(user.reload.preferred_currency).to eq("MXN")
     end
+
+    # D58: the Ajustes pill PATCHes this same endpoint on select and has no
+    # page to land on, so it asks for a status. The redirect above stays for
+    # /profile's form, which is still a form until AJU-1 retires the screen.
+    it "answers a status instead of a redirect when the pill asks for JSON" do
+      patch update_currency_path, params: { profile: { preferred_currency: "USD" } }, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.preferred_currency).to eq("USD")
+    end
+
+    it "refuses an unsupported currency over JSON without writing it" do
+      patch update_currency_path, params: { profile: { preferred_currency: "EUR" } }, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(user.reload.preferred_currency).to eq("MXN")
+    end
   end
 end

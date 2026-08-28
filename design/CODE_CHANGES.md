@@ -898,3 +898,46 @@ and the existing `auth-2fa.png`. Per D4 none needs a desktop variant.
 **Owed before it ships:** the 4-filter discovery card and a GitHub issue. **This is now the only thing standing between the decision and the code.** ADR-018 approves the
 decision; the project's own working method still wants trigger + JTBD + usage metric + DoD before
 a build starts.
+
+---
+
+## 15. Moneda commits on select, like everything else on the screen (D58) — SHIPPED
+
+**Status:** shipped 2026-08-28. `/settings` had **three** commit models on one screen and two of
+them wore the same segmented pill: theme applied from `localStorage` on click, the notification
+switches PATCHed on toggle, and currency waited for a `Guardar` the artboard never drew. D58 chose
+auto-save, and the screen is down to two — instant-local and instant-server.
+
+**Why auto-save rather than a second `Guardar`.** Not symmetry: the currency decides what every
+number on every screen means, so a choice you can make and forget to submit leaves you reading MXN
+while believing you switched, with nothing on screen to contradict you. The theme has no equivalent
+failure — it applies visibly the instant you click it. `admin/settings` had already settled the same
+question the same way ([`spec/system/admin/settings_spec.rb:37`](../spec/system/admin/settings_spec.rb#L37):
+*"has no Guardar button — each switch is its own PATCH"*), so this is the hub catching up to a
+convention rather than a new one.
+
+**What shipped**
+
+- **`app/javascript/controllers/choice_controller.js`** — a segmented control that persists the
+  option you pick. It is a sibling of `toggle`, not a flag on it: `toggle` sends
+  `{field: true|false}` and cannot express a choice between N options. D58's own recommendation
+  said *"the toggle pattern applies unchanged"*; reading the controller is what showed it does not.
+- The body is **form-encoded with the param's full bracket name**
+  (`profile[preferred_currency]`), so Rails parses it into the same nested params the plain form on
+  `/profile` already sends. The endpoint needed no param handling change.
+- **A rejected value reverts.** The pill is the only place the choice is visible, so leaving it on a
+  value the server refused would report a state the instance does not have. `toggle` does not do
+  this; it should, and that is its own item.
+- **`profiles#update_currency` answers both callers** through one private `respond_currency` —
+  `format.json { head status }` for the pill, `format.html { redirect_to profile_path }` for
+  `/profile`, which is still a form until AJU-1 retires that screen.
+- `settings/_appearance.html.erb` drops the `form_with`, the radio inputs and the `Guardar`.
+
+**Measured, not assumed:** `bin/quality` rated the first draft **C** with duplication 34 and 7
+smells — three near-identical `respond_to` blocks, which is the exact shape this project's own
+audit flags in `trades_controller`. Extracting `respond_currency` took it to **B**, duplication 0,
+0 smells. Full suite green at 2691 examples; brakeman 0 warnings.
+
+**Not done here, and deliberately:** `update_currency`'s two flash strings are still hardcoded
+es-MX. `profiles/` is at zero i18n keys and AJU-1 is going to rewrite the screen wholesale, so
+writing keys for it now is work for a surface that is scheduled to go.

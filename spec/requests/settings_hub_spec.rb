@@ -53,6 +53,20 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).to include(update_currency_path)
   end
 
+  # D58: the two pills on this screen looked identical and committed
+  # differently — theme applied on click, currency waited for a button nothing
+  # drew. A choice you can make and forget to submit is the failure this
+  # removes, so the button's absence is the assertion.
+  it "commits the currency on select, with no Guardar to forget" do
+    get settings_path
+
+    expect(response.body).to include('data-controller="choice"')
+    expect(response.body).to include('data-choice-param-value="profile[preferred_currency]"')
+    expect(response.body).to include('data-choice-value="MXN"')
+    expect(response.body).to include('data-choice-value="USD"')
+    expect(response.body).not_to include('type="submit" value="Guardar"')
+  end
+
   # Issue #176 builds in-app deletion; until then the honest thing is naming
   # the procedure that actually exists.
   it "says how account deletion works today rather than offering a dead button" do

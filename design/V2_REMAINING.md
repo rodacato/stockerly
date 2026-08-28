@@ -800,17 +800,18 @@ códigos de recuperación*. The code's Cuenta section has two rows and stops.
 
 Blocked by AUTH-1 in the same way ONB-1 is — the row needs a destination.
 
-### AJU-3 🟡 D58 — decided 2026-08-28: Moneda moves to auto-save
+### AJU-3 ✅ D58 — shipped 2026-08-28: Moneda auto-saves
 
 Measured in the code, not inferred: `theme_controller` writes to `localStorage` on click,
 `toggle_controller` POSTs the notification switches on toggle, and **Moneda is a form with an
 explicit `Guardar` submit**. Two identical-looking segmented pills, two different commit models,
 nothing on screen distinguishing them.
 
-**Decided: Moneda auto-saves and the `Guardar` is deleted.** Not for symmetry — because the currency
-changes what every number on every screen means, so a form you can forget to submit leaves you
-reading MXN while believing you switched. The theme has no equivalent failure: it applies visibly on
-click.
+**Shipped** — [CODE_CHANGES §15](CODE_CHANGES.md). Not for symmetry: the currency changes what every
+number on every screen means, so a form you can forget to submit leaves you reading MXN while
+believing you switched. The theme has no equivalent failure — it applies visibly on click. And
+`admin/settings` had already settled the same question the same way, so this is the hub catching up
+to a convention rather than inventing one.
 
 ⚠ **One correction to the brief and to D58's own recommendation, both of which said the toggle
 pattern applies unchanged.** It does not.
@@ -820,8 +821,13 @@ construction — it reads whether `bg-primary` is present, flips classes, and PA
 sends a *value* (~30 lines). Cheap, but the entry said free.
 
 The screen drops from **three** commit models to two: instant-local (theme) and instant-server
-(currency, switches). The artboard draws no `Guardar`, so design and code converge with no artboard
+(currency, switches). The artboard draws no `Guardar`, so design and code converged with no artboard
 edit.
+
+**One thing the new controller does that `toggle` does not: it reverts on a rejected value.** The
+pill is the only place the choice is visible, so leaving it on a value the server refused would
+report a state the instance does not have. `toggle` should do the same and does not — its own
+item, not this one's.
 
 ### AJU-4 ⚪ The `Estado y mantenimiento` artboard still carries a warning its own brief retired
 
@@ -1016,7 +1022,7 @@ reads as a record instead of a snapshot.
 
 | | Question | Whose |
 |---|---|---|
-| ~~D58~~ | ~~Tema vs Moneda commit split~~ | ✅ Moneda auto-saves (AJU-3) |
+| ~~D58~~ | ~~Tema vs Moneda commit split~~ | ✅ **shipped** — Moneda auto-saves (AJU-3, §15) |
 | ~~D59~~ | ~~The Brand Panel checklist~~ | ✅ promise, no checkmarks, four items (ONB-6) |
 | ~~ACT-3~~ | ~~Does `Historial` absorb `/trades`?~~ | ✅ it does, without the filters — **D60** |
 | D57 | Does `Movimientos` / `Movimientos de interés` take the word `Señales`? Note ADR-013 blessed the current name | Adrian |
