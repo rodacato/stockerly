@@ -114,7 +114,7 @@ Each phase closed with "specs green → next". Never asked "did Adrian use it?".
 |---|---|
 | Vision, audience, JTBDs, non-goals | `docs/vision/` |
 | ADRs (immutable decisions) | `docs/architecture/adr/` |
-| Design tokens, components | `docs/design/` |
+| Design system (source of truth) | `design/` |
 | Research, code audits | `docs/research/` |
 | Sprint protocol | `docs/sprints/README.md` |
 | Sprint retros | `docs/sprints/<n>/retro.md` |
@@ -203,9 +203,9 @@ If a consultation significantly changes project direction → ADR. Without an AD
 | **Expert Panel** | [`docs/research/experts.md`](docs/research/experts.md) | 8 Core + 8 Situational |
 | **Sprint protocol** | [`docs/sprints/README.md`](docs/sprints/README.md) | Sprint operating manual |
 | **GitHub workflow** | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | How we use Issues + Projects |
-| **Persistent memory** | [`.kwik-e/memory/`](.kwik-e/memory/) | User profile, decisions, anti-patterns |
+| **Persistent memory** | `.kwik-e/memory/` | User profile, decisions, anti-patterns |
 | **Deployment** | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare guide |
-| **Designs in process** | [`designs/wip/PROCESSING.md`](designs/wip/PROCESSING.md) | Stitch workflow (redesign closed at sprint) |
+| **Design system** | [`design/`](design/) | Pencil `.pen` flows, ui-kit, brand, `DECISIONS.md` |
 
 ### Product history
 

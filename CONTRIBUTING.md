@@ -132,7 +132,7 @@ Evaluate volume_spike condition by comparing current volume against
 - **Language:** All code, comments, and documentation in English
 - **Style:** Follow existing patterns — run `bin/rubocop` to verify
 - **Testing:** Every Use Case and Contract should have specs
-- **No over-engineering:** Only implement what's needed. See the [working principles](IDENTITY.md#principios-de-trabajo)
+- **No over-engineering:** Only implement what's needed. See the [working principles](IDENTITY.md#working-principles)
 - **No Devise:** Auth uses `has_secure_password`
 - **No Ransack:** Search uses ActiveRecord scopes with ILIKE
 

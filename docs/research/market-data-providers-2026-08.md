@@ -280,21 +280,33 @@ host.* They do not — nor from a residential connection, nor from the devcontai
 bootstrap 429s on the crumb endpoint itself. The block is the TLS fingerprint, and
 [ADR-017](../architecture/adr/0017-python-bridge-for-yahoo-finance.md) is the answer that closed it.
 
-Still open. **None of these is a finding, and none has a GitHub issue** — unlike all eighteen in §4,
-which each reached the board. They are verifications the audit owed and never paid:
+**Resolved by decision, not by reading (2026-08-27).** Two rows left this list without anyone
+answering the question they asked — the question stopped mattering:
 
-- **DataBursatil's terms of service.** Its **endpoints** were read and probed on 2026-08-26; its
-  **terms were not**, and five providers in this stack forbid redistribution. Half-done reads as
-  done at a glance, which is how it survived two passes — it is the load-bearing legal unknown.
-- **`/v2/emisoras` filtering.** No filter parameter was found and the unfiltered call costs ~2,181
-  credits, which is what blocks `/v2/financieros`. The docs section for it has not been read.
-- **Q-8, `descargas` with `archivo=guber`.** Probed on **three separate dates**; the archive name
-  was **never rejected**, only the dates (*"La fecha ingresada no esta disponible"*). So it is
-  unresolved rather than answered — the capability may well exist behind a date that does.
-- **Whether Alpha Vantage's open-source grant applies.** Unlimited against 25 calls a day. **It
-  would delete finding 17's budget model with it** — `FundamentalsBudget`, the tier ladder's
-  scarcity argument and the quota the Integraciones screen renders all exist because the ceiling
-  is 25. Granted, most of that goes away.
+- **DataBursatil's terms of service.** This was load-bearing only because five providers in this
+  stack forbid redistribution. **Stockerly never redistributes a provider key.** Onboarding links
+  each provider's sign-up so every self-hoster registers their own credential, so the
+  redistribution clause has nothing in this product to attach to. What is still unread is
+  narrower — whatever the terms say about storing or displaying the data a self-hoster fetched
+  with their own key — and at one instance per person that does not earn a ticket.
+- **Whether Alpha Vantage's open-source grant applies.** Deferred on purpose: *"no creo que sea
+  tan viable, pero es long term, el proyecto está aún muy joven."* **25 calls a day stays the
+  working assumption**, so `FundamentalsBudget`, the tier ladder and the quota the Integraciones
+  screen renders all stand as built. Revisit if the project ever outgrows that ceiling — not
+  before.
+
+**Now tracked as issues:**
+
+- **`/v2/emisoras` filtering** — [#379](https://github.com/rodacato/stockerly/issues/379). No
+  filter parameter was found and the unfiltered call costs ~2,181 credits, which is what blocks
+  `/v2/financieros`. The docs section for it has not been read.
+- **Q-8, `descargas` with `archivo=guber`** — [#380](https://github.com/rodacato/stockerly/issues/380).
+  Probed on **three separate dates**; the archive name was **never rejected**, only the dates
+  (*"La fecha ingresada no esta disponible"*). Unresolved rather than answered — the capability
+  may well exist behind a date that does.
+
+Still open, and still unticketed — verifications the audit owed and never paid:
+
 - Alpha Vantage's BMV coverage via `.MEX` — reported, not probed.
 - DataBursatil's `tasas`, `divisas`, `cables` and `noticias` endpoints — not probed.
 - Whether any **sanctioned alternative to Yahoo** exists for MX indices and corporate actions. The
