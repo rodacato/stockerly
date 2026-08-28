@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Observability moved inside the instance (2026-08-28)
+
+#### Added
+- Internal error tracker ([ADR-020](docs/architecture/adr/0020-internal-error-tracker.md)): unhandled exceptions from requests and jobs are recorded in `error_events` through a `Rails.error` subscriber, grouped by exception class plus the first application frame, and read at `/admin/errors`. Request params are filtered at the point of write; rows are purged after 30 days.
+- `developer_mode` instance switch, beside `maintenance_mode`, gating the errors screen and its hub row — never the recording.
+
+#### Removed
+- Sentry (`sentry-ruby`, `sentry-rails`, its initializer, the `ApplicationController` hook and every `SENTRY_*` reference in the deploy config, workflow, `.env.example` and runbook). The instance no longer needs an external account to answer "why did that 500 happen". `CheckSyncHealthJob` keeps the two channels that already reached the owner.
+
 ### 2.0 pivot — self-hosted single-user tracker (shipped to production 2026-08-23)
 
 Stockerly pivoted from a multi-user closed-beta fintech app to a self-hosted,
