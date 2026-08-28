@@ -4,6 +4,14 @@ module Administration
       DATA_SOURCE_COINGECKO = "CoinGecko API"
       DATA_SOURCE_YAHOO     = "Yahoo Finance"
 
+      PARQET_LOGO_URL = "https://assets.parqet.com/logos/symbol/%s".freeze
+      COINGECKO_LOGO_URL = "https://assets.coingecko.com/coins/images/%s/small/%s.png".freeze
+      COINGECKO_IMAGE_IDS = {
+        "BTC" => [ 1, "bitcoin" ], "ETH" => [ 279, "ethereum" ], "SOL" => [ 4128, "solana" ],
+        "ADA" => [ 975, "cardano" ], "DOT" => [ 12171, "polkadot" ], "DOGE" => [ 5, "dogecoin" ],
+        "AVAX" => [ 12559, "avalanche-2" ], "LINK" => [ 877, "chainlink" ], "UNI" => [ 12504, "uniswap" ]
+      }.freeze
+
       CATALOG = {
         us_stocks: [
           { symbol: "AAPL", name: "Apple Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: nil },
@@ -43,16 +51,22 @@ module Administration
           { symbol: "VGT", name: "Vanguard Information Technology", asset_type: "etf", exchange: "NYSE", country: "US", data_source: nil }
         ],
         mexican_stocks: [
-          { symbol: "GENIUSSACV.MX", name: "Genius Sports SAB", asset_type: "stock", exchange: "BMV", sector: "Technology", country: "MX", data_source: DATA_SOURCE_YAHOO },
-          { symbol: "IVVPESO.MX", name: "iShares S&P 500 MXN", asset_type: "etf", exchange: "BMV", country: "MX", data_source: DATA_SOURCE_YAHOO }
+          { symbol: "GENIUSSACV.MX", name: "Genius Sports SAB", asset_type: "stock", exchange: "BMV", sector: "Technology", country: "MX", currency: "MXN", data_source: DATA_SOURCE_YAHOO },
+          { symbol: "IVVPESO.MX", name: "iShares S&P 500 MXN", asset_type: "etf", exchange: "BMV", country: "MX", currency: "MXN", data_source: DATA_SOURCE_YAHOO }
         ],
         fixed_income: [
-          { symbol: "CETE28D", name: "CETES 28 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX" },
-          { symbol: "CETE91D", name: "CETES 91 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX" },
-          { symbol: "CETE182D", name: "CETES 182 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX" },
-          { symbol: "CETE364D", name: "CETES 364 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX" }
+          { symbol: "CETE28D", name: "CETES 28 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" },
+          { symbol: "CETE91D", name: "CETES 91 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" },
+          { symbol: "CETE182D", name: "CETES 182 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" },
+          { symbol: "CETE364D", name: "CETES 364 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" }
         ]
       }.freeze
+
+      # Seeded on a fresh instance, never offered in the onboarding picker: an
+      # index is not something you choose to hold.
+      SYSTEM = [
+        { symbol: "VIX", name: "CBOE Volatility Index", asset_type: "index", exchange: "CBOE", country: "US", data_source: nil }
+      ].freeze
 
       DEFAULT_SELECTED = %w[AAPL MSFT GOOGL NVDA BTC ETH SPY].freeze
 
@@ -60,7 +74,24 @@ module Administration
       def self.flat = CATALOG.values.flatten
       def self.symbols = flat.map { |a| a[:symbol] }
       def self.categories = CATALOG.keys
-      def self.find_by_symbols(symbols) = flat.select { |a| symbols.include?(a[:symbol]) }
+      def self.find_by_symbols(symbols) = seedable.select { |a| symbols.include?(a[:symbol]) }
+
+      # Everything a fresh instance gets, picker plus system rows. This is the
+      # list `stockerly:seed_assets` walks — there is no second one.
+      def self.seedable = flat + SYSTEM
+
+      # Where an asset's logo comes from, for every path that creates one.
+      def self.logo_url_for(symbol:, asset_type:, country: nil)
+        case asset_type.to_s
+        when "crypto"
+          ids = COINGECKO_IMAGE_IDS[symbol.to_s.upcase]
+          ids && format(COINGECKO_LOGO_URL, ids[0], ids[1])
+        when "fixed_income", "index"
+          nil
+        else
+          country == "MX" ? nil : format(PARQET_LOGO_URL, symbol)
+        end
+      end
 
       def self.category_label(key)
         I18n.t("onboarding.categorias.#{key}", default: key.to_s.humanize)

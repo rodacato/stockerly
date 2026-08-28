@@ -2,14 +2,6 @@ module Administration
   module UseCases
     module Assets
       class CreateAsset < ApplicationUseCase
-        PARQET_LOGO_URL = "https://assets.parqet.com/logos/symbol/%s"
-        COINGECKO_LOGO_URL = "https://assets.coingecko.com/coins/images/%s/small/%s.png"
-        COINGECKO_IMAGE_IDS = {
-          "BTC" => [ 1, "bitcoin" ], "ETH" => [ 279, "ethereum" ], "SOL" => [ 4128, "solana" ],
-          "ADA" => [ 975, "cardano" ], "DOT" => [ 12171, "polkadot" ], "DOGE" => [ 5, "dogecoin" ],
-          "AVAX" => [ 12559, "avalanche-2" ], "LINK" => [ 877, "chainlink" ], "UNI" => [ 12504, "uniswap" ]
-        }.freeze
-
         def call(admin:, params:)
           attrs = yield validate(Administration::Contracts::Assets::CreateContract, params)
           attrs = resolve_logo_url(attrs)
@@ -26,20 +18,14 @@ module Administration
 
         private
 
+        # The catalogue owns where a logo comes from — this path and
+        # `stockerly:seed_assets` used to answer it separately.
         def resolve_logo_url(attrs)
           return attrs if attrs[:logo_url].present?
 
-          logo = case attrs[:asset_type]
-          when "crypto"
-                   ids = COINGECKO_IMAGE_IDS[attrs[:symbol].upcase]
-                   ids ? format(COINGECKO_LOGO_URL, ids[0], ids[1]) : nil
-          when "fixed_income"
-                   nil
-          else
-                   attrs[:country] == "MX" ? nil : format(PARQET_LOGO_URL, attrs[:symbol])
-          end
-
-          attrs.merge(logo_url: logo)
+          attrs.merge(logo_url: Administration::Domain::AssetCatalog.logo_url_for(
+            symbol: attrs[:symbol], asset_type: attrs[:asset_type], country: attrs[:country]
+          ))
         end
 
         # Left blank on purpose: data_source records which gateway last served

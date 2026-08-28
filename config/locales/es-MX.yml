@@ -190,7 +190,7 @@ es-MX:
     index:
       cartera: Holdings
       importar: Importar movimientos
-      importar_desc: Sube el CSV de tu broker o pega su contenido.
+      importar_desc: Carga movimientos en el formato de Stockerly, de archivo o pegados.
       invertido: Invertido %{amount}
       no_realizada: No realizada %{amount}
       sigues: sigues %{percent}
@@ -1075,13 +1075,13 @@ es-MX:
       vacio: No recibí ningún movimiento.
     new:
       arrastra: o arrástralo aquí
-      columnas: Columnas que necesito
+      columnas: El formato de Stockerly
       ejemplo: |-
         asset_symbol,side,shares,price_per_share,executed_at
         VT,buy,0.070436076,141.9727,2025-12-08
       elegir: Elegir archivo CSV
-      intro: Sube el archivo que te da tu broker, o pega su contenido. Antes de guardar
-        nada te muestro qué encontré.
+      intro: Carga tus movimientos en el formato de Stockerly, subiendo el archivo
+        o pegando su contenido. Antes de guardar nada te muestro qué encontré.
       nada_aun: Nada se guarda hasta que confirmes.
       o_pega: o pega el contenido
       opcionales: 'Opcionales: fee · currency · external_id · net_amount'

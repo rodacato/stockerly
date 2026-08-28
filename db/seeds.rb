@@ -55,203 +55,65 @@ if Rails.env.development?
 end
 
 # --- Assets ---
-aapl = Asset.find_or_create_by!(symbol: "AAPL") do |a|
-  a.name = "Apple Inc."
-  a.asset_type = :stock
-  a.sector = "Technology"
-  a.exchange = "NASDAQ"
-  a.country = "US"
-  a.current_price = 189.43
-  a.change_percent_24h = 2.45
-  a.market_cap = 2_940_000_000_000
-  a.pe_ratio = 31.25
-  a.div_yield = 0.52
-  a.volume = 58_200_000
-  a.shares_outstanding = 15_500_000_000
-  a.price_updated_at = 2.minutes.ago
+# Identity (name, type, sector, exchange, country, currency) comes from the one
+# catalogue the seed task also walks. Only the market fixture below is dev's own —
+# prices and fundamentals a dev instance needs to render something.
+Administration::UseCases::Assets::SeedCatalog.call
+
+DEV_MARKET_DATA = {
+  "AAPL" => { current_price: 189.43, change_percent_24h: 2.45, market_cap: 2_940_000_000_000, pe_ratio: 31.25, div_yield: 0.52, volume: 58_200_000, shares_outstanding: 15_500_000_000, price_updated_at: 2.minutes.ago },
+  "TSLA" => { current_price: 176.54, change_percent_24h: -1.12, market_cap: 561_000_000_000, pe_ratio: 62.80, volume: 95_300_000, shares_outstanding: 3_180_000_000, price_updated_at: 2.minutes.ago },
+  "MSFT" => { current_price: 420.50, change_percent_24h: 0.81, market_cap: 3_120_000_000_000, pe_ratio: 36.14, div_yield: 0.72, volume: 22_100_000, shares_outstanding: 7_430_000_000, price_updated_at: 2.minutes.ago },
+  "NVDA" => { current_price: 894.52, change_percent_24h: 3.82, market_cap: 2_210_000_000_000, pe_ratio: 72.50, div_yield: 0.02, volume: 41_200_000, shares_outstanding: 2_470_000_000, price_updated_at: 2.minutes.ago },
+  "OKE" => { current_price: 87.42, change_percent_24h: 1.24, market_cap: 51_200_000_000, pe_ratio: 14.82, div_yield: 4.48, volume: 3_100_000, shares_outstanding: 585_600_000, price_updated_at: 5.minutes.ago },
+  "GOOGL" => { current_price: 174.98, change_percent_24h: 1.05, market_cap: 2_180_000_000_000, pe_ratio: 25.10, volume: 28_400_000, price_updated_at: 2.minutes.ago },
+  "META" => { current_price: 502.30, change_percent_24h: -0.68, market_cap: 1_280_000_000_000, pe_ratio: 33.20, volume: 18_600_000, price_updated_at: 2.minutes.ago },
+  "AMZN" => { current_price: 186.49, change_percent_24h: 2.15, market_cap: 1_940_000_000_000, pe_ratio: 60.75, volume: 35_200_000, price_updated_at: 2.minutes.ago },
+  "JPM" => { current_price: 198.72, change_percent_24h: 0.54, market_cap: 571_000_000_000, pe_ratio: 11.80, div_yield: 2.32, volume: 9_800_000, price_updated_at: 2.minutes.ago },
+  "JNJ" => { current_price: 156.12, change_percent_24h: -0.22, market_cap: 375_000_000_000, pe_ratio: 22.40, div_yield: 3.05, volume: 7_100_000, price_updated_at: 2.minutes.ago },
+  "KO" => { current_price: 60.85, change_percent_24h: 0.33, market_cap: 263_000_000_000, pe_ratio: 24.90, div_yield: 3.10, volume: 12_500_000, price_updated_at: 2.minutes.ago },
+  "PG" => { current_price: 162.40, change_percent_24h: 0.18, market_cap: 382_000_000_000, pe_ratio: 26.10, div_yield: 2.45, volume: 6_800_000, price_updated_at: 2.minutes.ago },
+  "QQQ" => { current_price: 438.20, change_percent_24h: 1.42, volume: 42_100_000, price_updated_at: 2.minutes.ago },
+  "SPY" => { current_price: 521.45, change_percent_24h: 0.58, volume: 65_300_000, price_updated_at: 2.minutes.ago },
+  "VOO" => { current_price: 479.10, change_percent_24h: 0.55, volume: 4_200_000, price_updated_at: 2.minutes.ago },
+  "VTI" => { current_price: 262.80, change_percent_24h: 0.48, volume: 3_500_000, price_updated_at: 2.minutes.ago },
+  "ARKK" => { current_price: 49.25, change_percent_24h: -1.85, volume: 8_900_000, price_updated_at: 2.minutes.ago },
+  "GENIUSSACV.MX" => { currency: "MXN", data_source: "Yahoo Finance", current_price: 32.50, change_percent_24h: 0.92, volume: 450_000, price_updated_at: 2.minutes.ago },
+  "IVVPESO.MX" => { currency: "MXN", data_source: "Yahoo Finance", current_price: 645.20, change_percent_24h: 0.75, volume: 1_200_000, price_updated_at: 2.minutes.ago },
+  "BTC" => { data_source: "CoinGecko API", current_price: 64_231.00, change_percent_24h: 0.85, market_cap: 1_260_000_000_000, price_updated_at: 1.minute.ago },
+  "ETH" => { data_source: "CoinGecko API", current_price: 3_450.00, change_percent_24h: -0.45, market_cap: 415_000_000_000, sync_status: :disabled, price_updated_at: 1.hour.ago },
+  "SOL" => { data_source: "CoinGecko API", current_price: 142.80, change_percent_24h: 2.10, sync_status: :active, price_updated_at: 30.minutes.ago },
+  "VIX" => { current_price: 14.33, change_percent_24h: -1.22, price_updated_at: 10.minutes.ago }
+}.freeze
+
+DEV_MARKET_DATA.each do |symbol, market|
+  Asset.find_by(symbol: symbol)&.update!(market)
 end
 
-tsla = Asset.find_or_create_by!(symbol: "TSLA") do |a|
-  a.name = "Tesla, Inc."
-  a.asset_type = :stock
-  a.sector = "Consumer Cyclical"
-  a.exchange = "NASDAQ"
-  a.country = "US"
-  a.current_price = 176.54
-  a.change_percent_24h = -1.12
-  a.market_cap = 561_000_000_000
-  a.pe_ratio = 62.80
-  a.volume = 95_300_000
-  a.shares_outstanding = 3_180_000_000
-  a.price_updated_at = 2.minutes.ago
-end
+aapl = Asset.find_by!(symbol: "AAPL")
+tsla = Asset.find_by!(symbol: "TSLA")
+msft = Asset.find_by!(symbol: "MSFT")
+nvda = Asset.find_by!(symbol: "NVDA")
+oke = Asset.find_by!(symbol: "OKE")
+googl = Asset.find_by!(symbol: "GOOGL")
+meta = Asset.find_by!(symbol: "META")
+amzn = Asset.find_by!(symbol: "AMZN")
+jpm = Asset.find_by!(symbol: "JPM")
+jnj = Asset.find_by!(symbol: "JNJ")
+ko = Asset.find_by!(symbol: "KO")
+pg = Asset.find_by!(symbol: "PG")
+qqq = Asset.find_by!(symbol: "QQQ")
+spy = Asset.find_by!(symbol: "SPY")
+voo = Asset.find_by!(symbol: "VOO")
+vti = Asset.find_by!(symbol: "VTI")
+arkk = Asset.find_by!(symbol: "ARKK")
+genius = Asset.find_by!(symbol: "GENIUSSACV.MX")
+ivvpeso = Asset.find_by!(symbol: "IVVPESO.MX")
+btc = Asset.find_by!(symbol: "BTC")
+eth = Asset.find_by!(symbol: "ETH")
+sol = Asset.find_by!(symbol: "SOL")
+vix = Asset.find_by!(symbol: "VIX")
 
-msft = Asset.find_or_create_by!(symbol: "MSFT") do |a|
-  a.name = "Microsoft Corp."
-  a.asset_type = :stock
-  a.sector = "Technology"
-  a.exchange = "NASDAQ"
-  a.country = "US"
-  a.current_price = 420.50
-  a.change_percent_24h = 0.81
-  a.market_cap = 3_120_000_000_000
-  a.pe_ratio = 36.14
-  a.div_yield = 0.72
-  a.volume = 22_100_000
-  a.shares_outstanding = 7_430_000_000
-  a.price_updated_at = 2.minutes.ago
-end
-
-nvda = Asset.find_or_create_by!(symbol: "NVDA") do |a|
-  a.name = "NVIDIA Corp."
-  a.asset_type = :stock
-  a.sector = "Technology"
-  a.exchange = "NASDAQ"
-  a.country = "US"
-  a.current_price = 894.52
-  a.change_percent_24h = 3.82
-  a.market_cap = 2_210_000_000_000
-  a.pe_ratio = 72.50
-  a.div_yield = 0.02
-  a.volume = 41_200_000
-  a.shares_outstanding = 2_470_000_000
-  a.price_updated_at = 2.minutes.ago
-end
-
-oke = Asset.find_or_create_by!(symbol: "OKE") do |a|
-  a.name = "Oneok Inc."
-  a.asset_type = :stock
-  a.sector = "Energy"
-  a.exchange = "NYSE"
-  a.country = "US"
-  a.current_price = 87.42
-  a.change_percent_24h = 1.24
-  a.market_cap = 51_200_000_000
-  a.pe_ratio = 14.82
-  a.div_yield = 4.48
-  a.volume = 3_100_000
-  a.shares_outstanding = 585_600_000
-  a.price_updated_at = 5.minutes.ago
-end
-
-# New US stocks
-googl = Asset.find_or_create_by!(symbol: "GOOGL") do |a|
-  a.name = "Alphabet Inc."; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "NASDAQ"; a.country = "US"; a.current_price = 174.98; a.change_percent_24h = 1.05; a.market_cap = 2_180_000_000_000
-  a.pe_ratio = 25.10; a.volume = 28_400_000; a.price_updated_at = 2.minutes.ago
-end
-meta = Asset.find_or_create_by!(symbol: "META") do |a|
-  a.name = "Meta Platforms"; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "NASDAQ"; a.country = "US"; a.current_price = 502.30; a.change_percent_24h = -0.68; a.market_cap = 1_280_000_000_000
-  a.pe_ratio = 33.20; a.volume = 18_600_000; a.price_updated_at = 2.minutes.ago
-end
-amzn = Asset.find_or_create_by!(symbol: "AMZN") do |a|
-  a.name = "Amazon.com Inc."; a.asset_type = :stock; a.sector = "Consumer Cyclical"; a.exchange = "NASDAQ"; a.country = "US"; a.current_price = 186.49; a.change_percent_24h = 2.15; a.market_cap = 1_940_000_000_000
-  a.pe_ratio = 60.75; a.volume = 35_200_000; a.price_updated_at = 2.minutes.ago
-end
-jpm = Asset.find_or_create_by!(symbol: "JPM") do |a|
-  a.name = "JPMorgan Chase"; a.asset_type = :stock; a.sector = "Finance"; a.exchange = "NYSE"; a.country = "US"; a.current_price = 198.72; a.change_percent_24h = 0.54; a.market_cap = 571_000_000_000
-  a.pe_ratio = 11.80; a.div_yield = 2.32; a.volume = 9_800_000; a.price_updated_at = 2.minutes.ago
-end
-jnj = Asset.find_or_create_by!(symbol: "JNJ") do |a|
-  a.name = "Johnson & Johnson"; a.asset_type = :stock; a.sector = "Healthcare"; a.exchange = "NYSE"; a.country = "US"; a.current_price = 156.12; a.change_percent_24h = -0.22; a.market_cap = 375_000_000_000
-  a.pe_ratio = 22.40; a.div_yield = 3.05; a.volume = 7_100_000; a.price_updated_at = 2.minutes.ago
-end
-ko = Asset.find_or_create_by!(symbol: "KO") do |a|
-  a.name = "Coca-Cola Co."; a.asset_type = :stock; a.sector = "Consumer"; a.exchange = "NYSE"; a.country = "US"; a.current_price = 60.85; a.change_percent_24h = 0.33; a.market_cap = 263_000_000_000
-  a.pe_ratio = 24.90; a.div_yield = 3.10; a.volume = 12_500_000; a.price_updated_at = 2.minutes.ago
-end
-pg = Asset.find_or_create_by!(symbol: "PG") do |a|
-  a.name = "Procter & Gamble"; a.asset_type = :stock; a.sector = "Consumer"; a.exchange = "NYSE"; a.country = "US"; a.current_price = 162.40; a.change_percent_24h = 0.18; a.market_cap = 382_000_000_000
-  a.pe_ratio = 26.10; a.div_yield = 2.45; a.volume = 6_800_000; a.price_updated_at = 2.minutes.ago
-end
-
-# US ETFs
-qqq = Asset.find_or_create_by!(symbol: "QQQ") do |a|
-  a.name = "Invesco QQQ Trust"; a.asset_type = :etf; a.exchange = "NASDAQ"; a.country = "US"; a.current_price = 438.20; a.change_percent_24h = 1.42; a.volume = 42_100_000; a.price_updated_at = 2.minutes.ago
-end
-spy = Asset.find_or_create_by!(symbol: "SPY") do |a|
-  a.name = "SPDR S&P 500 ETF"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"; a.current_price = 521.45; a.change_percent_24h = 0.58; a.volume = 65_300_000; a.price_updated_at = 2.minutes.ago
-end
-voo = Asset.find_or_create_by!(symbol: "VOO") do |a|
-  a.name = "Vanguard S&P 500"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"; a.current_price = 479.10; a.change_percent_24h = 0.55; a.volume = 4_200_000; a.price_updated_at = 2.minutes.ago
-end
-vti = Asset.find_or_create_by!(symbol: "VTI") do |a|
-  a.name = "Vanguard Total Stock"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"; a.current_price = 262.80; a.change_percent_24h = 0.48; a.volume = 3_500_000; a.price_updated_at = 2.minutes.ago
-end
-arkk = Asset.find_or_create_by!(symbol: "ARKK") do |a|
-  a.name = "ARK Innovation ETF"; a.asset_type = :etf; a.exchange = "NYSE"; a.country = "US"; a.current_price = 49.25; a.change_percent_24h = -1.85; a.volume = 8_900_000; a.price_updated_at = 2.minutes.ago
-end
-
-# Mexico (BMV) — prices via Yahoo Finance
-genius = Asset.find_or_create_by!(symbol: "GENIUSSACV.MX") do |a|
-  a.name = "Genius Sports SAB"; a.asset_type = :stock; a.sector = "Technology"; a.exchange = "BMV"; a.country = "MX"; a.currency = "MXN"
-  a.data_source = "Yahoo Finance"; a.current_price = 32.50; a.change_percent_24h = 0.92; a.volume = 450_000; a.price_updated_at = 2.minutes.ago
-end
-ivvpeso = Asset.find_or_create_by!(symbol: "IVVPESO.MX") do |a|
-  a.name = "iShares S&P 500 MXN"; a.asset_type = :etf; a.exchange = "BMV"; a.country = "MX"; a.currency = "MXN"
-  a.data_source = "Yahoo Finance"; a.current_price = 645.20; a.change_percent_24h = 0.75; a.volume = 1_200_000; a.price_updated_at = 2.minutes.ago
-end
-
-# Crypto
-btc = Asset.find_or_create_by!(symbol: "BTC") do |a|
-  a.name = "Bitcoin"
-  a.asset_type = :crypto
-  a.data_source = "CoinGecko API"
-  a.current_price = 64_231.00
-  a.change_percent_24h = 0.85
-  a.market_cap = 1_260_000_000_000
-  a.price_updated_at = 1.minute.ago
-end
-
-eth = Asset.find_or_create_by!(symbol: "ETH") do |a|
-  a.name = "Ethereum"
-  a.asset_type = :crypto
-  a.data_source = "CoinGecko API"
-  a.current_price = 3_450.00
-  a.change_percent_24h = -0.45
-  a.market_cap = 415_000_000_000
-  a.sync_status = :disabled
-  a.price_updated_at = 1.hour.ago
-end
-
-sol = Asset.find_or_create_by!(symbol: "SOL") do |a|
-  a.name = "Solana"
-  a.asset_type = :crypto
-  a.data_source = "CoinGecko API"
-  a.current_price = 142.80
-  a.change_percent_24h = 2.10
-  a.sync_status = :active
-  a.price_updated_at = 30.minutes.ago
-end
-
-# Indices
-vix = Asset.find_or_create_by!(symbol: "VIX") do |a|
-  a.name = "CBOE Volatility Index"
-  a.asset_type = :index
-  a.exchange = "CBOE"
-  a.country = "US"
-  a.current_price = 14.33
-  a.change_percent_24h = -1.22
-  a.price_updated_at = 10.minutes.ago
-end
-
-
-# --- Asset Logos (backfill — safe for re-runs) ---
-# Crypto: CoinGecko direct image URLs
-# Stocks/ETFs (US): Parqet logo service (https://assets.parqet.com/logos/symbol/TICKER)
-# MX tickers & fixed income: no logo coverage, uses styled text fallback in _asset_badge.html.erb
-Asset.where(logo_url: nil).find_each do |asset|
-  logo = case asset.asset_type
-  when "crypto"
-    coingecko_ids = { "BTC" => [ 1, "bitcoin" ], "ETH" => [ 279, "ethereum" ], "SOL" => [ 4128, "solana" ] }
-    ids = coingecko_ids[asset.symbol.upcase]
-    ids ? "https://assets.coingecko.com/coins/images/#{ids[0]}/small/#{ids[1]}.png" : nil
-  when "fixed_income", "index"
-    nil
-  else
-    asset.country == "MX" ? nil : "https://assets.parqet.com/logos/symbol/#{asset.symbol}"
-  end
-  asset.update!(logo_url: logo) if logo
-end
 
 # --- FX Rates ---
 # Before any demo portfolio, not after: valuing a mixed-currency portfolio
