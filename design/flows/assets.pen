@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The 'Activos' tab — three tiers of interest in a symbol, drawn as a ladder (D9).\n\nTracked (assets.sync_status active) → Watchlist (watchlist_items) → Holdings (open positions). The tier is not taxonomy, it is BUDGET: SyncAllFundamentalsJob orders positions → watchlist → rest against DAILY_BUDGET = 25 calls/day, and only open positions get dividends + splits synced at all. The segmented control stays at two (the two daily questions); Tracked is a foot-of-list entry with its own screen.\n\n⚠ VOCABULARY — D48, 2026-08-27. The ladder moved to industry-standard English: Poseo → Holdings, Sigo → Watchlist, Rastreado(s) → Tracked. D9's three-tier SHAPE is untouched; only the words changed. Two things this file learned the hard way:\n(a) the code shipped it first (#364), so here the artboards FOLLOWED the code instead of leading it — the reverse of design/README rule 1, and correct in this one case;\n(b) Adrian extended it to the tab itself, so the segmented reads 'Holdings | Watchlist' while the code still says assets.index.cartera: Cartera. That single string is a code change this file is now ahead of — CODE_CHANGES §13.\n'cartera' in lowercase prose still means the portfolio and is NOT the tier. The code keeps it (radar_subtitulo: 'De tu cartera y watchlist'). Do not sweep it.\n\nEntry: bottom-nav 'Activos'. Rows link to the asset detail in cockpit.pen.\nScreens: Holdings · Watchlist · Holdings vacía (first run) · Historial · Registrar movimiento (sheet) · Registrar movimiento con teclado (the real mobile spec, D11) · Tracked · Tracked·Buscar.\n\nGrounding: positions (shares, avg_cost, market_value, total_gain, cost_basis_in(MXN) via fx_rate_at_execution) · watchlist_items.entry_price captured on add → 'sigues +X%' (nothing renders it today) · assets (current_price, change_percent_24h, currency, exchange, asset_type, price_updated_at, sync_status) · latest_trend_score → the semáforo dots. You can only follow what is already Tracked: search hits `assets`, so the search screen IS the catalogue browser.\n\nCETES rows drop the sparkline and the semáforo — technical lights don't apply to fixed income — and carry days-to-maturity + annual rate instead (C1 Lucía).\n\nMoney per D10: the section header declares the currency, rows drop the symbol; off-currency values keep the ISO prefix (USD 172.40).\n\nDesktop (1280): three artboards — Holdings, Registrar movimiento (the same <dialog>, centered) and Tracked. Tracked earns one because it absorbs /admin/assets: curating a catalogue against a daily call budget is desk work, and desktop is where the budget sits beside the list instead of above it.\n\n⚠ Touch targets: segmented controls, rows and the keypad clear 44pt; filter chips sit at ~35pt + 8pt gap — below the floor, accepted for a secondary control, flagged rather than hidden.\n\nFlow-local components (kit candidates, not promoted): WatchRow and TierChip. — Corrected 2026-08-27: this line used to also list Segmented and OptionCard. Both are in the kit and have been for a long time — Segmented since 0.3.0 (0.8.0 adds Segmented3 and D49's own-width rule), OptionCard resolved into NavRow in 0.4.0. The `scrim` token is likewise a kit token, not a candidate.\n\nNavRow: vendored 2026-08-27, and the four hand-built copies are gone — the Tracked foot entry plus the three paths of the empty state now instance one master. Measuring them first changed what the job was. They were NOT four copies of one row: three had drifted about 6% larger (36px icon wrap, 18px icon, padding 14/16, description at 12) and snapped back to the kit's numbers, which is the point. But 'Captura lo que ya tienes' also carried a deliberate PRIMARY accent — $primary stroke at 1.5, $primary-muted wrap, $primary icon — because it is the recommended path out of an empty portfolio. Replacing all four with the plain kit row would have flattened that hierarchy while calling it consistency.\n\nIt is kept as an instance override rather than a new kit variant, since the method says not to promote unasked. ⚠ KIT GAP: NavRow has no recommended/primary state. If a second flow needs one, that override earns a variant instead of being copied.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the position list becomes a GRID of cards at their native ~309 width, never one stretched column — measured first: the list is grouped by asset type, not ranked by value (BTC at 61,200 sits third), so a grid breaks no ranking; (b) the Resumen became a bar — patrimonio left, freshness and 'Ver mi consolidado' right — because a stacked card stretched to 976 is the same 'river of air' mistake as a stretched AssetRow; (c) CETES is the only card with no sparkline and no semáforo, carrying maturity and annual rate instead. A grid makes that difference more visible, not less, which is the correct outcome (C1).\n\nThe dialog measures 480x649 inside 800 — it FITS. None of D11's mobile machinery applies on desktop: no 85dvh, no internal scroll, no sticky footer, no visualViewport listener. Those exist because the iOS keyboard covers a bottom-anchored sheet; a centered desktop dialog has no such problem. Do not port them for symmetry.\n\nHistorial (2026-08-27): the depth /positions never had. D35 kept that route with a date — an artboard by the time #294 closed, or it goes — and #294 closed on 2026-08-26 with none. Measured before drawing: it has ONE inbound link from outside itself (market/_position_trades to the trades tab), and three of its four tabs have none at all. It cannot be deleted the way admin/dashboard and admin/assets were (D34), because that deletion only worked when every card already had a 2.0 home: closed positions, the dividend history and the trade log have none. So the screen keeps those three and DROPS 'posiciones abiertas', which duplicated Holdings and is the likeliest reason nobody linked to it.\n\nIts build was gated on a discovery card; Adrian un-gated it 2026-08-27 ('hagámoslas, sí planeo usarlas') — see D43.\n\nNo tab control: the three stack as sections in the scroll, which is what #294 decided for the asset detail's sub-tabs and what the Bandeja does with its date groups. Rows are MovementItem, promoted in kit 0.2.0 for exactly this ('reused for trade log rows'). Money per D10 — each section header declares its currency, the trade rows keep the ISO prefix because they genuinely mix.\n\n'Movimiento' means a trade — here, and everywhere. D43 flagged that it named three things; D48 settled it by moving the technical-observation sense to 'Señales' (the word market_helper already fell back to). The cockpit screen takes the block's full name. Nothing on this screen changes.\n\nCopy: es-MX. kit-version-source 0.8.0.\n⚠ The TopBar grew 57 → 76 in kit 0.8.0 — the 44pt touch target the kit had been missing since 0.5.0, which the code always had. Every artboard here moved its content down 19px. Cartera and Watchlist grew with it (1116→1135, 1289→1308); the fixed-844 screens absorbed it in their slack. Verified: nothing clips.\n\n⚠ TRACKED · SIN FUENTE, 2026-08-27 (#329, cut down; registered as D46 — the entry this brief once said was owed and unwritten). The BMV addresses an issuer by name AND serie — WALMEX is rejected 400, only WALMEX* resolves — and Yahoo omits the serie when it is an asterisk. Measured against the real provider, not inferred.\n\nWhat this state exists for got narrower by measuring. #311 assumed one unmapped issuer failed the whole batch; it does not — the provider answers 200 with the rest and simply omits the one it cannot name. So nothing breaks loudly. The asset stops being priced while the row keeps rendering the last number it had. The failure is silence, and this state is what ends it.\n\n#329 asked for a row per provider that serves the asset — a mapping panel. Dropped: `rake data:resolve_bmv_symbols` resolves these by probing the bare name then the starred one, so a panel would be configuration for a problem that mostly fixes itself. What is left for a screen is the one the task could not confirm, which is one field, not a table.\n\nThe row carries it, because the row already had the slot. NVAX established it: where a healthy row says 'hace 12 min', a paused one says 'en pausa desde el 12 ago'. A sourceless one says 'sin cotizar desde el 21 ago' in warning, and its action turns from pause to wrench. It does NOT dim like a paused row — pausing is a choice the owner made, this is the instance failing, and the two must not read alike.\n\nThe fix opens in place under the row: what the provider said, the field pre-filled with the candidate the task already tried, and the promise the task already keeps — 'Guardamos el nombre solo si la fuente contesta con él'. A wrong mapping is worse than none, so nothing is written unconfirmed.\n\n🐞 The row's subtitle is single-line and clips as soon as the text grows. Here it wraps and the row goes 55 → 72. HALF-FIXED IN CODE: assets/_tracked_row.html.erb wraps, but components/_asset_row.html.erb:15 still truncates, so every other list keeps the fragility. Open.\n\nNOT drawn, deliberately: pinning an asset to a source, which #329 asked for as its second half. The chain order plus the mapping already answers it — a Mexican crypto CoinGecko does not list resolves through DataBursatil on its own. A control to choose the source would be a button for a problem the mapping closes. If an ordering turns out to be wrong, that is its own card with its own trigger.\n\nDesktop reflows: the fix is a full-width band inside the list, so `Tracked · Desktop` needs no variant.",
+          "content": "The 'Activos' tab — three tiers of interest in a symbol, drawn as a ladder (D9).\n\nTracked (assets.sync_status active) → Watchlist (watchlist_items) → Holdings (open positions). The tier is not taxonomy, it is BUDGET: SyncAllFundamentalsJob orders positions → watchlist → rest against DAILY_BUDGET = 25 calls/day, and only open positions get dividends + splits synced at all. The segmented control stays at two (the two daily questions); Tracked is a foot-of-list entry with its own screen.\n\n⚠ VOCABULARY — D48, 2026-08-27. The ladder moved to industry-standard English: Poseo → Holdings, Sigo → Watchlist, Rastreado(s) → Tracked. D9's three-tier SHAPE is untouched; only the words changed. Two things this file learned the hard way:\n(a) the code shipped it first (#364), so here the artboards FOLLOWED the code instead of leading it — the reverse of design/README rule 1, and correct in this one case;\n(b) Adrian extended it to the tab itself, so the segmented reads 'Holdings | Watchlist' while the code still says assets.index.cartera: Cartera. That single string is a code change this file is now ahead of — CODE_CHANGES §13.\n'cartera' in lowercase prose still means the portfolio and is NOT the tier. The code keeps it (radar_subtitulo: 'De tu cartera y watchlist'). Do not sweep it.\n\nEntry: bottom-nav 'Activos'. Rows link to the asset detail in cockpit.pen.\nScreens: Holdings · Watchlist · Holdings vacía (first run) · Historial · Registrar movimiento (sheet) · Registrar movimiento con teclado (the real mobile spec, D11) · Tracked · Tracked·Buscar · Importar CSV (Default · Revisión · Símbolos desconocidos).\n\nGrounding: positions (shares, avg_cost, market_value, total_gain, cost_basis_in(MXN) via fx_rate_at_execution) · watchlist_items.entry_price captured on add → 'sigues +X%' (nothing renders it today) · assets (current_price, change_percent_24h, currency, exchange, asset_type, price_updated_at, sync_status) · latest_trend_score → the semáforo dots. You can only follow what is already Tracked: search hits `assets`, so the search screen IS the catalogue browser.\n\nCETES rows drop the sparkline and the semáforo — technical lights don't apply to fixed income — and carry days-to-maturity + annual rate instead (C1 Lucía).\n\nMoney per D10: the section header declares the currency, rows drop the symbol; off-currency values keep the ISO prefix (USD 172.40).\n\nDesktop (1280): three artboards — Holdings, Registrar movimiento (the same <dialog>, centered) and Tracked. Tracked earns one because it absorbs /admin/assets: curating a catalogue against a daily call budget is desk work, and desktop is where the budget sits beside the list instead of above it.\n\n⚠ Touch targets: segmented controls, rows and the keypad clear 44pt; filter chips sit at ~35pt + 8pt gap — below the floor, accepted for a secondary control, flagged rather than hidden.\n\nFlow-local components (kit candidates, not promoted): WatchRow and TierChip. — Corrected 2026-08-27: this line used to also list Segmented and OptionCard. Both are in the kit and have been for a long time — Segmented since 0.3.0 (0.8.0 adds Segmented3 and D49's own-width rule), OptionCard resolved into NavRow in 0.4.0. The `scrim` token is likewise a kit token, not a candidate.\n\nNavRow: vendored 2026-08-27, and the four hand-built copies are gone — the Tracked foot entry plus the three paths of the empty state now instance one master. Measuring them first changed what the job was. They were NOT four copies of one row: three had drifted about 6% larger (36px icon wrap, 18px icon, padding 14/16, description at 12) and snapped back to the kit's numbers, which is the point. But 'Captura lo que ya tienes' also carried a deliberate PRIMARY accent — $primary stroke at 1.5, $primary-muted wrap, $primary icon — because it is the recommended path out of an empty portfolio. Replacing all four with the plain kit row would have flattened that hierarchy while calling it consistency.\n\nIt is kept as an instance override rather than a new kit variant, since the method says not to promote unasked. ⚠ KIT GAP: NavRow has no recommended/primary state. If a second flow needs one, that override earns a variant instead of being copied.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the position list becomes a GRID of cards at their native ~309 width, never one stretched column — measured first: the list is grouped by asset type, not ranked by value (BTC at 61,200 sits third), so a grid breaks no ranking; (b) the Resumen became a bar — patrimonio left, freshness and 'Ver mi consolidado' right — because a stacked card stretched to 976 is the same 'river of air' mistake as a stretched AssetRow; (c) CETES is the only card with no sparkline and no semáforo, carrying maturity and annual rate instead. A grid makes that difference more visible, not less, which is the correct outcome (C1).\n\nThe dialog measures 480x649 inside 800 — it FITS. None of D11's mobile machinery applies on desktop: no 85dvh, no internal scroll, no sticky footer, no visualViewport listener. Those exist because the iOS keyboard covers a bottom-anchored sheet; a centered desktop dialog has no such problem. Do not port them for symmetry.\n\nHistorial (2026-08-27): the depth /positions never had. D35 kept that route with a date — an artboard by the time #294 closed, or it goes — and #294 closed on 2026-08-26 with none. Measured before drawing: it has ONE inbound link from outside itself (market/_position_trades to the trades tab), and three of its four tabs have none at all. It cannot be deleted the way admin/dashboard and admin/assets were (D34), because that deletion only worked when every card already had a 2.0 home: closed positions, the dividend history and the trade log have none. So the screen keeps those three and DROPS 'posiciones abiertas', which duplicated Holdings and is the likeliest reason nobody linked to it.\n\nIts build was gated on a discovery card; Adrian un-gated it 2026-08-27 ('hagámoslas, sí planeo usarlas') — see D43.\n\nNo tab control: the three stack as sections in the scroll, which is what #294 decided for the asset detail's sub-tabs and what the Bandeja does with its date groups. Rows are MovementItem, promoted in kit 0.2.0 for exactly this ('reused for trade log rows'). Money per D10 — each section header declares its currency, the trade rows keep the ISO prefix because they genuinely mix.\n\n'Movimiento' means a trade — here, and everywhere. D43 flagged that it named three things; D48 settled it by moving the technical-observation sense to 'Señales' (the word market_helper already fell back to). The cockpit screen takes the block's full name. Nothing on this screen changes.\n\nCopy: es-MX. kit-version-source 0.8.1.\n⚠ The TopBar grew 57 → 76 in kit 0.8.0 — the 44pt touch target the kit had been missing since 0.5.0, which the code always had. Every artboard here moved its content down 19px. Cartera and Watchlist grew with it (1116→1135, 1289→1308); the fixed-844 screens absorbed it in their slack. Verified: nothing clips.\n\n⚠ TRACKED · SIN FUENTE, 2026-08-27 (#329, cut down; registered as D46 — the entry this brief once said was owed and unwritten). The BMV addresses an issuer by name AND serie — WALMEX is rejected 400, only WALMEX* resolves — and Yahoo omits the serie when it is an asterisk. Measured against the real provider, not inferred.\n\nWhat this state exists for got narrower by measuring. #311 assumed one unmapped issuer failed the whole batch; it does not — the provider answers 200 with the rest and simply omits the one it cannot name. So nothing breaks loudly. The asset stops being priced while the row keeps rendering the last number it had. The failure is silence, and this state is what ends it.\n\n#329 asked for a row per provider that serves the asset — a mapping panel. Dropped: `rake data:resolve_bmv_symbols` resolves these by probing the bare name then the starred one, so a panel would be configuration for a problem that mostly fixes itself. What is left for a screen is the one the task could not confirm, which is one field, not a table.\n\nThe row carries it, because the row already had the slot. NVAX established it: where a healthy row says 'hace 12 min', a paused one says 'en pausa desde el 12 ago'. A sourceless one says 'sin cotizar desde el 21 ago' in warning, and its action turns from pause to wrench. It does NOT dim like a paused row — pausing is a choice the owner made, this is the instance failing, and the two must not read alike.\n\nThe fix opens in place under the row: what the provider said, the field pre-filled with the candidate the task already tried, and the promise the task already keeps — 'Guardamos el nombre solo si la fuente contesta con él'. A wrong mapping is worse than none, so nothing is written unconfirmed.\n\n🐞 The row's subtitle is single-line and clips as soon as the text grows. Here it wraps and the row goes 55 → 72. HALF-FIXED IN CODE: assets/_tracked_row.html.erb wraps, but components/_asset_row.html.erb:15 still truncates, so every other list keeps the fragility. Open.\n\nNOT drawn, deliberately: pinning an asset to a source, which #329 asked for as its second half. The chain order plus the mapping already answers it — a Mexican crypto CoinGecko does not list resolves through DataBursatil on its own. A control to choose the source would be a button for a problem the mapping closes. If an ordering turns out to be wrong, that is its own card with its own trigger.\n\nDesktop reflows: the fix is a full-width band inside the list, so `Tracked · Desktop` needs no variant.\n\nIMPORTAR CSV (#401). Three artboards for the second door of Holdings/Vacío. The engine shipped first (#400: ImportTrades, UndoImport, the rake pair) so these artboards FOLLOW the code — the screens draw what the use case already refuses and reports, not a wish.\n\nDefault: file picker OR paste, because the deployed instance has no filesystem the operator can reach — a rake task there needs `kamal shell` plus getting the file into the container, which is the same data-entry friction this removes. The column list is the contract of ImportTradeRowContract; required and optional are drawn apart.\n\nRevisión is the dry run made visible: nothing is written, the batch totals and the skipped duplicates are stated before any button commits. Duplicates are normal, not exceptional — the broker reissues the same confirmation under a new filename, so identity is external_id.\n\nSímbolos desconocidos is the refusal, and it is the screen that carries the product decision: the batch is all-or-nothing. A partial import leaves the portfolio silently wrong, and auto-creating an asset from a row that holds only a ticker produces one with no type, market or country. The screen says why, then routes to Tracked.\n\nStates not drawn: in-flight parse (the file is local and the batch is ~50 rows), success (it returns to Holdings, already drawn), and the inline SearchTicker resolution of unknown symbols — deferred out of #401 on purpose.\n\nOpen findings: D62 — the door promises GBM/Kuspit/Binance, the engine reads one format; these artboards claim neither.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -9793,6 +9793,1304 @@
           "fill": "$fg-subtle"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "j10hHq",
+      "x": 4950,
+      "y": 0,
+      "name": "[Activos] / Importar CSV / Default",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "HvZrU",
+          "name": "Header",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "gap": "$space-3",
+          "padding": [
+            14,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "J4Bf5P",
+              "name": "Back",
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "$fg-default"
+            },
+            {
+              "type": "text",
+              "id": "oqQyf",
+              "name": "T",
+              "fill": "$fg-default",
+              "content": "Importar movimientos",
+              "fontFamily": "$font-display",
+              "fontSize": 17,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lnInH",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            18,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "aeeIh",
+              "name": "Intro",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Sube el archivo que te da tu broker, o pega su contenido. Antes de guardar nada te muestro qué encontré.",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "Y0p6p",
+              "name": "Drop",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-2",
+              "padding": [
+                26,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "t2pJSo",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "file-up",
+                  "library": "lucide",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "L6kr3P",
+                  "name": "l",
+                  "fill": "$primary",
+                  "content": "Elegir archivo CSV",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "IJbRZ",
+                  "name": "h",
+                  "fill": "$fg-subtle",
+                  "content": "o arrástralo aquí",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "K9vI9",
+              "name": "Sep",
+              "width": "fill_container",
+              "gap": "$space-3",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "id": "HoCsZ",
+                  "name": "L",
+                  "fill": "$border-default",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "text",
+                  "id": "eC55B",
+                  "name": "o",
+                  "fill": "$fg-subtle",
+                  "content": "o pega el contenido",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "rectangle",
+                  "id": "T0YqB",
+                  "name": "R",
+                  "fill": "$border-default",
+                  "width": "fill_container",
+                  "height": 1
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Kvj0o",
+              "name": "Paste",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-2",
+              "padding": [
+                12,
+                14
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "h0zZuK",
+                  "name": "ph",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "asset_symbol,side,shares,price_per_share,executed_at\nVT,buy,0.070436076,141.9727,2025-12-08\nNFLX,buy,0.098446029,101.5785,2025-12-08",
+                  "lineHeight": 1.6,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "L1Yjm8",
+              "name": "Formato",
+              "width": "fill_container",
+              "fill": "$bg-muted",
+              "cornerRadius": "$radius-lg",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "padding": [
+                13,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Z9CoPF",
+                  "name": "H",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "nbgqL",
+                      "name": "i",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "info",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    },
+                    {
+                      "type": "text",
+                      "id": "NS4QK",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Columnas que necesito",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "x2Cuw",
+                  "name": "req",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "asset_symbol · side · shares · price_per_share · executed_at",
+                  "lineHeight": 1.7,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "YJQKR",
+                  "name": "opt",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Opcionales: fee · currency · external_id · net_amount",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JVkFb",
+              "name": "Actions",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "padding": [
+                4,
+                0,
+                0,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Te3re",
+                  "name": "Revisar",
+                  "width": "fill_container",
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-md",
+                  "padding": [
+                    13,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "FEqvQ",
+                      "name": "t",
+                      "fill": "$fg-inverse",
+                      "content": "Revisar",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "MUTV2",
+                  "name": "note",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Nada se guarda hasta que confirmes.",
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "EZHOl",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "C3l3m",
+      "x": 5410,
+      "y": 0,
+      "name": "[Activos] / Importar CSV / Revisión",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "MU517",
+          "name": "Header",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "gap": "$space-3",
+          "padding": [
+            14,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "X3079k",
+              "name": "Back",
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "$fg-default"
+            },
+            {
+              "type": "text",
+              "id": "YeiXh",
+              "name": "T",
+              "fill": "$fg-default",
+              "content": "Revisión",
+              "fontFamily": "$font-display",
+              "fontSize": 17,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "X4nqym",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-3",
+          "padding": [
+            16,
+            24,
+            20,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "W3bdB",
+              "name": "NadaAun",
+              "width": "fill_container",
+              "fill": "$info-bg",
+              "cornerRadius": "$radius-md",
+              "gap": "$space-2",
+              "padding": [
+                11,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "R62nU",
+                  "name": "i",
+                  "width": 15,
+                  "height": 15,
+                  "icon": "eye",
+                  "library": "lucide",
+                  "fill": "$info-fg"
+                },
+                {
+                  "type": "text",
+                  "id": "tw3xe",
+                  "name": "t",
+                  "fill": "$info-fg",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Nada se ha guardado todavía. Esto es lo que encontré.",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "BfMxr",
+              "name": "Resumen",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-3",
+              "padding": [
+                16,
+                18
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "h9rgVr",
+                  "name": "R1",
+                  "width": "fill_container",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "eGARg",
+                      "name": "C",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-1",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "W6PkM",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "MOVIMIENTOS",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 10,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.12
+                        },
+                        {
+                          "type": "text",
+                          "id": "muBZW",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "50",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 24,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kGPEW",
+                      "name": "C",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-1",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Bj5Jf",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "INVERTIDO",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 10,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.12
+                        },
+                        {
+                          "type": "text",
+                          "id": "rySsQ",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "510.00 USD",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 24,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "iSFUk",
+                  "name": "Div",
+                  "fill": "$border-default",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "o0BVI",
+                  "name": "Meta",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$space-1",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "pUr91",
+                      "name": "a",
+                      "fill": "$fg-subtle",
+                      "content": "8 dic 2025 → 26 dic 2025 · 25 símbolos",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "d6xsow",
+                      "name": "b",
+                      "fill": "$fg-subtle",
+                      "content": "Todas son compras. Sin comisiones.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Y6xkfe",
+              "name": "Duplicados",
+              "width": "fill_container",
+              "fill": "$bg-muted",
+              "cornerRadius": "$radius-md",
+              "gap": "$space-2",
+              "padding": [
+                11,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "bymae",
+                  "name": "i",
+                  "width": 15,
+                  "height": 15,
+                  "icon": "copy",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "YBu82",
+                  "name": "t",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "9 movimientos ya estaban importados. Los omito.",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "ATiwE",
+              "name": "Lab",
+              "fill": "$fg-subtle",
+              "content": "PRIMEROS MOVIMIENTOS",
+              "fontFamily": "$font-sans",
+              "fontSize": 10,
+              "fontWeight": "600",
+              "letterSpacing": 0.12
+            },
+            {
+              "type": "frame",
+              "id": "SGISt",
+              "name": "Lista",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "id": "hTk0A",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "VT",
+                  "width": "fill_container",
+                  "descendants": {
+                    "aSq0g": {
+                      "content": "VT"
+                    },
+                    "DVcPe": {
+                      "content": "0.070436 títulos · 141.97 USD · 8 dic"
+                    }
+                  }
+                },
+                {
+                  "id": "w2m6f",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "NFLX",
+                  "width": "fill_container",
+                  "descendants": {
+                    "aSq0g": {
+                      "content": "NFLX"
+                    },
+                    "DVcPe": {
+                      "content": "0.098446 títulos · 101.58 USD · 8 dic"
+                    }
+                  }
+                },
+                {
+                  "id": "uVubq",
+                  "type": "ref",
+                  "ref": "HCLH3",
+                  "name": "MSTR",
+                  "width": "fill_container",
+                  "descendants": {
+                    "aSq0g": {
+                      "content": "MSTR"
+                    },
+                    "DVcPe": {
+                      "content": "0.054515 títulos · 183.44 USD · 8 dic"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "tkzjY",
+              "name": "Mas",
+              "fill": "$fg-subtle",
+              "content": "y 47 más",
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Bwe4l",
+          "name": "Actions",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "layout": "vertical",
+          "gap": "$space-2",
+          "padding": [
+            12,
+            24,
+            16,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "plp5s",
+              "name": "Importar",
+              "width": "fill_container",
+              "fill": "$primary",
+              "cornerRadius": "$radius-md",
+              "padding": [
+                13,
+                16
+              ],
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "T1kcXl",
+                  "name": "t",
+                  "fill": "$fg-inverse",
+                  "content": "Importar 50 movimientos",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 15,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p9Q1lC",
+              "name": "Cancelar",
+              "fill": "$fg-subtle",
+              "content": "Cancelar",
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "YXPNk",
+      "x": 5870,
+      "y": 0,
+      "name": "[Activos] / Importar CSV / Símbolos desconocidos",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "cmoT0",
+          "name": "Header",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "gap": "$space-3",
+          "padding": [
+            14,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "HFCAR",
+              "name": "Back",
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "$fg-default"
+            },
+            {
+              "type": "text",
+              "id": "nJNtH",
+              "name": "T",
+              "fill": "$fg-default",
+              "content": "Revisión",
+              "fontFamily": "$font-display",
+              "fontSize": 17,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "qXQLt",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-3",
+          "padding": [
+            16,
+            24,
+            20,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "emrZt",
+              "name": "Aviso",
+              "width": "fill_container",
+              "fill": "$warning-bg",
+              "cornerRadius": "$radius-lg",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "padding": [
+                14,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "srEA5",
+                  "name": "H",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "ntARn",
+                      "name": "i",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "triangle-alert",
+                      "library": "lucide",
+                      "fill": "$warning-fg"
+                    },
+                    {
+                      "type": "text",
+                      "id": "f7qDW",
+                      "name": "t",
+                      "fill": "$warning-fg",
+                      "content": "No puedo importar todavía",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "i5CXw",
+                  "name": "d",
+                  "fill": "$warning-fg",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "9 de tus 25 símbolos no están en tu catálogo. Sin ellos entrarían 41 movimientos de 50, y tu cartera quedaría incompleta sin avisarte.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "cpmeM",
+              "name": "Lab",
+              "fill": "$fg-subtle",
+              "content": "FALTAN EN TRACKED",
+              "fontFamily": "$font-sans",
+              "fontSize": 10,
+              "fontWeight": "600",
+              "letterSpacing": 0.12
+            },
+            {
+              "type": "frame",
+              "id": "Tmhxk",
+              "name": "Chips",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "U3Vq30",
+                  "name": "Row",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "X8IOnb",
+                      "name": "ALAB",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        7,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "HnbKR",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "ALAB",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hKhMO",
+                      "name": "ARKB",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        7,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WgYy0",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "ARKB",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "slP87",
+                      "name": "ARKX",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        7,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zuN7g",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "ARKX",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "v7siV",
+                      "name": "ESGU",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        7,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UBwWV",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "ESGU",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "f6ws2",
+                  "name": "Row",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Mija5",
+                      "name": "ESGV",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        7,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "f7xqKb",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "ESGV",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "x3jNM2",
+                      "name": "GOOG",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        7,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "TfCUs",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "GOOG",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lk7Ma",
+                      "name": "IVV",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        7,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "GBoR7",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "IVV",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "a7SYKR",
+                      "name": "MSTR",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        7,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wCxbQ",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "MSTR",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "lJRKO",
+                  "name": "Row",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "VJ9t9",
+                      "name": "SATS",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        7,
+                        11
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WcOJZ",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "SATS",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "g0zMT",
+              "name": "Porque",
+              "width": "fill_container",
+              "fill": "$bg-muted",
+              "cornerRadius": "$radius-lg",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "padding": [
+                13,
+                16
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "s0kdCL",
+                  "name": "t",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "No los doy de alta solo: el CSV trae el ticker y nada más. Un activo creado así queda sin tipo, sin mercado y sin país, y un dedazo se te vuelve un activo basura que se sincroniza para siempre.",
+                  "lineHeight": 1.55,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uOa9p",
+              "name": "Listo",
+              "width": "fill_container",
+              "fill": "$positive-bg",
+              "cornerRadius": "$radius-md",
+              "gap": "$space-2",
+              "padding": [
+                11,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "T0Yup7",
+                  "name": "i",
+                  "width": 15,
+                  "height": 15,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "$positive-fg"
+                },
+                {
+                  "type": "text",
+                  "id": "wlPSl",
+                  "name": "t",
+                  "fill": "$positive-fg",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "El archivo está bien formado: 50 movimientos, 510.00 USD. Solo faltan los símbolos.",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "xxjci",
+          "name": "Actions",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "layout": "vertical",
+          "gap": "$space-2",
+          "padding": [
+            12,
+            24,
+            16,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Ih5bY",
+              "name": "Alta",
+              "width": "fill_container",
+              "fill": "$primary",
+              "cornerRadius": "$radius-md",
+              "gap": "$space-2",
+              "padding": [
+                13,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "n3ORy",
+                  "name": "t",
+                  "fill": "$fg-inverse",
+                  "content": "Darlos de alta en Tracked",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 15,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "icon",
+                  "id": "fNLZi",
+                  "name": "c",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "arrow-right",
+                  "library": "lucide",
+                  "fill": "$fg-inverse"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "tR8YF",
+              "name": "Volver",
+              "fill": "$fg-subtle",
+              "content": "Elegir otro archivo",
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "YTft3",
+      "x": 0,
+      "y": 5300,
+      "name": "Log · Activos",
+      "width": 360,
+      "fill": "$bg-surface",
+      "cornerRadius": "$radius-lg",
+      "stroke": "$border-default",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 12,
+      "padding": [
+        20,
+        22
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "hsev7",
+          "name": "T",
+          "fill": "$fg-default",
+          "content": "Log · Activos",
+          "fontFamily": "$font-display",
+          "fontSize": 18,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "Szaca",
+          "name": "B",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401, engine shipped first in #400) · D62\n2026-08-28 · grid-* variables declared; the file's bands are NOT yet reflowed onto them\n2026-08-28 · this Log frame created; the brief above still carries its older dated lines inline — migrating them is pending, not done",
+          "lineHeight": 1.6,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        }
+      ]
     }
   ],
   "themes": {
@@ -10503,6 +11801,26 @@
           }
         }
       ]
+    },
+    "grid-x0": {
+      "type": "number",
+      "value": 0
+    },
+    "grid-brief-w": {
+      "type": "number",
+      "value": 360
+    },
+    "grid-gutter": {
+      "type": "number",
+      "value": 70
+    },
+    "grid-y0": {
+      "type": "number",
+      "value": 0
+    },
+    "grid-row-gap": {
+      "type": "number",
+      "value": 260
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"

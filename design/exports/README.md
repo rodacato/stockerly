@@ -15,8 +15,10 @@ Files land as `<nodeId>.png` and are renamed to `<flow>-<screen>[-<state>].png` 
 mean nothing to a reviewer. Re-export a flow whenever its artboards change materially; a stale PNG
 is worse than a missing one.
 
-**Index verified 2026-08-27.** All 62 rows below resolve to a file on disk, and every committed PNG
-has a row — checked by listing the directory against the tables, not by reading them.
+**Re-counted 2026-08-28: 68 rows, 68 PNGs on disk.** The previous header claimed 62 and was already
+stale before the three `Importar CSV` rows (#401) were appended — the actual count was 65. Counted by
+listing the directory against the tables (`ls design/exports/*.png | wc -l` against a grep of the row
+prefix), not by reading them.
 
 ⚠ **One file on disk is not in this index: `ZHvbW.png`, untracked.** It is an un-renamed export
 still carrying its node id — `[Activos] / Rastreados / Sin fuente`, whose renamed twin
@@ -49,6 +51,9 @@ tells a reviewer nothing.
 | `activos-tracked-sin-fuente.png` | `[Activos] / Tracked / Sin fuente` |
 | `activos-tracked-buscar.png` | `[Activos] / Tracked · Buscar / Default` |
 | `activos-historial.png` | `[Activos] / Historial / Default` — ⚠ see D43, designed after /positions hit its D35 deadline |
+| `activos-importar.png` | `[Activos] / Importar CSV / Default` |
+| `activos-importar-revision.png` | `[Activos] / Importar CSV / Revisión` — the dry run: nothing written yet |
+| `activos-importar-desconocidos.png` | `[Activos] / Importar CSV / Símbolos desconocidos` — the all-or-nothing refusal |
 | `reglas-lista.png` | `[Reglas] / Reglas / Default` |
 | `reglas-vacio.png` | `[Reglas] / Reglas / Vacío` |
 | `reglas-nueva-regla.png` | `[Reglas] / Nueva regla / Sheet` |
