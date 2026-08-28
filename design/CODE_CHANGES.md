@@ -866,9 +866,17 @@ surfaces call it. One visible consequence, logged as **D50**: a fixed-income ale
 
 ---
 
-## 14. TOTP with recovery codes (ADR-018, D52) — pending
+## 14. TOTP with recovery codes (ADR-018, D52) — SHIPPED
 
-**Status:** pending — approved 2026-08-27, four artboards drawn, zero lines of code. Written because
+**Status:** shipped 2026-08-28 in two slices, [#391](https://github.com/rodacato/stockerly/issues/391). Approved 2026-08-27 with four artboards drawn and zero lines of code.
+
+**The design decision worth reading is what the second factor is _not_.** It is not a guard bolted onto an authenticated session: `current_user` reads `session[:user_id]`, so the password step deliberately does not set it. An unfinished login has no identity anywhere in the app, which makes the bypass **structurally impossible** rather than something a `before_action` has to remember to check. `TwoFactorController` is the only place that knows who is half-way in, through a separate `session[:pending_user_id]` that expires in ten minutes and is dropped by `reset_session` the moment the login completes. The spec that matters walks `dashboard`, `assets`, `settings`, `portfolio` and `alerts` with a half-authenticated session and asserts every one bounces.
+
+**Replay was the other thing a naive integration gets wrong:** ROTP accepts the same code twice inside its 30-second window. `otp_last_used_at` records which window was spent and `verify(after:)` refuses it — pinned by a spec that logs in, logs out, and tries the same code again.
+
+**Two findings that measuring caught and guessing would not have.** `Success([...])` deconstructs to the array itself, so `in Success(codes)` silently fails to match ten elements against a one-element pattern; `EnableTotp` returns a keyed result now, because a bare array out of a monad is the trap rather than the symptom. And `login_as` posts the real login form, so an enrolled account was left parked at the second factor — the helper finishes the flow rather than reaching around it.
+
+The original work order follows, unedited. Written because
 ADR-018 lists its own consequences and nothing in this file carried them; four screens with no work
 order is the state D23 was raised about, the difference being that the build is now approved.
 
