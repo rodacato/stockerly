@@ -1,17 +1,94 @@
-<%# The position lists the Consolidado does not carry. Reachable by URL only —
-    the nav has four destinations and this is not one of them. %>
-<% content_for :page_title, "Posiciones y movimientos" %>
+<%# Historial (D43): the three lists that have no other home, stacked in one
+    scroll. No tab control — the shape #294 chose for the asset detail's
+    sub-tabs and the Bandeja uses for its date groups. `Posiciones abiertas`
+    is deliberately absent: it duplicated Holdings. %>
+<% content_for :page_title, t(".titulo") %>
 
-<div class="flex flex-col gap-5">
-  <%= link_to portfolio_path,
-              class: "inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline" do %>
-    <span class="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
-    <%= t("portfolios.show.titulo") %>
-  <% end %>
+<div class="mx-auto flex max-w-3xl flex-col gap-8">
+  <section class="flex flex-col gap-3">
+    <div>
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".movimientos") %></h2>
+      <%# D10: the header declares the currency once. Trade rows keep their ISO
+          prefix because they genuinely mix. %>
+      <p class="mt-0.5 text-sm text-fg-subtle"><%= t(".movimientos_moneda") %></p>
+    </div>
 
-  <%= render "positions/positions_table",
-             tab: @tab,
-             positions: @positions,
-             portfolio: @portfolio,
-             upcoming_dividends: @upcoming_dividends %>
+    <% if @trades.any? %>
+      <ul id="trades" class="flex flex-col gap-3">
+        <%= render partial: "trades/trade_row", collection: @trades, as: :trade %>
+      </ul>
+    <% else %>
+      <%= render "components/empty_state", icon: "receipt_long",
+                 title: t(".movimientos_vacio"), description: t(".movimientos_vacio_cuerpo"),
+                 cta_text: t("trades.new.titulo"), cta_path: new_trade_path %>
+    <% end %>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <div>
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".dividendos") %></h2>
+      <p class="mt-0.5 text-sm text-fg-subtle"><%= t(".valores_en", currency: @currency) %></p>
+    </div>
+
+    <% if @dividends.any? %>
+      <ul class="flex flex-col gap-3">
+        <% @dividends.each do |payment| %>
+          <li class="flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3">
+            <div class="min-w-0 flex-1">
+              <p class="font-mono text-sm font-bold text-fg-default"><%= payment.dividend.asset.symbol %></p>
+              <p class="text-xs text-fg-subtle">
+                <%= t(".dividendo_linea",
+                       fecha: l(payment.dividend.pay_date || payment.created_at.to_date, format: :short),
+                       titulos: t("assets.index.titulos", count: number_with_precision(payment.shares_held, precision: 0)),
+                       por_titulo: format_currency_mx(payment.dividend.amount_per_share, currency: payment.dividend.currency, precision: 2)) %>
+              </p>
+            </div>
+            <p class="shrink-0 font-mono text-sm font-bold text-fg-default">
+              <%= format_currency_mx(payment.total_amount, currency: payment.dividend.currency, precision: 0) %>
+            </p>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <%= render "components/empty_state", icon: "payments",
+                 title: t(".dividendos_vacio"), description: t(".dividendos_vacio_cuerpo") %>
+    <% end %>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <div>
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".cerradas") %></h2>
+      <p class="mt-0.5 text-sm text-fg-subtle"><%= t(".cerradas_moneda", currency: @currency) %></p>
+    </div>
+
+    <% if @closed.any? %>
+      <ul class="flex flex-col gap-3">
+        <% @closed.each do |entry| %>
+          <% position = entry[:position] %>
+          <li class="flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3">
+            <div class="min-w-0 flex-1">
+              <p class="font-mono text-sm font-bold text-fg-default"><%= position.asset.symbol %></p>
+              <p class="text-xs text-fg-subtle">
+                <%= t(".cerrada_linea",
+                       fecha: l((position.closed_at || position.updated_at).to_date, format: :short),
+                       titulos: t("assets.index.titulos", count: number_with_precision(position.shares, precision: 0))) %>
+              </p>
+            </div>
+            <%# A nil gain is a position whose trades lost their captured FX —
+                saying so beats printing a number derived from a guess. %>
+            <% if entry[:gain] %>
+              <p class="shrink-0 font-mono text-sm font-bold <%= gain_color(entry[:gain]) %>">
+                <%= entry[:gain].negative? ? "−" : "+" %><%= format_currency_mx(entry[:gain].abs, currency: @currency, precision: 0) %>
+              </p>
+            <% else %>
+              <p class="shrink-0 font-mono text-xs text-warning-fg"><%= t(".sin_tc") %></p>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <%= render "components/empty_state", icon: "lock",
+                 title: t(".cerradas_vacio"), description: t(".cerradas_vacio_cuerpo") %>
+    <% end %>
+  </section>
 </div>

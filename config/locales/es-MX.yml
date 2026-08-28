@@ -167,6 +167,7 @@ es-MX:
       vacio_watchlist_cuerpo: Sigue un activo y verás cómo se mueve desde que lo agregaste.
       vacio_watchlist_titulo: Tu watchlist está vacía
       valor_de_mercado: VALOR DE MERCADO · %{currency}
+      ver_historial_desc: Movimientos, dividendos cobrados y posiciones cerradas
       ver_tracked: Tracked
       ver_tracked_desc: Lo que tu instancia sincroniza y cuánto presupuesto queda
       watchlist: Watchlist
@@ -274,6 +275,7 @@ es-MX:
     accion:
       buy: compra
       sell: vende
+    cancelar: Cancelar
     clasificacion:
       bearish: Pesimista
       bullish: Optimista
@@ -284,6 +286,7 @@ es-MX:
       neutral: Neutral
       very_bearish: Muy pesimista
       very_bullish: Muy optimista
+    guardar: Guardar
     sin_tc_cuerpo: Falta el tipo de cambio del día, así que no puedo sumar tu patrimonio
       en una sola moneda. Cada posición se muestra en la suya.
     sin_tc_titulo: Sin consolidar
@@ -923,6 +926,33 @@ es-MX:
     titulos: Títulos
     tu_posicion: TU POSICIÓN
     ver_todas: Ver todas
+  positions:
+    index:
+      cerrada_linea: cerrada el %{fecha} · %{titulos}
+      cerradas: Posiciones cerradas
+      cerradas_moneda: Ganancia realizada, en %{currency}
+      cerradas_vacio: Aún no cierras ninguna posición
+      cerradas_vacio_cuerpo: Cuando vendas todo lo que tienes de un activo, aparecerá
+        aquí con lo que dejó.
+      confirmar_borrado: "¿Eliminar este movimiento permanentemente?"
+      dividendo_linea: "%{fecha} · %{titulos} · %{por_titulo} por título"
+      dividendos: Dividendos cobrados
+      dividendos_vacio: Aún no has cobrado dividendos
+      dividendos_vacio_cuerpo: Los pagos aparecen aquí cuando la fuente los reporta.
+      editar: Editar movimiento
+      eliminar: Eliminar movimiento
+      lado_buy: compra
+      lado_sell: venta
+      movimiento_linea: "%{fecha} · %{lado} %{titulos} · %{precio}"
+      movimientos: Movimientos
+      movimientos_moneda: Valores en la moneda de cada operación
+      movimientos_vacio: Aún no registras movimientos
+      movimientos_vacio_cuerpo: Cada compra y venta que registres queda aquí.
+      si_eliminar: Sí, eliminar
+      sin_cartera: No encontramos tu cartera.
+      sin_tc: sin TC
+      titulo: Historial
+      valores_en: Valores en %{currency}
   settings:
     show:
       avisos_campana: Todo aviso llega a tu campana; eso no se apaga. El correo sí.

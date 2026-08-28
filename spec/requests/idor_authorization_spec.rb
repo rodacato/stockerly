@@ -56,7 +56,7 @@ RSpec.describe "IDOR authorization", type: :request do
 
     it "prevents editing another user's trade" do
       get edit_trade_path(trade_b)
-      expect(response).to redirect_to(trades_path)
+      expect(response).to redirect_to(positions_path)
     end
 
     it "prevents updating another user's trade" do

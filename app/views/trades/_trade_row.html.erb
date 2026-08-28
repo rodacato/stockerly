@@ -1,38 +1,35 @@
-<%# Single trade row — used by index and Turbo Stream prepend. es-MX per S09 #98.
-    Lumen + inline delete-confirm trigger per S11 #145. %>
+<%# The kit's MovementItem, not a table row (KIT-4). It renders inside
+    Historial and is the target of the Turbo Stream replaces that the inline
+    edit and delete flows send, so the dom_id is load-bearing. %>
 <% is_buy = trade.buy? %>
-<% can_modify = trade.editable? %>
-<tr id="<%= dom_id(trade) %>" class="hover:bg-bg-muted transition-colors group">
-  <td class="px-6 py-4 text-sm font-mono text-fg-subtle"><%= trade.executed_at.strftime("%d %b %Y %H:%M") %></td>
-  <td class="px-6 py-4">
-    <div class="flex items-center gap-2">
-      <%= render "components/asset_badge", asset: trade.asset, size: "sm" %>
-      <span class="font-mono text-sm font-bold text-fg-default"><%= trade.asset.symbol %></span>
+<li id="<%= dom_id(trade) %>" class="group flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3">
+  <div class="min-w-0 flex-1">
+    <p class="font-mono text-sm font-bold text-fg-default"><%= trade.asset.symbol %></p>
+    <p class="text-xs text-fg-subtle">
+      <%= t("positions.index.movimiento_linea",
+             fecha: l(trade.executed_at.to_date, format: :short),
+             lado: t("positions.index.lado_#{trade.side}"),
+             titulos: t("assets.index.titulos", count: number_with_precision(trade.shares, precision: trade.shares.to_d.frac.zero? ? 0 : 4)),
+             precio: format_currency_mx(trade.price_per_share, currency: trade.currency, precision: 2)) %>
+    </p>
+  </div>
+
+  <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold <%= is_buy ? "bg-positive-bg text-positive-fg" : "bg-warning-bg text-warning-fg" %>">
+    <%= t("positions.index.lado_#{trade.side}") %>
+  </span>
+
+  <% if trade.editable? %>
+    <div class="flex shrink-0 items-center gap-1">
+      <%= link_to edit_trade_path(trade), data: { turbo_method: :get, turbo_stream: true },
+            class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary",
+            aria: { label: t("positions.index.editar") } do %>
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">edit</span>
+      <% end %>
+      <%= link_to confirm_destroy_trade_path(trade), data: { turbo_method: :get, turbo_stream: true },
+            class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-negative",
+            aria: { label: t("positions.index.eliminar") } do %>
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
+      <% end %>
     </div>
-  </td>
-  <td class="px-6 py-4 text-center">
-    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter <%= is_buy ? 'bg-positive-bg text-positive-fg' : 'bg-warning-bg text-warning-fg' %>">
-      <%= is_buy ? "Compra" : "Venta" %>
-    </span>
-  </td>
-  <td class="px-6 py-4 text-right text-sm font-mono font-medium text-fg-default"><%= trade.shares %></td>
-  <td class="px-6 py-4 text-right text-sm font-mono text-fg-subtle"><%= format_currency_mx(trade.price_per_share, currency: trade.currency, precision: 4) %></td>
-  <td class="px-6 py-4 text-right text-sm font-mono font-bold text-fg-default"><%= format_currency_mx(trade.total_amount, currency: trade.currency) %></td>
-  <td class="px-6 py-4 text-right text-sm font-mono text-fg-subtle"><%= trade.fee.positive? ? format_currency_mx(trade.fee, currency: trade.currency) : "—" %></td>
-  <td class="px-6 py-4 text-right">
-    <% if can_modify %>
-      <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <%= link_to edit_trade_path(trade), data: { turbo_method: :get, turbo_stream: true },
-            class: "p-1.5 rounded-lg hover:bg-bg-muted text-fg-subtle hover:text-primary transition-colors",
-            title: "Editar movimiento" do %>
-          <span class="material-symbols-outlined text-[18px]">edit</span>
-        <% end %>
-        <%= link_to confirm_destroy_trade_path(trade), data: { turbo_method: :get, turbo_stream: true },
-            class: "p-1.5 rounded-lg hover:bg-negative-bg text-fg-subtle hover:text-negative transition-colors",
-            title: "Eliminar movimiento" do %>
-          <span class="material-symbols-outlined text-[18px]">delete</span>
-        <% end %>
-      </div>
-    <% end %>
-  </td>
-</tr>
+  <% end %>
+</li>

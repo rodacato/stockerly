@@ -66,6 +66,19 @@
     <% end %>
   <% end %>
 
+  <%# The design drew Historial without a door (D60): its only inbound link was
+      from one asset's detail. This follows the foot-of-list pattern the screen
+      already uses for Tracked (D9) rather than inventing one. %>
+  <%= link_to positions_path,
+              class: "flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
+    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">receipt_long</span>
+    <span class="min-w-0 flex-1">
+      <span class="block text-sm font-semibold text-fg-default"><%= t("positions.index.titulo") %></span>
+      <span class="block text-xs text-fg-subtle"><%= t("assets.index.ver_historial_desc") %></span>
+    </span>
+    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">chevron_right</span>
+  <% end %>
+
   <%= link_to tracked_assets_path,
               class: "flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
     <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">radar</span>
