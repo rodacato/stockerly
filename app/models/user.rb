@@ -1,6 +1,10 @@
 class User < ApplicationRecord
   has_secure_password
 
+  # The shared secret is the whole factor: anyone who reads it can mint valid
+  # codes forever, so it never sits in the clear (ADR-018).
+  encrypts :otp_secret
+
   # --- Enums ---
   enum :role, { user: 0, admin: 1 }
 
@@ -16,6 +20,7 @@ class User < ApplicationRecord
   # behind foreign keys, so there is no nullify to fall back on.
   has_many :audit_logs, dependent: :destroy
   has_many :site_config_changes, foreign_key: :admin_id, inverse_of: :admin, dependent: :destroy
+  has_many :otp_recovery_codes, dependent: :destroy
 
   # --- Validations ---
   validates :full_name, presence: true, length: { minimum: 2 }
@@ -29,6 +34,17 @@ class User < ApplicationRecord
 
   def onboarded?
     onboarded_at.present?
+  end
+
+  # Enrolment is finished, not merely started: a secret exists on the record
+  # between "show me the QR" and "here is my first code", and a half-enrolled
+  # account must still log in with the password alone.
+  def otp_enrolled?
+    otp_enrolled_at.present?
+  end
+
+  def unused_recovery_codes_count
+    otp_recovery_codes.unconsumed.count
   end
 
   # --- Callbacks ---

@@ -1,0 +1,26 @@
+<% content_for(:title, "#{t('.titulo')} | Stockerly") %>
+
+<div class="flex flex-col gap-6">
+  <%= render "shared/auth_header", title: t(".titulo"), subtitle: t(".subtitulo") %>
+
+  <%= render "two_factor/error" %>
+
+  <%= form_with url: recovery_code_path, method: :post, class: "flex flex-col gap-4" do %>
+    <label class="flex flex-col gap-1.5">
+      <span class="text-sm font-medium text-fg-default"><%= t(".codigo") %></span>
+      <%= tag.input type: "text", name: "code", autocomplete: "off", autofocus: true, required: true,
+                    placeholder: t(".placeholder"), spellcheck: "false",
+                    class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3.5 text-center font-mono text-lg tracking-widest text-fg-default focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+    </label>
+
+    <button type="submit"
+            class="mt-2 w-full rounded-xl bg-primary px-4 py-3.5 text-base font-semibold text-fg-inverse transition-colors hover:bg-primary-hover">
+      <%= t(".entrar") %>
+    </button>
+  <% end %>
+
+  <div class="flex flex-col gap-2 text-center text-sm">
+    <%= link_to t(".volver_verificacion"), two_factor_path, class: "font-medium text-primary hover:underline" %>
+    <%= link_to t("auth.volver_login"), login_path, class: "text-fg-subtle hover:underline" %>
+  </div>
+</div>

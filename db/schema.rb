@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_28_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_28_164900) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -330,6 +330,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_120000) do
     t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"
   end
 
+  create_table "otp_recovery_codes", force: :cascade do |t|
+    t.string "code_digest", null: false
+    t.datetime "consumed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "consumed_at"], name: "index_otp_recovery_codes_on_user_id_and_consumed_at"
+    t.index ["user_id"], name: "index_otp_recovery_codes_on_user_id"
+  end
+
   create_table "portfolio_snapshots", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "currency", null: false
@@ -474,6 +484,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_120000) do
     t.string "email", null: false
     t.string "full_name", null: false
     t.datetime "onboarded_at"
+    t.datetime "otp_enrolled_at"
+    t.datetime "otp_last_used_at"
+    t.text "otp_secret"
     t.string "password_digest", null: false
     t.string "preferred_currency", default: "USD", null: false
     t.integer "role", default: 0, null: false
@@ -505,6 +518,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_120000) do
   add_foreign_key "financial_statements", "assets"
   add_foreign_key "market_index_histories", "market_indices"
   add_foreign_key "notifications", "users"
+  add_foreign_key "otp_recovery_codes", "users"
   add_foreign_key "portfolio_snapshots", "portfolios"
   add_foreign_key "portfolios", "users"
   add_foreign_key "positions", "assets"

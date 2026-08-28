@@ -11,6 +11,15 @@ class SessionsController < ApplicationController
     result = Identity::UseCases::Login.call(params: { email: params[:email], password: params[:password] })
 
     case result
+    in Dry::Monads::Success(user) if user.otp_enrolled?
+      # Deliberately NOT start_session: `current_user` reads session[:user_id],
+      # so withholding it is what makes an unfinished login reach nothing. The
+      # second factor is not a guard bolted onto an authenticated session — the
+      # session does not exist yet (ADR-018).
+      reset_session
+      session[:pending_user_id] = user.id
+      session[:pending_since] = Time.current.to_i
+      redirect_to two_factor_path
     in Dry::Monads::Success(user)
       start_session(user)
       EventBus.publish(Identity::Events::UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))

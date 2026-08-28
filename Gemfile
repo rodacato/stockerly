@@ -112,3 +112,6 @@ group :development do
   # Local code-quality report (flog/reek/flay) — preventive pass before Sonar [https://github.com/whitesmith/rubycritic]
   gem "rubycritic", require: false
 end
+
+gem "rotp", "~> 6.3"
+gem "rqrcode", "~> 3.2"
