@@ -49,11 +49,12 @@ See [`non-goals.md`](./non-goals.md). The headline additions from the pivot: **n
 
 ---
 
-## Three hard rules (non-negotiable)
+## Four hard rules (non-negotiable)
 
 1. **Multi-currency MXN/USD is a first-class citizen**, not an "international feature". Without this, the JTBDs lie.
 2. **Build for the real user (Adrian) first.** "Self-hosted for anyone" is packaging discipline, not a mandate to build for a hypothetical community. When a feature serves only the imagined self-hoster, it doesn't get built.
 3. **Every new feature passes the 4-filter:** documented personal trigger + JTBD + usage metric + Definition of Done. Without all 4, it doesn't get built. This applies with full force to the tempting data-entry ideas (AI PDF import, crypto exchange sync).
+4. **Self-contained by default — the fewest vendors a self-hoster can inherit.** When a capability can be met inside the app or by a third-party service, the in-app answer wins unless it isn't viable. A *required* external service is a scope change and needs its own ADR; an optional one must degrade honestly, the way a missing market-data key does. **The maintainer's own infrastructure is never the product's answer** — Cloudflare Tunnel, Tailscale and Access are how this instance is deployed, not a mitigation any other instance inherits. See [ADR-019](../architecture/adr/0019-self-contained-by-default.md), which was written the day this rule decided TOTP over Cloudflare Access.
 
 ---
 

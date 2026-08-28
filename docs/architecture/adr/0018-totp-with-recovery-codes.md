@@ -4,7 +4,7 @@
 - **Date:** 2026-08-27
 - **Author:** Adrian Castillo
 - **Supersedes:** the recommendation in [D23](../../../design/DECISIONS.md) (not a prior ADR)
-- **Related:** [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md), [ADR-015](./0015-one-api-key-per-provider.md)
+- **Related:** [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md), [ADR-015](./0015-one-api-key-per-provider.md), [ADR-019](./0019-self-contained-by-default.md)
 
 ---
 
@@ -55,6 +55,14 @@ Three boundaries, stated so they are not re-litigated per PR:
   misconfigured — the same permanent lockout by another door, on a deployment where mail is
   the single most likely thing to be wrong. Recovery codes work with no outbound network at all.
 - **No SMS.** Unchanged from the brief, and never in question.
+
+**Sequencing settled 2026-08-28 by [ADR-019](./0019-self-contained-by-default.md).** Reviewing
+whether this feature was justified, the analysis recommended verifying Cloudflare Access first, on
+the grounds that it protects the maintainer's instance today for minutes of work. That was right
+about Adrian's risk and wrong about the product's: **Access is a vendor dependency and TOTP ships
+inside the product.** ADR-019 turns that into the vision's fourth hard rule, so the order is TOTP
+first and it does not have to be re-argued. The discovery card this ADR says is owed is
+[#391](https://github.com/rodacato/stockerly/issues/391).
 
 **Cloudflare Access remains worth doing and is now independent of this.** It was proposed as
 the alternative to TOTP; it becomes defence in depth for the maintainer's own instance. Whether

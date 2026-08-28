@@ -903,9 +903,9 @@ turned on later and the codes are regenerated (a `Seguridad` section, `flows/set
 **Artboards:** `auth-totp-alta.png`, `auth-codigos-recuperacion.png`, `auth-codigo-recuperacion.png`,
 and the existing `auth-2fa.png`. Per D4 none needs a desktop variant.
 
-**Owed before it ships:** the 4-filter discovery card and a GitHub issue. **This is now the only thing standing between the decision and the code.** ADR-018 approves the
-decision; the project's own working method still wants trigger + JTBD + usage metric + DoD before
-a build starts.
+**Owed before it ships: paid 2026-08-28.** The 4-filter card is [#391](https://github.com/rodacato/stockerly/issues/391), and it passes three filters cleanly while **flagging the one it does not**: TOTP maps to none of the six canonical JTBDs, because authentication is a precondition for all of them rather than a job of its own — the existing login has no JTBD either. No JTBD #7 was invented to paper over it. The trigger is [ADR-019](../docs/architecture/adr/0019-self-contained-by-default.md)'s constraint rather than ADR-018's audience argument: the mitigation has to travel with the product, which applies to the maintainer's instance too. ADR-018 approved the
+decision, and the card landed before the first slice did — which is the order the project's own
+working method asks for.
 
 ---
 

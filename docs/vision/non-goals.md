@@ -52,6 +52,7 @@
 | **Aggregator bank/broker sync (Plaid, Yodlee, SnapTrade)** | **Permanent non-goal at this scale.** A cost trap: automated sync always sits behind a paid aggregator, and Maybe Finance — the same Rails/Hotwire/Postgres stack — died partly on Plaid economics. MX coverage is thin and expensive. See [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) and [the competitive research](../research/competitive-trackers-2026-08.md). Pluggy.ai / Belvo (LatAm-native) are the only ones worth even a future spike, and only behind a documented trigger. |
 | Per-broker CSV auto-parsers (Portfolio-Performance-style, 90+ parsers) | Huge maintenance surface; few MX brokers justify it. Smart generic CSV mapping covers the realistic need. |
 | AI PDF/screenshot statement import; crypto exchange API sync; read-only wallet import | Genuinely attractive, but each requires a documented trigger + JTBD before any work (4-filter, anti-pattern #1). Not rejected — deferred until earned. |
+| **Any third-party service the instance *requires* to work** | [ADR-019](../architecture/adr/0019-self-contained-by-default.md): a self-hoster inherits every dependency the product declares, and cannot be asked to sign up for one to get a feature. Optional vendors are fine and must degrade honestly — market-data providers are the model. The maintainer's own ingress (Cloudflare Tunnel, Tailscale, Access) is deployment, never the product's answer to a risk every instance carries. Adding a required service is a scope change and needs its own ADR. |
 
 ### Product
 
