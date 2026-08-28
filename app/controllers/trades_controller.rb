@@ -58,34 +58,16 @@ class TradesController < AuthenticatedController
         redirect_to assets_path, notice: trade_notice(trade)
       end
     in Dry::Monads::Failure[ :validation, errors ]
-      error_msg = errors.values.flatten.first
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: FLASH_PARTIAL, locals: { type: "alert", message: error_msg })
-        end
-        format.html { redirect_to assets_path, alert: error_msg }
-      end
+      respond_with_alert(errors.values.flatten.first, fallback: assets_path)
     in Dry::Monads::Failure[ :insufficient_shares, message ]
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
-        end
-        format.html { redirect_to assets_path, alert: message }
-      end
+      respond_with_alert(message, fallback: assets_path)
     in Dry::Monads::Failure[ _, message ]
       redirect_to assets_path, alert: message
     end
   end
 
   def edit
-    trade = current_user.portfolio&.trades&.find_by(id: params[:id])
-
-    if trade.nil?
-      redirect_to trades_path, alert: "Movimiento no encontrado."
-      return
-    end
+    return unless (trade = find_trade_or_redirect)
 
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.replace(trade, partial: "trades/edit_row", locals: { trade: trade }) }
@@ -98,12 +80,7 @@ class TradesController < AuthenticatedController
   # which is hostile on mobile and inconsistent with the Stockerly-2.0
   # design language.
   def confirm_destroy
-    trade = current_user.portfolio&.trades&.find_by(id: params[:id])
-
-    if trade.nil?
-      redirect_to trades_path, alert: "Movimiento no encontrado."
-      return
-    end
+    return unless (trade = find_trade_or_redirect)
 
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.replace(trade, partial: "trades/confirm_delete_row", locals: { trade: trade }) }
@@ -123,29 +100,15 @@ class TradesController < AuthenticatedController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace(trade, partial: "trades/trade_row", locals: { trade: trade }),
-            turbo_stream.prepend("flash_messages", partial: FLASH_PARTIAL,
-              locals: { type: "notice", message: "Movimiento actualizado." })
+            flash_stream("notice", "Movimiento actualizado.")
           ]
         end
         format.html { redirect_to trades_path, notice: "Movimiento actualizado." }
       end
     in Dry::Monads::Failure[ :validation, errors ]
-      error_msg = errors.values.flatten.first
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: FLASH_PARTIAL, locals: { type: "alert", message: error_msg })
-        end
-        format.html { redirect_to trades_path, alert: error_msg }
-      end
+      respond_with_alert(errors.values.flatten.first, fallback: trades_path)
     in Dry::Monads::Failure[ _, message ]
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
-        end
-        format.html { redirect_to trades_path, alert: message }
-      end
+      respond_with_alert(message, fallback: trades_path)
     end
   end
 
@@ -158,24 +121,36 @@ class TradesController < AuthenticatedController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.remove(trade),
-            turbo_stream.prepend("flash_messages", partial: FLASH_PARTIAL,
-              locals: { type: "notice", message: "Movimiento eliminado." })
+            flash_stream("notice", "Movimiento eliminado.")
           ]
         end
         format.html { redirect_to trades_path, notice: "Movimiento eliminado." }
       end
     in Dry::Monads::Failure[ _, message ]
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.prepend("flash_messages",
-            partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
-        end
-        format.html { redirect_to trades_path, alert: message }
-      end
+      respond_with_alert(message, fallback: trades_path)
     end
   end
 
   private
+
+  # Six call sites differed only in the message and the non-Turbo fallback.
+  def respond_with_alert(message, fallback:)
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: flash_stream("alert", message) }
+      format.html { redirect_to fallback, alert: message }
+    end
+  end
+
+  def flash_stream(type, message)
+    turbo_stream.prepend("flash_messages", partial: FLASH_PARTIAL,
+                         locals: { type: type, message: message })
+  end
+
+  def find_trade_or_redirect
+    trade = current_user.portfolio&.trades&.find_by(id: params[:id])
+    redirect_to trades_path, alert: "Movimiento no encontrado." if trade.nil?
+    trade
+  end
 
   def trade_notice(trade)
     "#{trade.buy? ? "Compra" : "Venta"} registrada: #{trade.shares} títulos de #{trade.asset.symbol}"

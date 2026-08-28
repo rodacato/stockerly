@@ -166,7 +166,7 @@ are shipped.
 
 Findings that belong to no single flow. Fixing them once fixes them everywhere.
 
-### X1 🔴 The 2.0 palette measurement has a blind spot, and eight off-contract tokens live in it
+### X1 🟡 Off-contract tokens — six of the eight are gone, and the rest die with ACT-2
 
 The 2.0 measurement above asks whether `slate-*`/`gray-*` survive. They do not — that column is
 genuinely zero. But the `@theme` block in `app/assets/tailwind/application.css` defines **eight
@@ -180,11 +180,22 @@ colour tokens the kit's 51-token contract does not have**, and six of them are i
 | `secondary` | 1 | no |
 | `accent` | 0 | no — **dead** |
 
-A screen can score 0 on the slate column and still be painted in pre-2.0 semantics. Either promote
-these into the kit or migrate the 21 uses and delete them; today the design contract and the code
-contract are two different lists and only one of them is enforced.
+A screen can score 0 on the slate column and still be painted in pre-2.0 semantics.
 
-### X2 🔴 `bg-primary-bg` is not a token — two elements render with no background
+**Partly paid 2026-08-28.** Every one of these is an exact alias of a contract token — `success` and
+`accent` are `positive` to the hex, `error` is `negative`, `secondary` is `fg-default`,
+`background-light`/`background-dark` are the two halves of `bg-canvas` — so migrating is a rename,
+not a re-colour. What decided the scope was **where they live**: 16 of the 22 source uses are in
+`positions/_positions_table.html.erb`, the file ACT-2 deletes.
+
+- **Migrated (6 uses, 4 files):** `_public_navbar`, `_donut_chart`, `layouts/application` and
+  `_asset_badge`. `layouts/application`'s `bg-background-light dark:bg-background-dark` collapses to
+  a bare `bg-bg-canvas`, which already carries both halves.
+- **`--color-accent` deleted** from the `@theme` — 0 uses, in either theme.
+- **Left standing:** the declarations `_positions_table` still needs. They go with the file, not
+  before it. Migrating them now would be re-writing 16 lines scheduled for deletion.
+
+### X2 ✅ `bg-primary-bg` was not a token — fixed 2026-08-28
 
 `--color-primary-bg` does not exist. Tailwind 4 generates nothing for a class whose variable is
 undefined, so the avatar circle in the Ajustes hub and the icon circle on the password-reset-sent
@@ -193,7 +204,7 @@ screen have **no fill at all**.
 - [`settings/show.html.erb:5`](../app/views/settings/show.html.erb#L5)
 - [`password_resets/sent.html.erb:9`](../app/views/password_resets/sent.html.erb#L9)
 
-The nearest real token is `primary-muted`. This is a one-word fix in two files and it is listed
+**Fixed:** both now read `bg-primary-muted`, the token the pair was reaching for. It was listed
 first because it is invisible in review and visible on screen.
 
 ### X3 🟡 Four screens are drawn and have no code at all
@@ -239,14 +250,15 @@ adds inherits the wrong default.
 The third row is there because it is the precedent: the same bug was found and fixed in `discover`
 and never swept for elsewhere.
 
-### X6 ⚪ `PortfolioChartHelper#portfolio_chart_data` is dead code with a passing spec
+### X6 ✅ `PortfolioChartHelper` deleted 2026-08-28 — dead code with a passing spec
 
 [`portfolio_chart_helper.rb`](../app/helpers/portfolio_chart_helper.rb) is one method, **zero
 render sites**. It hand-computes SVG polyline coordinates and hardcodes `#10b981` / `#ef4444` — the
 pre-2.0 green and red, as raw hex. D2 replaced it with `lightweight-charts`.
 
-`spec/helpers/portfolio_chart_helper_spec.rb` has four examples pinning it, so the suite stays green
-over a file nothing renders. Delete both.
+`spec/helpers/portfolio_chart_helper_spec.rb` had four examples pinning it, so the suite stayed green
+over a file nothing rendered. **Both deleted.** The suite went 2691 → 2687 examples and line coverage
+*rose* 95.37% → 95.50%, which is what removing tested-but-unreachable code looks like.
 
 ### X7 ⚪ Registry hygiene — what the retired audit's last group was really about
 
@@ -688,13 +700,13 @@ foot *"¿No está en la lista? Da de alta el activo…"*. `assets#search_ticker`
 exist; whether the results carry the tier state was not read line by line in this pass. Listed as
 **unverified**, not as a gap.
 
-### ACT-7 ⚪ The row-subtitle clip bug is half-fixed, and the unfixed half is the one used everywhere
+### ACT-7 ✅ The row-subtitle clip — the other half fixed 2026-08-28
 
-D46 recorded it. `assets/_tracked_row.html.erb` wraps correctly.
-[`components/_asset_row.html.erb:15`](../app/views/components/_asset_row.html.erb#L15) still carries
-`class="truncate …"` — and that is the row the Panorama Radar, Holdings and Watchlist all render.
-The fragility was fixed on the one screen that reported it and left on the three that share the
-component.
+D46 recorded it. `assets/_tracked_row.html.erb` wrapped correctly; `components/_asset_row.html.erb`
+still truncated — and that is the row the Panorama Radar, Holdings and Watchlist all render, so the
+fragility had been fixed on the one screen that reported it and left on the three that share the
+component. **`truncate` is gone**; the subtitle wraps and the row grows, which is what D46 decided
+for its twin.
 
 ### ACT-8 ⚪ `assets.pen` draws advice copy that ADR-0001 forbids — 11 instances
 
@@ -867,7 +879,7 @@ drew a link before its destination existed.
 Unlike CKP-1, this one has no D42 behind it. It is either a fourth screen with its own card, or the
 artboard drops the arrow. **Cheapest honest answer: drop the arrow.**
 
-### DSC-2 ⚪ A stale comment names a block the product deleted
+### DSC-2 ✅ The stale comment — rewritten 2026-08-28
 
 [`discover/show.html.erb:13`](../app/views/discover/show.html.erb#L13) reads *"Olas, reportes and
 titulares all read Alpaca (D31)"*. *Reportes* was dropped from the product on 2026-08-27, and the
@@ -954,7 +966,7 @@ None of these is a decision. All ten are the record catching up to something alr
 
 Ordered by what they cost to leave.
 
-### TD1 — `trades_controller.rb` repeats one 8-line failure block six times
+### TD1 ✅ — fixed 2026-08-28
 
 [`trades_controller.rb`](../app/controllers/trades_controller.rb) (227 lines, the largest controller
 in the app) carries this shape **six times**, near-verbatim, in `create`, `update` and `destroy`:
@@ -969,8 +981,14 @@ respond_to do |format|
 end
 ```
 
-One private `render_failure(message, fallback:)` collapses all six. `edit` and `confirm_destroy`
-additionally duplicate the same find-or-redirect preamble.
+**Fixed.** `respond_with_alert(message, fallback:)` collapses all six, `flash_stream(type, message)`
+carries the fragment the success paths also built by hand, and `find_trade_or_redirect` absorbs the
+preamble `edit` and `confirm_destroy` shared. The controller went **227 → 202 lines** with no
+behaviour change; the catch-all in `create` keeps its plain redirect, because routing it through the
+helper would start answering Turbo requests with a stream that action never sent.
+
+**Done now rather than with ACT-2 on purpose:** D60 deletes `trades#index` and the filter methods,
+not `create` / `update` / `destroy`, which is where all six blocks live.
 
 ### TD2 — Six user-facing strings hardcoded in `trades_controller`, four more in `positions_controller`
 
@@ -981,33 +999,40 @@ additionally duplicate the same find-or-redirect preamble.
 ADR-011 puts controller error strings on i18n. `sessions_controller` already does it
 (`t("auth.flash.…")`), so the pattern is established and these two controllers are the holdouts.
 
-### TD3 — `trades#index` builds its own scopes; every other index delegates to a use case
+**Split 2026-08-28, and neither half was done.** `positions_controller`'s four strings go with
+ACT-2's rebuild, so writing keys for them now is work for a screen being replaced.
+`trades_controller`'s six survive D60 and are genuinely owed — they were kept out of this batch so it
+stayed a refactor with no copy changes, which is what let the suite prove it.
+
+### TD3 ⏸ — deferred to ACT-2, deliberately
 
 Filter parsing, `filter_side`, `filter_currency`, the year `pluck`, the 50-row cap and the two
 counts all live in the controller, reading `current_user.portfolio.trades` directly. `positions`,
 `alerts`, `assets`, `market`, `dashboard` and `portfolios` all call a `UseCase` or a `Queries::*`.
 This is the one that did not.
 
-### TD4 — `positions#update` writes through the controller with no use case
+**Not fixed, and that is the call:** D60 deletes `trades#index` and these exact methods with it.
+Extracting a query object for code scheduled for deletion is the waste this tracker exists to
+name.
+
+### TD4 ⏸ — deferred to ACT-2, and it is a product question first
 
 `position.update(notes:, labels:)` plus a `parse_labels` that splits, strips, dedups and caps at 10
-— domain rules in a controller private method. Compounded by ACT-2: neither field is drawn anywhere.
+— domain rules in a controller private method.
+
+**Deferred, because the refactor is the second question.** Neither `notes` nor `labels` is drawn in
+any artboard, so whether they survive at all is part of ACT-2's rebuild. Extracting a use case for
+two fields that may not exist next week is work done twice.
 
 ### TD5 — `market_controller#show`
 
 See CKP-7. 21 assignments, three inline AR reads, a job enqueued from a GET.
 
-### TD6 — Dead code with a green spec
+### TD6 ✅ — done. See X6.
 
-See X6. `PortfolioChartHelper` + its four examples.
+### TD7 🟡 — partly done. See X1: 6 of 22 uses migrated, `accent` deleted, 16 left in the file ACT-2 removes.
 
-### TD7 — Off-contract tokens
-
-See X1. 21 uses of six tokens the design system does not define, plus one defined and never used.
-
-### TD8 — Two undefined utility classes rendering nothing
-
-See X2.
+### TD8 ✅ — done. See X2.
 
 ---
 
@@ -1061,7 +1086,14 @@ reads as a record instead of a snapshot.
 
 ## Free wins — no decision, no card
 
-X2 · X5 · X6 · TD1 · TD2 · DSC-2 · AJU-4 · AJU-5 · ALR-3 · ONB-4 · ONB-5 · X4 · ACT-7 · CKP-6
+**Paid 2026-08-28:** X2 · X6 (=TD6) · TD1 · TD8 · DSC-2 · ACT-7 · X1/TD7 in part.
+
+**Still open, all canvas except one:** X5 · X4 · AJU-4 · AJU-5 · ALR-3 · ONB-4 · ONB-5 · CKP-6 are
+`.pen` edits — they need Adrian at the canvas to save. TD2's `trades_controller` half is the only
+code left on this line.
+
+**Deliberately not paid:** TD3 and TD4 refactor code D60 and ACT-2 delete. Doing them now is work
+done twice, and saying so is cheaper than doing it.
 
 **One of them is worth doing before the rest, because it is the only item that stops an error from
 recurring:** D53's third fix — scripting the `DECISIONS.md` header recount. The header has been

@@ -22,7 +22,7 @@
    elsif asset.asset_type_fixed_income?
      "bg-teal-600 text-white"
    else
-     "bg-secondary text-fg-inverse"
+     "bg-fg-default text-fg-inverse"
    end %>
 <div class="relative inline-flex shrink-0">
   <% if asset.logo_url.present? %>
@@ -39,7 +39,7 @@
     </div>
   <% end %>
   <% unless market_open.nil? %>
-    <span class="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-bg-surface <%= market_open ? 'bg-success' : 'bg-border-strong' %>"
+    <span class="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-bg-surface <%= market_open ? 'bg-positive' : 'bg-border-strong' %>"
           title="<%= market_open ? 'Market open' : 'Market closed' %>"></span>
   <% end %>
 </div>

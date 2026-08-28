@@ -62,7 +62,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="font-sans bg-background-light dark:bg-background-dark text-fg-default antialiased">
+  <body class="font-sans bg-bg-canvas text-fg-default antialiased">
     <%= content_for?(:body) ? yield(:body) : yield %>
   </body>
 </html>

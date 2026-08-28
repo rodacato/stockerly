@@ -56,7 +56,6 @@
      view sweep this PR. Migration to the canonical names happens
      opportunistically in subsequent S11 design completions. */
   --color-secondary:         #0F172A;
-  --color-accent:            #10B981;
   --color-background-light:  #FAFAF7;
   --color-background-dark:   #1A1B23;
 
@@ -141,7 +140,6 @@
     --color-error-fg:          #FB7185;
 
     --color-secondary:         #F8FAFC;
-    --color-accent:            #34D399;
     --color-background-light:  #1A1B23;
     --color-background-dark:   #1A1B23;
 

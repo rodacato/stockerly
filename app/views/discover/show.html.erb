@@ -10,9 +10,10 @@
     <p class="text-fg-subtle"><%= @has_world_data ? t(".descripcion") : t(".sin_datos") %></p>
   </div>
 
-  <%# Olas, reportes and titulares all read Alpaca (D31). Until it is connected
-      the screen says which block needs what, rather than showing four empty
-      cards that look broken. %>
+  <%# Olas and titulares read Alpaca (D31); the Calendario needs no credential.
+      Until Alpaca is connected the screen says which block needs what, rather
+      than showing empty cards that look broken. Reportes was dropped from the
+      product (D47), not left waiting. %>
   <% unless @has_world_data %>
     <%# The artboard sets the body copy in primary over primary-muted, which
         measures 3.68:1 in light and 4.22:1 in dark — under the AA floor for
