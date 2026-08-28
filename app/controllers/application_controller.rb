@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
 
   before_action :redirect_to_setup
   before_action :check_maintenance_mode
-  before_action :set_sentry_context
 
   def append_info_to_payload(payload)
     super
@@ -35,10 +34,6 @@ class ApplicationController < ActionController::Base
     return if controller_path == "rails/health" || controller_name == "health"
 
     render "shared/maintenance", layout: "public", status: :service_unavailable
-  end
-
-  def set_sentry_context
-    Sentry.set_user(id: current_user&.id, email: current_user&.email)
   end
 
   def current_user

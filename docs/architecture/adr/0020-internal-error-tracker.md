@@ -78,10 +78,25 @@ email or push alerting per exception, source maps, release tracking, and anythin
 re-implements a hosted tracker. The job is *"I see a 500, I want the class, the line and the
 request that caused it"*. Everything past that needs its own trigger.
 
-**Sentry is not touched by this ADR.** Retiring it changes `deploy.yml`, the GitHub Actions release
-step and two gems, and it should be decided on evidence about whether the maintainer ever opens it —
-not folded into the change that makes it redundant. Until then both run, and the double write is
-accepted.
+**Sentry was to be left alone by this ADR — and was retired the same day.** The original text
+deferred it: retiring it changes `deploy.yml`, the Actions release step, `.kamal/secrets` and two
+gems, and the call belonged with evidence about whether the maintainer ever opens it. Adrian
+answered it directly on 2026-08-28, once the replacement existed: *"podríamos quitar la lógica del
+error tracker de vendor"*. That is the evidence — the owner is the only reader Sentry had, and he
+does not want it. So the removal ships with the tracker rather than behind it:
+
+- `sentry-ruby` and `sentry-rails` leave the `Gemfile`; `config/initializers/sentry.rb` is deleted.
+- `ApplicationController#set_sentry_context` goes with them.
+- `CheckSyncHealthJob` loses its `Sentry.capture_message` limb and keeps the two channels that
+  already reached the owner — the `health` row in Registros and the in-app notification. Its specs
+  now assert against those rows instead of against a mock, which makes them test the alert rather
+  than the reporting call.
+- `SENTRY_*` leaves `config/deploy.yml`, `.kamal/secrets`, the deploy workflow (including the
+  release step), `.env.example` and the runbook — all three of the places a Kamal secret lives, so
+  none is left resolving to an empty string.
+
+**There is no double write.** Shipping both would have meant a window where an instance reports
+twice and the runbook has to explain which one to read.
 
 ## Consequences
 
@@ -100,5 +115,9 @@ accepted.
   failure and `docs/ops/deploy.md` says so. Pretending otherwise would be worse than the gap.
 - **`developer_mode` starts with exactly one consumer.** Adding another is incremental and needs no
   ADR — unless it exposes instance internals outside the admin session, which boundary 5 forbids.
+- **One reader, not two.** Retiring Sentry in the same change means the runbook, `.env.example` and
+  the deploy workflow describe a single error path. The cost is that a self-hoster who *wants* a
+  hosted tracker now adds it back themselves, which is the right default under ADR-019: the vendor
+  is opt-in from zero rather than opt-out from wired-in.
 - **`SystemLog` keeps its meaning.** The pressure to make it the one log table goes away, which is
   the second-order win: the eight `Log*` handlers stay about scheduled work.

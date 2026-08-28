@@ -1,13 +1,11 @@
 # Hourly observability sweep that turns silent sync failures into a notice the
-# owner actually receives. Sentry serves whoever wrote the code; on a
-# self-hosted single-user instance that is a different person from the one whose
-# data went stale, and only one of them was being told (#328).
+# owner actually receives (#328).
 #
 # For each critical sync task, we look at SystemLog entries in the last 25 hours
 # (24h + 1h slack on edges). If we see errors AND no successes in that window,
-# we treat the sync as silently failing and fire a single Sentry warning per
-# affected task. Recent successes "cure" prior errors — a sync that hiccupped
-# but recovered is healthy.
+# we treat the sync as silently failing and raise a single alert per affected
+# task. Recent successes "cure" prior errors — a sync that hiccupped but
+# recovered is healthy.
 #
 # Dedup: Solid Cache (Rails.cache) keyed by task name, 6h TTL. Two consecutive
 # hourly runs against the same stuck sync produce only one alert.
@@ -77,23 +75,11 @@ class CheckSyncHealthJob < ApplicationJob
     alert(task_name, last_error: last_error, last_success: last_success)
   end
 
-  # Three readers, one dedup. Sentry is the maintainer's, the SystemLog row is
-  # the record Registros can show, and the notification is the only one that
-  # goes looking for the owner instead of waiting to be looked at.
+  # Two readers, one dedup. The SystemLog row is the record Registros can show,
+  # and the notification is the only one that goes looking for the owner
+  # instead of waiting to be looked at.
   def alert(task_name, last_error:, last_success:)
     return if recently_alerted?(task_name)
-
-    Sentry.capture_message(
-      "Sync failing: #{task_name}",
-      level: :warning,
-      extra: {
-        task_name: task_name,
-        last_error_at: last_error.created_at,
-        last_error_message: last_error.error_message,
-        last_success_at: last_success&.created_at,
-        lookback_window: LOOKBACK_WINDOW.inspect
-      }
-    )
 
     record(task_name, last_error: last_error, last_success: last_success)
     notify_owner(task_name, last_error: last_error)

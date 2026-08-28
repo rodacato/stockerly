@@ -497,13 +497,6 @@ GEM
       tty-which (~> 0.5.0)
       virtus (~> 2.0)
     securerandom (0.4.1)
-    sentry-rails (6.7.0)
-      railties (>= 5.2.0)
-      sentry-ruby (~> 6.7.0)
-    sentry-ruby (6.7.0)
-      bigdecimal
-      concurrent-ruby (~> 1.0, >= 1.0.2)
-      logger
     sexp_processor (4.17.5)
     simplecov (1.1.1)
     solid_cable (4.0.2)
@@ -647,8 +640,6 @@ DEPENDENCIES
   rspec-rails
   rubocop-rails-omakase
   rubycritic
-  sentry-rails
-  sentry-ruby
   simplecov
   solid_cable
   solid_cache
