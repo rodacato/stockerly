@@ -28,7 +28,7 @@ _Listing verified against the directory 2026-08-27._
 | Path | What it is |
 |---|---|
 | `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Currently **0.9.0, 20 components** |
-| `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed |
+| `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed, plus the live **Open kit gaps** list |
 | `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
 | `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 0.9.0 since 2026-08-27** |
 | `brand/` | The exported identity assets the repo consumes: `glyph.svg`, `wordmark.svg`, `wordmark.png` |
@@ -46,6 +46,13 @@ One `.pen` per domain, derived from the app's routes (`config/routes.rb`), not i
 **re-skins the screens that already exist in code** with the new identity; the code revamp to make
 the app match is tracked in [CODE_CHANGES.md](CODE_CHANGES.md). A flow earns its own file at ~3+
 screens; smaller ones may merge into a neighbor.
+
+> **The kit 0.8.0 → 0.9.0 migration closed 2026-08-27.** All ten `.pen` files are on the kit —
+> `ui-kit`, `alerts`, `settings`, `onboarding` and `brand` at **0.9.0**, the rest at **0.8.1**. The
+> split is not drift: 0.8.1 was a token-and-treatment patch every consumer took, 0.9.0 added
+> `HeaderBar` and moved only the flows that vendor it. Divergence is zero, verified by comparing
+> **values**, not names. `MIGRATION.md` tracked that work and was deleted on close, per its own
+> first line — the durable parts are here, in `ui-kit.CHANGELOG.md`'s gap list, and in D53/D57/D58/D59.
 
 > **Status below is the `.pen` file's, not the ERB's.** How closely the code matches each flow
 > is measured in [FIDELITY_AUDIT.md](FIDELITY_AUDIT.md) — read that before taking **done · in
@@ -125,6 +132,59 @@ The hub `../redesign/` (gitignored, local) holds the thinking this design serves
 Core/shared components → the kit. Feature-local → the flow. Flows **vendor** the kit at a pinned
 `kit-version-source` (Pencil can't cross-reference files); bumps follow the CHANGELOG rules.
 Being behind is fine; **diverging is not** — install every token in every flow.
+
+## Working a `.pen` — what this migration paid to learn
+
+Operating notes, not preferences. Each cost a mistake.
+
+- **A `.pen` write reaches disk with a LAG, and Pencil does not auto-save.** `git status` showing
+  *modified* proves that *something* landed, not that everything did — one commit shipped a stale
+  brief that way. **Verify by grepping for the specific content you wrote**, and when the grep count
+  is ambiguous, confirm with a `Get` query: prose in a brief matches the same strings as a live
+  artboard.
+- **Reconcile against the kit's list, never against the diff — and compare values, not names.**
+  Installing only the new tokens is how `auth.pen` and `onboarding.pen` went four minor versions
+  without `scrim`. Comparing membership but not values is how `brand.pen` diverged on `info-fg`
+  through a sweep designed to catch exactly that. Membership and equality are two checks.
+- **Measure before replacing.** Vendoring looks mechanical and is not: three `NavRow` copies were
+  drift and a fourth was a deliberate accent; two `SwitchRow` rows were drift and a third was a real
+  OFF state; `alerts`' back-header looked like `cockpit`'s and is a different component. Replacing
+  all of them would have erased real hierarchy while calling it consistency.
+- **`Get` does not descend into instances without `resolveInstances: true`.** An artboard can change
+  visually without any of its own nodes changing, because the change lives in a component master —
+  the first query for *which artboards to re-export* missed four that way.
+- **Measure `ctx.bounds` in a different `execute` than the one that writes.** In the same call it
+  returns pre-reflow positions and reports clipping that is not real.
+- **Verify the artboard names before writing.** Node ids repeat across flow files because the flows
+  were created by duplicating each other; an id never proves which file you are in.
+- **`Export` resolves its path from the repo root, not from the `.pen`,** and names files by node id.
+  An export nobody renames survives as a file nobody can identify — one did, for weeks.
+- **A claim about code carries `file:line`.** A handoff item cost four tool calls to disprove because
+  it had neither. A decision is only as current as the ADR it cites: read the chain forward
+  (ADR-001 → 013 → 014) before executing anything that rests on the first one.
+- **After a merge, verify master by content, not by SHA.** A squash or rebase merge rewrites SHAs, so
+  `git branch --contains` proves nothing; #366 merged only its first commit and nobody noticed until
+  the next session read the file.
+- **One person per `.pen` at a time governs WRITING**, because JSON merges badly. Reading a second
+  file to check a claim costs nothing — and not reading it is how a false warning survived months.
+
+### Measure the file before you trust a document about it
+
+Any number in `design/*.md` is a dated observation. Run this first; it is one call and it answers
+what four hand-maintained columns used to:
+
+```js
+const v = GetVariables().variables;
+Print("kit:", v["kit-version-source"]?.value, "| vars:", Object.keys(v).length,
+      "| chart-1:", !!v["chart-1"], "| info-fg:", JSON.stringify(v["info-fg"]?.value));
+Get((n, c) => { if (c.depth > 0) { c.skipChildren(); return undefined; }
+  return Print(n.reusable ? "COMPONENT" : "artboard", "|", n.name, "|", n.id, "|",
+               Math.round(c.bounds.width) + "x" + Math.round(c.bounds.height)); });
+Get(n => n.type === "frame" && !n.reusable &&
+     ["TopBar","BottomNav","TopBarDesktop","SidebarNav","SwitchRow","Header","HeaderBar"].includes(n.name) &&
+     Print("LOCAL COPY |", n.name, "|", n.id));
+Get((n, c) => c.problems && Print("LAYOUT |", n.id, n.name || n.type, "|", c.problems));
+```
 
 ## Team workflow
 

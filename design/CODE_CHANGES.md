@@ -285,11 +285,15 @@ stayed pre-2.0.
   `/dashboard` by slice 3.
 
 - Measure before landing: `grep -rn "watchlist" app/views | wc -l` and `grep -rn "Tus posiciones" app/views`
-  — the second currently returns [`app/views/dashboard/_watchlist_table.html.erb`](../app/views/dashboard/_watchlist_table.html.erb),
-  which titles the **watchlist** as positions (the 🐞 in D9).
+  — the second **returned** `app/views/dashboard/_watchlist_table.html.erb`, which titled the
+  **watchlist** as positions (the 🐞 in D9). *Past tense since 2026-08-27: the file went with the
+  dashboard rewrite, and the word "currently" plus a live link to a deleted path was the one real
+  broken cross-reference in 248 KB of `design/*.md`.*
 - Split the surface the way the design does: one `Activos` route with a segmented control —
-  `Cartera` reads `portfolio.open_positions`, `Sigo` reads `watchlist_items`. Never one merged list.
-- Third tier `Rastreados` = `Asset.syncing`, its own screen (not a peer tab). It absorbs
+  `Holdings` reads `portfolio.open_positions`, `Watchlist` reads `watchlist_items`. Never one merged
+  list. *(Named `Cartera` / `Sigo` when this was written; D48 renamed the ladder and §13 landed the
+  tab string.)*
+- Third tier `Tracked` = `Asset.syncing`, its own screen (not a peer tab). It absorbs
   `/admin/assets` — same list, same `toggle_status` action, minus the admin costume
   (D5 killed that framing for a single-user instance; D34 finished the absorption and deleted the
   screen). Surface the priority ladder honestly: the
