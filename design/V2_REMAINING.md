@@ -176,15 +176,17 @@ grep -oE '^### [^ ]+ [✅🔴🟡⚪]' design/V2_REMAINING.md | awk '{print $NF}
 
 | | Findings | |
 |---|---:|---|
-| ✅ closed | **20** | shipped or measured away |
+| ✅ closed | **22** | shipped or measured away |
 | 🔴 open | **4** | ACT-1 · CKP-1 · ALR-1 · AJU-1 |
 | 🟡 open | **15** | a real gap inside a working screen |
-| ⚪ open | **13** | debt and hygiene, mostly `.pen` edits |
+| ⚪ open | **11** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
 
 **52 headings carry a glyph and 54 findings exist.** It opened at 53 with
 [#386](https://github.com/rodacato/stockerly/pull/386); `KIT-5` is the one added since, and it came
-out of building `KIT-3`. The first command anchors on the finding ID on purpose — a bare
+out of building `KIT-3`. Two moved to ✅ on 2026-08-28 without a line of code: `DSC-3` (D56 measured
+away) and `KIT-5` (answered by a design call) — closing by measurement is the cheapest way this
+list shrinks. The first command anchors on the finding ID on purpose — a bare
 `grep -cE '^### '` also counts the one section heading that is not a finding, which is how the
 previous version of this block printed a command that did not reproduce its own number. The two outside the tally are `TD2` (hardcoded controller strings, a real
 finding of its own) and `TD5` (a pointer to `CKP-7`, not an independent one). **Assigning them a
@@ -413,18 +415,26 @@ does not find these, because a screen can be faithful and still be built out of 
 | `MovementItem` | `trades/_trade_row` | 🟡 **KIT-4** — exists, but as a `<tr>` |
 | `HeaderBar` | `components/_header_bar` | ✅ — its `Accion` slot is **KIT-5** |
 
-### KIT-1 🟡 The four primitives were never extracted, and the inline counts went up
+### KIT-1 🟡 The four primitives were never extracted — un-gated by D61, which picked the shape
 
 `Card`, `Field`, `ButtonPrimary` and `ButtonSecondary` were the bet: the four the translation would
 pay for itself on, or not. **It did not.** Every slice shipped without them, and
-`bg-bg-surface` went from **99 template lines to 121** over the redesign.
+`bg-bg-surface` went from **99 template lines to 124** over the redesign — 123 before `KIT-3` added the `HeaderBar`, which is a bar and not a card.
 
 That flips what the item is. Extracting them now is a change with **no slice behind it** — a
 refactor of shipped, working, on-contract markup. It is a decision, not leftover work, and the
-honest options are: extract them as their own pass, or accept the inline style as this codebase's
+honest options were: extract them as their own pass, or accept the inline style as this codebase's
 idiom and drop the four rows from the kit's expectations.
 
-**Nothing else in this file depends on the answer**, which is why it sits at 🟡 rather than blocking.
+**Answered 2026-08-28 by [D61](DECISIONS.md): extract, and `rounded-2xl` is the shape.** The
+measurement that settled it is why this stalled three times — of the 124 lines, **70 carry a border
+and a radius in one `class` attribute**, splitting **45 `rounded-2xl` · 23 `rounded-xl` · 2
+`rounded-lg`** (which sums to exactly 70), and only 26 of them share `p-5`. There is no *one* Card, which is
+what a partial taking a radius and a padding argument would have encoded. The majority shape wins,
+the `rounded-xl` sites are drift corrected as they are touched, and the six files putting
+`bg-bg-surface` on a `<header>`/`<nav>` are out of scope — those are bars.
+
+**Still nothing else in this file depends on it**, so it stays 🟡: unblocked, not urgent.
 
 ### KIT-2 ✅ `MarketCard` is built — the old inventory was measuring one directory
 
@@ -462,7 +472,7 @@ sr-only heading down, which is why the h1 count per breakpoint did not move.
 Not `TopBarDetail`: that one is cockpit-local, has a two-line ticker title and a bookmark, and was
 measured against `HeaderBar` and found to be a different component.
 
-### KIT-5 ⚪ The `HeaderBar` action slot is unbuilt, because the design has no desktop answer for it
+### KIT-5 ✅ The `HeaderBar` action slot — answered 2026-08-28: the body keeps it on desktop
 
 The kit's third slot — `Accion`, 44 tall, icon plus an optional label — was **deliberately not
 built** with KIT-3, and the reason is worth keeping rather than rediscovering.
@@ -476,9 +486,13 @@ saying where the action goes there. `settings.pen` drew desktop variants for the
 and Estado y mantenimiento; the two screens that have an action are the two it skipped.
 
 A slot with no consumer is not a partial worth shipping either, so the local was removed rather
-than left unused. **What this is waiting on is a design call, not code:** either the two desktop
-artboards, or a note that the action stays in the body on desktop and the bar carries it only on a
-phone.
+than left unused.
+
+**Answered 2026-08-28: the action stays in the body on desktop, and no artboards are owed.**
+Drawing `Registros · Desktop` and `Bandeja · Desktop` only to relocate a control that is already
+correctly placed buys nothing — the bar exists to give a phone a way back, and on desktop the
+sidebar already is the way back. The slot ships if and when a screen needs an action that has no
+home in its body.
 
 **One more thing the artboards owe.** `Bandeja` never overrode the master's placeholder label — it
 still reads `Acción` where the screen means *Marcar todas*. That is a `.pen` edit, and it belongs to
@@ -1036,7 +1050,7 @@ two briefs that record it disagree about which decision did it — `discover.pen
 the decision that dropped it was **D47**. `DECISIONS.md`'s D46 is the BMV `Tracked · Sin fuente`
 finding, so the brief is mis-citing by one.
 
-### DSC-3 ⚪ D56 should be closed as *not a defect* — Adrian's call, and it removes work
+### DSC-3 ✅ D56 closed as *not a defect* — decided 2026-08-28
 
 D56 is the open finding that says two pairs fall below AA and that fixing them ripples across the
 kit and the ERB. **Re-measured 2026-08-28 against the token values and the nodes themselves, both
