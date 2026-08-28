@@ -52,6 +52,12 @@
         number Mission Control shows accurately the moment you open it. %>
     <%= render "settings/nav_row", icon: "checklist", path: "/admin/jobs",
                title: t(".trabajos"), description: t(".trabajos_desc") %>
+    <%# ADR-020: only when the switch is on — the row is the developer surface,
+        not a permanent part of the hub. %>
+    <% if @developer_mode %>
+      <%= render "settings/nav_row", icon: "bug_report", path: admin_errors_path,
+                 title: t(".errores"), description: t(".errores_desc") %>
+    <% end %>
   </section>
 
   <section class="flex flex-col gap-3">

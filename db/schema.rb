@@ -187,6 +187,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_220000) do
     t.index ["report_date"], name: "index_earnings_events_on_report_date"
   end
 
+  create_table "error_events", force: :cascade do |t|
+    t.string "app_line"
+    t.jsonb "backtrace", default: [], null: false
+    t.datetime "created_at", null: false
+    t.string "exception_class", null: false
+    t.string "fingerprint", null: false
+    t.datetime "first_seen_at", null: false
+    t.string "job_class"
+    t.datetime "last_seen_at", null: false
+    t.text "message"
+    t.integer "occurrences", default: 1, null: false
+    t.string "reference"
+    t.string "request_method"
+    t.jsonb "request_params", default: {}, null: false
+    t.string "request_path"
+    t.string "source", default: "other", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fingerprint"], name: "index_error_events_on_fingerprint", unique: true
+    t.index ["last_seen_at"], name: "index_error_events_on_last_seen_at"
+    t.index ["reference"], name: "index_error_events_on_reference"
+  end
+
   create_table "fear_greed_readings", force: :cascade do |t|
     t.string "classification", null: false
     t.jsonb "component_data", default: {}

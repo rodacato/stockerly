@@ -1,6 +1,6 @@
 module Admin
   class SettingsController < BaseController
-    TOGGLE_KEYS = %w[maintenance_mode auto_sync_enabled email_notifications_enabled].freeze
+    TOGGLE_KEYS = %w[maintenance_mode auto_sync_enabled email_notifications_enabled developer_mode].freeze
 
     rate_limit to: 5, within: 1.minute, only: :trigger_data_source
 
@@ -10,6 +10,7 @@ module Admin
       @maintenance_mode            = enabled?(configs["maintenance_mode"])
       @auto_sync_enabled           = enabled?(configs["auto_sync_enabled"])
       @email_notifications_enabled = enabled?(configs["email_notifications_enabled"])
+      @developer_mode              = enabled?(configs["developer_mode"])
 
       @applied_at     = TOGGLE_KEYS.index_with { |key| configs[key]&.updated_at }
       @recent_changes = SiteConfigChange.recent.includes(:admin).limit(8)
@@ -60,6 +61,7 @@ module Admin
         environment: Rails.env,
         solid_queue: solid_queue_summary,
         cache_entries: HealthMetrics.cache_entries,
+        errors_last_24h: ErrorEvent.since(24.hours.ago).sum(:occurrences),
         # D31 gave Descubrir a kill criterion with a date. Reading it needs the
         # number on screen, not in a console.
         discover_weeks: MarketData::Discover::VisitLog.weeks_seen,

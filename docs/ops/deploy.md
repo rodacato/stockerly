@@ -392,3 +392,22 @@ ssh deploy@YOUR_SERVER_IP
 systemctl status cloudflared
 journalctl -u cloudflared -f
 ```
+
+**A page returned a 500 and you want to know why:**
+Turn on **Modo desarrollador** in Ajustes → Estado y mantenimiento, then open Ajustes → Errores
+(`/admin/errors`). Every unhandled exception from a request or a job is recorded there with its
+class, the failing application line, the full backtrace and the request that caused it, grouped so
+a bug that fired forty times is one entry. Entries are kept for 30 days and purged nightly
+(ADR-020).
+
+The switch controls the screen, not the recording: errors are captured whether it is on or off, so
+turning it on after the fact still shows what already happened.
+
+**The error screen is empty but you know something failed:**
+The tracker stores rows in PostgreSQL, so a failure that happens while the database is unreachable
+cannot be recorded — by construction, not by oversight. For that class of failure the fallback is
+the container log:
+```bash
+bin/kamal logs -f
+bin/kamal accessory details postgres
+```

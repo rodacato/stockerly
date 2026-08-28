@@ -1,6 +1,6 @@
 # ADR-020 — An internal error tracker, because a self-hoster's 500 is lost today
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-08-28
 - **Author:** Adrian Castillo
 - **Related:** [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md), [ADR-019](./0019-self-contained-by-default.md)
@@ -59,10 +59,10 @@ Seven boundaries, stated so they are not re-litigated per PR:
 3. **The subscriber never raises.** It rescues everything and gives up silently. A reporter that
    fails turns one broken request into two, and the second one is unreportable by construction.
 4. **Capture is always on; the surface is what the toggle gates.** `developer_mode`, a `SiteConfig`
-   flag alongside `maintenance_mode`, controls whether the diagnostic screen and the error
-   reference on the failure page are shown. It must not gate *capture*: an owner who has to enable
-   recording before an error is recorded has to reproduce the failure on purpose, which is exactly
-   today's problem with extra steps.
+   flag alongside `maintenance_mode`, controls whether `/admin/errors` opens and whether the hub
+   offers its row. It must not gate *capture*: an owner who has to enable recording before an error
+   is recorded has to reproduce the failure on purpose, which is exactly today's problem with extra
+   steps. Turning the switch on after a failure still shows what already happened.
 5. **`developer_mode` never touches `consider_all_requests_local`, and never renders a backtrace
    outside the admin session.** A public error page shows at most a short reference id. A
    database-backed switch that turns on backtraces in HTTP responses is a vulnerability with a
@@ -87,9 +87,14 @@ accepted.
 
 - **The capability stops depending on a signup.** After this, ADR-019's reviewer question is
   answered by the product for the diagnostic path.
-- **It needs an error-rendering route.** There is no `ErrorsController` and no `exceptions_app`
-  today — only static `public/500.html`. Surfacing a reference id on the failure page means adding
-  one, and that is roughly half the implementation.
+- **The failure page still shows nothing, deliberately.** The original plan surfaced a reference id
+  on the 500 page, which needs an `exceptions_app` and an `ErrorsController` where only static
+  `public/500.html` exists. Costed during implementation it came to duplicating 133 lines of
+  self-contained HTML and CSS, plus a rendering path that can itself fail and leave a blank page,
+  to display a UUID whose only use is disambiguating simultaneous errors — on a list already sorted
+  by last seen, for one user. Dropped as unpaid ceremony. The request id **is** captured and
+  searchable, so the screen half of the feature exists; what would reopen this is a real occasion
+  where the newest entry was ambiguous.
 - **A hole that is documented rather than fixed:** if PostgreSQL is unreachable, nothing is
   recorded, because the store is PostgreSQL. `kamal logs` remains the fallback for that class of
   failure and `docs/ops/deploy.md` says so. Pretending otherwise would be worse than the gap.

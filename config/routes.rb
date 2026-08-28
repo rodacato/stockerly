@@ -127,6 +127,9 @@ Rails.application.routes.draw do
     resources :logs, only: [ :index ] do
       collection { get :export_csv }
     end
+    # ADR-020: the instance's own error tracker, gated by the developer_mode
+    # switch rather than by a separate zone.
+    resources :errors, only: [ :index, :show, :destroy ]
     resource :settings, only: [ :show, :update ]
     # `refresh_fx_rates` used to be its own route; :fx_rates is a registered
     # source whose job_class is RefreshFxRatesJob, so the two collapse into one.
