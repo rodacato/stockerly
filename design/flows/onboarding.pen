@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "First-run journey for the self-hosted single-user instance.\n\nEntry: root → /setup (no account yet) → onboarding wizard (integrations → assets → complete) → /welcome on first authenticated visit.\n\nScreens: Setup · Integrations · Assets · Complete · Welcome.\n\nRules: single user — no 'admin account' framing (D1-onb: reframe to 'tu cuenta'). Wizard steps 1–3 skippable. Provider cards split keyed vs public (no key).\n\nStates: Setup error list · Integrations keyed+public · Assets pre-selects defaults · Complete shows counts.\n\nDesktop: Setup already had its split-panel (900 card = 420 brand + 480 form, the divergence D4 names). Integrations, Assets and Welcome now join it. Complete is NOT drawn — it inherits the wizard frame exactly, so a second artboard would only restate it.\n\nThe wizard reuses Setup's frame, which makes the desktop divergence real rather than decorative: the same 900 card, the Brand Panel carrying the promise, the step content on the right. Welcome sits outside that frame (it is post-wizard and has no Stepper): a 900 centered column where the Guide's three cards — registrar movimiento, watchlist, alerta — sit SIDE BY SIDE. On mobile they are 444pt of scroll; the closed beta's first failure was 'I don't know what to do', and three doors seen at once beat three doors discovered by scrolling.\n\nFindings (2026-08-24, panel C5/C7):\n⚠ The Brand Panel checklist mixes three wizard STEPS (conecta tus fuentes · elige los activos · lanza tu primer sync) with one CLAIM (100% libre y open source), and every item renders checked. In Setup that reads as a promise of what is coming. Reused in the wizard it reads as 'all done' while you are on step 1, which is why the Stepper stays in the Form Panel rather than being replaced by the checklist. Two elements now describe progress in the same view. Resolving it is a design call for Adrian: either the checklist gains state (and drops the claim to its own line), or it stays a promise and the Stepper remains the only progress indicator.\n⚠ Assets groups VOO (an S&P 500 equity ETF) and CETES (Mexican government debt) into one card labelled 'ETFS · RENTA FIJA MX' (C1 Lucía). The label already names two different things with a separator, and the rest of the product treats them as different all the way down: assets.pen's brief states CETES rows drop the sparkline and the semáforo because technical lights do not apply to fixed income. Onboarding is the only surface that puts them in the same box. Cheap fix, not applied here because it changes the screen's shape: either a fourth category, or keep three and stop implying they are one asset class.\n⚠ Coherence with auth.pen: Setup is a split-panel and Login is a plain centered card (420). They are the two doors into the same instance and they do not look alike. Flagged rather than fixed — auth.pen was closed before this file was opened, and the two files cannot be edited in one session.\n\nCopy: es-MX (source screens are English — D2-onb). kit-version-source 0.1.0.",
+          "content": "First-run journey for the self-hosted single-user instance.\n\nEntry: root → /setup (no account yet) → onboarding wizard (integraciones → activos → seguridad → listo) → /welcome on first authenticated visit.\n\nScreens: Setup · Integrations · Assets · Seguridad · Complete · Welcome. Setup carries no Stepper because it is BEFORE the wizard — it creates the account; the four numbered steps start after it.\n\nRules: single user — no 'admin account' framing (D1-onb: reframe to 'tu cuenta'). Wizard steps skippable. Provider cards split keyed vs public (no key).\n\n✅ D52 (2026-08-27): the wizard gained a fourth step, Seguridad, and the Stepper went 3 → 4 across all five instances. ADR-018 builds TOTP with recovery codes and D52 put the ask in BOTH the wizard and Ajustes: the wizard OFFERS and lets you skip, Ajustes is where it is turned on later.\n\n⚠ The step OFFERS; it does not enrol. The QR, the one-time recovery-code display and recovery-code entry are three artboards in flows/auth.pen, and redrawing them here would be two files owning one flow. This screen is a card and two buttons: Activar ahora, or Ahora no · lo activo desde Ajustes.\n\nIt is step 3 of 4, not step 1, and the position is the decision. Recovery codes are shown ONCE. Put enrolment before the reader has configured anything and the ten codes they must not skim arrive on the screen they are most likely to rush; put it after integrations and assets and the codes land next to a wizard they have already invested in. Skippable either way, so the cost of being wrong is a click.\n\n✅ VOO and CETES are SPLIT (2026-08-27), and this was not a design call — the code had already made it. This brief carried it as an open question: one card labelled 'ETFS · RENTA FIJA MX' put an S&P 500 equity ETF and Mexican government debt in the same box (C1 Lucía), and the fix was left unapplied 'because it changes the screen's shape'. Measured against config/locales/es-MX.yml: onboarding.categorias has FIVE entries and 'etfs' and 'fixed_income' are separate ones. The artboard was behind the code, the same shape D33 had in discover.pen. Now two cards, mobile and desktop.\n\n✅ The coherence flag against auth.pen is RESOLVED and was stale. This brief said 'Setup is a split-panel and Login is a plain centered card (420) … flagged rather than fixed — auth.pen was closed before this file was opened, and the two files cannot be edited in one session.' Measured: [Auth] / Login · Desktop is a 900 card = 420 Brand Panel + 480 Form Panel, the same split-panel as Setup. It was fixed in auth's own desktop pass and the note was never propagated back. The one-file-at-a-time rule was also over-read — it governs WRITING, because JSON merges badly; reading a second file to check a claim costs nothing.\n\n🐞 Fixed 2026-08-27: the Welcome ContextCard's Mark was 56×56 inside a 28×28 Glyph — twice its frame, spilling out. It was the file's one reported layout problem.\n\n⚠ STILL OPEN, and it is a design call. The Brand Panel checklist mixes three wizard STEPS (conecta tus fuentes · elige los activos · lanza tu primer sync) with one CLAIM (100% libre y open source), and every item renders checked. In Setup that reads as a promise of what is coming; reused in the wizard it reads as 'all done' while you are on step 1, which is why the Stepper stays in the Form Panel. Two elements describe progress in the same view. Either the checklist gains state and drops the claim to its own line, or it stays a promise and the Stepper remains the only progress indicator. Note the checklist also names THREE steps against a wizard that now has four.\n\nThe ledger asked to 'check for a third OptionCard → NavRow consumer'. There is no OptionCard in this file — the item had no subject here.\n\nDesktop: Setup already had its split-panel (900 card = 420 brand + 480 form, the divergence D4 names). Integrations, Assets and Welcome join it. Complete and Seguridad are NOT drawn on desktop — both inherit the wizard frame exactly, so a second artboard would only restate it. Welcome sits outside that frame (post-wizard, no Stepper): a 900 centered column where the Guide's three cards sit SIDE BY SIDE. On mobile they are 444pt of scroll; the closed beta's first failure was 'I don't know what to do', and three doors seen at once beat three doors discovered by scrolling.\n\nCopy: es-MX (source screens are English — D2-onb). kit-version-source 0.9.0 — the brief claimed 0.1.0 against a variable reading 0.7.0, which makes it the EIGHTH brief of eight found contradicting its own file. Not one escaped. That is what D53 is parked about.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -737,7 +737,7 @@
               "id": "zm21X",
               "name": "Step",
               "fill": "$fg-subtle",
-              "content": "Paso 1 de 3",
+              "content": "Paso 1 de 4",
               "fontFamily": "$font-mono",
               "fontSize": 12,
               "fontWeight": "normal"
@@ -747,7 +747,7 @@
               "id": "nLwuL",
               "name": "Pct",
               "fill": "$fg-subtle",
-              "content": "33%",
+              "content": "25%",
               "fontFamily": "$font-mono",
               "fontSize": 12,
               "fontWeight": "normal"
@@ -768,7 +768,7 @@
               "type": "frame",
               "id": "ePQce",
               "name": "Bar",
-              "width": 100,
+              "width": 80,
               "height": 6,
               "fill": "$primary",
               "cornerRadius": "$radius-sm"
@@ -809,7 +809,7 @@
               "width": "fill_container",
               "descendants": {
                 "ePQce": {
-                  "width": 100
+                  "width": 80
                 }
               }
             },
@@ -1226,13 +1226,13 @@
               "width": "fill_container",
               "descendants": {
                 "zm21X": {
-                  "content": "Paso 2 de 3"
+                  "content": "Paso 2 de 4"
                 },
                 "nLwuL": {
-                  "content": "66%"
+                  "content": "50%"
                 },
                 "ePQce": {
-                  "width": 210
+                  "width": 160
                 }
               }
             },
@@ -1670,7 +1670,7 @@
             {
               "type": "frame",
               "id": "gBjnE",
-              "name": "ETFS · RENTA FIJA MX",
+              "name": "ETFs",
               "width": "fill_container",
               "layout": "vertical",
               "gap": "$space-2",
@@ -1680,7 +1680,7 @@
                   "id": "YGFiM",
                   "name": "Cat",
                   "fill": "$fg-subtle",
-                  "content": "ETFS · RENTA FIJA MX",
+                  "content": "ETFS",
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
@@ -1765,10 +1765,31 @@
                       "fontWeight": "normal"
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cBB1Z",
+              "name": "Renta fija MX",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "BQBxh",
+                  "name": "Cat",
+                  "fill": "$fg-subtle",
+                  "content": "RENTA FIJA MX",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
                 },
                 {
                   "type": "frame",
-                  "id": "TmO33",
+                  "id": "JWD7H",
                   "name": "CETES",
                   "width": "fill_container",
                   "fill": "$bg-surface",
@@ -1781,7 +1802,7 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "iidRK",
+                      "id": "eTmnu",
                       "name": "Box",
                       "width": 20,
                       "height": 20,
@@ -1794,7 +1815,7 @@
                     },
                     {
                       "type": "frame",
-                      "id": "l4FdN",
+                      "id": "uPjCC",
                       "name": "Info",
                       "width": "fill_container",
                       "gap": "$space-2",
@@ -1802,7 +1823,7 @@
                       "children": [
                         {
                           "type": "text",
-                          "id": "ctgP2",
+                          "id": "VRN2Q",
                           "name": "Sym",
                           "fill": "$fg-default",
                           "content": "CETES",
@@ -1812,7 +1833,7 @@
                         },
                         {
                           "type": "text",
-                          "id": "AwvRV",
+                          "id": "AEQJP",
                           "name": "Nm",
                           "fill": "$fg-subtle",
                           "content": "Cetes 28 días",
@@ -1824,7 +1845,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "zm9L0",
+                      "id": "IymG8",
                       "name": "Ex",
                       "fill": "$fg-subtle",
                       "content": "BANXICO",
@@ -1922,7 +1943,7 @@
               "width": "fill_container",
               "descendants": {
                 "zm21X": {
-                  "content": "Paso 3 de 3"
+                  "content": "Paso 4 de 4"
                 },
                 "nLwuL": {
                   "content": "100%"
@@ -2355,8 +2376,8 @@
                         64
                       ],
                       "fill": "$primary",
-                      "width": 56,
-                      "height": 56
+                      "width": 28,
+                      "height": 28
                     }
                   ]
                 },
@@ -2950,7 +2971,7 @@
                   "width": "fill_container",
                   "descendants": {
                     "ePQce": {
-                      "width": 100
+                      "width": 80
                     }
                   }
                 },
@@ -3627,13 +3648,13 @@
                   "name": "Progress",
                   "descendants": {
                     "zm21X": {
-                      "content": "Paso 2 de 3"
+                      "content": "Paso 2 de 4"
                     },
                     "nLwuL": {
-                      "content": "66%"
+                      "content": "50%"
                     },
                     "ePQce": {
-                      "width": 210
+                      "width": 160
                     }
                   }
                 },
@@ -4071,7 +4092,7 @@
                 {
                   "type": "frame",
                   "id": "hIwHU",
-                  "name": "ETFS · RENTA FIJA MX",
+                  "name": "ETFs",
                   "width": "fill_container",
                   "layout": "vertical",
                   "gap": "$space-2",
@@ -4081,7 +4102,7 @@
                       "id": "ONzjR",
                       "name": "Cat",
                       "fill": "$fg-subtle",
-                      "content": "ETFS · RENTA FIJA MX",
+                      "content": "ETFS",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal",
@@ -4166,10 +4187,31 @@
                           "fontWeight": "normal"
                         }
                       ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zJFqK",
+                  "name": "Renta fija MX",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xW6YV",
+                      "name": "Cat",
+                      "fill": "$fg-subtle",
+                      "content": "RENTA FIJA MX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1
                     },
                     {
                       "type": "frame",
-                      "id": "lQkzo",
+                      "id": "jNS5M",
                       "name": "CETES",
                       "width": "fill_container",
                       "fill": "$bg-surface",
@@ -4182,7 +4224,7 @@
                       "children": [
                         {
                           "type": "frame",
-                          "id": "AyiBf",
+                          "id": "ZgaS5",
                           "name": "Box",
                           "width": 20,
                           "height": 20,
@@ -4195,7 +4237,7 @@
                         },
                         {
                           "type": "frame",
-                          "id": "I6lFE",
+                          "id": "a2NMw",
                           "name": "Info",
                           "width": "fill_container",
                           "gap": "$space-2",
@@ -4203,7 +4245,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "zEDfT",
+                              "id": "NrSaC",
                               "name": "Sym",
                               "fill": "$fg-default",
                               "content": "CETES",
@@ -4213,7 +4255,7 @@
                             },
                             {
                               "type": "text",
-                              "id": "N6PIDA",
+                              "id": "F8YN2Q",
                               "name": "Nm",
                               "fill": "$fg-subtle",
                               "content": "Cetes 28 días",
@@ -4225,7 +4267,7 @@
                         },
                         {
                           "type": "text",
-                          "id": "m6hl7u",
+                          "id": "fTzby",
                           "name": "Ex",
                           "fill": "$fg-subtle",
                           "content": "BANXICO",
@@ -4690,6 +4732,388 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "ewGdS",
+      "x": 3700,
+      "y": 0,
+      "name": "[Onboarding] / Seguridad / Default",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "y8pDN3",
+          "name": "Col",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-6",
+          "padding": [
+            36,
+            24
+          ],
+          "children": [
+            {
+              "id": "Uw1xb",
+              "type": "ref",
+              "ref": "NiYWI",
+              "name": "Progress",
+              "width": "fill_container",
+              "descendants": {
+                "zm21X": {
+                  "content": "Paso 3 de 4"
+                },
+                "nLwuL": {
+                  "content": "75%"
+                },
+                "ePQce": {
+                  "width": 240
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "ggsum",
+              "name": "Success",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "A8wg5",
+                  "name": "Ring",
+                  "width": 64,
+                  "height": 64,
+                  "fill": "$primary-muted",
+                  "cornerRadius": 32,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "jNNu3",
+                      "name": "Ck",
+                      "width": 32,
+                      "height": 32,
+                      "icon": "shield-check",
+                      "library": "lucide",
+                      "fill": "$primary-hover"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mxmRB",
+                  "name": "Title",
+                  "fill": "$fg-default",
+                  "content": "Protege tu cuenta",
+                  "fontFamily": "$font-display",
+                  "fontSize": 26,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "yTErB",
+                  "name": "Sub",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Nadie más puede recuperarte: esta instancia es tuya y no tiene mesa de ayuda.",
+                  "lineHeight": 1.45,
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "pw3DI",
+              "name": "Summary",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "U9sHJi",
+                  "name": "Un código de 6 dígitos de tu app de autenticación",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-card",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": "$space-4",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "HF3uW",
+                      "name": "IW",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$primary-muted",
+                      "cornerRadius": "$radius-md",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "qwjRO",
+                          "name": "Ic",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "shield-check",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rAig2",
+                      "name": "TC",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "DlLe2",
+                          "name": "Num",
+                          "fill": "$fg-default",
+                          "content": "TOTP",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "kbMov",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Un código de 6 dígitos de tu app de autenticación",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Iqg1v",
+                  "name": "Códigos de recuperación, de un solo uso, se muestran una vez",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-card",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": "$space-4",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x4uFMb",
+                      "name": "IW",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$positive-bg",
+                      "cornerRadius": "$radius-md",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "ELgbT",
+                          "name": "Ic",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "key-round",
+                          "library": "lucide",
+                          "fill": "$positive-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zbokg",
+                      "name": "TC",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "FKOYq",
+                          "name": "Num",
+                          "fill": "$fg-default",
+                          "content": "10",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZIHNu",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Códigos de recuperación, de un solo uso, se muestran una vez",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DmSRr",
+                  "name": "Puedes activarlo después desde Ajustes › Seguridad",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-card",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": "$space-4",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x6nq5",
+                      "name": "IW",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$warning-bg",
+                      "cornerRadius": "$radius-md",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "wGsCg",
+                          "name": "Ic",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "timer",
+                          "library": "lucide",
+                          "fill": "$warning-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "S2GR8y",
+                      "name": "TC",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "c7X9Kk",
+                          "name": "Num",
+                          "fill": "$fg-default",
+                          "content": "1 min",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "KWaIW",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Puedes activarlo después desde Ajustes › Seguridad",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RPFfH",
+              "name": "Actions",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "U0imr",
+                  "name": "Launch",
+                  "width": "fill_container",
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": "$space-2",
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wmZs7",
+                      "name": "LTxt",
+                      "fill": "$fg-inverse",
+                      "content": "Activar ahora",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "dJQin",
+                      "name": "LIc",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "shield-check",
+                      "library": "lucide",
+                      "fill": "$fg-inverse"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "g6eW9J",
+                  "name": "Alt",
+                  "fill": "$fg-subtle",
+                  "content": "Ahora no · lo activo desde Ajustes",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
@@ -4701,7 +5125,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.7.0"
+      "value": "0.9.0"
     },
     "font-display": {
       "type": "string",
@@ -5157,6 +5581,244 @@
         },
         {
           "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#38BDF8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#5CC8F5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-6": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#7C6CF0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#A78BFA",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-7": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F97316",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB923C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-8": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#06B6D4",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#22D3EE",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-neutral": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCD34D",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#A3E635",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#BEF264",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
           "theme": {
             "mode": "dark"
           }
