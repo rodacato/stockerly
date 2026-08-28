@@ -132,12 +132,20 @@ vanishes reads as a screen that was migrated.
 **Each section below is dated.** Take none of them as current past its own date — see *How to read
 the dates* at the top.
 
-### Auth — ✅ faithful
+### Auth — ✅ faithful for what exists, and four artboards now have no code
 
-_As of 2026-08-27._
+_As of 2026-08-27, re-measured after the ADR-018 pass._
 
 Four screens on tokens and i18n, sharing `_auth_header` and `_auth_field` so they cannot drift.
-`auth-2fa.png` stays an artboard on purpose (D23).
+The controller's three flashes were **not** on i18n despite §3c claiming the surface had landed —
+they are now `auth.flash.*`, which is what the rest of the app does.
+
+**`auth-2fa.png` no longer "stays an artboard on purpose (D23)".** D23 is reversed by
+[ADR-018](../docs/architecture/adr/0018-totp-with-recovery-codes.md): TOTP is being built, with
+recovery codes in the same scope. So the gap grew from one artboard to **four** — `2FA`,
+`TOTP · Alta`, `Códigos de recuperación` and `Código de recuperación` — and it is now a work order
+rather than a deliberate hold. Verified by grep: no `otp`, `two_factor` or `2fa` anywhere in `app/`
+or `config/routes.rb`. The order lives in [CODE_CHANGES.md](CODE_CHANGES.md) §14.
 
 ### Onboarding — ✅ faithful
 

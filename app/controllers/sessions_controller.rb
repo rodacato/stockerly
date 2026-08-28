@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
     in Dry::Monads::Success(user)
       start_session(user)
       EventBus.publish(Identity::Events::UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
-      redirect_to dashboard_path, notice: "¡Qué gusto verte de vuelta, #{user.full_name}!"
+      redirect_to dashboard_path, notice: t("auth.flash.bienvenida", nombre: user.full_name)
     in Dry::Monads::Failure[ :suspended, message ]
       publish_login_failed
       redirect_to login_path, alert: message
@@ -23,14 +23,14 @@ class SessionsController < ApplicationController
       flash.now[:alert] = message
       render :new, status: :unprocessable_content
     in Dry::Monads::Failure[ :validation, _ ]
-      flash.now[:alert] = "Correo o contraseña inválidos."
+      flash.now[:alert] = t("auth.flash.credenciales_invalidas")
       render :new, status: :unprocessable_content
     end
   end
 
   def destroy
     reset_session
-    redirect_to root_path, notice: "Sesión cerrada correctamente."
+    redirect_to root_path, notice: t("auth.flash.sesion_cerrada")
   end
 
   private
