@@ -5,7 +5,6 @@ module Identity
         attrs = yield validate(Contracts::LoginContract, params)
         user  = yield find_user(attrs[:email])
         _     = yield verify_password(user, attrs[:password])
-        _     = yield check_not_suspended(user)
 
         Success(user)
       end
@@ -19,10 +18,6 @@ module Identity
 
       def verify_password(user, password)
         user.authenticate(password) ? Success(true) : Failure([ :invalid_credentials, "Correo o contraseña inválidos." ])
-      end
-
-      def check_not_suspended(user)
-        user.suspended? ? Failure([ :suspended, "Tu cuenta ha sido suspendida." ]) : Success(true)
       end
     end
   end

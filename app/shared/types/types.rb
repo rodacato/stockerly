@@ -2,7 +2,6 @@ module Types
   include Dry.Types()
 
   UserRole         = Types::String.enum("user", "admin")
-  UserStatus       = Types::String.enum("active", "suspended")
   AssetType        = Types::String.enum("stock", "crypto", "index")
   SyncStatus       = Types::String.enum("active", "disabled")
   TradeSide        = Types::String.enum("buy", "sell")

@@ -22,8 +22,6 @@ if Rails.env.development?
     u.password = "password123"
     u.password_confirmation = "password123"
     u.role = :user
-    u.is_verified = true
-    u.email_verified_at = Time.current
   end
 
   sarah = User.find_or_create_by!(email: "sarah.s@web3.io") do |u|
@@ -45,8 +43,6 @@ if Rails.env.development?
     u.password = "password123"
     u.password_confirmation = "password123"
     u.role = :user
-    u.is_verified = true
-    u.email_verified_at = Time.current
   end
 
   # --- Portfolios & AlertPreferences (created via event handlers in prod, manual in seeds) ---

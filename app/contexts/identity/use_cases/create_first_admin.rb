@@ -20,9 +20,7 @@ module Identity
           email: attrs[:email],
           password: attrs[:password],
           password_confirmation: attrs[:password_confirmation],
-          role: :admin,
-          is_verified: true,
-          email_verified_at: Time.current
+          role: :admin
         )
         user.save ? Success(user) : Failure([ :validation, user.errors.to_hash ])
       end

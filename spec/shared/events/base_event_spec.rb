@@ -36,12 +36,12 @@ RSpec.describe BaseEvent do
         attribute :data, Types::String
 
         def self.name
-          "Admin::UserSuspended"
+          "Admin::IntegrationConnected"
         end
       end
 
       event = namespaced_class.new(data: "test")
-      expect(event.event_name).to eq("admin.user_suspended")
+      expect(event.event_name).to eq("admin.integration_connected")
     end
   end
 

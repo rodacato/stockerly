@@ -6,7 +6,7 @@ require "rails_helper"
 RSpec.describe "Saving from the trade sheet", type: :system, js: true do
   let(:user) do
     create(:user, email: "sheet@test.com", password: "password123",
-                  preferred_currency: "MXN", onboarded_at: Time.current, email_verified_at: Time.current)
+                  preferred_currency: "MXN", onboarded_at: Time.current)
   end
 
   before do

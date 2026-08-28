@@ -3,7 +3,6 @@ class User < ApplicationRecord
 
   # --- Enums ---
   enum :role, { user: 0, admin: 1 }
-  enum :status, { active: 0, suspended: 1 }
 
   # --- Associations ---
   has_one  :portfolio,        dependent: :destroy
@@ -26,18 +25,10 @@ class User < ApplicationRecord
   validates :password, length: { minimum: 8 }, if: -> { new_record? || password_digest_changed? }
 
   # --- Scopes ---
-  scope :admins,           -> { where(role: :admin) }
-  scope :traders,          -> { where(role: :user) }
-  scope :not_suspended,    -> { where.not(status: :suspended) }
-  scope :email_verified,   -> { where.not(email_verified_at: nil) }
-  scope :email_unverified, -> { where(email_verified_at: nil) }
+  scope :admins, -> { where(role: :admin) }
 
   def onboarded?
     onboarded_at.present?
-  end
-
-  def email_verified?
-    email_verified_at.present?
   end
 
   # --- Callbacks ---

@@ -5,7 +5,7 @@ RSpec.describe "Portfolio tabs", type: :system do
     driven_by :rack_test
   end
 
-  let!(:user) { create(:user, email: "portfolio@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
+  let!(:user) { create(:user, email: "portfolio@test.com", password: "password123", onboarded_at: Time.current) }
   let!(:portfolio) { create(:portfolio, user: user) }
   let!(:aapl) { create(:asset, symbol: "AAPL", name: "Apple Inc.", current_price: 189.0) }
   let!(:tsla) { create(:asset, symbol: "TSLA", name: "Tesla, Inc.", current_price: 176.0) }

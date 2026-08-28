@@ -11,7 +11,6 @@ RSpec.describe "Profile layout (S11 #146)", type: :system do
            full_name: "Adrian Castillo",
            password: "password123",
            onboarded_at: Time.current,
-           email_verified_at: Time.current,
            created_at: 1.month.ago)
   end
   let!(:portfolio) { create(:portfolio, user: user) }

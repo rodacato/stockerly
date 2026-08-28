@@ -5,7 +5,7 @@ RSpec.describe "Portfolio empty state", type: :system do
     driven_by :rack_test
   end
 
-  let!(:user) { create(:user, email: "empty@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
+  let!(:user) { create(:user, email: "empty@test.com", password: "password123", onboarded_at: Time.current) }
   let!(:portfolio) { create(:portfolio, user: user) }
 
   before do

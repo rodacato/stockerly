@@ -6,7 +6,7 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
   let!(:admin) do
     create(:user, :admin, full_name: "Adrian Cancino",
            email: "admin@test.com", password: "password123",
-           onboarded_at: Time.current, email_verified_at: Time.current)
+           onboarded_at: Time.current)
   end
   let!(:portfolio) { create(:portfolio, user: admin) }
 

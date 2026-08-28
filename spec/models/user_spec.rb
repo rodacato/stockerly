@@ -56,10 +56,6 @@ RSpec.describe User, type: :model do
     it "defines role enum" do
       expect(User.roles).to eq("user" => 0, "admin" => 1)
     end
-
-    it "defines status enum" do
-      expect(User.statuses).to eq("active" => 0, "suspended" => 1)
-    end
   end
 
   describe "password reset tokens (Rails 8 built-in)" do
@@ -90,21 +86,11 @@ RSpec.describe User, type: :model do
   end
 
   describe "scopes" do
-    let!(:admin)     { create(:user, :admin) }
-    let!(:trader)    { create(:user, role: :user) }
-    let!(:suspended) { create(:user, :suspended) }
+    let!(:admin)  { create(:user, :admin) }
+    let!(:trader) { create(:user, role: :user) }
 
     it ".admins returns only admin users" do
       expect(User.admins).to contain_exactly(admin)
-    end
-
-    it ".traders returns only user-role users" do
-      expect(User.traders).to contain_exactly(trader, suspended)
-    end
-
-    it ".not_suspended excludes suspended users" do
-      expect(User.not_suspended).to include(admin, trader)
-      expect(User.not_suspended).not_to include(suspended)
     end
   end
 
@@ -115,17 +101,6 @@ RSpec.describe User, type: :model do
 
     it "returns true when onboarded_at is set" do
       expect(build(:user, onboarded_at: Time.current)).to be_onboarded
-    end
-  end
-
-
-  describe "#email_verified?" do
-    it "returns false when email_verified_at is nil" do
-      expect(build(:user, email_verified_at: nil)).not_to be_email_verified
-    end
-
-    it "returns true when email_verified_at is set" do
-      expect(build(:user, email_verified_at: Time.current)).to be_email_verified
     end
   end
 

@@ -9,7 +9,7 @@ require "rails_helper"
 RSpec.describe "Asset detail (adaptive by type)", type: :system do
   before { driven_by :rack_test }
 
-  let!(:user) { create(:user, email: "adet@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
+  let!(:user) { create(:user, email: "adet@test.com", password: "password123", onboarded_at: Time.current) }
 
   before do
     visit login_path

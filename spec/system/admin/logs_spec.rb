@@ -4,7 +4,7 @@ RSpec.describe "Admin · Bitácora", type: :system do
   before { driven_by :rack_test }
 
   let!(:admin) do
-    create(:user, :admin, :email_verified, email: "admin@stockerly.mx",
+    create(:user, :admin, email: "admin@stockerly.mx",
                                             password: "password123",
                                             onboarded_at: Time.current,
                                             full_name: "Adrian Romero")

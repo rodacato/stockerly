@@ -9,8 +9,7 @@ RSpec.describe "Trades filters, footer and empty state", type: :system do
     create(:user,
            email: "trades_chrome@test.com",
            password: "password123",
-           onboarded_at: Time.current,
-           email_verified_at: Time.current)
+           onboarded_at: Time.current)
   end
   let!(:portfolio) { create(:portfolio, user: user) }
   let!(:mxn_asset) { create(:asset, :mexican, symbol: "WALMEX", currency: "MXN", current_price: 64.0) }
