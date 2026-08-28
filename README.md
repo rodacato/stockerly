@@ -137,7 +137,8 @@ Stockerly deploys to any Linux server using **Kamal 2** with Docker.
 
 The reference deployment uses Hetzner VPS + Cloudflare Tunnel (no inbound ports needed).
 
-See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide.
+See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide, including
+[running the read-only Kamal commands from the devcontainer](docs/ops/deploy.md#from-the-devcontainer).
 
 ## Documentation
 
