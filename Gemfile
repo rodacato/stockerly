@@ -39,9 +39,6 @@ gem "faraday-retry"
 # Structured JSON logging for production [https://github.com/roidrage/lograge]
 gem "lograge"
 
-# Error tracking and performance monitoring [https://sentry.io]
-gem "sentry-ruby"
-gem "sentry-rails"
 
 # Prometheus metrics for an external self-hosted scraper [https://github.com/yabeda-rb/yabeda]
 gem "yabeda-rails"

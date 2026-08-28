@@ -60,11 +60,10 @@ module Stockerly
 end
 ```
 
-Error tracking is **Sentry** (`sentry-ruby` / `sentry-rails` in the `Gemfile`), not Honeybadger.
-Note that Sentry's release marker does **not** come from this constant:
-`.github/workflows/deploy.yml` creates the release with `version: ${{ github.sha }}` after a
-successful production deploy. `lib/stockerly/version.rb` is the human-facing version used for
-tags and the changelog.
+Error tracking runs inside the instance ([ADR-020](docs/architecture/adr/0020-internal-error-tracker.md)):
+unhandled exceptions land in `error_events` and are read at `/admin/errors`. There is no external
+error service and no release marker to publish. `lib/stockerly/version.rb` is the human-facing
+version used for tags and the changelog.
 
 ### 3. Update CHANGELOG.md
 

@@ -110,8 +110,6 @@ Add these secrets:
 | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | yes | `bin/rails db:encryption:init` prints all three at once |
 | `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | yes | idem |
 | `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | yes | idem |
-| `SENTRY_DSN` | no | From the Sentry project settings — error tracking is off without it |
-| `SENTRY_AUTH_TOKEN` | no | Only needed to create a Sentry release on deploy; the step skips silently without it |
 | `RESEND_API_KEY` | no | From the Resend dashboard |
 | `METRICS_TOKEN` | no | Generate with `openssl rand -hex 32` — enables the Prometheus endpoint |
 
@@ -123,7 +121,8 @@ Add these secrets:
 > `bin/rails db:encryption:init` and keep them forever; rotating them orphans existing ciphertext.
 
 The same silent-empty behaviour applies to the optional rows: no warning, the feature is just
-absent. Without `SENTRY_DSN` there is no error tracking at all.
+absent. Error tracking is not among them — it runs inside the instance and needs no key
+(ADR-020).
 
 ### Environment **variables** (not secrets)
 
@@ -131,9 +130,6 @@ These are plain values, so set them under **Variables**, not Secrets, in the sam
 
 | Variable | Default if unset | Effect |
 |---|---|---|
-| `SENTRY_ENVIRONMENT` | `production` | Tags events in Sentry |
-| `SENTRY_TRACES_SAMPLE_RATE` | `0` | Performance-trace sampling |
-| `SENTRY_ORG` / `SENTRY_PROJECT` | — / `stockerly` | Target of the release step |
 | `METRICS_ENABLED` | `false` | Master switch for the Prometheus endpoint |
 
 > **Note:** The registry uses GHCR (GitHub Container Registry) with `GITHUB_TOKEN` — no Docker Hub credentials needed.
@@ -168,7 +164,6 @@ export ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=...
 export ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=...
 
 # Optional — each is silently absent if unset
-export SENTRY_DSN=...
 export RESEND_API_KEY=...
 export METRICS_TOKEN=...
 
@@ -235,8 +230,7 @@ git fetch origin
 git checkout production && git merge --ff-only origin/master && git push origin production
 ```
 
-The workflow gates the deploy on the suite, brakeman and bundler-audit, then runs Kamal and creates
-a Sentry release on success.
+The workflow gates the deploy on the suite, brakeman and bundler-audit, then runs Kamal.
 
 You can also trigger it from the GitHub Actions tab with **Run workflow**, which takes an `action`
 input:

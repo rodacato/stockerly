@@ -11,8 +11,11 @@ RSpec.describe CheckSyncHealthJob, type: :job do
     Rails.cache = original_cache
   end
 
-  before do
-    allow(Sentry).to receive(:capture_message)
+  # The alert is what the owner can actually see: a health row in Registros and
+  # a notification. Counting those is counting the alert.
+  def health_alerts(task_name = nil)
+    scope = SystemLog.where(module_name: "health")
+    task_name ? scope.where(task_name: task_name) : scope
   end
 
   def make_log(task_name, severity:, at: Time.current, message: nil)
@@ -47,9 +50,9 @@ RSpec.describe CheckSyncHealthJob, type: :job do
         end
       end
 
-      it "fires no Sentry alerts" do
+      it "raises no alert" do
         described_class.new.perform
-        expect(Sentry).not_to have_received(:capture_message)
+        expect(health_alerts).to be_empty
       end
     end
 
@@ -58,28 +61,17 @@ RSpec.describe CheckSyncHealthJob, type: :job do
         make_log("FX Rate Refresh", severity: :error, at: 2.hours.ago, message: "ExchangeRate 503")
       end
 
-      it "fires exactly one Sentry warning for that sync" do
+      it "raises exactly one alert for that sync" do
         described_class.new.perform
 
-        expect(Sentry).to have_received(:capture_message).with(
-          "Sync failing: FX Rate Refresh",
-          hash_including(level: :warning)
-        ).once
+        expect(health_alerts("FX Rate Refresh").count).to eq(1)
       end
 
-      it "passes diagnostic context in :extra" do
+      it "carries the last error into the alert, which is the diagnostic part" do
         described_class.new.perform
 
-        expect(Sentry).to have_received(:capture_message).with(
-          "Sync failing: FX Rate Refresh",
-          hash_including(
-            extra: hash_including(
-              task_name: "FX Rate Refresh",
-              last_error_message: "ExchangeRate 503",
-              last_success_at: nil
-            )
-          )
-        )
+        expect(health_alerts("FX Rate Refresh").sole.error_message)
+          .to include("ExchangeRate 503").and include("hace más de 25 h")
       end
     end
 
@@ -89,15 +81,11 @@ RSpec.describe CheckSyncHealthJob, type: :job do
         make_log("CETES Sync",  severity: :error, at: 3.hours.ago, message: "Banxico timeout")
       end
 
-      it "fires one Sentry warning per affected sync" do
+      it "raises one alert per affected sync" do
         described_class.new.perform
 
-        expect(Sentry).to have_received(:capture_message).with(
-          "Sync failing: News Sync", hash_including(level: :warning)
-        ).once
-        expect(Sentry).to have_received(:capture_message).with(
-          "Sync failing: CETES Sync", hash_including(level: :warning)
-        ).once
+        expect(health_alerts("News Sync").count).to eq(1)
+        expect(health_alerts("CETES Sync").count).to eq(1)
       end
     end
 
@@ -107,9 +95,9 @@ RSpec.describe CheckSyncHealthJob, type: :job do
         make_log("Bulk Stock Sync", severity: :success, at: 1.hour.ago)
       end
 
-      it "fires no Sentry alert (recent success cures the prior error)" do
+      it "raises no alert (recent success cures the prior error)" do
         described_class.new.perform
-        expect(Sentry).not_to have_received(:capture_message)
+        expect(health_alerts).to be_empty
       end
     end
 
@@ -120,7 +108,7 @@ RSpec.describe CheckSyncHealthJob, type: :job do
 
       it "ignores the old failure (out of window)" do
         described_class.new.perform
-        expect(Sentry).not_to have_received(:capture_message)
+        expect(health_alerts).to be_empty
       end
     end
 
@@ -129,13 +117,11 @@ RSpec.describe CheckSyncHealthJob, type: :job do
         make_log("Market Indices Sync", severity: :error, at: 1.hour.ago, message: "Yahoo Finance 502")
       end
 
-      it "fires only once across two consecutive runs within the 6h dedup window" do
+      it "alerts only once across two consecutive runs within the 6h dedup window" do
         described_class.new.perform
         described_class.new.perform
 
-        expect(Sentry).to have_received(:capture_message).with(
-          "Sync failing: Market Indices Sync", hash_including(level: :warning)
-        ).once
+        expect(health_alerts("Market Indices Sync").count).to eq(1)
       end
 
       it "fires again after the dedup TTL expires" do
@@ -146,16 +132,17 @@ RSpec.describe CheckSyncHealthJob, type: :job do
 
         described_class.new.perform
 
-        expect(Sentry).to have_received(:capture_message).with(
-          "Sync failing: Market Indices Sync", hash_including(level: :warning)
-        ).twice
+        expect(health_alerts("Market Indices Sync").count).to eq(2)
       end
     end
 
-    context "when Sentry raises during capture" do
+    # The only channel that can realistically fail is the one that crosses a
+    # context boundary, so that is where the resilience guarantee is exercised.
+    context "when a channel fails" do
       before do
         make_log("News Sync", severity: :error, at: 1.hour.ago, message: "boom")
-        allow(Sentry).to receive(:capture_message).and_raise(StandardError, "sentry down")
+        allow(Notifications::UseCases::CreateNotification)
+          .to receive(:call).and_raise(StandardError, "notifications down")
       end
 
       it "swallows the error so the job keeps running for other syncs" do
@@ -164,9 +151,9 @@ RSpec.describe CheckSyncHealthJob, type: :job do
     end
 
     context "when there are no SystemLog entries at all (cold start)" do
-      it "fires no Sentry alerts (silent ≠ failing)" do
+      it "raises no alert (silent ≠ failing)" do
         described_class.new.perform
-        expect(Sentry).not_to have_received(:capture_message)
+        expect(health_alerts).to be_empty
       end
     end
   end
@@ -177,8 +164,8 @@ RSpec.describe CheckSyncHealthJob, type: :job do
       make_log("Bulk BMV Sync", severity: :error, at: 2.hours.ago, message: "DataBursatil: rate_limited (HTTP 429)")
     end
 
-    # Sentry serves whoever wrote the code. On a self-hosted single-user
-    # instance that is not the person whose data went stale.
+    # The owner is the person whose data went stale, and the notification is the
+    # only channel that goes looking for them.
     it "creates one notification for the owner, in their own terms" do
       expect { described_class.perform_now }.to change(Notification, :count).by(1)
 
@@ -204,22 +191,20 @@ RSpec.describe CheckSyncHealthJob, type: :job do
       expect { described_class.perform_now }.not_to change(Notification, :count)
     end
 
-    it "still alerts Sentry — the two readers are not duplicates" do
-      allow(Sentry).to receive(:capture_message)
-
+    it "records the pattern as well as notifying — the two readers are not duplicates" do
       described_class.perform_now
 
-      expect(Sentry).to have_received(:capture_message).with(/Bulk BMV Sync/, anything)
+      expect(Notification.count).to eq(1)
+      expect(SystemLog.where(module_name: "health", task_name: "Bulk BMV Sync").count).to eq(1)
     end
 
-    # A failure in the owner-facing half must not swallow the maintainer's.
-    it "keeps alerting Sentry when the notification cannot be created" do
+    # A failure in the owner-facing half must not lose the written record.
+    it "keeps the health record when the notification cannot be created" do
       allow(Notifications::UseCases::CreateNotification).to receive(:call).and_raise(StandardError, "boom")
-      allow(Sentry).to receive(:capture_message)
 
       described_class.perform_now
 
-      expect(Sentry).to have_received(:capture_message)
+      expect(SystemLog.where(module_name: "health", task_name: "Bulk BMV Sync").count).to eq(1)
     end
 
     it "says nothing when setup never ran and there is no owner" do

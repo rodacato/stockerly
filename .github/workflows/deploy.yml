@@ -106,10 +106,6 @@ jobs:
       ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: ${{ secrets.ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY }}
       ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: ${{ secrets.ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY }}
       ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: ${{ secrets.ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT }}
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-      SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
-      SENTRY_TRACES_SAMPLE_RATE: ${{ vars.SENTRY_TRACES_SAMPLE_RATE || '0' }}
-      SENTRY_RELEASE: ${{ github.sha }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       METRICS_ENABLED: ${{ vars.METRICS_ENABLED || 'false' }}
       METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
@@ -124,13 +120,3 @@ jobs:
           host: ${{ secrets.HOST_IP }}
           ruby-version: ${{ env.RUBY_VERSION }}
           kamal-version: bundled
-
-      - name: Create Sentry release
-        if: ${{ success() && env.ACTION == 'deploy' }}
-        uses: rodacato/sector-7g/actions/sentry-release@master
-        with:
-          sentry-auth-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          org: ${{ vars.SENTRY_ORG }}
-          project: ${{ vars.SENTRY_PROJECT || 'stockerly' }}
-          environment: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
-          version: ${{ github.sha }}

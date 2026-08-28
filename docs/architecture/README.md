@@ -12,7 +12,7 @@
 - **Domain stack:** dry-monads, dry-validation, dry-types, dry-struct, dry-initializer
 - **Testing:** RSpec + FactoryBot + Capybara
 - **Deploy:** Kamal 2 + Cloudflare Tunnel + GitHub Actions
-- **Observability:** Sentry + lograge structured logs
+- **Observability:** in-instance error tracker (`/admin/errors`, ADR-020) + lograge structured logs
 
 ---
 
