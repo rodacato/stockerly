@@ -160,8 +160,9 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [016](./adr/0016-canonical-market-data-observations.md) | Canonical observations, multi-source kept reachable | Accepted 2026-08-26 |
 | [017](./adr/0017-python-bridge-for-yahoo-finance.md) | A Python bridge for Yahoo Finance, run as a subprocess | Accepted 2026-08-26 |
 | [018](./adr/0018-totp-with-recovery-codes.md) | TOTP with recovery codes, for an audience of more than one | Accepted 2026-08-27 · reverses design decision D23 |
+| [019](./adr/0019-self-contained-by-default.md) | Self-contained by default: the fewest vendors a self-hoster can inherit | Accepted 2026-08-28 · adds the vision's fourth hard rule |
 
-Fifteen ADRs: **0001, 0002 and 0006–0018**. The gap is explained below.
+Sixteen ADRs: **0001, 0002 and 0006–0019**. The gap is explained below.
 
 **ADR-018 is the newest, and it is the only one that reverses a decision this project had already
 published.** Design decision D23 recommended *against* building TOTP, and it was right for the
