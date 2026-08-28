@@ -889,12 +889,12 @@ nothing. There is no gem, no column, no route.
 
 **Where the product asks for it — D52 answered both.** The first-boot wizard offers enrollment and
 lets the reader skip it (a `Stepper` stage, `flows/onboarding.pen`), and Ajustes is where it is
-turned on later and the codes are regenerated (a `Seguridad` section, `flows/settings.pen`). Neither
-of those two flows is migrated yet, so this section lands after them.
+turned on later and the codes are regenerated (a `Seguridad` section, `flows/settings.pen`). Both flows were migrated on 2026-08-27 — `onboarding.pen` carries D52's fourth step and
+`settings.pen` its `Seguridad` row, both on kit 0.9.0 — so **the dependency this section named is cleared** and nothing in the design blocks the build.
 
 **Artboards:** `auth-totp-alta.png`, `auth-codigos-recuperacion.png`, `auth-codigo-recuperacion.png`,
 and the existing `auth-2fa.png`. Per D4 none needs a desktop variant.
 
-**Owed before it ships:** the 4-filter discovery card and a GitHub issue. ADR-018 approves the
+**Owed before it ships:** the 4-filter discovery card and a GitHub issue. **This is now the only thing standing between the decision and the code.** ADR-018 approves the
 decision; the project's own working method still wants trigger + JTBD + usage metric + DoD before
 a build starts.
