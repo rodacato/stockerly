@@ -3,7 +3,7 @@
 <div class="flex flex-col gap-6">
   <%= render "shared/auth_header", title: t(".titulo"), subtitle: t(".subtitulo") %>
 
-  <%= render "two_factor/error" %>
+  <%= render "shared/flash_alert", message: flash[:alert] %>
 
   <%= form_with url: two_factor_path, method: :post, class: "flex flex-col gap-4" do %>
     <label class="flex flex-col gap-1.5">

@@ -1,0 +1,10 @@
+<%# Locals: message. The inline alert the auth-shaped screens show above their
+    form — four of them had their own copy of this markup. `flash.now` writes
+    into the same hash for the current request, so callers pass `flash[:alert]`
+    either way. %>
+<% if message.present? %>
+  <p class="flex items-center gap-2 rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
+    <span class="material-symbols-outlined text-lg" aria-hidden="true">error</span>
+    <%= message %>
+  </p>
+<% end %>

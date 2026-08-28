@@ -5,12 +5,8 @@
 
   <%# The "sign in to continue" nudge is a redirect artifact, not an error — it
       already shows as a flash, and repeating it here reads as a failed attempt. %>
-  <% if flash[:alert].present? && !flash[:alert].start_with?("Inicia sesión para continuar", "Please sign in") %>
-    <p class="flex items-center gap-2 rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
-      <span class="material-symbols-outlined text-lg" aria-hidden="true">error</span>
-      <%= flash[:alert] %>
-    </p>
-  <% end %>
+  <% nudge = flash[:alert]&.start_with?("Inicia sesión para continuar", "Please sign in") %>
+  <%= render "shared/flash_alert", message: (flash[:alert] unless nudge) %>
 
   <%= form_with url: login_path, method: :post, class: "flex flex-col gap-4" do %>
     <%= render "shared/auth_field", name: "email", type: "email", label: t("auth.correo"),

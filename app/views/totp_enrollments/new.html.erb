@@ -6,12 +6,7 @@
     <p class="mt-1 text-sm text-fg-subtle"><%= t(".subtitulo") %></p>
   </div>
 
-  <% if flash.now[:alert].present? %>
-    <p class="flex items-center gap-2 rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
-      <span class="material-symbols-outlined text-lg" aria-hidden="true">error</span>
-      <%= flash.now[:alert] %>
-    </p>
-  <% end %>
+  <%= render "shared/flash_alert", message: flash[:alert] %>
 
   <div class="flex flex-col items-center gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
     <%# White plate under the QR on purpose: a dark surface behind the modules
@@ -42,5 +37,5 @@
     </button>
   <% end %>
 
-  <%= link_to t(".ahora_no"), settings_path, class: "text-center text-sm text-fg-subtle hover:underline" %>
+  <%= link_to t(".ahora_no"), @return_path, class: "text-center text-sm text-fg-subtle hover:underline" %>
 </div>
