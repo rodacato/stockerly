@@ -2267,7 +2267,7 @@
                       "id": "nYzda",
                       "name": "LTxt",
                       "fill": "$fg-inverse",
-                      "content": "Lanzar e ir al panel",
+                      "content": "Lanzar e ir al Panorama",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "600"
@@ -2289,7 +2289,7 @@
                   "id": "BiKxU",
                   "name": "Alt",
                   "fill": "$fg-subtle",
-                  "content": "Ir al panel sin sincronizar",
+                  "content": "Ir al Panorama sin sincronizar",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
                   "fontWeight": "500"
@@ -2599,7 +2599,7 @@
                       "id": "NPl1r",
                       "name": "T",
                       "fill": "$fg-default",
-                      "content": "Configura una alerta",
+                      "content": "Configura una regla",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "600"
@@ -2671,7 +2671,7 @@
                   "id": "U5ShCz",
                   "name": "CtaT",
                   "fill": "$fg-inverse",
-                  "content": "Ir al panel",
+                  "content": "Ir al Panorama",
                   "fontFamily": "$font-sans",
                   "fontSize": 15,
                   "fontWeight": "600"
@@ -4665,7 +4665,7 @@
                       "id": "gZrL8",
                       "name": "T",
                       "fill": "$fg-default",
-                      "content": "Configura una alerta",
+                      "content": "Configura una regla",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "600"
@@ -4743,7 +4743,7 @@
                       "id": "v1nrT",
                       "name": "CtaT",
                       "fill": "$fg-inverse",
-                      "content": "Ir al panel",
+                      "content": "Ir al Panorama",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "600"

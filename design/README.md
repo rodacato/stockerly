@@ -141,6 +141,12 @@ Operating notes, not preferences. Each cost a mistake.
   brief that way. **Verify by grepping for the specific content you wrote**, and when the grep count
   is ambiguous, confirm with a `Get` query: prose in a brief matches the same strings as a live
   artboard.
+- **A raw grep count is not a node count, and reading it as one will send you chasing ghosts.** The
+  serialized `.pen` holds strings that are not live nodes: after renaming two texts on 2026-08-28,
+  `grep -c` fell 4 → 2 while `Get` reported exactly two nodes, both already renamed, and the
+  screenshot confirmed it. **A grep answers *did the write land*; only `Get` answers *how many
+  nodes say this*, and only a screenshot answers *what does a reader see*.** Use the count as a
+  direction, never as a total.
 - **Reconcile against the kit's list, never against the diff — and compare values, not names.**
   Installing only the new tokens is how `auth.pen` and `onboarding.pen` went four minor versions
   without `scrim`. Comparing membership but not values is how `brand.pen` diverged on `info-fg`

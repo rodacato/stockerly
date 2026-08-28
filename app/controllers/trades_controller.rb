@@ -100,10 +100,10 @@ class TradesController < AuthenticatedController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace(trade, partial: "trades/trade_row", locals: { trade: trade }),
-            flash_stream("notice", "Movimiento actualizado.")
+            flash_stream("notice", t("trades.flash.actualizado"))
           ]
         end
-        format.html { redirect_to trades_path, notice: "Movimiento actualizado." }
+        format.html { redirect_to trades_path, notice: t("trades.flash.actualizado") }
       end
     in Dry::Monads::Failure[ :validation, errors ]
       respond_with_alert(errors.values.flatten.first, fallback: trades_path)
@@ -121,10 +121,10 @@ class TradesController < AuthenticatedController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.remove(trade),
-            flash_stream("notice", "Movimiento eliminado.")
+            flash_stream("notice", t("trades.flash.eliminado"))
           ]
         end
-        format.html { redirect_to trades_path, notice: "Movimiento eliminado." }
+        format.html { redirect_to trades_path, notice: t("trades.flash.eliminado") }
       end
     in Dry::Monads::Failure[ _, message ]
       respond_with_alert(message, fallback: trades_path)
@@ -148,12 +148,14 @@ class TradesController < AuthenticatedController
 
   def find_trade_or_redirect
     trade = current_user.portfolio&.trades&.find_by(id: params[:id])
-    redirect_to trades_path, alert: "Movimiento no encontrado." if trade.nil?
+    redirect_to trades_path, alert: t("trades.flash.no_encontrado") if trade.nil?
     trade
   end
 
   def trade_notice(trade)
-    "#{trade.buy? ? "Compra" : "Venta"} registrada: #{trade.shares} títulos de #{trade.asset.symbol}"
+    t("trades.flash.registrado",
+      side: t("trades.flash.side_#{trade.buy? ? "compra" : "venta"}"),
+      shares: trade.shares, symbol: trade.asset.symbol)
   end
 
   # A fresh sheet inside the frame, keeping the side the user was working in —
