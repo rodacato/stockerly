@@ -1,0 +1,46 @@
+<% content_for :page_title, t(".titulo") %>
+
+<div class="mx-auto flex max-w-md flex-col gap-6">
+  <div>
+    <h1 class="font-display text-2xl font-bold tracking-tight text-fg-default"><%= t(".titulo") %></h1>
+    <p class="mt-1 text-sm text-fg-subtle"><%= t(".subtitulo") %></p>
+  </div>
+
+  <% if flash.now[:alert].present? %>
+    <p class="flex items-center gap-2 rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
+      <span class="material-symbols-outlined text-lg" aria-hidden="true">error</span>
+      <%= flash.now[:alert] %>
+    </p>
+  <% end %>
+
+  <div class="flex flex-col items-center gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+    <%# White plate under the QR on purpose: a dark surface behind the modules
+        breaks the contrast every scanner depends on. %>
+    <div class="rounded-xl bg-white p-3 [&_svg]:size-48">
+      <%= totp_qr_svg(@enrollment[:provisioning_uri]) %>
+    </div>
+
+    <div class="flex w-full flex-col gap-1.5 border-t border-border-default pt-4 text-center">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".clave_manual") %></p>
+      <p class="select-all font-mono text-sm font-semibold tracking-wider text-fg-default">
+        <%= @enrollment[:formatted_secret] %>
+      </p>
+    </div>
+  </div>
+
+  <%= form_with url: totp_enrollment_path, method: :post, class: "flex flex-col gap-4" do %>
+    <label class="flex flex-col gap-1.5">
+      <span class="text-sm font-medium text-fg-default"><%= t(".codigo") %></span>
+      <%= tag.input type: "text", name: "code", inputmode: "numeric", autocomplete: "one-time-code",
+                    pattern: "[0-9]*", maxlength: 6, required: true, autofocus: true, placeholder: "000000",
+                    class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3.5 text-center font-mono text-2xl tracking-[0.4em] text-fg-default focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+    </label>
+
+    <button type="submit"
+            class="w-full rounded-xl bg-primary px-4 py-3.5 text-base font-semibold text-fg-inverse transition-colors hover:bg-primary-hover">
+      <%= t(".activar") %>
+    </button>
+  <% end %>
+
+  <%= link_to t(".ahora_no"), settings_path, class: "text-center text-sm text-fg-subtle hover:underline" %>
+</div>

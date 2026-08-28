@@ -20,7 +20,10 @@ module Identity
           codes = RegenerateRecoveryCodes.call(user: user)
         end
 
-        Success(codes)
+        # A keyed result, not a bare array: `Success([...])` deconstructs to the
+        # array itself, so `in Success(codes)` silently fails to match ten
+        # elements against a one-element pattern.
+        Success(recovery_codes: codes)
       end
     end
   end

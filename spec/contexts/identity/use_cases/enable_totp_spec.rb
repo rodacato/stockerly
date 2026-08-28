@@ -32,13 +32,13 @@ RSpec.describe Identity::UseCases::EnableTotp do
       result = described_class.call(user: user, code: ROTP::TOTP.new(user.otp_secret).now)
 
       expect(result).to be_success
-      expect(result.value!.size).to eq(10)
+      expect(result.value![:recovery_codes].size).to eq(10)
       expect(user.reload.otp_enrolled?).to be true
       expect(user.otp_recovery_codes.unconsumed.count).to eq(10)
     end
 
     it "stores the recovery codes hashed, never in the clear" do
-      codes = described_class.call(user: user, code: ROTP::TOTP.new(user.otp_secret).now).value!
+      codes = described_class.call(user: user, code: ROTP::TOTP.new(user.otp_secret).now).value![:recovery_codes]
 
       digests = user.otp_recovery_codes.pluck(:code_digest)
       expect(digests).not_to include(*codes)

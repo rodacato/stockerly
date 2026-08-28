@@ -1,7 +1,11 @@
 class OnboardingController < AuthenticatedController
   layout "onboarding"
 
-  STEPS = 3
+  # Four since D52: integraciones · activos · seguridad · listo. The security
+  # step OFFERS enrolment and lets the reader skip — it is step 3 and not step
+  # 1 on purpose, so the recovery codes land next to a wizard already invested
+  # in rather than on the screen a reader is most likely to rush.
+  STEPS = 4
 
   skip_before_action :redirect_to_onboarding
 
@@ -21,10 +25,12 @@ class OnboardingController < AuthenticatedController
     @catalog = Administration::Domain::AssetCatalog.all
   end
 
+  def security; end
+
   def save_assets
     symbols = params[:symbols] || []
     Administration::UseCases::Onboarding::SeedAssets.call(symbols: symbols)
-    redirect_to onboarding_complete_path
+    redirect_to onboarding_security_path
   end
 
   def complete

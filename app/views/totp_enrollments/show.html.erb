@@ -1,0 +1,27 @@
+<% content_for :page_title, t(".titulo") %>
+
+<div class="mx-auto flex max-w-md flex-col gap-6">
+  <div>
+    <h1 class="font-display text-2xl font-bold tracking-tight text-fg-default"><%= t(".titulo") %></h1>
+    <p class="mt-1 text-sm text-fg-default"><%= t(".subtitulo", count: @codes.size) %></p>
+  </div>
+
+  <%# select-all on the list, so "copy them somewhere" is one gesture. There is
+      no download: a file write is the browser's business and the codes are ten
+      short strings, not a document. %>
+  <ul class="grid select-all grid-cols-2 gap-2 rounded-2xl border border-border-default bg-bg-surface p-5">
+    <% @codes.each do |code| %>
+      <li class="rounded-lg bg-bg-muted px-3 py-2 text-center font-mono text-sm font-semibold tracking-wider text-fg-default">
+        <%= code %>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
+    <span class="material-symbols-outlined text-lg text-warning-fg" aria-hidden="true">warning</span>
+    <p class="text-xs text-warning-fg"><%= t(".no_se_repiten") %></p>
+  </div>
+
+  <%= link_to t(".ya_los_guarde"), settings_path,
+        class: "w-full rounded-xl bg-primary px-4 py-3.5 text-center text-base font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" %>
+</div>

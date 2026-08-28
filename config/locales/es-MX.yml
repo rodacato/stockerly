@@ -857,6 +857,18 @@ es-MX:
       subtitulo: Agrega las API keys de los proveedores que quieras. Puedes omitir
         y configurarlas luego.
       titulo: Conecta tus fuentes de datos
+    security:
+      activar: Activar ahora
+      ahora_no: Ahora no · lo activo desde Ajustes
+      codigos: 10 códigos de recuperación
+      codigos_desc: De un solo uso. Se muestran una vez.
+      subtitulo: 'Nadie más puede recuperarte: esta instancia es tuya y no tiene mesa
+        de ayuda.'
+      tiempo: 1 minuto
+      tiempo_desc: Puedes activarlo después desde Ajustes › Seguridad.
+      titulo: Protege tu cuenta
+      totp: TOTP
+      totp_desc: Un código de 6 dígitos de tu app de autenticación.
     step_header:
       paso: Paso %{step} de %{total}
   portfolios:
@@ -927,6 +939,9 @@ es-MX:
       datos_titulo: Tus datos
       digest: Resumen diario por correo
       digest_desc: Un solo correo a las 18:30 CDMX con lo que pasó.
+      dos_pasos: Verificación en dos pasos
+      dos_pasos_activa: Activa · te quedan %{count} códigos de recuperación
+      dos_pasos_desc: TOTP y códigos de recuperación
       estado: Estado y mantenimiento
       estado_desc: Diagnóstico, modo mantenimiento y cambios recientes
       instancia_cuerpo: 'Esto es tuyo: corre en tu servidor y nadie más lo ve.'
@@ -962,6 +977,25 @@ es-MX:
       long: "%-d de %B de %Y %H:%M"
       short: "%-d de %b %H:%M"
     pm: p.m.
+  totp_enrollments:
+    new:
+      activar: Activar
+      ahora_no: Ahora no
+      clave_manual: Clave manual
+      codigo: Código de verificación
+      subtitulo: Escanea el código con tu app de autenticación. Si no puedes escanearlo,
+        captura la clave a mano.
+      titulo: Verificación en dos pasos
+      ya_activa: La verificación en dos pasos ya está activa en esta cuenta.
+    show:
+      no_se_repiten: No se vuelven a mostrar. Si los pierdes y también pierdes tu
+        app de autenticación, no hay forma de entrar a tu instancia.
+      subtitulo: Son %{count} y cada uno sirve una sola vez. Si pierdes tu app de
+        autenticación, son la única forma de entrar a tu instancia.
+      titulo: Guarda tus códigos de recuperación
+      ya_los_guarde: Ya los guardé, continuar
+      ya_no_disponibles: Los códigos solo se muestran una vez. Genera unos nuevos
+        si los necesitas.
   trades:
     errores:
       fecha_futura: La fecha del movimiento no puede ser futura.

@@ -32,6 +32,13 @@ Rails.application.routes.draw do
   get  "recovery-code", to: "two_factor#new_recovery",    as: :recovery_code
   post "recovery-code", to: "two_factor#create_recovery"
 
+  # Enrolment lives behind the session, not beside the login: turning the
+  # second factor on is something an authenticated owner does.
+  get  "two-factor/setup", to: "totp_enrollments#new",        as: :totp_enrollment
+  post "two-factor/setup", to: "totp_enrollments#create"
+  get  "two-factor/codes", to: "totp_enrollments#show",       as: :recovery_codes
+  post "two-factor/codes", to: "totp_enrollments#regenerate", as: :regenerate_recovery_codes
+
   # --- Password Reset ---
   get   "forgot-password",       to: "password_resets#new",    as: :forgot_password
   post  "forgot-password",       to: "password_resets#create"
@@ -45,6 +52,7 @@ Rails.application.routes.draw do
   patch "onboarding/integrations", to: "onboarding#save_integrations", as: :onboarding_save_integrations
   get   "onboarding/assets",       to: "onboarding#assets", as: :onboarding_assets
   post  "onboarding/assets",       to: "onboarding#save_assets", as: :onboarding_save_assets
+  get   "onboarding/security",     to: "onboarding#security", as: :onboarding_security
   get   "onboarding/complete",     to: "onboarding#complete", as: :onboarding_complete
   post  "onboarding/launch",       to: "onboarding#launch", as: :onboarding_launch
 
