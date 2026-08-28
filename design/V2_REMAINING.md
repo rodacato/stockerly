@@ -474,12 +474,21 @@ locale has five entries — `us_stocks`, `crypto`, `etfs`, `mexican_stocks`, `fi
 category split as *"not a design call — the code had already made it"*, so the artboard simply
 did not finish catching up.
 
-### ONB-6 🟡 D59 — the Brand Panel checklist, still Adrian's call
+### ONB-6 🟡 D59 — decided 2026-08-28: it stays a promise, and loses its checkmarks
 
-Open. The checklist mixes three wizard *steps* with one *claim* (`100% libre y open source`), every
-item renders checked, and it now names three steps against a wizard that has four. Two elements
-describe progress in the same view. Options are in D59; nothing should be built from this panel
-until it is answered.
+**Decided: bullets instead of checkmarks, a fourth item, and the claim on its own line.** The
+`Stepper` is already a correct progress indicator, so giving the checklist real state would create a
+second source of truth for the same fact and require the two to agree forever — D53's shape, in
+pixels.
+
+**Measured on canvas before deciding, because where it appears decides how bad it is:** the panel
+carries the checklist on `Setup · Desktop`, `Integrations · Desktop` **and** `Assets · Desktop`, and
+correctly drops it on `Welcome · Desktop`. So inside the wizard a reader sees *"Paso 1 de 4 · 25%"*
+beside three ticked items. On mobile the panel is not drawn at all, so this is desktop-only.
+
+**Three artboard instances to edit:** checkmarks → bullets, insert *Protege tu cuenta* third (the
+order is Integraciones · Activos · Seguridad · Listo), and split *100% libre y open source* onto its
+own line.
 
 ---
 
@@ -624,7 +633,7 @@ Three more things are wrong around it:
   and **neither field is drawn in any artboard**. Either the design owes them a home or they are a
   1.0 feature nobody retired.
 
-### ACT-3 🔴 `/trades` has zero inbound links from outside itself
+### ACT-3 🔴 `/trades` has zero inbound links — decided 2026-08-28: `Historial` absorbs it (D60)
 
 Measured: every `trades_path` in a **view** lives inside `app/views/trades/` itself, and the only
 others are `trades_controller`'s own redirects. Nothing in the nav, the Activos screen, the
@@ -636,9 +645,24 @@ Behind that orphan sits the app's largest controller action — filters for `tip
 `anio`, a `distinct.pluck(EXTRACT(YEAR …))`, a 50-row cap, `@shown_count`/`@total_count` — and a
 187-line view. The design's `Historial` covers the same trade log as one of its three sections.
 
-**So this is a decision, not a defect:** either `Historial` absorbs `/trades`' filters and the route
-goes, or `/trades` gets an artboard and a way in. Shipping both is how the app ended up with two
-screens for one list. **Adrian's call.**
+**Decided as [D60](DECISIONS.md): `Historial` absorbs it, and the filters do not come along.**
+
+**The capability question came back clean**, which is what made the call easy: editing and deleting a
+trade live in `trades/_trade_row`, which renders from `trades/index` **and** from
+`positions/_positions_table` — so both affordances already exist on the surviving screen, through
+the same partial. `market/_position_trades` is read-only and loses nothing.
+
+What it costs instead is rebuilding that inline edit/delete inside a `MovementItem` card rather than
+a `<tr>` — **which is KIT-4's work, owed anyway**, not work this decision creates.
+
+**The filters are dropped, not ported.** They are real, and they were built for a screen nobody ever
+opened, which is the strongest available evidence that nothing needed them. They return with a
+documented trigger.
+
+**What lands:** the three drawn sections at `/positions`; `trades#index`, its 187-line view and the
+controller's filter methods deleted; the HTML fallbacks that redirect to `trades_path` repointed.
+`trades#new/create/edit/update/destroy` all stay — the sheet and the inline row flows are not this
+route.
 
 ### ACT-4 🟡 The Tracked budget panel states a total; the design breaks it down by tier
 
@@ -776,16 +800,28 @@ códigos de recuperación*. The code's Cuenta section has two rows and stops.
 
 Blocked by AUTH-1 in the same way ONB-1 is — the row needs a destination.
 
-### AJU-3 🟡 D58 — Tema and Moneda are the same pill and commit differently. Open, and it is Adrian's.
+### AJU-3 🟡 D58 — decided 2026-08-28: Moneda moves to auto-save
 
 Measured in the code, not inferred: `theme_controller` writes to `localStorage` on click,
 `toggle_controller` POSTs the notification switches on toggle, and **Moneda is a form with an
 explicit `Guardar` submit**. Two identical-looking segmented pills, two different commit models,
 nothing on screen distinguishing them.
 
-The brief's unbuilt recommendation is to move Moneda to auto-save — `update_currency_path` already
-exists and writes only `preferred_currency`, so the toggle pattern applies directly. **The defect is
-the inconsistency, not which behaviour is right.**
+**Decided: Moneda auto-saves and the `Guardar` is deleted.** Not for symmetry — because the currency
+changes what every number on every screen means, so a form you can forget to submit leaves you
+reading MXN while believing you switched. The theme has no equivalent failure: it applies visibly on
+click.
+
+⚠ **One correction to the brief and to D58's own recommendation, both of which said the toggle
+pattern applies unchanged.** It does not.
+[`toggle_controller.js`](../app/javascript/controllers/toggle_controller.js) is boolean by
+construction — it reads whether `bg-primary` is present, flips classes, and PATCHes
+`{field: true|false}`. Moneda is a two-value enum, so this needs a small sibling controller that
+sends a *value* (~30 lines). Cheap, but the entry said free.
+
+The screen drops from **three** commit models to two: instant-local (theme) and instant-server
+(currency, switches). The artboard draws no `Guardar`, so design and code converge with no artboard
+edit.
 
 ### AJU-4 ⚪ The `Estado y mantenimiento` artboard still carries a warning its own brief retired
 
@@ -975,12 +1011,15 @@ What actually stands between here and *the 2.0 revamp is done*, in the order tha
 
 ## Decisions owed before anything is built
 
+**Three were answered on 2026-08-28** and are struck through below rather than deleted, so the list
+reads as a record instead of a snapshot.
+
 | | Question | Whose |
 |---|---|---|
+| ~~D58~~ | ~~Tema vs Moneda commit split~~ | ✅ Moneda auto-saves (AJU-3) |
+| ~~D59~~ | ~~The Brand Panel checklist~~ | ✅ promise, no checkmarks, four items (ONB-6) |
+| ~~ACT-3~~ | ~~Does `Historial` absorb `/trades`?~~ | ✅ it does, without the filters — **D60** |
 | D57 | Does `Movimientos` / `Movimientos de interés` take the word `Señales`? Note ADR-013 blessed the current name | Adrian |
-| D58 | Tema vs Moneda commit split (AJU-3) | Adrian |
-| D59 | The Brand Panel checklist (ONB-6) | Adrian |
-| ACT-3 | Does `Historial` absorb `/trades`, or does `/trades` get drawn? | Adrian |
 | AJU-1 | Where do *Nombre y correo* and *Contraseña* live once `/profile` goes? | design pass |
 | D3 | The confluence engine — gates CKP-3, CKP-5 and ALR-1 | 4-filter card |
 | D33 | The Calendario's horizon, deliberately left for its builder | Adrian |
@@ -988,9 +1027,8 @@ What actually stands between here and *the 2.0 revamp is done*, in the order tha
 | D55 | The password reset is a mail-dependent recovery path ADR-018's own reasoning rejects | Adrian |
 | KIT-1 | Extract `Card` / `Field` / the two buttons as their own pass, or accept inline as this codebase's idiom and drop them from the kit's expectations | Adrian |
 
-**Seven open decisions, not six** — `DECISIONS.md`'s header reads `53 resolved · 6 open` against an
-actual **52 resolved · 7 open**. D33 is the one both the header and the last handoff dropped. Recount
-it; do not increment it (D53).
+**Five open decisions in `DECISIONS.md`** — D3, D15, D33, D55, D57 — recounted from the file on
+2026-08-28 after D58, D59 and D60 landed. Recount it; never increment it (D53).
 
 ## Builds, in dependency order
 
@@ -1000,7 +1038,9 @@ it; do not increment it (D53).
 3. **ACT-1** — the three-door empty state. The two missing doors are the product's own named fixes;
    each needs its own card.
 4. **AJU-1** — retire `/profile` into the hub. Needs the design pass first.
-5. **ACT-2** — rebuild `Historial` as the three drawn sections. Needs ACT-3 answered first.
+5. **ACT-2** — rebuild `Historial` as the three drawn sections, and delete `/trades#index` with it.
+   **Unblocked 2026-08-28 (D60).** Closes KIT-4 and collapses TD1, TD2 and TD3 into the rebuild
+   rather than refactoring code that is about to go. Owes a `CODE_CHANGES` work order.
 6. **CKP-1** — `Movimientos`. Un-gated by D42, metric stated, query exists.
 7. **ALR-2** — suggested rules in the empty state. Assembly over data already in hand.
 8. **CKP-2** — the chart's range control. Data already loaded.
