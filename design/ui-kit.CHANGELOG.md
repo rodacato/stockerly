@@ -248,6 +248,35 @@ paragraph replaced said the kit led the code, and it stopped being true the day 
 
 ---
 
+## 0.9.0 — HeaderBar (minor)
+
+**+1 component, 19 → 20.** Nothing renamed, nothing removed.
+
+### HeaderBar — the back-header two flows had already built five times
+
+`flows/settings.pen` hand-built it **four** times (Integraciones, Registros, Estado y mantenimiento,
+Integraciones · Estados) and `flows/alerts.pen` **twice** (Bandeja, Confluencia). The 0.8.0 gap note
+set the bar explicitly — *"if any of them needs the same bar, that is the second consumer and the
+promotion is earned"* — and it fired.
+
+**Measured before promoting**, because the same note nearly caused a false match. This is **not**
+cockpit's `TopBarDetail`: that one carries a two-line ticker title and a bookmark; this one an 18px
+display title and an optional action. Different components, and `TopBarDetail` stays local to
+`cockpit.pen` until it finds a second consumer of its own.
+
+| Slot | |
+|---|---|
+| `BackWrap` | 44×44, `$radius-md` — every hand-built copy had a bare 20px icon |
+| `T` | `fill_container`, 18px/700 `$font-display` |
+| `Accion` | `fit_content` × 44, icon + label. Icon-only consumers disable the label and pin the wrap to 44 — Pencil instances cannot add children, so the master carries both and instances subtract |
+
+Height 68 at rest, 44 of it the touch target.
+
+### Consumers
+
+`flows/settings.pen` (4 instances) and `flows/alerts.pen` (1 master replaced by the kit's shape).
+`cockpit.pen` is untouched — its detail bar is a different component.
+
 ## 0.8.1 — accent text on a muted surface (patch)
 
 **No components added or renamed. One token value moves, one component treatment changes, and the

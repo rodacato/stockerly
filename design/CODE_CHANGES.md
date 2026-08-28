@@ -493,9 +493,13 @@ visual: the four instance screens keep their admin styling.
 - ✅ **It links to the instance surfaces rather than reimplementing them** — Integraciones, Registros,
   Estado y mantenimiento and Mission Control all keep their existing screens. D5's point was killing
   the admin *framing*, not rewriting four working pages.
-- ⚠ **No failed-jobs badge.** The artboard shows a count beside Trabajos; `SolidQueue::FailedExecution`
+- ✅ **No failed-jobs badge, and the artboard caught up 2026-08-27.** `SolidQueue::FailedExecution`
   lives in another database and counting it put a cross-database query in the hub's request path —
-  which aborted the transaction outright in test. Mission Control shows the real number on open.
+  which aborted the transaction outright in test. The artboard kept showing a hardcoded `0` beside
+  Trabajos for two months after this was written; it shows nothing now and links to Mission Control.
+  **The real numbers were never lost**: `admin/settings/show.html.erb:14` renders
+  *"n en proceso · n fallidos · n programados"* on Estado y mantenimiento, where the query is paid on
+  a screen the reader chose to open.
 - 🐞 **Found by the screenshot: the currency control listed USD before MXN**, because
   `Asset::SUPPORTED_CURRENCIES` is ordered for validation and the view iterated it. On an MXN-first
   product the local currency reads first.

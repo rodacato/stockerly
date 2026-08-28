@@ -2647,6 +2647,97 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "D7F4lj",
+      "x": 1260,
+      "y": 2021,
+      "name": "HeaderBar",
+      "reusable": true,
+      "width": 390,
+      "fill": "$bg-surface",
+      "stroke": "$border-default",
+      "strokeWidth": {
+        "bottom": 1
+      },
+      "gap": "$space-3",
+      "padding": [
+        12,
+        20
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "M12wwg",
+          "name": "BackWrap",
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "YvTT4",
+              "name": "Back",
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "$fg-default"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "qT2g0",
+          "name": "T",
+          "fill": "$fg-default",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Título",
+          "fontFamily": "$font-display",
+          "fontSize": 18,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "DBUhM",
+          "name": "Accion",
+          "height": 44,
+          "gap": 5,
+          "padding": [
+            0,
+            8
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "tmKWM",
+              "name": "i",
+              "width": 15,
+              "height": 15,
+              "icon": "check-check",
+              "library": "lucide",
+              "fill": "$primary"
+            },
+            {
+              "type": "text",
+              "id": "q9YUwi",
+              "name": "t",
+              "fill": "$primary",
+              "content": "Acción",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
@@ -2658,7 +2749,7 @@
   "variables": {
     "kit-version": {
       "type": "string",
-      "value": "0.8.1"
+      "value": "0.9.0"
     },
     "font-display": {
       "type": "string",
