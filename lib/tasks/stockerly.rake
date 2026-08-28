@@ -71,4 +71,22 @@ namespace :stockerly do
       puts "Promoted #{user.email} to admin."
     end
   end
+
+  desc "Reset a user's password from the box, for when mail is not configured (D55)"
+  task :reset_password, [ :email ] => :environment do |_t, args|
+    email = args[:email]
+    abort "Usage: rake stockerly:reset_password[user@example.com]" if email.blank?
+
+    user = User.find_by(email: email.downcase.strip)
+    abort "User not found: #{email}" unless user
+    abort "No TTY: run this from an interactive shell so the password is not echoed." unless $stdin.tty?
+
+    require "io/console"
+    password = $stdin.getpass("New password for #{user.email}: ")
+    abort "Passwords do not match." unless password == $stdin.getpass("Repeat: ")
+
+    user.update!(password: password)
+    puts "Password updated for #{user.email}."
+    puts "Two-factor authentication is unchanged." if user.otp_enrolled?
+  end
 end
