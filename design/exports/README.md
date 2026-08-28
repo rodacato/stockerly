@@ -54,6 +54,9 @@ tells a reviewer nothing.
 | `reglas-nueva-regla.png` | `[Reglas] / Nueva regla / Sheet` |
 | `reglas-bandeja.png` | `[Reglas] / Bandeja / Default` |
 | `reglas-confluencia.png` | `[Reglas] / Confluencia / Default` |
+| `auth-totp-alta.png` | `[Auth] / TOTP · Alta / Default` — ADR-018 |
+| `auth-codigos-recuperacion.png` | `[Auth] / Códigos de recuperación / Default` — ADR-018 |
+| `auth-codigo-recuperacion.png` | `[Auth] / Código de recuperación / Default` — ADR-018 |
 | `descubrir-olas.png` | `[Descubrir] / Olas / Default` |
 | `descubrir-olas-sin-datos.png` | `[Descubrir] / Olas / Sin datos` |
 | `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
@@ -87,6 +90,14 @@ decision, not a redraw.
 
 **Nothing missing.** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention
 existed; both were caught up on 2026-08-24. Every artboard in every flow now has a PNG here.
+
+**Auth gained three artboards 2026-08-27** — TOTP enrollment, the one-time recovery-code display
+and recovery-code entry at login (ADR-018). `auth-2fa.png` was re-shot: its `Enviar código por
+correo` link is now `Usar un código de recuperación`, email OTP being explicitly out of scope. Per
+D4 none of the three needs a desktop variant.
+
+**`_playground.pen` has no exports on purpose.** It holds exploration, not screens; `Panel · V1…V4`
+moved there from `auth.pen` in the same pass.
 
 **Cockpit re-shot 2026-08-27** on kit 0.8.0 — all nine artboards, because the vendored `TopBar`
 grew 57 → 76 and `TopBarDesktop` 76 → 80. `cockpit-panorama-black-swan.png` is gone with its
