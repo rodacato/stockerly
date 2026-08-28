@@ -10,11 +10,11 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
 
 SimpleCov.start 'rails' do
   enable_coverage :branch
-  add_filter '/spec/'
-  add_filter '/config/'
-  add_filter '/vendor/'
-  add_filter 'app/jobs/application_job.rb'
-  add_filter 'app/mailers/application_mailer.rb'
+  skip '/spec/'
+  skip '/config/'
+  skip '/vendor/'
+  skip 'app/jobs/application_job.rb'
+  skip 'app/mailers/application_mailer.rb'
 end
 
 require 'spec_helper'
