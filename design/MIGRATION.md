@@ -26,7 +26,7 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 |---|---|---|---|
 | `ui-kit.lib.pen` | **0.8.0** | ✅ merged | — |
 | `flows/assets.pen` | **0.8.0** | ✅ PR #368 | — |
-| `flows/cockpit.pen` | **0.8.0** | tokens · D51 · D54 | the shell: 7 TopBar + 5 BottomNav copies, and the brief |
+| `flows/cockpit.pen` | **0.8.0** | ✅ shell · tokens · brief · exports | 3 items, one of them an owner's call |
 | `flows/auth.pen` | 0.7.0 | — | TOTP is real (ADR-018); three artboards to draw |
 | `flows/alerts.pen` | 0.7.0 | — | one artboard is dangerous to build from |
 | `flows/settings.pen` | 0.7.0 | — | a reversed decision still drawn, plus a `Seguridad` section (D52) |
@@ -37,25 +37,41 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 
 ---
 
-## `flows/cockpit.pen` — the largest, and the only one that redraws the shell
+## `flows/cockpit.pen` — migrated 2026-08-27, except three items
 
-**It does not vendor `TopBar`/`BottomNav`.** It carries **6 local TopBar copies and 4 local
-BottomNav copies**, so the 57 → 76 change is six edits here against one anywhere else. D32.1 logged
-this as waiting for "a batch someone asks for". This is that batch — consolidate while it is open.
+**Shell consolidated.** Six hand-built TopBars and four BottomNavs are now instances of three
+vendored components — `TopBar` (390×76), `TopBarDetail` (390×76) and `BottomNav` (390×62) — and
+`TopBarDesktop` moved 76 → 80. Zero local shell copies remain, verified by query, not by eye.
 
-- ✅ **Banner removed and the artboard deleted** (2026-08-27). Measured first: the banner text existed on
-  `Black swan` and nowhere else, which is D51's premise confirmed rather than assumed.
-- **Delete `Panorama / Black swan`** (D51, answered 2026-08-27). The banner was the only thing
-  separating it from `Default`, so it goes in the same pass — one fewer artboard to re-vendor,
-  and one fewer of the six local TopBar copies.
-- **Un-gate `Movimientos`** (D42) and rename it per D48 — the observation sense is **Señales**.
-- **Draw the `Cerrar posición` confirmation.** It does not exist. A destructive write flow with no
-  confirmation step, confirmed against `exports/README.md`'s complete inventory.
-- **`Señales` / `Más análisis` need the reading's date**, per #306's DoD and ADR-013 — a stale
-  reading may not be presented as today's state. Whether the artboard has a date slot is unknown.
-- ✅ **`considera vender` stays** — D36 was wrong and is reversed by **D54**: ADR-014 lists the phrase in its
-  allowed catalogue, and D36 judged it against ADR-001 a day after ADR-014 amended that. Read the ADR chain
-  (001 → 013 → 014) forward before executing anything that rests on ADR-001.
+**The six TopBars were two variants, not six copies of one**, and measuring them before replacing
+is what kept the file honest — the same lesson `NavRow` taught in `assets.pen`:
+
+- Three root bars (`Brand`/`Bell`) → the kit's `TopBar`.
+- Three detail bars (`TL`/`Bm`) → `TopBarDetail`, **a kit gap**: the kit ships the root bar only.
+  `Mi posición` carries `bookmark-check` and `Análisis` carries `bookmark` — a deliberate state
+  difference, preserved as an instance override rather than flattened.
+- 🐞 **`Movimientos` was carrying the asset detail's leftovers** — the subtitle *"Nvidia"* and a
+  bookmark icon, on a screen that lists signals across the whole portfolio. Both dropped.
+- `Back` and `Bm` were 22 and 20px. They are 44 now, matching the kit's root bar and the code, which
+  already had it (`_asset_header.html.erb`, `size-11`). Fixing the root and not the detail would have
+  introduced an inconsistency in the pass that exists to remove them.
+
+**Also done:** the 14 tokens and `kit-version-source` 0.8.0 · `Panorama / Black swan` deleted (D51)
+· `considera vender` restored (D54) · the brief rewritten whole, not patched · `Movimientos` grown
+733 → 844 to meet D7's floor, a pre-existing breach · all nine artboards re-shot.
+
+### Still pending here
+
+- ❓ **Rename `Movimientos` per D48.** The observation word is *Señales*, but adopting it gives one
+  word to a screen, to the Panorama's `Movimientos de interés` band (a name ADR-013 explicitly
+  blessed) and to a block that already exists inside `Asset · Análisis`. **Owner's call.**
+- **`Señales` carries no reading date.** Measured: zero timestamps in the block. ADR-013 and ADR-014
+  both require it — *a stale reading may not be presented as today's state* — and #306's DoD asks
+  for it. This is new design, not migration: it needs the copy decided.
+- **The `Cerrar posición` confirmation still does not exist.** A destructive write flow with no
+  confirmation step.
+- `Más análisis` **is not in this file under that name** — the earlier version of this ledger assumed
+  it was. Whatever it refers to, it is not an artboard here.
 
 ## `flows/auth.pen` + `_playground.pen` — the only pair that must be open together
 
@@ -126,6 +142,12 @@ this as waiting for "a batch someone asks for". This is that batch — consolida
   had drifted ~6% larger and snapped back, but a fourth carried a deliberate `$primary` accent
   because it is the recommended path out of an empty portfolio. It ships as an instance override.
   If a second flow needs it, that override has earned a variant.
+
+- **The kit has no detail `TopBar`.** It ships the root bar (`Brand`/`Bell`) only, so `cockpit.pen`
+  vendored `TopBarDetail` (`Back`/`Title`+`Sub`/`Bookmark`) locally. Not promoted — the method says
+  do not promote unasked. `auth.pen`, `alerts.pen` and `settings.pen` all have back-navigation
+  screens; if any of them needs the same bar, that is the second consumer and the promotion is
+  earned. Its `Bookmark` slot is asset-specific and would come off in a kit version.
 
 ## Method notes this migration paid for
 
