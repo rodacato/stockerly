@@ -226,6 +226,39 @@ component update rather than a consolidation.
   screens; if any of them needs the same bar, that is the second consumer and the promotion is
   earned. Its `Bookmark` slot is asset-specific and would come off in a kit version.
 
+## Cross-flow consistency sweep — 2026-08-27
+
+Run after `settings` closed, against the rules `README.md` states rather than against the plan. Every
+line below was measured; nothing here was assumed.
+
+**Clean, verified:**
+
+| Check | Result |
+|---|---|
+| Exports vs index | **64 PNGs on disk, 64 listed** — zero orphans, zero missing |
+| *"Tokens only — zero hex in a flow"* | **zero real hex** in any flow |
+| D7's 390×844 floor | **zero** artboards under it (after `Movimientos` 733→844 and `Registros` 670→844) |
+| One active nav item per artboard | **zero** doubles left (after settings' master) |
+| Retired providers named in artboards | **zero** (after the `Polygon Sync` log row) |
+| Token set vs the kit, by membership | exact in `cockpit`, `assets`, `discover`, `alerts`, `settings`, `_playground` |
+
+**Found and fixed: `auth.pen` was missing `scrim`.** The only migrated flow short a kit token — and
+**the reason generalises, which is the real finding**: every migration in this pass installed the
+*delta* (0.8.0's 14 new tokens) and never reconciled against the kit's full set. A count check would
+not have caught it either, since 52 vs 52 hides a missing token paired with an extra one. Only set
+membership does. **Reconcile against the kit's list, never against the diff.**
+
+**Found, not fixed:**
+
+- **The hex rule has no token for its own exception.** `cockpit.pen` carries 44 literals and all 44
+  are `#00000000` — transparency, not colour. The kit has no `transparent` token, so a hex literal is
+  the only way to say "no fill", and the rule as written forbids the only available spelling. Worth a
+  token in a future bump, or a sentence in the rule.
+- `_playground.pen` sits at **0.8.1** against the kit's 0.9.0. Behind, not diverging: 0.9.0 added a
+  component and no tokens, and `_playground` has no back-header to vendor it into.
+- `brand.pen` sits at **0.6.0** without the 14 new tokens. Behind by design — the ledger has always
+  said hygiene only.
+
 ## Method notes this migration paid for
 
 - **A `.pen` write reaches disk with a LAG.** `git status` showing "modified" and `git hash-object`

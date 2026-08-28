@@ -2937,6 +2937,23 @@
           }
         }
       ]
+    },
+    "scrim": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F172A99",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"
