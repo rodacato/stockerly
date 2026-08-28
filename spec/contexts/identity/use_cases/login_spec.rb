@@ -32,16 +32,6 @@ RSpec.describe Identity::UseCases::Login do
       expect(result.failure[0]).to eq(:invalid_credentials)
     end
 
-    it "returns Failure for suspended user" do
-      user.update!(status: :suspended)
-
-      result = described_class.call(params: { email: user.email, password: "password123" })
-
-      expect(result).to be_failure
-      expect(result.failure[0]).to eq(:suspended)
-      expect(result.failure[1]).to include("suspendida")
-    end
-
     it "returns Failure for empty email" do
       result = described_class.call(params: { email: "", password: "password123" })
 

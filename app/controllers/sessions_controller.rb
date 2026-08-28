@@ -15,9 +15,6 @@ class SessionsController < ApplicationController
       start_session(user)
       EventBus.publish(Identity::Events::UserLoggedIn.new(user_id: user.id, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
       redirect_to dashboard_path, notice: t("auth.flash.bienvenida", nombre: user.full_name)
-    in Dry::Monads::Failure[ :suspended, message ]
-      publish_login_failed
-      redirect_to login_path, alert: message
     in Dry::Monads::Failure[ :invalid_credentials, message ]
       publish_login_failed
       flash.now[:alert] = message

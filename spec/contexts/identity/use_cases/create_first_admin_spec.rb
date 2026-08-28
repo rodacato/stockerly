@@ -18,8 +18,6 @@ RSpec.describe Identity::UseCases::CreateFirstAdmin do
         expect(result).to be_success
         user = result.value!
         expect(user.admin?).to be true
-        expect(user.is_verified).to be true
-        expect(user.email_verified_at).to be_present
       end
 
       it "bootstraps integrations" do

@@ -6,7 +6,7 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
   let!(:admin) do
     create(:user, :admin,
            email: "admin@test.com", password: "password123",
-           onboarded_at: Time.current, email_verified_at: Time.current)
+           onboarded_at: Time.current)
   end
   let!(:portfolio) { create(:portfolio, user: admin) }
 

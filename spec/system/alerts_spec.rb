@@ -5,7 +5,7 @@ RSpec.describe "Alert management", type: :system do
     driven_by :rack_test
   end
 
-  let!(:user) { create(:user, email: "alerts@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
+  let!(:user) { create(:user, email: "alerts@test.com", password: "password123", onboarded_at: Time.current) }
   let!(:portfolio) { create(:portfolio, user: user) }
   let!(:preference) { create(:alert_preference, user: user) }
 

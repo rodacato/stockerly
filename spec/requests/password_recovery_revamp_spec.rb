@@ -4,7 +4,7 @@ require "rails_helper"
 # pattern matching /login + /register, the 5 dedicated states, and the
 # privacy-preserving forgot-sent message.
 RSpec.describe "Password recovery revamp (S11 #147)", type: :request do
-  let!(:user) { create(:user, email: "recovery@example.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
+  let!(:user) { create(:user, email: "recovery@example.com", password: "password123", onboarded_at: Time.current) }
 
   describe "GET /forgot-password (state 1 — forgot form)" do
     before { get forgot_password_path }

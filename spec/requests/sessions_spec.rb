@@ -38,14 +38,6 @@ RSpec.describe "Sessions", type: :request do
       expect(response.body).to include("Correo o contraseña inválidos")
     end
 
-    it "rejects suspended users" do
-      user.update!(status: :suspended)
-      post login_path, params: { email: "test@example.com", password: "password123" }
-      expect(response).to redirect_to(login_path)
-      follow_redirect!
-      expect(response.body).to include("suspendida")
-    end
-
     it "handles case-insensitive email" do
       post login_path, params: { email: "TEST@EXAMPLE.COM", password: "password123" }
       expect(response).to redirect_to(dashboard_path)

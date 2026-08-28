@@ -5,7 +5,7 @@ RSpec.describe "Disabled button placeholders removed", type: :system do
     driven_by :rack_test
   end
 
-  let!(:user) { create(:user, email: "buttons@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
+  let!(:user) { create(:user, email: "buttons@test.com", password: "password123", onboarded_at: Time.current) }
   let!(:portfolio) { create(:portfolio, user: user) }
 
   before do

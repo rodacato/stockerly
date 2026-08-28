@@ -5,7 +5,7 @@ RSpec.describe "Trade management", type: :system do
     driven_by :rack_test
   end
 
-  let!(:user) { create(:user, email: "trade_mgmt@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
+  let!(:user) { create(:user, email: "trade_mgmt@test.com", password: "password123", onboarded_at: Time.current) }
   let!(:portfolio) { create(:portfolio, user: user) }
   let!(:asset) { create(:asset, :stock, symbol: "AAPL", name: "Apple Inc.", current_price: 189.0) }
   let!(:position) { create(:position, portfolio: portfolio, asset: asset, shares: 10.0, avg_cost: 150.0, status: :open) }

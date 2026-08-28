@@ -8,7 +8,7 @@ RSpec.describe "Password reset flow", type: :system do
     driven_by :rack_test
   end
 
-  let!(:user) { create(:user, email: "reset@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
+  let!(:user) { create(:user, email: "reset@test.com", password: "password123", onboarded_at: Time.current) }
 
   it "navigates to forgot password page from login (state 1)" do
     visit login_path

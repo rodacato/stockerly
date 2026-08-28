@@ -7,7 +7,7 @@ require "rails_helper"
 RSpec.describe "Stockerly wordmark across surfaces", type: :system do
   before { driven_by :rack_test }
 
-  let!(:user) { create(:user, email: "logo@test.com", password: "password123", onboarded_at: Time.current, email_verified_at: Time.current) }
+  let!(:user) { create(:user, email: "logo@test.com", password: "password123", onboarded_at: Time.current) }
 
   describe "public surfaces" do
     it "renders the wordmark on the landing page" do
