@@ -34,3 +34,40 @@ RSpec.describe "Onboarding · the security step", type: :request do
     expect(user.reload.otp_enrolled?).to be false
   end
 end
+
+RSpec.describe "Onboarding · enrolling from inside the wizard", type: :request do
+  let(:user) { create(:user) }
+
+  before { login_as_without_onboarding(user) }
+
+  # The step's whole point is the button. An account mid-wizard is not
+  # `onboarded?`, so AuthenticatedController's guard would bounce it back to
+  # step 1 — the step would lead to the beginning of the wizard it is inside.
+  it "reaches the enrollment screen instead of being thrown back to step 1" do
+    get totp_enrollment_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("<svg")
+  end
+
+  # Asserting on the CTA rather than on the page: the app layout renders an
+  # "Ajustes" tab, so `not_to include(settings_path)` would fail for a reason
+  # that has nothing to do with where the button goes.
+  def cta_href(label)
+    Nokogiri::HTML(response.body).css("a").find { |a| a.text.strip == label }&.[](:href)
+  end
+
+  it "returns to the wizard's summary, not to Ajustes, once the codes are shown" do
+    get totp_enrollment_path
+    post totp_enrollment_path, params: { code: ROTP::TOTP.new(user.reload.otp_secret).now }
+    follow_redirect!
+
+    expect(cta_href("Ya los guardé, continuar")).to eq(onboarding_complete_path)
+  end
+
+  it "offers the skip back into the wizard, not into Ajustes" do
+    get totp_enrollment_path
+
+    expect(cta_href("Ahora no")).to eq(onboarding_complete_path)
+  end
+end

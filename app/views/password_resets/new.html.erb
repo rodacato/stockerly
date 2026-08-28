@@ -6,10 +6,7 @@
   <%= render "shared/auth_header", title: t("auth.forgot.titulo"), subtitle: t("auth.forgot.subtitulo") %>
 
   <% if flash[:alert].present? %>
-    <p class="flex items-center gap-2 rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
-      <span class="material-symbols-outlined text-lg" aria-hidden="true">error</span>
-      <%= flash[:alert] %>
-    </p>
+    <%= render "shared/flash_alert", message: flash[:alert] %>
   <% end %>
 
   <%= form_with url: forgot_password_path, method: :post, class: "flex flex-col gap-4" do %>
