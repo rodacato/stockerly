@@ -2143,13 +2143,13 @@
                   "height": 20,
                   "icon": "layout-grid",
                   "library": "lucide",
-                  "fill": "$primary"
+                  "fill": "$primary-hover"
                 },
                 {
                   "type": "text",
                   "id": "C1Qoza",
                   "name": "t",
-                  "fill": "$primary",
+                  "fill": "$primary-hover",
                   "content": "Panorama",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -2658,7 +2658,7 @@
   "variables": {
     "kit-version": {
       "type": "string",
-      "value": "0.8.0"
+      "value": "0.8.1"
     },
     "font-display": {
       "type": "string",
@@ -3096,7 +3096,7 @@
           }
         },
         {
-          "value": "#7B89FF",
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }

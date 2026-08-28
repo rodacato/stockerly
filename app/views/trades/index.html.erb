@@ -30,7 +30,7 @@
           <% [["todos", "Todos"], ["compras", "Compras"], ["ventas", "Ventas"]].each do |slug, label| %>
             <% active = (@tipo == slug) %>
             <%= link_to trades_path(tipo: slug, mercado: @mercado, anio: @anio),
-                  class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary bg-primary-muted border border-primary/25' : 'font-medium text-fg-subtle border border-border-default hover:bg-bg-muted'}" do %>
+                  class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary-hover bg-primary-muted border border-primary/25' : 'font-medium text-fg-subtle border border-border-default hover:bg-bg-muted'}" do %>
               <%= label %>
             <% end %>
           <% end %>
@@ -46,7 +46,7 @@
           <% [["todos", "Todos"], ["mxn", "MXN"], ["usd", "USD"]].each do |slug, label| %>
             <% active = (@mercado == slug) %>
             <%= link_to trades_path(tipo: @tipo, mercado: slug, anio: @anio),
-                  class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary bg-primary-muted border border-primary/25' : 'font-medium text-fg-subtle border border-border-default hover:bg-bg-muted'}" do %>
+                  class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary-hover bg-primary-muted border border-primary/25' : 'font-medium text-fg-subtle border border-border-default hover:bg-bg-muted'}" do %>
               <%= label %>
             <% end %>
           <% end %>
@@ -64,7 +64,7 @@
               <% label = (slug == "todos" ? "Todos" : slug) %>
               <% active = (@anio == slug) %>
               <%= link_to trades_path(tipo: @tipo, mercado: @mercado, anio: slug),
-                    class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary bg-primary-muted border border-primary/25' : 'font-medium text-fg-subtle border border-border-default hover:bg-bg-muted'}" do %>
+                    class: "inline-flex items-center rounded-full px-3 py-1.5 text-xs #{active ? 'font-semibold text-primary-hover bg-primary-muted border border-primary/25' : 'font-medium text-fg-subtle border border-border-default hover:bg-bg-muted'}" do %>
                 <%= label %>
               <% end %>
             <% end %>

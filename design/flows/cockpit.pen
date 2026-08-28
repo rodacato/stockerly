@@ -1990,7 +1990,7 @@
                           "type": "text",
                           "id": "ITYg4",
                           "name": "t",
-                          "fill": "$primary",
+                          "fill": "$primary-hover",
                           "content": "3M",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
@@ -2344,7 +2344,7 @@
                   "type": "text",
                   "id": "tVrug",
                   "name": "H",
-                  "fill": "$primary",
+                  "fill": "$primary-hover",
                   "content": "VS. TU PLAN",
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
@@ -3332,7 +3332,7 @@
                           "type": "text",
                           "id": "lH8kt",
                           "name": "t",
-                          "fill": "$primary",
+                          "fill": "$primary-hover",
                           "content": "1.3× prom.",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -5677,7 +5677,7 @@
                           "type": "text",
                           "id": "wLns9",
                           "name": "t",
-                          "fill": "$primary",
+                          "fill": "$primary-hover",
                           "content": "1A",
                           "fontFamily": "$font-sans",
                           "fontSize": 12,
@@ -6453,7 +6453,7 @@
                   "type": "text",
                   "id": "L3i8J2",
                   "name": "t",
-                  "fill": "$primary",
+                  "fill": "$primary-hover",
                   "content": "Panorama",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -7934,7 +7934,7 @@
                                           "type": "text",
                                           "id": "iE6uS",
                                           "name": "t",
-                                          "fill": "$primary",
+                                          "fill": "$primary-hover",
                                           "content": "3M",
                                           "fontFamily": "$font-mono",
                                           "fontSize": 12,
@@ -9084,7 +9084,7 @@
                                   "type": "text",
                                   "id": "eOxin",
                                   "name": "H",
-                                  "fill": "$primary",
+                                  "fill": "$primary-hover",
                                   "content": "VS. TU PLAN",
                                   "fontFamily": "$font-mono",
                                   "fontSize": 11,
@@ -9443,7 +9443,7 @@
                                           "type": "text",
                                           "id": "hyDXs",
                                           "name": "t",
-                                          "fill": "$primary",
+                                          "fill": "$primary-hover",
                                           "content": "1.3× prom.",
                                           "fontFamily": "$font-mono",
                                           "fontSize": 11,
@@ -10439,7 +10439,7 @@
                                   "type": "text",
                                   "id": "AII9u",
                                   "name": "t",
-                                  "fill": "$primary",
+                                  "fill": "$primary-hover",
                                   "content": "1A",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 12,
@@ -11676,7 +11676,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.8.0"
+      "value": "0.8.1"
     },
     "font-display": {
       "type": "string",
@@ -12114,7 +12114,7 @@
           }
         },
         {
-          "value": "#7B89FF",
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }
