@@ -251,8 +251,9 @@ Deploys are serialized (`concurrency: deploy`, no cancel-in-progress).
 
 ## 7. Useful Kamal Commands
 
-All Kamal commands run from your **local machine** (not the VPS), and every one of them needs the
-same variables the first deploy needed — `.kamal/secrets` reads them straight from your shell.
+All Kamal commands run from your **local machine** (not the VPS). Commands that *change* the
+deployment need the same variables the first deploy needed — `.kamal/secrets` reads them straight
+from your shell. Read-only commands do not; see [From the devcontainer](#from-the-devcontainer).
 
 There is no `.env.production` in this repo: nothing creates it and `.gitignore` ignores `/.env*`, so
 `source .env.production` fails. Either re-export the step 4 block in the shell you are working in,
@@ -281,6 +282,35 @@ bin/kamal accessory restart postgres  # Restart PostgreSQL
 
 The aliases are defined in `config/deploy.yml` under `aliases:` — that block is the authority if
 this list ever drifts.
+
+### From the devcontainer
+
+The devcontainer can run the read-only commands without holding any secret. Copy the example file
+once and set the server IP:
+
+```bash
+cp .devcontainer/local.env.example .devcontainer/local.env
+$EDITOR .devcontainer/local.env      # set HOST_IP; the file is gitignored
+```
+
+`.devcontainer/kamal-env.sh` is sourced by every shell and supplies what GitHub Actions supplies for
+free in CI: `GITHUB_REPOSITORY` and `GITHUB_ACTOR` derived from the git remote, plus `HOST_IP` from
+that file. Without it the ERB in `config/deploy.yml` renders nil and Kamal aborts with
+`image: should be a string`.
+
+Available, since these only read:
+
+```bash
+bin/kamal config                      # Resolved config — verify before changing anything
+bin/kamal app details                 # Running containers, image and uptime
+bin/kamal accessory details postgres  # PostgreSQL accessory status
+bin/kamal app logs -r job -n 200      # Production logs, per role
+bin/kamal audit                       # Deploy history with timestamps
+```
+
+Not available, because they need the secrets or a local Docker daemon: `deploy`, `rollback`,
+`migrate`, `build`, and the interactive aliases (`console`, `shell`, `db`). Run those from the host,
+or deploy through GitHub Actions as usual.
 
 ## Prometheus Metrics (optional)
 

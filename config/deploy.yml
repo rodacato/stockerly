@@ -45,9 +45,9 @@ env:
     # variable is "true" AND the METRICS_TOKEN secret is set. Toggle via the
     # GitHub Environment variable — no code change needed.
     METRICS_ENABLED: <%= ENV.fetch("METRICS_ENABLED", "false") %>
-    SENTRY_ENVIRONMENT: <%= ENV["SENTRY_ENVIRONMENT"] %>
-    SENTRY_TRACES_SAMPLE_RATE: <%= ENV["SENTRY_TRACES_SAMPLE_RATE"] %>
-    SENTRY_RELEASE: <%= ENV["SENTRY_RELEASE"] %>
+    SENTRY_ENVIRONMENT: "<%= ENV.fetch("SENTRY_ENVIRONMENT", "production") %>"
+    SENTRY_TRACES_SAMPLE_RATE: "<%= ENV.fetch("SENTRY_TRACES_SAMPLE_RATE", "0") %>"
+    SENTRY_RELEASE: "<%= ENV.fetch("SENTRY_RELEASE", "") %>"
   secret:
     - SECRET_KEY_BASE
     - POSTGRES_PASSWORD

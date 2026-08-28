@@ -19,6 +19,9 @@
 /.env*
 !/.env.example
 
+# Local, non-secret Kamal values for the devcontainer.
+/.devcontainer/local.env
+
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
