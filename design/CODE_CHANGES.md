@@ -952,10 +952,27 @@ writing keys for it now is work for a surface that is scheduled to go.
 
 ---
 
-## 16. Historial absorbs `/trades`, and seven debts go with it (D60) — work order
+## 16. Historial absorbs `/trades`, and seven debts go with it (D60) — SHIPPED
 
-**Status:** approved, not started. [D60](DECISIONS.md) decided it on 2026-08-28; no discovery card
-is owed because this rebuilds a drawn screen rather than adding a feature.
+**Status:** shipped 2026-08-28. [D60](DECISIONS.md) decided it the same day; no discovery card was
+owed because this rebuilt a drawn screen rather than adding a feature.
+
+**The number the artboard asked for did not exist.** `Posiciones cerradas` draws a realized gain, and
+nothing computed one. `TradesHelper` had a version whose own comment admitted it drifts — it values a
+sale against the position's *current* avg cost, which is not the cost at the moment of the sale.
+**A closed position has no such problem**: every trade it will ever have already exists, so
+`Trading::Domain::RealizedGain` is exact — proceeds minus cost, each leg at its own
+`fx_rate_at_execution`. It raises `MissingFxRate` rather than valuing a leg at 1:1, and the screen
+prints *"sin TC"* instead of a number derived from a guess.
+
+**Three orphans the deletion created**, each removed with the tests that kept it green:
+`TradesHelper#trades_summary_by_currency` lost its only call site, `components/_asset_badge` lost
+every render site, and `logo_spec`'s badge block went with it — including an example that visited the
+asset detail and asserted the symbol appeared, which passes whether the badge exists or not.
+
+**`trades_controller` measured 202 → 155 lines**, complexity 243.77 → 186.32 and smells 20 → 12.
+It stays **D**: what is left is the pattern-match arms, which is what the file looked like before
+`index` was ever there.
 
 **Why this one first.** It is the only remaining item that closes several others by existing.
 Everything below is deferred **because** this screen was going to die, and collects itself the day
@@ -1002,4 +1019,4 @@ This is DSC-1's shape: an artboard drawn without its door. **It is a decision, a
 on the same screen** — `assets/index` already carries a foot-of-list `NavRow` to Tracked (D9), so a
 second one for Historial follows a pattern that screen established rather than inventing one.
 
-**Owed before the build starts.** Adrian's call; the rest of the work order does not depend on it.
+**Answered:** a foot-of-list entry in Activos, beside the one that already goes to Tracked. Built.

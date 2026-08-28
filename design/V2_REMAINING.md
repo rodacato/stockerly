@@ -182,6 +182,9 @@ colour tokens the kit's 51-token contract does not have**, and six of them are i
 
 A screen can score 0 on the slate column and still be painted in pre-2.0 semantics.
 
+**Mostly paid.** The 16 uses in `positions/_positions_table` went with the file on 2026-08-28
+(ACT-2), which was always the plan. What the earlier pass found and paid:
+
 **Partly paid 2026-08-28.** Every one of these is an exact alias of a contract token — `success` and
 `accent` are `positive` to the hex, `error` is `negative`, `secondary` is `fg-default`,
 `background-light`/`background-dark` are the two halves of `bg-canvas` — so migrating is a rename,
@@ -377,7 +380,7 @@ one partial, five render sites.
 Not `TopBarDetail`: that one is cockpit-local, has a two-line ticker title and a bookmark, and was
 measured against `HeaderBar` and found to be a different component.
 
-### KIT-4 🟡 `MovementItem` exists as a table row, and the design retired the table
+### KIT-4 ✅ `MovementItem` is a card — shipped 2026-08-28 with ACT-2
 
 `trades/_trade_row.html.erb` is a `<tr>` with nine table tags, rendered from `trades/index.html.erb:113`
 and `positions/_positions_table.html.erb:37`. The kit's `MovementItem` is a card row, promoted in
@@ -666,7 +669,7 @@ CKP-3/CKP-5.
 Both need their own 4-filter card before a build, and CSV import in particular is a feature, not a
 screen.
 
-### ACT-2 🔴 `Historial` is designed as three sections; the code is the pre-redesign `/positions` with four tabs
+### ACT-2 ✅ `Historial` shipped 2026-08-28 as the three drawn sections
 
 The artboard (`Y6vkn`) is one scroll, three sections, no tab control: **Movimientos · Dividendos
 cobrados · Posiciones cerradas**. D43 dropped *posiciones abiertas* because it duplicated Holdings.
@@ -687,7 +690,7 @@ Three more things are wrong around it:
   and **neither field is drawn in any artboard**. Either the design owes them a home or they are a
   1.0 feature nobody retired.
 
-### ACT-3 🔴 `/trades` has zero inbound links — decided 2026-08-28: `Historial` absorbs it (D60)
+### ACT-3 ✅ `/trades` is gone — Historial absorbed it 2026-08-28 (D60)
 
 Measured: every `trades_path` in a **view** lives inside `app/views/trades/` itself, and the only
 others are `trades_controller`'s own redirects. Nothing in the nav, the Activos screen, the
@@ -1041,13 +1044,16 @@ not `create` / `update` / `destroy`, which is where all six blocks live.
 ADR-011 puts controller error strings on i18n. `sessions_controller` already does it
 (`t("auth.flash.…")`), so the pattern is established and these two controllers are the holdouts.
 
+**Both halves paid.** `positions_controller`'s four strings went with the rebuild on 2026-08-28.
+The original split, kept because the reasoning is the useful part:
+
 **Split 2026-08-28. `trades_controller`'s half is paid; `positions_controller`'s is not.** The six
 that survive D60 are now `trades.flash.*` keys — including `trade_notice`, whose *Compra*/*Venta*
 resolves through `side_compra`/`side_venta` rather than an inline ternary. `i18n-tasks` reports no
 missing and no unused keys. `positions_controller`'s four go with ACT-2's rebuild: writing keys for
 a screen being replaced is the same waste TD3 and TD4 are deferred for.
 
-### TD3 ⏸ — deferred to ACT-2, deliberately
+### TD3 ✅ — deleted with `trades#index` on 2026-08-28
 
 Filter parsing, `filter_side`, `filter_currency`, the year `pluck`, the 50-row cap and the two
 counts all live in the controller, reading `current_user.portfolio.trades` directly. `positions`,
@@ -1058,14 +1064,15 @@ This is the one that did not.
 Extracting a query object for code scheduled for deletion is the waste this tracker exists to
 name.
 
-### TD4 ⏸ — deferred to ACT-2, and it is a product question first
+### TD4 ✅ — the endpoint is gone (2026-08-28)
 
 `position.update(notes:, labels:)` plus a `parse_labels` that splits, strips, dedups and caps at 10
 — domain rules in a controller private method.
 
-**Deferred, because the refactor is the second question.** Neither `notes` nor `labels` is drawn in
-any artboard, so whether they survive at all is part of ACT-2's rebuild. Extracting a use case for
-two fields that may not exist next week is work done twice.
+**Answered by measuring, and the answer was to delete.** No view in `app/views` ever posted to
+`positions#update`, and no artboard draws `notes` or `labels` — a write endpoint reachable only by
+hand, with a spec keeping it green. That is X6's shape, so it went the same way. **The columns stay**:
+dropping data is its own decision and the endpoint was the dead part.
 
 ### TD5 — `market_controller#show`
 
@@ -1112,9 +1119,9 @@ reads as a record instead of a snapshot.
 3. **ACT-1** — the three-door empty state. The two missing doors are the product's own named fixes;
    each needs its own card.
 4. **AJU-1** — retire `/profile` into the hub. Needs the design pass first.
-5. **ACT-2** — rebuild `Historial` as the three drawn sections, and delete `/trades#index` with it.
-   **Unblocked 2026-08-28 (D60).** Closes KIT-4 and collapses TD1, TD2 and TD3 into the rebuild
-   rather than refactoring code that is about to go. Owes a `CODE_CHANGES` work order.
+5. ~~**ACT-2** — rebuild `Historial`, delete `/trades#index`.~~ ✅ **Shipped 2026-08-28** ([§16](CODE_CHANGES.md)).
+   It took ACT-3, KIT-4, TD3, TD4, TD2's second half and most of X1/TD7 with it — **seven items**,
+   which is what deferring them for this rebuild was betting on.
 6. **CKP-1** — `Movimientos`. Un-gated by D42, metric stated, query exists.
 7. **ALR-2** — suggested rules in the empty state. Assembly over data already in hand.
 8. **CKP-2** — the chart's range control. Data already loaded.
