@@ -283,6 +283,24 @@ bin/kamal accessory restart postgres  # Restart PostgreSQL
 The aliases are defined in `config/deploy.yml` under `aliases:` — that block is the authority if
 this list ever drifts.
 
+### Locked out: resetting a password without working mail
+
+`/forgot-password` sends a link by email, which is exactly what is most likely to be unconfigured
+on a fresh self-hosted box — so it is not the recovery path to rely on. Reset from the box instead:
+
+```bash
+bin/kamal shell
+bin/rails "stockerly:reset_password[you@example.com]"
+```
+
+It prompts twice, echoes nothing, and refuses to run without a TTY rather than printing the
+password into your scrollback. **Two-factor stays enrolled** — this replaces a password, not a
+second factor; if you also lost your authenticator, use one of the recovery codes shown at
+enrolment. The companion task is `stockerly:promote_admin[you@example.com]`.
+
+This exists because a required third-party service — including your own mail — may not be there on
+someone else's instance ([ADR-019](../architecture/adr/0019-self-contained-by-default.md), D55).
+
 ### From the devcontainer
 
 The devcontainer can run the read-only commands without holding any secret. Copy the example file
