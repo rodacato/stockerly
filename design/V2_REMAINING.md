@@ -486,7 +486,7 @@ locale has five entries — `us_stocks`, `crypto`, `etfs`, `mexican_stocks`, `fi
 category split as *"not a design call — the code had already made it"*, so the artboard simply
 did not finish catching up.
 
-### ONB-6 🟡 D59 — decided 2026-08-28: it stays a promise, and loses its checkmarks
+### ONB-6 ✅ D59 — applied 2026-08-28: it stays a promise, and lost its checkmarks
 
 **Decided: bullets instead of checkmarks, a fourth item, and the claim on its own line.** The
 `Stepper` is already a correct progress indicator, so giving the checklist real state would create a
@@ -498,9 +498,20 @@ carries the checklist on `Setup · Desktop`, `Integrations · Desktop` **and** `
 correctly drops it on `Welcome · Desktop`. So inside the wizard a reader sees *"Paso 1 de 4 · 25%"*
 beside three ticked items. On mobile the panel is not drawn at all, so this is desktop-only.
 
-**Three artboard instances to edit:** checkmarks → bullets, insert *Protege tu cuenta* third (the
-order is Integraciones · Activos · Seguridad · Listo), and split *100% libre y open source* onto its
-own line.
+**Applied to all three panels**, and the exports re-shot. The `Brand Panel` is `space_between`, so
+promoting the claim from a `Checklist` item to a panel-level `Claim` text pins it to the bottom on
+its own — no spacer, no variant.
+
+**Verified against the committed file, not against `git status`** — which showed nothing while the
+first write was still in flight, exactly as the method warns. `Protege tu cuenta` 1 → 4 (the
+`Seguridad` title plus three new rows), `100% libre y open source` **5 → 5** (moved, not
+duplicated), icon names `check` 32 → 20 and `minus` 0 → 12, which is 3 panels × 4 rows.
+
+⚠ **The `Brand Panel` is hand-built three times** and this edit had to be applied three times
+because of it. That is the `HeaderBar` shape — built four times in `settings.pen`, twice in
+`alerts.pen`, promoted to the kit at 0.9.0 on two consumers. **Three consumers is past that bar.**
+Not promoted here, because the method says not to promote unasked; logged so the next edit to this
+panel is the last one that costs three.
 
 ---
 
