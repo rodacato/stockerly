@@ -5,8 +5,10 @@
 > date it was taken, because this document's whole failure mode is a measurement outliving the
 > thing it measured.
 
-**As of 2026-08-27 the crossing is 18 kit components (0.7.0) against 15 partials, all of them
-referenced.** The header of this document read *"the kit's 13 components (0.4.0)"* and *"17
+**As of 2026-08-27 (second pass) the crossing is 20 kit components (0.9.0) against 16 partials, all
+of them referenced.** The first pass that day recorded 18 (0.7.0) against 15 — accurate when taken,
+and outlived within hours by two kit bumps and one partial created to close the defect this document
+itself had measured. That is the failure mode named at the top of this file, happening to this file. The header of this document read *"the kit's 13 components (0.4.0)"* and *"17
 partials"* until that date; both were counts from an earlier pass that nothing re-ran.
 
 **Measurement log** — kept so a reader can see the drift rather than only the latest number:
@@ -15,9 +17,10 @@ partials"* until that date; both were counts from an earlier pass that nothing r
 |---|---|---|---|
 | 2026-08-24 | 13 (0.4.0) | 19 partials, 11 alive | Seven had zero references in `app/`, `lib/` or `spec/`; an eighth rendered only into a Turbo Stream target no page mounts. So the crossing was 11 against 13. |
 | 2026-08-25 | 16 (0.5.0) | 17, all referenced | The eight dead ones gone — seven in the shell slice, `_asset_fundamentals` with that sweep. |
-| **2026-08-27** | **18 (0.7.0)** | **15, all referenced** | Re-run: `ls app/views/components/*.html.erb` and, per partial, `grep -rc "components/<name>" app lib spec`. Lowest is 1 file, highest is `_empty_state` at 9. |
+| 2026-08-27 | 18 (0.7.0) | 15, all referenced | Re-run: `ls app/views/components/*.html.erb` and, per partial, `grep -rc "components/<name>" app lib spec`. Lowest is 1 file, highest is `_empty_state` at 9. |
+| **2026-08-27** (2nd) | **20 (0.9.0)** | **16, all referenced** | Same commands. Kit gained `Segmented3` (0.8.0) and `HeaderBar` (0.9.0); code gained `_asset_price`, which closes the 🐞 below. |
 
-## A. The kit's 18 — where each one lives in code today
+## A. The kit's 20 — where each one lives in code today
 
 Re-measured 2026-08-27. The five rows at the bottom were **missing from this table entirely**: the
 kit gained `SidebarNav`, `TopBarDesktop` and `AppShellDesktop` in 0.5.0 and `Logo` / `LogoMark` in
@@ -44,6 +47,8 @@ kit gained `SidebarNav`, `TopBarDesktop` and `AppShellDesktop` in 0.5.0 and `Log
 | `AppShellDesktop` *(0.5.0)* | `layouts/app.html.erb` | ✅ **Shipped** (slice 1) | Not a partial — the layout composes the four shell partials and CSS picks the variant |
 | `Logo` *(0.7.0)* | `shared/_logo` | ✅ **Shipped** (§11) | `brand_logo(:light \| :dark)` owns the filenames |
 | `LogoMark` *(0.7.0)* | `shared/_logo_mark` | ✅ **Shipped** (§11) | The symbol alone |
+| `Segmented3` *(0.8.0)* | `components/_segmented` | ✅ **Shipped**, same partial | A second master only because Pencil instances cannot add children. **The code is right and the kit is the compromise**: one N-ary partial taking an `options` array. Do not mirror the split into the ERB. |
+| `HeaderBar` *(0.9.0)* | — | **Net-new, not built** | The back-header `settings.pen` hand-built four times and `alerts.pen` twice. No ERB equivalent: the instance screens still carry their admin styling, which is what §8 lists as the work left. Not cockpit's `TopBarDetail`, which stays flow-local. |
 
 Two things followed from the original crossing and one of them held. First, `TopBar` was the only
 genuine revamp — that is still true, and it is why the shell was slice 1. Second, the four
@@ -86,12 +91,13 @@ without asking for the frame, so mounting it would have been building a componen
 not draw. `AssetFundamentalsUpdated` keeps its logging handler. The stale
 `rescue ActionView::MissingTemplate` went with it.
 
-### Alive — 15, re-measured 2026-08-27
+### Alive — 16, re-measured 2026-08-27 (second pass)
 
 The whole directory, not a subset: `ls app/views/components/*.html.erb` returns exactly these
-fifteen, and each one is rendered from at least one file (`grep -rc "components/<name>" app lib
-spec`). Three rows this table used to carry — `_data_status`, `_index_card` and `_asset_price` —
-**named partials that no longer exist**, and one of those absences is a live defect (below).
+sixteen, and each one is rendered from at least one file (`grep -rc "components/<name>" app lib
+spec`). Two rows this table used to carry — `_data_status` and `_index_card` — **name partials that
+no longer exist**. A third, `_asset_price`, was in that list until 2026-08-27 and is back in the
+table above: the defect it recorded got fixed.
 
 | Partial | Rendered from | Note |
 |---|---|---|
@@ -101,6 +107,7 @@ spec`). Three rows this table used to carry — `_data_status`, `_index_card` an
 | `_sheet_dialog` | 4 | **Net-new.** The `+ Nueva` sheet D14 asked for; Reglas and the trade flow share it. |
 | `_sparkline` | 3 | ✅ **Rewritten in slice 3** — a line, not bars, and `_asset_row` now passes real `heights` instead of drawing an invented shape. |
 | `_asset_row` | 2 | The kit's `AssetRow`. |
+| `_asset_price` | 2 | ✅ **Created 2026-08-27**, closing the 🐞 below. The price block moved out of `market/_asset_header` into the partial the handler had always named. |
 | `_segmented` | 2 | **Net-new.** The kit's `Segmented`. |
 | `_watch_row` | 2 | **Net-new** — the `WatchRow` the 0.4.0 gap list kept flow-local in design. |
 | `_donut_chart` | 1 (2 renders) | Survives → Consolidado (slice 4). Kit gap: it needs a categorical ramp, still open. |
@@ -114,7 +121,28 @@ spec`). Three rows this table used to carry — `_data_status`, `_index_card` an
 - ~~`_index_card`~~ — no such partial. The row was already corrected once (*"not orphaned after
   all"*) and then the file went with `/market`'s listing under D31. Corrected twice, deleted once,
   never re-read.
-- ~~`_asset_price`~~ — see below. This is the one that matters.
+- ~~`_asset_price`~~ — **it exists again since 2026-08-27**; see below. It was the one that mattered.
+
+🐞 ✅ **RESOLVED 2026-08-27 — the broadcast was finished, not deleted.** Kept in full because the
+measurement was right and the way it was closed matters. **Neither of the two options this section
+offered was taken.** It framed the choice as *mount-or-delete* and said it was not this document's
+to make; the answer turned out to be a third thing — **the handler was already correct and the view
+half was missing**, so the price block moved out of `market/_asset_header.html.erb` into
+`components/_asset_price.html.erb`, the partial the handler had always named, and the header renders
+it at the `asset_price_<id>` id the broadcast targets. The handler also resolves the owner now,
+because a broadcast renders outside a request and has no `current_user`.
+
+**The spec was rewritten too, and that is the part worth carrying forward.** This section's sharpest
+line was that the spec *"asserts the call was made and never renders — it is green"*. It now lets
+the real broadcast render and reads the payload off the test adapter; deleting the partial makes it
+fail. Verified by deleting it.
+
+**A note on how this was found, because it is the argument for keeping this file.** The defect was
+fixed the same day from a session handoff that listed it independently, with the same diagnosis
+about the stubbed spec — and neither document knew about the other. Two registries measured the same
+bug and the fix came from one while the other still called it open for six more hours.
+
+The original measurement, unedited:
 
 🐞 **`_asset_price` is gone and its broadcast is still wired.** This table said *"Survives — the
 live-price mechanism the design keeps"*, and the `_asset_fundamentals` row above cited it as the
