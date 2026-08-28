@@ -31,7 +31,7 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 | `flows/alerts.pen` | **0.9.0** | ✅ | — |
 | `flows/settings.pen` | **0.9.0** | ✅ | — |
 | `flows/discover.pen` | **0.8.1** | ✅ | — |
-| `flows/onboarding.pen` | 0.7.0 | — | TOTP lands in the wizard (D52): nine artboards move |
+| `flows/onboarding.pen` | **0.9.0** | ✅ done | — |
 | `_playground.pen` | **0.8.1** | ✅ | — |
 | `brand.pen` | **0.9.0** | ✅ | — |
 
@@ -205,11 +205,46 @@ component update rather than a consolidation.
   measurement. Neither of those is fixed here — both are token-level.
 - ✅ Brief rewritten. Fifth of five found contradicting its own file.
 
-## `flows/onboarding.pen`
+## `flows/onboarding.pen` — done 2026-08-27, on 0.9.0. The last flow.
 
-- Check for a third `OptionCard` → `NavRow` consumer (kit 0.4.0 parked this for "when next open").
-- **It became the large one.** D52 puts a skippable TOTP step in the wizard, so the `Stepper`
-  gains a stage and all nine artboards move.
+- ✅ The 14 tokens · `kit-version-source` **0.9.0**. This flow vendors no shell, so 0.8.0's TopBar
+  growth never reached it.
+- ✅ **D52: the wizard gained a fourth step and the `Stepper` went 3 → 4** across all five instances.
+  Setup keeps no Stepper because it is *before* the wizard — it creates the account.
+- ✅ **`Seguridad` OFFERS enrolment; it does not perform it.** The QR, the one-time recovery-code
+  display and recovery-code entry are three artboards in `flows/auth.pen`, and redrawing them here
+  would be two files owning one flow. **It is step 3 of 4 and the position is the decision:** recovery
+  codes are shown once, so putting enrolment before the reader has configured anything lands the ten
+  codes they must not skim on the screen they are most likely to rush. No desktop artboard, the same
+  reason `Complete` has none — both inherit the wizard frame exactly.
+- ✅ **VOO and CETES split, and this was NOT a design call — the code had already made it.** The brief
+  carried it as an open question with the fix declined *"because it changes the screen's shape"*:
+  one card labelled `ETFS · RENTA FIJA MX` holding an S&P 500 equity ETF and Mexican government debt
+  (C1 Lucía). Measured against `config/locales/es-MX.yml`: `onboarding.categorias` has **five**
+  entries and `etfs` / `fixed_income` are separate ones. The artboard was behind the code — D33's
+  exact shape in `discover.pen`. Two cards now, mobile and desktop.
+- ✅ **The coherence flag against `auth.pen` was stale.** The brief said Setup is a split-panel while
+  Login is a plain centered card, *"flagged rather than fixed — the two files cannot be edited in one
+  session."* Measured: `[Auth] / Login · Desktop` is a 900 card = 420 Brand Panel + 480 Form Panel,
+  the same split-panel. Fixed in auth's own desktop pass and never propagated back. **The rule was
+  also over-read**: one-file-at-a-time governs *writing*, because JSON merges badly. Reading a second
+  file to check a claim costs nothing, and not reading it is how a false ⚠ survived four months.
+- ✅ 🐞 The Welcome `ContextCard`'s `Mark` was **56×56 inside a 28×28 `Glyph`** — the file's one
+  reported layout problem. Corrected. **The re-export came back byte-identical**, so the overflow was
+  structural and never visible; said plainly rather than claimed as a visible fix.
+- **The ledger asked to "check for a third `OptionCard` → `NavRow` consumer". There is no
+  `OptionCard` in this file** — the item had no subject here.
+- ✅ Brief rewritten. **Eighth of eight.** Not one brief in the system escaped contradicting its own
+  file; this one claimed `0.1.0` against a variable reading 0.7.0.
+
+### ❓ Still open — owner's call
+
+**The Brand Panel checklist.** It mixes three wizard STEPS with one CLAIM (*100% libre y open
+source*) and renders every item checked. In Setup that is a promise; reused in the wizard it reads
+*"all done"* on step 1, which is why the Stepper stays in the Form Panel — two elements describing
+progress in one view. Either the checklist gains state and the claim moves to its own line, or it
+stays a promise and the Stepper is the only progress indicator. **D52 sharpened it: the checklist
+names three steps against a wizard that now has four.**
 
 ## `brand.pen` — done 2026-08-27, on 0.9.0
 

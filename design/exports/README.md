@@ -91,6 +91,11 @@ decision, not a redraw.
 **Nothing missing.** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention
 existed; both were caught up on 2026-08-24. Every artboard in every flow now has a PNG here.
 
+**Onboarding re-shot 2026-08-27** — five artboards plus one new: the Stepper went 3 → 4 steps
+(D52), and `Assets` split its combined `ETFS · RENTA FIJA MX` card into two, catching up to a
+locale that has had five separate categories all along. `Seguridad` gets no desktop artboard, the
+same reason `Complete` gets none: both inherit the wizard frame exactly.
+
 **Descubrir re-shot 2026-08-27** — all three artboards, for the same reason Cockpit was: the
 vendored `TopBar` grew 57 → 76 and `TopBarDesktop` 76 → 80.
 
@@ -113,6 +118,7 @@ so an export that is never renamed survives as an orphan nobody can identify.
 | `onboarding-setup-desktop.png` | `[Onboarding] / Setup / Desktop` |
 | `onboarding-integrations.png` | `[Onboarding] / Integrations / Default` |
 | `onboarding-assets.png` | `[Onboarding] / Assets / Default` |
+| `onboarding-seguridad.png` | `[Onboarding] / Seguridad / Default` — the D52 step; it offers TOTP and lets you skip, the enrolment screens live in `auth.pen` |
 | `onboarding-complete.png` | `[Onboarding] / Complete / Default` |
 | `onboarding-welcome.png` | `[Onboarding] / Welcome / Default` |
 | `onboarding-integrations-desktop.png` | `[Onboarding] / Integrations / Desktop` |
