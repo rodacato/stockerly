@@ -44,28 +44,15 @@
 
 ### Milestones (sprints)
 
-| # | Milestone | State | Sprint goal (summary) |
-|---|---|---|---|
-| 1 | `2026-S02-truth-foundation` | closed | P0 multi-currency phase 1 + kill fake landing + Brand Discovery parallel |
-| 2 | `2026-S03-jtbd-alignment` | closed | Currency-aware calculators + deprecate LLM + non-JTBD analytics cleanup |
-| 3 | `2026-S04-jtbd-gap-fill` | closed | CETES maturity + JTBD #6 "Notable Observations" |
-| 4 | `2026-S05-architectural` | closed | ADR-002 + events cleanup + SimpleUseCase |
-| 5 | `2026-S06-visual-coherence` | closed | Landing/login with brand v2 + final tokens migration |
-| 6 | `2026-S07-beta-prep` | closed | LFPDPPP + invite codes + minimal onboarding |
-| 7 | `2026-S08-beta-readiness` | closed | — |
-| 8 | `2026-S09-design-pass` | closed | — |
-| 9 | `2026-S10-design-completion-and-invite-readiness` | open | — |
-
-This table drifts every sprint. The authoritative list is one command, so prefer it over reading
-the table:
+The authoritative list is one command — there is no copy of it here, because a table of sprint
+names in a file is stale the day a sprint opens:
 
 ```bash
 gh api 'repos/rodacato/stockerly/milestones?state=all' --jq '.[] | "[\(.number)] \(.title) — \(.state)"'
 ```
 
-Full goal for each milestone is in its description on GitHub (visible when opening the milestone).
-Milestones 7–9 predate this table and their summaries were never written down here; their
-descriptions on GitHub are the only record.
+Each milestone's goal lives in its description on GitHub, visible when you open it. That is the
+only record — sprint goals were never mirrored into this repo.
 
 ### Labels (taxonomy)
 

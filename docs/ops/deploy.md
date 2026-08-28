@@ -197,9 +197,7 @@ After the first deploy, visit `https://stockerly.notdefined.dev/setup` to run th
 
 > **There is no registration.** The pivot to a single-user tracker (ADR-010) deleted the sign-up
 > route along with the rest of the multi-user surface; there is no toggle for it anywhere. `/setup`
-> is the only path that creates an account, and it stops answering as soon as one exists. To start
-> over you drop and recreate the database — see `2.0-cutover.md` for the exact commands, and read
-> its banner first.
+> is the only path that creates an account, and it stops answering as soon as one exists.
 
 Once the Banxico key is configured, seed the FX history so a backdated trade values at its own day's rate:
 
@@ -208,6 +206,24 @@ bin/kamal app exec 'bin/rails data:backfill_fx_history'
 ```
 
 It is one free request for the whole USD/MXN FIX back to 1991, and it is idempotent — re-run it any time a gap appears.
+
+### Starting over from an empty database
+
+Only when you mean to destroy every trade, alert and encrypted provider key on the instance —
+there is no undo and no backup step below. The entrypoint runs `bin/rails db:prepare` on boot,
+which rebuilds an *empty* database to the current schema but will not wipe an existing one, so
+the database is dropped and recreated first:
+
+```bash
+bin/kamal app stop
+bin/kamal accessory exec postgres --interactive \
+  'psql -U stockerly -d postgres -c "DROP DATABASE IF EXISTS stockerly_production; CREATE DATABASE stockerly_production OWNER stockerly;"'
+bin/kamal deploy
+```
+
+The Solid Queue / Cache / Cable databases are separate (`*_queue`, `*_cache`, `*_cable`); if they
+carry stale state, recreate them the same way — otherwise `db:prepare` handles them. On the next
+boot the instance has no users, so it answers at `/setup` again.
 
 ## 6. Subsequent Deploys
 
