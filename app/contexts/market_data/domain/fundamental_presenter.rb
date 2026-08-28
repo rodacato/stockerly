@@ -72,9 +72,10 @@ module MarketData
       super
     end
 
+    # Must answer for exactly what method_missing serves: a key stored with a
+    # nil value is present to `key?` but not to `metric`, and that gap raised.
     def respond_to_missing?(name, include_private = false)
-      key = name.to_s
-      @metrics.key?(key) || ALIASES.fetch(key, []).any? { |alt| @metrics.key?(alt) } || super
+      !metric(name).nil? || super
     end
 
     private

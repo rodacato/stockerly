@@ -108,6 +108,42 @@ RSpec.describe MarketData::Domain::FundamentalPresenter do
     end
   end
 
+  # The gateways persist their misses as nil rather than omitting the key, and
+  # the view walks every definition through respond_to? before public_send.
+  describe "a key stored with a nil value" do
+    let(:fundamental) { build(:asset_fundamental, metrics: { "dividend_yield" => nil }) }
+
+    it "is not claimed by respond_to?" do
+      expect(presenter).not_to respond_to(:dividend_yield)
+    end
+
+    it "does not raise when the caller trusts respond_to? before public_send" do
+      value = presenter.respond_to?(:dividend_yield) ? presenter.public_send(:dividend_yield) : nil
+
+      expect(value).to be_nil
+    end
+
+    it "still reports a sibling key that did arrive" do
+      presenter = described_class.new(
+        asset: asset,
+        fundamental: build(:asset_fundamental, metrics: { "dividend_yield" => nil, "beta" => "2.31" })
+      )
+
+      expect(presenter).to respond_to(:beta)
+      expect(presenter.beta).to eq("2.31")
+    end
+
+    it "answers respond_to? through an alias the same way it answers metric" do
+      presenter = described_class.new(
+        asset: asset,
+        fundamental: build(:asset_fundamental, metrics: { "return_on_equity" => "1.57" })
+      )
+
+      expect(presenter).to respond_to(:roe)
+      expect(presenter.roe).to eq("1.57")
+    end
+  end
+
   describe "with nil fundamental" do
     let(:presenter) { described_class.new(asset: asset, fundamental: nil) }
 
