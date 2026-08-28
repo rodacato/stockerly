@@ -92,8 +92,13 @@ only from a console.
 The window is right for manual entry, where it guards against rewriting settled history, and
 wrong for import, where the mistake is minutes old even though the trade is not.
 
-**Fix:** record a batch id on each imported trade and offer "undo this import" while the batch
-is recent. That preserves the invariant the window protects instead of punching a hole in it.
+**Decided 2026-08-28:** no batch-id column, no exemption from the window. Three cheaper pieces
+cover it — the task is dry-run by default, `external_id` (§3.5) makes a re-run safe by
+construction, and a companion `stockerly:undo_import[path]` reads the same CSV, discards those
+trades by `external_id`, and recalculates the touched positions and rebuilds snapshots once.
+
+That is an undo without a migration, and it does the recalculation a console `destroy_all`
+would silently skip. The window keeps protecting what it was written to protect.
 
 ### 3.5 No idempotency — `trades` schema
 
@@ -115,9 +120,16 @@ Switch preferred to MXN later and every one of them is wrong — and
 `fx_rate_backfill:trades` will not repair them, because it only fills rows where the column
 `IS NULL` and these are not null, they are `1.0`. The damage is silent and lands on cost basis.
 
-**Fix:** out of scope for the import, but it must not be discovered later. Either the import
-records the trade-currency→MXN rate regardless of preference, or switching preferred currency
-grows a re-resolve step. Flagged for a decision, not solved here.
+**Decided 2026-08-28:** the import records the trade-currency→MXN rate always, regardless of the
+current preference. The app is self-hosted and Mexico-first; MXN is the stable reference, the
+preference is not.
+
+This costs nothing today. `Position#avg_cost_in` short-circuits when the target matches the
+asset's currency, so with `preferred = USD` and USD-denominated assets the stored rate is never
+read — and the day the preference flips to MXN it is already correct, with no backfill.
+
+Residual, pre-existing and out of scope: an MXN-denominated asset valued in USD would read the
+rate in the wrong direction. The import does not create this and none of the 25 symbols hit it.
 
 ### 3.7 Silent share truncation — `trades.shares` is `precision: 15, scale: 6`
 
@@ -195,15 +207,20 @@ rake task has been run enough times to show the friction is real.
 
 Phase 0 is not throwaway: if Phase 1 ever lands, its commit step calls the same importer.
 
-## 7. Open questions
+## 7. Decisions and what is still open
 
-1. **§3.6 FX semantics** — record the MXN rate regardless of preference, or add a re-resolve
-   step to changing preferred currency? Needs deciding before the first import, not after.
-2. **§3.4 batch undo** — worth building in Phase 0, or does "0 trades today, console is right
-   there" make it Phase 1 work?
-3. **The 8 catalogue-grade symbols** (`VT VWO VGT AVGO AMD INTC NFLX COIN`) — part of this, or
-   separate? The onboarding picker serves a stranger; the import serves the operator. Different
-   concerns that happen to share a symbol list.
+Resolved 2026-08-28:
+
+1. **§3.6 FX semantics** — always record the trade-currency→MXN rate. Self-hosted and
+   Mexico-first; MXN is the stable reference and the preference is not.
+2. **§3.4 undo** — dry-run by default plus `stockerly:undo_import[path]`. No batch-id column,
+   no exemption from the modification window.
+3. **The 8 catalogue-grade symbols** (`VT VWO VGT AVGO AMD INTC NFLX COIN`) — in scope here,
+   added to `AssetCatalog` alongside Phase 0.
+
+Still open:
+
 4. **Three asset lists** (`AssetCatalog`, `stockerly:seed_assets`, `db/seeds.rb`) have already
-   drifted. The import does not depend on collapsing them, but it adds a fourth way an asset
-   gets created.
+   drifted, and adding the 8 symbols means editing at least two of them. The import does not
+   depend on collapsing them, but it adds a fourth way an asset gets created. Worth its own
+   decision before the count grows.
