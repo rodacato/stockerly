@@ -32,7 +32,7 @@ _Listing verified against the directory 2026-08-27._
 | `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
 | `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section |
 | `brand/` | The exported identity assets the repo consumes: `glyph.svg`, `wordmark.svg`, `wordmark.png` |
-| `_playground.pen` | Experiments — inside the system (vendors the kit like any flow) |
+| `_playground.pen` | Experiments — inside the system (kit installed at 0.8.0 on 2026-08-27; holds `Panel · V1…V4`, the login brand-panel exploration) |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |
 | `CODE_CHANGES.md` | Work order for landing the redesign in code |
 | `COMPONENT_INVENTORY.md` | The kit crossed against `app/views/components/` — the translation work order |
@@ -65,7 +65,7 @@ screens; smaller ones may merge into a neighbor.
 
 | File | Domain | Screens (from code) | Status |
 |---|---|---|---|
-| `flows/auth.pen` | Auth | login, 2FA/TOTP, forgot, email-sent, reset — no signup (account created in onboarding) | **done · in review** |
+| `flows/auth.pen` | Auth | login, 2FA/TOTP, TOTP enrollment, recovery codes, recovery-code entry, forgot, email-sent, reset — no signup (account created in onboarding) | **done · in review** — **migrated to kit 0.8.0 on 2026-08-27**: three ADR-018 artboards drawn, the email-OTP link replaced, the brief rewritten, `Panel · V1…V4` moved to `_playground.pen` |
 | `flows/onboarding.pen` | Onboarding | setup, integrations, assets, complete, welcome (+ Setup desktop) | **done · in review** — its ERB revamp **landed 2026-08-25** as slice 7 ([CODE_CHANGES.md](CODE_CHANGES.md) §9b). The wizard left `Admin::` and `app/views/onboarding/` is 2.0 on every measure |
 | `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo), movimientos, asset detail (Análisis · Mi posición), consolidado | **done · in review** — **migrated to kit 0.8.0 on 2026-08-27**: six TopBars and four BottomNavs consolidated into three vendored components, `Black swan` deleted (D51), the brief rewritten, all nine exports re-shot |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings, watchlist, holdings vacía, historial, registrar movimiento (sheet + con teclado), tracked, tracked·buscar | **done · in review** — **migrated to kit 0.8.0 and D48 on 2026-08-27**: the ladder renamed, the TopBar's 19px growth absorbed, all twelve exports re-shot |

@@ -27,12 +27,12 @@ Kit **0.8.0** is not additive in practice even though it renames nothing:
 | `ui-kit.lib.pen` | **0.8.0** | ✅ merged | — |
 | `flows/assets.pen` | **0.8.0** | ✅ PR #368 | — |
 | `flows/cockpit.pen` | **0.8.0** | ✅ shell · tokens · brief · exports | 3 items, one of them an owner's call |
-| `flows/auth.pen` | 0.7.0 | — | TOTP is real (ADR-018); three artboards to draw |
+| `flows/auth.pen` | **0.8.0** | ✅ done | — |
 | `flows/alerts.pen` | 0.7.0 | — | one artboard is dangerous to build from |
 | `flows/settings.pen` | 0.7.0 | — | a reversed decision still drawn, plus a `Seguridad` section (D52) |
 | `flows/discover.pen` | 0.7.0 | — | the artboard is behind the code here |
 | `flows/onboarding.pen` | 0.7.0 | — | TOTP lands in the wizard (D52): nine artboards move |
-| `_playground.pen` | **none** | — | it is empty; this is an install, not a re-vendor |
+| `_playground.pen` | **0.8.0** | ✅ installed + Panel · V1…V4 | — |
 | `brand.pen` | n/a | — | hygiene only |
 
 ---
@@ -73,22 +73,32 @@ is what kept the file honest — the same lesson `NavRow` taught in `assets.pen`
 - `Más análisis` **is not in this file under that name** — the earlier version of this ledger assumed
   it was. Whatever it refers to, it is not an artboard here.
 
-## `flows/auth.pen` + `_playground.pen` — the only pair that must be open together
+## `flows/auth.pen` + `_playground.pen` — done 2026-08-27
 
-- **Move `Panel · V1…V4`** out of `auth.pen` into `_playground.pen`. Move, not delete. Two files
-  open at once; this is the one place the one-file-at-a-time rule genuinely bites.
-- **`_playground.pen` is EMPTY** — one 800×600 frame, zero variables, zero components. Verified by
-  reading it. It is *not* "behind on 0.6.0" and cannot be drawing the retired mark. Install the kit.
-- **Rewrite the brief.** It calls the auth choice *"settled: password + TOTP, email OTP fallback"*.
-  Half of that is now true and half is contradicted: **ADR-018 builds TOTP with recovery codes and
-  puts email OTP explicitly out of scope.** Its Tunnel/Tailscale premise was also disproved.
-- **Three artboards that do not exist:** TOTP enrollment (QR + secret + verify), the one-time
-  recovery-code display, and recovery-code entry at login.
-- **Both** (D52, answered 2026-08-27): the wizard **offers** enrollment and lets the reader skip it,
-  and Ajustes is where it is turned on later and the codes are regenerated. So the answer that
-  costs the most: `onboarding.pen` gains a skippable `Stepper` stage across nine artboards and
-  `settings.pen` gains its `Seguridad` section.
-- Per D4 none of the new auth screens needs a desktop variant.
+Worked as a pair, the one place the one-file-at-a-time rule genuinely bites. The panels were
+verified on disk in the destination **before** being deleted from the source — a move where the
+delete lands and the insert has not is how exploration disappears.
+
+- ✅ `Panel · V1…V4` moved to `_playground.pen`. Moved, not deleted: they are the reasoning behind
+  the login's brand panel.
+- ✅ `_playground.pen` had the kit **installed**, not re-vendored — it was one 800×600 frame with
+  zero variables. It now carries all 51 tokens at 0.8.0.
+- ✅ Brief rewritten. It called the auth choice *"settled: password + TOTP, email OTP fallback"* —
+  half true, half contradicted — and claimed `kit-version-source 0.1.0` against a variable reading
+  0.7.0. It now opens with ADR-018's three boundaries.
+- ✅ **Three artboards drawn**: `TOTP · Alta` (QR + manual key + 6-digit verify), `Códigos de
+  recuperación` (ten one-time codes, display-once) and `Código de recuperación` (entry at login).
+  Per D4 none has a desktop variant — they are forms in a card and diverge on nothing.
+- ✅ 🐞 **The 2FA screen offered `Enviar código por correo`.** ADR-018 puts email OTP explicitly out
+  of scope; the link is now `Usar un código de recuperación`, which is the path that actually
+  exists. Re-shot.
+- **This flow vendors no shell**, so 0.8.0's 57 → 76 never reached it. The migration was tokens
+  plus the new screens.
+
+**Found, not fixed:** ADR-018 rejects email OTP because *"mail is the single most likely thing to be
+wrong"* on a self-hosted box — and `/forgot-password` depends on exactly that mail. The reasoning
+that kills email OTP applies to a recovery path this flow already ships. Out of ADR-018's scope, but
+it is the same argument, and somebody should say so before a self-hoster finds it the hard way.
 
 ## `flows/alerts.pen`
 
