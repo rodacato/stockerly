@@ -67,7 +67,7 @@ screens; smaller ones may merge into a neighbor.
 |---|---|---|---|
 | `flows/auth.pen` | Auth | login, 2FA/TOTP, forgot, email-sent, reset — no signup (account created in onboarding) | **done · in review** |
 | `flows/onboarding.pen` | Onboarding | setup, integrations, assets, complete, welcome (+ Setup desktop) | **done · in review** — its ERB revamp **landed 2026-08-25** as slice 7 ([CODE_CHANGES.md](CODE_CHANGES.md) §9b). The wizard left `Admin::` and `app/views/onboarding/` is 2.0 on every measure |
-| `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo/black swan), movimientos, asset detail (Análisis · Mi posición), consolidado | **done · in review** |
+| `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo), movimientos, asset detail (Análisis · Mi posición), consolidado | **done · in review** — **migrated to kit 0.8.0 on 2026-08-27**: six TopBars and four BottomNavs consolidated into three vendored components, `Black swan` deleted (D51), the brief rewritten, all nine exports re-shot |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings, watchlist, holdings vacía, historial, registrar movimiento (sheet + con teclado), tracked, tracked·buscar | **done · in review** — **migrated to kit 0.8.0 and D48 on 2026-08-27**: the ladder renamed, the TopBar's 19px growth absorbed, all twelve exports re-shot |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (default/vacío), nueva regla (sheet), bandeja, confluencia | **done · in review** |
 | `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, integraciones, registros, estado y mantenimiento | **done · in review** |

@@ -36,11 +36,10 @@ tells a reviewer nothing.
 |---|---|
 | `cockpit-panorama-default.png` | `[Cockpit] / Panorama / Default` |
 | `cockpit-panorama-tranquilo.png` | `[Cockpit] / Panorama / Tranquilo` |
-| `cockpit-panorama-black-swan.png` | `[Cockpit] / Panorama / Black swan` |
 | `cockpit-asset-analisis.png` | `[Cockpit] / Asset · Análisis / Default` |
 | `cockpit-asset-mi-posicion.png` | `[Cockpit] / Asset · Mi posición / Default` |
 | `cockpit-consolidado.png` | `[Cockpit] / Consolidado / Default` |
-| `cockpit-movimientos.png` | `[Cockpit] / Movimientos / Default` — ⚠ see D42, designed but the build is gated |
+| `cockpit-movimientos.png` | `[Cockpit] / Movimientos / Default` — D42's gate was lifted 2026-08-27 |
 | `activos-holdings.png` | `[Activos] / Holdings / Default` |
 | `activos-watchlist.png` | `[Activos] / Watchlist / Default` |
 | `activos-holdings-vacia.png` | `[Activos] / Holdings / Vacío` |
@@ -80,7 +79,7 @@ reflow. The kit's shell variant is included because it is what every desktop art
 | `ajustes-integraciones-desktop.png` | `[Ajustes] / Integraciones · Desktop / Default` |
 | `ajustes-estado-desktop.png` | `[Ajustes] / Estado y mantenimiento · Desktop / Default` |
 
-Not drawn on desktop, on purpose: `Sigo`, `Cartera vacía`, the two `Rastreados · Buscar` and
+Not drawn on desktop, on purpose: `Watchlist`, `Holdings vacía`, the two `Tracked · Buscar` and
 `Reglas` states, `Descubrir · Sin datos` (it reflows into the same two-column shell with the
 notice and the Calendario alone), and `Registros` — each reflows into a pattern one of the ones above already
 settles. `Registros` would want a real log table, which is a new component and therefore a
@@ -88,6 +87,11 @@ decision, not a redraw.
 
 **Nothing missing.** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention
 existed; both were caught up on 2026-08-24. Every artboard in every flow now has a PNG here.
+
+**Cockpit re-shot 2026-08-27** on kit 0.8.0 — all nine artboards, because the vendored `TopBar`
+grew 57 → 76 and `TopBarDesktop` 76 → 80. `cockpit-panorama-black-swan.png` is gone with its
+artboard (D51). A stray `ZHvbW.png` was deleted in the same pass: `Export` names files by node id,
+so an export that is never renamed survives as an orphan nobody can identify.
 
 | File | Artboard |
 |---|---|
