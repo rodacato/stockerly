@@ -226,8 +226,12 @@ es-MX:
     correo_placeholder: tu@correo.com
     flash:
       bienvenida: "¡Qué gusto verte de vuelta, %{nombre}!"
+      codigo_recuperacion_usado: Entraste con un código de recuperación. Te quedan
+        %{count}.
       credenciales_invalidas: Correo o contraseña inválidos.
       sesion_cerrada: Sesión cerrada correctamente.
+      verificacion_expirada: Se agotó el tiempo para verificar. Inicia sesión otra
+        vez.
     forgot:
       enviar: Enviar enlace
       subtitulo: Ingresa tu correo y te enviamos un enlace para restablecerla.
@@ -261,6 +265,7 @@ es-MX:
       inactividad: Cerramos tu sesión por inactividad.
     terminos: Términos
     volver: Volver a iniciar sesión
+    volver_login: Volver a iniciar sesión
   brand:
     description: 'Tracker self-hosted de patrimonio invertido: acciones, cripto y
       renta fija MX, con multi-divisa MXN/USD correcta.'
@@ -988,6 +993,21 @@ es-MX:
       titulos: Títulos
       total: Total
       venta: Venta
+  two_factor:
+    new:
+      codigo: Código de verificación
+      subtitulo: Ingresa el código de 6 dígitos de tu app de autenticación.
+      titulo: Verifica tu identidad
+      usar_recuperacion: Usar un código de recuperación
+      verificar: Verificar
+    new_recovery:
+      codigo: Código de recuperación
+      entrar: Entrar
+      placeholder: 7f2a-91c4
+      subtitulo: Captura uno de los códigos de un solo uso que guardaste al activar
+        la verificación en dos pasos.
+      titulo: Usa un código de recuperación
+      volver_verificacion: Volver a la verificación en dos pasos
   watchlist_items:
     flash:
       agregado: Agregado a tu watchlist.

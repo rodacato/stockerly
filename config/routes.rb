@@ -24,6 +24,14 @@ Rails.application.routes.draw do
   post   "login",    to: "sessions#create"
   delete "logout",   to: "sessions#destroy"
 
+  # The second factor. Reachable only with a pending login in the session —
+  # the password step does not set `session[:user_id]`, so these are the only
+  # routes a half-authenticated visitor can touch (ADR-018).
+  get  "two-factor",    to: "two_factor#new",             as: :two_factor
+  post "two-factor",    to: "two_factor#create"
+  get  "recovery-code", to: "two_factor#new_recovery",    as: :recovery_code
+  post "recovery-code", to: "two_factor#create_recovery"
+
   # --- Password Reset ---
   get   "forgot-password",       to: "password_resets#new",    as: :forgot_password
   post  "forgot-password",       to: "password_resets#create"

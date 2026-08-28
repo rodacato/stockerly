@@ -1,0 +1,29 @@
+<% content_for(:title, "#{t('.titulo')} | Stockerly") %>
+
+<div class="flex flex-col gap-6">
+  <%= render "shared/auth_header", title: t(".titulo"), subtitle: t(".subtitulo") %>
+
+  <%= render "two_factor/error" %>
+
+  <%= form_with url: two_factor_path, method: :post, class: "flex flex-col gap-4" do %>
+    <label class="flex flex-col gap-1.5">
+      <span class="text-sm font-medium text-fg-default"><%= t(".codigo") %></span>
+      <%# inputmode numeric + autocomplete one-time-code is what makes the OS
+          offer the code from the notification instead of asking for a paste. %>
+      <%= tag.input type: "text", name: "code", inputmode: "numeric", autocomplete: "one-time-code",
+                    pattern: "[0-9]*", maxlength: 6, autofocus: true, required: true,
+                    placeholder: "000000",
+                    class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3.5 text-center font-mono text-2xl tracking-[0.4em] text-fg-default focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+    </label>
+
+    <button type="submit"
+            class="mt-2 w-full rounded-xl bg-primary px-4 py-3.5 text-base font-semibold text-fg-inverse transition-colors hover:bg-primary-hover">
+      <%= t(".verificar") %>
+    </button>
+  <% end %>
+
+  <div class="flex flex-col gap-2 text-center text-sm">
+    <%= link_to t(".usar_recuperacion"), recovery_code_path, class: "font-medium text-primary hover:underline" %>
+    <%= link_to t("auth.volver_login"), login_path, class: "text-fg-subtle hover:underline" %>
+  </div>
+</div>

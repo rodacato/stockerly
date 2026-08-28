@@ -1,0 +1,6 @@
+<% if flash.now[:alert].present? || flash[:alert].present? %>
+  <p class="flex items-center gap-2 rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
+    <span class="material-symbols-outlined text-lg" aria-hidden="true">error</span>
+    <%= flash[:alert] %>
+  </p>
+<% end %>
