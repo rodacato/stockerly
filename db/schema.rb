@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_28_164900) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_28_220000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -444,6 +444,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_164900) do
     t.string "currency", default: "USD", null: false
     t.datetime "discarded_at"
     t.datetime "executed_at", null: false
+    t.string "external_id"
     t.decimal "fee", precision: 10, scale: 2, default: "0.0", null: false
     t.decimal "fx_rate_at_execution", precision: 15, scale: 8
     t.bigint "portfolio_id", null: false
@@ -458,6 +459,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_164900) do
     t.index ["executed_at"], name: "index_trades_on_executed_at"
     t.index ["portfolio_id", "asset_id"], name: "index_trades_on_portfolio_id_and_asset_id"
     t.index ["portfolio_id", "executed_at"], name: "index_trades_on_portfolio_and_executed"
+    t.index ["portfolio_id", "external_id"], name: "index_trades_on_portfolio_and_external_id", unique: true, where: "(external_id IS NOT NULL)"
     t.index ["portfolio_id"], name: "index_trades_on_portfolio_id"
     t.index ["position_id"], name: "index_trades_on_position_id"
     t.index ["side"], name: "index_trades_on_side"
