@@ -170,20 +170,23 @@ Counted from this file, never incremented — the command is printed for the sam
 two tables print theirs.
 
 ```sh
-grep -cE '^### '                design/V2_REMAINING.md   # every finding heading
+grep -cE '^### [A-Z]+[0-9-]'    design/V2_REMAINING.md   # every finding heading
 grep -oE '^### [^ ]+ [✅🔴🟡⚪]' design/V2_REMAINING.md | awk '{print $NF}' | sort | uniq -c
 ```
 
 | | Findings | |
 |---|---:|---|
-| ✅ closed | **19** | shipped or measured away |
+| ✅ closed | **20** | shipped or measured away |
 | 🔴 open | **4** | ACT-1 · CKP-1 · ALR-1 · AJU-1 |
-| 🟡 open | **16** | a real gap inside a working screen |
-| ⚪ open | **12** | debt and hygiene, mostly `.pen` edits |
+| 🟡 open | **15** | a real gap inside a working screen |
+| ⚪ open | **13** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
 
-**51 headings carry a glyph and 53 findings exist**, which is the count [#386](https://github.com/rodacato/stockerly/pull/386)
-opened this file with. The two outside the tally are `TD2` (hardcoded controller strings, a real
+**52 headings carry a glyph and 54 findings exist.** It opened at 53 with
+[#386](https://github.com/rodacato/stockerly/pull/386); `KIT-5` is the one added since, and it came
+out of building `KIT-3`. The first command anchors on the finding ID on purpose — a bare
+`grep -cE '^### '` also counts the one section heading that is not a finding, which is how the
+previous version of this block printed a command that did not reproduce its own number. The two outside the tally are `TD2` (hardcoded controller strings, a real
 finding of its own) and `TD5` (a pointer to `CKP-7`, not an independent one). **Assigning them a
 severity is a call, not a count** — so they are shown rather than absorbed, and the tally stays
 something the command above reproduces.
@@ -408,7 +411,7 @@ does not find these, because a screen can be faithful and still be built out of 
 | `ButtonPrimary` · `ButtonSecondary` | inline, 62 lines | 🟡 **KIT-1** |
 | `Field` | raw form helpers, 37 calls | 🟡 **KIT-1** |
 | `MovementItem` | `trades/_trade_row` | 🟡 **KIT-4** — exists, but as a `<tr>` |
-| `HeaderBar` | — | 🟡 **KIT-3** |
+| `HeaderBar` | `components/_header_bar` | ✅ — its `Accion` slot is **KIT-5** |
 
 ### KIT-1 🟡 The four primitives were never extracted, and the inline counts went up
 
@@ -432,7 +435,7 @@ reason it read as missing.
 
 Closed here. Left in the table so the correction is visible rather than silent.
 
-### KIT-3 🟡 `HeaderBar` has no ERB equivalent, and the four screens behind the hub have no way back
+### KIT-3 ✅ `HeaderBar` — shipped 2026-08-28, and the dead end is closed
 
 Promoted to the kit at 0.9.0 after `settings.pen` hand-built it four times and `alerts.pen` twice.
 Its artboards — `Registros`, `Estado y mantenimiento`, `Integraciones`, `Bandeja`, `Confluencia` —
@@ -443,11 +446,43 @@ each set `content_for(:page_title, t(".titulo"))` and stop, and `layouts/app` re
 is logo + bell. **So on a phone, Ajustes → Registros is a one-way trip**: no back affordance exists
 except the browser gesture or jumping to another tab.
 
-This is the one kit gap that is a navigation defect rather than a styling one. It is also small —
-one partial, five render sites.
+This was the one kit gap that was a navigation defect rather than a styling one.
+
+**Shipped as `components/_header_bar`, and it is four render sites, not five.** Counting the
+artboards gave six instances; counting the code gives four. `Integraciones · Estados` is a state of
+the `Integraciones` artboard rather than a second screen, and `Confluencia` has no route at all —
+it is ALR-1. The four are `admin/logs`, `admin/settings`, `admin/integrations` (back to the hub)
+and `notifications` (back to Reglas, per D13).
+
+**It replaces the mobile `TopBar` rather than sitting above it** — the artboards draw one bar or
+the other, never both — so it carries the `h1` that `layouts/app` otherwise emits `sr-only`. The
+layout picks between the two on `content_for?(:header_bar)`, and the same condition stands the
+sr-only heading down, which is why the h1 count per breakpoint did not move.
 
 Not `TopBarDetail`: that one is cockpit-local, has a two-line ticker title and a bookmark, and was
 measured against `HeaderBar` and found to be a different component.
+
+### KIT-5 ⚪ The `HeaderBar` action slot is unbuilt, because the design has no desktop answer for it
+
+The kit's third slot — `Accion`, 44 tall, icon plus an optional label — was **deliberately not
+built** with KIT-3, and the reason is worth keeping rather than rediscovering.
+
+Two of the four screens draw an action, and both already have that control in the code:
+`Registros` draws `download` (icon-only, label disabled) and the export-CSV link exists in the body;
+`Bandeja` draws `check-check` with a label and *Marcar todas* exists the same way. Moving either
+into the bar looks like pure fidelity — **and it would delete the control on desktop**, because
+`HeaderBar` is `lg:hidden` and there is no `Registros · Desktop` or `Bandeja · Desktop` artboard
+saying where the action goes there. `settings.pen` drew desktop variants for the Hub, Integraciones
+and Estado y mantenimiento; the two screens that have an action are the two it skipped.
+
+A slot with no consumer is not a partial worth shipping either, so the local was removed rather
+than left unused. **What this is waiting on is a design call, not code:** either the two desktop
+artboards, or a note that the action stays in the body on desktop and the bar carries it only on a
+phone.
+
+**One more thing the artboards owe.** `Bandeja` never overrode the master's placeholder label — it
+still reads `Acción` where the screen means *Marcar todas*. That is a `.pen` edit, and it belongs to
+whoever answers the paragraph above.
 
 ### KIT-4 ✅ `MovementItem` is a card — shipped 2026-08-28 with ACT-2
 
@@ -1194,8 +1229,8 @@ reads as a record instead of a snapshot.
 6. **CKP-1** — `Movimientos`. Un-gated by D42, metric stated, query exists.
 7. **ALR-2** — suggested rules in the empty state. Assembly over data already in hand.
 8. **CKP-2** — the chart's range control. Data already loaded.
-9. **KIT-3** — the `HeaderBar` partial. One component, five render sites, and it closes a
-   navigation dead-end: the four screens behind the Ajustes hub have no back affordance on a phone.
+9. ~~**KIT-3** — the `HeaderBar` partial.~~ ✅ **Shipped 2026-08-28** — four render sites, not the
+   five the entry claimed, and it left **KIT-5** behind.
 10. **ACT-4, ACT-5** — the Tracked budget breakdown and list search.
 11. **CKP-3, CKP-5, ALR-1** — everything that waits on persisted indicator state (#306 / D3). One
     engine, three screens.

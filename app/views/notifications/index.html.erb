@@ -1,4 +1,7 @@
 <% content_for :page_title, t(".titulo") %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: alerts_path %>
+<% end %>
 
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
   <div class="flex items-baseline justify-between gap-3">

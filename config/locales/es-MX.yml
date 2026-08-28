@@ -804,6 +804,7 @@ es-MX:
     panorama: Panorama
     principal: Navegación principal
     reglas: Reglas
+    regresar: Regresar
   notifications:
     flash:
       eliminadas:

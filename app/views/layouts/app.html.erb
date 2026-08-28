@@ -6,7 +6,9 @@
     <%= render "components/sidebar_nav" %>
 
     <div class="flex min-w-0 flex-1 flex-col">
-      <%= render "components/top_bar" %>
+      <%# Screens behind the hub swap the logo+bell bar for a HeaderBar that
+          gives them a way back. The artboards draw one or the other. %>
+      <%= content_for?(:header_bar) ? content_for(:header_bar) : render("components/top_bar") %>
       <%= render "components/top_bar_desktop" %>
 
       <div id="flash_messages" class="fixed right-4 top-20 z-50 flex max-w-sm flex-col gap-3" style="pointer-events: none;">
@@ -18,7 +20,7 @@
             somewhere. A screen whose artboard heads it with its own name sets
             :own_heading and renders that h1 itself; the rest get this one, and
             two h1s on one page stays the defect it was. %>
-        <% unless content_for?(:own_heading) %>
+        <% unless content_for?(:own_heading) || content_for?(:header_bar) %>
           <h1 class="sr-only lg:hidden">
             <%= content_for(:page_title) || t("nav.#{main_nav_items.find { |i| i[:active] }&.dig(:key) || "panorama"}") %>
           </h1>
