@@ -2255,7 +2255,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.8.0"
+      "value": "0.8.1"
     },
     "font-display": {
       "type": "string",
@@ -2693,7 +2693,7 @@
           }
         },
         {
-          "value": "#7B89FF",
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }

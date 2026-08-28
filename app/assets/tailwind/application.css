@@ -130,7 +130,7 @@
     --color-warning-fg:        #FBBF24;
     --color-info:              #7B89FF;
     --color-info-bg:           #2A2E55;
-    --color-info-fg:           #7B89FF;
+    --color-info-fg:           #9098FF;
 
     /* Legacy aliases — dark variants. -fg collapses to the base token
        in dark mode (saturated mid-tone already passes contrast on

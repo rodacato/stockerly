@@ -865,7 +865,7 @@
                   "type": "text",
                   "id": "kbcoj",
                   "name": "t",
-                  "fill": "$primary",
+                  "fill": "$primary-hover",
                   "content": "Descubrir",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -1755,7 +1755,7 @@
                   "type": "text",
                   "id": "eGo48",
                   "name": "L",
-                  "fill": "$primary",
+                  "fill": "$primary-hover",
                   "content": "Ir a Integraciones →",
                   "fontFamily": "$font-sans",
                   "fontSize": 13,
@@ -2613,7 +2613,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.8.0"
+      "value": "0.8.1"
     },
     "font-display": {
       "type": "string",
@@ -3051,7 +3051,7 @@
           }
         },
         {
-          "value": "#7B89FF",
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }

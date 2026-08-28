@@ -822,7 +822,7 @@
           }
         },
         {
-          "value": "#7B89FF",
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }
@@ -1177,7 +1177,7 @@
     },
     "kit-version-source": {
       "type": "string",
-      "value": "0.8.0"
+      "value": "0.8.1"
     }
   },
   "fileToken": "bfb6de32-3f18-4f93-8dfc-5847758f07f7"
