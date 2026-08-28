@@ -220,8 +220,12 @@ Counted across flows, so it does not read as four separate small gaps:
 | `Seguridad` (wizard step 3 of 4) | onboarding | no route, no action, no view |
 | `Movimientos` | cockpit | no route, no controller, no view |
 
-Six, not four, once the wizard step and the observation feed are counted. The three auth screens
-plus the wizard step are **one build** (ADR-018 + D52); `Movimientos` is its own.
+**Five of the six shipped on 2026-08-28.** The three auth screens, `2FA` and the wizard step were
+one build (ADR-018 + D52), which is how they were built — [#391](https://github.com/rodacato/stockerly/issues/391),
+[CODE_CHANGES §14](CODE_CHANGES.md).
+
+**`Movimientos` is the one left**, and it was always its own: un-gated by D42, the query exists, and
+nothing about TOTP touched it. See CKP-1.
 
 ### X4 ⚪ Six briefs disagree with their own file about the kit version they vendor
 
@@ -404,12 +408,14 @@ existing.
 | `Códigos de recuperación` | — | 🔴 nothing |
 | `Código de recuperación` | — | 🔴 nothing |
 
-### AUTH-1 🔴 TOTP: four artboards, zero lines, and the work order is written
+### AUTH-1 ✅ TOTP — shipped 2026-08-28 (#391)
 
 `grep -rn "otp\|two_factor\|2fa" app/ config/routes.rb -i` returns nothing. The order is
 [CODE_CHANGES §14](CODE_CHANGES.md): a gem, a migration (`otp_secret` + enrolled-at + hashed
 recovery codes), routes, and a second factor in `sessions_controller#create`, which today runs
 `start_session` → `redirect_to dashboard_path` with nothing in between.
+
+**Shipped in two slices on 2026-08-28** — the login second factor, then enrolment from both entry points D52 named. The record is [CODE_CHANGES §14](CODE_CHANGES.md).
 
 **One line of §14 said this landed after `onboarding` and `settings` were migrated. Both migrated
 to kit `0.9.0` on 2026-08-27, so the queue had already drained — and `46a95aa` corrected the line
@@ -430,7 +436,7 @@ surface by two.
 
 **10 artboards (6 mobile + 4 desktop) · the wizard is 4 steps in design and 3 in code.**
 
-### ONB-1 🔴 The wizard has three steps; the design has four
+### ONB-1 ✅ The wizard has four steps — shipped 2026-08-28
 
 [`onboarding_controller.rb:4`](../app/controllers/onboarding_controller.rb#L4) is `STEPS = 3`.
 [`_step_header.html.erb`](../app/views/onboarding/_step_header.html.erb) derives *"Paso n de 3"* and
@@ -438,13 +444,13 @@ the progress percentage from that constant, so **every step label in the running
 against the design**: the artboards read `Paso 1 de 4 · 25%`, `Paso 2 de 4 · 50%`,
 `Paso 3 de 4 · 75%` (Seguridad), `Paso 4 de 4 · 100%`.
 
-There is no `onboarding/security` route, action or view. The `Seguridad` artboard (`ewGdS`) is a
-card and two buttons — *Activar ahora* / *Ahora no · lo activo desde Ajustes* — and per D52 it
-**offers, it does not enrol**, so it is cheap. But it cannot ship before AUTH-1: pressing *Activar
-ahora* needs somewhere to go.
+**Shipped.** `OnboardingController::STEPS` is 4, `onboarding/security` exists, and the step sits
+between the assets step and the summary. It **offers and lets the reader skip**, per D52 — blocking
+first boot on a phone the reader may not have in hand is the trap. It is step 3 rather than step 1
+so the recovery codes land next to a wizard already invested in.
 
-Sequence: AUTH-1 → ONB-1, or ONB-1 ships with the button disabled, which is the thing D13/D16/D23
-keep telling us not to do.
+The sequencing held: AUTH-1 shipped first, so *Activar ahora* had somewhere to go rather than
+shipping disabled, which is the thing D13/D16/D23 keep telling us not to do.
 
 ### ONB-2 🟡 The empty first run is one of the three failures the 2.0 exists to fix, and it is unbuilt
 
@@ -841,12 +847,12 @@ This is the D5 merge, left half-done: the destination was built and the origin w
 Deciding it needs a design pass, because *Nombre y correo* and *Contraseña* have to land somewhere —
 inline in the hub, or in two small screens that get drawn.
 
-### AJU-2 🔴 The hub has no `Seguridad` row (D52)
+### AJU-2 ✅ The hub has its `Seguridad` row — shipped 2026-08-28
 
 The `Hub` artboard draws it under **Cuenta**, third row: *Verificación en dos pasos · TOTP y
 códigos de recuperación*. The code's Cuenta section has two rows and stops.
 
-Blocked by AUTH-1 in the same way ONB-1 is — the row needs a destination.
+**Shipped.** The row reads the account's real state rather than only offering the feature: it points at enrolment when the factor is off and at the codes when it is on, and its description says how many recovery codes are left.
 
 ### AJU-3 ✅ D58 — shipped 2026-08-28: Moneda auto-saves
 
@@ -1100,9 +1106,9 @@ reads as a record instead of a snapshot.
 
 ## Builds, in dependency order
 
-1. **AUTH-1** — TOTP with recovery codes. Unblocks ONB-1 and AJU-2. Owes its 4-filter card and issue;
-   ADR-018 already approves the decision. Four artboards drawn, zero code.
-2. **ONB-1 + AJU-2** — the wizard's fourth step and the hub's Seguridad row. Small, once 1 lands.
+1. ~~**AUTH-1** — TOTP with recovery codes.~~ ✅ **Shipped 2026-08-28** (#391), and it took ONB-1 and
+   AJU-2 with it exactly as predicted: three tracker findings, one build.
+2. ~~**ONB-1 + AJU-2**~~ ✅ shipped in the same pass.
 3. **ACT-1** — the three-door empty state. The two missing doors are the product's own named fixes;
    each needs its own card.
 4. **AJU-1** — retire `/profile` into the hub. Needs the design pass first.
