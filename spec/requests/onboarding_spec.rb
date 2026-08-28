@@ -37,12 +37,14 @@ RSpec.describe "Onboarding", type: :request do
   end
 
   describe "POST /onboarding/assets" do
-    it "creates the chosen assets and moves to the summary" do
+    # D52 put Seguridad between the assets and the summary, so the wizard is
+    # four steps and this one no longer lands on the last.
+    it "creates the chosen assets and moves to the security step" do
       expect {
         post onboarding_save_assets_path, params: { symbols: %w[AAPL BTC] }
       }.to change(Asset, :count).by(2)
 
-      expect(response).to redirect_to(onboarding_complete_path)
+      expect(response).to redirect_to(onboarding_security_path)
     end
   end
 

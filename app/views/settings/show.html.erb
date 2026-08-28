@@ -18,6 +18,12 @@
                title: t(".nombre_correo"), description: t(".nombre_correo_desc") %>
     <%= render "settings/nav_row", icon: "lock", path: profile_path(tab: "seguridad"),
                title: t(".contrasena"), description: t(".contrasena_desc") %>
+    <%# D52's Seguridad row. The description reads the account's real state, so
+        the row says whether the factor is on rather than only offering it. %>
+    <%= render "settings/nav_row", icon: "verified_user",
+               path: @user.otp_enrolled? ? recovery_codes_path : totp_enrollment_path,
+               title: t(".dos_pasos"),
+               description: @user.otp_enrolled? ? t(".dos_pasos_activa", count: @user.unused_recovery_codes_count) : t(".dos_pasos_desc") %>
   </section>
 
   <%= render "settings/appearance", user: @user %>

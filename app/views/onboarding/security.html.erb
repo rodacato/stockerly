@@ -1,0 +1,31 @@
+<%= render "onboarding/step_header", step: 3 %>
+
+<div class="flex flex-col gap-6">
+  <div>
+    <h1 class="font-display text-2xl font-bold tracking-tight text-fg-default"><%= t(".titulo") %></h1>
+    <p class="mt-1 text-sm text-fg-subtle"><%= t(".subtitulo") %></p>
+  </div>
+
+  <div class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+    <% [ [ "smartphone", t(".totp"), t(".totp_desc") ],
+         [ "key", t(".codigos"), t(".codigos_desc") ],
+         [ "schedule", t(".tiempo"), t(".tiempo_desc") ] ].each do |icon, title, description| %>
+      <div class="flex items-start gap-3">
+        <span class="material-symbols-outlined text-xl text-primary" aria-hidden="true"><%= icon %></span>
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-fg-default"><%= title %></p>
+          <p class="text-xs text-fg-subtle"><%= description %></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="flex flex-col gap-3">
+    <%= link_to t(".activar"), totp_enrollment_path,
+          class: "w-full rounded-xl bg-primary px-4 py-3.5 text-center text-base font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" %>
+    <%# The skip is a real option, not a dark pattern: a reader without their
+        phone in hand must be able to finish first boot (D52). %>
+    <%= link_to t(".ahora_no"), onboarding_complete_path,
+          class: "text-center text-sm text-fg-subtle hover:underline" %>
+  </div>
+</div>
