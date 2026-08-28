@@ -491,7 +491,7 @@
                           "name": "Check",
                           "width": 18,
                           "height": 18,
-                          "icon": "check",
+                          "icon": "minus",
                           "library": "lucide",
                           "fill": "$fg-inverse"
                         },
@@ -521,7 +521,7 @@
                           "name": "Check",
                           "width": 18,
                           "height": 18,
-                          "icon": "check",
+                          "icon": "minus",
                           "library": "lucide",
                           "fill": "$fg-inverse"
                         },
@@ -532,6 +532,36 @@
                           "opacity": 0.85,
                           "fill": "$fg-inverse",
                           "content": "Elige los activos a seguir",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "EFo2Q",
+                      "name": "Item",
+                      "gap": "$space-2",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "imBUK",
+                          "name": "Dash",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "minus",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        },
+                        {
+                          "type": "text",
+                          "id": "N9ZDX6",
+                          "name": "Txt",
+                          "opacity": 0.85,
+                          "fill": "$fg-inverse",
+                          "content": "Protege tu cuenta",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -551,7 +581,7 @@
                           "name": "Check",
                           "width": 18,
                           "height": 18,
-                          "icon": "check",
+                          "icon": "minus",
                           "library": "lucide",
                           "fill": "$fg-inverse"
                         },
@@ -567,38 +597,19 @@
                           "fontWeight": "normal"
                         }
                       ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "dgSIh",
-                      "name": "Item",
-                      "gap": "$space-2",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "a4rEdd",
-                          "name": "Check",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "check",
-                          "library": "lucide",
-                          "fill": "$fg-inverse"
-                        },
-                        {
-                          "type": "text",
-                          "id": "n8wEt",
-                          "name": "Txt",
-                          "opacity": 0.85,
-                          "fill": "$fg-inverse",
-                          "content": "100% libre y open source",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
                     }
                   ]
+                },
+                {
+                  "type": "text",
+                  "id": "eiRZv",
+                  "name": "Claim",
+                  "opacity": 0.85,
+                  "fill": "$fg-inverse",
+                  "content": "100% libre y open source",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2839,7 +2850,7 @@
                           "name": "Check",
                           "width": 18,
                           "height": 18,
-                          "icon": "check",
+                          "icon": "minus",
                           "library": "lucide",
                           "fill": "$fg-inverse"
                         },
@@ -2869,7 +2880,7 @@
                           "name": "Check",
                           "width": 18,
                           "height": 18,
-                          "icon": "check",
+                          "icon": "minus",
                           "library": "lucide",
                           "fill": "$fg-inverse"
                         },
@@ -2880,6 +2891,36 @@
                           "opacity": 0.85,
                           "fill": "$fg-inverse",
                           "content": "Elige los activos a seguir",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "v6UdiN",
+                      "name": "Item",
+                      "gap": "$space-2",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "O991T",
+                          "name": "Dash",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "minus",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        },
+                        {
+                          "type": "text",
+                          "id": "cs47b",
+                          "name": "Txt",
+                          "opacity": 0.85,
+                          "fill": "$fg-inverse",
+                          "content": "Protege tu cuenta",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -2899,7 +2940,7 @@
                           "name": "Check",
                           "width": 18,
                           "height": 18,
-                          "icon": "check",
+                          "icon": "minus",
                           "library": "lucide",
                           "fill": "$fg-inverse"
                         },
@@ -2915,38 +2956,19 @@
                           "fontWeight": "normal"
                         }
                       ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "yLasu",
-                      "name": "Item",
-                      "gap": "$space-2",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "USBFV",
-                          "name": "Check",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "check",
-                          "library": "lucide",
-                          "fill": "$fg-inverse"
-                        },
-                        {
-                          "type": "text",
-                          "id": "aNjHL",
-                          "name": "Txt",
-                          "opacity": 0.85,
-                          "fill": "$fg-inverse",
-                          "content": "100% libre y open source",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
                     }
                   ]
+                },
+                {
+                  "type": "text",
+                  "id": "QW0Ij",
+                  "name": "Claim",
+                  "opacity": 0.85,
+                  "fill": "$fg-inverse",
+                  "content": "100% libre y open source",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -3516,7 +3538,7 @@
                           "name": "Check",
                           "width": 18,
                           "height": 18,
-                          "icon": "check",
+                          "icon": "minus",
                           "library": "lucide",
                           "fill": "$fg-inverse"
                         },
@@ -3546,7 +3568,7 @@
                           "name": "Check",
                           "width": 18,
                           "height": 18,
-                          "icon": "check",
+                          "icon": "minus",
                           "library": "lucide",
                           "fill": "$fg-inverse"
                         },
@@ -3557,6 +3579,36 @@
                           "opacity": 0.85,
                           "fill": "$fg-inverse",
                           "content": "Elige los activos a seguir",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "GpcL3",
+                      "name": "Item",
+                      "gap": "$space-2",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "U26Ag6",
+                          "name": "Dash",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "minus",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GtIyF",
+                          "name": "Txt",
+                          "opacity": 0.85,
+                          "fill": "$fg-inverse",
+                          "content": "Protege tu cuenta",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -3576,7 +3628,7 @@
                           "name": "Check",
                           "width": 18,
                           "height": 18,
-                          "icon": "check",
+                          "icon": "minus",
                           "library": "lucide",
                           "fill": "$fg-inverse"
                         },
@@ -3592,38 +3644,19 @@
                           "fontWeight": "normal"
                         }
                       ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "cV1tM",
-                      "name": "Item",
-                      "gap": "$space-2",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "Z4CpL",
-                          "name": "Check",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "check",
-                          "library": "lucide",
-                          "fill": "$fg-inverse"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ZYmT0",
-                          "name": "Txt",
-                          "opacity": 0.85,
-                          "fill": "$fg-inverse",
-                          "content": "100% libre y open source",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
                     }
                   ]
+                },
+                {
+                  "type": "text",
+                  "id": "k3jHcJ",
+                  "name": "Claim",
+                  "opacity": 0.85,
+                  "fill": "$fg-inverse",
+                  "content": "100% libre y open source",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             },
