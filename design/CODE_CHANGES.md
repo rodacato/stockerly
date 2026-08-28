@@ -30,7 +30,7 @@ depends on the current structure. None of them is a refactor for its own sake.
 | 0.2 | **Expose the fonts as `@theme` tokens** (`--font-display / --font-sans / --font-mono`). The families already load from Google Fonts and already exist as CSS vars — they are just not Tailwind utilities. | Three lines; unblocks the typography that carries the whole visual change (D1: colour is a no-op, type and shape are the redesign). |
 | 0.3 | **Set up I18n + `i18n-tasks`** (ADR-011): `config/locales/es-MX.yml`, lazy-key convention, `i18n-tasks health` in CI. | Every slice writes copy. Adding the layer after the first slice means rewriting that slice's strings. |
 | 0.4 | **`lightweight-charts` via importmap** + a smoke Stimulus controller (D2). | Pure de-risking: two of the heaviest screens depend on it. Better to learn it misbehaves self-hosted now than mid-slice. |
-| 0.5 | **Component inventory**: cross the existing `app/views/components/` partials against the kit's 13 components — 1:1, net-new, or dead. → [COMPONENT_INVENTORY.md](COMPONENT_INVENTORY.md) | This *is* the work order for the translation. It found 8 of the 19 partials dead or broken, so the crossing is 11 against 13. |
+| 0.5 | **Component inventory**: cross the existing `app/views/components/` partials against the kit's 13 components — 1:1, net-new, or dead. → its findings now live in [V2_REMAINING.md](V2_REMAINING.md)'s *Kit → code* section | This *is* the work order for the translation. It found 8 of the 19 partials dead or broken, so the crossing was 11 against 13. |
 
 **Already done, verified rather than assumed:** the PWA is wired (manifest with maskable icons,
 `display: standalone`, service worker registered, `theme-color` already `#5B6CFF`) — only its
@@ -147,7 +147,8 @@ and the asset detail reuses it with one.
   `Trading::Domain::WeeklyInsightCalculator` and the `RecentNews` / `TrendingAssets` /
   `MajorIndices` queries in case slices 4 and 5 consumed them. They did not, so all four are gone —
   along with `NewsArticle.recent`, whose only production wrapper was `RecentNews`, and
-  `BroadcastFundamentalsUpdate` (see COMPONENT_INVENTORY.md). Deleted 2026-08-25 on
+  `BroadcastFundamentalsUpdate` (the component inventory measured it; that document was retired into
+  [V2_REMAINING.md](V2_REMAINING.md) on 2026-08-28). Deleted 2026-08-25 on
   `chore/delete-dead-code`; 2671 examples, 0 failures.
 
 ## 3b. Asset detail (slice 5) — DONE, with the header left alone
@@ -548,8 +549,8 @@ visual: the four instance screens keep their admin styling.
 
 **Status:** shipped, [#290](https://github.com/rodacato/stockerly/issues/290) closed. This section
 read *"pending — needs its own 4-filter card before build"* until 2026-08-27, by which point the
-gateway had been in the tree long enough for §10 to be built on top of it and for FIDELITY_AUDIT to
-already record #290 as closed. Verified rather than assumed:
+gateway had been in the tree long enough for §10 to be built on top of it and for the fidelity audit
+to already record #290 as closed. Verified rather than assumed:
 [`app/contexts/market_data/gateways/alpaca_gateway.rb`](../app/contexts/market_data/gateways/alpaca_gateway.rb)
 exists and `config/initializers/data_sources.rb` registers `:alpaca_us` with
 `gateway_class: MarketData::Gateways::AlpacaGateway` and `circuit_breaker_key: "alpaca"`. Six jobs
@@ -759,8 +760,7 @@ one `MAIN_NAV` entry, one job file, one `recurring.yml` line, two YAMLs, one spe
 happened: `ui-kit.CHANGELOG.md` records **0.6.0** putting Descubrir into `BottomNav` and
 `SidebarNav` at index 3 (`AppShellDesktop` inherited it by `ref`), and **0.7.0** re-synced all
 seven flows for the new mark. The kit is at 0.7.0. Left uncorrected, this sent a reader to redo
-design work that was already done — which is the failure mode FIDELITY_AUDIT's last TODO group
-exists to name.
+design work that was already done — which is the failure mode D53 exists to name.
 
 ## 11. The new mark (D45) — SHIPPED
 

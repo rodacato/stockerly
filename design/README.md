@@ -35,8 +35,7 @@ _Listing verified against the directory 2026-08-27._
 | `_playground.pen` | Experiments — inside the system (kit installed at 0.8.0 on 2026-08-27; holds `Panel · V1…V4`, the login brand-panel exploration) |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |
 | `CODE_CHANGES.md` | Work order for landing the redesign in code |
-| `COMPONENT_INVENTORY.md` | The kit crossed against `app/views/components/` — the translation work order |
-| `FIDELITY_AUDIT.md` | Per-flow measurement of how far the code is from the artboards |
+| `V2_REMAINING.md` | **Where the migration stands and what is left** — the 2.0 contract measurement, the kit-to-code crossing, and the punch list. Retired and replaced `FIDELITY_AUDIT.md` + `COMPONENT_INVENTORY.md` on 2026-08-28 |
 | `exports/` | Canvas PNGs for review — **committed** (they must travel) |
 | `references/` | Local-only device captures — **never commit: real data** (gitignored) |
 
@@ -55,7 +54,7 @@ screens; smaller ones may merge into a neighbor.
 > first line — the durable parts are here, in `ui-kit.CHANGELOG.md`'s gap list, and in D53/D57/D58/D59.
 
 > **Status below is the `.pen` file's, not the ERB's.** How closely the code matches each flow
-> is measured in [FIDELITY_AUDIT.md](FIDELITY_AUDIT.md) — read that before taking **done · in
+> is measured in [V2_REMAINING.md](V2_REMAINING.md) — read that before taking **done · in
 > review** as "the screen looks like this".
 
 > **Vocabulary renamed 2026-08-27 (D48).** The tier ladder is now **Holdings** (was Poseo),
