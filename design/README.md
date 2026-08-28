@@ -71,7 +71,7 @@ screens; smaller ones may merge into a neighbor.
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings, watchlist, holdings vacía, historial, registrar movimiento (sheet + con teclado), tracked, tracked·buscar | **done · in review** — **migrated to kit 0.8.0 and D48 on 2026-08-27**: the ladder renamed, the TopBar's 19px growth absorbed, all twelve exports re-shot |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (default/vacío), nueva regla (sheet), bandeja, confluencia | **done · in review** |
 | `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, integraciones, registros, estado y mantenimiento | **done · in review** |
-| `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default, sin datos) + Olas desktop | **done · in review** |
+| `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default, sin datos) + Olas desktop | **done · in review** — **migrated to kit 0.8.0 on 2026-08-27**: the only flow whose shell was already fully vendored, so both bars were updated rather than consolidated; D33 closed, D41 applied, D56 raised |
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for
 structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit · **(3)** review/feel ·

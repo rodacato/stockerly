@@ -91,6 +91,9 @@ decision, not a redraw.
 **Nothing missing.** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention
 existed; both were caught up on 2026-08-24. Every artboard in every flow now has a PNG here.
 
+**Descubrir re-shot 2026-08-27** — all three artboards, for the same reason Cockpit was: the
+vendored `TopBar` grew 57 → 76 and `TopBarDesktop` 76 → 80.
+
 **Auth gained three artboards 2026-08-27** — TOTP enrollment, the one-time recovery-code display
 and recovery-code entry at login (ADR-018). `auth-2fa.png` was re-shot: its `Enviar código por
 correo` link is now `Usar un código de recuperación`, email OTP being explicitly out of scope. Per
