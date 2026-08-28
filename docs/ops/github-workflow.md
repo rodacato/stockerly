@@ -161,14 +161,13 @@ set but means nothing since ADR-010 dropped the closed beta. Don't apply it to n
 - [ ] CI green (`bundle exec rspec`, `bin/rubocop`, `bin/brakeman`, `bin/bundler-audit`)
 - [ ] No new copy violates ADR-001 (manual audit)
 - [ ] No new features violate non-goals (manual audit)
-- [ ] Sprint retro written in `docs/sprints/<sprint-name>/retro.md`
-- [ ] Retro answers: what worked / what didn't / what to change / which of the 6 alignment axes improved?
 - [ ] Closed issues have status `Done` in the project
 
-> **No retro or QA file currently exists in the repo.** They were written for S01–S09 and then
-> deleted together by commit `cf54285` at the pivot. Read the banner on
-> [`docs/sprints/README.md`](../sprints/README.md) before ticking either box — whether the practice
-> resumes for S10 is undecided.
+> **Retros are no longer a repo artifact.** They were written for S01–S09 and deleted together by
+> commit `cf54285` at the pivot; `docs/sprints/` was retired on 2026-08-28 rather than left
+> describing a practice whose entire output had been judged disposable. Its commit-prefix taxonomy —
+> the one part that lived nowhere else — moved to [`CONTRIBUTING.md`](../../CONTRIBUTING.md). If the
+> practice resumes, it needs a home decided on purpose, not an empty folder waiting for it.
 
 **Hard rule:** no new sprint opens while the previous one is open. If issues remain unclosed at the end, decide:
 - Move to backlog (no milestone) if no longer urgent
@@ -230,4 +229,3 @@ Currently required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `r
 - [1.0 retrospective](../1.0-retrospective.md) — historical backlog input
 - [Expert Panel](../research/experts.md) — structured consultations
 - [IDENTITY.md](../../IDENTITY.md) — the AI assistant's role, commitments and 7 anti-patterns
-- [Sprint protocol](../sprints/README.md) — read its banner first; most of it is no longer practiced
