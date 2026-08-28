@@ -5,14 +5,16 @@ RSpec.describe "Empty state consistency", type: :request do
 
   before { login_as(user) }
 
-  describe "portfolio empty states use component" do
-    it "renders standardized empty state for open positions" do
+  # D43 dropped the open-positions list from Historial: it duplicated Holdings,
+  # which is where that empty state lives now.
+  describe "Holdings empty state uses component" do
+    it "renders standardized empty state for an empty portfolio" do
       create(:portfolio, user: user)
-      get positions_path
+      get assets_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Aún no hay posiciones abiertas")
-      expect(response.body).to include("trending_up")
+      expect(response.body).to include("Aún no tienes posiciones")
+      expect(response.body).to include("account_balance_wallet")
     end
   end
 
@@ -26,15 +28,16 @@ RSpec.describe "Empty state consistency", type: :request do
     end
   end
 
-  describe "trades empty state uses component" do
-    it "renders standardized empty state for trade history" do
-      get trades_path
+  # The trade log moved into Historial with D60; its empty state moved with it
+  # and is covered there, per section, in historial_spec.
+  describe "Historial empty states use the component" do
+    it "renders one per section rather than one for the page" do
+      create(:portfolio, user: user)
+      get positions_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Aún no hay movimientos")
-      # Icon swapped to `history` in S11 #145 to match the Stockerly-2.0
-      # mockup; previous `swap_horiz` no longer renders.
-      expect(response.body).to include("history")
+      expect(response.body).to include("Aún no registras movimientos")
+      expect(response.body).to include("receipt_long")
     end
   end
 end

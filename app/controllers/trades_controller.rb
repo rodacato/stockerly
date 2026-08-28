@@ -1,40 +1,6 @@
 class TradesController < AuthenticatedController
   FLASH_PARTIAL = "shared/flash_message"
 
-  # Filter params accepted on /trades:
-  #   tipo:    "todos" | "compras" | "ventas"
-  #   mercado: "todos" | "mxn" | "usd"
-  #   anio:    "todos" | "<YYYY>"
-  # Filters apply server-side via scopes on the trades collection. Counts
-  # are computed against the unfiltered relation so the chips can show
-  # the full year list and an honest "shown / total" footer label.
-  def index
-    @tipo    = params[:tipo].presence    || "todos"
-    @mercado = params[:mercado].presence || "todos"
-    @anio    = params[:anio].presence    || "todos"
-
-    base = current_user.portfolio&.trades&.kept&.includes(:asset, :position) || Trade.none
-    @total_count = base.count
-    # Aggregate year-extraction at the DB level so we don't pull every
-    # executed_at timestamp into Ruby memory just to call `.uniq` on
-    # year. EXTRACT runs once; the result set is tiny.
-    @available_years = base.distinct.pluck(Arel.sql("EXTRACT(YEAR FROM executed_at)::int")).sort.reverse
-
-    scope = base
-    scope = scope.where(side: filter_side)         if filter_side
-    scope = scope.where(currency: filter_currency) if filter_currency
-    # Use a date-range comparison instead of EXTRACT(YEAR FROM ...) so
-    # Postgres can hit the `index_trades_on_executed_at` index. `all_year`
-    # generates the inclusive [Jan 1, Dec 31] range.
-    scope = scope.where(executed_at: Time.zone.local(@anio.to_i).all_year) if @anio != "todos"
-
-    # Materialize once: the view iterates the relation twice (table body
-    # + summary helper). `.to_a` avoids a redundant COUNT for `@shown_count`
-    # and a double-load of the rows.
-    @trades = scope.recent.limit(50).to_a
-    @shown_count = @trades.size
-  end
-
   # D11: a real page first. The drawer is a presentation the JS layer adds; if
   # it never runs, this still works.
   def new
@@ -71,7 +37,7 @@ class TradesController < AuthenticatedController
 
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.replace(trade, partial: "trades/edit_row", locals: { trade: trade }) }
-      format.html { redirect_to trades_path }
+      format.html { redirect_to positions_path }
     end
   end
 
@@ -84,7 +50,7 @@ class TradesController < AuthenticatedController
 
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.replace(trade, partial: "trades/confirm_delete_row", locals: { trade: trade }) }
-      format.html { redirect_to trades_path }
+      format.html { redirect_to positions_path }
     end
   end
 
@@ -103,12 +69,12 @@ class TradesController < AuthenticatedController
             flash_stream("notice", t("trades.flash.actualizado"))
           ]
         end
-        format.html { redirect_to trades_path, notice: t("trades.flash.actualizado") }
+        format.html { redirect_to positions_path, notice: t("trades.flash.actualizado") }
       end
     in Dry::Monads::Failure[ :validation, errors ]
-      respond_with_alert(errors.values.flatten.first, fallback: trades_path)
+      respond_with_alert(errors.values.flatten.first, fallback: positions_path)
     in Dry::Monads::Failure[ _, message ]
-      respond_with_alert(message, fallback: trades_path)
+      respond_with_alert(message, fallback: positions_path)
     end
   end
 
@@ -124,10 +90,10 @@ class TradesController < AuthenticatedController
             flash_stream("notice", t("trades.flash.eliminado"))
           ]
         end
-        format.html { redirect_to trades_path, notice: t("trades.flash.eliminado") }
+        format.html { redirect_to positions_path, notice: t("trades.flash.eliminado") }
       end
     in Dry::Monads::Failure[ _, message ]
-      respond_with_alert(message, fallback: trades_path)
+      respond_with_alert(message, fallback: positions_path)
     end
   end
 
@@ -148,7 +114,7 @@ class TradesController < AuthenticatedController
 
   def find_trade_or_redirect
     trade = current_user.portfolio&.trades&.find_by(id: params[:id])
-    redirect_to trades_path, alert: t("trades.flash.no_encontrado") if trade.nil?
+    redirect_to positions_path, alert: t("trades.flash.no_encontrado") if trade.nil?
     trade
   end
 
@@ -184,21 +150,5 @@ class TradesController < AuthenticatedController
 
   def update_trade_params
     params.require(:trade).permit(:shares, :price_per_share, :fee, :executed_at)
-  end
-
-  def filter_side
-    case @tipo
-    when "compras" then :buy
-    when "ventas"  then :sell
-    else nil
-    end
-  end
-
-  def filter_currency
-    case @mercado
-    when "mxn" then "MXN"
-    when "usd" then "USD"
-    else nil
-    end
   end
 end

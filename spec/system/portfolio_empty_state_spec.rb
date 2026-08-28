@@ -20,13 +20,14 @@ RSpec.describe "Portfolio empty state", type: :system do
     expect(page).to have_content(I18n.t("portfolios.show.sin_historial_titulo"))
   end
 
-  it "offers the lists a way back to the Consolidado" do
+  # Historial carries no back-link of its own: the artboard's TopBar is a title
+  # and nothing else, and the screen is reached from the Activos tab. Back
+  # affordances on sub-screens are KIT-3's HeaderBar, not a one-off here.
+  it "shows one empty state per section" do
     visit positions_path
-    expect(page).to have_link(I18n.t("portfolios.show.titulo"))
-  end
 
-  it "shows positions table with empty state message" do
-    visit positions_path
-    expect(page).to have_content("Aún no hay posiciones abiertas")
+    expect(page).to have_content("Aún no registras movimientos")
+    expect(page).to have_content("Aún no has cobrado dividendos")
+    expect(page).to have_content("Aún no cierras ninguna posición")
   end
 end

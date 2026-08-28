@@ -1,46 +1,16 @@
 class PositionsController < AuthenticatedController
-  # The position lists the Consolidado does not carry — open, closed, dividends
-  # and the trade log. Routable with no nav entry, the same treatment /market,
-  # /earnings and /news got in slice 1: the asset detail draws Operaciones and
-  # Dividendos per asset, and its "Ver todas" is where a global list belongs.
+  # Historial: the trade log, the dividends received and what closed positions
+  # made — the three lists D43 found had no other home. `/trades` used to hold
+  # the first of them behind no inbound link at all; D60 folded it in here.
   def index
-    result = Trading::UseCases::LoadPortfolio.call(user: current_user, tab: params[:tab] || "open")
-
-    if result.success?
-      data = result.value!
-      @portfolio          = data[:portfolio]
-      @positions          = data[:positions]
-      @summary            = data[:summary]
-      @tab                = data[:tab]
-      @upcoming_dividends = data[:upcoming_dividends]
-      @currency           = data[:currency]
-    else
-      redirect_to portfolio_path, alert: "Cartera no encontrada."
+    case Trading::UseCases::AssembleHistorial.call(user: current_user)
+    in Dry::Monads::Success(data)
+      @currency  = data[:currency]
+      @trades    = data[:trades]
+      @dividends = data[:dividends]
+      @closed    = data[:closed]
+    in Dry::Monads::Failure[ :not_found, _ ]
+      redirect_to portfolio_path, alert: t("positions.index.sin_cartera")
     end
-  end
-
-  def update
-    position = current_user.portfolio&.positions&.find_by(id: params[:id])
-
-    if position.nil?
-      redirect_to positions_path, alert: "No encontramos la posición."
-      return
-    end
-
-    labels = parse_labels(params.dig(:position, :labels))
-
-    if position.update(notes: params.dig(:position, :notes), labels: labels)
-      redirect_to positions_path, notice: "Actualizamos la posición."
-    else
-      redirect_to positions_path, alert: "No pudimos actualizar la posición."
-    end
-  end
-
-  private
-
-  def parse_labels(raw)
-    return [] if raw.blank?
-
-    raw.split(",").map(&:strip).reject(&:blank?).uniq.first(10)
   end
 end

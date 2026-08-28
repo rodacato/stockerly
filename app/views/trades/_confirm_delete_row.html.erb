@@ -1,32 +1,24 @@
-<%# Inline delete-confirm row — replaces the trade row when the user
-    clicks delete. Cancel link reverts to the trade row via a normal
-    navigation back to /trades; confirm button submits DELETE /trades/:id.
-    Avoids the JS confirm() dialog, consistent with Stockerly-2.0 patterns.
-    es-MX per S11 #145. %>
-<tr id="<%= dom_id(trade) %>" class="bg-negative-bg/40 border-y border-negative/30">
-  <td colspan="8" class="px-6 py-4">
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-      <span class="material-symbols-outlined text-negative">delete</span>
-      <div class="min-w-0 flex-1">
-        <p class="text-sm font-semibold text-fg-default">¿Eliminar este movimiento permanentemente?</p>
-        <p class="mt-1 text-xs text-fg-subtle">
-          <%= trade.buy? ? "Compra" : "Venta" %> ·
-          <span class="font-mono font-semibold text-fg-default"><%= trade.asset.symbol %></span> ·
-          <%= trade.shares %> @ <%= format_currency_mx(trade.price_per_share, currency: trade.currency, precision: 4) %> ·
-          <%= trade.executed_at.strftime("%d %b %Y %H:%M") %>
-        </p>
-      </div>
-      <div class="flex items-center gap-2">
-        <%= link_to trades_path,
-              class: "rounded-lg border border-border-default bg-bg-surface px-3 py-1.5 text-xs font-medium text-fg-subtle hover:bg-bg-muted" do %>
-          Cancelar
-        <% end %>
-        <%= button_to trade_path(trade), method: :delete,
-              class: "inline-flex items-center gap-1.5 rounded-lg bg-negative px-3 py-1.5 text-xs font-bold text-white hover:opacity-90 transition-opacity cursor-pointer" do %>
-          <span class="material-symbols-outlined text-[14px]">delete_forever</span>
-          Sí, eliminar
-        <% end %>
-      </div>
-    </div>
-  </td>
-</tr>
+<%# Confirms in place instead of through a JS dialog, which is hostile on a
+    phone. Same dom_id as the card it replaces. %>
+<li id="<%= dom_id(trade) %>" class="flex flex-col gap-3 rounded-2xl border border-negative bg-negative-bg px-4 py-3 sm:flex-row sm:items-center">
+  <span class="material-symbols-outlined shrink-0 text-negative-fg" aria-hidden="true">delete</span>
+
+  <div class="min-w-0 flex-1">
+    <p class="text-sm font-semibold text-negative-fg"><%= t("positions.index.confirmar_borrado") %></p>
+    <p class="mt-0.5 text-xs text-negative-fg">
+      <span class="font-mono font-semibold"><%= trade.asset.symbol %></span> ·
+      <%= t("positions.index.movimiento_linea",
+             fecha: l(trade.executed_at.to_date, format: :short),
+             lado: t("positions.index.lado_#{trade.side}"),
+             titulos: t("assets.index.titulos", count: number_with_precision(trade.shares, precision: trade.shares.to_d.frac.zero? ? 0 : 4)),
+             precio: format_currency_mx(trade.price_per_share, currency: trade.currency, precision: 2)) %>
+    </p>
+  </div>
+
+  <div class="flex shrink-0 items-center gap-2">
+    <%= link_to t("comun.cancelar"), positions_path,
+          class: "rounded-lg border border-border-default bg-bg-surface px-3 py-1.5 text-sm font-semibold text-fg-subtle" %>
+    <%= button_to t("positions.index.si_eliminar"), trade_path(trade), method: :delete,
+          class: "cursor-pointer rounded-lg bg-negative px-3 py-1.5 text-sm font-semibold text-fg-inverse" %>
+  </div>
+</li>

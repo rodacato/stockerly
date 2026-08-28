@@ -28,7 +28,7 @@ RSpec.describe "App shell", type: :system do
   end
 
   it "keeps a tab lit across the screens it owns" do
-    visit trades_path
+    visit positions_path
 
     expect(page.all("a[aria-current='page']").map { |a| a[:href] }.uniq).to eq([ assets_path ])
   end

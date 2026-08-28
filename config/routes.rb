@@ -92,8 +92,13 @@ Rails.application.routes.draw do
   resources :alerts, only: [ :index, :new, :create, :update, :destroy ] do
     member { patch :toggle }
   end
-  resources :positions, only: [ :index, :update ]
-  resources :trades,    only: [ :index, :new, :create, :edit, :update, :destroy ] do
+  # Historial. `update` went with the four-tab table: `notes` and `labels` were
+  # written by an endpoint no view ever posted to, and no artboard draws them.
+  resources :positions, only: [ :index ]
+  # No `index` since D60 — Historial holds the trade log, and /trades had no
+  # inbound link from anywhere in the app. The sheet and the inline row flows
+  # stay.
+  resources :trades, only: [ :new, :create, :edit, :update, :destroy ] do
     member { get :confirm_destroy }
   end
   resources :watchlist_items, only: [ :create, :destroy ]

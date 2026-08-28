@@ -30,7 +30,7 @@ RSpec.describe "Authenticated pages", type: :request do
 
       get positions_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Posiciones y movimientos")
+      expect(response.body).to include("Historial")
     end
   end
 

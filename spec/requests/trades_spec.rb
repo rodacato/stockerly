@@ -9,25 +9,6 @@ RSpec.describe "Trades", type: :request do
     { trade: { asset_symbol: "AAPL", side: "buy", shares: "10", price_per_share: "150.0" } }
   end
 
-  describe "GET /trades" do
-    context "when authenticated" do
-      before { login_as(user) }
-
-      it "renders the trade history page" do
-        get trades_path
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Movimientos")
-      end
-    end
-
-    context "when unauthenticated" do
-      it "redirects to login" do
-        get trades_path
-        expect(response).to redirect_to(login_path)
-      end
-    end
-  end
-
   describe "POST /trades" do
     before { login_as(user) }
 
@@ -111,7 +92,7 @@ RSpec.describe "Trades", type: :request do
 
     it "redirects when trade not found" do
       get edit_trade_path(id: 999999)
-      expect(response).to redirect_to(trades_path)
+      expect(response).to redirect_to(positions_path)
     end
   end
 
@@ -127,7 +108,7 @@ RSpec.describe "Trades", type: :request do
     it "updates trade and redirects with notice" do
       patch trade_path(trade), params: { trade: { shares: "15" } }
 
-      expect(response).to redirect_to(trades_path)
+      expect(response).to redirect_to(positions_path)
       follow_redirect!
       expect(response.body).to include("Movimiento actualizado.")
       expect(trade.reload.shares).to eq(15.0)
@@ -145,7 +126,7 @@ RSpec.describe "Trades", type: :request do
 
       patch trade_path(trade), params: { trade: { shares: "15" } }
 
-      expect(response).to redirect_to(trades_path)
+      expect(response).to redirect_to(positions_path)
       follow_redirect!
       expect(response.body).to include("Cannot edit trades older than 30 days")
     end
@@ -163,7 +144,7 @@ RSpec.describe "Trades", type: :request do
     it "soft-deletes the trade and redirects" do
       delete trade_path(trade)
 
-      expect(response).to redirect_to(trades_path)
+      expect(response).to redirect_to(positions_path)
       follow_redirect!
       expect(response.body).to include("Movimiento eliminado")
       expect(trade.reload.discarded?).to be true
@@ -181,7 +162,7 @@ RSpec.describe "Trades", type: :request do
 
       delete trade_path(trade)
 
-      expect(response).to redirect_to(trades_path)
+      expect(response).to redirect_to(positions_path)
       follow_redirect!
       expect(response.body).to include("Cannot delete trades older than 30 days")
     end

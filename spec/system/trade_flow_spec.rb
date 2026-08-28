@@ -22,7 +22,7 @@ RSpec.describe "Trade flow", type: :system do
     }
 
     visit positions_path
-    expect(page).to have_content("Apple Inc.")
+    expect(page).to have_content("AAPL")
     expect(page).to have_content("10")
   end
 
@@ -34,7 +34,7 @@ RSpec.describe "Trade flow", type: :system do
     }
 
     visit positions_path
-    expect(page).to have_content("Apple Inc.")
+    expect(page).to have_content("AAPL")
     expect(page).to have_content("15")
   end
 
@@ -46,7 +46,7 @@ RSpec.describe "Trade flow", type: :system do
     }
 
     visit positions_path(tab: "closed")
-    expect(page).to have_content("Apple Inc.")
+    expect(page).to have_content("AAPL")
   end
 
   it "shows trade in Trade Log tab after execution" do

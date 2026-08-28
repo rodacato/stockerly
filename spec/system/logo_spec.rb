@@ -41,29 +41,4 @@ RSpec.describe "Stockerly wordmark across surfaces", type: :system do
       expect(page).to have_css("img[alt='Stockerly']")
     end
   end
-
-  describe "asset badge fallback" do
-    it "renders the colored-symbol fallback when an asset has no logo_url" do
-      asset = create(:asset, :stock, symbol: "FALLBACK", name: "No Logo Inc.", logo_url: nil, exchange: "NASDAQ")
-      visit login_path
-      fill_in "Correo electrónico", with: "logo@test.com"
-      fill_in "Contraseña", with: "password123"
-      click_button "Iniciar sesión"
-      visit market_asset_path(asset.symbol)
-      expect(page).to have_content("FALLBACK")
-    end
-
-    it "carries the onerror hook when an asset DOES have a logo_url (covers 404 case)" do
-      asset = create(:asset, :stock, symbol: "WITHLOGO", name: "Has Logo Inc.", logo_url: "https://example.test/logo.png", exchange: "NASDAQ")
-      visit login_path
-      fill_in "Correo electrónico", with: "logo@test.com"
-      fill_in "Contraseña", with: "password123"
-      click_button "Iniciar sesión"
-      # The 2.0 asset header dropped the badge; the screens that render
-      # `components/asset_badge` — trades, watchlist, positions — still carry it.
-      create(:trade, portfolio: user.portfolio || create(:portfolio, user: user), asset: asset)
-      visit trades_path
-      expect(page.html).to include("onerror")
-    end
-  end
 end

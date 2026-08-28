@@ -22,24 +22,27 @@ RSpec.describe "Trade management", type: :system do
     click_button "Iniciar sesión"
   end
 
-  it "shows trade history page with actions column" do
-    visit trades_path
+  it "shows the trade log with its per-row actions" do
+    visit positions_path
 
     expect(page).to have_content("Movimientos")
-    expect(page).to have_content("Acciones")
     expect(page).to have_content("AAPL")
+    # The cards carry icon buttons with aria-labels, not a column header
+    # (KIT-4), so the href is what identifies them.
+    expect(page).to have_link(href: edit_trade_path(trade))
+    expect(page).to have_link(href: confirm_destroy_trade_path(trade))
   end
 
   it "excludes soft-deleted trades from the list" do
     trade.discard!
-    visit trades_path
+    visit positions_path
 
     expect(page).not_to have_content("AAPL")
-    expect(page).to have_content("Aún no hay movimientos")
+    expect(page).to have_content("Aún no registras movimientos")
   end
 
   it "shows edit and delete buttons for recent trades" do
-    visit trades_path
+    visit positions_path
 
     expect(page).to have_css("span", text: "edit")
     expect(page).to have_css("span", text: "delete")
@@ -47,7 +50,7 @@ RSpec.describe "Trade management", type: :system do
 
   it "hides action buttons for old trades" do
     trade.update_column(:executed_at, 31.days.ago)
-    visit trades_path
+    visit positions_path
 
     expect(page).not_to have_css("span", text: "edit")
     expect(page).not_to have_css("span", text: "delete")

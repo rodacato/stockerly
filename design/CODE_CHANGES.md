@@ -949,3 +949,57 @@ audit flags in `trades_controller`. Extracting `respond_currency` took it to **B
 **Not done here, and deliberately:** `update_currency`'s two flash strings are still hardcoded
 es-MX. `profiles/` is at zero i18n keys and AJU-1 is going to rewrite the screen wholesale, so
 writing keys for it now is work for a surface that is scheduled to go.
+
+---
+
+## 16. Historial absorbs `/trades`, and seven debts go with it (D60) — work order
+
+**Status:** approved, not started. [D60](DECISIONS.md) decided it on 2026-08-28; no discovery card
+is owed because this rebuilds a drawn screen rather than adding a feature.
+
+**Why this one first.** It is the only remaining item that closes several others by existing.
+Everything below is deferred **because** this screen was going to die, and collects itself the day
+it does:
+
+| | What it is | How this closes it |
+|---|---|---|
+| **ACT-2** | `/positions` is the pre-redesign four-tab table | replaced by the three drawn sections |
+| **ACT-3** | `/trades` has no inbound link and duplicates the trade log | `trades#index` and its 187-line view are deleted |
+| **KIT-4** | `MovementItem` ships as a `<tr>` | both its render sites are these two screens |
+| **TD3** | `trades#index` builds its own scopes | deleted with the action |
+| **TD4** | `positions#update` writes `notes`/`labels` with no use case | neither field is drawn; the rebuild answers whether they survive |
+| **TD2** (half) | four hardcoded strings in `positions_controller` | rewritten with the screen |
+| **X1 / TD7** (most) | 16 of 22 off-contract token uses | all in `positions/_positions_table`, which goes |
+
+**What the screen is.** Three sections stacked in one scroll, no tab control — the shape #294 chose
+for the asset detail's sub-tabs and the Bandeja uses for its date groups:
+
+1. **Movimientos** — *valores en la moneda de cada operación*, so rows keep the ISO prefix (D10)
+2. **Dividendos cobrados** — *valores en MXN*, header declares it once
+3. **Posiciones cerradas** — *ganancia realizada, en MXN*
+
+**`Posiciones abiertas` is dropped**, and that is D43's finding rather than a simplification: it
+duplicated Holdings, and is the likeliest reason nobody ever linked to the screen.
+
+**The filters do not come along.** `tipo` / `mercado` / `anio` are real and were built for a screen
+nobody opened, which is the strongest available evidence that nothing needed them. They return with
+a documented trigger.
+
+**What must not be lost.** Editing and deleting a trade live in `trades/_trade_row`, which renders
+from **both** screens today — so the capability already exists on the survivor. It has to be rebuilt
+inside a `MovementItem` card rather than a `<tr>`, which is KIT-4's work and is why the two collapse
+into one job. `market/_position_trades` is read-only and loses nothing.
+
+### ⚠ The one thing the design did not draw: how anyone gets there
+
+Measured on canvas 2026-08-28. The only `Historial` text node in `assets.pen` is **its own TopBar
+title** — no screen in the flow draws a link to it, and the brief confirms the code has exactly one
+inbound link, from `market/_position_trades`'s *Ver todas*. Delete `/trades` and the screen holding
+the closed positions, the dividend history and the trade log — the three lists D43 says have no
+other home — is reachable only from inside one asset's page.
+
+This is DSC-1's shape: an artboard drawn without its door. **It is a decision, and the precedent is
+on the same screen** — `assets/index` already carries a foot-of-list `NavRow` to Tracked (D9), so a
+second one for Historial follows a pattern that screen established rather than inventing one.
+
+**Owed before the build starts.** Adrian's call; the rest of the work order does not depend on it.
