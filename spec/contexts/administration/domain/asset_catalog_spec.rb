@@ -54,4 +54,41 @@ RSpec.describe Administration::Domain::AssetCatalog do
       expect(described_class::DEFAULT_SELECTED).to include("AAPL", "BTC", "SPY")
     end
   end
+
+  describe "the one list" do
+    it "seeds the picker plus the system rows, and offers only the picker" do
+      expect(described_class.seedable.size).to eq(described_class.flat.size + described_class::SYSTEM.size)
+      expect(described_class.symbols).not_to include("VIX")
+      expect(described_class.seedable.map { |a| a[:symbol] }).to include("VIX")
+    end
+
+    # Every MX row used to omit currency, so each was created with the column
+    # default — CETES and a peso-quoted ETF stored as USD.
+    it "declares MXN on every peso-denominated row" do
+      mx = described_class.seedable.select { |a| a[:country] == "MX" }
+
+      expect(mx).not_to be_empty
+      expect(mx.map { |a| a[:currency] }.uniq).to eq([ "MXN" ])
+    end
+
+    it "gives every row the fields an Asset needs to be valid" do
+      described_class.seedable.each do |attrs|
+        asset = Asset.new(attrs.merge(sync_status: :active))
+        expect(asset).to be_valid, "#{attrs[:symbol]}: #{asset.errors.full_messages.join(', ')}"
+      end
+    end
+  end
+
+  describe ".logo_url_for" do
+    it "sends crypto to CoinGecko and everything else to Parqet" do
+      expect(described_class.logo_url_for(symbol: "BTC", asset_type: "crypto")).to include("coingecko")
+      expect(described_class.logo_url_for(symbol: "AAPL", asset_type: "stock", country: "US")).to include("parqet")
+    end
+
+    it "has no logo for the kinds nobody publishes one for" do
+      expect(described_class.logo_url_for(symbol: "CETE28D", asset_type: "fixed_income", country: "MX")).to be_nil
+      expect(described_class.logo_url_for(symbol: "VIX", asset_type: "index", country: "US")).to be_nil
+      expect(described_class.logo_url_for(symbol: "IVVPESO.MX", asset_type: "etf", country: "MX")).to be_nil
+    end
+  end
 end
