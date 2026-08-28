@@ -17,7 +17,12 @@ module Administration
           { symbol: "JNJ", name: "Johnson & Johnson", asset_type: "stock", exchange: "NYSE", sector: "Healthcare", country: "US", data_source: nil },
           { symbol: "KO", name: "Coca-Cola Co.", asset_type: "stock", exchange: "NYSE", sector: "Consumer", country: "US", data_source: nil },
           { symbol: "PG", name: "Procter & Gamble", asset_type: "stock", exchange: "NYSE", sector: "Consumer", country: "US", data_source: nil },
-          { symbol: "OKE", name: "Oneok Inc.", asset_type: "stock", exchange: "NYSE", sector: "Energy", country: "US", data_source: nil }
+          { symbol: "OKE", name: "Oneok Inc.", asset_type: "stock", exchange: "NYSE", sector: "Energy", country: "US", data_source: nil },
+          { symbol: "AVGO", name: "Broadcom Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: nil },
+          { symbol: "AMD", name: "Advanced Micro Devices", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: nil },
+          { symbol: "INTC", name: "Intel Corp.", asset_type: "stock", exchange: "NASDAQ", sector: "Technology", country: "US", data_source: nil },
+          { symbol: "NFLX", name: "Netflix, Inc.", asset_type: "stock", exchange: "NASDAQ", sector: "Consumer Cyclical", country: "US", data_source: nil },
+          { symbol: "COIN", name: "Coinbase Global", asset_type: "stock", exchange: "NASDAQ", sector: "Finance", country: "US", data_source: nil }
         ],
         crypto: [
           { symbol: "BTC", name: "Bitcoin", asset_type: "crypto", data_source: DATA_SOURCE_COINGECKO },
@@ -32,7 +37,10 @@ module Administration
           { symbol: "QQQ", name: "Invesco QQQ Trust", asset_type: "etf", exchange: "NASDAQ", country: "US", data_source: nil },
           { symbol: "VOO", name: "Vanguard S&P 500", asset_type: "etf", exchange: "NYSE", country: "US", data_source: nil },
           { symbol: "VTI", name: "Vanguard Total Stock", asset_type: "etf", exchange: "NYSE", country: "US", data_source: nil },
-          { symbol: "ARKK", name: "ARK Innovation ETF", asset_type: "etf", exchange: "NYSE", country: "US", data_source: nil }
+          { symbol: "ARKK", name: "ARK Innovation ETF", asset_type: "etf", exchange: "NYSE", country: "US", data_source: nil },
+          { symbol: "VT", name: "Vanguard Total World Stock", asset_type: "etf", exchange: "NYSE", country: "US", data_source: nil },
+          { symbol: "VWO", name: "Vanguard Emerging Markets", asset_type: "etf", exchange: "NYSE", country: "US", data_source: nil },
+          { symbol: "VGT", name: "Vanguard Information Technology", asset_type: "etf", exchange: "NYSE", country: "US", data_source: nil }
         ],
         mexican_stocks: [
           { symbol: "GENIUSSACV.MX", name: "Genius Sports SAB", asset_type: "stock", exchange: "BMV", sector: "Technology", country: "MX", data_source: DATA_SOURCE_YAHOO },
