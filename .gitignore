@@ -83,3 +83,6 @@ design/references/
 
 # Python venv for the yfinance bridge
 /.venv
+
+# Personal blog-post scratchpad — kept locally, never published with the repo
+/BITACORA_2_0.md

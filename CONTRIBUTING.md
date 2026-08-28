@@ -118,6 +118,23 @@ See [CLAUDE.md](CLAUDE.md) for the complete architecture reference.
 - Keep the first line under 70 characters
 - Add a blank line and a body for context if needed
 - One commit per logical change
+- No `Co-Authored-By` line, and no AI attribution anywhere in the message
+
+**Prefixes.** Carried here from `docs/sprints/README.md` when that folder was retired — the
+taxonomy outlived the sprint protocol that defined it.
+
+| Prefix | For |
+|---|---|
+| `feat(<ctx>):` | new functionality |
+| `refactor(<ctx>):` | internal change |
+| `fix:` | bug fix |
+| `chore:` | maintenance, cleanup |
+| `docs:` | documentation only |
+| `test:` | tests only |
+
+`<ctx>` is the bounded context the change lands in — `trading`, `market-data`, `alerts`,
+`identity`, `notifications`, `admin`. **Each commit references its issue**, e.g.
+`feat(trading): capture FX at execution [#27]`.
 
 Examples:
 ```

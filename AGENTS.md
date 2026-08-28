@@ -74,7 +74,6 @@ evaporates.
 | [`docs/vision/non-goals.md`](docs/vision/non-goals.md) | What we explicitly are NOT |
 | [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | The 6 canonical JTBDs |
 | [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions — 16 ADRs, numbered to 0018. Read before deciding; ADR-0007 is superseded by ADR-0011 |
-| [`docs/sprints/README.md`](docs/sprints/README.md) | Sprint operating manual |
 | [`docs/research/experts.md`](docs/research/experts.md) | The advisory panel |
 | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | Issues + Projects v2 + Milestones |
 | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare |
@@ -148,15 +147,13 @@ If a trigger isn't documented, push back instead of advancing.
 
 ## Trigger Phrases & Behaviors
 
-The user communicates in Spanish — map the phrase to the behavior. Full sprint
-playbook in [`docs/sprints/README.md`](docs/sprints/README.md).
+The user communicates in Spanish — map the phrase to the behavior. The working
+protocol lives in [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md).
 
 | Phrase (Spanish) | Behavior |
 |---|---|
 | "tengo una idea" | Don't build. Open a discovery card (GitHub Issue) with the 4 filters. If the trigger isn't documented, say so. |
-| "empecemos un sprint" / "abramos el sprint" | Read `docs/sprints/README.md`. Only start if the previous sprint is closed *with a retro*. Set the goal in the GitHub Milestone (one sentence). |
-| "cerremos el sprint" | Mandatory QA pass (smoke + green CI) **then** retro in `docs/sprints/<n>/retro.md`. No new sprint while one is open. |
-| "¿dónde estamos?" / "estado del proyecto" | Read the active Milestone + `docs/sprints/<n>/` + `docs/vision/`. Summarize: goal, done vs pending, what's next. |
+| "¿dónde estamos?" / "estado del proyecto" | Read the open Milestone + the open Issues + `docs/vision/`. Summarize: goal, done vs pending, what's next. |
 | "consulta a los expertos" / "que el panel evalúe" | Activate the relevant experts from `docs/research/experts.md`; end with recommendation + risks + rollback. |
 
 ---

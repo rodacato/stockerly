@@ -116,8 +116,7 @@ Each phase closed with "specs green → next". Never asked "did Adrian use it?".
 | ADRs (immutable decisions) | `docs/architecture/adr/` |
 | Design system (source of truth) | `design/` |
 | Research, code audits | `docs/research/` |
-| Sprint protocol | `docs/sprints/README.md` |
-| Sprint retros | `docs/sprints/<n>/retro.md` |
+| Working protocol | `docs/ops/github-workflow.md` |
 | **Backlog items with discovery cards** | **GitHub Issues** |
 | **Sprint board** | **GitHub Projects v2** |
 | **Sprint goal** | **GitHub Milestone description** |
@@ -201,7 +200,6 @@ If a consultation significantly changes project direction → ADR. Without an AD
 | **JTBDs** | [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | 6 expanded JTBDs |
 | **ADRs** | [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions (ADR-001 active) |
 | **Expert Panel** | [`docs/research/experts.md`](docs/research/experts.md) | 8 Core + 8 Situational |
-| **Sprint protocol** | [`docs/sprints/README.md`](docs/sprints/README.md) | Sprint operating manual |
 | **GitHub workflow** | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | How we use Issues + Projects |
 | **Persistent memory** | `.kwik-e/memory/` | User profile, decisions, anti-patterns |
 | **Deployment** | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare guide |
