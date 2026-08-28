@@ -5,9 +5,14 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
+    # tini as PID 1 — `sleep infinity` never reaps, so git/node/claude zombies pile up.
+    init: true
     volumes:
       - ../..:/workspaces:cached
       - bundle_cache:/usr/local/bundle
+      # The shell-history feature writes here (/dc/shellhistory, per its
+      # devcontainer-feature.json); without the volume every rebuild starts empty.
+      - commandhistory:/dc/shellhistory
     ports:
       - "4100:4100"
     environment:
@@ -34,3 +39,4 @@ services:
 volumes:
   postgres_data:
   bundle_cache:
+  commandhistory:
