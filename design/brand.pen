@@ -4,8 +4,8 @@
     {
       "type": "frame",
       "id": "eNuMX",
-      "x": 0,
-      "y": 0,
+      "x": -946,
+      "y": 909,
       "name": "Brand / Brief",
       "width": 560,
       "fill": "$bg-surface",
@@ -316,7 +316,7 @@
                   "fill": "$fg-default",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "0.7.0",
+                  "content": "0.9.0",
                   "fontFamily": "$font-sans",
                   "fontSize": 11,
                   "fontWeight": "600"
@@ -378,7 +378,7 @@
                   "fill": "$fg-default",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Symbol decided. Pending: scale-1 export, flow re-vendor, code change.",
+                  "content": "Symbol shipped. The three items this row listed as pending are all done: brand-escala-1x.png exists at scale 1, all seven flows carry the mark, and the code change landed as CODE_CHANGES §11 (logos, favicons, the maskable icon, the manifest and the service worker's cache bust).",
                   "fontFamily": "$font-sans",
                   "fontSize": 11,
                   "fontWeight": "600"
@@ -392,8 +392,8 @@
     {
       "type": "frame",
       "id": "iIJAu",
-      "x": 640,
-      "y": 0,
+      "x": 0,
+      "y": -59,
       "name": "Actual / Símbolo",
       "width": 660,
       "fill": "$bg-surface",
@@ -6518,7 +6518,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.6.0"
+      "value": "0.9.0"
     },
     "font-display": {
       "type": "string",
@@ -6956,7 +6956,7 @@
           }
         },
         {
-          "value": "#7B89FF",
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }
@@ -6974,6 +6974,244 @@
         },
         {
           "value": "#000000B3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6CFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7B89FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#38BDF8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#5CC8F5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-6": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#7C6CF0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#A78BFA",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-7": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F97316",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB923C",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-8": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#06B6D4",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#22D3EE",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "chart-neutral": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#94A3B8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-1": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F43F5E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FB7185",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-2": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-3": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCD34D",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-4": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#A3E635",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#BEF264",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "sentiment-5": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
           "theme": {
             "mode": "dark"
           }
