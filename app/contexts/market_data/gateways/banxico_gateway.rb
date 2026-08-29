@@ -89,8 +89,8 @@ module MarketData
 
     def connection
       @connection ||= Faraday.new(url: BASE_URL) do |f|
-        f.request :retry, max: 2, interval: 0.5, backoff_factor: 2,
-                          retry_statuses: [ 500, 502, 503 ]
+        f.request :retry, RetryPolicy.options(max: 2, interval: 0.5, backoff_factor: 2,
+                                              retry_statuses: [ 500, 502, 503 ])
         f.response :json
         f.headers["Bmx-Token"] = @api_token
         f.options.timeout = TIMEOUT
