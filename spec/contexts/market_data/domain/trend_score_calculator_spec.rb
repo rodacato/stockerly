@@ -92,7 +92,7 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
       end
     end
 
-    context "5-factor mode (≥35 closes)" do
+    context "per-factor gating" do
       let(:uptrend_closes) { (1..40).map { |i| 100.0 + (i * 1.5) } }
       let(:uptrend_volumes) { (1..40).map { |i| 1_000_000 + (i * 10_000) } }
 
@@ -104,11 +104,34 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
         result[:factors].each_value { |v| expect(v).to be_a(Float) }
       end
 
-      it "falls back to 2-factor when closes are between 15 and 34" do
+      it "yields every factor the series can support, not only the two a short series used to allow" do
         closes = (1..25).map { |i| 100.0 + (i * 1.0) }
         result = described_class.calculate(closes: closes)
 
-        expect(result[:factors].keys).to contain_exactly(:rsi, :momentum)
+        # 25 closes clears ema_crossover (21) but not macd (34). The old ">= 35"
+        # branch withheld all three behind the strictest one's requirement.
+        expect(result[:factors].keys).to contain_exactly(:rsi, :momentum, :ema_crossover)
+      end
+
+      it "adds volume_trend once there are enough volumes, still short of macd" do
+        closes = (1..25).map { |i| 100.0 + (i * 1.0) }
+        result = described_class.calculate(closes: closes, volumes: Array.new(25, 1_000_000))
+
+        expect(result[:factors].keys).to contain_exactly(:rsi, :momentum, :ema_crossover, :volume_trend)
+      end
+
+      it "never reports macd below the closes EMA26 needs to seed" do
+        (15..33).each do |n|
+          result = described_class.calculate(closes: (1..n).map { |i| 100.0 + i })
+          expect(result[:factors]).not_to have_key(:macd), "macd appeared with #{n} closes"
+        end
+      end
+
+      it "scores a partial reading rather than refusing one" do
+        result = described_class.calculate(closes: (1..25).map { |i| 100.0 + i })
+
+        expect(result[:score]).to be_between(0, 100)
+        expect(described_class::FACTORS - result[:factors].keys).to contain_exactly(:macd, :volume_trend)
       end
 
       it "produces macd factor >= 50 for uptrend" do

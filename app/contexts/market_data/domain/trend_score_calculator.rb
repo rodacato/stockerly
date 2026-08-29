@@ -4,10 +4,12 @@ module MarketData
     # Receives array of closing prices (oldest→newest, min 15 elements), returns score hash.
     # No DB reads, no I/O, no side effects.
     #
-    # Graceful degradation:
-    # - ≥35 closes (+ volumes) → 5-factor: RSI 30%, Momentum 20%, MACD 20%, Volume 15%, EMA 15%
-    # - 15-34 closes → 2-factor fallback: RSI 60%, Momentum 40% (backward compatible)
+    # Every factor is attempted and each one gates on its own minimum, so a short
+    # series yields the factors it can support rather than none. `factors` carries
+    # only what was computable; FACTORS minus its keys is what the reading is missing.
     class TrendScoreCalculator
+      FACTORS = %i[rsi momentum macd volume_trend ema_crossover].freeze
+
     class << self
     def calculate(closes:, volumes: nil)
       return nil if closes.blank? || closes.size < 15
@@ -16,23 +18,18 @@ module MarketData
       momentum = momentum_7d(closes)
       return nil unless rsi && momentum
 
-      if closes.size >= 35
-        macd = macd_signal(closes)
-        vol = volumes.present? ? volume_trend(volumes, momentum) : nil
-        ema = ema_crossover(closes)
+      macd = macd_signal(closes)
+      vol = volumes.present? ? volume_trend(volumes, momentum) : nil
+      ema = ema_crossover(closes)
 
-        score = blend_5_factor(rsi, momentum, macd, vol, ema)
-        factors = {
-          rsi: rsi.round(1),
-          momentum: normalize_momentum(momentum).round(1),
-          macd: macd&.round(1),
-          volume_trend: vol&.round(1),
-          ema_crossover: ema&.round(1)
-        }
-      else
-        score = blend(rsi, momentum)
-        factors = { rsi: rsi.round(1), momentum: normalize_momentum(momentum).round(1) }
-      end
+      score = blend_5_factor(rsi, momentum, macd, vol, ema)
+      factors = {
+        rsi: rsi.round(1),
+        momentum: normalize_momentum(momentum).round(1),
+        macd: macd&.round(1),
+        volume_trend: vol&.round(1),
+        ema_crossover: ema&.round(1)
+      }.compact
 
       { score: score, label: label_for(score), direction: momentum >= 0 ? :upward : :downward, factors: factors }
     end
@@ -159,12 +156,6 @@ module MarketData
       end
 
       (weighted / total_weight * 1.0).clamp(0, 100).round
-    end
-
-    def blend(rsi, momentum)
-      norm_rsi = rsi.clamp(0, 100)
-      norm_momentum = normalize_momentum(momentum)
-      (0.6 * norm_rsi + 0.4 * norm_momentum).clamp(0, 100).round
     end
 
     def label_for(score)

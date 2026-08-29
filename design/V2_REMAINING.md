@@ -201,7 +201,7 @@ mean what the screen implies*. Four of the five new reds are data-shape defects 
 screen-by-screen audit — `X10` in particular describes a capability with a single non-visual
 consumer, which is exactly the kind of thing a walk through the views cannot see.
 
-**`DECISIONS.md`: 72 entries · 67 resolved · 5 open** — D3, D15, D33, D64 and D71. **This block
+**`DECISIONS.md`: 72 entries · 68 resolved · 4 open** — D3, D15, D33 and D64. **This block
 previously listed D55 and D57 as open and they are both resolved**, and gave a stale entry total;
 that file's header carried the same two errors. D68–D70 were raised and resolved on 2026-08-29 by a
 panel consultation, which is why the open count fell rather than rose. Run the third command above;
@@ -505,6 +505,21 @@ class it serves. Crypto backfill would start failing where it currently succeeds
 because the fix is a shape decision and not a constant: either each gateway clamps to its own
 ceiling, or `DAYS` becomes per-asset-type. Alpaca and DataBursatil take `(from, to)` ranges and are
 unaffected.
+
+**Resolved 2026-08-29 — `DAYS` moved to 365 and neither mechanism was needed (D71).** 400 calendar
+days is ~276 trading sessions against 365's ~252, and the deepest window the app asks for is SMA200
+at **200 rows**, so nothing it computes notices the difference. 365 is also exactly CoinGecko's
+ceiling, so one global constant is honoured by every registered source. The table grows a row a day
+and is never pruned, so the initial fetch only has to cover day one.
+
+**The `>= 35` gate is gone too, and it was withholding more than MACD.** `TrendScoreCalculator`
+computed nothing beyond RSI and momentum below 35 closes — but `ema_crossover` needs only **21** and
+`volume_trend` only **20 volumes**, so all three were gated behind the strictest one's requirement.
+Each factor now gates on its own minimum and `blend_5_factor` already renormalised over whatever was
+present, so the change was to delete the branch rather than to write one. A reading below a factor's
+mathematical minimum is still refused rather than approximated — `EMA26` cannot be seeded from 20
+points, and a number there would be invented. `FACTORS` minus a reading's own keys is what it is
+missing.
 
 ### X10 🔴 The nightly job computes every indicator factor and throws it away
 
