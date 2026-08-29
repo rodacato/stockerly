@@ -809,6 +809,12 @@ es-MX:
       resultados futuros.
     precio:
       titulo: Precio · %{currency} · cierre diario
+    range_52w:
+      above_high: "%{percent} arriba de su máximo del año"
+      below_low: "%{percent} abajo de su mínimo del año"
+      high: a %{percent} de su máximo del año
+      low: a %{percent} de su mínimo del año
+      titulo: RANGO 52 SEMANAS
     statement_table:
       concepto: Concepto
       margen: Margen %
@@ -828,6 +834,15 @@ es-MX:
       vacio_cuerpo: Aún no tenemos información financiera para este activo. Los datos
         se sincronizan a diario — vuelve más tarde.
       vacio_titulo: Sin datos fundamentales
+    vs_plan:
+      activa: activa
+      costo: Tu costo · %{value}
+      en_pausa: en pausa
+      regla: Regla · %{summary}
+      titulo: VS. TU PLAN
+      umbral: Tu umbral · %{value}
+      umbral_baja: necesita bajar %{percent}
+      umbral_sube: necesita subir %{percent}
   nav:
     abrir_avisos: Abrir avisos
     activos: Activos
@@ -959,8 +974,6 @@ es-MX:
     invertido: Invertido
     movimientos: Movimientos
     no_realizado: No realizado · aún no vendes (todo en papel)
-    plan_sin_reglas: No tienes reglas sobre este activo.
-    plan_titulo: VS. TUS REGLAS
     retrospectiva_cuerpo: Tus %{count} compras promediaron %{price} con RSI ~%{rsi}.
     retrospectiva_titulo: Cómo entraste
     retrospectiva_una: Tu compra fue a %{price} con RSI ~%{rsi}.

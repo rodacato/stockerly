@@ -1,0 +1,24 @@
+<%# Where the price sits in its own year — the reading that answers "¿está caro?"
+    without asking the reader to learn an indicator. Hoisted out of Señales,
+    which is #306-blocked, so this ships on its own (CKP-9).
+    Locals: range (MarketData::Domain::FiftyTwoWeekRange::Reading), currency. %>
+<section class="flex flex-col gap-2 rounded-2xl border border-border-default bg-bg-surface p-5">
+  <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+    <h3 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".titulo") %></h3>
+    <p class="text-xs text-fg-subtle">
+      <%= t(".#{range.zone}", percent: number_to_percentage(range.distance, precision: 1, format: "%n%")) %>
+    </p>
+  </div>
+
+  <div class="relative h-2.5">
+    <div class="absolute inset-x-0 top-1 h-1.5 rounded-full bg-bg-muted"></div>
+    <span class="absolute top-0 size-2.5 -translate-x-1/2 rounded-full bg-fg-default"
+          style="left: <%= (range.position * 100).round(2) %>%"
+          aria-hidden="true"></span>
+  </div>
+
+  <div class="flex justify-between font-mono text-[11px] text-fg-subtle">
+    <span><%= format_currency_mx(range.low, currency: currency) %></span>
+    <span><%= format_currency_mx(range.high, currency: currency) %></span>
+  </div>
+</section>
