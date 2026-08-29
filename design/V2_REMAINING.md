@@ -1,29 +1,31 @@
 # What is left to finish the 2.0 revamp
 
-> ## ⚠ This file stops being the board — 2026-08-29
+> ## ⚠ This file is no longer the board — 2026-08-29
 >
-> **The decision is taken; the migration is not done, and this banner says which.**
-> [ADR-022](../docs/architecture/adr/0022-github-as-the-system-of-record.md) makes the private
-> GitHub Project the system of record for outstanding work, and
-> [`docs/ops/github-workflow.md`](../docs/ops/github-workflow.md) is the manual. As of this commit
-> **the board carries no item from the inventory below** — it holds closed issues only. Two
-> findings already had numbers before the decision (`CKP-3` → #306, `CKP-4` → #301); the rest are
-> still here. A finding leaves when it becomes a board item carrying its `Finding ID`, so a `.pen`
-> brief citing `CKP-4` keeps resolving on either side of the move.
+> **Outstanding work lives in the private `Stockerly` Project on GitHub**
+> ([ADR-022](../docs/architecture/adr/0022-github-as-the-system-of-record.md),
+> [`docs/ops/github-workflow.md`](../docs/ops/github-workflow.md)). The open findings were migrated
+> there as board items carrying their `Finding ID` in the title, so a `.pen` brief citing `CKP-4`
+> resolves on either side of the move. **Do not add a finding here.**
 >
-> **Do not add a finding here** — new work opens on the board. **Do not hand-maintain a count
-> here either:** this file's own tally was wrong seven times, which is the argument the ADR is
-> built on. Re-derive it instead.
+> **What the glyph still means, and what it stopped meaning.** `✅` records that a finding was
+> closed and names what closed it — that is history, and it stays true. `🔴` / `🟡` / `⚪` records
+> the **severity** the audit assigned it (see *Severity* below). Neither says whether an item is
+> ready, blocked, or being researched. **That is on the board, and only there:**
 >
 > ```sh
-> for g in 🔴 🟡 ⚪ ✅; do printf '%s %s\n' "$g" "$(grep -cE "^### .* $g " design/V2_REMAINING.md)"; done
+> gh project item-list 6 --owner rodacato --format json --limit 200 \
+>   | jq -r '.items[] | "\(.status)\t\(.title)"' | sort
 > ```
 >
-> **What this file keeps, and why it was not deleted:** how the migration was measured
+> Reading a live status out of this file instead is how its own tally came to be wrong seven times
+> before it was retired (#443), which is the argument the ADR is built on.
+>
+> **What this file still owns, and why it was not deleted:** how the migration was measured
 > (*How this was measured*, *Where the migration stands*), what the audit could not check, and
 > the post-mortems of the findings that turned out to be **the thing that was wrong** —
-> `X12`, `X13`, `X15`. That reasoning is the best artifact this project produced. What moves out
-> is the inventory of what is open, once it moves.
+> `X12`, `X13`, `X15`. That reasoning is the best artifact this project produced. The inventory of
+> what is open is what moved.
 
 > **The question this file answers:** flow by flow, what is still unconnected, what disagrees
 > between the design and the code, and what debt the revamp is carrying. It is the punch list for
