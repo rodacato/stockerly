@@ -1,0 +1,69 @@
+<% v = BrandAssets::VERSION %>
+{
+  "id": "/dashboard",
+  "lang": "es-MX",
+  "dir": "ltr",
+  "name": <%= raw t("brand.title").to_json %>,
+  "short_name": "Stockerly",
+  "description": <%= raw t("brand.description").to_json %>,
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "launch_handler": { "client_mode": "navigate-existing" },
+  "background_color": "#FAFAF7",
+  "theme_color": "#5B6CFF",
+  "categories": ["finance"],
+  "icons": [
+    {
+      "src": "/icon.svg?v=<%= v %>",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png?v=<%= v %>",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png?v=<%= v %>",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192.png?v=<%= v %>",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-maskable-512.png?v=<%= v %>",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-monochrome-512.png?v=<%= v %>",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "monochrome"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": <%= raw t(".registrar").to_json %>,
+      "url": "/trades/new"
+    },
+    {
+      "name": <%= raw t("nav.activos").to_json %>,
+      "url": "/assets"
+    },
+    {
+      "name": <%= raw t("nav.reglas").to_json %>,
+      "url": "/alerts"
+    }
+  ]
+}

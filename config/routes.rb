@@ -7,6 +7,12 @@ Rails.application.routes.draw do
   get  "setup", to: "setup#new"
   post "setup", to: "setup#create"
 
+  # --- PWA ---
+  # Rails serves these, not `public/`: the static file server stamps everything
+  # with a one-year max-age, which pinned installed apps to an old worker.
+  get "manifest.json",     to: "pwa#manifest",       as: :pwa_manifest
+  get "service-worker.js", to: "pwa#service_worker", as: :pwa_service_worker
+
   # --- Root ---
   # No public landing: the project is a closed beta, not a marketing funnel.
   # Anyone reaching `/` is bounced to `/login` (which redirects authenticated

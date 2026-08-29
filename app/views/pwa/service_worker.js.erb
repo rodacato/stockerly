@@ -1,25 +1,29 @@
+<% v = BrandAssets::VERSION %>
 // Stockerly Service Worker — cache-first for static assets, network-first for pages
-// Bump CACHE_VERSION whenever brand assets change; the activate handler purges
-// older `stockerly-*` caches so stale logos can't survive across deploys.
-const CACHE_VERSION = "v5";
+// The cache name rides BrandAssets::VERSION, so bumping the brand purges every
+// older `stockerly-*` cache in the activate handler below.
+const CACHE_VERSION = "b<%= v %>";
 const STATIC_CACHE = `stockerly-static-${CACHE_VERSION}`;
 const FONT_CACHE = `stockerly-fonts-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 
 // Assets to pre-cache on install. Query strings match the layout/manifest so
 // SW + browser share cache entries instead of double-fetching. Covers every
-// brand asset declared in the layout `<head>` and PWA manifest so the offline
+// brand asset declared in the layout head and PWA manifest so the offline
 // shell never falls back to a missing logo.
 const PRECACHE_URLS = [
   OFFLINE_URL,
-  "/favicon.svg?v=3",
-  "/icon.svg?v=3",
-  "/icon-192.png?v=3",
-  "/icon-512.png?v=3",
-  "/icon-512.svg?v=3",
-  "/icon-maskable-512.svg?v=3",
-  "/apple-touch-icon.png?v=3",
-  "/og-image.png?v=3"
+  "/favicon.svg?v=<%= v %>",
+  "/icon.svg?v=<%= v %>",
+  "/icon-192.png?v=<%= v %>",
+  "/icon-512.png?v=<%= v %>",
+  "/icon-512.svg?v=<%= v %>",
+  "/icon-maskable-192.png?v=<%= v %>",
+  "/icon-maskable-512.png?v=<%= v %>",
+  "/icon-maskable-512.svg?v=<%= v %>",
+  "/icon-monochrome-512.png?v=<%= v %>",
+  "/apple-touch-icon.png?v=<%= v %>",
+  "/og-image.png?v=<%= v %>"
 ];
 
 // Install: pre-cache offline page and icons
@@ -34,13 +38,18 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   const currentCaches = [STATIC_CACHE, FONT_CACHE];
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key.startsWith("stockerly-") && !currentCaches.includes(key))
-          .map((key) => caches.delete(key))
+    Promise.all([
+      // Lets the browser start the navigation request while the worker boots,
+      // so network-first pages don't pay the startup latency twice.
+      self.registration.navigationPreload?.enable(),
+      caches.keys().then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key.startsWith("stockerly-") && !currentCaches.includes(key))
+            .map((key) => caches.delete(key))
+        )
       )
-    )
+    ])
   );
   self.clients.claim();
 });
@@ -55,10 +64,13 @@ self.addEventListener("fetch", (event) => {
   // Skip non-http(s) requests (chrome-extension, etc.)
   if (!request.url.startsWith("http")) return;
 
-  // Navigation requests: network-first with offline fallback
+  // Navigation requests: network-first with offline fallback. Portfolio HTML is
+  // never cached — a stale position is worse than no page at all.
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request).catch(() => caches.match(OFFLINE_URL))
+      Promise.resolve(event.preloadResponse)
+        .then((preloaded) => preloaded || fetch(request))
+        .catch(() => caches.match(OFFLINE_URL))
     );
     return;
   }

@@ -5,10 +5,14 @@
     <% page_description = content_for(:description) || t("brand.description") %>
     <meta charset="utf-8">
     <title><%= page_title %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%# viewport-fit=cover is what makes env(safe-area-inset-*) resolve to
+        anything but 0 — the bottom nav already pads itself with it. %>
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="description" content="<%= page_description %>">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Stockerly">
     <meta name="application-name" content="Stockerly">
     <meta name="theme-color" content="#5B6CFF">
 
@@ -17,27 +21,26 @@
     <meta property="og:site_name" content="Stockerly">
     <meta property="og:title" content="<%= page_title %>">
     <meta property="og:description" content="<%= page_description %>">
-    <meta property="og:image" content="<%= "#{request.base_url}/og-image.png?v=3" %>">
+    <meta property="og:image" content="<%= request.base_url %>/og-image.png?v=<%= BrandAssets::VERSION %>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Stockerly">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<%= page_title %>">
     <meta name="twitter:description" content="<%= page_description %>">
-    <meta name="twitter:image" content="<%= "#{request.base_url}/og-image.png?v=3" %>">
+    <meta name="twitter:image" content="<%= request.base_url %>/og-image.png?v=<%= BrandAssets::VERSION %>">
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
 
-    <%# Cache-bust query param: bump when /favicon.svg, /apple-touch-icon.png,
-        or /manifest.json content changes. PWA-spec URLs must stay stable
-        (browsers/iOS expect them at well-known paths), so we ride the query
-        string to invalidate Cloudflare's edge cache on brand updates. %>
-    <link rel="manifest" href="/manifest.json?v=3">
-    <link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">
-    <link rel="icon" href="/icon-192.png?v=3" type="image/png" sizes="192x192">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">
+    <%# PWA-spec URLs must stay stable (browsers/iOS expect them at well-known
+        paths), so brand updates ride BrandAssets::VERSION in the query string
+        to invalidate Cloudflare's edge cache. %>
+    <link rel="manifest" href="/manifest.json?v=<%= BrandAssets::VERSION %>">
+    <link rel="icon" href="/favicon.svg?v=<%= BrandAssets::VERSION %>" type="image/svg+xml">
+    <link rel="icon" href="/icon-192.png?v=<%= BrandAssets::VERSION %>" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=<%= BrandAssets::VERSION %>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
