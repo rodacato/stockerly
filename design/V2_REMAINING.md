@@ -1337,13 +1337,20 @@ can be written down and defended**, because *"a chip that invents a threshold is
 [`PeHistoryCalculator`](../app/contexts/market_data/domain/pe_history_calculator.rb) already computes
 exactly that shape for P/E over 90 days. **D70.**
 
-### CKP-11 🟡 `news_articles` is synced every 30 minutes and read by nobody
+### CKP-11 ✅ `news_articles` was synced every 30 minutes and read by nobody — shipped 2026-08-29 (#427)
 
 `SyncNewsJob` runs every 30 minutes in production ([`recurring.yml`](../config/recurring.yml)) and
 `SyncArticles` writes rows carrying `related_ticker`. The table has a dedicated index on
 `(related_ticker, published_at)` — built for exactly one query, *"news for this symbol"* — and that
-query does not exist anywhere in the app. Grepped: the only reader of `NewsArticle` is the writer.
-Descubrir does not use it either; its single mention of news is in a comment.
+query did not exist anywhere in the app. Grepped: the only reader of `NewsArticle` was the writer.
+Descubrir did not use it either; its single mention of news was in a comment.
+
+`MarketData::Queries::RecentNews` is that query, and the asset detail renders it under
+*Observaciones recientes*. Two bounds were chosen rather than defaulted: the seven-day window
+excludes an older article instead of showing it as old, and `related_ticker` is matched against
+`former_symbols` as well as the symbol. The block is absent when there is nothing, and the work
+added **JTBD #7** — it mapped to none of the six, and folding it into #4 (scheduled earnings,
+notified ahead, held assets only) would have given #4 a metric that cannot measure it.
 
 So the instance spends provider quota every half hour filling a table with no consumer, while the
 asset detail has no answer to *"did something happen that I missed"*. D31 deleted `/news` as a
