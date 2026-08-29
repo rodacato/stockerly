@@ -383,6 +383,28 @@ Three concrete instances remain, none of them a `DONE`:
 
 ---
 
+### X8 🟡 Four code changes shipped on 2026-08-29 that no artboard has caught up with
+
+**This file's usual finding is the code trailing the design. These four are the inverse**, which is
+the harder one to notice: the screens still look right, and the `.pen` is quietly describing a
+product that has moved. Logged the day it happened rather than discovered in the next audit.
+
+| Flow | What the code does now | What the artboard still shows |
+|---|---|---|
+| `settings.pen` | The Ajustes hub's *Tus datos* section opens the importer — [`settings/show.html.erb`](../app/views/settings/show.html.erb) | `ajustes-hub.png` and `-desktop.png` draw the section as prose plus the deletion note, with no row |
+| `assets.pen` | *Agregar activo* autofills **Sector** from the provider — Yahoo returns it and the Stimulus target existed unused | The field is drawn as one the owner types |
+| `assets.pen` | The importer's unknown-symbol screen is about to become a checkbox list with a bulk action | `activos-importar-desconocidos.png` draws the single *Darlos de alta en Tracked* CTA, which was a link to `/tracked` that carried no symbols |
+| `assets.pen` | Ticker search runs on Yahoo, so it answers company names, not only tickers | `activos-tracked-buscar.png` — worth re-reading against ACT-6, which already flags one unverified state of this artboard |
+
+**Do these in one pass, and not before the bulk-alta build lands** — the third row is the screen that
+build replaces, so drawing it now is drawing it twice. The first two are already true and safe to
+draw whenever.
+
+**None of this changes `DECISIONS.md`.** What shipped that day was architecture, and it is recorded
+where architecture goes: [ADR-017's amendment](../docs/architecture/adr/0017-python-bridge-for-yahoo-finance.md)
+for the provider swap and the raised ceiling, TD9 for what is left of Alpha Vantage. **D62 is
+untouched and still open** — the door still names three brokers the engine cannot read.
+
 # Kit → code
 
 `ui-kit.lib.pen` holds **20 components at 0.9.0**. Sixteen are in the code; three are not, and one
