@@ -13,7 +13,7 @@ set -euo pipefail
 owner="${BOARD_OWNER:-rodacato}"
 number="${BOARD_NUMBER:-6}"
 repo="${BOARD_REPO:-rodacato/stockerly}"
-expected_workflows=("Item closed" "Pull request merged")
+expected_workflows=("Item closed" "Auto-add to project")
 
 items=$(gh project item-list "$number" --owner "$owner" --format json --limit 500)
 open_issues=$(gh issue list --repo "$repo" --state open --limit 500 --json number --jq '.[].number' | sort -n)
@@ -46,7 +46,7 @@ for name in "${expected_workflows[@]}"; do
   state=$(awk -F'\t' -v n="$name" '$1==n {print $2}' <<<"$workflows")
   if [[ "$state" != "true" ]]; then
     drift=1
-    echo "Project workflow '$name' is ${state:-absent} — the board will stop tracking closures."
+    echo "Project workflow '$name' is ${state:-absent} — the board will drift from the issues."
     echo "  Enable it at https://github.com/users/$owner/projects/$number/workflows (there is no API for it)."
   fi
 done

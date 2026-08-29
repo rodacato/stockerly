@@ -171,10 +171,11 @@ Required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:projec
 5. **A co-author or AI-attribution line** in a commit, issue or PR. See
    [`AGENTS.md`](../../AGENTS.md) — Adrian is the sole author of every artifact here.
 6. **A research issue with no closure criterion.** It will never close.
-7. **Assuming the board updates itself.** `Item closed` and `Pull request merged` are Project
+7. **Assuming the board updates itself.** `Item closed` and `Auto-add to project` are Project
    workflows that must be enabled in the UI — there is no API to turn them on, only to read their
-   state, which is what `bin/board-check` reads. With them off, `Closes #N` closes the issue and
-   leaves the board item sitting in a live status.
+   state, which is what `bin/board-check` reads. With `Item closed` off, `Closes #N` closes the
+   issue and leaves the board item in a live status; with `Auto-add to project` off, a new issue
+   never reaches the board at all.
 
 ---
 
