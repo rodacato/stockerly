@@ -1170,7 +1170,7 @@ artboard leads with, and X9 measures the table at ~30 bars. The control is build
 would render four identical charts and a fifth. It is gated on X9, not on effort — and the
 `O/H/L/C/Vol` strip is unaffected: `asset_price_histories` carries all five columns per row.
 
-### CKP-3 🟡 `Señales` and `Más análisis` — blocked on a reader, not on a schema (#306)
+### CKP-3 ✅ `Señales` — shipped 2026-08-29 (#306), from a table neither amendment named
 
 The artboard's `Señales` block reads *current* state: `RSI (14) 72 · sobrecomprado`, the moving-average
 sentence, the Bollinger sentence, distance to the 52-week range. `Más análisis` adds `DISPARADORES`
@@ -1205,6 +1205,33 @@ from the observations table outward, and `trend_scores` was never in frame becau
 `Alerts::Domain::AlertEvaluator` reading `.score` — no view has ever touched it. A capability with one
 non-visual reader is invisible to an audit that walks screens. That is the same shape as D53: the
 conclusion was current with what had been looked at, not with what exists.
+
+**Closed 2026-08-29 (#306) — and the amendment above is wrong in the same way it diagnosed.** It
+concluded that `trend_scores.factors` answers the schema question. It answers a third of it. Measured
+against the calculator: `factors` carries `rsi` (raw RSI(14), renderable), and then `momentum`, `macd`,
+`volume_trend` and `ema_crossover` — **all normalised to a 0–100 contribution before being stored**.
+They are score inputs, not readings. The moving-average row needs price against MA50 and MA200;
+`ema_crossover` is the EMA9/EMA21 spread, a different pair reduced to a score. **Bollinger is not in
+`factors` at all.** So the amendment found the table and stopped there, without checking which of the
+three rows its columns could fill — which is precisely the failure it had just named one paragraph
+above, committed one layer down.
+
+**Where the other two rows were: computed nightly and discarded.** `DetectTechnicalObservations` loads
+a 210-close window per asset and calls `sma(period: 50)`, `sma(period: 200)` and `bollinger_bands` for
+today *and* yesterday, purely to test for a crossing. No crossing, nothing persists. That is **X10 one
+job over** — the same defect, in the job X10 did not touch.
+
+**What shipped:** `technical_readings`, one row per asset, **upserted rather than appended** — X16
+taught that an appended daily table owes a prune job, and nothing reads indicator history. `readings` is
+`jsonb` against a declared registry (`TechnicalIndicators::READINGS`), mirroring `FACTORS` and its
+`.compact` contract, so a young asset with no 200 closes has no `sma_200` key rather than a zero, and
+the moving-average row degrades to MA50 alone instead of asserting half a comparison. Phrases come from
+a closed catalogue in the domain (ADR-014), and only RSI names a condition, because 70/30 is the
+threshold this codebase already writes down (D36). The artboard's *"— tendencia alcista"* is an
+inference the data does not carry and was left out rather than defended.
+
+**`Más análisis` stays open** and is not part of this closure — it waits on the usage metric #306
+records. `Distancia a máx/mín 52 sem` left this entry earlier as `CKP-9`.
 
 ### CKP-4 🟡 `Mi posición` is missing `Rendimiento` and `Cerrar posición` (#301)
 
