@@ -15,7 +15,7 @@ export default class PushSubscriptionController extends Controller {
   }
 
   async sync() {
-    if (!this.supported) return this.block("unsupported")
+    if (!this.supported) return this.block(this.installable ? "installable" : "unsupported")
     if (Notification.permission === "denied") return this.block("denied")
 
     const registration = await navigator.serviceWorker.ready
@@ -100,6 +100,14 @@ export default class PushSubscriptionController extends Controller {
 
   get supported() {
     return "serviceWorker" in navigator && "PushManager" in globalThis && "Notification" in globalThis
+  }
+
+  // iOS hands PushManager to an installed app and to nothing else, so the same
+  // missing API means "add it to your home screen" there and "this browser
+  // cannot" everywhere else. Saying which is the whole point — the channel
+  // failing silently on the primary device is what closed this idea before.
+  get installable() {
+    return !globalThis.matchMedia("(display-mode: standalone)").matches && !navigator.standalone
   }
 }
 

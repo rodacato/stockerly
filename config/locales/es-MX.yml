@@ -1057,6 +1057,8 @@ es-MX:
       push: Avisos en el teléfono
       push_bloqueado: Bloqueaste los avisos para este sitio. Se cambia desde el navegador.
       push_desc: Al disparar una regla, aunque tengas la app cerrada.
+      push_instala: En iPhone hay que agregar Stockerly a la pantalla de inicio antes
+        de activarlos.
       push_no_disponible: Este navegador no admite avisos push.
       registros: Registros
       registros_desc: Sincronizaciones y avisos de los últimos 90 días
