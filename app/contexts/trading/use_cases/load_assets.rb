@@ -8,16 +8,17 @@ module Trading
       def call(user:, tab: nil)
         tab = TABS.include?(tab) ? tab : TABS.first
         portfolio = user.portfolio
+        currency = user.preferred_currency
 
-        summary = consolidated_summary(portfolio, user.preferred_currency)
+        summary = consolidated_summary(portfolio, currency)
 
         {
           tab: tab,
-          currency: user.preferred_currency,
+          currency: currency,
           portfolio: portfolio,
           summary: summary,
           fx_unavailable: portfolio.present? && summary.nil?,
-          positions: (tab == "cartera" ? positions_for(portfolio) : []),
+          positions: (tab == "cartera" ? positions_for(portfolio, currency) : []),
           watchlist_items: (tab == "watchlist" ? watchlist_for(user) : [])
         }
       end
@@ -38,14 +39,60 @@ module Trading
         nil
       end
 
-      def positions_for(portfolio)
+      # D68: market value descending, in the declared currency.
+      def positions_for(portfolio, currency)
         return [] unless portfolio
 
-        portfolio.open_positions.includes(:asset).order(:id)
+        positions = portfolio.open_positions.includes(asset: :asset_price_histories).to_a
+        by_market_value(positions, portfolio, currency) || positions.sort_by { |position| position.asset.symbol }
       end
 
+      # One unreachable rate invalidates the comparison for every row, not only
+      # its own, so the whole list retreats to alphabetical rather than mixing.
+      def by_market_value(positions, portfolio, currency)
+        positions.sort_by do |position|
+          asset = position.asset
+          [ -portfolio.convert(position.market_value, from: asset.currency, to: currency), asset.symbol ]
+        end
+      rescue Trading::Domain::MissingFxRate
+        nil
+      end
+
+      # D68: the watchlist is a queue — what sits closest to its own threshold
+      # rises. Distance is a percentage because D10 leaves the prices unconverted.
       def watchlist_for(user)
-        user.watchlist_items.includes(:asset).order(created_at: :desc)
+        thresholds = thresholds_by_symbol(user)
+
+        user.watchlist_items
+            .includes(asset: :asset_price_histories)
+            .to_a
+            .sort_by { |item| proximity_key(item.asset, thresholds) }
+      end
+
+      def thresholds_by_symbol(user)
+        user.alert_rules
+            .active
+            .where(condition: AlertRule::PRICE_THRESHOLD_CONDITIONS)
+            .where.not(threshold_value: nil)
+            .pluck(:asset_symbol, :threshold_value)
+            .group_by(&:first)
+            .transform_values { |rows| rows.map(&:last) }
+      end
+
+      # A row with a threshold sorts ahead of a row without one: a distance to
+      # your own number and a day's movement do not share an axis.
+      def proximity_key(asset, thresholds)
+        symbol = asset.symbol
+        distance = nearest_distance(asset.current_price, thresholds[symbol])
+        return [ 0, distance, symbol ] if distance
+
+        [ 1, -asset.change_percent_24h.to_f.abs, symbol ]
+      end
+
+      def nearest_distance(price, thresholds)
+        return nil if price.blank? || price.zero? || thresholds.blank?
+
+        thresholds.map { |threshold| ((threshold - price) / price * 100).abs }.min
       end
     end
   end

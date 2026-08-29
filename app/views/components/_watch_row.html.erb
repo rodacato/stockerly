@@ -1,9 +1,15 @@
-<%# Locals: item (WatchlistItem)
+<%# Locals: item (WatchlistItem); optional context
     Prices keep their ISO prefix: a watchlist mixes currencies and nothing here
-    is converted, so D10 says every value names its own. %>
+    is converted, so D10 says every value names its own.
+    D69: in the radar the movement leads, so both row kinds answer the same
+    question in the same slot. %>
+<% context = local_assigns.fetch(:context, :watchlist) %>
 <% asset = item.asset %>
 <% change = asset.change_percent_24h || 0 %>
 <% followed = followed_since_percent(item) %>
+<% price_slot = { text: format_currency_mx(asset.current_price, currency: asset.currency), color: "text-fg-default" } %>
+<% move_slot = { text: signed_percent(change), color: gain_color(change) } %>
+<% primary, secondary = context == :radar ? [ move_slot, price_slot.merge(color: "text-fg-subtle") ] : [ price_slot, move_slot ] %>
 <%= link_to market_asset_path(asset.symbol),
             class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
   <div class="min-w-0 flex-1">
@@ -16,11 +22,9 @@
   </div>
 
   <div class="shrink-0 text-right">
-    <p class="font-mono text-sm font-bold text-fg-default">
-      <%= format_currency_mx(asset.current_price, currency: asset.currency) %>
-    </p>
-    <p class="font-mono text-xs <%= gain_color(change) %>"><%= signed_percent(change) %></p>
-    <% if followed %>
+    <p class="font-mono text-sm font-bold <%= primary[:color] %>"><%= primary[:text] %></p>
+    <p class="font-mono text-xs <%= secondary[:color] %>"><%= secondary[:text] %></p>
+    <% if followed && context != :radar %>
       <p class="mt-0.5 text-[11px] text-fg-subtle"><%= t("assets.index.sigues", percent: signed_percent(followed)) %></p>
     <% end %>
   </div>

@@ -16,7 +16,7 @@ module Trading
         currency  = user.preferred_currency
         summary   = consolidated_summary(portfolio, currency)
         positions = open_positions(portfolio)
-        watched   = user.watchlist_items.includes(:asset).to_a
+        watched   = user.watchlist_items.includes(asset: :asset_price_histories).to_a
 
         {
           currency: currency,
@@ -46,7 +46,7 @@ module Trading
       def open_positions(portfolio)
         return [] unless portfolio
 
-        portfolio.open_positions.includes(:asset).to_a
+        portfolio.open_positions.includes(asset: :asset_price_histories).to_a
       end
 
       def sentiment_cards(user)

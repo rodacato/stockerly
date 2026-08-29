@@ -27,6 +27,10 @@ class AlertRule < ApplicationRecord
   # form treats it as optional and the evaluator ignores it.
   MARKETWIDE_CONDITIONS = %w[bmv_holiday cete_auction].freeze
 
+  # The only conditions whose threshold_value is a price, and so the only ones
+  # a distance-to-threshold reading may compare a quote against.
+  PRICE_THRESHOLD_CONDITIONS = %w[price_crosses_above price_crosses_below].freeze
+
   validates :asset_symbol, presence: true, unless: :marketwide?
   validates :threshold_value, presence: true, numericality: true, unless: :date_based?
   validates :window_days, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
