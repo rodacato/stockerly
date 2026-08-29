@@ -1202,6 +1202,46 @@ See CKP-7. 21 assignments, three inline AR reads, a job enqueued from a GET.
 
 ### TD8 ✅ — done. See X2.
 
+### TD9 🟡 — Alpha Vantage may have nothing left to do, and nobody has decided
+
+**Measured 2026-08-29 against the real library, not assumed.** After the ticker search moved to the
+Yahoo bridge ([ADR-017's amendment](../docs/architecture/adr/0017-python-bridge-for-yahoo-finance.md)),
+Alpha Vantage has exactly two consumers left, and `yfinance` covers both:
+
+| What is left | Covered? | How it was measured |
+|---|---|---|
+| `:fundamentals` → [`sync_fundamental_job.rb`](../app/jobs/sync_fundamental_job.rb) via `GatewayChain#fetch_overview` | **34 of 34 fields** | every key `AlphaVantageGateway#parse_overview` reads, looked up in `yfinance.Ticker('AAPL').info`. Nothing missing. |
+| Statements → [`sync_statements_job.rb`](../app/jobs/sync_statements_job.rb) | all three, annual **and** quarterly | `income_stmt` 39 rows, `balance_sheet` 69, `cashflow` 53, four fiscal years each |
+| `search_tickers` | already migrated | `081ac98` — the method is now dead code |
+
+**What retiring it would buy.** One less mandatory API key, which is the same packaging argument that
+moved the search. The statements job spends **three calls per asset** (one per `STATEMENT_TYPES`
+entry); `yfinance` reads all three off one `Ticker`, so 39 tracked assets go from ~117 calls to ~39.
+
+**What it would cost, honestly.** Alpha Vantage is an official API with a published contract;
+`yfinance` is a browser-impersonating scrape. That dependency is already load-bearing — prices,
+history, dividends, splits, earnings, indices and now search all run through it — so this extends an
+existing risk rather than introducing a new one. It does concentrate more of the product behind a
+single unsanctioned door, which is the ADR-017 quarantine getting thinner each time this is done.
+
+**Three things to settle in the same pass, not after it:**
+
+1. **`FundamentalsBudget` is hardcoded to Alpha Vantage** — `PROVIDER = "Alpha Vantage"` in
+   [`fundamentals_budget.rb`](../app/contexts/market_data/domain/fundamentals_budget.rb). The
+   *Presupuesto de hoy* panel on `Tracked` reads it. Retire the provider and that panel counts a
+   source that no longer exists. It needs repointing or rethinking, not deleting.
+2. **FMP is the other registered `:fundamentals` source** and is `maintainer_only` — its `/api/v3`
+   403s for accounts created after 2025-08-31. Decide in the same pass whether it stays as Adrian's
+   own fallback or goes too.
+3. **The search has no fallback today.** If Alpha Vantage's gateway is deleted, that stops being a
+   choice. If a chain is wanted behind `SearchTickers`, it has to be built before the deletion, not
+   remembered after it.
+
+**Not urgent, and that is the point of writing it down:** nothing is broken today. Alpha Vantage
+still answers fundamentals and statements at 25 calls a day. This is a *return-to-it* item — come
+back with the three questions above answered, not with a deletion PR.
+
+
 ---
 
 # The finish line
@@ -1225,6 +1265,7 @@ reads as a record instead of a snapshot.
 | D15 | Urgency per rule — decided in principle, unbuilt | — |
 | D55 | The password reset is a mail-dependent recovery path ADR-018's own reasoning rejects | Adrian |
 | KIT-1 | Extract `Card` / `Field` / the two buttons as their own pass, or accept inline as this codebase's idiom and drop them from the kit's expectations | Adrian |
+| TD9 | Does Alpha Vantage get retired now that `yfinance` covers all 34 fundamentals fields and all three statements? Settle the budget panel, FMP and the search fallback in the same pass | Adrian |
 
 **Five open decisions in `DECISIONS.md`** — D3, D15, D33, D55, D57 — recounted from the file on
 2026-08-28 after D58, D59 and D60 landed. Recount it; never increment it (D53).

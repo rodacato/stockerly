@@ -89,3 +89,37 @@ The 222 MB is real and is the cost being accepted.
   DataBursatil. If Yahoo closes this door too, three capabilities degrade and nothing else
   moves.
 - The redistribution finding is unchanged: no data from this source ships in the repo.
+
+---
+
+## Amendment — 2026-08-29: the search moved here, and the ceiling moved with it
+
+Two statements above became false and are corrected here rather than edited away.
+
+**"For those three capabilities only" — no longer true.** Ticker search now runs through this
+bridge. It had been served by Alpha Vantage, which is what the Consequences section meant by *"nothing
+that a sanctioned provider serves is routed here"* — so this is a deliberate departure from that
+line, not an oversight against it.
+
+The reason is that Alpha Vantage was not, in practice, serving it. Its free tier is 25 calls a day
+and 5 a minute, a search spends one, and it refuses entirely without an API key. Adding five assets
+in a row exhausted the minute ceiling; the provider answered with its `Note`, and the typeahead could
+only render that as a generic error. For a product whose packaging goal is *"a technical
+self-hoster runs it with one command"*, a search that needs a registered key to work at all is a
+worse trade than one more capability on an unsanctioned surface.
+
+**"6 requests a minute, 200 a day" — raised to 30 and 2,000.** The old figure was sized for *"roughly
+35 calls a day"*, which was honest for three capabilities and is not for four: resolving a
+seventeen-symbol CSV batch alone exceeds six calls a minute. Both numbers remain our own restraint
+rather than Yahoo's policy, and both remain far below what it would notice.
+
+**The defaults were also not what this ADR said.** `ProviderDefaults` stated 6/min and 200/day; the
+row in this repo's own database held 5/min and no daily cap at all. Since defaults apply on create
+only, the migration that ships with this amendment **raises** rather than replaces — it leaves a
+ceiling already higher alone, and treats `NULL` as the unlimited it means everywhere else here.
+
+**Still quarantined, with one fewer wall.** US prices still go to Alpaca, US quotes to Finnhub, BMV
+to DataBursatil. If Yahoo closes this door, four capabilities degrade now instead of three, and the
+search degrades to nothing rather than to Alpha Vantage — `MarketData::UseCases::SearchTickers` names
+one gateway, with no chain behind it. That is a real cost of this amendment and is left open
+deliberately: a fallback nobody exercises is how a provider quietly stops working.
