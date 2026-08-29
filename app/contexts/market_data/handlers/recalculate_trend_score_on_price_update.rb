@@ -11,7 +11,7 @@ module MarketData
 
         histories = MarketData::Queries::PriceSeries.for(asset).latest(Domain::TrendScoreCalculator::WINDOW)
         closes = histories.pluck(:close).map(&:to_f)
-        volumes = histories.pluck(:volume).map(&:to_f)
+        volumes = histories.pluck(:volume)
 
         result = Domain::TrendScoreCalculator.calculate(closes: closes, volumes: volumes)
         return unless result

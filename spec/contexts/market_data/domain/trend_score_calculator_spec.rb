@@ -120,6 +120,38 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
         expect(result[:factors].keys).to contain_exactly(:rsi, :momentum, :ema_crossover, :volume_trend)
       end
 
+      it "drops a missing volume rather than scoring it as no trading" do
+        closes = (1..40).map { |i| 100.0 + i }
+        steady = Array.new(40, 1_000_000)
+        with_gaps = steady.dup
+        [ 5, 12, 27 ].each { |i| with_gaps[i] = nil }
+
+        intact = described_class.calculate(closes: closes, volumes: steady)
+        gapped = described_class.calculate(closes: closes, volumes: with_gaps)
+
+        expect(gapped[:factors][:volume_trend]).to eq(intact[:factors][:volume_trend])
+      end
+
+      it "would have been dragged down had the gaps been scored as zero" do
+        closes = (1..40).map { |i| 100.0 + i }
+        zeroed = Array.new(40, 1_000_000)
+        [ 36, 37, 38 ].each { |i| zeroed[i] = 0.0 }
+
+        honest = described_class.calculate(closes: closes, volumes: Array.new(40, 1_000_000))
+        with_zeros = described_class.calculate(closes: closes, volumes: zeroed)
+
+        expect(with_zeros[:factors][:volume_trend]).to be < honest[:factors][:volume_trend]
+      end
+
+      it "withholds the factor when too few volumes were actually reported" do
+        closes = (1..40).map { |i| 100.0 + i }
+        mostly_missing = Array.new(40) { |i| i < 25 ? nil : 1_000_000 }
+
+        result = described_class.calculate(closes: closes, volumes: mostly_missing)
+
+        expect(result[:factors]).not_to have_key(:volume_trend)
+      end
+
       it "never reports macd below the closes EMA26 needs to seed" do
         (15..33).each do |n|
           result = described_class.calculate(closes: (1..n).map { |i| 100.0 + i })
