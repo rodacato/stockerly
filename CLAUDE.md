@@ -138,7 +138,7 @@ EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::Eval
 # Reads: supplier's public API
 sentiment    = MarketData::Queries::CurrentFearGreed.call
 observations = MarketData::Queries::NotableObservations.call(asset_ids: ids)
-fx_rate      = MarketData::UseCases::EnsureFreshFxRate.call(base: "USD", target: "MXN")
+dividends    = MarketData::Queries::UpcomingDividends.call(asset_ids: ids)
 ```
 
 Forbidden in Trading: direct AR model access (`MarketIndex.major`, `FearGreedReading.latest_*`, `TechnicalObservation`) and direct gateway instantiation (`MarketData::Gateways::*.new`).

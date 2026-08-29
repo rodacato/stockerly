@@ -49,8 +49,8 @@ This is the DDD **customer/supplier (supporting subdomain)** pattern, applied to
 - **Trading may call** `MarketData::Domain::*` services that are **explicitly marked as part of the read API** (a YARD `@api public` tag or a comment block stating "Cross-context read API — Trading may call this"). The current `MarketSentiment.for_user` is grandfathered as read API.
 - **MarketData publishes events** that Trading subscribes to (already in place: `MarketData::Events::AssetPriceUpdated`, etc.).
 - **Trading publishes events** that MarketData subscribes to **only if needed** — at present, no MarketData handler depends on a Trading event, and that should remain the default.
-- **FxRate access** (currently a top-level AR model) stays as a tolerable shared-model dependency until the FX-storage ADR lands. The Trading-side resolver's direct gateway call is wrapped under this ADR (see Implementation).
-- **Read-through cache pattern** — Trading may call a MarketData read API (e.g., `EnsureFreshFxRate`) whose internal implementation refreshes its own cached AR model from a gateway. This is **not** a cross-context write: Trading reads; MarketData internally decides whether to refresh its own data before responding. The "events only for writes" rule applies to writes whose **intent crosses the boundary** (BC A asking BC B to mutate B's state for A's benefit), not to internal cache refreshes that happen as a side-effect of a read.
+- **FX access** stays a tolerable shared-model dependency. The FX-storage ADR this clause waited for is [ADR-009](0009-fx-history-strategy.md), and it did not move the models out of the top level — so `FxRate` and `FxRateHistory` remain shared, read directly by `Trading::Domain::ExecutionRate`. See the amendment at the foot of this ADR for why the wrapper that used to sit in front of them is gone.
+- **Read-through cache pattern** — Trading may call a MarketData read API whose internal implementation refreshes its own cached AR model from a gateway. This is **not** a cross-context write: Trading reads; MarketData internally decides whether to refresh its own data before responding. The "events only for writes" rule applies to writes whose **intent crosses the boundary** (BC A asking BC B to mutate B's state for A's benefit), not to internal cache refreshes that happen as a side-effect of a read. The pattern stands; **FX is no longer an instance of it** (see the amendment).
 
 #### ❌ Forbidden
 
@@ -105,7 +105,7 @@ This is the DDD **customer/supplier (supporting subdomain)** pattern, applied to
    - `MarketData::Queries::MajorIndices` — wraps `MarketIndex.major.includes(:market_index_histories)`
    - `MarketData::Queries::CurrentFearGreed` — wraps the 4-key hash currently built in `AssembleDashboard:27-32`
 2. **Refactor `Trading::UseCases::AssembleDashboard`** to call those queries. `MarketSentiment.for_user(user)` stays as-is (grandfathered as read API; add YARD comment marking it).
-3. **Wrap the gateway call in the Trading-side resolver** using a new `MarketData::UseCases::EnsureFreshFxRate` (read-through cache pattern: reads the current `FxRate`, refreshes from the gateway only when stale, returns the rate). The internal write to the `FxRate` AR model is a cache update within MarketData's own ownership — **not** a cross-context write from Trading. Trading sees a read API; MarketData decides when to refresh internally. Remove the "known leak" self-documenting comment in `fx_rate_resolver.rb:20`. (This pattern is also the answer to "doesn't this violate the events-only-for-writes rule?": no, because Trading is not commanding MarketData to mutate state — it's asking MarketData for a fresh value, and MarketData internally decides how to provide it.)
+3. ⚠️ **Undone 2026-08-29 — see the amendment at the foot of this ADR.** Both classes named in this step are deleted; FX is read from the dated series and refreshed on a schedule instead. Kept as the record of what was decided in 2026-06. **Wrap the gateway call in the Trading-side resolver** using a new `MarketData::UseCases::EnsureFreshFxRate` (read-through cache pattern: reads the current `FxRate`, refreshes from the gateway only when stale, returns the rate). The internal write to the `FxRate` AR model is a cache update within MarketData's own ownership — **not** a cross-context write from Trading. Trading sees a read API; MarketData decides when to refresh internally. Remove the "known leak" self-documenting comment in `fx_rate_resolver.rb:20`. (This pattern is also the answer to "doesn't this violate the events-only-for-writes rule?": no, because Trading is not commanding MarketData to mutate state — it's asking MarketData for a fresh value, and MarketData internally decides how to provide it.)
 4. **Remove direct `MarketData::*` references** from `app/contexts/trading/` outside of the new read API. Verify with `grep -rn "MarketData::" app/contexts/trading/`.
 5. **Update CLAUDE.md** "Cross-Context Communication" section to reflect this ADR's nuance.
 
@@ -162,3 +162,35 @@ One consequence this ADR listed *was* eventually honoured, though it took until 
 everywhere: the "CLAUDE.md needs an amendment" item under **Negative**. `CLAUDE.md` and
 `conventions.md` were qualified; `docs/architecture/README.md` kept the absolute *"contexts
 communicate only via Domain Events"* line for three months after this ADR was accepted.
+
+---
+
+## Amendment, 2026-08-29 — FX stops being the read-through-cache example
+
+`EnsureFreshFxRate`, the supplier-side wrapper this ADR's Implementation section introduced, is
+deleted. Nothing called it.
+
+**How it emptied out.** ADR-009 gave FX a dated series, `FxRateHistory`, and the Trading-side
+resolver read that series *first*, falling through to `EnsureFreshFxRate` only on a miss. The
+[2026-08-29 amendment to ADR-009](0009-fx-history-strategy.md) then removed the fallthrough on
+purpose: for a rate that is supposed to be the FIX of a specific day, refreshing a gateway and
+answering with *today's* number is not a fallback, it is the bug the dated series exists to prevent.
+`FxRateHistory.rate_on` already walks back to the most recent published FIX on or before the date,
+which is the honest answer when a day has none. With the fallthrough gone the wrapper had no callers,
+and the resolver in front of it was deleted in the same change.
+
+**What this does to the boundary.** Trading reads `FxRateHistory` directly, as it already did through
+the resolver. That is the shared-model tolerance in the Decision above, not a new leak — and the two
+things this ADR actually forbids are both still true: Trading instantiates no MarketData gateway, and
+it writes nothing MarketData owns. Keeping the series fresh is MarketData's own job, in
+`RefreshFxRatesJob` and `SyncFxHistoryJob`, which is where a refresh belongs — on a schedule, rather
+than as a side effect of somebody asking what a trade was worth.
+
+**The pattern is not retired**, it simply has no live instance right now. A supplier read that
+genuinely needs a refresh-on-miss should still be written this way. What FX demonstrated is the
+narrower lesson: refresh-on-miss and *historical* accuracy pull in opposite directions, so a read that
+must be dated should not have a live-refresh fallback behind it.
+
+The live examples of the read contract are the `MarketData::Queries::*` objects — `CurrentFearGreed`,
+`NotableObservations`, `PriceSeries`, `UpcomingDividends` and the rest.
+
