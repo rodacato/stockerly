@@ -844,6 +844,7 @@ es-MX:
   notificaciones:
     simbolos:
       agregados: 'Ya están en Tracked: %{symbols}.'
+      reintenta: Vuelve a subir tu CSV.
       sin_reconocer: 'El proveedor no reconoció: %{symbols}.'
       titulo:
         one: Di de alta 1 símbolo de tu archivo

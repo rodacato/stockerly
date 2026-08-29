@@ -62,9 +62,14 @@ class ResolveTrackedSymbolsJob < ApplicationJob
     )
   end
 
+  # Each sentence is conditional: with nothing added the first one used to
+  # render as "Ya están en Tracked: ." -- a list header with no list. The
+  # instruction only earns a place when there is something to re-import.
   def body_for(added, unresolved)
-    lines = [ I18n.t("notificaciones.simbolos.agregados", symbols: added.join(", ")) ]
+    lines = []
+    lines << I18n.t("notificaciones.simbolos.agregados", symbols: added.join(", ")) if added.any?
     lines << I18n.t("notificaciones.simbolos.sin_reconocer", symbols: unresolved.join(", ")) if unresolved.any?
+    lines << I18n.t("notificaciones.simbolos.reintenta") if added.any?
     lines.join(" ")
   end
 end

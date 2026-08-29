@@ -60,6 +60,30 @@ RSpec.describe ResolveTrackedSymbolsJob do
     expect(user.notifications.last.body).to include("AMD").and include("ZZZZ")
   end
 
+  # With nothing added the body used to open "Ya están en Tracked: ." -- a list
+  # header with no list -- because the sentence was unconditional.
+  it "does not open a list it has nothing to put in" do
+    stub_yfinance_search("ZZZZ", results: [])
+
+    described_class.perform_now([ "ZZZZ" ], user.id)
+
+    body = user.notifications.last.body
+    expect(body).to eq("El proveedor no reconoció: ZZZZ.")
+  end
+
+  # Re-importing is the point of the alta, and the notification is what the
+  # owner sees minutes later -- the flash that said so is long gone.
+  it "says to re-upload only when something landed to import" do
+    stub_match("ALAB")
+    stub_yfinance_search("ZZZZ", results: [])
+
+    described_class.perform_now(%w[ALAB ZZZZ], user.id)
+
+    expect(user.notifications.last.body).to eq(
+      "Ya están en Tracked: ALAB. El proveedor no reconoció: ZZZZ. Vuelve a subir tu CSV."
+    )
+  end
+
   it "does nothing when the user is gone" do
     expect { described_class.perform_now([ "ALAB" ], 0) }.not_to change(Asset, :count)
   end
