@@ -2,8 +2,7 @@
     continuous scroll, so the sub-tabs that used to hold the fundamentals are
     gone (D36): Estados financieros keeps its lazy frame at the foot, and the
     rest reads top to bottom. Locals: asset. %>
-<% range = range_52w_for(@asset, @presenter) %>
-<%= render "market/range_52w", range: range, currency: @asset.currency if range %>
+<%= render "market/range_52w", range: @range_52w, currency: @asset.currency if @range_52w %>
 
 <%= render "market/state_verdict", state: @state, state_source: @state_source, holding: @holding %>
 
@@ -22,14 +21,9 @@
 <% end %>
 
 <% unless @asset.asset_type_fixed_income? %>
-  <%
-    cost_anchor = cost_anchor_for(@asset, @position_data)
-    threshold = threshold_rule_for(@asset_rules)
-    threshold_anchor = threshold_anchor_for(@asset, threshold)
-  %>
-  <% if cost_anchor || threshold_anchor || @asset_rules.any? %>
-    <%= render "market/vs_plan", cost_anchor: cost_anchor, threshold_anchor: threshold_anchor,
-               threshold_currency: threshold&.currency, rules: @asset_rules - [ threshold ].compact,
+  <% if @anchors[:cost] || @anchors[:threshold] || @asset_rules.any? %>
+    <%= render "market/vs_plan", cost_anchor: @anchors[:cost], threshold_anchor: @anchors[:threshold],
+               threshold_currency: @anchors[:threshold_rule]&.currency, rules: @anchors[:other_rules],
                currency: @asset.currency %>
   <% end %>
 <% end %>

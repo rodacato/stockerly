@@ -21,6 +21,7 @@ class MarketController < AuthenticatedController
       @day_change = data[:day_change]
       @news = data[:news] || []
       @reading = data[:reading]
+      @range_52w = data[:range_52w]
       @signals = data[:signals] || []
 
       # ADR-002 forbids MarketData reading Trading or Alerts, so the user-side
@@ -29,6 +30,9 @@ class MarketController < AuthenticatedController
       @holding = @position_data.present?
       @asset_rules = Alerts::UseCases::LoadAssetRules.call(user: current_user, symbol: @asset.symbol)
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
+      @anchors = Trading::UseCases::LoadAssetAnchors.call(
+        asset: @asset, position_data: @position_data, rules: @asset_rules
+      )
     in Dry::Monads::Failure[ :not_found, _ ]
       redirect_to assets_path, alert: t("market.flash.no_encontrado")
     end
