@@ -11,13 +11,9 @@ module Admin
     end
 
     def export_csv
-      result = Administration::UseCases::Logs::ExportCsv.call(admin: current_user, params: filter_params)
+      csv = Administration::UseCases::Logs::ExportCsv.call(admin: current_user, params: filter_params).value!
 
-      if result.success?
-        send_data result.value!, filename: "system_logs_#{Date.current}.csv", type: "text/csv"
-      else
-        redirect_to admin_logs_path, alert: t("admin.logs.flash.exportacion_fallida")
-      end
+      send_data csv, filename: "system_logs_#{Date.current}.csv", type: "text/csv"
     end
 
     private
