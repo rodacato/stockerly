@@ -761,13 +761,17 @@ syncing down to nothing and score **every one of its alerts at 0** without error
 newest row per asset regardless of age (`DISTINCT ON (asset_id)`), and two specs pin exactly that —
 verified by removing the guard, which fails both and nothing else.
 
-### X17 ⚪ The CSP still authorizes TradingView; the widget it was for is gone
+### X17 ✅ The CSP allowances are deliberate — closed 2026-08-29 by D66
 
 [`content_security_policy.rb`](../config/initializers/content_security_policy.rb) permits
 `https://s3.tradingview.com` in `script_src`, `https://*.tradingview.com` plus its websocket in
 `connect_src`, and `frame_src`. D2 rejected the iframe and CODE_CHANGES §3b records the widget's
 removal; the permissions stayed. Either they are removed or they are used deliberately — **D66
 decides which**, and this entry closes with it.
+
+**Closed by `D66`, not by an edit.** The decision permits the widget behind an explicit
+opt-in toggle, so the allowances that outlived the deleted widget are **deliberate rather than
+residue** — which is exactly the fork this entry named. The toggle itself is a board item.
 
 ### X18 ⚪ Provenance and the `≈` conversion exist only on the detail
 
@@ -1030,10 +1034,13 @@ so the recovery codes land next to a wizard already invested in.
 The sequencing held: AUTH-1 shipped first, so *Activar ahora* had somewhere to go rather than
 shipping disabled, which is the thing D13/D16/D23 keep telling us not to do.
 
-### ONB-2 🟡 The empty first run is one of the three failures the 2.0 exists to fix, and it is unbuilt
+### ONB-2 ✅ Absorbed into ACT-1 — closed 2026-08-29
 
 See ACT-1. It is the Activos flow's artboard but it is the *onboarding* problem — it is what the
 reader meets immediately after `Complete`.
+
+It was always `ACT-1` seen from the onboarding side, never separate work. The board item for
+`ACT-1` carries this entry's text in full.
 
 ### ONB-3 🟡 `/welcome` and `/help` are the only authenticated screens with zero i18n keys
 
@@ -1826,13 +1833,15 @@ name.
 hand, with a spec keeping it green. That is X6's shape, so it went the same way. **The columns stay**:
 dropping data is its own decision and the endpoint was the dead part.
 
-### TD5 — `market_controller#show`
+### TD5 ✅ — closed 2026-08-29: it was a pointer to CKP-7, which shipped
 
 See CKP-7. 21 assignments, three inline AR reads, a job enqueued from a GET.
 
+`CKP-7` shipped on 2026-08-29. This was never an independent finding.
+
 ### TD6 ✅ — done. See X6.
 
-### TD7 🟡 — partly done. See X1: 6 of 22 uses migrated, `accent` deleted, 16 left in the file ACT-2 removes.
+### TD7 ✅ — closed 2026-08-29: absorbed into X1, which owns the migration. See X1: 6 of 22 uses migrated, `accent` deleted, 16 left in the file ACT-2 removes.
 
 ### TD8 ✅ — done. See X2.
 
