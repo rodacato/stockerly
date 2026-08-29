@@ -164,7 +164,9 @@
 **Statement:** *When one of my positions (or a watchlist asset) enters a notable technical zone (oversold/overbought per RSI, Bollinger Bands breakout, moving-average crossover), I want to see it described in context, so I can factor it into my weekly portfolio reflection.*
 
 **Required data:**
-- Historical daily prices ≥200 days (exists via `price_histories`)
+- Historical daily prices ≥200 days — **does not exist.** `BackfillPriceHistoryJob::DAYS` fetched
+  30 until 2026-08-29; the table accumulates one row a day from there, so no asset has ever had
+  the 200 this line claims. Corrected 2026-08-29 — see `design/V2_REMAINING.md` X9
 - Per-asset computed indicators (RSI(14), MACD, BB, MA50, MA200, EMA9/21)
 - TrendScore 5-factor (already exists)
 - User holdings + watchlist
@@ -186,7 +188,12 @@
 
 **Usage metric:** Adrian opens ≥1 asset detail per week from a surfaced notable observation. If he ignores them, the JTBD isn't working or the observations are too noisy.
 
-**Blocked by:** nothing. Dedup happens at write time (`persist_if_fresh`), and the copy lives in `MarketHelper::OBSERVATION_PHRASES`.
+**Blocked by:** the data precondition above, for the half of this JTBD that needs long windows.
+Dedup and copy are fine — dedup happens at write time (`persist_if_fresh`) and the phrases live in
+`MarketHelper::OBSERVATION_PHRASES`. But MACD, MA50 and MA200 all need more closes than the app
+has ever held, so the indicators this JTBD lists have never run in production. **This line read
+"nothing" from 2026-05-14 to 2026-08-29**, which is why the gap survived three audits: the
+requirement was written down, marked satisfied, and never measured.
 
 **Current status:** delivered on three surfaces — the Panorama's "Movimientos de interés", the asset detail's verdict card, and its "Observaciones recientes". The verdict card reads a state out loud under [ADR-014](../architecture/adr/0014-state-phrases-from-a-closed-catalogue.md); the observations block stays purely descriptive. Threshold tuning is still untouched.
 
