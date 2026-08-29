@@ -12,7 +12,9 @@ module Notifications
 
       def self.private_key = ENV["VAPID_PRIVATE_KEY"].presence
 
-      def self.subject = ENV.fetch("VAPID_SUBJECT", "mailto:stockerly@localhost")
+      # `.presence`, not `ENV.fetch`: an unset Kamal secret arrives as the empty
+      # string rather than absent, so a default keyed on absence never fires.
+      def self.subject = ENV["VAPID_SUBJECT"].presence || "mailto:stockerly@localhost"
 
       def self.call(subscription:, title:, body:, path:, badge_count:)
         return false unless configured?
