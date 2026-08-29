@@ -30,6 +30,46 @@ RSpec.describe "Activos", type: :request do
       expect(response.body).to include("Walmart de México")
     end
 
+    # D68 orders the watchlist by distance to your own threshold. A list ranked
+    # on a number the screen never prints reads as no order at all.
+    it "states the gap it ranks each row on" do
+      asset = mxn_asset(symbol: "WALMEX", current_price: 100)
+      create(:watchlist_item, user: user, asset: asset, entry_price: 90)
+      create(:alert_rule, user: user, asset_symbol: "WALMEX", condition: "price_crosses_below",
+                          threshold_value: 90, status: :active)
+
+      get assets_path(tab: "watchlist")
+
+      expect(response.body).to include(I18n.t("assets.index.falta", percent: "10.0%"))
+    end
+
+    it "keeps the since-you-followed reading for a row with no threshold" do
+      asset = mxn_asset(symbol: "GAP", current_price: 110)
+      create(:watchlist_item, user: user, asset: asset, entry_price: 100)
+
+      get assets_path(tab: "watchlist")
+
+      expect(response.body).to include(I18n.t("assets.index.sigues", percent: "+10.0%"))
+      expect(response.body).not_to include(I18n.t("assets.index.falta", percent: "10.0%"))
+    end
+
+    it "prints the gaps in the order it sorted them" do
+      near = mxn_asset(symbol: "NEAR", current_price: 100)
+      far  = mxn_asset(symbol: "FAR", current_price: 100)
+      create(:watchlist_item, user: user, asset: near)
+      create(:watchlist_item, user: user, asset: far)
+      create(:alert_rule, user: user, asset_symbol: "NEAR", condition: "price_crosses_below",
+                          threshold_value: 96, status: :active)
+      create(:alert_rule, user: user, asset_symbol: "FAR", condition: "price_crosses_below",
+                          threshold_value: 80, status: :active)
+
+      get assets_path(tab: "watchlist")
+
+      expect(response.body.index("NEAR")).to be < response.body.index("FAR")
+      expect(response.body.index(I18n.t("assets.index.falta", percent: "4.0%")))
+        .to be < response.body.index(I18n.t("assets.index.falta", percent: "20.0%"))
+    end
+
     it "shows the watchlist under Watchlist, not the portfolio" do
       held = mxn_asset(symbol: "HELD", current_price: 10)
       watched = mxn_asset(symbol: "WATCHED", current_price: 10)

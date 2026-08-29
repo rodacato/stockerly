@@ -11,6 +11,7 @@ module Trading
         currency = user.preferred_currency
 
         summary = consolidated_summary(portfolio, currency)
+        gaps = tab == "watchlist" ? watchlist_gaps(user) : {}
 
         {
           tab: tab,
@@ -19,7 +20,8 @@ module Trading
           summary: summary,
           fx_unavailable: portfolio.present? && summary.nil?,
           positions: (tab == "cartera" ? positions_for(portfolio, currency) : []),
-          watchlist_items: (tab == "watchlist" ? watchlist_for(user) : [])
+          watchlist_items: (tab == "watchlist" ? watchlist_for(user, gaps) : []),
+          watchlist_gaps: gaps
         }
       end
 
@@ -60,13 +62,22 @@ module Trading
 
       # D68: the watchlist is a queue — what sits closest to its own threshold
       # rises. Distance is a percentage because D10 leaves the prices unconverted.
-      def watchlist_for(user)
-        thresholds = thresholds_by_symbol(user)
-
+      def watchlist_for(user, gaps)
         user.watchlist_items
             .includes(:asset)
             .to_a
-            .sort_by { |item| proximity_key(item.asset, thresholds) }
+            .sort_by { |item| proximity_key(item.asset, gaps) }
+      end
+
+      # The distance the list is ordered by, keyed by symbol so the row can show
+      # the number it is ranked on. An order the reader cannot see is a guess.
+      def watchlist_gaps(user)
+        thresholds = thresholds_by_symbol(user)
+
+        user.watchlist_items.includes(:asset).each_with_object({}) do |item, gaps|
+          distance = nearest_distance(item.asset.current_price, thresholds[item.asset.symbol])
+          gaps[item.asset.symbol] = distance if distance
+        end
       end
 
       def thresholds_by_symbol(user)
@@ -81,9 +92,9 @@ module Trading
 
       # A row with a threshold sorts ahead of a row without one: a distance to
       # your own number and a day's movement do not share an axis.
-      def proximity_key(asset, thresholds)
+      def proximity_key(asset, gaps)
         symbol = asset.symbol
-        distance = nearest_distance(asset.current_price, thresholds[symbol])
+        distance = gaps[symbol]
         return [ 0, distance, symbol ] if distance
 
         [ 1, -asset.change_percent_24h.to_f.abs, symbol ]

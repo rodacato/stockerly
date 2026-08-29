@@ -188,6 +188,7 @@ es-MX:
   assets:
     index:
       cartera: Holdings
+      falta: falta %{percent}
       importar: Importar movimientos
       importar_desc: Carga movimientos en el formato de Stockerly, de archivo o pegados.
       invertido: Invertido %{amount}
