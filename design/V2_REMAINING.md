@@ -179,10 +179,10 @@ python3 -c "import re;rows=[l for l in open('design/DECISIONS.md') if re.match(r
 
 | | Findings | |
 |---|---:|---|
-| ✅ closed | **28** | shipped or measured away |
-| 🔴 open | **6** | ACT-1 · CKP-1 · ALR-1 · AJU-1 · X11 · X12 |
-| 🟡 open | **21** | a real gap inside a working screen |
-| ⚪ open | **16** | debt and hygiene, mostly `.pen` edits |
+| ✅ closed | **30** | shipped or measured away |
+| 🔴 open | **4** | CKP-1 · ACT-1 · ALR-1 · AJU-1 |
+| 🟡 open | **22** | a real gap inside a working screen |
+| ⚪ open | **15** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
 
 **71 headings carry a glyph and 73 findings exist.** It opened at 53 with
@@ -569,7 +569,7 @@ exists, the nightly job exists, and the calculator already produces every value 
 What is missing is that one writer drops the payload and no reader was ever written. The
 architectural discovery the issue asks for is largely already answered by the schema.
 
-### X11 🔴 The same asset is ordered three different ways on three screens
+### X11 ✅ The same asset was ordered three different ways on three screens — fixed 2026-08-29
 
 | Screen | Order | Source |
 |---|---|---|
@@ -581,7 +581,14 @@ The Radar's ordering is deliberate and defensible — it is a "what moved today"
 are not orderings at all, and no screen offers a control. Six holdings appear in three sequences
 across three screens, so positional memory of your own portfolio is impossible to form. **D68.**
 
-### X12 🔴 Two row components put different meanings in the same visual slot
+**Fixed 2026-08-29 (#438).** Cartera orders by market value in the declared currency, with an
+explicit alphabetical retreat when a rate is missing — the sort converts every row inside one
+`begin`, because a half-converted list is not an ordering. Watchlist orders by **distance to your own
+alert threshold**, as a percentage so USD and MXN rows compare without converting (D10), which is
+what turns it from a list into a queue. The Radar is unchanged. No sort control: fix the default
+first (C6 Esther).
+
+### X12 🟡 Two row components put different meanings in the same slot — code fixed, the artboard has not accepted the screen
 
 [`_asset_row`](../app/views/components/_asset_row.html.erb) ends in `money_cell(amount)` — **what you
 hold is worth**. [`_watch_row`](../app/views/components/_watch_row.html.erb) ends in
@@ -608,6 +615,17 @@ needs it."*
 list is something the code does and no artboard backs — not drift between two versions of the same
 idea, but a screen the code invented. That makes D69's radar clause a decision about a list the
 design has not yet accepted, which is worth knowing before it is built.
+
+**The code half shipped 2026-08-29 (#438) and the design half did not, so this drops to 🟡 rather
+than closing.** A `context:` local on the two existing partials now leads the Radar with the change
+on both row kinds — its primary slot means one thing on every row, including fixed income, which
+leads with its maturity. Cartera keeps value primary.
+
+**What is still owed is an artboard, not code.** `cockpit.pen` has no `WatchRow` and its radar is
+five `AssetRow` instances, so the `_watch_row` treatment now shipping there is a row variant the
+design has never drawn. Either the artboard gains the mixed radar or the code stops rendering one;
+that is a design call, and until it is taken this entry stays open as the record that code led design
+here — the reverse of D8.
 
 ### X13 🟡 "Hoy" is two different numbers on the same screen
 
@@ -645,12 +663,22 @@ review — this entry stays open and now carries the measurement the next attemp
 Severity raised from ⚪ to 🟡: it is a real gap, not hygiene, now that the naive fix is known to be
 a pessimisation.
 
-### X16 ⚪ `trend_scores` grows without bound
+### X16 ✅ `trend_scores` grew without bound — pruned 2026-08-29
 
 `RecalculateTrendScoreOnPriceUpdate` is subscribed to price updates and `create!`s a row each time.
 High-priority stocks sync every 5 minutes ([`recurring.yml`](../config/recurring.yml)), and the
 nightly job adds one more per asset. The only cleanup entry in `recurring.yml` is
 `cleanup_old_logs`, which covers `SystemLog`. Nothing prunes this table.
+
+**Fixed 2026-08-29.** `PruneTrendScoresJob` runs nightly and drops readings past 30 days — the window
+`_recent_observations` already calls recent, rather than a number picked for the occasion.
+
+**The naive version of this is a silent bug, which is why it is a job and not a `command:` line
+beside `cleanup_old_logs`.** `Alerts::Domain::AlertEvaluator` reads
+`asset.latest_trend_score&.score || 0`, so an age-only delete would prune an asset that stopped
+syncing down to nothing and score **every one of its alerts at 0** without erroring. The job keeps the
+newest row per asset regardless of age (`DISTINCT ON (asset_id)`), and two specs pin exactly that —
+verified by removing the guard, which fails both and nothing else.
 
 ### X17 ⚪ The CSP still authorizes TradingView; the widget it was for is gone
 
