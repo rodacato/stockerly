@@ -18,6 +18,7 @@
 4. *When an earnings event is coming for something I hold, I want to know 2 days ahead, so I don't find out after the fact.*
 5. *When I add a new trade, I want to capture it in under 30 seconds, so I don't abandon the recording out of laziness.* **(Now central — the beta died partly on data-entry friction.)*
 6. *When one of my positions (or a watchlist asset) enters a notable technical zone (oversold/overbought per RSI, Bollinger Bands break, moving-average crossover), I want to see it described in context — with a one-sentence explanation of what the indicator means — so I can factor it into my weekly reflection.* **(Now carries the inline-explanation requirement — failure #2.)*
+7. *When I open a symbol I hold or watch, I want to see what was published about it recently, so a move I do not understand has somewhere to be explained.* **(Added 2026-08-29 with the per-symbol news block.)*
 
 **Product language constraint (formalized in ADR-001):**
 - Stockerly speaks descriptively: *"AAPL appears oversold per RSI(14)"*.
