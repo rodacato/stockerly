@@ -83,9 +83,17 @@ RSpec.describe FundamentalsHelper, "#remaining_metrics_by_category", type: :help
 
   it "leaves out what the extract already shows" do
     asset = build(:asset, :stock, current_price: 100)
-    rest = helper.remaining_metrics_by_category(asset, presenter_for(asset, "beta" => "1.4", "forward_pe" => "28.4"))
+    presenter = presenter_for(asset, "profit_margin" => "0.21", "forward_pe" => "28.4")
+    rest = helper.remaining_metrics_by_category(asset, presenter)
 
     expect(rest.values.flatten.map(&:key)).to include(:forward_pe)
-    expect(rest.values.flatten.map(&:key)).not_to include(:beta)
+    expect(rest.values.flatten.map(&:key)).not_to include(:net_margin)
+  end
+
+  # The five are named, not counted: a spec that only checked the size would go
+  # on passing through any swap, which is the change most worth catching.
+  it "shows five metrics, and they are the five that answer a question out loud" do
+    expect(FundamentalsHelper::SUMMARY_METRICS)
+      .to eq(%i[pe_ratio net_margin revenue_growth debt_to_equity dividend_yield])
   end
 end

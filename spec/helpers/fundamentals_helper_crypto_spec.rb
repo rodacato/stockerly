@@ -15,7 +15,7 @@ RSpec.describe FundamentalsHelper, type: :helper do
       metrics = helper.summary_metrics_for(asset)
 
       expect(metrics).to eq(FundamentalsHelper::SUMMARY_METRICS)
-      expect(metrics).to include(:pe_ratio, :roe, :eps)
+      expect(metrics).to include(:pe_ratio, :net_margin, :dividend_yield)
     end
   end
 end
