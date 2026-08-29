@@ -30,7 +30,7 @@ gem "dry-validation", "~> 1.10"
 gem "dry-monads", "~> 1.6"
 
 # Pagination [https://github.com/ddnexus/pagy]
-gem "pagy", "~> 43.3"
+gem "pagy", "~> 43.6"
 
 # HTTP client for external API gateways [https://github.com/lostisland/faraday]
 gem "faraday", "~> 2.9"
