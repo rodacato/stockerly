@@ -179,9 +179,9 @@ python3 -c "import re;rows=[l for l in open('design/DECISIONS.md') if re.match(r
 
 | | Findings | |
 |---|---:|---|
-| ✅ closed | **23** | shipped or measured away |
+| ✅ closed | **24** | shipped or measured away |
 | 🔴 open | **9** | ACT-1 · CKP-1 · CKP-8 · ALR-1 · AJU-1 · X9 · X10 · X11 · X12 |
-| 🟡 open | **22** | a real gap inside a working screen |
+| 🟡 open | **21** | a real gap inside a working screen |
 | ⚪ open | **17** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
 
@@ -628,7 +628,7 @@ carries either, and the watchlist mixes currencies without converting (D10 is wh
 names its own). Consistent with D10; worth a deliberate call rather than an omission, since
 "where did this number come from" is the one question this product's screens exist to answer.
 
-### X19 🟡 `PriceSeries#recent(n)` counts calendar days; both callers read it as rows
+### X19 ✅ `PriceSeries#recent(n)` counted calendar days while both callers read it as rows — fixed 2026-08-29
 
 [`recent(days)`](../app/contexts/market_data/queries/price_series.rb) is
 `since(days.days.ago.to_date)` — a **date window**, not a row count. Its only two callers are the two
@@ -646,6 +646,17 @@ fix; it is a behaviour change to both and belongs in its own commit, not folded 
 
 **Found by fixing X10, not by auditing** — the same pattern as `TD9`/`TD10`. Aligning the two
 writers put both on the same call and made the ambiguity visible; reading either one alone had not.
+
+**Fixed 2026-08-29.** Both writers now take `PriceSeries#latest(TrendScoreCalculator::WINDOW)` — 60
+**rows**. The constant lives on the calculator because its own minimums are what set the number, and
+both writers cite the one source, which is the lesson X10 paid for. `recent` still counts calendar
+days and that is correct for what it is; the defect was two callers reading it as a row count.
+
+**The spec that pins it is built on a stock's calendar** — weekdays minus four market holidays —
+because a pure-weekday series would not have caught this: 50 calendar days of weekdays is ~36 rows,
+still above MACD's 34, so the first version of the spec passed against the old code. With the
+holidays it drops to ~32 and the reading loses MACD entirely. Verified by reverting the fix: the
+spec fails with `macd` absent.
 
 ### X20 ⚪ A missing volume is scored as zero
 
