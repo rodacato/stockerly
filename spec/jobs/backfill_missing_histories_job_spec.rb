@@ -6,19 +6,16 @@ RSpec.describe BackfillMissingHistoriesJob, type: :job do
   let!(:disabled_stock) { create(:asset, symbol: "OFF", asset_type: :stock, sync_status: :disabled) }
 
   before do
-    # sparse_stock has only 3 histories (below threshold of 7)
-    3.times do |i|
-      create(:asset_price_history, asset: sparse_stock, date: i.days.ago.to_date)
-    end
+    histories_for(sparse_stock, described_class::MIN_HISTORIES - 1)
+    histories_for(full_stock, described_class::MIN_HISTORIES)
+  end
 
-    # full_stock has 10 histories (above threshold)
-    10.times do |i|
-      create(:asset_price_history, asset: full_stock, date: i.days.ago.to_date)
-    end
+  def histories_for(asset, count)
+    count.times { |i| create(:asset_price_history, asset: asset, date: i.days.ago.to_date) }
   end
 
   describe "#perform" do
-    it "enqueues BackfillPriceHistoryJob for assets with fewer than 7 histories" do
+    it "enqueues BackfillPriceHistoryJob for assets below #{described_class::MIN_HISTORIES} histories" do
       expect { described_class.perform_now }
         .to have_enqueued_job(BackfillPriceHistoryJob).with(sparse_stock.id)
     end
@@ -51,6 +48,11 @@ RSpec.describe BackfillMissingHistoriesJob, type: :job do
 
     it "limits to #{described_class::MAX_ASSETS} assets" do
       expect(described_class::MAX_ASSETS).to eq(50)
+    end
+
+    it "requires enough history for the longest indicator window" do
+      expect(described_class::MIN_HISTORIES).to be >= 200
+      expect(described_class::MIN_HISTORIES).to be < BackfillPriceHistoryJob::DAYS * 5 / 7
     end
 
     it "logs success with count" do

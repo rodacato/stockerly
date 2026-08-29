@@ -7,7 +7,7 @@ class BackfillMissingHistoriesJob < ApplicationJob
 
   MAX_ASSETS = 50
   STAGGER_SECONDS = 5
-  MIN_HISTORIES = 7
+  MIN_HISTORIES = 200
 
   queue_as :default
 

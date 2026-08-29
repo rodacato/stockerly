@@ -1,10 +1,10 @@
 namespace :data do
-  desc "Backfill price history for assets with fewer than 7 records"
+  desc "Backfill price history for assets with insufficient records"
   task backfill_prices: :environment do
     assets = Asset.where(sync_status: :active)
                   .left_joins(:asset_price_histories)
                   .group("assets.id")
-                  .having("COUNT(asset_price_histories.id) < 7")
+                  .having("COUNT(asset_price_histories.id) < ?", BackfillMissingHistoriesJob::MIN_HISTORIES)
 
     count = assets.count.size
     puts "Backfilling price history for #{count} assets..."

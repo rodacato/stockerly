@@ -5,7 +5,7 @@ module MarketData
     # crossed, so a purchase on an ordinary day has none — this fills that gap.
     #
     # Dates with too little history before them are simply absent from the
-    # result. BackfillPriceHistoryJob fetches 30 days and the daily sync
+    # result. BackfillPriceHistoryJob fetches a bounded window and the daily sync
     # accumulates from there, so a purchase predating the asset's sync has no
     # answer, and inventing one would be worse than the gap.
     class RsiOnDates
