@@ -68,6 +68,7 @@ module Trading
       def resolve_assets(parsed)
         symbols = parsed.map { |r| r[:asset_symbol].upcase }.uniq
         found = Asset.where(symbol: symbols).index_by(&:symbol)
+        found = found.merge(by_former_symbol(symbols - found.keys))
         missing = symbols - found.keys
         return Failure([ :unknown_symbols, missing.sort ]) if missing.any?
 
@@ -75,6 +76,18 @@ module Trading
         return Failure([ :unsupported_asset_type, unsupported.sort ]) if unsupported.any?
 
         Success(found)
+      end
+
+      # Only what no live ticker claimed. Retired symbols get reassigned, so a
+      # live SATS must win over an ECHO that used to be called that -- otherwise
+      # a genuine purchase of the new company lands in the old one's position,
+      # silently. Hence this runs on the leftovers, never on the whole list.
+      def by_former_symbol(unclaimed)
+        return {} if unclaimed.empty?
+
+        Asset.where("former_symbols && ARRAY[?]::varchar[]", unclaimed).each_with_object({}) do |asset, found|
+          asset.former_symbols.each { |former| found[former] = asset if unclaimed.include?(former) }
+        end
       end
 
       # Resolved up front for every distinct pair so a missing historical rate

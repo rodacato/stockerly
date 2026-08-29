@@ -1114,6 +1114,7 @@ es-MX:
       rechazo:
         alternar: Todos / ninguno
         dar_alta: Darlos de alta en Tracked
+        deslistado: ya no cotiza — darlo de alta congelado
         en_catalogo: en el catálogo
         faltan: Faltan en Tracked
         invalid_rows:
@@ -1136,6 +1137,8 @@ es-MX:
           creado así queda sin tipo, sin mercado y sin país, y un dedazo se te vuelve
           un activo basura que se sincroniza para siempre.'
         preguntar: le pregunto al proveedor
+        renombrado: "¿otro ticker hoy?"
+        renombrado_ph: ECHO
         titulo: No puedo importar todavía
         unknown_symbols:
           one: 1 de tus símbolos no está en tu catálogo. Sin él tu cartera quedaría

@@ -161,4 +161,35 @@ RSpec.describe Trading::UseCases::ImportTrades do
       expect(Position.sole.shares).to eq(3)
     end
   end
+
+  # EchoStar traded as SATS when the December statement printed and trades as
+  # ECHO now. A file written then carries the old ticker forever.
+  describe "a symbol the asset used to trade under" do
+    let!(:echo) { create(:asset, symbol: "ECHO", currency: "USD", former_symbols: [ "SATS" ]) }
+
+    it "resolves the row and books it against the live asset" do
+      result = described_class.call(user: user, rows: [ row(asset_symbol: "SATS") ], dry_run: false)
+
+      expect(result).to be_success
+      expect(Trade.last.asset).to eq(echo)
+    end
+
+    it "does not resolve a symbol nobody claims, current or former" do
+      result = described_class.call(user: user, rows: [ row(asset_symbol: "NOPE") ], dry_run: true)
+
+      expect(result.failure).to eq([ :unknown_symbols, [ "NOPE" ] ])
+    end
+
+    # Retired tickers get reassigned. If a live SATS ever existed, a purchase of
+    # it landing in EchoStar's position would be money in the wrong instrument,
+    # and nothing would say so.
+    it "gives a live ticker to its own asset, never to the one that used to hold it" do
+      live = create(:asset, symbol: "SATS", currency: "USD")
+
+      described_class.call(user: user, rows: [ row(asset_symbol: "SATS") ], dry_run: false)
+
+      expect(Trade.last.asset).to eq(live)
+      expect(Trade.last.asset).not_to eq(echo)
+    end
+  end
 end

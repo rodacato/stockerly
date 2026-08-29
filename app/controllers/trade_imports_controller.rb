@@ -38,7 +38,10 @@ class TradeImportsController < AuthenticatedController
   # re-previewing: the provider half lands asynchronously, so a preview run now
   # would report symbols that are still on their way.
   def track_missing
-    case Administration::UseCases::Assets::TrackMissingSymbols.call(symbols: params[:symbols], user: current_user)
+    case Administration::UseCases::Assets::TrackMissingSymbols.call(
+      symbols: params[:symbols], user: current_user,
+      renames: params[:renames]&.to_unsafe_h || {}, delisted: params[:delisted] || []
+    )
     in Dry::Monads::Success(report)
       redirect_to new_trade_import_path, notice: alta_notice(report)
     in Dry::Monads::Failure

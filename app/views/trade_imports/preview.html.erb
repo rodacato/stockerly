@@ -42,6 +42,21 @@
                   <%= @catalogued.include?(symbol) ? t(".rechazo.en_catalogo") : t(".rechazo.preguntar") %>
                 </span>
               </label>
+
+              <%# Two escapes for the two things an unresolvable ticker can be.
+                  Neither is the default: the row works untouched. %>
+              <div class="mt-1.5 flex flex-col gap-1.5 pl-9">
+                <label class="flex items-center gap-2">
+                  <span class="text-[10px] text-fg-subtle"><%= t(".rechazo.renombrado") %></span>
+                  <%= text_field_tag "renames[#{symbol}]", nil, placeholder: t(".rechazo.renombrado_ph"),
+                        class: "w-24 rounded border border-border-default bg-bg-canvas px-2 py-1 font-mono text-[11px] uppercase text-fg-default" %>
+                </label>
+                <label class="flex cursor-pointer items-center gap-2">
+                  <%= check_box_tag "delisted[]", symbol, false, id: "dead_#{symbol.downcase.gsub(/[^a-z0-9]+/, "-")}",
+                        class: "size-3.5 cursor-pointer accent-warning-fg" %>
+                  <span class="text-[10px] text-fg-subtle"><%= t(".rechazo.deslistado") %></span>
+                </label>
+              </div>
             </li>
           <% end %>
         </ul>

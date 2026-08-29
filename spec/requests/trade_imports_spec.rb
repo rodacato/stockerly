@@ -210,6 +210,46 @@ RSpec.describe "Trade imports", type: :request do
       expect(ResolveTrackedSymbolsJob).not_to have_received(:perform_later)
     end
 
+    # EchoStar: SATS on the December statement, ECHO today. Recording the old
+    # name is what makes the same file import on the next upload.
+    it "adopts a rename onto the live asset and remembers the old ticker" do
+      create(:asset, symbol: "ECHO", currency: "USD")
+
+      post track_missing_trade_import_path, params: { symbols: %w[SATS], renames: { "SATS" => "ECHO" } }
+
+      expect(Asset.find_by(symbol: "ECHO").former_symbols).to eq([ "SATS" ])
+      expect(Asset.find_by(symbol: "SATS")).to be_nil
+      expect(ResolveTrackedSymbolsJob).not_to have_received(:perform_later)
+    end
+
+    # The trades keep their cost; nothing ever asks a provider about it again.
+    it "creates a delisted symbol frozen rather than dropping its trades" do
+      post track_missing_trade_import_path, params: { symbols: %w[SIVB], delisted: %w[SIVB] }
+
+      asset = Asset.find_by(symbol: "SIVB")
+      expect(asset).to be_present
+      expect(asset.sync_status).to eq("disabled")
+      expect(ResolveTrackedSymbolsJob).not_to have_received(:perform_later)
+    end
+
+    it "only takes the owner's word for the symbols they typed it against" do
+      create(:asset, symbol: "ECHO", currency: "USD")
+
+      post track_missing_trade_import_path, params: { symbols: %w[ALAB], renames: { "SATS" => "ECHO" } }
+
+      expect(Asset.find_by(symbol: "ECHO").former_symbols).to be_empty
+      expect(ResolveTrackedSymbolsJob).to have_received(:perform_later).with([ "ALAB" ], user.id)
+    end
+
+    it "offers both escapes on the refusal screen" do
+      csv = "#{good}\nALAB,buy,1.0,10.0,2025-12-08,order-2"
+
+      post preview_trade_import_path, params: { contenido: csv }
+
+      expect(response.body).to include(%(name="renames[ALAB]"))
+      expect(response.body).to include(%(name="delisted[]" id="dead_alab" value="ALAB"))
+    end
+
     it "refuses a submission with every box unchecked" do
       post track_missing_trade_import_path, params: {}
 
