@@ -82,8 +82,6 @@ es-MX:
         vacio_titulo: No hay fuentes configuradas
         verificar: Verificar conexión
     logs:
-      flash:
-        exportacion_fallida: La exportación falló.
       index:
         buscar: Buscar por ID, tarea o palabra clave…
         carga_util: Carga útil
@@ -326,9 +324,6 @@ es-MX:
     description: 'Tracker self-hosted de patrimonio invertido: acciones, cripto y
       renta fija MX, con multi-divisa MXN/USD correcta.'
     title: Stockerly — Tu patrimonio invertido, en una pantalla
-  bug_reports:
-    flash:
-      no_enviado: No se pudo enviar el reporte.
   comun:
     accion:
       buy: compra
