@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile.\n\nEntry: login → /dashboard (main authenticated home).\nScreens: Panorama (Default · Tranquilo) → Asset detail (Análisis · Mi posición) → Consolidado (the portfolio lens: patrimonio, equity curve, '¿Valió la pena?', allocation) → Señales (the observation feed, D42 · renamed from Movimientos by D57). Desktop (1280): three artboards. Panorama and Consolidado fit without scroll; the asset detail drops from 3037pt to 1400pt.\n\n⚠ Panorama / Black swan was DELETED 2026-08-27 (D51). D25 cancelled the 'Evento de mercado · caídas generalizadas hoy' banner, and measuring found that banner existed on that artboard and nowhere else — it was the only thing separating the state from Default. Nothing computes market breadth, so there is no state to draw until something does; a real version needs its own 4-filter card.\n\nConsolidado entry points: the Panorama patrimonio hero and Holdings' summary card in assets.pen — one screen, two doors. Its two comparison cards are designed in full but their engine is build-gated and needs TWR, not the money-weighted period returns (D12).\n\nBlocks: PatrimonioStrip (MXN total + Δ día, the door to Consolidado) + sentiment carousel · 'atención hoy' band · holdings list with semáforo + freshness · (detail) price chart (D2) + confluence semáforo (D3) + señales (RSI/MA/Bollinger) + observations + fundamentals.\n\nGrounding: real data — portfolio value, P&L (MXN, FX at trade), trend-score, RSI/SMA/Bollinger, technical_observations, fundamentals. Confluence engine (Light 2 + window) is design-only, build-gated (D3).\n\n⚠ Read the ADR chain forward before touching any copy here: ADR-001 → ADR-013 → ADR-014. ADR-013 allows an action verb that is a deterministic function of a persisted TechnicalObservation — the 'compra'/'vende' chips on Señales are its reference case, not a violation. ADR-014 allows a state read as a sentence from a closed catalogue, and lists 'considera vender' among them, which is why the Verdict chip on Asset · Análisis stays. D36 dropped that chip citing ADR-001 a day after ADR-014 amended it; D54 reverses that. A decision is only as current as the ADR it cites.\n\nVocabulary is D48: the tier ladder is Holdings / Watchlist / Tracked, defined in flows/assets.pen (D9); this file's rows link into it. Lowercase 'cartera' in prose means the portfolio, not the tier, and stays. D57 answered this 2026-08-28: the screen and the band take Señales. 'Movimientos' already means a trade in two shipped screens (Historial and the asset's position tab), so keeping it here would ship one word with two meanings; 'signals' is also what technical analysis calls this. The band was already 'Señales de interés' in the code — these artboards were the side that was behind. The Señales block inside Asset · Análisis keeps its name: same reading at another resolution.\n\nMoney follows D10: the Radar subtitle declares MXN once and rows drop the symbol; anything in another currency carries its ISO prefix (USD 137.00) — including the position grid, which genuinely mixes MXN and USD.\n\nDesktop findings (2026-08-24, panel C5/C1/C4): (a) the sentiment carousel dies on desktop — the cards stack in ColC at their native ~309 width, so nothing is stretched and nothing is cut; (b) the asset detail has NO master list — the Radar is the Panorama's editorialised selection ('con actividad hoy'), not an asset navigator. The master-detail D4 asks for belongs in flows/assets.pen, where the list IS the screen; (c) the reading chain veredicto → chart → semáforo stays in one column, with Señales adjacent — they are the same reading at two resolutions.\n\n⚠ The stocks Fear & Greed block is GONE (2026-08-26, D38). CNN's index answers HTTP 418 to every User-Agent by IP reputation, it is a proprietary composite with no equivalent source, and swapping in a different indicator under the same label would be a lie the artboard tells. The carousel keeps crypto + watchlist; Contexto de mercado keeps the index quote and the divergence sentence. If equity sentiment is ever wanted, VIX is already seeded as a MarketIndex and needs its own 4-filter card, because it is a different indicator, not a replacement source.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2, the controller carries a ResizeObserver) — do not copy the pinned width into the ERB.\n\nShell: TopBar, TopBarDetail and BottomNav are vendored components in this file as of kit 0.8.0 — six hand-built bars and four navs were consolidated into them 2026-08-27. TopBarDetail is a kit gap: the kit ships the root bar only. Copy: es-MX. kit-version-source 0.8.0.",
+          "content": "The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile.\n\nEntry: login → /dashboard (main authenticated home).\nScreens: Panorama (Default · Tranquilo) → Asset detail (Análisis · Mi posición) → Consolidado (the portfolio lens: patrimonio, equity curve, '¿Valió la pena?', allocation) → Señales (the observation feed, D42 · renamed from Movimientos by D57). Desktop (1280): three artboards. Panorama and Consolidado fit without scroll; the asset detail drops from 2984pt to 1400pt.\n\n⚠ Panorama / Black swan was DELETED 2026-08-27 (D51). D25 cancelled the 'Evento de mercado · caídas generalizadas hoy' banner, and measuring found that banner existed on that artboard and nowhere else — it was the only thing separating the state from Default. Nothing computes market breadth, so there is no state to draw until something does; a real version needs its own 4-filter card.\n\nConsolidado entry points: the Panorama patrimonio hero and Holdings' summary card in assets.pen — one screen, two doors. Its two comparison cards are designed in full but their engine is build-gated and needs TWR, not the money-weighted period returns (D12).\n\nBlocks: PatrimonioStrip (MXN total + Δ día, the door to Consolidado) + sentiment carousel · 'atención hoy' band · holdings list with semáforo + freshness · (detail) 52-week range + price chart (D2) + vs-tu-plan anchor (D67) + confluence semáforo (D3) + señales (RSI/MA/Bollinger — the 52-week range moved out to Rango52, CKP-9) + observations + fundamentals.\n\nGrounding: real data — portfolio value, P&L (MXN, FX at trade), trend-score, RSI/SMA/Bollinger, technical_observations, fundamentals. Confluence engine (Light 2 + window) is design-only, build-gated (D3).\n\n⚠ Read the ADR chain forward before touching any copy here: ADR-001 → ADR-013 → ADR-014. ADR-013 allows an action verb that is a deterministic function of a persisted TechnicalObservation — the 'compra'/'vende' chips on Señales are its reference case, not a violation. ADR-014 allows a state read as a sentence from a closed catalogue, and lists 'considera vender' among them, which is why the Verdict chip on Asset · Análisis stays. D36 dropped that chip citing ADR-001 a day after ADR-014 amended it; D54 reverses that. A decision is only as current as the ADR it cites.\n\nVocabulary is D48: the tier ladder is Holdings / Watchlist / Tracked, defined in flows/assets.pen (D9); this file's rows link into it. Lowercase 'cartera' in prose means the portfolio, not the tier, and stays. D57 answered this 2026-08-28: the screen and the band take Señales. 'Movimientos' already means a trade in two shipped screens (Historial and the asset's position tab), so keeping it here would ship one word with two meanings; 'signals' is also what technical analysis calls this. The band was already 'Señales de interés' in the code — these artboards were the side that was behind. The Señales block inside Asset · Análisis keeps its name: same reading at another resolution.\n\nMoney follows D10: the Radar subtitle declares MXN once and rows drop the symbol; anything in another currency carries its ISO prefix (USD 137.00) — including the position grid, which genuinely mixes MXN and USD.\n\nDesktop findings (2026-08-24, panel C5/C1/C4): (a) the sentiment carousel dies on desktop — the cards stack in ColC at their native ~309 width, so nothing is stretched and nothing is cut; (b) the asset detail has NO master list — the Radar is the Panorama's editorialised selection ('con actividad hoy'), not an asset navigator. The master-detail D4 asks for belongs in flows/assets.pen, where the list IS the screen; (c) the reading chain veredicto → chart → semáforo stays in one column, with Señales adjacent — they are the same reading at two resolutions.\n\n⚠ The stocks Fear & Greed block is GONE (2026-08-26, D38). CNN's index answers HTTP 418 to every User-Agent by IP reputation, it is a proprietary composite with no equivalent source, and swapping in a different indicator under the same label would be a lie the artboard tells. The carousel keeps crypto + watchlist; Contexto de mercado keeps the index quote and the divergence sentence. If equity sentiment is ever wanted, VIX is already seeded as a MarketIndex and needs its own 4-filter card, because it is a different indicator, not a replacement source.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2, the controller carries a ResizeObserver) — do not copy the pinned width into the ERB.\n\nShell: TopBar, TopBarDetail and BottomNav are vendored components in this file as of kit 0.8.0 — six hand-built bars and four navs were consolidated into them 2026-08-27. TopBarDetail is a kit gap: the kit ships the root bar only. Copy: es-MX. kit-version-source 0.8.1.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -429,11 +429,12 @@
                       "content": "Apple"
                     },
                     "w2FQh": {
-                      "content": "38,000"
-                    },
-                    "QrM6I": {
                       "content": "+4.0%",
                       "fill": "$positive-fg"
+                    },
+                    "QrM6I": {
+                      "content": "38,000",
+                      "fill": "$fg-subtle"
                     },
                     "Zzbi9": {
                       "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
@@ -471,11 +472,12 @@
                       "content": "Nvidia"
                     },
                     "w2FQh": {
-                      "content": "52,000"
-                    },
-                    "QrM6I": {
                       "content": "−2.0%",
                       "fill": "$negative-fg"
+                    },
+                    "QrM6I": {
+                      "content": "52,000",
+                      "fill": "$fg-subtle"
                     },
                     "Zzbi9": {
                       "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
@@ -513,11 +515,12 @@
                       "content": "Bitcoin"
                     },
                     "w2FQh": {
-                      "content": "21,000"
-                    },
-                    "QrM6I": {
                       "content": "+8.0%",
                       "fill": "$positive-fg"
+                    },
+                    "QrM6I": {
+                      "content": "21,000",
+                      "fill": "$fg-subtle"
                     },
                     "Zzbi9": {
                       "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
@@ -555,11 +558,12 @@
                       "content": "Vanguard S&P 500"
                     },
                     "w2FQh": {
-                      "content": "61,000"
-                    },
-                    "QrM6I": {
                       "content": "+1.0%",
                       "fill": "$positive-fg"
+                    },
+                    "QrM6I": {
+                      "content": "61,000",
+                      "fill": "$fg-subtle"
                     },
                     "Zzbi9": {
                       "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
@@ -597,11 +601,12 @@
                       "content": "Cetes 28d"
                     },
                     "w2FQh": {
-                      "content": "90,000"
-                    },
-                    "QrM6I": {
                       "content": "vence en 3 días",
                       "fill": "$warning-fg"
+                    },
+                    "QrM6I": {
+                      "content": "90,000",
+                      "fill": "$fg-subtle"
                     },
                     "Zzbi9": {
                       "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
@@ -1596,6 +1601,106 @@
             },
             {
               "type": "frame",
+              "id": "wVPf8",
+              "name": "Rango52",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "UD0Zi",
+                  "name": "Head",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "JWpan",
+                      "name": "H",
+                      "fill": "$fg-subtle",
+                      "content": "RANGO 52 SEMANAS",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "G9w3ZU",
+                      "name": "Pos",
+                      "fill": "$fg-subtle",
+                      "content": "a 3% de su máximo",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "HlYMR",
+                  "name": "Track",
+                  "width": 350,
+                  "height": 10,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "BH0Av",
+                      "x": 0,
+                      "y": 2,
+                      "name": "Bar",
+                      "width": 350,
+                      "height": 6,
+                      "fill": "$bg-muted",
+                      "cornerRadius": 99
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "r3WJFu",
+                      "x": 320,
+                      "y": 0,
+                      "name": "Marker",
+                      "fill": "$fg-default",
+                      "width": 10,
+                      "height": 10
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "b9xc7P",
+                  "name": "Labels",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "pOvcT",
+                      "name": "Lo",
+                      "fill": "$fg-subtle",
+                      "content": "108",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "gxKWS",
+                      "name": "Hi",
+                      "fill": "$fg-subtle",
+                      "content": "190",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
               "id": "X04NTw",
               "name": "Lectura",
               "width": "fill_container",
@@ -2394,7 +2499,7 @@
                       "id": "uknKF",
                       "name": "a",
                       "fill": "$fg-default",
-                      "content": "Meta · 200",
+                      "content": "Tu umbral · 150",
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
                       "fontWeight": "normal"
@@ -2404,7 +2509,7 @@
                       "id": "yXMf9",
                       "name": "b",
                       "fill": "$fg-subtle",
-                      "content": "faltan +9%",
+                      "content": "necesita bajar 18.6%",
                       "fontFamily": "$font-mono",
                       "fontSize": 13,
                       "fontWeight": "normal"
@@ -3090,110 +3195,6 @@
                       "content": "Tocó la banda superior · extremo alto de su rango de 20 sesiones",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "hZgan",
-                  "name": "Div",
-                  "width": "fill_container",
-                  "height": 1,
-                  "fill": "$border-default"
-                },
-                {
-                  "type": "frame",
-                  "id": "d3mDWd",
-                  "name": "Dist",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": "$space-2",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "aMlLI",
-                      "name": "L",
-                      "fill": "$fg-subtle",
-                      "content": "DISTANCIA A MÁX/MÍN 52 SEM",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 12,
-                      "fontWeight": "normal",
-                      "letterSpacing": 0.5
-                    },
-                    {
-                      "type": "frame",
-                      "id": "gr0df",
-                      "name": "DM",
-                      "width": 252,
-                      "height": 10,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "QTIoi",
-                          "name": "Sp",
-                          "width": 239,
-                          "height": 10
-                        },
-                        {
-                          "type": "ellipse",
-                          "id": "k0PnnE",
-                          "name": "Mk",
-                          "fill": "$primary",
-                          "width": 10,
-                          "height": 10
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "LmFil",
-                      "name": "Tk",
-                      "width": 252,
-                      "height": 7,
-                      "fill": "$bg-muted",
-                      "cornerRadius": 99
-                    },
-                    {
-                      "type": "frame",
-                      "id": "nKyXV",
-                      "name": "DL",
-                      "width": 252,
-                      "justifyContent": "space_between",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "R8IwIe",
-                          "name": "a",
-                          "fill": "$fg-subtle",
-                          "content": "mín 108",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "CjHQW",
-                          "name": "b",
-                          "fill": "$fg-subtle",
-                          "content": "máx 190",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "zjhNz",
-                      "name": "R",
-                      "fill": "$fg-subtle",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "A 3% de su máximo de 52 semanas.",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
                       "fontWeight": "normal"
                     }
                   ]
@@ -6861,11 +6862,12 @@
                                   "content": "Apple"
                                 },
                                 "w2FQh": {
-                                  "content": "38,000"
-                                },
-                                "QrM6I": {
                                   "content": "+4.0%",
                                   "fill": "$positive-fg"
+                                },
+                                "QrM6I": {
+                                  "content": "38,000",
+                                  "fill": "$fg-subtle"
                                 },
                                 "Zzbi9": {
                                   "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
@@ -6903,11 +6905,12 @@
                                   "content": "Nvidia"
                                 },
                                 "w2FQh": {
-                                  "content": "52,000"
-                                },
-                                "QrM6I": {
                                   "content": "−2.0%",
                                   "fill": "$negative-fg"
+                                },
+                                "QrM6I": {
+                                  "content": "52,000",
+                                  "fill": "$fg-subtle"
                                 },
                                 "Zzbi9": {
                                   "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
@@ -6945,11 +6948,12 @@
                                   "content": "Bitcoin"
                                 },
                                 "w2FQh": {
-                                  "content": "21,000"
-                                },
-                                "QrM6I": {
                                   "content": "+8.0%",
                                   "fill": "$positive-fg"
+                                },
+                                "QrM6I": {
+                                  "content": "21,000",
+                                  "fill": "$fg-subtle"
                                 },
                                 "Zzbi9": {
                                   "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
@@ -6987,11 +6991,12 @@
                                   "content": "Vanguard S&P 500"
                                 },
                                 "w2FQh": {
-                                  "content": "61,000"
-                                },
-                                "QrM6I": {
                                   "content": "+1.0%",
                                   "fill": "$positive-fg"
+                                },
+                                "QrM6I": {
+                                  "content": "61,000",
+                                  "fill": "$fg-subtle"
                                 },
                                 "Zzbi9": {
                                   "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
@@ -7029,11 +7034,12 @@
                                   "content": "Cetes 28d"
                                 },
                                 "w2FQh": {
-                                  "content": "90,000"
-                                },
-                                "QrM6I": {
                                   "content": "vence en 3 días",
                                   "fill": "$warning-fg"
+                                },
+                                "QrM6I": {
+                                  "content": "90,000",
+                                  "fill": "$fg-subtle"
                                 },
                                 "Zzbi9": {
                                   "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
@@ -7515,6 +7521,106 @@
                               "name": "Fr",
                               "fill": "$fg-subtle",
                               "content": "act. hace 9 min",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xCuQr",
+                      "name": "Rango52",
+                      "width": 350,
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "GENEY",
+                          "name": "Head",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "lvm6i",
+                              "name": "H",
+                              "fill": "$fg-subtle",
+                              "content": "RANGO 52 SEMANAS",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "xdVYN",
+                              "name": "Pos",
+                              "fill": "$fg-subtle",
+                              "content": "a 3% de su máximo",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "OmbI6",
+                          "name": "Track",
+                          "width": 350,
+                          "height": 10,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "tj6Go",
+                              "x": 0,
+                              "y": 2,
+                              "name": "Bar",
+                              "width": 350,
+                              "height": 6,
+                              "fill": "$bg-muted",
+                              "cornerRadius": 99
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "EXPRy",
+                              "x": 320,
+                              "y": 0,
+                              "name": "Marker",
+                              "fill": "$fg-default",
+                              "width": 10,
+                              "height": 10
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "FqQ7v",
+                          "name": "Labels",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "z9PgF",
+                              "name": "Lo",
+                              "fill": "$fg-subtle",
+                              "content": "108",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "O1ndy",
+                              "name": "Hi",
+                              "fill": "$fg-subtle",
+                              "content": "190",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
                               "fontWeight": "normal"
@@ -8805,110 +8911,6 @@
                                       "fontWeight": "normal"
                                     }
                                   ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "Z2IMvH",
-                                  "name": "Div",
-                                  "width": "fill_container",
-                                  "height": 1,
-                                  "fill": "$border-default"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "T6crrp",
-                                  "name": "Dist",
-                                  "width": "fill_container",
-                                  "layout": "vertical",
-                                  "gap": "$space-2",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "d0gv8R",
-                                      "name": "L",
-                                      "fill": "$fg-subtle",
-                                      "content": "DISTANCIA A MÁX/MÍN 52 SEM",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 12,
-                                      "fontWeight": "normal",
-                                      "letterSpacing": 0.5
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "Le74Q",
-                                      "name": "DM",
-                                      "width": "fill_container",
-                                      "height": 10,
-                                      "children": [
-                                        {
-                                          "type": "frame",
-                                          "id": "IKHqh",
-                                          "name": "Sp",
-                                          "width": 239,
-                                          "height": 10
-                                        },
-                                        {
-                                          "type": "ellipse",
-                                          "id": "ssG5T",
-                                          "name": "Mk",
-                                          "fill": "$primary",
-                                          "width": 10,
-                                          "height": 10
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "j9DhQ",
-                                      "name": "Tk",
-                                      "width": "fill_container",
-                                      "height": 7,
-                                      "fill": "$bg-muted",
-                                      "cornerRadius": 99
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "uY72Q",
-                                      "name": "DL",
-                                      "width": "fill_container",
-                                      "justifyContent": "space_between",
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "kzKlC",
-                                          "name": "a",
-                                          "fill": "$fg-subtle",
-                                          "content": "mín 108",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 11,
-                                          "fontWeight": "normal"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "eEPng",
-                                          "name": "b",
-                                          "fill": "$fg-subtle",
-                                          "content": "máx 190",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 11,
-                                          "fontWeight": "normal"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "kRrXy",
-                                      "name": "R",
-                                      "fill": "$fg-subtle",
-                                      "textGrowth": "fixed-width",
-                                      "width": "fill_container",
-                                      "content": "A 3% de su máximo de 52 semanas.",
-                                      "lineHeight": 1.5,
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
                                 }
                               ]
                             },
@@ -9134,7 +9136,7 @@
                                       "id": "V1ZCqV",
                                       "name": "a",
                                       "fill": "$fg-default",
-                                      "content": "Meta · 200",
+                                      "content": "Tu umbral · 150",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 13,
                                       "fontWeight": "normal"
@@ -9144,7 +9146,7 @@
                                       "id": "e3Gfm9",
                                       "name": "b",
                                       "fill": "$fg-subtle",
-                                      "content": "faltan +9%",
+                                      "content": "necesita bajar 18.6%",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 13,
                                       "fontWeight": "normal"
@@ -11665,6 +11667,44 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "PKWWy",
+      "x": 0,
+      "y": 7160,
+      "name": "Log · Cockpit",
+      "width": 360,
+      "fill": "$bg-surface",
+      "cornerRadius": "$radius-card",
+      "layout": "vertical",
+      "gap": "$space-3",
+      "padding": 20,
+      "children": [
+        {
+          "type": "text",
+          "id": "NexCB",
+          "name": "T",
+          "fill": "$fg-default",
+          "content": "Log · Cockpit",
+          "fontFamily": "$font-display",
+          "fontSize": 16,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "A0vHIs",
+          "name": "Entries",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-08-29 · Panorama: the Radar's ten AssetRow instances (5 mobile, 5 desktop) now lead with the change and demote the value. AssetRow stays generic — the component defines emphasis positions, not what goes in them, so no kit change and no second component · D69, D72, X12\n2026-08-29 · kit 0.8.1 · Asset · Análisis: the 52-week range moved OUT of Señales to sit under the price as Rango52. Señales is #306-blocked and that row is the one part of it buildable today, so it no longer waits on the rest · CKP-9, #426. Applied to the Desktop artboard in the same pass\n2026-08-29 · kit 0.8.1 · Asset · Análisis: VsPlan's second row now reads the alert threshold instead of a Meta — no target_price will exist · D67, CKP-8. Applied to the Desktop artboard in the same pass\n2026-08-29 · declared grid-x0/brief-w/gutter/y0/row-gap and opened this Log; the file predated both conventions\n2026-08-29 · brief corrected: kit-version-source said 0.8.0 against the file's 0.8.1, and the detail height moved 3037 → 2984 (the hoist freed more than Rango52 added)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        }
+      ]
     }
   ],
   "themes": {
@@ -12375,6 +12415,26 @@
           }
         }
       ]
+    },
+    "grid-x0": {
+      "type": "number",
+      "value": 0
+    },
+    "grid-brief-w": {
+      "type": "number",
+      "value": 360
+    },
+    "grid-gutter": {
+      "type": "number",
+      "value": 100
+    },
+    "grid-y0": {
+      "type": "number",
+      "value": 0
+    },
+    "grid-row-gap": {
+      "type": "number",
+      "value": 260
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"

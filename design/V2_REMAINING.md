@@ -201,7 +201,7 @@ mean what the screen implies*. Four of the five new reds are data-shape defects 
 screen-by-screen audit — `X10` in particular describes a capability with a single non-visual
 consumer, which is exactly the kind of thing a walk through the views cannot see.
 
-**`DECISIONS.md`: 71 entries · 66 resolved · 5 open** — D3, D15, D33, D64 and D71. **This block
+**`DECISIONS.md`: 72 entries · 67 resolved · 5 open** — D3, D15, D33, D64 and D71. **This block
 previously listed D55 and D57 as open and they are both resolved**, and gave a stale entry total;
 that file's header carried the same two errors. D68–D70 were raised and resolved on 2026-08-29 by a
 panel consultation, which is why the open count fell rather than rose. Run the third command above;
@@ -557,6 +557,17 @@ a misreading waiting to happen.
 The same discontinuity runs vertically: Activos · Cartera never shows a price, and the asset
 detail's `Análisis` tab never shows your amount, so the leading number changes meaning as you
 navigate between them. **D69.**
+
+**Amended 2026-08-29 — measured in the `.pen`, and the diagnosis was wrong about whose defect this
+is.** `cockpit.pen` has **no `WatchRow` component at all**, and its Panorama artboard's radar is five
+`AssetRow` instances (AAPL, NVDA, BTC, VOO, CETES) — all holdings. `WatchRow` is flow-local to
+`assets.pen`, and `ui-kit.CHANGELOG.md` says so explicitly: *"One flow — promote only if a second
+needs it."*
+
+**So the design never drew a mixed radar.** The interleaving of positions and watchlist rows in one
+list is something the code does and no artboard backs — not drift between two versions of the same
+idea, but a screen the code invented. That makes D69's radar clause a decision about a list the
+design has not yet accepted, which is worth knowing before it is built.
 
 ### X13 🟡 "Hoy" is two different numbers on the same screen
 
@@ -1064,6 +1075,23 @@ never read as one.
 **No migration is implied.** Holding → `avg_cost`; watching → the active rule's `threshold_value`;
 both → position within the 52-week range (CKP-9). Three anchors, three columns that already exist.
 
+**Amended 2026-08-29 while designing it — this entry understated the finding, and in the direction
+that matters.** It said the two references are in the database and neither is on the screen. True,
+and incomplete: **`cockpit.pen`'s `Asset · Análisis` artboard already draws the whole anchor**, as a
+`VS. TU PLAN` block with three rows — `Tu costo · 120 → +53% · +MXN 61,000`, `Meta · 200 → faltan
++9%`, and `Regla · vender si RSI>70 3 días → día 1 / 3`.
+
+The code ships **one of those three rows**, and on the wrong tab. `market/_asset_rules` renders only
+the rules, and `show.html.erb` mounts it inside **Mi posición**, while the artboard puts the block in
+**Análisis** — where the price it anchors actually lives. `Mi posición`'s own artboard draws no
+`VsPlan` at all, so the code's placement matches no artboard.
+
+**And the dropped row nobody explained is the load-bearing one.** `_asset_rules`'s comment justifies
+dropping `Meta` (*"no target price exists anywhere in the code"* — correct, and D67 settles it), and
+says nothing about `Tu costo`, which `position.avg_cost` has backed all along. So this is not a
+design gap to fill; it is **an implementation that shipped a third of a designed block** and a
+comment that accounted for one of the two omissions.
+
 ### CKP-9 🟡 The 52-week range is registered, filled by two providers, and hidden in an accordion
 
 `fifty_two_week_high` and `fifty_two_week_low` are registered metrics
@@ -1074,7 +1102,12 @@ appear only behind *Ver todos* — and there as two bare numbers rather than as 
 between them**, which is the reading that answers *"is this expensive right now"*.
 
 [#306](https://github.com/rodacato/stockerly/issues/306) already names this as its cheap half,
-buildable without any of that issue's blocked work. Two caveats it does not name: **crypto has no
+buildable without any of that issue's blocked work. **Amended 2026-08-29: it was already drawn, and
+in the worst possible place.** The artboard carried a full `DISTANCIA A MÁX/MÍN 52 SEM` row — track,
+marker, `mín 108 / máx 190` and the sentence *"A 3% de su máximo de 52 semanas"* — **inside the
+`Señales` block**, which is the one block #306 says cannot be built. The single buildable row was
+tied to the blocked ones. Hoisted out to sit under the price as `Rango52` on 2026-08-29, so #426
+ships on its own. This entry is now a move, not a build. Two caveats it does not name: **crypto has no
 values** (CoinGecko does not fill them, and `ath_price` is a different question), and there is **no
 local fallback** until X9 lands — a 52-week range computed from thirty bars would be a lie with a
 number's formatting.
