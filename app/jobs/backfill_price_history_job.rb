@@ -6,7 +6,7 @@ class BackfillPriceHistoryJob < ApplicationJob
 
   queue_as :default
 
-  DAYS = 400
+  DAYS = 365
 
   def perform(asset_id)
     asset = Asset.find_by(id: asset_id)
