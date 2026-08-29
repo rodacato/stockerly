@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_29_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_29_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -97,6 +97,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_120000) do
     t.decimal "div_yield", precision: 8, scale: 4
     t.string "exchange"
     t.decimal "face_value", precision: 15, scale: 2
+    t.string "former_symbols", default: [], null: false, array: true
     t.datetime "fundamentals_synced_at"
     t.text "last_sync_error"
     t.datetime "last_synced_at"
@@ -119,6 +120,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_120000) do
     t.index ["country", "asset_type"], name: "index_assets_on_country_and_asset_type"
     t.index ["country"], name: "index_assets_on_country"
     t.index ["exchange"], name: "index_assets_on_exchange"
+    t.index ["former_symbols"], name: "index_assets_on_former_symbols", using: :gin
     t.index ["sector"], name: "index_assets_on_sector"
     t.index ["symbol"], name: "index_assets_on_symbol", unique: true
     t.index ["sync_status"], name: "index_assets_on_sync_status"
