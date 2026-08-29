@@ -14,7 +14,7 @@
 <% elsif @price_histories.size >= 2 %>
   <section class="rounded-2xl border border-border-default bg-bg-surface p-5">
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
-      <%= t("market.precio.titulo", currency: @asset.currency) %>
+      <%= t("market.precio.titulo", currency: @asset.currency, days: MarketData::UseCases::LoadAssetDetail::CHART_DAYS) %>
     </h3>
     <div class="mt-4" data-controller="chart" data-chart-height-value="260"
          data-chart-series-value="<%= price_series_json(@price_histories) %>"></div>

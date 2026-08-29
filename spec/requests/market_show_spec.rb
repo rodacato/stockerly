@@ -206,4 +206,19 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("Avance al vencimiento")
     end
   end
+  # X14: the chart drew a 30-day window and its heading never said so, while a
+  # row's sparkline draws seven sessions. Same silhouette, different scale.
+  describe "the price chart's window" do
+    it "states the window it actually queried" do
+      asset = create(:asset, :stock, symbol: "NVDA", currency: "USD", current_price: 120, sync_status: :active)
+      3.times { |d| create(:asset_price_history, asset: asset, date: Date.current - d, close: 100 + d) }
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include(
+        I18n.t("market.precio.titulo", currency: "USD",
+                                       days: MarketData::UseCases::LoadAssetDetail::CHART_DAYS)
+      )
+    end
+  end
 end
