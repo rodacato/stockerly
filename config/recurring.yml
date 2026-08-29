@@ -54,6 +54,10 @@ production:
     command: "SystemLog.where('created_at < ?', 90.days.ago).delete_all"
     schedule: at 2:15am every day
 
+  prune_trend_scores:
+    class: PruneTrendScoresJob
+    schedule: at 2:30am every day
+
   # D31 clause 2: the one job Descubrir gets. Every 4h, written with a 24h TTL
   # so a failed run serves stale waves instead of an empty screen.
   warm_discover:

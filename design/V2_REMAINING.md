@@ -179,10 +179,10 @@ python3 -c "import re;rows=[l for l in open('design/DECISIONS.md') if re.match(r
 
 | | Findings | |
 |---|---:|---|
-| ✅ closed | **28** | shipped or measured away |
-| 🔴 open | **6** | ACT-1 · CKP-1 · ALR-1 · AJU-1 · X11 · X12 |
+| ✅ closed | **29** | shipped or measured away |
+| 🔴 open | **6** | X11 · X12 · CKP-1 · ACT-1 · ALR-1 · AJU-1 |
 | 🟡 open | **20** | a real gap inside a working screen |
-| ⚪ open | **17** | debt and hygiene, mostly `.pen` edits |
+| ⚪ open | **16** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
 
 **71 headings carry a glyph and 73 findings exist.** It opened at 53 with
@@ -630,12 +630,22 @@ inside the row partial, so the Radar issues six and Activos issues one per holdi
 does have a `loaded?` path that reuses an eager-loaded association — neither caller preloads
 `asset_price_histories`, so it never takes it. Invisible at ten assets; still the wrong shape.
 
-### X16 ⚪ `trend_scores` grows without bound
+### X16 ✅ `trend_scores` grew without bound — pruned 2026-08-29
 
 `RecalculateTrendScoreOnPriceUpdate` is subscribed to price updates and `create!`s a row each time.
 High-priority stocks sync every 5 minutes ([`recurring.yml`](../config/recurring.yml)), and the
 nightly job adds one more per asset. The only cleanup entry in `recurring.yml` is
 `cleanup_old_logs`, which covers `SystemLog`. Nothing prunes this table.
+
+**Fixed 2026-08-29.** `PruneTrendScoresJob` runs nightly and drops readings past 30 days — the window
+`_recent_observations` already calls recent, rather than a number picked for the occasion.
+
+**The naive version of this is a silent bug, which is why it is a job and not a `command:` line
+beside `cleanup_old_logs`.** `Alerts::Domain::AlertEvaluator` reads
+`asset.latest_trend_score&.score || 0`, so an age-only delete would prune an asset that stopped
+syncing down to nothing and score **every one of its alerts at 0** without erroring. The job keeps the
+newest row per asset regardless of age (`DISTINCT ON (asset_id)`), and two specs pin exactly that —
+verified by removing the guard, which fails both.
 
 ### X17 ⚪ The CSP still authorizes TradingView; the widget it was for is gone
 
