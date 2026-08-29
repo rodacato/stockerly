@@ -73,11 +73,12 @@ evaporates.
 | [`docs/vision/audience.md`](docs/vision/audience.md) | Primary user / packaging target / non-users |
 | [`docs/vision/non-goals.md`](docs/vision/non-goals.md) | What we explicitly are NOT |
 | [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | The 6 canonical JTBDs |
-| [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions — 16 ADRs, numbered to 0018. Read before deciding; ADR-0007 is superseded by ADR-0011 |
+| [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions — 19 ADRs, numbered to 0022. Read before deciding; ADR-0007 is superseded by ADR-0011 |
 | [`docs/research/experts.md`](docs/research/experts.md) | The advisory panel |
 | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | Issues + Projects v2 + Milestones |
 | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare |
 | [`design/`](design/) | The design system — Pencil `.pen` files, ui-kit, brand, `DECISIONS.md`. **This is the source of truth** |
+| [`design/exports/`](design/exports/) | The artboards as PNGs — the only reviewable form of an encrypted `.pen`, and the README's imagery |
 
 **Stack:** Rails 8 + Ruby 3.3.6, dry-rb (Contracts at the boundary, monads in
 Use Cases), Hotwire (Turbo + Stimulus), Tailwind 4, PostgreSQL. Deploy via Kamal

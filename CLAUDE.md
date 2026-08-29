@@ -112,7 +112,7 @@ Cross-cutting code with **no namespace change** — available everywhere:
 
 ### Market Data Gateways
 
-`app/contexts/market_data/gateways/` holds **10 concrete provider gateways** — Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Alpha Vantage, FMP, Banxico, ExchangeRate (`FxRatesGateway`), and Alternative.me (`CryptoFearGreedGateway`). That is 13 files: 12 classes minus the 2 base classes (`MarketDataGateway`, `FundamentalsGateway`), plus 1 error class (`ApiKeyNotConfiguredError`). Registration and fallback priority live in `config/initializers/data_sources.rb`. **Polygon.io and CNN are retired** (`db/migrate/20260826210000_remove_retired_integrations.rb`) — do not cite them as sources.
+`app/contexts/market_data/gateways/` holds **10 concrete provider gateways** — Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Alpha Vantage, FMP, Banxico, ExchangeRate (`FxRatesGateway`), and Alternative.me (`CryptoFearGreedGateway`). That is 14 files: the 10 concrete gateways, 2 base classes (`MarketDataGateway`, `FundamentalsGateway`), 1 error class (`ApiKeyNotConfiguredError`) and `RetryPolicy`. Registration and fallback priority live in `config/initializers/data_sources.rb`. **Polygon.io and CNN are retired** (`db/migrate/20260826210000_remove_retired_integrations.rb`) — do not cite them as sources.
 
 ### Autoloading (Zeitwerk)
 
@@ -204,9 +204,10 @@ Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUs
 
 - **Public:** `/` (302 → `/login`), `/privacy`, `/terms`, `/risk-disclosure`, `/login`
 - **First boot:** `/setup` — `ApplicationController#redirect_to_setup` sends every request here while no user exists; `SetupController#require_no_users` redirects away once one does. Then `/onboarding/*` → `/welcome`.
-- **Authenticated:** `/dashboard`, `/discover`, `/portfolio`, `/alerts`, `/assets`, `/tracked`, `/market/:symbol`, `/profile`, `/help`, `/report-bug`
+- **Authenticated:** `/dashboard`, `/discover`, `/portfolio`, `/alerts`, `/assets`, `/tracked`, `/positions` (Historial), `/trades/import`, `/market/:symbol`, `/notifications`, `/settings`, `/profile`, `/help`, `/report-bug`
 - **Password Reset:** `/forgot-password`, `/reset-password/:token`
-- **Admin:** `/admin/integrations`, `/admin/logs`, `/admin/settings`, `/admin/jobs` (Mission Control)
+- **Second factor (ADR-018):** `/two-factor` and `/recovery-code` are reachable only with a pending login; `/two-factor/setup` and `/two-factor/codes` are enrolment, behind a full session
+- **Admin:** `/admin/integrations`, `/admin/logs`, `/admin/errors` (ADR-020, gated by the `developer_mode` switch), `/admin/settings`, `/admin/jobs` (Mission Control)
 
 The standalone `/market` listing, `/news` and `/earnings` were deleted in the 2.0 cleanup (D31 — see the comment in `config/routes.rb`); earnings now live in a tab on each asset's own page. `/admin/assets` is gone (D9): the catalogue is managed from `/tracked`.
 
@@ -230,7 +231,7 @@ spec/
 └── factories/        # FactoryBot definitions
 ```
 
-**2,690 examples** (`bundle exec rspec --dry-run`, measured 2026-08-27). Coverage on the same date: **95.33% line** (6726/7055) and **79.27% branch** (1985/2504) via SimpleCov, with branch coverage enabled. Re-measure rather than quoting this figure once it ages — the `coverage/` report is regenerated on every run, and Sonar reads `coverage/coverage.json`.
+**3,007 examples** (`bundle exec rspec --dry-run`, measured 2026-08-29). Coverage last measured 2026-08-27 on a smaller suite: **95.33% line** (6726/7055) and **79.27% branch** (1985/2504) via SimpleCov, with branch coverage enabled. Re-measure rather than quoting this figure once it ages — the `coverage/` report is regenerated on every run, and Sonar reads `coverage/coverage.json`.
 
 ## Environment Gotchas
 

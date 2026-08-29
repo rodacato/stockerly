@@ -109,6 +109,11 @@ promote a seeded user instead:
 bin/rails runner 'User.find_by!(email: "demo@stockerly.com").update!(role: :admin)'
 ```
 
+`/admin/errors` needs one more switch: it is gated by `developer_mode`
+([ADR-020](docs/architecture/adr/0020-internal-error-tracker.md)), which is off by default and
+lives beside `maintenance_mode` under **Admin → Settings**. The gate hides the screen, never the
+recording — exceptions are written whether or not you can read them.
+
 ## Optional configuration
 
 **Market-data API keys** are all optional and are configured in the Setup Wizard or later under

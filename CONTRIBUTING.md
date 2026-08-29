@@ -39,7 +39,7 @@ create four demo users, all non-admin; sign in as `demo@stockerly.com` / `passwo
 ### Running Tests
 
 ```bash
-bundle exec rspec                                    # Full suite (2,690 examples as of 2026-08-27)
+bundle exec rspec                                    # Full suite (3,007 examples as of 2026-08-29)
 bundle exec rspec spec/contexts/trading/             # One context
 bundle exec rspec spec/contexts/trading/use_cases/execute_trade_spec.rb      # One file
 bundle exec rspec spec/contexts/trading/use_cases/execute_trade_spec.rb:15   # One example
@@ -86,12 +86,32 @@ app/contexts/{context}/
 
 See [CLAUDE.md](CLAUDE.md) for the complete architecture reference.
 
+## Where work comes from
+
+**GitHub is the system of record** ([ADR-022](docs/architecture/adr/0022-github-as-the-system-of-record.md)).
+No markdown file in this repo states what is open — the private `Stockerly` Project holds every
+outstanding item, and anything ready to build is promoted to a public Issue first.
+[`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) is the operational manual and is
+required reading before opening an issue or a PR.
+
+A feature needs all four filters before it becomes an issue: a documented personal trigger, a
+JTBD, a usage metric, and a Definition of Done. Without them it stays a draft on the board. The
+issue templates in [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) enforce this.
+
 ## Making Changes
 
-1. Create a branch from `master`:
+1. Create a branch from the latest `master`:
    ```bash
-   git checkout -b feature/your-feature-name
+   git fetch origin
+   git checkout -b feat/your-change origin/master --no-track
    ```
+
+   `--no-track` matters: without it the new branch's upstream becomes `origin/master`, and a later
+   `git push -u origin <branch>` resolves against that upstream and pushes straight to `master`,
+   bypassing branch protection. Push with an explicit refspec — `git push -u origin <branch>:<branch>`.
+
+   Branch prefixes mirror the commit prefixes below: `feat/`, `fix/`, `chore/`, `docs/`,
+   `refactor/`, `test/`.
 
 2. Write your code with tests:
    - Use Case specs go in `spec/contexts/{context}/use_cases/`
@@ -105,12 +125,18 @@ See [CLAUDE.md](CLAUDE.md) for the complete architecture reference.
    bundle exec rspec
    ```
 
-4. Commit with a clear message and push:
+4. Commit with a clear message and push the branch with an explicit refspec:
    ```bash
-   git push origin feature/your-feature-name
+   git push -u origin feat/your-change:feat/your-change
    ```
 
-5. Open a Pull Request against `master`
+5. Open a Pull Request against `master`. **Its body must carry `Closes #N`** (or `Fixes #N` /
+   `Resolves #N`) for every issue it resolves — that keyword is the only thing that closes an
+   issue on merge, and a missed one leaves the board lying about what is open.
+
+6. If the change is visual, say which artboard in [`design/exports/`](design/exports/) it
+   implements, or re-export the artboard if the design moved. The design system in
+   [`design/`](design/) is the source of truth for what a screen should look like.
 
 ## Commit Messages
 
@@ -146,11 +172,20 @@ Evaluate volume_spike condition by comparing current volume against
 
 ## Code Conventions
 
-- **Language:** All code, comments, and documentation in English
+- **Language:** Code, comments, commits, issues, PRs and everything under `docs/` in **English**
+  — including routes (`/dashboard`, `/tracked`, `/alerts`). Everything the user reads is **es-MX**
+- **Copy goes through I18n:** user-facing strings live in `config/locales/es-MX.yml` behind lazy
+  lookups (`t(".key")`), managed with `i18n-tasks` — CI runs `i18n-tasks health` and fails on
+  missing, unused or unnormalized keys. Single locale; a second one is not a goal
+  ([ADR-011](docs/architecture/adr/0011-adopt-i18n-for-the-2.0-rewrite.md), superseding ADR-007).
+  Hardcoded es-MX in a view the 2.0 redesign has not reached yet is expected, not a defect
+- **Descriptive, never prescriptive:** Stockerly reports what it observes; it does not tell the
+  user what to do ([ADR-001](docs/architecture/adr/0001-descriptive-not-prescriptive-language.md))
 - **Style:** Follow existing patterns — run `bin/rubocop` to verify
 - **Testing:** Every Use Case and Contract should have specs
 - **No over-engineering:** Only implement what's needed. See the [working principles](IDENTITY.md#working-principles)
-- **No Devise:** Auth uses `has_secure_password`
+- **No Devise:** Auth uses `has_secure_password`, with TOTP and recovery codes for the second
+  factor ([ADR-018](docs/architecture/adr/0018-totp-with-recovery-codes.md))
 - **No Ransack:** Search uses ActiveRecord scopes with ILIKE
 
 ## Security
@@ -173,6 +208,8 @@ See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability re
 ## Questions?
 
 - Open an [issue](https://github.com/rodacato/stockerly/issues) for bugs or feature requests
+- How work is tracked: [docs/ops/github-workflow.md](docs/ops/github-workflow.md) — the board, drafts, issues, PRs
 - Review [docs/vision/](docs/vision/) to understand product direction
-- Architecture map: [docs/architecture/](docs/architecture/) — bounded contexts and ADRs
+- Architecture map: [docs/architecture/](docs/architecture/) — bounded contexts and 19 ADRs
+- Design system: [design/](design/) — Pencil files, ui-kit, and the exported artboards
 - Product history: [docs/1.0-retrospective.md](docs/1.0-retrospective.md) — why Stockerly pivoted to a single-user tracker
