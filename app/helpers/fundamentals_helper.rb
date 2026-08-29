@@ -73,9 +73,15 @@ module FundamentalsHelper
     asset.country == "US" ? "US GAAP" : "As reported"
   end
 
+  # Five, and each one answers a question a reader can say out loud (#429, D70).
+  # The five that went: ev_ebitda and fcf_yield ask you to already know what
+  # EBITDA and free cash flow are, eps says nothing without the price beside it,
+  # beta is a trader's number, market_cap is context rather than a judgement,
+  # and roe restates net_margin for a holder who is not comparing capital
+  # structures. dividend_yield was not among the ten and is the only one here
+  # that answers in money.
   SUMMARY_METRICS = %i[
-    pe_ratio ev_ebitda market_cap roe net_margin
-    fcf_yield revenue_growth eps debt_to_equity beta
+    pe_ratio net_margin revenue_growth debt_to_equity dividend_yield
   ].freeze
 
   CRYPTO_SUMMARY_METRICS = %i[
