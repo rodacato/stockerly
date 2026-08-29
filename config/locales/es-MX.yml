@@ -1014,6 +1014,8 @@ es-MX:
       errores_desc: Qué falló, dónde y cuántas veces
       estado: Estado y mantenimiento
       estado_desc: Diagnóstico, modo mantenimiento y cambios recientes
+      importar: Importar movimientos
+      importar_desc: Sube el CSV de tu broker o pega su contenido
       instancia_cuerpo: 'Esto es tuyo: corre en tu servidor y nadie más lo ve.'
       instancia_titulo: Tu instancia
       integraciones: Integraciones

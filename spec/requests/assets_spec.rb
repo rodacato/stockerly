@@ -58,6 +58,19 @@ RSpec.describe "Activos", type: :request do
       expect(response.body).to include(I18n.t("assets.index.vacio_cartera_titulo"))
     end
 
+    # The empty portfolio is exactly when the importer has to be visible, and
+    # the foot-of-list row is what keeps it reachable once holdings exist.
+    it "offers the importer whether or not the portfolio has holdings" do
+      get assets_path
+
+      expect(response.body.scan(%r{href="#{new_trade_import_path}"}).size).to eq(2)
+
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "AMXL", current_price: 15), shares: 1, avg_cost: 12, status: :open)
+      get assets_path
+
+      expect(response.body).to include(%(href="#{new_trade_import_path}"))
+    end
+
     it "declares the currency once and drops the symbol from the rows" do
       asset = mxn_asset(symbol: "AMXL", current_price: 15)
       create(:position, portfolio: portfolio, asset: asset, shares: 1_000, avg_cost: 12, status: :open)
