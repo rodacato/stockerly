@@ -9,7 +9,7 @@ class TradeImportsController < AuthenticatedController
   def preview
     return render :new, status: :unprocessable_content if rows.blank?
 
-    case Trading::UseCases::ImportTrades.call(user: current_user, rows: rows, dry_run: true)
+    case Trading::UseCases::ImportTrades.call(user: current_user, rows: rows, dry_run: true, skip_unknown: skip_unknown?)
     in Dry::Monads::Success(report)
       @report = report
       render :preview
@@ -17,6 +17,7 @@ class TradeImportsController < AuthenticatedController
       @reason = reason
       @details = details
       @catalogued = catalogued(details)
+      @blocked_rows, @importable_rows = split_by_symbol(details)
       render :preview, status: :unprocessable_content
     end
   end
@@ -24,7 +25,7 @@ class TradeImportsController < AuthenticatedController
   def create
     return redirect_to new_trade_import_path, alert: t(".vacio") if rows.blank?
 
-    case Trading::UseCases::ImportTrades.call(user: current_user, rows: rows, dry_run: false)
+    case Trading::UseCases::ImportTrades.call(user: current_user, rows: rows, dry_run: false, skip_unknown: skip_unknown?)
     in Dry::Monads::Success(report)
       redirect_to portfolio_path, notice: t(".listo", count: report[:imported])
     in Dry::Monads::Failure[ _reason, _details ]
@@ -50,6 +51,21 @@ class TradeImportsController < AuthenticatedController
   # Which of the missing symbols the bundled catalogue already describes. The
   # row says so because the two halves cost differently: one is free, the other
   # spends a provider call and may not come back with anything.
+  # Opt-in, and it has to survive the confirm step: the preview that showed
+  # what would be dropped and the commit that drops it must agree.
+  # How much of the file the refusal is actually holding, so the offer to
+  # import the rest can name a number instead of a promise.
+  def split_by_symbol(details)
+    unknown = Array(details).map(&:upcase).to_set
+    blocked = rows.count { |row| unknown.include?(row[:asset_symbol].to_s.upcase) }
+
+    [ blocked, rows.size - blocked ]
+  end
+
+  def skip_unknown?
+    params[:skip_unknown].present?
+  end
+
   def catalogued(details)
     Administration::Domain::AssetCatalog.find_by_symbols(Array(details)).map { |entry| entry[:symbol] }.to_set
   end

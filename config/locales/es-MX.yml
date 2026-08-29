@@ -1124,6 +1124,14 @@ es-MX:
           other: 'Me faltan los tipos de cambio de %{count} fechas:'
         not_found: No encontré tu cartera.
         otro_archivo: Elegir otro archivo
+        parcial:
+          one: Importar solo 1 movimiento
+          other: Importar solo los %{count} movimientos que sí puedo
+        parcial_cuerpo:
+          one: 'O deja fuera ese símbolo: se quedan sin importar %{count} movimiento
+            y el resto entra completo. Puedes cargarlo después.'
+          other: 'O deja fuera esos %{symbols} símbolos: se quedan sin importar %{count}
+            movimientos y el resto entra completo. Puedes cargarlos después.'
         porque: 'No los doy de alta solo: el CSV trae el ticker y nada más. Un activo
           creado así queda sin tipo, sin mercado y sin país, y un dedazo se te vuelve
           un activo basura que se sincroniza para siempre.'
