@@ -141,6 +141,19 @@ gh issue view 306
 gh auth refresh -s project,read:project
 ```
 
+**`bin/board-check`** reconciles the two and exits non-zero on drift: an open issue missing from
+the board, a closed issue left in a live status, or one of the built-in workflows that keeps those
+two true having been switched off.
+
+```bash
+bin/board-check
+```
+
+Run it when you want to trust a count, and after any batch of merges. It is **not wired to CI** —
+that would need a PAT with `read:project`, since Actions' `GITHUB_TOKEN` cannot read a user-scoped
+private Project. ADR-022's honest risk therefore still stands: nothing here is self-enforcing, and
+this script only shortens the distance between drifting and noticing.
+
 Required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:project`.
 
 ---
@@ -158,6 +171,10 @@ Required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:projec
 5. **A co-author or AI-attribution line** in a commit, issue or PR. See
    [`AGENTS.md`](../../AGENTS.md) — Adrian is the sole author of every artifact here.
 6. **A research issue with no closure criterion.** It will never close.
+7. **Assuming the board updates itself.** `Item closed` and `Pull request merged` are Project
+   workflows that must be enabled in the UI — there is no API to turn them on, only to read their
+   state, which is what `bin/board-check` reads. With them off, `Closes #N` closes the issue and
+   leaves the board item sitting in a live status.
 
 ---
 

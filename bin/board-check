@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# Reconcile the GitHub board against the issues it is supposed to track.
+# ADR-022 makes the board the system of record; nothing enforces that, so this
+# is the check that says when it has drifted.
+#
+#   bin/board-check          # report drift, exit 1 if any
+#
+# Needs `gh` authenticated with `read:project`. Exits 0 only when the board and
+# the issues agree in both directions and the workflows that keep them agreeing
+# are still on.
+set -euo pipefail
+
+owner="${BOARD_OWNER:-rodacato}"
+number="${BOARD_NUMBER:-6}"
+repo="${BOARD_REPO:-rodacato/stockerly}"
+expected_workflows=("Item closed" "Pull request merged")
+
+items=$(gh project item-list "$number" --owner "$owner" --format json --limit 500)
+open_issues=$(gh issue list --repo "$repo" --state open --limit 500 --json number --jq '.[].number' | sort -n)
+board_issues=$(jq -r '.items[] | select(.content.type=="Issue") | .content.number' <<<"$items" | sort -n)
+
+drift=0
+
+missing=$(comm -23 <(echo "$open_issues") <(echo "$board_issues"))
+if [[ -n "$missing" ]]; then
+  drift=1
+  echo "Open issues not on the board:"
+  while read -r n; do [[ -n "$n" ]] && echo "  #$n  $(gh issue view "$n" --repo "$repo" --json title --jq .title)"; done <<<"$missing"
+fi
+
+# A closed issue left in a live status is the board lying about what is open.
+while IFS=$'\t' read -r n status; do
+  [[ "$status" == "Done" ]] && continue
+  if [[ "$(gh issue view "$n" --repo "$repo" --json state --jq .state)" == "CLOSED" ]]; then
+    drift=1
+    echo "Closed issue still live on the board: #$n is '$status', expected 'Done'"
+  fi
+done < <(jq -r '.items[] | select(.content.type=="Issue") | "\(.content.number)\t\(.status)"' <<<"$items")
+
+workflows=$(gh api graphql -f owner="$owner" -F number="$number" -f query='
+  query($owner:String!,$number:Int!){ user(login:$owner){ projectV2(number:$number){
+    workflows(first:50){ nodes{ name enabled } } } } }' \
+  --jq '.data.user.projectV2.workflows.nodes[] | "\(.name)\t\(.enabled)"')
+
+for name in "${expected_workflows[@]}"; do
+  state=$(awk -F'\t' -v n="$name" '$1==n {print $2}' <<<"$workflows")
+  if [[ "$state" != "true" ]]; then
+    drift=1
+    echo "Project workflow '$name' is ${state:-absent} — the board will stop tracking closures."
+    echo "  Enable it at https://github.com/users/$owner/projects/$number/workflows (there is no API for it)."
+  fi
+done
+
+if [[ "$drift" == 0 ]]; then
+  echo "Board and issues agree; the workflows that keep them agreeing are on."
+fi
+exit "$drift"
