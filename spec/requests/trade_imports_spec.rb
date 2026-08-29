@@ -122,6 +122,52 @@ RSpec.describe "Trade imports", type: :request do
     end
   end
 
+  # One dead ticker held up 49 good trades. The refusal stays the default; this
+  # is the door out of it, and it only opens when asked.
+  describe "importing without the symbols it cannot resolve" do
+    let(:mixed) { "#{good}\nNOPE,buy,1.0,10.0,2025-12-08,order-2\nNOPE,buy,2.0,10.0,2025-12-09,order-3" }
+
+    it "offers the way out, naming what it would cost" do
+      post preview_trade_import_path, params: { contenido: mixed }
+
+      expect(response.body).to include("Importar solo 1 movimiento")
+      expect(response.body).to include("se quedan sin importar 2")
+    end
+
+    it "previews the rest and reports what it would leave behind" do
+      post preview_trade_import_path, params: { contenido: mixed, skip_unknown: "1" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Nada se ha guardado todavía")
+      expect(Trade.count).to eq(0)
+    end
+
+    it "imports the rest and leaves the unknown symbol's trades out entirely" do
+      post trade_imports_path, params: { contenido: mixed, skip_unknown: "1" }
+
+      expect(response).to redirect_to(portfolio_path)
+      expect(Trade.count).to eq(1)
+      expect(Trade.first.asset.symbol).to eq("VT")
+    end
+
+    # Dropping some rows of a symbol would leave that position wrong by a
+    # number, which is worse than not having it.
+    it "drops whole symbols, never single rows" do
+      csv = "#{mixed}\nVT,buy,1.0,120.0,2025-12-09,order-4"
+
+      post trade_imports_path, params: { contenido: csv, skip_unknown: "1" }
+
+      expect(Trade.pluck(:external_id)).to contain_exactly("order-1", "order-4")
+    end
+
+    it "still refuses everything when the door was not opened" do
+      post trade_imports_path, params: { contenido: mixed }
+
+      expect(Trade.count).to eq(0)
+      expect(flash[:alert]).to be_present
+    end
+  end
+
   describe "POST /trades/import/tracked" do
     before { allow(ResolveTrackedSymbolsJob).to receive(:perform_later) }
 

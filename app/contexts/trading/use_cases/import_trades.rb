@@ -16,16 +16,17 @@ module Trading
       # asking for.
       Batch = Data.define(:portfolio, :rows, :assets, :rates)
 
-      def call(user:, rows:, dry_run: true)
+      def call(user:, rows:, dry_run: true, skip_unknown: false)
         portfolio = user.portfolio
         return Failure([ :not_found, "Portfolio not found" ]) unless portfolio
 
         parsed = yield validate_rows(rows)
+        parsed, dropped = drop_unknown(parsed) if skip_unknown
         assets = yield resolve_assets(parsed)
         rates  = yield resolve_fx_rates(parsed)
 
         fresh, skipped = partition_already_imported(portfolio, parsed)
-        report = build_report(fresh, skipped, dry_run)
+        report = build_report(fresh, skipped, dry_run).merge(dropped: dropped || {})
         return Success(report) if dry_run
 
         batch = Batch.new(portfolio: portfolio, rows: fresh, assets: assets, rates: rates)
@@ -36,6 +37,20 @@ module Trading
       end
 
       private
+
+      # Whole symbols leave, never single rows. Dropping some rows of a symbol
+      # would leave that position wrong by a number; dropping all of them
+      # leaves it absent, which the report can state and the owner can fix.
+      #
+      # The batch stays all-or-nothing by default: this runs only when the
+      # screen asked for it, so what the refusal protected against -- a
+      # portfolio quietly missing trades -- still cannot happen by accident.
+      def drop_unknown(parsed)
+        known = Asset.where(symbol: parsed.map { |row| row[:asset_symbol].upcase }.uniq).pluck(:symbol).to_set
+        kept, gone = parsed.partition { |row| known.include?(row[:asset_symbol].upcase) }
+
+        [ kept, gone.group_by { |row| row[:asset_symbol].upcase }.transform_values(&:size) ]
+      end
 
       def validate_rows(rows)
         contract = Trading::Contracts::ImportTradeRowContract.new
