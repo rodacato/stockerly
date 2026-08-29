@@ -1,7 +1,6 @@
 # Stockerly — docs/
 
-> Living project documentation. `vision/`, `architecture/`, `ops/` and `sprints/` are kept
-> current. **`research/` is not** — each research note is a dated snapshot of what was known on
+> Living project documentation. `vision/`, `architecture/` and `ops/` are kept current. **`research/` is not** — each research note is a dated snapshot of what was known on
 > the day it was written, and carries an as-of banner naming what has superseded it since. Read
 > those for how a decision was reached, not for what the code does today. For the history that
 > led to the current single-user pivot, see [`1.0-retrospective.md`](./1.0-retrospective.md).
@@ -18,7 +17,7 @@
 | Design system (source of truth, Pencil-based) | [`../design/`](../design/) |
 | Research: expert panel, competitive survey, provider audit (**dated snapshots**) | [`research/`](./research/) |
 | Deploy, security, runbooks | [`ops/`](./ops/) |
-| Sprint protocol and template | [`sprints/`](./sprints/) |
+| How work moves: the board, issues, research | [`ops/github-workflow.md`](./ops/github-workflow.md) |
 | Screenshots for README/showcase | [`screenshots/`](./screenshots/) |
 | Why Stockerly pivoted to a single-user tracker | [`1.0-retrospective.md`](./1.0-retrospective.md) |
 
@@ -26,7 +25,10 @@
 
 ## Hard rules
 
-1. **One source of truth per type.** Vision in `vision/`, decisions in `architecture/adr/`, backlog in GitHub Issues, sprints in GitHub Projects. Never duplicate.
+1. **One source of truth per type.** Vision in `vision/`, decisions in `architecture/adr/`, and
+   **all outstanding work in the private `Stockerly` GitHub Project** — never in a markdown file.
+   See [ADR-022](./architecture/adr/0022-github-as-the-system-of-record.md) and
+   [`ops/github-workflow.md`](./ops/github-workflow.md). Never duplicate.
 2. **Doc > 200 lines: audit it.** Is it a reference or fiction? Useful documentation fits on a single screen.
 3. **Edits to `vision/` or `architecture/adr/`** require a commit message explaining the reason.
 

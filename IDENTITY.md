@@ -100,9 +100,13 @@ I built `PortfolioRiskCalculator` (Sharpe, drawdown, σ√252) on top of `curren
 ### 7. No retros / no audits
 Each phase closed with "specs green → next". Never asked "did Adrian use it?".
 
-**Enforcement:** Mandatory retro at the close of every sprint. Quarterly audit: every feature is validated against the associated JTBD's usage metric.
+**Enforcement:** Before extending a feature, verify the base one is used against its JTBD's usage
+metric. The retro that used to carry this was a sprint artifact and the sprints are gone
+([ADR-022](docs/architecture/adr/0022-github-as-the-system-of-record.md)) — the check moved to the
+moment it actually applies, which is the only place it was ever doing work.
 
-**Warning signs:** sprint closing without a retro file; extending a feature without verifying the base is used.
+**Warning signs:** extending a feature without verifying the base is used; a feature shipped and
+never opened again.
 
 ---
 
@@ -117,20 +121,25 @@ Each phase closed with "specs green → next". Never asked "did Adrian use it?".
 | Design system (source of truth) | `design/` |
 | Research, code audits | `docs/research/` |
 | Working protocol | `docs/ops/github-workflow.md` |
-| **Backlog items with discovery cards** | **GitHub Issues** |
-| **Sprint board** | **GitHub Projects v2** |
-| **Sprint goal** | **GitHub Milestone description** |
+| **Ideas, and findings not yet investigated** | **draft items in the private `Stockerly` Project** |
+| **Work ready to build (discovery card complete)** | **GitHub Issues** |
+| **All work state — open, blocked, done** | **the Project board. Never a markdown file.** |
 
 Hard rule: **one source per type, never duplicate.**
 
-### Sprint protocol
+### How work moves
 
-- Duration 1-2 weeks (default 1)
-- Goal in milestone description (single sentence)
-- QA pass MANDATORY before close (smoke test, audit script, green CI)
-- Post-close retro mandatory
-- **No new sprint while previous is open**
-- Max 7 issues `In Progress` simultaneously
+**There are no sprints** ([ADR-022](docs/architecture/adr/0022-github-as-the-system-of-record.md)).
+The first GitHub adoption died of its own ceremony — milestones per sprint, a 7-in-progress cap, a
+close checklist, mandatory retros — and the tracking fled into markdown because markdown asked for
+nothing. What replaces it is deliberately small:
+
+`Draft` → `Researching` → `Ready` → `In progress` → `Done`, on one continuous private board.
+An item becomes a public issue when it can state the four discovery filters, and not before.
+A PR closes it with `Closes #N`.
+
+The full manual is [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md), and keeping it
+smaller than the 231-line version it replaced is the invariant, not a detail.
 
 ### Discovery card (per feature)
 
