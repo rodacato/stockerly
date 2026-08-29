@@ -12,6 +12,7 @@ class AssetsController < AuthenticatedController
     @positions       = data[:positions]
     @watchlist_items = data[:watchlist_items]
     @watchlist_gaps  = data[:watchlist_gaps]
+    @sparkline_closes = data[:sparkline_closes]
     @fx_unavailable  = data[:fx_unavailable]
   end
 

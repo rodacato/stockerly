@@ -1,5 +1,5 @@
 <%# Usage: render "components/sparkline", direction: :up
-    With real data: render "components/sparkline", heights: sparkline_heights(asset), direction: :up
+    With real data: render "components/sparkline", heights: sparkline_heights(closes), direction: :up
     `heights` are 0-100 normalized closes (SparklineHelper). Without them the
     shape is generic and says nothing — pass real ones wherever they exist. %>
 <% direction ||= :up %>

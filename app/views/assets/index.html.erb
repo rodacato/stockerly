@@ -42,7 +42,8 @@
     <% if @positions.any? %>
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <% @positions.each do |position| %>
-          <%= render "components/asset_row", position: position, declared_currency: @currency %>
+          <%= render "components/asset_row", position: position, declared_currency: @currency,
+                     closes: @sparkline_closes[position.asset_id] %>
         <% end %>
       </div>
     <% else %>
@@ -57,7 +58,8 @@
     <% if @watchlist_items.any? %>
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <% @watchlist_items.each do |item| %>
-          <%= render "components/watch_row", item: item, gap: @watchlist_gaps[item.asset.symbol] %>
+          <%= render "components/watch_row", item: item, gap: @watchlist_gaps[item.asset.symbol],
+                     closes: @sparkline_closes[item.asset_id] %>
         <% end %>
       </div>
     <% else %>

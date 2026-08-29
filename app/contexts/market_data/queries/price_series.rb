@@ -14,6 +14,29 @@ module MarketData
 
       def self.for(asset, interval: DAILY) = new(asset, interval: interval)
 
+      # The last `points` closes for many assets in ONE statement, oldest first.
+      #
+      # The obvious alternative — preloading :asset_price_histories — was built,
+      # measured and reverted (X15): it loads the whole series to draw seven
+      # points, and that cost grows with the table while a per-row query's does
+      # not. Rails cannot limit a preloaded has_many, so the window function is
+      # the only shape that beats both.
+      def self.recent_closes(assets, points: 7, interval: DAILY)
+        ids = Array(assets).map { |asset| asset.try(:id) || asset }.uniq
+        return {} if ids.empty?
+
+        ranked = AssetPriceHistory
+                   .select("asset_id, close, date, ROW_NUMBER() OVER (PARTITION BY asset_id ORDER BY date DESC) AS rn")
+                   .where(asset_id: ids, interval: interval)
+
+        AssetPriceHistory.from(ranked, :asset_price_histories)
+                         .where("rn <= ?", points)
+                         .order(:asset_id, :date)
+                         .pluck(:asset_id, :close)
+                         .group_by(&:first)
+                         .transform_values { |rows| rows.map(&:last) }
+      end
+
       def initialize(asset, interval: DAILY)
         @asset = asset
         @interval = interval

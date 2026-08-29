@@ -24,7 +24,8 @@ module Trading
           fx_unavailable: portfolio.present? && summary.nil?,
           sentiment_cards: sentiment_cards(user),
           signals: signals(positions, watched),
-          radar: radar(positions, watched)
+          radar: radar(positions, watched),
+          sparkline_closes: MarketData::Queries::PriceSeries.recent_closes(asset_ids_of(positions, watched))
         }
       end
 
