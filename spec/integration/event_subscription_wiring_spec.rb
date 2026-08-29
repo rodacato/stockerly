@@ -120,11 +120,12 @@ RSpec.describe "Event Subscription Wiring" do
       end
     end
 
+    # Its only subscriber wrote a SystemLog the job had already written one
+    # line earlier, so every sync produced two identical rows at the same
+    # second. The event stays published; nothing consumes it today.
     describe "MarketData::Events::MarketIndicesUpdated" do
-      it "has MarketData::Handlers::LogMarketIndicesUpdate handler" do
-        handlers = EventBus.handlers_for(MarketData::Events::MarketIndicesUpdated)
-
-        expect(handlers).to include(MarketData::Handlers::LogMarketIndicesUpdate)
+      it "has no handler, because the one it had duplicated the job's own log" do
+        expect(EventBus.handlers_for(MarketData::Events::MarketIndicesUpdated)).to be_empty
       end
     end
 

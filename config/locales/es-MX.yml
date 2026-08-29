@@ -82,6 +82,7 @@ es-MX:
         carga_util: Carga útil
         descripcion: Lo que hizo tu instancia sola, sincronizaciones, avisos y errores
           de los últimos 90 días.
+        detalle: Detalle
         detalle_error: Detalle del error
         exportar: Exportar CSV
         limpiar: Limpiar filtros

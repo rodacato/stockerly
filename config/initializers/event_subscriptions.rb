@@ -45,7 +45,6 @@ Rails.application.config.after_initialize do
   EventBus.subscribe(MarketData::Events::EarningsSynced, MarketData::Handlers::LogEarningsSync)
 
   # Market Indices
-  EventBus.subscribe(MarketData::Events::MarketIndicesUpdated, MarketData::Handlers::LogMarketIndicesUpdate)
 
   # Sentiment
   EventBus.subscribe(MarketData::Events::FearGreedUpdated, MarketData::Handlers::LogFearGreedUpdate)

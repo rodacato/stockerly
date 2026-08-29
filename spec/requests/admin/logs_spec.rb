@@ -35,6 +35,21 @@ RSpec.describe "Admin logs error details", type: :request do
       expect(response.body).not_to include('data-reveal-target="content"')
     end
 
+    # Every sync job writes its outcome into the column named error_message,
+    # success included. The screen painted that column red by name, so a
+    # healthy sync read as a failure. The one success example above never
+    # caught it because it creates a log with no message at all.
+    it "does not paint a successful sync's message as an error" do
+      create(:system_log, task_name: "Market Indices Sync", severity: :success,
+             error_message: "6 indices updated")
+      get admin_logs_path
+
+      expect(response.body).to include("6 indices updated")
+      expect(response.body).to include(I18n.t("admin.logs.index.detalle"))
+      expect(response.body).not_to include(I18n.t("admin.logs.index.detalle_error"))
+      expect(response.body).not_to include("bg-negative-bg")
+    end
+
     it "renders the error detail row as hidden with reveal target" do
       create(:system_log, :error, error_message: "Rate limit exceeded")
       get admin_logs_path
