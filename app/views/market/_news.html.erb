@@ -1,0 +1,38 @@
+<%# CKP-11 / #427: the per-symbol read of `news_articles`, a table that was
+    filled every 30 minutes and had no consumer. Headlines are quoted material
+    — rendered as their source wrote them and attributed, never re-toned by us
+    (ADR-0001 governs our copy, not a third party's). Locals: asset, news. %>
+<% if news.any? %>
+  <section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+    <header class="flex flex-wrap items-baseline gap-2 px-5 pt-4 pb-3">
+      <h2 class="font-display text-base font-semibold tracking-tight text-fg-default">
+        <%= t(".titulo") %>
+      </h2>
+      <span class="text-xs text-fg-subtle">
+        <%= t(".filtro_html", symbol: tag.span(asset.symbol, class: "font-mono text-fg-default"),
+                              days: MarketData::Queries::RecentNews::WINDOW_DAYS) %>
+      </span>
+      <span class="ml-auto text-[11px] italic text-fg-subtle">
+        <%= t(".atribucion") %>
+      </span>
+    </header>
+
+    <ul class="divide-y divide-border-default">
+      <% news.each do |article| %>
+        <li class="px-5 py-3.5">
+          <% if article.url.present? %>
+            <%= link_to article.url, target: "_blank", rel: "noopener noreferrer",
+                        class: "text-sm font-medium text-fg-default leading-snug hover:text-primary" do %>
+              <%= article.title %>
+            <% end %>
+          <% else %>
+            <p class="text-sm font-medium text-fg-default leading-snug"><%= article.title %></p>
+          <% end %>
+          <p class="mt-1 text-xs text-fg-subtle">
+            <%= article.source %> · <%= observation_when(article.published_at) %>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>

@@ -41,7 +41,8 @@ module MarketData
           price_histories: price_histories,
           pe_history: pe_history,
           dividends: dividends,
-          company_overview: company_overview
+          company_overview: company_overview,
+          news: Queries::RecentNews.call(asset: asset)
         ))
       end
 

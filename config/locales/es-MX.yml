@@ -809,6 +809,10 @@ es-MX:
     metricas_que_mide: Qué mide
     metricas_referencial: Información referencial. El desempeño pasado no garantiza
       resultados futuros.
+    news:
+      atribucion: Titulares de sus fuentes, sin editar.
+      filtro_html: Filtradas a %{symbol} · últimos %{days} días
+      titulo: Noticias
     precio:
       titulo: Precio · %{currency} · %{days} días · cierre diario
     range_52w:
