@@ -1019,6 +1019,9 @@ es-MX:
   pwa:
     manifest:
       registrar: Registrar movimiento
+    update:
+      accion: Actualizar
+      aviso: Hay una versión nueva lista.
   settings:
     show:
       avisos_campana: Todo aviso llega a tu campana; eso no se apaga. El correo sí.

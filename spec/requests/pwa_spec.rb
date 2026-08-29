@@ -103,6 +103,14 @@ RSpec.describe "PWA", type: :request do
       end
     end
 
+    # Auto-activating swapped assets under a live tab; now the page asks first.
+    it "waits for the page to authorise the swap instead of skipping the queue" do
+      get "/service-worker.js"
+
+      expect(response.body).to include("SKIP_WAITING")
+      expect(response.body).not_to match(/^\s*self\.skipWaiting\(\);$/)
+    end
+
     it "pre-caches only assets that exist, since addAll rejects the whole install" do
       get "/service-worker.js"
       urls = response.body[/PRECACHE_URLS = \[(.*?)\]/m, 1].scan(%r{"(/[^"]+)"}).flatten
@@ -130,7 +138,26 @@ RSpec.describe "PWA", type: :request do
       get login_path
 
       expect(response.body).to match(%r{<link rel="manifest" href="/manifest\.json\?v=\d+">})
-      expect(response.body).to include('<meta name="theme-color" content="#5B6CFF">')
+      expect(response.body).to match(/<meta name="theme-color"[^>]*data-dark="#23242E"/)
+    end
+
+    # The status bar belongs to the chrome, so it tracks bg-surface; the splash
+    # and the task switcher are the brand's, and stay on the manifest colour.
+    it "paints the status bar from the surface token, not the brand one" do
+      get "/manifest.json"
+      expect(JSON.parse(response.body)["theme_color"]).to eq("#5B6CFF")
+
+      get login_path
+      expect(response.body).to include('content="#FFFFFF" data-light="#FFFFFF" data-dark="#23242E"')
+    end
+
+    it "declares a startup image for every device and scheme it ships" do
+      get login_path
+
+      IosSplash.each_image do |_device, _scheme, path|
+        expect(Rails.public_path.join(path.delete_prefix("/"))).to exist
+        expect(response.body).to include(%(href="#{path}?v=#{BrandAssets::VERSION}"))
+      end
     end
 
     # Without viewport-fit=cover every env(safe-area-inset-*) in the stylesheet
@@ -146,6 +173,15 @@ RSpec.describe "PWA", type: :request do
 
       expect(response.body).to include('<meta name="apple-mobile-web-app-title" content="Stockerly">')
       expect(response.body).to include('<meta name="mobile-web-app-capable" content="yes">')
+    end
+
+    it "ships the update prompt hidden, for the controller to reveal" do
+      login_as(create(:user))
+
+      get dashboard_path
+
+      expect(response.body).to include('data-controller="pwa-update"')
+      expect(response.body).to match(/data-controller="pwa-update" hidden/)
     end
 
     it "uses one cache-bust version across layout, manifest and service worker" do

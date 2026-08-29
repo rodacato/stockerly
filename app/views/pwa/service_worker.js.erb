@@ -31,7 +31,12 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE).then((cache) => cache.addAll(PRECACHE_URLS))
   );
-  self.skipWaiting();
+});
+
+// A new worker waits until the page says so, so a live tab can't have its
+// assets swapped mid-session. The pwa-update controller sends this.
+self.addEventListener("message", (event) => {
+  if (event.data === "SKIP_WAITING") self.skipWaiting();
 });
 
 // Activate: clean up old caches

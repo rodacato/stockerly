@@ -47,6 +47,12 @@ export default class ThemeController extends Controller {
     const wantsDark = mode === "dark" ||
       (mode === "system" && globalThis.matchMedia("(prefers-color-scheme: dark)").matches)
     document.documentElement.classList.toggle("dark", wantsDark)
+
+    // Repaints the standalone status bar; the head script does the same on load.
+    const themeColor = document.querySelector('meta[name="theme-color"]')
+    if (themeColor) {
+      themeColor.content = wantsDark ? themeColor.dataset.dark : themeColor.dataset.light
+    }
   }
 
   get currentMode() {
