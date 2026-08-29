@@ -185,5 +185,5 @@ Live examples belong in `conventions.md`; this ADR keeps the historical list.
 Surviving from the nine: `ListRecent`, `UpdatePreferences`, `ToggleRule`, `DestroyRule`,
 `RemoveFromWatchlist`, `Assets::ToggleStatus`.
 
-The "Deferred" items above were never picked up: `EnsureFreshFxRate` is still an
+~~The "Deferred" items above were never picked up: `EnsureFreshFxRate` is still an~~ **— moot since 2026-08-29:** `EnsureFreshFxRate` was deleted, not converted; nothing called it once FX reads became dated. See the amendment to [ADR-002](0002-trading-marketdata-boundary.md).
 `ApplicationUseCase`, and the follow-up audit of other trivial use cases has not been run.
