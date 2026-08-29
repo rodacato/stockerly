@@ -179,8 +179,8 @@ python3 -c "import re;rows=[l for l in open('design/DECISIONS.md') if re.match(r
 
 | | Findings | |
 |---|---:|---|
-| ✅ closed | **26** | shipped or measured away |
-| 🔴 open | **8** | X9 · X10 · X11 · X12 · CKP-1 · ACT-1 · ALR-1 · AJU-1 |
+| ✅ closed | **28** | shipped or measured away |
+| 🔴 open | **6** | ACT-1 · CKP-1 · ALR-1 · AJU-1 · X11 · X12 |
 | 🟡 open | **20** | a real gap inside a working screen |
 | ⚪ open | **17** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
@@ -207,14 +207,19 @@ that file's header carried the same two errors. D68–D70 were raised and resolv
 panel consultation, which is why the open count fell rather than rose. Run the third command above;
 do not adjust the old numbers.
 
-**What the nine reds are.** Five predate this review: `ACT-1` (the empty state's CSV and demo doors),
-`CKP-1` (`Movimientos`, un-gated by D42), `ALR-1` (`Confluencia` as a screen, gated on D3's engine),
-and `AJU-1` (retire `/profile` into the hub). Four are new and three of those share one root — the
-app keeps thirty days of price history (`X9`), so the indicators it already computes never run in
-their full mode, and the nightly writer discards the ones it does compute (`X10`). `CKP-8` is a
-product gap rather than a data one: the two references a buy-or-sell decision needs are both in the
-database and neither is on the screen that needs them. `X11` and `X12` are consistency defects across
-the three screens.
+**What the seven reds are.** Five predate the 2026-08-29 review: `ACT-1` (the empty state's CSV and
+demo doors), `CKP-1` (`Movimientos`, un-gated by D42), `ALR-1` (`Confluencia` as a screen, gated on
+D3's engine), and `AJU-1` (retire `/profile` into the hub). `CKP-8` is the product gap that review
+found — the two references a buy-or-sell decision needs are both in the database, the artboard draws
+all of them, and the code ships one row on the wrong tab. `X11` and `X12` are the consistency defects
+across the three screens; both are now **designed and awaiting code** (#431).
+
+**Two of that review's four reds closed the same week.** `X9` (thirty days of history) and `X10` (the
+nightly job discarding its factors) were fixed in #432 and #435. Worth recording what it took,
+because the first diagnosis was incomplete: widening the table was necessary and changed nothing on
+its own. Five-factor readings only began running once the calculator stopped gating three factors
+behind the strictest one's minimum, and once both writers stopped asking for a **calendar** window
+where the thresholds are counted in **rows** (`X19`).
 
 ## Severity
 
@@ -454,7 +459,7 @@ copy a reader has no way to catch. It is also the second place TD9 has to visit:
 Vantage would leave this row naming a provider the instance no longer has. 🐞 Fix it in `alerts.pen`
 in the same pass as the notification row above.
 
-### X9 🔴 Thirty days of price history — the floor every indicator stands on
+### X9 ✅ Thirty days of price history — fixed 2026-08-29
 
 [`BackfillPriceHistoryJob::DAYS`](../app/jobs/backfill_price_history_job.rb#L8) is `30`, and
 [`RecordPriceHistory`](../app/contexts/market_data/handlers/record_price_history.rb) adds one row a
@@ -492,6 +497,20 @@ downloads the asset's entire history, decades of it for a US large cap. Alpaca i
 (`fetch_daily_bars` takes a date range and paginates), but it requests `feed: "sip"`, which is not
 in every Alpaca plan; **that one is a fact to establish with a live call, not by reading.**
 
+**Amended 2026-08-29 — the fact was already established, in this repo, and I asked for a live call
+anyway.** [D19](DECISIONS.md) was verified against a Basic key on 2026-08-26 and records that `feed`
+**already defaults to `sip`**, that what a free plan loses is **recency, not venue**, and that the
+free tier carries **7+ years of history**. So no window this job would ever request is near a limit,
+and the "establish it with a live call" line above was asking for work the registry had already
+done. **That is D53's failure mode committed by the entry that cites D53** — a conclusion current
+with what had been looked at rather than with what exists.
+
+**Resolved 2026-08-29.** `DAYS` is 365 (D71), `MIN_HISTORIES` is 200 and converges, the yfinance
+ladder gained its bounded step, and the five-factor mode now actually runs — which took two further
+changes this entry did not foresee: the calculator's `>= 35` gate (it withheld `ema_crossover` and
+`volume_trend`, whose minimums are 21 and 20) and `X19`'s row window. Widening the table was
+necessary and, on its own, would have changed nothing.
+
 The chain itself is already right and already fires on add: `BackfillHistoryOnAssetCreation`
 listens for `AssetCreated`, and `attempt` walks the registry — Alpaca, then Yahoo for US;
 DataBursatil for BMV; CoinGecko for crypto. Only the window is wrong.
@@ -521,7 +540,7 @@ mathematical minimum is still refused rather than approximated — `EMA26` canno
 points, and a number there would be invented. `FACTORS` minus a reading's own keys is what it is
 missing.
 
-### X10 🔴 The nightly job computes every indicator factor and throws it away
+### X10 ✅ The nightly job computed every indicator factor and threw it away — fixed 2026-08-29
 
 `trend_scores` has a **`factors` jsonb column**, and `TrendScoreCalculator.calculate` returns
 `{ score:, label:, direction:, factors: }` where `factors` carries `rsi`, `momentum`, and — in
@@ -536,6 +555,12 @@ The job runs nightly at 11:30pm and `Asset#latest_trend_score` orders by `calcul
 each night the poorer row becomes the latest reading. The richer one is still in the table; nothing
 reads it either — `trend_scores` has exactly one consumer, `Alerts::Domain::AlertEvaluator`, and it
 reads `.score` only. No view has ever rendered a factor.
+
+**Fixed 2026-08-29.** The nightly job now mirrors the handler — same window, volumes passed,
+`factors` persisted — with a spec that fails when reverted. Measuring it turned up something worse
+than the discarded payload: on identical data the job scored **72** where the handler scored **85**,
+because its 30-day window kept it permanently in two-factor mode. The nightly row was not merely
+less detailed, it was a different number.
 
 **This is what corrects CKP-3 and [#306](https://github.com/rodacato/stockerly/issues/306).** That
 issue states the `Señales` block "would have to either compute the indicators at render time or
