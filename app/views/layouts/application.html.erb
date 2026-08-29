@@ -14,7 +14,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Stockerly">
     <meta name="application-name" content="Stockerly">
-    <meta name="theme-color" content="#5B6CFF">
+    <%# The chrome the app runs in, not the brand: this paints the status bar,
+        so it tracks bg-surface and the theme the user picked. The manifest
+        keeps #5B6CFF for the splash and the task switcher. %>
+    <meta name="theme-color" content="#FFFFFF" data-light="#FFFFFF" data-dark="#23242E">
 
     <%# Open Graph / Social Sharing %>
     <meta property="og:type" content="website">
@@ -41,6 +44,7 @@
     <link rel="icon" href="/favicon.svg?v=<%= BrandAssets::VERSION %>" type="image/svg+xml">
     <link rel="icon" href="/icon-192.png?v=<%= BrandAssets::VERSION %>" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=<%= BrandAssets::VERSION %>">
+    <%= render "shared/ios_splash" %>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,6 +63,8 @@
             (stored === "system" &&
               window.matchMedia("(prefers-color-scheme: dark)").matches);
           document.documentElement.classList.toggle("dark", wantsDark);
+          var themeColor = document.querySelector('meta[name="theme-color"]');
+          themeColor.content = wantsDark ? themeColor.dataset.dark : themeColor.dataset.light;
         } catch (_) { /* private mode / no storage — fall back to light */ }
       })();
     </script>

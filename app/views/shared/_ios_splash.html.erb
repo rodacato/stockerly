@@ -1,0 +1,3 @@
+<% IosSplash.each_image do |device, scheme, path| %>
+  <link rel="apple-touch-startup-image" media="<%= IosSplash.media_query(device, scheme) %>" href="<%= path %>?v=<%= BrandAssets::VERSION %>">
+<% end %>
