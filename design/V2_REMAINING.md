@@ -164,66 +164,49 @@ are shipped.
 
 ---
 
-## Where this stands — 2026-08-29
+## Where this stands
 
-Counted from this file, never incremented — the commands are printed for the same reason the other
-two tables print theirs. The third derives `DECISIONS.md`'s header, which lives here because that
-file's columns have been wrong seven times from being carried forward.
+**There is no count in this file any more, and that is deliberate.** The tally that used to sit here
+was data derived from the file it lived in, maintained by hand. It was wrong **seven times**, every
+time for the same reason — a column carried forward instead of re-derived — and on 2026-08-29 it
+conflicted in three consecutive pull requests, because every concurrent branch had to touch the one
+block. A number nobody can trust, that also blocks parallel work, is worse than no number.
+
+Run these instead. They are the same commands that used to produce the table, and their output is
+always current by construction:
 
 ```sh
 grep -cE '^### [A-Z]+[0-9-]'    design/V2_REMAINING.md   # every finding heading
 grep -oE '^### [^ ]+ [✅🔴🟡⚪]' design/V2_REMAINING.md | awk '{print $NF}' | sort | uniq -c
+grep -E '^### [^ ]+ 🔴' design/V2_REMAINING.md | sed 's/^### //' | cut -d' ' -f1   # which ones are red
 # DECISIONS: parse the verdict COLUMN, not the row — a resolved entry may cite an open Dn
 python3 -c "import re;rows=[l for l in open('design/DECISIONS.md') if re.match(r'^\| \*\*D\d+\*\* \|',l)];v=[re.search(r'[✅⏳]',l.strip().strip('|').split('|')[3]) for l in rows];print(len(rows),'entries',sum(1 for m in v if m and m.group()=='✅'),'resolved',sum(1 for m in v if m and m.group()=='⏳'),'open')"
 ```
 
-| | Findings | |
-|---|---:|---|
-| ✅ closed | **30** | shipped or measured away |
-| 🔴 open | **4** | CKP-1 · ACT-1 · ALR-1 · AJU-1 |
-| 🟡 open | **22** | a real gap inside a working screen |
-| ⚪ open | **15** | debt and hygiene, mostly `.pen` edits |
-| — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
+`TD2` and `TD5` carry no severity glyph, so the second command does not see them: `TD2` (hardcoded
+controller strings) is a real finding of its own, and `TD5` is a pointer to `CKP-7` rather than an
+independent one. Assigning them a severity is a call, not a count.
 
-**71 headings carry a glyph and 73 findings exist.** It opened at 53 with
-[#386](https://github.com/rodacato/stockerly/pull/386). **Sixteen were added on 2026-08-29 by one
-review** — `X9`–`X20` and `CKP-8`–`CKP-11`, from measuring the three screens that answer the daily
-question (Panorama, Activos, `/market/:symbol`) against their code rather than against their
-artboards. Before that: `KIT-5` out of building `KIT-3`, then `X8`, `TD9` and `TD10`. The two outside
-the tally are `TD2` (hardcoded controller strings, a real finding of its own) and `TD5` (a pointer to
-`CKP-7`, not an independent one); assigning them a severity is a call, not a count, so they are shown
-rather than absorbed.
+**What is worth keeping from the block this replaces**, because it is judgement rather than
+arithmetic:
 
-**The count went up, and that is the finding.** Every previous revision of this block reported the
-list shrinking. This one nearly doubled the open reds, because the review looked at a layer earlier
-audits had not: not *does the code match the artboard*, but *does the data the code reads exist and
-mean what the screen implies*. Four of the five new reds are data-shape defects invisible to a
-screen-by-screen audit — `X10` in particular describes a capability with a single non-visual
-consumer, which is exactly the kind of thing a walk through the views cannot see.
+**The count went up on 2026-08-29, and that was the finding.** Every previous revision reported the
+list shrinking. That review nearly doubled the open reds, because it looked at a layer earlier audits
+had not: not *does the code match the artboard*, but *does the data the code reads exist and mean
+what the screen implies*. Most of its new reds were data-shape defects invisible to a
+screen-by-screen audit — `X10` in particular described a capability whose only consumer was
+non-visual, which no walk through the views can see.
 
-**`DECISIONS.md`: 72 entries · 68 resolved · 4 open** — D3, D15, D33 and D64. **This block
-previously listed D55 and D57 as open and they are both resolved**, and gave a stale entry total;
-that file's header carried the same two errors. D68–D70 were raised and resolved on 2026-08-29 by a
-panel consultation, which is why the open count fell rather than rose. Run the third command above;
-do not adjust the old numbers.
+**Then all of them closed within the week, and none the way it was first described.** Widening the
+price-history table changed nothing until two further gates came out (`X9`). `CKP-8` turned out to be
+an artboard the code had shipped a third of, on the wrong tab, rather than a design that was missing.
+`X12` reversed direction entirely: filed as design-versus-code drift, it turns out to be **code
+leading design** — the reverse of D8 — which is why it stays open after its own fix shipped. And
+`X15`'s prescribed fix was measured and found to be a pessimisation, so it reopened rather than
+closing.
 
-**What the four reds are, and all four predate the 2026-08-29 review.** `ACT-1` (the empty state's
-CSV and demo doors), `CKP-1` (`Movimientos`, un-gated by D42), `ALR-1` (`Confluencia` as a screen,
-gated on D3's engine) and `AJU-1` (retire `/profile` into the hub).
-
-**Every red that review raised is closed or downgraded within the week** — `X9` and `X10` on the data
-side, `CKP-8` and `CKP-9` on the screen, `X11` on ordering, and `X12` dropped to 🟡 once its code
-shipped. None of them closed the way it was first described: widening the table changed nothing until
-two further gates came out, `CKP-8` turned out to be an artboard the code had shipped a third of, and
-`X12` reversed direction entirely — filed as design-versus-code drift, it turns out to be **code
-leading design**, which is why it stays open rather than closing with its own fix.
-
-**Two of that review's four reds closed the same week.** `X9` (thirty days of history) and `X10` (the
-nightly job discarding its factors) were fixed in #432 and #435. Worth recording what it took,
-because the first diagnosis was incomplete: widening the table was necessary and changed nothing on
-its own. Five-factor readings only began running once the calculator stopped gating three factors
-behind the strictest one's minimum, and once both writers stopped asking for a **calendar** window
-where the thresholds are counted in **rows** (`X19`).
+**That is the argument for keeping entries after resolution.** In every one of those cases the
+correction was worth more than the fix.
 
 ## Severity
 

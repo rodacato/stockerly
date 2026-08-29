@@ -22,7 +22,8 @@
 >
 > **Carrying a column forward is the bug.** Re-run the parse; never add to the old total. The
 > commands and their sibling for the findings file live in
-> [V2_REMAINING](V2_REMAINING.md)'s counting block.
+> [V2_REMAINING](V2_REMAINING.md)'s **Where this stands** section, which retired its own hand-kept
+> tally on 2026-08-29 for the reason this header keeps demonstrating.
 
 **How entries work.** A `Dn` is a finding logged when a call isn't purely mechanical. In a
 normal migration the design matches the code; here (a **redesign**) the design leads on visual
