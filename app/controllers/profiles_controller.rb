@@ -83,7 +83,7 @@ class ProfilesController < AuthenticatedController
   end
 
   def preference_params
-    params.permit(:email_digest, :urgent_email)
+    params.permit(:email_digest, :urgent_email, :push)
   end
 
   # Precompute the IdentityCard sidebar counts at the controller layer

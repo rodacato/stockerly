@@ -1,0 +1,22 @@
+<%# Rendered only where VAPID keys exist — a self-hoster who never set them up
+    gets no switch rather than one that silently does nothing. %>
+<div class="flex items-center gap-4 py-4"
+     data-controller="push-subscription"
+     data-push-subscription-vapid-key-value="<%= Notifications::Domain::WebPushDelivery.public_key %>"
+     data-push-subscription-url-value="<%= push_subscriptions_path %>"
+     data-push-subscription-preferences-url-value="<%= update_preferences_path %>">
+  <div class="min-w-0 flex-1">
+    <p class="text-sm font-semibold text-fg-default"><%= t("settings.show.push") %></p>
+    <p class="text-xs text-fg-subtle"><%= t("settings.show.push_desc") %></p>
+    <p class="mt-1 text-xs text-warning-fg" hidden
+       data-push-subscription-target="status"
+       data-denied="<%= t("settings.show.push_bloqueado") %>"
+       data-unsupported="<%= t("settings.show.push_no_disponible") %>"></p>
+  </div>
+  <button type="button" data-action="click->push-subscription#toggle"
+          aria-label="<%= t("settings.show.push") %>"
+          class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors">
+    <span data-push-subscription-target="track" class="pointer-events-none inline-block h-5 w-11 rounded-full bg-bg-muted transition-colors"></span>
+    <span data-push-subscription-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 translate-x-0 rounded-full bg-white shadow ring-0 transition-transform"></span>
+  </button>
+</div>

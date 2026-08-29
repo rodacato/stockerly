@@ -187,7 +187,7 @@ Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUs
 
 ### Models
 
-34 files in `app/models/` — 33 models plus `ApplicationRecord`. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
+37 files in `app/models/` — 36 models plus `ApplicationRecord`. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
 
 ### Frontend Stack
 

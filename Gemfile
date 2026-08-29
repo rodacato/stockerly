@@ -112,3 +112,6 @@ end
 
 gem "rotp", "~> 6.3"
 gem "rqrcode", "~> 3.2"
+
+# VAPID signing and the payload encryption the Web Push protocol requires
+gem "web-push", "~> 3.0"

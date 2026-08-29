@@ -249,6 +249,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.21.2)
+    jwt (3.2.0)
+      base64
     kamal (2.12.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -331,6 +333,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.4-x86_64-linux-musl)
       racc (~> 1.4)
+    openssl (4.0.2)
     ostruct (0.6.3)
     pagy (43.6.2)
       json
@@ -565,6 +568,9 @@ GEM
       actionview (>= 8.0.0)
       bindex (>= 0.4.0)
       railties (>= 8.0.0)
+    web-push (3.1.0)
+      jwt (~> 3.0)
+      openssl (>= 3.0)
     webmock (3.26.3)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -650,6 +656,7 @@ DEPENDENCIES
   turbo-rails
   tzinfo-data
   web-console
+  web-push (~> 3.0)
   webmock
   yabeda-prometheus
   yabeda-puma-plugin

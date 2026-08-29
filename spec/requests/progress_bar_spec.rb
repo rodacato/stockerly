@@ -13,7 +13,7 @@ RSpec.describe "Progress bar in app layout", type: :request do
       get dashboard_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include('data-controller="progress-bar"')
+      expect(response.body).to match(/data-controller="[^"]*\bprogress-bar\b/)
     end
 
     it "includes progress bar target element" do
