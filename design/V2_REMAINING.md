@@ -166,44 +166,54 @@ are shipped.
 
 ## Where this stands — 2026-08-29
 
-Counted from this file, never incremented — the command is printed for the same reason the other
-two tables print theirs.
+Counted from this file, never incremented — the commands are printed for the same reason the other
+two tables print theirs. The third derives `DECISIONS.md`'s header, which lives here because that
+file's columns have been wrong seven times from being carried forward.
 
 ```sh
 grep -cE '^### [A-Z]+[0-9-]'    design/V2_REMAINING.md   # every finding heading
 grep -oE '^### [^ ]+ [✅🔴🟡⚪]' design/V2_REMAINING.md | awk '{print $NF}' | sort | uniq -c
+# DECISIONS: parse the verdict COLUMN, not the row — a resolved entry may cite an open Dn
+python3 -c "import re;rows=[l for l in open('design/DECISIONS.md') if re.match(r'^\| \*\*D\d+\*\* \|',l)];v=[re.search(r'[✅⏳]',l.strip().strip('|').split('|')[3]) for l in rows];print(len(rows),'entries',sum(1 for m in v if m and m.group()=='✅'),'resolved',sum(1 for m in v if m and m.group()=='⏳'),'open')"
 ```
 
 | | Findings | |
 |---|---:|---|
 | ✅ closed | **23** | shipped or measured away |
-| 🔴 open | **4** | ACT-1 · CKP-1 · ALR-1 · AJU-1 |
-| 🟡 open | **16** | a real gap inside a working screen |
-| ⚪ open | **12** | debt and hygiene, mostly `.pen` edits |
+| 🔴 open | **9** | ACT-1 · CKP-1 · CKP-8 · ALR-1 · AJU-1 · X9 · X10 · X11 · X12 |
+| 🟡 open | **22** | a real gap inside a working screen |
+| ⚪ open | **17** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
 
-**55 headings carry a glyph and 57 findings exist.** It opened at 53 with
-[#386](https://github.com/rodacato/stockerly/pull/386). Four have been added since: `KIT-5` out of
-building `KIT-3`, then `X8`, `TD9` and `TD10` on 2026-08-29 — the last two found while doing other
-work rather than while auditing, which is the pattern worth noticing. Three moved to ✅: `DSC-3`
-(D56 measured away), `KIT-5` (answered by a design call), and `X8` (three artboards drawn, its
-fourth converted to D64). Closing by measurement is still the cheapest way this list shrinks. The first command anchors on the finding ID on purpose — a bare
-`grep -cE '^### '` also counts the one section heading that is not a finding, which is how the
-previous version of this block printed a command that did not reproduce its own number. The two outside the tally are `TD2` (hardcoded controller strings, a real
-finding of its own) and `TD5` (a pointer to `CKP-7`, not an independent one). **Assigning them a
-severity is a call, not a count** — so they are shown rather than absorbed, and the tally stays
-something the command above reproduces.
+**71 headings carry a glyph and 73 findings exist.** It opened at 53 with
+[#386](https://github.com/rodacato/stockerly/pull/386). **Sixteen were added on 2026-08-29 by one
+review** — `X9`–`X20` and `CKP-8`–`CKP-11`, from measuring the three screens that answer the daily
+question (Panorama, Activos, `/market/:symbol`) against their code rather than against their
+artboards. Before that: `KIT-5` out of building `KIT-3`, then `X8`, `TD9` and `TD10`. The two outside
+the tally are `TD2` (hardcoded controller strings, a real finding of its own) and `TD5` (a pointer to
+`CKP-7`, not an independent one); assigning them a severity is a call, not a count, so they are shown
+rather than absorbed.
 
-**`DECISIONS.md`: 64 entries · 60 resolved · 7 open** — D3, D15, D33, D55, D57, and D63/D64 raised
-2026-08-29. That file's own header had said `59 resolved · 3 open` against an actual `60 · 5`; every
-column has since been re-derived by script rather than carried forward, which is what had been
-going wrong. **This block was stale the same way** — it read `15 🟡` against `17`, and cited
-`DECISIONS.md` at figures two revisions old. Run the commands above; do not adjust the old numbers.
+**The count went up, and that is the finding.** Every previous revision of this block reported the
+list shrinking. This one nearly doubled the open reds, because the review looked at a layer earlier
+audits had not: not *does the code match the artboard*, but *does the data the code reads exist and
+mean what the screen implies*. Four of the five new reds are data-shape defects invisible to a
+screen-by-screen audit — `X10` in particular describes a capability with a single non-visual
+consumer, which is exactly the kind of thing a walk through the views cannot see.
 
-**What the four reds are.** `ACT-1` (the empty state's CSV and demo doors — two 4-filter cards owed),
-`CKP-1` (`Movimientos`, the last drawn screen with no code — un-gated by D42), `ALR-1` (`Confluencia`
-as a screen, gated on D3's engine), and `AJU-1` (retire `/profile` into the hub — needs a design pass
-before a slice).
+**`DECISIONS.md`: 71 entries · 63 resolved · 8 open** — D3, D15, D33, D64, and D68–D71 raised
+2026-08-29. **This block previously listed D55 and D57 as open and they are both resolved**, and gave
+a stale entry total; that file's header carried the same two errors. Run the third command above; do
+not adjust the old numbers.
+
+**What the nine reds are.** Five predate this review: `ACT-1` (the empty state's CSV and demo doors),
+`CKP-1` (`Movimientos`, un-gated by D42), `ALR-1` (`Confluencia` as a screen, gated on D3's engine),
+and `AJU-1` (retire `/profile` into the hub). Four are new and three of those share one root — the
+app keeps thirty days of price history (`X9`), so the indicators it already computes never run in
+their full mode, and the nightly writer discards the ones it does compute (`X10`). `CKP-8` is a
+product gap rather than a data one: the two references a buy-or-sell decision needs are both in the
+database and neither is on the screen that needs them. `X11` and `X12` are consistency defects across
+the three screens.
 
 ## Severity
 
@@ -442,6 +452,181 @@ caused it — a plausible sentence that is wrong on the fact it exists to report
 copy a reader has no way to catch. It is also the second place TD9 has to visit: retiring Alpha
 Vantage would leave this row naming a provider the instance no longer has. 🐞 Fix it in `alerts.pen`
 in the same pass as the notification row above.
+
+### X9 🔴 Thirty days of price history — the floor every indicator stands on
+
+[`BackfillPriceHistoryJob::DAYS`](../app/jobs/backfill_price_history_job.rb#L8) is `30`, and
+[`RecordPriceHistory`](../app/contexts/market_data/handlers/record_price_history.rb) adds one row a
+day going forward. No job prunes the table, so a series does grow — but an asset added last month
+has about thirty bars, and that is the number every downstream calculation actually sees.
+
+Measured against what the app already computes:
+
+| Needs | Bars | Available |
+|---|---:|---|
+| RSI(14) | 15 | ✅ |
+| Bollinger 20×2σ | 20 | ✅ |
+| MACD(12,26,9) | 35 | ❌ |
+| SMA50 | 50 | ❌ |
+| SMA200 | 200 | ❌ |
+| 52-week range | ~252 | ❌ locally |
+
+**The consequence is not theoretical.** `TrendScoreCalculator` switches to its five-factor blend at
+**≥35 closes** and otherwise falls back to RSI + momentum
+([`trend_score_calculator.rb:22`](../app/contexts/market_data/domain/trend_score_calculator.rb#L22)).
+Its two callers ask for `recent(30)` and `recent(50)` against a table holding ~30 — so **MACD, the
+EMA crossover and the volume factor have never once been computed in production.** The code exists,
+it has specs, and it has never run on real data. That is X10's other half.
+
+**Widening it has a trap that must be fixed in the same change.**
+[`BackfillMissingHistoriesJob::MIN_HISTORIES`](../app/jobs/backfill_missing_histories_job.rb#L10) is
+`7`: the weekly orchestrator only re-fetches assets holding **fewer than seven rows**. Raise `DAYS`
+alone and new assets get the wider window while every asset already tracked stays at thirty
+permanently. The threshold has to move with the window.
+
+**And one gateway needs a step added.**
+[`YfinanceGateway::PERIODS`](../app/contexts/market_data/gateways/yfinance_gateway.rb#L20) tops out
+at `365 => "1y"` and `period_for` falls through to `"max"` above that — so asking for 400 days
+downloads the asset's entire history, decades of it for a US large cap. Alpaca is unaffected
+(`fetch_daily_bars` takes a date range and paginates), but it requests `feed: "sip"`, which is not
+in every Alpaca plan; **that one is a fact to establish with a live call, not by reading.**
+
+The chain itself is already right and already fires on add: `BackfillHistoryOnAssetCreation`
+listens for `AssetCreated`, and `attempt` walks the registry — Alpaca, then Yahoo for US;
+DataBursatil for BMV; CoinGecko for crypto. Only the window is wrong.
+
+**One gateway will not take the wider window, and it was found by making the change rather than by
+planning it.** `DAYS` feeds *every* historical source.
+[`CoinGeckoGateway#fetch_historical`](../app/contexts/market_data/gateways/coingecko_gateway.rb#L54)
+passes `days` straight through as a `market_chart` query param, and CoinGecko's free and demo tiers
+cap that range at **365 days** — so a 400-day request is expected to be refused for the one asset
+class it serves. Crypto backfill would start failing where it currently succeeds. **This is D71**,
+because the fix is a shape decision and not a constant: either each gateway clamps to its own
+ceiling, or `DAYS` becomes per-asset-type. Alpaca and DataBursatil take `(from, to)` ranges and are
+unaffected.
+
+### X10 🔴 The nightly job computes every indicator factor and throws it away
+
+`trend_scores` has a **`factors` jsonb column**, and `TrendScoreCalculator.calculate` returns
+`{ score:, label:, direction:, factors: }` where `factors` carries `rsi`, `momentum`, and — in
+five-factor mode — `macd`, `volume_trend` and `ema_crossover`. Two writers disagree about it:
+
+| Writer | Window | Volumes | Persists `factors` |
+|---|---|---|---|
+| [`RecalculateTrendScoreOnPriceUpdate`](../app/contexts/market_data/handlers/recalculate_trend_score_on_price_update.rb) | `recent(50)` | yes | ✅ |
+| [`CalculateTrendScoresJob`](../app/jobs/calculate_trend_scores_job.rb#L14) | `recent(30)` | no | ❌ omitted from `create!` |
+
+The job runs nightly at 11:30pm and `Asset#latest_trend_score` orders by `calculated_at DESC`, so
+each night the poorer row becomes the latest reading. The richer one is still in the table; nothing
+reads it either — `trend_scores` has exactly one consumer, `Alerts::Domain::AlertEvaluator`, and it
+reads `.score` only. No view has ever rendered a factor.
+
+**This is what corrects CKP-3 and [#306](https://github.com/rodacato/stockerly/issues/306).** That
+issue states the `Señales` block "would have to either compute the indicators at render time or
+persist a daily snapshot, which is a new table and a new job". **The table exists, the column
+exists, the nightly job exists, and the calculator already produces every value the block needs.**
+What is missing is that one writer drops the payload and no reader was ever written. The
+architectural discovery the issue asks for is largely already answered by the schema.
+
+### X11 🔴 The same asset is ordered three different ways on three screens
+
+| Screen | Order | Source |
+|---|---|---|
+| Activos · Cartera | `order(:id)` — insertion order, i.e. none | [`load_assets.rb:44`](../app/contexts/trading/use_cases/load_assets.rb#L44) |
+| Activos · Watchlist | `created_at: :desc` | same file |
+| Panorama · Radar | maturity first, then `-change.abs` | [`assemble_panorama.rb:117`](../app/contexts/trading/use_cases/assemble_panorama.rb#L117) |
+
+The Radar's ordering is deliberate and defensible — it is a "what moved today" list. The other two
+are not orderings at all, and no screen offers a control. Six holdings appear in three sequences
+across three screens, so positional memory of your own portfolio is impossible to form. **D68.**
+
+### X12 🔴 Two row components put different meanings in the same visual slot
+
+[`_asset_row`](../app/views/components/_asset_row.html.erb) ends in `money_cell(amount)` — **what you
+hold is worth**. [`_watch_row`](../app/views/components/_watch_row.html.erb) ends in
+`format_currency_mx(asset.current_price)` — **what one unit costs**. Same position, same font, same
+weight, different kind of number.
+
+On Activos the two never meet: they are separate tabs. **On the Panorama they are interleaved in one
+list** — [`dashboard/show.html.erb`](../app/views/dashboard/show.html.erb) renders `asset_row` for a
+`:position` entry and `watch_row` for a `:watchlist` entry inside the same Radar, with nothing
+distinguishing them. A right-aligned column where `$48,200` is a holding and `$182.50` is a quote is
+a misreading waiting to happen.
+
+The same discontinuity runs vertically: Activos · Cartera never shows a price, and the asset
+detail's `Análisis` tab never shows your amount, so the leading number changes meaning as you
+navigate between them. **D69.**
+
+### X13 🟡 "Hoy" is two different numbers on the same screen
+
+Rows use `asset.change_percent_24h` — a rolling 24-hour figure from the provider.
+[`_patrimonio_strip`](../app/views/dashboard/_patrimonio_strip.html.erb) uses `summary.day_gain`,
+computed by `PortfolioSummary`. Both are labelled *hoy* and rendered within one viewport of each
+other on the Panorama, and they have no reason to agree — a rolling window and a calendar day are
+different questions.
+
+### X14 🟡 The sparkline and the chart disagree about what window they draw
+
+[`sparkline_heights`](../app/helpers/sparkline_helper.rb#L5) takes **7 points**; the asset detail's
+chart takes **30 days**. Both are silhouettes of the same series with no scale, so a row and the
+screen it links to imply different shapes of the same asset. Neither states its window.
+
+### X15 ⚪ `sparkline_heights` runs one query per row
+
+[`sparkline_helper.rb:5`](../app/helpers/sparkline_helper.rb#L5) calls `PriceSeries.for(asset)` from
+inside the row partial, so the Radar issues six and Activos issues one per holding. `PriceSeries`
+does have a `loaded?` path that reuses an eager-loaded association — neither caller preloads
+`asset_price_histories`, so it never takes it. Invisible at ten assets; still the wrong shape.
+
+### X16 ⚪ `trend_scores` grows without bound
+
+`RecalculateTrendScoreOnPriceUpdate` is subscribed to price updates and `create!`s a row each time.
+High-priority stocks sync every 5 minutes ([`recurring.yml`](../config/recurring.yml)), and the
+nightly job adds one more per asset. The only cleanup entry in `recurring.yml` is
+`cleanup_old_logs`, which covers `SystemLog`. Nothing prunes this table.
+
+### X17 ⚪ The CSP still authorizes TradingView; the widget it was for is gone
+
+[`content_security_policy.rb`](../config/initializers/content_security_policy.rb) permits
+`https://s3.tradingview.com` in `script_src`, `https://*.tradingview.com` plus its websocket in
+`connect_src`, and `frame_src`. D2 rejected the iframe and CODE_CHANGES §3b records the widget's
+removal; the permissions stayed. Either they are removed or they are used deliberately — **D66
+decides which**, and this entry closes with it.
+
+### X18 ⚪ Provenance and the `≈` conversion exist only on the detail
+
+[`_asset_price`](../app/views/components/_asset_price.html.erb) shows the approximate value in your
+preferred currency and a caption naming which provider supplied the number. Neither row component
+carries either, and the watchlist mixes currencies without converting (D10 is why — every value
+names its own). Consistent with D10; worth a deliberate call rather than an omission, since
+"where did this number come from" is the one question this product's screens exist to answer.
+
+### X19 🟡 `PriceSeries#recent(n)` counts calendar days; both callers read it as rows
+
+[`recent(days)`](../app/contexts/market_data/queries/price_series.rb) is
+`since(days.days.ago.to_date)` — a **date window**, not a row count. Its only two callers are the two
+`trend_scores` writers, and both use it to satisfy a threshold expressed in *closes*:
+`TrendScoreCalculator` needs **≥ 35 closes** for five-factor mode and `volume_trend` needs ≥ 20
+volumes.
+
+A stock trades about five days in seven, so `recent(50)` yields roughly **35 rows** — sitting exactly
+on the threshold, where two market holidays inside the window silently drop the asset back to the
+two-factor blend. Crypto trades seven days a week and clears it comfortably. **The same call returns
+a different mode depending on the asset class and the calendar**, and nothing reports which one ran.
+
+`PriceSeries#latest(n)` already exists and takes *n rows*. Switching the two writers to it is the
+fix; it is a behaviour change to both and belongs in its own commit, not folded into X10.
+
+**Found by fixing X10, not by auditing** — the same pattern as `TD9`/`TD10`. Aligning the two
+writers put both on the same call and made the ambiguity visible; reading either one alone had not.
+
+### X20 ⚪ A missing volume is scored as zero
+
+`volume` is nullable on `asset_price_histories`, and both `trend_scores` writers do
+`pluck(:volume).map(&:to_f)` — which turns `nil` into `0.0` rather than excluding the row. A gap in
+volume data therefore drags `volume_trend` toward a reading it did not earn, instead of degrading to
+the factor being absent. Pre-existing and shared by both writers; noted, not fixed, because the
+honest alternative (drop the factor when volumes are incomplete) is a scoring decision.
 
 # Kit → code
 
@@ -759,7 +944,12 @@ did not get it.
 
 `@price_histories` is already loaded; the range control is a filter over data in hand, not new data.
 
-### CKP-3 🟡 `Señales` and `Más análisis` — the two blocks the data cannot support (#306)
+**Amended 2026-08-29 — the filter has nothing to filter.** `1A` and `Máx` are the two ranges the
+artboard leads with, and X9 measures the table at ~30 bars. The control is buildable today and
+would render four identical charts and a fifth. It is gated on X9, not on effort — and the
+`O/H/L/C/Vol` strip is unaffected: `asset_price_histories` carries all five columns per row.
+
+### CKP-3 🟡 `Señales` and `Más análisis` — blocked on a reader, not on a schema (#306)
 
 The artboard's `Señales` block reads *current* state: `RSI (14) 72 · sobrecomprado`, the moving-average
 sentence, the Bollinger sentence, distance to the 52-week range. `Más análisis` adds `DISPARADORES`
@@ -772,6 +962,28 @@ labelled `discovery-needed`, and it is the one genuinely blocked item in the coc
 The code ships `_recent_observations` (*Observaciones notables*, the event log the artboard also
 draws) and `_confluence` — so the screen is not empty where `Señales` would go, it is one block
 shorter.
+
+**Amended 2026-08-29 — the paragraph above is right about `TechnicalObservation` and wrong about the
+conclusion it draws, and the heading changed with it.** Everything said about events-not-state holds:
+`persist_if_fresh` really does apply a weekly cooldown, and `indicator_snapshot` really is the reading
+at the crossing. What does not hold is *"so the block cannot be rendered from what exists"* — that
+reasoning searched `technical_observations` and stopped. **`trend_scores` is a daily indicator-snapshot
+table and it has existed all along**: a `factors` jsonb column, a nightly `CalculateTrendScoresJob`, and
+a calculator that already produces RSI, momentum, MACD, the EMA crossover and a volume factor. X10 has
+the measurement.
+
+So #306's Definition of Done asks for a decision — *"computed per request, or a daily snapshot with its
+own job"* — that the schema answered before the issue was written. What is actually owed is smaller and
+more specific: **one writer stops dropping its payload (X10), the window gets wide enough for the
+five-factor mode to ever run (X9), and someone writes the reader.** The staleness requirement in the DoD
+survives intact and matters more here than it did — `factors` is dated by `calculated_at`, and a
+three-day-old MACD presented in the present tense is exactly what ADR-014's panel warned about.
+
+**How this was missed is the useful part.** The issue was written while building the Análisis scroll,
+from the observations table outward, and `trend_scores` was never in frame because its only consumer is
+`Alerts::Domain::AlertEvaluator` reading `.score` — no view has ever touched it. A capability with one
+non-visual reader is invisible to an audit that walks screens. That is the same shape as D53: the
+conclusion was current with what had been looked at, not with what exists.
 
 ### CKP-4 🟡 `Mi posición` is missing `Rendimiento` and `Cerrar posición` (#301)
 
@@ -796,6 +1008,11 @@ Panorama artboard's rows read `neutral · estirado · renta fija` against rows t
 
 Same root as CKP-3: no persisted current state. **One fix serves both.**
 
+**Amended 2026-08-29 — the shared root is real and it is not what this said.** Per X10 the state
+*is* persisted, in `trend_scores.factors`, which carries a `label` and a `direction` per asset per
+day — the two fields a row chip would render. The semáforo's third light stays gated on D3's
+engine; the **chip does not**, and it was blocked on a taxonomy that turns out to be a column.
+
 ### CKP-6 ⚪ The brief says the Consolidado's comparison engine is build-gated. It shipped.
 
 `Brief · Cockpit` still reads *"its two comparison cards are designed in full but their engine is
@@ -818,6 +1035,78 @@ inline `.where(...).order(...).limit(3)` for the rules card, and `trigger_fundam
 None of it crosses an ADR-002 boundary (checked: no context reaches into another's models or
 gateways anywhere in the app). It is the one controller that did not move its assembly into the use
 case that already exists for it.
+### CKP-8 🔴 The asset detail has no anchor — the two references a decision needs are both present and neither is legible
+
+The screen answers *what is this asset doing*. It does not answer *what is it doing *relative to
+me**, which is the question that precedes every buy and every sell. Both references exist in the
+database already:
+
+- **What you hold** — `position.avg_cost` is rendered in
+  [`_position_summary`](../app/views/market/_position_summary.html.erb), in the third cell of a
+  three-column grid, on the **`Mi posición` tab**. The current price lives on the *other* tab. So
+  "am I above or below my own cost" costs a tab switch and a subtraction. For an owner who averages
+  down deliberately, that is the primary reading of the screen, and it is the one arrangement that
+  makes it hardest to take.
+- **What you only watch** — `alert_rules` carries `condition` + `threshold_value`, so *"tell me if
+  it drops below 150"* is already settable and already fires.
+  [`_asset_rules`](../app/views/market/_asset_rules.html.erb) lists those rules **as prose with an
+  active/paused pill** and never renders the distance to the threshold. The watchlist rows do not
+  mention them at all. The anchor exists as data and is drawn as text.
+
+Note what `entry_price` is and is not. `watchlist_items.entry_price` is captured in a
+`before_create` from `asset.current_price` and surfaces as *"sigues +X%"*
+([`assets_helper.rb:45`](../app/helpers/assets_helper.rb#L45)). That is **the price when you started
+watching** — a reference point, not a target. `_asset_rules`'s own comment says *"no target price
+exists anywhere in the code"*, and it is right: the alert threshold is the closest thing, and it was
+never read as one.
+
+**No migration is implied.** Holding → `avg_cost`; watching → the active rule's `threshold_value`;
+both → position within the 52-week range (CKP-9). Three anchors, three columns that already exist.
+
+### CKP-9 🟡 The 52-week range is registered, filled by two providers, and hidden in an accordion
+
+`fifty_two_week_high` and `fifty_two_week_low` are registered metrics
+([`metric_definitions.rb:128`](../app/contexts/market_data/domain/metric_definitions.rb#L128)) in
+category `:risk`, populated by `AlphaVantageGateway` and `FmpGateway`. They are **not** in
+`SUMMARY_METRICS` ([`fundamentals_helper.rb:76`](../app/helpers/fundamentals_helper.rb#L76)), so they
+appear only behind *Ver todos* — and there as two bare numbers rather than as **where the price sits
+between them**, which is the reading that answers *"is this expensive right now"*.
+
+[#306](https://github.com/rodacato/stockerly/issues/306) already names this as its cheap half,
+buildable without any of that issue's blocked work. Two caveats it does not name: **crypto has no
+values** (CoinGecko does not fill them, and `ath_price` is a different question), and there is **no
+local fallback** until X9 lands — a 52-week range computed from thirty bars would be a lie with a
+number's formatting.
+
+### CKP-10 🟡 Fundamentals are ten bare numbers behind a popover that costs ten clicks
+
+`SUMMARY_METRICS` is a fixed ten, identical for every equity, with the remaining ~26 in a *Ver
+todos* accordion. [`_metric_card`](../app/views/market/_metric_card.html.erb) already carries a
+per-metric teaching popover with *¿Qué mide?* and *¿Cómo leerlo?* — good copy, and it asks the
+reader to open it ten times to read one screen. The owner reports not knowing how to use the block
+at all, which is the honest measurement of that design.
+
+D36 drew the line that constrains the fix: interpretive chips are built **only where the threshold
+can be written down and defended**, because *"a chip that invents a threshold is worse than no chip
+— it reads as analysis and is a guess"*. That rules out *caro* / *barato*. It does not rule out
+**comparison against the metric's own history**, which is a fact rather than a judgement, and
+[`PeHistoryCalculator`](../app/contexts/market_data/domain/pe_history_calculator.rb) already computes
+exactly that shape for P/E over 90 days. **D70.**
+
+### CKP-11 🟡 `news_articles` is synced every 30 minutes and read by nobody
+
+`SyncNewsJob` runs every 30 minutes in production ([`recurring.yml`](../config/recurring.yml)) and
+`SyncArticles` writes rows carrying `related_ticker`. The table has a dedicated index on
+`(related_ticker, published_at)` — built for exactly one query, *"news for this symbol"* — and that
+query does not exist anywhere in the app. Grepped: the only reader of `NewsArticle` is the writer.
+Descubrir does not use it either; its single mention of news is in a comment.
+
+So the instance spends provider quota every half hour filling a table with no consumer, while the
+asset detail has no answer to *"did something happen that I missed"*. D31 deleted `/news` as a
+listing and was right to — a river of headlines is the bubble Descubrir exists to leave. **Per-symbol
+news on the asset detail is a different screen and a different question**, and the schema was already
+shaped for it.
+
 
 ---
 
