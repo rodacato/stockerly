@@ -27,11 +27,8 @@
   --color-border-default:    #E7E3D9;
   --color-border-strong:     #D6D1C4;
 
-  /* --- Semantic — Lumen positive/negative/warning, exposed under both
-     the canonical Lumen names AND the legacy success/error/warning/info
-     aliases so existing view code (bg-success, text-error-fg, etc.) still
-     resolves. -fg variants per tokens.md §4.1 WCAG-AA pattern, tuned to
-     pass 4.5:1 on white. ---------------------------------------------- */
+  /* --- Semantic — Lumen positive/negative/warning/info. -fg variants per
+     tokens.md §4.1 WCAG-AA pattern, tuned to pass 4.5:1 on white. ------ */
   --color-positive:          #10B981;
   --color-positive-bg:       #ECFDF5;
   --color-positive-fg:       #047857;
@@ -44,20 +41,6 @@
   --color-info:              #5B6CFF;   /* alias of primary per tokens.md §1.1 */
   --color-info-bg:           #EEF0FF;
   --color-info-fg:           #4757E3;
-
-  /* Legacy semantic aliases — same hex, old names. Eliminate when the
-     codebase converges on positive/negative/warning/info naming. */
-  --color-success:           #10B981;
-  --color-success-fg:        #047857;
-  --color-error:             #F43F5E;
-  --color-error-fg:          #BE123C;
-
-  /* Legacy structural aliases — pre-Lumen names kept to avoid a wide
-     view sweep this PR. Migration to the canonical names happens
-     opportunistically in subsequent S11 design completions. */
-  --color-secondary:         #0F172A;
-  --color-background-light:  #FAFAF7;
-  --color-background-dark:   #1A1B23;
 
   /* --- Overlay + shape — from the kit (0.3.0 scrim, D1 radii). ---------- */
   --color-scrim:             #0F172A99;
@@ -130,18 +113,6 @@
     --color-info:              #7B89FF;
     --color-info-bg:           #2A2E55;
     --color-info-fg:           #9098FF;
-
-    /* Legacy aliases — dark variants. -fg collapses to the base token
-       in dark mode (saturated mid-tone already passes contrast on
-       dark slate per tokens.md §4.1). */
-    --color-success:           #34D399;
-    --color-success-fg:        #34D399;
-    --color-error:             #FB7185;
-    --color-error-fg:          #FB7185;
-
-    --color-secondary:         #F8FAFC;
-    --color-background-light:  #1A1B23;
-    --color-background-dark:   #1A1B23;
 
     --color-chart-1:           #7B89FF;
     --color-chart-2:           #5CC8F5;
