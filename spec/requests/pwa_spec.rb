@@ -36,6 +36,36 @@ RSpec.describe "PWA", type: :request do
       expect(maskable).not_to be_empty
       expect(plain.map { |icon| icon["src"] }).not_to include(*maskable.map { |icon| icon["src"] })
     end
+
+    # Android mints the home-screen icon from a raster source; an SVG-only
+    # maskable entry silently falls back to the plain icon in a white circle.
+    it "offers the maskable and monochrome icons as PNG, which Android requires" do
+      get "/manifest.json"
+      icons = JSON.parse(response.body)["icons"]
+
+      %w[maskable monochrome].each do |purpose|
+        matching = icons.select { |icon| icon["purpose"] == purpose }
+        expect(matching).not_to be_empty
+        expect(matching.map { |icon| icon["type"] }).to all(eq("image/png"))
+      end
+    end
+
+    it "points every shortcut at a route that resolves" do
+      get "/manifest.json"
+      shortcuts = JSON.parse(response.body)["shortcuts"]
+
+      expect(shortcuts).not_to be_empty
+      shortcuts.each do |shortcut|
+        expect(shortcut["name"]).to be_present
+        expect { Rails.application.routes.recognize_path(shortcut["url"]) }.not_to raise_error
+      end
+    end
+
+    it "is revalidated on every load instead of inheriting the one-year asset cache" do
+      get "/manifest.json"
+
+      expect(response.headers["cache-control"]).to include("must-revalidate")
+    end
   end
 
   describe "service-worker.js" do
@@ -45,6 +75,14 @@ RSpec.describe "PWA", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("CACHE_VERSION")
       expect(response.body).to include("stockerly-static")
+    end
+
+    # A far-future max-age here is what stranded production on a worker from
+    # six days before the brand bump: the edge kept answering with the old file.
+    it "is revalidated on every load instead of inheriting the one-year asset cache" do
+      get "/service-worker.js"
+
+      expect(response.headers["cache-control"]).to include("must-revalidate")
     end
 
     it "includes font cache for Google Fonts" do
@@ -60,7 +98,7 @@ RSpec.describe "PWA", type: :request do
       get "/service-worker.js"
 
       expect(response.body).to include("/offline.html")
-      %w[/favicon.svg /icon-192.png /icon-512.png /apple-touch-icon.png].each do |asset|
+      %w[/favicon.svg /icon-192.png /icon-512.png /icon-maskable-512.png /apple-touch-icon.png].each do |asset|
         expect(response.body).to include("#{asset}?v=#{version}")
       end
     end
@@ -93,6 +131,21 @@ RSpec.describe "PWA", type: :request do
 
       expect(response.body).to match(%r{<link rel="manifest" href="/manifest\.json\?v=\d+">})
       expect(response.body).to include('<meta name="theme-color" content="#5B6CFF">')
+    end
+
+    # Without viewport-fit=cover every env(safe-area-inset-*) in the stylesheet
+    # resolves to 0, and the bottom nav sits under the iPhone home indicator.
+    it "opts into the display cutout so the safe-area insets are non-zero" do
+      get login_path
+
+      expect(response.body).to include("viewport-fit=cover")
+    end
+
+    it "names the installed app so iOS does not fall back to the page title" do
+      get login_path
+
+      expect(response.body).to include('<meta name="apple-mobile-web-app-title" content="Stockerly">')
+      expect(response.body).to include('<meta name="mobile-web-app-capable" content="yes">')
     end
 
     it "uses one cache-bust version across layout, manifest and service worker" do

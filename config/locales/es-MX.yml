@@ -1016,6 +1016,9 @@ es-MX:
       sin_tc: sin TC
       titulo: Historial
       valores_en: Valores en %{currency}
+  pwa:
+    manifest:
+      registrar: Registrar movimiento
   settings:
     show:
       avisos_campana: Todo aviso llega a tu campana; eso no se apaga. El correo sí.
