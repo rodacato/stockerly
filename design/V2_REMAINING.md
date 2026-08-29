@@ -197,16 +197,24 @@ what the screen implies*. Most of its new reds were data-shape defects invisible
 screen-by-screen audit — `X10` in particular described a capability whose only consumer was
 non-visual, which no walk through the views can see.
 
-**Then all of them closed within the week, and none the way it was first described.** Widening the
-price-history table changed nothing until two further gates came out (`X9`). `CKP-8` turned out to be
-an artboard the code had shipped a third of, on the wrong tab, rather than a design that was missing.
-`X12` reversed direction entirely: filed as design-versus-code drift, it turns out to be **code
-leading design** — the reverse of D8 — which is why it stays open after its own fix shipped. And
-`X15`'s prescribed fix was measured and found to be a pessimisation, so it reopened rather than
-closing.
+**Then all of them closed within the week, and not one the way it was first described.**
 
-**That is the argument for keeping entries after resolution.** In every one of those cases the
-correction was worth more than the fix.
+- **`X9`** — widening the price-history table changed nothing on its own. Five-factor readings only
+  began running once the calculator stopped gating three factors behind the strictest one's minimum,
+  and once both writers stopped asking for a *calendar* window where every threshold is counted in
+  *rows*.
+- **`CKP-8`** — an artboard the code had shipped a third of, on the wrong tab, rather than a design
+  that was missing.
+- **`X12`** — filed as code inventing a screen the design never drew. **The artboard's own subtitle
+  had specified that screen all along**, and it was the finding that had drifted, not the code.
+- **`X15`** — the prescribed fix was built, measured, found to be a pessimisation, and reverted. It
+  closed later by a different mechanism entirely.
+- **`X13`** — the filed defect turned out to be the weak one, sitting on top of a real one: a column
+  that carries a different measure depending on which provider answered. It was rewritten rather than
+  fixed, and stays open.
+
+**That is the argument for keeping entries after they resolve.** In every one of those the correction
+was worth more than the fix — and in two of them the entry itself was the thing that was wrong.
 
 ## Severity
 
@@ -575,7 +583,7 @@ alert threshold**, as a percentage so USD and MXN rows compare without convertin
 what turns it from a list into a queue. The Radar is unchanged. No sort control: fix the default
 first (C6 Esther).
 
-### X12 🟡 Two row components put different meanings in the same slot — code fixed, the artboard has not accepted the screen
+### X12 ✅ Two row components put different meanings in the same slot — closed 2026-08-29
 
 [`_asset_row`](../app/views/components/_asset_row.html.erb) ends in `money_cell(amount)` — **what you
 hold is worth**. [`_watch_row`](../app/views/components/_watch_row.html.erb) ends in
@@ -614,7 +622,25 @@ design has never drawn. Either the artboard gains the mixed radar or the code st
 that is a design call, and until it is taken this entry stays open as the record that code led design
 here — the reverse of D8.
 
-### X13 🟡 "Hoy" is two different numbers on the same screen
+**Closed 2026-08-29 (#445), and the call never had to be made — the premise above is wrong.** The
+Panorama's radar subtitle has read `De tu cartera y watchlist · con actividad hoy · valores en MXN`
+since it was drawn, on both artboards, while every row was a holding. The design had **specified**
+the mixed radar in copy and never drawn the row: an incomplete artboard, not a contradiction, and the
+code was following the brief the whole time.
+
+The row is drawn now, as an `AssetRow` instance per D72 rather than a second component. What tells it
+from a holding is the ISO prefix (`USD 248.50`) that D10 keeps on an unconverted price, where a
+holding's value drops the symbol. **That is quiet, and it is the honest limit of the fix** — the
+stronger signal is a bookmark glyph, which this flow already uses on the asset-detail header, but
+`AssetRow`'s master has eleven live instances and restructuring a master with live instances is the
+one operation the Pencil guardrails name. If the prefix proves too subtle in use, that slot is the
+follow-up and it is a kit-level change.
+
+**Worth keeping: this entry was wrong in the interesting direction.** It read the gap as code
+inventing a screen, while the artboard's own subtitle said otherwise. A finding that names which side
+drifted should read the copy on that side first.
+
+### X13 🟡 `change_percent_24h` is not one quantity — it is whichever the provider had
 
 Rows use `asset.change_percent_24h` — a rolling 24-hour figure from the provider.
 [`_patrimonio_strip`](../app/views/dashboard/_patrimonio_strip.html.erb) uses `summary.day_gain`,
@@ -622,13 +648,46 @@ computed by `PortfolioSummary`. Both are labelled *hoy* and rendered within one 
 other on the Panorama, and they have no reason to agree — a rolling window and a calendar day are
 different questions.
 
-### X14 🟡 The sparkline and the chart disagree about what window they draw
+**Rewritten 2026-08-29 — measuring this found the filed defect was the wrong one, with a bigger one
+underneath.** The paragraph above is weak: the strip's figure is the **portfolio's** day and a row's
+is an **asset's**, different scopes nobody tries to reconcile. Relabelling would have fixed nothing,
+so nothing was built.
+
+**What the measurement found instead:** `assets.change_percent_24h` holds a different measure
+depending on which gateway answered.
+
+| Provider | What it writes there |
+|---|---|
+| Alpaca | `(close − open) / open` — **the session's move** |
+| CoinGecko | `price_change_percentage_24h` — **a rolling 24 hours** |
+| Finnhub | `dp` — previous close to current |
+| DataBursatil | the venue's own `c` field |
+
+One column, named for 24 hours, carrying **at least three measures** — and because the registry falls
+back between providers, **the same asset can change measure between syncs with nothing recording it.**
+Every screen that renders a change percentage renders this.
+
+Normalising at the gateway boundary is the real fix and is not free: Alpaca cannot supply a
+previous-close comparison without a second call. It needs a decision about what the column promises,
+and it deserves an ADR rather than a quiet patch, because it changes what a number on every screen
+means.
+
+### X14 ✅ The sparkline and the chart disagreed about their window — closed 2026-08-29
 
 [`sparkline_heights`](../app/helpers/sparkline_helper.rb#L5) takes **7 points**; the asset detail's
 chart takes **30 days**. Both are silhouettes of the same series with no scale, so a row and the
 screen it links to imply different shapes of the same asset. Neither states its window.
 
-### X15 🟡 `sparkline_heights` runs one query per row — and the obvious fix is worse
+**Closed 2026-08-29 (#447), asymmetrically and on purpose.** The chart's heading states its window,
+and `LoadAssetDetail::CHART_DAYS` is read by both the heading and the query, so the label cannot
+drift from what it describes — a hardcoded `30` in the copy would have been the same defect a commit
+later.
+
+**The sparkline stays unlabelled.** It is a directional glance in 56 pixels with nowhere to put a
+window, and labelling every row to describe a graphic that carries no axis costs more than it tells.
+Declaring the chart's window closes the gap because that is the one a reader can misread.
+
+### X15 ✅ `sparkline_heights` ran one query per row — closed 2026-08-29, not as prescribed
 
 [`sparkline_helper.rb:5`](../app/helpers/sparkline_helper.rb#L5) calls `PriceSeries.for(asset)` from
 inside the row partial, so the Radar issues six and Activos issues one per holding. `PriceSeries`
@@ -649,6 +708,16 @@ rows per asset (a lateral join or a `row_number()` window), which beats both sha
 review — this entry stays open and now carries the measurement the next attempt should start from.
 Severity raised from ⚪ to 🟡: it is a real gap, not hygiene, now that the naive fix is known to be
 a pessimisation.
+
+**Closed 2026-08-29 (#444) by the batch query, not the preload.** `PriceSeries.recent_closes` takes
+the last N closes for many assets in one statement, with a `ROW_NUMBER()` window partitioned by
+asset. `sparkline_heights` now takes closes rather than an `Asset` — which is what
+`DiscoverHelper#wave_sparkline_heights` already did. Its own comment said it existed *only* because
+the other took an `Asset`, so removing that reason removed the duplicate with it.
+
+**Writing its spec found a latent bug the move exposed:** the helper divided without coercing, so
+integer closes produced a flat 0/100 line. It worked only as long as every caller happened to pass
+`BigDecimal` from the database — an accident, not a contract.
 
 ### X16 ✅ `trend_scores` grew without bound — pruned 2026-08-29
 
@@ -712,6 +781,20 @@ because a pure-weekday series would not have caught this: 50 calendar days of we
 still above MACD's 34, so the first version of the spec passed against the old code. With the
 holidays it drops to ~32 and the reading loses MACD entirely. Verified by reverting the fix: the
 spec fails with `macd` absent.
+
+### X21 ⚪ `_analysis.html.erb` assembles the same way CKP-7 objected to, one layer out
+
+Found 2026-08-29 while closing CKP-7. With the controller's assembly moved into its use cases, the
+remaining assembly sits in the **view**: `market/_analysis.html.erb` calls `cost_anchor_for`,
+`threshold_rule_for`, `threshold_anchor_for` and `range_52w_for`, four helpers in
+[`market_helper.rb`](../app/helpers/market_helper.rb), to build three anchors and a range at render
+time.
+
+Nothing is fetched there that the controller had not already loaded — the helper's own comment says
+so and it is still true — so this is not an N+1 or a boundary crossing. It is the **same shape**
+CKP-7 objected to: a layer that should be rendering is deciding what to render. Whether that matters
+enough to move is a call; it is recorded here rather than fixed by momentum, since CKP-7's own fix is
+what put it in view.
 
 ### X20 ✅ A missing volume was scored as zero — fixed 2026-08-29
 
@@ -1128,7 +1211,7 @@ builds `Domain::TimeWeightedReturn`, `:40` computes `vs_cetes` against
 `portfolios/show.html.erb:78-100` renders both cards plus the TWR note. The gate is gone; the brief
 is the last place that still says otherwise.
 
-### CKP-7 ⚪ `market_controller#show` assigns 21 instance variables in a 52-line file, and enqueues a job on a GET
+### CKP-7 ✅ `market_controller#show` assembled its own screen and enqueued from a GET — closed 2026-08-29
 
 [`market_controller.rb`](../app/controllers/market_controller.rb) takes 9 values out of
 `LoadAssetDetail` and then derives 7 more itself — including three direct ActiveRecord reads
@@ -1139,6 +1222,33 @@ inline `.where(...).order(...).limit(3)` for the rules card, and `trigger_fundam
 None of it crosses an ADR-002 boundary (checked: no context reaches into another's models or
 gateways anywhere in the app). It is the one controller that did not move its assembly into the use
 case that already exists for it.
+
+**Its own numbers were stale by the time it was worked.** Measured at `5dfccf7`: **18 instance
+variables, not 21**, and it derived **9**, not 7 — a price anchor and a range block had landed in
+between. The three direct AR reads it names were still exactly right.
+
+**Closed 2026-08-29 in two halves.**
+
+**The assembly (#446).** The observation window, `AssetState` and `AssetMarketContext` moved into
+`LoadAssetDetail`; the inline rules query became `Alerts::UseCases::LoadAssetRules`. Query counts
+identical at 17, 25 and 13 for the three shapes measured.
+
+`LoadAssetPosition` and `LoadAssetRules` stayed **composed in the controller on purpose**: ADR-002
+says MarketData may not read Trading, so moving either inside `LoadAssetDetail` would have
+manufactured a violation in the forbidden direction in the name of tidiness. A controller composing
+two contexts' public use cases is what that ADR sanctions.
+
+The detail that would have broken it silently: the moved reading is computed **before** the
+fixed-income early return, because `_analysis` renders the verdict card for every asset type. Behind
+the early return, a CETE's verdict would have emptied with every request spec still green — caught
+by the two browser specs, not by the request ones.
+
+**The GET (#448), which was a product decision rather than a refactor.** The enqueue moved out of the
+read: the empty state carries a button, the POST enqueues, and the block swaps itself in when the
+sync lands. The cooldown moved with it into `RequestFundamentalSync`, because a button is pressable
+repeatedly and the guard belongs beside what it guards. Five specs pinned the old behaviour — two
+asserting the enqueue, three asserting its absence in a way that would have passed trivially against
+a GET that can no longer enqueue anything.
 ### CKP-8 ✅ The asset detail's anchor — built 2026-08-29
 
 The screen answers *what is this asset doing*. It does not answer *what is it doing *relative to
