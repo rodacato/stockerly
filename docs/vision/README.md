@@ -27,7 +27,7 @@ See [`audience.md`](./audience.md). In summary:
 
 ## Jobs to be Done
 
-See [`jobs-to-be-done.md`](./jobs-to-be-done.md). The 6 JTBDs from 2026-05-14 largely survive the pivot. **JTBD #5 (capture a trade in under 30 seconds) is now central** — the beta died partly on data-entry friction, so frictionless capture is a first-class goal, not a nicety.
+See [`jobs-to-be-done.md`](./jobs-to-be-done.md). The 6 JTBDs from 2026-05-14 largely survive the pivot; a seventh was added 2026-08-29. **JTBD #5 (capture a trade in under 30 seconds) is now central** — the beta died partly on data-entry friction, so frictionless capture is a first-class goal, not a nicety.
 
 ---
 
@@ -78,6 +78,6 @@ Stockerly speaks in **descriptive language, never prescriptively**. Interpreted 
 |---|---|
 | [`audience.md`](./audience.md) | The single real user, the packaging target, non-users |
 | [`non-goals.md`](./non-goals.md) | What we explicitly are NOT (audience, scope, market) |
-| [`jobs-to-be-done.md`](./jobs-to-be-done.md) | The 6 JTBDs expanded with data, surfaces, triggers, metrics |
+| [`jobs-to-be-done.md`](./jobs-to-be-done.md) | The 7 JTBDs expanded with data, surfaces, triggers, metrics |
 | [`../research/competitive-trackers-2026-08.md`](../research/competitive-trackers-2026-08.md) | How other self-hosted trackers solve onboarding / indicators / data-entry |
 | [`../architecture/adr/`](../architecture/adr/) | Immutable architecture decisions |

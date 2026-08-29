@@ -1,6 +1,6 @@
 # Jobs to be Done — Stockerly
 
-> The 6 JTBDs that justify Stockerly's existence. Written 2026-05-14; **reviewed against the
+> The 7 JTBDs that justify Stockerly's existence. Six were written 2026-05-14; **reviewed against the
 > 2026-08-20 pivot** ([ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)),
 > which changed the audience and not these six — JTBD #5 (fast capture) and #6 (readable
 > indicators) were promoted to central, since data-entry friction and indicator illiteracy are two
@@ -8,6 +8,8 @@
 > **2026-08-27**.
 > Each JTBD here is the **expansion** of the lines that appear in [`audience.md`](./audience.md).
 > A new feature in the backlog must map to one of these (or propose a new JTBD via an edit to this file).
+> **JTBD #7 was added 2026-08-29** by the per-symbol news block (#427), which is the first feature since
+> the pivot that mapped to none of the six.
 
 ---
 
@@ -196,6 +198,45 @@ has ever held, so the indicators this JTBD lists have never run in production. *
 requirement was written down, marked satisfied, and never measured.
 
 **Current status:** delivered on three surfaces — the Panorama's "Movimientos de interés", the asset detail's verdict card, and its "Observaciones recientes". The verdict card reads a state out loud under [ADR-014](../architecture/adr/0014-state-phrases-from-a-closed-catalogue.md); the observations block stays purely descriptive. Threshold tuning is still untouched.
+
+---
+
+## JTBD #7 — What was published about something I follow
+
+**Statement:** *When I open a symbol I hold or watch, I want to see what was published about it recently, so a move I do not understand has somewhere to be explained — and so I find out about it here rather than by accident.*
+
+**Why this is not JTBD #4.** Both answer *what happened to my asset*, and folding this into #4 was
+the first reading. It does not hold: #4 is a **scheduled** event on a **held** asset, announced
+**two days ahead** by a notification. This is **unscheduled**, reaches **watched** assets too, and
+is read **after the fact** on a screen the reader already chose to open. #4's usage metric — opening
+the detail *before* the event — cannot measure it. Two mechanisms, two metrics, two JTBDs.
+
+**Required data:**
+- `news_articles` rows carrying `related_ticker` — **exists**, and had no reader until 2026-08-29.
+  `SyncNewsJob` fills them every 30 minutes ([`recurring.yml`](../../config/recurring.yml)) through
+  the `:news` capability (Alpaca, Finnhub)
+- `Asset#former_symbols`, so a renamed ticker keeps the articles filed under the old one
+- `published_at` and `source` per article, both non-null; `url` when the provider sent one
+
+**App surface:**
+- Asset detail (`/market/:symbol`) — a capped block under *Observaciones recientes*, bounded to
+  `MarketData::Queries::RecentNews::WINDOW_DAYS`. No article means no block
+
+**Triggers:** none, deliberately. This is read where the reader already is. It is **not** a
+notification and **not** a listing — D31 deleted `/news` and was right to; a river of headlines is
+the bubble Descubrir exists to leave.
+
+**Usage metric:** Adrian clicks through to ≥1 article per fortnight from an asset detail. Below
+that, the block is a headline river on a screen built to avoid one, and it is **deleted** — along
+with `SyncNewsJob`, which would then be spending provider quota on nothing. That deletion clause is
+the point of the metric: this is the JTBD most likely to decay into noise.
+
+**Blocked by:** nothing.
+
+**Current status:** delivered 2026-08-29 (#427). Headlines render as their source wrote them and
+are attributed; [ADR-001](../architecture/adr/0001-descriptive-not-prescriptive-language.md) governs
+our copy, and a third party's headline is quoted material. No summarisation and no sentiment scoring
+over headline text — that would make it our sentence.
 
 ---
 
