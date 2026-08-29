@@ -3,6 +3,8 @@ module Alerts
     class AlertEvaluator
       def self.evaluate(rules, asset, new_price)
         rules.select do |rule|
+          next false if rule.daily_once? && rule.fired_today?
+
           rule.cooled_down? && triggered?(rule, asset, new_price)
         end
       end
@@ -16,9 +18,9 @@ module Alerts
         when "price_crosses_below"
           old_price > rule.threshold_value && new_price <= rule.threshold_value
         when "day_change_percent"
-          return false if old_price.zero?
-          change_pct = ((new_price - old_price) / old_price * 100).abs
-          change_pct >= rule.threshold_value
+          change = day_change(asset, new_price)
+          return false if change.nil?
+          change.abs >= rule.threshold_value
         when "rsi_overbought"
           score = asset.latest_trend_score&.score || 0
           score >= rule.threshold_value
@@ -34,11 +36,27 @@ module Alerts
         end
       end
 
+      # The day change as every screen defines it (ADR-021), measured against
+      # the price that is arriving rather than the row on disk: this handler is
+      # subscribed ahead of RecordPriceHistory, so today's row still carries the
+      # previous sync's price when a rule is evaluated.
+      #
+      # nil when there is no earlier close — a newly tracked asset has no day
+      # change, and unknown must not read as no movement.
+      def self.day_change(asset, new_price)
+        previous = MarketData::Queries::PriceSeries.for(asset).latest(2)
+                     .reject { |row| row.date >= Date.current }
+                     .last
+        return nil if previous.nil?
+
+        MarketData::Domain::DayChange.from_closes([ previous.close, new_price ])
+      end
+
       def self.average_volume(asset, days: 5)
         MarketData::Queries::PriceSeries.for(asset).average_volume(days)
       end
 
-      private_class_method :triggered?, :average_volume
+      private_class_method :triggered?, :average_volume, :day_change
     end
   end
 end

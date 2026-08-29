@@ -27,6 +27,12 @@ class AlertRule < ApplicationRecord
   # index level, volume_spike a multiplier, day_change_percent a percentage.
   PRICE_THRESHOLD_CONDITIONS = %w[price_crosses_above price_crosses_below].freeze
 
+  # A level, not an event. Once the day change is past the threshold it stays
+  # past it for the rest of the session, so the 60-minute cooldown that suits a
+  # crossing would re-fire this one all day. The rule says "in the day"; it is
+  # told once in the day.
+  DAILY_ONCE_CONDITIONS = %w[day_change_percent].freeze
+
   # Conditions that don't anchor on a single asset (BMV-wide festivo, Banxico
   # auction schedule). They share `AlertRule#asset_symbol` for storage but the
   # form treats it as optional and the evaluator ignores it.
@@ -55,6 +61,14 @@ class AlertRule < ApplicationRecord
 
   def marketwide?
     MARKETWIDE_CONDITIONS.include?(condition)
+  end
+
+  def daily_once?
+    DAILY_ONCE_CONDITIONS.include?(condition)
+  end
+
+  def fired_today?
+    last_triggered_at.present? && last_triggered_at >= Time.zone.now.beginning_of_day
   end
 
   def cooled_down?

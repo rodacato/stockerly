@@ -12,6 +12,7 @@ module MarketData
     # "Previous" is the previous row, never yesterday's date: equities do not
     # trade every day and crypto does.
     class DayChange
+      # @api public — read by Alerts (ADR-002 read API)
       # nil when there is no previous close to compare against — a newly
       # tracked asset has no day change, which is not the same as no movement.
       def self.from_closes(closes)
