@@ -18,11 +18,14 @@ class AssetsController < AuthenticatedController
   end
 
   def tracked
-    data = Trading::UseCases::LoadTrackedAssets.call(user: current_user)
+    @query = params[:q].presence
+    data = Trading::UseCases::LoadTrackedAssets.call(user: current_user, query: @query)
 
     @assets       = data[:assets]
+    @total        = data[:total]
     @held_ids     = data[:held_ids]
     @followed_ids = data[:followed_ids]
+    @tier_counts  = data[:tier_counts]
     @budget       = data[:budget]
   end
 

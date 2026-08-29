@@ -121,6 +121,86 @@ RSpec.describe "Activos › Tracked", type: :request do
       expect(SyncAllStatementsJob.const_defined?(:DAILY_BUDGET, false)).to be false
     end
 
+    describe "the budget's tier breakdown" do
+      let(:counts) { Trading::UseCases::LoadTrackedAssets.call(user: user)[:tier_counts] }
+
+      def stock(symbol, **attrs)
+        create(:asset, :stock, symbol: symbol, currency: "MXN", **attrs)
+      end
+
+      def hold(asset)
+        create(:position, portfolio: portfolio, asset: asset, shares: 1, avg_cost: 1, status: :open)
+      end
+
+      it "counts each rung of the ladder the sync job spends in" do
+        hold(stock("HELD"))
+        create(:watchlist_item, user: user, asset: stock("FOLLOWED"))
+        stock("PLAIN")
+
+        expect(counts).to eq(held: 1, followed: 1, tracked: 1)
+      end
+
+      # An asset held AND followed sits on the top rung once, not on two.
+      it "puts an asset on its highest rung only" do
+        both = stock("BOTH")
+        hold(both)
+        create(:watchlist_item, user: user, asset: both)
+
+        expect(counts).to eq(held: 1, followed: 0, tracked: 0)
+      end
+
+      # Negative: the panel counts one provider's fundamentals quota, and
+      # SyncAllFundamentalsJob only enqueues active stocks and ETFs. Crypto
+      # and a disabled asset spend none of it.
+      it "leaves out what cannot spend this budget" do
+        create(:asset, :crypto, symbol: "BTC", currency: "USD")
+        stock("OFF", sync_status: :disabled)
+
+        expect(counts).to eq(held: 0, followed: 0, tracked: 0)
+      end
+    end
+
+    describe "filtering the list" do
+      before do
+        create(:asset, :stock, symbol: "NVDA", name: "Nvidia Corp.", currency: "USD")
+        create(:asset, :stock, symbol: "MSFT", name: "Microsoft", currency: "USD")
+      end
+
+      # AAPL is the add-form's own placeholder, so it is in every body and
+      # cannot be used as a fixture here.
+      def filter(query)
+        get tracked_assets_path(q: query)
+        response.body
+      end
+
+      it "matches on the symbol" do
+        body = filter("nvda")
+
+        expect(body).to include("NVDA")
+        expect(body).not_to include("MSFT")
+      end
+
+      it "matches on the name too, since nobody remembers every ticker" do
+        body = filter("microsoft")
+
+        expect(body).to include("MSFT")
+        expect(body).not_to include("NVDA")
+      end
+
+      it "says which query found nothing, rather than reading as an empty instance" do
+        body = filter("zzzz")
+
+        expect(body).to include("Sin coincidencias", "zzzz")
+        expect(body).not_to include("Tu instancia aún no rastrea ningún activo")
+      end
+
+      # Negative: a blank q is not a filter. An empty search box used to be an
+      # easy way to ask for everything and get nothing back.
+      it "shows everything when the box is empty" do
+        expect(filter("  ")).to include("NVDA", "MSFT")
+      end
+    end
+
     # A statements sync spends three calls and logs one, and failures spend
     # quota without logging success at all. Counting logs missed both.
     it "counts the calls made, not the successes logged" do
