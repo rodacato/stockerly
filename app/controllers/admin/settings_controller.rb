@@ -44,7 +44,7 @@ module Admin
         end
       end
 
-      redirect_to admin_settings_path, notice: "Ajustes guardados."
+      redirect_to admin_settings_path, notice: t("admin.settings.flash.guardados")
     end
 
     private

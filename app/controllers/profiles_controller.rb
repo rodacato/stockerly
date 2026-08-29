@@ -11,7 +11,7 @@ class ProfilesController < AuthenticatedController
 
     case result
     in Dry::Monads::Success
-      redirect_to profile_path, notice: "Perfil actualizado."
+      redirect_to profile_path, notice: t("profiles.flash.actualizado")
     in Dry::Monads::Failure[ :validation, errors ]
       flash.now[:alert] = errors.values.flatten.first
       render :show, status: :unprocessable_content
@@ -25,7 +25,7 @@ class ProfilesController < AuthenticatedController
   # write — we just pass current values explicitly.
   def update_currency
     currency = params.dig(:profile, :preferred_currency).to_s.strip
-    return respond_currency(:unprocessable_content, alert: "Moneda no soportada.") unless Asset::SUPPORTED_CURRENCIES.include?(currency)
+    return respond_currency(:unprocessable_content, alert: t("profiles.flash.moneda_no_soportada")) unless Asset::SUPPORTED_CURRENCIES.include?(currency)
 
     result = Identity::UseCases::UpdateInfo.call(
       user: current_user,
@@ -34,7 +34,7 @@ class ProfilesController < AuthenticatedController
 
     case result
     in Dry::Monads::Success
-      respond_currency(:ok, notice: "Moneda actualizada.")
+      respond_currency(:ok, notice: t("profiles.flash.moneda_actualizada"))
     in Dry::Monads::Failure[ :validation, errors ]
       respond_currency(:unprocessable_content, alert: errors.values.flatten.first)
     end
@@ -55,7 +55,7 @@ class ProfilesController < AuthenticatedController
 
     case result
     in Dry::Monads::Success
-      redirect_to profile_path, notice: "Contraseña cambiada correctamente."
+      redirect_to profile_path, notice: t("profiles.flash.contrasena_cambiada")
     in Dry::Monads::Failure[ :unauthorized, message ]
       redirect_to profile_path, alert: message
     in Dry::Monads::Failure[ :validation, errors ]

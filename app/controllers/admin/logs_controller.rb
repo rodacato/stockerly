@@ -16,7 +16,7 @@ module Admin
       if result.success?
         send_data result.value!, filename: "system_logs_#{Date.current}.csv", type: "text/csv"
       else
-        redirect_to admin_logs_path, alert: "La exportación falló."
+        redirect_to admin_logs_path, alert: t("admin.logs.flash.exportacion_fallida")
       end
     end
 
