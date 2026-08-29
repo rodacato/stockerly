@@ -10,6 +10,11 @@ module MarketData
     class TrendScoreCalculator
       FACTORS = %i[rsi momentum macd volume_trend ema_crossover].freeze
 
+      # Rows to hand this calculator, expressed in rows because its own minimums
+      # are: MACD needs 34 closes and a 50-calendar-day window is ~35 trading
+      # rows for a stock, two market holidays short of it.
+      WINDOW = 60
+
     class << self
     def calculate(closes:, volumes: nil)
       return nil if closes.blank? || closes.size < 15
