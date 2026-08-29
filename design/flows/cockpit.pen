@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile.\n\nEntry: login → /dashboard (main authenticated home).\nScreens: Panorama (Default · Tranquilo) → Asset detail (Análisis · Mi posición) → Consolidado (the portfolio lens: patrimonio, equity curve, '¿Valió la pena?', allocation) → Señales (the observation feed, D42 · renamed from Movimientos by D57). Desktop (1280): three artboards. Panorama and Consolidado fit without scroll; the asset detail drops from 2984pt to 1400pt.\n\n⚠ Panorama / Black swan was DELETED 2026-08-27 (D51). D25 cancelled the 'Evento de mercado · caídas generalizadas hoy' banner, and measuring found that banner existed on that artboard and nowhere else — it was the only thing separating the state from Default. Nothing computes market breadth, so there is no state to draw until something does; a real version needs its own 4-filter card.\n\nConsolidado entry points: the Panorama patrimonio hero and Holdings' summary card in assets.pen — one screen, two doors. Its two comparison cards are designed in full but their engine is build-gated and needs TWR, not the money-weighted period returns (D12).\n\nBlocks: PatrimonioStrip (MXN total + Δ día, the door to Consolidado) + sentiment carousel · 'atención hoy' band · holdings list with semáforo + freshness · (detail) 52-week range + price chart (D2) + vs-tu-plan anchor (D67) + confluence semáforo (D3) + señales (RSI/MA/Bollinger — the 52-week range moved out to Rango52, CKP-9) + observations + fundamentals.\n\nGrounding: real data — portfolio value, P&L (MXN, FX at trade), trend-score, RSI/SMA/Bollinger, technical_observations, fundamentals. Confluence engine (Light 2 + window) is design-only, build-gated (D3).\n\n⚠ Read the ADR chain forward before touching any copy here: ADR-001 → ADR-013 → ADR-014. ADR-013 allows an action verb that is a deterministic function of a persisted TechnicalObservation — the 'compra'/'vende' chips on Señales are its reference case, not a violation. ADR-014 allows a state read as a sentence from a closed catalogue, and lists 'considera vender' among them, which is why the Verdict chip on Asset · Análisis stays. D36 dropped that chip citing ADR-001 a day after ADR-014 amended it; D54 reverses that. A decision is only as current as the ADR it cites.\n\nVocabulary is D48: the tier ladder is Holdings / Watchlist / Tracked, defined in flows/assets.pen (D9); this file's rows link into it. Lowercase 'cartera' in prose means the portfolio, not the tier, and stays. D57 answered this 2026-08-28: the screen and the band take Señales. 'Movimientos' already means a trade in two shipped screens (Historial and the asset's position tab), so keeping it here would ship one word with two meanings; 'signals' is also what technical analysis calls this. The band was already 'Señales de interés' in the code — these artboards were the side that was behind. The Señales block inside Asset · Análisis keeps its name: same reading at another resolution.\n\nMoney follows D10: the Radar subtitle declares MXN once and rows drop the symbol; anything in another currency carries its ISO prefix (USD 137.00) — including the position grid, which genuinely mixes MXN and USD.\n\nDesktop findings (2026-08-24, panel C5/C1/C4): (a) the sentiment carousel dies on desktop — the cards stack in ColC at their native ~309 width, so nothing is stretched and nothing is cut; (b) the asset detail has NO master list — the Radar is the Panorama's editorialised selection ('con actividad hoy'), not an asset navigator. The master-detail D4 asks for belongs in flows/assets.pen, where the list IS the screen; (c) the reading chain veredicto → chart → semáforo stays in one column, with Señales adjacent — they are the same reading at two resolutions.\n\n⚠ The stocks Fear & Greed block is GONE (2026-08-26, D38). CNN's index answers HTTP 418 to every User-Agent by IP reputation, it is a proprietary composite with no equivalent source, and swapping in a different indicator under the same label would be a lie the artboard tells. The carousel keeps crypto + watchlist; Contexto de mercado keeps the index quote and the divergence sentence. If equity sentiment is ever wanted, VIX is already seeded as a MarketIndex and needs its own 4-filter card, because it is a different indicator, not a replacement source.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2, the controller carries a ResizeObserver) — do not copy the pinned width into the ERB.\n\nShell: TopBar, TopBarDetail and BottomNav are vendored components in this file as of kit 0.8.0 — six hand-built bars and four navs were consolidated into them 2026-08-27. TopBarDetail is a kit gap: the kit ships the root bar only. Copy: es-MX. kit-version-source 0.8.1.",
+          "content": "The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile.\n\nEntry: login → /dashboard (main authenticated home).\nScreens: Panorama (Default · Tranquilo) → Asset detail (Análisis · Mi posición) → Consolidado (the portfolio lens: patrimonio, equity curve, '¿Valió la pena?', allocation) → Señales (the observation feed, D42 · renamed from Movimientos by D57). Desktop (1280): three artboards. Panorama and Consolidado fit without scroll; the asset detail drops from 2984pt to 1400pt.\n\n⚠ Panorama / Black swan was DELETED 2026-08-27 (D51). D25 cancelled the 'Evento de mercado · caídas generalizadas hoy' banner, and measuring found that banner existed on that artboard and nowhere else — it was the only thing separating the state from Default. Nothing computes market breadth, so there is no state to draw until something does; a real version needs its own 4-filter card.\n\nConsolidado entry points: the Panorama patrimonio hero and Holdings' summary card in assets.pen — one screen, two doors. Its two comparison cards are designed in full but their engine is build-gated and needs TWR, not the money-weighted period returns (D12).\n\nBlocks: PatrimonioStrip (MXN total + Δ día, the door to Consolidado) + sentiment carousel · 'atención hoy' band · radar rows come from both Holdings and Watchlist (X12) · holdings list with semáforo + freshness · (detail) 52-week range + price chart (D2) + vs-tu-plan anchor (D67) + confluence semáforo (D3) + señales (RSI/MA/Bollinger — the 52-week range moved out to Rango52, CKP-9) + observations + fundamentals.\n\nGrounding: real data — portfolio value, P&L (MXN, FX at trade), trend-score, RSI/SMA/Bollinger, technical_observations, fundamentals. Confluence engine (Light 2 + window) is design-only, build-gated (D3).\n\n⚠ Read the ADR chain forward before touching any copy here: ADR-001 → ADR-013 → ADR-014. ADR-013 allows an action verb that is a deterministic function of a persisted TechnicalObservation — the 'compra'/'vende' chips on Señales are its reference case, not a violation. ADR-014 allows a state read as a sentence from a closed catalogue, and lists 'considera vender' among them, which is why the Verdict chip on Asset · Análisis stays. D36 dropped that chip citing ADR-001 a day after ADR-014 amended it; D54 reverses that. A decision is only as current as the ADR it cites.\n\nVocabulary is D48: the tier ladder is Holdings / Watchlist / Tracked, defined in flows/assets.pen (D9); this file's rows link into it. Lowercase 'cartera' in prose means the portfolio, not the tier, and stays. D57 answered this 2026-08-28: the screen and the band take Señales. 'Movimientos' already means a trade in two shipped screens (Historial and the asset's position tab), so keeping it here would ship one word with two meanings; 'signals' is also what technical analysis calls this. The band was already 'Señales de interés' in the code — these artboards were the side that was behind. The Señales block inside Asset · Análisis keeps its name: same reading at another resolution.\n\nMoney follows D10: the Radar subtitle declares MXN once and rows drop the symbol; anything in another currency carries its ISO prefix (USD 137.00) — including the position grid, which genuinely mixes MXN and USD.\n\nDesktop findings (2026-08-24, panel C5/C1/C4): (a) the sentiment carousel dies on desktop — the cards stack in ColC at their native ~309 width, so nothing is stretched and nothing is cut; (b) the asset detail has NO master list — the Radar is the Panorama's editorialised selection ('con actividad hoy'), not an asset navigator. The master-detail D4 asks for belongs in flows/assets.pen, where the list IS the screen; (c) the reading chain veredicto → chart → semáforo stays in one column, with Señales adjacent — they are the same reading at two resolutions.\n\n⚠ The stocks Fear & Greed block is GONE (2026-08-26, D38). CNN's index answers HTTP 418 to every User-Agent by IP reputation, it is a proprietary composite with no equivalent source, and swapping in a different indicator under the same label would be a lie the artboard tells. The carousel keeps crypto + watchlist; Contexto de mercado keeps the index quote and the divergence sentence. If equity sentiment is ever wanted, VIX is already seeded as a MarketIndex and needs its own 4-filter card, because it is a different indicator, not a replacement source.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2, the controller carries a ResizeObserver) — do not copy the pinned width into the ERB.\n\nShell: TopBar, TopBarDetail and BottomNav are vendored components in this file as of kit 0.8.0 — six hand-built bars and four navs were consolidated into them 2026-08-27. TopBarDetail is a kit gap: the kit ships the root bar only. Copy: es-MX. kit-version-source 0.8.1.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -584,6 +584,49 @@
                     },
                     "E60Udm": {
                       "fill": "$border-strong"
+                    }
+                  }
+                },
+                {
+                  "id": "XRTwG",
+                  "type": "ref",
+                  "ref": "r16WM",
+                  "name": "TSLA · watchlist",
+                  "width": "fill_container",
+                  "descendants": {
+                    "eG3WE": {
+                      "content": "TSLA"
+                    },
+                    "uvrOY": {
+                      "content": "Tesla"
+                    },
+                    "w2FQh": {
+                      "content": "+3.2%",
+                      "fill": "$positive-fg"
+                    },
+                    "QrM6I": {
+                      "content": "USD 248.50",
+                      "fill": "$fg-subtle"
+                    },
+                    "Zzbi9": {
+                      "geometry": "M2 16 L11 18 L20 13 L29 15 L38 8 L47 10 L54 4",
+                      "stroke": "$positive"
+                    },
+                    "zSCE5": {
+                      "fill": "$bg-muted"
+                    },
+                    "rD21s": {
+                      "content": "en rango",
+                      "fill": "$fg-subtle"
+                    },
+                    "sFBnt": {
+                      "fill": "$positive"
+                    },
+                    "S40qP": {
+                      "fill": "$bg-muted"
+                    },
+                    "E60Udm": {
+                      "fill": "$bg-muted"
                     }
                   }
                 },
@@ -6709,7 +6752,7 @@
       "name": "[Cockpit] / Panorama · Desktop / Default",
       "clip": true,
       "width": 1280,
-      "height": 860,
+      "height": 963,
       "fill": "$bg-canvas",
       "children": [
         {
@@ -7021,6 +7064,49 @@
                               }
                             },
                             {
+                              "id": "OQ089",
+                              "type": "ref",
+                              "ref": "r16WM",
+                              "name": "TSLA · watchlist",
+                              "width": "fill_container",
+                              "descendants": {
+                                "eG3WE": {
+                                  "content": "TSLA"
+                                },
+                                "uvrOY": {
+                                  "content": "Tesla"
+                                },
+                                "w2FQh": {
+                                  "content": "+3.2%",
+                                  "fill": "$positive-fg"
+                                },
+                                "QrM6I": {
+                                  "content": "USD 248.50",
+                                  "fill": "$fg-subtle"
+                                },
+                                "Zzbi9": {
+                                  "geometry": "M2 16 L11 18 L20 13 L29 15 L38 8 L47 10 L54 4",
+                                  "stroke": "$positive"
+                                },
+                                "zSCE5": {
+                                  "fill": "$bg-muted"
+                                },
+                                "rD21s": {
+                                  "content": "en rango",
+                                  "fill": "$fg-subtle"
+                                },
+                                "sFBnt": {
+                                  "fill": "$positive"
+                                },
+                                "S40qP": {
+                                  "fill": "$bg-muted"
+                                },
+                                "E60Udm": {
+                                  "fill": "$bg-muted"
+                                }
+                              }
+                            },
+                            {
                               "id": "D6Olp",
                               "type": "ref",
                               "ref": "r16WM",
@@ -7327,7 +7413,7 @@
       "type": "frame",
       "id": "pM2rP",
       "x": 760,
-      "y": 4088,
+      "y": 4191,
       "name": "[Cockpit] / Asset · Análisis · Desktop / Default",
       "clip": true,
       "width": 1280,
@@ -9950,7 +10036,7 @@
       "type": "frame",
       "id": "lc9x8",
       "x": 760,
-      "y": 5888,
+      "y": 5991,
       "name": "[Cockpit] / Consolidado · Desktop / Default",
       "clip": true,
       "width": 1280,
@@ -11698,7 +11784,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-08-29 · Panorama: the Radar's ten AssetRow instances (5 mobile, 5 desktop) now lead with the change and demote the value. AssetRow stays generic — the component defines emphasis positions, not what goes in them, so no kit change and no second component · D69, D72, X12\n2026-08-29 · kit 0.8.1 · Asset · Análisis: the 52-week range moved OUT of Señales to sit under the price as Rango52. Señales is #306-blocked and that row is the one part of it buildable today, so it no longer waits on the rest · CKP-9, #426. Applied to the Desktop artboard in the same pass\n2026-08-29 · kit 0.8.1 · Asset · Análisis: VsPlan's second row now reads the alert threshold instead of a Meta — no target_price will exist · D67, CKP-8. Applied to the Desktop artboard in the same pass\n2026-08-29 · declared grid-x0/brief-w/gutter/y0/row-gap and opened this Log; the file predated both conventions\n2026-08-29 · brief corrected: kit-version-source said 0.8.0 against the file's 0.8.1, and the detail height moved 3037 → 2984 (the hoist freed more than Rango52 added)",
+          "content": "2026-08-29 · Panorama + Panorama · Desktop: the Radar draws a watchlist row at last. Its own subtitle has read 'De tu cartera y watchlist' all along while every row was a holding, so the artboard was incomplete rather than in conflict with the code. Drawn as an AssetRow instance per D72 — the ISO prefix (USD 248.50) is what tells it from a position, since a holding's value drops the symbol under D10. Desktop grew 860 → 963 and the two artboards below it moved down 103 · X12\n2026-08-29 · Panorama: the Radar's ten AssetRow instances (5 mobile, 5 desktop) now lead with the change and demote the value. AssetRow stays generic — the component defines emphasis positions, not what goes in them, so no kit change and no second component · D69, D72, X12\n2026-08-29 · kit 0.8.1 · Asset · Análisis: the 52-week range moved OUT of Señales to sit under the price as Rango52. Señales is #306-blocked and that row is the one part of it buildable today, so it no longer waits on the rest · CKP-9, #426. Applied to the Desktop artboard in the same pass\n2026-08-29 · kit 0.8.1 · Asset · Análisis: VsPlan's second row now reads the alert threshold instead of a Meta — no target_price will exist · D67, CKP-8. Applied to the Desktop artboard in the same pass\n2026-08-29 · declared grid-x0/brief-w/gutter/y0/row-gap and opened this Log; the file predated both conventions\n2026-08-29 · brief corrected: kit-version-source said 0.8.0 against the file's 0.8.1, and the detail height moved 3037 → 2984 (the hoist freed more than Rango52 added)",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
