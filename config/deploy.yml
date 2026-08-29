@@ -54,6 +54,10 @@ env:
     - ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT
     - RESEND_API_KEY
     - METRICS_TOKEN
+    # Web Push. Absent means the switch never renders — see WebPushDelivery.
+    - VAPID_PUBLIC_KEY
+    - VAPID_PRIVATE_KEY
+    - VAPID_SUBJECT
 
 builder:
   arch: amd64

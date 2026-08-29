@@ -130,6 +130,9 @@ Rails.application.routes.draw do
   resource :profile,   only: [ :show, :update ]
   patch  "profile/password",    to: "profiles#change_password",    as: :change_password
   patch  "profile/preferences", to: "profiles#update_preferences", as: :update_preferences
+
+  post   "push-subscriptions", to: "push_subscriptions#create",  as: :push_subscriptions
+  delete "push-subscriptions", to: "push_subscriptions#destroy"
   patch  "profile/currency",    to: "profiles#update_currency",    as: :update_currency
 
   # --- Admin Zone ---

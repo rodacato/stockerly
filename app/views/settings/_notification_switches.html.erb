@@ -25,4 +25,5 @@
       </button>
     </div>
   <% end %>
+  <%= render "settings/push_switch" if Notifications::Domain::WebPushDelivery.configured? %>
 </div>

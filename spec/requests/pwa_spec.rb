@@ -85,6 +85,14 @@ RSpec.describe "PWA", type: :request do
       expect(response.headers["cache-control"]).to include("must-revalidate")
     end
 
+    it "handles the push events an alert needs to reach a closed app" do
+      get "/service-worker.js"
+
+      expect(response.body).to include('addEventListener("push"')
+      expect(response.body).to include('addEventListener("notificationclick"')
+      expect(response.body).to include("setAppBadge")
+    end
+
     it "includes font cache for Google Fonts" do
       get "/service-worker.js"
 

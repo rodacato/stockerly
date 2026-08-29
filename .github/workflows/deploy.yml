@@ -109,6 +109,9 @@ jobs:
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       METRICS_ENABLED: ${{ vars.METRICS_ENABLED || 'false' }}
       METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+      VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+      VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+      VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT }}
 
     steps:
       - uses: actions/checkout@v7

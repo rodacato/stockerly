@@ -59,6 +59,38 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+// Push: the payload is built by Notifications::Domain::WebPushDelivery.
+self.addEventListener("push", (event) => {
+  const payload = event.data ? event.data.json() : {};
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title || "Stockerly", {
+      body: payload.body,
+      icon: "/icon-192.png?v=<%= v %>",
+      badge: "/icon-monochrome-512.png?v=<%= v %>",
+      tag: "stockerly-alert",
+      data: { path: payload.path || "/notifications" }
+    }).then(() => {
+      if (typeof payload.badge === "number" && self.navigator.setAppBadge) {
+        return self.navigator.setAppBadge(payload.badge);
+      }
+    })
+  );
+});
+
+// Focus the window already showing the target instead of opening a second one.
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const path = event.notification.data ? event.notification.data.path : "/notifications";
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
+      const open = windows.find((client) => new URL(client.url).pathname === path);
+      return open ? open.focus() : self.clients.openWindow(path);
+    })
+  );
+});
+
 // Fetch: network-first for navigation, cache-first for static assets
 self.addEventListener("fetch", (event) => {
   const { request } = event;

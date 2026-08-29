@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_29_180000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_29_180716) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -32,6 +32,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_180000) do
   create_table "alert_preferences", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "email_digest", default: true, null: false
+    t.boolean "push", default: false, null: false
     t.datetime "updated_at", null: false
     t.boolean "urgent_email", default: false, null: false
     t.bigint "user_id", null: false
@@ -404,6 +405,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_180000) do
     t.index ["status"], name: "index_positions_on_status"
   end
 
+  create_table "push_subscriptions", force: :cascade do |t|
+    t.string "auth_key", null: false
+    t.datetime "created_at", null: false
+    t.string "endpoint", null: false
+    t.datetime "last_delivered_at"
+    t.string "p256dh_key", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["endpoint"], name: "index_push_subscriptions_on_endpoint", unique: true
+    t.index ["user_id"], name: "index_push_subscriptions_on_user_id"
+  end
+
   create_table "site_config_changes", force: :cascade do |t|
     t.bigint "admin_id", null: false
     t.datetime "created_at", null: false
@@ -549,6 +562,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_180000) do
   add_foreign_key "portfolios", "users"
   add_foreign_key "positions", "assets"
   add_foreign_key "positions", "portfolios"
+  add_foreign_key "push_subscriptions", "users"
   add_foreign_key "site_config_changes", "users", column: "admin_id"
   add_foreign_key "stock_splits", "assets"
   add_foreign_key "technical_observations", "assets"

@@ -1054,6 +1054,10 @@ es-MX:
       moneda: Moneda preferida · en la que se te muestra todo tu patrimonio
       nombre_correo: Nombre y correo
       nombre_correo_desc: Cómo te llamas y a dónde llegan los correos
+      push: Avisos en el teléfono
+      push_bloqueado: Bloqueaste los avisos para este sitio. Se cambia desde el navegador.
+      push_desc: Al disparar una regla, aunque tengas la app cerrada.
+      push_no_disponible: Este navegador no admite avisos push.
       registros: Registros
       registros_desc: Sincronizaciones y avisos de los últimos 90 días
       tema: Apariencia y región

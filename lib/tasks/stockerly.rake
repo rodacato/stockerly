@@ -7,6 +7,14 @@ namespace :stockerly do
     puts "Assets: #{result[:created]} created, #{result[:corrected]} corrected, #{result[:total]} total"
   end
 
+  desc "Print a VAPID key pair for push notifications. Generate once and keep — replacing it drops every subscription."
+  task vapid_keys: :environment do
+    pair = WebPush.generate_key
+
+    puts "VAPID_PUBLIC_KEY=#{pair.public_key}"
+    puts "VAPID_PRIVATE_KEY=#{pair.private_key}"
+  end
+
   desc "Promote a user to admin by email"
   task :promote_admin, [ :email ] => :environment do |_t, args|
     email = args[:email]

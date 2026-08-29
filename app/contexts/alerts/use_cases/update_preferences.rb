@@ -10,7 +10,7 @@ module Alerts
         # existing preference, `||=` short-circuits and update! is a
         # straight UPDATE — same single-write outcome.
         pref = user.alert_preference || user.build_alert_preference
-        pref.update!(params.slice(:email_digest, :urgent_email))
+        pref.update!(params.slice(:email_digest, :urgent_email, :push))
         pref
       end
     end

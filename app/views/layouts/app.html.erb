@@ -1,6 +1,7 @@
 <% content_for(:body) do %>
   <%= turbo_stream_from "notifications_#{current_user.id}" if current_user %>
-  <div data-controller="progress-bar" class="flex min-h-screen bg-bg-canvas">
+  <div data-controller="progress-bar app-badge" data-app-badge-count-value="<%= navbar_unread_count %>"
+       class="flex min-h-screen bg-bg-canvas">
     <div data-progress-bar-target="bar" class="progress-bar fixed left-0 top-0 z-60 h-0.75 w-0 bg-primary opacity-0"></div>
 
     <%= render "components/sidebar_nav" %>

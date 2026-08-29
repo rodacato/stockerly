@@ -112,6 +112,12 @@ Add these secrets:
 | `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | yes | idem |
 | `RESEND_API_KEY` | no | From the Resend dashboard |
 | `METRICS_TOKEN` | no | Generate with `openssl rand -hex 32` — enables the Prometheus endpoint |
+| `VAPID_PUBLIC_KEY` | no | `bin/rails stockerly:vapid_keys` prints a pair — enables push notifications |
+| `VAPID_PRIVATE_KEY` | no | idem, from the same run as the public half |
+
+> **The VAPID pair is generated once and kept.** Replacing it invalidates every browser
+> subscription already recorded, and each device has to be re-enabled by hand from **Ajustes >
+> Avisos en el teléfono**. With neither key set the switch is not rendered at all.
 
 > **The encryption keys are not optional and Kamal will not tell you they are missing.**
 > `.kamal/secrets` resolves every entry as `NAME=$NAME`, so an unset variable becomes the **empty
@@ -131,6 +137,7 @@ These are plain values, so set them under **Variables**, not Secrets, in the sam
 | Variable | Default if unset | Effect |
 |---|---|---|
 | `METRICS_ENABLED` | `false` | Master switch for the Prometheus endpoint |
+| `VAPID_SUBJECT` | `mailto:stockerly@localhost` | Contact the push service reaches you at |
 
 > **Note:** The registry uses GHCR (GitHub Container Registry) with `GITHUB_TOKEN` — no Docker Hub credentials needed.
 
