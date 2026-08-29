@@ -3,6 +3,11 @@
 # your test database is "scratch space" for the test suite and is wiped
 # and recreated between test runs. Don't rely on the data there!
 
+# Both `has_secure_password` and the recovery-code digests read this cost, and
+# at the production default of 12 a single hash costs ~220ms.
+require "bcrypt"
+BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -27,6 +32,9 @@ Rails.application.configure do
 
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
+
+  # A retry still happens, it just stops sleeping the backoff to prove it.
+  config.x.gateway_retry_max_interval = 0
 
   # Disable host authorization in test (Rack::Test and RSpec use different default hosts).
   config.hosts.clear
