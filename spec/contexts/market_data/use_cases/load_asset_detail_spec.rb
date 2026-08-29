@@ -110,6 +110,38 @@ RSpec.describe MarketData::UseCases::LoadAssetDetail do
       end
     end
 
+    context "the technical reading" do
+      it "derives the state, its source and the trend from recent observations" do
+        create(:technical_observation, asset: asset, observation_type: "bb_upper_breached", observed_at: 2.days.ago)
+        trend = create(:technical_observation, asset: asset, observation_type: "ma200_crossed_above", observed_at: 1.day.ago)
+
+        data = described_class.call(symbol: "AAPL").value!
+
+        expect(data[:state]).to eq(:stretched)
+        expect(data[:state_source].observation_type).to eq("bb_upper_breached")
+        expect(data[:trend_source]).to eq(trend)
+      end
+
+      it "ignores observations older than the 30-day window" do
+        create(:technical_observation, asset: asset, observation_type: "bb_upper_breached", observed_at: 45.days.ago)
+
+        data = described_class.call(symbol: "AAPL").value!
+
+        expect(data[:recent_observations]).to be_empty
+        expect(data[:state]).to eq(:neutral)
+      end
+
+      it "is present for fixed income, whose verdict card renders too" do
+        cetes = create(:asset, :fixed_income, symbol: "CETES_182D")
+
+        data = described_class.call(symbol: cetes.symbol).value!
+
+        expect(data[:state]).to eq(:neutral)
+        expect(data).to have_key(:market_context)
+        expect(data[:recent_observations]).to be_empty
+      end
+    end
+
     context "when asset does not exist" do
       it "returns Failure with :not_found" do
         result = described_class.call(symbol: "INVALID")

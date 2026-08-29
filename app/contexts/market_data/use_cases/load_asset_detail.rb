@@ -5,13 +5,14 @@ module MarketData
         asset = Asset.find_by(symbol: symbol.upcase)
         return Failure([ :not_found, "Asset not found" ]) unless asset
 
+        reading = reading_for(asset)
+
         if asset.asset_type_fixed_income?
-          return Success({
-            asset: asset,
+          return Success(reading.merge(
             presenter: nil,
             has_fundamentals: false,
             yield_data: build_yield_data(asset)
-          })
+          ))
         end
 
         fundamental = resolve_fundamental(asset)
@@ -29,8 +30,7 @@ module MarketData
         has_statements = !asset.asset_type_crypto? && asset.financial_statements.exists?
         company_overview = resolve_company_overview(asset)
 
-        Success({
-          asset: asset,
+        Success(reading.merge(
           presenter: presenter,
           has_fundamentals: fundamental.present?,
           has_statements: has_statements,
@@ -38,10 +38,24 @@ module MarketData
           pe_history: pe_history,
           dividends: dividends,
           company_overview: company_overview
-        })
+        ))
       end
 
       private
+
+      # ADR-014: the state is derived, the phrase is selected, neither is composed downstream.
+      def reading_for(asset)
+        observations = asset.technical_observations.recent.within_last(30).limit(5)
+
+        {
+          asset: asset,
+          recent_observations: observations,
+          state: Domain::AssetState.for(observations),
+          state_source: Domain::AssetState.source(observations),
+          trend_source: Domain::AssetState.trend(observations),
+          market_context: Queries::AssetMarketContext.call(asset: asset)
+        }
+      end
 
       def build_yield_data(asset)
         days_to_maturity = asset.maturity_date ? (asset.maturity_date - Date.current).to_i : 0

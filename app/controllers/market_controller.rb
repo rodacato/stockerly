@@ -13,16 +13,18 @@ class MarketController < AuthenticatedController
       @pe_history = data[:pe_history]
       @dividends = data[:dividends] || []
       @company_overview = data[:company_overview]
-      @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
-      @recent_observations = @asset.technical_observations.recent.within_last(30).limit(5)
-      # ADR-014: the state is derived, the phrase is selected, neither is composed here.
-      @state = MarketData::Domain::AssetState.for(@recent_observations)
-      @state_source = MarketData::Domain::AssetState.source(@recent_observations)
-      @trend_source = MarketData::Domain::AssetState.trend(@recent_observations)
-      @market_context = MarketData::Queries::AssetMarketContext.call(asset: @asset)
+      @recent_observations = data[:recent_observations]
+      @state = data[:state]
+      @state_source = data[:state_source]
+      @trend_source = data[:trend_source]
+      @market_context = data[:market_context]
+
+      # ADR-002 forbids MarketData reading Trading or Alerts, so the user-side
+      # readings are composed here from their own contexts.
       @position_data = Trading::UseCases::LoadAssetPosition.call(user: current_user, asset: @asset)
       @holding = @position_data.present?
-      @asset_rules = current_user.alert_rules.where(asset_symbol: @asset.symbol).order(created_at: :desc).limit(3)
+      @asset_rules = Alerts::UseCases::LoadAssetRules.call(user: current_user, symbol: @asset.symbol)
+      @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
 
       trigger_fundamental_sync(@asset) unless @has_fundamentals
     in Dry::Monads::Failure[ :not_found, _ ]
