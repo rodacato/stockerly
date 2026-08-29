@@ -207,12 +207,16 @@ that file's header carried the same two errors. D68–D70 were raised and resolv
 panel consultation, which is why the open count fell rather than rose. Run the third command above;
 do not adjust the old numbers.
 
-**What the seven reds are.** Five predate the 2026-08-29 review: `ACT-1` (the empty state's CSV and
-demo doors), `CKP-1` (`Movimientos`, un-gated by D42), `ALR-1` (`Confluencia` as a screen, gated on
-D3's engine), and `AJU-1` (retire `/profile` into the hub). `CKP-8` is the product gap that review
-found — the two references a buy-or-sell decision needs are both in the database, the artboard draws
-all of them, and the code ships one row on the wrong tab. `X11` and `X12` are the consistency defects
-across the three screens; both are now **designed and awaiting code** (#431).
+**What the four reds are, and all four predate the 2026-08-29 review.** `ACT-1` (the empty state's
+CSV and demo doors), `CKP-1` (`Movimientos`, un-gated by D42), `ALR-1` (`Confluencia` as a screen,
+gated on D3's engine) and `AJU-1` (retire `/profile` into the hub).
+
+**Every red that review raised is closed or downgraded within the week** — `X9` and `X10` on the data
+side, `CKP-8` and `CKP-9` on the screen, `X11` on ordering, and `X12` dropped to 🟡 once its code
+shipped. None of them closed the way it was first described: widening the table changed nothing until
+two further gates came out, `CKP-8` turned out to be an artboard the code had shipped a third of, and
+`X12` reversed direction entirely — filed as design-versus-code drift, it turns out to be **code
+leading design**, which is why it stays open rather than closing with its own fix.
 
 **Two of that review's four reds closed the same week.** `X9` (thirty days of history) and `X10` (the
 nightly job discarding its factors) were fixed in #432 and #435. Worth recording what it took,
