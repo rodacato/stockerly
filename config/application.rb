@@ -57,6 +57,10 @@ module Stockerly
     config.i18n.available_locales = [ :"es-MX", :en ]
     config.i18n.fallbacks = [ :en ]
 
+    # No cap on a gateway's retry backoff outside of test, where the wait is
+    # real and worth waiting for. See MarketData::Gateways::RetryPolicy.
+    config.x.gateway_retry_max_interval = nil
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end

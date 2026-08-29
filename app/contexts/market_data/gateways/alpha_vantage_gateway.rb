@@ -149,7 +149,7 @@ module MarketData
 
     def connection
       @connection ||= Faraday.new(url: BASE_URL) do |f|
-        f.request :retry, max: 1, interval: 1.0, retry_statuses: [ 500, 502, 503 ]
+        f.request :retry, RetryPolicy.options(max: 1, interval: 1.0, retry_statuses: [ 500, 502, 503 ])
         f.response :json
         f.options.timeout = TIMEOUT
         f.options.open_timeout = TIMEOUT
