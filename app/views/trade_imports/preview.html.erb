@@ -54,7 +54,7 @@
       <%# The refusal is all-or-nothing so a portfolio is never quietly short a
           trade. Saying which trades leave, and being told to go ahead, is what
           keeps that true while unblocking a file one dead ticker holds up. %>
-      <%= form_with url: preview_trade_import_path, class: "flex flex-col gap-2 rounded-2xl bg-bg-muted px-4 py-3.5" do |f| %>
+      <%= form_with url: preview_trade_import_path, class: "flex flex-col gap-2 rounded-2xl bg-bg-muted px-4 py-3.5", data: { turbo: false } do |f| %>
         <%= f.hidden_field :contenido, value: @csv_text %>
         <%= f.hidden_field :skip_unknown, value: "1" %>
         <p class="text-xs leading-relaxed text-fg-subtle">
