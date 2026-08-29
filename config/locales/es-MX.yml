@@ -809,7 +809,7 @@ es-MX:
     metricas_referencial: Información referencial. El desempeño pasado no garantiza
       resultados futuros.
     precio:
-      titulo: Precio · %{currency} · cierre diario
+      titulo: Precio · %{currency} · %{days} días · cierre diario
     range_52w:
       above_high: "%{percent} arriba de su máximo del año"
       below_low: "%{percent} abajo de su mínimo del año"

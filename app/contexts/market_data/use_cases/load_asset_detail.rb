@@ -1,6 +1,10 @@
 module MarketData
   module UseCases
     class LoadAssetDetail < ApplicationUseCase
+      # The chart's window, named so the heading that states it and the query
+      # that fetches it cannot drift apart.
+      CHART_DAYS = 30
+
       def call(symbol:)
         asset = Asset.find_by(symbol: symbol.upcase)
         return Failure([ :not_found, "Asset not found" ]) unless asset
@@ -18,7 +22,7 @@ module MarketData
         fundamental = resolve_fundamental(asset)
         presenter = Domain::FundamentalPresenter.new(asset: asset, fundamental: fundamental)
 
-        price_histories = MarketData::Queries::PriceSeries.for(asset).since(30.days.ago.to_date)
+        price_histories = MarketData::Queries::PriceSeries.for(asset).since(CHART_DAYS.days.ago.to_date)
 
         pe_history = if asset.asset_type_stock?
                        eps = fundamental&.metrics&.dig("eps")&.to_d
