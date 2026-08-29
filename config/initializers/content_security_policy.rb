@@ -14,6 +14,8 @@ Rails.application.configure do
     policy.style_src   :self, "https://fonts.googleapis.com", :unsafe_inline
     policy.connect_src :self, "https://*.tradingview.com", "wss://*.tradingview.com"
     policy.frame_src   "https://*.tradingview.com"
+    # The tradingview.com allowances are kept for D66's opt-in chart toggle, not
+    # by omission; nothing loads them today, and they go if D66 is dropped (X17).
     policy.frame_ancestors :none
   end
 
