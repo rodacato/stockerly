@@ -832,8 +832,12 @@ es-MX:
         se actualizan semanalmente.
       vacio_titulo: Sin estados financieros
     summary_tab:
-      vacio_cuerpo: Aún no tenemos información financiera para este activo. Los datos
-        se sincronizan a diario — vuelve más tarde.
+      buscando_cuerpo: Los estamos pidiendo al proveedor. Aparecen aquí solos en cuanto
+        lleguen — no hace falta recargar.
+      buscando_titulo: Buscando fundamentales
+      sin_fuente: Ningún proveedor publica fundamentales para este tipo de activo.
+      vacio_cta: Traerlos ahora
+      vacio_cuerpo: Todavía no los hemos pedido para este activo.
       vacio_titulo: Sin datos fundamentales
     vs_plan:
       activa: activa

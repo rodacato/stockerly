@@ -1,10 +1,13 @@
 <%# Fundamentales, flattened out of the sub-tabs the artboard does not draw.
     The extract is what the artboard shows; "Ver todos" opens the remaining
-    categories in place rather than on a screen nobody designed (D36). %>
-<% if @has_fundamentals %>
+    categories in place rather than on a screen nobody designed (D36).
+    Locals, not ivars: a broadcast renders this outside a request.
+    Locals: asset, presenter, has_fundamentals; optional pending. %>
+<div id="asset_fundamentals_<%= asset.id %>">
+<% if has_fundamentals %>
   <%
-    summary = summary_metrics_for(@asset)
-    rest = remaining_metrics_by_category(@asset, @presenter)
+    summary = summary_metrics_for(asset)
+    rest = remaining_metrics_by_category(asset, presenter)
   %>
   <section data-controller="reveal" class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default"><%= t(".titulo") %></h3>
@@ -13,11 +16,11 @@
       <% summary.each do |key| %>
         <% defn = MarketData::Domain::MetricDefinitions.find(key) rescue nil %>
         <% next unless defn %>
-        <%= render "market/metric_card", definition: defn, value: resolve_metric_value(@presenter, key) %>
+        <%= render "market/metric_card", definition: defn, value: resolve_metric_value(presenter, key) %>
       <% end %>
     </div>
   
-    <% if @asset.asset_type_stock? %>
+    <% if asset.asset_type_stock? %>
       <%= render "market/analyst_target" %>
     <% end %>
   
@@ -36,7 +39,7 @@
             </h4>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               <% defns.each do |defn| %>
-                <%= render "market/metric_card", definition: defn, value: resolve_metric_value(@presenter, defn.key) %>
+                <%= render "market/metric_card", definition: defn, value: resolve_metric_value(presenter, defn.key) %>
               <% end %>
             </div>
           </div>
@@ -44,8 +47,20 @@
       </div>
     <% end %>
   </section>
+<% elsif local_assigns[:pending] %>
+  <%= render "components/empty_state", icon: "hourglass_top",
+             title: t("market.summary_tab.buscando_titulo"),
+             description: t("market.summary_tab.buscando_cuerpo") %>
+<% elsif asset.asset_type_stock? || asset.asset_type_etf? %>
+  <%= render "components/empty_state", icon: "analytics",
+             title: t("market.summary_tab.vacio_titulo"),
+             description: t("market.summary_tab.vacio_cuerpo"),
+             cta_text: t("market.summary_tab.vacio_cta"),
+             cta_path: market_asset_fundamentals_path(asset.symbol),
+             cta_method: :post %>
 <% else %>
   <%= render "components/empty_state", icon: "analytics",
              title: t("market.summary_tab.vacio_titulo"),
-             description: t("market.summary_tab.vacio_cuerpo") %>
+             description: t("market.summary_tab.sin_fuente") %>
 <% end %>
+</div>

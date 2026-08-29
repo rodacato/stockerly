@@ -1,11 +1,15 @@
-<%# Parameters: icon, title, description, cta_text (optional), cta_path (optional) %>
+<%# Parameters: icon, title, description, cta_text (optional), cta_path (optional),
+    cta_method (optional — :post renders a button, anything else a link) %>
 <div class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-default px-4 py-16 text-center">
   <span class="material-symbols-outlined mb-4 text-6xl text-border-strong" aria-hidden="true"><%= icon %></span>
   <h3 class="mb-2 font-display text-lg font-semibold text-fg-default"><%= title %></h3>
   <p class="mb-6 max-w-[320px] text-sm text-fg-subtle"><%= description %></p>
   <% if local_assigns[:cta_text] && local_assigns[:cta_path] %>
-    <%= link_to cta_path, class: "inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-fg-inverse transition-colors hover:bg-primary-hover" do %>
-      <%= cta_text %>
+    <% cta_class = "inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-fg-inverse transition-colors hover:bg-primary-hover" %>
+    <% if local_assigns[:cta_method] == :post %>
+      <%= button_to cta_text, cta_path, class: cta_class %>
+    <% else %>
+      <%= link_to cta_text, cta_path, class: cta_class %>
     <% end %>
   <% end %>
 </div>
