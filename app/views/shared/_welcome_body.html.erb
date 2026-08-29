@@ -1,24 +1,24 @@
 <%# Shared body between /welcome and /help. Context note + 3 starting guide cards + support footer. %>
 
 <%# Context card %>
-<div class="rounded-2xl border border-primary/20 bg-primary/5 p-5 flex gap-4">
+<div class="rounded-2xl bg-primary-muted p-5 flex gap-4">
   <div class="size-8 shrink-0 flex items-center justify-center text-primary mt-0.5">
     <%= render "shared/logo_mark" %>
   </div>
   <div class="min-w-0">
-    <h2 class="text-lg font-semibold text-fg-default mb-1.5">Software en desarrollo</h2>
-    <p class="text-sm text-fg-default leading-relaxed">Stockerly está en desarrollo activo. Las cosas pueden cambiar o romperse; si algo no funciona como esperas, probablemente es un bug — repórtalo.</p>
+    <h2 class="text-lg font-semibold text-fg-default mb-1.5"><%= t(".desarrollo_titulo") %></h2>
+    <p class="text-sm text-fg-default leading-relaxed"><%= t(".desarrollo_cuerpo") %></p>
   </div>
 </div>
 
 <%# Starting guide — 3 cards %>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
   <% [
-    { icon: "add_chart",            title: "Registra tu primer movimiento", body: "Carga una compra o venta para empezar a calcular tu rendimiento.", href: portfolio_path },
-    { icon: "visibility",           title: "Crea una watchlist",            body: "Sigue los activos que te interesan sin tenerlos en cartera.",     href: assets_path },
-    { icon: "notifications_active", title: "Configura una regla",          body: "Recibe avisos cuando un precio o métrica cruce un umbral.",       href: alerts_path }
+    { icon: "add_chart",            title: t(".guia_movimiento_titulo"), body: t(".guia_movimiento_cuerpo"), href: portfolio_path },
+    { icon: "visibility",           title: t(".guia_watchlist_titulo"),  body: t(".guia_watchlist_cuerpo"),  href: assets_path },
+    { icon: "notifications_active", title: t(".guia_regla_titulo"),      body: t(".guia_regla_cuerpo"),      href: alerts_path }
   ].each do |card| %>
-    <%= link_to card[:href], class: "group flex flex-col p-5 rounded-2xl bg-bg-surface border border-border-default hover:border-primary/30 hover:bg-bg-muted transition-colors no-underline text-fg-default" do %>
+    <%= link_to card[:href], class: "group flex flex-col p-5 rounded-2xl bg-bg-surface border border-border-default hover:border-primary hover:bg-bg-muted transition-colors no-underline text-fg-default" do %>
       <div class="size-8 rounded-lg bg-bg-muted text-fg-default inline-flex items-center justify-center mb-4">
         <span class="material-symbols-outlined text-lg"><%= card[:icon] %></span>
       </div>
@@ -33,6 +33,6 @@
 
 <%# Support footer %>
 <div class="text-sm text-fg-subtle space-y-1.5">
-  <p>¿Encontraste un bug? <%= link_to "Repórtalo aquí.", new_bug_report_path, class: "text-primary border-b border-primary/40 hover:border-primary transition-colors" %></p>
-  <p>¿Otra pregunta? Escríbenos a <%= mail_to Stockerly::SUPPORT_EMAIL, nil, class: "text-primary border-b border-primary/40 hover:border-primary transition-colors" %>.</p>
+  <p><%= t(".bug_pregunta") %> <%= link_to t(".bug_enlace"), new_bug_report_path, class: "text-primary border-b border-primary transition-colors" %></p>
+  <p><%= t(".contacto_pregunta") %> <%= mail_to Stockerly::SUPPORT_EMAIL, nil, class: "text-primary border-b border-primary transition-colors" %>.</p>
 </div>

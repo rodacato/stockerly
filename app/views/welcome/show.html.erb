@@ -1,11 +1,11 @@
-<% content_for(:title, "Bienvenido a Stockerly") %>
+<% content_for(:title, t(".title")) %>
 
 <main class="flex-1 flex flex-col items-center py-12 px-4">
-  <div class="w-full max-w-2xl space-y-8">
+  <div class="w-full max-w-[900px] space-y-8">
     <%# Greeting %>
     <div>
-      <h1 class="text-3xl font-bold text-fg-default tracking-tight">Hola, <%= current_user.full_name.split.first %></h1>
-      <p class="text-sm text-fg-subtle mt-2">Tu tracker personal de inversiones.</p>
+      <h1 class="text-3xl font-bold text-fg-default tracking-tight"><%= t(".saludo", name: current_user.full_name.split.first) %></h1>
+      <p class="text-sm text-fg-subtle mt-2"><%= t(".subtitulo") %></p>
     </div>
 
     <%# Context card + starting guide %>
@@ -14,8 +14,8 @@
     <%# Primary CTA %>
     <%= button_to complete_welcome_path,
           method: :post,
-          class: "w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-4 rounded-lg transition-colors shadow-md shadow-primary/20 cursor-pointer" do %>
-      <span>Ir al Panorama</span>
+          class: "w-full inline-flex items-center justify-center gap-2 cursor-pointer rounded-lg bg-primary px-4 py-3 font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" do %>
+      <span><%= t(".cta") %></span>
       <span class="material-symbols-outlined text-lg">arrow_forward</span>
     <% end %>
   </div>

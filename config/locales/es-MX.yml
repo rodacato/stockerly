@@ -480,6 +480,10 @@ es-MX:
       titulares_meta: de tus canastas
       titulares_titulo: Titulares
       titulo: Descubrir
+  help:
+    show:
+      subtitulo: Cómo empezar con Stockerly, qué hacer cuando algo falla, y cómo contactarnos.
+      titulo: Ayuda y soporte
   market:
     actions:
       crear_regla: Crear regla
@@ -1107,6 +1111,21 @@ es-MX:
       subtitulo: Es la única cuenta de tu instancia. Con ella entras a tu tracker.
       titulo: Crea tu cuenta
     ya_completado: Esta instancia ya está configurada.
+  shared:
+    welcome_body:
+      bug_enlace: Repórtalo aquí.
+      bug_pregunta: "¿Encontraste un bug?"
+      contacto_pregunta: "¿Otra pregunta? Escríbenos a"
+      desarrollo_cuerpo: Stockerly está en desarrollo activo. Las cosas pueden cambiar
+        o romperse; si algo no funciona como esperas, probablemente es un bug — repórtalo.
+      desarrollo_titulo: Software en desarrollo
+      guia_movimiento_cuerpo: Carga una compra o venta para empezar a calcular tu
+        rendimiento.
+      guia_movimiento_titulo: Registra tu primer movimiento
+      guia_regla_cuerpo: Recibe avisos cuando un precio o métrica cruce un umbral.
+      guia_regla_titulo: Configura una regla
+      guia_watchlist_cuerpo: Sigue los activos que te interesan sin tenerlos en cartera.
+      guia_watchlist_titulo: Crea una watchlist
   time:
     am: a.m.
     formats:
@@ -1270,3 +1289,9 @@ es-MX:
       agregado: Agregado a tu watchlist.
       eliminado: Eliminado de tu watchlist.
       no_encontrado: No encontramos ese elemento.
+  welcome:
+    show:
+      cta: Ir al Panorama
+      saludo: Hola, %{name}
+      subtitulo: Tu tracker personal de inversiones.
+      title: Bienvenido a Stockerly
