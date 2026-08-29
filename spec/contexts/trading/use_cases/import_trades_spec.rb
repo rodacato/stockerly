@@ -180,6 +180,19 @@ RSpec.describe Trading::UseCases::ImportTrades do
       expect(result.failure).to eq([ :unknown_symbols, [ "NOPE" ] ])
     end
 
+    # The two features were specced apart and never together, so the partial
+    # import silently discarded a row the alias could have resolved -- losing
+    # trades is exactly what the all-or-nothing refusal exists to prevent.
+    it "keeps an aliased symbol when the rest of the file is being skipped" do
+      rows = [ row(asset_symbol: "SATS"), row(asset_symbol: "NOPE", external_id: "x-2") ]
+
+      result = described_class.call(user: user, rows: rows, dry_run: false, skip_unknown: true)
+
+      expect(result.value![:imported]).to eq(1)
+      expect(result.value![:dropped]).to eq({ "NOPE" => 1 })
+      expect(Trade.last.asset).to eq(echo)
+    end
+
     # Retired tickers get reassigned. If a live SATS ever existed, a purchase of
     # it landing in EchoStar's position would be money in the wrong instrument,
     # and nothing would say so.
