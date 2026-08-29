@@ -44,6 +44,7 @@ module MarketData
           dividends: dividends,
           company_overview: company_overview,
           news: Queries::RecentNews.call(asset: asset),
+          range_52w: fifty_two_week_range(asset, presenter),
           reading: reading_record,
           signals: Domain::IndicatorSignals.for(reading_record)
         ))
@@ -65,6 +66,19 @@ module MarketData
           day_change: day_change,
           market_context: Queries::AssetMarketContext.call(asset: asset, day_change: day_change)
         }
+      end
+
+      # The 52-week range is this context's own reading — asset price against two
+      # registered metrics — so it is assembled here rather than in the template
+      # that used to compute it (X21).
+      def fifty_two_week_range(asset, presenter)
+        return nil if presenter.blank?
+
+        Domain::FiftyTwoWeekRange.for(
+          price: asset.current_price,
+          low: presenter.metric("fifty_two_week_low"),
+          high: presenter.metric("fifty_two_week_high")
+        )
       end
 
       def build_yield_data(asset)
