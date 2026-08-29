@@ -61,6 +61,9 @@ module MarketData
     # Search tickers by keyword via SYMBOL_SEARCH endpoint.
     # Returns Success([{ symbol:, name:, quote_type:, exchange:, exchange_display: }, ...])
     def search_tickers(query)
+      check = RateLimiter.check!(PROVIDER)
+      return check if check.failure?
+
       response = connection.get(QUERY_PATH) do |req|
         req.params["function"] = "SYMBOL_SEARCH"
         req.params["keywords"] = query

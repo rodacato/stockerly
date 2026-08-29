@@ -267,6 +267,32 @@ RSpec.describe MarketData::Gateways::AlphaVantageGateway do
       end
     end
 
+    # The search was the one Alpha Vantage call that never consulted the
+    # limiter, so it spent real quota the budget screen could not see and
+    # sailed past the 5/min ceiling until the provider itself refused.
+    context "quota" do
+      let!(:integration) do
+        create(:integration, provider_name: "Alpha Vantage",
+               daily_call_limit: 25, max_requests_per_minute: 5)
+      end
+
+      it "spends a call the budget can count" do
+        stub_alpha_vantage_ticker_search("AAPL", results: [])
+
+        expect { gateway.search_tickers("AAPL") }
+          .to change { MarketData::Domain::FundamentalsBudget.today.used }.from(0).to(1)
+      end
+
+      it "refuses locally once the minute ceiling is reached" do
+        integration.update!(minute_calls: 5, minute_reset_at: Time.current)
+
+        result = gateway.search_tickers("AAPL")
+
+        expect(result).to be_failure
+        expect(result.failure[0]).to eq(:rate_limited)
+      end
+    end
+
     context "when server error" do
       before { stub_alpha_vantage_ticker_search_error(status: 500) }
 
