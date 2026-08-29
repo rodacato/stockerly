@@ -18,7 +18,8 @@
 | Research: expert panel, competitive survey, provider audit (**dated snapshots**) | [`research/`](./research/) |
 | Deploy, security, runbooks | [`ops/`](./ops/) |
 | How work moves: the board, issues, research | [`ops/github-workflow.md`](./ops/github-workflow.md) |
-| Screenshots for README/showcase | [`screenshots/`](./screenshots/) |
+| Artboards used as the README's imagery | [`../design/exports/`](../design/exports/) |
+| Captures of a running instance (only where no artboard exists) | [`screenshots/`](./screenshots/) |
 | Why Stockerly pivoted to a single-user tracker | [`1.0-retrospective.md`](./1.0-retrospective.md) |
 
 ---

@@ -15,23 +15,53 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Open-source, self-hosted single-user asset tracker for stocks (USD), crypto, and Mexican fixed income (CETES), with correct MXN/USD multi-currency tracking. Built with Rails 8, PostgreSQL, Hotwire, and Tailwind CSS 4.
+Open-source, self-hosted **single-user** asset tracker for stocks (USD), crypto, and Mexican fixed
+income (CETES), with correct MXN/USD multi-currency tracking — the FX rate is captured at the
+trade's own date, not at import time. Built with Rails 8, PostgreSQL, Hotwire, and Tailwind CSS 4.
+The interface is **es-MX**; the code, routes and docs are English.
 
-100% free and open source — no pricing tiers, no premium features. See [docs/1.0-retrospective.md](docs/1.0-retrospective.md) for why Stockerly pivoted from a multi-user beta to a single-user tracker.
+100% free and open source — no pricing tiers, no premium features. See
+[docs/1.0-retrospective.md](docs/1.0-retrospective.md) for why Stockerly pivoted from a multi-user
+beta to a single-user tracker.
 
-![Dashboard](docs/screenshots/dashboard.png)
+![Panorama](design/exports/cockpit-panorama-desktop.png)
+
+> The images in this README are **artboards from the design system**
+> ([`design/`](design/)), not captures of a running instance. A `.pen` file is encrypted JSON, so
+> the PNGs in [`design/exports/`](design/exports/) are what makes a design reviewable — and they
+> are the closest thing to a current picture of the app that lives in the repo. They are re-shot
+> whenever the artboards change; the previous screenshots were captures of the pre-2.0 app and
+> were deleted rather than kept as a stale likeness.
 
 ## Features
 
-- **Portfolio Management** — Track trades, positions, gain/loss, allocation by sector and asset type. Period returns (1D to ALL), TWR benchmarking against S&P 500/NASDAQ/Dow Jones, risk metrics (volatility, Sharpe ratio, max drawdown).
-- **Market Intelligence** — 5-factor TrendScore (RSI, Momentum, MACD, Volume, EMA), Fear & Greed Index, market indices with sparklines, asset detail pages with adaptive tabs for stocks and crypto.
-- **Alerts** — Price thresholds, sentiment conditions, volume spikes, portfolio concentration risk (HHI). Configurable cooldown system.
-- **Earnings** — Beat/miss history, EPS bar charts and analyst targets, on each asset's own page.
-- **Dividends & Splits** — Automatic tracking and position adjustment on stock splits.
-- **Multi-Provider Data** — 10 market-data gateways (Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Alpha Vantage, FMP, Banxico, ExchangeRate, Alternative.me). Gateway chains with circuit breakers and adaptive scheduling.
-- **PWA** — Installable as a mobile app with offline support.
-- **Discover** — Market-wide waves, five basket-filtered headlines, and the macro calendar. Read without holding a position.
-- **Instance Operations** — Integration monitoring with rate-limit bars, sync logs with CSV export, background-job dashboard, and instance settings.
+- **Three tiers of asset, not one list** — *Holdings* (what you own), *Watchlist* (what you follow),
+  and *Tracked* (the instance's catalogue, which is what the sync jobs read). Adding to the
+  catalogue happens at `/tracked`, not in an admin console.
+- **Multi-currency that tells the truth** — FX captured at execution (Banxico's fix for the trade's
+  date), FX-weighted cost basis, and an unrealised gain split into *what the asset did* vs *what
+  the peso did* ([ADR-009](docs/architecture/adr/0009-fx-history-strategy.md)). For a MXN investor
+  holding USD assets those are two different stories.
+- **Consolidado** — portfolio value over `1M · 3M · 1A · YTD · MAX`, with a time-weighted return
+  measured against reinvested CETES: the benchmark a Mexican investor actually gives something up for.
+- **Asset detail** — 5-factor TrendScore (RSI, momentum, MACD, volume trend, EMA crossover),
+  fundamentals, earnings history and financial statements, each on its own tab.
+- **Alerts** — price crossings, day-change %, RSI overbought/oversold, volume spikes, dividend
+  ex-dates, BMV holidays and CETES auctions. Per-rule cooldowns.
+- **Trade capture built for the chore it is** — a sheet with ticker autocomplete and the Banxico
+  rate pre-filled for the date you typed, plus CSV import with a dry-run review step and an
+  all-or-nothing refusal when a symbol is unknown.
+- **Descubrir** — market-wide waves, basket-filtered headlines and the macro calendar. Reads
+  outside the instance's own catalogue, so it works before you hold anything.
+- **Two-factor** — TOTP with one-time recovery codes, self-contained, no external identity provider
+  ([ADR-018](docs/architecture/adr/0018-totp-with-recovery-codes.md)).
+- **Multi-provider market data** — 10 gateways (Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo
+  Finance, Alpha Vantage, FMP, Banxico, ExchangeRate, Alternative.me) behind gateway chains with
+  circuit breakers and adaptive scheduling. All optional.
+- **Instance operations** — integration health with rate-limit bars, sync logs with CSV export, a
+  background-job dashboard, an error tracker that runs *inside* the instance
+  ([ADR-020](docs/architecture/adr/0020-internal-error-tracker.md)), and instance settings.
+- **PWA** — installable, with push notifications and offline support.
 
 ## Architecture
 
@@ -39,14 +69,16 @@ Pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts:
 
 | Context | Responsibility |
 |---------|---------------|
-| **Identity** | Single-user auth, profile, onboarding |
-| **Trading** | Trades, portfolios, watchlists, dashboard |
+| **Identity** | Single-user auth, two-factor, profile, onboarding |
+| **Trading** | Trades, positions, portfolio, watchlist, dashboard |
 | **Alerts** | Rule management, evaluation, triggering |
 | **Market Data** | External data: prices, fundamentals, earnings, FX |
-| **Administration** | Integrations, sync logs, instance settings |
+| **Administration** | Integrations, sync logs, error tracker, instance settings |
 | **Notifications** | Notification creation and delivery |
 
-Cross-context communication via domain events only. See [CLAUDE.md](CLAUDE.md) for detailed architecture docs.
+Writes cross contexts through domain events only; reads follow the customer/supplier pattern in
+[ADR-002](docs/architecture/adr/0002-trading-marketdata-boundary.md). See [CLAUDE.md](CLAUDE.md)
+for the full architecture reference.
 
 ## Tech Stack
 
@@ -56,10 +88,11 @@ Cross-context communication via domain events only. See [CLAUDE.md](CLAUDE.md) f
 | Database | PostgreSQL 16 (multi-database: primary + Solid Cache + Solid Queue + Solid Cable) |
 | Frontend | Hotwire (Turbo + Stimulus), Tailwind CSS 4 |
 | Background Jobs | Solid Queue |
-| Auth | `has_secure_password` (bcrypt, no Devise) |
+| Auth | `has_secure_password` (bcrypt, no Devise) + TOTP with recovery codes |
 | Validation | dry-validation, dry-monads, dry-types, dry-struct |
+| Copy | Rails I18n, single locale `es-MX`, managed with `i18n-tasks` |
 | Deployment | Kamal 2, Docker, Cloudflare Tunnel |
-| CI | GitHub Actions (RSpec, RuboCop, Brakeman, Bundler Audit) |
+| CI | GitHub Actions (RSpec, RuboCop, Brakeman, Bundler Audit, i18n-tasks) |
 
 ## Getting Started
 
@@ -78,7 +111,11 @@ four-database setup, background jobs via `bin/jobs`, first-run check, and troubl
 
 ### API Keys
 
-Stockerly ships **10 market-data gateways** (concrete providers — `app/contexts/market_data/gateways/` holds 13 files: 12 classes, of which 2 are base classes, plus 1 error class). API keys are configured during the Setup Wizard, later under Integrations, or via Rails credentials. The registrations below are the source of truth in [`config/initializers/data_sources.rb`](config/initializers/data_sources.rb):
+Stockerly ships **10 market-data gateways** —
+[`app/contexts/market_data/gateways/`](app/contexts/market_data/gateways/) holds 14 files: the 10
+concrete providers, 2 base classes, 1 error class and 1 retry policy. API keys are configured
+during the Setup Wizard, later under Integrations, or via Rails credentials. The registrations in
+[`config/initializers/data_sources.rb`](config/initializers/data_sources.rb) are the source of truth:
 
 | Provider | Data it serves |
 |----------|----------------|
@@ -93,12 +130,15 @@ Stockerly ships **10 market-data gateways** (concrete providers — `app/context
 | [ExchangeRate](https://www.exchangerate-api.com/) | Current FX rates |
 | [Alternative.me](https://alternative.me/crypto/fear-and-greed-index/) | Crypto Fear & Greed sentiment |
 
-All providers are optional, and several need no key at all. The app works without any API keys configured — you just won't get live market data. Rate limits are per-provider settings stored on each `Integration` record, not hardcoded, so consult the provider's current terms rather than this table.
+All providers are optional, and several need no key at all. The app works without any API keys
+configured — you just won't get live market data. Rate limits are per-provider settings stored on
+each `Integration` record, not hardcoded, so consult the provider's current terms rather than this
+table.
 
 ## Running Tests
 
 ```bash
-# Full suite (2,690 examples as of 2026-08-27)
+# Full suite (3,007 examples as of 2026-08-29)
 bundle exec rspec
 
 # Single file
@@ -135,7 +175,10 @@ bin/setup-hooks
 
 Stockerly deploys to any Linux server using **Kamal 2** with Docker.
 
-The reference deployment uses Hetzner VPS + Cloudflare Tunnel (no inbound ports needed).
+The reference deployment uses Hetzner VPS + Cloudflare Tunnel (no inbound ports needed). That
+tunnel is how *this* instance is exposed, not a dependency you inherit —
+[ADR-019](docs/architecture/adr/0019-self-contained-by-default.md) keeps the app working without
+any of the maintainer's infrastructure.
 
 See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide, including
 [running the read-only Kamal commands from the devcontainer](docs/ops/deploy.md#from-the-devcontainer).
@@ -147,7 +190,9 @@ See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide, 
 | [GETTING_STARTED.md](GETTING_STARTED.md) | Run Stockerly locally — both paths, databases, jobs, troubleshooting |
 | [docs/](docs/) | Documentation index (vision, architecture, ops) |
 | [docs/vision/](docs/vision/) | Product north, audience, JTBDs, non-goals |
-| [docs/architecture/](docs/architecture/) | Bounded contexts map + ADRs |
+| [docs/architecture/](docs/architecture/) | Bounded contexts map + 19 ADRs |
+| [design/](design/) | The design system — Pencil files, ui-kit, brand, exported artboards |
+| [docs/ops/github-workflow.md](docs/ops/github-workflow.md) | How work is tracked: the board, issues, PRs |
 | [docs/ops/deploy.md](docs/ops/deploy.md) | Production deployment guide |
 | [CHANGELOG.md](CHANGELOG.md) | Release history |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution model |
@@ -158,25 +203,52 @@ See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide, 
 
 ## Contributing
 
-Stockerly is a self-hosted single-user tracker, built first as Adrian's daily-driver and packaged so any technically capable person can stand it up. See [docs/vision/audience.md](docs/vision/audience.md) for the audience model and [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
+Stockerly is a self-hosted single-user tracker, built first as Adrian's daily-driver and packaged
+so any technically capable person can stand it up. See
+[docs/vision/audience.md](docs/vision/audience.md) for the audience model,
+[docs/ops/github-workflow.md](docs/ops/github-workflow.md) for how work is tracked, and
+[CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 
 If you find a bug or have a question, open an [issue](https://github.com/rodacato/stockerly/issues).
 
 ## Gallery
 
 <details>
-<summary>More screenshots</summary>
+<summary>More artboards</summary>
 
-_Captured before the 2.0 mark landed; they show the retired logo, and some screens no longer
-exist — the standalone market listing was deleted in the 2.0 cleanup._
+Desktop artboards unless noted. The full index, artboard by artboard, is in
+[`design/exports/README.md`](design/exports/README.md).
 
-![Market Listings](docs/screenshots/market.png)
-![Asset Detail](docs/screenshots/asset-detail.png)
-![Portfolio](docs/screenshots/portfolio.png)
-![Alerts](docs/screenshots/alerts.png)
-![Admin — Integrations](docs/screenshots/admin-integrations.png)
-![Admin — Settings](docs/screenshots/admin-settings.png)
-![Admin — Logs](docs/screenshots/admin-logs.png)
+**Cockpit — asset detail and the consolidated view**
+
+![Asset · Análisis](design/exports/cockpit-asset-analisis-desktop.png)
+![Consolidado](design/exports/cockpit-consolidado-desktop.png)
+
+**Activos — holdings, trade capture, CSV import**
+
+![Holdings](design/exports/activos-holdings-desktop.png)
+![Registrar movimiento](design/exports/activos-registrar-movimiento-desktop.png)
+![Importar CSV — revisión](design/exports/activos-importar-revision.png)
+
+**Reglas y Descubrir**
+
+![Reglas](design/exports/reglas-lista.png)
+![Descubrir · Olas](design/exports/descubrir-olas-desktop.png)
+
+**Onboarding y seguridad**
+
+![Onboarding · Welcome](design/exports/onboarding-welcome-desktop.png)
+![TOTP · Alta](design/exports/auth-totp-alta.png)
+
+**Ajustes**
+
+![Integraciones](design/exports/ajustes-integraciones-desktop.png)
+![Estado y mantenimiento](design/exports/ajustes-estado-desktop.png)
+
+**The one capture of a running instance** — the error tracker shipped after the design pass, so it
+has no artboard:
+
+![Admin — Errores](docs/screenshots/admin-errors.png)
 
 </details>
 

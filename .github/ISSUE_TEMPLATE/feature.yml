@@ -51,7 +51,7 @@ body:
         - [ ] Migration added for X
         - [ ] Use case implemented
         - [ ] Tests covering Success/Failure
-        - [ ] View updated, screenshot regenerated in docs/screenshots/
+        - [ ] View updated, artboard re-exported to design/exports/
         - [ ] No ADR-001 violations in new copy
     validations:
       required: true
