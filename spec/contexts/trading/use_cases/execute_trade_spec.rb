@@ -226,11 +226,11 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
     end
   end
 
-  describe "currency and fx_rate capture — integration with FxRateResolver (#42)" do
-    # Resolution-branch coverage lives in spec/contexts/trading/domain/fx_rate_resolver_spec.rb.
-    # These specs cover what the use case alone is responsible for: deriving currency
-    # from the asset, propagating override from params, persisting the resolved rate,
-    # and ensuring no partial trade is created when resolution fails.
+  describe "currency and fx_rate capture (#42, #405)" do
+    # Branch coverage lives in spec/contexts/trading/domain/execution_rate_spec.rb.
+    # These cover what the use case alone owns: deriving currency from the asset,
+    # propagating the override, and persisting a rate captured against MXN rather
+    # than against whatever the user happens to prefer.
     let(:mx_user) { create(:user, preferred_currency: "MXN") }
     let!(:mx_portfolio) { create(:portfolio, user: mx_user) }
 
@@ -261,24 +261,35 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
       expect(result.value!.fx_rate_at_execution).to eq(BigDecimal("18.42"))
     end
 
-    it "persists the rate resolved by FxRateResolver against the DB" do
-      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.5)
+    it "persists the FIX of the day the trade executed" do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: 2.days.ago.to_date, rate: 17.5, source: "banxico")
 
-      result = described_class.call(user: mx_user, params: buy_params)
+      result = described_class.call(user: mx_user, params: buy_params.merge(executed_at: 1.day.ago.to_date.iso8601))
 
       expect(result).to be_success
       expect(result.value!.fx_rate_at_execution).to eq(BigDecimal("17.5"))
     end
 
-    it "fails and does not persist a trade when the resolver returns :fx_rate_unavailable" do
-      gateway = instance_double(MarketData::Gateways::FxRatesGateway, refresh_rates: nil)
-      allow(MarketData::Gateways::FxRatesGateway).to receive(:new).and_return(gateway)
+    # The rate is captured against MXN whatever the user reads in, so the same
+    # trade entered by a USD-preferring account stores the same number.
+    it "captures against MXN even when the user prefers USD" do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: 2.days.ago.to_date, rate: 17.5, source: "banxico")
 
+      result = described_class.call(user: user, params: buy_params.merge(executed_at: 1.day.ago.to_date.iso8601))
+
+      expect(result).to be_success
+      expect(result.value!.fx_rate_at_execution).to eq(BigDecimal("17.5"))
+    end
+
+    # Refusing would mean a fresh instance whose FX history has not synced yet
+    # could not record anything. NULL says "not known", which is true, and the
+    # backfill fills it at the trade's own date.
+    it "records the trade with a null rate when no FIX exists, rather than refusing it" do
       expect {
         result = described_class.call(user: mx_user, params: buy_params)
-        expect(result).to be_failure
-        expect(result.failure.first).to eq(:fx_rate_unavailable)
-      }.not_to change(Trade, :count)
+        expect(result).to be_success
+        expect(result.value!.fx_rate_at_execution).to be_nil
+      }.to change(Trade, :count).by(1)
     end
   end
 

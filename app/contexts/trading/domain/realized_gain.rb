@@ -54,15 +54,9 @@ module Trading
         (trade.fee || 0) * rate(trade)
       end
 
-      # Fail loud rather than silently valuing a leg at 1:1 — a wrong gain on a
+      # Fails loud rather than silently valuing a leg at 1:1 — a wrong gain on a
       # money screen is worse than a page that says it cannot compute one.
-      def rate(trade)
-        return 1.to_d if currency == trade.currency
-
-        trade.fx_rate_at_execution ||
-          raise(MissingFxRate,
-                "Trade##{trade.id}: no fx_rate_at_execution; cannot state the realized gain in #{currency}")
-      end
+      def rate(trade) = Trading::Domain::ExecutionRate.multiplier(trade: trade, target: currency)
     end
   end
 end

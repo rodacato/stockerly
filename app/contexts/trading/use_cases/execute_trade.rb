@@ -12,12 +12,7 @@ module Trading
         return Failure([ :insufficient_shares, "Not enough shares to sell" ]) if sell_exceeds_position?(attrs, position)
 
         trade_currency = attrs[:currency] || asset.currency
-        fx_rate = yield Trading::Domain::FxRateResolver.call(
-          trade_currency: trade_currency,
-          preferred_currency: user.preferred_currency,
-          override: attrs[:fx_rate_at_execution],
-          at_date: attrs[:executed_at]&.to_date
-        )
+        fx_rate = yield capture_fx(trade_currency, attrs)
 
         trade = persist_trade(portfolio, asset, position, attrs, trade_currency, fx_rate)
         update_position_after_trade(position, attrs)
@@ -34,6 +29,23 @@ module Trading
       end
 
       private
+
+      # Against MXN, never against the user's current preference: a rate stored
+      # relative to a setting stops being true the moment the setting changes,
+      # and the backfill could not repair it because the column was not null.
+      #
+      # A missing rate stores NULL instead of refusing the trade. NULL is true —
+      # it says "not known yet" — and `fx_rate_backfill:trades` fills it at the
+      # trade's own date once the series syncs. Refusing would mean a fresh
+      # instance, whose FX history has not run yet, could not record anything at
+      # all. The read path still fails loud rather than valuing NULL at 1:1.
+      def capture_fx(currency, attrs)
+        Success(Trading::Domain::ExecutionRate.capture(
+          currency: currency,
+          at_date: attrs[:executed_at]&.to_date,
+          override: attrs[:fx_rate_at_execution]
+        ))
+      end
 
       def find_or_create_position(portfolio, asset, attrs)
         return create_new_position(portfolio, asset, attrs) if always_new_lot?(asset, attrs)

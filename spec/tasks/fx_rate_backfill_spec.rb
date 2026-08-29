@@ -24,51 +24,64 @@ RSpec.describe "fx_rate_backfill rake tasks" do
       expect(trade.reload.fx_rate_at_execution).to eq(BigDecimal(1))
     end
 
-    it "fills NULL fx_rate_at_execution for cross-currency trades using current FxRate" do
-      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.5)
-      trade = create(:trade, portfolio: portfolio, asset: usd_asset, currency: "USD", fx_rate_at_execution: nil)
+    it "fills a cross-currency trade with the FIX of the day it executed" do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: 10.days.ago.to_date, rate: 17.5, source: "banxico")
+      trade = create(:trade, portfolio: portfolio, asset: usd_asset, currency: "USD",
+                             executed_at: 9.days.ago, fx_rate_at_execution: nil)
 
       Rake::Task["fx_rate_backfill:trades"].invoke
 
       expect(trade.reload.fx_rate_at_execution).to eq(BigDecimal("17.5"))
+    end
+
+    # The whole reason the column exists: a backdated trade valued at today's
+    # rate is the bug it was added to prevent.
+    it "values each trade at its own date, not at today's rate" do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: 30.days.ago.to_date, rate: 17.0, source: "banxico")
+      FxRateHistory.record(base: "USD", quote: "MXN", date: Date.current, rate: 25.0, source: "banxico")
+      old_trade = create(:trade, portfolio: portfolio, asset: usd_asset, currency: "USD",
+                                 executed_at: 29.days.ago, fx_rate_at_execution: nil)
+      new_trade = create(:trade, portfolio: portfolio, asset: usd_asset, currency: "USD",
+                                 executed_at: Time.current, fx_rate_at_execution: nil)
+
+      Rake::Task["fx_rate_backfill:trades"].invoke
+
+      expect(old_trade.reload.fx_rate_at_execution).to eq(BigDecimal("17.0"))
+      expect(new_trade.reload.fx_rate_at_execution).to eq(BigDecimal("25.0"))
     end
 
     it "is idempotent — skips rows already filled on a second run" do
-      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.5)
-      trade = create(:trade, portfolio: portfolio, asset: usd_asset, currency: "USD", fx_rate_at_execution: nil)
+      FxRateHistory.record(base: "USD", quote: "MXN", date: 10.days.ago.to_date, rate: 17.5, source: "banxico")
+      trade = create(:trade, portfolio: portfolio, asset: usd_asset, currency: "USD",
+                             executed_at: 9.days.ago, fx_rate_at_execution: nil)
 
-      Rake::Task["fx_rate_backfill:trades"].invoke
-      Rake::Task["fx_rate_backfill:trades"].reenable
-
-      # On the second run there should be nothing to do; the rate stays the same
-      # and no gateway calls are issued.
-      expect(MarketData::Gateways::FxRatesGateway).not_to receive(:new)
-      Rake::Task["fx_rate_backfill:trades"].invoke
+      2.times do
+        Rake::Task["fx_rate_backfill:trades"].invoke
+        Rake::Task["fx_rate_backfill:trades"].reenable
+      end
 
       expect(trade.reload.fx_rate_at_execution).to eq(BigDecimal("17.5"))
     end
 
-    it "leaves trade unchanged and warns when the resolver fails" do
+    it "leaves the trade null and warns when the series cannot answer for that date" do
       trade = create(:trade, portfolio: portfolio, asset: usd_asset, currency: "USD", fx_rate_at_execution: nil)
-      gateway = instance_double(MarketData::Gateways::FxRatesGateway, refresh_rates: nil)
-      allow(MarketData::Gateways::FxRatesGateway).to receive(:new).and_return(gateway)
 
       expect { Rake::Task["fx_rate_backfill:trades"].invoke }.to output(/skipped/).to_stderr
 
       expect(trade.reload.fx_rate_at_execution).to be_nil
     end
 
-    it "caches resolution per (currency, preferred) pair across many trades" do
-      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.5)
-      3.times { create(:trade, portfolio: portfolio, asset: usd_asset, currency: "USD", fx_rate_at_execution: nil) }
-
-      # Even with multiple trades sharing (USD, MXN), the resolver should be called once.
-      # We assert by counting gateway instantiations: forward FxRate exists, so 0 gateway calls.
-      expect(MarketData::Gateways::FxRatesGateway).not_to receive(:new)
+    # Captured against MXN whatever the account prefers — the divergence #405
+    # was filed for.
+    it "captures against MXN even for a USD-preferring account" do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: 10.days.ago.to_date, rate: 17.5, source: "banxico")
+      usd_portfolio = create(:portfolio, user: create(:user, preferred_currency: "USD"))
+      trade = create(:trade, portfolio: usd_portfolio, asset: usd_asset, currency: "USD",
+                             executed_at: 9.days.ago, fx_rate_at_execution: nil)
 
       Rake::Task["fx_rate_backfill:trades"].invoke
 
-      expect(Trade.where(fx_rate_at_execution: BigDecimal("17.5")).count).to eq(3)
+      expect(trade.reload.fx_rate_at_execution).to eq(BigDecimal("17.5"))
     end
   end
 end
