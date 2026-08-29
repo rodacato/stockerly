@@ -53,7 +53,7 @@
             </div>
 
             <%= render "components/sparkline", direction: nil,
-                  heights: wave_sparkline_heights(wave.closes) %>
+                  heights: sparkline_heights(wave.closes) %>
 
             <div class="shrink-0 text-right">
               <p class="font-mono text-sm font-bold <%= wave.change_percent.negative? ? "text-negative" : "text-positive" %>">

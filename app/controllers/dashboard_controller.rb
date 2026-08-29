@@ -8,5 +8,6 @@ class DashboardController < AuthenticatedController
     @sentiment_cards = data[:sentiment_cards]
     @signals         = data[:signals]
     @radar           = data[:radar]
+    @sparkline_closes = data[:sparkline_closes]
   end
 end

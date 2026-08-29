@@ -12,6 +12,7 @@ module Trading
 
         summary = consolidated_summary(portfolio, currency)
         gaps = tab == "watchlist" ? watchlist_gaps(user) : {}
+        rows = tab == "cartera" ? positions_for(portfolio, currency) : watchlist_for(user, gaps)
 
         {
           tab: tab,
@@ -19,9 +20,10 @@ module Trading
           portfolio: portfolio,
           summary: summary,
           fx_unavailable: portfolio.present? && summary.nil?,
-          positions: (tab == "cartera" ? positions_for(portfolio, currency) : []),
-          watchlist_items: (tab == "watchlist" ? watchlist_for(user, gaps) : []),
-          watchlist_gaps: gaps
+          positions: (tab == "cartera" ? rows : []),
+          watchlist_items: (tab == "watchlist" ? rows : []),
+          watchlist_gaps: gaps,
+          sparkline_closes: MarketData::Queries::PriceSeries.recent_closes(rows.map(&:asset))
         }
       end
 

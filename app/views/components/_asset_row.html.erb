@@ -25,7 +25,7 @@
   </div>
 
   <div class="w-20 shrink-0">
-    <%= render "components/sparkline", direction: change.negative? ? :down : :up, heights: sparkline_heights(asset) %>
+    <%= render "components/sparkline", direction: change.negative? ? :down : :up, heights: sparkline_heights(local_assigns[:closes]) %>
   </div>
 
   <div class="shrink-0 text-right">

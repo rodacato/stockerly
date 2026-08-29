@@ -1,111 +1,27 @@
 require "rails_helper"
 
+# Normalisation only. Which closes reach it is
+# MarketData::Queries::PriceSeries.recent_closes, specced beside it.
 RSpec.describe SparklineHelper do
-  let(:asset) { create(:asset) }
-
   describe "#sparkline_heights" do
-    context "with price history data" do
-      before do
-        7.times do |i|
-          create(:asset_price_history, asset: asset, date: (7 - i).days.ago.to_date, close: 100 + (i * 10))
-        end
-      end
+    it "normalises a rising series across the full 0-100 range" do
+      heights = helper.sparkline_heights([ 100, 110, 120, 130 ])
 
-      it "returns normalized heights between 0 and 100" do
-        heights = helper.sparkline_heights(asset)
-
-        expect(heights).to be_an(Array)
-        expect(heights.size).to eq(7)
-        expect(heights.first).to eq(0)
-        expect(heights.last).to eq(100)
-        heights.each { |h| expect(h).to be_between(0, 100) }
-      end
+      expect(heights).to eq([ 0, 33, 67, 100 ])
     end
 
-    context "with flat prices" do
-      before do
-        3.times do |i|
-          create(:asset_price_history, asset: asset, date: (3 - i).days.ago.to_date, close: 50.0)
-        end
-      end
-
-      it "returns constant heights of 50" do
-        heights = helper.sparkline_heights(asset)
-
-        expect(heights).to all(eq(50))
-      end
+    it "centres a flat series rather than dividing by a zero range" do
+      expect(helper.sparkline_heights([ 50.0, 50.0, 50.0 ])).to all(eq(50))
     end
 
-    context "with fewer than 2 data points" do
-      it "returns nil when no history" do
-        expect(helper.sparkline_heights(asset)).to be_nil
-      end
-
-      it "returns nil with only 1 data point" do
-        create(:asset_price_history, asset: asset, date: Date.current, close: 100)
-        expect(helper.sparkline_heights(asset)).to be_nil
-      end
+    it "keeps the series' own direction, since it normalises rather than sorts" do
+      expect(helper.sparkline_heights([ 130, 120, 110, 100 ])).to eq([ 100, 67, 33, 0 ])
     end
 
-    context "with custom points parameter" do
-      before do
-        14.times do |i|
-          create(:asset_price_history, asset: asset, date: (14 - i).days.ago.to_date, close: 100 + i)
-        end
-      end
-
-      it "limits to specified number of points" do
-        heights = helper.sparkline_heights(asset, points: 5)
-
-        expect(heights.size).to eq(5)
-      end
-    end
-
-    context "with preloaded association" do
-      before do
-        7.times do |i|
-          create(:asset_price_history, asset: asset, date: (7 - i).days.ago.to_date, close: 100 + (i * 10))
-        end
-      end
-
-      it "uses preloaded data without extra queries" do
-        preloaded_asset = Asset.includes(:asset_price_histories).find(asset.id)
-
-        queries = []
-        callback = lambda { |_name, _start, _finish, _id, payload| queries << payload[:sql] }
-        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-          helper.sparkline_heights(preloaded_asset)
-        end
-
-        expect(queries.none? { |q| q.include?("asset_price_histories") }).to be true
-      end
-
-      it "returns correct heights from preloaded data" do
-        preloaded_asset = Asset.includes(:asset_price_histories).find(asset.id)
-        heights = helper.sparkline_heights(preloaded_asset)
-
-        expect(heights).to be_an(Array)
-        expect(heights.size).to eq(7)
-        expect(heights.first).to eq(0)
-        expect(heights.last).to eq(100)
-      end
-    end
-
-    context "with stale data older than 7 days" do
-      before do
-        7.times do |i|
-          create(:asset_price_history, asset: asset, date: 30.days.ago.to_date + i, close: 100 + (i * 10))
-        end
-      end
-
-      it "still returns sparkline from the most recent data points" do
-        heights = helper.sparkline_heights(asset)
-
-        expect(heights).to be_an(Array)
-        expect(heights.size).to eq(7)
-        expect(heights.first).to eq(0)
-        expect(heights.last).to eq(100)
-      end
+    it "returns nil when there is no shape to draw" do
+      expect(helper.sparkline_heights([])).to be_nil
+      expect(helper.sparkline_heights([ 100 ])).to be_nil
+      expect(helper.sparkline_heights(nil)).to be_nil
     end
   end
 end
