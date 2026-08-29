@@ -1,0 +1,39 @@
+<%# The anchor: the current price against a reference of yours. Cost when you
+    hold it, your price threshold when you only watch it, plus the rules that
+    carry no price. The artboard draws this in Análisis; the code shipped one of
+    its three rows, in Mi posición (CKP-8, D67).
+    Locals: cost_anchor, threshold_anchor, threshold_currency, rules, currency. %>
+<section class="flex flex-col gap-3 rounded-2xl border border-border-default bg-bg-surface p-5">
+  <h3 class="font-mono text-[11px] uppercase tracking-widest text-primary"><%= t(".titulo") %></h3>
+
+  <% if cost_anchor %>
+    <div class="flex items-baseline justify-between gap-3 text-sm">
+      <span class="text-fg-default"><%= t(".costo", value: format_currency_mx(cost_anchor.reference, currency: currency)) %></span>
+      <span class="font-mono font-semibold <%= gain_color(cost_anchor.percent) %>"><%= signed_percent(cost_anchor.percent) %></span>
+    </div>
+  <% end %>
+
+  <% if threshold_anchor %>
+    <div class="flex items-baseline justify-between gap-3 text-sm">
+      <span class="text-fg-default"><%= t(".umbral", value: format_currency_mx(threshold_anchor.reference, currency: threshold_currency)) %></span>
+      <% gap = number_to_percentage(threshold_anchor.percent.abs, precision: 1, format: "%n%") %>
+      <span class="font-mono text-fg-subtle">
+        <% if threshold_anchor.percent.negative? %>
+          <%= t(".umbral_baja", percent: gap) %>
+        <% else %>
+          <%= t(".umbral_sube", percent: gap) %>
+        <% end %>
+      </span>
+    </div>
+  <% end %>
+
+  <% rules.each do |rule| %>
+    <div class="flex items-baseline justify-between gap-3 text-sm">
+      <span class="min-w-0 text-fg-default"><%= t(".regla", summary: alert_condition_summary(rule)) %></span>
+      <span class="shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold
+                   <%= rule.active? ? "bg-positive-bg text-positive-fg" : "bg-bg-muted text-fg-subtle" %>">
+        <%= rule.active? ? t(".activa") : t(".en_pausa") %>
+      </span>
+    </div>
+  <% end %>
+</section>

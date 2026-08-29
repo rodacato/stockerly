@@ -34,7 +34,6 @@
         <% if @position_data[:retrospective] %>
           <%= render "market/purchase_retrospective", retrospective: @position_data[:retrospective] %>
         <% end %>
-        <%= render "market/asset_rules", rules: @asset_rules %>
         <%= render "market/position_trades", trades: @position_data[:trades], asset: @asset %>
         <% if @dividends.present? %>
           <%= render "market/dividend_history" %>

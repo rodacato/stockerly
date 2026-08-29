@@ -22,6 +22,11 @@ class AlertRule < ApplicationRecord
 
   DATE_BASED_CONDITIONS = %w[dividend_ex_date bmv_holiday cete_auction].freeze
 
+  # The two conditions whose threshold is a price, so a distance to it can be
+  # stated. day_change_percent, rsi_* and volume_spike all carry a
+  # threshold_value that is not comparable to a quote.
+  PRICE_THRESHOLD_CONDITIONS = %w[price_crosses_above price_crosses_below].freeze
+
   # Conditions that don't anchor on a single asset (BMV-wide festivo, Banxico
   # auction schedule). They share `AlertRule#asset_symbol` for storage but the
   # form treats it as optional and the evaluator ignores it.
@@ -37,6 +42,7 @@ class AlertRule < ApplicationRecord
 
   scope :date_based, -> { where(condition: DATE_BASED_CONDITIONS) }
   scope :price_based, -> { where.not(condition: DATE_BASED_CONDITIONS) }
+  scope :price_threshold, -> { where(condition: PRICE_THRESHOLD_CONDITIONS) }
 
   DEFAULT_COOLDOWN_MINUTES = 60
 
