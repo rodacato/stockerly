@@ -96,8 +96,6 @@ es-MX:
     no_autorizado: No tienes acceso a esa sección.
     settings:
       show:
-        abrir_errores: Ver los errores registrados
-        abrir_jobs: Abrir Mission Control
         banner_activo: La app está bloqueada y muestra un banner. Tu sesión sigue
           viva.
         cache: Caché

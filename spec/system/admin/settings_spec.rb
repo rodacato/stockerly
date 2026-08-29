@@ -52,10 +52,14 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
     expect(page).to have_content("La app está bloqueada y muestra un banner.")
   end
 
-  it "links to the Mission Control jobs dashboard from Diagnóstico" do
+  # D5 gave Ajustes one hub, and it already carries rows for Trabajos and for
+  # the error tracker. Diagnóstico offering them a second time was the admin
+  # split growing back a door at a time.
+  it "does not offer a second way into the surfaces the Ajustes hub already opens" do
     visit admin_settings_path
 
-    expect(page).to have_link("Abrir Mission Control", href: "/admin/jobs")
+    expect(page).to have_no_link(href: "/admin/jobs")
+    expect(page).to have_no_link(href: admin_errors_path)
   end
 
   it "renders runtime diagnostic values (mono labels)" do
