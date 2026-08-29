@@ -161,11 +161,12 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [017](./adr/0017-python-bridge-for-yahoo-finance.md) | A Python bridge for Yahoo Finance, run as a subprocess | Accepted 2026-08-26 |
 | [018](./adr/0018-totp-with-recovery-codes.md) | TOTP with recovery codes, for an audience of more than one | Accepted 2026-08-27 · reverses design decision D23 |
 | [019](./adr/0019-self-contained-by-default.md) | Self-contained by default: the fewest vendors a self-hoster can inherit | Accepted 2026-08-28 · adds the vision's fourth hard rule |
+| [020](./adr/0020-internal-error-tracker.md) | An internal error tracker, because a self-hoster's 500 is lost today | Accepted 2026-08-28 |
+| [021](./adr/0021-one-definition-of-the-day-change.md) | One definition of the day change, computed from our own closes | Accepted 2026-08-29 |
 
-Sixteen ADRs: **0001, 0002 and 0006–0019**. The gap is explained below.
+Eighteen ADRs: **0001, 0002 and 0006–0021**. The gap is explained below.
 
-**ADR-018 is the newest, and it is the only one that reverses a decision this project had already
-published.** Design decision D23 recommended *against* building TOTP, and it was right for the
+**ADR-018 is the only one that reverses a decision this project had already published.** Design decision D23 recommended *against* building TOTP, and it was right for the
 audience it was written for: one person, who could put Cloudflare Access in front of his own tunnel.
 ADR-010 retired that audience. Access cannot be prescribed to a self-hoster who does not have it, so
 the recommendation expired with its premise rather than being overruled — and recovery codes ship in

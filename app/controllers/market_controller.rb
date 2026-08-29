@@ -18,6 +18,7 @@ class MarketController < AuthenticatedController
       @state_source = data[:state_source]
       @trend_source = data[:trend_source]
       @market_context = data[:market_context]
+      @day_change = data[:day_change]
 
       # ADR-002 forbids MarketData reading Trading or Alerts, so the user-side
       # readings are composed here from their own contexts.

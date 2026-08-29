@@ -16,9 +16,18 @@ module MarketData
           "asset_#{asset.id}",
           target: "asset_price_#{asset.id}",
           partial: "components/asset_price",
-          locals: { asset: asset, user: owner }
+          locals: { asset: asset, user: owner, change: day_change_for(asset) }
         )
       end
+
+      # The broadcast redraws the same block the page rendered, so it computes
+      # the day change the same way (ADR-021) rather than reading the column.
+      def self.day_change_for(asset)
+        MarketData::Domain::DayChange.from_closes(
+          MarketData::Queries::PriceSeries.for(asset).latest(2).map(&:close)
+        )
+      end
+      private_class_method :day_change_for
     end
   end
 end

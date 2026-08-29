@@ -28,6 +28,20 @@ module AssetsHelper
     "#{value.negative? ? "−" : "+"}#{number_with_precision(value.abs, precision: 1)}%"
   end
 
+  # An unknown day change is drawn as a dash, never as 0%: an asset without a
+  # previous close has not been flat, it has nothing to compare against.
+  def day_change_slot(percent)
+    return { text: "—", color: "text-fg-subtle" } if percent.nil?
+
+    { text: signed_percent(percent), color: gain_color(percent) }
+  end
+
+  def day_change_direction(percent)
+    return :flat if percent.nil?
+
+    percent.negative? ? :down : :up
+  end
+
   # D9's ladder, cheapest first: owning implies following implies tracked.
   def tracked_tier(asset, held_ids:, followed_ids:)
     return :held if held_ids.include?(asset.id)

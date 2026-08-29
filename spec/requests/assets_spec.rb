@@ -112,13 +112,28 @@ RSpec.describe "Activos", type: :request do
     end
 
     it "leads each holding with what it is worth, not with the day's move (D69)" do
-      asset = mxn_asset(symbol: "WALMEX", current_price: 70, change_percent_24h: 1.5)
+      asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
       create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
 
       get assets_path
 
       expect(response.body).to match(%r{text-sm font-bold text-fg-default">\s*7,000\s*</p>})
       expect(response.body).to match(%r{text-xs text-positive">\s*\+1\.5%\s*</p>})
+    end
+
+    # ADR-021: one close is no day change. Rendering 0% would report the row
+    # as flat, which is a different claim from having nothing to compare.
+    it "draws a dash for a holding with no previous close" do
+      asset = mxn_asset(symbol: "NUEVA", current_price: 10, change_percent_24h: 4.0)
+      create(:asset_price_history, asset: asset, date: Date.current,
+                                   open: 10, high: 10, low: 10, close: 10)
+      create(:position, portfolio: portfolio, asset: asset, shares: 1, avg_cost: 10, status: :open)
+
+      get assets_path
+
+      expect(response.body).to match(%r{text-xs text-fg-subtle">\s*—\s*</p>})
+      expect(response.body).not_to include("+4.0%")
+      expect(response.body).not_to include("+0.0%")
     end
 
     it "orders the holdings by market value descending (D68)" do

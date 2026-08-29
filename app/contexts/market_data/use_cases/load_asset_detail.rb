@@ -50,6 +50,7 @@ module MarketData
       # ADR-014: the state is derived, the phrase is selected, neither is composed downstream.
       def reading_for(asset)
         observations = asset.technical_observations.recent.within_last(30).limit(5)
+        day_change = Domain::DayChange.from_closes(Queries::PriceSeries.for(asset).latest(2).map(&:close))
 
         {
           asset: asset,
@@ -57,7 +58,8 @@ module MarketData
           state: Domain::AssetState.for(observations),
           state_source: Domain::AssetState.source(observations),
           trend_source: Domain::AssetState.trend(observations),
-          market_context: Queries::AssetMarketContext.call(asset: asset)
+          day_change: day_change,
+          market_context: Queries::AssetMarketContext.call(asset: asset, day_change: day_change)
         }
       end
 

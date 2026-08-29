@@ -4,14 +4,15 @@
     engine is gated on its discovery card.
     D69: the row owns two emphasis slots and the context says which number
     fills the first one. A fixed-income row about to mature reports that
-    instead of a 24h move it does not have. %>
+    instead of a day move it does not have.
+    ADR-021: `change` is the computed day change and may be nil. %>
 <% maturity_days = local_assigns[:maturity_days] %>
 <% context = local_assigns.fetch(:context, :cartera) %>
 <% asset = position.asset %>
-<% change = asset.change_percent_24h || 0 %>
+<% change = local_assigns[:change] %>
 <% amount, amount_currency = position_amount(position, declared_currency) %>
 <% value_slot = { text: money_cell(amount, currency: amount_currency, declared: declared_currency, precision: 0), color: "text-fg-default" } %>
-<% move_slot = maturity_days ? { text: t("comun.vencimiento", count: maturity_days), color: "text-warning-fg" } : { text: signed_percent(change), color: gain_color(change) } %>
+<% move_slot = maturity_days ? { text: t("comun.vencimiento", count: maturity_days), color: "text-warning-fg" } : day_change_slot(change) %>
 <% primary, secondary = context == :radar ? [ move_slot, value_slot.merge(color: "text-fg-subtle") ] : [ value_slot, move_slot ] %>
 <%= link_to market_asset_path(asset.symbol),
             class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
@@ -25,7 +26,7 @@
   </div>
 
   <div class="w-20 shrink-0">
-    <%= render "components/sparkline", direction: change.negative? ? :down : :up, heights: sparkline_heights(local_assigns[:closes]) %>
+    <%= render "components/sparkline", direction: day_change_direction(change), heights: sparkline_heights(local_assigns[:closes]) %>
   </div>
 
   <div class="shrink-0 text-right">

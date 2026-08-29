@@ -9,5 +9,6 @@ class DashboardController < AuthenticatedController
     @signals         = data[:signals]
     @radar           = data[:radar]
     @sparkline_closes = data[:sparkline_closes]
+    @day_changes     = data[:day_changes]
   end
 end

@@ -109,8 +109,8 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
 
   describe "the radar" do
     it "leaves out an asset that did not move" do
-      still = mxn_asset(symbol: "QUIET", current_price: 10, change_percent_24h: 0)
-      moved = mxn_asset(symbol: "LOUD", current_price: 10, change_percent_24h: 3.2)
+      still = with_day_change(mxn_asset(symbol: "QUIET", current_price: 10), 0)
+      moved = with_day_change(mxn_asset(symbol: "LOUD", current_price: 10), 3.2)
       create(:position, portfolio: portfolio, asset: still, shares: 1, avg_cost: 10, status: :open)
       create(:position, portfolio: portfolio, asset: moved, shares: 1, avg_cost: 10, status: :open)
 
@@ -118,8 +118,8 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
     end
 
     it "orders by how far it moved, in either direction" do
-      small = mxn_asset(symbol: "SMALL", change_percent_24h: 1.0)
-      big   = mxn_asset(symbol: "BIG",   change_percent_24h: -8.0)
+      small = with_day_change(mxn_asset(symbol: "SMALL"), 1.0)
+      big   = with_day_change(mxn_asset(symbol: "BIG"), -8.0)
       [ small, big ].each { |a| create(:position, portfolio: portfolio, asset: a, shares: 1, avg_cost: 1, status: :open) }
 
       expect(described_class.call(user: user)[:radar].map { |e| e.asset.symbol }).to eq([ "BIG", "SMALL" ])
@@ -128,7 +128,7 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
     # A CETES that does not move is precisely the row the design shows, because
     # what makes it news is the maturity date.
     it "keeps a fixed-income position that is about to mature even though it is flat" do
-      cetes = create(:asset, :fixed_income, symbol: "CETES28", currency: "MXN", change_percent_24h: 0)
+      cetes = with_day_change(create(:asset, :fixed_income, symbol: "CETES28", currency: "MXN"), 0)
       create(:position, portfolio: portfolio, asset: cetes, shares: 1, avg_cost: 10,
                         status: :open, maturity_date: 3.days.from_now.to_date)
 
@@ -139,7 +139,7 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
     end
 
     it "ignores a maturity too far out to be news" do
-      cetes = create(:asset, :fixed_income, symbol: "CETES91", currency: "MXN", change_percent_24h: 0)
+      cetes = with_day_change(create(:asset, :fixed_income, symbol: "CETES91", currency: "MXN"), 0)
       create(:position, portfolio: portfolio, asset: cetes, shares: 1, avg_cost: 10,
                         status: :open, maturity_date: 200.days.from_now.to_date)
 
@@ -147,8 +147,8 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
     end
 
     it "mixes what you own with what you watch" do
-      held    = mxn_asset(symbol: "HELD", change_percent_24h: 2.0)
-      watched = mxn_asset(symbol: "WATCHED", change_percent_24h: 5.0)
+      held    = with_day_change(mxn_asset(symbol: "HELD"), 2.0)
+      watched = with_day_change(mxn_asset(symbol: "WATCHED"), 5.0)
       create(:position, portfolio: portfolio, asset: held, shares: 1, avg_cost: 1, status: :open)
       create(:watchlist_item, user: user, asset: watched)
 

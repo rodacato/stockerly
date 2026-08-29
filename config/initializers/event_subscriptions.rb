@@ -16,8 +16,10 @@ Rails.application.config.after_initialize do
 
   # Market Data
   EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
-  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::BroadcastPriceUpdate)
+  # Order is load-bearing: the broadcast reads the day change off today's
+  # history row (ADR-021), which RecordPriceHistory is what updates.
   EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::RecordPriceHistory)
+  EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::BroadcastPriceUpdate)
   EventBus.subscribe(MarketData::Events::AssetPriceUpdated, MarketData::Handlers::RecalculateTrendScoreOnPriceUpdate)
   EventBus.subscribe(MarketData::Events::AllGatewaysFailed, MarketData::Handlers::LogAllGatewaysFailure)
 

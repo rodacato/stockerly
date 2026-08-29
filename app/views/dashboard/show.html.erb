@@ -61,10 +61,11 @@
                        declared_currency: @currency,
                        maturity_days: entry.maturity_days,
                        closes: @sparkline_closes[entry.asset.id],
+                       change: entry.change,
                        context: :radar %>
           <% else %>
             <%= render "components/watch_row", item: entry.record, context: :radar,
-                       closes: @sparkline_closes[entry.asset.id] %>
+                       closes: @sparkline_closes[entry.asset.id], change: entry.change %>
           <% end %>
         <% end %>
       </div>

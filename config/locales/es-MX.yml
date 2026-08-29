@@ -611,6 +611,7 @@ es-MX:
     header:
       agregar_watchlist: Agregar a watchlist
       quitar_watchlist: Quitar de watchlist
+      sin_cambio_dia: sin dato del día
       sin_precio: Precio no disponible
     market_context:
       abierto: abierto

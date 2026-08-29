@@ -43,7 +43,8 @@
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <% @positions.each do |position| %>
           <%= render "components/asset_row", position: position, declared_currency: @currency,
-                     closes: @sparkline_closes[position.asset_id] %>
+                     closes: @sparkline_closes[position.asset_id],
+                     change: @day_changes[position.asset_id] %>
         <% end %>
       </div>
     <% else %>
@@ -59,7 +60,8 @@
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <% @watchlist_items.each do |item| %>
           <%= render "components/watch_row", item: item, gap: @watchlist_gaps[item.asset.symbol],
-                     closes: @sparkline_closes[item.asset_id] %>
+                     closes: @sparkline_closes[item.asset_id],
+                     change: @day_changes[item.asset_id] %>
         <% end %>
       </div>
     <% else %>

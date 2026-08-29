@@ -12,7 +12,10 @@ module Trading
 
         summary = consolidated_summary(portfolio, currency)
         gaps = tab == "watchlist" ? watchlist_gaps(user) : {}
-        rows = tab == "cartera" ? positions_for(portfolio, currency) : watchlist_for(user, gaps)
+        rows = tab == "cartera" ? positions_for(portfolio, currency) : user.watchlist_items.includes(:asset).to_a
+        closes = MarketData::Queries::PriceSeries.recent_closes(rows.map(&:asset))
+        day_changes = MarketData::Domain::DayChange.by_asset(closes)
+        rows = sorted_watchlist(rows, gaps, day_changes) if tab == "watchlist"
 
         {
           tab: tab,
@@ -23,7 +26,8 @@ module Trading
           positions: (tab == "cartera" ? rows : []),
           watchlist_items: (tab == "watchlist" ? rows : []),
           watchlist_gaps: gaps,
-          sparkline_closes: MarketData::Queries::PriceSeries.recent_closes(rows.map(&:asset))
+          sparkline_closes: closes,
+          day_changes: day_changes
         }
       end
 
@@ -64,11 +68,8 @@ module Trading
 
       # D68: the watchlist is a queue — what sits closest to its own threshold
       # rises. Distance is a percentage because D10 leaves the prices unconverted.
-      def watchlist_for(user, gaps)
-        user.watchlist_items
-            .includes(:asset)
-            .to_a
-            .sort_by { |item| proximity_key(item.asset, gaps) }
+      def sorted_watchlist(items, gaps, day_changes)
+        items.sort_by { |item| proximity_key(item.asset, gaps, day_changes) }
       end
 
       # The distance the list is ordered by, keyed by symbol so the row can show
@@ -94,12 +95,14 @@ module Trading
 
       # A row with a threshold sorts ahead of a row without one: a distance to
       # your own number and a day's movement do not share an axis.
-      def proximity_key(asset, gaps)
+      # ADR-021: the fallback reads the same computed day change the row shows,
+      # so the order and the number on it cannot come from different measures.
+      def proximity_key(asset, gaps, day_changes)
         symbol = asset.symbol
         distance = gaps[symbol]
         return [ 0, distance, symbol ] if distance
 
-        [ 1, -asset.change_percent_24h.to_f.abs, symbol ]
+        [ 1, -day_changes[asset.id].to_f.abs, symbol ]
       end
 
       def nearest_distance(price, thresholds)

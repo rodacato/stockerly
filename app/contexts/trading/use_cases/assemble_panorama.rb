@@ -17,6 +17,8 @@ module Trading
         summary   = consolidated_summary(portfolio, currency)
         positions = open_positions(portfolio)
         watched   = user.watchlist_items.includes(:asset).to_a
+        closes    = MarketData::Queries::PriceSeries.recent_closes(asset_ids_of(positions, watched))
+        day_changes = MarketData::Domain::DayChange.by_asset(closes)
 
         {
           currency: currency,
@@ -24,8 +26,9 @@ module Trading
           fx_unavailable: portfolio.present? && summary.nil?,
           sentiment_cards: sentiment_cards(user),
           signals: signals(positions, watched),
-          radar: radar(positions, watched),
-          sparkline_closes: MarketData::Queries::PriceSeries.recent_closes(asset_ids_of(positions, watched))
+          radar: radar(positions, watched, day_changes),
+          sparkline_closes: closes,
+          day_changes: day_changes
         }
       end
 
@@ -109,23 +112,25 @@ module Trading
 
       # "Con actividad hoy" is taken literally: the asset moved, or a fixed
       # income position matures soon enough that its silence is the news.
-      def radar(positions, watched)
-        entries = positions.map { |p| entry_for(:position, p, maturity_days_of(p)) } +
-                  watched.map { |w| entry_for(:watchlist, w, nil) }
+      # ADR-021: an asset with no computable day change has not been quiet, it
+      # is unknown — so it is not reported as activity either way.
+      def radar(positions, watched, day_changes)
+        entries = positions.map { |p| entry_for(:position, p, maturity_days_of(p), day_changes) } +
+                  watched.map { |w| entry_for(:watchlist, w, nil, day_changes) }
 
         entries
-          .select { |e| e.change.abs.positive? || e.maturity_days }
-          .sort_by { |e| [ e.maturity_days ? 0 : 1, -e.change.abs ] }
+          .select { |e| e.change&.nonzero? || e.maturity_days }
+          .sort_by { |e| [ e.maturity_days ? 0 : 1, -e.change.to_f.abs ] }
           .first(RADAR_LIMIT)
       end
 
-      def entry_for(kind, record, maturity_days)
+      def entry_for(kind, record, maturity_days, day_changes)
         asset = record.asset
         RadarEntry.new(
           kind: kind,
           record: record,
           asset: asset,
-          change: asset.change_percent_24h.to_f,
+          change: day_changes[asset.id],
           maturity_days: maturity_days
         )
       end
