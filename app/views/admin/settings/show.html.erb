@@ -25,15 +25,6 @@
         </div>
       <% end %>
     </dl>
-    <% if @developer_mode %>
-      <%= link_to t(".abrir_errores"), admin_errors_path,
-            class: "inline-flex items-center gap-1.5 self-start text-sm font-semibold text-primary hover:underline" %>
-    <% end %>
-    <%= link_to "/admin/jobs", target: "_blank", rel: "noopener",
-          class: "inline-flex items-center gap-1.5 self-start text-sm font-semibold text-primary hover:underline" do %>
-      <%= t(".abrir_jobs") %>
-      <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
-    <% end %>
   </section>
 
   <section class="flex flex-col gap-3">
