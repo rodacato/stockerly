@@ -232,17 +232,23 @@ es-MX:
       eliminado: "%{symbol} se quitó del catálogo."
       eliminar: Dejar de rastrear
       en_pausa: En pausa
+      filtrar:
+        one: Buscar entre tu activo
+        other: Buscar entre tus %{count} activos
+        zero: Buscar entre tus activos
       fuente_mapeada: Listo. %{symbol} vuelve a sincronizar en la próxima pasada.
       fuente_no_mapeada: No se pudo guardar el nombre de la fuente.
       fuente_no_reconoce: "%{provider} no reconoce «%{symbol}». No guardamos nada."
       intro: Los activos que tu instancia sincroniza a diario. Seguir uno o comprarlo
         le da prioridad; pausarlo libera presupuesto.
       no_encontrado: No encontré ese activo.
+      orden_de_gasto: Se gastan en ese orden. Si el presupuesto se acaba, los últimos
+        esperan al día siguiente.
       pausado: "%{symbol} en pausa. Su presupuesto queda libre."
       pausar: Pausar
       presupuesto_agotado: Agotado hasta mañana
       presupuesto_detalle: "%{used} de %{limit} llamadas usadas"
-      presupuesto_titulo: Presupuesto de hoy
+      presupuesto_titulo: Presupuesto diario · Fundamentales
       probar: Probar
       reanudado: "%{symbol} vuelve a sincronizarse."
       reanudar: Reanudar
@@ -253,6 +259,8 @@ es-MX:
       sin_fuente_detalle: "%{provider} no reconoce «%{symbol}». La BMV nombra a cada
         emisora con su serie, y Yahoo la omite cuando es un asterisco."
       sin_fuente_promesa: Guardamos el nombre solo si la fuente contesta con él.
+      sin_resultados: Ningún activo rastreado coincide con «%{query}».
+      sin_resultados_titulo: Sin coincidencias
       tier_followed: Watchlist
       tier_held: Holdings
       tier_tracked: Tracked

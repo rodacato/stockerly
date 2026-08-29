@@ -13,6 +13,17 @@
 
     <%= render "assets/track_form" %>
 
+    <%# Filters what you already track — a different control from the typeahead
+        in the form above, which searches the catalogue to add. %>
+    <%= form_with url: tracked_assets_path, method: :get, data: { turbo_action: "advance" },
+          class: "relative" do %>
+      <label for="tracked_query" class="sr-only"><%= t("assets.tracked.filtrar", count: @total) %></label>
+      <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base text-fg-subtle" aria-hidden="true">search</span>
+      <input type="search" id="tracked_query" name="q" value="<%= @query %>" autocomplete="off"
+             placeholder="<%= t("assets.tracked.filtrar", count: @total) %>"
+             class="w-full rounded-lg border border-border-default bg-bg-canvas py-2.5 pl-10 pr-3 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary/20" />
+    <% end %>
+
     <% if @assets.any? %>
       <div class="grid gap-3 sm:grid-cols-2">
         <% @assets.each do |asset| %>
@@ -21,6 +32,11 @@
                      tier: tracked_tier(asset, held_ids: @held_ids, followed_ids: @followed_ids) %>
         <% end %>
       </div>
+    <% elsif @query %>
+      <%= render "components/empty_state",
+                 icon: "search_off",
+                 title: t("assets.tracked.sin_resultados_titulo"),
+                 description: t("assets.tracked.sin_resultados", query: @query) %>
     <% else %>
       <%= render "components/empty_state",
                  icon: "radar",
@@ -39,6 +55,19 @@
     <p class="text-xs text-fg-subtle">
       <%= @budget.exhausted? ? t("assets.tracked.presupuesto_agotado") : t("assets.tracked.presupuesto_detalle", used: @budget.used, limit: @budget.limit) %>
     </p>
+
+    <%# The ladder in spend order (D9): the tier is the budget, so the panel
+        breaks the queue down instead of only stating a total. %>
+    <dl class="flex flex-col gap-1.5 border-t border-border-default pt-3">
+      <% [ :held, :followed, :tracked ].each do |tier| %>
+        <div class="flex items-baseline justify-between gap-3">
+          <dt class="text-xs text-fg-subtle"><%= t("assets.tracked.tier_#{tier}") %></dt>
+          <dd class="font-mono text-xs text-fg-default"><%= @tier_counts[tier] %></dd>
+        </div>
+      <% end %>
+    </dl>
+    <p class="text-xs text-fg-subtle"><%= t("assets.tracked.orden_de_gasto") %></p>
+
     <p class="text-xs text-fg-subtle"><%= t("assets.tracked.intro") %></p>
   </aside>
 </div>
