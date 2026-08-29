@@ -45,29 +45,95 @@ RSpec.describe Alerts::Domain::AlertEvaluator do
       end
     end
 
+    # #455: the condition used to measure the move between two consecutive
+    # syncs under a name that promises a day. It now reads the same day change
+    # every screen shows (ADR-021), computed from the previous daily close.
     context "day_change_percent" do
-      it "triggers when absolute day change exceeds threshold" do
+      def close_on(a, date, close)
+        create(:asset_price_history, asset: a, date: date, close: close)
+      end
+
+      it "triggers on a day move past the threshold" do
+        close_on(asset, 1.day.ago.to_date, 150.0)
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 5.0)
 
-        # 150 -> 160 = 6.67% change
-        triggered = Alerts::Domain::AlertEvaluator.evaluate([ rule ], asset, 160.0)
-        expect(triggered).to include(rule)
+        # previous close 150 -> arriving 160 = 6.67% on the day
+        expect(described_class.evaluate([ rule ], asset, 160.0)).to include(rule)
       end
 
-      it "does not trigger when change is below threshold" do
+      it "does not trigger on a day move below the threshold" do
+        close_on(asset, 1.day.ago.to_date, 150.0)
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 10.0)
 
-        # 150 -> 155 = 3.33% change
-        triggered = Alerts::Domain::AlertEvaluator.evaluate([ rule ], asset, 155.0)
-        expect(triggered).to be_empty
+        expect(described_class.evaluate([ rule ], asset, 155.0)).to be_empty
       end
 
-      it "handles zero current price gracefully" do
-        asset_zero = create(:asset, symbol: "ZERO", current_price: 0)
-        rule = create(:alert_rule, user: user, asset_symbol: "ZERO", condition: :day_change_percent, threshold_value: 5.0)
+      # The defect, pinned: an asset that oscillates travels far sync to sync
+      # while the day change stays flat. Under the old measure each 4% swing
+      # fired; the day never moved.
+      it "does not trigger on consecutive swings whose day change stays flat" do
+        close_on(asset, 1.day.ago.to_date, 150.0)
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 3.0)
 
-        triggered = Alerts::Domain::AlertEvaluator.evaluate([ rule ], asset_zero, 10.0)
-        expect(triggered).to be_empty
+        asset.update!(current_price: 156.0)
+        expect(described_class.evaluate([ rule ], asset, 150.5)).to be_empty
+      end
+
+      # The other half of the defect: a calm 4% drift over a session never
+      # produced a single 4% step, so it never fired.
+      it "triggers on a slow drift the old sync-to-sync measure would have missed" do
+        close_on(asset, 1.day.ago.to_date, 150.0)
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 3.0)
+
+        asset.update!(current_price: 155.9)
+        expect(described_class.evaluate([ rule ], asset, 156.0)).to include(rule)
+      end
+
+      # Unknown is not a move.
+      it "does not trigger when the asset has no earlier close" do
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 1.0)
+
+        expect(described_class.evaluate([ rule ], asset, 999.0)).to be_empty
+      end
+
+      it "does not fall back to the previous sync when the day change is unknown" do
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 5.0)
+
+        asset.update!(current_price: 100.0)
+        expect(described_class.evaluate([ rule ], asset, 200.0)).to be_empty
+      end
+
+      it "ignores today's row, which still carries the previous sync at evaluation time" do
+        close_on(asset, 1.day.ago.to_date, 150.0)
+        close_on(asset, Date.current, 155.0)
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 5.0)
+
+        # Against today's stale row it is 3.2%; against yesterday's close, 6.67%.
+        expect(described_class.evaluate([ rule ], asset, 160.0)).to include(rule)
+      end
+
+      it "returns nothing when the previous close is zero" do
+        close_on(asset, 1.day.ago.to_date, 0.0)
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent, threshold_value: 5.0)
+
+        expect(described_class.evaluate([ rule ], asset, 10.0)).to be_empty
+      end
+
+      # A level, not an event: it stays past the threshold all session.
+      it "fires once a day rather than every cooldown window" do
+        close_on(asset, 1.day.ago.to_date, 150.0)
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent,
+                      threshold_value: 5.0, last_triggered_at: 3.hours.ago)
+
+        expect(described_class.evaluate([ rule ], asset, 160.0)).to be_empty
+      end
+
+      it "fires again once the day has turned" do
+        close_on(asset, 1.day.ago.to_date, 150.0)
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent,
+                      threshold_value: 5.0, last_triggered_at: 1.day.ago.end_of_day - 1.hour)
+
+        expect(described_class.evaluate([ rule ], asset, 160.0)).to include(rule)
       end
     end
 
