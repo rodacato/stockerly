@@ -14,7 +14,7 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_integrations_path, notice: "Integración conectada."
+        redirect_to admin_integrations_path, notice: t("admin.integrations.flash.conectada")
       else
         redirect_to admin_integrations_path, alert: result.failure.last
       end
@@ -27,7 +27,7 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_integrations_path, notice: "Integración actualizada."
+        redirect_to admin_integrations_path, notice: t("admin.integrations.flash.actualizada")
       else
         redirect_to admin_integrations_path, alert: result.failure.last
       end
@@ -40,7 +40,7 @@ module Admin
       )
 
       if result.success?
-        redirect_to admin_integrations_path, notice: "Integración eliminada."
+        redirect_to admin_integrations_path, notice: t("admin.integrations.flash.eliminada")
       else
         redirect_to admin_integrations_path, alert: result.failure.last
       end
@@ -50,7 +50,7 @@ module Admin
       result = Administration::UseCases::Integrations::RefreshSync.call(integration_id: params[:id])
 
       if result.success?
-        redirect_back fallback_location: admin_integrations_path, notice: "Sincronización de la integración programada."
+        redirect_back fallback_location: admin_integrations_path, notice: t("admin.integrations.flash.sincronizacion_encolada")
       else
         redirect_back fallback_location: admin_integrations_path, alert: result.failure.last
       end

@@ -21,7 +21,7 @@ class BugReportsController < AuthenticatedController
       @errors = errors
       render :new, status: :unprocessable_content
     else
-      redirect_to new_bug_report_path, alert: "No se pudo enviar el reporte."
+      redirect_to new_bug_report_path, alert: t("bug_reports.flash.no_enviado")
     end
   end
 
