@@ -10,6 +10,8 @@ class SyncMarketIndicesJob < ApplicationJob
   queue_as :default
 
   def perform
+    return close_indices unless markets_open?
+
     chain = GatewayChain.new(
       gateways: [ MarketData::Gateways::YfinanceGateway.new ]
     )
@@ -27,6 +29,17 @@ class SyncMarketIndicesJob < ApplicationJob
   end
 
   private
+
+  def markets_open?
+    MarketHours.us_market_open? || MarketHours.bmv_market_open?
+  end
+
+  # Overnight there is nothing to fetch, but the flags still have to fall:
+  # skipping the run without clearing them leaves every index reading "open"
+  # until the next session. This costs no provider call.
+  def close_indices
+    MarketIndex.where(is_open: true).update_all(is_open: false, updated_at: Time.current)
+  end
 
   def upsert_indices(quotes)
     updated = 0

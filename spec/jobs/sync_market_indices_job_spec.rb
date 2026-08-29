@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe SyncMarketIndicesJob do
   include ActiveJob::TestHelper
+  include ActiveSupport::Testing::TimeHelpers
 
   let!(:spx) { create(:market_index, symbol: "SPX", name: "S&P 500", value: 5000.0) }
   let!(:ndx) { create(:market_index, symbol: "NDX", name: "NASDAQ 100", value: 18000.0) }
@@ -15,7 +16,12 @@ RSpec.describe SyncMarketIndicesJob do
     end
   end
 
+  # Every example below assumes a session is running. The job no longer goes
+  # out to the provider when both markets are closed, so without anchoring the
+  # clock these pass or fail depending on the hour the suite runs.
   describe "#perform" do
+    around { |example| travel_to(Time.zone.parse("2026-08-26 12:00:00 EST")) { example.run } }
+
     context "when the bridge returns quotes" do
       before do
         stub_bridge({
@@ -41,7 +47,7 @@ RSpec.describe SyncMarketIndicesJob do
       end
 
       it "publishes MarketIndicesUpdated event" do
-        handler = class_double(MarketData::Handlers::LogMarketIndicesUpdate, call: nil)
+        handler = class_double("SomeHandler", call: nil)
         EventBus.subscribe(MarketData::Events::MarketIndicesUpdated, handler)
 
         described_class.perform_now
@@ -84,6 +90,32 @@ RSpec.describe SyncMarketIndicesJob do
 
         expect(spx.reload.value).to eq(5000.0.to_d)
       end
+    end
+  end
+
+  # 864 provider calls a day, six per run every ten minutes, and overnight
+  # every one of them asks about a market that closed hours ago.
+  describe "outside market hours" do
+    around { |example| travel_to(Time.zone.parse("2026-08-26 22:00:00 EST")) { example.run } }
+
+    it "does not reach the provider at all" do
+      expect(PythonRunner).not_to receive(:call)
+
+      described_class.perform_now
+    end
+
+    it "writes no log line, because a skipped run is not news every ten minutes" do
+      expect { described_class.perform_now }.not_to change(SystemLog, :count)
+    end
+
+    # Skipping without this would leave every index reading "open" all night,
+    # which is worse than the calls it saves.
+    it "closes the indices it left open" do
+      spx.update!(is_open: true)
+
+      described_class.perform_now
+
+      expect(spx.reload.is_open).to be(false)
     end
   end
 end
