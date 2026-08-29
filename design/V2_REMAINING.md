@@ -1,5 +1,20 @@
 # What is left to finish the 2.0 revamp
 
+> ## ⚠ This file is no longer the board — 2026-08-29
+>
+> **Outstanding work lives in the private `Stockerly` Project on GitHub**
+> ([ADR-022](../docs/architecture/adr/0022-github-as-the-system-of-record.md),
+> [`docs/ops/github-workflow.md`](../docs/ops/github-workflow.md)). Every open finding below was migrated there and
+> carries its `Finding ID`, so a `.pen` brief citing `CKP-4` still resolves. **Do not add a
+> finding here, and do not read a status here** — this file's own tally was wrong seven times
+> before it was retired, which is the argument the ADR is built on.
+>
+> **What this file still owns, and why it was not deleted:** how the migration was measured
+> (*How this was measured*, *Where the migration stands*), what the audit could not check, and
+> the post-mortems of the findings that turned out to be **the thing that was wrong** —
+> `X12`, `X13`, `X15`. That reasoning is the best artifact this project produced. The
+> inventory of what is open is what moved.
+
 > **The question this file answers:** flow by flow, what is still unconnected, what disagrees
 > between the design and the code, and what debt the revamp is carrying. It is the punch list for
 > declaring 2.0 done.

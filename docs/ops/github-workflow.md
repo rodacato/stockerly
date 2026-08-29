@@ -1,7 +1,13 @@
 # GitHub Workflow — Stockerly
 
-> Operational manual for how we use GitHub Issues + Projects + Milestones + Labels.
-> Established in Sprint 1 (2026-05-14). Required reading before opening an issue or PR.
+> Operational manual for how work is tracked. **GitHub is the system of record**
+> ([ADR-022](../architecture/adr/0022-github-as-the-system-of-record.md)) — no markdown file
+> states what is open. Required reading before opening an issue or PR.
+>
+> **Rewritten 2026-08-29.** The version this replaces described a sprint protocol — milestones,
+> a 7-in-progress cap, a close checklist, retros — that was abandoned in practice, and a board
+> that was closed. The tracking moved into `design/*.md` instead. This is the second attempt, and
+> it is deliberately smaller: **the ceremony is what collapsed, not the board.**
 
 ---
 
@@ -9,223 +15,157 @@
 
 | Element | Where |
 |---|---|
-| **Backlog items + bugs + research** | GitHub Issues |
-| **Sprint board (visual)** | GitHub Project v2 "Stockerly v2 Roadmap" |
-| **Sprint name + goal** | GitHub Milestone (one per sprint) |
-| **Issue taxonomy** | Labels (type, context, priority, state, special) |
-| **Issue creation templates** | `.github/ISSUE_TEMPLATE/*.yml` |
-| **PR template** | `.github/PULL_REQUEST_TEMPLATE.md` |
-| **Long-form docs** | `docs/` (do NOT duplicate in issues) |
+| **All outstanding work, and its state** | the private `Stockerly` Project (v2) |
+| **Ideas and un-investigated findings** | **draft items** in that Project — no number, not public |
+| **Work ready to build** | GitHub Issues, public |
+| **Issue taxonomy** | labels (type, context, priority) |
+| **Templates** | `.github/ISSUE_TEMPLATE/*.yml`, `.github/PULL_REQUEST_TEMPLATE.md` |
+| **Reasoning, decisions, history** | `docs/` and `design/` — never issue state |
+
+**Milestones are not sprints.** They are available for a genuine dated goal and are not created by
+default. `docs/sprints/` was retired on 2026-08-28; its commit-prefix taxonomy moved to
+[`CONTRIBUTING.md`](../../CONTRIBUTING.md). Retros were deleted at the pivot. If the practice ever
+resumes it needs a home decided on purpose.
 
 ---
 
-## Current setup
+## The loop
 
-### Repo
-
-- **URL:** [github.com/rodacato/stockerly](https://github.com/rodacato/stockerly)
-- **Visibility:** public
-- **Audience:** one real user (Adrian), packaged so a technical self-hoster can run it. The closed
-  beta with ≤20 friends was run and failed; [ADR-010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)
-  dropped it as an audience on 2026-08-20. Nothing in this repo is gated on inviting anyone.
-- **CI:** GitHub Actions — `ci.yml` (gate on PR and `master`), `quality.yml` (report-only, plus
-  manual Sonar), `deploy.yml` (push to `production`). See
-  [`security-checklist.md`](./security-checklist.md) for which checks actually block a merge.
-
-### Project v2
-
-- **Name:** `Stockerly v2 Roadmap`
-- **Number:** 6
-- **Owner:** rodacato (user-scoped, no org)
-- **Status field (default):** `Todo` → `In Progress` → `Done` (simple, not customized)
-- **Items:** issues are added via `gh project item-add 6 --owner rodacato --url <issue-url>`
-
-> **Note:** the Status field wasn't customized with additional columns (Triage/Ready/In Sprint/In Review). Instead, workflow state is read by combining **labels** (`triage`, `ready`, `blocked`) and **project Status** (`Todo`, `In Progress`, `Done`). Simpler. If a richer board is needed later, customize via UI.
-
-### Milestones (sprints)
-
-The authoritative list is one command — there is no copy of it here, because a table of sprint
-names in a file is stale the day a sprint opens:
-
-```bash
-gh api 'repos/rodacato/stockerly/milestones?state=all' --jq '.[] | "[\(.number)] \(.title) — \(.state)"'
+```
+idea / finding
+      │
+      ▼
+  ┌─────────┐   can it state the 4 filters?
+  │  Draft  │──── no ──►  Researching ──┐
+  └─────────┘                           │ answered
+      │ yes                             │
+      ▼                                 ▼
+   Issue  ◄──────────────────────────────
+      │   promoted from the draft — board position and fields survive
+      ▼
+  branch ──► PR "Closes #N" ──► Done
 ```
 
-Each milestone's goal lives in its description on GitHub, visible when you open it. That is the
-only record — sprint goals were never mirrored into this repo.
+**Draft** — lives only in the Project. No number, no URL, invisible outside the board. Where an
+idea goes the moment it exists, and where a finding goes when it is real but un-investigated. It
+costs nothing and notifies nobody; the alternative is an idea that lives in a chat log.
 
-### Labels (taxonomy)
+**Issue** — public and numbered. Promoted when it can state the four filters. **Without all four it
+stays a draft.** That gate predates this process and does not change.
 
-**Type** (kind of work):
-- `feat` — new functionality mapped to a JTBD
-- `bug` — defect in existing functionality
-- `chore` — maintenance, cleanup, deprecation
-- `docs` — documentation-only changes
-- `refactor` — internal change without behavior impact
-- `research` — open question to investigate before scoping
-
-**Context** (bounded context touched):
-- `ctx:trading`, `ctx:market-data`, `ctx:alerts`, `ctx:identity`, `ctx:notifications`, `ctx:admin`
-
-**Priority**:
-- `P0` — breaks a core JTBD or blocks a release
-- `P1` — cleanup/refactor before new features
-- `P2` — quality / polish
-
-**State**:
-- `triage` — new, not yet reviewed (default in templates)
-- `ready` — discovery complete, ready for a sprint
-- `blocked` — waiting on dependency or decision
-
-**Special**:
-- `discovery-needed` — missing one or more discovery card fields
-- `design` — design / visual / UX work
-- `parallel` — parallel axis in a sprint whose main goal is different
-
-**Retired:** `beta-blocker` ("no friends invited until resolved") still exists in the repo's label
-set but means nothing since ADR-010 dropped the closed beta. Don't apply it to new issues; use `P0`.
+**Done** — closed by a PR carrying `Closes #N`. Drafts have no number and cannot be closed that
+way, so anything heading for a PR is promoted first. This is the constraint that keeps drafts from
+quietly becoming a second board.
 
 ---
 
-## How to open an issue
+## The board
 
-### Feature / Refactor / Chore / Docs
+- **Name:** `Stockerly` · **Owner:** `rodacato` (user-scoped) · **Visibility:** private
+- Private means *the board* is private. The repo is public and so is every issue on it. Only
+  drafts and the field values below are unlisted.
 
-1. Go to [New Issue](https://github.com/rodacato/stockerly/issues/new/choose)
-2. Select "Feature / Refactor / Chore"
-3. Fill the 4 Discovery Card fields:
-   1. **Documented personal trigger** (date + specific situation)
-   2. **JTBD** ("When X, I want Y, so that Z" — must map to one of the 6 canonical or justify a new one)
-   3. **Usage metric**
-   4. **Definition of Done** (concrete checklist)
-4. If you can't fill all 4 → the issue stays with `discovery-needed` and `triage`
-5. Apply type, context, and priority labels
-6. Assign milestone if you already know which sprint it belongs to
+| Field | Values |
+|---|---|
+| **Status** | `Draft` · `Researching` · `Ready` · `In progress` · `Blocked` · `Done` |
+| **Severidad** | 🔴 the 2.0 is not done while this stands · 🟡 a real gap inside a working screen · ⚪ debt or hygiene |
+| **Flow** | `Auth` `Onboarding` `Cockpit` `Activos` `Alerts` `Ajustes` `Descubrir` `Kit` `Cross-cutting` `Tech debt` `Market data` |
+| **Finding ID** | the `design/V2_REMAINING.md` ID (`CKP-1`, `ACT-4`, …) where one exists, so a `.pen` brief citing it still resolves |
 
-### Bug
+`Severidad` and `Flow` are the design audit's own scales, carried over deliberately — they were
+already the axes the work was organized along.
 
-1. Select "Bug" template
-2. Describe what happened, what you expected, repro steps
-3. **Do NOT include real financial data** (amounts, positions, account IDs) — use synthetic examples
-4. Apply `bug` + `ctx:*` + severity labels
+---
 
-### Research
+## Labels
 
-1. Select "Research" template
-2. State the open question, why it matters, hypothesis, closure criterion
-3. List experts from the panel to consult (in `docs/research/experts.md`)
-4. Expected output: ADR + possible subsequent feature issue
+Labels are for **search and filtering**, never for state. The Status column owns state.
+
+- **Type:** `feat` · `bug` · `chore` · `docs` · `refactor` · `research`
+- **Context:** `ctx:trading` · `ctx:market-data` · `ctx:alerts` · `ctx:identity` · `ctx:notifications` · `ctx:admin`
+- **Priority:** `P0` breaks a core JTBD · `P1` before new features · `P2` polish
+- **Special:** `design` — design / visual / UX work
+
+**Retired:** `triage`, `discovery-needed` and `ready` are replaced by the `Draft`, `Researching`
+and `Ready` columns — a label that duplicates a column is the duplication this process removes.
+`parallel` went with the sprint protocol. `beta-blocker` has meant nothing since ADR-010; use `P0`.
+
+---
+
+## How to open work
+
+**An idea, or a finding you have not investigated** → a draft on the board. Title, a body with
+whatever evidence you have, `Severidad` and `Flow`. That is the whole ritual.
+
+**Feature / Refactor / Chore / Docs** → the *Feature* template, which enforces the four filters:
+documented personal trigger (date + situation) · JTBD (*"When X, I want Y, so that Z"*, mapping to
+one of the six canonical or justifying a new one) · usage metric · Definition of Done. Add type,
+context and priority labels.
+
+**Bug** → the *Bug* template: what happened, what you expected, repro steps. **Never real financial
+data** — the repo is public; use synthetic examples.
+
+**Research** → the *Research* template: the open question, why it matters now, the hypothesis, and
+**the criterion that closes it**. A research issue that cannot say what would end it is a reading
+list, not work. Its output is a decision — an ADR, or a `Dn` in `design/DECISIONS.md` — or a
+promoted issue. List the experts to consult from [`docs/research/experts.md`](../research/experts.md).
 
 ---
 
 ## How to open a PR
 
-1. Reference an issue: in commit or PR body use `Fixes #N` (auto-close on merge)
-2. Fill the PR template (`.github/PULL_REQUEST_TEMPLATE.md`):
-   - What the PR does (1-3 sentences, why before what)
-   - Linked issue
-   - Mandatory checklist:
-     - Tests pass
-     - Rubocop clean
-     - ADR-001: no prescriptive language
-     - Vision: no fiscal additions
-     - No co-author in commits
-     - Discovery card complete (if feat)
-     - ADR exists (if architectural refactor)
-3. Commits without `Co-Authored-By` or AI mention
+1. **`Closes #N` in the PR body**, first sentence. Only `close`/`fix`/`resolve` and their
+   conjugations work, only on merge to the default branch. Don't lose the line across a rebase.
+2. Fill [the template](../../.github/PULL_REQUEST_TEMPLATE.md): what it does (why before what),
+   the linked issue, and the checklist — tests, Rubocop, ADR-001 (no prescriptive language), no
+   fiscal additions, no co-author line, discovery card complete for a `feat`, an ADR for an
+   architectural refactor.
+3. Never push to `master` and never bypass branch protection. Branch with
+   `git checkout -b <name> origin/master --no-track`.
 
 ---
 
-## Sprint protocol
-
-### Planning
-
-1. Read issues with label `ready` that don't have a milestone assigned
-2. Read the next milestone's goal (`gh api repos/rodacato/stockerly/milestones`)
-3. Move issues to the milestone — maximum 7 simultaneous `In Progress` (hard rule)
-4. Define **1-sentence goal** in the milestone description (if not already there)
-5. If an issue has `parallel` label, it's OK for the milestone to have a different main goal — parallel items take at most 30% of effort
-
-### Execution
-
-1. Each commit references the sprint (e.g., `feat(trading): capture FX at execution [#27]`)
-2. Move issue from `Todo` → `In Progress` in Project board when starting it
-3. PR links the issue with `Fixes #N`
-4. Move to `Done` on merge
-
-### Close
-
-**Before marking sprint as closed:**
-
-- [ ] Milestone goal achieved or documented why not
-- [ ] CI green (`bundle exec rspec`, `bin/rubocop`, `bin/brakeman`, `bin/bundler-audit`)
-- [ ] No new copy violates ADR-001 (manual audit)
-- [ ] No new features violate non-goals (manual audit)
-- [ ] Closed issues have status `Done` in the project
-
-> **Retros are no longer a repo artifact.** They were written for S01–S09 and deleted together by
-> commit `cf54285` at the pivot; `docs/sprints/` was retired on 2026-08-28 rather than left
-> describing a practice whose entire output had been judged disposable. Its commit-prefix taxonomy —
-> the one part that lived nowhere else — moved to [`CONTRIBUTING.md`](../../CONTRIBUTING.md). If the
-> practice resumes, it needs a home decided on purpose, not an empty folder waiting for it.
-
-**Hard rule:** no new sprint opens while the previous one is open. If issues remain unclosed at the end, decide:
-- Move to backlog (no milestone) if no longer urgent
-- Re-assign to the next milestone if still alive
-
----
-
-## Useful commands (`gh` CLI)
+## Commands
 
 ```bash
-# List open issues by milestone
-gh issue list --milestone "2026-S02-truth-foundation"
+# The board
+gh project item-list  --owner rodacato <N>
+gh project item-create --owner rodacato <N> --title "..." --body "..."   # a draft
+gh project item-add   --owner rodacato <N> --url <issue-url>
 
-# List issues by label
-gh issue list --label "P0"
+# Issues
+gh issue list --state open --label P0
+gh issue view 306
 
-# View a full issue
-gh issue view 27
-
-# List milestones
-gh api repos/rodacato/stockerly/milestones --jq '.[] | "[\(.number)] \(.title)"'
-
-# List project items
-gh project item-list 6 --owner rodacato
-
-# Add an issue to the project
-gh project item-add 6 --owner rodacato --url https://github.com/rodacato/stockerly/issues/N
-```
-
----
-
-## Common mistakes to avoid
-
-1. **Creating an issue without a complete discovery card** → stays in `triage` with `discovery-needed`. Doesn't advance to `ready` until completed. Not worked on.
-2. **Duplicating info between issue and `docs/`** → docs are for evergreen (vision, ADR, design system, research notes); issues are for state-ful work. If the issue describes architecture, link to the ADR, don't copy it.
-3. **Issues with sensitive info** → repo is public. Do NOT include amounts, account numbers, real personal data screenshots. Use synthetic examples.
-4. **Co-author in commits** → forbidden; see [`AGENTS.md`](../../AGENTS.md). Adrian is the sole author of every artifact in this repo, commits and issues included.
-5. **Opening a new sprint with the previous one open** → don't do it.
-6. **Skipping QA before closing a sprint** → don't do it. The most common trap is "tests pass, ship it" without manually validating ADR-001 / non-goals.
-
----
-
-## How to refresh `gh` auth (if Project v2 doesn't work)
-
-```bash
+# Auth — Project v2 needs the WRITE scope; read:project only reads
 gh auth refresh -s project,read:project
 ```
 
-Currently required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:project`.
+Required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:project`.
+
+---
+
+## Common mistakes
+
+1. **Writing what is open into a markdown file.** The defect ADR-022 exists to end. Every count
+   kept by hand in this repo has been wrong; the `DECISIONS.md` tally was wrong seven times before
+   it was retired. If you want a number, query GitHub.
+2. **Promoting a draft that cannot state the four filters.** It stays a draft. That is not a
+   holding pen for work you have decided to do anyway.
+3. **Duplicating a document into an issue.** Architecture goes in an ADR, design reasoning in
+   `design/DECISIONS.md`, research in `docs/research/`. The issue links to it.
+4. **Sensitive data in a public issue.** No amounts, account numbers, or real screenshots.
+5. **A co-author or AI-attribution line** in a commit, issue or PR. See
+   [`AGENTS.md`](../../AGENTS.md) — Adrian is the sole author of every artifact here.
+6. **A research issue with no closure criterion.** It will never close.
 
 ---
 
 ## References
 
-- [Vision](../vision/README.md) — north star and 3 hard rules
-- [JTBDs](../vision/jobs-to-be-done.md) — the 6 canonical
-- [Non-goals](../vision/non-goals.md) — what we are NOT
+- [ADR-022](../architecture/adr/0022-github-as-the-system-of-record.md) — why GitHub, and why the first attempt failed
+- [Vision](../vision/README.md) · [JTBDs](../vision/jobs-to-be-done.md) · [Non-goals](../vision/non-goals.md)
 - [ADR-001](../architecture/adr/0001-descriptive-not-prescriptive-language.md) — product language
-- [1.0 retrospective](../1.0-retrospective.md) — historical backlog input
 - [Expert Panel](../research/experts.md) — structured consultations
-- [IDENTITY.md](../../IDENTITY.md) — the AI assistant's role, commitments and 7 anti-patterns
+- [`design/V2_REMAINING.md`](../../design/V2_REMAINING.md) — the migration's measurement record (no longer a board)
+- [IDENTITY.md](../../IDENTITY.md) — the AI assistant's role and its 7 anti-patterns

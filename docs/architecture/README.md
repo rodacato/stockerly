@@ -163,8 +163,9 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [019](./adr/0019-self-contained-by-default.md) | Self-contained by default: the fewest vendors a self-hoster can inherit | Accepted 2026-08-28 · adds the vision's fourth hard rule |
 | [020](./adr/0020-internal-error-tracker.md) | An internal error tracker, because a self-hoster's 500 is lost today | Accepted 2026-08-28 |
 | [021](./adr/0021-one-definition-of-the-day-change.md) | One definition of the day change, computed from our own closes | Accepted 2026-08-29 |
+| [022](./adr/0022-github-as-the-system-of-record.md) | GitHub is the system of record for outstanding work | Accepted 2026-08-29 · retires the sprint protocol |
 
-Eighteen ADRs: **0001, 0002 and 0006–0021**. The gap is explained below.
+Nineteen ADRs: **0001, 0002 and 0006–0022**. The gap is explained below.
 
 **ADR-018 is the only one that reverses a decision this project had already published.** Design decision D23 recommended *against* building TOTP, and it was right for the
 audience it was written for: one person, who could put Cloudflare Access in front of his own tunnel.
