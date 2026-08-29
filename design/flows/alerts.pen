@@ -1361,6 +1361,7 @@
       "name": "[Reglas] / Bandeja / Default",
       "clip": true,
       "width": 390,
+      "height": 1097,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -1441,7 +1442,7 @@
                       "id": "j34cRK",
                       "name": "n",
                       "fill": "$primary-hover",
-                      "content": "12",
+                      "content": "13",
                       "fontFamily": "$font-mono",
                       "fontSize": 10,
                       "fontWeight": "600"
@@ -1580,6 +1581,31 @@
               "layout": "vertical",
               "gap": "$space-2",
               "children": [
+                {
+                  "id": "gx979",
+                  "type": "ref",
+                  "ref": "rPPff",
+                  "name": "Di de alta 8 símbolos",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q1Za4": {
+                      "fill": "$bg-muted"
+                    },
+                    "D5UMe": {
+                      "icon": "upload",
+                      "fill": "$fg-subtle"
+                    },
+                    "AcKzA": {
+                      "content": "Di de alta 8 símbolos de tu archivo"
+                    },
+                    "vMj7h": {
+                      "content": "El proveedor no reconoció SATS · vuelve a subir tu CSV"
+                    },
+                    "pXPqq": {
+                      "content": "10:24"
+                    }
+                  }
+                },
                 {
                   "id": "vuBGK",
                   "type": "ref",
@@ -1822,7 +1848,7 @@
                       "fill": "$fg-subtle"
                     },
                     "vMj7h": {
-                      "content": "Alpha Vantage volvió a responder tras 2 horas"
+                      "content": "DataBursatil volvió a responder tras 2 horas"
                     },
                     "pXPqq": {
                       "content": "03:15"
@@ -3579,6 +3605,44 @@
               "fontWeight": "600"
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "nloxs",
+      "x": 0,
+      "y": 2180,
+      "name": "Log · Reglas y avisos",
+      "width": 360,
+      "fill": "$bg-muted",
+      "cornerRadius": "$radius-md",
+      "layout": "vertical",
+      "gap": "$space-4",
+      "padding": "$space-5",
+      "children": [
+        {
+          "type": "text",
+          "id": "dBaD0",
+          "name": "T",
+          "fill": "$fg-default",
+          "content": "Log · Reglas y avisos",
+          "fontFamily": "$font-display",
+          "fontSize": 18,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "b4GSQN",
+          "name": "B",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-08-29 · Bandeja gains the bulk-alta notification; Todas 12 → 13. Its body names the next step, which the shipped copy does not — CODE_CHANGES\n2026-08-29 · 🐞 fixed: the price-sync row credited Alpha Vantage, which is registered for fundamentals only and has never served a price. Now DataBursatil\n2026-08-29 · this frame created; the brief was not audited for dated lines in this pass\n2026-08-27 · kit 0.8.1 · third channel toggle dropped against the schema's two booleans; SwitchRow and a local HeaderBar vendored; bell badge unclipped",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 13,
+          "fontWeight": "normal"
         }
       ]
     }

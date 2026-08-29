@@ -383,27 +383,55 @@ Three concrete instances remain, none of them a `DONE`:
 
 ---
 
-### X8 🟡 Four code changes shipped on 2026-08-29 that no artboard has caught up with
+### X8 🟡 Four code changes shipped on 2026-08-29 ahead of their artboards — three drawn, one undrawable
 
 **This file's usual finding is the code trailing the design. These four are the inverse**, which is
 the harder one to notice: the screens still look right, and the `.pen` is quietly describing a
-product that has moved. Logged the day it happened rather than discovered in the next audit.
+product that has moved. Logged the day it happened rather than discovered in the next audit, and
+**worked the same day** — three of the four are drawn; the fourth turned out to have no artboard to
+update at all, which is D64.
 
 | Flow | What the code does now | What the artboard still shows |
 |---|---|---|
-| `settings.pen` | The Ajustes hub's *Tus datos* section opens the importer — [`settings/show.html.erb`](../app/views/settings/show.html.erb) | `ajustes-hub.png` and `-desktop.png` draw the section as prose plus the deletion note, with no row |
-| `assets.pen` | *Agregar activo* autofills **Sector** from the provider — Yahoo returns it and the Stimulus target existed unused | The field is drawn as one the owner types |
-| `assets.pen` | The importer's unknown-symbol screen is about to become a checkbox list with a bulk action | `activos-importar-desconocidos.png` draws the single *Darlos de alta en Tracked* CTA, which was a link to `/tracked` that carried no symbols |
-| `assets.pen` | Ticker search runs on Yahoo, so it answers company names, not only tickers | `activos-tracked-buscar.png` — worth re-reading against ACT-6, which already flags one unverified state of this artboard |
+| ✅ `settings.pen` | The Ajustes hub's *Tus datos* section opens the importer — [`settings/show.html.erb`](../app/views/settings/show.html.erb) | **Drawn 2026-08-29** on both the mobile and desktop hubs, as a `NavRow` carrying the same label and description as the Activos door |
+| ✅ `settings.pen` | Yahoo serves ticker search, at 30/min instead of 5 | **Drawn 2026-08-29** on all three Integraciones artboards. Its card had read *3 / 5 por minuto* — which matched the database and **not** `ProviderDefaults`, where the figure was 6 |
+| ✅ `assets.pen` | The importer's unknown-symbol screen is a checkbox list with a bulk action | **Drawn 2026-08-29.** `Símbolos desconocidos` now lists nine checked rows with a *Todos / ninguno* toggle, replacing the chip grid. The uniform per-row source label is **D63** |
+| `assets.pen` | Ticker search answers company names, and *Agregar activo* autofills Sector | **Nothing to update — the form is not drawn.** `Tracked · Buscar` is the *list filter*, not the typeahead. Two shipped changes have no artboard: **D64** |
+| ⏳ `alerts.pen` | The bulk alta ends in a **system notification** — *Di de alta N símbolos de tu archivo* | `reglas-bandeja.png` draws no row for it. Found while auditing: the file was not open, so it is left rather than risked |
 
-**Do these in one pass, and not before the bulk-alta build lands** — the third row is the screen that
-build replaces, so drawing it now is drawing it twice. The first two are already true and safe to
-draw whenever.
+**What this pass did not do:** `settings.pen` has no `grid-*` variables and its brief still carries
+**seven dated lines** from before the Log/brief split existed. A `Log · Ajustes` frame now exists and
+today's entries went into it, so the pollution stopped growing — migrating the seven, and reflowing
+the bands onto the grid, is left as its own pass because a reflow moves artboards and invalidates
+every export in this flow.
 
-**None of this changes `DECISIONS.md`.** What shipped that day was architecture, and it is recorded
-where architecture goes: [ADR-017's amendment](../docs/architecture/adr/0017-python-bridge-for-yahoo-finance.md)
-for the provider swap and the raised ceiling, TD9 for what is left of Alpha Vantage. **D62 is
-untouched and still open** — the door still names three brokers the engine cannot read.
+**A correction to this entry's own first draft.** It closed by asserting *"D62 is untouched and still
+open — the door still names three brokers the engine cannot read."* **Both halves were false.** D62
+was resolved on 2026-08-28, and `assets.pen`'s middle door has read *Importar movimientos* ever
+since; the claim was copied from a branch whose `design/` predated that. This is X7's own lesson —
+*a record describes the world when it was written* — committed inside the entry whose subject is
+keeping the record honest, which is the strongest argument for the counting script that section
+asks for.
+
+**And then the correction itself carried a second false claim, caught the same way.** Its first
+draft added that `design/exports/activos-holdings-vacia.png` was *"genuinely stale and still shows
+the three named brokers"*. It is not: re-exporting the artboard produced a **byte-identical file**,
+so the committed PNG has been current since D62 landed. Both errors came from reading a branch whose
+`design/` predated master and not re-checking against the tree in front of me — the same root cause,
+twice, inside eight lines. Verifying is cheap; remembering is what is expensive.
+
+What did not change: the architecture record. [ADR-017's amendment](../docs/architecture/adr/0017-python-bridge-for-yahoo-finance.md)
+carries the provider swap and the raised ceiling, TD9 carries what is left of Alpha Vantage.
+
+**And the audit for "what else did we move" turned up a bug nothing in this session caused.**
+`reglas-bandeja.png`'s last row reads *Sincronización de precios reanudada · Alpha Vantage volvió a
+responder tras 2 horas*. **Alpha Vantage has never served prices.** It is registered
+`capabilities: %i[fundamentals]` and nothing else; prices come from Alpaca, Finnhub, CoinGecko,
+DataBursatil and Yahoo. The row attributes a price outage to the one provider that could not have
+caused it — a plausible sentence that is wrong on the fact it exists to report, which is the kind of
+copy a reader has no way to catch. It is also the second place TD9 has to visit: retiring Alpha
+Vantage would leave this row naming a provider the instance no longer has. 🐞 Fix it in `alerts.pen`
+in the same pass as the notification row above.
 
 # Kit → code
 
@@ -870,6 +898,15 @@ Artboard: `25 llamadas · 34 activos en Tracked · 5 en Holdings · 6 en Watchli
 progress bar and `used/limit`. The tier breakdown — which is the whole point of D9's ladder, since
 the tier *is* the budget — is not rendered. `@held_ids` and `@followed_ids` are already in scope for
 `tracked_tier`, so the three counts are in hand.
+
+**The label is the other half, and it matters more than it looks.** The artboard says
+`PRESUPUESTO DIARIO · FUNDAMENTALES`; the code says `Presupuesto de hoy` (`assets.tracked.presupuesto_titulo`).
+The design names **which** budget, and that is the accurate one: the panel reads
+`FundamentalsBudget`, whose `PROVIDER` is hardcoded to `"Alpha Vantage"` — so it has never shown
+"today's calls", it has shown one provider's fundamentals quota. Adopting the design's label is a
+one-line locale change and it is a precondition for TD9: retiring Alpha Vantage retargets this
+panel, and a title that already says what it counts survives that, while *Presupuesto de hoy* does
+not.
 
 ### ACT-5 🟡 The Tracked list has no search
 

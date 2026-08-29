@@ -503,6 +503,7 @@
       "name": "[Ajustes] / Hub / Default",
       "clip": true,
       "width": 390,
+      "height": 1684,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -1202,6 +1203,27 @@
                       "fontWeight": "700"
                     }
                   ]
+                },
+                {
+                  "id": "a7NWHP",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Importar movimientos",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "upload"
+                    },
+                    "GueOK": {
+                      "content": "Importar movimientos"
+                    },
+                    "uH4YA": {
+                      "content": "Carga el formato de Stockerly, de archivo o pegado."
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
                 },
                 {
                   "type": "frame",
@@ -2870,7 +2892,7 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Índices y corporativos de la BMV. Respaldo del resto.",
+                          "content": "Índices, corporativos de la BMV y búsqueda de tickers. Respaldo del resto.",
                           "fontFamily": "$font-sans",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -2910,7 +2932,7 @@
                           "id": "ky7V1",
                           "name": "q",
                           "fill": "$fg-subtle",
-                          "content": "3 / 5 por minuto",
+                          "content": "12 / 30 por minuto",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -5321,6 +5343,27 @@
                               ]
                             },
                             {
+                              "id": "MsWPZ",
+                              "type": "ref",
+                              "ref": "bZ59N",
+                              "name": "Importar movimientos",
+                              "width": "fill_container",
+                              "descendants": {
+                                "sfEQs": {
+                                  "icon": "upload"
+                                },
+                                "GueOK": {
+                                  "content": "Importar movimientos"
+                                },
+                                "uH4YA": {
+                                  "content": "Carga el formato de Stockerly, de archivo o pegado."
+                                },
+                                "AgU5u": {
+                                  "content": ""
+                                }
+                              }
+                            },
+                            {
                               "type": "frame",
                               "id": "qm4RR",
                               "name": "Box",
@@ -7019,7 +7062,7 @@
                                       "fill": "$fg-subtle",
                                       "textGrowth": "fixed-width",
                                       "width": "fill_container",
-                                      "content": "Índices y corporativos de la BMV. Respaldo del resto.",
+                                      "content": "Índices, corporativos de la BMV y búsqueda de tickers. Respaldo del resto.",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 11,
                                       "fontWeight": "normal"
@@ -7059,7 +7102,7 @@
                                       "id": "Cc5SM",
                                       "name": "q",
                                       "fill": "$fg-subtle",
-                                      "content": "3 / 5 por minuto",
+                                      "content": "12 / 30 por minuto",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 11,
                                       "fontWeight": "normal"
@@ -8529,7 +8572,7 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Índices y corporativos de la BMV. Respaldo del resto.",
+                          "content": "Índices, corporativos de la BMV y búsqueda de tickers. Respaldo del resto.",
                           "fontFamily": "$font-sans",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -8767,6 +8810,44 @@
               "fontWeight": "600"
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "KKXa3",
+      "x": 0,
+      "y": 3760,
+      "name": "Log · Ajustes",
+      "width": 360,
+      "fill": "$bg-muted",
+      "cornerRadius": "$radius-md",
+      "layout": "vertical",
+      "gap": "$space-4",
+      "padding": "$space-5",
+      "children": [
+        {
+          "type": "text",
+          "id": "zKRq1",
+          "name": "T",
+          "fill": "$fg-default",
+          "content": "Log · Ajustes",
+          "fontFamily": "$font-display",
+          "fontSize": 18,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "Nimpw",
+          "name": "B",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 13,
+          "fontWeight": "normal"
         }
       ]
     }
