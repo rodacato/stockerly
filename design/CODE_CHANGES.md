@@ -1020,3 +1020,34 @@ on the same screen** — `assets/index` already carries a foot-of-list `NavRow` 
 second one for Historial follows a pattern that screen established rather than inventing one.
 
 **Answered:** a foot-of-list entry in Activos, beside the one that already goes to Tracked. Built.
+
+---
+
+## 17. The bulk-alta notification says what happened, not what was asked for — OWED
+
+**Status:** drawn 2026-08-29 (#417), not built. The design leads the code here (D8).
+
+`ResolveTrackedSymbolsJob` finishes a batch by creating one notification. What ships:
+
+> **Di de alta 9 símbolos de tu archivo**
+> Ya están en Tracked: ALAB, ARKB, ARKX… El proveedor no reconoció: SATS.
+
+What `alerts.pen`'s Bandeja draws:
+
+> **Di de alta 8 símbolos de tu archivo**
+> El proveedor no reconoció SATS · vuelve a subir tu CSV
+
+**One difference, and it is the body: the drawn copy names the next step.** Nothing in the shipped
+text tells the owner that the file has to go back in, and re-uploading is the entire point of the
+alta — it exists so the import succeeds on the second pass. The flash on the redirect says so; the
+notification, which is what they actually see when the job finishes minutes later, does not.
+
+**The titles differ by a number, not by a rule.** This entry's first draft claimed the shipped title
+reports the size of the *request* while the artboard reports what landed. That is false: `notify`
+passes `count: added.size`, so both count what landed. The artboard says 8 and the shipped example
+says 9 because they are illustrating different runs — a difference in the mock data, not in the
+behaviour. Checked against the job rather than inferred from the two strings, which is how the
+wrong version got written in the first place.
+
+So the change is small: `notificaciones.simbolos.agregados` and `.sin_reconocer` collapse into one
+sentence ending in the instruction, assembled in the job's `body_for`.

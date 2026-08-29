@@ -164,7 +164,7 @@ are shipped.
 
 ---
 
-## Where this stands — 2026-08-28
+## Where this stands — 2026-08-29
 
 Counted from this file, never incremented — the command is printed for the same reason the other
 two tables print theirs.
@@ -176,24 +176,29 @@ grep -oE '^### [^ ]+ [✅🔴🟡⚪]' design/V2_REMAINING.md | awk '{print $NF}
 
 | | Findings | |
 |---|---:|---|
-| ✅ closed | **22** | shipped or measured away |
+| ✅ closed | **23** | shipped or measured away |
 | 🔴 open | **4** | ACT-1 · CKP-1 · ALR-1 · AJU-1 |
-| 🟡 open | **15** | a real gap inside a working screen |
-| ⚪ open | **11** | debt and hygiene, mostly `.pen` edits |
+| 🟡 open | **16** | a real gap inside a working screen |
+| ⚪ open | **12** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
 
-**52 headings carry a glyph and 54 findings exist.** It opened at 53 with
-[#386](https://github.com/rodacato/stockerly/pull/386); `KIT-5` is the one added since, and it came
-out of building `KIT-3`. Two moved to ✅ on 2026-08-28 without a line of code: `DSC-3` (D56 measured
-away) and `KIT-5` (answered by a design call) — closing by measurement is the cheapest way this
-list shrinks. The first command anchors on the finding ID on purpose — a bare
+**55 headings carry a glyph and 57 findings exist.** It opened at 53 with
+[#386](https://github.com/rodacato/stockerly/pull/386). Four have been added since: `KIT-5` out of
+building `KIT-3`, then `X8`, `TD9` and `TD10` on 2026-08-29 — the last two found while doing other
+work rather than while auditing, which is the pattern worth noticing. Three moved to ✅: `DSC-3`
+(D56 measured away), `KIT-5` (answered by a design call), and `X8` (three artboards drawn, its
+fourth converted to D64). Closing by measurement is still the cheapest way this list shrinks. The first command anchors on the finding ID on purpose — a bare
 `grep -cE '^### '` also counts the one section heading that is not a finding, which is how the
 previous version of this block printed a command that did not reproduce its own number. The two outside the tally are `TD2` (hardcoded controller strings, a real
 finding of its own) and `TD5` (a pointer to `CKP-7`, not an independent one). **Assigning them a
 severity is a call, not a count** — so they are shown rather than absorbed, and the tally stays
 something the command above reproduces.
 
-**`DECISIONS.md`: 60 entries · 55 resolved · 5 open** — D3, D15, D33, D55, D57.
+**`DECISIONS.md`: 64 entries · 60 resolved · 7 open** — D3, D15, D33, D55, D57, and D63/D64 raised
+2026-08-29. That file's own header had said `59 resolved · 3 open` against an actual `60 · 5`; every
+column has since been re-derived by script rather than carried forward, which is what had been
+going wrong. **This block was stale the same way** — it read `15 🟡` against `17`, and cited
+`DECISIONS.md` at figures two revisions old. Run the commands above; do not adjust the old numbers.
 
 **What the four reds are.** `ACT-1` (the empty state's CSV and demo doors — two 4-filter cards owed),
 `CKP-1` (`Movimientos`, the last drawn screen with no code — un-gated by D42), `ALR-1` (`Confluencia`
@@ -383,7 +388,7 @@ Three concrete instances remain, none of them a `DONE`:
 
 ---
 
-### X8 🟡 Four code changes shipped on 2026-08-29 ahead of their artboards — three drawn, one undrawable
+### X8 ✅ Four code changes shipped ahead of their artboards — closed 2026-08-29 (#417)
 
 **This file's usual finding is the code trailing the design. These four are the inverse**, which is
 the harder one to notice: the screens still look right, and the `.pen` is quietly describing a
@@ -398,6 +403,11 @@ update at all, which is D64.
 | ✅ `assets.pen` | The importer's unknown-symbol screen is a checkbox list with a bulk action | **Drawn 2026-08-29.** `Símbolos desconocidos` now lists nine checked rows with a *Todos / ninguno* toggle, replacing the chip grid. The uniform per-row source label is **D63** |
 | `assets.pen` | Ticker search answers company names, and *Agregar activo* autofills Sector | **Nothing to update — the form is not drawn.** `Tracked · Buscar` is the *list filter*, not the typeahead. Two shipped changes have no artboard: **D64** |
 | ⏳ `alerts.pen` | The bulk alta ends in a **system notification** — *Di de alta N símbolos de tu archivo* | `reglas-bandeja.png` draws no row for it. Found while auditing: the file was not open, so it is left rather than risked |
+
+**Closed with three drawn and one converted to a decision.** The fourth was not skipped: the
+*Agregar activo* typeahead has no artboard to update, so it became **D64** rather than a task. A
+fifth artboard was drawn that this entry never predicted — the Bandeja's row for the bulk-alta
+notification — because auditing *what else did we move* is what found it.
 
 **What this pass did not do:** `settings.pen` has no `grid-*` variables and its brief still carries
 **seven dated lines** from before the Log/brief split existed. A `Log · Ajustes` frame now exists and
@@ -1260,6 +1270,25 @@ See CKP-7. 21 assignments, three inline AR reads, a job enqueued from a GET.
 ### TD7 🟡 — partly done. See X1: 6 of 22 uses migrated, `accent` deleted, 16 left in the file ACT-2 removes.
 
 ### TD8 ✅ — done. See X2.
+
+### TD10 ⚪ — the adaptive backoff is written and never read
+
+[`AdaptiveScheduling`](../app/jobs/concerns/adaptive_scheduling.rb) exists so a job that hits a rate
+limit backs off instead of hammering the provider. `adaptive_backoff` doubles a multiplier in the
+cache on failure and `adaptive_reset` clears it on success — both are called from real jobs.
+
+**`adaptive_multiplier`, the only reader, appears nowhere but its own usage comment.** No job
+consults it to decide whether to skip or delay a run, so the multiplier is computed, stored with a
+24-hour TTL, and never consulted. The concern is a no-op that reads as a safety net.
+
+Two ways out and they are not equivalent. Wiring it up means every including job gains a skip
+condition — real behaviour change across `SyncMarketIndicesJob`, `SyncPriorityAssetsJob` and the
+rest, and each needs its own spec. Deleting it means saying out loud that Solid Queue's retry plus
+the per-provider `RateLimiter` already cover this, which is arguably true: the limiter refuses
+locally before a call goes out, which is what the backoff was protecting against.
+
+**Found while fixing the index sync's logging (#418), not looked for.** Nothing is broken by it
+today — that is exactly why it survived. Left as a decision rather than a drive-by.
 
 ### TD9 🟡 — Alpha Vantage may have nothing left to do, and nobody has decided
 

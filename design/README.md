@@ -55,8 +55,11 @@ screens; smaller ones may merge into a neighbor.
 
 > **Status below is the `.pen` file's, not the ERB's.** How closely the code matches each flow
 > is measured in [V2_REMAINING.md](V2_REMAINING.md) — read that before taking **done · in
-> review** as "the screen looks like this". That file also carries the running count: as of
-> 2026-08-28, **19 findings closed and 33 open, four of them red**.
+> review** as "the screen looks like this". **That file carries the running count and this line is a
+> copy of it, so it goes stale on its own** — it read `19 closed and 33 open` while V2_REMAINING said
+> `22 and 32`, and both were wrong against a recount. As of 2026-08-29: **23 closed and 32 open,
+> four of them red.** Re-derive from V2_REMAINING's own commands rather than trusting this
+> sentence.
 >
 > **The code caught up on three flows on 2026-08-28.** `auth` gained its three TOTP screens and the
 > second factor at login; `onboarding` gained the Seguridad step and went to four; `assets` gained
