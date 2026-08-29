@@ -30,7 +30,9 @@ module Notifications
         # The browser dropped this install. Keeping the row would retry forever.
         subscription.destroy
         false
-      rescue WebPush::ResponseError => e
+      # Anything else — a rejected key pair, a push service having a bad day —
+      # is logged and dropped rather than left to retry the whole queue.
+      rescue WebPush::Error => e
         Rails.logger.warn("[web_push] #{subscription.id} rejected: #{e.message}")
         false
       end

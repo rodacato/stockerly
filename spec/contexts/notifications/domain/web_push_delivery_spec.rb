@@ -35,6 +35,15 @@ RSpec.describe Notifications::Domain::WebPushDelivery do
       expect(deliver).to be(false)
       expect(PushSubscription.exists?(subscription.id)).to be(false)
     end
+
+    # A key pair pasted wrong is a self-hoster's likeliest mistake, and it
+    # would otherwise raise out of every alert and retry the queue forever.
+    it "keeps a malformed key pair out of the job queue, and the subscription" do
+      allow(WebPush).to receive(:payload_send).and_raise(WebPush::ConfigurationError, "invalid key")
+
+      expect(deliver).to be(false)
+      expect(PushSubscription.exists?(subscription.id)).to be(true)
+    end
   end
 
   context "without VAPID keys" do
