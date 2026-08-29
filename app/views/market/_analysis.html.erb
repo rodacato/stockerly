@@ -39,6 +39,7 @@
 <% else %>
   <%= render "market/market_context", asset: @asset, context: @market_context %>
   <%= render "market/confluence", state: @state, trend: @trend_source %>
+  <%= render "market/signals", signals: @signals, reading: @reading %>
   <%= render "market/recent_observations", asset: @asset, observations: @recent_observations %>
   <%= render "market/news", asset: @asset, news: @news %>
   <%= render "market/fundamentals_block", asset: @asset, presenter: @presenter, has_fundamentals: @has_fundamentals %>

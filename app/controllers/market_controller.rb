@@ -20,6 +20,8 @@ class MarketController < AuthenticatedController
       @market_context = data[:market_context]
       @day_change = data[:day_change]
       @news = data[:news] || []
+      @reading = data[:reading]
+      @signals = data[:signals] || []
 
       # ADR-002 forbids MarketData reading Trading or Alerts, so the user-side
       # readings are composed here from their own contexts.

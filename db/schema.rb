@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_29_180716) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_29_220000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -475,6 +475,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_180716) do
     t.index ["observed_at"], name: "index_technical_observations_on_observed_at"
   end
 
+  create_table "technical_readings", force: :cascade do |t|
+    t.bigint "asset_id", null: false
+    t.datetime "calculated_at", null: false
+    t.datetime "created_at", null: false
+    t.jsonb "readings", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id"], name: "index_technical_readings_on_asset_id", unique: true
+  end
+
   create_table "trades", force: :cascade do |t|
     t.bigint "asset_id", null: false
     t.datetime "created_at", null: false
@@ -566,6 +575,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_180716) do
   add_foreign_key "site_config_changes", "users", column: "admin_id"
   add_foreign_key "stock_splits", "assets"
   add_foreign_key "technical_observations", "assets"
+  add_foreign_key "technical_readings", "assets"
   add_foreign_key "trades", "assets"
   add_foreign_key "trades", "portfolios"
   add_foreign_key "trades", "positions"

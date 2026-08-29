@@ -18,6 +18,7 @@ class Asset < ApplicationRecord
   has_many :financial_statements,  dependent: :destroy
   has_many :asset_fundamentals,    dependent: :destroy
   has_many :technical_observations, dependent: :destroy
+  has_one :technical_reading, dependent: :destroy
 
   validates :name,     presence: true
   validates :symbol,   presence: true, uniqueness: { case_sensitive: false }

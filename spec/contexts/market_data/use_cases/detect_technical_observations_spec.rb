@@ -10,6 +10,38 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
     end
   end
 
+  # #306: the detector already computed these to test for a crossing and threw
+  # them away when none fired. That discard is the defect; these pin the fix.
+  describe "the persisted reading" do
+    it "writes today's indicators even when no crossing fired" do
+      asset = create(:asset, symbol: "FLAT", current_price: 100)
+      seed_history(asset, Array.new(60, 100.0))
+
+      expect { use_case.call }.to change(TechnicalReading, :count).by(1)
+      expect(asset.reload.technical_reading.readings).to include("rsi", "sma_50", "close")
+    end
+
+    it "keeps one row per asset, overwritten rather than appended" do
+      asset = create(:asset, symbol: "ONCE", current_price: 100)
+      seed_history(asset, Array.new(60, 100.0))
+      use_case.call
+      first = asset.reload.technical_reading
+
+      expect { use_case.call }.not_to change(TechnicalReading, :count)
+      expect(asset.reload.technical_reading.calculated_at).to be > first.calculated_at
+    end
+
+    # Absence is the signal: SMA200 needs 200 closes, so a young asset carries
+    # the keys it could compute and not a zero for the ones it could not.
+    it "omits an indicator it could not compute rather than storing zero" do
+      asset = create(:asset, symbol: "YOUNG", current_price: 100)
+      seed_history(asset, Array.new(60, 100.0))
+      use_case.call
+
+      expect(asset.reload.technical_reading.readings).not_to have_key("sma_200")
+    end
+  end
+
   describe "#call" do
     it "returns Success(0) when no assets have sufficient history" do
       create(:asset, symbol: "TINY", current_price: 100)

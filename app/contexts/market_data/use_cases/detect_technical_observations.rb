@@ -49,7 +49,22 @@ module MarketData
         events += ma_crossings(closes, period: 200, type_above: "ma200_crossed_above", type_below: "ma200_crossed_below")
         events += bollinger_breaches(closes)
 
+        persist_reading(asset, closes, observed_at)
         events.count { |e| persist_if_fresh(asset, e[:type], observed_at, e[:snapshot]) }
+      end
+
+      # The detector already computes today's RSI, moving averages and bands to
+      # test for a crossing, and used to discard them when none fired. One row
+      # per asset, overwritten — nothing reads indicator history, and an
+      # appended row would need its own prune job (X16).
+      def persist_reading(asset, closes, calculated_at)
+        reading = Domain::TechnicalIndicators.current_reading(closes)
+        return if reading.blank?
+
+        record = asset.technical_reading || asset.build_technical_reading
+        record.update!(calculated_at: calculated_at, readings: reading)
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.warn("TechnicalReading failed for #{asset.symbol}: #{e.message}")
       end
 
       def collect_rsi_transitions(closes)

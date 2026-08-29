@@ -1,0 +1,37 @@
+<%# CKP-3 / #306: the Señales block, read from the daily `technical_readings`
+    row. Phrases come from MarketData::Domain::IndicatorSignals (ADR-014's
+    closed catalogue); the template chooses none of them. Locals: signals,
+    reading. %>
+<% if signals.any? %>
+  <section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+    <header class="flex flex-wrap items-baseline gap-2 px-5 pt-4 pb-3">
+      <h2 class="font-display text-base font-semibold tracking-tight text-fg-default">
+        <%= t(".titulo") %>
+      </h2>
+      <% if reading.stale? %>
+        <span class="rounded-full bg-bg-muted px-2 py-0.5 text-[11px] font-medium text-fg-subtle">
+          <%= t(".desactualizado", fecha: short_date_es(reading.calculated_at.to_date)) %>
+        </span>
+      <% end %>
+      <span class="ml-auto text-[11px] italic text-fg-subtle">
+        <%= t(".disclaimer") %>
+      </span>
+    </header>
+
+    <ul class="divide-y divide-border-default">
+      <% signals.each do |signal| %>
+        <li class="grid grid-cols-[1fr_auto] sm:grid-cols-[140px_1fr_auto] items-center gap-3.5 px-5 py-3.5">
+          <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+            <%= t(".etiquetas.#{signal[:indicator]}") %>
+          </span>
+          <p class="text-sm text-fg-default leading-snug">
+            <%= t(".#{signal[:indicator]}.#{signal[:state]}") %>
+          </p>
+          <span class="text-right font-mono text-xs text-fg-subtle">
+            <%= signal_value(signal) %>
+          </span>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>

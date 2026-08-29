@@ -9,7 +9,28 @@ module MarketData
     # path already covers (MACD, EMA crossover, volume trend) stay in
     # TrendScoreCalculator — duplicating them here would invite drift.
     class TechnicalIndicators
+      # The keys a persisted reading may carry. Like TrendScoreCalculator's
+      # FACTORS, this minus a row's keys is what that reading could not compute
+      # — absence is the signal, never a zero.
+      READINGS = %i[close rsi sma_50 sma_200 bb_upper bb_middle bb_lower].freeze
+
       class << self
+        # Every indicator this object computes, as one dated reading. The single
+        # shape persisted to `technical_readings`; nothing else writes that table.
+        def current_reading(closes)
+          bands = bollinger_bands(closes)
+
+          {
+            close: closes.last&.to_f&.round(4),
+            rsi: rsi(closes),
+            sma_50: sma(closes, period: 50),
+            sma_200: sma(closes, period: 200),
+            bb_upper: bands&.fetch(:upper),
+            bb_middle: bands&.fetch(:middle),
+            bb_lower: bands&.fetch(:lower)
+          }.compact
+        end
+
         # RSI for the last close. Returns nil if size < period + 1.
         def rsi(closes, period: 14)
           return nil if closes.size < period + 1
