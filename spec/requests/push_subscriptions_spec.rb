@@ -58,7 +58,11 @@ RSpec.describe "Push subscriptions", type: :request do
   describe "the switch on /settings" do
     # A switch that cannot deliver is worse than no switch: it reports a state
     # the instance does not have. Most self-hosters will never set VAPID keys.
+    # Stubbed rather than assumed: a developer with keys in their own .env used
+    # to make this example pass for the wrong reason, and fail once they had.
     it "is absent on an instance with no VAPID keys" do
+      allow(Notifications::Domain::WebPushDelivery).to receive(:configured?).and_return(false)
+
       get settings_path
 
       expect(response.body).not_to include("push-subscription")
