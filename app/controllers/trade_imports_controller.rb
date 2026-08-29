@@ -16,6 +16,7 @@ class TradeImportsController < AuthenticatedController
     in Dry::Monads::Failure[ reason, details ]
       @reason = reason
       @details = details
+      @catalogued = catalogued(details)
       render :preview, status: :unprocessable_content
     end
   end
@@ -31,7 +32,37 @@ class TradeImportsController < AuthenticatedController
     end
   end
 
+  # Adding the catalogue entries the file needs, so the same file can be
+  # imported on the next pass. It redirects back to the picker rather than
+  # re-previewing: the provider half lands asynchronously, so a preview run now
+  # would report symbols that are still on their way.
+  def track_missing
+    case Administration::UseCases::Assets::TrackMissingSymbols.call(symbols: params[:symbols], user: current_user)
+    in Dry::Monads::Success(report)
+      redirect_to new_trade_import_path, notice: alta_notice(report)
+    in Dry::Monads::Failure
+      redirect_to new_trade_import_path, alert: t(".ninguno")
+    end
+  end
+
   private
+
+  # Which of the missing symbols the bundled catalogue already describes. The
+  # row says so because the two halves cost differently: one is free, the other
+  # spends a provider call and may not come back with anything.
+  def catalogued(details)
+    Administration::Domain::AssetCatalog.find_by_symbols(Array(details)).map { |entry| entry[:symbol] }.to_set
+  end
+
+  # Full keys, not lazy lookups: this is a helper, and a lazy key here resolves
+  # against the method name rather than the action that called it.
+  def alta_notice(report)
+    created = report[:created].size
+    pending = report[:pending].size
+    return t("trade_imports.track_missing.alta_en_camino", count: created, pending: pending) if pending.positive?
+
+    t("trade_imports.track_missing.alta", count: created)
+  end
 
   def rows
     @rows ||= Trading::Domain::CsvRows.call(text: csv_text)

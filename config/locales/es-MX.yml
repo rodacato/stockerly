@@ -842,6 +842,13 @@ es-MX:
     principal: Navegación principal
     reglas: Reglas
     regresar: Regresar
+  notificaciones:
+    simbolos:
+      agregados: 'Ya están en Tracked: %{symbols}.'
+      sin_reconocer: 'El proveedor no reconoció: %{symbols}.'
+      titulo:
+        one: Di de alta 1 símbolo de tu archivo
+        other: Di de alta %{count} símbolos de tu archivo
   notifications:
     flash:
       eliminadas:
@@ -1105,7 +1112,9 @@ es-MX:
         one: "%{desde} → %{hasta} · 1 símbolo"
         other: "%{desde} → %{hasta} · %{count} símbolos"
       rechazo:
+        alternar: Todos / ninguno
         dar_alta: Darlos de alta en Tracked
+        en_catalogo: en el catálogo
         faltan: Faltan en Tracked
         invalid_rows:
           one: 'Hay 1 fila que no puedo leer:'
@@ -1118,6 +1127,7 @@ es-MX:
         porque: 'No los doy de alta solo: el CSV trae el ticker y nada más. Un activo
           creado así queda sin tipo, sin mercado y sin país, y un dedazo se te vuelve
           un activo basura que se sincroniza para siempre.'
+        preguntar: le pregunto al proveedor
         titulo: No puedo importar todavía
         unknown_symbols:
           one: 1 de tus símbolos no está en tu catálogo. Sin él tu cartera quedaría
@@ -1130,6 +1140,16 @@ es-MX:
       simbolos: Símbolos
       titulo: Revisión
       volver: Elegir otro archivo
+    track_missing:
+      alta:
+        one: Di de alta 1 símbolo. Vuelve a subir tu archivo.
+        other: Di de alta %{count} símbolos. Vuelve a subir tu archivo.
+      alta_en_camino:
+        one: Di de alta %{count} de una vez. Voy por %{pending} más con el proveedor
+          y te aviso al terminar.
+        other: Di de alta %{count} de una vez. Voy por %{pending} más con el proveedor
+          y te aviso al terminar.
+      ninguno: No seleccionaste ningún símbolo.
   trades:
     errores:
       fecha_futura: La fecha del movimiento no puede ser futura.
