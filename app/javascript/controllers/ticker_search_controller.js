@@ -72,6 +72,7 @@ export default class TickerSearchController extends Controller {
         data-asset-type="${r.asset_type}"
         data-exchange="${this.escapeAttr(r.exchange || '')}"
         data-country="${this.escapeAttr(r.country || '')}"
+        data-sector="${this.escapeAttr(r.sector || '')}"
         class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-bg-muted transition-colors text-left cursor-pointer">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
@@ -95,6 +96,7 @@ export default class TickerSearchController extends Controller {
     this.assetTypeTarget.value = btn.dataset.assetType
     this.exchangeTarget.value = btn.dataset.exchange
     this.countryTarget.value = btn.dataset.country
+    this.sectorTarget.value = btn.dataset.sector
 
     this.inputTarget.value = `${btn.dataset.symbol} — ${btn.dataset.name}`
     this.hideResults()

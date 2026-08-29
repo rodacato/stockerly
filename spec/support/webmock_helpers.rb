@@ -715,6 +715,22 @@ module WebmockHelpers
       .and_return(Dry::Monads::Success(entries))
   end
 
+  def stub_yfinance_search(query, results: [])
+    allow(PythonRunner).to receive(:call).with("yahoo.py", "search", query)
+      .and_return(Dry::Monads::Success(results))
+  end
+
+  def stub_yfinance_search_failure(query, tag: :gateway_error)
+    allow(PythonRunner).to receive(:call).with("yahoo.py", "search", query)
+      .and_return(Dry::Monads::Failure([ tag, "#{query} unavailable" ]))
+  end
+
+  # One search hit, shaped the way lib/python/yahoo.py emits it.
+  def yfinance_match(symbol:, name:, quote_type: "EQUITY", exchange: "NASDAQ", sector: nil)
+    { "symbol" => symbol, "name" => name, "quote_type" => quote_type,
+      "exchange" => exchange, "sector" => sector }
+  end
+
   def stub_yfinance_not_found(symbol)
     allow(PythonRunner).to receive(:call).with("yahoo.py", anything, symbol, *any_args)
       .and_return(Dry::Monads::Failure([ :not_found, "no data for #{symbol}" ]))

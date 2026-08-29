@@ -89,3 +89,6 @@ design/references/
 
 # Personal blog-post scratchpad — kept locally, never published with the repo
 /BITACORA_2_0.md
+
+# Bytecode from the bundled Python bridge
+lib/python/__pycache__/

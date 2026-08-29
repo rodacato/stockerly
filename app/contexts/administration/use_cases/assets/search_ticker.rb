@@ -10,7 +10,13 @@ module Administration
           "MUTUALFUND" => "etf"
         }.freeze
 
+        # Keyed on whatever the provider calls the venue. Yahoo sends an
+        # exchange display name; the region names below are Alpha Vantage's.
         REGION_COUNTRY_MAP = {
+          "NASDAQ" => "US", "NYSE" => "US", "NYSEArca" => "US",
+          "NYSE American" => "US", "BATS Trading" => "US", "OTC Markets" => "US",
+          "XETRA" => "DE", "Munich" => "DE", "Dusseldorf Stock Exchange" => "DE",
+          "London" => "GB", "Mexico City" => "MX",
           "United States" => "US",
           "United Kingdom" => "GB",
           "Germany" => "DE", "Frankfurt" => "DE",
@@ -46,14 +52,14 @@ module Administration
             asset_type: QUOTE_TYPE_MAP[result[:quote_type]] || "stock",
             exchange: region,
             country: country,
+            sector: result[:sector],
             currency: derive_currency(result[:currency], country)
           }
         end
 
-        # Alpha Vantage SYMBOL_SEARCH usually includes currency directly. Fall back to
-        # country for the rare cases where the provider omits it. asset_type isn't a
-        # signal here because the gateway never emits CRYPTOCURRENCY or fixed_income
-        # types from a ticker search.
+        # Yahoo's search omits currency entirely, so country carries it. A venue
+        # nobody mapped lands on USD, which is right for every venue listed here
+        # except Mexico's, and Mexico's is mapped.
         def derive_currency(provider_currency, country)
           return provider_currency if provider_currency.present?
           return "MXN" if country == "MX"

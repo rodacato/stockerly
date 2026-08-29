@@ -26,6 +26,18 @@ RSpec.describe PythonRunner, :real_subprocess do
       expect(result.failure[1]).to include("Unsafe argument")
     end
 
+    # A ticker search takes a company name, so the guard has to pass a space
+    # while still refusing the characters a shell would care about.
+    it "passes a multi-word query through as one argument" do
+      result = described_class.call("probe.py", "Astera Labs")
+
+      expect(result).to be_success
+    end
+
+    it "still refuses a pipe in an argument" do
+      expect(described_class.call("probe.py", "AAPL | cat").failure[0]).to eq(:invalid_request)
+    end
+
     it "reports a missing interpreter as unsupported rather than crashing" do
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with("PYTHON_BIN").and_return("/nonexistent/python")
