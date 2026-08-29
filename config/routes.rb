@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   get "service-worker.js", to: "pwa#service_worker", as: :pwa_service_worker
 
   # --- Root ---
-  # No public landing: the project is a closed beta, not a marketing funnel.
+  # No public landing: the instance has one account, not an audience to convert.
   # Anyone reaching `/` is bounced to `/login` (which redirects authenticated
   # users to `/dashboard`). Use 302 instead of the Rails default 301 so browsers
   # don't aggressively cache the redirect — we may re-route `/` later.
