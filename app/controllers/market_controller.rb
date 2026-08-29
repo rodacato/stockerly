@@ -25,11 +25,22 @@ class MarketController < AuthenticatedController
       @holding = @position_data.present?
       @asset_rules = Alerts::UseCases::LoadAssetRules.call(user: current_user, symbol: @asset.symbol)
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
-
-      trigger_fundamental_sync(@asset) unless @has_fundamentals
     in Dry::Monads::Failure[ :not_found, _ ]
       redirect_to assets_path, alert: t("market.flash.no_encontrado")
     end
+  end
+
+  # CKP-7: a read no longer enqueues. The reader asks, and the block swaps
+  # itself in when MarketData::Handlers::BroadcastFundamentalsUpdate fires.
+  def request_fundamentals
+    asset = Asset.find_by!(symbol: params[:symbol].upcase)
+    pending = MarketData::UseCases::RequestFundamentalSync.call(asset: asset)
+
+    render turbo_stream: turbo_stream.replace(
+      "asset_fundamentals_#{asset.id}",
+      partial: "market/fundamentals_block",
+      locals: { asset: asset, presenter: nil, has_fundamentals: false, pending: pending }
+    )
   end
 
   def earnings_tab
@@ -41,14 +52,5 @@ class MarketController < AuthenticatedController
   def statements_tab
     @asset = Asset.find_by!(symbol: params[:symbol].upcase)
     render layout: false
-  end
-
-  private
-
-  def trigger_fundamental_sync(asset)
-    return unless asset.asset_type_stock? || asset.asset_type_etf?
-    return if asset.fundamentals_synced_at.present? && asset.fundamentals_synced_at > 10.minutes.ago
-
-    SyncFundamentalJob.perform_later(asset.id)
   end
 end

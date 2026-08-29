@@ -60,6 +60,7 @@ Rails.application.config.after_initialize do
 
   # Fundamentals
   EventBus.subscribe(MarketData::Events::AssetFundamentalsUpdated, MarketData::Handlers::LogFundamentalsUpdate)
+  EventBus.subscribe(MarketData::Events::AssetFundamentalsUpdated, MarketData::Handlers::BroadcastFundamentalsUpdate)
   EventBus.subscribe(MarketData::Events::FinancialStatementsSynced, MarketData::Handlers::RecalculateFundamentalsOnStatementsSynced)
 
   # Integrations

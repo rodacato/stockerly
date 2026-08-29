@@ -152,47 +152,6 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("Fuente:")
     end
 
-    context "on-demand fundamental sync" do
-      it "enqueues SyncFundamentalJob when no fundamentals exist" do
-        expect {
-          get market_asset_path(asset.symbol)
-        }.to have_enqueued_job(SyncFundamentalJob).with(asset.id)
-      end
-
-      it "does not enqueue when fundamentals were recently synced" do
-        asset.update!(fundamentals_synced_at: 5.minutes.ago)
-
-        expect {
-          get market_asset_path(asset.symbol)
-        }.not_to have_enqueued_job(SyncFundamentalJob)
-      end
-
-      it "enqueues when fundamentals are stale (> 10 minutes)" do
-        asset.update!(fundamentals_synced_at: 15.minutes.ago)
-
-        expect {
-          get market_asset_path(asset.symbol)
-        }.to have_enqueued_job(SyncFundamentalJob).with(asset.id)
-      end
-
-      it "does not enqueue for crypto assets" do
-        crypto = create(:asset, symbol: "BTC", name: "Bitcoin", asset_type: :crypto)
-
-        expect {
-          get market_asset_path(crypto.symbol)
-        }.not_to have_enqueued_job(SyncFundamentalJob)
-      end
-
-      it "does not enqueue when fundamentals already present" do
-        create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
-               metrics: { "eps" => "6.07" })
-
-        expect {
-          get market_asset_path(asset.symbol)
-        }.not_to have_enqueued_job(SyncFundamentalJob)
-      end
-    end
-
     it "renders fixed income detail (yield card) for CETES assets" do
       cetes = create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28 días",
                      yield_rate: 11.15, face_value: 10.0, maturity_date: 20.days.from_now.to_date)
