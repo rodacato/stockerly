@@ -1,4 +1,4 @@
-# Fetches 30 days of historical OHLCV data for a single asset and
+# Fetches DAYS of historical OHLCV data for a single asset and
 # upserts into AssetPriceHistory. Triggered by AssetCreated event.
 class BackfillPriceHistoryJob < ApplicationJob
   include PausableSync
@@ -6,7 +6,7 @@ class BackfillPriceHistoryJob < ApplicationJob
 
   queue_as :default
 
-  DAYS = 30
+  DAYS = 400
 
   def perform(asset_id)
     asset = Asset.find_by(id: asset_id)

@@ -25,7 +25,7 @@ RSpec.describe "data:backfill rake tasks" do
 
     it "skips assets with sufficient history" do
       asset = create(:asset, symbol: "MSFT", asset_type: :stock, sync_status: :active)
-      7.times do |i|
+      BackfillMissingHistoriesJob::MIN_HISTORIES.times do |i|
         create(:asset_price_history, asset: asset, date: i.days.ago.to_date)
       end
 

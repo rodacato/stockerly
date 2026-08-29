@@ -17,7 +17,7 @@ module MarketData
       # Far enough back to catch the quarter that just reported -- and its
       # actual EPS -- without pouring six years of history into the table.
       HISTORY_WINDOW_DAYS = 180
-      PERIODS = { 7 => "5d", 30 => "1mo", 90 => "3mo", 365 => "1y" }.freeze
+      PERIODS = { 7 => "5d", 30 => "1mo", 90 => "3mo", 365 => "1y", 730 => "2y" }.freeze
       # Yahoo's own tickers on the left, the symbols MarketIndex stores on the right.
       INDEX_SYMBOL_MAP = {
         "^GSPC" => "SPX",

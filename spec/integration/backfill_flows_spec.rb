@@ -26,7 +26,7 @@ RSpec.describe "Backfill Flows (E2E)", type: :model do
     end
 
     it "skips assets that already have sufficient history" do
-      10.times { |i| create(:asset_price_history, asset: asset, date: i.days.ago.to_date) }
+      BackfillMissingHistoriesJob::MIN_HISTORIES.times { |i| create(:asset_price_history, asset: asset, date: i.days.ago.to_date) }
 
       expect { BackfillMissingHistoriesJob.perform_now }
         .not_to have_enqueued_job(BackfillPriceHistoryJob)

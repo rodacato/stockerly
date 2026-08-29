@@ -85,6 +85,14 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
 
       gateway.fetch_historical("WALMEX.MX", days: 200)
     end
+
+    it "keeps the backfill window bounded instead of asking for everything" do
+      stub_bridge([])
+      expect(PythonRunner).to receive(:call).with("yahoo.py", "history", "WALMEX.MX", "2y")
+        .and_return(Dry::Monads::Success([]))
+
+      gateway.fetch_historical("WALMEX.MX", days: BackfillPriceHistoryJob::DAYS)
+    end
   end
 
   describe "#fetch_earnings" do
