@@ -4,6 +4,7 @@
     D69: in the radar the movement leads, so both row kinds answer the same
     question in the same slot. %>
 <% context = local_assigns.fetch(:context, :watchlist) %>
+<% gap = local_assigns[:gap] %>
 <% asset = item.asset %>
 <% change = asset.change_percent_24h || 0 %>
 <% followed = followed_since_percent(item) %>
@@ -24,8 +25,15 @@
   <div class="shrink-0 text-right">
     <p class="font-mono text-sm font-bold <%= primary[:color] %>"><%= primary[:text] %></p>
     <p class="font-mono text-xs <%= secondary[:color] %>"><%= secondary[:text] %></p>
-    <% if followed && context != :radar %>
-      <p class="mt-0.5 text-[11px] text-fg-subtle"><%= t("assets.index.sigues", percent: signed_percent(followed)) %></p>
+    <%# The list is ordered by this gap, so the row states it — an order the
+        reader cannot see reads as no order at all. Rows without a threshold
+        have no queue position and keep the reading they always had. %>
+    <% if context != :radar %>
+      <% if gap %>
+        <p class="mt-0.5 font-mono text-[11px] text-fg-subtle"><%= t("assets.index.falta", percent: number_to_percentage(gap, precision: 1, format: "%n%")) %></p>
+      <% elsif followed %>
+        <p class="mt-0.5 text-[11px] text-fg-subtle"><%= t("assets.index.sigues", percent: signed_percent(followed)) %></p>
+      <% end %>
     <% end %>
   </div>
 <% end %>

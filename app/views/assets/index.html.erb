@@ -57,7 +57,7 @@
     <% if @watchlist_items.any? %>
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <% @watchlist_items.each do |item| %>
-          <%= render "components/watch_row", item: item %>
+          <%= render "components/watch_row", item: item, gap: @watchlist_gaps[item.asset.symbol] %>
         <% end %>
       </div>
     <% else %>
