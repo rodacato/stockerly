@@ -332,7 +332,7 @@ GEM
     nokogiri (1.19.4-x86_64-linux-musl)
       racc (~> 1.4)
     ostruct (0.6.3)
-    pagy (43.6.1)
+    pagy (43.6.2)
       json
       uri
       yaml
@@ -630,7 +630,7 @@ DEPENDENCIES
   kamal
   lograge
   mission_control-jobs
-  pagy (~> 43.3)
+  pagy (~> 43.6)
   pg (~> 1.1)
   propshaft
   puma (~> 8.0, >= 8.0.2)
