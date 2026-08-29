@@ -4,26 +4,35 @@
 > `ui-kit.lib.pen` cite these by number. Keep entries after resolution — record the outcome
 > instead of deleting; the reasoning is the useful part.
 
-**Status:** 72 entries · 68 resolved · 4 open · 3 🔴 high-impact · 10 🐞 app bugs
+**Status:** read it from the board, not from here
+([ADR-022](../docs/architecture/adr/0022-github-as-the-system-of-record.md)). Every unresolved
+entry is a board item keyed by `Dn`:
 
-> **Every column re-derived by script, 2026-08-29 — recounted, never incremented (D53).** Parsing
-> each `| **Dn** |` row and reading the marker that *opens its verdict column* gives
-> **72 entries · 68 ✅ · 4 ⏳ · 3 🔴 · 10 🐞**. Open is D3, D15, D33 and D64. Parsing the verdict
-> column is the part that matters: a bare `grep '⏳'` over the row also matches an open `Dn` that a
-> *resolved* entry happens to cite, which is how a previous version counted eleven. Re-run after
-> D68–D70 were resolved by a panel consultation the same day they were raised — the count moved by
-> three in one direction and zero in the other, which is exactly the case incrementing gets wrong.
+```sh
+gh project item-list 6 --owner rodacato --format json --limit 200 \
+  | jq -r '.items[] | select(.title | test("^\\[D[0-9]+\\]")) | "\(.status)\t\(.title)"' | sort
+```
+
+> **The count that stood here is retired, for the reason it kept demonstrating.** It was a
+> hand-kept tally of data derived from this file, and it was **wrong seven times** — four of them
+> because a column was carried forward instead of re-derived. #443 retired the sibling tally in
+> [V2_REMAINING](V2_REMAINING.md) on 2026-08-29 and published the commands in its place; this
+> follows it, and ADR-022 gives the open entries one home so there is one place to read.
 >
-> **The line this replaces listed D55 and D57 as open; both are resolved** — D55 on 2026-08-28 (the
-> password-reset rake task) and D57 the same day (renaming the cockpit screen to `Señales`).
-> [V2_REMAINING](V2_REMAINING.md) carried the same two, plus a different entry total. That is the
-> seventh time this header has been wrong, and the fourth time the cause was a column carried
-> forward instead of re-derived.
+> **What the verdict marker means now.** `✅` records that a decision was taken and names the
+> outcome — history, and it stays true. `⏳` marks an entry the board owns; what state it is in
+> (draft, blocked, being researched) is read there and not inferred from this column.
 >
-> **Carrying a column forward is the bug.** Re-run the parse; never add to the old total. The
-> commands and their sibling for the findings file live in
-> [V2_REMAINING](V2_REMAINING.md)'s **Where this stands** section, which retired its own hand-kept
-> tally on 2026-08-29 for the reason this header keeps demonstrating.
+> Re-derive the totals from the file when you want them — never increment the old ones:
+>
+> ```sh
+> awk -F'|' '/^\| \*\*D[0-9]+\*\* \|/ {print $5}' design/DECISIONS.md \
+>   | grep -oE '^ *(✅|⏳)' | tr -d ' ' | sort | uniq -c
+> ```
+>
+> **Parsing the verdict column is the part that matters.** A bare `grep '⏳'` over the whole row
+> also matches a *resolved* entry that happens to cite an open `Dn`, which is how a previous
+> version counted eleven.
 
 **How entries work.** A `Dn` is a finding logged when a call isn't purely mechanical. In a
 normal migration the design matches the code; here (a **redesign**) the design leads on visual
