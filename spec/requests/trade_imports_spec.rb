@@ -108,6 +108,66 @@ RSpec.describe "Trade imports", type: :request do
     end
   end
 
+  describe "POST /trades/import/tracked" do
+    before { allow(ResolveTrackedSymbolsJob).to receive(:perform_later) }
+
+    # The screen used to offer one CTA that was a link to /tracked carrying no
+    # symbols, so seventeen missing tickers meant seventeen manual entries.
+    it "offers every missing symbol as a checked box, not a link" do
+      csv = "#{good}\nAMD,buy,1.0,10.0,2025-12-08,order-2\nALAB,buy,1.0,10.0,2025-12-08,order-3"
+
+      post preview_trade_import_path, params: { contenido: csv }
+
+      expect(response.body).to include(%(action="#{track_missing_trade_import_path}"))
+      expect(response.body).to include(%(name="symbols[]" id="symbol_amd" value="AMD"))
+      expect(response.body).to include(%(name="symbols[]" id="symbol_alab" value="ALAB"))
+      expect(response.body.scan(/type="checkbox"[^>]*checked="checked"/).size).to eq(2)
+    end
+
+    # The two halves cost differently, so the row says which is which before
+    # anyone spends a provider call on it.
+    it "says which symbols the catalogue already knows" do
+      csv = "#{good}\nAMD,buy,1.0,10.0,2025-12-08,order-2\nALAB,buy,1.0,10.0,2025-12-08,order-3"
+
+      post preview_trade_import_path, params: { contenido: csv }
+
+      expect(response.body).to include("en el catálogo").and include("le pregunto al proveedor")
+    end
+
+    it "creates the catalogued half and sends the rest to the job" do
+      post track_missing_trade_import_path, params: { symbols: %w[AMD ALAB] }
+
+      expect(Asset.find_by(symbol: "AMD")).to be_present
+      expect(ResolveTrackedSymbolsJob).to have_received(:perform_later).with([ "ALAB" ], user.id)
+      expect(response).to redirect_to(new_trade_import_path)
+      expect(flash[:notice]).to include("1").and include("te aviso")
+    end
+
+    it "says the file can go back in when nothing is left pending" do
+      post track_missing_trade_import_path, params: { symbols: %w[AMD] }
+
+      expect(flash[:notice]).to eq("Di de alta 1 símbolo. Vuelve a subir tu archivo.")
+      expect(ResolveTrackedSymbolsJob).not_to have_received(:perform_later)
+    end
+
+    it "refuses a submission with every box unchecked" do
+      post track_missing_trade_import_path, params: {}
+
+      expect(response).to redirect_to(new_trade_import_path)
+      expect(flash[:alert]).to eq("No seleccionaste ningún símbolo.")
+      expect(ResolveTrackedSymbolsJob).not_to have_received(:perform_later)
+    end
+
+    it "is behind authentication" do
+      delete "/logout"
+
+      post track_missing_trade_import_path, params: { symbols: %w[AMD] }
+
+      expect(response).to redirect_to("/login")
+      expect(Asset.find_by(symbol: "AMD")).to be_nil
+    end
+  end
+
   describe "the door" do
     it "is reachable from the assets screen" do
       get assets_path

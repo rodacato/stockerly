@@ -20,15 +20,36 @@
     </div>
 
     <% if @reason == :unknown_symbols %>
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-fg-subtle"><%= t(".rechazo.faltan") %></p>
-      <ul class="flex flex-wrap gap-2">
-        <% @details.each do |symbol| %>
-          <li class="rounded-lg border border-border-default bg-bg-surface px-2.5 py-1.5 font-mono text-xs font-semibold text-fg-default"><%= symbol %></li>
-        <% end %>
-      </ul>
-      <p class="rounded-2xl bg-bg-muted px-4 py-3.5 text-xs leading-relaxed text-fg-subtle"><%= t(".rechazo.porque") %></p>
-      <%= link_to t(".rechazo.dar_alta"), tracked_assets_path,
-                  class: "rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-fg-inverse" %>
+      <%# Checked by default because every symbol here came out of the owner's
+          own file. Unchecking is for the ticker they do not recognise. %>
+      <%= form_with url: track_missing_trade_import_path, class: "flex flex-col gap-3",
+                    data: { controller: "check-all" } do |f| %>
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-fg-subtle"><%= t(".rechazo.faltan") %></span>
+          <button type="button" data-action="check-all#toggle"
+                  class="cursor-pointer text-xs font-semibold text-primary"><%= t(".rechazo.alternar") %></button>
+        </div>
+
+        <ul class="flex flex-col gap-1.5">
+          <% @details.each do |symbol| %>
+            <li>
+              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-border-default bg-bg-surface px-3 py-2.5">
+                <%= check_box_tag "symbols[]", symbol, true, id: "symbol_#{symbol.parameterize}",
+                      data: { check_all_target: "box" },
+                      class: "size-4 cursor-pointer accent-primary" %>
+                <span class="font-mono text-xs font-semibold text-fg-default"><%= symbol %></span>
+                <span class="ml-auto text-[10px] text-fg-subtle">
+                  <%= @catalogued.include?(symbol) ? t(".rechazo.en_catalogo") : t(".rechazo.preguntar") %>
+                </span>
+              </label>
+            </li>
+          <% end %>
+        </ul>
+
+        <p class="rounded-2xl bg-bg-muted px-4 py-3.5 text-xs leading-relaxed text-fg-subtle"><%= t(".rechazo.porque") %></p>
+        <%= f.submit t(".rechazo.dar_alta"),
+              class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-fg-inverse" %>
+      <% end %>
     <% else %>
       <ul class="flex flex-col gap-1.5">
         <% Array(@details).each do |detail| %>
