@@ -128,6 +128,22 @@ RSpec.describe "PWA", type: :request do
     end
   end
 
+  # PwaController drops the same-origin guard on the worker, and it can afford
+  # to because nothing here mutates: the CSRF token check passes GET through
+  # untouched anyway. Adding a writing action would change that, so the routes
+  # are what keeps the claim true.
+  describe "the surface itself" do
+    it "answers nothing but GET" do
+      %w[/manifest.json /service-worker.js].each do |path|
+        post path
+        expect(response).to have_http_status(:not_found)
+
+        delete path
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe "offline.html" do
     it "serves the offline fallback page" do
       get "/offline.html"
