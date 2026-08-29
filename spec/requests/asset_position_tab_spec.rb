@@ -67,37 +67,6 @@ RSpec.describe "The asset detail's Mi posición tab", type: :request do
     expect(response.body).to include(I18n.t("posicion.sin_desglose"))
   end
 
-  describe "the rules card" do
-    # The artboard also showed a Meta; no target price exists in the code, so
-    # the card carries the rules, which do.
-    it "lists the rules you have on this asset" do
-      hold
-      create(:alert_rule, user: user, asset_symbol: "NVDA", condition: "rsi_overbought",
-                          threshold_value: 70, status: :active)
-
-      get market_asset_path(asset.symbol)
-
-      expect(response.body).to include(I18n.t("posicion.plan_titulo"))
-      expect(response.body).to include("RSI(14) ≥ 70")
-    end
-
-    it "says you have none rather than showing an empty card" do
-      hold
-
-      get market_asset_path(asset.symbol)
-
-      expect(response.body).to include(I18n.t("posicion.plan_sin_reglas"))
-    end
-
-    it "does not show another asset's rules" do
-      hold
-      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "rsi_oversold", threshold_value: 30)
-
-      get market_asset_path(asset.symbol)
-
-      expect(response.body).to include(I18n.t("posicion.plan_sin_reglas"))
-    end
-  end
 
   describe "the retrospective" do
     it "states the facts about how you entered, without grading them" do

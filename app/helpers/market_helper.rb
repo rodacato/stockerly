@@ -72,6 +72,35 @@ module MarketHelper
         token: "--color-chart-1", width: 2 } ].to_json
   end
 
+  # The three references the Análisis anchor reads against (CKP-8, D67). The
+  # controller already loads all of them; nothing new is fetched here.
+  def cost_anchor_for(asset, position_data)
+    position = position_data && position_data[:position]
+    return nil unless position
+
+    Trading::Domain::PriceAnchor.against_cost(price: asset.current_price, cost: position.avg_cost)
+  end
+
+  def threshold_rule_for(rules)
+    rules.find { |rule| rule.active? && AlertRule::PRICE_THRESHOLD_CONDITIONS.include?(rule.condition) }
+  end
+
+  def threshold_anchor_for(asset, rule)
+    return nil unless rule
+
+    Trading::Domain::PriceAnchor.against_threshold(price: asset.current_price, threshold: rule.threshold_value)
+  end
+
+  def range_52w_for(asset, presenter)
+    return nil if presenter.blank?
+
+    MarketData::Domain::FiftyTwoWeekRange.for(
+      price: asset.current_price,
+      low: presenter.metric("fifty_two_week_low"),
+      high: presenter.metric("fifty_two_week_high")
+    )
+  end
+
   # Used for technical observations in the asset detail page.
   def observation_when(time)
     return "—" if time.nil?

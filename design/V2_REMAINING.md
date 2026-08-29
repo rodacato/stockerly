@@ -179,9 +179,9 @@ python3 -c "import re;rows=[l for l in open('design/DECISIONS.md') if re.match(r
 
 | | Findings | |
 |---|---:|---|
-| ✅ closed | **24** | shipped or measured away |
-| 🔴 open | **9** | ACT-1 · CKP-1 · CKP-8 · ALR-1 · AJU-1 · X9 · X10 · X11 · X12 |
-| 🟡 open | **21** | a real gap inside a working screen |
+| ✅ closed | **26** | shipped or measured away |
+| 🔴 open | **8** | X9 · X10 · X11 · X12 · CKP-1 · ACT-1 · ALR-1 · AJU-1 |
+| 🟡 open | **20** | a real gap inside a working screen |
 | ⚪ open | **17** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
 
@@ -1073,7 +1073,7 @@ inline `.where(...).order(...).limit(3)` for the rules card, and `trigger_fundam
 None of it crosses an ADR-002 boundary (checked: no context reaches into another's models or
 gateways anywhere in the app). It is the one controller that did not move its assembly into the use
 case that already exists for it.
-### CKP-8 🔴 The asset detail has no anchor — the two references a decision needs are both present and neither is legible
+### CKP-8 ✅ The asset detail's anchor — built 2026-08-29
 
 The screen answers *what is this asset doing*. It does not answer *what is it doing *relative to
 me**, which is the question that precedes every buy and every sell. Both references exist in the
@@ -1101,6 +1101,14 @@ never read as one.
 **No migration is implied.** Holding → `avg_cost`; watching → the active rule's `threshold_value`;
 both → position within the 52-week range (CKP-9). Three anchors, three columns that already exist.
 
+**Built 2026-08-29.** `Trading::Domain::PriceAnchor` takes values rather than records, so Trading
+never reaches into an `AlertRule` to find a threshold — the view resolves which reference applies and
+hands over numbers. `market/_vs_plan` renders in **Análisis**, where the artboard draws it, and
+`market/_asset_rules` is deleted along with its place on Mi posición. `AlertRule::PRICE_THRESHOLD_CONDITIONS`
+names the two conditions whose threshold is comparable to a quote; `day_change_percent`, the RSI pair
+and `volume_spike` all carry a `threshold_value` that is not a price, and are listed as rules instead.
+The block is **absent** rather than empty when there is neither a position nor a rule.
+
 **Amended 2026-08-29 while designing it — this entry understated the finding, and in the direction
 that matters.** It said the two references are in the database and neither is on the screen. True,
 and incomplete: **`cockpit.pen`'s `Asset · Análisis` artboard already draws the whole anchor**, as a
@@ -1118,7 +1126,7 @@ says nothing about `Tu costo`, which `position.avg_cost` has backed all along. S
 design gap to fill; it is **an implementation that shipped a third of a designed block** and a
 comment that accounted for one of the two omissions.
 
-### CKP-9 🟡 The 52-week range is registered, filled by two providers, and hidden in an accordion
+### CKP-9 ✅ The 52-week range — hoisted and built 2026-08-29
 
 `fifty_two_week_high` and `fifty_two_week_low` are registered metrics
 ([`metric_definitions.rb:128`](../app/contexts/market_data/domain/metric_definitions.rb#L128)) in
