@@ -10527,7 +10527,7 @@
       "name": "[Activos] / Importar CSV / Símbolos desconocidos",
       "clip": true,
       "width": 390,
-      "height": 844,
+      "height": 920,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -10641,273 +10641,660 @@
               ]
             },
             {
-              "type": "text",
-              "id": "cpmeM",
+              "type": "frame",
+              "id": "ml9Sy",
               "name": "Lab",
-              "fill": "$fg-subtle",
-              "content": "FALTAN EN TRACKED",
-              "fontFamily": "$font-sans",
-              "fontSize": 10,
-              "fontWeight": "600",
-              "letterSpacing": 0.12
+              "width": "fill_container",
+              "gap": "$space-2",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "LhE9E",
+                  "name": "t",
+                  "fill": "$fg-subtle",
+                  "content": "FALTAN EN TRACKED",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "600",
+                  "letterSpacing": 0.12
+                },
+                {
+                  "type": "frame",
+                  "id": "ezU3A",
+                  "name": "Spacer",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "text",
+                  "id": "l10lPe",
+                  "name": "Alternar",
+                  "fill": "$primary",
+                  "content": "Todos / ninguno",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                }
+              ]
             },
             {
               "type": "frame",
-              "id": "Tmhxk",
-              "name": "Chips",
+              "id": "vmyCX",
+              "name": "Lista",
               "width": "fill_container",
               "layout": "vertical",
               "gap": "$space-2",
               "children": [
                 {
                   "type": "frame",
-                  "id": "U3Vq30",
-                  "name": "Row",
+                  "id": "Xk34B",
+                  "name": "ALAB",
                   "width": "fill_container",
-                  "gap": "$space-2",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    9,
+                    12
+                  ],
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "X8IOnb",
-                      "name": "ALAB",
-                      "fill": "$bg-surface",
+                      "id": "xRjBG",
+                      "name": "Box",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$primary",
                       "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        7,
-                        11
-                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "HnbKR",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "ALAB",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "gmdsW",
+                          "name": "c",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
                         }
                       ]
                     },
                     {
-                      "type": "frame",
-                      "id": "hKhMO",
-                      "name": "ARKB",
-                      "fill": "$bg-surface",
-                      "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        7,
-                        11
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "WgYy0",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "ARKB",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "xvkYg",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "ALAB",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
                     },
                     {
                       "type": "frame",
-                      "id": "slP87",
-                      "name": "ARKX",
-                      "fill": "$bg-surface",
-                      "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        7,
-                        11
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "zuN7g",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "ARKX",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "id": "TCjdc",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": 1
                     },
                     {
-                      "type": "frame",
-                      "id": "v7siV",
-                      "name": "ESGU",
-                      "fill": "$bg-surface",
-                      "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        7,
-                        11
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "UBwWV",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "ESGU",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "NcBv7",
+                      "name": "Fuente",
+                      "fill": "$fg-subtle",
+                      "content": "le pregunto al proveedor",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
                 {
                   "type": "frame",
-                  "id": "f6ws2",
-                  "name": "Row",
+                  "id": "J6EqS7",
+                  "name": "ARKB",
                   "width": "fill_container",
-                  "gap": "$space-2",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    9,
+                    12
+                  ],
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "Mija5",
-                      "name": "ESGV",
-                      "fill": "$bg-surface",
+                      "id": "yFSWB",
+                      "name": "Box",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$primary",
                       "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        7,
-                        11
-                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "f7xqKb",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "ESGV",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "IgyRp",
+                          "name": "c",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
                         }
                       ]
                     },
                     {
-                      "type": "frame",
-                      "id": "x3jNM2",
-                      "name": "GOOG",
-                      "fill": "$bg-surface",
-                      "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        7,
-                        11
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "TfCUs",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "GOOG",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "s2JLy",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "ARKB",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
                     },
                     {
                       "type": "frame",
-                      "id": "lk7Ma",
-                      "name": "IVV",
-                      "fill": "$bg-surface",
-                      "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        7,
-                        11
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "GBoR7",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "IVV",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "id": "qE1Np",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": 1
                     },
                     {
-                      "type": "frame",
-                      "id": "a7SYKR",
-                      "name": "MSTR",
-                      "fill": "$bg-surface",
-                      "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        7,
-                        11
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "wCxbQ",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "MSTR",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "TQvlj",
+                      "name": "Fuente",
+                      "fill": "$fg-subtle",
+                      "content": "le pregunto al proveedor",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
                 {
                   "type": "frame",
-                  "id": "lJRKO",
-                  "name": "Row",
+                  "id": "e4DQPU",
+                  "name": "ARKX",
                   "width": "fill_container",
-                  "gap": "$space-2",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    9,
+                    12
+                  ],
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "VJ9t9",
-                      "name": "SATS",
-                      "fill": "$bg-surface",
+                      "id": "WTrdx",
+                      "name": "Box",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$primary",
                       "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        7,
-                        11
-                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "WcOJZ",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "SATS",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "QWYA8",
+                          "name": "c",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
                         }
                       ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "YWOHx",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "ARKX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "n2p9v",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZmYic",
+                      "name": "Fuente",
+                      "fill": "$fg-subtle",
+                      "content": "le pregunto al proveedor",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "S5Byb",
+                  "name": "ESGU",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    9,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Ui544",
+                      "name": "Box",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "avqDM",
+                          "name": "c",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "mbpVU",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "ESGU",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WrhUx",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "PimPZ",
+                      "name": "Fuente",
+                      "fill": "$fg-subtle",
+                      "content": "le pregunto al proveedor",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "N88DuG",
+                  "name": "ESGV",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    9,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "zBJ54",
+                      "name": "Box",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "B5pQf",
+                          "name": "c",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "jP8W7",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "ESGV",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ZsszM",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "kV21A",
+                      "name": "Fuente",
+                      "fill": "$fg-subtle",
+                      "content": "le pregunto al proveedor",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hFT8H",
+                  "name": "GOOG",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    9,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "rSlSj",
+                      "name": "Box",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "ELZRi",
+                          "name": "c",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "qsHhU",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "GOOG",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "v8lPR4",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "lUw8S",
+                      "name": "Fuente",
+                      "fill": "$fg-subtle",
+                      "content": "le pregunto al proveedor",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Rbhzo",
+                  "name": "IVV",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    9,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "QtLRs",
+                      "name": "Box",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "ya5Xt",
+                          "name": "c",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "B1yCf",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "IVV",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "t1n5L",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "kjwHM",
+                      "name": "Fuente",
+                      "fill": "$fg-subtle",
+                      "content": "le pregunto al proveedor",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "szw03",
+                  "name": "MSTR",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    9,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "t4aXR",
+                      "name": "Box",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "lwgSf",
+                          "name": "c",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "rYR3v",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "MSTR",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C49Mxe",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "wMkU1",
+                      "name": "Fuente",
+                      "fill": "$fg-subtle",
+                      "content": "le pregunto al proveedor",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "BEYlS",
+                  "name": "SATS",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    9,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "YWnv6",
+                      "name": "Box",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "gm3WQ",
+                          "name": "c",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "E3Dsu",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "SATS",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "s9xFs",
+                      "name": "Spacer",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "x4B5g",
+                      "name": "Fuente",
+                      "fill": "$fg-subtle",
+                      "content": "le pregunto al proveedor",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -11084,7 +11471,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
+          "content": "2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
           "lineHeight": 1.6,
           "fontFamily": "$font-sans",
           "fontSize": 12,
