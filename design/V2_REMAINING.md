@@ -201,10 +201,11 @@ mean what the screen implies*. Four of the five new reds are data-shape defects 
 screen-by-screen audit — `X10` in particular describes a capability with a single non-visual
 consumer, which is exactly the kind of thing a walk through the views cannot see.
 
-**`DECISIONS.md`: 71 entries · 63 resolved · 8 open** — D3, D15, D33, D64, and D68–D71 raised
-2026-08-29. **This block previously listed D55 and D57 as open and they are both resolved**, and gave
-a stale entry total; that file's header carried the same two errors. Run the third command above; do
-not adjust the old numbers.
+**`DECISIONS.md`: 71 entries · 66 resolved · 5 open** — D3, D15, D33, D64 and D71. **This block
+previously listed D55 and D57 as open and they are both resolved**, and gave a stale entry total;
+that file's header carried the same two errors. D68–D70 were raised and resolved on 2026-08-29 by a
+panel consultation, which is why the open count fell rather than rose. Run the third command above;
+do not adjust the old numbers.
 
 **What the nine reds are.** Five predate this review: `ACT-1` (the empty state's CSV and demo doors),
 `CKP-1` (`Movimientos`, un-gated by D42), `ALR-1` (`Confluencia` as a screen, gated on D3's engine),
