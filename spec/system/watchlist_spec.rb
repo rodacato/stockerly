@@ -13,6 +13,15 @@ RSpec.describe "Watchlist management", type: :system do
   let!(:aapl) { create(:asset, symbol: "AAPL", name: "Apple Inc.", current_price: 189.0, asset_type: :stock) }
   let!(:tsla) { create(:asset, symbol: "TSLA", name: "Tesla, Inc.", current_price: 176.0, asset_type: :stock) }
 
+  # The Radar reports movement (ADR-021), and movement is now computed from two
+  # daily closes rather than read off a provider column the factory happened to
+  # fill. These specs are about the watchlist surfacing, so they give the assets
+  # a move to have rather than asserting against one they never had.
+  before do
+    with_day_change(aapl, 1.25)
+    with_day_change(tsla, -0.80)
+  end
+
   before do
     visit login_path
     fill_in "Correo electrónico", with: "wl@test.com"
