@@ -36,16 +36,10 @@ class Position < ApplicationRecord
     buys = trades.select { |t| t.side == "buy" && t.discarded_at.nil? }
     return 0.to_d if buys.empty?
 
-    missing = buys.count { |t| t.fx_rate_at_execution.nil? }
-    if missing.positive?
-      raise Trading::Domain::MissingFxRate,
-              "Position##{id}: #{missing} buy trade(s) missing fx_rate_at_execution; cannot derive cost basis in #{target_currency}"
-    end
-
     total_shares = buys.sum(&:shares)
     return 0.to_d if total_shares.zero?
 
-    total_user_cost = buys.sum { |t| t.shares * t.price_per_share * t.fx_rate_at_execution }
+    total_user_cost = buys.sum { |t| t.shares * t.price_per_share * Trading::Domain::ExecutionRate.multiplier(trade: t, target: target_currency) }
     (total_user_cost / total_shares).to_d
   end
 

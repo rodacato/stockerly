@@ -11,11 +11,6 @@ module Trading
     # Every failure is batch-level and reports every offending row at once —
     # stopping on the first bad row of fifty tells you almost nothing.
     class ImportTrades < ApplicationUseCase
-      # The reference currency is fixed, not the user's current preference:
-      # fx_rate_at_execution outlives the preference, and a rate stored
-      # relative to a setting is wrong the moment the setting changes.
-      REFERENCE_CURRENCY = "MXN".freeze
-
       # The four values every step below needs. They were threaded as four
       # parameters through five methods; naming the tuple is what that was
       # asking for.
@@ -76,8 +71,8 @@ module Trading
         missing = []
 
         pairs.each do |currency, date|
-          rate = currency == REFERENCE_CURRENCY ? BigDecimal(1) : FxRateHistory.rate_on(base: currency, quote: REFERENCE_CURRENCY, date: date)
-          rate ? rates[[ currency, date ]] = rate : missing << "#{currency}->#{REFERENCE_CURRENCY} on #{date}"
+          rate = Trading::Domain::ExecutionRate.capture(currency: currency, at_date: date)
+          rate ? rates[[ currency, date ]] = rate : missing << "#{currency}->#{Trading::Domain::ExecutionRate::REFERENCE} on #{date}"
         end
 
         missing.any? ? Failure([ :missing_fx_history, missing.sort ]) : Success(rates)

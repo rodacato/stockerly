@@ -1,6 +1,6 @@
 # ADR-009 — Historical FX rates for cross-currency snapshot revaluation
 
-- **Status:** Accepted · **implemented 2026-08-24** (slice 2b: `FxRateHistory`, `Portfolio#convert(at_date:)`, and `FxRateResolver` preferring the FIX for the trade's own date) · **amended 2026-08-26** ([#318](https://github.com/rodacato/stockerly/issues/318)): the series is `SF60653`, and history is seeded from 1991 rather than collected forward
+- **Status:** Accepted · **implemented 2026-08-24** (slice 2b: `FxRateHistory`, `Portfolio#convert(at_date:)`, and a resolver preferring the FIX for the trade's own date) · **amended 2026-08-26** ([#318](https://github.com/rodacato/stockerly/issues/318)): the series is `SF60653`, and history is seeded from 1991 rather than collected forward · **amended 2026-08-29** ([#405](https://github.com/rodacato/stockerly/issues/405)): the captured rate is expressed against MXN rather than against the user's preferred currency — see the amendment at the foot of this ADR
 - **Date:** 2026-06-27
 - **Author:** Adrian Castillo
 - **Supersedes:** —
@@ -105,3 +105,42 @@ fallback.
 - A second non-USD/MXN currency pair becomes first-class (the resolver and history schema assume the USD/MXN axis is dominant).
 - ~~Backfill precision on pre-history snapshots becomes a real complaint (would justify importing a historical Banxico series instead of collecting forward only).~~ **Fired and resolved 2026-08-26** — the trigger's own remedy was taken: `rake data:backfill_fx_history` seeds all 12,705 rows of `SF60653` from 1991-11-14, so no snapshot predates the store and there is no pre-history to be imprecise about. Retire this trigger rather than waiting on it. *(Struck 2026-08-27.)*
 - The per-callsite `at_date:` discipline proves error-prone in practice (would justify pushing the date into a value object rather than a bare argument). **Still open.**
+
+---
+
+## Amendment, 2026-08-29 — the rate is expressed against MXN, not against a preference
+
+**What was wrong.** This ADR settled *when* a rate is read: the FIX of the day the trade executed.
+It never settled *what the stored number is a rate to*, and the implementation answered "the user's
+preferred currency at the moment the row was written". That makes a persisted money column depend on
+a mutable setting: flip the preference and every existing row silently means something else. It was
+also unrepairable, because `fx_rate_backfill:trades` only ever filled rows that were `NULL`, and
+these were not null — they were wrong.
+
+It surfaced when the CSV importer ([#400](https://github.com/rodacato/stockerly/pull/400)) chose MXN
+deliberately while `ExecuteTrade` kept using the preference, leaving one column with two writers that
+meant different things by it ([#405](https://github.com/rodacato/stockerly/issues/405)). Nothing had
+been traded yet, which is why this was cheap to correct.
+
+**The decision.** `trades.fx_rate_at_execution` means **how many MXN one unit of the trade's currency
+bought on the day it executed**. MXN because the product is self-hosted and Mexico-first: it is the
+stable reference, and a preference is not.
+
+**What follows from it.**
+
+- `Trading::Domain::ExecutionRate` owns both halves. `capture` writes the reference rate;
+  `multiplier(trade:, target:)` reads it back as `stored ÷ (target→MXN on that day)` — one expression
+  that is correct for all four currency/target combinations, where the previous code was correct for
+  three and silently wrong for the fourth (a peso trade read in dollars valued one peso as one
+  dollar).
+- Both conversions are dated to the execution, so a peso gain earned at 17.20 is not restated by
+  today's rate. That is this ADR's original point, now applied on the way back out as well.
+- `Position#avg_cost_in`, `RealizedGain` and `ExternalFlows` each carried their own copy of the
+  conversion. They delegate; `Trading::Domain::FxRateResolver` had no callers left and is deleted.
+- **A missing rate stores `NULL`, it does not refuse the trade.** `NULL` is true — it says "not known
+  yet" — and the backfill fills it at the trade's own date once the series syncs. Refusing would mean
+  a fresh instance whose FX history has not run could record nothing at all. The read path still
+  raises rather than valuing `NULL` at 1:1.
+- The trade sheet captures the reference rate and displays the running total in the preferred
+  currency, so `/fx_rate` returns both the rate to store and the divisor to display with.
+

@@ -1,8 +1,8 @@
 namespace :fx_rate_backfill do
-  desc "Fill trades.fx_rate_at_execution for rows where it is NULL (S2-D, #44)"
+  desc "Fill trades.fx_rate_at_execution (against MXN, at each trade's own date) where NULL"
   task trades: :environment do
     # Idempotent: skip rows already filled. Re-running is safe.
-    pending = Trade.where(fx_rate_at_execution: nil).includes(portfolio: :user)
+    pending = Trade.where(fx_rate_at_execution: nil)
     total = pending.count
 
     if total.zero?
@@ -10,42 +10,23 @@ namespace :fx_rate_backfill do
       next
     end
 
-    puts "fx_rate_backfill:trades — processing #{total} trade(s)"
+    reference = Trading::Domain::ExecutionRate::REFERENCE
+    puts "fx_rate_backfill:trades — processing #{total} trade(s) against #{reference}"
 
     filled = 0
     skipped = []
 
-    # Cache resolved rates by (from, to) so we don't refresh the gateway repeatedly
-    # for trades that share a currency pair (de-dup per the issue's note).
-    cache = {}
-
     pending.find_each do |trade|
-      preferred = trade.portfolio.user.preferred_currency
-      key = [ trade.currency, preferred ]
+      executed_on = trade.executed_at.to_date
+      rate = Trading::Domain::ExecutionRate.capture(currency: trade.currency, at_date: executed_on)
 
-      cache[key] ||= Trading::Domain::FxRateResolver.call(
-        trade_currency: trade.currency,
-        preferred_currency: preferred
-      )
-
-      result = cache[key]
-
-      if result.success?
-        rate = result.value!
+      if rate
         trade.update_column(:fx_rate_at_execution, rate)
         filled += 1
-        source =
-          if trade.currency == preferred
-            "identity"
-          else
-            "current_fx_rate"
-          end
-        puts "  ✓ trade=##{trade.id} #{trade.currency}→#{preferred} " \
-             "executed_at=#{trade.executed_at.to_date} " \
-             "rate=#{rate.to_s('F')} source=#{source}"
+        puts "  ✓ trade=##{trade.id} #{trade.currency}→#{reference} executed_at=#{executed_on} rate=#{rate.to_s('F')}"
       else
-        skipped << { id: trade.id, currency: trade.currency, preferred: preferred, reason: result.failure[1] }
-        warn "  ✗ trade=##{trade.id} skipped — #{result.failure[1]}"
+        skipped << { id: trade.id, currency: trade.currency, date: executed_on }
+        warn "  ✗ trade=##{trade.id} skipped — no #{trade.currency}→#{reference} rate on #{executed_on}"
       end
     end
 
@@ -56,7 +37,7 @@ namespace :fx_rate_backfill do
       puts ""
       puts "Skipped trades (left NULL — manual review recommended):"
       skipped.each do |s|
-        puts "  - trade=##{s[:id]} #{s[:currency]}→#{s[:preferred]} reason=#{s[:reason]}"
+        puts "  - trade=##{s[:id]} #{s[:currency]} on #{s[:date]}"
       end
     end
   end

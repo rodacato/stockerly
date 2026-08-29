@@ -46,7 +46,7 @@
 
 **Usage metric:** Adrian opens the dashboard ≥1 time per week on weekends. If it drops below 1/month, the JTBD is not being fulfilled.
 
-**Blocked by:** nothing. The P0 is fixed — `ExecuteTrade` takes the currency from the trade or the asset and captures `fx_rate_at_execution` through `FxRateResolver`, and `PortfolioSummary#total_invested` derives cost basis at historical FX (ADR-009).
+**Blocked by:** nothing. The P0 is fixed — `ExecuteTrade` takes the currency from the trade or the asset and captures `fx_rate_at_execution` against MXN through `Trading::Domain::ExecutionRate`, and `PortfolioSummary#total_invested` derives cost basis at historical FX (ADR-009).
 
 **Current status:** delivered. The Consolidado (`/portfolio`) shows the total in MXN, its history, and how it compares against CETES; the Panorama's strip carries it daily. `day_gain` subtracts capital flows so a late-recorded purchase no longer reads as a gain (D27).
 
