@@ -46,8 +46,8 @@ module Trading
       # screen asked for it, so what the refusal protected against -- a
       # portfolio quietly missing trades -- still cannot happen by accident.
       def drop_unknown(parsed)
-        known = Asset.where(symbol: parsed.map { |row| row[:asset_symbol].upcase }.uniq).pluck(:symbol).to_set
-        kept, gone = parsed.partition { |row| known.include?(row[:asset_symbol].upcase) }
+        resolvable = resolve_symbols(symbols_in(parsed)).keys.to_set
+        kept, gone = parsed.partition { |row| resolvable.include?(row[:asset_symbol].upcase) }
 
         [ kept, gone.group_by { |row| row[:asset_symbol].upcase }.transform_values(&:size) ]
       end
@@ -66,9 +66,8 @@ module Trading
       # a symbol and nothing else, so anything created from it would be an asset
       # with no type, exchange or country.
       def resolve_assets(parsed)
-        symbols = parsed.map { |r| r[:asset_symbol].upcase }.uniq
-        found = Asset.where(symbol: symbols).index_by(&:symbol)
-        found = found.merge(by_former_symbol(symbols - found.keys))
+        symbols = symbols_in(parsed)
+        found = resolve_symbols(symbols)
         missing = symbols - found.keys
         return Failure([ :unknown_symbols, missing.sort ]) if missing.any?
 
@@ -76,6 +75,18 @@ module Trading
         return Failure([ :unsupported_asset_type, unsupported.sort ]) if unsupported.any?
 
         Success(found)
+      end
+
+      def symbols_in(parsed)
+        parsed.map { |row| row[:asset_symbol].upcase }.uniq
+      end
+
+      # The one answer to "which of these do we know". Asking it twice is how
+      # the partial import came to discard rows an alias could have resolved:
+      # it had its own query, and that query had never heard of former_symbols.
+      def resolve_symbols(symbols)
+        found = Asset.where(symbol: symbols).index_by(&:symbol)
+        found.merge(by_former_symbol(symbols - found.keys))
       end
 
       # Only what no live ticker claimed. Retired symbols get reassigned, so a
