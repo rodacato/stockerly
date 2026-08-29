@@ -14,7 +14,10 @@
     <p class="rounded-lg bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert"><%= @error %></p>
   <% end %>
 
-  <%= form_with url: preview_trade_import_path, class: "flex flex-col gap-4" do |f| %>
+  <%# Turbo refuses a 200 to a form POST, and a successful preview renders
+      rather than redirects -- it cannot redirect, because the CSV lives in the
+      request and nowhere else. Opting out is what makes the happy path load. %>
+  <%= form_with url: preview_trade_import_path, class: "flex flex-col gap-4", data: { turbo: false } do |f| %>
     <label class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-border-default bg-bg-surface px-5 py-7 text-center">
       <span class="material-symbols-outlined text-2xl text-primary">upload_file</span>
       <span class="text-sm font-semibold text-primary"><%= t(".elegir") %></span>
