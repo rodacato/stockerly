@@ -83,6 +83,15 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).not_to include('type="submit" value="Guardar"')
   end
 
+  # Tus datos is where a person goes looking for how to get data in, not only
+  # for how to get it out.
+  it "opens the importer from the data section" do
+    get settings_path
+
+    expect(response.body).to include(%(href="#{new_trade_import_path}"))
+    expect(response.body).to include(I18n.t("settings.show.importar"))
+  end
+
   # Issue #176 builds in-app deletion; until then the honest thing is naming
   # the procedure that actually exists.
   it "says how account deletion works today rather than offering a dead button" do

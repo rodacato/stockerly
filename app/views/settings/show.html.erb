@@ -62,6 +62,10 @@
 
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".datos_titulo") %></h2>
+    <%# The hub's door to the importer. Assets already has one, but the data a
+        person wants to load is what this section is about. %>
+    <%= render "settings/nav_row", icon: "upload_file", path: new_trade_import_path,
+               title: t(".importar"), description: t(".importar_desc") %>
     <div class="rounded-2xl border border-border-default bg-bg-surface p-5">
       <p class="text-sm text-fg-subtle"><%= t(".datos_cuerpo") %></p>
       <%# Issue #176 builds this in the app; until then the honest thing is to
