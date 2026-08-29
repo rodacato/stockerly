@@ -698,13 +698,24 @@ still above MACD's 34, so the first version of the spec passed against the old c
 holidays it drops to ~32 and the reading loses MACD entirely. Verified by reverting the fix: the
 spec fails with `macd` absent.
 
-### X20 ⚪ A missing volume is scored as zero
+### X20 ✅ A missing volume was scored as zero — fixed 2026-08-29
 
 `volume` is nullable on `asset_price_histories`, and both `trend_scores` writers do
 `pluck(:volume).map(&:to_f)` — which turns `nil` into `0.0` rather than excluding the row. A gap in
 volume data therefore drags `volume_trend` toward a reading it did not earn, instead of degrading to
 the factor being absent. Pre-existing and shared by both writers; noted, not fixed, because the
 honest alternative (drop the factor when volumes are incomplete) is a scoring decision.
+
+**Fixed 2026-08-29, and only half of it was a scoring decision.** Coercing `nil` to `0.0` is not
+"less data" — it asserts that **nothing traded that day**, which is a strong claim and a false one,
+and it drags the 5-day average against the 20-day one. Dropping it was never a judgement call.
+
+What *was* a call is what happens next, and Adrian took it: **compute with whatever real volumes
+remain, and let the reading say the factor is absent when too few do.** So the writers now pass raw
+volumes and `volume_trend` compacts them itself — one rule, in the domain, rather than the same fix
+twice at two call sites — and the existing 20-reading minimum now counts **reported** volumes. Below
+it the factor is simply missing, which the per-factor gating already reports through
+`FACTORS - factors.keys`; no warning mechanism had to be built for it.
 
 # Kit → code
 

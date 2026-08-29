@@ -107,11 +107,14 @@ module MarketData
       (normalized.clamp(-50, 50) + 50).clamp(0, 100)
     end
 
+    # A missing volume is dropped, never coerced to zero: nil means the day was
+    # not reported, and 0.0 asserts that nothing traded, which drags the ratio.
     def volume_trend(volumes, momentum)
-      return nil if volumes.blank? || volumes.size < 20
+      values = Array(volumes).compact.map(&:to_f)
+      return nil if values.size < 20
 
-      avg_5d = volumes.last(5).sum / 5.0
-      avg_20d = volumes.last(20).sum / 20.0
+      avg_5d = values.last(5).sum / 5.0
+      avg_20d = values.last(20).sum / 20.0
       return 50.0 if avg_20d.zero?
 
       ratio = avg_5d / avg_20d
