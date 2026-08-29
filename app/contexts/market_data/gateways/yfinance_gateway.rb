@@ -124,6 +124,22 @@ module MarketData
         Success(quotes)
       end
 
+      # Matching nothing is Success([]), not a failure: "no such ticker" and
+      # "the provider is down" have to stay distinguishable upstream.
+      def search_tickers(query)
+        run("search", query).fmap do |matches|
+          matches.map do |match|
+            {
+              symbol: match["symbol"],
+              name: match["name"],
+              quote_type: match["quote_type"],
+              exchange: match["exchange"],
+              sector: match["sector"]
+            }
+          end
+        end
+      end
+
       private
 
       def run(command, symbol, *extra)

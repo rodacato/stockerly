@@ -2,19 +2,16 @@ require "rails_helper"
 
 RSpec.describe Administration::UseCases::Assets::SearchTicker do
   describe ".call" do
-    before { create(:integration, provider_name: "Alpha Vantage") }
+    let!(:integration) do
+      create(:integration, provider_name: "Yahoo Finance",
+             max_requests_per_minute: 6, daily_call_limit: 200)
+    end
 
     context "with valid query" do
       before do
-        stub_alpha_vantage_ticker_search("AAPL", results: [
-          { "1. symbol" => "AAPL", "2. name" => "Apple Inc.", "3. type" => "Equity",
-            "4. region" => "United States", "5. marketOpen" => "09:30",
-            "6. marketClose" => "16:00", "7. timezone" => "UTC-04",
-            "8. currency" => "USD", "9. matchScore" => "1.0000" },
-          { "1. symbol" => "AAPL.MEX", "2. name" => "Apple Inc.", "3. type" => "Equity",
-            "4. region" => "Mexico", "5. marketOpen" => "08:30",
-            "6. marketClose" => "15:00", "7. timezone" => "UTC-06",
-            "8. currency" => "MXN", "9. matchScore" => "0.5000" }
+        stub_yfinance_search("AAPL", results: [
+          yfinance_match(symbol: "AAPL", name: "Apple Inc.", exchange: "NASDAQ", sector: "Technology"),
+          yfinance_match(symbol: "AAPL.MX", name: "Apple Inc.", exchange: "Mexico")
         ])
       end
 
@@ -25,130 +22,94 @@ RSpec.describe Administration::UseCases::Assets::SearchTicker do
         expect(result.value!.size).to eq(2)
       end
 
-      it "maps Equity to stock asset_type" do
-        result = described_class.call(query: "AAPL")
-        first = result.value!.first
+      it "maps EQUITY to stock asset_type" do
+        first = described_class.call(query: "AAPL").value!.first
 
         expect(first[:symbol]).to eq("AAPL")
         expect(first[:name]).to eq("Apple Inc.")
         expect(first[:asset_type]).to eq("stock")
-        expect(first[:exchange]).to eq("United States")
+        expect(first[:exchange]).to eq("NASDAQ")
         expect(first[:country]).to eq("US")
       end
 
-      it "maps Mexico region to MX country" do
-        result = described_class.call(query: "AAPL")
-        mx = result.value!.last
+      it "maps the Mexican listing to MX and MXN" do
+        mx = described_class.call(query: "AAPL").value!.last
 
-        expect(mx[:symbol]).to eq("AAPL.MEX")
+        expect(mx[:symbol]).to eq("AAPL.MX")
         expect(mx[:country]).to eq("MX")
+        expect(mx[:currency]).to eq("MXN")
       end
 
-      it "propagates currency from the provider response (#45)" do
-        result = described_class.call(query: "AAPL")
-
-        expect(result.value!.first[:currency]).to eq("USD")
-        expect(result.value!.last[:currency]).to eq("MXN")
-      end
-    end
-
-    context "when provider omits currency" do
-      before do
-        stub_alpha_vantage_ticker_search("XX", results: [
-          { "1. symbol" => "XX", "2. name" => "Test", "3. type" => "Equity",
-            "4. region" => "United States", "9. matchScore" => "1.0000" },
-          { "1. symbol" => "XX.MX", "2. name" => "Test MX", "3. type" => "Equity",
-            "4. region" => "Mexico", "9. matchScore" => "0.5000" }
-        ])
-      end
-
-      it "falls back to USD for US-country results (#45)" do
-        result = described_class.call(query: "XX")
-        expect(result.value!.first[:currency]).to eq("USD")
-      end
-
-      it "falls back to MXN for MX-country results (#45)" do
-        result = described_class.call(query: "XX")
-        expect(result.value!.last[:currency]).to eq("MXN")
+      # Alpha Vantage never returned a sector, so the field on the Agregar
+      # activo form was always left for the owner to type.
+      it "carries the sector the provider already knows" do
+        expect(described_class.call(query: "AAPL").value!.first[:sector]).to eq("Technology")
       end
     end
 
-    context "with ETF results" do
-      before do
-        stub_alpha_vantage_ticker_search("SPY", results: [
-          { "1. symbol" => "SPY", "2. name" => "SPDR S&P 500 ETF Trust", "3. type" => "ETF",
-            "4. region" => "United States", "5. marketOpen" => "09:30",
-            "6. marketClose" => "16:00", "7. timezone" => "UTC-04",
-            "8. currency" => "USD", "9. matchScore" => "1.0000" }
-        ])
-      end
+    it "maps ETF results to the etf type" do
+      stub_yfinance_search("ESGU", results: [
+        yfinance_match(symbol: "ESGU", name: "iShares ESG Aware MSCI USA ETF", quote_type: "ETF")
+      ])
 
-      it "maps ETF type correctly" do
-        result = described_class.call(query: "SPY")
+      etf = described_class.call(query: "ESGU").value!.first
 
-        etf = result.value!.first
-        expect(etf[:asset_type]).to eq("etf")
-        expect(etf[:country]).to eq("US")
-      end
+      expect(etf[:asset_type]).to eq("etf")
+      expect(etf[:country]).to eq("US")
     end
 
-    context "with unknown region" do
-      before do
-        stub_alpha_vantage_ticker_search("TSM", results: [
-          { "1. symbol" => "TSM", "2. name" => "Taiwan Semiconductor", "3. type" => "Equity",
-            "4. region" => "Australia", "5. marketOpen" => "10:00",
-            "6. marketClose" => "16:00", "7. timezone" => "UTC+10",
-            "8. currency" => "AUD", "9. matchScore" => "0.8000" }
-        ])
-      end
+    it "maps a German venue Yahoo names differently than Alpha Vantage did" do
+      stub_yfinance_search("Astera Labs", results: [
+        yfinance_match(symbol: "64B.DE", name: "Astera Labs, Inc.", exchange: "XETRA")
+      ])
 
-      it "falls back to nil country for unmapped regions" do
-        result = described_class.call(query: "TSM")
-        first = result.value!.first
-
-        expect(first[:exchange]).to eq("Australia")
-        expect(first[:country]).to be_nil
-      end
+      expect(described_class.call(query: "Astera Labs").value!.first[:country]).to eq("DE")
     end
 
-    context "with blank query" do
-      it "returns Failure with validation error" do
-        result = described_class.call(query: "")
+    # Yahoo sends no currency at all, so an unmapped venue cannot inherit one.
+    # USD is the deliberate floor, and Mexico is what had to be mapped.
+    it "leaves an unmapped venue without a country, priced in USD" do
+      stub_yfinance_search("PTT", results: [
+        yfinance_match(symbol: "PTT.BK", name: "PTT Public Company", exchange: "SET")
+      ])
 
-        expect(result).to be_failure
-        expect(result.failure.first).to eq(:validation)
-      end
+      first = described_class.call(query: "PTT").value!.first
+
+      expect(first[:exchange]).to eq("SET")
+      expect(first[:country]).to be_nil
+      expect(first[:currency]).to eq("USD")
     end
 
-    context "with single character query" do
-      it "returns Failure with validation error" do
-        result = described_class.call(query: "A")
+    it "returns Failure with validation error for a blank query" do
+      result = described_class.call(query: "")
 
-        expect(result).to be_failure
-        expect(result.failure.first).to eq(:validation)
-      end
+      expect(result).to be_failure
+      expect(result.failure.first).to eq(:validation)
     end
 
-    context "when gateway fails" do
-      before { stub_alpha_vantage_ticker_search_error(status: 500) }
+    it "returns Failure with validation error for a single character" do
+      result = described_class.call(query: "A")
 
-      it "propagates gateway Failure" do
-        result = described_class.call(query: "AAPL")
-
-        expect(result).to be_failure
-        expect(result.failure.first).to eq(:gateway_error)
-      end
+      expect(result).to be_failure
+      expect(result.failure.first).to eq(:validation)
     end
 
-    context "when rate limited" do
-      before { stub_alpha_vantage_rate_limited("SYMBOL_SEARCH") }
+    it "propagates gateway Failure" do
+      stub_yfinance_search_failure("AAPL")
 
-      it "returns Failure with rate_limited" do
-        result = described_class.call(query: "AAPL")
+      result = described_class.call(query: "AAPL")
 
-        expect(result).to be_failure
-        expect(result.failure.first).to eq(:rate_limited)
-      end
+      expect(result).to be_failure
+      expect(result.failure.first).to eq(:gateway_error)
+    end
+
+    it "refuses once the provider's minute ceiling is spent" do
+      integration.update!(minute_calls: 6, minute_reset_at: Time.current)
+
+      result = described_class.call(query: "AAPL")
+
+      expect(result).to be_failure
+      expect(result.failure.first).to eq(:rate_limited)
     end
   end
 end

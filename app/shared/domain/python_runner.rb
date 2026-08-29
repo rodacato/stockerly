@@ -12,7 +12,9 @@ class PythonRunner
 
   SCRIPT_DIR = Rails.root.join("lib/python")
   DEFAULT_TIMEOUT = 25
-  SAFE_ARGUMENT = /\A[A-Za-z0-9.^\-_=*]{1,32}\z/
+  # Spaces are allowed because a ticker search takes a company name. Nothing
+  # here reaches a shell, so a space cannot split one argv entry into two.
+  SAFE_ARGUMENT = /\A[A-Za-z0-9.^\-_=* ]{1,32}\z/
 
   def self.call(script, *args, timeout: DEFAULT_TIMEOUT)
     new.call(script, *args, timeout: timeout)

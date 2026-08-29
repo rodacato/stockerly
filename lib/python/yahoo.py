@@ -77,11 +77,25 @@ def earnings(ticker):
     ]
 
 
+def search(yfinance, query, limit=8):
+    return [
+        {
+            "symbol": match.get("symbol"),
+            "name": match.get("longname") or match.get("shortname"),
+            "quote_type": match.get("quoteType"),
+            "exchange": match.get("exchDisp") or match.get("exchange"),
+            "sector": match.get("sectorDisp") or match.get("sector"),
+        }
+        for match in yfinance.Search(query, max_results=limit).quotes
+        if match.get("symbol")
+    ]
+
+
 def main():
     if len(sys.argv) < 3:
-        fail("usage: yahoo.py <quote|history|dividends|splits|earnings> <symbol> [period]", "invalid_request")
+        fail("usage: yahoo.py <quote|history|dividends|splits|earnings|search> <symbol|query> [period]", "invalid_request")
 
-    command, symbol = sys.argv[1], sys.argv[2]
+    command, argument = sys.argv[1], sys.argv[2]
     period = sys.argv[3] if len(sys.argv) > 3 else "1mo"
 
     try:
@@ -90,7 +104,13 @@ def main():
         fail("yfinance is not installed in this image", "not_supported")
 
     try:
-        ticker = yfinance.Ticker(symbol)
+        # Matching nothing is an answer, so search returns before the
+        # empty-payload guard that turns a blank result into not_found.
+        if command == "search":
+            sys.stdout.write(json.dumps(search(yfinance, argument)))
+            return
+
+        ticker = yfinance.Ticker(argument)
 
         if command == "quote":
             payload = quote(ticker)
@@ -106,7 +126,7 @@ def main():
             fail(f"unknown command: {command}", "invalid_request")
 
         if payload is None or (isinstance(payload, list) and not payload):
-            fail(f"no data for {symbol}", "not_found")
+            fail(f"no data for {argument}", "not_found")
 
         sys.stdout.write(json.dumps(payload))
     except SystemExit:

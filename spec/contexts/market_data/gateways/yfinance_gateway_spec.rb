@@ -13,6 +13,33 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
     allow(PythonRunner).to receive(:call).and_return(Dry::Monads::Failure([ tag, message ]))
   end
 
+  describe "#search_tickers" do
+    it "maps the bridge payload to the shape Administration consumes" do
+      stub_bridge([ { "symbol" => "ALAB", "name" => "Astera Labs, Inc.", "quote_type" => "EQUITY",
+                      "exchange" => "NASDAQ", "sector" => "Technology" } ])
+
+      result = gateway.search_tickers("Astera Labs")
+
+      expect(result).to be_success
+      expect(result.value!).to eq([ { symbol: "ALAB", name: "Astera Labs, Inc.",
+                                      quote_type: "EQUITY", exchange: "NASDAQ", sector: "Technology" } ])
+    end
+
+    # "Nothing matched" and "the provider is down" have to stay different, or
+    # the typeahead renders an error where it should render an empty list.
+    it "answers an unmatched query with Success and an empty list" do
+      stub_bridge([])
+
+      expect(gateway.search_tickers("zzzz").value!).to eq([])
+    end
+
+    it "propagates a bridge failure" do
+      stub_bridge_failure(:not_supported, "yfinance is not installed in this image")
+
+      expect(gateway.search_tickers("AAPL").failure[0]).to eq(:not_supported)
+    end
+  end
+
   describe "#fetch_price" do
     it "returns the quote with the moment it describes" do
       stub_bridge({ "price" => 66_440.9, "change_percent" => 0.223, "volume" => 31_379_135,
