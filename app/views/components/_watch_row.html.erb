@@ -2,14 +2,15 @@
     Prices keep their ISO prefix: a watchlist mixes currencies and nothing here
     is converted, so D10 says every value names its own.
     D69: in the radar the movement leads, so both row kinds answer the same
-    question in the same slot. %>
+    question in the same slot.
+    ADR-021: `change` is the computed day change and may be nil. %>
 <% context = local_assigns.fetch(:context, :watchlist) %>
 <% gap = local_assigns[:gap] %>
 <% asset = item.asset %>
-<% change = asset.change_percent_24h || 0 %>
+<% change = local_assigns[:change] %>
 <% followed = followed_since_percent(item) %>
 <% price_slot = { text: format_currency_mx(asset.current_price, currency: asset.currency), color: "text-fg-default" } %>
-<% move_slot = { text: signed_percent(change), color: gain_color(change) } %>
+<% move_slot = day_change_slot(change) %>
 <% primary, secondary = context == :radar ? [ move_slot, price_slot.merge(color: "text-fg-subtle") ] : [ price_slot, move_slot ] %>
 <%= link_to market_asset_path(asset.symbol),
             class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
@@ -19,7 +20,7 @@
   </div>
 
   <div class="w-20 shrink-0">
-    <%= render "components/sparkline", direction: change.negative? ? :down : :up, heights: sparkline_heights(local_assigns[:closes]) %>
+    <%= render "components/sparkline", direction: day_change_direction(change), heights: sparkline_heights(local_assigns[:closes]) %>
   </div>
 
   <div class="shrink-0 text-right">

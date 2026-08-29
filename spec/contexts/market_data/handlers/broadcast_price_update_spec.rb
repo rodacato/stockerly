@@ -5,7 +5,7 @@ RSpec.describe MarketData::Handlers::BroadcastPriceUpdate do
 
   describe ".call" do
     let!(:owner) { create(:user, preferred_currency: "MXN") }
-    let(:asset)  { create(:asset, symbol: "AAPL", currency: "USD", current_price: 150, change_percent_24h: 2.5) }
+    let(:asset)  { with_day_change(create(:asset, symbol: "AAPL", currency: "USD", current_price: 150), 2.5) }
 
     it "broadcasts the rendered price block to the asset's stream" do
       described_class.call(asset_id: asset.id)

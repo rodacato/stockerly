@@ -14,15 +14,17 @@ module MarketData
       # that 0.9 gap rather than above it.
       DIVERGENCE_THRESHOLD = 0.5
 
-      def self.call(asset:)
+      # `day_change` is the computed figure the header renders (ADR-021), passed
+      # in so the sentence below the price cannot quote a different number.
+      def self.call(asset:, day_change: nil)
         index = reference_index_for(asset)
 
         {
           index: index,
           market_open: MarketHours.open_for_asset?(asset),
           sentiment: sentiment_for(asset),
-          divergence: divergence(asset, index),
-          asset_change: asset.change_percent_24h,
+          divergence: divergence(day_change, index),
+          asset_change: day_change,
           index_change: index&.change_percent
         }
       end
@@ -48,8 +50,7 @@ module MarketData
       #                direction: today says more about the market.
       # :asset_led   — the asset moved further, or against the index.
       # :aligned     — the two are within the threshold.
-      def self.divergence(asset, index)
-        asset_change = asset.change_percent_24h
+      def self.divergence(asset_change, index)
         index_change = index&.change_percent
         return nil if asset_change.nil? || index_change.nil?
 

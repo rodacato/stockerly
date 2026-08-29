@@ -10,7 +10,7 @@ RSpec.describe "Panorama", type: :request do
 
   describe "GET /dashboard" do
     it "renders the four blocks" do
-      asset = mxn_asset(symbol: "WALMEX", current_price: 70, change_percent_24h: 1.5)
+      asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
       create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
 
       get dashboard_path
@@ -23,7 +23,7 @@ RSpec.describe "Panorama", type: :request do
     end
 
     it "declares MXN once on the strip and drops the symbol from the figure" do
-      asset = mxn_asset(symbol: "AMXL", current_price: 15, change_percent_24h: 1.0)
+      asset = with_day_change(mxn_asset(symbol: "AMXL", current_price: 15), 1.0)
       create(:position, portfolio: portfolio, asset: asset, shares: 1_000, avg_cost: 12, status: :open)
 
       get dashboard_path
@@ -44,8 +44,8 @@ RSpec.describe "Panorama", type: :request do
   # no fx_rates row — the product's central case on a fresh instance.
   describe "when the FX rate for a held currency is missing" do
     before do
-      asset = create(:asset, :stock, symbol: "AAPL", currency: "USD",
-                                     current_price: 100, change_percent_24h: 2.0)
+      asset = with_day_change(create(:asset, :stock, symbol: "AAPL", currency: "USD",
+                                                    current_price: 100), 2.0)
       create(:position, portfolio: portfolio, asset: asset, shares: 5, avg_cost: 80, status: :open)
     end
 
@@ -135,8 +135,8 @@ RSpec.describe "Panorama", type: :request do
     # nothing on this screen is fragment-cached, so what this proves is that a
     # price change reaches the row.
     it "reflects a price change on the next visit" do
-      asset = create(:asset, :stock, symbol: "BUST", currency: "USD",
-                                     current_price: 100.0, change_percent_24h: 1.25)
+      asset = with_day_change(create(:asset, :stock, symbol: "BUST", currency: "USD",
+                                                    current_price: 100.0), 1.25)
       create(:watchlist_item, user: user, asset: asset)
 
       get dashboard_path
@@ -151,7 +151,7 @@ RSpec.describe "Panorama", type: :request do
     # D69: the Radar asks what needs attention today, and both row kinds answer
     # it with the movement — so the movement takes the primary slot on both.
     it "leads a holding with the day's move and demotes what it is worth" do
-      asset = mxn_asset(symbol: "WALMEX", current_price: 70, change_percent_24h: 1.5)
+      asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
       create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
 
       get dashboard_path
@@ -161,8 +161,8 @@ RSpec.describe "Panorama", type: :request do
     end
 
     it "leads a watched row with the day's move and demotes the quote" do
-      asset = create(:asset, :stock, symbol: "AAPL", currency: "USD",
-                                     current_price: 182.50, change_percent_24h: -2.0)
+      asset = with_day_change(create(:asset, :stock, symbol: "AAPL", currency: "USD",
+                                                    current_price: 182.50), -2.0)
       create(:watchlist_item, user: user, asset: asset)
 
       get dashboard_path
@@ -172,8 +172,8 @@ RSpec.describe "Panorama", type: :request do
     end
 
     it "keeps the quote leading on Activos, where the same partial serves a different question" do
-      asset = create(:asset, :stock, symbol: "AAPL", currency: "USD",
-                                     current_price: 182.50, change_percent_24h: -2.0)
+      asset = with_day_change(create(:asset, :stock, symbol: "AAPL", currency: "USD",
+                                                    current_price: 182.50), -2.0)
       create(:watchlist_item, user: user, asset: asset)
 
       get assets_path(tab: "watchlist")
@@ -182,10 +182,39 @@ RSpec.describe "Panorama", type: :request do
       expect(response.body).to match(%r{text-xs text-negative">\s*−2\.0%\s*</p>})
     end
 
+    # X13 / ADR-021: the column carries whichever measure the provider that
+    # answered happened to ship, so no screen reads it any more.
+    it "reports the computed day change rather than the provider's column" do
+      asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70,
+                                        change_percent_24h: 9.9), 1.5)
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
+
+      get dashboard_path
+
+      expect(response.body).to match(%r{text-sm font-bold text-positive">\s*\+1\.5%\s*</p>})
+      expect(response.body).not_to include("+9.9%")
+    end
+
+    # The radar is ordered by the size of the move, so the number it sorts on
+    # has to be the number the row shows — the defect X13 belongs to.
+    it "orders the rows by the same figure the rows display" do
+      loud  = with_day_change(mxn_asset(symbol: "LOUD", current_price: 100,
+                                        change_percent_24h: 0.1), 4.0)
+      quiet = with_day_change(mxn_asset(symbol: "QUIET", current_price: 100,
+                                        change_percent_24h: 9.9), 1.0)
+      [ loud, quiet ].each { |asset| create(:watchlist_item, user: user, asset: asset) }
+
+      get dashboard_path
+      radar = response.body.split(I18n.t("dashboard.show.radar_titulo")).last
+
+      expect(radar.scan(/LOUD|QUIET/).uniq).to eq(%w[LOUD QUIET])
+      expect(radar.scan(/[+−]\d+\.\d%/).first(2)).to eq(%w[+4.0% +1.0%])
+    end
+
     # A CETES that is about to mature has no 24h move to lead with, and the
     # radar's own sort already puts it first.
     it "leads a maturing fixed-income row with its maturity" do
-      cetes = create(:asset, :fixed_income, symbol: "CETES28", currency: "MXN", change_percent_24h: 0)
+      cetes = with_day_change(create(:asset, :fixed_income, symbol: "CETES28", currency: "MXN"), 0)
       create(:position, portfolio: portfolio, asset: cetes, shares: 100, avg_cost: 9.5,
                         status: :open, maturity_date: 3.days.from_now.to_date)
 
@@ -222,11 +251,11 @@ RSpec.describe "Panorama", type: :request do
   describe "the patrimonio strip and late capture" do
     # This screen rendered "+20.0% hoy" for a purchase recorded late.
     it "does not report a backdated purchase as today's move" do
-      held = mxn_asset(symbol: "HELD", current_price: 10, change_percent_24h: 0)
+      held = mxn_asset(symbol: "HELD", current_price: 10)
       create(:position, portfolio: portfolio, asset: held, shares: 500, avg_cost: 10, status: :open)
       portfolio.snapshots.create!(date: Date.yesterday, currency: "MXN",
                                   total_value: 5_000, invested_value: 5_000)
-      mxn_asset(symbol: "NEW", current_price: 10, change_percent_24h: 0)
+      mxn_asset(symbol: "NEW", current_price: 10)
 
       Trading::UseCases::ExecuteTrade.call(user: user, params: {
         asset_symbol: "NEW", side: "buy", shares: 100,

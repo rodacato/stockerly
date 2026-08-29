@@ -2,8 +2,8 @@
     replaces this element by id when a sync moves the number, so everything it
     reads must come from the locals — a broadcast renders outside a request and
     has no current_user.
-    Locals: asset, user. %>
-<% change = asset.change_percent_24h || 0 %>
+    Locals: asset, user, change (the computed day change, ADR-021; may be nil). %>
+<% change = local_assigns[:change] %>
 <% approximate = approximate_in_preferred(asset, user) %>
 
 <div id="asset_price_<%= asset.id %>">
@@ -17,7 +17,11 @@
       <% if approximate %>
         <span class="text-fg-subtle">≈ <%= approximate %></span>
       <% end %>
-      <span class="<%= gain_color(change) %>"><%= signed_percent(change) %> hoy</span>
+      <% if change %>
+        <span class="<%= gain_color(change) %>"><%= signed_percent(change) %> hoy</span>
+      <% else %>
+        <span class="text-fg-subtle"><%= t("market.header.sin_cambio_dia") %></span>
+      <% end %>
       <% if asset.price_updated_at %>
         <span class="text-fg-subtle">act. <%= observation_when(asset.price_updated_at) %></span>
       <% end %>

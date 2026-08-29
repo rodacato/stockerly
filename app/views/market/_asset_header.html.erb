@@ -2,7 +2,7 @@
     breadcrumb, a badge, five chips and three action buttons; the artboard is a
     back link, the name, the price and a bookmark. The capture button moved to
     the foot of Mi posición, where the artboard puts it.
-    Locals: asset, is_watchlisted. %>
+    Locals: asset, is_watchlisted, day_change. %>
 <header class="flex flex-col gap-4">
   <div class="flex items-start justify-between gap-4">
     <%# Back to Activos: the listing this used to return to was deleted with D31,
@@ -41,5 +41,5 @@
     <% end %>
   </div>
 
-  <%= render "components/asset_price", asset: asset, user: current_user %>
+  <%= render "components/asset_price", asset: asset, user: current_user, change: day_change %>
 </header>

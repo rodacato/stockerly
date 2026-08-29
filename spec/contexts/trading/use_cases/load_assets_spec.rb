@@ -61,8 +61,8 @@ RSpec.describe Trading::UseCases::LoadAssets do
 
   describe "the Watchlist's order (D68)" do
     def watch(symbol, price:, change: 0.0, currency: "MXN")
-      asset = create(:asset, :stock, symbol: symbol, currency: currency,
-                                     current_price: price, change_percent_24h: change)
+      asset = create(:asset, :stock, symbol: symbol, currency: currency, current_price: price)
+      with_day_change(asset, change)
       create(:watchlist_item, user: user, asset: asset, entry_price: price)
       asset
     end
@@ -125,6 +125,20 @@ RSpec.describe Trading::UseCases::LoadAssets do
       rule("SINGLE", 110)
 
       expect(symbols_of("watchlist")).to eq(%w[MULTI SINGLE])
+    end
+
+    # X15's lesson: the day change reads the closes the sparklines already
+    # fetch, in the same statement, so the count cannot grow per row.
+    it "reads every row's day change without a query per row" do
+      watch("ONE", price: 100, change: 1.0)
+      described_class.call(user: user, tab: "watchlist")
+      one = count_queries { described_class.call(user: user, tab: "watchlist") }
+
+      watch("TWO", price: 100, change: 2.0)
+      watch("THREE", price: 100, change: 3.0)
+      watch("FOUR", price: 100, change: 4.0)
+
+      expect { described_class.call(user: user, tab: "watchlist") }.to make_queries(count: one)
     end
 
     it "falls back to movement for an asset with no price to measure against" do

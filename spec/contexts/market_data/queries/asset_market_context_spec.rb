@@ -1,19 +1,19 @@
 require "rails_helper"
 
 RSpec.describe MarketData::Queries::AssetMarketContext do
-  def context_for(asset) = described_class.call(asset: asset)
+  def context_for(asset, day_change: nil) = described_class.call(asset: asset, day_change: day_change)
 
   describe "the reference index" do
     it "reads a Mexican asset against the IPC" do
       create(:market_index, symbol: "IPC", name: "IPC", change_percent: 0.4)
-      asset = create(:asset, :mexican, change_percent_24h: 0.5)
+      asset = create(:asset, :mexican)
 
       expect(context_for(asset)[:index].symbol).to eq("IPC")
     end
 
     it "reads a US asset against the S&P 500" do
       create(:market_index, symbol: "SPX", name: "S&P 500", change_percent: 0.4)
-      asset = create(:asset, :stock, country: "US", change_percent_24h: 0.5)
+      asset = create(:asset, :stock, country: "US")
 
       expect(context_for(asset)[:index].symbol).to eq("SPX")
     end
@@ -30,7 +30,7 @@ RSpec.describe MarketData::Queries::AssetMarketContext do
     let!(:index) { create(:market_index, symbol: "SPX", name: "S&P 500", change_percent: -3.0) }
 
     def divergence(asset_change)
-      context_for(create(:asset, :stock, country: "US", change_percent_24h: asset_change))[:divergence]
+      context_for(create(:asset, :stock, country: "US"), day_change: asset_change)[:divergence]
     end
 
     # The artboard's own example: the index fell further than the asset, so the
@@ -56,7 +56,7 @@ RSpec.describe MarketData::Queries::AssetMarketContext do
     end
 
     it "reads nothing when there is no index" do
-      asset = create(:asset, :crypto, change_percent_24h: -2.1)
+      asset = create(:asset, :crypto)
 
       expect(context_for(asset)[:divergence]).to be_nil
     end

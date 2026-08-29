@@ -11,6 +11,9 @@ RSpec.describe "Watchlist flow", type: :request do
   end
 
   it "adds asset to watchlist and shows on dashboard" do
+    # The radar reports what moved today, and a move needs two closes (ADR-021).
+    with_day_change(apple, 2.0)
+
     # Add to watchlist
     post watchlist_items_path, params: { asset_id: apple.id }
     expect(response).to redirect_to(dashboard_path)
