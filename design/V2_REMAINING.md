@@ -1,19 +1,29 @@
 # What is left to finish the 2.0 revamp
 
-> ## ⚠ This file is no longer the board — 2026-08-29
+> ## ⚠ This file stops being the board — 2026-08-29
 >
-> **Outstanding work lives in the private `Stockerly` Project on GitHub**
-> ([ADR-022](../docs/architecture/adr/0022-github-as-the-system-of-record.md),
-> [`docs/ops/github-workflow.md`](../docs/ops/github-workflow.md)). Every open finding below was migrated there and
-> carries its `Finding ID`, so a `.pen` brief citing `CKP-4` still resolves. **Do not add a
-> finding here, and do not read a status here** — this file's own tally was wrong seven times
-> before it was retired, which is the argument the ADR is built on.
+> **The decision is taken; the migration is not done, and this banner says which.**
+> [ADR-022](../docs/architecture/adr/0022-github-as-the-system-of-record.md) makes the private
+> GitHub Project the system of record for outstanding work, and
+> [`docs/ops/github-workflow.md`](../docs/ops/github-workflow.md) is the manual. As of this commit
+> **the board carries no item from the inventory below** — it holds closed issues only. Two
+> findings already had numbers before the decision (`CKP-3` → #306, `CKP-4` → #301); the rest are
+> still here. A finding leaves when it becomes a board item carrying its `Finding ID`, so a `.pen`
+> brief citing `CKP-4` keeps resolving on either side of the move.
 >
-> **What this file still owns, and why it was not deleted:** how the migration was measured
+> **Do not add a finding here** — new work opens on the board. **Do not hand-maintain a count
+> here either:** this file's own tally was wrong seven times, which is the argument the ADR is
+> built on. Re-derive it instead.
+>
+> ```sh
+> for g in 🔴 🟡 ⚪ ✅; do printf '%s %s\n' "$g" "$(grep -cE "^### .* $g " design/V2_REMAINING.md)"; done
+> ```
+>
+> **What this file keeps, and why it was not deleted:** how the migration was measured
 > (*How this was measured*, *Where the migration stands*), what the audit could not check, and
 > the post-mortems of the findings that turned out to be **the thing that was wrong** —
-> `X12`, `X13`, `X15`. That reasoning is the best artifact this project produced. The
-> inventory of what is open is what moved.
+> `X12`, `X13`, `X15`. That reasoning is the best artifact this project produced. What moves out
+> is the inventory of what is open, once it moves.
 
 > **The question this file answers:** flow by flow, what is still unconnected, what disagrees
 > between the design and the code, and what debt the revamp is carrying. It is the punch list for
