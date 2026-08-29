@@ -64,6 +64,14 @@ class TradeImportsController < AuthenticatedController
     t("trade_imports.track_missing.alta", count: created)
   end
 
+  # An uploaded file arrives as ASCII-8BIT, so every symbol parsed out of it is
+  # a binary string -- and binary is what String#parameterize refuses to
+  # transliterate. Pasted text is already UTF-8, which is why only uploads
+  # broke. scrub keeps a file with one bad byte from taking the whole batch.
+  def decode(text)
+    text.force_encoding(Encoding::UTF_8).scrub
+  end
+
   def rows
     @rows ||= Trading::Domain::CsvRows.call(text: csv_text)
   rescue Trading::Domain::CsvRows::MissingHeader => e
@@ -77,7 +85,7 @@ class TradeImportsController < AuthenticatedController
   def csv_text
     @csv_text ||= begin
       uploaded = params[:archivo]
-      uploaded.respond_to?(:read) ? uploaded.read : params[:contenido].to_s
+      uploaded.respond_to?(:read) ? decode(uploaded.read) : params[:contenido].to_s
     end
   end
 end

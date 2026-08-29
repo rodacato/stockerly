@@ -59,6 +59,20 @@ RSpec.describe "Trade imports", type: :request do
       expect(Trade.count).to eq(0)
     end
 
+    # An uploaded file reads back as ASCII-8BIT, and the unknown-symbol screen
+    # builds a checkbox id from each symbol. The existing upload example only
+    # ever exercised the happy path, so a binary symbol never reached the view.
+    it "renders the unknown-symbol screen for an uploaded file, not only pasted text" do
+      csv = "#{good}\nALAB,buy,1.0,10.0,2025-12-08,order-2"
+      file = Rack::Test::UploadedFile.new(StringIO.new(csv), "text/csv", original_filename: "trades.csv")
+
+      post preview_trade_import_path, params: { archivo: file }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(%(value="ALAB"))
+      expect(response.body).to include("No puedo importar todavía")
+    end
+
     it "rejects a file whose required columns are missing" do
       post preview_trade_import_path, params: { contenido: "foo,bar\n1,2" }
 
