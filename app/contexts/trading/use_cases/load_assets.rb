@@ -43,7 +43,7 @@ module Trading
       def positions_for(portfolio, currency)
         return [] unless portfolio
 
-        positions = portfolio.open_positions.includes(asset: :asset_price_histories).to_a
+        positions = portfolio.open_positions.includes(:asset).to_a
         by_market_value(positions, portfolio, currency) || positions.sort_by { |position| position.asset.symbol }
       end
 
@@ -64,7 +64,7 @@ module Trading
         thresholds = thresholds_by_symbol(user)
 
         user.watchlist_items
-            .includes(asset: :asset_price_histories)
+            .includes(:asset)
             .to_a
             .sort_by { |item| proximity_key(item.asset, thresholds) }
       end

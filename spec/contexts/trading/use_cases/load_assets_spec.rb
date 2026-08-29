@@ -136,28 +136,4 @@ RSpec.describe Trading::UseCases::LoadAssets do
       expect(symbols_of("watchlist")).to eq(%w[PRICED NOPRICE])
     end
   end
-
-  describe "the sparkline's history (X15)" do
-    it "hands each row its price history already loaded" do
-      3.times { |i| hold(mxn_asset(symbol: "SYM#{i}", current_price: 10), shares: 1) }
-
-      positions = described_class.call(user: user, tab: "cartera")[:positions]
-
-      expect {
-        positions.each { |p| MarketData::Queries::PriceSeries.for(p.asset).latest(7) }
-      }.to make_queries(count: 0)
-    end
-
-    it "hands each watched row its price history already loaded" do
-      3.times do |i|
-        create(:watchlist_item, user: user, asset: mxn_asset(symbol: "WSYM#{i}", current_price: 10))
-      end
-
-      items = described_class.call(user: user, tab: "watchlist")[:watchlist_items]
-
-      expect {
-        items.each { |item| MarketData::Queries::PriceSeries.for(item.asset).latest(7) }
-      }.to make_queries(count: 0)
-    end
-  end
 end

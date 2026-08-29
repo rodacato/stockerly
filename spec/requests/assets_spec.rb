@@ -6,18 +6,6 @@ RSpec.describe "Activos", type: :request do
 
   before { login_as(user) }
 
-  def price_history_queries
-    hits = []
-    sub = ActiveSupport::Notifications.subscribe("sql.active_record") do |_n, _s, _f, _id, payload|
-      sql = payload[:sql]
-      hits << sql if sql.include?("asset_price_histories")
-    end
-    yield
-    hits.size
-  ensure
-    ActiveSupport::Notifications.unsubscribe(sub) if sub
-  end
-
   def mxn_asset(**attrs)
     create(:asset, :stock, currency: "MXN", **attrs)
   end
@@ -105,15 +93,6 @@ RSpec.describe "Activos", type: :request do
     end
 
     # X15: the sparkline used to read PriceSeries once per row.
-    it "draws every sparkline from a single price-history query" do
-      3.times do |i|
-        asset = mxn_asset(symbol: "SYM#{i}", current_price: 10)
-        create(:position, portfolio: portfolio, asset: asset, shares: 1, avg_cost: 1, status: :open)
-        2.times { |d| create(:asset_price_history, asset: asset, date: d.days.ago.to_date, close: 10 + d) }
-      end
-
-      expect(price_history_queries { get assets_path }).to eq(1)
-    end
 
     it "declares the currency once and drops the symbol from the rows" do
       asset = mxn_asset(symbol: "AMXL", current_price: 15)

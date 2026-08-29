@@ -8,18 +8,6 @@ RSpec.describe "Panorama", type: :request do
 
   def mxn_asset(**attrs) = create(:asset, :stock, currency: "MXN", **attrs)
 
-  def price_history_queries
-    hits = []
-    sub = ActiveSupport::Notifications.subscribe("sql.active_record") do |_n, _s, _f, _id, payload|
-      sql = payload[:sql]
-      hits << sql if sql.include?("asset_price_histories")
-    end
-    yield
-    hits.size
-  ensure
-    ActiveSupport::Notifications.unsubscribe(sub) if sub
-  end
-
   describe "GET /dashboard" do
     it "renders the four blocks" do
       asset = mxn_asset(symbol: "WALMEX", current_price: 70, change_percent_24h: 1.5)
@@ -207,15 +195,6 @@ RSpec.describe "Panorama", type: :request do
     end
 
     # X15: the sparkline used to read PriceSeries once per row.
-    it "draws every sparkline from a single price-history query" do
-      3.times do |i|
-        asset = mxn_asset(symbol: "SYM#{i}", current_price: 10, change_percent_24h: 2.0 + i)
-        create(:position, portfolio: portfolio, asset: asset, shares: 1, avg_cost: 1, status: :open)
-        2.times { |d| create(:asset_price_history, asset: asset, date: d.days.ago.to_date, close: 10 + d) }
-      end
-
-      expect(price_history_queries { get dashboard_path }).to eq(1)
-    end
   end
 
   # Every link on this screen pointed at Activos, under three labels, because

@@ -22,19 +22,15 @@ class AlertRule < ApplicationRecord
 
   DATE_BASED_CONDITIONS = %w[dividend_ex_date bmv_holiday cete_auction].freeze
 
-  # The two conditions whose threshold is a price, so a distance to it can be
-  # stated. day_change_percent, rsi_* and volume_spike all carry a
-  # threshold_value that is not comparable to a quote.
+  # The only conditions whose threshold_value is a price, so the only ones a
+  # distance-to-threshold reading may compare a quote against. rsi_* store an
+  # index level, volume_spike a multiplier, day_change_percent a percentage.
   PRICE_THRESHOLD_CONDITIONS = %w[price_crosses_above price_crosses_below].freeze
 
   # Conditions that don't anchor on a single asset (BMV-wide festivo, Banxico
   # auction schedule). They share `AlertRule#asset_symbol` for storage but the
   # form treats it as optional and the evaluator ignores it.
   MARKETWIDE_CONDITIONS = %w[bmv_holiday cete_auction].freeze
-
-  # The only conditions whose threshold_value is a price, and so the only ones
-  # a distance-to-threshold reading may compare a quote against.
-  PRICE_THRESHOLD_CONDITIONS = %w[price_crosses_above price_crosses_below].freeze
 
   validates :asset_symbol, presence: true, unless: :marketwide?
   validates :threshold_value, presence: true, numericality: true, unless: :date_based?
