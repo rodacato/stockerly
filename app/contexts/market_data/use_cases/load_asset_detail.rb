@@ -19,6 +19,7 @@ module MarketData
           ))
         end
 
+        reading_record = asset.technical_reading
         fundamental = resolve_fundamental(asset)
         presenter = Domain::FundamentalPresenter.new(asset: asset, fundamental: fundamental)
 
@@ -42,7 +43,9 @@ module MarketData
           pe_history: pe_history,
           dividends: dividends,
           company_overview: company_overview,
-          news: Queries::RecentNews.call(asset: asset)
+          news: Queries::RecentNews.call(asset: asset),
+          reading: reading_record,
+          signals: Domain::IndicatorSignals.for(reading_record)
         ))
       end
 

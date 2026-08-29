@@ -102,6 +102,18 @@ module MarketHelper
   end
 
   # Used for technical observations in the asset detail page.
+  # The numbers behind a Señales row, in the reading's own units: RSI is a
+  # bare index, the other two are prices the phrase already named.
+  def signal_value(signal)
+    case signal[:indicator]
+    when :rsi           then number_with_precision(signal[:value], precision: 1)
+    when :moving_average then [ signal[:ma50], signal[:ma200] ].compact
+                              .map { |v| number_with_precision(v, precision: 2, delimiter: ",") }.join(" · ")
+    when :bollinger     then [ signal[:lower], signal[:upper] ]
+                              .map { |v| number_with_precision(v, precision: 2, delimiter: ",") }.join(" – ")
+    end
+  end
+
   def observation_when(time)
     return "—" if time.nil?
 

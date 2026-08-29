@@ -821,6 +821,29 @@ es-MX:
       high: a %{percent} de su máximo del año
       low: a %{percent} de su mínimo del año
       titulo: RANGO 52 SEMANAS
+    signals:
+      bollinger:
+        above_upper: Precio por arriba de la banda superior de Bollinger
+        below_lower: Precio por abajo de la banda inferior de Bollinger
+        inside: Precio dentro de las bandas de Bollinger
+      desactualizado: Lectura del %{fecha}
+      disclaimer: Lecturas, no recomendaciones.
+      etiquetas:
+        bollinger: BANDAS
+        moving_average: MEDIA MÓVIL
+        rsi: RSI
+      moving_average:
+        above_50: Precio por arriba de su MA50
+        above_50_below_200: Precio por arriba de su MA50 y por abajo de su MA200
+        above_both: Precio por arriba de su MA50 y de su MA200
+        below_50: Precio por abajo de su MA50
+        below_50_above_200: Precio por abajo de su MA50 y por arriba de su MA200
+        below_both: Precio por abajo de su MA50 y de su MA200
+      rsi:
+        neutral: Fuera de las zonas de sobrecompra y sobreventa
+        overbought: En zona de sobrecompra (RSI(14) por encima de 70)
+        oversold: En zona de sobreventa (RSI(14) por debajo de 30)
+      titulo: Señales
     statement_table:
       concepto: Concepto
       margen: Margen %
