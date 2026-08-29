@@ -147,6 +147,54 @@ RSpec.describe "Panorama", type: :request do
       get dashboard_path
       expect(response.body).to include("USD 150.00")
     end
+
+    # D69: the Radar asks what needs attention today, and both row kinds answer
+    # it with the movement — so the movement takes the primary slot on both.
+    it "leads a holding with the day's move and demotes what it is worth" do
+      asset = mxn_asset(symbol: "WALMEX", current_price: 70, change_percent_24h: 1.5)
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
+
+      get dashboard_path
+
+      expect(response.body).to match(%r{text-sm font-bold text-positive">\s*\+1\.5%\s*</p>})
+      expect(response.body).to match(%r{text-xs text-fg-subtle">\s*7,000\s*</p>})
+    end
+
+    it "leads a watched row with the day's move and demotes the quote" do
+      asset = create(:asset, :stock, symbol: "AAPL", currency: "USD",
+                                     current_price: 182.50, change_percent_24h: -2.0)
+      create(:watchlist_item, user: user, asset: asset)
+
+      get dashboard_path
+
+      expect(response.body).to match(%r{text-sm font-bold text-negative">\s*−2\.0%\s*</p>})
+      expect(response.body).to match(%r{text-xs text-fg-subtle">\s*USD 182\.50\s*</p>})
+    end
+
+    it "keeps the quote leading on Activos, where the same partial serves a different question" do
+      asset = create(:asset, :stock, symbol: "AAPL", currency: "USD",
+                                     current_price: 182.50, change_percent_24h: -2.0)
+      create(:watchlist_item, user: user, asset: asset)
+
+      get assets_path(tab: "watchlist")
+
+      expect(response.body).to match(%r{text-sm font-bold text-fg-default">\s*USD 182\.50\s*</p>})
+      expect(response.body).to match(%r{text-xs text-negative">\s*−2\.0%\s*</p>})
+    end
+
+    # A CETES that is about to mature has no 24h move to lead with, and the
+    # radar's own sort already puts it first.
+    it "leads a maturing fixed-income row with its maturity" do
+      cetes = create(:asset, :fixed_income, symbol: "CETES28", currency: "MXN", change_percent_24h: 0)
+      create(:position, portfolio: portfolio, asset: cetes, shares: 100, avg_cost: 9.5,
+                        status: :open, maturity_date: 3.days.from_now.to_date)
+
+      get dashboard_path
+
+      expect(response.body).to match(%r{text-sm font-bold text-warning-fg">\s*vence en 3 días\s*</p>})
+    end
+
+    # X15: the sparkline used to read PriceSeries once per row.
   end
 
   # Every link on this screen pointed at Activos, under three labels, because

@@ -59,9 +59,10 @@
             <%= render "components/asset_row",
                        position: entry.record,
                        declared_currency: @currency,
-                       maturity_days: entry.maturity_days %>
+                       maturity_days: entry.maturity_days,
+                       context: :radar %>
           <% else %>
-            <%= render "components/watch_row", item: entry.record %>
+            <%= render "components/watch_row", item: entry.record, context: :radar %>
           <% end %>
         <% end %>
       </div>

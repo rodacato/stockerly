@@ -181,8 +181,8 @@ python3 -c "import re;rows=[l for l in open('design/DECISIONS.md') if re.match(r
 |---|---:|---|
 | ✅ closed | **28** | shipped or measured away |
 | 🔴 open | **6** | ACT-1 · CKP-1 · ALR-1 · AJU-1 · X11 · X12 |
-| 🟡 open | **20** | a real gap inside a working screen |
-| ⚪ open | **17** | debt and hygiene, mostly `.pen` edits |
+| 🟡 open | **21** | a real gap inside a working screen |
+| ⚪ open | **16** | debt and hygiene, mostly `.pen` edits |
 | — open | **2** | `TD2` and `TD5` carry no severity glyph — see below |
 
 **71 headings carry a glyph and 73 findings exist.** It opened at 53 with
@@ -623,12 +623,27 @@ different questions.
 chart takes **30 days**. Both are silhouettes of the same series with no scale, so a row and the
 screen it links to imply different shapes of the same asset. Neither states its window.
 
-### X15 ⚪ `sparkline_heights` runs one query per row
+### X15 🟡 `sparkline_heights` runs one query per row — and the obvious fix is worse
 
 [`sparkline_helper.rb:5`](../app/helpers/sparkline_helper.rb#L5) calls `PriceSeries.for(asset)` from
 inside the row partial, so the Radar issues six and Activos issues one per holding. `PriceSeries`
 does have a `loaded?` path that reuses an eager-loaded association — neither caller preloads
 `asset_price_histories`, so it never takes it. Invisible at ten assets; still the wrong shape.
+
+**Amended 2026-08-29 — the preload was built, measured, and reverted.** `includes(asset:
+:asset_price_histories)` does collapse the query count to one, and it loads the **entire** series to
+draw seven points: measured at **360 rows for three assets** holding 120 days each, against the 21
+actually needed. After D71 widened the backfill that is ~365 rows per asset, and the table is never
+pruned, so **the preload's cost grows without bound while the N+1's stays constant** — twenty
+indexed queries returning seven rows each do not get slower as history accumulates. A fix that
+degrades over time, replacing one that does not, is the wrong trade regardless of today's magnitude.
+
+**The real fix is a batch query**, not an association preload: one statement returning the last N
+rows per asset (a lateral join or a `row_number()` window), which beats both shapes. Rails cannot
+`limit` a preloaded `has_many`, so there is no cheaper middle. That is its own change with its own
+review — this entry stays open and now carries the measurement the next attempt should start from.
+Severity raised from ⚪ to 🟡: it is a real gap, not hygiene, now that the naive fix is known to be
+a pessimisation.
 
 ### X16 ⚪ `trend_scores` grows without bound
 

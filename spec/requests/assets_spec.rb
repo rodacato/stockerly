@@ -71,6 +71,29 @@ RSpec.describe "Activos", type: :request do
       expect(response.body).to include(%(href="#{new_trade_import_path}"))
     end
 
+    it "leads each holding with what it is worth, not with the day's move (D69)" do
+      asset = mxn_asset(symbol: "WALMEX", current_price: 70, change_percent_24h: 1.5)
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
+
+      get assets_path
+
+      expect(response.body).to match(%r{text-sm font-bold text-fg-default">\s*7,000\s*</p>})
+      expect(response.body).to match(%r{text-xs text-positive">\s*\+1\.5%\s*</p>})
+    end
+
+    it "orders the holdings by market value descending (D68)" do
+      %w[SMALL BIG MID].zip([ 1, 100, 10 ]).each do |symbol, shares|
+        create(:position, portfolio: portfolio, asset: mxn_asset(symbol: symbol, current_price: 10),
+                          shares: shares, avg_cost: 1, status: :open)
+      end
+
+      get assets_path
+
+      expect(response.body.scan(/\b(?:SMALL|BIG|MID)\b/).uniq).to eq(%w[BIG MID SMALL])
+    end
+
+    # X15: the sparkline used to read PriceSeries once per row.
+
     it "declares the currency once and drops the symbol from the rows" do
       asset = mxn_asset(symbol: "AMXL", current_price: 15)
       create(:position, portfolio: portfolio, asset: asset, shares: 1_000, avg_cost: 12, status: :open)
@@ -78,7 +101,7 @@ RSpec.describe "Activos", type: :request do
       get assets_path
 
       expect(response.body).to include("VALOR DE MERCADO · MXN")
-      expect(response.body).to include(">\n      15,000\n    <")
+      expect(response.body).to match(%r{text-sm font-bold text-fg-default">\s*15,000\s*</p>})
     end
   end
 
