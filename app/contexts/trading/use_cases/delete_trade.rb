@@ -14,7 +14,7 @@ module Trading
         return Failure([ :too_old, "Cannot delete trades older than #{MAX_DELETE_AGE_DAYS} days" ]) if too_old?(trade)
 
         trade.discard!
-        recalculate_position(trade.position)
+        trade.position&.resync_from_trades!
 
         publish(Events::TradeDeleted.new(
           trade_id: trade.id,
@@ -29,19 +29,6 @@ module Trading
 
       def too_old?(trade)
         trade.executed_at < MAX_DELETE_AGE_DAYS.days.ago
-      end
-
-      def recalculate_position(position)
-        return unless position
-
-        position.recalculate_avg_cost!
-
-        remaining = position.trades.kept.where(side: :buy).sum(:shares) - position.trades.kept.where(side: :sell).sum(:shares)
-        if remaining.zero?
-          position.update!(status: :closed, shares: remaining, closed_at: Time.current)
-        else
-          position.update!(shares: remaining, status: :open, closed_at: nil)
-        end
       end
     end
   end
