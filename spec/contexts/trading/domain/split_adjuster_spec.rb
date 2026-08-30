@@ -51,4 +51,41 @@ RSpec.describe Trading::Domain::SplitAdjuster do
       expect(closed.avg_cost).to eq(50.0)
     end
   end
+  describe "applying twice" do
+    it "leaves the same numbers as applying once" do
+      described_class.new(stock_split).adjust!
+      described_class.new(stock_split.reload).adjust!
+
+      expect(position.reload.shares).to eq(400)
+      expect(position.avg_cost).to eq(50.0)
+    end
+
+    it "records that the split landed" do
+      expect { described_class.new(stock_split).adjust! }
+        .to change { stock_split.reload.applied_at }.from(nil)
+    end
+
+    it "does not touch trades on the second pass" do
+      trade = create(:trade, portfolio: portfolio, asset: asset, position: position,
+                             side: :buy, shares: 10, price_per_share: 200.0,
+                             executed_at: 5.days.ago)
+
+      described_class.new(stock_split).adjust!
+      described_class.new(stock_split.reload).adjust!
+
+      expect(trade.reload.shares).to eq(40)
+      expect(trade.price_per_share).to eq(50.0)
+    end
+  end
+
+  describe "when the adjustment fails partway" do
+    it "rolls back the positions it had already rewritten" do
+      allow(Trade).to receive(:where).and_raise(ActiveRecord::StatementInvalid, "boom")
+
+      expect { described_class.new(stock_split).adjust! }.to raise_error(ActiveRecord::StatementInvalid)
+
+      expect(position.reload.shares).to eq(100)
+      expect(stock_split.reload.applied_at).to be_nil
+    end
+  end
 end
