@@ -19,7 +19,7 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
   end
 
   describe "stock (equity)" do
-    let!(:apple) { create(:asset, name: "Apple Inc.", symbol: "AAPL", asset_type: :stock, currency: "USD", current_price: 227.44, change_percent_24h: 1.5, exchange: "NASDAQ", country: "US") }
+    let!(:apple) { create(:asset, name: "Apple Inc.", symbol: "AAPL", asset_type: :stock, currency: "USD", current_price: 227.44, exchange: "NASDAQ", country: "US") }
 
     it "renders the 2.0 header: back link, name, price and type" do
       visit market_asset_path(apple.symbol)
@@ -55,7 +55,7 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
   end
 
   describe "ETF" do
-    let!(:voo) { create(:asset, :etf, name: "Vanguard S&P 500 ETF", symbol: "VOO", currency: "USD", current_price: 540.12, change_percent_24h: 0.45) }
+    let!(:voo) { create(:asset, :etf, name: "Vanguard S&P 500 ETF", symbol: "VOO", currency: "USD", current_price: 540.12) }
 
     it "renders the ETF chip and omits the sections it has no data for" do
       visit market_asset_path(voo.symbol)
@@ -74,7 +74,7 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
   end
 
   describe "crypto" do
-    let!(:btc) { create(:asset, :crypto, name: "Bitcoin", symbol: "BTC", currency: "USD", current_price: 67_250.00, change_percent_24h: 2.1) }
+    let!(:btc) { create(:asset, :crypto, name: "Bitcoin", symbol: "BTC", currency: "USD", current_price: 67_250.00) }
 
     before do
       create(:asset_fundamental, asset: btc, period_label: "CRYPTO_MARKET",

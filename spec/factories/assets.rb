@@ -6,7 +6,6 @@ FactoryBot.define do
     sync_status { :active }
     currency { "USD" }
     current_price { 150.0000 }
-    change_percent_24h { 1.25 }
     sector { "Technology" }
     exchange { "NASDAQ" }
     price_updated_at { Time.current }

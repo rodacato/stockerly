@@ -5,7 +5,7 @@ RSpec.describe "The asset detail header", type: :request do
   let(:portfolio) { user.portfolio || create(:portfolio, user: user) }
   let(:asset) do
     create(:asset, :stock, symbol: "NVDA", name: "Nvidia", currency: "USD",
-                           current_price: 184, change_percent_24h: -2.1, sync_status: :active)
+                           current_price: 184, sync_status: :active)
   end
 
   before do
