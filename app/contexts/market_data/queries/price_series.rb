@@ -37,6 +37,12 @@ module MarketData
                          .transform_values { |rows| rows.map(&:last) }
       end
 
+      # Volumes from rows already in hand, minus today's. A running total would
+      # drag the 5-day leg of a volume trend down by however early it is read.
+      def self.closed_volumes(rows)
+        rows.reject { |row| row.date >= Date.current }.map(&:volume)
+      end
+
       def initialize(asset, interval: DAILY)
         @asset = asset
         @interval = interval
@@ -73,8 +79,14 @@ module MarketData
         scope.order(:date).pluck(:date, :close).to_h
       end
 
+      # Bars whose day is over. Today's row is still accumulating — high, low
+      # and volume grow with every sync — so anything reading those stops here.
+      def closed
+        scope.where(date: ...Date.current).order(:date)
+      end
+
       def average_volume(days)
-        scope.where(date: days.days.ago.to_date..).average(:volume)&.to_i || 0
+        closed.where(date: days.days.ago.to_date..).average(:volume)&.to_i || 0
       end
 
       private

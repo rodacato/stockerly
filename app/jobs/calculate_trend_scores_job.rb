@@ -9,7 +9,7 @@ class CalculateTrendScoresJob < ApplicationJob
     Asset.syncing.find_each do |asset|
       histories = MarketData::Queries::PriceSeries.for(asset).latest(MarketData::Domain::TrendScoreCalculator::WINDOW)
       closes = histories.pluck(:close).map(&:to_f)
-      volumes = histories.pluck(:volume)
+      volumes = MarketData::Queries::PriceSeries.closed_volumes(histories)
 
       result = MarketData::Domain::TrendScoreCalculator.calculate(closes: closes, volumes: volumes)
       next unless result
