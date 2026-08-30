@@ -3,7 +3,7 @@
     the domain carries the key only. The chip is built for the three metrics
     whose threshold is definitional (D36) and omitted everywhere else. %>
 <% chip = metric_chip(definition, value) %>
-<div class="relative flex flex-col gap-3 rounded-2xl border border-border-default bg-bg-surface p-5"
+<div class="<%= card_classes("relative flex flex-col gap-3 p-5") %>"
      data-controller="metric-tooltip">
   <div class="flex items-center justify-between gap-2">
     <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">

@@ -16,7 +16,7 @@
     </div>
 
     <div class="md:col-span-8">
-      <div data-controller="tabs" class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+      <div data-controller="tabs" class="<%= card_classes("shadow-sm overflow-hidden") %>">
         <%# Tab strip — underline pattern. %>
         <div class="flex gap-1 px-2 sm:px-4 border-b border-border-default overflow-x-auto">
           <button data-tabs-target="tab" data-action="tabs#switch"

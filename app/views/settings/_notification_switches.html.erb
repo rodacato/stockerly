@@ -7,7 +7,7 @@
      [ "urgent_email", t("settings.show.urgente"), t("settings.show.urgente_desc"), preferences&.urgent_email == true ]
    ] %>
 
-<div class="divide-y divide-border-default rounded-2xl border border-border-default bg-bg-surface px-4">
+<div class="<%= card_classes("divide-y divide-border-default px-4") %>">
   <% channels.each do |field, label, description, on| %>
     <div class="flex items-center gap-4 py-4"
          data-controller="toggle"

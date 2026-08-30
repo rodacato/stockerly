@@ -3,7 +3,7 @@
     — rendered as their source wrote them and attributed, never re-toned by us
     (ADR-0001 governs our copy, not a third party's). Locals: asset, news. %>
 <% if news.any? %>
-  <section class="rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+  <section class="<%= card_classes("shadow-sm overflow-hidden") %>">
     <header class="flex flex-wrap items-baseline gap-2 px-5 pt-4 pb-3">
       <h2 class="font-display text-base font-semibold tracking-tight text-fg-default">
         <%= t(".titulo") %>

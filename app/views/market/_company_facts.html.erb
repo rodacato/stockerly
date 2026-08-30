@@ -11,7 +11,7 @@
       - missing data: "Ficha no disponible para este activo" fallback. %>
 <% return if asset.asset_type_fixed_income? %>
 
-<section class="mt-6 rounded-2xl border border-border-default bg-bg-surface shadow-sm overflow-hidden">
+<section class="<%= card_classes("mt-6 shadow-sm overflow-hidden") %>">
   <% if asset.asset_type_crypto? %>
     <div class="px-5 py-6 sm:px-6">
       <h3 class="text-base font-semibold tracking-tight text-fg-default">Acerca del activo</h3>

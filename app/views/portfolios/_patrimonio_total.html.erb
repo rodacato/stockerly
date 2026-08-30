@@ -2,7 +2,7 @@
     No "Invertido / Disponible" split: the artboard draws one, and `Disponible`
     was `buying_power` — deleted by D26 because nothing ever wrote to it. %>
 <% if summary %>
-  <section class="rounded-2xl border border-border-default bg-bg-surface p-5">
+  <section class="<%= card_classes("p-5") %>">
     <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
       <%= t("portfolios.show.patrimonio_total", currency: currency) %>
     </p>

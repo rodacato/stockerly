@@ -6,7 +6,7 @@
     <p class="mt-1 text-sm text-fg-subtle"><%= t(".subtitulo") %></p>
   </div>
 
-  <div class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+  <div class="<%= card_classes("flex flex-col gap-4 p-5") %>">
     <% [ [ "smartphone", t(".totp"), t(".totp_desc") ],
          [ "key", t(".codigos"), t(".codigos_desc") ],
          [ "schedule", t(".tiempo"), t(".tiempo_desc") ] ].each do |icon, title, description| %>

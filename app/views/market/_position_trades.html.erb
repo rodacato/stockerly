@@ -1,6 +1,6 @@
 <%# Locals: trades, asset. The five most recent, with a way to all of them —
     the global list lives at /positions since the Consolidado took /portfolio. %>
-<section class="rounded-2xl border border-border-default bg-bg-surface p-5">
+<section class="<%= card_classes("p-5") %>">
   <div class="flex items-baseline justify-between gap-4">
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
       <%= t("posicion.movimientos") %>

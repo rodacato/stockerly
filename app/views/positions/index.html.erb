@@ -33,7 +33,7 @@
     <% if @dividends.any? %>
       <ul class="flex flex-col gap-3">
         <% @dividends.each do |payment| %>
-          <li class="flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3">
+          <li class="<%= card_classes("flex items-center gap-3 px-4 py-3") %>">
             <div class="min-w-0 flex-1">
               <p class="font-mono text-sm font-bold text-fg-default"><%= payment.dividend.asset.symbol %></p>
               <p class="text-xs text-fg-subtle">
@@ -65,7 +65,7 @@
       <ul class="flex flex-col gap-3">
         <% @closed.each do |entry| %>
           <% position = entry[:position] %>
-          <li class="flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3">
+          <li class="<%= card_classes("flex items-center gap-3 px-4 py-3") %>">
             <div class="min-w-0 flex-1">
               <p class="font-mono text-sm font-bold text-fg-default"><%= position.asset.symbol %></p>
               <p class="text-xs text-fg-subtle">

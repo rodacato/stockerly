@@ -9,7 +9,7 @@
   <%# select-all on the list, so "copy them somewhere" is one gesture. There is
       no download: a file write is the browser's business and the codes are ten
       short strings, not a document. %>
-  <ul class="grid select-all grid-cols-2 gap-2 rounded-2xl border border-border-default bg-bg-surface p-5">
+  <ul class="<%= card_classes("grid select-all grid-cols-2 gap-2 p-5") %>">
     <% @codes.each do |code| %>
       <li class="rounded-lg bg-bg-muted px-3 py-2 text-center font-mono text-sm font-semibold tracking-wider text-fg-default">
         <%= code %>

@@ -1,5 +1,5 @@
 <%# Locals: label, card, body. `card` is nil when the comparison cannot be made. %>
-<article class="rounded-2xl border border-border-default bg-bg-surface p-5">
+<article class="<%= card_classes("p-5") %>">
   <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= label %></p>
 
   <% if card %>

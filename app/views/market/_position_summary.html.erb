@@ -3,7 +3,7 @@
 <% currency = data[:currency] %>
 <% breakdown = data[:breakdown] %>
 
-<section class="rounded-2xl border border-border-default bg-bg-surface p-5">
+<section class="<%= card_classes("p-5") %>">
   <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("posicion.tu_posicion") %></p>
 
   <% if breakdown %>
