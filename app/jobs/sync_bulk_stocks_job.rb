@@ -57,6 +57,7 @@ class SyncBulkStocksJob < ApplicationJob
         symbol: asset.symbol,
         old_price: (old_price || 0).to_s,
         new_price: data[:price].to_s,
+        volume: data[:volume]&.to_s,
         source: data[:source] || MarketData::Gateways::AlpacaGateway.source_id
       ))
     end

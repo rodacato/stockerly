@@ -1,8 +1,8 @@
 module MarketData
   module Handlers
     # Records daily OHLCV in AssetPriceHistory when a price update occurs.
-    # Creates today's row or widens its high/low, and records which provider
-    # produced the number.
+    # Creates today's row or widens its high/low, carries the day's volume,
+    # and records which provider produced the number.
     class RecordPriceHistory
       UNKNOWN_SOURCE = "unknown".freeze
 
@@ -34,6 +34,7 @@ module MarketData
           close: new_price,
           high: [ row.high, new_price ].max,
           low: [ row.low, new_price ].min,
+          volume: volume || row.volume,
           source: source,
           as_of: as_of,
           fetched_at: Time.current
@@ -44,7 +45,7 @@ module MarketData
         AssetPriceHistory.create!(
           asset_id: asset_id, date: date, interval: "1d", status: "confirmed",
           open: new_price, high: new_price, low: new_price, close: new_price,
-          source: source, as_of: as_of, fetched_at: Time.current
+          volume: volume, source: source, as_of: as_of, fetched_at: Time.current
         )
       end
 
@@ -60,6 +61,12 @@ module MarketData
       # one guessed for it; ADR-016 needs "we do not know" to stay legible.
       def source
         @source ||= field(:source).presence || UNKNOWN_SOURCE
+      end
+
+      # The provider sends the day's running total, so the latest wins — like
+      # close, not like high/low.
+      def volume
+        @volume ||= field(:volume)&.to_i
       end
 
       def as_of

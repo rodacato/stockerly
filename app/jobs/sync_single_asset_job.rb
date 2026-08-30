@@ -71,20 +71,21 @@ class SyncSingleAssetJob < ApplicationJob
 
     asset.update!(update_attrs)
 
-    publish_price_update(asset, old_price, data[:price], data[:source]) if price_changed?(old_price, data[:price])
+    publish_price_update(asset, old_price, data) if price_changed?(old_price, data[:price])
   end
 
   def price_changed?(old_price, new_price)
     old_price.nil? || old_price.to_d != new_price.to_d
   end
 
-  def publish_price_update(asset, old_price, new_price, source = nil)
+  def publish_price_update(asset, old_price, data)
     EventBus.publish(MarketData::Events::AssetPriceUpdated.new(
       asset_id: asset.id,
       symbol: asset.symbol,
       old_price: (old_price || 0).to_s,
-      new_price: new_price.to_s,
-      source: source
+      new_price: data[:price].to_s,
+      volume: data[:volume]&.to_s,
+      source: data[:source]
     ))
   end
 
