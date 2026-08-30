@@ -4,6 +4,7 @@ module MarketData
     # Docs: https://docs.coingecko.com/reference/simple-price
     # Docs: https://docs.coingecko.com/reference/coins-markets
     class CoingeckoGateway < MarketDataGateway
+    include ResolvesApiKey
     include Dry::Monads[:result]
 
     DEMO_URL = "https://api.coingecko.com"
@@ -203,14 +204,6 @@ module MarketData
       end
 
       Success(results)
-    end
-
-    def resolve_api_key
-      key = ApiKeyResolver.for(PROVIDER)
-      raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
-      key
-    rescue ActiveRecord::Encryption::Errors::Decryption
-      raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
     end
 
     def resolve_pro_tier

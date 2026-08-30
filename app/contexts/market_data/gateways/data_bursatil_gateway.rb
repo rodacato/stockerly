@@ -9,6 +9,7 @@ module MarketData
     # from the provider instead of counted locally, and cached, because asking
     # for it also costs a credit.
     class DataBursatilGateway < MarketDataGateway
+      include ResolvesApiKey
       include Dry::Monads[:result]
 
       BASE_URL = "https://api.databursatil.com"
@@ -179,14 +180,6 @@ module MarketData
           f.options.timeout = TIMEOUT
           f.options.open_timeout = TIMEOUT
         end
-      end
-
-      def resolve_api_key
-        key = ApiKeyResolver.for(PROVIDER)
-        raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
-        key
-      rescue ActiveRecord::Encryption::Errors::Decryption
-        raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
       end
     end
   end

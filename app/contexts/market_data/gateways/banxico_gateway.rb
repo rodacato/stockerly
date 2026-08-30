@@ -3,6 +3,7 @@ module MarketData
     # Driven adapter: Banxico SIE API for CETES auction results.
     # Docs: https://www.banxico.org.mx/SieAPIRest/service/v1/doc/catalogoSeries
     class BanxicoGateway
+    include ResolvesApiKey
     include Dry::Monads[:result]
 
     BASE_URL = "https://www.banxico.org.mx/SieAPIRest/service/v1/"
@@ -78,14 +79,6 @@ module MarketData
     end
 
     private
-
-    def resolve_api_key
-      key = ApiKeyResolver.for(PROVIDER)
-      raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
-      key
-    rescue ActiveRecord::Encryption::Errors::Decryption
-      raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
-    end
 
     def connection
       @connection ||= Faraday.new(url: BASE_URL) do |f|
