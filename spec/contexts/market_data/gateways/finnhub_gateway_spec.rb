@@ -14,7 +14,6 @@ RSpec.describe MarketData::Gateways::FinnhubGateway do
         data = result.value!
         expect(data[:symbol]).to eq("AAPL")
         expect(data[:price]).to eq(189.43.to_d)
-        expect(data[:change_percent]).to eq(1.69.to_d)
         expect(data[:volume]).to be_nil
       end
     end

@@ -79,7 +79,7 @@ module MarketData
       end
 
       # Latest confirmed close per symbol, in the shape the bulk job reads.
-      # Returns Success([{ symbol:, price:, change_percent:, volume: }, ...])
+      # Returns Success([{ symbol:, price:, volume: }, ...])
       def fetch_bulk_prices(symbols)
         result = fetch_daily_bars(symbols, 7.days.ago.to_date, Time.current)
         return result if result.failure?
@@ -91,7 +91,6 @@ module MarketData
           {
             symbol: symbol,
             price: bar[:close],
-            change_percent: change_percent(bar[:open], bar[:close]),
             volume: bar[:volume]
           }
         end
@@ -205,12 +204,6 @@ module MarketData
           f.options.timeout = TIMEOUT
           f.options.open_timeout = TIMEOUT
         end
-      end
-
-      def change_percent(open, close)
-        return BigDecimal("0") if open.nil? || open.zero?
-
-        ((close - open) / open * 100).round(2)
       end
 
       def parse_bar(bar)
