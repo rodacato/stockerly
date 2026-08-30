@@ -1,6 +1,5 @@
 # Adjusts positions and historical trades for a stock split.
 # Multiplies shares by split ratio and divides avg_cost/price by ratio.
-# Uses pessimistic locking on positions for safety.
 module Trading
   module Domain
     class SplitAdjuster
@@ -9,34 +8,39 @@ module Trading
         @ratio = stock_split.ratio
       end
 
+      # Locking the split makes the already-applied check and the write atomic,
+      # and Mission Control's retry button reaches this handler.
       def adjust!
-        positions = Position.where(asset: @split.asset)
+        @split.with_lock do
+          return if @split.applied_at?
 
-        positions.find_each do |position|
-          position.with_lock do
-            position.update!(
-              shares: position.shares * @ratio,
-              avg_cost: position.avg_cost / @ratio
-            )
-          end
+          adjust_positions!
+          adjust_trades!
+          @split.update!(applied_at: Time.current)
         end
-
-        adjust_trades!
       end
 
       private
 
-      def adjust_trades!
-        trades = Trade.where(asset: @split.asset)
-          .kept
-          .where("executed_at < ?", @split.ex_date)
-
-        trades.find_each do |trade|
-          trade.update!(
-            shares: trade.shares * @ratio,
-            price_per_share: trade.price_per_share / @ratio
+      def adjust_positions!
+        Position.where(asset: @split.asset).find_each do |position|
+          position.update!(
+            shares: position.shares * @ratio,
+            avg_cost: position.avg_cost / @ratio
           )
         end
+      end
+
+      def adjust_trades!
+        Trade.where(asset: @split.asset)
+          .kept
+          .where("executed_at < ?", @split.ex_date)
+          .find_each do |trade|
+            trade.update!(
+              shares: trade.shares * @ratio,
+              price_per_share: trade.price_per_share / @ratio
+            )
+          end
       end
     end
   end
