@@ -10,10 +10,15 @@ class SyncDividendsJob < ApplicationJob
   def perform
     asset_count = 0
     dividend_count = 0
+    unreachable = []
+    assets = assets_to_check.to_a
 
-    assets_to_check.each do |asset|
+    assets.each do |asset|
       result = chain_for(asset).fetch_dividends(asset.gateway_symbols)
-      next if result.failure?
+      if result.failure?
+        unreachable << asset.symbol
+        next
+      end
 
       synced = sync_dividends_for(asset, result.value!)
       if synced > 0
@@ -27,7 +32,8 @@ class SyncDividendsJob < ApplicationJob
       dividend_count: dividend_count
     ))
 
-    log_sync_success("Dividends Sync", message: "#{dividend_count} dividends across #{asset_count} assets")
+    report("Dividends Sync", "#{dividend_count} dividends across #{asset_count} assets",
+           unreachable: unreachable, total: assets.size)
   end
 
   private

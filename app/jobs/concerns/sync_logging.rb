@@ -15,6 +15,18 @@ module SyncLogging
     )
   end
 
+  # A run that skipped assets is not a success, and one that reached none of
+  # them is an error rather than a partial.
+  def report(task_name, message, unreachable:, total:)
+    return log_sync_success(task_name, message: message) if unreachable.empty?
+
+    log_sync_failure(
+      task_name,
+      "#{message}; #{unreachable.size}/#{total} unreachable: #{unreachable.sort.join(', ')}",
+      severity: unreachable.size == total ? :error : :warning
+    )
+  end
+
   def log_sync_failure(task_name, message, severity: :error, duration_seconds: nil)
     SystemLog.create!(
       task_name: task_name,

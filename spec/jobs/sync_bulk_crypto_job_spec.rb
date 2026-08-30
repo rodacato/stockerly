@@ -41,7 +41,9 @@ RSpec.describe SyncBulkCryptoJob, type: :job do
 
         log = SystemLog.last
         expect(log.severity).to eq("success")
-        expect(log.task_name).to include("Bulk Crypto Sync")
+        expect(log.task_name).to eq("Bulk Crypto Sync")
+        # The monitor matches exactly; a suffix here is a blind spot there.
+        expect(CheckSyncHealthJob::CRITICAL_SYNCS).to include(log.task_name)
         expect(log.module_name).to eq("sync")
       end
     end

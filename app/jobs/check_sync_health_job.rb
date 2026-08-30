@@ -15,7 +15,6 @@
 # concerns/sync_logging.rb):
 #
 #   - "FX Rate Refresh"      (RefreshFxRatesJob — hourly)
-#   - "Bulk Stock Sync"      (SyncBulkStocksJob — every 5-30 min via SyncPriorityAssetsJob)
 #   - "Bulk BMV Sync"        (SyncBulkBmvJob — every 5-30 min via SyncPriorityAssetsJob)
 #   - "Bulk Crypto Sync"     (SyncBulkCryptoJob — every 5 min via SyncPriorityAssetsJob)
 #   - "News Sync"            (SyncNewsJob — every 30 min)
@@ -36,7 +35,6 @@ class CheckSyncHealthJob < ApplicationJob
   # developer's name for it; the owner holds Mexican shares.
   OWNER_FACING = {
     "FX Rate Refresh"     => "El tipo de cambio no se ha actualizado en más de un día",
-    "Bulk Stock Sync"     => "Tus acciones de EE. UU. no se han actualizado en más de un día",
     "Bulk BMV Sync"       => "Tus acciones mexicanas no se han actualizado en más de un día",
     "Bulk Crypto Sync"    => "Tus criptomonedas no se han actualizado en más de un día",
     "News Sync"           => "Las noticias no se han actualizado en más de un día",
@@ -47,7 +45,6 @@ class CheckSyncHealthJob < ApplicationJob
 
   CRITICAL_SYNCS = [
     "FX Rate Refresh",
-    "Bulk Stock Sync",
     "Bulk BMV Sync",
     "Bulk Crypto Sync",
     "News Sync",
@@ -70,7 +67,6 @@ class CheckSyncHealthJob < ApplicationJob
     last_error   = logs.where(severity: :error).order(created_at: :desc).first
 
     return if last_success.present? # recent success cures prior errors
-    return if last_error.blank?     # no errors recorded — silent but not failing
 
     alert(task_name, last_error: last_error, last_success: last_success)
   end
@@ -98,8 +94,16 @@ class CheckSyncHealthJob < ApplicationJob
       module_name: "health",
       severity: :error,
       error_message: "Sin sincronización exitosa desde #{last_success&.created_at&.to_date || 'hace más de 25 h'}. " \
-                     "Último error: #{last_error.error_message}"
+                     "#{detail_for(last_error)}"
     )
+  end
+
+  # A sync that logged nothing at all is not healthy, it is unobserved — so the
+  # summary has to say that rather than dereference an error that is not there.
+  def detail_for(last_error)
+    return "Sin registros en la ventana." if last_error.nil?
+
+    "Último error: #{last_error.error_message}"
   end
 
   # One account per instance by design (ADR-0010), so the first user is the
@@ -111,7 +115,7 @@ class CheckSyncHealthJob < ApplicationJob
     Notifications::UseCases::CreateNotification.call(
       user_id: owner.id,
       title: OWNER_FACING.fetch(task_name, task_name),
-      body: "#{last_error.error_message}. Revisa Registros para el detalle.",
+      body: "#{last_error&.error_message || 'Sin registros en la ventana'}. Revisa Registros para el detalle.",
       notification_type: :system
     )
   end

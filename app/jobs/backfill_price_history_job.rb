@@ -15,8 +15,9 @@ class BackfillPriceHistoryJob < ApplicationJob
     result = fetch_history(asset)
 
     if result.success?
-      upsert_bars(asset, result.value!, @source)
-      log_sync_success("Backfill: #{asset.symbol}")
+      bars = result.value!
+      rejected = upsert_bars(asset, bars, @source)
+      log_backfill(asset, stored: bars.size - rejected, rejected: rejected)
     else
       log_sync_failure("Backfill: #{asset.symbol}", result.failure[1])
     end
@@ -81,8 +82,29 @@ class BackfillPriceHistoryJob < ApplicationJob
     asset.symbol_for(klass::PROVIDER)
   end
 
+  def log_backfill(asset, stored:, rejected:)
+    return log_sync_success("Backfill: #{asset.symbol}", message: "#{stored} bars") if rejected.zero?
+
+    log_sync_failure("Backfill: #{asset.symbol}",
+                     "#{stored} bars stored, #{rejected} rejected",
+                     severity: :warning)
+  end
+
+  # Rescuing per bar rather than around the loop: a single bad row used to abort
+  # the range silently, and the job still reported success.
   def upsert_bars(asset, bars, source)
+    rejected = 0
+
     bars.each do |bar|
+      upsert_bar(asset, bar, source)
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+      rejected += 1
+    end
+
+    rejected
+  end
+
+  def upsert_bar(asset, bar, source)
       AssetPriceHistory.find_or_initialize_by(asset_id: asset.id, date: bar[:date], interval: "1d").tap do |record|
         SourceChange.record(record, source) if record.persisted?
 
@@ -99,8 +121,5 @@ class BackfillPriceHistoryJob < ApplicationJob
         )
         record.save!
       end
-    end
-  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-    # Ignore race conditions on concurrent upserts
   end
 end

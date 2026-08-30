@@ -6,7 +6,6 @@ class SyncBulkCryptoJob < ApplicationJob
 
   queue_as :default
 
-  retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
 
   def perform(asset_ids)
     assets = Asset.where(id: asset_ids, sync_status: :active).index_by(&:symbol)
@@ -16,7 +15,7 @@ class SyncBulkCryptoJob < ApplicationJob
 
     if result.success?
       update_assets(assets, result.value!)
-      log_sync_success("Bulk Crypto Sync: #{assets.size} assets")
+      log_sync_success("Bulk Crypto Sync", message: "#{assets.size} assets")
     elsif result.failure[0] == :rate_limited || result.failure[0] == :circuit_open
       log_sync_failure("Bulk Crypto Sync", result.failure[1], severity: :warning)
     else

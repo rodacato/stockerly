@@ -8,7 +8,6 @@ class RefreshFxRatesJob < ApplicationJob
 
   queue_as :default
 
-  retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
 
   def perform
     result = MarketData::Gateways::FxRatesGateway.new.refresh_rates
