@@ -29,7 +29,6 @@ module Identity
         create_site_defaults!
         create_integrations!
         create_market_indices!
-        create_fx_rates!
       end
 
       def create_site_defaults!
@@ -73,21 +72,6 @@ module Identity
             i.exchange = attrs[:exchange]
             i.value = 0
             i.change_percent = 0
-          end
-        end
-      end
-
-      def create_fx_rates!
-        pairs = [
-          { base_currency: "USD", quote_currency: "EUR", rate: 0.92 },
-          { base_currency: "USD", quote_currency: "MXN", rate: 17.25 },
-          { base_currency: "USD", quote_currency: "GBP", rate: 0.79 }
-        ]
-
-        pairs.each do |attrs|
-          FxRate.find_or_create_by!(base_currency: attrs[:base_currency], quote_currency: attrs[:quote_currency]) do |r|
-            r.rate = attrs[:rate]
-            r.fetched_at = Time.current
           end
         end
       end

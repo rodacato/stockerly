@@ -46,7 +46,7 @@ RSpec.describe "Setup", type: :request, setup_bypass: false do
         post setup_path, params: valid_params
         expect(Integration.count).to eq(MarketData::Domain::ProviderDefaults::ALL.size)
         expect(MarketIndex.count).to eq(6)
-        expect(FxRate.count).to eq(3)
+        expect(FxRate.count).to eq(0)
       end
     end
 
