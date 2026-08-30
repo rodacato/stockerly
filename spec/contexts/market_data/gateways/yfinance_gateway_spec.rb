@@ -72,7 +72,7 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
       stub_bridge([ { "date" => "2026-08-24", "open" => 47.0, "high" => 48.2, "low" => 46.9,
                       "close" => 47.76, "volume" => 1_000 } ])
 
-      bar = gateway.fetch_historical("WALMEX.MX", days: 30).value!.first
+      bar = gateway.fetch_historical("WALMEX.MX", 30.days.ago.to_date, Date.current).value!.first
 
       expect(bar).to eq({ date: Date.new(2026, 8, 24), open: BigDecimal("47.0"), high: BigDecimal("48.2"),
                           low: BigDecimal("46.9"), close: BigDecimal("47.76"), volume: 1_000 })
@@ -83,7 +83,7 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
       expect(PythonRunner).to receive(:call).with("yahoo.py", "history", "WALMEX.MX", "1y")
         .and_return(Dry::Monads::Success([]))
 
-      gateway.fetch_historical("WALMEX.MX", days: 200)
+      gateway.fetch_historical("WALMEX.MX", 200.days.ago.to_date, Date.current)
     end
 
     it "keeps the backfill window bounded instead of asking for everything" do
@@ -95,7 +95,7 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
         Dry::Monads::Success([])
       end
 
-      gateway.fetch_historical("WALMEX.MX", days: BackfillPriceHistoryJob::DAYS)
+      gateway.fetch_historical("WALMEX.MX", BackfillPriceHistoryJob::DAYS.days.ago.to_date, Date.current)
     end
   end
 

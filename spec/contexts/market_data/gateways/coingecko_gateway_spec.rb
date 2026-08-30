@@ -93,7 +93,7 @@ RSpec.describe MarketData::Gateways::CoingeckoGateway do
       before { stub_coingecko_historical(coin_id: "bitcoin", days: 7) }
 
       it "returns Success with daily price data" do
-        result = gateway.fetch_historical("BTC", days: 7)
+        result = gateway.fetch_historical("BTC", 7.days.ago.to_date, Date.current)
 
         expect(result).to be_success
         bars = result.value!

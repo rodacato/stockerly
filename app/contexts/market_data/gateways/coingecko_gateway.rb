@@ -52,7 +52,9 @@ module MarketData
 
     # Fetch daily price history for a crypto symbol.
     # Returns Success([{ date:, open:, high:, low:, close:, volume: }, ...])
-    def fetch_historical(symbol, days: 30)
+    # CoinGecko counts back from today, so to_date only sets the window length.
+    def fetch_historical(symbol, from_date = 30.days.ago.to_date, to_date = Date.current)
+      days = (to_date.to_date - from_date.to_date).to_i
       coin_id = SYMBOL_TO_ID[symbol.upcase]
       return Failure([ :not_found, "Unknown crypto symbol: #{symbol}" ]) unless coin_id
 

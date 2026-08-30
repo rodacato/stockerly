@@ -32,8 +32,8 @@ module MarketData
 
         row.update!(
           close: new_price,
-          high: [ row.high, new_price ].max,
-          low: [ row.low, new_price ].min,
+          high: [ row.high, new_price ].compact.max,
+          low: [ row.low, new_price ].compact.min,
           volume: volume || row.volume,
           source: source,
           as_of: as_of,

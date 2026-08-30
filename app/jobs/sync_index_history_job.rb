@@ -18,7 +18,7 @@ class SyncIndexHistoryJob < ApplicationJob
       index = MarketIndex.find_by(symbol: internal_sym)
       next unless index
 
-      result = gateway.fetch_historical(yahoo_sym, days: days)
+      result = gateway.fetch_historical(yahoo_sym, days.days.ago.to_date, Date.current)
       next if result.failure?
 
       result.value!.each do |bar|
