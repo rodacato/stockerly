@@ -16,7 +16,7 @@ module Trading
         {
           position: position,
           currency: currency,
-          breakdown: breakdown_for(position, currency),
+          breakdown: Domain::FxDegradation.new.figure { breakdown_for(position, currency) },
           retrospective: Domain::PurchaseRetrospective.call(position),
           trades: position.trades.kept.order(executed_at: :desc).limit(5)
         }
@@ -30,8 +30,6 @@ module Trading
         breakdown = Domain::PositionBreakdown.new(position, currency: currency)
         breakdown.total
         breakdown
-      rescue Trading::Domain::MissingFxRate
-        nil
       end
     end
   end

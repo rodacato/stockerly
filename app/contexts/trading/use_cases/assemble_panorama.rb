@@ -14,7 +14,8 @@ module Trading
       def call(user:)
         portfolio = user.portfolio
         currency  = user.preferred_currency
-        summary   = consolidated_summary(portfolio, currency)
+        fx        = Domain::FxDegradation.new
+        summary   = fx.figure { consolidated_summary(portfolio, currency) }
         positions = open_positions(portfolio)
         watched   = user.watchlist_items.includes(:asset).to_a
         closes    = MarketData::Queries::PriceSeries.recent_closes(asset_ids_of(positions, watched))
@@ -23,7 +24,7 @@ module Trading
         {
           currency: currency,
           summary: summary,
-          fx_unavailable: portfolio.present? && summary.nil?,
+          fx_unavailable: portfolio.present? && fx.degraded?,
           sentiment_cards: sentiment_cards(user),
           signals: signals(positions, watched),
           radar: radar(positions, watched, day_changes),
@@ -43,8 +44,6 @@ module Trading
         summary.total_value
         summary.day_gain
         summary
-      rescue Trading::Domain::MissingFxRate
-        nil
       end
 
       def open_positions(portfolio)

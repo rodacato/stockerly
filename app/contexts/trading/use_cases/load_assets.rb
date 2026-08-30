@@ -10,9 +10,10 @@ module Trading
         portfolio = user.portfolio
         currency = user.preferred_currency
 
-        summary = consolidated_summary(portfolio, currency)
+        fx = Trading::Domain::FxDegradation.new
+        summary = fx.figure { consolidated_summary(portfolio, currency) }
         gaps = tab == "watchlist" ? watchlist_gaps(user) : {}
-        rows = tab == "cartera" ? positions_for(portfolio, currency) : user.watchlist_items.includes(:asset).to_a
+        rows = tab == "cartera" ? positions_for(fx, portfolio, currency) : user.watchlist_items.includes(:asset).to_a
         closes = MarketData::Queries::PriceSeries.recent_closes(rows.map(&:asset))
         day_changes = MarketData::Domain::DayChange.by_asset(closes)
         rows = sorted_watchlist(rows, gaps, day_changes) if tab == "watchlist"
@@ -22,7 +23,7 @@ module Trading
           currency: currency,
           portfolio: portfolio,
           summary: summary,
-          fx_unavailable: portfolio.present? && summary.nil?,
+          fx_unavailable: portfolio.present? && fx.degraded?,
           positions: (tab == "cartera" ? rows : []),
           watchlist_items: (tab == "watchlist" ? rows : []),
           watchlist_gaps: gaps,
@@ -43,16 +44,15 @@ module Trading
         summary = Trading::Domain::PortfolioSummary.new(portfolio, currency: currency)
         summary.total_value
         summary
-      rescue Trading::Domain::MissingFxRate
-        nil
       end
 
       # D68: market value descending, in the declared currency.
-      def positions_for(portfolio, currency)
+      def positions_for(fx, portfolio, currency)
         return [] unless portfolio
 
         positions = portfolio.open_positions.includes(:asset).to_a
-        by_market_value(positions, portfolio, currency) || positions.sort_by { |position| position.asset.symbol }
+        fx.figure { by_market_value(positions, portfolio, currency) } ||
+          positions.sort_by { |position| position.asset.symbol }
       end
 
       # One unreachable rate invalidates the comparison for every row, not only
@@ -62,8 +62,6 @@ module Trading
           asset = position.asset
           [ -portfolio.convert(position.market_value, from: asset.currency, to: currency), asset.symbol ]
         end
-      rescue Trading::Domain::MissingFxRate
-        nil
       end
 
       # D68: the watchlist is a queue — what sits closest to its own threshold

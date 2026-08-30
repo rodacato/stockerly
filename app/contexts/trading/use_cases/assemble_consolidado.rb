@@ -28,31 +28,29 @@ module Trading
         return empty(currency, period) unless portfolio
 
         from = starts_on(portfolio, period)
-        summary = consolidated_summary(portfolio, currency)
-        twr = Domain::TimeWeightedReturn.new(portfolio, currency: currency).between(from: from)
+        fx = Domain::FxDegradation.new
+
+        summary = fx.figure { consolidated_summary(portfolio, currency) }
+        twr = fx.figure { Domain::TimeWeightedReturn.new(portfolio, currency: currency).between(from: from) }
 
         {
           period: period,
           from: from,
           currency: currency,
           summary: summary,
-          fx_unavailable: summary.nil?,
-          series: series_for(portfolio, currency, from),
+          series: fx.figure([]) { series_for(portfolio, currency, from) },
           twr: twr,
-          vs_cetes: vs_cetes(twr, from),
-          vs_hold: vs_hold(portfolio, currency, from, twr),
-          allocation: allocation_for(portfolio, currency)
+          vs_cetes: twr && vs_cetes(twr, from),
+          vs_hold: twr && fx.figure { vs_hold(portfolio, currency, from, twr) },
+          allocation: fx.figure({}) { allocation_for(portfolio, currency) },
+          fx_unavailable: fx.degraded?
         }
       end
 
       private
 
-      # The donut is one more thing a missing rate makes impossible rather than
-      # fatal — the same call raises inside allocation as it does in the summary.
       def allocation_for(portfolio, currency)
         portfolio.allocation_by_asset_type(currency: currency)
-      rescue Trading::Domain::MissingFxRate
-        {}
       end
 
       def empty(currency, period)
@@ -73,8 +71,6 @@ module Trading
         summary.total_value
         summary.day_gain
         summary
-      rescue Trading::Domain::MissingFxRate
-        nil
       end
 
       # Two lines that start together and separate by exactly the return: the
@@ -95,8 +91,6 @@ module Trading
 
       def value_of(portfolio, currency, snapshot)
         portfolio.convert(snapshot.total_value, from: snapshot.currency, to: currency, at_date: snapshot.date)
-      rescue Trading::Domain::MissingFxRate
-        0
       end
 
       def vs_cetes(mine, from)
@@ -123,8 +117,6 @@ module Trading
       def value_today(portfolio, currency, held)
         held.sum do |asset, shares|
           portfolio.convert(shares * (asset.current_price || 0), from: asset.currency, to: currency)
-        rescue Trading::Domain::MissingFxRate
-          0
         end
       end
     end
