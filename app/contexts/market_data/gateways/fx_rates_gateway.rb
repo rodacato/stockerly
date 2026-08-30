@@ -4,6 +4,7 @@ module MarketData
     # Separate output port — does NOT inherit from MarketDataGateway
     # because the contract is fundamentally different (FX pairs, not asset prices).
     class FxRatesGateway
+    include ResolvesApiKey
     include Dry::Monads[:result]
 
     BASE_URL = "https://v6.exchangerate-api.com"
@@ -58,14 +59,6 @@ module MarketData
       end
 
       Success(:rates_refreshed)
-    end
-
-    def resolve_api_key
-      key = ApiKeyResolver.for(PROVIDER)
-      raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
-      key
-    rescue ActiveRecord::Encryption::Errors::Decryption
-      raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
     end
     end
   end

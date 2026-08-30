@@ -4,6 +4,7 @@ module MarketData
     # Docs: https://www.alphavantage.co/documentation/
     # CRITICAL: Rate limits return HTTP 200 with "Note" key (NOT 429).
     class AlphaVantageGateway < FundamentalsGateway
+    include ResolvesApiKey
     BASE_URL = "https://www.alphavantage.co"
     PROVIDER = "Alpha Vantage"
     QUERY_PATH = "/query"
@@ -202,14 +203,6 @@ module MarketData
       BigDecimal(value.to_s)
     rescue ArgumentError
       nil
-    end
-
-    def resolve_api_key
-      key = ApiKeyResolver.for(PROVIDER)
-      raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
-      key
-    rescue ActiveRecord::Encryption::Errors::Decryption
-      raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
     end
     end
   end

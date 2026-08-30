@@ -4,6 +4,7 @@ module MarketData
     # ticker search, company news, and earnings calendar.
     # Docs: https://finnhub.io/docs/api
     class FinnhubGateway < MarketDataGateway
+    include ResolvesApiKey
     include Dry::Monads[:result]
 
     BASE_URL = "https://finnhub.io/api/v1"
@@ -234,14 +235,6 @@ module MarketData
       end
 
       Success(parsed)
-    end
-
-    def resolve_api_key
-      key = ApiKeyResolver.for(PROVIDER)
-      raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
-      key
-    rescue ActiveRecord::Encryption::Errors::Decryption
-      raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
     end
     end
   end

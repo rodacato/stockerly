@@ -3,6 +3,7 @@ module MarketData
     # Driven adapter: Financial Modeling Prep API for fundamentals, dividends, and splits.
     # Free tier: 250 calls/day. Docs: https://financialmodelingprep.com/developer/docs
     class FmpGateway < MarketDataGateway
+    include ResolvesApiKey
     include Dry::Monads[:result]
 
     BASE_URL = "https://financialmodelingprep.com"
@@ -167,14 +168,6 @@ module MarketData
       end
 
       Success(splits)
-    end
-
-    def resolve_api_key
-      key = ApiKeyResolver.for(PROVIDER)
-      raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
-      key
-    rescue ActiveRecord::Encryption::Errors::Decryption
-      raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
     end
     end
   end

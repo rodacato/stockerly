@@ -7,6 +7,7 @@ module MarketData
     # minutes and returns 403 for anything newer, so this gateway covers
     # end-of-day history and never current prices.
     class AlpacaGateway < MarketDataGateway
+      include ResolvesApiKey
       include Dry::Monads[:result]
 
       BASE_URL = "https://data.alpaca.markets"
@@ -246,14 +247,6 @@ module MarketData
         return symbols.first if wanted.empty?
 
         (symbols & wanted).first || wanted.first
-      end
-
-      def resolve_api_key
-        key = ApiKeyResolver.for(PROVIDER)
-        raise ApiKeyNotConfiguredError.new(PROVIDER) if key.blank?
-        key
-      rescue ActiveRecord::Encryption::Errors::Decryption
-        raise ApiKeyNotConfiguredError.new(PROVIDER, reason: "decryption failed")
       end
     end
   end
