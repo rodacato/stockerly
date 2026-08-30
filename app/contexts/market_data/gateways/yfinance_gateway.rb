@@ -45,7 +45,10 @@ module MarketData
       end
 
       # Returns Success([{ date:, open:, high:, low:, close:, volume: }, ...])
-      def fetch_historical(symbol, days: 30)
+      # The bridge asks for a period, so the range becomes a day count here.
+      def fetch_historical(symbol, from_date = 30.days.ago.to_date, to_date = Date.current)
+        days = (to_date.to_date - from_date.to_date).to_i
+
         run("history", symbol, period_for(days)).fmap do |bars|
           bars.map do |bar|
             {

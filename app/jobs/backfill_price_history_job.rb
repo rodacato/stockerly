@@ -59,19 +59,9 @@ class BackfillPriceHistoryJob < ApplicationJob
     gateway = klass.new
     symbol = symbol_for(klass, asset)
 
-    if accepts_days?(gateway)
-      gateway.fetch_historical(symbol, days: DAYS)
-    else
-      gateway.fetch_historical(symbol, DAYS.days.ago.to_date, Date.current)
-    end
+    gateway.fetch_historical(symbol, DAYS.days.ago.to_date, Date.current)
   rescue MarketData::Gateways::ApiKeyNotConfiguredError
     nil
-  end
-
-  # The five gateways take two shapes — (symbol, from, to) and (symbol, days:)
-  # — so ask the method rather than branch on the class.
-  def accepts_days?(gateway)
-    gateway.method(:fetch_historical).parameters.any? { |_type, name| name == :days }
   end
 
   # The BMV addresses an issuer differently from Yahoo, and the asset carries
@@ -104,22 +94,20 @@ class BackfillPriceHistoryJob < ApplicationJob
     rejected
   end
 
+  # DataBursatil reports a close and nothing else, so a bar carries only what its
+  # provider had — assigning the rest would blank what another source filled.
   def upsert_bar(asset, bar, source)
-      AssetPriceHistory.find_or_initialize_by(asset_id: asset.id, date: bar[:date], interval: "1d").tap do |record|
-        SourceChange.record(record, source) if record.persisted?
+    AssetPriceHistory.find_or_initialize_by(asset_id: asset.id, date: bar[:date], interval: "1d").tap do |record|
+      SourceChange.record(record, source) if record.persisted?
 
-        record.assign_attributes(
-          open: bar[:open],
-          high: bar[:high],
-          low: bar[:low],
-          close: bar[:close],
-          volume: bar[:volume],
-          source: source,
-          status: "confirmed",
-          as_of: bar[:date].end_of_day,
-          fetched_at: Time.current
-        )
-        record.save!
-      end
+      record.assign_attributes(bar.slice(:open, :high, :low, :close, :volume).compact)
+      record.assign_attributes(
+        source: source,
+        status: "confirmed",
+        as_of: bar[:date].end_of_day,
+        fetched_at: Time.current
+      )
+      record.save!
+    end
   end
 end

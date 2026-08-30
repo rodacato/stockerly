@@ -201,4 +201,35 @@ RSpec.describe MarketData::Handlers::RecordPriceHistory do
       expect(todays_row.volume).to be_nil
     end
   end
+  # DataBursatil reports a close and nothing else, so a BMV row can legitimately
+  # carry no high or low. Widening one used to raise on the nil comparison, and
+  # the surrounding rescue only catches RecordInvalid.
+  context "when today's row came from a close-only source" do
+    let!(:partial) do
+      AssetPriceHistory.create!(
+        asset_id: asset.id, date: Date.current, interval: "1d",
+        close: 100.0, high: nil, low: nil, volume: nil,
+        source: "DataBursatil", status: "confirmed"
+      )
+    end
+
+    let(:event) do
+      MarketData::Events::AssetPriceUpdated.new(
+        asset_id: asset.id, symbol: "AAPL", old_price: "100.0", new_price: "105.0"
+      )
+    end
+
+    it "widens it without raising" do
+      expect { described_class.call(event) }.not_to raise_error
+    end
+
+    it "takes the new price as both bounds it had no value for" do
+      described_class.call(event)
+
+      partial.reload
+      expect(partial.high.to_f).to eq(105.0)
+      expect(partial.low.to_f).to eq(105.0)
+      expect(partial.close.to_f).to eq(105.0)
+    end
+  end
 end
