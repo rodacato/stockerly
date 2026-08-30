@@ -15,11 +15,6 @@ class GatewayChain
     @gateways.each do |gateway|
       breaker = @circuit_breakers[gateway.class.name]
 
-      if breaker && breaker.state == :open
-        attempted << gateway.class.name
-        next
-      end
-
       wanted = symbol_for(gateway, symbol)
 
       result = if breaker
@@ -49,11 +44,6 @@ class GatewayChain
 
       breaker = @circuit_breakers[gateway.class.name]
 
-      if breaker && breaker.state == :open
-        attempted << gateway.class.name
-        next
-      end
-
       result = if breaker
                  breaker.call { gateway.fetch_overview(symbol) }
       else
@@ -80,11 +70,6 @@ class GatewayChain
 
       breaker = @circuit_breakers[gateway.class.name]
 
-      if breaker && breaker.state == :open
-        attempted << gateway.class.name
-        next
-      end
-
       result = if breaker
                  breaker.call { gateway.fetch_news(ticker: ticker, limit: limit) }
       else
@@ -108,11 +93,6 @@ class GatewayChain
       next unless gateway.respond_to?(:fetch_earnings)
 
       breaker = @circuit_breakers[gateway.class.name]
-
-      if breaker && breaker.state == :open
-        attempted << gateway.class.name
-        next
-      end
 
       result = if breaker
                  breaker.call { gateway.fetch_earnings(ticker) }
@@ -154,11 +134,6 @@ class GatewayChain
       next unless gateway.respond_to?(method)
 
       breaker = @circuit_breakers[gateway.class.name]
-
-      if breaker&.state == :open
-        attempted << gateway.class.name
-        next
-      end
 
       wanted = symbol_for(gateway, symbol)
       result = breaker ? breaker.call { gateway.public_send(method, wanted) } : gateway.public_send(method, wanted)
