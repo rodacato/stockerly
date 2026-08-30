@@ -165,4 +165,45 @@ RSpec.describe Position, type: :model do
       expect(position.reload.avg_cost.to_f).to be_within(0.01).of(100.0)
     end
   end
+  describe "#resync_from_trades!" do
+    let(:portfolio) { create(:portfolio) }
+    let(:asset) { create(:asset, currency: "USD") }
+    let(:position) { create(:position, portfolio: portfolio, asset: asset, shares: 99, avg_cost: 1, status: :open) }
+
+    def trade(side, shares, price, **extra)
+      create(:trade, portfolio: portfolio, asset: asset, position: position,
+                     side: side, shares: shares, price_per_share: price, currency: "USD", **extra)
+    end
+
+    it "re-derives shares from the trades that are still kept" do
+      trade(:buy, 10, 100)
+      trade(:buy, 5, 100, discarded_at: 1.hour.ago)
+
+      position.resync_from_trades!
+
+      expect(position.reload.shares).to eq(10)
+      expect(position).to be_open
+    end
+
+    it "closes the position when the sells cancel the buys" do
+      trade(:buy, 10, 100)
+      trade(:sell, 10, 120)
+
+      position.resync_from_trades!
+
+      expect(position.reload.shares).to eq(0)
+      expect(position).to be_closed
+      expect(position.closed_at).to be_present
+    end
+
+    it "reopens a closed position when a sell is taken back" do
+      trade(:buy, 10, 100)
+      position.update!(status: :closed, shares: 0, closed_at: Time.current)
+
+      position.resync_from_trades!
+
+      expect(position.reload).to be_open
+      expect(position.closed_at).to be_nil
+    end
+  end
 end

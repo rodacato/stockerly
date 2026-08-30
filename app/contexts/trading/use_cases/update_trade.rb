@@ -14,7 +14,7 @@ module Trading
 
         previous_values = extract_previous(trade, attrs)
         update_trade(trade, attrs)
-        recalculate_position(trade.position) if position_affecting_change?(attrs)
+        trade.position&.resync_from_trades! if position_affecting_change?(attrs)
 
         publish(Events::TradeUpdated.new(
           trade_id: trade.id,
@@ -50,19 +50,6 @@ module Trading
 
       def position_affecting_change?(attrs)
         attrs.key?(:shares) || attrs.key?(:price_per_share)
-      end
-
-      def recalculate_position(position)
-        return unless position
-
-        position.recalculate_avg_cost!
-
-        remaining = position.trades.kept.where(side: :buy).sum(:shares) - position.trades.kept.where(side: :sell).sum(:shares)
-        if remaining.zero?
-          position.update!(status: :closed, shares: remaining, closed_at: Time.current)
-        else
-          position.update!(shares: remaining, status: :open, closed_at: nil)
-        end
       end
 
       def parse_executed_at(value)
