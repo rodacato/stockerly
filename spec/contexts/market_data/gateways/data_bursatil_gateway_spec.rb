@@ -16,11 +16,9 @@ RSpec.describe MarketData::Gateways::DataBursatilGateway do
 
       expect(result.value!).to eq([
         { symbol: "WALMEX.MX", source: "DataBursatil/bmv", price: BigDecimal("68.1"),
-          change_percent: BigDecimal("1.77"), volume: 1_222_566,
-          as_of: Time.zone.parse("2026-08-26 10:03:00") },
+          volume: 1_222_566, as_of: Time.zone.parse("2026-08-26 10:03:00") },
         { symbol: "GFNORTEO.MX", source: "DataBursatil/bmv", price: BigDecimal("193.64"),
-          change_percent: BigDecimal("1.77"), volume: 1_222_566,
-          as_of: Time.zone.parse("2026-08-26 10:03:00") }
+          volume: 1_222_566, as_of: Time.zone.parse("2026-08-26 10:03:00") }
       ])
     end
 

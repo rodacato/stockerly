@@ -38,7 +38,7 @@ module MarketData
     end
 
     # Fetch price for a single crypto symbol.
-    # Returns Success({ symbol:, price:, change_percent:, market_cap: })
+    # Returns Success({ symbol:, price:, market_cap: })
     def fetch_price(symbol)
       coin_id = SYMBOL_TO_ID[symbol.upcase]
       return Failure([ :not_found, "Unknown crypto symbol: #{symbol}" ]) unless coin_id
@@ -149,7 +149,6 @@ module MarketData
         {
           symbol: symbol.upcase,
           price: data[QUOTE_CURRENCY].to_d,
-          change_percent: data["usd_24h_change"]&.to_d&.round(4) || 0,
           market_cap: data["usd_market_cap"]&.to_d
         }
       end

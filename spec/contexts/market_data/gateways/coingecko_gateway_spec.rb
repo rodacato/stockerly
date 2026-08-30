@@ -14,7 +14,6 @@ RSpec.describe MarketData::Gateways::CoingeckoGateway do
         data = result.value!
         expect(data[:symbol]).to eq("BTC")
         expect(data[:price]).to eq(64_231.0.to_d)
-        expect(data[:change_percent]).to be_a(BigDecimal)
         expect(data[:market_cap]).to be_a(BigDecimal)
       end
     end
