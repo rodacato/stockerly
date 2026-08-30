@@ -52,7 +52,7 @@ RSpec.describe Trading::Domain::ExecutionRate do
       trade = trade_for(usd_asset, currency: "USD", rate: nil)
 
       expect { described_class.multiplier(trade: trade, target: "MXN") }
-        .to raise_error(Trading::Domain::MissingFxRate, /no fx_rate_at_execution/)
+        .to raise_error(Trading::Domain::MissingFxRate, /no rate captured/)
     end
 
     it "fails loud when the target has no rate on that day" do

@@ -101,7 +101,7 @@
         </div>
         <div class="flex flex-1 flex-col gap-0.5">
           <span class="text-[10px] font-semibold uppercase tracking-widest text-fg-subtle"><%= t(".invertido") %></span>
-          <span class="font-mono text-2xl font-bold text-fg-default"><%= number_with_precision(@report[:invested], precision: 2, delimiter: ",") %></span>
+          <span class="font-mono text-2xl font-bold text-fg-default"><%= format_currency_mx(@report[:invested], currency: @report[:currency]) %></span>
         </div>
       </div>
       <span class="h-px bg-border-default"></span>
