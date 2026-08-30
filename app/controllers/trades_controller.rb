@@ -28,6 +28,8 @@ class TradesController < AuthenticatedController
       respond_with_alert(errors.values.flatten.first, fallback: assets_path)
     in Dry::Monads::Failure[ :insufficient_shares, message ]
       respond_with_alert(message, fallback: assets_path)
+    in Dry::Monads::Failure[ :missing_fx_rate, currency ]
+      respond_with_alert(t("trades.errores.tc_faltante", currency: currency), fallback: assets_path)
     in Dry::Monads::Failure[ _, message ]
       redirect_to assets_path, alert: message
     end

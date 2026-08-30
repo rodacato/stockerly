@@ -7,12 +7,12 @@ module Trading
         return Failure([ :not_found, "Portfolio not found" ]) unless portfolio
 
         asset = Asset.find_by!(symbol: attrs[:asset_symbol].upcase)
-        position = find_or_create_position(portfolio, asset, attrs)
-
-        return Failure([ :insufficient_shares, "Not enough shares to sell" ]) if sell_exceeds_position?(attrs, position)
-
         trade_currency = attrs[:currency] || asset.currency
         fx_rate = yield capture_fx(trade_currency, attrs)
+        return Failure([ :missing_fx_rate, trade_currency ]) if unpriceable?(trade_currency, asset, fx_rate)
+
+        position = find_or_create_position(portfolio, asset, attrs)
+        return Failure([ :insufficient_shares, "Not enough shares to sell" ]) if sell_exceeds_position?(attrs, position)
 
         trade = persist_trade(portfolio, asset, position, attrs, trade_currency, fx_rate)
         update_position_after_trade(position, attrs)
@@ -45,6 +45,12 @@ module Trading
           at_date: attrs[:executed_at]&.to_date,
           override: attrs[:fx_rate_at_execution]
         ))
+      end
+
+      # capture_fx stores NULL when the rate is not known yet and the backfill
+      # repairs it, but only a same-currency trade has a cost basis without it.
+      def unpriceable?(currency, asset, fx_rate)
+        fx_rate.nil? && currency != asset.currency
       end
 
       def find_or_create_position(portfolio, asset, attrs)

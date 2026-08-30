@@ -20,7 +20,7 @@ export default class TradeSheetController extends Controller {
     // The card shows whenever there is a rate to capture — the trade stores its
     // currency against the reference, not against what the user reads in.
     const currency = this.currencyTarget.value
-    if (currency === this.referenceCurrencyValue) {
+    if (!currency || currency === this.referenceCurrencyValue) {
       this.fxCardTarget.hidden = true
       this.fxRateTarget.value = ""
       this.displayDivisor = 1
