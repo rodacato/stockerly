@@ -141,5 +141,28 @@ RSpec.describe Position, type: :model do
       position.recalculate_avg_cost!
       expect(position.avg_cost.to_f).to eq(100.0)
     end
+
+    # Buying a US-listed asset through the SIC settles in pesos, so a position
+    # can hold buys paid in two currencies for one USD-quoted asset.
+    it "states a peso-settled buy in the asset's currency before averaging" do
+      date = Date.new(2026, 3, 10)
+      FxRateHistory.record(base: "USD", quote: "MXN", date: date, rate: 19.0, source: "banxico")
+
+      portfolio = create(:portfolio)
+      asset = create(:asset, symbol: "AAPL", currency: "USD")
+      position = create(:position, portfolio: portfolio, asset: asset, avg_cost: 100.0, shares: 20)
+
+      create(:trade, portfolio: portfolio, asset: asset, position: position, side: :buy,
+                     shares: 10, price_per_share: 100.0, currency: "USD",
+                     fx_rate_at_execution: 19.0, executed_at: date)
+      create(:trade, portfolio: portfolio, asset: asset, position: position, side: :buy,
+                     shares: 10, price_per_share: 1_900.0, currency: "MXN",
+                     fx_rate_at_execution: 1.0, executed_at: date)
+
+      position.recalculate_avg_cost!
+
+      # Both buys cost USD 100/share; summing price_per_share raw gives 1000.
+      expect(position.reload.avg_cost.to_f).to be_within(0.01).of(100.0)
+    end
   end
 end

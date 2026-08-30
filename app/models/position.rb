@@ -33,26 +33,29 @@ class Position < ApplicationRecord
   def avg_cost_in(target_currency)
     return avg_cost.to_d if target_currency == asset&.currency
 
-    buys = trades.select { |t| t.side == "buy" && t.discarded_at.nil? }
-    return 0.to_d if buys.empty?
-
-    total_shares = buys.sum(&:shares)
-    return 0.to_d if total_shares.zero?
-
-    total_user_cost = buys.sum { |t| t.shares * t.price_per_share * Trading::Domain::ExecutionRate.multiplier(trade: t, target: target_currency) }
-    (total_user_cost / total_shares).to_d
+    weighted_avg_cost(trades.select { |t| t.side == "buy" && t.discarded_at.nil? }, target_currency)
   end
 
   def cost_basis_in(target_currency)
     shares * avg_cost_in(target_currency)
   end
 
+  # A trade may be paid in a currency other than its asset's (the SIC settles
+  # a US-listed asset in pesos), so buys are stated in the asset's unit first.
   def recalculate_avg_cost!
-    buy_trades = trades.kept.where(side: :buy)
-    return if buy_trades.empty?
+    cost = weighted_avg_cost(trades.kept.where(side: :buy).to_a, asset.currency)
+    return if cost.zero?
 
-    total_shares = buy_trades.sum(:shares)
-    weighted_cost = buy_trades.sum("shares * price_per_share")
-    update!(avg_cost: weighted_cost / total_shares)
+    update!(avg_cost: cost)
+  end
+
+  private
+
+  def weighted_avg_cost(buys, target_currency)
+    total_shares = buys.sum(&:shares)
+    return 0.to_d if total_shares.zero?
+
+    total = buys.sum { |t| t.shares * t.price_per_share * Trading::Domain::ExecutionRate.multiplier(trade: t, target: target_currency) }
+    (total / total_shares).to_d
   end
 end

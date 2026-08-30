@@ -90,4 +90,43 @@ RSpec.describe Trading::Domain::PositionBreakdown do
 
     expect(breakdown(position).total.percent).to eq(0)
   end
+  # The SIC settles a US-listed asset in pesos, so one position can hold buys
+  # paid in two currencies. Both legs below cost USD 100/share.
+  describe "a USD position with one leg settled in pesos" do
+    let(:bought_on) { 30.days.ago.to_date }
+
+    before do
+      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 20.0)
+      FxRateHistory.record(base: "USD", quote: "MXN", date: bought_on, rate: 17.0, source: "test")
+    end
+
+    let(:position) do
+      asset = create(:asset, :stock, symbol: "AAPL", currency: "USD", current_price: 120)
+      pos = create(:position, portfolio: portfolio, asset: asset, shares: 20, avg_cost: 100, status: :open)
+
+      create(:trade, portfolio: portfolio, position: pos, asset: asset, side: :buy,
+                     shares: 10, price_per_share: 100, currency: "USD",
+                     fx_rate_at_execution: 17.0, executed_at: bought_on)
+      create(:trade, portfolio: portfolio, position: pos, asset: asset, side: :buy,
+                     shares: 10, price_per_share: 1_700, currency: "MXN",
+                     fx_rate_at_execution: 1.0, executed_at: bought_on)
+
+      pos.recalculate_avg_cost!
+      pos
+    end
+
+    it "averages both legs in the asset's currency" do
+      expect(position.reload.avg_cost.to_f).to be_within(0.01).of(100.0)
+    end
+
+    it "attributes the asset's move without the peso leg distorting it" do
+      expect(breakdown(position).from_asset.amount).to eq(8_000)
+    end
+
+    it "still splits into two parts that sum to the total" do
+      split = breakdown(position)
+
+      expect(split.from_asset.amount + split.from_fx.amount).to eq(split.total.amount)
+    end
+  end
 end
