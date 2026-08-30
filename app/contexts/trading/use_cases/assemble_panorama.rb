@@ -15,7 +15,7 @@ module Trading
         portfolio = user.portfolio
         currency  = user.preferred_currency
         fx        = Domain::FxDegradation.new
-        summary   = fx.figure { consolidated_summary(portfolio, currency) }
+        summary   = fx.figure { Trading::Domain::PortfolioSummary.prewarmed(portfolio, currency: currency) }
         positions = open_positions(portfolio)
         watched   = user.watchlist_items.includes(:asset).to_a
         closes    = MarketData::Queries::PriceSeries.recent_closes(asset_ids_of(positions, watched))
@@ -37,14 +37,6 @@ module Trading
 
       # Valuing here is the load-bearing part: AssembleDashboard built the
       # summary lazily, so Portfolio#convert raised in the template instead.
-      def consolidated_summary(portfolio, currency)
-        return nil unless portfolio
-
-        summary = Trading::Domain::PortfolioSummary.new(portfolio, currency: currency)
-        summary.total_value
-        summary.day_gain
-        summary
-      end
 
       def open_positions(portfolio)
         return [] unless portfolio

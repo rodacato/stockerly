@@ -3,6 +3,17 @@ module Trading
     class PortfolioSummary
       attr_reader :portfolio, :currency
 
+      # Forcing the figures here rather than in a view: a missing rate has to
+      # raise where the screen's FxDegradation can catch it (ADR-0023).
+      def self.prewarmed(portfolio, currency:, day_gain: true)
+        return nil unless portfolio
+
+        new(portfolio, currency: currency).tap do |summary|
+          summary.total_value
+          summary.day_gain if day_gain
+        end
+      end
+
       def initialize(portfolio, currency: nil)
         @portfolio = portfolio
         @currency  = currency || portfolio.user.preferred_currency

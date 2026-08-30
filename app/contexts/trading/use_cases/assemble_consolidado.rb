@@ -30,7 +30,7 @@ module Trading
         from = starts_on(portfolio, period)
         fx = Domain::FxDegradation.new
 
-        summary = fx.figure { consolidated_summary(portfolio, currency) }
+        summary = fx.figure { Domain::PortfolioSummary.prewarmed(portfolio, currency: currency) }
         twr = fx.figure { Domain::TimeWeightedReturn.new(portfolio, currency: currency).between(from: from) }
 
         {
@@ -66,12 +66,6 @@ module Trading
 
       # Same degradation as every other screen: a missing rate makes the
       # consolidation impossible, not the page.
-      def consolidated_summary(portfolio, currency)
-        summary = Domain::PortfolioSummary.new(portfolio, currency: currency)
-        summary.total_value
-        summary.day_gain
-        summary
-      end
 
       # Two lines that start together and separate by exactly the return: the
       # portfolio's value, and the capital that was put into it.
