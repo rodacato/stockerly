@@ -98,3 +98,6 @@ lib/python/__pycache__/
 
 # Broker exports: real position data, never committed
 *.csv
+
+# RSpec --only-failures state, regenerated on every run
+spec/examples.txt
