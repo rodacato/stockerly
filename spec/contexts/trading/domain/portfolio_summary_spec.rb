@@ -38,7 +38,7 @@ RSpec.describe Trading::Domain::PortfolioSummary do
     end
 
     it "calculates day gain from yesterday snapshot" do
-      create(:portfolio_snapshot, portfolio: portfolio, date: Date.yesterday, total_value: 2800.0, invested_value: 2800.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: Date.yesterday, total_value: 2800.0)
 
       result = subject.day_gain
       # today: 3100 - yesterday: 2800 = 300

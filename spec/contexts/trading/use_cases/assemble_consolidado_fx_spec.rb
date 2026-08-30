@@ -13,8 +13,8 @@ RSpec.describe Trading::UseCases::AssembleConsolidado do
   def data = described_class.call(user: user.reload)
 
   before do
-    portfolio.snapshots.create!(date: 30.days.ago.to_date, currency: "USD", total_value: 1_000, invested_value: 1_000)
-    portfolio.snapshots.create!(date: 2.days.ago.to_date, currency: "USD", total_value: 1_200, invested_value: 1_000)
+    portfolio.snapshots.create!(date: 30.days.ago.to_date, currency: "USD", total_value: 1_000)
+    portfolio.snapshots.create!(date: 2.days.ago.to_date, currency: "USD", total_value: 1_200)
     create(:trade, portfolio: portfolio, asset: usd_asset, side: :buy, shares: 5,
                    price_per_share: 200, currency: "USD", executed_at: 40.days.ago)
   end

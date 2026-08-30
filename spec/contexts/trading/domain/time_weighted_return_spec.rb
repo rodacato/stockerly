@@ -7,7 +7,7 @@ RSpec.describe Trading::Domain::TimeWeightedReturn do
 
   def snapshot(days_ago, value)
     portfolio.snapshots.create!(date: days_ago.days.ago.to_date, currency: "MXN",
-                                total_value: value, invested_value: value)
+                                total_value: value)
   end
 
   def buy(amount, days_ago:)
@@ -101,8 +101,8 @@ RSpec.describe Trading::Domain::TimeWeightedReturn do
   it "values a foreign snapshot at its own date's rate" do
     FxRateHistory.record(base: "USD", quote: "MXN", date: 2.days.ago.to_date, rate: 17.0)
     FxRateHistory.record(base: "USD", quote: "MXN", date: 1.day.ago.to_date, rate: 18.0)
-    portfolio.snapshots.create!(date: 2.days.ago.to_date, currency: "USD", total_value: 100, invested_value: 100)
-    portfolio.snapshots.create!(date: 1.day.ago.to_date, currency: "USD", total_value: 100, invested_value: 100)
+    portfolio.snapshots.create!(date: 2.days.ago.to_date, currency: "USD", total_value: 100)
+    portfolio.snapshots.create!(date: 1.day.ago.to_date, currency: "USD", total_value: 100)
 
     # 1,700 MXN to 1,800 MXN: the position did not move, the peso did.
     expect(twr).to be_within(0.01).of(5.88)

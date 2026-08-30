@@ -12,7 +12,7 @@ RSpec.describe Trading::Domain::PortfolioSummary, "#day_gain with external flows
 
   def snapshot_yesterday(total)
     portfolio.snapshots.create!(date: Date.yesterday, currency: "MXN",
-                                total_value: total, invested_value: total)
+                                total_value: total)
   end
 
   def record_trade(symbol:, side: "buy", shares:, price:, on: Date.current)

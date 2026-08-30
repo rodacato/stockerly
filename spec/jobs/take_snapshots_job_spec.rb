@@ -35,12 +35,10 @@ RSpec.describe TakeSnapshotsJob, type: :job do
         create(:position, portfolio: portfolio, asset: asset, shares: 10, avg_cost: 90, status: :open)
       end
 
-      it "calculates invested_value from positions" do
+      it "values the snapshot from the open positions" do
         described_class.perform_now
 
-        snapshot = PortfolioSnapshot.last
-        expect(snapshot.invested_value.to_f).to eq(1000.0) # 10 shares * $100
-        expect(snapshot.total_value.to_f).to eq(1000.0)
+        expect(PortfolioSnapshot.last.total_value.to_f).to eq(1000.0) # 10 shares * $100
       end
     end
 
@@ -62,7 +60,7 @@ RSpec.describe TakeSnapshotsJob, type: :job do
 
         snapshot = PortfolioSnapshot.last
         # 5 × 200 MXN + 2 × 100 USD × 17 MXN/USD = 1000 + 3400 = 4400 MXN
-        expect(snapshot.invested_value.to_f).to eq(4400.0)
+        expect(snapshot.total_value.to_f).to eq(4400.0)
         expect(snapshot.total_value.to_f).to eq(4400.0)
         expect(snapshot.currency).to eq("MXN")
 

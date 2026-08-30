@@ -29,7 +29,7 @@ RSpec.describe Trading::Handlers::RebuildSnapshotsOnBackdatedTrade do
 
     described_class.call(event_for(trade))
 
-    expect(portfolio.snapshots.find_by(date: 5.days.ago.to_date).invested_value).to eq(1_000)
+    expect(portfolio.snapshots.find_by(date: 5.days.ago.to_date).total_value).to eq(1_000)
   end
 
   it "does not rebuild for a trade recorded on its own day" do
@@ -42,12 +42,12 @@ RSpec.describe Trading::Handlers::RebuildSnapshotsOnBackdatedTrade do
     create(:asset_price_history, asset: asset, date: 5.days.ago.to_date, close: 10)
     trade = trade_on(5.days.ago)
     described_class.call(event_for(trade))
-    expect(portfolio.snapshots.find_by(date: 5.days.ago.to_date).invested_value).to eq(1_000)
+    expect(portfolio.snapshots.find_by(date: 5.days.ago.to_date).total_value).to eq(1_000)
 
     trade.discard!
     described_class.call({ trade_id: trade.id })
 
-    expect(portfolio.snapshots.find_by(date: 5.days.ago.to_date).invested_value).to eq(0)
+    expect(portfolio.snapshots.find_by(date: 5.days.ago.to_date).total_value).to eq(0)
   end
 
   it "survives a trade that no longer exists" do
@@ -60,6 +60,6 @@ RSpec.describe Trading::Handlers::RebuildSnapshotsOnBackdatedTrade do
 
     described_class.call({ trade_id: trade.id })
 
-    expect(portfolio.snapshots.find_by(date: 4.days.ago.to_date).invested_value).to eq(1_000)
+    expect(portfolio.snapshots.find_by(date: 4.days.ago.to_date).total_value).to eq(1_000)
   end
 end

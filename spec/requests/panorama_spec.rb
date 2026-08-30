@@ -269,7 +269,7 @@ RSpec.describe "Panorama", type: :request do
       held = mxn_asset(symbol: "HELD", current_price: 10)
       create(:position, portfolio: portfolio, asset: held, shares: 500, avg_cost: 10, status: :open)
       portfolio.snapshots.create!(date: Date.yesterday, currency: "MXN",
-                                  total_value: 5_000, invested_value: 5_000)
+                                  total_value: 5_000)
       mxn_asset(symbol: "NEW", current_price: 10)
 
       Trading::UseCases::ExecuteTrade.call(user: user, params: {

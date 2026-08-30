@@ -14,11 +14,9 @@ class Portfolio < ApplicationRecord
     positions.where(status: :closed)
   end
 
+  # Market value, not cost: the old invested_value was this same sum under a
+  # name that promised the opposite. Cost basis is Position#cost_basis_in.
   def total_value(currency: user.preferred_currency)
-    invested_value(currency: currency)
-  end
-
-  def invested_value(currency: user.preferred_currency)
     open_positions_with_assets.sum do |p|
       position_market_value_in(p, currency)
     end

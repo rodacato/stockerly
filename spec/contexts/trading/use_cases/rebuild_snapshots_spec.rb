@@ -20,14 +20,14 @@ RSpec.describe Trading::UseCases::RebuildSnapshots do
   # The exact reproduction from D27.
   it "corrects a snapshot that predates a backdated trade" do
     portfolio.snapshots.create!(date: 5.days.ago.to_date, currency: "MXN",
-                                total_value: 0, invested_value: 0)
+                                total_value: 0)
     buy(100, 10, on: 5.days.ago)
     close(10, on: 5.days.ago.to_date)
 
     described_class.call(portfolio: portfolio, from: 5.days.ago.to_date)
 
     snapshot = portfolio.snapshots.find_by(date: 5.days.ago.to_date)
-    expect(snapshot.invested_value).to eq(1_000)
+    expect(snapshot.total_value).to eq(1_000)
     expect(snapshot.total_value).to eq(1_000)
   end
 

@@ -21,8 +21,7 @@ class TakeSnapshotsJob < ApplicationJob
     portfolio.snapshots.create!(
       date: Date.current,
       currency: currency,
-      total_value: portfolio.total_value(currency: currency),
-      invested_value: portfolio.invested_value(currency: currency)
+      total_value: portfolio.total_value(currency: currency)
     )
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
     # Snapshot already taken for today — idempotent

@@ -99,7 +99,7 @@ module Trading
       # to have held.
       def vs_hold(portfolio, currency, from, mine)
         valuation = Domain::HistoricalValuation.new(portfolio, currency: currency)
-        opening = valuation.invested_on(from)
+        opening = valuation.market_value_on(from)
         return nil unless opening.positive?
 
         held_today = value_today(portfolio, currency, valuation.shares_on(from))

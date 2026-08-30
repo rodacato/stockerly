@@ -16,11 +16,6 @@ RSpec.describe PortfolioSnapshot, type: :model do
       expect(snapshot).not_to be_valid
     end
 
-    it "requires invested_value" do
-      snapshot.invested_value = nil
-      expect(snapshot).not_to be_valid
-    end
-
     it "requires unique date per portfolio" do
       portfolio = create(:portfolio)
       create(:portfolio_snapshot, portfolio: portfolio, date: "2026-02-20")

@@ -9,7 +9,7 @@ RSpec.describe Trading::UseCases::AssembleConsolidado do
 
   def snapshot(days_ago, value)
     portfolio.snapshots.create!(date: days_ago.days.ago.to_date, currency: "MXN",
-                                total_value: value, invested_value: value)
+                                total_value: value)
   end
 
   def buy(shares, price, days_ago:)
