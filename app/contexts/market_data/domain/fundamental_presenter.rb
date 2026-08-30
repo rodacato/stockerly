@@ -38,6 +38,16 @@ module MarketData
       (fcf / market_cap).round(4)
     end
 
+    # How much of a coin's cap trades in a day. CoinGecko serves both figures
+    # and not the ratio, which is the number that says whether the price is thin.
+    def volume_market_cap_ratio
+      volume = metric("total_volume_24h")&.to_d
+      cap = metric("market_cap")&.to_d
+      return nil unless volume && cap&.nonzero?
+
+      (volume / cap).round(4)
+    end
+
     # The gateways and the statement calculator name the same quantity
     # differently — Alpha Vantage and FMP persist `return_on_equity`, the
     # calculator writes `roe_calculated`, and the UI asks for `roe`. Without
