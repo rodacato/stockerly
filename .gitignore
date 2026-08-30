@@ -92,3 +92,9 @@ design/references/
 
 # Bytecode from the bundled Python bridge
 lib/python/__pycache__/
+
+# macOS finder metadata
+.DS_Store
+
+# Broker exports: real position data, never committed
+*.csv
