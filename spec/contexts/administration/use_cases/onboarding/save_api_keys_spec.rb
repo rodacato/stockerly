@@ -35,4 +35,45 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
       expect(result.value![:updated]).to eq(0)
     end
   end
+  # Setup writes no FX rate, so the wizard is where real history first arrives —
+  # and pulling it is also the only on-the-spot check that a token works.
+  describe "pulling Banxico history once its key is saved" do
+    let!(:banxico) { create(:integration, :keyless, provider_name: "Banxico") }
+
+    def banxico_returns(status:, body: nil)
+      stub_request(:get, %r{series/#{MarketData::Gateways::BanxicoGateway::FIX_SERIES}/datos/})
+        .to_return(status: status, body: body.to_s, headers: { "Content-Type" => "application/json" })
+    end
+
+    def fix_payload(datos)
+      { bmx: { series: [ { idSerie: MarketData::Gateways::BanxicoGateway::FIX_SERIES, datos: datos } ] } }.to_json
+    end
+
+    it "stores the fixes it received and reports how many" do
+      banxico_returns(status: 200, body: fix_payload([ { "fecha" => "11/05/2026", "dato" => "17.0100" } ]))
+
+      result = described_class.call(keys: { banxico.id.to_s => "token-123" })
+
+      expect(result.value![:fx]).to eq(1)
+      expect(FxRateHistory.count).to eq(1)
+    end
+
+    it "reports the failure and leaves no rate behind when Banxico refuses" do
+      banxico_returns(status: 500)
+
+      result = described_class.call(keys: { banxico.id.to_s => "bad-token" })
+
+      expect(result.value![:fx]).to eq(:failed)
+      expect(FxRateHistory.count).to eq(0)
+      expect(FxRate.count).to eq(0)
+    end
+
+    it "skips the pull when no Banxico key was given" do
+      other = create(:integration, :keyless, provider_name: "CoinGecko")
+
+      result = described_class.call(keys: { other.id.to_s => "cg-key" })
+
+      expect(result.value![:fx]).to eq(:skipped)
+    end
+  end
 end

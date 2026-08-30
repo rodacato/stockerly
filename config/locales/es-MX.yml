@@ -962,6 +962,10 @@ es-MX:
       subtitulo: Este es el resumen de tu configuración.
       sync: El sync arranca en segundo plano
       titulo: Todo listo
+    integraciones:
+      tc_error: Guardamos tus llaves, pero Banxico no respondió el tipo de cambio.
+        Revisa el token en Integraciones.
+      tc_listo: Llaves guardadas. Banxico respondió con %{count} tipo(s) de cambio.
     integrations:
       api_key: API key
       api_key_placeholder: Pega tu API key de %{provider}

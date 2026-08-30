@@ -64,7 +64,7 @@ class SyncDividendsJob < ApplicationJob
       dividend.assign_attributes(
         amount_per_share: data[:amount_per_share],
         pay_date: data[:pay_date],
-        currency: data[:currency] || "USD"
+        currency: data[:currency] || asset.currency
       )
 
       next unless dividend.new_record? || dividend.changed?

@@ -17,8 +17,9 @@ class OnboardingController < AuthenticatedController
 
   def save_integrations
     keys = params[:api_keys]&.to_unsafe_h || {}
-    Administration::UseCases::Onboarding::SaveApiKeys.call(keys: keys)
-    redirect_to onboarding_assets_path
+    result = Administration::UseCases::Onboarding::SaveApiKeys.call(keys: keys)
+
+    redirect_to onboarding_assets_path, notice: fx_notice(result.value![:fx])
   end
 
   def assets
@@ -46,6 +47,16 @@ class OnboardingController < AuthenticatedController
   end
 
   private
+
+  # The Banxico pull is the only key the wizard can exercise on the spot, so its
+  # outcome is worth saying out loud rather than leaving to a later sync.
+  def fx_notice(outcome)
+    case outcome
+    in Integer => stored then t("onboarding.integraciones.tc_listo", count: stored)
+    in :failed then t("onboarding.integraciones.tc_error")
+    else nil
+    end
+  end
 
   def require_not_onboarded
     redirect_to dashboard_path if current_user.onboarded?

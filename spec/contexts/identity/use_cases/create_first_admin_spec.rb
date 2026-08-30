@@ -32,10 +32,12 @@ RSpec.describe Identity::UseCases::CreateFirstAdmin do
         }.to change(MarketIndex, :count).by(6)
       end
 
-      it "bootstraps FX rates" do
+      # Setup runs before any API key exists, so the only rate it could write is
+      # an invented one — and a fabricated rate is worse than a visible gap.
+      it "writes no FX rate at all" do
         expect {
           described_class.call(params: valid_params)
-        }.to change(FxRate, :count).by(3)
+        }.not_to change(FxRate, :count)
       end
 
       it "publishes FirstAdminCreated event" do

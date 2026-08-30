@@ -65,7 +65,7 @@ class SyncStatementsJob < ApplicationJob
         data: report,
         fiscal_year: fiscal_date.year,
         fiscal_quarter: period_type == "quarterly" ? quarter_for(fiscal_date) : nil,
-        currency: report["reported_currency"] || "USD",
+        currency: report["reported_currency"] || asset.currency,
         source: "alpha_vantage",
         fetched_at: Time.current
       )
