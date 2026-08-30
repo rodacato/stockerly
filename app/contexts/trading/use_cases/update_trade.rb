@@ -57,7 +57,7 @@ module Trading
 
         position.recalculate_avg_cost!
 
-        remaining = position.trades.where(side: :buy).sum(:shares) - position.trades.where(side: :sell).sum(:shares)
+        remaining = position.trades.kept.where(side: :buy).sum(:shares) - position.trades.kept.where(side: :sell).sum(:shares)
         if remaining.zero?
           position.update!(status: :closed, shares: remaining, closed_at: Time.current)
         else

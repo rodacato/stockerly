@@ -117,4 +117,19 @@ RSpec.describe Trading::UseCases::UpdateTrade do
       expect(result.failure.first).to eq(:validation)
     end
   end
+
+  describe "when another trade on the position was deleted" do
+    let!(:discarded_trade) do
+      create(:trade, portfolio: portfolio, asset: asset, position: position,
+             side: :buy, shares: 5.0, price_per_share: 100.0, total_amount: 500.0,
+             executed_at: 4.days.ago, discarded_at: 1.hour.ago)
+    end
+
+    it "leaves the discarded trade out of the recalculated shares" do
+      result = described_class.call(user: user, params: { trade_id: trade.id, shares: 12.0 })
+
+      expect(result).to be_success
+      expect(position.reload.shares).to eq(12.0)
+    end
+  end
 end
