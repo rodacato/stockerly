@@ -28,7 +28,7 @@ RSpec.describe MarketIndex, type: :model do
       spx = create(:market_index, symbol: "SPX", name: "S&P 500")
       ndx = create(:market_index, symbol: "NDX", name: "NASDAQ 100")
       ipc = create(:market_index, symbol: "IPC", name: "IPC Mexico")
-      other = create(:market_index, symbol: "NIKKEI", name: "Nikkei 225")
+      create(:market_index, symbol: "NIKKEI", name: "Nikkei 225")
       expect(MarketIndex.major).to contain_exactly(spx, ndx, ipc)
     end
   end

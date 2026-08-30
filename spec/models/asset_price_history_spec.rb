@@ -30,14 +30,14 @@ RSpec.describe AssetPriceHistory, type: :model do
     it ".for_period returns records within date range" do
       jan = create(:asset_price_history, asset: asset, date: "2026-01-15")
       feb = create(:asset_price_history, asset: asset, date: "2026-02-15")
-      mar = create(:asset_price_history, asset: asset, date: "2026-03-15")
+      create(:asset_price_history, asset: asset, date: "2026-03-15")
       result = AssetPriceHistory.for_period(Date.new(2026, 1, 1), Date.new(2026, 2, 28))
       expect(result).to contain_exactly(jan, feb)
     end
 
     it ".recent returns records from last N days" do
       recent = create(:asset_price_history, asset: asset, date: 5.days.ago)
-      old = create(:asset_price_history, asset: asset, date: 60.days.ago)
+      create(:asset_price_history, asset: asset, date: 60.days.ago)
       expect(AssetPriceHistory.recent(30)).to contain_exactly(recent)
     end
   end

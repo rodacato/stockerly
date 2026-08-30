@@ -31,7 +31,7 @@ RSpec.describe BackfillMissingHistoriesJob, type: :job do
     end
 
     it "staggers jobs with #{described_class::STAGGER_SECONDS}-second intervals" do
-      sparse2 = create(:asset, symbol: "SPARSE2", asset_type: :stock, sync_status: :active)
+      create(:asset, symbol: "SPARSE2", asset_type: :stock, sync_status: :active)
 
       expect(BackfillPriceHistoryJob).to receive(:set).with(wait: 0.seconds).ordered.and_call_original
       expect(BackfillPriceHistoryJob).to receive(:set).with(wait: 5.seconds).ordered.and_call_original

@@ -2,7 +2,7 @@ module MarketData
   module Handlers
     class LogFundamentalsUpdate
       def self.call(event)
-        asset_id = event.is_a?(Hash) ? event[:asset_id] : event.asset_id
+        event.is_a?(Hash) ? event[:asset_id] : event.asset_id
         symbol   = event.is_a?(Hash) ? event[:symbol] : event.symbol
         source   = event.is_a?(Hash) ? event[:source] : event.source
 

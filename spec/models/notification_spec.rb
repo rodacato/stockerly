@@ -25,7 +25,7 @@ RSpec.describe Notification, type: :model do
 
     it ".unread returns only unread notifications" do
       unread = create(:notification, user: user, read: false)
-      read_notif = create(:notification, user: user, read: true)
+      create(:notification, user: user, read: true)
       expect(Notification.unread).to contain_exactly(unread)
     end
 

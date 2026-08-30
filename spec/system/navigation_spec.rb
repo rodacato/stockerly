@@ -31,7 +31,7 @@ RSpec.describe "Navigation", type: :system do
 
   describe "Auth flow" do
     it "logs in and accesses dashboard" do
-      user = create(:user, email: "login@test.com", password: "password123", onboarded_at: Time.current)
+      create(:user, email: "login@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
       fill_in "Correo electrónico", with: "login@test.com"
@@ -43,7 +43,7 @@ RSpec.describe "Navigation", type: :system do
     end
 
     it "logs out and lands on login (via root redirect)" do
-      user = create(:user, email: "logout@test.com", password: "password123", onboarded_at: Time.current)
+      create(:user, email: "logout@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
       fill_in "Correo electrónico", with: "logout@test.com"
@@ -112,7 +112,7 @@ RSpec.describe "Navigation", type: :system do
     end
 
     it "redirects non-admin users from admin zone" do
-      user = create(:user, email: "nonadmin@test.com", password: "password123", onboarded_at: Time.current)
+      create(:user, email: "nonadmin@test.com", password: "password123", onboarded_at: Time.current)
 
       visit login_path
       fill_in "Correo electrónico", with: "nonadmin@test.com"

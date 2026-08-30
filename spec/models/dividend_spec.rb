@@ -31,7 +31,7 @@ RSpec.describe Dividend, type: :model do
 
   describe "scopes" do
     it ".upcoming returns future dividends ordered by date" do
-      past = create(:dividend, ex_date: 1.month.ago)
+      create(:dividend, ex_date: 1.month.ago)
       future = create(:dividend, ex_date: 1.month.from_now)
       expect(Dividend.upcoming).to contain_exactly(future)
     end

@@ -207,7 +207,7 @@ RSpec.describe Asset, type: :model do
     end
 
     it "returns the most recent trend score" do
-      old = create(:trend_score, asset: asset, calculated_at: 2.days.ago)
+      create(:trend_score, asset: asset, calculated_at: 2.days.ago)
       recent = create(:trend_score, asset: asset, calculated_at: 1.hour.ago)
       expect(asset.latest_trend_score).to eq(recent)
     end

@@ -20,7 +20,7 @@ RSpec.describe PruneTrendScoresJob, type: :job do
     score_at(cutoff + 1.day)
     score_at(1.day.ago)
 
-    expect { described_class.perform_now }.not_to change { TrendScore.count }
+    expect { described_class.perform_now }.not_to(change { TrendScore.count })
   end
 
   # AlertEvaluator reads `latest_trend_score&.score || 0`, so pruning an asset

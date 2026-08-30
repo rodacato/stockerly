@@ -2,7 +2,7 @@ module Administration
   module Handlers
     class LogIntegrationConnected
       def self.call(event)
-        integration_id = event.is_a?(Hash) ? event[:integration_id] : event.integration_id
+        event.is_a?(Hash) ? event[:integration_id] : event.integration_id
         provider_name  = event.is_a?(Hash) ? event[:provider_name] : event.provider_name
 
         SystemLog.create!(

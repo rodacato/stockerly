@@ -1,8 +1,31 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+# Omakase is formatting only — 45 of RuboCop's 791 cops. These two departments
+# catch defects rather than opine on style, so they run alongside it.
+Lint:
+  Enabled: true
+Security:
+  Enabled: true
+
+# The gateway base classes define no initialize, so super would only reach
+# Object's. The adapters are not skipping parent state; there is none.
+Lint/MissingSuper:
+  Enabled: false
+
+Lint/UnusedMethodArgument:
+  Exclude:
+    # Implements Rails.error's subscriber signature; the keywords it does not
+    # read cannot be renamed without breaking the contract.
+    - app/contexts/administration/handlers/record_unhandled_error.rb
+
+Lint/UnusedBlockArgument:
+  Exclude:
+    # A double impersonating a signature has to keep the keyword names it
+    # answers to, unused or not.
+    - spec/**/*
+
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    # Fixture data scoped to the example group that reads it.
+    - spec/**/*

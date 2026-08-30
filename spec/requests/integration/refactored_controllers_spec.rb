@@ -9,7 +9,7 @@ RSpec.describe "Refactored controller flows", type: :request do
 
   describe "Alerts dashboard via Use Case" do
     it "loads rules, events, and preferences from database" do
-      rule = create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200.0)
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200.0)
       create(:alert_preference, user: user, email_digest: true)
 
       get alerts_path

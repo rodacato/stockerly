@@ -129,6 +129,6 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
       rescue ActiveRecord::RecordInvalid
         # Expected — the transaction should re-raise.
       end
-    }.not_to change { SiteConfig.maintenance_mode? }
+    }.not_to(change { SiteConfig.maintenance_mode? })
   end
 end

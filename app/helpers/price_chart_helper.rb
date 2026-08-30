@@ -58,7 +58,7 @@ module PriceChartHelper
 
   private
 
-  def build_volume_bars(price_histories, width, height, step_x)
+  def build_volume_bars(price_histories, _width, height, step_x)
     volumes = price_histories.map { |ph| ph.respond_to?(:volume) ? ph.volume.to_i : 0 }
     max_volume = volumes.max || 0
     return [] if max_volume.zero?

@@ -103,8 +103,8 @@ RSpec.describe Notifications::UseCases::ListRecent do
         expect {
           data = described_class.call(user: user)
           # Force the inbox-row code path the helper walks per row.
-          data[:notifications].each { |n| n.notifiable&.is_a?(EarningsEvent) ? n.notifiable.asset&.symbol : nil }
-          data[:notifications].each { |n| n.notifiable&.is_a?(Position) ? n.notifiable.asset&.symbol : nil }
+          data[:notifications].each { |n| n.notifiable.is_a?(EarningsEvent) ? n.notifiable.asset&.symbol : nil }
+          data[:notifications].each { |n| n.notifiable.is_a?(Position) ? n.notifiable.asset&.symbol : nil }
         }.to make_queries(at_most: 15)
       end
     end

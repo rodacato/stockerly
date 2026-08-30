@@ -9,7 +9,7 @@ RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
     end
 
     it "creates integration and returns Success" do
-      result = described_class.call(admin: admin, params: valid_params)
+      result = described_class.call(params: valid_params)
 
       expect(result).to be_success
       integration = result.value!
@@ -21,11 +21,11 @@ RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
     it "publishes IntegrationConnected event" do
       expect(EventBus).to receive(:publish).with(an_instance_of(Administration::Events::IntegrationConnected))
 
-      described_class.call(admin: admin, params: valid_params)
+      described_class.call(params: valid_params)
     end
 
     it "creates a default pool key when api_key_encrypted is provided" do
-      result = described_class.call(admin: admin, params: valid_params.merge(api_key_encrypted: "sk-123"))
+      result = described_class.call(params: valid_params.merge(api_key_encrypted: "sk-123"))
 
       expect(result).to be_success
       integration = result.value!
@@ -35,7 +35,7 @@ RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
     end
 
     it "returns Failure for missing provider_name" do
-      result = described_class.call(admin: admin, params: { provider_type: "Stocks & Forex" })
+      result = described_class.call(params: { provider_type: "Stocks & Forex" })
 
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:validation)
@@ -44,7 +44,7 @@ RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
     it "returns Failure for duplicate provider_name" do
       create(:integration, provider_name: "AlphaVantage")
 
-      result = described_class.call(admin: admin, params: valid_params)
+      result = described_class.call(params: valid_params)
 
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:validation)

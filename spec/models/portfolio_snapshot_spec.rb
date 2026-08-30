@@ -32,7 +32,7 @@ RSpec.describe PortfolioSnapshot, type: :model do
   describe "scopes" do
     it ".recent orders by date desc" do
       portfolio = create(:portfolio)
-      old = create(:portfolio_snapshot, portfolio: portfolio, date: 5.days.ago)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 5.days.ago)
       recent = create(:portfolio_snapshot, portfolio: portfolio, date: Date.current)
       expect(PortfolioSnapshot.recent.first).to eq(recent)
     end

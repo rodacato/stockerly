@@ -2,7 +2,7 @@ module Administration
   module UseCases
     module Integrations
       class DeleteProvider < ApplicationUseCase
-        def call(admin:, params:)
+        def call(params:)
           attrs       = yield validate(Administration::Contracts::Integrations::DeleteContract, params)
           integration = yield find(attrs[:id])
           provider    = integration.provider_name

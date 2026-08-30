@@ -99,7 +99,7 @@ RSpec.describe "Registrar movimiento — proyección del costo promedio", type: 
         fill_in "trade[shares]", with: "10"
         fill_in "trade[price_per_share]", with: "100"
         expect(page).to have_css("[data-trade-sheet-target='projection']", visible: :visible)
-      }.not_to change { [ Trade.count, Position.last.avg_cost, Position.last.shares ] }
+      }.not_to(change { [ Trade.count, Position.last.avg_cost, Position.last.shares ] })
     end
   end
 

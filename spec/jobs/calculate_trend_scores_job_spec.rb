@@ -17,7 +17,7 @@ RSpec.describe CalculateTrendScoresJob, type: :job do
       end
 
       it "does not create TrendScore for disabled assets" do
-        expect { described_class.perform_now }.not_to change { disabled_asset.trend_scores.count }
+        expect { described_class.perform_now }.not_to(change { disabled_asset.trend_scores.count })
       end
 
       it "logs sync success with count" do

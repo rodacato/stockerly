@@ -42,7 +42,7 @@ RSpec.describe TrendScore, type: :model do
   describe "scopes" do
     it ".latest orders by calculated_at desc" do
       asset = create(:asset)
-      old = create(:trend_score, asset: asset, calculated_at: 2.days.ago)
+      create(:trend_score, asset: asset, calculated_at: 2.days.ago)
       recent = create(:trend_score, asset: asset, calculated_at: 1.hour.ago)
       expect(TrendScore.latest.first).to eq(recent)
     end
