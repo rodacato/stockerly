@@ -77,6 +77,42 @@ RSpec.describe MarketData::Queries::PriceSeries do
     it "returns zero rather than nil when there is nothing to average" do
       expect(described_class.for(asset).average_volume(30)).to eq(0)
     end
+
+    # Today's volume is a running total, so averaging it against whole days
+    # drags the mean down by however early in the session the read happens.
+    it "leaves today out, because its volume is still accumulating" do
+      bar(1, close: 100, volume: 1_000)
+      bar(0, close: 100, volume: 5)
+
+      expect(described_class.for(asset).average_volume(30)).to eq(1_000)
+    end
+  end
+
+  describe ".closed_volumes" do
+    it "drops today's running total and keeps the closed days" do
+      rows = [ bar(2, close: 100, volume: 900), bar(1, close: 100, volume: 1_100), bar(0, close: 100, volume: 7) ]
+
+      expect(described_class.closed_volumes(rows)).to eq([ 900, 1_100 ])
+    end
+
+    it "is empty when nothing has closed yet" do
+      expect(described_class.closed_volumes([ bar(0, close: 100, volume: 7) ])).to be_empty
+    end
+  end
+
+  describe "#closed" do
+    it "stops at yesterday" do
+      bar(1, close: 102)
+      bar(0, close: 999)
+
+      expect(described_class.for(asset).closed.map(&:close)).to eq([ 102.to_d ])
+    end
+
+    it "is empty when the only bar is today's" do
+      bar(0, close: 999)
+
+      expect(described_class.for(asset).closed).to be_empty
+    end
   end
 
   describe "#closes_by_date" do
