@@ -85,6 +85,10 @@ production:
     class: SyncAllFundamentalsJob
     schedule: "0 7 * * 2,5"
 
+  sync_crypto_fundamentals:
+    class: SyncCryptoFundamentalsJob
+    schedule: "30 7 * * *"
+
   sync_fundamentals_statements:
     class: SyncAllStatementsJob
     schedule: "0 8 * * 0"

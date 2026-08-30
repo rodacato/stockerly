@@ -9,12 +9,14 @@ class SyncFundamentalJob < ApplicationJob
   def perform(asset_id)
     asset = Asset.find_by(id: asset_id)
     return unless asset&.active?
+    # Crypto is not excluded, it is served elsewhere: SyncCryptoFundamentalsJob
+    # fetches every coin in one CoinGecko call, off this job's Alpha Vantage budget.
     return unless asset.asset_type_stock? || asset.asset_type_etf?
 
     result = fundamentals_chain.fetch_overview(asset.symbol)
 
     if result.success?
-      persist(asset, result.value!)
+      store(asset, result.value!)
     else
       log_sync_failure("Fundamentals: #{asset.symbol}", result.failure[1],
         severity: result.failure[0] == :rate_limited ? :warning : :error)
@@ -23,27 +25,9 @@ class SyncFundamentalJob < ApplicationJob
 
   private
 
-  def persist(asset, data)
-    source = data.delete(:data_source) || "unknown"
-
-    fundamental = AssetFundamental.find_or_initialize_by(
-      asset: asset, period_label: "OVERVIEW"
-    )
-    fundamental.update!(
-      metrics: data,
-      source: source,
-      calculated_at: Time.current
-    )
-
-    asset.update!(fundamentals_synced_at: Time.current)
-
+  def store(asset, data)
+    MarketData::UseCases::StoreFundamentals.call(asset: asset, metrics: data)
     log_sync_success("Fundamentals: #{asset.symbol}")
-
-    EventBus.publish(MarketData::Events::AssetFundamentalsUpdated.new(
-      asset_id: asset.id,
-      symbol: asset.symbol,
-      source: source
-    ))
   end
 
   # FMP was the fallback here, and its /api/v3 is gated the same way its
