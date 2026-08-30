@@ -46,4 +46,26 @@ RSpec.describe SyncSplitsJob, type: :job do
 
     expect { described_class.perform_now }.not_to change(StockSplit, :count)
   end
+  # The whole run used to report success even when every gateway in the chain
+  # had failed, which is the one thing Registros must never say.
+  describe "when the provider cannot be reached" do
+    before do
+      allow(gateway).to receive(:fetch_splits)
+        .and_return(Dry::Monads::Failure([ :gateway_error, "Alpaca 503" ]))
+    end
+
+    it "logs a failure naming the assets it could not check" do
+      described_class.perform_now
+
+      log = SystemLog.where(task_name: "Splits Sync").last
+      expect(log).to be_error
+      expect(log.error_message).to include(asset.symbol)
+    end
+
+    it "does not report success" do
+      described_class.perform_now
+
+      expect(SystemLog.where(task_name: "Splits Sync", severity: :success)).to be_empty
+    end
+  end
 end

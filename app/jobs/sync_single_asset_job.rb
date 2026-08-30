@@ -8,7 +8,6 @@ class SyncSingleAssetJob < ApplicationJob
 
   queue_as :default
 
-  retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
 
   def perform(asset_id)
     asset = Asset.find_by(id: asset_id)

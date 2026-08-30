@@ -8,7 +8,6 @@ class SyncBulkBmvJob < ApplicationJob
 
   queue_as :default
 
-  retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
 
   # The one failure a reader can act on: the provider does not know this name.
   UNNAMED = "sin_fuente".freeze
@@ -40,7 +39,7 @@ class SyncBulkBmvJob < ApplicationJob
     missing = assets.keys - quotes.map { |quote| quote[:symbol] }
 
     if missing.empty?
-      log_sync_success("Bulk BMV Sync: #{quotes.size} assets")
+      log_sync_success("Bulk BMV Sync", message: "#{quotes.size} assets")
       return
     end
 

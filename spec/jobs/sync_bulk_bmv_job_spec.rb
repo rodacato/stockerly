@@ -44,7 +44,9 @@ RSpec.describe SyncBulkBmvJob, type: :job do
 
         log = SystemLog.last
         expect(log.severity).to eq("success")
-        expect(log.task_name).to include("Bulk BMV Sync")
+        expect(log.task_name).to eq("Bulk BMV Sync")
+        # The monitor matches exactly; a suffix here is a blind spot there.
+        expect(CheckSyncHealthJob::CRITICAL_SYNCS).to include(log.task_name)
       end
     end
 

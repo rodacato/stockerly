@@ -9,7 +9,6 @@ class SyncBulkStocksJob < ApplicationJob
 
   TASK_NAME = "Bulk Stock Sync"
 
-  retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
 
   def perform(asset_ids)
     assets = Asset.where(id: asset_ids, sync_status: :active).index_by(&:symbol)

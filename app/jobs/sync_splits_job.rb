@@ -9,10 +9,15 @@ class SyncSplitsJob < ApplicationJob
 
   def perform
     detected = 0
+    unreachable = []
+    assets = assets_with_open_positions.to_a
 
-    assets_with_open_positions.each do |asset|
+    assets.each do |asset|
       result = chain_for(asset).fetch_splits(asset.gateway_symbols)
-      next if result.failure?
+      if result.failure?
+        unreachable << asset.symbol
+        next
+      end
 
       result.value!.each do |data|
         split = asset.stock_splits.find_or_initialize_by(ex_date: data[:date])
@@ -35,7 +40,7 @@ class SyncSplitsJob < ApplicationJob
       end
     end
 
-    log_sync_success("Splits Sync", message: "#{detected} new splits detected")
+    report("Splits Sync", "#{detected} new splits detected", unreachable: unreachable, total: assets.size)
   end
 
   private

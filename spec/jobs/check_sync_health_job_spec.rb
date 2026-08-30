@@ -18,6 +18,14 @@ RSpec.describe CheckSyncHealthJob, type: :job do
     task_name ? scope.where(task_name: task_name) : scope
   end
 
+  # Absence now alerts, so a spec about one sync has to say the others are fine
+  # or it measures every unmonitored name at once.
+  def silence_other_syncs(except:)
+    (described_class::CRITICAL_SYNCS - Array(except)).each do |name|
+      make_log(name, severity: :success, at: 1.hour.ago)
+    end
+  end
+
   def make_log(task_name, severity:, at: Time.current, message: nil)
     SystemLog.create!(
       task_name: task_name,
@@ -28,10 +36,9 @@ RSpec.describe CheckSyncHealthJob, type: :job do
   end
 
   describe "constants" do
-    it "monitors the 8 critical sync task names exactly as logged by sync jobs" do
+    it "monitors the 7 critical sync task names exactly as logged by sync jobs" do
       expect(described_class::CRITICAL_SYNCS).to contain_exactly(
         "FX Rate Refresh",
-        "Bulk Stock Sync",
         "Bulk BMV Sync",
         "Bulk Crypto Sync",
         "News Sync",
@@ -91,8 +98,9 @@ RSpec.describe CheckSyncHealthJob, type: :job do
 
     context "when an error is followed by a more recent success (cured)" do
       before do
-        make_log("Bulk Stock Sync", severity: :error,   at: 10.hours.ago, message: "AlphaVantage 500")
-        make_log("Bulk Stock Sync", severity: :success, at: 1.hour.ago)
+        silence_other_syncs(except: "Bulk BMV Sync")
+        make_log("Bulk BMV Sync", severity: :error,   at: 10.hours.ago, message: "AlphaVantage 500")
+        make_log("Bulk BMV Sync", severity: :success, at: 1.hour.ago)
       end
 
       it "raises no alert (recent success cures the prior error)" do
@@ -103,12 +111,17 @@ RSpec.describe CheckSyncHealthJob, type: :job do
 
     context "when errors are older than the 25h lookback window" do
       before do
+        silence_other_syncs(except: "Earnings Sync")
         make_log("Earnings Sync", severity: :error, at: 26.hours.ago, message: "stale")
       end
 
-      it "ignores the old failure (out of window)" do
+      # Out of window means unobserved, not healthy — the alert now says so, and
+      # says it without an error to point at.
+      it "alerts on the absence rather than on the stale failure" do
         described_class.new.perform
-        expect(health_alerts).to be_empty
+
+        entry = health_alerts("Earnings Sync").sole
+        expect(entry.error_message).to include("Sin registros en la ventana")
       end
     end
 
@@ -151,9 +164,10 @@ RSpec.describe CheckSyncHealthJob, type: :job do
     end
 
     context "when there are no SystemLog entries at all (cold start)" do
-      it "raises no alert (silent ≠ failing)" do
+      it "alerts on every monitored sync, because silence is unobserved, not healthy" do
         described_class.new.perform
-        expect(health_alerts).to be_empty
+
+        expect(health_alerts.pluck(:task_name)).to match_array(described_class::CRITICAL_SYNCS)
       end
     end
   end
@@ -161,6 +175,7 @@ RSpec.describe CheckSyncHealthJob, type: :job do
     let!(:owner) { create(:user) }
 
     before do
+      silence_other_syncs(except: "Bulk BMV Sync")
       make_log("Bulk BMV Sync", severity: :error, at: 2.hours.ago, message: "DataBursatil: rate_limited (HTTP 429)")
     end
 
