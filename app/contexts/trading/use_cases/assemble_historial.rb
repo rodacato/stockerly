@@ -20,7 +20,7 @@ module Trading
           currency: currency,
           trades: portfolio.trades.kept.recent.includes(:asset, :position).limit(TRADE_LIMIT),
           dividends: portfolio.dividend_payments.recent.includes(dividend: :asset),
-          closed: closed_with_gain(portfolio, currency)
+          closed: closed_with_gain(Domain::FxDegradation.new, portfolio, currency)
         })
       end
 
@@ -29,16 +29,11 @@ module Trading
       # The gain is computed here rather than in the view so a missing FX rate
       # surfaces as one failure for the section, not as an exception halfway
       # through rendering a list.
-      def closed_with_gain(portfolio, currency)
+      def closed_with_gain(fx, portfolio, currency)
         portfolio.closed_positions.includes(:asset, :trades).map do |position|
-          { position: position, gain: safe_gain(position, currency) }
+          gain = fx.figure { Domain::RealizedGain.new(position, currency: currency).amount }
+          { position: position, gain: gain }
         end
-      end
-
-      def safe_gain(position, currency)
-        Domain::RealizedGain.new(position, currency: currency).amount
-      rescue Domain::MissingFxRate
-        nil
       end
     end
   end
