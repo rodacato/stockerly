@@ -66,4 +66,26 @@ RSpec.describe AlertRule, type: :model do
       expect(event.reload.alert_rule_id).to be_nil
     end
   end
+  describe "#currency" do
+    it "reads MXN off a CETE, which carries no .MX suffix" do
+      create(:asset, symbol: "CETE28D", asset_type: :fixed_income, currency: "MXN")
+      rule = build(:alert_rule, asset_symbol: "CETE28D")
+
+      expect(rule.currency).to eq("MXN")
+    end
+
+    it "reads the asset rather than the shape of its symbol" do
+      create(:asset, symbol: "WALMEX.MX", currency: "MXN")
+      create(:asset, symbol: "AAPL", currency: "USD")
+
+      expect(build(:alert_rule, asset_symbol: "WALMEX.MX").currency).to eq("MXN")
+      expect(build(:alert_rule, asset_symbol: "AAPL").currency).to eq("USD")
+    end
+
+    # A rule can outlive the asset it was written against.
+    it "falls back to the suffix rule for a symbol the catalogue no longer has" do
+      expect(build(:alert_rule, asset_symbol: "GONE.MX").currency).to eq("MXN")
+      expect(build(:alert_rule, asset_symbol: "GONE").currency).to eq("USD")
+    end
+  end
 end
