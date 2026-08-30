@@ -43,10 +43,12 @@ bin/quality app lib     # whole-repo baseline (noise tuned in .reek.yml)
 # config/ci.rb declares NO rspec step — run the suite separately.
 bin/ci
 
-# Database
+# Database — names derive from the checkout directory, so each git worktree has its own
 bin/rails db:migrate
 bin/rails db:seed
 bin/rails db:reset      # drop + create + migrate + seed
+bin/rails db:worktrees        # every database group on this server + the worktree it belongs to
+bin/rails db:worktrees:prune  # drop the groups whose worktree is gone (FORCE=1 skips the prompt)
 
 # Background jobs
 bin/jobs                # starts Solid Queue worker
@@ -228,6 +230,7 @@ spec/
 ├── jobs/             # Background job behavior
 ├── system/           # Capybara end-to-end browser tests
 ├── integration/      # Multi-layer flow tests
+├── lib/              # lib/ code — Stockerly::Checkout, WorktreeDatabases
 └── factories/        # FactoryBot definitions
 ```
 

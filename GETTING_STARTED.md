@@ -55,6 +55,10 @@ Solid Queue, and Solid Cable (Rails 8 runs cache, jobs, and Action Cable on Post
 Redis). `bin/setup` (via `bin/rails db:prepare`) creates and migrates all four; you don't
 manage them by hand.
 
+Their names come from the directory the checkout sits in, so a folder named `stockerly` gets
+`stockerly_development` and a second git worktree gets its own set instead of sharing this one.
+Set `DATABASE_PREFIX` if you need a fixed name regardless of the directory.
+
 ## Background jobs
 
 `bin/dev` starts only the web server and the Tailwind watcher (see `Procfile.dev`). To

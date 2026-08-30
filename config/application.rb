@@ -1,5 +1,6 @@
 require_relative "boot"
 require_relative "../lib/stockerly/version"
+require_relative "../lib/stockerly/checkout"
 
 require "rails"
 # Pick the frameworks you want:
