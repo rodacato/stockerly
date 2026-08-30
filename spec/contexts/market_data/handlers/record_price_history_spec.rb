@@ -161,4 +161,44 @@ RSpec.describe MarketData::Handlers::RecordPriceHistory do
       end
     end
   end
+
+  describe "volume" do
+    let(:asset) { create(:asset, symbol: "AAPL") }
+
+    def price_event(volume: nil)
+      MarketData::Events::AssetPriceUpdated.new(
+        asset_id: asset.id, symbol: "AAPL", old_price: "185.0", new_price: "189.43", volume: volume
+      )
+    end
+
+    def todays_row = AssetPriceHistory.find_by(asset_id: asset.id, date: Date.current)
+
+    it "records the day's volume on a new row" do
+      described_class.call(price_event(volume: "1200000"))
+
+      expect(todays_row.volume).to eq(1_200_000)
+    end
+
+    it "takes the latest total, because the provider sends a running one" do
+      create(:asset_price_history, asset: asset, date: Date.current, volume: 1_200_000)
+
+      described_class.call(price_event(volume: "1850000"))
+
+      expect(todays_row.volume).to eq(1_850_000)
+    end
+
+    it "keeps a known volume when the event carries none" do
+      create(:asset_price_history, asset: asset, date: Date.current, volume: 1_200_000)
+
+      described_class.call(price_event)
+
+      expect(todays_row.volume).to eq(1_200_000)
+    end
+
+    it "leaves volume unknown rather than reading a missing one as no trading" do
+      described_class.call(price_event)
+
+      expect(todays_row.volume).to be_nil
+    end
+  end
 end
