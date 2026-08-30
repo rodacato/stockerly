@@ -12,7 +12,7 @@ module Trading
         @splits    = {}
       end
 
-      def invested_on(date)
+      def market_value_on(date)
         shares_on(date).sum { |asset, shares| value_of(asset, shares, date) }
       end
 

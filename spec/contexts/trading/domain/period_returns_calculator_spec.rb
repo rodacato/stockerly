@@ -24,9 +24,9 @@ RSpec.describe Trading::Domain::PeriodReturnsCalculator do
       let!(:position) { create(:position, portfolio: portfolio, asset: asset, shares: 10.0, avg_cost: 150.0, status: :open) }
 
       before do
-        create(:portfolio_snapshot, portfolio: portfolio, date: 2.months.ago.to_date, total_value: 1800.0, invested_value: 1800.0)
-        create(:portfolio_snapshot, portfolio: portfolio, date: 2.weeks.ago.to_date, total_value: 1900.0, invested_value: 1900.0)
-        create(:portfolio_snapshot, portfolio: portfolio, date: 2.days.ago.to_date, total_value: 1950.0, invested_value: 1950.0)
+        create(:portfolio_snapshot, portfolio: portfolio, date: 2.months.ago.to_date, total_value: 1800.0)
+        create(:portfolio_snapshot, portfolio: portfolio, date: 2.weeks.ago.to_date, total_value: 1900.0)
+        create(:portfolio_snapshot, portfolio: portfolio, date: 2.days.ago.to_date, total_value: 1950.0)
       end
 
       it "computes 1M return using the nearest snapshot" do
@@ -58,10 +58,10 @@ RSpec.describe Trading::Domain::PeriodReturnsCalculator do
 
   describe "#chart_data" do
     before do
-      create(:portfolio_snapshot, portfolio: portfolio, date: 3.weeks.ago.to_date, total_value: 1800.0, invested_value: 1800.0)
-      create(:portfolio_snapshot, portfolio: portfolio, date: 2.weeks.ago.to_date, total_value: 1850.0, invested_value: 1850.0)
-      create(:portfolio_snapshot, portfolio: portfolio, date: 1.week.ago.to_date, total_value: 1900.0, invested_value: 1900.0)
-      create(:portfolio_snapshot, portfolio: portfolio, date: 2.months.ago.to_date, total_value: 1700.0, invested_value: 1700.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 3.weeks.ago.to_date, total_value: 1800.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 2.weeks.ago.to_date, total_value: 1850.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 1.week.ago.to_date, total_value: 1900.0)
+      create(:portfolio_snapshot, portfolio: portfolio, date: 2.months.ago.to_date, total_value: 1700.0)
     end
 
     it "returns data points for the given period" do

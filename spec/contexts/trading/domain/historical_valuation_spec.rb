@@ -45,14 +45,14 @@ RSpec.describe Trading::Domain::HistoricalValuation do
     end
   end
 
-  describe "#invested_on" do
+  describe "#market_value_on" do
     it "values the shares held at that date, at that date's close" do
       buy(100, 50, on: 10.days.ago)
       close(50, on: 10.days.ago.to_date)
       close(80, on: Date.current)
 
-      expect(valuation.invested_on(10.days.ago.to_date)).to eq(5_000)
-      expect(valuation.invested_on(Date.current)).to eq(8_000)
+      expect(valuation.market_value_on(10.days.ago.to_date)).to eq(5_000)
+      expect(valuation.market_value_on(Date.current)).to eq(8_000)
     end
 
     # Markets are shut on weekends; an exact-date lookup would value them at zero.
@@ -60,14 +60,14 @@ RSpec.describe Trading::Domain::HistoricalValuation do
       buy(100, 50, on: 10.days.ago)
       close(50, on: 10.days.ago.to_date)
 
-      expect(valuation.invested_on(5.days.ago.to_date)).to eq(5_000)
+      expect(valuation.market_value_on(5.days.ago.to_date)).to eq(5_000)
     end
 
     it "values at zero when no close exists on or before the date" do
       buy(100, 50, on: 10.days.ago)
       close(50, on: Date.current)
 
-      expect(valuation.invested_on(8.days.ago.to_date)).to eq(0)
+      expect(valuation.market_value_on(8.days.ago.to_date)).to eq(0)
     end
 
     # The reason AC4 exists. SplitAdjuster rewrites trades into post-split terms
@@ -78,7 +78,7 @@ RSpec.describe Trading::Domain::HistoricalValuation do
       close(100, on: 10.days.ago.to_date)           # the close of that day, in its own terms
       create(:stock_split, asset: asset, ex_date: 5.days.ago.to_date, ratio_from: 1, ratio_to: 2)
 
-      expect(valuation.invested_on(10.days.ago.to_date)).to eq(10_000)
+      expect(valuation.market_value_on(10.days.ago.to_date)).to eq(10_000)
     end
 
     it "composes two splits by multiplication, not addition" do
@@ -87,7 +87,7 @@ RSpec.describe Trading::Domain::HistoricalValuation do
       create(:stock_split, asset: asset, ex_date: 5.days.ago.to_date, ratio_from: 1, ratio_to: 2)
       create(:stock_split, asset: asset, ex_date: 3.days.ago.to_date, ratio_from: 1, ratio_to: 2)
 
-      expect(valuation.invested_on(10.days.ago.to_date)).to eq(10_000)
+      expect(valuation.market_value_on(10.days.ago.to_date)).to eq(10_000)
     end
 
     it "leaves a close after the split alone" do
@@ -95,7 +95,7 @@ RSpec.describe Trading::Domain::HistoricalValuation do
       create(:stock_split, asset: asset, ex_date: 5.days.ago.to_date, ratio_from: 1, ratio_to: 2)
       close(50, on: 2.days.ago.to_date)
 
-      expect(valuation.invested_on(2.days.ago.to_date)).to eq(10_000)
+      expect(valuation.market_value_on(2.days.ago.to_date)).to eq(10_000)
     end
 
     it "converts a foreign holding at the rate of that date" do
@@ -104,7 +104,7 @@ RSpec.describe Trading::Domain::HistoricalValuation do
       close(100, on: 10.days.ago.to_date, which: usd)
       FxRateHistory.record(base: "USD", quote: "MXN", date: 10.days.ago.to_date, rate: 18.0)
 
-      expect(valuation.invested_on(10.days.ago.to_date)).to eq(18_000)
+      expect(valuation.market_value_on(10.days.ago.to_date)).to eq(18_000)
     end
   end
 end

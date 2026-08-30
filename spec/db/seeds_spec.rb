@@ -1,4 +1,6 @@
 require "rails_helper"
+# Loaded explicitly: run on its own, nothing else has pulled Rake in yet.
+require "rake"
 
 # db/seeds.rb has broken twice on the same shape: a column is dropped, the seed
 # keeps assigning it, and nothing notices because CI never runs db:seed and the

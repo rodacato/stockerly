@@ -18,7 +18,7 @@ RSpec.describe "Recording a trade I made days ago", type: :request do
     asset = create(:asset, :stock, symbol: "WALMEX", currency: "MXN", current_price: 10)
     create(:asset_price_history, asset: asset, date: 5.days.ago.to_date, close: 10)
     portfolio.snapshots.create!(date: 5.days.ago.to_date, currency: "MXN",
-                                total_value: 0, invested_value: 0)
+                                total_value: 0)
 
     perform_enqueued_jobs do
       post trades_path, params: {
@@ -27,7 +27,7 @@ RSpec.describe "Recording a trade I made days ago", type: :request do
       }
     end
 
-    expect(portfolio.snapshots.find_by(date: 5.days.ago.to_date).invested_value).to eq(1_000)
+    expect(portfolio.snapshots.find_by(date: 5.days.ago.to_date).total_value).to eq(1_000)
   end
 
   it "refuses a trade dated in the future, in es-MX" do

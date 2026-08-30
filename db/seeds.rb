@@ -290,8 +290,7 @@ end
         portfolio: portfolio,
         date: days_ago.days.ago.to_date,
         currency: alex.preferred_currency,
-        total_value: portfolio.total_value + rand(-500.0..500.0).round(2),
-        invested_value: (portfolio.total_value + rand(-300.0..300.0)).round(2)
+        total_value: portfolio.total_value + rand(-500.0..500.0).round(2)
       )
     end
   end

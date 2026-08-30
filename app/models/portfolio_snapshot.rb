@@ -3,7 +3,6 @@ class PortfolioSnapshot < ApplicationRecord
 
   validates :date,           presence: true, uniqueness: { scope: :portfolio_id }
   validates :total_value,    presence: true
-  validates :invested_value, presence: true
   validates :currency,       presence: true
 
   scope :recent, -> { order(date: :desc) }

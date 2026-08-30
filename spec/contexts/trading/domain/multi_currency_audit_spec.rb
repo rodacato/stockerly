@@ -111,8 +111,8 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
   describe "Portfolio aggregate methods (must be currency-aware)" do
     subject(:p) { portfolio.reload }
 
-    it "Portfolio#invested_value(currency: 'MXN') = 20 × 155 × 17.50 = 54,250 MXN" do
-      expect(p.invested_value(currency: "MXN").to_f).to be_within(0.01).of(54_250.0)
+    it "Portfolio#total_value(currency: 'MXN') = 20 × 155 × 17.50 = 54,250 MXN" do
+      expect(p.total_value(currency: "MXN").to_f).to be_within(0.01).of(54_250.0)
     end
 
     it "Portfolio#total_value(currency: 'MXN') = invested = 54,250 MXN" do
@@ -168,7 +168,6 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
              portfolio: portfolio,
              date: Date.yesterday,
              total_value: 52_500.0,
-             invested_value: 52_500.0,
              currency: "MXN")
     end
 
@@ -181,9 +180,9 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
 
     it "PeriodReturnsCalculator with same-currency historical snapshots" do
       create(:portfolio_snapshot, portfolio: portfolio, date: 7.days.ago,
-             total_value: 50_000.0, invested_value: 50_000.0, currency: "MXN")
+             total_value: 50_000.0, currency: "MXN")
       create(:portfolio_snapshot, portfolio: portfolio, date: 30.days.ago,
-             total_value: 49_000.0, invested_value: 49_000.0, currency: "MXN")
+             total_value: 49_000.0, currency: "MXN")
 
       result = Trading::Domain::PeriodReturnsCalculator.new(portfolio).calculate
       # 7-day: 54,250 - 50,000 = 4,250 / 50,000 = 8.5%
@@ -211,7 +210,6 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
              portfolio: portfolio,
              date: Date.yesterday,
              total_value: 3_000.0,       # USD value from before currency toggle
-             invested_value: 3_000.0,
              currency: "USD")
     end
 
@@ -225,7 +223,7 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
 
     it "period_returns revalues each cross-currency snapshot at TODAY's FX (FX-on-principal ignored)" do
       create(:portfolio_snapshot, portfolio: portfolio, date: 30.days.ago,
-             total_value: 2_800.0, invested_value: 2_800.0, currency: "USD")
+             total_value: 2_800.0, currency: "USD")
       result = Trading::Domain::PeriodReturnsCalculator.new(portfolio).calculate
       # Current: 30-day USD 2,800 × today's 17.50 = 49,000 baseline → 10.71%
       # Honest: need historical FX from 30 days ago to compute true MXN baseline
