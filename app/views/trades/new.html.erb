@@ -50,7 +50,8 @@
 
           <label class="flex flex-col gap-1.5">
             <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.moneda") %></span>
-            <%= f.select :currency, Asset::SUPPORTED_CURRENCIES, { selected: @currency },
+            <%= f.select :currency, Asset::SUPPORTED_CURRENCIES, { include_blank: t("trades.new.moneda_prompt") },
+                         required: true,
                          data: { trade_sheet_target: "currency", action: "change->trade-sheet#refreshRate" },
                          class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
           </label>

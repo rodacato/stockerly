@@ -23,8 +23,9 @@ RSpec.describe "Saving from the trade sheet", type: :system, js: true do
     expect(page).to have_field("trade[asset_symbol]")
   end
 
-  def fill_movement(symbol:, shares:, price:)
+  def fill_movement(symbol:, shares:, price:, currency: "MXN")
     fill_in "trade[asset_symbol]", with: symbol
+    select currency, from: "trade[currency]"
     fill_in "trade[shares]", with: shares
     fill_in "trade[price_per_share]", with: price
   end

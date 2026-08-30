@@ -1264,6 +1264,8 @@ es-MX:
     errores:
       fecha_futura: La fecha del movimiento no puede ser futura.
       fecha_invalida: Esa fecha no es válida.
+      tc_faltante: No hay tipo de cambio de %{currency} para esa fecha, así que el
+        costo promedio no se puede calcular.
     flash:
       actualizado: Movimiento actualizado.
       eliminado: Movimiento eliminado.
@@ -1282,6 +1284,7 @@ es-MX:
       guardar: Guardar movimiento
       guardar_y_otro: Guardar y registrar otro
       moneda: Moneda
+      moneda_prompt: "¿En qué moneda pagaste?"
       opcional: opcional
       precio: Precio por título
       proyeccion: Tu costo promedio pasaría de %{currency} %{actual} a %{currency}

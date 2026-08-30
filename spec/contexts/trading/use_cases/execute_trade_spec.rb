@@ -308,4 +308,36 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
       expect(result.failure.first).to eq(:validation)
     end
   end
+
+  # A trade in the asset's own currency stores a NULL rate and lets the backfill
+  # repair it. One paid in another currency has no cost basis without the rate.
+  describe "a trade paid in a currency other than the asset's" do
+    let!(:mx_asset) { create(:asset, :mexican, :stock, symbol: "WALMEX.MX") }
+    let(:mixed_params) do
+      { asset_symbol: "WALMEX.MX", side: "buy", shares: 10.0, price_per_share: 3.5,
+        currency: "USD", executed_at: "2026-03-10" }
+    end
+
+    it "is refused when no rate is known for that date" do
+      result = described_class.call(user: user, params: mixed_params)
+
+      expect(result).to be_failure
+      expect(result.failure.first).to eq(:missing_fx_rate)
+      expect(result.failure.last).to eq("USD")
+    end
+
+    it "writes nothing when it is refused" do
+      expect { described_class.call(user: user, params: mixed_params) }.not_to change(Trade, :count)
+      expect { described_class.call(user: user, params: mixed_params) }.not_to change(Position, :count)
+    end
+
+    it "is accepted once the rate exists" do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: Date.new(2026, 3, 10), rate: 19.0, source: "test")
+
+      result = described_class.call(user: user, params: mixed_params)
+
+      expect(result).to be_success
+      expect(result.value!.currency).to eq("USD")
+    end
+  end
 end
