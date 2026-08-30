@@ -7,6 +7,7 @@ class TradesController < AuthenticatedController
     @side = params[:side] == "sell" ? "sell" : "buy"
     @symbol = params[:symbol]
     @currency = current_user.preferred_currency
+    @held = held_position
   end
 
   def create
@@ -98,6 +99,19 @@ class TradesController < AuthenticatedController
   end
 
   private
+
+  # What the average-cost projection anchors on (#428). Only a buy into a
+  # position that already exists has an average to move, and only the symbol the
+  # sheet was opened with — the field is free text, so the JS drops the
+  # projection the moment it stops matching.
+  def held_position
+    return nil unless @side == "buy" && @symbol.present?
+
+    asset = Asset.find_by(symbol: @symbol.upcase)
+    return nil if asset.nil? || asset.asset_type_fixed_income?
+
+    current_user.portfolio&.open_positions&.find_by(asset_id: asset.id)
+  end
 
   # Six call sites differed only in the message and the non-Turbo fallback.
   def respond_with_alert(message, fallback:)
