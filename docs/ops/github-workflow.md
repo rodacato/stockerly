@@ -142,8 +142,9 @@ gh auth refresh -s project,read:project
 ```
 
 **`bin/board-check`** reconciles the two and exits non-zero on drift: an open issue missing from
-the board, a closed issue left in a live status, or one of the built-in workflows that keeps those
-two true having been switched off.
+the board, a closed issue left in a live status, **an open issue sitting in `Done`**, or one of the
+built-in workflows that keeps those true having been switched off. The `Done` case is the one with
+no workflow behind it, so it is the one that drifts in silence.
 
 ```bash
 bin/board-check

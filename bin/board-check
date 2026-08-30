@@ -28,12 +28,18 @@ if [[ -n "$missing" ]]; then
   while read -r n; do [[ -n "$n" ]] && echo "  #$n  $(gh issue view "$n" --repo "$repo" --json title --jq .title)"; done <<<"$missing"
 fi
 
-# A closed issue left in a live status is the board lying about what is open.
+# Both directions. A closed issue in a live status is the board saying work is
+# outstanding that is not; an open issue in Done is the board saying it is
+# finished when nothing closed it. Only the first has a workflow behind it, so
+# the second is the one that drifts silently.
 while IFS=$'\t' read -r n status; do
-  [[ "$status" == "Done" ]] && continue
-  if [[ "$(gh issue view "$n" --repo "$repo" --json state --jq .state)" == "CLOSED" ]]; then
+  state=$(gh issue view "$n" --repo "$repo" --json state --jq .state)
+  if [[ "$state" == "CLOSED" && "$status" != "Done" ]]; then
     drift=1
     echo "Closed issue still live on the board: #$n is '$status', expected 'Done'"
+  elif [[ "$state" == "OPEN" && "$status" == "Done" ]]; then
+    drift=1
+    echo "Open issue marked Done on the board: #$n was moved by hand, or its PR never closed it"
   fi
 done < <(jq -r '.items[] | select(.content.type=="Issue") | "\(.content.number)\t\(.status)"' <<<"$items")
 
