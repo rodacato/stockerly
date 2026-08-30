@@ -23,7 +23,7 @@
         <span class="text-fg-subtle"><%= t("market.header.sin_cambio_dia") %></span>
       <% end %>
       <% if asset.price_updated_at %>
-        <span class="text-fg-subtle">act. <%= observation_when(asset.price_updated_at) %></span>
+        <span class="text-fg-subtle">act. <%= relative_age(asset.price_updated_at) %></span>
       <% end %>
     </div>
 

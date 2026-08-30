@@ -28,7 +28,7 @@
             <%= observation_tag(observation) %>
           </span>
           <span class="text-right text-xs text-fg-subtle">
-            <%= observation_when(observation.observed_at) %>
+            <%= relative_age(observation.observed_at) %>
           </span>
         </li>
       <% end %>

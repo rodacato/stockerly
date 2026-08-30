@@ -5,19 +5,19 @@ RSpec.describe FundamentalsHelper, type: :helper do
     # Every producer stores a percentage as a decimal ratio. Printing it raw
     # showed Apple's 24.6% net margin as "0.2%".
     it "scales a decimal ratio into a percentage" do
-      expect(helper.format_metric_value(0.2461, :percentage)).to eq("24.6%")
+      expect(helper.format_metric_value(0.2461, :percentage, currency: "USD")).to eq("24.6%")
     end
 
     it "scales a ratio above 1.0, which ROE routinely is" do
-      expect(helper.format_metric_value(1.57, :percentage)).to eq("157.0%")
+      expect(helper.format_metric_value(1.57, :percentage, currency: "USD")).to eq("157.0%")
     end
 
     it "leaves a :ratio metric unscaled" do
-      expect(helper.format_metric_value(1.42, :ratio)).to eq("1.42")
+      expect(helper.format_metric_value(1.42, :ratio, currency: "USD")).to eq("1.42")
     end
 
     it "renders a dash for a missing value instead of 0%" do
-      expect(helper.format_metric_value(nil, :percentage)).to eq("—")
+      expect(helper.format_metric_value(nil, :percentage, currency: "USD")).to eq("—")
     end
   end
 

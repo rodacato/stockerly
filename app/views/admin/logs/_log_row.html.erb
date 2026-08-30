@@ -16,7 +16,7 @@
     <div class="min-w-0 flex-1">
       <div class="flex items-baseline justify-between gap-3">
         <p class="truncate font-mono font-semibold text-fg-default"><%= log.task_name %></p>
-        <span class="shrink-0 font-mono text-xs text-fg-subtle"><%= admin_log_timestamp(log) %></span>
+        <span class="shrink-0 font-mono text-xs text-fg-subtle"><%= absolute_stamp(log.created_at, seconds: true) %></span>
       </div>
       <p class="text-sm text-fg-subtle"><%= message %></p>
       <% if log.module_name.present? %>

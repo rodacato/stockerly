@@ -40,7 +40,7 @@ module FundamentalsHelper
     [ t("market.chips.#{key}"), CHIP_TONES.fetch(key) ]
   end
 
-  def format_metric_value(value, format_type)
+  def format_metric_value(value, format_type, currency:)
     return "—" if value.nil?
 
     case format_type
@@ -49,23 +49,25 @@ module FundamentalsHelper
     # FMP persist ProfitMargin as 0.2461, and FundamentalCalculator rounds
     # net/revenue to 4 places. Printing it raw showed a 24.6% margin as "0.2%".
     when :percentage then "#{number_with_precision(value.to_f * 100, precision: 1)}%"
-    when :currency   then format_large_currency(value)
+    when :currency   then format_large_currency(value, currency: currency)
     when :number     then number_with_delimiter(value.to_i)
     when :text       then value.to_s
     else value.to_s
     end
   end
 
-  def format_large_currency(value)
+  # The currency is required, not decorative: market cap is read on a screen
+  # that mixes BMV and NASDAQ issuers, where a bare "$" names neither.
+  def format_large_currency(value, currency:)
     v = value.to_f
     if v.abs >= 1_000_000_000_000
-      "$#{number_with_precision(v / 1e12, precision: 2)}T"
+      "#{format_currency_mx(v / 1e12, currency: currency, precision: 2)}T"
     elsif v.abs >= 1_000_000_000
-      "$#{number_with_precision(v / 1e9, precision: 1)}B"
+      "#{format_currency_mx(v / 1e9, currency: currency, precision: 1)}B"
     elsif v.abs >= 1_000_000
-      "$#{number_with_precision(v / 1e6, precision: 1)}M"
+      "#{format_currency_mx(v / 1e6, currency: currency, precision: 1)}M"
     else
-      number_to_currency(v)
+      format_currency_mx(v, currency: currency)
     end
   end
 

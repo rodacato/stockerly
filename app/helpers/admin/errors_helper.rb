@@ -7,14 +7,6 @@ module Admin
       [ "other",   "Otros",      "other" ]
     ].freeze
 
-    def admin_error_timestamp(time)
-      return "—" if time.blank?
-
-      date = time.to_date
-      mxn = time.in_time_zone("America/Mexico_City")
-      "#{date.day.to_s.rjust(2, '0')} #{DatetimeEsHelper::MONTHS_ES[date.month - 1]} #{date.year} · #{mxn.strftime('%H:%M:%S')}"
-    end
-
     # What was running when it blew up, in the shape that identifies it: a verb
     # and a path for a request, the class for a job.
     def admin_error_origin(event)

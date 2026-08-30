@@ -16,7 +16,7 @@
       <%= observation_phrase(observation) %><%= " · RSI #{rsi.to_f.round}" if rsi %>
     </p>
     <% if stale %>
-      <p class="mt-0.5 font-mono text-[11px] text-fg-subtle"><%= observation_when(observation.observed_at) %></p>
+      <p class="mt-0.5 font-mono text-[11px] text-fg-subtle"><%= relative_age(observation.observed_at) %></p>
     <% end %>
   </div>
 

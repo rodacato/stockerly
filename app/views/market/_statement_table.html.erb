@@ -37,11 +37,11 @@
                 <% raw_value = stmt.data[item[:key]] %>
                 <td class="py-3.5 px-6 text-right tabular-nums">
                   <% if item[:bold] && item[:accent] %>
-                    <div class="text-sm font-bold text-primary"><%= format_statement_value(raw_value) %></div>
+                    <div class="text-sm font-bold text-primary"><%= format_statement_value(raw_value, currency: asset.currency) %></div>
                   <% elsif item[:bold] %>
-                    <div class="text-sm font-bold"><%= format_statement_value(raw_value) %></div>
+                    <div class="text-sm font-bold"><%= format_statement_value(raw_value, currency: asset.currency) %></div>
                   <% else %>
-                    <span class="text-sm text-fg-subtle"><%= format_statement_value(raw_value) %></span>
+                    <span class="text-sm text-fg-subtle"><%= format_statement_value(raw_value, currency: asset.currency) %></span>
                   <% end %>
                   <% if item[:margin_key] && stmt.data["totalRevenue"]&.to_f&.nonzero? %>
                     <% margin = (raw_value.to_f / stmt.data["totalRevenue"].to_f * 100).round(1) %>

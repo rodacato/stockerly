@@ -20,7 +20,7 @@
             <%= t("admin.errors.index.veces", count: event.occurrences) %>
           </span>
         <% end %>
-        <span class="font-mono text-xs text-fg-subtle"><%= admin_error_timestamp(event.last_seen_at) %></span>
+        <span class="font-mono text-xs text-fg-subtle"><%= absolute_stamp(event.last_seen_at, seconds: true) %></span>
       </div>
     </div>
 

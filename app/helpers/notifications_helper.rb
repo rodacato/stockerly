@@ -92,12 +92,7 @@ module NotificationsHelper
     elsif d == Date.current - 1
       "ayer · #{notification.created_at.in_time_zone('America/Mexico_City').strftime('%H:%M')} CDMX"
     else
-      # strftime("%b") is English regardless of locale, so an older notice read
-      # "23 Aug 2026" on an es-MX screen. MONTHS_ES is what the date headers
-      # above this row already use.
-      date = notification.created_at.in_time_zone("America/Mexico_City")
-      month = DatetimeEsHelper::MONTHS_ES[date.month - 1]
-      "#{date.day} #{month} #{date.year} · #{date.strftime('%H:%M')} CDMX"
+      "#{absolute_stamp(notification.created_at)} CDMX"
     end
   end
 

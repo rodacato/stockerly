@@ -39,7 +39,7 @@
               <p class="text-xs text-fg-subtle">
                 <%= t(".dividendo_linea",
                        fecha: l(payment.dividend.pay_date || payment.created_at.to_date, format: :short),
-                       titulos: t("assets.index.titulos", count: number_with_precision(payment.shares_held, precision: 0)),
+                       titulos: t("assets.index.titulos", count: format_shares(payment.shares_held)),
                        por_titulo: format_currency_mx(payment.dividend.amount_per_share, currency: payment.dividend.currency, precision: 2)) %>
               </p>
             </div>
@@ -71,7 +71,7 @@
               <p class="text-xs text-fg-subtle">
                 <%= t(".cerrada_linea",
                        fecha: l((position.closed_at || position.updated_at).to_date, format: :short),
-                       titulos: t("assets.index.titulos", count: number_with_precision(position.shares, precision: 0))) %>
+                       titulos: t("assets.index.titulos", count: format_shares(position.shares))) %>
               </p>
             </div>
             <%# A nil gain is a position whose trades lost their captured FX —

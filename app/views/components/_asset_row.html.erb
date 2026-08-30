@@ -21,7 +21,7 @@
     <%# Wraps rather than truncates: the subtitle carries a state phrase, not a
         date, and a clipped explanation is worse than a taller row (D46). %>
     <p class="text-xs text-fg-subtle">
-      <%= asset.name %> · <%= t("assets.index.titulos", count: number_with_precision(position.shares, precision: position.shares.to_d.frac.zero? ? 0 : 4, delimiter: ",")) %>
+      <%= asset.name %> · <%= t("assets.index.titulos", count: format_shares(position.shares)) %>
     </p>
   </div>
 

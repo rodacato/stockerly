@@ -73,10 +73,9 @@ module StatementsHelper
     end
   end
 
-  def format_statement_value(value)
+  def format_statement_value(value, currency:)
     return "—" if value.nil? || value.to_s == "None"
 
-    num = value.to_f
-    format_large_currency(num)
+    format_large_currency(value.to_f, currency: currency)
   end
 end

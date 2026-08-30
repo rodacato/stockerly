@@ -16,9 +16,9 @@
         </span>
       </div>
       <div class="flex items-baseline gap-2 font-mono text-xs text-fg-subtle">
-        <span><%= ccy %> <%= number_with_precision(chart[:min_price], precision: 2, delimiter: ',') %></span>
+        <span><%= format_currency_mx(chart[:min_price], currency: ccy) %></span>
         <span class="text-fg-subtle">—</span>
-        <span><%= ccy %> <%= number_with_precision(chart[:max_price], precision: 2, delimiter: ',') %></span>
+        <span><%= format_currency_mx(chart[:max_price], currency: ccy) %></span>
       </div>
     </div>
 
@@ -43,7 +43,7 @@
           <circle cx="<%= dp[:cx] %>" cy="<%= dp[:cy] %>" r="0"
                   fill="<%= chart[:color] %>" stroke="white" stroke-width="1.5"
                   data-date="<%= short_date_es(dp[:date]) %>"
-                  data-value="<%= ccy %> <%= number_with_precision(dp[:value], precision: 2, delimiter: ',') %>"/>
+                  data-value="<%= format_currency_mx(dp[:value], currency: ccy) %>"/>
         <% end %>
       </svg>
 

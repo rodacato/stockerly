@@ -24,7 +24,7 @@
             </span>
           </span>
           <span class="mt-0.5 block font-mono text-[11px] text-fg-subtle">
-            <%= number_with_precision(trade.shares, precision: trade.shares.to_d.frac.zero? ? 0 : 4) %>
+            <%= format_shares(trade.shares) %>
             @ <%= format_currency_mx(trade.price_per_share, currency: trade.currency) %>
           </span>
         </span>
