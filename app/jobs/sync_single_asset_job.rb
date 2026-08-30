@@ -61,7 +61,6 @@ class SyncSingleAssetJob < ApplicationJob
 
     update_attrs = {
       current_price: data[:price],
-      change_percent_24h: data[:change_percent],
       volume: data[:volume] || asset.volume,
       market_cap: data[:market_cap] || asset.market_cap,
       price_updated_at: Time.current,

@@ -1,10 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
-// The trade sheet's live parts (D11): the running total, and the FX rate for
-// the date the movement actually happened rather than for today.
+// The trade sheet's live parts (D11): the running total, the FX rate for the
+// date the movement actually happened rather than for today, and what the buy
+// would do to an average cost you already hold.
 export default class TradeSheetController extends Controller {
-  static targets = ["date", "currency", "shares", "price", "fee", "fxRate", "fxCard", "fxLabel", "fxNote", "total"]
-  static values = { fxUrl: String, preferredCurrency: String, referenceCurrency: String }
+  static targets = ["date", "currency", "shares", "price", "fee", "fxRate", "fxCard", "fxLabel", "fxNote", "total", "projection", "symbol"]
+  static values = {
+    fxUrl: String, preferredCurrency: String, referenceCurrency: String,
+    heldShares: Number, heldAvgCost: Number, heldSymbol: String, heldCurrency: String
+  }
 
   connect() {
     // Until a lookup lands, one reference unit is worth one reference unit.
@@ -54,6 +58,8 @@ export default class TradeSheetController extends Controller {
   recalculate() {
     const shares = parseFloat(this.sharesTarget.value)
     const price = parseFloat(this.priceTarget.value)
+    this.project(shares, price)
+
     if (!shares || !price) {
       this.totalTarget.textContent = "—"
       return
@@ -69,6 +75,39 @@ export default class TradeSheetController extends Controller {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     })}`
+  }
+
+  // Where this buy leaves the average of a position already held. Stated in the
+  // asset's own currency and only when the sheet is entering that currency —
+  // averaging a price against a cost basis denominated differently would be
+  // adding two units. The fee is deliberately out: it is a cost of the trade,
+  // not part of what a share cost.
+  project(shares, price) {
+    if (!this.hasProjectionTarget) return
+
+    const held = this.heldSharesValue
+    const avg = this.heldAvgCostValue
+    const symbol = (this.hasSymbolTarget ? this.symbolTarget.value : "").trim().toUpperCase()
+    const usable = held > 0 && avg > 0 &&
+      symbol === this.heldSymbolValue &&
+      this.currencyTarget.value === this.heldCurrencyValue &&
+      shares > 0 && price > 0
+
+    if (!usable) {
+      this.projectionTarget.hidden = true
+      return
+    }
+
+    const projected = (held * avg + shares * price) / (held + shares)
+    this.projectionTarget.hidden = false
+    this.projectionTarget.textContent = this.projectionTarget.dataset.template
+      .replace(/%\{currency\}/g, this.heldCurrencyValue)
+      .replace("%{actual}", this.money(avg))
+      .replace("%{proyectado}", this.money(projected))
+  }
+
+  money(value) {
+    return value.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 
   label(currency) {

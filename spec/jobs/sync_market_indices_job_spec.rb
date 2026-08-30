@@ -30,6 +30,10 @@ RSpec.describe SyncMarketIndicesJob do
         })
       end
 
+      # The change percentage assertion is the guard for #479: the four
+      # asset-quote gateways stopped returning `change_percent` because nothing
+      # read it, and `fetch_index_quotes` builds on `fetch_price`, so this is
+      # the path that must not go with them.
       it "updates existing MarketIndex records" do
         described_class.perform_now
 

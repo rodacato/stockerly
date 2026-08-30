@@ -39,7 +39,6 @@ class SyncBulkCryptoJob < ApplicationJob
 
       asset.update!(
         current_price: data[:price],
-        change_percent_24h: data[:change_percent],
         market_cap: data[:market_cap] || asset.market_cap,
         price_updated_at: Time.current
       )

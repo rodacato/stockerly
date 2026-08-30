@@ -44,7 +44,6 @@ class SyncBulkStocksJob < ApplicationJob
 
       asset.update!(
         current_price: data[:price],
-        change_percent_24h: data[:change_percent],
         volume: data[:volume] || asset.volume,
         price_updated_at: Time.current
       )
