@@ -117,7 +117,7 @@ RSpec.describe Alerts::Domain::DateBasedAlertEvaluator do
       end
 
       it "skips a Tuesday that falls on a Banxico holiday" do
-        today = Date.new(2026, 1, 30) # Friday; Tuesday +4 days = 2026-02-03 (not holiday)
+        Date.new(2026, 1, 30) # Friday; Tuesday +4 days = 2026-02-03 (not holiday)
         # Actually let's use a Tuesday that IS a holiday: 2026-02-02 (Día de la Constitución is Mon)
         # Closest tuesday holiday on our seed list... none obvious. Inject one inline.
         MarketHoliday.create!(market: :Banxico, date: Date.new(2026, 6, 30), name: "Inyectado para test") # 2026-06-30 is Tuesday

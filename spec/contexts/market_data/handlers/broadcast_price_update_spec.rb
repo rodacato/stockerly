@@ -18,14 +18,14 @@ RSpec.describe MarketData::Handlers::BroadcastPriceUpdate do
 
     it "does nothing when asset not found" do
       expect { described_class.call(asset_id: -1) }
-        .not_to change { broadcasts("asset_#{asset.id}").size }
+        .not_to(change { broadcasts("asset_#{asset.id}").size })
     end
 
     it "does nothing before setup has created the account" do
       owner.destroy
 
       expect { described_class.call(asset_id: asset.id) }
-        .not_to change { broadcasts("asset_#{asset.id}").size }
+        .not_to(change { broadcasts("asset_#{asset.id}").size })
     end
   end
 end

@@ -151,7 +151,7 @@ RSpec.describe MarketData::Handlers::RecordPriceHistory do
 
       it "stays quiet when the same source updates its own row" do
         expect { described_class.call(price_event(source: "Alpaca/sip")) }
-          .not_to change { SystemLog.where(severity: :warning).count }
+          .not_to(change { SystemLog.where(severity: :warning).count })
       end
 
       it "still records the new source" do

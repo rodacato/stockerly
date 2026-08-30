@@ -31,7 +31,7 @@ RSpec.describe AlertEvent, type: :model do
   describe "scopes" do
     it ".recent returns last 10 ordered by triggered_at desc" do
       user = create(:user)
-      old = create(:alert_event, user: user, triggered_at: 2.days.ago)
+      create(:alert_event, user: user, triggered_at: 2.days.ago)
       recent = create(:alert_event, user: user, triggered_at: 1.hour.ago)
       expect(AlertEvent.recent.first).to eq(recent)
     end

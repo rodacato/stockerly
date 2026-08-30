@@ -12,11 +12,11 @@ RSpec.describe "email_notifications_enabled", type: :mailer do
     before { SiteConfig.set("email_notifications_enabled", false) }
 
     it "does not send the digest" do
-      expect { deliver_digest }.not_to change { ActionMailer::Base.deliveries.size }
+      expect { deliver_digest }.not_to(change { ActionMailer::Base.deliveries.size })
     end
 
     it "does not send an urgent alert" do
-      expect { deliver_urgent }.not_to change { ActionMailer::Base.deliveries.size }
+      expect { deliver_urgent }.not_to(change { ActionMailer::Base.deliveries.size })
     end
 
     # A single-user instance with no support desk cannot afford a settings

@@ -42,21 +42,21 @@ RSpec.describe Notifications::UseCases::SendDailyDigest do
   it "sends nothing when the user has nothing to report" do
     create(:alert_preference, user: user, email_digest: true)
 
-    expect { send_digests }.not_to change { ActionMailer::Base.deliveries.size }
+    expect { send_digests }.not_to(change { ActionMailer::Base.deliveries.size })
   end
 
   it "skips notifications older than the window" do
     create(:alert_preference, user: user, email_digest: true)
     notify(created_at: 3.days.ago)
 
-    expect { send_digests }.not_to change { ActionMailer::Base.deliveries.size }
+    expect { send_digests }.not_to(change { ActionMailer::Base.deliveries.size })
   end
 
   it "leaves alone the user who turned the digest off" do
     create(:alert_preference, user: user, email_digest: false)
     notify
 
-    expect { send_digests }.not_to change { ActionMailer::Base.deliveries.size }
+    expect { send_digests }.not_to(change { ActionMailer::Base.deliveries.size })
   end
 
   it "returns how many digests it sent" do

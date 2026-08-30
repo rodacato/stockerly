@@ -9,7 +9,6 @@ module Admin
 
     def create
       result = Administration::UseCases::Integrations::ConnectProvider.call(
-        admin: current_user,
         params: integration_params.to_h
       )
 
@@ -22,7 +21,6 @@ module Admin
 
     def update
       result = Administration::UseCases::Integrations::UpdateProvider.call(
-        admin: current_user,
         params: update_params.to_h.merge(id: params[:id].to_i)
       )
 
@@ -35,7 +33,6 @@ module Admin
 
     def destroy
       result = Administration::UseCases::Integrations::DeleteProvider.call(
-        admin: current_user,
         params: { id: params[:id].to_i }
       )
 

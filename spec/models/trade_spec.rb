@@ -47,30 +47,30 @@ RSpec.describe Trade, type: :model do
 
     it ".buys returns only buy trades" do
       buy = create(:trade, portfolio: portfolio, asset: asset, side: :buy)
-      sell = create(:trade, portfolio: portfolio, asset: asset, side: :sell)
+      create(:trade, portfolio: portfolio, asset: asset, side: :sell)
       expect(Trade.buys).to contain_exactly(buy)
     end
 
     it ".sells returns only sell trades" do
-      buy = create(:trade, portfolio: portfolio, asset: asset, side: :buy)
+      create(:trade, portfolio: portfolio, asset: asset, side: :buy)
       sell = create(:trade, portfolio: portfolio, asset: asset, side: :sell)
       expect(Trade.sells).to contain_exactly(sell)
     end
 
     it ".recent orders by executed_at desc" do
-      old = create(:trade, portfolio: portfolio, asset: asset, executed_at: 2.days.ago)
+      create(:trade, portfolio: portfolio, asset: asset, executed_at: 2.days.ago)
       recent = create(:trade, portfolio: portfolio, asset: asset, executed_at: 1.hour.ago)
       expect(Trade.recent.first).to eq(recent)
     end
 
     it ".kept excludes discarded trades" do
       kept = create(:trade, portfolio: portfolio, asset: asset)
-      discarded = create(:trade, portfolio: portfolio, asset: asset, discarded_at: Time.current)
+      create(:trade, portfolio: portfolio, asset: asset, discarded_at: Time.current)
       expect(Trade.kept).to contain_exactly(kept)
     end
 
     it ".discarded returns only discarded trades" do
-      kept = create(:trade, portfolio: portfolio, asset: asset)
+      create(:trade, portfolio: portfolio, asset: asset)
       discarded = create(:trade, portfolio: portfolio, asset: asset, discarded_at: Time.current)
       expect(Trade.discarded).to contain_exactly(discarded)
     end

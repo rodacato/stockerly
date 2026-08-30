@@ -181,7 +181,7 @@ RSpec.describe MarketData::UseCases::LoadAssetDetail do
       end
 
       it "is omitted for fixed_income assets entirely" do
-        cetes = create(:asset, :fixed_income, symbol: "CETES_91D")
+        create(:asset, :fixed_income, symbol: "CETES_91D")
         data = described_class.call(symbol: "CETES_91D").value!
         expect(data).not_to have_key(:company_overview)
       end

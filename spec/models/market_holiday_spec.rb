@@ -64,7 +64,7 @@ RSpec.describe MarketHoliday, type: :model do
 
   describe ".upcoming" do
     it "returns only holidays today-or-future in date order" do
-      past   = MarketHoliday.create!(market: :BMV, date: 5.days.ago.to_date,     name: "Past")
+      MarketHoliday.create!(market: :BMV, date: 5.days.ago.to_date,     name: "Past")
       today  = MarketHoliday.create!(market: :BMV, date: Date.current,           name: "Today")
       future = MarketHoliday.create!(market: :BMV, date: 10.days.from_now.to_date, name: "Future")
 

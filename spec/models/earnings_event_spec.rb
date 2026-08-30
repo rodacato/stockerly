@@ -37,12 +37,12 @@ RSpec.describe EarningsEvent, type: :model do
 
     it ".for_month returns events for a given month" do
       march = create(:earnings_event, asset: asset, report_date: "2026-03-15")
-      april = create(:earnings_event, asset: create(:asset), report_date: "2026-04-10")
+      create(:earnings_event, asset: create(:asset), report_date: "2026-04-10")
       expect(EarningsEvent.for_month(Date.new(2026, 3, 1))).to contain_exactly(march)
     end
 
     it ".upcoming returns future events ordered by date" do
-      past = create(:earnings_event, asset: asset, report_date: 1.month.ago)
+      create(:earnings_event, asset: asset, report_date: 1.month.ago)
       future = create(:earnings_event, asset: create(:asset), report_date: 1.month.from_now)
       expect(EarningsEvent.upcoming).to contain_exactly(future)
     end

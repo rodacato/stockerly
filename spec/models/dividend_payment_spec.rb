@@ -24,7 +24,7 @@ RSpec.describe DividendPayment, type: :model do
 
   describe "scopes" do
     it ".recent orders by created_at desc" do
-      old = create(:dividend_payment, created_at: 2.days.ago)
+      create(:dividend_payment, created_at: 2.days.ago)
       recent = create(:dividend_payment, created_at: 1.hour.ago)
       expect(DividendPayment.recent.first).to eq(recent)
     end

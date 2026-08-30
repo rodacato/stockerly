@@ -81,8 +81,8 @@ module MarketData
       return Failure([ :not_found, "No profile data from FMP" ]) unless body.is_a?(Array) && body.first.present?
 
       profile = body.first
-      price = safe_decimal(profile["price"])
-      eps = safe_decimal(profile["eps"] || profile["lastDiv"])
+      safe_decimal(profile["price"])
+      safe_decimal(profile["eps"] || profile["lastDiv"])
 
       Success({
         symbol: profile["symbol"],

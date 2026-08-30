@@ -8,7 +8,6 @@ RSpec.describe Administration::UseCases::Integrations::UpdateProvider do
     context "with valid params" do
       it "updates the integration" do
         result = described_class.call(
-          admin: admin,
           params: { id: integration.id, daily_call_limit: 1000 }
         )
 
@@ -18,7 +17,6 @@ RSpec.describe Administration::UseCases::Integrations::UpdateProvider do
 
       it "updates max_requests_per_minute" do
         result = described_class.call(
-          admin: admin,
           params: { id: integration.id, max_requests_per_minute: 10 }
         )
 
@@ -30,7 +28,6 @@ RSpec.describe Administration::UseCases::Integrations::UpdateProvider do
         expect(EventBus).to receive(:publish).with(instance_of(Administration::Events::IntegrationUpdated))
 
         described_class.call(
-          admin: admin,
           params: { id: integration.id, daily_call_limit: 1000 }
         )
       end
@@ -39,7 +36,6 @@ RSpec.describe Administration::UseCases::Integrations::UpdateProvider do
     context "with invalid params" do
       it "fails when daily_call_limit is not positive" do
         result = described_class.call(
-          admin: admin,
           params: { id: integration.id, daily_call_limit: 0 }
         )
 
@@ -49,7 +45,6 @@ RSpec.describe Administration::UseCases::Integrations::UpdateProvider do
 
       it "fails when max_requests_per_minute is not positive" do
         result = described_class.call(
-          admin: admin,
           params: { id: integration.id, max_requests_per_minute: -1 }
         )
 
@@ -61,7 +56,6 @@ RSpec.describe Administration::UseCases::Integrations::UpdateProvider do
     context "when integration not found" do
       it "returns not_found failure" do
         result = described_class.call(
-          admin: admin,
           params: { id: 999_999 }
         )
 

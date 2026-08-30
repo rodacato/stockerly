@@ -2,7 +2,7 @@ module Administration
   module UseCases
     module Integrations
       class UpdateProvider < ApplicationUseCase
-        def call(admin:, params:)
+        def call(params:)
           attrs       = yield validate(Administration::Contracts::Integrations::UpdateContract, params)
           integration = yield find(attrs[:id])
           changes     = yield update(integration, attrs)

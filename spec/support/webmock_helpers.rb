@@ -537,14 +537,6 @@ module WebmockHelpers
       )
   end
 
-  def stub_finnhub_server_error
-    stub_request(:get, %r{finnhub\.io/api/v1/quote}).to_return(status: 500, body: "Server error")
-  end
-
-  def stub_finnhub_rate_limited
-    stub_request(:get, %r{finnhub\.io/api/v1/quote}).to_return(status: 429, body: "Rate limited")
-  end
-
   def stub_finnhub_candles(symbol, days: 7)
     timestamps = days.times.map { |i| (days - i).days.ago.to_i }
     stub_request(:get, "https://finnhub.io/api/v1/stock/candle")
@@ -638,7 +630,7 @@ module WebmockHelpers
       .to_return(status: 200, body: articles.to_json, headers: { "Content-Type" => "application/json" })
   end
 
-  def stub_finnhub_news_empty(symbol)
+  def stub_finnhub_news_empty(_symbol)
     stub_request(:get, %r{finnhub\.io/api/v1/company-news})
       .to_return(status: 200, body: "[]", headers: { "Content-Type" => "application/json" })
   end
@@ -667,7 +659,7 @@ module WebmockHelpers
       .to_return(status: 200, body: { "earningsCalendar" => events }.to_json, headers: { "Content-Type" => "application/json" })
   end
 
-  def stub_finnhub_earnings_empty(symbol)
+  def stub_finnhub_earnings_empty(_symbol)
     stub_request(:get, %r{finnhub\.io/api/v1/calendar/earnings})
       .to_return(status: 200, body: { "earningsCalendar" => [] }.to_json, headers: { "Content-Type" => "application/json" })
   end

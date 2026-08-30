@@ -2,7 +2,7 @@ module Administration
   module UseCases
     module Integrations
       class ConnectProvider < ApplicationUseCase
-        def call(admin:, params:)
+        def call(params:)
           attrs       = yield validate(Administration::Contracts::Integrations::ConnectContract, params)
           integration = yield persist(attrs)
           _           = yield publish(Administration::Events::IntegrationConnected.new(

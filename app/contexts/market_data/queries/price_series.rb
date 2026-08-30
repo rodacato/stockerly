@@ -86,7 +86,7 @@ module MarketData
       end
 
       def average_volume(days)
-        closed.where(date: days.days.ago.to_date..).average(:volume)&.to_i || 0
+        closed.where(date: days.days.ago.to_date..).average(:volume).to_i
       end
 
       private

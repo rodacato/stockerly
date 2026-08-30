@@ -36,7 +36,7 @@ RSpec.describe NewsArticle, type: :model do
   describe "scopes" do
     it ".for_ticker filters by related_ticker" do
       aapl = create(:news_article, related_ticker: "AAPL")
-      tsla = create(:news_article, related_ticker: "TSLA")
+      create(:news_article, related_ticker: "TSLA")
       expect(NewsArticle.for_ticker("AAPL")).to contain_exactly(aapl)
     end
 
@@ -47,7 +47,7 @@ RSpec.describe NewsArticle, type: :model do
 
     it ".for_source filters by source" do
       bloomberg = create(:news_article, source: "Bloomberg")
-      reuters = create(:news_article, source: "Reuters")
+      create(:news_article, source: "Reuters")
       expect(NewsArticle.for_source("Bloomberg")).to contain_exactly(bloomberg)
     end
 
@@ -58,7 +58,7 @@ RSpec.describe NewsArticle, type: :model do
 
     it ".published_after filters by time" do
       recent = create(:news_article, published_at: 30.minutes.ago)
-      old = create(:news_article, published_at: 2.hours.ago)
+      create(:news_article, published_at: 2.hours.ago)
       expect(NewsArticle.published_after(1.hour.ago)).to contain_exactly(recent)
     end
 
