@@ -124,6 +124,28 @@ RSpec.describe SyncPriorityAssetsJob, type: :job do
       end
     end
 
+    context "with ETFs" do
+      let!(:voo) { create(:asset, symbol: "VOO", asset_type: :etf, exchange: "NYSE") }
+
+      it "enqueues SyncSingleAssetJob when the US market is open" do
+        travel_to Time.zone.parse("2025-01-15 12:00:00 EST") do
+          expect {
+            described_class.perform_now("etf", "all")
+          }.to have_enqueued_job(SyncSingleAssetJob).with(voo.id)
+        end
+      end
+
+      it "leaves stocks alone" do
+        create(:asset, symbol: "AAPL", asset_type: :stock, exchange: "NASDAQ")
+
+        travel_to Time.zone.parse("2025-01-15 12:00:00 EST") do
+          expect {
+            described_class.perform_now("etf", "all")
+          }.to have_enqueued_job(SyncSingleAssetJob).once
+        end
+      end
+    end
+
     context "with no matching assets" do
       it "does nothing" do
         expect {
