@@ -5,21 +5,22 @@ module SyncLogging
 
   private
 
-  def log_sync_success(task_name, message: nil)
+  def log_sync_success(task_name, message: nil, duration_seconds: 0)
     SystemLog.create!(
       task_name: task_name,
       module_name: "sync",
       severity: :success,
-      duration_seconds: 0,
+      duration_seconds: duration_seconds,
       error_message: message
     )
   end
 
-  def log_sync_failure(task_name, message, severity: :error)
+  def log_sync_failure(task_name, message, severity: :error, duration_seconds: nil)
     SystemLog.create!(
       task_name: task_name,
       module_name: "sync",
       severity: severity,
+      duration_seconds: duration_seconds,
       error_message: message
     )
   end
