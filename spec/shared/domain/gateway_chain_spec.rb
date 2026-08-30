@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe GatewayChain do
   include Dry::Monads[:result]
+  include ActiveSupport::Testing::TimeHelpers
 
   let(:success_data) { { symbol: "AAPL", price: 189.43.to_d, change_percent: 2.4, volume: 58_000_000 } }
   let(:primary_gateway) { instance_double(MarketData::Gateways::FinnhubGateway) }
@@ -70,25 +71,39 @@ RSpec.describe GatewayChain do
 
     context "with circuit breakers" do
       let(:breaker) { CircuitBreaker.new(name: "test", threshold: 1, timeout: 60) }
-
-      it "skips gateway with open circuit breaker" do
-        # Open the breaker
-        breaker.call { Failure([ :gateway_error, "fail" ]) }
-        expect(breaker.state).to eq(:open)
-
-        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YfinanceGateway, source_id: "Yahoo Finance")
-        allow(fallback_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
-        allow(primary_gateway).to receive_messages(class: MarketData::Gateways::FinnhubGateway, source_id: "Finnhub")
-
-        chain = described_class.new(
+      let(:chain) do
+        described_class.new(
           gateways: [ primary_gateway, fallback_gateway ],
           circuit_breakers: { "MarketData::Gateways::FinnhubGateway" => breaker }
         )
+      end
+
+      before do
+        breaker.call { Failure([ :gateway_error, "fail" ]) }
+
+        allow(primary_gateway).to receive_messages(class: MarketData::Gateways::FinnhubGateway, source_id: "Finnhub")
+        allow(primary_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
+        allow(fallback_gateway).to receive_messages(class: MarketData::Gateways::YfinanceGateway, source_id: "Yahoo Finance")
+        allow(fallback_gateway).to receive(:fetch_price).and_return(Success(success_data.dup))
+      end
+
+      it "falls through to the next gateway without calling the open one" do
+        expect(breaker.state).to eq(:open)
 
         result = chain.fetch_price("AAPL")
 
         expect(result).to be_success
         expect(result.value![:data_source]).to eq("MarketData::Gateways::YfinanceGateway")
+        expect(primary_gateway).not_to have_received(:fetch_price)
+      end
+
+      it "retries the open gateway once its timeout has elapsed" do
+        travel_to 61.seconds.from_now do
+          result = chain.fetch_price("AAPL")
+
+          expect(result.value![:data_source]).to eq("MarketData::Gateways::FinnhubGateway")
+          expect(breaker.state).to eq(:closed)
+        end
       end
     end
 
