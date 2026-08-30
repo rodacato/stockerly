@@ -11,7 +11,7 @@ module Trading
         currency = user.preferred_currency
 
         fx = Trading::Domain::FxDegradation.new
-        summary = fx.figure { consolidated_summary(portfolio, currency) }
+        summary = fx.figure { Trading::Domain::PortfolioSummary.prewarmed(portfolio, currency: currency, day_gain: false) }
         gaps = tab == "watchlist" ? watchlist_gaps(user) : {}
         rows = tab == "cartera" ? positions_for(fx, portfolio, currency) : user.watchlist_items.includes(:asset).to_a
         closes = MarketData::Queries::PriceSeries.recent_closes(rows.map(&:asset))
@@ -38,13 +38,6 @@ module Trading
       # calculation, wrong for a screen, where it means a 500 instead of your
       # holdings. Consolidation is what becomes impossible, not the list: the
       # rows fall back to their own currency (D10) and the screen says so.
-      def consolidated_summary(portfolio, currency)
-        return nil unless portfolio
-
-        summary = Trading::Domain::PortfolioSummary.new(portfolio, currency: currency)
-        summary.total_value
-        summary
-      end
 
       # D68: market value descending, in the declared currency.
       def positions_for(fx, portfolio, currency)
