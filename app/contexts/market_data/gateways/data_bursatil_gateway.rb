@@ -148,7 +148,12 @@ module MarketData
         }
       end
 
+      # Every request goes through here, so the budget is counted once rather than
+      # at each of the four public methods the way the other gateways do it.
       def get(path, params)
+        check = RateLimiter.check!(PROVIDER)
+        return check if check.failure?
+
         response = connection.get(path) do |req|
           req.params.update(params.transform_keys(&:to_s).merge("token" => @token))
         end

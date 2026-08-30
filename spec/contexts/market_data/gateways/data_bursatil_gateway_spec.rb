@@ -170,4 +170,26 @@ RSpec.describe MarketData::Gateways::DataBursatilGateway do
       expect(result.failure[1]).to include("bolsa")
     end
   end
+  # Metered in transmitted bytes out of 200,000 credits a month: the one provider
+  # that can actually run out was the only one not counted.
+  describe "rate limiting" do
+    it "consults the limiter before spending a request" do
+      stub_databursatil("/v2/cotizaciones", { "GFNORTEO" => { "bmv" => databursatil_quote(last: 193.64) } })
+      allow(RateLimiter).to receive(:check!).and_call_original
+
+      gateway.fetch_price("GFNORTEO.MX")
+
+      expect(RateLimiter).to have_received(:check!).with(described_class::PROVIDER)
+    end
+
+    it "does not call the provider when the budget is spent" do
+      allow(RateLimiter).to receive(:check!)
+        .and_return(Dry::Monads::Failure([ :rate_limited, "quota exhausted" ]))
+
+      result = gateway.fetch_price("GFNORTEO.MX")
+
+      expect(result).to be_failure
+      expect(result.failure.first).to eq(:rate_limited)
+    end
+  end
 end

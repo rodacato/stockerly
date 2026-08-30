@@ -10,12 +10,18 @@ class RefreshFxRatesJob < ApplicationJob
 
 
   def perform
-    result = MarketData::Gateways::FxRatesGateway.new.refresh_rates
+    result = breaker.call { MarketData::Gateways::FxRatesGateway.new.refresh_rates }
 
     if result.success?
       log_sync_success("FX Rate Refresh")
     else
       log_sync_failure("FX Rate Refresh", result.failure[1])
     end
+  end
+
+  private
+
+  def breaker
+    GatewayChain.breaker_for("fx")
   end
 end

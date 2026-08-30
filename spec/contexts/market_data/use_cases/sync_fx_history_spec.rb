@@ -58,4 +58,22 @@ RSpec.describe MarketData::UseCases::SyncFxHistory do
     expect(result.failure).to eq([ :gateway_error, "Banxico returned 503" ])
     expect(FxRateHistory.count).to eq(0)
   end
+  # Banxico blocks an abusing token for a full calendar day, and the same token
+  # serves CETES — so the direct call needs the breaker its registry declares.
+  describe "under its circuit breaker" do
+    it "does not reach Banxico once the breaker is open" do
+      breaker = GatewayChain.breaker_for("banxico")
+      5.times { breaker.call { Dry::Monads::Failure([ :gateway_error, "boom" ]) } }
+      expect(breaker.state).to eq(:open)
+
+      gateway = instance_double(MarketData::Gateways::BanxicoGateway)
+      allow(gateway).to receive(:fetch_fx_fixes)
+
+      result = described_class.call(from: Date.current - 3, to: Date.current, gateway: gateway)
+
+      expect(result).to be_failure
+      expect(result.failure.first).to eq(:circuit_open)
+      expect(gateway).not_to have_received(:fetch_fx_fixes)
+    end
+  end
 end

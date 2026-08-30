@@ -11,7 +11,7 @@ module MarketData
         from ||= to - DEFAULT_LOOKBACK
         gateway ||= MarketData::Gateways::BanxicoGateway.new
 
-        fixes = yield gateway.fetch_fx_fixes(from: from, to: to)
+        fixes = yield banxico_breaker.call { gateway.fetch_fx_fixes(from: from, to: to) }
         stored = persist(fixes)
 
         Success(stored: stored, from: from, to: to)
@@ -20,6 +20,12 @@ module MarketData
       end
 
       private
+
+      # Banxico blocks an abusing token for a full calendar day, and that token
+      # serves FX and CETES alike, so the direct call runs under its breaker too.
+      def banxico_breaker
+        GatewayChain.breaker_for("banxico")
+      end
 
       def persist(fixes)
         pair = MarketData::Gateways::BanxicoGateway::FIX_PAIR

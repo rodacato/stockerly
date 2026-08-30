@@ -10,7 +10,7 @@ module MarketData
         from ||= to - DEFAULT_LOOKBACK
         gateway ||= Gateways::BanxicoGateway.new
 
-        auctions = yield gateway.fetch_auction_series(term: term, from: from, to: to)
+        auctions = yield banxico_breaker.call { gateway.fetch_auction_series(term: term, from: from, to: to) }
 
         Success(stored: persist(term, auctions), from: from, to: to)
       rescue Gateways::ApiKeyNotConfiguredError => e
@@ -18,6 +18,12 @@ module MarketData
       end
 
       private
+
+      # Banxico blocks an abusing token for a full calendar day, and that token
+      # serves FX and CETES alike, so the direct call runs under its breaker too.
+      def banxico_breaker
+        GatewayChain.breaker_for("banxico")
+      end
 
       def persist(term, auctions)
         auctions.count do |auction|

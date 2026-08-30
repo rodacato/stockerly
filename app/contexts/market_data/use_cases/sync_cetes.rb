@@ -7,7 +7,7 @@ module MarketData
         synced = 0
 
         TERMS.each do |term|
-          result = Gateways::BanxicoGateway.new.fetch_auctions(term: term)
+          result = banxico_breaker.call { Gateways::BanxicoGateway.new.fetch_auctions(term: term) }
           next if result.failure?
 
           result.value!.each do |data|
@@ -22,6 +22,12 @@ module MarketData
       end
 
       private
+
+      # Banxico blocks an abusing token for a full calendar day, and that token
+      # serves FX and CETES alike, so the direct call runs under its breaker too.
+      def banxico_breaker
+        GatewayChain.breaker_for("banxico")
+      end
 
       # CETES_28D / CETES_91D / etc. are abstract instrument symbols that roll —
       # each weekly auction is a new lot with a new maturity. Previously this
