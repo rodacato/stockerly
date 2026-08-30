@@ -26,7 +26,7 @@
     <% if source %>
       <p class="mt-2 font-mono text-[11px] uppercase tracking-wider opacity-80">
         <%= observation_phrase(source) %><%= " · RSI #{rsi.to_f.round}" if rsi %>
-        <%= " · #{observation_when(source.observed_at)}" if stale %>
+        <%= " · #{relative_age(source.observed_at)}" if stale %>
       </p>
     <% end %>
   </div>

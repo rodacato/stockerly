@@ -46,10 +46,9 @@ module MarketHelper
   # Native-currency price prefix used on the asset detail header and price
   # chart. Per ADR / S09 convention: "MXN 48.50" / "USD 612.85".
   def asset_currency_price(asset, precision: 2)
-    "#{asset.currency} #{number_with_precision(asset.current_price || 0, precision: precision, delimiter: ',')}"
+    format_currency_mx(asset.current_price, currency: asset.currency, precision: precision)
   end
 
-  # Relative-time label in es-MX: "hace 12 min", "hoy", "ayer", "hace 3 días".
   # The price in the reader's own currency, which is the whole MXN-first point:
   # a USD quote means little until you see what it is in pesos. Nil when the
   # asset already quotes in it, or when no rate is stored — an approximation
@@ -84,19 +83,6 @@ module MarketHelper
                               .map { |v| number_with_precision(v, precision: 2, delimiter: ",") }.join(" · ")
     when :bollinger     then [ signal[:lower], signal[:upper] ]
                               .map { |v| number_with_precision(v, precision: 2, delimiter: ",") }.join(" – ")
-    end
-  end
-
-  def observation_when(time)
-    return "—" if time.nil?
-
-    delta = Time.current - time
-    case delta
-    when 0...60        then "hace un instante"
-    when 60...3600     then "hace #{(delta / 60).to_i} min"
-    when 3600...86_400 then "hace #{(delta / 3600).to_i} h"
-    when 86_400...172_800 then "ayer"
-    else "hace #{(delta / 86_400).to_i} días"
     end
   end
 

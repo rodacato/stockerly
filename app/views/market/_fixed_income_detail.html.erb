@@ -47,14 +47,14 @@
 
       <div class="border-t border-border-default pt-3">
         <p class="<%= label_class %>"><%= t(".valor_nominal") %></p>
-        <p class="<%= figure_class %>">MXN <%= number_with_precision(asset.face_value || 0, precision: 2, delimiter: ",") %></p>
+        <p class="<%= figure_class %>"><%= format_currency_mx(asset.face_value, currency: asset.currency) %></p>
         <p class="text-[11px] text-fg-subtle"><%= t(".por_titulo") %></p>
       </div>
 
       <div class="border-t border-border-default pt-3">
         <p class="<%= label_class %>"><%= t(".precio_descuento") %></p>
         <p class="<%= figure_class %>">
-          <%= yield_data[:discount_price] ? "MXN #{number_with_precision(yield_data[:discount_price], precision: 4, delimiter: ",")}" : "—" %>
+          <%= yield_data[:discount_price] ? format_currency_mx(yield_data[:discount_price], currency: asset.currency, precision: 4) : "—" %>
         </p>
         <p class="text-[11px] text-fg-subtle"><%= t(".via_cetes_directo") %></p>
       </div>
@@ -111,7 +111,7 @@
       <div class="rounded-xl border p-4 text-center <%= positive ? "border-positive-fg/25 bg-positive-bg" : "border-border-default bg-bg-muted" %>">
         <p class="font-mono text-[10.5px] uppercase tracking-widest <%= positive ? "text-positive-fg" : "text-fg-subtle" %>"><%= label %></p>
         <p class="mt-1 font-mono text-xl font-medium <%= positive ? "text-positive-fg" : "text-fg-default" %>">
-          <%= amount ? "#{"+" if positive}MXN #{number_with_precision(amount, precision: 2, delimiter: ",")}" : "—" %>
+          <%= amount ? "#{"+" if positive}#{format_currency_mx(amount, currency: asset.currency)}" : "—" %>
         </p>
       </div>
     <% end %>

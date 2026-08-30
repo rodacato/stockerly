@@ -29,7 +29,7 @@
             <p class="text-sm font-medium text-fg-default leading-snug"><%= article.title %></p>
           <% end %>
           <p class="mt-1 text-xs text-fg-subtle">
-            <%= article.source %> · <%= observation_when(article.published_at) %>
+            <%= article.source %> · <%= relative_age(article.published_at) %>
           </p>
         </li>
       <% end %>

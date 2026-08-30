@@ -26,11 +26,11 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-5">
       <div>
         <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Precio actual</p>
-        <p class="font-mono text-xl font-medium text-fg-default"><%= ccy %> <%= number_with_precision(current, precision: 2, delimiter: ",") %></p>
+        <p class="font-mono text-xl font-medium text-fg-default"><%= format_currency_mx(current, currency: ccy) %></p>
       </div>
       <div>
         <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Objetivo de analistas</p>
-        <p class="font-mono text-xl font-medium text-primary"><%= ccy %> <%= number_with_precision(target, precision: 2, delimiter: ",") %></p>
+        <p class="font-mono text-xl font-medium text-primary"><%= format_currency_mx(target, currency: ccy) %></p>
       </div>
       <div>
         <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Diferencia</p>
@@ -43,15 +43,15 @@
     <% if high_52w.positive? && low_52w.positive? && range.positive? %>
       <div class="mb-1">
         <div class="flex justify-between text-[10.5px] font-medium text-fg-subtle mb-2">
-          <span>Mín. 52s: <%= ccy %> <%= number_with_precision(low_52w, precision: 2, delimiter: ",") %></span>
-          <span>Máx. 52s: <%= ccy %> <%= number_with_precision(high_52w, precision: 2, delimiter: ",") %></span>
+          <span>Mín. 52s: <%= format_currency_mx(low_52w, currency: ccy) %></span>
+          <span>Máx. 52s: <%= format_currency_mx(high_52w, currency: ccy) %></span>
         </div>
         <div class="relative h-2 w-full bg-bg-muted rounded-full">
           <div class="absolute top-0 h-full bg-primary/30 rounded-full" style="width: <%= position_pct %>%"></div>
           <div class="absolute -top-1 w-3 h-4 bg-primary rounded-sm transform -translate-x-1/2"
-               style="left: <%= position_pct %>%" title="Actual: <%= ccy %> <%= number_with_precision(current, precision: 2, delimiter: ",") %>"></div>
+               style="left: <%= position_pct %>%" title="Actual: <%= format_currency_mx(current, currency: ccy) %>"></div>
           <div class="absolute -top-1 w-0.5 h-4 transform -translate-x-1/2 <%= positive_diff ? 'bg-emerald-500' : 'bg-rose-500' %>"
-               style="left: <%= target_pct %>%" title="Objetivo: <%= ccy %> <%= number_with_precision(target, precision: 2, delimiter: ",") %>"></div>
+               style="left: <%= target_pct %>%" title="Objetivo: <%= format_currency_mx(target, currency: ccy) %>"></div>
         </div>
         <div class="flex justify-between mt-2">
           <span class="text-[10.5px] font-semibold text-primary">Actual</span>

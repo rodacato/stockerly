@@ -99,19 +99,5 @@ module Admin
         limit: number_with_delimiter(quota.limit),
         unit: t("admin.integrations.index.unidad.#{quota.unit}"))
     end
-
-    def integration_last_check_label(integration)
-      ts = integration.last_sync_at
-      return "nunca" unless ts
-      # Clamp at 0 to avoid "hace -1 s" when client/server clock skew
-      # makes the timestamp slightly in the future.
-      seconds = [ (Time.current - ts).to_i, 0 ].max
-      return "hace #{seconds} s" if seconds < 60
-      return "hace #{seconds / 60} min" if seconds < 3600
-      return "hace #{seconds / 3600} h" if seconds < 86_400
-      "hace #{seconds / 86_400} d"
-    end
-
-    # Returns the last 4 chars of the api key (visible).
   end
 end

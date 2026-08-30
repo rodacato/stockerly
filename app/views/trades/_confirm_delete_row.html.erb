@@ -10,7 +10,7 @@
       <%= t("positions.index.movimiento_linea",
              fecha: l(trade.executed_at.to_date, format: :short),
              lado: t("positions.index.lado_#{trade.side}"),
-             titulos: t("assets.index.titulos", count: number_with_precision(trade.shares, precision: trade.shares.to_d.frac.zero? ? 0 : 4)),
+             titulos: t("assets.index.titulos", count: format_shares(trade.shares)),
              precio: format_currency_mx(trade.price_per_share, currency: trade.currency, precision: 2)) %>
     </p>
   </div>

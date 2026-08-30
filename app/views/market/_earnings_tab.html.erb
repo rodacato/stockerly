@@ -58,10 +58,10 @@
               </span>
             </td>
             <td class="px-4 py-3 text-right font-mono text-fg-subtle">
-              <%= event.estimated_eps ? "#{event.asset.currency} #{number_with_precision(event.estimated_eps, precision: 2, delimiter: ",")}" : "—" %>
+              <%= event.estimated_eps ? format_currency_mx(event.estimated_eps, currency: event.asset.currency) : "—" %>
             </td>
             <td class="px-4 py-3 text-right font-mono font-semibold text-fg-default">
-              <%= event.actual_eps ? "#{event.asset.currency} #{number_with_precision(event.actual_eps, precision: 2, delimiter: ",")}" : t(".por_reportar") %>
+              <%= event.actual_eps ? format_currency_mx(event.actual_eps, currency: event.asset.currency) : t(".por_reportar") %>
             </td>
             <td class="px-4 py-3 text-right font-mono">
               <% if event.eps_surprise_percent %>

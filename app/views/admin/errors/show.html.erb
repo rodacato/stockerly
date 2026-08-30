@@ -18,8 +18,8 @@
     <dl class="divide-y divide-border-default rounded-xl border border-border-default bg-bg-surface px-4">
       <% [ [ t(".origen"),     admin_error_origin(@error_event) ],
            [ t(".veces"),      @error_event.occurrences ],
-           [ t(".primera"),    admin_error_timestamp(@error_event.first_seen_at) ],
-           [ t(".ultima"),     admin_error_timestamp(@error_event.last_seen_at) ],
+           [ t(".primera"),    absolute_stamp(@error_event.first_seen_at, seconds: true) ],
+           [ t(".ultima"),     absolute_stamp(@error_event.last_seen_at, seconds: true) ],
            [ t(".referencia"), @error_event.reference.presence || "—" ] ].each do |label, value| %>
         <div class="flex items-baseline justify-between gap-4 py-3">
           <dt class="text-fg-subtle"><%= label %></dt>

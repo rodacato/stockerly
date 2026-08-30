@@ -51,7 +51,7 @@
     <div>
       <p class="text-[11px] text-fg-subtle"><%= t("posicion.titulos") %></p>
       <p class="font-mono text-sm font-semibold text-fg-default">
-        <%= number_with_precision(position.shares, precision: position.shares.to_d.frac.zero? ? 0 : 4, delimiter: ",") %>
+        <%= format_shares(position.shares) %>
       </p>
     </div>
     <div>

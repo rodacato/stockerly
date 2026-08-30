@@ -32,7 +32,7 @@
       <span class="font-mono text-sm <%= entry.quota.known? ? "text-fg-default" : "text-fg-subtle" %>">
         <%= source_quota_label(entry.quota) %>
       </span>
-      <span class="font-mono text-xs text-fg-subtle"><%= integration_last_check_label(integration) %></span>
+      <span class="font-mono text-xs text-fg-subtle"><%= relative_age(integration.last_sync_at, blank: "nunca") %></span>
     </div>
     <%# No track where there is no reading: an empty bar reads as 0% used,
         which is a number we do not have. %>

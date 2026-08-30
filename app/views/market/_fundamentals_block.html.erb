@@ -16,7 +16,7 @@
       <% summary.each do |key| %>
         <% defn = MarketData::Domain::MetricDefinitions.find(key) rescue nil %>
         <% next unless defn %>
-        <%= render "market/metric_card", definition: defn, value: resolve_metric_value(presenter, key) %>
+        <%= render "market/metric_card", definition: defn, value: resolve_metric_value(presenter, key), currency: asset.currency %>
       <% end %>
     </div>
   
@@ -39,7 +39,7 @@
             </h4>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               <% defns.each do |defn| %>
-                <%= render "market/metric_card", definition: defn, value: resolve_metric_value(presenter, defn.key) %>
+                <%= render "market/metric_card", definition: defn, value: resolve_metric_value(presenter, defn.key), currency: asset.currency %>
               <% end %>
             </div>
           </div>

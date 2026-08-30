@@ -46,13 +46,6 @@ module Admin
       end
     end
 
-    def admin_log_timestamp(log)
-      ts = log.created_at
-      d  = ts.to_date
-      mxn = ts.in_time_zone("America/Mexico_City")
-      "#{d.day.to_s.rjust(2, '0')} #{DatetimeEsHelper::MONTHS_ES[d.month - 1]} #{d.year} · #{mxn.strftime('%H:%M:%S')}"
-    end
-
     def admin_log_module_chip(module_name)
       return "—" if module_name.blank?
       module_name

@@ -1,4 +1,4 @@
-<%# One metric, with its educational popover. Locals: definition, value.
+<%# One metric, with its educational popover. Locals: definition, value, currency.
     The name, description and guidance come from `market.metricas.<key>.*`;
     the domain carries the key only. The chip is built for the three metrics
     whose threshold is definitional (D36) and omitted everywhere else. %>
@@ -19,7 +19,7 @@
   <div class="flex flex-col gap-1.5">
     <div class="flex flex-wrap items-baseline gap-2">
       <p class="font-mono text-2xl font-medium tracking-tight text-fg-default">
-        <%= format_metric_value(value, definition.format_type) %>
+        <%= format_metric_value(value, definition.format_type, currency: currency) %>
       </p>
       <% if chip %>
         <span class="rounded-full px-2 py-0.5 text-[11px] font-semibold <%= chip.last %>"><%= chip.first %></span>

@@ -16,7 +16,7 @@
           <div class="rounded-xl border border-border-default bg-bg-muted p-3 text-center">
             <p class="font-mono text-[10px] uppercase tracking-widest text-fg-subtle"><%= year %></p>
             <p class="mt-1 font-mono text-base font-medium text-fg-default">
-              <%= ccy %> <%= number_with_precision(total, precision: 2, delimiter: ",") %>
+              <%= format_currency_mx(total, currency: ccy) %>
             </p>
             <p class="text-[10px] text-fg-subtle"><%= t(".por_accion") %></p>
           </div>
@@ -40,7 +40,7 @@
               <td class="px-4 py-3 font-medium text-fg-default"><%= short_date_es(div.ex_date) %></td>
               <td class="px-4 py-3 text-fg-subtle"><%= short_date_es(div.pay_date) %></td>
               <td class="px-4 py-3 text-right font-mono font-semibold text-positive-fg">
-                <%= ccy %> <%= number_with_precision(div.amount_per_share, precision: 4, delimiter: ",") %>
+                <%= format_currency_mx(div.amount_per_share, currency: ccy, precision: 4) %>
               </td>
             </tr>
           <% end %>

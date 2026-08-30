@@ -51,15 +51,15 @@ RSpec.describe StatementsHelper, type: :helper do
 
   describe "#format_statement_value" do
     it "formats large values as abbreviated currency" do
-      expect(helper.format_statement_value(394_328_000_000)).to eq("$394.3B")
+      expect(helper.format_statement_value(394_328_000_000, currency: "USD")).to eq("USD 394.3B")
     end
 
     it "returns em dash for nil values" do
-      expect(helper.format_statement_value(nil)).to eq("—")
+      expect(helper.format_statement_value(nil, currency: "USD")).to eq("—")
     end
 
     it "returns em dash for None strings" do
-      expect(helper.format_statement_value("None")).to eq("—")
+      expect(helper.format_statement_value("None", currency: "USD")).to eq("—")
     end
   end
 end
