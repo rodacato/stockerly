@@ -120,10 +120,13 @@ RSpec.describe Alerts::Domain::AlertEvaluator do
       end
 
       # A level, not an event: it stays past the threshold all session.
+      # Anchored to the start of today, not to a relative offset: `3.hours.ago`
+      # lands on yesterday when the suite runs before 03:00, and the condition
+      # under test is exactly "did it already fire today".
       it "fires once a day rather than every cooldown window" do
         close_on(asset, 1.day.ago.to_date, 150.0)
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :day_change_percent,
-                      threshold_value: 5.0, last_triggered_at: 3.hours.ago)
+                      threshold_value: 5.0, last_triggered_at: Time.current.beginning_of_day)
 
         expect(described_class.evaluate([ rule ], asset, 160.0)).to be_empty
       end

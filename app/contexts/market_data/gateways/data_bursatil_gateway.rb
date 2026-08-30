@@ -45,7 +45,7 @@ module MarketData
         self.class.source_id(exchange)
       end
 
-      # Returns Success({ symbol:, price:, change_percent:, volume:, as_of: })
+      # Returns Success({ symbol:, price:, volume:, as_of: })
       def fetch_price(symbol)
         result = fetch_bulk_prices([ symbol ])
         return result if result.failure?
@@ -58,7 +58,7 @@ module MarketData
 
       # One call covers many issuers, which is the whole reason this provider
       # replaces per-symbol polling.
-      # Returns Success([{ symbol:, price:, change_percent:, volume:, as_of: }, ...])
+      # Returns Success([{ symbol:, price:, volume:, as_of: }, ...])
       def fetch_bulk_prices(symbols, exchange: DEFAULT_EXCHANGE)
         requested = Array(symbols)
         result = get("/v2/cotizaciones", {
@@ -142,7 +142,6 @@ module MarketData
           symbol: symbol,
           source: source_id(exchange),
           price: venue["u"].to_d,
-          change_percent: venue["c"]&.to_d || BigDecimal("0"),
           volume: venue["v"]&.to_i,
           as_of: venue["f"].present? ? Time.zone.parse(venue["f"]) : nil
         }

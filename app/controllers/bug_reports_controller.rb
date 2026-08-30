@@ -20,8 +20,6 @@ class BugReportsController < AuthenticatedController
       @bug_report = BugReportInput.new(**bug_report_params.to_h.symbolize_keys)
       @errors = errors
       render :new, status: :unprocessable_content
-    else
-      redirect_to new_bug_report_path, alert: "No se pudo enviar el reporte."
     end
   end
 

@@ -124,7 +124,7 @@ RSpec.describe "Activos", type: :request do
     # ADR-021: one close is no day change. Rendering 0% would report the row
     # as flat, which is a different claim from having nothing to compare.
     it "draws a dash for a holding with no previous close" do
-      asset = mxn_asset(symbol: "NUEVA", current_price: 10, change_percent_24h: 4.0)
+      asset = mxn_asset(symbol: "NUEVA", current_price: 10)
       create(:asset_price_history, asset: asset, date: Date.current,
                                    open: 10, high: 10, low: 10, close: 10)
       create(:position, portfolio: portfolio, asset: asset, shares: 1, avg_cost: 10, status: :open)

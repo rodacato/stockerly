@@ -71,7 +71,7 @@ RSpec.describe "Panorama", type: :request do
   end
 
   describe "movimientos de interés" do
-    let(:asset) { mxn_asset(symbol: "NVDA", change_percent_24h: -3.0) }
+    let(:asset) { mxn_asset(symbol: "NVDA") }
 
     before { create(:watchlist_item, user: user, asset: asset) }
 
@@ -182,26 +182,41 @@ RSpec.describe "Panorama", type: :request do
       expect(response.body).to match(%r{text-xs text-negative">\s*−2\.0%\s*</p>})
     end
 
-    # X13 / ADR-021: the column carries whichever measure the provider that
-    # answered happened to ship, so no screen reads it any more.
-    it "reports the computed day change rather than the provider's column" do
-      asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70,
-                                        change_percent_24h: 9.9), 1.5)
+    # ADR-021: computed from two closes, so it means the same thing whichever
+    # provider answered. X13 deleted the column this used to be contrasted
+    # against, which is why the decoy value is gone from here.
+    it "reports the day change computed from two closes" do
+      asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
       create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
 
       get dashboard_path
 
       expect(response.body).to match(%r{text-sm font-bold text-positive">\s*\+1\.5%\s*</p>})
-      expect(response.body).not_to include("+9.9%")
+    end
+
+    # Negative, and the one behaviour X13 actually changed: with the provider
+    # column gone there is nothing to fall back on, so an asset without two
+    # closes has no day change — and the radar, which only carries what moved,
+    # leaves it out rather than showing a number it cannot compute.
+    it "leaves out an asset that has only one close" do
+      recien = mxn_asset(symbol: "RECIEN", current_price: 70)
+      create(:asset_price_history, asset: recien, date: Date.current,
+                                   open: 70, high: 70, low: 70, close: 70)
+      movido = with_day_change(mxn_asset(symbol: "MOVIDO", current_price: 100), 2.0)
+      [ recien, movido ].each { |asset| create(:watchlist_item, user: user, asset: asset) }
+
+      get dashboard_path
+      radar = response.body.split(I18n.t("dashboard.show.radar_titulo")).last
+
+      expect(radar).to include("MOVIDO")
+      expect(radar).not_to include("RECIEN")
     end
 
     # The radar is ordered by the size of the move, so the number it sorts on
     # has to be the number the row shows — the defect X13 belongs to.
     it "orders the rows by the same figure the rows display" do
-      loud  = with_day_change(mxn_asset(symbol: "LOUD", current_price: 100,
-                                        change_percent_24h: 0.1), 4.0)
-      quiet = with_day_change(mxn_asset(symbol: "QUIET", current_price: 100,
-                                        change_percent_24h: 9.9), 1.0)
+      loud  = with_day_change(mxn_asset(symbol: "LOUD", current_price: 100), 4.0)
+      quiet = with_day_change(mxn_asset(symbol: "QUIET", current_price: 100), 1.0)
       [ loud, quiet ].each { |asset| create(:watchlist_item, user: user, asset: asset) }
 
       get dashboard_path

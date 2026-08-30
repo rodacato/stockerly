@@ -32,6 +32,11 @@ es-MX:
         ultima: Última vez
         veces: Ocurrencias
     integrations:
+      flash:
+        actualizada: Integración actualizada.
+        conectada: Integración conectada.
+        eliminada: Integración eliminada.
+        sincronizacion_encolada: Sincronización de la integración programada.
       index:
         administrar: Administrar fuente
         api_key: API key
@@ -95,6 +100,8 @@ es-MX:
         ver_detalle: Ver detalle
     no_autorizado: No tienes acceso a esa sección.
     settings:
+      flash:
+        guardados: Ajustes guardados.
       show:
         banner_activo: La app está bloqueada y muestra un banner. Tu sesión sigue
           viva.
@@ -275,6 +282,7 @@ es-MX:
       codigo_recuperacion_usado: Entraste con un código de recuperación. Te quedan
         %{count}.
       credenciales_invalidas: Correo o contraseña inválidos.
+      requiere_sesion: Inicia sesión para continuar.
       sesion_cerrada: Sesión cerrada correctamente.
       verificacion_expirada: Se agotó el tiempo para verificar. Inicia sesión otra
         vez.
@@ -1056,6 +1064,12 @@ es-MX:
       sin_tc: sin TC
       titulo: Historial
       valores_en: Valores en %{currency}
+  profiles:
+    flash:
+      actualizado: Perfil actualizado.
+      contrasena_cambiada: Contraseña cambiada correctamente.
+      moneda_actualizada: Moneda actualizada.
+      moneda_no_soportada: Moneda no soportada.
   pwa:
     manifest:
       registrar: Registrar movimiento
@@ -1270,6 +1284,8 @@ es-MX:
       moneda: Moneda
       opcional: opcional
       precio: Precio por título
+      proyeccion: Tu costo promedio pasaría de %{currency} %{actual} a %{currency}
+        %{proyectado}
       tc_banxico: FIX de Banxico del %{date}
       tc_manual: Sin FIX para esa fecha. Escríbelo si lo sabes.
       tc_titulo: Tipo de cambio · %{base}/%{target}

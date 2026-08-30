@@ -15,7 +15,7 @@ module MarketData
     end
 
     # Fetch real-time quote for a single symbol.
-    # Returns Success({ symbol:, price:, change_percent:, volume: })
+    # Returns Success({ symbol:, price:, volume: })
     def fetch_price(symbol)
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
@@ -154,7 +154,6 @@ module MarketData
       Success({
         symbol: symbol,
         price: current.to_d,
-        change_percent: body["dp"]&.to_d || BigDecimal("0"),
         volume: nil
       })
     end

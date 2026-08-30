@@ -14,6 +14,7 @@ RSpec.describe "Admin Integrations", type: :request do
       }
 
       expect(response).to redirect_to(admin_integrations_path)
+      expect(flash[:notice]).to eq("Integración actualizada.")
       expect(integration.reload.daily_call_limit).to eq(1000)
       expect(integration.reload.max_requests_per_minute).to eq(10)
     end
@@ -105,6 +106,28 @@ RSpec.describe "Admin Integrations", type: :request do
       }.to change(Integration, :count).by(-1)
 
       expect(response).to redirect_to(admin_integrations_path)
+      expect(flash[:notice]).to eq("Integración eliminada.")
+    end
+  end
+
+  describe "POST /admin/integrations" do
+    it "says the provider is connected" do
+      post admin_integrations_path, params: {
+        integration: { provider_name: "Finnhub", provider_type: "market_data" }
+      }
+
+      expect(response).to redirect_to(admin_integrations_path)
+      expect(flash[:notice]).to eq("Integración conectada.")
+    end
+  end
+
+  describe "POST /admin/integrations/:id/refresh_sync" do
+    let!(:integration) { create(:integration, provider_name: "Alpaca") }
+
+    it "says the sync was queued" do
+      post refresh_sync_admin_integration_path(integration)
+
+      expect(flash[:notice]).to eq("Sincronización de la integración programada.")
     end
   end
 end

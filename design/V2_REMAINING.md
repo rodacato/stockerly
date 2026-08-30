@@ -775,13 +775,29 @@ decides which**, and this entry closes with it.
 opt-in toggle, so the allowances that outlived the deleted widget are **deliberate rather than
 residue** — which is exactly the fork this entry named. The toggle itself is a board item.
 
-### X18 ⚪ Provenance and the `≈` conversion exist only on the detail
+**Re-examined 2026-08-29 (#458) and kept, over an argument to remove them.** The argument was that a
+CSP allowance is live surface rather than a plan: `D66` is `Blocked` on a research item that has not
+run, so the origins are permitted for a feature with no build date, and re-adding four lines in the
+PR that builds the toggle costs nothing. Adrian's call is to keep them. What the entry was actually
+missing was not a removal but a **reader** — `content_security_policy.rb` now names D66 as the
+reason and the condition that ends it, so the next person to read that file finds a decision instead
+of residue. If D66 is ever dropped, the allowances go with it.
+
+### X18 ✅ Provenance stays on the detail — decided 2026-08-29 (D74, #458)
 
 [`_asset_price`](../app/views/components/_asset_price.html.erb) shows the approximate value in your
 preferred currency and a caption naming which provider supplied the number. Neither row component
 carries either, and the watchlist mixes currencies without converting (D10 is why — every value
 names its own). Consistent with D10; worth a deliberate call rather than an omission, since
 "where did this number come from" is the one question this product's screens exist to answer.
+
+**Decided as `D74`: the rows do not carry it.** Rows are for scanning and the detail is for
+checking — a reader asking where a number came from is already opening it — and the rows do carry
+the part that changes meaning at a glance, which is the currency. **The measurement is what settled
+it:** `asset_data_source_caption` reads `PriceSeries.for(asset).latest(1)`, one query per call, so
+per row it is **one query per row** — `X15`'s exact shape, closed days earlier by batching
+`sparkline_heights` into a window function. The choice was never "add a caption" but "add a batched
+read and row space for a question nobody asks while scanning". D74 records what would reverse it.
 
 ### X19 ✅ `PriceSeries#recent(n)` counted calendar days while both callers read it as rows — fixed 2026-08-29
 
@@ -813,7 +829,7 @@ still above MACD's 34, so the first version of the spec passed against the old c
 holidays it drops to ~32 and the reading loses MACD entirely. Verified by reverting the fix: the
 spec fails with `macd` absent.
 
-### X21 ⚪ `_analysis.html.erb` assembles the same way CKP-7 objected to, one layer out
+### X21 ✅ `_analysis.html.erb` assembled the same way CKP-7 objected to — closed 2026-08-29 (#457)
 
 Found 2026-08-29 while closing CKP-7. With the controller's assembly moved into its use cases, the
 remaining assembly sits in the **view**: `market/_analysis.html.erb` calls `cost_anchor_for`,
@@ -826,6 +842,19 @@ so and it is still true — so this is not an N+1 or a boundary crossing. It is 
 CKP-7 objected to: a layer that should be rendering is deciding what to render. Whether that matters
 enough to move is a call; it is recorded here rather than fixed by momentum, since CKP-7's own fix is
 what put it in view.
+
+**Closed 2026-08-29 (#457), and the two halves went to different places** — which is the part worth
+keeping, because the obvious single answer was wrong. The 52-week range is MarketData's own reading,
+so it moved into `LoadAssetDetail`. The anchors are not: they compose a **Trading** position with an
+**Alerts** rule, so the use case cannot assemble them under ADR-002 and the controller was the
+obvious home — the same controller `CKP-7` and `TD5` had just deflated. They became
+`Trading::UseCases::LoadAssetAnchors` instead, taking what the controller already holds and issuing
+no query.
+
+**The query count was measured rather than argued: 21 before, 21 after.** The budget spec that
+landed with it is a guard against a future fetch and not a proof of this change — it passes on both
+commits by design, and was verified by adding ten queries to the partial, which fails it. Deleting
+the four now-unused helpers also took `MarketHelper` from a `D` rating to a `C`.
 
 ### X20 ✅ A missing volume was scored as zero — fixed 2026-08-29
 
