@@ -9,7 +9,7 @@
     summary = summary_metrics_for(asset)
     rest = remaining_metrics_by_category(asset, presenter)
   %>
-  <section data-controller="reveal" class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+  <section data-controller="reveal" class="<%= card_classes("flex flex-col gap-4 p-5") %>">
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default"><%= t(".titulo") %></h3>
   
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

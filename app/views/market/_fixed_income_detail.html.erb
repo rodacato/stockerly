@@ -14,7 +14,7 @@
   figure_class    = "mt-1 font-mono text-lg font-medium text-fg-default"
 %>
 
-<section class="flex flex-col gap-5 rounded-2xl border border-border-default bg-bg-surface p-6">
+<section class="<%= card_classes("flex flex-col gap-5 p-6") %>">
   <div class="flex flex-wrap items-baseline gap-2">
     <h2 class="font-display text-lg font-semibold tracking-tight text-fg-default"><%= t(".titulo") %></h2>
     <span class="text-xs text-fg-subtle"><%= t(".fuente") %></span>
@@ -62,7 +62,7 @@
   </div>
 </section>
 
-<section class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-6">
+<section class="<%= card_classes("flex flex-col gap-4 p-6") %>">
   <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
     <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">calendar_today</span>
     <%= t(".avance") %>
@@ -95,7 +95,7 @@
   <% end %>
 </section>
 
-<section class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-6">
+<section class="<%= card_classes("flex flex-col gap-4 p-6") %>">
   <div class="flex flex-col gap-1">
     <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
       <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">calculate</span>

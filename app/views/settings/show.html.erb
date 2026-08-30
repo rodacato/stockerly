@@ -1,7 +1,7 @@
 <% content_for :page_title, t(".titulo") %>
 
 <div class="flex flex-col gap-8">
-  <section class="flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+  <section class="<%= card_classes("flex items-center gap-4 p-5") %>">
     <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-muted font-display text-lg font-bold text-primary">
       <%= @user.full_name.to_s.strip.first&.upcase || "?" %>
     </span>
@@ -66,7 +66,7 @@
         person wants to load is what this section is about. %>
     <%= render "settings/nav_row", icon: "upload_file", path: new_trade_import_path,
                title: t(".importar"), description: t(".importar_desc") %>
-    <div class="rounded-2xl border border-border-default bg-bg-surface p-5">
+    <div class="<%= card_classes("p-5") %>">
       <p class="text-sm text-fg-subtle"><%= t(".datos_cuerpo") %></p>
       <%# Issue #176 builds this in the app; until then the honest thing is to
           name the procedure that actually exists. %>

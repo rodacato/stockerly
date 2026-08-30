@@ -7,7 +7,7 @@
     <%= t("settings.show.tema") %>
   </h2>
 
-  <div class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-4">
+  <div class="<%= card_classes("flex flex-col gap-4 p-4") %>">
     <div data-controller="theme" data-theme-storage-key-value="stockerly.theme"
          class="flex gap-1 rounded-xl bg-bg-muted p-1">
       <% [ [ "light", "Claro" ], [ "dark", "Oscuro" ], [ "system", "Sistema" ] ].each do |mode, label| %>

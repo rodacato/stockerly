@@ -11,7 +11,7 @@
       min/max badges. %>
   <%= render "market/price_chart" %>
 <% elsif @price_histories.size >= 2 %>
-  <section class="rounded-2xl border border-border-default bg-bg-surface p-5">
+  <section class="<%= card_classes("p-5") %>">
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
       <%= t("market.precio.titulo", currency: @asset.currency, days: MarketData::UseCases::LoadAssetDetail::CHART_DAYS) %>
     </h3>
@@ -41,13 +41,13 @@
   <%= render "market/company_facts", asset: @asset, company_overview: @company_overview %>
 
   <% if @dividends.present? %>
-    <section class="rounded-2xl border border-border-default bg-bg-surface p-5">
+    <section class="<%= card_classes("p-5") %>">
       <%= render "market/dividend_history" %>
     </section>
   <% end %>
 
   <% if @has_statements %>
-    <section class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+    <section class="<%= card_classes("flex flex-col gap-4 p-5") %>">
       <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
         <%= t("market.statements_tab.titulo") %>
       </h3>

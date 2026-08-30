@@ -4,7 +4,7 @@
 
 <div class="flex flex-col gap-5">
   <% if @summary %>
-    <section class="flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+    <section class="<%= card_classes("flex flex-wrap items-end justify-between gap-4 p-5") %>">
       <div class="flex flex-col gap-2">
         <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
           <%= t("assets.index.valor_de_mercado", currency: @currency) %>

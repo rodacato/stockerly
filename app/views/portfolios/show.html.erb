@@ -8,7 +8,7 @@
 
   <div class="flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:items-start">
     <section class="lg:col-span-8">
-      <div class="rounded-2xl border border-border-default bg-bg-surface p-5">
+      <div class="<%= card_classes("p-5") %>">
         <div class="flex flex-wrap items-baseline justify-between gap-3">
           <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".como_ha_ido") %></h2>
           <% if @twr %>
@@ -46,7 +46,7 @@
     </section>
 
     <section class="lg:col-span-4">
-      <div class="rounded-2xl border border-border-default bg-bg-surface p-5">
+      <div class="<%= card_classes("p-5") %>">
         <div class="flex flex-wrap items-baseline justify-between gap-2">
           <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".como_repartido") %></h2>
           <span class="font-mono text-[11px] uppercase tracking-wider text-fg-subtle">

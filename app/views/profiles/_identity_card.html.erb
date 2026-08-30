@@ -8,7 +8,7 @@
 <% role_label = user.admin? ? "Administrador" : "Usuario" %>
 <% role_icon  = user.admin? ? "shield_person" : "person" %>
 
-<aside class="rounded-2xl border border-border-default bg-bg-surface p-6 shadow-sm">
+<aside class="<%= card_classes("p-6 shadow-sm") %>">
   <div class="flex flex-col items-center gap-4 text-center">
     <div class="size-20 rounded-2xl bg-primary-muted border-4 border-white dark:border-bg-canvas shadow-xl flex items-center justify-center">
       <span class="text-2xl font-black text-primary"><%= initials %></span>

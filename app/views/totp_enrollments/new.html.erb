@@ -8,7 +8,7 @@
 
   <%= render "shared/flash_alert", message: flash[:alert] %>
 
-  <div class="flex flex-col items-center gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+  <div class="<%= card_classes("flex flex-col items-center gap-4 p-5") %>">
     <%# White plate under the QR on purpose: a dark surface behind the modules
         breaks the contrast every scanner depends on. %>
     <div class="rounded-xl bg-white p-3 [&_svg]:size-48">

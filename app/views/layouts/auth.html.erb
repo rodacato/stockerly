@@ -7,7 +7,7 @@
       <%= render "shared/flash" %>
     </div>
 
-    <div class="grid w-full max-w-4xl overflow-hidden rounded-2xl border border-border-default bg-bg-surface shadow-sm lg:grid-cols-2">
+    <div class="<%= card_classes("grid w-full max-w-4xl overflow-hidden shadow-sm lg:grid-cols-2") %>">
       <%# Brand panel: desktop only. On a phone the logo lives inside the card,
           which is what the mobile artboard draws. %>
       <aside class="hidden flex-col justify-between bg-primary p-8 lg:flex">

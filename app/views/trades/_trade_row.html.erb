@@ -2,7 +2,7 @@
     Historial and is the target of the Turbo Stream replaces that the inline
     edit and delete flows send, so the dom_id is load-bearing. %>
 <% is_buy = trade.buy? %>
-<li id="<%= dom_id(trade) %>" class="group flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3">
+<li id="<%= dom_id(trade) %>" class="<%= card_classes("group flex items-center gap-3 px-4 py-3") %>">
   <div class="min-w-0 flex-1">
     <p class="font-mono text-sm font-bold text-fg-default"><%= trade.asset.symbol %></p>
     <p class="text-xs text-fg-subtle">

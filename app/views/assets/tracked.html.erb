@@ -45,7 +45,7 @@
     <% end %>
   </div>
 
-  <aside class="flex w-full shrink-0 flex-col gap-3 rounded-2xl border border-border-default bg-bg-surface p-5 lg:w-80">
+  <aside class="<%= card_classes("flex w-full shrink-0 flex-col gap-3 p-5 lg:w-80") %>">
     <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("assets.tracked.presupuesto_titulo") %></p>
     <p class="font-display text-3xl font-bold tracking-tight text-fg-default"><%= @budget.remaining %></p>
     <div class="h-2 overflow-hidden rounded-full bg-bg-muted">

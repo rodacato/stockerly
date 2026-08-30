@@ -18,7 +18,7 @@
       body: trend ? t(".tendencia_#{trend_direction}", when: observation_when(trend.observed_at)) : t(".tendencia_sin_datos") }
   ]
 %>
-<section class="flex flex-col gap-4 rounded-2xl border border-border-default bg-bg-surface p-5">
+<section class="<%= card_classes("flex flex-col gap-4 p-5") %>">
   <div class="flex flex-wrap items-baseline gap-2">
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default"><%= t(".titulo") %></h3>
     <span class="text-xs text-fg-subtle"><%= t(".subtitulo") %></span>

@@ -2,7 +2,7 @@
     without asking the reader to learn an indicator. Hoisted out of Señales,
     which is #306-blocked, so this ships on its own (CKP-9).
     Locals: range (MarketData::Domain::FiftyTwoWeekRange::Reading), currency. %>
-<section class="flex flex-col gap-2 rounded-2xl border border-border-default bg-bg-surface p-5">
+<section class="<%= card_classes("flex flex-col gap-2 p-5") %>">
   <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
     <h3 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".titulo") %></h3>
     <p class="text-xs text-fg-subtle">
