@@ -3,11 +3,12 @@ module MarketData
     # The one definition of the day change every screen renders:
     # (current close − previous close) / previous close, as a percentage.
     #
-    # ADR-021: `assets.change_percent_24h` carries whichever measure the
-    # provider that answered happened to ship, so it cannot be what a screen
-    # reads. Computing from two closes is provider-independent, and
-    # RecordPriceHistory keeps today's row at the current price, so the figure
-    # moves with the sync instead of going stale at the close.
+    # ADR-021: `assets.change_percent_24h` used to carry whichever measure the
+    # provider that answered happened to ship, so it could not be what a screen
+    # read. The column is gone; computing from two closes is
+    # provider-independent, and RecordPriceHistory keeps today's row at the
+    # current price, so the figure moves with the sync instead of going stale
+    # at the close.
     #
     # "Previous" is the previous row, never yesterday's date: equities do not
     # trade every day and crypto does.

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_29_220000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_30_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -89,7 +89,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_220000) do
 
   create_table "assets", force: :cascade do |t|
     t.integer "asset_type", default: 0, null: false
-    t.decimal "change_percent_24h", precision: 8, scale: 4
     t.string "country", limit: 2
     t.datetime "created_at", null: false
     t.string "currency", limit: 3, default: "USD", null: false
