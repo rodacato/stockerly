@@ -7,7 +7,11 @@
        data-controller="trade-sheet"
        data-trade-sheet-fx-url-value="<%= fx_rate_path %>"
        data-trade-sheet-preferred-currency-value="<%= @currency %>"
-       data-trade-sheet-reference-currency-value="<%= Trading::Domain::ExecutionRate::REFERENCE %>">
+       data-trade-sheet-reference-currency-value="<%= Trading::Domain::ExecutionRate::REFERENCE %>"
+       data-trade-sheet-held-shares-value="<%= @held&.shares %>"
+       data-trade-sheet-held-avg-cost-value="<%= @held&.avg_cost %>"
+       data-trade-sheet-held-symbol-value="<%= @held&.asset&.symbol %>"
+       data-trade-sheet-held-currency-value="<%= @held&.asset&.currency %>">
 
     <%= form_with url: trades_path, scope: :trade, class: "flex min-h-0 flex-col" do |f| %>
       <div class="flex flex-col gap-4 overflow-y-auto px-1 pb-4">
@@ -32,6 +36,7 @@
           <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.activo") %></span>
           <%= f.text_field :asset_symbol, value: @symbol, required: true, autocomplete: "off",
                            placeholder: t("trades.new.activo_ayuda"),
+                           data: { trade_sheet_target: "symbol", action: "input->trade-sheet#recalculate" },
                            class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
         </label>
 
@@ -66,6 +71,13 @@
                                class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-right font-mono text-sm text-fg-default" %>
           </label>
         </div>
+
+        <%# What this buy would do to the average you already hold (issue 428).
+            Absent until every input it needs is present, so it never shows a
+            stale or half-answered figure. %>
+        <p hidden class="rounded-lg bg-bg-muted px-3 py-2.5 text-sm text-fg-subtle"
+           data-trade-sheet-target="projection"
+           data-template="<%= t("trades.new.proyeccion", currency: "%{currency}", actual: "%{actual}", proyectado: "%{proyectado}") %>"></p>
 
         <label class="flex flex-col gap-1.5">
           <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle">
