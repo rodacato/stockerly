@@ -13,7 +13,7 @@ module Trading
         required(:price_per_share).filled(:decimal)
         required(:executed_at).filled(:string)
         optional(:fee).maybe(:decimal)
-        optional(:currency).maybe(:string, included_in?: Asset::SUPPORTED_CURRENCIES)
+        required(:currency).filled(:string, included_in?: Asset::SUPPORTED_CURRENCIES)
         optional(:external_id).maybe(:string)
         optional(:net_amount).maybe(:decimal)
       end

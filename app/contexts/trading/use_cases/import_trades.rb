@@ -231,7 +231,7 @@ module Trading
 
       def earliest_date(rows) = rows.map { |row| executed_on(row) }.min
 
-      def currency_of(row) = row[:currency].presence || "USD"
+      def currency_of(row) = row[:currency]
 
       def executed_on(row) = Time.zone.parse(row[:executed_at]).to_date
     end

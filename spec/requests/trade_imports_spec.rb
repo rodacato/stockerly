@@ -5,8 +5,8 @@ RSpec.describe "Trade imports", type: :request do
   let!(:portfolio) { create(:portfolio, user: user) }
   let!(:vt) { create(:asset, :etf, symbol: "VT", currency: "USD") }
 
-  let(:header) { "asset_symbol,side,shares,price_per_share,executed_at,external_id" }
-  let(:good) { "#{header}\nVT,buy,2.0,100.0,2025-12-08,order-1" }
+  let(:header) { "asset_symbol,side,shares,price_per_share,executed_at,external_id,currency" }
+  let(:good) { "#{header}\nVT,buy,2.0,100.0,2025-12-08,order-1,USD" }
 
   before do
     FxRateHistory.record(base: "USD", quote: "MXN", date: Date.new(2025, 12, 1), rate: 18.2293, source: "banxico")
@@ -49,7 +49,7 @@ RSpec.describe "Trade imports", type: :request do
     end
 
     it "refuses the whole batch when a symbol is unknown, naming every one" do
-      csv = "#{good}\nNOPE,buy,1.0,10.0,2025-12-08,order-2\nALSONOPE,buy,1.0,10.0,2025-12-08,order-3"
+      csv = "#{good}\nNOPE,buy,1.0,10.0,2025-12-08,order-2,USD\nALSONOPE,buy,1.0,10.0,2025-12-08,order-3,USD"
 
       post preview_trade_import_path, params: { contenido: csv }
 
@@ -63,7 +63,7 @@ RSpec.describe "Trade imports", type: :request do
     # builds a checkbox id from each symbol. The existing upload example only
     # ever exercised the happy path, so a binary symbol never reached the view.
     it "renders the unknown-symbol screen for an uploaded file, not only pasted text" do
-      csv = "#{good}\nALAB,buy,1.0,10.0,2025-12-08,order-2"
+      csv = "#{good}\nALAB,buy,1.0,10.0,2025-12-08,order-2,USD"
       file = Rack::Test::UploadedFile.new(StringIO.new(csv), "text/csv", original_filename: "trades.csv")
 
       post preview_trade_import_path, params: { archivo: file }
@@ -100,7 +100,7 @@ RSpec.describe "Trade imports", type: :request do
     end
 
     it "writes nothing when the batch is refused" do
-      csv = "#{header}\nNOPE,buy,1.0,10.0,2025-12-08,order-9"
+      csv = "#{header}\nNOPE,buy,1.0,10.0,2025-12-08,order-9,USD"
 
       expect {
         post trade_imports_path, params: { contenido: csv }
@@ -125,7 +125,7 @@ RSpec.describe "Trade imports", type: :request do
   # One dead ticker held up 49 good trades. The refusal stays the default; this
   # is the door out of it, and it only opens when asked.
   describe "importing without the symbols it cannot resolve" do
-    let(:mixed) { "#{good}\nNOPE,buy,1.0,10.0,2025-12-08,order-2\nNOPE,buy,2.0,10.0,2025-12-09,order-3" }
+    let(:mixed) { "#{good}\nNOPE,buy,1.0,10.0,2025-12-08,order-2,USD\nNOPE,buy,2.0,10.0,2025-12-09,order-3,USD" }
 
     it "offers the way out, naming what it would cost" do
       post preview_trade_import_path, params: { contenido: mixed }
@@ -153,7 +153,7 @@ RSpec.describe "Trade imports", type: :request do
     # Dropping some rows of a symbol would leave that position wrong by a
     # number, which is worse than not having it.
     it "drops whole symbols, never single rows" do
-      csv = "#{mixed}\nVT,buy,1.0,120.0,2025-12-09,order-4"
+      csv = "#{mixed}\nVT,buy,1.0,120.0,2025-12-09,order-4,USD"
 
       post trade_imports_path, params: { contenido: csv, skip_unknown: "1" }
 
@@ -174,7 +174,7 @@ RSpec.describe "Trade imports", type: :request do
     # The screen used to offer one CTA that was a link to /tracked carrying no
     # symbols, so seventeen missing tickers meant seventeen manual entries.
     it "offers every missing symbol as a checked box, not a link" do
-      csv = "#{good}\nAMD,buy,1.0,10.0,2025-12-08,order-2\nALAB,buy,1.0,10.0,2025-12-08,order-3"
+      csv = "#{good}\nAMD,buy,1.0,10.0,2025-12-08,order-2,USD\nALAB,buy,1.0,10.0,2025-12-08,order-3,USD"
 
       post preview_trade_import_path, params: { contenido: csv }
 
@@ -187,7 +187,7 @@ RSpec.describe "Trade imports", type: :request do
     # The two halves cost differently, so the row says which is which before
     # anyone spends a provider call on it.
     it "says which symbols the catalogue already knows" do
-      csv = "#{good}\nAMD,buy,1.0,10.0,2025-12-08,order-2\nALAB,buy,1.0,10.0,2025-12-08,order-3"
+      csv = "#{good}\nAMD,buy,1.0,10.0,2025-12-08,order-2,USD\nALAB,buy,1.0,10.0,2025-12-08,order-3,USD"
 
       post preview_trade_import_path, params: { contenido: csv }
 
@@ -242,7 +242,7 @@ RSpec.describe "Trade imports", type: :request do
     end
 
     it "offers both escapes on the refusal screen" do
-      csv = "#{good}\nALAB,buy,1.0,10.0,2025-12-08,order-2"
+      csv = "#{good}\nALAB,buy,1.0,10.0,2025-12-08,order-2,USD"
 
       post preview_trade_import_path, params: { contenido: csv }
 
