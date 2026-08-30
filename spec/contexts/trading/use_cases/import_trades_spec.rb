@@ -27,6 +27,16 @@ RSpec.describe Trading::UseCases::ImportTrades do
   end
 
   describe "refusals" do
+    it "refuses a row that does not state its currency, naming the row" do
+      result = described_class.call(user: user, rows: [ row, row(currency: nil, external_id: "order-2") ])
+
+      expect(result).to be_failure
+      tag, invalid = result.failure
+      expect(tag).to eq(:invalid_rows)
+      expect(invalid.first[:row]).to eq(2)
+      expect(invalid.first[:errors]).to have_key(:currency)
+    end
+
     it "refuses the batch when a symbol is not in the catalogue, listing every one" do
       result = described_class.call(user: user, rows: [ row, row(asset_symbol: "NOPE", external_id: "o2"), row(asset_symbol: "ALSONOPE", external_id: "o3") ], dry_run: false)
 
