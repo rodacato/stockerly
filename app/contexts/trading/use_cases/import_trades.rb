@@ -26,7 +26,7 @@ module Trading
         rates  = yield resolve_fx_rates(parsed)
 
         fresh, skipped = partition_already_imported(portfolio, parsed)
-        report = build_report(fresh, skipped, dry_run).merge(dropped: dropped || {})
+        report = build_report(fresh, skipped, dry_run, rates, user.preferred_currency).merge(dropped: dropped || {})
         return Success(report) if dry_run
 
         batch = Batch.new(portfolio: portfolio, rows: fresh, assets: assets, rates: rates)
@@ -215,18 +215,32 @@ module Trading
         ))
       end
 
-      def build_report(fresh, skipped, dry_run)
+      def build_report(fresh, skipped, dry_run, rates, currency)
         dates = fresh.map { |row| executed_on(row) }
 
         {
           dry_run: dry_run,
           imported: fresh.size,
           skipped: skipped.map { |row| { asset_symbol: row[:asset_symbol], external_id: row[:external_id] } },
-          invested: fresh.sum { |row| row[:shares] * row[:price_per_share] },
+          invested: invested_in(fresh, rates, currency),
+          currency: currency,
           symbols: fresh.map { |row| row[:asset_symbol].upcase }.uniq.sort,
           earliest_on: dates.min,
           latest_on: dates.max
         }
+      end
+
+      # Each row at the rate of its own execution date, which resolve_fx_rates
+      # has already proven exists — a batch missing any of them never gets here.
+      def invested_in(rows, rates, target)
+        rows.sum do |row|
+          currency = currency_of(row)
+          date = executed_on(row)
+
+          row[:shares] * row[:price_per_share] * Trading::Domain::ExecutionRate.factor(
+            currency: currency, stored: rates[[ currency, date ]], on: date, target: target
+          )
+        end
       end
 
       def earliest_date(rows) = rows.map { |row| executed_on(row) }.min

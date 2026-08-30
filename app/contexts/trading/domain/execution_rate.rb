@@ -17,17 +17,23 @@ module Trading
       REFERENCE = "MXN".freeze
 
       def self.multiplier(trade:, target:)
+        factor(currency: trade.currency, stored: trade.fx_rate_at_execution,
+               on: trade.executed_at.to_date, target: target, subject: "Trade##{trade.id}")
+      end
+
+      # The same arithmetic for money that is not a persisted trade yet — an
+      # import preview holds rows and their captured rates, not records.
+      def self.factor(currency:, stored:, on:, target:, subject: "amount")
         target = target.to_s.upcase
         # Same currency cancels the ratio exactly; skipping the lookup is both
         # the correct answer and the hot path.
-        return BigDecimal(1) if target == trade.currency
+        return BigDecimal(1) if target == currency
 
-        stored = trade.fx_rate_at_execution
-        raise MissingFxRate, "Trade##{trade.id}: no fx_rate_at_execution; cannot state its value in #{target}" if stored.nil?
+        raise MissingFxRate, "#{subject}: no rate captured; cannot state its value in #{target}" if stored.nil?
         return stored if target == REFERENCE
 
-        divisor = FxRateHistory.rate_on(base: target, quote: REFERENCE, date: trade.executed_at.to_date)
-        raise MissingFxRate, "No #{target}->#{REFERENCE} rate on #{trade.executed_at.to_date}; cannot state Trade##{trade.id} in #{target}" unless divisor&.positive?
+        divisor = FxRateHistory.rate_on(base: target, quote: REFERENCE, date: on)
+        raise MissingFxRate, "No #{target}->#{REFERENCE} rate on #{on}; cannot state #{subject} in #{target}" unless divisor&.positive?
 
         stored / divisor
       end

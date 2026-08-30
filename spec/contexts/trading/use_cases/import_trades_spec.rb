@@ -215,4 +215,27 @@ RSpec.describe Trading::UseCases::ImportTrades do
       expect(Trade.last.asset).not_to eq(echo)
     end
   end
+  # The rows have carried their own currency since #496; the headline figure
+  # summed them raw and rendered with no label at all.
+  describe "the invested total on a mixed-currency file" do
+    it "states it in the reader's currency instead of adding two units" do
+      result = described_class.call(user: user, rows: [
+        row(shares: "1", price_per_share: "100", currency: "USD", net_amount: nil),
+        row(shares: "1", price_per_share: "100", currency: "MXN", net_amount: nil, external_id: "order-2")
+      ])
+
+      expect(result).to be_success
+      report = result.value!
+
+      # 100 USD + (100 MXN ÷ 18.2293) — a raw sum would read 200.
+      expect(report[:currency]).to eq("USD")
+      expect(report[:invested].to_f).to be_within(0.01).of(105.49)
+    end
+
+    it "names the currency the figure is stated in" do
+      result = described_class.call(user: user, rows: [ row ])
+
+      expect(result.value![:currency]).to eq(user.preferred_currency)
+    end
+  end
 end

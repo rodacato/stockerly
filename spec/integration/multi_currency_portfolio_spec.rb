@@ -167,7 +167,7 @@ RSpec.describe "Multi-currency portfolio", type: :model do
 
     it "raises rather than silently treating the FX rate as zero" do
       expect { Trading::Domain::PortfolioSummary.new(portfolio).total_invested }
-        .to raise_error(Trading::Domain::MissingFxRate, /no fx_rate_at_execution/)
+        .to raise_error(Trading::Domain::MissingFxRate, /no rate captured/)
     end
   end
 

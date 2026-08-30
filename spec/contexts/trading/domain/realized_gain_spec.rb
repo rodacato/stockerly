@@ -61,7 +61,7 @@ RSpec.describe Trading::Domain::RealizedGain do
     trade(side: :sell, shares: 1, price: 120, fx: 18)
 
     expect { described_class.new(position.reload, currency: "MXN").amount }
-      .to raise_error(Trading::Domain::MissingFxRate, /fx_rate_at_execution/)
+      .to raise_error(Trading::Domain::MissingFxRate, /no rate captured/)
   end
 
   it "ignores discarded trades" do
