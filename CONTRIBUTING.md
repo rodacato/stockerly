@@ -63,6 +63,44 @@ bin/ci                # setup + rubocop + bundler-audit + importmap audit + brak
 bin/jobs              # Starts Solid Queue worker
 ```
 
+### Databases and git worktrees
+
+Database names are derived from the directory the checkout lives in, so every git worktree gets
+its own set and none of them can corrupt another's. `/workspaces/stockerly` uses
+`stockerly_development` and `stockerly_test`; a worktree at `/workspaces/stockerly-486` uses
+`stockerly_486_development` and `stockerly_486_test`. Nothing needs editing — `Stockerly::Checkout`
+reads the directory name, and `DATABASE_PREFIX` overrides it — which is also the answer if two
+checkouts ever sit in directories that share a name.
+
+This matters because worktrees otherwise share one Postgres: a migration run in one changes the
+schema every other one reads, and two suites on different branches purge and reload the same test
+database in a loop (#486).
+
+```bash
+git worktree add ../stockerly-486 -b chore/my-branch origin/master --no-track
+cd ../stockerly-486
+bin/rails db:prepare            # creates this worktree's databases; migrate and test freely
+bin/rails tailwindcss:build     # the build is gitignored, and the js: true specs need it
+```
+
+When you are done with a worktree, drop its databases before removing the directory — otherwise
+they stay on the server under a name that no longer means anything:
+
+```bash
+bin/rails db:drop                        # from inside the worktree
+cd ../stockerly && git worktree remove ../stockerly-486
+```
+
+If you forgot, the databases can still be found and removed from any checkout:
+
+```bash
+bin/rails db:worktrees          # every group on this server, and the worktree it belongs to
+bin/rails db:worktrees:prune    # drops the groups whose worktree is gone (FORCE=1 skips the prompt)
+```
+
+`prune` only ever considers databases named after this repository's checkouts, never drops a
+prefix that `git worktree list` still reports, and stops rather than guessing if git cannot answer.
+
 ## Project Architecture
 
 Stockerly uses **DDD + Hexagonal Architecture**. Code is organized by bounded context, not by technical layer:

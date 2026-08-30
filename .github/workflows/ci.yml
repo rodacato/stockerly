@@ -38,6 +38,8 @@ jobs:
       DATABASE_HOST: localhost
       DATABASE_USERNAME: stockerly
       DATABASE_PASSWORD: test_password
+      # Pin the database names so they do not follow the checkout directory here.
+      DATABASE_PREFIX: stockerly
 
     steps:
       - name: Checkout code

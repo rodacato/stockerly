@@ -1,3 +1,7 @@
+<%# The name is derived from the checkout directory so sibling git worktrees
+    do not share databases — see Stockerly::Checkout and CONTRIBUTING.md. %>
+<% prefix = Stockerly::Checkout.database_prefix %>
+
 default: &default
   adapter: postgresql
   encoding: unicode
@@ -9,35 +13,35 @@ default: &default
 development:
   primary:
     <<: *default
-    database: stockerly_development
+    database: <%= prefix %>_development
   cache:
     <<: *default
-    database: stockerly_development_cache
+    database: <%= prefix %>_development_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *default
-    database: stockerly_development_queue
+    database: <%= prefix %>_development_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *default
-    database: stockerly_development_cable
+    database: <%= prefix %>_development_cable
     migrations_paths: db/cable_migrate
 
 test:
   primary:
     <<: *default
-    database: stockerly_test
+    database: <%= prefix %>_test
   cache:
     <<: *default
-    database: stockerly_test_cache
+    database: <%= prefix %>_test_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *default
-    database: stockerly_test_queue
+    database: <%= prefix %>_test_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *default
-    database: stockerly_test_cable
+    database: <%= prefix %>_test_cable
     migrations_paths: db/cable_migrate
 
 production:
