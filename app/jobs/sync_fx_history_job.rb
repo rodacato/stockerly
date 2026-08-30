@@ -3,6 +3,7 @@
 # holiday gap heals itself on the next pass.
 class SyncFxHistoryJob < ApplicationJob
   include PausableSync
+  include SyncLogging
   queue_as :default
 
   LOOKBACK_DAYS = 7
@@ -10,24 +11,13 @@ class SyncFxHistoryJob < ApplicationJob
   def perform(days: LOOKBACK_DAYS)
     started = Time.current
     result = MarketData::UseCases::SyncFxHistory.call(from: Date.current - days, to: Date.current)
+    duration = (Time.current - started).round(2)
 
     case result
     in Dry::Monads::Success(stored:, **)
-      log(:success, "Stored #{stored} FIX rate(s)", started)
+      log_sync_success("FX History Sync", message: "Stored #{stored} FIX rate(s)", duration_seconds: duration)
     in Dry::Monads::Failure[ _, message ]
-      log(:error, message, started)
+      log_sync_failure("FX History Sync", message, duration_seconds: duration)
     end
-  end
-
-  private
-
-  def log(severity, message, started)
-    SystemLog.create!(
-      task_name: "FX History Sync",
-      module_name: "sync",
-      severity: severity,
-      message: message,
-      duration_seconds: (Time.current - started).round(2)
-    )
   end
 end
