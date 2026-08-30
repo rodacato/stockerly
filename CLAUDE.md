@@ -114,7 +114,7 @@ Cross-cutting code with **no namespace change** — available everywhere:
 
 ### Market Data Gateways
 
-`app/contexts/market_data/gateways/` holds **10 concrete provider gateways** — Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Alpha Vantage, FMP, Banxico, ExchangeRate (`FxRatesGateway`), and Alternative.me (`CryptoFearGreedGateway`). That is 14 files: the 10 concrete gateways, 2 base classes (`MarketDataGateway`, `FundamentalsGateway`), 1 error class (`ApiKeyNotConfiguredError`) and `RetryPolicy`. Registration and fallback priority live in `config/initializers/data_sources.rb`. **Polygon.io and CNN are retired** (`db/migrate/20260826210000_remove_retired_integrations.rb`) — do not cite them as sources.
+`app/contexts/market_data/gateways/` holds **10 concrete provider gateways** — Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Alpha Vantage, FMP, Banxico, ExchangeRate (`FxRatesGateway`), and Alternative.me (`CryptoFearGreedGateway`). That is 15 files: the 10 concrete gateways, 2 base classes (`MarketDataGateway`, `FundamentalsGateway`), 1 error class (`ApiKeyNotConfiguredError`), `RetryPolicy`, and the `ResolvesApiKey` module the eight keyed gateways share. Registration and fallback priority live in `config/initializers/data_sources.rb`. **Polygon.io and CNN are retired** (`db/migrate/20260826210000_remove_retired_integrations.rb`) — do not cite them as sources.
 
 ### Autoloading (Zeitwerk)
 
@@ -140,7 +140,6 @@ EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::Eval
 # Reads: supplier's public API
 sentiment    = MarketData::Queries::CurrentFearGreed.call
 observations = MarketData::Queries::NotableObservations.call(asset_ids: ids)
-dividends    = MarketData::Queries::UpcomingDividends.call(asset_ids: ids)
 ```
 
 Forbidden in Trading: direct AR model access (`MarketIndex.major`, `FearGreedReading.latest_*`, `TechnicalObservation`) and direct gateway instantiation (`MarketData::Gateways::*.new`).
@@ -177,7 +176,7 @@ Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUs
 
 ### Controllers
 
-- `AuthenticatedController` — base for logged-in pages (loads notifications for navbar)
+- `AuthenticatedController` — base for logged-in pages (session timeout, authentication, onboarding redirect). The navbar's unread count is a helper, not a `before_action`, so a request that renders no navbar does not pay for it
 - `Admin::BaseController` — inherits from `AuthenticatedController`, adds `require_admin` guard
 - Controllers delegate to Use Cases and pattern-match on results:
   ```ruby
@@ -189,7 +188,7 @@ Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUs
 
 ### Models
 
-37 files in `app/models/` — 36 models plus `ApplicationRecord`. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
+38 files in `app/models/` — 37 models plus `ApplicationRecord`. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
 
 ### Frontend Stack
 
@@ -234,7 +233,7 @@ spec/
 └── factories/        # FactoryBot definitions
 ```
 
-**3,007 examples** (`bundle exec rspec --dry-run`, measured 2026-08-29). Coverage last measured 2026-08-27 on a smaller suite: **95.33% line** (6726/7055) and **79.27% branch** (1985/2504) via SimpleCov, with branch coverage enabled. Re-measure rather than quoting this figure once it ages — the `coverage/` report is regenerated on every run, and Sonar reads `coverage/coverage.json`.
+**3,164 examples** (`bundle exec rspec --dry-run`, measured 2026-08-30). Coverage measured the same day: **95.73% line** (7690/8033) and **80.56% branch** (2239/2779) via SimpleCov, with branch coverage enabled. Re-measure rather than quoting this figure once it ages — the `coverage/` report is regenerated on every run, and Sonar reads `coverage/coverage.json`.
 
 ## Environment Gotchas
 

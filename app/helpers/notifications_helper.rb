@@ -1,13 +1,6 @@
 module NotificationsHelper
-  # Lazy-loaded for the navbar bell + dropdown. Helpers so partials avoid
-  # reading instance variables that a base-controller before_action would
-  # otherwise have to populate on every request, even when the navbar
-  # isn't visible (mailers, error pages).
-  def navbar_notifications
-    return [] unless current_user
-    @navbar_notifications ||= current_user.notifications.recent.limit(6).to_a
-  end
-
+  # A helper rather than a before_action so a partial can ask for the count
+  # without every request paying for it, navbar or not (mailers, error pages).
   def navbar_unread_count
     return 0 unless current_user
     @navbar_unread_count ||= current_user.notifications.unread.count
