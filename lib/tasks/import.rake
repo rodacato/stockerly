@@ -10,6 +10,13 @@ namespace :stockerly do
     end
   end
 
+  desc "Delete every trade and everything derived from it (dry run; pass COMMIT=1 to write)"
+  task reset_trades: :environment do
+    portfolio = ImportTradesCli.user.portfolio or abort "No portfolio yet — run the Setup Wizard at /setup first."
+
+    ImportTradesCli.print_reset(portfolio, commit: ENV["COMMIT"] == "1")
+  end
+
   desc "Undo an import by the external ids in its CSV"
   task :undo_import, [ :path ] => :environment do |_t, args|
     ids = ImportTradesCli.read(args[:path]).filter_map { |row| row[:external_id].presence }
@@ -45,10 +52,57 @@ module ImportTradesCli
     puts "\nRe-run with COMMIT=1 to write." if report[:dry_run]
   end
 
+  # Everything downstream of a trade, so a re-import starts from nothing rather
+  # than merging into half a history. The catalogue, FX rates, price history and
+  # the portfolio row itself are deliberately left alone -- they are not derived
+  # from trades and re-fetching them costs provider calls.
+  def self.print_reset(portfolio, commit:)
+    counts = ImportTradesReset.counts(portfolio)
+
+    if counts.values.sum.zero?
+      puts "Nothing to delete — the portfolio holds no trades."
+      return
+    end
+
+    puts commit ? "Deleting:" : "DRY RUN — nothing deleted:"
+    counts.each { |table, count| puts format("  %-18s %d", table, count) }
+
+    unless commit
+      puts "\nRe-run with COMMIT=1 to delete. Take a database backup first."
+      return
+    end
+
+    ImportTradesReset.call(portfolio)
+    puts "\nDone. inception_date cleared; import the oldest month first."
+  end
+
   def self.abort_with(reason, details)
     warn "Import refused — #{reason}:"
     Array(details).each { |d| warn "  #{d.is_a?(Hash) ? d.inspect : d}" }
     warn "\nAdd the missing symbols at /tracked, then re-run." if reason == :unknown_symbols
     exit 1
+  end
+end
+
+# The delete itself, apart from the printing so it can be tested without
+# capturing stdout.
+module ImportTradesReset
+  TABLES = %i[trades positions snapshots dividend_payments].freeze
+
+  def self.counts(portfolio)
+    TABLES.index_with { |table| portfolio.public_send(table).count }
+  end
+
+  def self.call(portfolio)
+    ActiveRecord::Base.transaction do
+      # Ordered child-first: a position destroys its own trades, and letting it
+      # do that mid-sweep would leave the trades relation counting rows that are
+      # already gone.
+      portfolio.trades.destroy_all
+      portfolio.positions.destroy_all
+      portfolio.snapshots.destroy_all
+      portfolio.dividend_payments.destroy_all
+      portfolio.update!(inception_date: nil)
+    end
   end
 end
