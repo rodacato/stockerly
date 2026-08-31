@@ -21,6 +21,7 @@ module Trading
         return Failure([ :not_found, "Portfolio not found" ]) unless portfolio
 
         parsed = yield validate_rows(rows)
+        yield reject_repeated_ids(parsed)
         parsed, dropped = drop_unknown(parsed) if skip_unknown
         assets = yield resolve_assets(parsed)
         rates  = yield resolve_fx_rates(parsed)
@@ -60,6 +61,18 @@ module Trading
         return Failure([ :invalid_rows, invalid.map { |number, result| { row: number, errors: result.errors.to_h } } ]) if invalid.any?
 
         Success(results.map { |_, result| result.to_h }.sort_by { |row| row[:executed_at] })
+      end
+
+      # Two rows claiming the same external_id are the same trade told twice, and
+      # the unique index would refuse the second one mid-transaction -- a 500 on
+      # the confirm step, after the preview said the batch was fine, because a
+      # dry run never reaches the insert. Caught here it is a batch-level
+      # refusal like every other, and it names the ids so the file can be fixed.
+      def reject_repeated_ids(parsed)
+        ids = parsed.filter_map { |row| row[:external_id].presence }
+        repeated = ids.tally.select { |_, count| count > 1 }.keys
+
+        repeated.any? ? Failure([ :repeated_external_ids, repeated.sort ]) : Success(parsed)
       end
 
       # Phase 0 refuses rather than inventing catalogue entries: the row carries
