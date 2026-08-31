@@ -12,7 +12,10 @@ module Trading
       KEYS = %i[asset_symbol side shares price_per_share fee currency executed_at external_id net_amount].freeze
 
       MissingHeader = Class.new(StandardError)
-      REQUIRED = %i[asset_symbol side shares price_per_share executed_at].freeze
+      # currency belongs here because the contract requires it: without the
+      # column every row fails validation individually, so a fifty-row file
+      # answers a missing header with fifty copies of the same error.
+      REQUIRED = %i[asset_symbol side shares price_per_share currency executed_at].freeze
 
       def call(text:)
         table = CSV.parse(text.to_s, headers: true)
