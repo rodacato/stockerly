@@ -1099,11 +1099,11 @@ es-MX:
       borrar_trading_confirmar: Esto elimina %{operaciones} operaciones y todo lo
         que se calcula a partir de ellas. No se puede deshacer. ¿Continuar?
       borrar_trading_conteo: "%{operaciones} operaciones · %{posiciones} posiciones
-        · %{snapshots} registros de valor"
+        · %{snapshots} días de historial"
       borrar_trading_cta: Borrar movimientos
-      borrar_trading_desc: Elimina operaciones, posiciones e historial de valor. Conserva
-        tu cuenta, el catálogo de activos y los tipos de cambio, para que puedas volver
-        a importar sin reconfigurar nada.
+      borrar_trading_desc: Elimina operaciones, posiciones y la curva de valor de
+        tu portafolio. Conserva tu cuenta, los símbolos que sigues y los tipos de
+        cambio, para que puedas volver a importar sin reconfigurar nada.
       cerrar_sesion: Cerrar sesión
       contrasena: Contraseña
       contrasena_desc: Cámbiala cuando quieras
