@@ -1214,11 +1214,13 @@ es-MX:
       nada_aun: Nada se guarda hasta que confirmes.
       o_pega: o pega el contenido
       opcionales: 'Opcionales: fee · currency · external_id · net_amount'
+      revisando: Leyendo el archivo…
       revisar: Revisar
       titulo: Importar movimientos
       volver: Volver a tu cartera
     preview:
       cancelar: Cancelar
+      confirmando: Importando…
       confirmar:
         one: Importar 1 movimiento
         other: Importar %{count} movimientos
@@ -1260,10 +1262,13 @@ es-MX:
         renombrado: "¿otro ticker hoy?"
         renombrado_ph: ECHO
         repeated_external_ids:
-          one: 'El archivo trae 1 identificador repetido, así que un movimiento viene
-            dos veces. Corrígelo y vuelve a subirlo:'
-          other: 'El archivo trae %{count} identificadores repetidos, así que hay
-            movimientos duplicados. Corrígelos y vuelve a subirlo:'
+          one: 'Dos filas comparten el mismo identificador, así que no puedo saber
+            si son un movimiento o dos. Si el archivo lo generó una herramienta, vuelve
+            a generarlo; si lo armaste tú, dale un identificador propio a cada fila:'
+          other: 'Hay %{count} identificadores que se repiten, así que no puedo saber
+            si cada uno es un movimiento o varios. Si el archivo lo generó una herramienta,
+            vuelve a generarlo; si lo armaste tú, dale un identificador propio a cada
+            fila:'
         titulo: No puedo importar todavía
         unknown_symbols:
           one: 1 de tus símbolos no está en tu catálogo. Sin él tu cartera quedaría
