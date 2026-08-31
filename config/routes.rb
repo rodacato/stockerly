@@ -126,7 +126,10 @@ Rails.application.routes.draw do
       delete :destroy_read
     end
   end
-  resource :settings,  only: [ :show ]
+  resource :settings,  only: [ :show ] do
+    delete "trading-data", to: "settings#destroy_trading_data", as: :trading_data
+    delete "account",      to: "settings#destroy_account",      as: :account
+  end
   resource :profile,   only: [ :show, :update ]
   patch  "profile/password",    to: "profiles#change_password",    as: :change_password
   patch  "profile/preferences", to: "profiles#update_preferences", as: :update_preferences
