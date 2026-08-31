@@ -107,8 +107,18 @@ RSpec.describe Trading::UseCases::ImportTrades do
 
       trade = Trade.sole
       expect(trade.external_id).to eq("order-1")
-      expect(trade.shares).to eq(BigDecimal("0.070436"))
-      expect(trade.position.shares).to eq(BigDecimal("0.070436"))
+      expect(trade.shares).to eq(BigDecimal("0.070436076"))
+      expect(trade.position.shares).to eq(BigDecimal("0.070436076"))
+    end
+
+    it "keeps a crypto quantity that six decimals would have rounded away" do
+      btc = create(:asset, symbol: "BTC", asset_type: :crypto, currency: "USD")
+      described_class.call(user: user, rows: [ row(
+        asset_symbol: btc.symbol, shares: "0.000096644027",
+        price_per_share: "103472.510000", net_amount: nil, external_id: "order-btc"
+      ) ], dry_run: false)
+
+      expect(Trade.sole.shares).to eq(BigDecimal("0.000096644027"))
     end
 
     it "dates the position from the trade, not from import day" do

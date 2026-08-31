@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_30_223815) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_31_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -156,7 +156,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_30_223815) do
     t.datetime "created_at", null: false
     t.bigint "dividend_id", null: false
     t.bigint "portfolio_id", null: false
-    t.decimal "shares_held", precision: 15, scale: 6, null: false
+    t.decimal "shares_held", precision: 24, scale: 12, null: false
     t.decimal "total_amount", precision: 15, scale: 2, null: false
     t.datetime "updated_at", null: false
     t.index ["portfolio_id", "dividend_id"], name: "index_dividend_payments_on_portfolio_id_and_dividend_id", unique: true
@@ -393,7 +393,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_30_223815) do
     t.text "notes"
     t.datetime "opened_at"
     t.bigint "portfolio_id", null: false
-    t.decimal "shares", precision: 15, scale: 6, null: false
+    t.decimal "shares", precision: 24, scale: 12, null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["asset_id"], name: "index_positions_on_asset_id"
@@ -495,7 +495,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_30_223815) do
     t.bigint "portfolio_id", null: false
     t.bigint "position_id"
     t.decimal "price_per_share", precision: 15, scale: 4, null: false
-    t.decimal "shares", precision: 15, scale: 6, null: false
+    t.decimal "shares", precision: 24, scale: 12, null: false
     t.integer "side", null: false
     t.decimal "total_amount", precision: 15, scale: 2, null: false
     t.datetime "updated_at", null: false
