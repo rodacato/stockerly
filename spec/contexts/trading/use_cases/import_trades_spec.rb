@@ -47,6 +47,25 @@ RSpec.describe Trading::UseCases::ImportTrades do
       expect(Trade.count).to eq(0)
     end
 
+    # The unique index would have caught it at the insert, which is a 500 on the
+    # confirm step after a dry run said the batch was fine.
+    it "refuses a batch that carries the same external id twice" do
+      duplicate = row(external_id: "order-1", asset_symbol: "COIN", shares: "0.036232711", price_per_share: "275.993700")
+
+      result = described_class.call(user: user, rows: [ row, duplicate ])
+
+      expect(result).to be_failure
+      reason, details = result.failure
+      expect(reason).to eq(:repeated_external_ids)
+      expect(details).to eq([ "order-1" ])
+    end
+
+    it "lets a batch through when every external id is its own" do
+      result = described_class.call(user: user, rows: [ row, row(asset_symbol: "COIN", shares: "0.036232711", price_per_share: "275.993700", external_id: "order-2") ])
+
+      expect(result).to be_success
+    end
+
     it "refuses a row whose net amount disagrees with shares x price" do
       result = described_class.call(user: user, rows: [ row(net_amount: "-99.00") ], dry_run: false)
 

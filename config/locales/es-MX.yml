@@ -1259,6 +1259,11 @@ es-MX:
         preguntar: le pregunto al proveedor
         renombrado: "¿otro ticker hoy?"
         renombrado_ph: ECHO
+        repeated_external_ids:
+          one: 'El archivo trae 1 identificador repetido, así que un movimiento viene
+            dos veces. Corrígelo y vuelve a subirlo:'
+          other: 'El archivo trae %{count} identificadores repetidos, así que hay
+            movimientos duplicados. Corrígelos y vuelve a subirlo:'
         titulo: No puedo importar todavía
         unknown_symbols:
           one: 1 de tus símbolos no está en tu catálogo. Sin él tu cartera quedaría
