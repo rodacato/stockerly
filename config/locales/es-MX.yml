@@ -1081,18 +1081,35 @@ es-MX:
       accion: Actualizar
       aviso: Hay una versión nueva lista.
   settings:
+    destroy_account:
+      listo: Tu cuenta y tus datos se borraron.
+    destroy_trading_data:
+      listo: Listo. Tus movimientos se borraron; ya puedes importar de nuevo.
     show:
       avisos_campana: Todo aviso llega a tu campana; eso no se apaga. El correo sí.
       avisos_titulo: Avisos
+      borrar_cuenta: Borrar mi cuenta y empezar de cero
+      borrar_cuenta_confirmar: Esto elimina tu cuenta y todos tus datos, y cierra
+        la sesión. No se puede deshacer. ¿Continuar?
+      borrar_cuenta_cta: Borrar cuenta
+      borrar_cuenta_desc: Elimina la cuenta y todo lo tuyo — movimientos, alertas,
+        seguimiento y notificaciones. La instancia vuelve al asistente de instalación.
+        Conserva el catálogo, los tipos de cambio y tus integraciones.
+      borrar_trading: Borrar mis movimientos
+      borrar_trading_confirmar: Esto elimina %{operaciones} operaciones y todo lo
+        que se calcula a partir de ellas. No se puede deshacer. ¿Continuar?
+      borrar_trading_conteo: "%{operaciones} operaciones · %{posiciones} posiciones
+        · %{snapshots} registros de valor"
+      borrar_trading_cta: Borrar movimientos
+      borrar_trading_desc: Elimina operaciones, posiciones e historial de valor. Conserva
+        tu cuenta, el catálogo de activos y los tipos de cambio, para que puedas volver
+        a importar sin reconfigurar nada.
       cerrar_sesion: Cerrar sesión
       contrasena: Contraseña
       contrasena_desc: Cámbiala cuando quieras
       cuenta: Cuenta
       datos_cuerpo: Tus movimientos, posiciones y reglas viven en la base de datos
         de esta instancia. Nadie los sincroniza a ningún lado.
-      datos_eliminar: Eliminar mi cuenta y mis datos
-      datos_eliminar_desc: 'Hoy se hace por correo (procedimiento ARCO). En la app:
-        pendiente.'
       datos_titulo: Tus datos
       digest: Resumen diario por correo
       digest_desc: Un solo correo a las 18:30 CDMX con lo que pasó.

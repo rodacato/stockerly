@@ -92,13 +92,11 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).to include(I18n.t("settings.show.importar"))
   end
 
-  # Issue #176 builds in-app deletion; until then the honest thing is naming
-  # the procedure that actually exists.
-  it "says how account deletion works today rather than offering a dead button" do
+  it "offers both deletions, and says which one keeps the account" do
     get settings_path
 
-    expect(response.body).to include(I18n.t("settings.show.datos_eliminar_desc"))
-    expect(response.body).not_to include(%(href="/account/delete"))
+    expect(response.body).to include(I18n.t("settings.show.borrar_trading_desc"))
+    expect(response.body).to include(I18n.t("settings.show.borrar_cuenta_desc"))
   end
 
   describe "the nav" do
@@ -112,6 +110,73 @@ RSpec.describe "Ajustes", type: :request do
       get profile_path
 
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "borrar datos" do
+    let(:portfolio) { create(:portfolio, user: user, inception_date: Date.new(2025, 11, 11)) }
+    let(:asset) { create(:asset, :stock, symbol: "VT") }
+
+    def stock_the_portfolio
+      position = create(:position, portfolio: portfolio, asset: asset)
+      create(:trade, portfolio: portfolio, asset: asset, position: position)
+      create(:portfolio_snapshot, portfolio: portfolio)
+    end
+
+    it "shows what borrar movimientos would remove" do
+      stock_the_portfolio
+
+      get settings_path
+
+      expect(response.body).to include(I18n.t("settings.show.borrar_trading"))
+      expect(response.body).to include(I18n.t("settings.show.borrar_cuenta"))
+    end
+
+    it "removes the movements and leaves the account standing" do
+      stock_the_portfolio
+
+      delete trading_data_settings_path
+
+      expect(response).to redirect_to(settings_path)
+      expect(portfolio.trades.count).to eq(0)
+      expect(portfolio.positions.count).to eq(0)
+      expect(portfolio.snapshots.count).to eq(0)
+      expect(portfolio.reload.inception_date).to be_nil
+      expect(User.exists?(user.id)).to be(true)
+      expect(Asset.where(symbol: "VT")).to exist
+    end
+
+    # Offering a button that deletes nothing invites the click that teaches you
+    # it deletes nothing.
+    it "disables the movements button when there is nothing to remove" do
+      portfolio
+
+      get settings_path
+
+      expect(response.body).to include("disabled")
+    end
+
+    it "deletes the account and sends the instance back to the wizard" do
+      stock_the_portfolio
+
+      delete account_settings_path
+
+      expect(response).to redirect_to(setup_path)
+      expect(User.exists?(user.id)).to be(false)
+      expect(Portfolio.where(user_id: user.id)).not_to exist
+      expect(Trade.count).to eq(0)
+    end
+
+    # The expensive half of the database: none of it is personal, and refetching
+    # it costs provider calls.
+    it "keeps the catalogue, the rate history and the integrations on either path" do
+      stock_the_portfolio
+      FxRateHistory.record(base: "USD", quote: "MXN", date: Date.new(2025, 11, 11), rate: 20.1, source: "banxico")
+
+      delete account_settings_path
+
+      expect(Asset.where(symbol: "VT")).to exist
+      expect(FxRateHistory.count).to eq(1)
     end
   end
 end
