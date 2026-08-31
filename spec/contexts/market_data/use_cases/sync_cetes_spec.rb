@@ -18,7 +18,7 @@ RSpec.describe MarketData::UseCases::SyncCetes do
       result = use_case.call
 
       expect(result).to be_success
-      expect(result.value!).to eq(4)
+      expect(result.value![:synced]).to eq(4)
       expect(Asset.fixed_incomes.count).to eq(4)
       expect(Asset.find_by(symbol: "CETES_28D").yield_rate.to_f).to eq(11.15)
       expect(EventBus).to have_received(:publish).with(an_instance_of(MarketData::Events::CetesSynced))
@@ -54,7 +54,7 @@ RSpec.describe MarketData::UseCases::SyncCetes do
       expect(preexisting.reload.maturity_date).to eq(14.days.from_now.to_date)
     end
 
-    it "skips terms when gateway returns failure" do
+    it "names the terms it could not reach instead of dropping them" do
       stub_banxico_auctions(term: "28", yield_rate: 11.15, date: "25/02/2026")
       stub_banxico_not_found(term: "91")
       stub_banxico_not_found(term: "182")
@@ -64,7 +64,8 @@ RSpec.describe MarketData::UseCases::SyncCetes do
       result = use_case.call
 
       expect(result).to be_success
-      expect(result.value!).to eq(1)
+      expect(result.value![:unreachable]).to contain_exactly("91", "182", "364")
+      expect(result.value![:synced]).to eq(1)
       expect(Asset.fixed_incomes.count).to eq(1)
     end
   end

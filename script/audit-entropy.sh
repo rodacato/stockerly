@@ -93,8 +93,9 @@ bloated_docs_list=$(
 # 5. TODO / FIXME / XXX in app/.
 todos=$(
   grep -rEn 'TODO|FIXME|XXX' app/ --include='*.rb' --include='*.erb' 2>/dev/null \
-    | wc -l | tr -d ' '
+    || true
 )
+todos=$(printf '%s' "$todos" | grep -c . || true)
 
 # 6. Hardcoded color classes in views: any Tailwind palette other than slate
 # (the neutral track stays as-is until S6). Each hit is a candidate for

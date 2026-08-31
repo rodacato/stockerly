@@ -5,10 +5,15 @@ module MarketData
 
       def call
         synced = 0
+        unreachable = []
+        gateway = Gateways::BanxicoGateway.new
 
         TERMS.each do |term|
-          result = banxico_breaker.call { Gateways::BanxicoGateway.new.fetch_auctions(term: term) }
-          next if result.failure?
+          result = banxico_breaker.call { gateway.fetch_auctions(term: term) }
+          if result.failure?
+            unreachable << term
+            next
+          end
 
           result.value!.each do |data|
             upsert_cetes_asset(term, data)
@@ -18,7 +23,11 @@ module MarketData
 
         publish(Events::CetesSynced.new(count: synced))
 
-        Success(synced)
+        # "CETES Sync" is monitored, and the monitor treats a success as curing
+        # prior errors — so a run that reached nothing must not report one.
+        return Failure([ :all_terms_unreachable, "Banxico refused every term: #{unreachable.join(', ')}" ]) if unreachable.size == TERMS.size
+
+        Success(synced: synced, unreachable: unreachable)
       end
 
       private
