@@ -46,4 +46,26 @@ RSpec.describe "Importar movimientos", type: :system, js: true do
     expect(page).to have_current_path(portfolio_path)
     expect(Trade.count).to eq(1)
   end
+
+  # A slow import used to look like a button that did nothing: the upload form
+  # opts out of Turbo, so nothing disabled it or changed its label.
+  it "tells the user the file is being read while it submits" do
+    visit new_trade_import_path
+
+    # Dispatched, not requestSubmit: a synthetic submit event runs the listener
+    # without navigating, so the button can be inspected mid-flight.
+    page.execute_script(
+      "document.querySelector(\"form[action='#{preview_trade_import_path}']\").dispatchEvent(new Event('submit'))"
+    )
+
+    expect(page).to have_button("Leyendo el archivo…", disabled: true)
+
+    visit new_trade_import_path
+
+    find("textarea").set("#{header}\nVT,buy,2.0,100.0,2025-12-08,order-1,USD")
+    click_button "Revisar"
+
+    expect(page).to have_button("Importar 1 movimiento")
+    expect(find("form[action='#{trade_imports_path}']")["data-turbo-submits-with"]).to eq("Importando…")
+  end
 end

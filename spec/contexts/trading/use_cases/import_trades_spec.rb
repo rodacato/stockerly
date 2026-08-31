@@ -57,7 +57,9 @@ RSpec.describe Trading::UseCases::ImportTrades do
       expect(result).to be_failure
       reason, details = result.failure
       expect(reason).to eq(:repeated_external_ids)
-      expect(details).to eq([ "order-1" ])
+      # The id alone cannot be acted on -- the symbol and date are what let
+      # someone find the two rows it is talking about.
+      expect(details).to eq([ "order-1 (VT, 2025-12-08, x2)" ])
     end
 
     it "lets a batch through when every external id is its own" do

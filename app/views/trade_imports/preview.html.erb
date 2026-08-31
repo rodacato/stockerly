@@ -124,7 +124,10 @@
       <% end %>
     </ul>
 
-    <%= form_with url: trade_imports_path, class: "flex flex-col items-center gap-2 pt-1" do |f| %>
+    <%# Turbo drives this one, so it disables the button and swaps the label
+        itself -- an import of a few hundred rows is not instant. %>
+    <%= form_with url: trade_imports_path, class: "flex flex-col items-center gap-2 pt-1",
+                  data: { turbo_submits_with: t(".confirmando") } do |f| %>
       <%= f.hidden_field :contenido, value: @csv_text %>
       <%= f.submit t(".confirmar", count: @report[:imported]),
                    class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-fg-inverse" %>

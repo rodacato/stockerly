@@ -69,10 +69,19 @@ module Trading
       # dry run never reaches the insert. Caught here it is a batch-level
       # refusal like every other, and it names the ids so the file can be fixed.
       def reject_repeated_ids(parsed)
-        ids = parsed.filter_map { |row| row[:external_id].presence }
-        repeated = ids.tally.select { |_, count| count > 1 }.keys
+        collisions = parsed.select { |row| row[:external_id].present? }
+                           .group_by { |row| row[:external_id] }
+                           .select { |_, rows| rows.size > 1 }
+        return Success(parsed) if collisions.empty?
 
-        repeated.any? ? Failure([ :repeated_external_ids, repeated.sort ]) : Success(parsed)
+        Failure([ :repeated_external_ids, collisions.map { |id, rows| describe_collision(id, rows) }.sort ])
+      end
+
+      # The id alone is unactionable -- it was minted by whatever produced the
+      # file, not written by the person reading the error. Naming the symbol and
+      # the date turns it into two rows they can find.
+      def describe_collision(id, rows)
+        "#{id} (#{rows.first[:asset_symbol].upcase}, #{executed_on(rows.first)}, x#{rows.size})"
       end
 
       # Phase 0 refuses rather than inventing catalogue entries: the row carries
