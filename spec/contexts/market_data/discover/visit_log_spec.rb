@@ -15,10 +15,15 @@ RSpec.describe MarketData::Discover::VisitLog do
   # The criterion is "opened in at least 4 of 8 weeks", which a single
   # timestamp cannot answer — it says when, never how often.
   describe "counting the weeks it was opened in" do
+    # Anchored mid-week on purpose: counting back in hours from Time.current
+    # crosses into the previous ISO week whenever the suite runs in the small
+    # hours of a Monday, which made this fail for two hours every week.
     it "counts one week however many times it was opened that week" do
-      3.times { |i| described_class.record(now: Time.current - i.hours) }
+      midweek = Time.zone.parse("2026-01-14 12:00")
 
-      expect(described_class.weeks_seen).to eq(1)
+      3.times { |i| described_class.record(now: midweek - i.hours) }
+
+      expect(described_class.weeks_seen(now: midweek)).to eq(1)
     end
 
     it "counts distinct weeks inside the window" do
