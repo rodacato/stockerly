@@ -118,8 +118,6 @@ module MarketData
       report.transform_keys { |k| k.underscore }
     end
 
-    # One retry, not two: the free tier allows five calls a minute, so a second
-    # attempt spends the budget the next caller needs.
     # The only provider whose transport failures are named rather than collapsed
     # into :gateway_error.
     def transport_failure(error)
@@ -128,6 +126,8 @@ module MarketData
       super
     end
 
+    # One retry, not two: the free tier allows five calls a minute, so a second
+    # attempt spends the budget the next caller needs.
     def connection
       build_connection(url: BASE_URL, timeout: TIMEOUT,
                        retry_options: { max: 1, interval: 1.0, retry_statuses: [ 500, 502, 503 ] })
