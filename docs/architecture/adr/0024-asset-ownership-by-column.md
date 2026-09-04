@@ -123,7 +123,8 @@ contested — the alternative to writing a query object is writing a query objec
   explicitly exempts from context rules. Clause 2 says the jobs act on MarketData's behalf, which
   makes the column list meaningful, but it is a convention with no boundary behind it: nothing stops
   a job writing `name` tomorrow.
-- **Nothing mechanically enforces a column.** `audit-entropy.sh` matches `::` — it sees a foreign
+- **Nothing mechanically enforces a column.** `bin/checks boundaries` — which replaced
+  `audit-entropy.sh` on 2026-09-04 — matches constant names: it sees a foreign
   constant, never a foreign column. A regression here is caught by review or not at all. That is the
   honest price of choosing the ~16-file answer over the ~35–40-file one, and it is the trade this
   ADR makes deliberately: a rule that is true today and unenforced beats a rule that is enforced and

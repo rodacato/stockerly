@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Runs the ADR conventions a grep can see. No Rails boot, so it is cheap enough
+# to run on every push and before every commit.
+#
+#   bin/checks              # all of them
+#   bin/checks boundaries   # one, by id
+
+require_relative "../script/checks/support"
+Dir.glob(File.join(Checks::ROOT, "script/checks/*.rb")).each { |path| require path }
+
+wanted = ARGV.reject { |arg| arg.start_with?("-") }
+checks = Checks.registry.map(&:new)
+checks = checks.select { |check| wanted.include?(check.id) } if wanted.any?
+
+if checks.empty?
+  warn "No such check: #{wanted.join(', ')}. Known: #{Checks.registry.map { |c| c.new.id }.sort.join(', ')}"
+  exit 2
+end
+
+puts "Conventions (#{checks.length}):"
+results = checks.sort_by(&:id).map do |check|
+  Checks::Reporter.new(check.id, check.title).call(check.run)
+end
+puts
+
+exit(results.all? ? 0 : 1)

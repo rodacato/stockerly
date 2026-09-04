@@ -150,3 +150,6 @@ jobs:
 
       - name: Check the locale catalogue for missing, unused and unnormalized keys
         run: bundle exec i18n-tasks health
+
+      - name: Check the ADR conventions a grep can see
+        run: bin/checks

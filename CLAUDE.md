@@ -39,7 +39,11 @@ bin/bundler-audit       # gem vulnerabilities
 bin/quality             # RubyCritic on Ruby files changed vs origin/master
 bin/quality app lib     # whole-repo baseline (noise tuned in .reek.yml)
 
-# Local CI pipeline (setup + rubocop + bundler-audit + importmap audit + brakeman)
+# ADR conventions a grep can see — runs in CI, no Rails boot
+bin/checks              # all of them
+bin/checks boundaries   # one, by id
+
+# Local CI pipeline (setup + rubocop + checks + bundler-audit + importmap audit + brakeman)
 # config/ci.rb declares NO rspec step — run the suite separately.
 bin/ci
 
