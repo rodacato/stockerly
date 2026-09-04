@@ -18,7 +18,7 @@ module Admin
 
     def admin_error_source_classes(source)
       case source.to_s
-      when "request" then "bg-primary/10 text-primary"
+      when "request" then "bg-primary-muted text-primary"
       when "job"     then "bg-warning/10 text-warning"
       else                "bg-bg-muted text-fg-subtle"
       end

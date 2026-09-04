@@ -8,7 +8,7 @@
   <div class="flex items-start justify-between gap-3">
     <p class="text-fg-subtle"><%= t(".descripcion") %></p>
     <%= link_to export_csv_admin_logs_path(severity: params[:severity], module_name: params[:module_name], search: params[:search], range: params[:range]),
-          class: "flex size-10 shrink-0 items-center justify-center rounded-lg text-primary transition-colors hover:bg-primary/10",
+          class: "flex size-10 shrink-0 items-center justify-center rounded-lg text-primary transition-colors hover:bg-primary-muted",
           aria: { label: t(".exportar") }, title: t(".exportar") do %>
       <span class="material-symbols-outlined text-xl" aria-hidden="true">download</span>
     <% end %>

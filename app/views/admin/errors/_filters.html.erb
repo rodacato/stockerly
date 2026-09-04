@@ -15,7 +15,7 @@
     <% Admin::ErrorsHelper::SOURCE_OPTIONS.each do |slug, label, value| %>
       <% active = (params[:source].presence || "todos") == slug %>
       <%= link_to admin_errors_path(search: params[:search], source: value),
-            class: "rounded-full border px-4 py-2 text-sm transition-colors #{active ? 'border-primary bg-primary/10 font-semibold text-primary' : 'border-border-default text-fg-default'}" do %>
+            class: "rounded-full border px-4 py-2 text-sm transition-colors #{active ? 'border-primary bg-primary-muted font-semibold text-primary' : 'border-border-default text-fg-default'}" do %>
         <%= label %>
       <% end %>
     <% end %>
