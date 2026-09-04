@@ -108,7 +108,7 @@
     <% [ [ t(".inversion_inicial"), yield_data[:investment_cost_100], false ],
          [ t(".valor_vencimiento"), yield_data[:face_value_100], false ],
          [ t(".rendimiento_estimado"), yield_data[:total_return_100], true ] ].each do |label, amount, positive| %>
-      <div class="rounded-xl border p-4 text-center <%= positive ? "border-positive-fg/25 bg-positive-bg" : "border-border-default bg-bg-muted" %>">
+      <div class="rounded-xl border p-4 text-center <%= positive ? "border-positive bg-positive-bg" : "border-border-default bg-bg-muted" %>">
         <p class="font-mono text-[10.5px] uppercase tracking-widest <%= positive ? "text-positive-fg" : "text-fg-subtle" %>"><%= label %></p>
         <p class="mt-1 font-mono text-xl font-medium <%= positive ? "text-positive-fg" : "text-fg-default" %>">
           <%= amount ? "#{"+" if positive}#{format_currency_mx(amount, currency: asset.currency)}" : "—" %>
@@ -118,7 +118,7 @@
   </div>
 </section>
 
-<aside class="flex items-start gap-2 rounded-xl border border-warning/25 bg-warning-bg px-4 py-3">
+<aside class="flex items-start gap-2 rounded-xl border border-warning bg-warning-bg px-4 py-3">
   <span class="material-symbols-outlined text-base text-warning-fg" aria-hidden="true">info</span>
   <p class="text-xs leading-snug text-warning-fg"><%= t(".aviso") %></p>
 </aside>
