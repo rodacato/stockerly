@@ -33,7 +33,7 @@ module MarketData
       Success({
         value: data["value"].to_i,
         classification: data["value_classification"],
-        fetched_at: Time.at(data["timestamp"].to_i),
+        fetched_at: Time.zone.at(data["timestamp"].to_i),
         component_data: {}
       })
     rescue StandardError => e

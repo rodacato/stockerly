@@ -31,7 +31,7 @@ RSpec.describe "HeaderBar", type: :request do
       doc = response.parsed_body
       mobile = doc.css("h1").reject { |h| h["class"].to_s.include?("sr-only") }
 
-      expect(mobile.map(&:text).map(&:strip)).to include(page_title_for(path))
+      expect(mobile.map { |node| node.text.strip }).to include(page_title_for(path))
       expect(doc.css("h1.sr-only")).to be_empty
     end
   end

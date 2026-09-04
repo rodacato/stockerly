@@ -142,7 +142,7 @@ module MarketData
 
       bars = prices.map do |timestamp_ms, price|
         {
-          date: Time.at(timestamp_ms / 1000).to_date,
+          date: Time.at(timestamp_ms / 1000).utc.to_date,
           open: price.to_d,
           high: price.to_d,
           low: price.to_d,

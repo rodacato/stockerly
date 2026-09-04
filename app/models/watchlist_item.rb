@@ -2,7 +2,7 @@ class WatchlistItem < ApplicationRecord
   belongs_to :user
   belongs_to :asset
 
-  validates :asset_id, uniqueness: { scope: :user_id, message: "already in watchlist" }
+  validates :asset_id, uniqueness: { scope: :user_id }
 
   before_create :capture_entry_price
 

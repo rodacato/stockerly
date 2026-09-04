@@ -13,7 +13,7 @@ RSpec.describe WatchlistItem, type: :model do
       create(:watchlist_item, user: user, asset: asset)
       duplicate = build(:watchlist_item, user: user, asset: asset)
       expect(duplicate).not_to be_valid
-      expect(duplicate.errors[:asset_id]).to include("already in watchlist")
+      expect(duplicate.errors[:asset_id]).to include("ya está en tu lista de seguimiento")
     end
 
     it "allows same asset for different users" do

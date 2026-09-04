@@ -1,5 +1,12 @@
 ---
 es-MX:
+  activerecord:
+    errors:
+      models:
+        watchlist_item:
+          attributes:
+            asset_id:
+              taken: ya está en tu lista de seguimiento
   admin:
     errors:
       desactivado: Activa el modo desarrollador en Ajustes para ver esta sección.
@@ -1343,6 +1350,9 @@ es-MX:
         la verificación en dos pasos.
       titulo: Usa un código de recuperación
       volver_verificacion: Volver a la verificación en dos pasos
+  user_mailer:
+    password_reset:
+      subject: Restablece tu contraseña de Stockerly
   watchlist_items:
     flash:
       agregado: Agregado a tu watchlist.
