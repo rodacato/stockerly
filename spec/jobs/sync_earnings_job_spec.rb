@@ -21,15 +21,16 @@ RSpec.describe SyncEarningsJob do
       end
     end
 
-    context "when sync fails" do
+    # SyncEarnings returns Success unconditionally, so the only failure an
+    # operator can ever see here is a raise.
+    context "when the sync raises" do
       before do
         allow(MarketData::UseCases::SyncEarnings).to receive(:call)
-          .and_return(Dry::Monads::Failure([ :gateway_error, "Connection timeout" ]))
+          .and_raise(StandardError, "Connection timeout")
       end
 
-      it "logs failure with error message" do
-        expect { described_class.perform_now }
-          .to change(SystemLog, :count).by(1)
+      it "logs the failure and re-raises so the queue records it" do
+        expect { described_class.perform_now }.to raise_error(StandardError, "Connection timeout")
 
         log = SystemLog.last
         expect(log.task_name).to eq("Earnings Sync")

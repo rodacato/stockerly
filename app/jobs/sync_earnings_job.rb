@@ -5,12 +5,11 @@ class SyncEarningsJob < ApplicationJob
   queue_as :default
 
   def perform
-    result = MarketData::UseCases::SyncEarnings.call
+    synced = MarketData::UseCases::SyncEarnings.call.value!
 
-    if result.success?
-      log_sync_success("Earnings Sync", message: "#{result.value!} events synced")
-    else
-      log_sync_failure("Earnings Sync", result.failure[1])
-    end
+    log_sync_success("Earnings Sync", message: "#{synced} events synced")
+  rescue StandardError => e
+    log_sync_failure("Earnings Sync", e.message)
+    raise
   end
 end
