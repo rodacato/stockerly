@@ -4,34 +4,29 @@ module MarketData
     # Receives raw statement data hashes, returns metrics hash.
     # No DB reads, no I/O, no side effects.
     class FundamentalCalculator
+    TTM_KEYS = %w[total_revenue gross_profit operating_income net_income
+                  ebitda interest_expense research_and_development
+                  operating_cashflow capital_expenditures dividend_payout].freeze
+
     class << self
       include SafeDecimal
 
       # Main entry point: latest annual statements → calculated metrics hash.
       def calculate(income_data:, balance_data:, cash_flow_data:, overview_metrics: {})
-        metrics = {}
-
-        # Health (from balance sheet)
-        metrics[:debt_to_equity] = debt_to_equity(balance_data)
-        metrics[:current_ratio] = current_ratio(balance_data)
-        metrics[:quick_ratio] = quick_ratio(balance_data)
-
-        # Profitability (from income statement)
-        metrics[:net_margin] = net_margin(income_data)
-        metrics[:operating_margin] = operating_margin(income_data)
-        metrics[:gross_margin] = gross_margin(income_data)
-        metrics[:interest_coverage] = interest_coverage(income_data)
-
-        # Cash flow
-        metrics[:free_cash_flow] = free_cash_flow(cash_flow_data)
-        metrics[:fcf_yield] = fcf_yield(cash_flow_data, overview_metrics)
-        metrics[:operating_cash_flow] = safe_decimal(cash_flow_data["operating_cashflow"])
-
-        # Return metrics (income + balance)
-        metrics[:roe_calculated] = roe(income_data, balance_data)
-        metrics[:roa_calculated] = roa(income_data, balance_data)
-
-        metrics.compact
+        {
+          debt_to_equity: debt_to_equity(balance_data),
+          current_ratio: current_ratio(balance_data),
+          quick_ratio: quick_ratio(balance_data),
+          net_margin: net_margin(income_data),
+          operating_margin: operating_margin(income_data),
+          gross_margin: gross_margin(income_data),
+          interest_coverage: interest_coverage(income_data),
+          free_cash_flow: free_cash_flow(cash_flow_data),
+          fcf_yield: fcf_yield(cash_flow_data, overview_metrics),
+          operating_cash_flow: operating_cash_flow(cash_flow_data),
+          roe_calculated: roe(income_data, balance_data),
+          roa_calculated: roa(income_data, balance_data)
+        }.compact
       end
 
       # TTM: sum last 4 quarterly income/cash_flow reports.
@@ -42,12 +37,8 @@ module MarketData
         last_four = quarterly_reports.first(4)
         summed = {}
 
-        numeric_keys = %w[total_revenue gross_profit operating_income net_income
-                          ebitda interest_expense research_and_development
-                          operating_cashflow capital_expenditures dividend_payout]
-
-        numeric_keys.each do |key|
-          values = last_four.map { |q| safe_decimal(q[key]) }.compact
+        TTM_KEYS.each do |key|
+          values = last_four.map { |quarter| safe_decimal(quarter[key]) }.compact
           summed[key] = values.sum if values.size == 4
         end
 
@@ -61,55 +52,38 @@ module MarketData
       def debt_to_equity(balance)
         short_debt = safe_decimal(balance["short_term_debt"]) || BigDecimal("0")
         long_debt = safe_decimal(balance["long_term_debt"]) || BigDecimal("0")
-        equity = safe_decimal(balance["total_shareholder_equity"])
-        return nil unless equity&.nonzero?
-
-        ((short_debt + long_debt) / equity).round(4)
+        ratio(short_debt + long_debt, safe_decimal(balance["total_shareholder_equity"]))
       end
 
       def current_ratio(balance)
-        assets = safe_decimal(balance["total_current_assets"])
-        liabilities = safe_decimal(balance["total_current_liabilities"])
-        return nil unless assets && liabilities&.nonzero?
-        (assets / liabilities).round(4)
+        ratio(safe_decimal(balance["total_current_assets"]),
+              safe_decimal(balance["total_current_liabilities"]))
       end
 
       def quick_ratio(balance)
         assets = safe_decimal(balance["total_current_assets"])
+        return nil unless assets
+
         inventory = safe_decimal(balance["inventory"]) || BigDecimal("0")
-        liabilities = safe_decimal(balance["total_current_liabilities"])
-        return nil unless assets && liabilities&.nonzero?
-        ((assets - inventory) / liabilities).round(4)
+        ratio(assets - inventory, safe_decimal(balance["total_current_liabilities"]))
       end
 
       # --- Profitability ---
 
       def net_margin(income)
-        net = safe_decimal(income["net_income"])
-        revenue = safe_decimal(income["total_revenue"])
-        return nil unless net && revenue&.nonzero?
-        (net / revenue).round(4)
+        ratio(safe_decimal(income["net_income"]), safe_decimal(income["total_revenue"]))
       end
 
       def operating_margin(income)
-        operating = safe_decimal(income["operating_income"])
-        revenue = safe_decimal(income["total_revenue"])
-        return nil unless operating && revenue&.nonzero?
-        (operating / revenue).round(4)
+        ratio(safe_decimal(income["operating_income"]), safe_decimal(income["total_revenue"]))
       end
 
       def gross_margin(income)
-        gross = safe_decimal(income["gross_profit"])
-        revenue = safe_decimal(income["total_revenue"])
-        return nil unless gross && revenue&.nonzero?
-        (gross / revenue).round(4)
+        ratio(safe_decimal(income["gross_profit"]), safe_decimal(income["total_revenue"]))
       end
 
       def interest_coverage(income)
-        operating = safe_decimal(income["operating_income"])
-        interest = safe_decimal(income["interest_expense"])
-        return nil unless operating && interest&.nonzero?
-        (operating / interest).round(4)
+        ratio(safe_decimal(income["operating_income"]), safe_decimal(income["interest_expense"]))
       end
 
       # --- Cash Flow ---
@@ -121,27 +95,27 @@ module MarketData
         operating - capex.abs
       end
 
+      def operating_cash_flow(cash_flow)
+        safe_decimal(cash_flow["operating_cashflow"])
+      end
+
       def fcf_yield(cash_flow, overview)
-        fcf = free_cash_flow(cash_flow)
-        market_cap = safe_decimal(overview["market_cap"] || overview[:market_cap])
-        return nil unless fcf && market_cap&.nonzero?
-        (fcf / market_cap).round(4)
+        ratio(free_cash_flow(cash_flow), safe_decimal(overview["market_cap"] || overview[:market_cap]))
       end
 
       # --- Return Metrics ---
 
       def roe(income, balance)
-        net = safe_decimal(income["net_income"])
-        equity = safe_decimal(balance["total_shareholder_equity"])
-        return nil unless net && equity&.nonzero?
-        (net / equity).round(4)
+        ratio(safe_decimal(income["net_income"]), safe_decimal(balance["total_shareholder_equity"]))
       end
 
       def roa(income, balance)
-        net = safe_decimal(income["net_income"])
-        assets = safe_decimal(balance["total_assets"])
-        return nil unless net && assets&.nonzero?
-        (net / assets).round(4)
+        ratio(safe_decimal(income["net_income"]), safe_decimal(balance["total_assets"]))
+      end
+
+      def ratio(numerator, denominator)
+        return nil unless numerator && denominator&.nonzero?
+        (numerator / denominator).round(4)
       end
     end
     end
