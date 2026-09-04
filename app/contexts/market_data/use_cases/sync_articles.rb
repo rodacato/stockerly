@@ -62,8 +62,8 @@ module MarketData
       return 1.0 if a == b
       return 0.0 if a.length < 2 || b.length < 2
 
-      bigrams_a = (0...a.length - 1).map { |i| a[i, 2] }.to_set
-      bigrams_b = (0...b.length - 1).map { |i| b[i, 2] }.to_set
+      bigrams_a = (0...(a.length - 1)).map { |i| a[i, 2] }.to_set
+      bigrams_b = (0...(b.length - 1)).map { |i| b[i, 2] }.to_set
 
       intersection = (bigrams_a & bigrams_b).size
       (2.0 * intersection) / (bigrams_a.size + bigrams_b.size)

@@ -4,7 +4,7 @@ class DeleteArchivedAlertRuleConditions < ActiveRecord::Migration[8.1]
     # All three are archived as part of Sprint 3 (issue #32) — the use cases,
     # handlers, and UI surfaces are gone. Orphan rows would point to enum
     # values the model no longer defines.
-    execute <<~SQL
+    execute <<~SQL.squish
       DELETE FROM alert_events
       WHERE alert_rule_id IN (
         SELECT id FROM alert_rules WHERE condition IN (5, 6, 8)

@@ -36,8 +36,7 @@ module MarketData
       def all
         DataSourceRegistry.all
                           .group_by(&:integration_name)
-                          .map { |provider, sources| entry_for(provider, sources) }
-                          .compact
+                          .filter_map { |provider, sources| entry_for(provider, sources) }
                           .sort_by { |entry| [ entry.state == :connected ? 1 : 0, entry.provider ] }
       end
 
@@ -45,8 +44,8 @@ module MarketData
       # the screen cannot claim a priority the chain does not follow.
       def for_capability(capability)
         entries = DataSourceRegistry.for_capability(capability)
-                                    .map { |source| by_provider[source.integration_name] }
-                                    .compact.uniq
+                                    .filter_map { |source| by_provider[source.integration_name] }
+                                    .uniq
         { primary: entries.first, fallbacks: entries.drop(1) }
       end
 

@@ -23,7 +23,7 @@ class RaiseYahooFinanceCeiling < ActiveRecord::Migration[8.1]
   private
 
   def raise_ceiling(column, ceiling)
-    execute(<<~SQL)
+    execute(<<~SQL.squish)
       UPDATE integrations
          SET #{column} = #{ceiling}, updated_at = NOW()
        WHERE provider_name = 'Yahoo Finance'

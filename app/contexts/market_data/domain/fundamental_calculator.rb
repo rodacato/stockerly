@@ -38,7 +38,7 @@ module MarketData
         summed = {}
 
         TTM_KEYS.each do |key|
-          values = last_four.map { |quarter| safe_decimal(quarter[key]) }.compact
+          values = last_four.filter_map { |quarter| safe_decimal(quarter[key]) }
           summed[key] = values.sum if values.size == 4
         end
 

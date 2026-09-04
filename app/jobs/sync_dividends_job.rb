@@ -36,17 +36,17 @@ class SyncDividendsJob < ApplicationJob
            unreachable: unreachable, total: assets.size)
   end
 
-  private
-
-  def chain_for(asset)
-    GatewayChain.for_capability(:dividends, market: asset.market, asset_type: asset.asset_type)
-  end
-
   # Open positions, plus the ones closed recently: a dividend is declared and
   # paid weeks after its ex-date, and selling does not undo an entitlement
   # already earned. The window keeps the list from growing forever, which is
   # what asking about every asset ever held would do to the call budget.
   RECENTLY_CLOSED = 90.days
+
+  private
+
+  def chain_for(asset)
+    GatewayChain.for_capability(:dividends, market: asset.market, asset_type: asset.asset_type)
+  end
 
   def assets_to_check
     recently_closed = Position.where(status: :closed)

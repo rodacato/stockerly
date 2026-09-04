@@ -28,7 +28,7 @@ RSpec.describe "HeaderBar", type: :request do
     it "heads #{path} with the visible title instead of the sr-only one" do
       get path
 
-      doc = Nokogiri::HTML(response.body)
+      doc = response.parsed_body
       mobile = doc.css("h1").reject { |h| h["class"].to_s.include?("sr-only") }
 
       expect(mobile.map(&:text).map(&:strip)).to include(page_title_for(path))
@@ -43,7 +43,7 @@ RSpec.describe "HeaderBar", type: :request do
 
     expect(response).to have_http_status(:ok)
     expect(response.body).not_to include(%(aria-label="#{I18n.t("nav.regresar")}"))
-    expect(Nokogiri::HTML(response.body).css("h1.sr-only")).not_to be_empty
+    expect(response.parsed_body.css("h1.sr-only")).not_to be_empty
   end
 
   def page_title_for(path)

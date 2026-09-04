@@ -31,6 +31,44 @@ Rails/DynamicFindBy:
 Rails/RedundantActiveRecordAllMethod:
   Enabled: false
 
+# Same assumption, two more shapes of it. MetricDefinitions is a registry with
+# its own `all`, so `find_each` is not on it, and every `errors.to_h` flagged
+# here belongs to a Dry::Validation result, where it is the documented API.
+Rails/FindEach:
+  Exclude:
+    - 'spec/contexts/market_data/domain/metric_definitions_spec.rb'
+
+Rails/DeprecatedActiveModelErrorsMethods:
+  Enabled: false
+
+# PwaController inherits ActionController::Base on purpose: the manifest and the
+# service worker are fetched outside any session, and ApplicationController would
+# put authentication, setup and maintenance filters back in front of them.
+Rails/ApplicationController:
+  Exclude:
+    - 'app/controllers/pwa_controller.rb'
+
+# response.parsed_body dispatches on Content-Type, so it is not a drop-in for
+# JSON.parse(response.body): the manifest is served as application/manifest+json
+# and comes back a String, which then answers `["short_name"]` with a substring.
+Rails/ResponseParsedBody:
+  Exclude:
+    - 'spec/requests/pwa_spec.rb'
+
+# It is right that `2.minutes.ago` in a constant is evaluated once, and that is
+# exactly what a seed script wants. Its autocorrection turns the constant into a
+# method, which the script below then cannot reference.
+Rails/RelativeDateConstant:
+  Exclude:
+    - 'db/seeds.rb'
+
+# Seeds report progress to whoever ran them. Rails.logger is not where a person
+# watching `db:seed` is looking.
+Rails/Output:
+  Exclude:
+    - 'db/seeds.rb'
+    - 'db/seeds/**/*'
+
 # A new defect-catching cop should arrive enabled rather than wait to be noticed.
 # The cost is that a rubocop bump can fail CI — which is where it should fail.
 AllCops:

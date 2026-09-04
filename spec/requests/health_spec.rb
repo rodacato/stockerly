@@ -19,7 +19,7 @@ RSpec.describe "Health Endpoint", type: :request do
         get "/health"
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json["status"]).to eq("ok")
         expect(json["checks"]["prices_us"]).to eq("ok")
         expect(json["checks"]["indices"]).to eq("ok")
@@ -33,7 +33,7 @@ RSpec.describe "Health Endpoint", type: :request do
 
         get "/health"
 
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json["status"]).to eq("degraded")
         expect(json["checks"]["prices_us"]).to eq("degraded")
       end
@@ -46,7 +46,7 @@ RSpec.describe "Health Endpoint", type: :request do
         get "/health"
 
         expect(response).to have_http_status(:service_unavailable)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json["status"]).to eq("critical")
         expect(json["checks"]["prices_us"]).to eq("critical")
       end
@@ -62,7 +62,7 @@ RSpec.describe "Health Endpoint", type: :request do
         get "/health"
 
         expect(response).to have_http_status(:service_unavailable)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json["checks"]["prices_crypto"]).to eq("ok")
         expect(json["checks"]["prices_us"]).to eq("critical")
       end
@@ -72,7 +72,7 @@ RSpec.describe "Health Endpoint", type: :request do
       get "/health"
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json["status"]).to eq("ok")
     end
 

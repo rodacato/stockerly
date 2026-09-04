@@ -16,6 +16,10 @@ class ApplicationController < ActionController::Base
     payload[:ip] = request.remote_ip
   end
 
+  ABSOLUTE_TIMEOUT = 30.days.to_i
+
+  INACTIVITY_TIMEOUT = 14.days.to_i
+
   private
 
   def redirect_to_setup
@@ -50,9 +54,6 @@ class ApplicationController < ActionController::Base
     session[:session_started_at] = Time.current.to_i
     session[:last_activity_at] = Time.current.to_i
   end
-
-  INACTIVITY_TIMEOUT = 14.days.to_i
-  ABSOLUTE_TIMEOUT = 30.days.to_i
 
   def check_session_timeout
     return unless session[:user_id]

@@ -16,17 +16,6 @@ module Alerts
         triggered
       end
 
-      private
-
-      def publish_triggered(rule, price)
-        EventBus.publish(Events::AlertRuleTriggered.new(
-          alert_rule_id: rule.id,
-          user_id: rule.user_id,
-          asset_symbol: rule.asset_symbol,
-          triggered_price: price.to_s
-        ))
-      end
-
       # Lightweight decorator so AlertEvaluator sees the pre-update price
       AssetPriceProxy = Struct.new(:asset, :current_price) do
         def method_missing(method, ...)
@@ -36,6 +25,17 @@ module Alerts
         def respond_to_missing?(method, include_private = false)
           asset.respond_to?(method, include_private)
         end
+      end
+
+      private
+
+      def publish_triggered(rule, price)
+        EventBus.publish(Events::AlertRuleTriggered.new(
+          alert_rule_id: rule.id,
+          user_id: rule.user_id,
+          asset_symbol: rule.asset_symbol,
+          triggered_price: price.to_s
+        ))
       end
     end
   end
