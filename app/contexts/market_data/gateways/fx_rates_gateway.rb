@@ -22,13 +22,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/v6/#{@api_key}/latest/#{base}")
+      result = get_json("/v6/#{@api_key}/latest/#{base}")
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_and_upsert(base, targets, response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_and_upsert(base, targets, result.value!)
     end
 
     private

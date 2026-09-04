@@ -22,16 +22,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/api/v1/quote") do |req|
-        req.params["symbol"] = symbol
-        req.params["token"] = @api_key
-      end
+      result = get_json("/api/v1/quote", { symbol: symbol, token: @api_key })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_quote(symbol, response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_quote(symbol, result.value!)
     end
 
     # Fetch prices for multiple symbols via individual calls.
@@ -43,8 +37,6 @@ module MarketData
       end
 
       Success(results)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
     end
 
     # Fetch daily OHLCV candles for a date range.
@@ -56,19 +48,12 @@ module MarketData
       from_ts = Date.parse(from_date.to_s).to_time.to_i
       to_ts   = Date.parse(to_date.to_s).to_time.to_i
 
-      response = connection.get("/api/v1/stock/candle") do |req|
-        req.params["symbol"] = symbol
-        req.params["resolution"] = "D"
-        req.params["from"] = from_ts
-        req.params["to"] = to_ts
-        req.params["token"] = @api_key
-      end
+      result = get_json("/api/v1/stock/candle", {
+        symbol: symbol, resolution: "D", from: from_ts, to: to_ts, token: @api_key
+      })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_candles(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_candles(result.value!)
     end
 
     # Fetch recent company news for a specific ticker.
@@ -82,18 +67,12 @@ module MarketData
       from_date = 7.days.ago.to_date.to_s
       to_date = Date.current.to_s
 
-      response = connection.get("/api/v1/company-news") do |req|
-        req.params["symbol"] = ticker
-        req.params["from"] = from_date
-        req.params["to"] = to_date
-        req.params["token"] = @api_key
-      end
+      result = get_json("/api/v1/company-news", {
+        symbol: ticker, from: from_date, to: to_date, token: @api_key
+      })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_news(response.body, limit: limit)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_news(result.value!, limit: limit)
     end
 
     # Fetch earnings calendar for a ticker.
@@ -105,18 +84,12 @@ module MarketData
       from_date = 6.months.ago.to_date.to_s
       to_date = (Date.current + 6.months).to_s
 
-      response = connection.get("/api/v1/calendar/earnings") do |req|
-        req.params["symbol"] = ticker
-        req.params["from"] = from_date
-        req.params["to"] = to_date
-        req.params["token"] = @api_key
-      end
+      result = get_json("/api/v1/calendar/earnings", {
+        symbol: ticker, from: from_date, to: to_date, token: @api_key
+      })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_earnings(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_earnings(result.value!)
     end
 
     # Search tickers by name or symbol.
@@ -125,16 +98,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/api/v1/search") do |req|
-        req.params["q"] = query
-        req.params["token"] = @api_key
-      end
+      result = get_json("/api/v1/search", { q: query, token: @api_key })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_search(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_search(result.value!)
     end
 
     private

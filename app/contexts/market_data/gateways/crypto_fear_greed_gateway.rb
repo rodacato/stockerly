@@ -13,13 +13,10 @@ module MarketData
     TIMEOUT  = 5
 
     def fetch_index
-      response = connection.get("/fng/", limit: 1)
+      result = get_json("/fng/", { limit: 1 })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse(result.value!)
     end
 
     private
