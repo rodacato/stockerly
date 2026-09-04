@@ -22,11 +22,11 @@ module Alerts
           return false if change.nil?
           change.abs >= rule.threshold_value
         when "rsi_overbought"
-          score = asset.latest_trend_score&.score || 0
-          score >= rule.threshold_value
+          rsi = latest_rsi(asset)
+          !rsi.nil? && rsi >= rule.threshold_value
         when "rsi_oversold"
-          score = asset.latest_trend_score&.score || 0
-          score <= rule.threshold_value
+          rsi = latest_rsi(asset)
+          !rsi.nil? && rsi <= rule.threshold_value
         when "volume_spike"
           avg = average_volume(asset)
           return false if avg.zero?
@@ -34,6 +34,16 @@ module Alerts
         else
           false
         end
+      end
+
+      # The reading the asset detail draws, so a notice and the screen it sends
+      # you to cannot disagree. This rule used to read the blended trend score
+      # while telling the owner it had measured RSI(14).
+      #
+      # nil when no reading exists: a rule cannot fire on an indicator nobody
+      # has computed, and a missing RSI must not read as zero.
+      def self.latest_rsi(asset)
+        asset.technical_reading&.[](:rsi)&.to_f
       end
 
       # The day change as every screen defines it (ADR-021), measured against

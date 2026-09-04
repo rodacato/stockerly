@@ -141,22 +141,36 @@ RSpec.describe Alerts::Domain::AlertEvaluator do
     end
 
     context "rsi_overbought" do
-      it "triggers when trend score is at or above threshold" do
-        create(:trend_score, asset: asset, score: 80, calculated_at: Time.current)
+      it "triggers on the RSI its notice names, not on the blended score" do
+        asset.create_technical_reading!(calculated_at: Time.current, readings: { "rsi" => 74.0 })
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :rsi_overbought, threshold_value: 70.0)
 
         triggered = Alerts::Domain::AlertEvaluator.evaluate([ rule ], asset, 160.0)
         expect(triggered).to include(rule)
       end
+
+      it "stays silent when the trend score is high and the RSI is not" do
+        create(:trend_score, asset: asset, score: 88, calculated_at: Time.current)
+        asset.create_technical_reading!(calculated_at: Time.current, readings: { "rsi" => 61.0 })
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :rsi_overbought, threshold_value: 70.0)
+
+        expect(Alerts::Domain::AlertEvaluator.evaluate([ rule ], asset, 160.0)).to be_empty
+      end
     end
 
     context "rsi_oversold" do
-      it "triggers when trend score is at or below threshold" do
-        create(:trend_score, asset: asset, score: 20, calculated_at: Time.current)
+      it "triggers on the RSI its notice names, not on the blended score" do
+        asset.create_technical_reading!(calculated_at: Time.current, readings: { "rsi" => 24.0 })
         rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :rsi_oversold, threshold_value: 30.0)
 
         triggered = Alerts::Domain::AlertEvaluator.evaluate([ rule ], asset, 140.0)
         expect(triggered).to include(rule)
+      end
+
+      it "cannot fire on an indicator nobody has computed" do
+        rule = create(:alert_rule, user: user, asset_symbol: asset.symbol, condition: :rsi_oversold, threshold_value: 30.0)
+
+        expect(Alerts::Domain::AlertEvaluator.evaluate([ rule ], asset, 140.0)).to be_empty
       end
     end
 
