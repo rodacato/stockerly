@@ -64,6 +64,39 @@ RSpec.describe MarketData::Gateways::FmpGateway do
       end
     end
 
+    # #554: parse_overview used to compute a price and an `eps || lastDiv`
+    # fallback and discard both. These pin the answers rather than the deletion.
+    context "when the profile is missing eps" do
+      before do
+        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/AAPL})
+          .to_return(status: 200, headers: { "Content-Type" => "application/json" },
+                     body: [ profile_response.first.except("eps") ].to_json)
+      end
+
+      it "reports no eps rather than falling back to the dividend" do
+        data = gateway.fetch_overview("AAPL").value!
+
+        expect(data[:eps]).to be_nil
+        expect(data[:dividend_per_share]).to eq(BigDecimal("1.0"))
+      end
+    end
+
+    context "when the profile carries a price" do
+      before do
+        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/AAPL})
+          .to_return(status: 200, headers: { "Content-Type" => "application/json" },
+                     body: profile_response.to_json)
+      end
+
+      # A fundamentals overview is written to a JSON blob on a twice-weekly
+      # cadence; a price there would be a second, stale, unprovenanced quote.
+      it "leaves the price to the price chain" do
+        data = gateway.fetch_overview("AAPL").value!
+
+        expect(data).not_to have_key(:price)
+      end
+    end
+
     context "when FMP returns empty response" do
       before do
         stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/INVALID})
