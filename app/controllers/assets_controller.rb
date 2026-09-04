@@ -94,7 +94,7 @@ class AssetsController < AuthenticatedController
   private
 
   def asset_params
-    params.require(:asset).permit(:symbol, :name, :asset_type, :country, :exchange, :sector, :logo_url)
+    params.expect(asset: [ :symbol, :name, :asset_type, :country, :exchange, :sector, :logo_url ])
   end
 
   def first_error(errors)

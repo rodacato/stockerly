@@ -155,7 +155,7 @@ class TradesController < AuthenticatedController
   end
 
   def trade_params
-    raw = params.require(:trade).permit(:asset_symbol, :side, :shares, :price_per_share, :fee, :executed_at, :currency, :fx_rate_at_execution).to_h
+    raw = params.expect(trade: [ :asset_symbol, :side, :shares, :price_per_share, :fee, :executed_at, :currency, :fx_rate_at_execution ]).to_h
     # Treat empty strings from the form's optional selectors as "not provided"
     # so the contract's `optional(:currency).maybe(...)` rule applies and
     # ExecuteTrade falls back to the asset's native currency.
@@ -165,6 +165,6 @@ class TradesController < AuthenticatedController
   end
 
   def update_trade_params
-    params.require(:trade).permit(:shares, :price_per_share, :fee, :executed_at)
+    params.expect(trade: [ :shares, :price_per_share, :fee, :executed_at ])
   end
 end

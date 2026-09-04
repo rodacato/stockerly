@@ -65,11 +65,11 @@ class ProfilesController < AuthenticatedController
   private
 
   def profile_params
-    params.require(:profile).permit(:full_name, :email, :preferred_currency)
+    params.expect(profile: [ :full_name, :email, :preferred_currency ])
   end
 
   def password_params
-    params.require(:password_change).permit(:current_password, :password, :password_confirmation)
+    params.expect(password_change: [ :current_password, :password, :password_confirmation ])
   end
 
   def preference_params

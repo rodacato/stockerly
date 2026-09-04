@@ -19,7 +19,7 @@ module Admin
     end
 
     def trigger_data_source
-      source = DataSourceRegistry.find(params[:key].to_sym)
+      source = DataSourceRegistry.find(params.expect(:key).to_sym)
       source.job_class.perform_later(*source.job_args)
       redirect_to admin_settings_path, notice: t(".encolada", source: source.name)
     rescue KeyError
