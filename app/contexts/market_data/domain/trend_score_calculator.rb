@@ -47,8 +47,9 @@ module MarketData
       return nil if closes.size < 15
 
       deltas = closes.last(15).each_cons(2).map { |previous, current| current - previous }
-      avg_gain = deltas.sum { |delta| delta.positive? ? delta : 0.0 } / 14.0
-      avg_loss = deltas.sum { |delta| delta.negative? ? delta.abs : 0.0 } / 14.0
+      gains, losses = deltas.partition(&:positive?)
+      avg_gain = gains.sum / 14.0
+      avg_loss = losses.sum.abs / 14.0
       return avg_gain.zero? ? 50.0 : 100.0 if avg_loss.zero?
 
       rs = avg_gain / avg_loss
@@ -152,7 +153,7 @@ module MarketData
         [ 0.2, macd ],
         [ 0.15, vol ],
         [ 0.15, ema ]
-      ].reject { |_weight, value| value.nil? }
+      ].select { |_weight, value| value }
 
       # Accumulated left to right on purpose: Array#sum compensates float error
       # and would not reproduce the scores already stored.
