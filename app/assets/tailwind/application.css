@@ -44,7 +44,7 @@
 
   /* --- Overlay + shape — from the kit (0.3.0 scrim, D1 radii). An alpha is
      the correct implementation for both: they composite over whatever
-     surface they land on, so the row carries it (D60). ------------------- */
+     surface they land on, so the row carries it (D76). ------------------- */
   --color-scrim:             #0F172A99;
   --color-focus:             #5B6CFF33;
   --radius-card:             20px;
