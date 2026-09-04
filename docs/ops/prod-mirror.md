@@ -27,11 +27,19 @@ No password: the accessory container authenticates local socket connections by
 trust, which is the same reason `bin/kamal db` opens a `psql` without one. The
 role is reachable only from inside that container, and the only way in is SSH.
 
-### 2. `HOST_IP` on the machine that deploys
+### 2. Nothing, if the Kamal environment already loads
 
-`bin/prod-sync` reads it from the environment or from `.env`. Everything else
-has a default: `PROD_SSH_USER=deploy`, `PROD_PG_CONTAINER=stockerly-postgres`,
+`bin/prod-sync` sources `.devcontainer/kamal-env.sh`, which is where `HOST_IP`
+and the GitHub slug already come from — the same file Kamal itself depends on.
+If `bin/kamal config` renders, the sync has what it needs. Everything else has a
+default: `PROD_SSH_USER=deploy`, `PROD_PG_CONTAINER=stockerly-postgres`,
 `PROD_PG_DB=stockerly_production`, `PROD_PG_ROLE=stockerly_ro`.
+
+That environment is wired into the shell by `.devcontainer/post-create.sh`, and
+only when the container is created. A container older than that hook has no
+`STOCKERLY_ROOT` in its `~/.bashrc`, and Kamal fails there with
+`image: should be a string` — which reads like a config error and is a missing
+environment. Append the two lines the hook writes, or rebuild.
 
 ## The sync
 
@@ -43,10 +51,9 @@ bin/prod-sync status    # what the mirror currently holds
 ```
 
 Run with no arguments and it does what it can from where it is. The devcontainer
-has no SSH keys, so inside it the dump half is skipped and the newest file in
-`tmp/prod/` is restored — which means the usual rhythm is `bin/prod-sync dump`
-on the host, then `bin/prod-sync` in the container. The repository is mounted
-into the container, so the file needs no copying.
+forwards the SSH agent, so both halves usually run there in one command; where
+the agent is absent the dump half is skipped and the newest file in `tmp/prod/`
+is restored instead, which is why the halves are separable at all.
 
 `FORCE=1` skips the confirmation before the mirror is replaced.
 
@@ -70,15 +77,26 @@ offer to drop it.
 Historical bars are immutable, so a backtest wants the copy — it reads the same
 rows thousands of times and has no business doing that over the network against
 a 4 GB box that also runs the app. When something genuinely needs *today's*
-number, tunnel rather than open a port:
+number, go through SSH rather than open a port — a one-off query needs no
+tunnel at all:
 
 ```bash
-ssh -L 5433:localhost:5432 deploy@$HOST_IP
+ssh deploy@$HOST_IP "docker exec -i stockerly-postgres \
+  psql -U stockerly_ro -d stockerly_production -c 'SELECT ...'"
 ```
 
-Publishing 5432 would be the one inbound port on a host whose ingress is a
-Cloudflare Tunnel precisely so it has none. The tunnel gives the same access,
-to the same read-only role, and closes when you close it.
+The accessory exposes 5432 on the Docker network and publishes nothing to the
+host, so `ssh -L 5433:localhost:5432` reaches nothing. A real tunnel has to name
+the container's address on that network:
+
+```bash
+PGIP=$(ssh deploy@$HOST_IP "docker inspect -f \
+  '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' stockerly-postgres")
+ssh -L 5433:$PGIP:5432 deploy@$HOST_IP
+```
+
+Either way the access arrives over SSH. Publishing 5432 would be the one inbound
+port on a host whose ingress is a Cloudflare Tunnel precisely so it has none.
 
 ## What the dump contains
 

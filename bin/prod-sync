@@ -7,7 +7,9 @@ cd "$(dirname "$0")/.."
 
 MODE="${1:-auto}"
 
-[ -f .env ] && set -a && . ./.env && set +a
+# One definition of HOST_IP and the GitHub slug, shared with Kamal.
+[ -r .env ] && { set -a; . ./.env; set +a; }
+[ -r .devcontainer/kamal-env.sh ] && { STOCKERLY_ROOT="$PWD"; . .devcontainer/kamal-env.sh; }
 
 SSH_USER="${PROD_SSH_USER:-deploy}"
 SSH_HOST="${HOST_IP:-}"
