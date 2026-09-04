@@ -9,7 +9,7 @@
       <p class="text-fg-subtle"><%= t(".subtitulo") %></p>
     </div>
 
-    <%= form_with url: onboarding_save_assets_path, method: :post, class: "mb-10", data: { controller: "selectable-card" } do |f| %>
+    <%= form_with url: onboarding_save_assets_path, method: :post, class: "mb-10" do |f| %>
       <% @catalog.each do |category_key, assets| %>
         <div class="mb-6">
           <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-fg-subtle mb-3">
@@ -19,7 +19,7 @@
             <% assets.each do |asset| %>
               <% default_selected = Administration::Domain::AssetCatalog::DEFAULT_SELECTED.include?(asset[:symbol]) %>
               <label class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all
-                            <%= default_selected ? 'border-primary bg-primary-muted' : 'border-border-default bg-bg-surface hover:border-primary/50' %>">
+                            <%= default_selected ? 'border-primary bg-primary-muted' : 'border-border-default bg-bg-surface hover:border-primary' %>">
                 <input type="checkbox" name="symbols[]" value="<%= asset[:symbol] %>"
                        <%= 'checked' if default_selected %>
                        class="size-5 rounded-full border-border-default text-primary focus:ring-primary">
@@ -41,7 +41,7 @@
         <% end %>
         <div class="flex items-center gap-4">
           <%= link_to t(".omitir"), onboarding_complete_path, class: "text-sm font-medium text-fg-subtle hover:text-primary transition-colors" %>
-          <button type="submit" class="bg-primary hover:bg-primary-hover text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-primary/25">
+          <button type="submit" class="bg-primary hover:bg-primary-hover text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg">
             <%= t(".continuar") %>
           </button>
         </div>
