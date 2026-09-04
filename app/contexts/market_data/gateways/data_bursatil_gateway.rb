@@ -9,6 +9,7 @@ module MarketData
     # from the provider instead of counted locally, and cached, because asking
     # for it also costs a credit.
     class DataBursatilGateway < MarketDataGateway
+      include PerformsRequests
       include ResolvesApiKey
       include Dry::Monads[:result]
 
@@ -179,12 +180,7 @@ module MarketData
       end
 
       def connection
-        @connection ||= Faraday.new(url: BASE_URL) do |f|
-          f.request :retry, RetryPolicy.options(max: 2, interval: 0.5, backoff_factor: 2, retry_statuses: [ 500, 502, 503 ])
-          f.response :json
-          f.options.timeout = TIMEOUT
-          f.options.open_timeout = TIMEOUT
-        end
+        build_connection(url: BASE_URL, timeout: TIMEOUT, retry_options: { max: 2, interval: 0.5, backoff_factor: 2, retry_statuses: [ 500, 502, 503 ] })
       end
     end
   end

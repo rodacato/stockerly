@@ -4,6 +4,7 @@ module MarketData
     # Free, no auth required.
     # Docs: https://alternative.me/crypto/fear-and-greed-index/
     class CryptoFearGreedGateway
+    include PerformsRequests
     include Dry::Monads[:result]
 
     BASE_URL = "https://api.alternative.me"
@@ -24,13 +25,7 @@ module MarketData
     private
 
     def connection
-      @connection ||= Faraday.new(url: BASE_URL) do |f|
-        f.options.timeout = TIMEOUT
-        f.options.open_timeout = TIMEOUT
-        f.request :retry, RetryPolicy.options(max: 2, interval: 0.5)
-        f.response :json
-        f.adapter Faraday.default_adapter
-      end
+      build_connection(url: BASE_URL, timeout: TIMEOUT, retry_options: { max: 2, interval: 0.5 })
     end
 
     def parse(body)

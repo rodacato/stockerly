@@ -7,6 +7,7 @@ module MarketData
     # minutes and returns 403 for anything newer, so this gateway covers
     # end-of-day history and never current prices.
     class AlpacaGateway < MarketDataGateway
+      include PerformsRequests
       include ResolvesApiKey
       include Dry::Monads[:result]
 
@@ -197,13 +198,9 @@ module MarketData
       end
 
       def connection
-        @connection ||= Faraday.new(url: BASE_URL) do |f|
-          f.request :retry, RetryPolicy.options(max: 2, interval: 0.5, backoff_factor: 2, retry_statuses: [ 500, 502, 503 ])
-          f.response :json
+        build_connection(url: BASE_URL, timeout: TIMEOUT, retry_options: { max: 2, interval: 0.5, backoff_factor: 2, retry_statuses: [ 500, 502, 503 ] }) do |f|
           f.headers["APCA-API-KEY-ID"] = @key_id
           f.headers["APCA-API-SECRET-KEY"] = @secret
-          f.options.timeout = TIMEOUT
-          f.options.open_timeout = TIMEOUT
         end
       end
 

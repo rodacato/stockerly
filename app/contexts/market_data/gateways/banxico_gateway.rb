@@ -3,6 +3,7 @@ module MarketData
     # Driven adapter: Banxico SIE API for CETES auction results.
     # Docs: https://www.banxico.org.mx/SieAPIRest/service/v1/doc/catalogoSeries
     class BanxicoGateway
+    include PerformsRequests
     include ResolvesApiKey
     include Dry::Monads[:result]
 
@@ -81,13 +82,8 @@ module MarketData
     private
 
     def connection
-      @connection ||= Faraday.new(url: BASE_URL) do |f|
-        f.request :retry, RetryPolicy.options(max: 2, interval: 0.5, backoff_factor: 2,
-                                              retry_statuses: [ 500, 502, 503 ])
-        f.response :json
+      build_connection(url: BASE_URL, timeout: TIMEOUT, retry_options: { max: 2, interval: 0.5, backoff_factor: 2, retry_statuses: [ 500, 502, 503 ] }) do |f|
         f.headers["Bmx-Token"] = @api_token
-        f.options.timeout = TIMEOUT
-        f.options.open_timeout = TIMEOUT
       end
     end
 

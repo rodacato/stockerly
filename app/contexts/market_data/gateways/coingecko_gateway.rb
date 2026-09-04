@@ -4,6 +4,7 @@ module MarketData
     # Docs: https://docs.coingecko.com/reference/simple-price
     # Docs: https://docs.coingecko.com/reference/coins-markets
     class CoingeckoGateway < MarketDataGateway
+    include PerformsRequests
     include ResolvesApiKey
     include Dry::Monads[:result]
 
@@ -126,14 +127,8 @@ module MarketData
     private
 
     def connection
-      base = @pro ? PRO_URL : DEMO_URL
-      @connection ||= Faraday.new(url: base) do |f|
-        f.request :retry, RetryPolicy.options(max: 2, interval: 1, backoff_factor: 2,
-                                              retry_statuses: [ 500, 502, 503 ])
-        f.response :json
-        f.options.timeout = TIMEOUT
-        f.options.open_timeout = TIMEOUT
-      end
+      build_connection(url: @pro ? PRO_URL : DEMO_URL, timeout: TIMEOUT,
+                       retry_options: { max: 2, interval: 1, backoff_factor: 2, retry_statuses: [ 500, 502, 503 ] })
     end
 
     def apply_auth(req)

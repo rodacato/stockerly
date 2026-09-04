@@ -4,6 +4,7 @@ module MarketData
     # Docs: https://www.alphavantage.co/documentation/
     # CRITICAL: Rate limits return HTTP 200 with "Note" key (NOT 429).
     class AlphaVantageGateway < FundamentalsGateway
+    include PerformsRequests
     include ResolvesApiKey
     BASE_URL = "https://www.alphavantage.co"
     PROVIDER = "Alpha Vantage"
@@ -148,13 +149,11 @@ module MarketData
       report.transform_keys { |k| k.underscore }
     end
 
+    # One retry, not two: the free tier allows five calls a minute, so a second
+    # attempt spends the budget the next caller needs.
     def connection
-      @connection ||= Faraday.new(url: BASE_URL) do |f|
-        f.request :retry, RetryPolicy.options(max: 1, interval: 1.0, retry_statuses: [ 500, 502, 503 ])
-        f.response :json
-        f.options.timeout = TIMEOUT
-        f.options.open_timeout = TIMEOUT
-      end
+      build_connection(url: BASE_URL, timeout: TIMEOUT,
+                       retry_options: { max: 1, interval: 1.0, retry_statuses: [ 500, 502, 503 ] })
     end
 
     def parse_overview(body)
