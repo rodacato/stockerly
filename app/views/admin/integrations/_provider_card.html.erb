@@ -68,7 +68,7 @@
     <div class="flex flex-wrap items-center gap-2">
       <%= button_to t("admin.integrations.index.verificar"), refresh_sync_admin_integration_path(integration), method: :post,
             form_class: "inline-flex",
-            class: "rounded-lg bg-primary/10 px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/15" %>
+            class: "rounded-lg bg-primary-muted px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-fg-inverse" %>
       <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex flex-wrap items-end gap-2" do |f| %>
         <%= f.password_field :api_key_encrypted, name: "integration[api_key_encrypted]", value: nil,
               placeholder: integration_key_placeholder(integration),
