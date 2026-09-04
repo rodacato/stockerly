@@ -2,7 +2,7 @@ module MarketData
   module UseCases
     # One home for the fundamentals row two syncs write: Alpha Vantage one
     # equity per call, CoinGecko every crypto in a single one.
-    class StoreFundamentals < ApplicationUseCase
+    class StoreFundamentals < SimpleUseCase
       # LoadAssetDetail reads a different row per asset type, so the wrong
       # label here stores data the screen never looks at.
       EQUITY = "OVERVIEW".freeze
@@ -18,7 +18,7 @@ module MarketData
 
         asset.update!(fundamentals_synced_at: Time.current)
 
-        publish(MarketData::Events::AssetFundamentalsUpdated.new(
+        EventBus.publish(MarketData::Events::AssetFundamentalsUpdated.new(
           asset_id: asset.id, symbol: asset.symbol, source: source
         ))
       end
