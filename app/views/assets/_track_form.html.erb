@@ -19,7 +19,7 @@
              placeholder="<%= t("assets.tracked.buscar_placeholder") %>"
              data-ticker-search-target="input"
              data-action="input->ticker-search#search keydown->ticker-search#navigate"
-             class="w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2.5 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary/20" />
+             class="w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2.5 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-focus" />
       <div data-ticker-search-target="results"
            class="absolute left-0 right-0 top-full z-50 mt-1 hidden max-h-64 overflow-y-auto rounded-lg border border-border-default bg-bg-surface shadow-xl"></div>
     </div>
@@ -34,7 +34,7 @@
           </label>
           <%= f.text_field field, placeholder: placeholder,
                 data: { ticker_search_target: field.to_s.camelize(:lower) },
-                class: "w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary/20 #{"font-mono uppercase" if mono}" %>
+                class: "w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-focus #{"font-mono uppercase" if mono}" %>
         </div>
       <% end %>
       <div>
@@ -45,7 +45,7 @@
               options_for_select(Asset.asset_types.keys.map { |k| [ t("comun.tipo_activo.#{k}"), k ] }),
               { prompt: t("assets.tracked.selecciona") },
               data: { ticker_search_target: "assetType" },
-              class: "w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2 text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+              class: "w-full rounded-lg border border-border-default bg-bg-canvas px-3 py-2 text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-focus" %>
       </div>
     </div>
 

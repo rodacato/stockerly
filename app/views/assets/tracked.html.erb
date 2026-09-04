@@ -21,7 +21,7 @@
       <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base text-fg-subtle" aria-hidden="true">search</span>
       <input type="search" id="tracked_query" name="q" value="<%= @query %>" autocomplete="off"
              placeholder="<%= t("assets.tracked.filtrar", count: @total) %>"
-             class="w-full rounded-lg border border-border-default bg-bg-canvas py-2.5 pl-10 pr-3 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary/20" />
+             class="w-full rounded-lg border border-border-default bg-bg-canvas py-2.5 pl-10 pr-3 text-sm text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-focus" />
     <% end %>
 
     <% if @assets.any? %>
