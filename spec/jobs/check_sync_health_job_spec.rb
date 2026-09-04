@@ -1,12 +1,19 @@
 require "rails_helper"
 
 RSpec.describe CheckSyncHealthJob, type: :job do
+  include ActiveSupport::Testing::TimeHelpers
+
+  # Wednesday 11:00 ET / 10:00 CST — both sessions open, both more than an hour
+  # in. The market-gated watches are only evaluated then, so without pinning the
+  # clock every spec about them would pass or fail by the hour it ran at.
+  BOTH_MARKETS_OPEN = "2026-01-14 11:00:00 -0500".freeze
+
   # Test env uses :null_store (config/environments/test.rb), so swap in an
   # in-memory store so the dedup spec can actually observe a cache hit/miss.
   around do |example|
     original_cache = Rails.cache
     Rails.cache = ActiveSupport::Cache::MemoryStore.new
-    example.run
+    travel_to(Time.zone.parse(BOTH_MARKETS_OPEN)) { example.run }
   ensure
     Rails.cache = original_cache
   end

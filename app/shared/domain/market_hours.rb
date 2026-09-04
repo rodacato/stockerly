@@ -4,6 +4,10 @@ module MarketHours
   US_TIMEZONE  = "Eastern Time (US & Canada)"
   BMV_TIMEZONE = "America/Mexico_City"
 
+  # Minutes since midnight, local to each market. 9:30 = 570, 16:00 = 960.
+  US_SESSION  = (570...960)
+  BMV_SESSION = (510...900)
+
   US_EXCHANGES  = %w[NYSE NASDAQ].freeze
   BMV_EXCHANGES = %w[BMV].freeze
 
@@ -29,24 +33,43 @@ module MarketHours
 
   # NYSE/NASDAQ: Mon-Fri 9:30 AM – 4:00 PM ET
   def self.us_market_open?
-    now = Time.current.in_time_zone(US_TIMEZONE)
-    return false if now.saturday? || now.sunday?
-
-    minutes_since_midnight = now.hour * 60 + now.min
-    minutes_since_midnight >= 570 && minutes_since_midnight < 960 # 9:30=570, 16:00=960
+    session_open?(US_TIMEZONE, US_SESSION)
   end
 
   # BMV: Mon-Fri 8:30 AM – 3:00 PM CST
   def self.bmv_market_open?
-    now = Time.current.in_time_zone(BMV_TIMEZONE)
-    return false if now.saturday? || now.sunday?
+    session_open?(BMV_TIMEZONE, BMV_SESSION)
+  end
 
-    minutes_since_midnight = now.hour * 60 + now.min
-    minutes_since_midnight >= 510 && minutes_since_midnight < 900 # 8:30=510, 15:00=900
+  # Minutes elapsed since today's opening bell, or nil while the market is
+  # closed. A monitor needs this to tell "the sync has not had its turn yet"
+  # from "the sync is dead": at 9:31 both look like silence.
+  def self.us_minutes_since_open
+    minutes_since_open(US_TIMEZONE, US_SESSION)
+  end
+
+  def self.bmv_minutes_since_open
+    minutes_since_open(BMV_TIMEZONE, BMV_SESSION)
   end
 
   # Crypto markets never close.
   def self.crypto_market_open?
     true
   end
+
+  def self.session_open?(zone, session)
+    now = Time.current.in_time_zone(zone)
+    return false if now.saturday? || now.sunday?
+
+    session.cover?(now.hour * 60 + now.min)
+  end
+  private_class_method :session_open?
+
+  def self.minutes_since_open(zone, session)
+    return nil unless session_open?(zone, session)
+
+    now = Time.current.in_time_zone(zone)
+    (now.hour * 60 + now.min) - session.first
+  end
+  private_class_method :minutes_since_open
 end
