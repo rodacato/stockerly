@@ -21,4 +21,14 @@ RSpec.describe "FX Rates Flow (E2E)", type: :model do
     expect(eur_rate).to be_present
     expect(eur_rate.rate).to be > 0
   end
+
+  # The monitor read a task name nothing wrote, so /health called FX healthy
+  # forever. Running the real job through the real read is what keeps the two
+  # strings from drifting apart again — asserting the name twice would not.
+  it "makes the refresh visible to the freshness monitor" do
+    RefreshFxRatesJob.perform_now
+
+    expect(DataFreshness.latest_fx_sync).to be_within(5.seconds).of(Time.current)
+    expect(DataFreshness.checks[:fx_rates]).to eq("ok")
+  end
 end
