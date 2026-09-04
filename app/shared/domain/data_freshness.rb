@@ -4,12 +4,41 @@
 # and by the Prometheus `stockerly_data_age_seconds` gauge (age of the
 # freshest sync). Keeping both on the same queries avoids drift between the
 # JSON monitor and the scraped metric.
+#
+# Prices are read per sync route, not as one number over every asset (#553).
+# A single `maximum(:price_updated_at)` across all active assets answered "did
+# anything update?" while being read as "is everything updating?": crypto syncs
+# every 5 minutes around the clock, so one live crypto row reported the whole
+# portfolio fresh with every US equity and every BMV issuer stale.
+#
+# `index` assets are deliberately absent: nothing schedules them and nothing
+# should. The VIX level the app reads is a MarketIndex row, refreshed every 10
+# minutes by SyncMarketIndicesJob through the yfinance bridge — no sanctioned
+# price provider serves an index, which is why that job exists at all. Watching
+# the seeded VIX *asset* would be a check that can only ever be red.
 class DataFreshness
-  CHECKS = {
-    prices: { ok: 15.minutes, degraded: 1.hour },
+  # An hour into a session a sync on a 5-30 minute cadence has had several
+  # turns; before that, silence only means the opening bell just rang. Same
+  # grace CheckSyncHealthJob applies to its market-gated watches.
+  SESSION_GRACE = 60.minutes
+
+  # types/country select the assets one sync route refreshes; market names the
+  # session it depends on, or nil when it runs regardless of market hours.
+  PRICE_CHECKS = {
+    prices_crypto: { types: %i[crypto], market: nil, ok: 15.minutes, degraded: 1.hour },
+    prices_us: { types: %i[stock etf], country: :us, market: :us, ok: 15.minutes, degraded: 1.hour },
+    prices_mx: { types: %i[stock etf], country: :mx, market: :bmv, ok: 15.minutes, degraded: 1.hour },
+    # CETES are auctioned weekly and synced Sunday 10:00, so a day of silence
+    # is normal and nine days is not — the window CheckSyncHealthJob watches.
+    prices_fixed_income: { types: %i[fixed_income], market: nil, ok: 8.days, degraded: 9.days }
+  }.freeze
+
+  CHECKS = PRICE_CHECKS.merge(
     indices: { ok: 20.minutes, degraded: 2.hours },
     fx_rates: { ok: 2.hours, degraded: 6.hours }
-  }.freeze
+  ).freeze
+
+  PRICE_ASSET_TYPES = PRICE_CHECKS.values.flat_map { |check| check[:types] }.uniq.freeze
 
   class << self
     # Age in seconds of the most recently synced data across all sources,
@@ -24,11 +53,10 @@ class DataFreshness
     end
 
     def checks
-      {
-        prices: status_for(:prices, latest_price_sync),
+      PRICE_CHECKS.keys.index_with { |key| price_status(key) }.merge(
         indices: status_for(:indices, latest_indices_sync),
         fx_rates: status_for(:fx_rates, latest_fx_sync)
-      }
+      )
     end
 
     def overall_status(checks = self.checks)
@@ -54,8 +82,22 @@ class DataFreshness
       end
     end
 
+    # A route that only runs while a market is open cannot be judged while it
+    # is closed: at 09:31 ET every US price is yesterday's close and that is
+    # not a fault.
+    def price_status(key)
+      return "ok" unless session_underway?(PRICE_CHECKS.fetch(key)[:market])
+
+      status_for(key, latest_price_sync_for(key))
+    end
+
+    def latest_price_sync_for(key)
+      price_scope(key).maximum(:price_updated_at)
+    end
+
+    # The gauge reports the freshest sync of any kind, so this one stays broad.
     def latest_price_sync
-      Asset.where(sync_status: :active).maximum(:price_updated_at)
+      Asset.syncing.where(asset_type: PRICE_ASSET_TYPES).maximum(:price_updated_at)
     end
 
     def latest_indices_sync
@@ -69,6 +111,33 @@ class DataFreshness
     # job against this read so the two names cannot drift apart again.
     def latest_fx_sync
       SystemLog.where(task_name: "FX Rate Refresh").where(severity: :success).maximum(:created_at)
+    end
+
+    private
+
+    # Same country split SyncPriorityAssetsJob routes on, so the monitor covers
+    # exactly what the schedule feeds.
+    def price_scope(key)
+      check = PRICE_CHECKS.fetch(key)
+      scope = Asset.syncing.where(asset_type: check[:types])
+
+      case check[:country]
+      when :mx then scope.where(country: "MX")
+      when :us then scope.where.not(country: "MX").or(scope.where(country: [ nil, "" ]))
+      else scope
+      end
+    end
+
+    def session_underway?(market)
+      case market
+      when :us then grace_elapsed?(MarketHours.us_minutes_since_open)
+      when :bmv then grace_elapsed?(MarketHours.bmv_minutes_since_open)
+      else true
+      end
+    end
+
+    def grace_elapsed?(minutes_since_open)
+      minutes_since_open.present? && minutes_since_open.minutes >= SESSION_GRACE
     end
   end
 end

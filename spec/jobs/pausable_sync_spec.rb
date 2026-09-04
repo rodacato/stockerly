@@ -56,6 +56,6 @@ RSpec.describe PausableSync do
     end
 
     expect(fetching).to all(have_attributes(included_modules: include(described_class)))
-    expect(fetching.size).to eq(25)
+    expect(fetching.size).to eq(24)
   end
 end

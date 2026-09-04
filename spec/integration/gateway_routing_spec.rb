@@ -110,17 +110,10 @@ RSpec.describe "Gateway routing", type: :job do
     end
   end
 
+  # US stocks have no bulk path: SyncPriorityAssetsJob fans them out one by one
+  # through SyncSingleAssetJob, covered above. The example that used to sit here
+  # drove SyncBulkStocksJob, which nothing enqueued (#553).
   describe "bulk paths" do
-    it "sends US stocks to Alpaca's daily bars in one call" do
-      asset = create(:asset, symbol: "AAPL", asset_type: :stock)
-      stub_alpaca_bars({ "AAPL" => [ alpaca_bar(date: Date.current.to_s, close: 200.0, open: 198.0) ] })
-
-      SyncBulkStocksJob.perform_now([ asset.id ])
-
-      expect(a_request(:get, alpaca_bars).with(query: hash_including("feed" => "sip"))).to have_been_made
-      expect(asset.reload.current_price.to_f).to eq(200.0)
-    end
-
     # Yahoo answers 429 to every request we can construct, from every network
     # tested, so the BMV bulk path no longer goes there.
     it "sends BMV assets to DataBursatil in bulk" do

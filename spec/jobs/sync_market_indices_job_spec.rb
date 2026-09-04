@@ -78,6 +78,22 @@ RSpec.describe SyncMarketIndicesJob do
       end
     end
 
+    # #553 read the absence of "vix" from recurring.yml as "nothing refreshes
+    # the VIX". The schedule names jobs, not symbols: this job carries ^VIX in
+    # INDEX_SYMBOL_MAP and runs every ten minutes, and MarketIndex.vix is the
+    # row it writes.
+    context "when the bridge returns the VIX" do
+      let!(:vix) { create(:market_index, symbol: "VIX", name: "CBOE Volatility", value: 14.0) }
+
+      before { stub_bridge({ "^VIX" => { "price" => 18.72, "change_percent" => 3.10, "volume" => 0 } }) }
+
+      it "refreshes the row MarketIndex.vix reads" do
+        described_class.perform_now
+
+        expect(MarketIndex.vix.value).to eq(18.72.to_d)
+      end
+    end
+
     context "when the bridge fails for every symbol" do
       before { stub_bridge({}) }
 

@@ -1,6 +1,12 @@
 require "rails_helper"
 
 RSpec.describe DataFreshness do
+  include ActiveSupport::Testing::TimeHelpers
+
+  # Thursday 17:00 UTC: 13:00 ET and 11:00 CDMX, both sessions well past the
+  # opening grace, so every market-gated price check is actually evaluated.
+  let(:session) { Time.utc(2026, 9, 3, 17, 0, 0) }
+
   describe ".newest_data_age_seconds" do
     it "returns the age in seconds of the most recently synced source" do
       create(:asset, sync_status: :active, price_updated_at: 5.minutes.ago)
@@ -24,16 +30,98 @@ RSpec.describe DataFreshness do
   end
 
   describe ".checks" do
-    it "flags a source as degraded past its ok threshold" do
-      create(:asset, sync_status: :active, price_updated_at: 30.minutes.ago)
+    # The defect this file exists for (#553): `maximum(:price_updated_at)` over
+    # every active asset let the 24/7 crypto sync answer for the equities.
+    it "reports a stale asset class even while another class is live" do
+      travel_to(session) do
+        create(:asset, :crypto, price_updated_at: 1.minute.ago)
+        create(:asset, price_updated_at: 3.hours.ago, country: "US")
 
-      expect(described_class.checks[:prices]).to eq("degraded")
+        checks = described_class.checks
+
+        expect(checks[:prices_crypto]).to eq("ok")
+        expect(checks[:prices_us]).to eq("critical")
+        expect(described_class.overall_status(checks)).to eq("critical")
+      end
     end
 
-    it "flags a source as critical past its degraded threshold" do
-      create(:asset, sync_status: :active, price_updated_at: 2.hours.ago)
+    it "keeps the BMV and US routes apart" do
+      travel_to(session) do
+        create(:asset, price_updated_at: 1.minute.ago, country: "US")
+        create(:asset, price_updated_at: 3.hours.ago, country: "MX", exchange: "BMV")
 
-      expect(described_class.checks[:prices]).to eq("critical")
+        checks = described_class.checks
+
+        expect(checks[:prices_us]).to eq("ok")
+        expect(checks[:prices_mx]).to eq("critical")
+      end
+    end
+
+    it "counts an asset with no country on the US route" do
+      travel_to(session) do
+        create(:asset, price_updated_at: 3.hours.ago, country: nil)
+
+        expect(described_class.checks[:prices_us]).to eq("critical")
+      end
+    end
+
+    it "flags a source as degraded past its ok threshold" do
+      travel_to(session) do
+        create(:asset, price_updated_at: 30.minutes.ago, country: "US")
+
+        expect(described_class.checks[:prices_us]).to eq("degraded")
+      end
+    end
+
+    # Overnight nothing is scheduled to update a US equity, so the silence is
+    # not a fault and the check must not read it as one.
+    it "does not judge a market-gated route while its session is closed" do
+      travel_to(Time.utc(2026, 9, 3, 3, 0, 0)) do
+        create(:asset, price_updated_at: 12.hours.ago, country: "US")
+
+        expect(described_class.checks[:prices_us]).to eq("ok")
+      end
+    end
+
+    # 09:45 ET: every price is yesterday's close because the first sync of the
+    # session has barely had its turn.
+    it "does not judge a route inside the opening grace" do
+      travel_to(Time.utc(2026, 9, 3, 13, 45, 0)) do
+        create(:asset, price_updated_at: 18.hours.ago, country: "US")
+
+        expect(described_class.checks[:prices_us]).to eq("ok")
+      end
+    end
+
+    # The factory pauses fixed income; a seeded instance does not — SeedAssets
+    # and EnsureListed both list CETES as active, and SyncCetesJob refreshes
+    # them weekly.
+    it "gives CETES the weekly window its auction cadence earns" do
+      travel_to(session) do
+        create(:asset, :fixed_income, sync_status: :active, price_updated_at: 3.days.ago)
+
+        expect(described_class.checks[:prices_fixed_income]).to eq("ok")
+      end
+    end
+
+    it "flags CETES that have missed more than one weekly auction" do
+      travel_to(session) do
+        create(:asset, :fixed_income, sync_status: :active, price_updated_at: 10.days.ago)
+
+        expect(described_class.checks[:prices_fixed_income]).to eq("critical")
+      end
+    end
+
+    # Nothing on the schedule refreshes an index asset; the VIX level the app
+    # reads is a MarketIndex row. Watching the seeded asset would be a check
+    # that can only be red.
+    it "does not watch index assets" do
+      travel_to(session) do
+        create(:asset, :index, price_updated_at: 1.year.ago)
+
+        expect(described_class.checks.keys).not_to include(:prices_index)
+        expect(described_class.overall_status).to eq("ok")
+      end
     end
 
     # This read asked for "FX Rates Sync", a name nothing writes, so it found
@@ -57,19 +145,19 @@ RSpec.describe DataFreshness do
 
   describe ".overall_status" do
     it "is critical when any check is critical" do
-      checks = { prices: "ok", indices: "critical", fx_rates: "degraded" }
+      checks = { prices_us: "ok", indices: "critical", fx_rates: "degraded" }
 
       expect(described_class.overall_status(checks)).to eq("critical")
     end
 
     it "is degraded when a check is degraded and none critical" do
-      checks = { prices: "ok", indices: "degraded", fx_rates: "ok" }
+      checks = { prices_us: "ok", indices: "degraded", fx_rates: "ok" }
 
       expect(described_class.overall_status(checks)).to eq("degraded")
     end
 
     it "is ok when all checks pass" do
-      checks = { prices: "ok", indices: "ok", fx_rates: "ok" }
+      checks = { prices_us: "ok", indices: "ok", fx_rates: "ok" }
 
       expect(described_class.overall_status(checks)).to eq("ok")
     end
