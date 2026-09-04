@@ -29,4 +29,35 @@ RSpec.describe MarketData::Queries::MarketCalendar do
       expect(described_class.holiday?(market: :BMV, date: date)).to be(false)
     end
   end
+
+  describe ".dates_in_year" do
+    it "returns one market's closures for one year" do
+      MarketHoliday.create!(market: :NYSE, date: Date.new(2026, 11, 26), name: "Thanksgiving")
+      MarketHoliday.create!(market: :NYSE, date: Date.new(2027, 11, 25), name: "Thanksgiving")
+      MarketHoliday.create!(market: :BMV,  date: Date.new(2026, 12, 25), name: "Navidad")
+
+      expect(described_class.dates_in_year(market: :NYSE, year: 2026)).to eq([ Date.new(2026, 11, 26) ])
+    end
+
+    # Empty is how a caller learns the calendar does not reach that year, which
+    # is why the read returns the dates rather than a boolean.
+    it "is empty for a year the calendar does not reach" do
+      MarketHoliday.create!(market: :NYSE, date: Date.new(2026, 11, 26), name: "Thanksgiving")
+
+      expect(described_class.dates_in_year(market: :NYSE, year: 2028)).to be_empty
+    end
+  end
+
+  describe ".covered_through" do
+    it "reports the last date the calendar reaches for a market" do
+      MarketHoliday.create!(market: :NYSE, date: Date.new(2026, 11, 26), name: "Thanksgiving")
+      MarketHoliday.create!(market: :NYSE, date: Date.new(2027, 12, 24), name: "Christmas")
+
+      expect(described_class.covered_through(market: :NYSE)).to eq(Date.new(2027, 12, 24))
+    end
+
+    it "is nil when the market has no calendar at all" do
+      expect(described_class.covered_through(market: :NYSE)).to be_nil
+    end
+  end
 end

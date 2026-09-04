@@ -123,6 +123,64 @@ RSpec.describe MarketHours do
     end
   end
 
+  # Without this the NYSE trades on Thanksgiving as far as the app is
+  # concerned, and every gate built on it — the syncs, /health, the owner's
+  # freshness notification — inherits the mistake (#504).
+  describe "holidays" do
+    # 2026-11-26 is a Thursday, so weekday and clock arithmetic both say open.
+    let(:thanksgiving) { Date.new(2026, 11, 26) }
+
+    def close(market, date)
+      MarketHoliday.create!(market: market, date: date, name: "Test closure")
+    end
+
+    it "is closed on a US exchange holiday during what would be trading hours" do
+      close(:NYSE, thanksgiving)
+
+      travel_to Time.zone.parse("2026-11-26 11:00:00 -0500") do
+        expect(described_class.us_market_open?).to be false
+        expect(described_class.us_minutes_since_open).to be_nil
+      end
+    end
+
+    it "closes NASDAQ on the same calendar as NYSE" do
+      close(:NYSE, thanksgiving)
+
+      travel_to Time.zone.parse("2026-11-26 11:00:00 -0500") do
+        expect(described_class.open?("NASDAQ")).to be false
+      end
+    end
+
+    it "is closed on a BMV holiday" do
+      close(:BMV, Date.new(2026, 9, 16))
+
+      travel_to Time.zone.parse("2026-09-16 10:00:00 -0600") do
+        expect(described_class.bmv_market_open?).to be false
+        expect(described_class.bmv_minutes_since_open).to be_nil
+      end
+    end
+
+    it "does not close the US session for a holiday only the BMV observes" do
+      close(:BMV, thanksgiving)
+
+      travel_to Time.zone.parse("2026-11-26 11:00:00 -0500") do
+        expect(described_class.us_market_open?).to be true
+      end
+    end
+
+    # The calendar is seeded a year or two ahead. A year it does not reach is
+    # not a year without holidays, but answering "open" there keeps the syncs
+    # running rather than pausing them for twelve months — CheckSyncHealthJob
+    # is what says the calendar is running out before it does.
+    it "falls back to weekdays and clock times for a year the calendar does not reach" do
+      close(:NYSE, thanksgiving)
+
+      travel_to Time.zone.parse("2028-11-23 11:00:00 -0500") do
+        expect(described_class.us_market_open?).to be true
+      end
+    end
+  end
+
   describe ".crypto_market_open?" do
     it "always returns true" do
       travel_to Time.zone.parse("2025-01-18 03:00:00 UTC") do
