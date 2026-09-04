@@ -38,17 +38,17 @@ class CheckSyncHealthJob < ApplicationJob
   private
 
   def check_log(key, watch)
-    logs = SystemLog.where(task_name: watch[:task_name])
-                    .where("created_at > ?", watch[:window].ago)
+    task_name, window = watch.values_at(:task_name, :window)
+    logs = SystemLog.where(task_name: task_name).where("created_at > ?", window.ago)
 
     return if logs.exists?(severity: :success) # recent success cures prior errors
 
     last_error = logs.where(severity: :error).order(created_at: :desc).first
-    phrase     = window_phrase(watch[:window])
+    phrase     = window_phrase(window)
 
     alert(
       key,
-      task_name: watch[:task_name],
+      task_name: task_name,
       title: title_for(key, phrase),
       record: log_record_message(phrase, last_error),
       body: log_body(last_error)
