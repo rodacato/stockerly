@@ -55,14 +55,12 @@ module Trading
       # Threshold values are spaced by ≥2 days, so date-level dedup is enough
       # to prevent both same-day re-runs and accidental cross-threshold dupes.
       def ids_notified_today(positions)
-        return Set.new if positions.empty?
-
-        Notification
-          .where(notifiable_type: "Position", notification_type: :maturity_reminder)
-          .where(notifiable_id: positions.map(&:id))
-          .where(created_at: Date.current.all_day)
-          .pluck(:notifiable_id)
-          .to_set
+        Notifications::Queries::AlreadySent.notifiable_ids_on(
+          date: Date.current,
+          notifiable_type: "Position",
+          notifiable_ids: positions.map(&:id),
+          notification_type: :maturity_reminder
+        )
       end
 
       MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze

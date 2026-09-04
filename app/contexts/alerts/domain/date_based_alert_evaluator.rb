@@ -49,7 +49,7 @@ module Alerts
       def self.evaluate_bmv_holiday(rule, today)
         window = (rule.window_days || DEFAULT_WINDOW_DAYS).to_i
         target_date = today + window.days
-        holiday = MarketHoliday.find_by(market: :BMV, date: target_date)
+        holiday = MarketData::Queries::MarketCalendar.holiday_on(market: :BMV, date: target_date)
         return nil unless holiday
 
         Result.new(rule: rule, event_date: holiday.date, context: {
@@ -81,7 +81,7 @@ module Alerts
         # Date#wday is 2 for Tuesday; the modulo aligns `candidate` to the
         # next Tuesday on/after `from`.
         candidate = from + ((2 - from.wday) % 7)
-        candidate += 7 while MarketHoliday.holiday?(market: :Banxico, date: candidate)
+        candidate += 7 while MarketData::Queries::MarketCalendar.holiday?(market: :Banxico, date: candidate)
         candidate
       end
 
