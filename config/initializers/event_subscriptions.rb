@@ -8,10 +8,10 @@ Rails.application.config.after_initialize do
 
   # Administration
   EventBus.subscribe(Identity::Events::ProfileUpdated, Identity::Handlers::CreateAuditLogOnProfileUpdate)
-  EventBus.subscribe(MarketData::Events::AssetCreated, Administration::Handlers::CreateAuditLogOnAssetCreation)
-  EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::SyncAssetOnCreation)
-  EventBus.subscribe(MarketData::Events::AssetCreated, MarketData::Handlers::BackfillHistoryOnAssetCreation)
-  EventBus.subscribe(MarketData::Events::AssetDeleted, Administration::Handlers::CreateAuditLogOnAssetDeletion)
+  EventBus.subscribe(Administration::Events::AssetCreated, Administration::Handlers::CreateAuditLogOnAssetCreation)
+  EventBus.subscribe(Administration::Events::AssetCreated, MarketData::Handlers::SyncAssetOnCreation)
+  EventBus.subscribe(Administration::Events::AssetCreated, MarketData::Handlers::BackfillHistoryOnAssetCreation)
+  EventBus.subscribe(Administration::Events::AssetDeleted, Administration::Handlers::CreateAuditLogOnAssetDeletion)
   EventBus.subscribe(Administration::Events::CsvExported, Administration::Handlers::CreateAuditLogOnCsvExport)
 
   # Market Data

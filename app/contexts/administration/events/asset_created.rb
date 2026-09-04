@@ -1,4 +1,4 @@
-module MarketData
+module Administration
   module Events
     class AssetCreated < BaseEvent
       attribute :asset_id, Types::Integer

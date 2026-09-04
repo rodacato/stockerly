@@ -1,4 +1,4 @@
-module MarketData
+module Administration
   module Events
     class AssetDeleted < BaseEvent
       attribute :asset_symbol, Types::String
