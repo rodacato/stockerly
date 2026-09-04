@@ -74,6 +74,6 @@ class AlertsController < AuthenticatedController
   private
 
   def alert_params
-    params.require(:alert).permit(:asset_symbol, :condition, :threshold_value, :window_days)
+    params.expect(alert: [ :asset_symbol, :condition, :threshold_value, :window_days ])
   end
 end

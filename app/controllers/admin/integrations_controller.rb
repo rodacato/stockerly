@@ -56,11 +56,11 @@ module Admin
     private
 
     def integration_params
-      params.require(:integration).permit(:provider_name, :provider_type)
+      params.expect(integration: [ :provider_name, :provider_type ])
     end
 
     def update_params
-      params.require(:integration).permit(:daily_call_limit, :max_requests_per_minute, :api_key_encrypted)
+      params.expect(integration: [ :daily_call_limit, :max_requests_per_minute, :api_key_encrypted ])
     end
   end
 end
