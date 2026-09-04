@@ -103,9 +103,38 @@ That's it. The base class provides only `.call` delegation; no monads, no valida
 - **Use cases with `yield` but only one branch.** If there's only one possible failure and it's "not found", consider `find!` instead. If the failure is business-rule (e.g., "cannot toggle a paused rule that's already deleted"), keep ApplicationUseCase — the monad readably encodes the constraint.
 - **Use cases that publish a single event.** If the event payload is mechanical (an `id`), `SimpleUseCase` + an inline `EventBus.publish(...)` is fine. If the payload requires the use case's return value, keep ApplicationUseCase.
 
-### Rule when in doubt
+### The criterion — four tests, all of them
 
-> *If a use case has zero `yield`, zero `validate`, zero `publish`, and zero pattern-matched callers, it is a `SimpleUseCase`. Anything else stays on `ApplicationUseCase`.*
+A use case is a `SimpleUseCase` when **all four** are true. Any one of them failing keeps it on
+`ApplicationUseCase`.
+
+1. Zero `yield`.
+2. Zero `validate(ContractClass, params)`.
+3. Zero base-class `publish(event)`. An inline `EventBus.publish(...)` does not count — that is
+   the gray zone above, and it is fine inside a `SimpleUseCase`.
+4. **Zero pattern-matched callers.** No controller, job, handler or other use case destructures
+   its result via `case/in Success(...) | Failure(...)`, reads `result.failure`, or `yield`s it
+   inside another use case's do-notation.
+
+Test 4 is load-bearing and is the one that gets dropped. It is what keeps `Identity::ResetPassword`,
+`MarketData::LoadAssetDetail` and the other multi-branch use cases on `ApplicationUseCase` even
+though they use none of `yield` / `validate` / `publish` — their callers read a reachable `Failure`,
+and taking the monad away would mean rewriting the caller.
+
+### The invariant behind the criterion
+
+> *A use case that never returns a `Failure` must not return a `Result`.*
+
+`SimpleUseCase` is the mechanism; this is the reason. A `Success` wrapper around a value that
+cannot arrive any other way costs the caller an unwrap and invites an error branch for an error
+that cannot happen. That is not hypothetical: five sync jobs shipped an `else` reading
+`log_sync_failure(task, result.failure[1])` on use cases that return `Success` unconditionally,
+and one spec stubbed a `Failure` the use case could not produce and asserted the row it would
+write — a green test certifying failure logging that did not exist. Meanwhile a real raise wrote
+no `SystemLog` at all, because the code that would have logged it was in the unreachable branch.
+
+Both are grep-checkable: a class with no literal `Failure(` / `Failure[` and no `validate(` and no
+propagated callee failure has no failure path, whatever it inherits from.
 
 ---
 
@@ -187,3 +216,33 @@ Surviving from the nine: `ListRecent`, `UpdatePreferences`, `ToggleRule`, `Destr
 
 ~~The "Deferred" items above were never picked up: `EnsureFreshFxRate` is still an~~ **— moot since 2026-08-29:** `EnsureFreshFxRate` was deleted, not converted; nothing called it once FX reads became dated. See the amendment to [ADR-002](0002-trading-marketdata-boundary.md).
 `ApplicationUseCase`, and the follow-up audit of other trivial use cases has not been run.
+
+
+## Amendment, 2026-09-04 — the criterion made explicit, and 13 use cases moved onto it
+
+**The decision stands unchanged.** This amendment adds precision, not permission.
+
+[Issue #535](https://github.com/rodacato/stockerly/issues/535) reported 21 of 51
+`ApplicationUseCase` subclasses using none of `yield` / `validate` / `publish`, and proposed
+amending this ADR to describe that reality — making `ApplicationUseCase` the default and
+`SimpleUseCase` the exception. Re-measurement rejected the premise:
+
+- **The real drift was 13 of 51, not 21.** The count had been taken against three of this ADR's
+  four tests. Eleven of the candidates are held on `ApplicationUseCase` by the fourth — a caller
+  that destructures a reachable `Failure` — so the rule as written already classified them
+  correctly. The other three had been excluded for an inline `EventBus.publish`, which the gray
+  zone blesses.
+- **There was zero reverse drift.** All 27 `SimpleUseCase` subclasses were clean: not one had
+  wanted the machinery back. A rule applied correctly 27 times out of 27 whenever it is consulted,
+  and skipped when it is not, is being forgotten rather than rejected. Amending it to match the
+  forgetting would have removed the ability to name the drift.
+
+So the criterion was restated above with the fourth test promoted out of prose into a numbered
+list, and the invariant it protects was written down. The 13 moved to `SimpleUseCase` in the same
+change; the eight production call sites were mechanical, five of them deletions of a success guard
+around a `Result` that is always `Success`.
+
+**Still not done:** the audit script this ADR's Mitigations section proposed in 2026-05 and the
+follow-up audit its Deferred section promised. Both were skipped, and #535 is what that costs —
+the drift is found by a periodic audit rather than at write time. Until one exists, the four tests
+above are what a reviewer applies by hand.
