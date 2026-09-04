@@ -18,7 +18,7 @@
       <%= mail_to Stockerly::SUPPORT_EMAIL, "Eliminar mi cuenta",
           subject: "Solicitud ARCO - Cancelación de cuenta",
           body: "Solicito la eliminación de mi cuenta (#{current_user.email}) y los datos personales asociados.",
-          class: "inline-flex items-center gap-2 rounded-lg border border-negative/40 bg-bg-surface px-4 py-2 text-sm font-semibold text-negative hover:bg-negative-bg transition-colors" %>
+          class: "inline-flex items-center gap-2 rounded-lg border border-negative bg-bg-surface px-4 py-2 text-sm font-semibold text-negative hover:bg-negative-bg transition-colors" %>
     </div>
     <p class="mt-4 text-xs text-fg-subtle">
       Más detalles del procedimiento ARCO en el <%= link_to "Aviso de privacidad", privacy_path, class: "text-primary font-medium hover:underline" %>.
