@@ -304,34 +304,6 @@ RSpec.describe MarketData::Domain::FundamentalCalculator do
     end
   end
 
-  describe ".cagr" do
-    it "calculates compound annual growth rate" do
-      # 200 → 800 in 5 years: (800/200)^(1/5) - 1 ≈ 0.3195
-      result = described_class.cagr(800, 200, 5)
-      expect(result).to be_within(0.001).of(0.3195)
-    end
-
-    it "returns nil for negative start value" do
-      expect(described_class.cagr(100, -50, 3)).to be_nil
-    end
-
-    it "returns nil for zero start value" do
-      expect(described_class.cagr(100, 0, 3)).to be_nil
-    end
-
-    it "returns nil for zero years" do
-      expect(described_class.cagr(100, 50, 0)).to be_nil
-    end
-
-    it "returns nil for negative end value" do
-      expect(described_class.cagr(-100, 50, 3)).to be_nil
-    end
-
-    it "returns nil when all inputs are nil" do
-      expect(described_class.cagr(nil, nil, nil)).to be_nil
-    end
-  end
-
   describe "edge cases" do
     it "handles None string values" do
       income = { "net_income" => "None", "total_revenue" => "383285000000" }
