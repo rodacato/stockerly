@@ -62,8 +62,13 @@ class DataFreshness
       SystemLog.where("task_name LIKE ?", "Market Indices%").where(severity: :success).maximum(:created_at)
     end
 
+    # "FX Rate Refresh" is the string RefreshFxRatesJob passes to SyncLogging.
+    # This read used to ask for "FX Rates Sync", which nothing writes, so it
+    # always found nil and /health always reported FX healthy — including while
+    # the refresh was dead. spec/integration/fx_rates_flow_spec.rb runs the real
+    # job against this read so the two names cannot drift apart again.
     def latest_fx_sync
-      SystemLog.where(task_name: "FX Rates Sync").where(severity: :success).maximum(:created_at)
+      SystemLog.where(task_name: "FX Rate Refresh").where(severity: :success).maximum(:created_at)
     end
   end
 end

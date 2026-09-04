@@ -6,7 +6,7 @@ RSpec.describe "Health Endpoint", type: :request do
       create(:asset, sync_status: :active, price_updated_at: 5.minutes.ago)
       SystemLog.create!(task_name: "Market Indices Sync", module_name: "sync", severity: :success,
                         duration_seconds: 0, created_at: 10.minutes.ago)
-      SystemLog.create!(task_name: "FX Rates Sync", module_name: "sync", severity: :success,
+      SystemLog.create!(task_name: "FX Rate Refresh", module_name: "sync", severity: :success,
                         duration_seconds: 0, created_at: 1.hour.ago)
 
       get "/health"
