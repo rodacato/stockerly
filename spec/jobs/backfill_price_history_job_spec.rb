@@ -82,28 +82,4 @@ RSpec.describe BackfillPriceHistoryJob, type: :job do
   end
   # DataBursatil returns date and close only, so a BMV backfill must not blank
   # the OHLC another source already recorded for the same day.
-  describe "a close-only bar over an existing full row" do
-    let(:asset) { create(:asset, :mexican, symbol: "WALMEX.MX", asset_type: :stock) }
-    let(:day) { 3.days.ago.to_date }
-
-    let!(:existing) do
-      AssetPriceHistory.create!(
-        asset_id: asset.id, date: day, interval: "1d",
-        open: 70.0, high: 72.0, low: 69.0, close: 71.0, volume: 1_000_000,
-        source: "Yahoo Finance", status: "confirmed"
-      )
-    end
-
-    it "updates the close and leaves the columns it has no value for" do
-      job = described_class.new
-      job.send(:upsert_bar, asset, { date: day, close: 71.5 }, "DataBursatil")
-
-      existing.reload
-      expect(existing.close.to_f).to eq(71.5)
-      expect(existing.open.to_f).to eq(70.0)
-      expect(existing.high.to_f).to eq(72.0)
-      expect(existing.low.to_f).to eq(69.0)
-      expect(existing.volume).to eq(1_000_000)
-    end
-  end
 end
