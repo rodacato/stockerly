@@ -22,7 +22,7 @@ module NotificationsHelper
   ICON_STYLES = {
     "alert_triggered"   => "bg-primary-muted text-primary",
     "earnings_reminder" => "bg-bg-muted text-fg-subtle",
-    "maturity_reminder" => "bg-warning/10 text-warning",
+    "maturity_reminder" => "bg-warning-bg text-warning",
     "system"            => "bg-bg-muted text-fg-subtle"
   }.freeze
 

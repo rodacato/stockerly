@@ -92,7 +92,7 @@
         <p class="mt-1 text-xs text-fg-subtle"><%= t(".borrar_cuenta_desc") %></p>
         <%= button_to t(".borrar_cuenta_cta"), account_settings_path, method: :delete,
                       form: { data: { turbo_confirm: t(".borrar_cuenta_confirmar") } },
-                      class: "mt-3 rounded-xl border border-negative px-4 py-2 text-sm font-semibold text-negative transition-colors hover:bg-negative/10" %>
+                      class: "mt-3 rounded-xl border border-negative px-4 py-2 text-sm font-semibold text-negative transition-colors hover:bg-negative-bg" %>
       </div>
     </div>
   </section>
