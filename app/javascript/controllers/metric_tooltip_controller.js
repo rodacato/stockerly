@@ -13,26 +13,26 @@ export default class MetricTooltipController extends Controller {
     document.querySelectorAll("[data-metric-tooltip-target='popover']").forEach(el => {
       if (el !== this.popoverTarget) {
         el.classList.add("hidden")
-        el.closest("[data-controller='metric-tooltip']")?.classList.remove("ring-2", "ring-primary/30")
+        el.closest("[data-controller='metric-tooltip']")?.classList.remove("ring-2", "ring-focus")
       }
     })
 
     this.popoverTarget.classList.toggle("hidden")
     this.element.classList.toggle("ring-2", isHidden)
-    this.element.classList.toggle("ring-primary/30", isHidden)
+    this.element.classList.toggle("ring-focus", isHidden)
   }
 
   close(event) {
     event.stopPropagation()
     this.popoverTarget.classList.add("hidden")
-    this.element.classList.remove("ring-2", "ring-primary/30")
+    this.element.classList.remove("ring-2", "ring-focus")
   }
 
   connect() {
     this.outsideHandler = (event) => {
       if (!this.element.contains(event.target)) {
         this.popoverTarget.classList.add("hidden")
-        this.element.classList.remove("ring-2", "ring-primary/30")
+        this.element.classList.remove("ring-2", "ring-focus")
       }
     }
     document.addEventListener("click", this.outsideHandler)
