@@ -10,6 +10,7 @@ module MarketData
     PROVIDER = "Alpha Vantage"
     QUERY_PATH = "/query"
     TIMEOUT_MESSAGE = "#{PROVIDER} request timed out"
+    TIMEOUT_ERRORS = [ Faraday::TimeoutError, Faraday::ConnectionFailed ].freeze
     TIMEOUT  = 10
 
     def initialize(api_key: nil)
@@ -22,26 +23,15 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get(QUERY_PATH) do |req|
-        req.params["function"] = "OVERVIEW"
-        req.params["symbol"] = symbol
-        req.params["apikey"] = @api_key
-      end
+      result = get_json(QUERY_PATH, { function: "OVERVIEW", symbol: symbol, apikey: @api_key })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      body = response.body
+      body = result.value!
       return Failure([ :rate_limited, body["Note"] ]) if body.key?("Note")
       return Failure([ :auth_error, body["Information"] ]) if body.key?("Information")
       return Failure([ :not_found, "No data for #{symbol}" ]) if body["Symbol"].blank?
 
       parse_overview(body)
-    rescue Faraday::TimeoutError, Faraday::ConnectionFailed
-      Failure([ :timeout, TIMEOUT_MESSAGE ])
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
-    rescue JSON::ParserError
-      Failure([ :parse_error, "Invalid JSON response from Alpha Vantage" ])
     end
 
     # Fetch income statement (annual + quarterly reports).
@@ -66,26 +56,15 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get(QUERY_PATH) do |req|
-        req.params["function"] = "SYMBOL_SEARCH"
-        req.params["keywords"] = query
-        req.params["apikey"] = @api_key
-      end
+      result = get_json(QUERY_PATH, { function: "SYMBOL_SEARCH", keywords: query, apikey: @api_key })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      body = response.body
+      body = result.value!
       return Failure([ :rate_limited, body["Note"] ]) if body.key?("Note")
       return Failure([ :auth_error, body["Information"] ]) if body.key?("Information")
 
       matches = body["bestMatches"] || []
-      results = matches.filter_map { |m| parse_search_match(m) }
-
-      Success(results)
-    rescue Faraday::TimeoutError, Faraday::ConnectionFailed
-      Failure([ :timeout, TIMEOUT_MESSAGE ])
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      Success(matches.filter_map { |m| parse_search_match(m) })
     end
 
     private
@@ -118,15 +97,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get(QUERY_PATH) do |req|
-        req.params["function"] = function
-        req.params["symbol"] = symbol
-        req.params["apikey"] = @api_key
-      end
+      result = get_json(QUERY_PATH, { function: function, symbol: symbol, apikey: @api_key })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      body = response.body
+      body = result.value!
       return Failure([ :rate_limited, body["Note"] ]) if body.key?("Note")
       return Failure([ :auth_error, body["Information"] ]) if body.key?("Information")
       return Failure([ :empty_data, "No data for #{symbol}" ]) if body["annualReports"].blank? && body["quarterlyReports"].blank?
@@ -136,12 +110,6 @@ module MarketData
         annual_reports: (body["annualReports"] || []).map { |r| normalize_keys(r) },
         quarterly_reports: (body["quarterlyReports"] || []).map { |r| normalize_keys(r) }
       })
-    rescue Faraday::TimeoutError, Faraday::ConnectionFailed
-      Failure([ :timeout, TIMEOUT_MESSAGE ])
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
-    rescue JSON::ParserError
-      Failure([ :parse_error, "Invalid JSON response from Alpha Vantage" ])
     end
 
     # Converts Alpha Vantage PascalCase keys to snake_case for consistency.
@@ -151,6 +119,14 @@ module MarketData
 
     # One retry, not two: the free tier allows five calls a minute, so a second
     # attempt spends the budget the next caller needs.
+    # The only provider whose transport failures are named rather than collapsed
+    # into :gateway_error.
+    def transport_failure(error)
+      return Failure([ :timeout, TIMEOUT_MESSAGE ]) if TIMEOUT_ERRORS.any? { |klass| error.is_a?(klass) }
+
+      super
+    end
+
     def connection
       build_connection(url: BASE_URL, timeout: TIMEOUT,
                        retry_options: { max: 1, interval: 1.0, retry_statuses: [ 500, 502, 503 ] })

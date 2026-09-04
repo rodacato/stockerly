@@ -44,7 +44,7 @@ module MarketData
         page_token = nil
 
         MAX_PAGES.times do
-          response = get("/v2/stocks/bars", {
+          response = get_json("/v2/stocks/bars", {
             symbols: Array(symbols).join(","),
             timeframe: "1Day",
             start: from_date.to_s,
@@ -156,7 +156,7 @@ module MarketData
         params = { limit: limit.clamp(1, 50), sort: "desc" }
         params[:symbols] = ticker if ticker.present?
 
-        response = get("/v1beta1/news", params)
+        response = get_json("/v1beta1/news", params)
         return response if response.failure?
 
         parse_news(response.value!, ticker)
@@ -168,7 +168,7 @@ module MarketData
         check = RateLimiter.check!(PROVIDER)
         return check if check.failure?
 
-        get("/v1/corporate-actions", {
+        get_json("/v1/corporate-actions", {
           symbols: symbol, types: types, start: from_date.to_s, end: to_date.to_s, limit: 1000
         }).fmap { |body| body["corporate_actions"] || {} }
       end
@@ -181,15 +181,12 @@ module MarketData
         (requested && requested < wall ? requested : wall).utc.iso8601
       end
 
-      def get(path, params)
-        response = connection.get(path) { |req| req.params.update(params.transform_keys(&:to_s)) }
-
+      # A 403 already reads as :no_entitlement by status alone, but only the
+      # body says which subscription is missing, and that is the actionable half.
+      def failure_from(response)
         return Failure([ :no_entitlement, entitlement_message(response) ]) if response.status == 403
-        return GatewayFailure.from(response, PROVIDER) unless response.success?
 
-        Success(response.body)
-      rescue Faraday::Error => e
-        Failure([ :gateway_error, e.message ])
+        super
       end
 
       def entitlement_message(response)

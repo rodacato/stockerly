@@ -43,14 +43,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      path = "series/#{FIX_SERIES}/datos/#{format_date(from)}/#{format_date(to)}"
-      response = connection.get(path)
+      result = get_json("series/#{FIX_SERIES}/datos/#{format_date(from)}/#{format_date(to)}")
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_fixes(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_fixes(result.value!)
     end
 
     # Auction results for a term across a date range, oldest first. Same shape
@@ -70,13 +66,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("series/#{CETES_SERIES.values.join(',')}/datos/oportuno")
+      result = get_json("series/#{CETES_SERIES.values.join(',')}/datos/oportuno")
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_curve(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_curve(result.value!)
     end
 
     private
@@ -96,13 +89,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("series/#{series_id}/datos/#{path_segment}")
+      result = get_json("series/#{series_id}/datos/#{path_segment}")
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_auctions(response.body, term.to_s)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_auctions(result.value!, term.to_s)
     end
 
     def parse_auctions(body, term)

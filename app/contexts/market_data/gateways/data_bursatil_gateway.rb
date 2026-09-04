@@ -155,15 +155,7 @@ module MarketData
         check = RateLimiter.check!(PROVIDER)
         return check if check.failure?
 
-        response = connection.get(path) do |req|
-          req.params.update(params.transform_keys(&:to_s).merge("token" => @token))
-        end
-
-        return failure_from(response) unless response.success?
-
-        Success(response.body)
-      rescue Faraday::Error => e
-        Failure([ :gateway_error, e.message ])
+        get_json(path, params.merge(token: @token))
       end
 
       # Errors arrive as a map keyed by the parameter at fault, which says more

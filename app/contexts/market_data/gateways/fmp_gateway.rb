@@ -21,15 +21,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/api/v3/profile/#{symbol}") do |req|
-        req.params["apikey"] = @api_key
-      end
+      result = get_json("/api/v3/profile/#{symbol}", { apikey: @api_key })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_overview(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_overview(result.value!)
     end
 
     # Fetch historical dividends for a stock symbol.
@@ -38,15 +33,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/api/v3/historical-price-full/stock_dividend/#{symbol}") do |req|
-        req.params["apikey"] = @api_key
-      end
+      result = get_json("/api/v3/historical-price-full/stock_dividend/#{symbol}", { apikey: @api_key })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_dividends(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_dividends(result.value!)
     end
 
     # Fetch historical stock splits for a symbol.
@@ -55,15 +45,10 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/api/v3/historical-price-full/stock_split/#{symbol}") do |req|
-        req.params["apikey"] = @api_key
-      end
+      result = get_json("/api/v3/historical-price-full/stock_split/#{symbol}", { apikey: @api_key })
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_splits(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_splits(result.value!)
     end
 
     private

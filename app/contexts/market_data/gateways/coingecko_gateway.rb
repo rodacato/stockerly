@@ -62,18 +62,12 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/api/v3/coins/#{coin_id}/market_chart") do |req|
-        req.params["vs_currency"] = QUOTE_CURRENCY
-        req.params["days"] = days.to_s
-        req.params["interval"] = "daily"
-        apply_auth(req)
-      end
+      result = get_json("/api/v3/coins/#{coin_id}/market_chart", {
+        vs_currency: QUOTE_CURRENCY, days: days.to_s, interval: "daily"
+      }) { |req| apply_auth(req) }
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_historical(response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_historical(result.value!)
     end
 
     # Fetch prices for multiple crypto symbols in a single API call.
@@ -85,19 +79,13 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/api/v3/simple/price") do |req|
-        req.params["ids"] = ids.join(",")
-        req.params["vs_currencies"] = QUOTE_CURRENCY
-        req.params["include_24hr_change"] = "true"
-        req.params["include_market_cap"] = "true"
-        apply_auth(req)
-      end
+      result = get_json("/api/v3/simple/price", {
+        ids: ids.join(","), vs_currencies: QUOTE_CURRENCY,
+        include_24hr_change: "true", include_market_cap: "true"
+      }) { |req| apply_auth(req) }
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_bulk(symbols, response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_bulk(symbols, result.value!)
     end
 
     # Fetch extended market data via /coins/markets endpoint.
@@ -109,19 +97,13 @@ module MarketData
       check = RateLimiter.check!(PROVIDER)
       return check if check.failure?
 
-      response = connection.get("/api/v3/coins/markets") do |req|
-        req.params["vs_currency"] = QUOTE_CURRENCY
-        req.params["ids"] = ids.join(",")
-        req.params["order"] = "market_cap_desc"
-        req.params["sparkline"] = "false"
-        apply_auth(req)
-      end
+      result = get_json("/api/v3/coins/markets", {
+        vs_currency: QUOTE_CURRENCY, ids: ids.join(","),
+        order: "market_cap_desc", sparkline: "false"
+      }) { |req| apply_auth(req) }
+      return result if result.failure?
 
-      return GatewayFailure.from(response, PROVIDER) unless response.success?
-
-      parse_market_data(symbols, response.body)
-    rescue Faraday::Error => e
-      Failure([ :gateway_error, e.message ])
+      parse_market_data(symbols, result.value!)
     end
 
     private
