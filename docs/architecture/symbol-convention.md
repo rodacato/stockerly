@@ -11,8 +11,24 @@ Decided 2026-05-14 during Sprint 2 (`2026-S02-truth-foundation`). Formalized in 
 | US stocks & ETFs (NASDAQ/NYSE) | Plain ticker | `AAPL`, `TSLA`, `SPY`, `VOO` |
 | BMV (Mexican stocks/ETFs) | `.MX` suffix (Yahoo Finance / Alpha Vantage convention) | `WALMEX.MX`, `GENIUSSACV.MX`, `IVVPESO.MX` |
 | Crypto | Standard ticker (no exchange suffix — crypto is global) | `BTC`, `ETH`, `SOL` |
-| Fixed income (CETES) | Synthetic, term-based | `CETE28D`, `CETE91D`, `CETE182D`, `CETE364D` |
+| Fixed income (CETES) | Synthetic, term-based | `CETES_28D`, `CETES_91D`, `CETES_182D`, `CETES_364D` |
 | Indices | Provider's symbol | `IPC` (BMV), `VIX` (CBOE), `SPX`, `NDX`, `DJI` |
+
+## Fixed income is the one synthetic family — and it spells CETES out
+
+**Amended 2026-09-04 (#552).** Banxico publishes series IDs (`SF43936`), not symbols, so there is no
+provider form to store verbatim and the CETES symbol is ours to choose. The table above used to say
+`CETE28D` while `MarketData::UseCases::SyncCetes` created `CETES_28D`; both were live and a fresh
+instance got two rows per term (ADR-024 named this and deferred it). The underscored form wins:
+
+- It is what the weekly Banxico sync writes, so it is the row that carries the live yield.
+- It is the form `notify_approaching_maturities` puts in a user-facing title — a Mexican reader sees
+  the instrument's actual name, not a truncation that reads like a typo.
+- The maturity-progress block on `/market/:symbol` parses the term out of it.
+
+`db/migrate/20260904120000_unify_cetes_symbols.rb` renames the catalogue rows, merges a duplicate
+pair when both exist, and records `CETE28D` in `former_symbols` so a CSV carrying the old spelling
+still resolves.
 
 ## Why `.MX` and not plain
 

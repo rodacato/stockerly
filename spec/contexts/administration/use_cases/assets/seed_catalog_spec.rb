@@ -19,26 +19,26 @@ RSpec.describe Administration::UseCases::Assets::SeedCatalog do
     described_class.call
 
     expect(Asset.find_by(symbol: "BTC").logo_url).to include("coingecko")
-    expect(Asset.find_by(symbol: "CETE28D").logo_url).to be_nil
+    expect(Asset.find_by(symbol: "CETES_28D").logo_url).to be_nil
   end
 
   describe "correcting rows that predate a catalogue change" do
     it "fixes a currency the catalogue now declares" do
-      create(:asset, symbol: "CETE28D", currency: "USD", asset_type: :fixed_income)
+      create(:asset, symbol: "CETES_28D", currency: "USD", asset_type: :fixed_income)
 
-      expect { described_class.call }.to change { Asset.find_by(symbol: "CETE28D").currency }.from("USD").to("MXN")
+      expect { described_class.call }.to change { Asset.find_by(symbol: "CETES_28D").currency }.from("USD").to("MXN")
     end
 
     # Currency decides what money on the asset means; rewriting it under an
     # existing trade would silently restate that trade's cost.
     it "refuses to change the currency of an asset that has been traded, and says which" do
-      asset = create(:asset, symbol: "CETE28D", currency: "USD", asset_type: :fixed_income)
+      asset = create(:asset, symbol: "CETES_28D", currency: "USD", asset_type: :fixed_income)
       create(:trade, asset: asset, portfolio: create(:portfolio))
 
       result = described_class.call
 
       expect(asset.reload.currency).to eq("USD")
-      expect(result[:skipped]).to eq([ "CETE28D" ])
+      expect(result[:skipped]).to eq([ "CETES_28D" ])
     end
 
     it "backfills a blank logo without overwriting one already set" do

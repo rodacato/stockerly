@@ -4,7 +4,7 @@
   # `total_days` only comes from the symbol pattern (CETES_28D / CETES_91D / ...).
   # No `issue_date` on Asset yet, so for non-CETES fixed-income instruments
   # we can't compute progress — leave it nil and hide the maturity-progress block.
-  parsed_term     = asset.symbol.to_s.match(/CETES?_(\d+)D/i)
+  parsed_term     = asset.symbol.to_s.match(/\ACETES_(\d+)D\z/i)
   total_days      = parsed_term ? parsed_term[1].to_i : nil
   days_remaining  = yield_data[:days_to_maturity].to_i
   days_elapsed    = total_days ? [ total_days - days_remaining, 0 ].max : nil

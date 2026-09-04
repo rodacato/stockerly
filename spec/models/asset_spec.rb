@@ -134,14 +134,14 @@ RSpec.describe Asset, type: :model do
     end
 
     it ".fixed_incomes returns only fixed income assets" do
-      cete = create(:asset, :fixed_income, symbol: "CETE28D", name: "CETES 28 Dias")
+      cete = create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28 Dias")
       expect(Asset.fixed_incomes).to contain_exactly(cete)
     end
   end
 
   describe "fixed income fields" do
     it "stores yield_rate, maturity_date, and face_value" do
-      cete = create(:asset, :fixed_income, symbol: "CETE28D", name: "CETES 28D",
+      cete = create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28D",
                     yield_rate: 11.15, maturity_date: Date.new(2026, 3, 23), face_value: 10.0)
 
       cete.reload

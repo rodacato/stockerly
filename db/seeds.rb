@@ -232,7 +232,7 @@ end
 # Run: SyncEarningsJob.perform_now after seeding to populate initial data.
 
 # --- Fixed Income (CETES) ---
-Asset.find_or_create_by!(symbol: "CETE28D") do |a|
+Asset.find_or_create_by!(symbol: "CETES_28D") do |a|
   a.name = "CETES 28 Dias"
   a.asset_type = :fixed_income
   a.current_price = 10.0
@@ -244,7 +244,7 @@ Asset.find_or_create_by!(symbol: "CETE28D") do |a|
   a.currency = "MXN"
   a.sync_status = :disabled
 end
-Asset.find_or_create_by!(symbol: "CETE364D") do |a|
+Asset.find_or_create_by!(symbol: "CETES_364D") do |a|
   a.name = "CETES 364 Dias"
   a.asset_type = :fixed_income
   a.current_price = 10.0
