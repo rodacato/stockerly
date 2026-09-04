@@ -142,27 +142,28 @@ module MarketData
       ((spread.clamp(-5, 5) * 10.0) + 50.0).clamp(0, 100)
     end
 
+    # RSI and momentum are always present; the other three are weighted only
+    # when the series could compute them, and the divisor is the weight actually
+    # gathered — a missing factor is left out, never scored as a zero.
     def blend_5_factor(rsi, momentum, macd, vol, ema)
-      norm_rsi = rsi.clamp(0, 100)
-      norm_momentum = normalize_momentum(momentum)
+      present = [
+        [ 0.3, rsi.clamp(0, 100) ],
+        [ 0.2, normalize_momentum(momentum) ],
+        [ 0.2, macd ],
+        [ 0.15, vol ],
+        [ 0.15, ema ]
+      ].reject { |_weight, value| value.nil? }
 
-      total_weight = 0.3 + 0.2 # RSI + momentum always present
-      weighted = (0.3 * norm_rsi) + (0.2 * norm_momentum)
-
-      if macd
-        weighted += 0.2 * macd
-        total_weight += 0.2
-      end
-      if vol
-        weighted += 0.15 * vol
-        total_weight += 0.15
-      end
-      if ema
-        weighted += 0.15 * ema
-        total_weight += 0.15
+      # Accumulated left to right on purpose: Array#sum compensates float error
+      # and would not reproduce the scores already stored.
+      weighted = 0.0
+      total_weight = 0.0
+      present.each do |weight, value|
+        weighted += weight * value
+        total_weight += weight
       end
 
-      (weighted / total_weight * 1.0).clamp(0, 100).round
+      (weighted / total_weight).clamp(0, 100).round
     end
 
     def label_for(score)
