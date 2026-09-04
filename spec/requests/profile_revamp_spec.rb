@@ -1,9 +1,8 @@
 require "rails_helper"
 
-# Profile revamp (S09 #97) — asserts es-MX surface, tabbed settings,
-# preferred-currency selector, ARCO data-export link, and the explicit
-# removal of the watchlist embed (which now lives only on /dashboard
-# and /market).
+# Profile revamp (S09 #97) — asserts es-MX surface, tabbed settings, the ARCO
+# data-export link, and the explicit removal of the watchlist embed (which now
+# lives only on /dashboard and /market). Preferences moved to /settings.
 RSpec.describe "Profile revamp (S09 #97)", type: :request do
   let(:user) { create(:user, email: "p97@example.com", full_name: "Adrian Castillo", preferred_currency: "MXN", password: "password123") }
 
@@ -22,12 +21,11 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
       expect(response.body).to include("Miembro desde")
     end
 
-    it "renders the four tabbed settings" do
+    it "renders the three tabbed settings" do
       # Tab labels live in <button> nodes; match label text rather than
       # exact node delimiters since the buttons carry many class names.
       expect(response.body).to include("Información")
       expect(response.body).to include("Seguridad")
-      expect(response.body).to include("Preferencias")
       expect(response.body).to include("Datos y sesión")
     end
 
@@ -45,25 +43,14 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
       expect(response.body).to include("Cambiar contraseña")
     end
 
-    it "renders the Preferencias tab with theme, currency selector and 3-channel notifications" do
-      expect(response.body).to include("Moneda preferida")
-      # Only the channels that actually deliver get a toggle: the digest and
-      # the urgent email. SMS never existed, and the in-app bell cannot be
-      # turned off, so neither is offered as a switch.
-      expect(response.body).to include("Resumen diario por correo")
-      expect(response.body).to include("Avisos urgentes por correo")
-      expect(response.body).not_to include("SMS")
-      expect(response.body.scan(/data-toggle-field-value=/).size).to eq(2)
-      # Theme picker
-      expect(response.body).to include("Apariencia")
-      expect(response.body).to include("Claro")
-      expect(response.body).to include("Oscuro")
-      expect(response.body).to include("Sistema")
-    end
-
-    it "preselects the user's current preferred_currency in the selector" do
-      # MXN radio should be checked for this user
-      expect(response.body).to match(/value="MXN"[^>]*checked/)
+    # Theme, currency and the two email switches live on /settings, which owns
+    # them without a Guardar to forget. Keeping a second copy here is what this
+    # assertion exists to prevent.
+    it "does not repeat the preferences /settings owns" do
+      expect(response.body).not_to include("Preferencias")
+      expect(response.body).not_to include("Moneda preferida")
+      expect(response.body).not_to include("data-toggle-field-value")
+      expect(response.body).not_to include('data-controller="theme"')
     end
 
     it "renders the Datos y sesión tab with ARCO export + delete-account links + sign-out" do
@@ -104,26 +91,10 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
       expect(user.reload.full_name).to eq("New Name")
     end
 
-    it "is also reachable via the dedicated /profile/currency endpoint (S11 #146 review fix)" do
-      patch update_currency_path, params: { profile: { preferred_currency: "USD" } }
-      expect(response).to redirect_to(profile_path)
-      follow_redirect!
-      expect(response.body).to include("Moneda actualizada")
-      expect(user.reload.preferred_currency).to eq("USD")
-    end
-
-    it "rejects unsupported currencies on /profile/currency" do
-      patch update_currency_path, params: { profile: { preferred_currency: "EUR" } }
-      expect(response).to redirect_to(profile_path)
-      follow_redirect!
-      expect(response.body).to include("Moneda no soportada.")
-      expect(user.reload.preferred_currency).to eq("MXN")
-    end
-
-    # D58: the Ajustes pill PATCHes this same endpoint on select and has no
-    # page to land on, so it asks for a status. The redirect above stays for
-    # /profile's form, which is still a form until AJU-1 retires the screen.
-    it "answers a status instead of a redirect when the pill asks for JSON" do
+    # D58: the Ajustes pill is the only caller of /profile/currency now that the
+    # profile form is gone, and it PATCHes on select with no page to land on,
+    # so the endpoint answers a status.
+    it "answers a status when the Ajustes pill writes the currency" do
       patch update_currency_path, params: { profile: { preferred_currency: "USD" } }, as: :json
 
       expect(response).to have_http_status(:ok)
