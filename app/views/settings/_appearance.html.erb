@@ -36,5 +36,14 @@
         <% end %>
       </div>
     </div>
+
+    <%# Fixed for the whole instance: every date on every screen is rendered in
+        this zone, so naming it is what makes a timestamp readable. %>
+    <div class="flex items-center justify-between gap-3">
+      <p class="text-xs text-fg-subtle"><%= t("settings.show.zona_horaria") %></p>
+      <span class="rounded-lg bg-bg-muted px-3 py-2 font-mono text-sm font-semibold text-fg-default">
+        <%= t("settings.show.zona_horaria_valor") %>
+      </span>
+    </div>
   </div>
 </section>

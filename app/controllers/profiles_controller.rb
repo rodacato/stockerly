@@ -18,14 +18,15 @@ class ProfilesController < AuthenticatedController
     end
   end
 
-  # Dedicated endpoint for the preferred-currency segmented control.
-  # Splitting this out of #update avoids the hidden-field pattern (which
-  # risks stale-data overwrites of full_name/email if the user has the
-  # profile open in multiple tabs). UpdateInfo still owns the canonical
-  # write — we just pass current values explicitly.
+  # Dedicated endpoint for the preferred-currency pill in Ajustes. Splitting
+  # this out of #update avoids the hidden-field pattern (which risks
+  # stale-data overwrites of full_name/email when the profile is open in
+  # another tab). UpdateInfo still owns the canonical write — we just pass
+  # current values explicitly. The pill commits on select and has no page to
+  # land on, so the answer is a status.
   def update_currency
     currency = params.dig(:profile, :preferred_currency).to_s.strip
-    return respond_currency(:unprocessable_content, alert: t("profiles.flash.moneda_no_soportada")) unless Asset::SUPPORTED_CURRENCIES.include?(currency)
+    return head :unprocessable_content unless Asset::SUPPORTED_CURRENCIES.include?(currency)
 
     result = Identity::UseCases::UpdateInfo.call(
       user: current_user,
@@ -33,10 +34,8 @@ class ProfilesController < AuthenticatedController
     )
 
     case result
-    in Dry::Monads::Success
-      respond_currency(:ok, notice: t("profiles.flash.moneda_actualizada"))
-    in Dry::Monads::Failure[ :validation, errors ]
-      respond_currency(:unprocessable_content, alert: errors.values.flatten.first)
+    in Dry::Monads::Success then head :ok
+    in Dry::Monads::Failure[ :validation, _errors ] then head :unprocessable_content
     end
   end
 
@@ -64,15 +63,6 @@ class ProfilesController < AuthenticatedController
   end
 
   private
-
-  # Two callers, two shapes: /profile posts a form and wants the redirect, the
-  # Ajustes pill PATCHes on select and has no page to land on (D58).
-  def respond_currency(status, **flash)
-    respond_to do |format|
-      format.json { head status }
-      format.html { redirect_to profile_path, **flash }
-    end
-  end
 
   def profile_params
     params.require(:profile).permit(:full_name, :email, :preferred_currency)

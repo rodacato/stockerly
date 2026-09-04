@@ -6,7 +6,7 @@
   <div>
     <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle">Perfil</p>
     <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-fg-default">Tu perfil</h1>
-    <p class="mt-1 text-sm text-fg-subtle">Gestiona tu información, seguridad y preferencias.</p>
+    <p class="mt-1 text-sm text-fg-subtle">Gestiona tu información, seguridad y sesión.</p>
   </div>
 
   <%# 2-col grid: 4/12 sidebar + 8/12 settings (stacks on mobile). %>
@@ -29,10 +29,6 @@
           </button>
           <button data-tabs-target="tab" data-action="tabs#switch"
                   class="whitespace-nowrap text-sm font-medium px-3 py-3.5 border-b-2 border-transparent text-fg-subtle transition-colors">
-            Preferencias
-          </button>
-          <button data-tabs-target="tab" data-action="tabs#switch"
-                  class="whitespace-nowrap text-sm font-medium px-3 py-3.5 border-b-2 border-transparent text-fg-subtle transition-colors">
             Datos y sesión
           </button>
         </div>
@@ -46,9 +42,6 @@
                        user: current_user,
                        active_sessions: @active_sessions,
                        current_session_id: @current_session_id %>
-          </div>
-          <div data-tabs-target="panel" class="hidden">
-            <%= render "profiles/preferences_tab", user: current_user %>
           </div>
           <div data-tabs-target="panel" class="hidden">
             <%= render "profiles/data_session_tab" %>

@@ -1,7 +1,7 @@
 require "rails_helper"
 
-# Profile 2-col + IdentityCard + theme + sessions + 3-channel prefs,
-# per S11 #146. Driven by rack_test (no JS).
+# Profile 2-col + IdentityCard + sessions, per S11 #146. Theme and the
+# notification switches live on /settings. Driven by rack_test (no JS).
 RSpec.describe "Profile layout (S11 #146)", type: :system do
   before { driven_by :rack_test }
 
@@ -42,34 +42,23 @@ RSpec.describe "Profile layout (S11 #146)", type: :system do
     end
   end
 
-  describe "Theme picker" do
-    before { visit profile_path }
+  describe "Ajustes owns the preferences" do
+    before { visit settings_path }
 
-    it "renders three theme options" do
-      expect(page).to have_css('[data-controller="theme"]')
+    it "renders the theme options and both email switches once, on the hub" do
       expect(page).to have_css('[data-theme-mode="light"]')
       expect(page).to have_css('[data-theme-mode="dark"]')
       expect(page).to have_css('[data-theme-mode="system"]')
-    end
-  end
-
-  describe "notification preferences" do
-    before { visit profile_path }
-
-    it "offers a toggle only for the channels that actually deliver" do
-      expect(page).to have_content("Resumen diario por correo")
-      expect(page).to have_content("Avisos urgentes por correo")
       expect(page).to have_css('[data-toggle-field-value="email_digest"]')
       expect(page).to have_css('[data-toggle-field-value="urgent_email"]')
     end
 
-    it "offers no toggle for channels the app cannot send" do
-      expect(page).to have_no_content("SMS")
-      expect(page).to have_css("[data-toggle-field-value]", count: 2, visible: :all)
-    end
+    it "leaves none of them on the profile" do
+      visit profile_path
 
-    it "says the in-app bell is not optional instead of faking a switch for it" do
-      expect(page).to have_content("Todo aviso llega a tu campana en la app; eso no se apaga.")
+      expect(page).to have_no_css('[data-controller="theme"]')
+      expect(page).to have_no_css("[data-toggle-field-value]", visible: :all)
+      expect(page).to have_no_content("Moneda preferida")
     end
   end
 

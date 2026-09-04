@@ -69,6 +69,15 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).to include(update_currency_path)
   end
 
+  # Rescued from the profile tab this hub replaced: the zone is fixed for the
+  # whole instance, so the screen states it instead of offering a control.
+  it "states the timezone every date is rendered in" do
+    get settings_path
+
+    expect(response.body).to include(I18n.t("settings.show.zona_horaria"))
+    expect(response.body).to include(I18n.t("settings.show.zona_horaria_valor"))
+  end
+
   # D58: the two pills on this screen looked identical and committed
   # differently — theme applied on click, currency waited for a button nothing
   # drew. A choice you can make and forget to submit is the failure this
