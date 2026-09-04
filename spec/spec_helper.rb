@@ -13,7 +13,36 @@
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+# #526 cost a full investigation to establish that the suite reported 3176,
+# then 3174, then 3172 examples for the same seed because the working tree had
+# changed between runs, not because collection is non-deterministic. One
+# porcelain call at boot — no network, nothing per example — makes the tree the
+# run belongs to visible in the line above the first dot.
+module TreeBanner
+  def self.line
+    return @line if defined?(@line)
+
+    @line = build
+  end
+
+  def self.build
+    status = IO.popen(%w[git status --porcelain=v2 --branch], err: :close, &:read)
+    return nil if status.to_s.empty?
+
+    entries = status.each_line.reject { |line| line.start_with?("#") }
+    untracked = entries.count { |line| line.start_with?("?") }
+    parts = [ "Tree: #{status[/^# branch\.oid (\S+)/, 1].to_s[0, 7]} on #{status[/^# branch\.head (\S+)/, 1]}" ]
+    parts << "dirty" if entries.length > untracked
+    parts << "#{untracked} untracked" if untracked.positive?
+    parts.join(" · ")
+  rescue StandardError
+    nil
+  end
+end
+
 RSpec.configure do |config|
+  config.before(:suite) { RSpec.configuration.reporter.message(TreeBanner.line) if TreeBanner.line }
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

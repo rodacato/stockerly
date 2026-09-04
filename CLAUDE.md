@@ -244,7 +244,17 @@ spec/
 └── factories/        # FactoryBot definitions
 ```
 
-**3,164 examples** (`bundle exec rspec --dry-run`, measured 2026-08-30). Coverage measured the same day: **95.73% line** (7690/8033) and **80.56% branch** (2239/2779) via SimpleCov, with branch coverage enabled. Re-measure rather than quoting this figure once it ages — the `coverage/` report is regenerated on every run, and Sonar reads `coverage/coverage.json`.
+**Measure the suite; do not quote it.** The example count and the coverage figures move with every merge, so a number copied out of this file into a PR, an issue or a report is stale the moment it is written. `bundle exec rspec` prints the count and regenerates `coverage/` (SimpleCov, branch coverage enabled), writing the percentages to `coverage/.last_run.json` and the report Sonar reads to `coverage/coverage.json`; `--dry-run` gives the count alone. Every run also prints the commit, branch and dirty flag it ran against, on the line under the seed — cite that, not this paragraph.
+
+The figures below are an example of the shape, and a rough sense of scale. They are **not** a source: measured on 2026-09-04, seed 1, after the wave that landed that day.
+
+```
+3237 examples, 0 failures
+Line coverage:   7672 / 8000 (95.90%)
+Branch coverage: 2217 / 2745 (80.76%)
+```
+
+The count is deterministic across seeds — that is what #526 established. Coverage is not: seed 20260904 gave 96.21% line and 80.91% branch on the same tree, because which examples exercise a branch depends on the order they run in. One more reason to read `coverage/.last_run.json` from your own run rather than a figure someone wrote down.
 
 ## Environment Gotchas
 
