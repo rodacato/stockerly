@@ -173,3 +173,38 @@ here regardless of what it is called.
 Falling back to a **different** provider is a separate, legitimate mechanism and already exists as
 `GatewayChain`. Rotating a credential on expiry or compromise is a third thing again. Do not
 conflate them. See [ADR-015](adr/0015-one-api-key-per-provider.md).
+
+---
+
+## An indicator's expected value comes from outside this codebase
+
+Every spec that pins a number an indicator returns takes that number from an **independent
+implementation of the published definition** — never from running the implementation under test
+and recording what came back.
+
+Written down because the alternative was tried and cost two defects:
+
+- `TechnicalIndicators.rsi` averaged fourteen deltas with a plain mean where Wilder's smooths
+  them across the series. Three specs asserted the values it produced, and one asserted the
+  bug outright as a property: *"reads only the last 15 closes, so history before the window
+  cannot move the answer"*. The suite was green for months while the app called an asset
+  oversold four times more often than any chart the owner could compare it against.
+- The replacement expectations, and every ATR figure, were computed from Wilder's recursion in
+  a throwaway script and pinned with a comment saying where they came from. That is what makes
+  them able to fail.
+
+Practically:
+
+1. Compute the expected value from the definition, in something that is not this code — a few
+   lines of Python, a published worked example, a broker's chart. Whatever it is, it must not
+   share an author with the implementation.
+2. Pin the number in the spec with a comment naming its provenance.
+3. Add the property that distinguishes the right definition from the plausible wrong one. For
+   Wilder that is *history before the last window still moves the answer*; the plain mean cannot
+   satisfy it, so the spec would catch a regression to it.
+4. Do not run the oracle in the suite. A frozen number with stated provenance is faster and
+   cannot go green because both implementations share a misunderstanding.
+
+Every card that adds or changes an indicator carries this as a definition-of-done line. The
+measurements behind it are in
+[`docs/research/indicator-audit-2026-09.md`](../research/indicator-audit-2026-09.md).
