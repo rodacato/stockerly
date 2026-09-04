@@ -38,11 +38,11 @@ module MarketData
       end
 
       def already_notified?(user, event)
-        Notification.where(
+        Notifications::Queries::AlreadySent.call(
           user: user,
           notifiable: event,
           notification_type: :earnings_reminder
-        ).exists?
+        )
       end
 
       MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
