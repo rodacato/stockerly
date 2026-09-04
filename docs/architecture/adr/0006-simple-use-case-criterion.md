@@ -157,7 +157,7 @@ propagated callee failure has no failure path, whatever it inherits from.
 ### Mitigations
 
 - **Decision matrix is short and binary.** Most use cases are obviously one shape or the other; the gray zone is small.
-- **Linter / audit script can pin the rule.** A future addition to `script/audit-entropy.sh` can count `SimpleUseCase` subclasses that secretly need `yield` (audit-time check rather than a class-load check), if/when the regression risk materializes.
+- **A check pins the rule.** `bin/checks use-cases` applies all four tests and the invariant on every PR. It landed on 2026-09-04, three months after this section proposed it — see the amendment at the foot of this file.
 - **CLAUDE.md amendment is one paragraph.** Done in the same PR as this ADR.
 
 ---
@@ -246,3 +246,32 @@ around a `Result` that is always `Success`.
 follow-up audit its Deferred section promised. Both were skipped, and #535 is what that costs —
 the drift is found by a periodic audit rather than at write time. Until one exists, the four tests
 above are what a reviewer applies by hand.
+
+## Amendment, 2026-09-04 — the script this ADR promised in 2026-05 exists
+
+The Mitigations section proposed it, the Deferred section promised a follow-up audit, and the
+2026-09-04 amendment above recorded that both were skipped — which is what [#535](https://github.com/rodacato/stockerly/issues/535)
+cost: the drift was found by a periodic audit rather than at write time. `script/checks/use_cases.rb`,
+run by `bin/checks` in CI, closes that.
+
+It applies **all four tests, not three**. A use case is flagged when it inherits
+`ApplicationUseCase` and has no `yield`, no `validate(`, no base-class `publish(` — the lookbehind
+excludes `EventBus.publish`, the gray zone above, and getting that exclusion wrong is what inflated
+#535's count from 13 to 21 — and no caller that destructures its result. Test 4 reads three caller
+shapes: `case`/`in` on the result, a read of `.failure`, and a `yield` inside another use case's
+do-notation, including the form where the result is handed to a helper that destructures it (the
+2FA controller's `verify`). A looser reading counts an unrelated `in Success` twelve lines away as a
+caller and lets the drift straight through, so the detector is deliberately narrow.
+
+It also carries the invariant: **a use case that never returns a `Failure` must not return a
+`Result`.** Grep-checkable exactly as this ADR words it — no literal `Failure(`/`Failure[`, no
+`validate(`, and no propagated callee failure, the last covering both `yield` and the hand-rolled
+`return result if result.failure?`.
+
+**Measured on `master` the day it landed: zero criterion violations** — the 13 moved above are
+still moved, and no reverse drift appeared. **One invariant violation**, recorded in
+`script/checks/baseline.yml`: `MarketData::UseCases::StoreFundamentals` ends on base-class
+`publish(`, so it returns `Success(event)` and cannot fail, and both callers in `app/jobs/` discard
+the result. Its event payload is mechanical — `asset_id`, `symbol`, `source` — which is precisely
+the gray zone above: `SimpleUseCase` with an inline `EventBus.publish`. It is left as a recorded
+finding rather than fixed here, because the fix touches the two sync jobs.
