@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+# Mirror the production database into a local one, so local work never spends
+# API quota. See docs/ops/prod-mirror.md.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+MODE="${1:-auto}"
+
+[ -f .env ] && set -a && . ./.env && set +a
+
+SSH_USER="${PROD_SSH_USER:-deploy}"
+SSH_HOST="${HOST_IP:-}"
+PG_CONTAINER="${PROD_PG_CONTAINER:-stockerly-postgres}"
+PG_DB="${PROD_PG_DB:-stockerly_production}"
+PG_ROLE="${PROD_PG_ROLE:-stockerly_ro}"
+
+MIRROR_PREFIX="${MIRROR_PREFIX:-prodmirror}"
+MIRROR_DB="${MIRROR_PREFIX}_development"
+DUMP_DIR="tmp/prod"
+LATEST="$DUMP_DIR/latest.dump"
+
+export PGHOST="${DATABASE_HOST:-localhost}"
+export PGUSER="${DATABASE_USERNAME:-postgres}"
+export PGPASSWORD="${DATABASE_PASSWORD:-}"
+
+die() { echo "✗ $*" >&2; exit 1; }
+say() { echo "→ $*"; }
+
+can_reach_prod() {
+  [ -n "$SSH_HOST" ] || return 1
+  ssh -o BatchMode=yes -o ConnectTimeout=5 "$SSH_USER@$SSH_HOST" true 2>/dev/null
+}
+
+dump() {
+  [ -n "$SSH_HOST" ] || die "HOST_IP is not set — this half has to run where you deploy from."
+  can_reach_prod || die "Cannot SSH to $SSH_USER@$SSH_HOST — run this half on the machine that deploys."
+
+  mkdir -p "$DUMP_DIR"
+  local file="$DUMP_DIR/stockerly-$(date +%Y%m%d-%H%M%S).dump"
+
+  say "Dumping $PG_DB from $SSH_HOST as $PG_ROLE"
+  ssh "$SSH_USER@$SSH_HOST" \
+    "docker exec -i $PG_CONTAINER pg_dump -U $PG_ROLE -d $PG_DB -Fc --no-owner --no-privileges" \
+    > "$file"
+
+  [ -s "$file" ] || { rm -f "$file"; die "The dump came back empty — nothing was written."; }
+  ln -sf "$(basename "$file")" "$LATEST"
+  say "Wrote $file ($(du -h "$file" | cut -f1))"
+}
+
+restore() {
+  [ -e "$LATEST" ] || die "No dump in $DUMP_DIR — run 'bin/prod-sync dump' where you deploy from."
+
+  if psql -lqt | cut -d'|' -f1 | grep -qw "$MIRROR_DB"; then
+    if [ "${FORCE:-}" != "1" ]; then
+      read -rp "Replace $MIRROR_DB with $(readlink "$LATEST")? [y/N] " reply
+      [ "$reply" = "y" ] || die "Aborted, nothing was touched."
+    fi
+    dropdb --force "$MIRROR_DB"
+  fi
+
+  createdb "$MIRROR_DB"
+  say "Restoring into $MIRROR_DB"
+
+  # pg_restore exits non-zero on errors it ignored anyway, so the restore is
+  # judged by what landed rather than by the exit code.
+  local log="$DUMP_DIR/restore.log"
+  pg_restore --no-owner --no-privileges --dbname "$MIRROR_DB" "$DUMP_DIR/$(readlink "$LATEST")" >"$log" 2>&1 || true
+
+  local tables
+  tables=$(psql -d "$MIRROR_DB" -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public'")
+  [ "$tables" -gt 0 ] || die "The restore landed no tables — see $log"
+
+  local ignored
+  ignored=$(grep -c "^pg_restore: error" "$log" || true)
+  [ "$ignored" -eq 0 ] || say "$ignored error(s) ignored during restore — see $log"
+
+  status
+}
+
+status() {
+  psql -lqt | cut -d'|' -f1 | grep -qw "$MIRROR_DB" || die "$MIRROR_DB does not exist yet."
+
+  psql -d "$MIRROR_DB" -P border=2 -v ON_ERROR_STOP=1 <<'SQL'
+SELECT 'assets'          AS table, count(*)::text AS rows, ''                                         AS span FROM assets
+UNION ALL SELECT 'price history', count(*)::text, coalesce(min(date)::text || ' .. ' || max(date)::text, '—') FROM asset_price_histories
+UNION ALL SELECT 'trades',        count(*)::text, coalesce(min(executed_at)::date::text || ' .. ' || max(executed_at)::date::text, '—') FROM trades
+UNION ALL SELECT 'positions',     count(*)::text, '' FROM positions
+UNION ALL SELECT 'fundamentals',  count(*)::text, '' FROM asset_fundamentals
+UNION ALL SELECT 'fx history',    count(*)::text, coalesce(min(rate_date)::text || ' .. ' || max(rate_date)::text, '—') FROM fx_rate_histories;
+SQL
+
+  echo
+  say "Read it with:  DATABASE_PREFIX=$MIRROR_PREFIX bin/rails console"
+}
+
+case "$MODE" in
+  dump)    dump ;;
+  restore) restore ;;
+  status)  status ;;
+  auto)
+    if can_reach_prod; then dump; else say "No SSH from here — restoring the dump already on disk."; fi
+    restore
+    ;;
+  *) die "Usage: bin/prod-sync [dump|restore|status]" ;;
+esac
