@@ -27,8 +27,8 @@
   --color-border-default:    #E7E3D9;
   --color-border-strong:     #D6D1C4;
 
-  /* --- Semantic — Lumen positive/negative/warning/info. -fg variants per
-     tokens.md §4.1 WCAG-AA pattern, tuned to pass 4.5:1 on white. ------ */
+  /* --- Semantic — Lumen positive/negative/warning/info. The -fg variants
+     are tuned to pass WCAG-AA 4.5:1 on their own -bg. ------------------- */
   --color-positive:          #10B981;
   --color-positive-bg:       #ECFDF5;
   --color-positive-fg:       #047857;
@@ -38,7 +38,7 @@
   --color-warning:           #F59E0B;
   --color-warning-bg:        #FFFBEB;
   --color-warning-fg:        #B45309;
-  --color-info:              #5B6CFF;   /* alias of primary per tokens.md §1.1 */
+  --color-info:              #5B6CFF;   /* alias of primary */
   --color-info-bg:           #EEF0FF;
   --color-info-fg:           #4757E3;
 
@@ -61,7 +61,7 @@
 @theme static {
   /* --- Data-viz — closed token sets for chart encoding only. Chrome stays
      one-accent (primary); these exist solely so multi-series charts and the
-     sentiment heatmap stop hardcoding hex. See tokens.md §1.4 + §4.2. ----- */
+     sentiment heatmap stop hardcoding hex. ------------------------------- */
   --color-chart-1:           #5B6CFF;
   --color-chart-2:           #38BDF8;
   --color-chart-3:           #10B981;
