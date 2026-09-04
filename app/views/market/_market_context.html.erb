@@ -12,7 +12,7 @@
         <span class="text-xs text-fg-subtle"><%= context[:market_open] ? t(".abierto") : t(".cerrado") %></span>
         <% if context[:index_change] %>
           <span class="font-mono text-sm font-semibold <%= context[:index_change].to_f.negative? ? "text-negative-fg" : "text-positive-fg" %>">
-            <%= number_to_percentage(context[:index_change], precision: 1, format: "%n%") %> <%= t(".hoy") %>
+            <%= signed_percent(context[:index_change]) %> <%= t(".hoy") %>
           </span>
         <% end %>
       </div>
@@ -32,8 +32,8 @@
     <p class="text-sm leading-snug text-fg-subtle">
       <%= t("market.divergencia.#{context[:divergence]}",
             symbol: asset.symbol,
-            asset_change: number_to_percentage(context[:asset_change], precision: 1, format: "%n%"),
-            index_change: number_to_percentage(context[:index_change], precision: 1, format: "%n%"),
+            asset_change: signed_percent(context[:asset_change]),
+            index_change: signed_percent(context[:index_change]),
             index: context[:index].name) %>
     </p>
   <% end %>

@@ -23,9 +23,16 @@ module AssetsHelper
     [ native, from ]
   end
 
+  # One percent format, two readings. A change carries its sign, and the sign is
+  # the typographic minus — a hyphen is a separator, not a sign. A distance
+  # ("falta 3.2%", "necesita subir 1.4%") is a magnitude the copy gives a
+  # direction to, so it carries none.
   def signed_percent(percent)
-    value = percent.to_f
-    "#{value.negative? ? "−" : "+"}#{number_with_precision(value.abs, precision: 1)}%"
+    "#{percent.to_f.negative? ? "−" : "+"}#{unsigned_percent(percent)}"
+  end
+
+  def unsigned_percent(percent)
+    "#{number_with_precision(percent.to_f.abs, precision: 1)}%"
   end
 
   # An unknown day change is drawn as a dash, never as 0%: an asset without a

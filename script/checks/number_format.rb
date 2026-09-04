@@ -4,14 +4,13 @@ require_relative "support"
 
 module Checks
   # #500 and #511 consolidated money and share formatting into MoneyHelper,
-  # killing 20 hand-written sites, a literal MXN and an ambiguous $. #541
-  # records that two percent conventions still coexist — signed_percent across
-  # 8 files, number_to_percentage across 5 — putting two different minus glyphs
-  # on screen.
+  # killing 20 hand-written sites, a literal MXN and an ambiguous $. #541 then
+  # picked the percent convention: signed_percent for a change, its
+  # unsigned_percent sibling for a magnitude, both emitting the typographic
+  # minus rather than the hyphen number_to_percentage put next to it on screen.
   #
-  # This does not pick the percent convention; #541 does. It enforces the part
-  # that is already decided: money and percent are formatted by a helper, so
-  # whichever convention #541 lands has one place to land in.
+  # This keeps that picked: money and percent are formatted by a helper, so
+  # there is one place the convention lives.
   class NumberFormat < Check
     ID = "number-format"
     TITLE = "Money and percent are formatted by a helper, not inline"

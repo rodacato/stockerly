@@ -6,7 +6,7 @@
   <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
     <h3 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".titulo") %></h3>
     <p class="text-xs text-fg-subtle">
-      <%= t(".#{range.zone}", percent: number_to_percentage(range.distance, precision: 1, format: "%n%")) %>
+      <%= t(".#{range.zone}", percent: unsigned_percent(range.distance)) %>
     </p>
   </div>
 

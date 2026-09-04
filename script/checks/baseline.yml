@@ -41,21 +41,10 @@ design-tokens:
   app/views/watchlist_items/_watchlist_button.html.erb:
     count: 1
 
+# Empty on purpose: #541 picked signed_percent, so the five files this started
+# with are migrated rather than exempted. Keep the key so a new finding lands
+# under a heading that already reads as debt.
 number-format:
-  # The five files #541 names: number_to_percentage in a view, while
-  # signed_percent is the other convention across 8 files. #541 picks one; this
-  # is what keeps it picked. The money half has no rows — number_to_currency
-  # appears nowhere, so that part of the check starts at zero.
-  app/views/components/_watch_row.html.erb:
-    count: 1
-  app/views/discover/show.html.erb:
-    count: 1
-  app/views/market/_market_context.html.erb:
-    count: 3
-  app/views/market/_range_52w.html.erb:
-    count: 1
-  app/views/market/_vs_plan.html.erb:
-    count: 1
 
 # Empty on purpose: the one row this convention started with (#570) is fixed,
 # not exempted. Keep the key so a new finding lands under a heading that
