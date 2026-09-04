@@ -31,7 +31,7 @@
         have no queue position and keep the reading they always had. %>
     <% if context != :radar %>
       <% if gap %>
-        <p class="mt-0.5 font-mono text-[11px] text-fg-subtle"><%= t("assets.index.falta", percent: number_to_percentage(gap, precision: 1, format: "%n%")) %></p>
+        <p class="mt-0.5 font-mono text-[11px] text-fg-subtle"><%= t("assets.index.falta", percent: unsigned_percent(gap)) %></p>
       <% elsif followed %>
         <p class="mt-0.5 text-[11px] text-fg-subtle"><%= t("assets.index.sigues", percent: signed_percent(followed)) %></p>
       <% end %>

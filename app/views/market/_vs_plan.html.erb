@@ -16,7 +16,7 @@
   <% if threshold_anchor %>
     <div class="flex items-baseline justify-between gap-3 text-sm">
       <span class="text-fg-default"><%= t(".umbral", value: format_currency_mx(threshold_anchor.reference, currency: threshold_currency)) %></span>
-      <% gap = number_to_percentage(threshold_anchor.percent.abs, precision: 1, format: "%n%") %>
+      <% gap = unsigned_percent(threshold_anchor.percent) %>
       <span class="font-mono text-fg-subtle">
         <% if threshold_anchor.percent.negative? %>
           <%= t(".umbral_baja", percent: gap) %>

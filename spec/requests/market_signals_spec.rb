@@ -7,8 +7,9 @@ RSpec.describe "Market Asset Detail — Señales", type: :request do
   let!(:asset) { create(:asset, symbol: "AAPL", name: "Apple Inc.") }
 
   # short_date_es formats the stale badge; the spec asserts the string the
-  # reader actually sees rather than re-deriving the format.
-  let(:formatter) { Class.new { include MarketHelper }.new }
+  # reader actually sees rather than re-deriving the format. Through the view
+  # context, because the helper localizes the date the way a view does.
+  let(:formatter) { ApplicationController.helpers }
 
   before { login_as(user) }
 
