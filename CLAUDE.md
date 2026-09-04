@@ -114,7 +114,7 @@ Cross-cutting code with **no namespace change** — available everywhere:
 
 ### Market Data Gateways
 
-`app/contexts/market_data/gateways/` holds **10 concrete provider gateways** — Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Alpha Vantage, FMP, Banxico, ExchangeRate (`FxRatesGateway`), and Alternative.me (`CryptoFearGreedGateway`). That is 15 files: the 10 concrete gateways, 2 base classes (`MarketDataGateway`, `FundamentalsGateway`), 1 error class (`ApiKeyNotConfiguredError`), `RetryPolicy`, and the `ResolvesApiKey` module the eight keyed gateways share. Registration and fallback priority live in `config/initializers/data_sources.rb`. **Polygon.io and CNN are retired** (`db/migrate/20260826210000_remove_retired_integrations.rb`) — do not cite them as sources.
+`app/contexts/market_data/gateways/` holds **10 concrete provider gateways** — Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Alpha Vantage, FMP, Banxico, ExchangeRate (`FxRatesGateway`), and Alternative.me (`CryptoFearGreedGateway`). That is 16 files: the 10 concrete gateways, 2 base classes (`MarketDataGateway`, `FundamentalsGateway`), 1 error class (`ApiKeyNotConfiguredError`), `RetryPolicy`, the `ResolvesApiKey` module the eight keyed gateways share, and `PerformsRequests` — the Faraday plumbing (connection assembly, `get_json`, and the `failure_from` / `transport_failure` hooks) that the nine HTTP gateways include. Registration and fallback priority live in `config/initializers/data_sources.rb`. **Polygon.io and CNN are retired** (`db/migrate/20260826210000_remove_retired_integrations.rb`) — do not cite them as sources.
 
 ### Autoloading (Zeitwerk)
 
