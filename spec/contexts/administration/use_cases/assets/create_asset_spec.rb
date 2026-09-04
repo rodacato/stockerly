@@ -20,7 +20,7 @@ RSpec.describe Administration::UseCases::Assets::CreateAsset do
     end
 
     it "publishes AssetCreated event" do
-      expect(EventBus).to receive(:publish).with(an_instance_of(MarketData::Events::AssetCreated))
+      expect(EventBus).to receive(:publish).with(an_instance_of(Administration::Events::AssetCreated))
 
       described_class.call(admin: admin, params: valid_params)
     end

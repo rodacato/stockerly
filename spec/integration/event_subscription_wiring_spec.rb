@@ -46,9 +46,9 @@ RSpec.describe "Event Subscription Wiring" do
   # Administration
   # ---------------------------------------------------------------------------
   describe "Administration subscriptions" do
-    describe "MarketData::Events::AssetCreated" do
+    describe "Administration::Events::AssetCreated" do
       it "has audit log, sync, and backfill history handlers" do
-        handlers = EventBus.handlers_for(MarketData::Events::AssetCreated)
+        handlers = EventBus.handlers_for(Administration::Events::AssetCreated)
 
         expect(handlers).to include(Administration::Handlers::CreateAuditLogOnAssetCreation)
         expect(handlers).to include(MarketData::Handlers::SyncAssetOnCreation)

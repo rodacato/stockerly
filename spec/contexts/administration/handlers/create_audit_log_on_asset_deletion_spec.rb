@@ -4,7 +4,7 @@ RSpec.describe Administration::Handlers::CreateAuditLogOnAssetDeletion do
   let(:admin) { create(:user, :admin) }
 
   it "creates an audit log entry capturing the deleted symbol" do
-    event = MarketData::Events::AssetDeleted.new(asset_symbol: "TSLA", admin_id: admin.id)
+    event = Administration::Events::AssetDeleted.new(asset_symbol: "TSLA", admin_id: admin.id)
 
     expect { described_class.call(event) }.to change(AuditLog, :count).by(1)
 
