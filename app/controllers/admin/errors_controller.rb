@@ -3,13 +3,10 @@ module Admin
     before_action :require_developer_mode
 
     def index
-      result = Administration::UseCases::Errors::ListErrors.call(params: filter_params, request: request)
+      data = Administration::UseCases::Errors::ListErrors.call(params: filter_params, request: request)
 
-      if result.success?
-        data = result.value!
-        @pagy = data[:pagy]
-        @error_events = data[:errors]
-      end
+      @pagy = data[:pagy]
+      @error_events = data[:errors]
     end
 
     def show

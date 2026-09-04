@@ -28,8 +28,7 @@ RSpec.describe MarketData::UseCases::NotifyApproachingEarnings do
 
       it "returns count of notifications created" do
         result = described_class.call
-        expect(result).to be_success
-        expect(result.value!).to eq(1)
+        expect(result).to eq(1)
       end
 
       it "sets correct notification attributes" do
@@ -66,8 +65,7 @@ RSpec.describe MarketData::UseCases::NotifyApproachingEarnings do
     context "with no upcoming earnings" do
       it "returns zero" do
         result = described_class.call
-        expect(result).to be_success
-        expect(result.value!).to eq(0)
+        expect(result).to eq(0)
       end
     end
 

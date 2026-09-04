@@ -1,7 +1,7 @@
 module Administration
   module UseCases
     module Onboarding
-      class SaveApiKeys < ApplicationUseCase
+      class SaveApiKeys < SimpleUseCase
         BANXICO = "Banxico".freeze
 
         def call(keys:)
@@ -21,7 +21,7 @@ module Administration
             updated += 1
           end
 
-          Success({ updated: updated, fx: banxico ? pull_fx_history : :skipped })
+          { updated: updated, fx: banxico ? pull_fx_history : :skipped }
         end
 
         private

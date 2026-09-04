@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe EvaluateDateBasedAlertsJob, type: :job do
   it "delegates to Alerts::UseCases::EvaluateDateBasedRules" do
-    instance = instance_double(Alerts::UseCases::EvaluateDateBasedRules, call: Dry::Monads::Success([]))
+    instance = instance_double(Alerts::UseCases::EvaluateDateBasedRules, call: [])
     allow(Alerts::UseCases::EvaluateDateBasedRules).to receive(:new).and_return(instance)
 
     described_class.perform_now

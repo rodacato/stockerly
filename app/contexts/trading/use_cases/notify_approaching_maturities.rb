@@ -8,7 +8,7 @@ module Trading
     #
     # Copy is descriptive per ADR-001: "CETES_28D expires in 5 days" — never
     # "consider reinvesting" or any action verb directed at the user.
-    class NotifyApproachingMaturities < ApplicationUseCase
+    class NotifyApproachingMaturities < SimpleUseCase
       THRESHOLD_DAYS = [ 7, 3, 1 ].freeze
 
       def call
@@ -31,7 +31,7 @@ module Trading
           sent += 1
         end
 
-        Success(sent)
+        sent
       end
 
       private

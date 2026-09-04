@@ -8,11 +8,8 @@ RSpec.describe Alerts::UseCases::EvaluateRules do
 
   describe "#call" do
     context "when asset does not exist" do
-      it "returns failure" do
-        result = use_case.call(asset_id: -1, new_price: "200.0")
-
-        expect(result).to be_failure
-        expect(result.failure[0]).to eq(:not_found)
+      it "triggers nothing" do
+        expect(use_case.call(asset_id: -1, new_price: "200.0")).to eq([])
       end
     end
 
@@ -24,8 +21,7 @@ RSpec.describe Alerts::UseCases::EvaluateRules do
       it "returns success with empty array" do
         result = use_case.call(asset_id: asset.id, new_price: "155.0")
 
-        expect(result).to be_success
-        expect(result.value!).to be_empty
+        expect(result).to be_empty
       end
     end
 
@@ -37,8 +33,7 @@ RSpec.describe Alerts::UseCases::EvaluateRules do
       it "returns the triggered rules" do
         result = use_case.call(asset_id: asset.id, new_price: "160.0")
 
-        expect(result).to be_success
-        expect(result.value!).to include(rule)
+        expect(result).to include(rule)
       end
 
       it "publishes Alerts::Events::AlertRuleTriggered event" do
@@ -60,8 +55,7 @@ RSpec.describe Alerts::UseCases::EvaluateRules do
       it "ignores paused rules" do
         result = use_case.call(asset_id: asset.id, new_price: "160.0")
 
-        expect(result).to be_success
-        expect(result.value!).to be_empty
+        expect(result).to be_empty
       end
     end
   end

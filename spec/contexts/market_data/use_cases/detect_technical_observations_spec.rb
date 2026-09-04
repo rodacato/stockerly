@@ -43,11 +43,10 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
   end
 
   describe "#call" do
-    it "returns Success(0) when no assets have sufficient history" do
+    it "detects nothing when no assets have sufficient history" do
       create(:asset, symbol: "TINY", current_price: 100)
       result = use_case.call
-      expect(result).to be_success
-      expect(result.value!).to eq(0)
+      expect(result).to eq(0)
     end
 
     it "skips assets with nil current_price (dead listings)" do

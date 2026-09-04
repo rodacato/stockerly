@@ -4,7 +4,7 @@ class DetectTechnicalObservationsJob < ApplicationJob
   queue_as :default
 
   def perform
-    detected = MarketData::UseCases::DetectTechnicalObservations.call.value!
+    detected = MarketData::UseCases::DetectTechnicalObservations.call
 
     log_sync_success("Technical Observations", message: "#{detected} observations detected")
   rescue StandardError => e

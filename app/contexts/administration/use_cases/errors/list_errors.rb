@@ -1,7 +1,7 @@
 module Administration
   module UseCases
     module Errors
-      class ListErrors < ApplicationUseCase
+      class ListErrors < SimpleUseCase
         include Pagy::Method
 
         def call(params: {}, request: nil)
@@ -14,7 +14,7 @@ module Administration
             request: request || { base_url: "", path: "", params: {}, cookie: nil }
           )
 
-          Success({ pagy: pagy, errors: errors })
+          { pagy: pagy, errors: errors }
         end
 
         private

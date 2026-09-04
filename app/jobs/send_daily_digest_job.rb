@@ -4,7 +4,7 @@ class SendDailyDigestJob < ApplicationJob
   queue_as :default
 
   def perform
-    sent = Notifications::UseCases::SendDailyDigest.call.value!
+    sent = Notifications::UseCases::SendDailyDigest.call
 
     log_sync_success("Daily Digest", message: "#{sent} digest(s) sent")
   rescue StandardError => e

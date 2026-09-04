@@ -1,6 +1,6 @@
 module Alerts
   module UseCases
-    class LoadDashboard < ApplicationUseCase
+    class LoadDashboard < SimpleUseCase
       ALLOWED_FILTERS = %w[active paused all].freeze
 
       # Defaults to every rule. The screen used to carry Activas/Pausadas/Todas
@@ -34,14 +34,14 @@ module Alerts
           all:    active_count + paused_count
         }
 
-        Success({
+        {
           rules: rules,
           events: events,
           preference: preference,
           triggered_today: triggered_today,
           counts: counts,
           filter: filter
-        })
+        }
       end
     end
   end

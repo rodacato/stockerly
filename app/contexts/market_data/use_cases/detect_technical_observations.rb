@@ -8,7 +8,7 @@ module MarketData
     #
     # ADR-002: this use case does NOT filter by user state. Dashboard-side
     # presentation filters observations against watchlist + open positions.
-    class DetectTechnicalObservations < ApplicationUseCase
+    class DetectTechnicalObservations < SimpleUseCase
       DEDUP_WINDOW_DAYS = 7
 
       def call
@@ -16,7 +16,7 @@ module MarketData
         scannable_assets.find_each do |asset|
           detected += detect_for(asset)
         end
-        Success(detected)
+        detected
       end
 
       private

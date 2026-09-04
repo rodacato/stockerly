@@ -1,6 +1,6 @@
 module MarketData
   module UseCases
-    class NotifyApproachingEarnings < ApplicationUseCase
+    class NotifyApproachingEarnings < SimpleUseCase
       LOOKAHEAD_DAYS = 3
 
       def call
@@ -8,7 +8,7 @@ module MarketData
           .where(report_date: Date.current..(Date.current + LOOKAHEAD_DAYS.days))
           .includes(:asset)
 
-        return Success(0) if upcoming_events.empty?
+        return 0 if upcoming_events.empty?
 
         count = 0
         upcoming_events.each do |event|
@@ -26,7 +26,7 @@ module MarketData
           end
         end
 
-        Success(count)
+        count
       end
 
       private

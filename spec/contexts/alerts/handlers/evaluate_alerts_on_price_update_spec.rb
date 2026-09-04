@@ -11,7 +11,7 @@ RSpec.describe Alerts::Handlers::EvaluateAlertsOnPriceUpdate do
     it "invokes Alerts::UseCases::EvaluateRules" do
       use_case = instance_double(Alerts::UseCases::EvaluateRules)
       allow(Alerts::UseCases::EvaluateRules).to receive(:new).and_return(use_case)
-      allow(use_case).to receive(:call).and_return(Dry::Monads::Success([]))
+      allow(use_case).to receive(:call).and_return([])
 
       described_class.call(asset_id: asset.id, new_price: "160.0", old_price: "150.0")
 

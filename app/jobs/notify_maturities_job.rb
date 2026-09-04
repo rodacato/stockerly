@@ -4,7 +4,7 @@ class NotifyMaturitiesJob < ApplicationJob
   queue_as :default
 
   def perform
-    sent = Trading::UseCases::NotifyApproachingMaturities.call.value!
+    sent = Trading::UseCases::NotifyApproachingMaturities.call
 
     log_sync_success("Maturity Notifications", message: "#{sent} notifications sent")
   rescue StandardError => e
