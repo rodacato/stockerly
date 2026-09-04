@@ -124,6 +124,27 @@ RSpec.describe DataFreshness do
       end
     end
 
+    # SyncMarketIndicesJob returns early unless a US or MX session is open and
+    # logs nothing when it does, so Friday's success aged into "critical" every
+    # Saturday. The route carries the same gating the price routes do (#504).
+    it "does not judge the indices while both sessions are closed" do
+      SystemLog.create!(task_name: "Market Indices Sync", module_name: "sync", severity: :success,
+                        duration_seconds: 0, created_at: Time.utc(2026, 9, 4, 20, 0, 0))
+
+      travel_to(Time.utc(2026, 9, 5, 17, 0, 0)) do
+        expect(described_class.checks[:indices]).to eq("ok")
+      end
+    end
+
+    it "judges the indices once a session is underway" do
+      travel_to(session) do
+        SystemLog.create!(task_name: "Market Indices Sync", module_name: "sync", severity: :success,
+                          duration_seconds: 0, created_at: 3.hours.ago)
+
+        expect(described_class.checks[:indices]).to eq("critical")
+      end
+    end
+
     # This read asked for "FX Rates Sync", a name nothing writes, so it found
     # nil no matter how long the refresh had been dead and /health reported FX
     # healthy on that basis. Before the fix this example read "ok".
@@ -140,6 +161,52 @@ RSpec.describe DataFreshness do
     # degraded, and CheckSyncHealthJob is what watches for the silence itself.
     it "reports ok when a source has no data" do
       expect(described_class.checks[:fx_rates]).to eq("ok")
+    end
+  end
+
+  # Same measure, second rendering (#504). /health is read on purpose and wants
+  # the early warning; a notification arrives unasked, so the owner threshold
+  # waits for a silence the next scheduled run cannot still cure.
+  describe ".stale_for_owner" do
+    it "leaves a route the dashboard already calls critical alone until the owner threshold" do
+      travel_to(session) do
+        create(:asset, price_updated_at: 3.hours.ago, country: "US")
+
+        expect(described_class.checks[:prices_us]).to eq("critical")
+        expect(described_class.stale_for_owner).not_to have_key(:prices_us)
+      end
+    end
+
+    it "reports the route and the window it broke once the owner threshold passes" do
+      travel_to(session) do
+        create(:asset, price_updated_at: 7.hours.ago, country: "US")
+
+        expect(described_class.stale_for_owner).to include(prices_us: 6.hours)
+      end
+    end
+
+    # An instance holding no US equities has no US prices that could be stale.
+    # Absence of a log is different: it means the sync never once reported.
+    it "says nothing about an asset class with no assets to refresh" do
+      travel_to(session) do
+        expect(described_class.stale_for_owner.keys).to contain_exactly(:indices, :fx_rates)
+      end
+    end
+
+    it "does not judge a market-gated route while its session is closed" do
+      travel_to(Time.utc(2026, 9, 3, 3, 0, 0)) do
+        create(:asset, price_updated_at: 12.hours.ago, country: "US")
+
+        expect(described_class.stale_for_owner.keys).not_to include(:prices_us, :indices)
+      end
+    end
+
+    it "gives CETES the same nine days the dashboard gives it" do
+      travel_to(session) do
+        create(:asset, :fixed_income, sync_status: :active, price_updated_at: 6.days.ago)
+
+        expect(described_class.stale_for_owner).not_to have_key(:prices_fixed_income)
+      end
     end
   end
 
