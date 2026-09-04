@@ -12,6 +12,7 @@
 HORIZONS = [ 5, 10, 20 ].freeze
 OVERSOLD = 30
 OVERBOUGHT = 70
+TREND_PERIODS = [ 50, 200 ].freeze
 
 Indicators = MarketData::Domain::TechnicalIndicators
 
@@ -43,6 +44,18 @@ def episodes(indices, gap)
   indices.each_with_object([]) { |i, kept| kept << i if kept.empty? || i - kept.last >= gap }
 end
 
+# Light 3's own test, asked at the moment light 1 fires and never after it —
+# the whole-window split below can see the future, and this one cannot.
+#
+# Both periods, because they answer differently: an oversold bar is almost
+# always under its 50, and being under the 200 as well is the real question.
+def trend_at(closes, index, period)
+  sma = Indicators.sma(closes[0..index], period: period)
+  return nil if sma.nil?
+
+  closes[index] >= sma ? :above : :below
+end
+
 def describe(values)
   return "n=0" if values.empty?
 
@@ -60,6 +73,8 @@ overbought = Hash.new { |h, k| h[k] = [] }
 base = Hash.new { |h, k| h[k] = [] }
 per_asset = []
 drift = []
+split = Hash.new { |h, k| h[k] = [] }
+live = Hash.new { |h, k| h[k] = [] }
 
 Asset.joins(:asset_price_histories).distinct.find_each do |asset|
   closes = MarketData::Queries::PriceSeries.for(asset).closed.map { |row| row.close.to_f }
@@ -79,12 +94,28 @@ Asset.joins(:asset_price_histories).distinct.find_each do |asset|
     high_days << i if reading[:rsi] > OVERBOUGHT && closes[i] > reading[:bb_upper]
   end
 
+  total = ((closes.last - closes.first) / closes.first) * 100
+  direction = total.negative? ? :fell : :rose
+
   HORIZONS.each do |h|
-    episodes(low_days, h).each { |i| (r = forward_return(closes, i, h)) && oversold[h] << r }
-    episodes(high_days, h).each { |i| (r = forward_return(closes, i, h)) && overbought[h] << r }
+    episodes(low_days, h).each do |i|
+      next unless (r = forward_return(closes, i, h))
+
+      oversold[h] << r
+      split[[ direction, h ]] << r
+
+      TREND_PERIODS.each do |period|
+        state = trend_at(closes, i, period)
+        live[[ period, state, h ]] << r unless state.nil?
+      end
+    end
+    episodes(high_days, h).each do |i|
+      r = forward_return(closes, i, h)
+      overbought[h] << r if r
+    end
   end
 
-  drift << (closes.last - closes.first) / closes.first * 100
+  drift << total
   per_asset << { symbol: asset.symbol, bars: closes.size, low: episodes(low_days, 10).size,
                  high: episodes(high_days, 10).size, days: low_days.size + high_days.size }
 end
@@ -106,6 +137,27 @@ HORIZONS.each do |h|
   puts "\n  +#{h} trading days   (base rate #{format('%+.2f%%', mean_base)}, averaged over every bar)"
   puts "    oversold    #{describe(oversold[h])}"
   puts "    overbought  #{describe(overbought[h])}"
+end
+
+puts "\nThe oversold light, split by where the asset went over the whole window"
+puts "  Diagnostic only — this split can see the future, so it is not a rule."
+HORIZONS.each do |h|
+  puts "\n  +#{h} trading days"
+  puts "    on assets that rose  #{describe(split[[ :rose, h ]])}"
+  puts "    on assets that fell  #{describe(split[[ :fell, h ]])}"
+end
+
+puts "\nThe same split, asked on the day the light fired: close against its SMA"
+puts "  A rule, not a diagnostic — every input existed on the day. Read the n:"
+puts "  a starved row is the corpus talking, not the signal."
+TREND_PERIODS.each do |period|
+  HORIZONS.each do |h|
+    above = live[[ period, :above, h ]]
+    below = live[[ period, :below, h ]]
+    puts "\n  SMA(#{period}), +#{h} trading days"
+    puts "    above  #{describe(above)}"
+    puts "    below  #{describe(below)}"
+  end
 end
 
 puts "\nAssets: #{per_asset.size}  ·  oversold events: #{per_asset.sum { |r| r[:low] }}  ·  overbought events: #{per_asset.sum { |r| r[:high] }}"
