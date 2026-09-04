@@ -87,6 +87,42 @@ RSpec.describe MarketHours do
     end
   end
 
+  # The monitor needs the distance from the opening bell, not just "open": at
+  # 9:31 a sync that has not logged yet is early, not dead.
+  describe ".us_minutes_since_open" do
+    it "counts the minutes elapsed since 9:30 ET" do
+      travel_to Time.zone.parse("2025-01-15 11:00:00 EST") do
+        expect(described_class.us_minutes_since_open).to eq(90)
+      end
+    end
+
+    it "is zero at the opening bell itself" do
+      travel_to Time.zone.parse("2025-01-15 09:30:00 EST") do
+        expect(described_class.us_minutes_since_open).to eq(0)
+      end
+    end
+
+    it "is nil while the market is closed, so silence cannot be measured" do
+      travel_to Time.zone.parse("2025-01-18 12:00:00 EST") do
+        expect(described_class.us_minutes_since_open).to be_nil
+      end
+    end
+  end
+
+  describe ".bmv_minutes_since_open" do
+    it "counts the minutes elapsed since 8:30 CST" do
+      travel_to Time.zone.parse("2025-01-15 10:00:00 CST") do
+        expect(described_class.bmv_minutes_since_open).to eq(90)
+      end
+    end
+
+    it "is nil after the 3:00 PM CST close" do
+      travel_to Time.zone.parse("2025-01-15 15:30:00 CST") do
+        expect(described_class.bmv_minutes_since_open).to be_nil
+      end
+    end
+  end
+
   describe ".crypto_market_open?" do
     it "always returns true" do
       travel_to Time.zone.parse("2025-01-18 03:00:00 UTC") do
