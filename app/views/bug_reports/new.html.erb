@@ -12,7 +12,7 @@
         <p class="text-base text-fg-default leading-relaxed">Gracias. Lo voy a revisar lo antes posible y te respondo al correo con el que te registraste.</p>
         <div class="flex items-center gap-4 pt-2">
           <%= link_to "Volver al Panorama", dashboard_path,
-                class: "inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors" %>
+                class: "inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold py-2.5 px-4 rounded-lg transition-colors" %>
           <%= link_to "Reportar otro bug", new_bug_report_path,
                 class: "text-sm text-fg-subtle hover:text-primary transition-colors border-b border-transparent hover:border-primary" %>
         </div>
@@ -52,7 +52,7 @@
         <div class="flex items-center justify-between gap-4 pt-2">
           <%= link_to "Cancelar", dashboard_path, class: "text-sm text-fg-subtle hover:text-primary transition-colors" %>
           <%= f.submit "Enviar reporte",
-                class: "inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors cursor-pointer" %>
+                class: "inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold py-2.5 px-4 rounded-lg transition-colors cursor-pointer" %>
         </div>
       <% end %>
     <% end %>
