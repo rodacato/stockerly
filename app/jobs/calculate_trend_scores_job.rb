@@ -7,21 +7,7 @@ class CalculateTrendScoresJob < ApplicationJob
     count = 0
 
     Asset.syncing.find_each do |asset|
-      histories = MarketData::Queries::PriceSeries.for(asset).latest(MarketData::Domain::TrendScoreCalculator::WINDOW)
-      closes = histories.pluck(:close).map(&:to_f)
-      volumes = MarketData::Queries::PriceSeries.closed_volumes(histories)
-
-      result = MarketData::Domain::TrendScoreCalculator.calculate(closes: closes, volumes: volumes)
-      next unless result
-
-      asset.trend_scores.create!(
-        score: result[:score],
-        label: result[:label],
-        direction: result[:direction],
-        calculated_at: Time.current,
-        factors: result[:factors] || {}
-      )
-      count += 1
+      count += 1 if MarketData::UseCases::RecordTrendScore.call(asset: asset)
     end
 
     log_sync_success("TrendScores: #{count} assets scored")

@@ -9,20 +9,7 @@ module MarketData
         asset = Asset.find_by(id: asset_id)
         return unless asset
 
-        histories = MarketData::Queries::PriceSeries.for(asset).latest(Domain::TrendScoreCalculator::WINDOW)
-        closes = histories.pluck(:close).map(&:to_f)
-        volumes = Queries::PriceSeries.closed_volumes(histories)
-
-        result = Domain::TrendScoreCalculator.calculate(closes: closes, volumes: volumes)
-        return unless result
-
-        asset.trend_scores.create!(
-          score: result[:score],
-          label: result[:label],
-          direction: result[:direction],
-          calculated_at: Time.current,
-          factors: result[:factors] || {}
-        )
+        UseCases::RecordTrendScore.call(asset: asset)
       end
     end
   end
