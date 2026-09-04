@@ -1,6 +1,8 @@
 module Trading
   module Contracts
     class ExecuteTradeContract < ApplicationContract
+      include ValidatesTradeDate
+
       POSITIVE_VALUE_ERROR = "must be greater than 0"
 
       params do
@@ -29,26 +31,6 @@ module Trading
 
       rule(:asset_symbol) do
         key.failure("asset not found") unless Asset.exists?(symbol: value.upcase)
-      end
-
-      # JTBD #5 already specifies `max: today`, and nothing enforced it: a trade
-      # dated 90 days out was accepted, opening a position that does not exist
-      # yet and counting it into today's figures. The message reaches the user
-      # verbatim through the sheet's flash, so it is es-MX.
-      rule(:executed_at) do
-        next if value.blank?
-
-        parsed = begin
-          Date.parse(value)
-        rescue ArgumentError, TypeError
-          nil
-        end
-
-        if parsed.nil?
-          key.failure(I18n.t("trades.errores.fecha_invalida"))
-        elsif parsed > Date.current
-          key.failure(I18n.t("trades.errores.fecha_futura"))
-        end
       end
 
       # Fixed-income lots (CETES, future Bonos M, UDIs) carry a per-position

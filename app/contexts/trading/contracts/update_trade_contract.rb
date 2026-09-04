@@ -1,6 +1,8 @@
 module Trading
   module Contracts
     class UpdateTradeContract < ApplicationContract
+      include ValidatesTradeDate
+
       params do
         required(:trade_id).filled(:integer)
         optional(:shares).filled(:float)

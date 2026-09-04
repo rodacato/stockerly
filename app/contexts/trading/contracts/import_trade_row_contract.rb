@@ -22,16 +22,9 @@ module Trading
       rule(:price_per_share) { key.failure(POSITIVE_VALUE_ERROR) if value <= 0 }
 
       rule(:executed_at) do
-        parsed = begin
-          Time.zone.parse(value)
-        rescue ArgumentError, TypeError
-          nil
-        end
-
-        if parsed.nil?
-          key.failure("is not a valid date")
-        elsif parsed.to_date > Date.current
-          key.failure("is in the future")
+        case Trading::Domain::TradeDate.fault(value)
+        when :invalid then key.failure("is not a valid date")
+        when :future  then key.failure("is in the future")
         end
       end
 

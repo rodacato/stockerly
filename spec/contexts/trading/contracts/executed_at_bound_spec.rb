@@ -34,3 +34,30 @@ RSpec.describe Trading::Contracts::ExecuteTradeContract, "executed_at bound" do
     expect(validate(nil).errors[:executed_at]).to be_blank
   end
 end
+
+# The edit path answers the same question as the create path, in the same words.
+RSpec.describe Trading::Contracts::UpdateTradeContract, "executed_at bound" do
+  let(:trade) { create(:trade) }
+
+  def validate(executed_at)
+    described_class.new.call(trade_id: trade.id, executed_at: executed_at)
+  end
+
+  it "rejects a date in the future, in es-MX" do
+    expect(validate(1.day.from_now.to_date.to_s).errors[:executed_at])
+      .to include(I18n.t("trades.errores.fecha_futura"))
+  end
+
+  it "rejects a date that is not a date" do
+    expect(validate("no-es-fecha").errors[:executed_at])
+      .to include(I18n.t("trades.errores.fecha_invalida"))
+  end
+
+  it "accepts a past date" do
+    expect(validate(90.days.ago.to_date.to_s).errors[:executed_at]).to be_blank
+  end
+
+  it "accepts an edit that does not touch the date" do
+    expect(described_class.new.call(trade_id: trade.id, shares: 2.0).errors[:executed_at]).to be_blank
+  end
+end
