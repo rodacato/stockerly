@@ -44,13 +44,15 @@ app/contexts/{context_name}/
 ├── events/        # dry-struct: immutable domain events
 ├── gateways/      # Faraday HTTP adapters (MarketData only)
 ├── handlers/      # Reactions to events (sync or async)
-├── queries/       # Read API exposed to customer contexts (MarketData only, ADR-002)
+├── queries/       # Read API exposed to customer contexts (ADR-002)
 └── use_cases/     # Orchestration with dry-monads (Success/Failure)
 ```
 
 A context has the folders it needs, not all of them: Identity and Notifications have no `domain/`,
-Notifications has no `contracts/`, and `gateways/` and `queries/` exist only in MarketData, which
-also carries a `discover/` folder for the Descubrir surface.
+Notifications has no `contracts/`, and `gateways/` exists only in MarketData, which also carries a
+`discover/` folder for the Descubrir surface. `queries/` is MarketData's and Notifications' —
+Notifications gained one when `AlreadySent` replaced the direct `Notification` reads its callers
+were doing.
 
 ---
 
@@ -102,6 +104,12 @@ explicitly marked as read API — and never touches the supplier's ActiveRecord 
 
 The one adopted pair is **Trading → MarketData** (Trading reads, MarketData does not read Trading).
 Another pair adopts the pattern by writing its own ADR, not by precedent.
+
+**Where two contexts write the same table**, [ADR-024](./adr/0024-asset-ownership-by-column.md)
+settles it by column rather than by table: Administration owns `Asset`'s identity and lifecycle,
+MarketData owns its observed data, and a context that needs a write on the other side calls the
+owner's use case. `SystemLog` and `AuditLog` are declared infrastructure — any context may write
+them — not shared kernel.
 
 ```ruby
 # Writes: events
@@ -164,8 +172,10 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [020](./adr/0020-internal-error-tracker.md) | An internal error tracker, because a self-hoster's 500 is lost today | Accepted 2026-08-28 |
 | [021](./adr/0021-one-definition-of-the-day-change.md) | One definition of the day change, computed from our own closes | Accepted 2026-08-29 |
 | [022](./adr/0022-github-as-the-system-of-record.md) | GitHub is the system of record for outstanding work | Accepted 2026-08-29 · retires the sprint protocol |
+| [023](./adr/0023-a-missing-rate-absents-the-figure.md) | A missing exchange rate absents the figure, never fabricates one | Accepted 2026-08-30 |
+| [024](./adr/0024-asset-ownership-by-column.md) | `Asset` is owned by column: Administration lists it, MarketData measures it | Accepted 2026-09-04 · writes the shared-kernel decision 002 deferred |
 
-Nineteen ADRs: **0001, 0002 and 0006–0022**. The gap is explained below.
+Twenty-one ADRs: **0001, 0002 and 0006–0024**. The gap is explained below.
 
 **ADR-018 is the only one that reverses a decision this project had already published.** Design decision D23 recommended *against* building TOTP, and it was right for the
 audience it was written for: one person, who could put Cloudflare Access in front of his own tunnel.

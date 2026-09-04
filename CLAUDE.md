@@ -133,6 +133,8 @@ Shared infrastructure uses Zeitwerk collapse — no namespace prefix:
 
 Current customer/supplier pair: **Trading → MarketData** (Trading reads, MarketData does not read Trading). Other pairs may adopt the pattern via additional ADRs when needed.
 
+Where two contexts write the same table, [ADR-024](docs/architecture/adr/0024-asset-ownership-by-column.md) settles it **by column**: Administration owns `Asset`'s identity and lifecycle (`symbol`, `name`, `asset_type`, `currency`, `country`, `exchange`, `sector`, `logo_url`, `sync_status`, `provider_symbols`, `former_symbols`) and publishes `Administration::Events::AssetCreated` / `AssetDeleted`; MarketData and the sync jobs own the observed data (`current_price`, `volume`, `market_cap`, `data_source`, `last_synced_at`, `yield_rate`, …) and publish `AssetPriceUpdated` / `AssetFundamentalsUpdated`. A context needing a write across that seam calls the owner's use case (`Administration::UseCases::Assets::EnsureListed`). Reads of `Asset` stay shared. `SystemLog` and `AuditLog` are infrastructure, not shared kernel — any context may write them.
+
 ```ruby
 # Writes: events (unchanged)
 EventBus.subscribe(MarketData::Events::AssetPriceUpdated, Alerts::Handlers::EvaluateAlertsOnPriceUpdate)
@@ -148,7 +150,8 @@ Key cross-context flows:
 - `MarketData::Events::AssetPriceUpdated` → `Alerts::Handlers::EvaluateAlertsOnPriceUpdate` (write event)
 - `Trading::Events::SplitDetected` → `Trading::Handlers::AdjustPositionsOnSplit` (write event)
 - `Identity::Events::FirstAdminCreated` → `Identity::Handlers::CreatePortfolioOnRegistration` (write event) — public registration is gone; the single account is created by the Setup Wizard
-- `MarketData::Queries::*` consumed by Trading (read API per ADR-002)
+- `Administration::Events::AssetCreated` → `MarketData::Handlers::SyncAssetOnCreation` (write event, ADR-024)
+- `MarketData::Queries::*` consumed by Trading and Alerts, `Notifications::Queries::AlreadySent` consumed by Trading and MarketData (read API per ADR-002)
 
 ### Use Case Base Classes
 

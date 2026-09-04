@@ -81,7 +81,7 @@ Otherwise → `SimpleUseCase`.
 
 ## Cross-context communication (ADR-002)
 
-Writes that cross contexts flow exclusively through domain events. Reads follow the customer/supplier pattern — the downstream context (Trading today) calls the supplier's (MarketData's) public read API (`Queries::*`, marked `Domain::*` services, or use cases), never the supplier's ActiveRecord models or gateways. See [ADR-002](adr/0002-trading-marketdata-boundary.md) for details.
+Writes that cross contexts flow exclusively through domain events. Reads follow the customer/supplier pattern — the downstream context (Trading today) calls the supplier's (MarketData's) public read API (`Queries::*`, marked `Domain::*` services, or use cases), never the supplier's ActiveRecord models or gateways. See [ADR-002](adr/0002-trading-marketdata-boundary.md) for details, and [ADR-024](adr/0024-asset-ownership-by-column.md) for the one table two contexts write: `Asset` is owned by column, and a write on the other side of that seam calls the owner's use case.
 
 ---
 

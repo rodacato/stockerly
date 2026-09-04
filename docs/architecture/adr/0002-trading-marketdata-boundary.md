@@ -194,3 +194,24 @@ must be dated should not have a live-refresh fallback behind it.
 The live examples of the read contract are the `MarketData::Queries::*` objects — `CurrentFearGreed`,
 `NotableObservations`, `PriceSeries`, `UpcomingDividends` and the rest.
 
+---
+
+## Amendment, 2026-09-04 — the shared kernel gets its decision, and one phantom citation resolves
+
+Two of this ADR's deferrals were written down on 2026-09-04 as
+[ADR-024](0024-asset-ownership-by-column.md):
+
+- *"Top-level `Asset` and `FxRate` models — future ADR on shared kernel layout."* `Asset` is
+  resolved there by column: Administration owns identity and lifecycle, MarketData owns the
+  observed data. `FxRate` / `FxRateHistory` turned out not to need resolving — they have one
+  writer, MarketData, and this ADR's §Allowed already tolerates Trading's read.
+- *"`Administration::UseCases::Assets::*` publishes `MarketData::Events::Asset*` — waits for
+  ADR-005."* ADR-005 is burned and was never going to arrive. ADR-024 answers it in the opposite
+  direction from the one the audit assumed: the events are catalogue lifecycle facts, so they moved
+  to `Administration::Events::` to join their publisher, rather than the publisher moving to join
+  them.
+
+**This ADR's Gray-zone clause is not retired.** ADR-024 governs *writes* only. Reading `Asset` from
+any context stays sanctioned exactly as written above; the guess in that clause — *"the right fix
+may be a future move of `Asset` into `MarketData::Models::Asset`"* — is the option ADR-024 measured
+at ~35–40 files and rejected.
