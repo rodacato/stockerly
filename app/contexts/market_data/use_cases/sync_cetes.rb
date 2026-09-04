@@ -45,7 +45,6 @@ module MarketData
       # per-position maturity is captured at trade execution and frozen for the
       # life of the position; the abstract asset no longer carries one.
       def upsert_cetes_asset(term, data)
-        asset = Asset.find_or_initialize_by(symbol: "CETES_#{term}D")
         days = term.to_i
         discount_price = Domain::YieldCalculator.discount_price(
           face_value: 10.0,
@@ -53,19 +52,29 @@ module MarketData
           days: days
         )
 
-        asset.update!(
-          name: "CETES #{term} Days",
-          asset_type: :fixed_income,
+        listing(term).update!(
           yield_rate: data[:yield_rate],
           face_value: 10.0,
-          exchange: "Banxico",
-          country: "MX",
           current_price: discount_price,
-          price_updated_at: Time.current,
-          sync_status: :active
+          price_updated_at: Time.current
         )
       rescue ActiveRecord::RecordInvalid
         nil
+      end
+
+      # ADR-024: the catalogue is Administration's, so the row is created by
+      # its owner and this sync writes only the columns Banxico serves.
+      def listing(term)
+        Administration::UseCases::Assets::EnsureListed.call(
+          symbol: "CETES_#{term}D",
+          attributes: {
+            name: "CETES #{term} Days",
+            asset_type: :fixed_income,
+            exchange: "Banxico",
+            country: "MX",
+            currency: "MXN"
+          }
+        )
       end
     end
   end
