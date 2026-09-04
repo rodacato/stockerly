@@ -5,9 +5,8 @@ module EarningsHelper
   }.freeze
 
   def earnings_date_header(date)
-    abbr  = DatetimeEsHelper::WEEKDAYS_ES[date.wday]
-    month = DatetimeEsHelper::MONTHS_ES[date.month - 1]
-    "#{WEEKDAY_LABELS[abbr]} · #{date.day} #{month} #{date.year}"
+    abbr = DatetimeEsHelper::WEEKDAYS_ES[date.wday]
+    "#{WEEKDAY_LABELS[abbr]} · #{l(date, format: :day_month_year_upper)}"
   end
 
   def earnings_period_label(event)

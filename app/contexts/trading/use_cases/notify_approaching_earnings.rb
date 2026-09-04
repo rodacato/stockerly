@@ -38,8 +38,6 @@ module Trading
         count
       end
 
-      MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
-
       private
 
       def users_following(asset)
@@ -57,7 +55,7 @@ module Trading
       end
 
       def format_date_es(date)
-        "#{date.day} #{MONTHS_ES[date.month - 1]}"
+        I18n.l(date, format: :day_month)
       end
 
       def when_phrase_es(date)
