@@ -172,8 +172,7 @@ class DataFreshness
       case market
       when :us then grace_elapsed?(MarketHours.us_minutes_since_open)
       when :bmv then grace_elapsed?(MarketHours.bmv_minutes_since_open)
-      when :us_or_bmv then grace_elapsed?(MarketHours.us_minutes_since_open) ||
-                            grace_elapsed?(MarketHours.bmv_minutes_since_open)
+      when :us_or_bmv then session_underway?(:us) || session_underway?(:bmv)
       else true
       end
     end
