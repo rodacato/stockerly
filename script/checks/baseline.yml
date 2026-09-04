@@ -6,10 +6,12 @@
 # `count` is per file. Exceed it and the run fails.
 
 design-tokens:
-  # #489 counted these; #548 migrated the opacity modifiers around them. The
-  # helpers and the Stimulus controllers hold state colours that never got a
-  # semantic token; the two market charts inline an SVG palette; legal/ and
-  # shared/ carry amber warning boxes older than the token set.
+  # #489 counted these; #548 migrated the opacity modifiers around them and #561
+  # the tail. The helpers and the Stimulus controllers hold state colours that
+  # never got a semantic token; the two market charts inline an SVG palette;
+  # legal/ and shared/ carry amber warning boxes older than the token set.
+  # Three controllers left the tree in #561 because nothing mounted them, taking
+  # onboarding_form_controller.js and selectable_card_controller.js off this list.
   app/helpers/alerts_helper.rb:
     count: 6
   app/helpers/earnings_helper.rb:
@@ -19,10 +21,6 @@ design-tokens:
   app/helpers/notifications_helper.rb:
     count: 1
   app/helpers/price_chart_helper.rb:
-    count: 2
-  app/javascript/controllers/onboarding_form_controller.js:
-    count: 2
-  app/javascript/controllers/selectable_card_controller.js:
     count: 2
   app/javascript/controllers/ticker_search_controller.js:
     count: 4
