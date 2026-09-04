@@ -80,6 +80,23 @@ RSpec.describe MarketData::UseCases::SyncPriceHistory do
     end
   end
 
+  describe "a provider that serves less history than was asked for" do
+    let(:crypto) { create(:asset, symbol: "BTC", asset_type: :crypto) }
+
+    before { create(:integration, provider_name: "CoinGecko", api_key_encrypted: "key") }
+
+    it "asks CoinGecko only as far back as its public tier answers" do
+      stub = stub_request(:get, %r{api\.coingecko\.com/api/v3/coins/bitcoin/market_chart})
+               .with(query: hash_including("days" => "365"))
+               .to_return(status: 200, headers: { "Content-Type" => "application/json" },
+                          body: { prices: [ [ 1.day.ago.to_i * 1000, 60_000.0 ] ] }.to_json)
+
+      described_class.call(asset: crypto, from: 10.years.ago.to_date)
+
+      expect(stub).to have_been_requested
+    end
+  end
+
   describe "when no source serves the asset" do
     it "fails rather than reporting an empty success" do
       allow(DataSourceRegistry).to receive(:for_capability).and_return([])

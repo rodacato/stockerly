@@ -12,6 +12,12 @@ module MarketData
         const_defined?(:PROVIDER) ? const_get(:PROVIDER) : name
       end
 
+      # How far back this provider will serve daily history, in days, or nil for
+      # no limit of its own. A caller that asks past it does not get a shorter
+      # answer — CoinGecko's public tier refuses the whole request with a 401 —
+      # so the limit has to be known before the call, not discovered by it.
+      def self.max_history_days = nil
+
       delegate :source_id, to: :class
 
       def fetch_price(_symbol)

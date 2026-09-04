@@ -44,9 +44,19 @@ module MarketData
       # An unconfigured provider is skipped rather than raised, so a missing key
       # degrades to the next source instead of failing the call outright.
       def attempt(klass, asset, from, to)
-        klass.new.fetch_historical(symbol_for(klass, asset), from, to)
+        klass.new.fetch_historical(symbol_for(klass, asset), reachable_from(klass, from, to), to)
       rescue MarketData::Gateways::ApiKeyNotConfiguredError
         nil
+      end
+
+      # Ask each provider only as far back as it serves. One caller's range
+      # cannot be right for all of them: the same request that gets ten years
+      # from Alpaca gets a 401 and no crypto at all from CoinGecko (D71).
+      def reachable_from(klass, from, to)
+        limit = klass.max_history_days
+        return from if limit.nil?
+
+        [ from, to - limit.days ].max
       end
 
       # The BMV addresses an issuer differently from Yahoo, and the asset

@@ -20,6 +20,13 @@ module MarketData
     QUOTE_CURRENCY = "usd".freeze
     TIMEOUT  = 5
 
+    # Probed 2026-09-04: days=3650 answers 401 error_code 10012, "Public API
+    # users are limited to querying historical data within the past 365 days".
+    # A refusal, not a truncation, so asking for more returns nothing at all.
+    MAX_HISTORY_DAYS = 365
+
+    def self.max_history_days = MAX_HISTORY_DAYS
+
     # CoinGecko uses lowercase IDs, not ticker symbols.
     SYMBOL_TO_ID = {
       "BTC" => "bitcoin",

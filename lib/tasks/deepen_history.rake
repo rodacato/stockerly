@@ -2,7 +2,7 @@
 # MarketData::UseCases::SyncPriceHistory, the same action the routine backfill
 # job runs — this only chooses the range and never rewrites. See ADR-0024.
 module DeepenHistory
-  YEARS = 5
+  YEARS = 10
   PACING = 2.seconds
 
   module_function
@@ -34,7 +34,7 @@ end
 namespace :data do
   # `years` is a floor, not a window: Yahoo's gateway can only express
   # 5d/1mo/3mo/1y/2y/max, so past two years it returns everything it has.
-  desc "Deepen one symbol's daily history — data:deepen[NVDA,5]"
+  desc "Deepen one symbol's daily history — data:deepen[NVDA,10]"
   task :deepen, [ :symbol, :years ] => :environment do |_task, args|
     abort "Usage: bin/rails 'data:deepen[SYMBOL,YEARS]'" if args[:symbol].blank?
 
@@ -46,7 +46,7 @@ namespace :data do
     DeepenHistory.call(asset, years)
   end
 
-  desc "Deepen every active asset, paced — data:deepen_all[5]"
+  desc "Deepen every active asset, paced — data:deepen_all[10]"
   task :deepen_all, [ :years ] => :environment do |_task, args|
     years = (args[:years] || DeepenHistory::YEARS).to_i
     assets = Asset.where(sync_status: :active).order(:symbol)

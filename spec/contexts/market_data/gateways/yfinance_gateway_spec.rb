@@ -86,14 +86,14 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
       gateway.fetch_historical("WALMEX.MX", 200.days.ago.to_date, Date.current)
     end
 
-    it "keeps the backfill window bounded instead of asking for everything" do
+    it "asks for everything when the backfill window passes what the ladder can say" do
       stub_bridge([])
-      # Asserted against the ladder rather than a literal period, so a future
-      # change to DAYS that falls through to "max" fails here.
-      expect(PythonRunner).to receive(:call) do |_script, _command, _symbol, period|
-        expect(period).not_to eq("max")
-        Dry::Monads::Success([])
-      end
+      # This used to assert the opposite. The ladder tops out at 2y, so once
+      # DAYS became ten years "max" is the honest answer rather than a window
+      # silently truncated to a fifth of what was asked for. Still asserted
+      # through DAYS, so a change to it is still visible here.
+      expect(PythonRunner).to receive(:call).with("yahoo.py", "history", "WALMEX.MX", "max")
+        .and_return(Dry::Monads::Success([]))
 
       gateway.fetch_historical("WALMEX.MX", BackfillPriceHistoryJob::DAYS.days.ago.to_date, Date.current)
     end
