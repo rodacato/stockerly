@@ -1,12 +1,30 @@
+inherit_from: .rubocop_todo.yml
+
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-# Omakase is formatting only — 45 of RuboCop's 791 cops. These two departments
-# catch defects rather than opine on style, so they run alongside it.
+# Omakase is formatting only. Every department below catches defects rather than
+# opining on style, which is the line this file draws — 230 of RuboCop's 796 cops.
+#
+# Turning on Rails, Performance and Migration found 250 offenses in 141 files.
+# They are frozen in .rubocop_todo.yml so new code is held to the rule while the
+# backlog is burned down. That file is debt to shrink, not a permanent exemption:
+# a cop that stays in it forever should be disabled here, with the reason.
 Lint:
   Enabled: true
 Security:
   Enabled: true
+Rails:
+  Enabled: true
+Performance:
+  Enabled: true
+Migration:
+  Enabled: true
+
+# A new defect-catching cop should arrive enabled rather than wait to be noticed.
+# The cost is that a rubocop bump can fail CI — which is where it should fail.
+AllCops:
+  NewCops: enable
 
 # The gateway base classes define no initialize, so super would only reach
 # Object's. The adapters are not skipping parent state; there is none.
