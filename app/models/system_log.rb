@@ -6,6 +6,6 @@ class SystemLog < ApplicationRecord
 
   scope :recent,     -> { order(created_at: :desc) }
   scope :errors,     -> { where(severity: :error) }
-  scope :last_24h,   -> { where("created_at >= ?", 24.hours.ago) }
+  scope :last_24h,   -> { where(created_at: 24.hours.ago..) }
   scope :by_module,  ->(mod) { where(module_name: mod) if mod.present? }
 end

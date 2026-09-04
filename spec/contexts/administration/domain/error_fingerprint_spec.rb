@@ -28,7 +28,7 @@ RSpec.describe Administration::Domain::ErrorFingerprint do
     it "leads with the application frame, not the gem frame above it" do
       backtrace = [
         "#{Gem.dir}/gems/activerecord-8.1.3.1/lib/active_record/relation.rb:10:in `find'",
-        "#{Rails.root}/app/models/thing.rb:12:in `call'"
+        "#{Rails.root.join("app/models/thing.rb:12:in `call'")}"
       ]
 
       expect(described_class.clean(backtrace).first).to include("app/models/thing.rb:12")

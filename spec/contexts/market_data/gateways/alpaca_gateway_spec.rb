@@ -74,7 +74,7 @@ RSpec.describe MarketData::Gateways::AlpacaGateway do
 
       result = gateway.fetch_daily_bars(%w[AAPL], "2026-08-17", "2026-08-18")
 
-      expect(result.value!["AAPL"].map { |b| b[:date] })
+      expect(result.value!["AAPL"].pluck(:date))
         .to eq([ Date.new(2026, 8, 17), Date.new(2026, 8, 18) ])
     end
 
@@ -153,7 +153,7 @@ RSpec.describe MarketData::Gateways::AlpacaGateway do
         forward: [ { "ex_date" => "2024-06-10", "new_rate" => 10, "old_rate" => 1 } ],
         reverse: [ { "ex_date" => "2021-03-01", "new_rate" => 1, "old_rate" => 20 } ])
 
-      expect(gateway.fetch_splits("XYZ").value!.map { |s| s[:date] })
+      expect(gateway.fetch_splits("XYZ").value!.pluck(:date))
         .to eq([ Date.new(2021, 3, 1), Date.new(2024, 6, 10) ])
     end
 

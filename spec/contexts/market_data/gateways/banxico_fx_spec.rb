@@ -70,7 +70,7 @@ RSpec.describe MarketData::Gateways::BanxicoGateway, "FIX rates" do
 
     result = gateway.fetch_fx_fixes(from: from, to: to)
 
-    expect(result.value!.map { |f| f[:date] }).to eq([ Date.new(2026, 5, 11) ])
+    expect(result.value!.pluck(:date)).to eq([ Date.new(2026, 5, 11) ])
   end
 
   it "reports a rate limit as its own failure so a retry can back off" do

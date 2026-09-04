@@ -102,7 +102,7 @@ RSpec.describe MarketData::Gateways::DataBursatilGateway do
 
       bars = gateway.fetch_intraday("GFNORTEO.MX", date: Date.new(2026, 8, 25)).value!
 
-      expect(bars.map { |bar| bar[:price] }).to eq([ BigDecimal("186.75"), BigDecimal("187.5") ])
+      expect(bars.pluck(:price)).to eq([ BigDecimal("186.75"), BigDecimal("187.5") ])
     end
 
     it "passes the interval the caller asked for" do

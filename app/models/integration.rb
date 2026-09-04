@@ -55,7 +55,7 @@ class Integration < ApplicationRecord
 
   def masked_api_key
     key = active_api_key
-    return nil unless key.present?
+    return nil if key.blank?
     "••••••••••••#{key.last(4)}"
   end
 

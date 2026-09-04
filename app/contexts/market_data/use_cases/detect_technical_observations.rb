@@ -125,8 +125,7 @@ module MarketData
       def persist_if_fresh(asset, type, observed_at, snapshot)
         recent_exists = asset.technical_observations
                              .where(observation_type: type)
-                             .where(observed_at: DEDUP_WINDOW_DAYS.days.ago..)
-                             .exists?
+                             .exists?(observed_at: DEDUP_WINDOW_DAYS.days.ago..)
         return false if recent_exists
 
         TechnicalObservation.create!(

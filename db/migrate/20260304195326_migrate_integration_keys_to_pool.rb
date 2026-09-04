@@ -1,7 +1,7 @@
 class MigrateIntegrationKeysToPool < ActiveRecord::Migration[8.1]
   def up
     Integration.where.not(api_key_encrypted: nil).find_each do |integration|
-      next if integration.api_key_pools.where(is_default: true).exists?
+      next if integration.api_key_pools.exists?(is_default: true)
 
       legacy_key = integration.api_key_encrypted
       next if legacy_key.blank?

@@ -75,7 +75,7 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
       # 15 monotonically declining closes (yesterday: all losses → RSI≈0),
       # then a strong rebound on the last day → today's window includes
       # one big gain → RSI crosses back above 30.
-      declining = (1..15).map { |i| 100.0 - i * 4 }
+      declining = (1..15).map { |i| 100.0 - (i * 4) }
       rebound = 80.0
       seed_history(asset, declining + [ rebound ])
 

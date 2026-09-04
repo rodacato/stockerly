@@ -42,7 +42,7 @@ RSpec.describe Trading::UseCases::AssembleConsolidado do
       snapshot(5, 1_100)
 
       # MAX would otherwise reach back to the older snapshot.
-      expect(data(period: "MAX")[:series].map { |p| p[:date] }).to all(be >= 10.days.ago.to_date)
+      expect(data(period: "MAX")[:series].pluck(:date)).to all(be >= 10.days.ago.to_date)
     end
   end
 

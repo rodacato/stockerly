@@ -36,8 +36,8 @@ module Trading
 
         {
           held: eligible.count { |id| held.include?(id) },
-          followed: eligible.count { |id| !held.include?(id) && followed.include?(id) },
-          tracked: eligible.count { |id| !held.include?(id) && !followed.include?(id) }
+          followed: eligible.count { |id| held.exclude?(id) && followed.include?(id) },
+          tracked: eligible.count { |id| held.exclude?(id) && followed.exclude?(id) }
         }
       end
     end

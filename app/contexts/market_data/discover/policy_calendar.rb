@@ -9,7 +9,7 @@ module MarketData
     class PolicyCalendar
       Event = Data.define(:date, :source, :title, :tentative)
 
-      PATH = Rails.root.join("config", "discover_calendar.yml")
+      PATH = Rails.root.join("config/discover_calendar.yml")
 
       class << self
         def upcoming(limit: 3, today: Date.current)

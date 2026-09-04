@@ -19,7 +19,7 @@ module WebmockHelpers
   end
 
   def stub_coingecko_historical(coin_id: "bitcoin", days: 7)
-    prices = days.times.map do |i|
+    prices = Array.new(days) do |i|
       timestamp_ms = (days - i).days.ago.to_i * 1000
       [ timestamp_ms, 60_000.0 + (i * 500) ]
     end
@@ -538,7 +538,7 @@ module WebmockHelpers
   end
 
   def stub_finnhub_candles(symbol, days: 7)
-    timestamps = days.times.map { |i| (days - i).days.ago.to_i }
+    timestamps = Array.new(days) { |i| (days - i).days.ago.to_i }
     stub_request(:get, "https://finnhub.io/api/v1/stock/candle")
       .with(query: hash_including("symbol" => symbol))
       .to_return(
@@ -546,11 +546,11 @@ module WebmockHelpers
         headers: { "Content-Type" => "application/json" },
         body: {
           s: "ok",
-          c: days.times.map { |i| 183.0 + i },
-          o: days.times.map { |i| 180.0 + i },
-          h: days.times.map { |i| 185.0 + i },
-          l: days.times.map { |i| 178.0 + i },
-          v: days.times.map { |i| 50_000_000 + (i * 1_000_000) },
+          c: Array.new(days) { |i| 183.0 + i },
+          o: Array.new(days) { |i| 180.0 + i },
+          h: Array.new(days) { |i| 185.0 + i },
+          l: Array.new(days) { |i| 178.0 + i },
+          v: Array.new(days) { |i| 50_000_000 + (i * 1_000_000) },
           t: timestamps
         }.to_json
       )
@@ -612,7 +612,7 @@ module WebmockHelpers
   end
 
   def stub_finnhub_news(symbol, count: 3)
-    articles = count.times.map do |i|
+    articles = Array.new(count) do |i|
       {
         "category" => "company news",
         "datetime" => 1.day.ago.to_i + (i * 3600),
@@ -641,13 +641,13 @@ module WebmockHelpers
   end
 
   def stub_finnhub_earnings(symbol, count: 2)
-    events = count.times.map do |i|
+    events = Array.new(count) do |i|
       {
         "date" => (Date.current + (i * 90).days).to_s,
         "epsActual" => i.zero? ? 1.52 : nil,
         "epsEstimate" => 1.45 + (i * 0.1),
         "hour" => i.zero? ? "bmo" : "amc",
-        "quarter" => ((Date.current.month / 3.0).ceil + i) % 4 + 1,
+        "quarter" => (((Date.current.month / 3.0).ceil + i) % 4) + 1,
         "revenueActual" => i.zero? ? 94_836_000_000 : nil,
         "revenueEstimate" => 92_000_000_000,
         "symbol" => symbol,
@@ -679,7 +679,7 @@ module WebmockHelpers
   end
 
   def stub_yfinance_history(symbol, days: 7, close: 180.0)
-    bars = days.times.map do |i|
+    bars = Array.new(days) do |i|
       { "date" => (days - i).days.ago.to_date.to_s, "open" => close - 1, "high" => close + 1,
         "low" => close - 2, "close" => close + i, "volume" => 1_000 }
     end

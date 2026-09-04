@@ -88,7 +88,7 @@ module MarketData
       def role_for(sources, provider)
         peers = sources.flat_map { |source| peers_for(source) }
 
-        return :only    if peers.any? { |names| names == [ provider ] }
+        return :only    if peers.any?([ provider ])
         return :primary if peers.any? { |names| names.first == provider }
 
         :fallback

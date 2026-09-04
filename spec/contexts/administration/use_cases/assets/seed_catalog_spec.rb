@@ -6,7 +6,7 @@ RSpec.describe Administration::UseCases::Assets::SeedCatalog do
   it "creates every asset the catalogue declares" do
     expect { described_class.call }.to change(Asset, :count).by(catalog.seedable.size)
 
-    expect(Asset.pluck(:symbol)).to match_array(catalog.seedable.map { |a| a[:symbol] })
+    expect(Asset.pluck(:symbol)).to match_array(catalog.seedable.pluck(:symbol))
   end
 
   it "is idempotent — a second run creates nothing" do

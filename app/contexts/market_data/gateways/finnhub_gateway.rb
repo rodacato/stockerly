@@ -146,7 +146,7 @@ module MarketData
       return Success([]) if results.blank?
 
       articles = results.filter_map do |item|
-        next unless item["headline"].present?
+        next if item["headline"].blank?
 
         {
           title: item["headline"],
@@ -167,7 +167,7 @@ module MarketData
       return Success([]) if results.blank?
 
       events = results.filter_map do |item|
-        next unless item["date"].present?
+        next if item["date"].blank?
 
         {
           report_date: Date.parse(item["date"]),

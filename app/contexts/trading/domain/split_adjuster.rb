@@ -34,7 +34,7 @@ module Trading
       def adjust_trades!
         Trade.where(asset: @split.asset)
           .kept
-          .where("executed_at < ?", @split.ex_date)
+          .where(executed_at: ...@split.ex_date)
           .find_each do |trade|
             trade.update!(
               shares: trade.shares * @ratio,

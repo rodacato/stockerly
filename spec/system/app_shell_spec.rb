@@ -23,14 +23,14 @@ RSpec.describe "App shell", type: :system do
   it "marks only the current destination" do
     visit assets_path
 
-    current = page.all("a[aria-current='page']").map { |a| a[:href] }.uniq
+    current = page.all("a[aria-current='page']").pluck(:href).uniq
     expect(current).to eq([ assets_path ])
   end
 
   it "keeps a tab lit across the screens it owns" do
     visit positions_path
 
-    expect(page.all("a[aria-current='page']").map { |a| a[:href] }.uniq).to eq([ assets_path ])
+    expect(page.all("a[aria-current='page']").pluck(:href).uniq).to eq([ assets_path ])
   end
 
   it "labels the bell with the unread count so it is not just an icon" do

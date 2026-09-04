@@ -46,7 +46,7 @@ class SessionsController < ApplicationController
   end
 
   def publish_login_failed
-    return unless params[:email].present?
+    return if params[:email].blank?
 
     EventBus.publish(Identity::Events::UserLoginFailed.new(email: params[:email].to_s, ip_address: request.remote_ip, user_agent: request.user_agent.to_s))
   end

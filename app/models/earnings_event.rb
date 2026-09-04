@@ -7,9 +7,9 @@ class EarningsEvent < ApplicationRecord
   validates :timing,      presence: true
 
   scope :for_month, ->(date) {
-    where(report_date: date.beginning_of_month..date.end_of_month)
+    where(report_date: date.all_month)
   }
-  scope :upcoming, -> { where("report_date >= ?", Date.current).order(:report_date) }
+  scope :upcoming, -> { where(report_date: Date.current..).order(:report_date) }
   scope :reported, -> { where.not(actual_eps: nil) }
   scope :recent_window, ->(days = 7) {
     where(report_date: (Date.current - days.days)..(Date.current - 1)).order(report_date: :desc)

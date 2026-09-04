@@ -30,7 +30,7 @@ module MarketData
                    .where(asset_id: ids, interval: interval)
 
         AssetPriceHistory.from(ranked, :asset_price_histories)
-                         .where("rn <= ?", points)
+                         .where(rn: ..points)
                          .order(:asset_id, :date)
                          .pluck(:asset_id, :close)
                          .group_by(&:first)

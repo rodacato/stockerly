@@ -82,7 +82,7 @@ RSpec.describe Trading::Domain::PeriodReturnsCalculator do
     it "orders by date ascending" do
       data = calculator.chart_data(period: "1M")
 
-      dates = data.map { |d| d[:date] }
+      dates = data.pluck(:date)
       expect(dates).to eq(dates.sort)
     end
   end

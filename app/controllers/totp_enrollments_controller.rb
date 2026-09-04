@@ -11,6 +11,13 @@ class TotpEnrollmentsController < AuthenticatedController
   before_action :redirect_if_enrolled, only: [ :new, :create ]
   before_action :require_enrolled, only: :regenerate
 
+  # Shown once. Reloading after the codes leave the session sends the reader to
+  # Ajustes, which is where a fresh set can be minted — the honest answer, since
+  # these cannot be shown again.
+  def show
+    @codes = session.delete(:fresh_recovery_codes)
+    redirect_to @return_path, alert: t(".ya_no_disponibles") if @codes.blank?
+  end
   def new
     @enrollment = Identity::UseCases::BeginTotpEnrollment.call(user: current_user)
   end
@@ -31,13 +38,6 @@ class TotpEnrollmentsController < AuthenticatedController
     end
   end
 
-  # Shown once. Reloading after the codes leave the session sends the reader to
-  # Ajustes, which is where a fresh set can be minted — the honest answer, since
-  # these cannot be shown again.
-  def show
-    @codes = session.delete(:fresh_recovery_codes)
-    redirect_to @return_path, alert: t(".ya_no_disponibles") if @codes.blank?
-  end
 
   def regenerate
     session[:fresh_recovery_codes] = Identity::UseCases::RegenerateRecoveryCodes.call(user: current_user)

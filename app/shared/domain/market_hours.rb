@@ -61,7 +61,7 @@ module MarketHours
     now = Time.current.in_time_zone(zone)
     return false if now.saturday? || now.sunday?
 
-    session.cover?(now.hour * 60 + now.min)
+    session.cover?((now.hour * 60) + now.min)
   end
   private_class_method :session_open?
 
@@ -69,7 +69,7 @@ module MarketHours
     return nil unless session_open?(zone, session)
 
     now = Time.current.in_time_zone(zone)
-    (now.hour * 60 + now.min) - session.first
+    ((now.hour * 60) + now.min) - session.first
   end
   private_class_method :minutes_since_open
 end

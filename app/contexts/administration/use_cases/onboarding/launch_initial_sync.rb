@@ -9,8 +9,8 @@ module Administration
         def call(launch_sync: false)
           return { launched: false } unless launch_sync
 
-          SyncPriorityAssetsJob.perform_later("stock", "high") if Asset.where(asset_type: :stock).exists?
-          SyncPriorityAssetsJob.perform_later("crypto", "high") if Asset.where(asset_type: :crypto).exists?
+          SyncPriorityAssetsJob.perform_later("stock", "high") if Asset.exists?(asset_type: :stock)
+          SyncPriorityAssetsJob.perform_later("crypto", "high") if Asset.exists?(asset_type: :crypto)
           RefreshFxRatesJob.perform_later
           SyncMarketIndicesJob.perform_later
 

@@ -50,7 +50,7 @@ RSpec.describe MarketData::Domain::IndicatorSignals do
 
     it "omits the row entirely when no average was computed" do
       r = build(:technical_reading, readings: { "close" => 150.0, "rsi" => 55.0 })
-      expect(described_class.for(r).map { |s| s[:indicator] }).not_to include(:moving_average)
+      expect(described_class.for(r).pluck(:indicator)).not_to include(:moving_average)
     end
   end
 
@@ -72,7 +72,7 @@ RSpec.describe MarketData::Domain::IndicatorSignals do
 
     it "omits the row when the bands could not be computed" do
       r = build(:technical_reading, readings: { "close" => 150.0, "rsi" => 55.0 })
-      expect(described_class.for(r).map { |s| s[:indicator] }).not_to include(:bollinger)
+      expect(described_class.for(r).pluck(:indicator)).not_to include(:bollinger)
     end
   end
 end

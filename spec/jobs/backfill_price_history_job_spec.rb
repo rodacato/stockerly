@@ -11,7 +11,7 @@ RSpec.describe BackfillPriceHistoryJob, type: :job do
       let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock) }
 
       before do
-        bars = 7.times.map { |i| alpaca_bar(date: (7 - i).days.ago.to_date.to_s, close: 180.0 + i) }
+        bars = Array.new(7) { |i| alpaca_bar(date: (7 - i).days.ago.to_date.to_s, close: 180.0 + i) }
         stub_alpaca_bars({ "AAPL" => bars })
       end
 
