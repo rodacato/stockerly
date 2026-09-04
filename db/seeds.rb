@@ -1,6 +1,6 @@
 puts "Seeding database..."
 
-# --- Market holidays (BMV + Banxico, used by date-based alert rules) ---
+# --- Market holidays (BMV + Banxico + NYSE/NASDAQ) ---
 load Rails.root.join("db/seeds/market_holidays.rb")
 
 # --- Site Configuration ---
