@@ -189,4 +189,138 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
       end
     end
   end
+
+  context "characterisation of the arithmetic behind each factor" do
+    let(:sawtooth) { (1..40).map { |i| 100.0 + (i * 0.5) + (i.even? ? 1.5 : -1.5) } }
+    let(:linear_up) { (1..40).map { |i| 100.0 + (i * 1.5) } }
+    let(:gentle_up) { (1..40).map { |i| 100.0 + (i * 0.2) } }
+    let(:gentle_down) { (1..40).map { |i| 200.0 - (i * 0.2) } }
+    let(:steep_down) { (1..40).map { |i| 200.0 - (i * 1.5) } }
+    let(:accelerating) { (1..40).map { |i| 100.0 + (i * 0.5) + (i > 25 ? (i - 25) * 3.0 : 0) } }
+    let(:spiking_volumes) { Array.new(35, 1_000_000) + Array.new(5, 3_000_000) }
+
+    describe "compute_ema_series" do
+      it "seeds on the mean of the first period values, which a seed taken from values.first would not match" do
+        series = described_class.send(:compute_ema_series, (1..15).map(&:to_f), 5)
+
+        expect(series.size).to eq(11)
+        series.zip((3..13).map(&:to_f)).each do |got, expected|
+          expect(got).to be_within(1e-9).of(expected)
+        end
+      end
+
+      it "returns the seed alone when the series is exactly one period long, catching an off-by-one in the guard" do
+        expect(described_class.send(:compute_ema_series, (1..12).map(&:to_f), 12)).to eq([ 6.5 ])
+      end
+
+      it "returns an empty array one value short of the period, not the nil its callers would crash on" do
+        expect(described_class.send(:compute_ema_series, (1..11).map(&:to_f), 12)).to eq([])
+      end
+
+      it "emits one value per input past the seed window, which is what MACD's alignment offset assumes" do
+        expect(described_class.send(:compute_ema_series, (1..40).map(&:to_f), 26).size).to eq(15)
+        expect(described_class.send(:compute_ema_series, (1..40).map(&:to_f), 12).size).to eq(29)
+      end
+    end
+
+    describe "rsi_14" do
+      it "divides average gain by average loss when the window holds both, the branch no other spec reaches" do
+        expect(described_class.send(:rsi_14, sawtooth)).to eq(58.33)
+      end
+
+      it "keeps the three early returns that a single general formula would turn into NaN or Infinity" do
+        expect(described_class.send(:rsi_14, Array.new(20, 150.0))).to eq(50.0)
+        expect(described_class.send(:rsi_14, (1..20).map { |i| 100.0 + i })).to eq(100.0)
+        expect(described_class.send(:rsi_14, (1..20).map { |i| 200.0 - i })).to eq(0.0)
+      end
+
+      it "reads only the last 15 closes, so history before the window cannot move the answer" do
+        expect(described_class.send(:rsi_14, Array.new(25, 1.0) + sawtooth)).to eq(58.33)
+      end
+    end
+
+    describe "macd_signal" do
+      it "pins the histogram-to-score scale on a series whose histogram is not zero" do
+        expect(described_class.send(:macd_signal, sawtooth)).to be_within(1e-9).of(50.436997288702344)
+      end
+
+      it "pins the exact value the accelerating-uptrend example only bounds at >= 50" do
+        expect(described_class.send(:macd_signal, accelerating)).to be_within(1e-9).of(68.29558130666342)
+      end
+
+      it "lands on the midpoint for a linear series, which a wrong EMA alignment offset would shift" do
+        expect(described_class.send(:macd_signal, linear_up)).to be_within(1e-9).of(50.0)
+      end
+    end
+
+    describe "ema_crossover" do
+      it "pins the spread-to-score scale either side of the midpoint, where the clamp hides it today" do
+        expect(described_class.send(:ema_crossover, gentle_up)).to be_within(1e-9).of(61.111111111111114)
+        expect(described_class.send(:ema_crossover, gentle_down)).to be_within(1e-9).of(43.75)
+      end
+
+      it "pins the unsaturated value the sawtooth produces" do
+        expect(described_class.send(:ema_crossover, sawtooth)).to be_within(1e-9).of(75.47521066039579)
+      end
+
+      it "records that the strong uptrend the suite asserts on sits at the clamp ceiling, not in the linear region" do
+        expect(described_class.send(:ema_crossover, linear_up)).to eq(100.0)
+      end
+    end
+
+    describe "volume_trend" do
+      it "inverts the ratio when momentum is negative, a 100-point swing on identical volumes" do
+        expect(described_class.send(:volume_trend, spiking_volumes, 7.02)).to eq(100.0)
+        expect(described_class.send(:volume_trend, spiking_volumes, -6.98)).to eq(0.0)
+      end
+
+      it "scores steady volume at a third of the range, not at a neutral midpoint" do
+        expect(described_class.send(:volume_trend, Array.new(40, 1_000_000), 5.0)).to be_within(1e-9).of(33.333333333333336)
+      end
+
+      it "answers the midpoint instead of dividing by a zero 20-day average" do
+        expect(described_class.send(:volume_trend, Array.new(40, 0), 5.0)).to eq(50.0)
+      end
+    end
+
+    describe "blend_5_factor" do
+      it "renormalises over the weights actually present instead of over a fixed 1.0" do
+        expect(described_class.send(:blend_5_factor, 70.0, 5.0, nil, nil, nil)).to eq(67)
+      end
+
+      it "pins the five-factor blend that the 0.6/0.4 example name describes but never computes" do
+        expect(described_class.send(:blend_5_factor, 70.0, 5.0, 60.0, 40.0, 55.0)).to eq(60)
+      end
+
+      it "weights macd above volume and the ema crossover, a difference a uniform weight would flatten" do
+        expect(described_class.send(:blend_5_factor, 0.0, -20.0, 100.0, nil, nil)).to eq(29)
+        expect(described_class.send(:blend_5_factor, 0.0, -20.0, nil, 100.0, nil)).to eq(23)
+        expect(described_class.send(:blend_5_factor, 0.0, -20.0, nil, nil, 100.0)).to eq(23)
+      end
+    end
+
+    describe ".calculate" do
+      it "pins the whole reading for a series that saturates no factor" do
+        result = described_class.calculate(closes: sawtooth, volumes: Array.new(40, 1_000_000))
+
+        expect(result).to eq(
+          score: 57,
+          label: :neutral,
+          direction: :upward,
+          factors: { rsi: 58.3, momentum: 64.1, macd: 50.4, volume_trend: 33.3, ema_crossover: 75.5 }
+        )
+      end
+
+      it "pins the bearish reading, where the same volume spike counts against the score" do
+        result = described_class.calculate(closes: steep_down, volumes: spiking_volumes)
+
+        expect(result).to eq(
+          score: 17,
+          label: :low_score,
+          direction: :downward,
+          factors: { rsi: 0.0, momentum: 32.6, macd: 50.0, volume_trend: 0.0, ema_crossover: 0.0 }
+        )
+      end
+    end
+  end
 end
