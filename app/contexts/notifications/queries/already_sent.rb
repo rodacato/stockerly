@@ -6,11 +6,11 @@ module Notifications
     # querying the `Notification` model directly.
     class AlreadySent
       def self.call(user:, notifiable:, notification_type:)
-        Notification.where(
+        Notification.exists?(
           user: user,
           notifiable: notifiable,
           notification_type: notification_type
-        ).exists?
+        )
       end
 
       # The same question asked for a whole set at once, so a caller iterating
