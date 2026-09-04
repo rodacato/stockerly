@@ -225,7 +225,7 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
 
     describe "rsi_14" do
       it "divides average gain by average loss when the window holds both, the branch no other spec reaches" do
-        expect(described_class.send(:rsi_14, sawtooth)).to eq(58.33)
+        expect(described_class.send(:rsi_14, sawtooth)).to eq(60.4)
       end
 
       it "keeps the three early returns that a single general formula would turn into NaN or Infinity" do
@@ -234,8 +234,12 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
         expect(described_class.send(:rsi_14, (1..20).map { |i| 200.0 - i })).to eq(0.0)
       end
 
-      it "reads only the last 15 closes, so history before the window cannot move the answer" do
-        expect(described_class.send(:rsi_14, Array.new(25, 1.0) + sawtooth)).to eq(58.33)
+      it "is the one the rest of the app reads, so the score and the detail cannot disagree" do
+        expect(described_class.send(:rsi_14, sawtooth)).to eq(MarketData::Domain::TechnicalIndicators.rsi(sawtooth))
+      end
+
+      it "smooths across the series, so closes before the last window still move the answer" do
+        expect(described_class.send(:rsi_14, Array.new(25, 1.0) + sawtooth)).to eq(65.09)
       end
     end
 
@@ -314,7 +318,7 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
           score: 57,
           label: :neutral,
           direction: :upward,
-          factors: { rsi: 58.3, momentum: 64.1, macd: 50.4, volume_trend: 33.3, ema_crossover: 75.5 }
+          factors: { rsi: 60.4, momentum: 64.1, macd: 50.4, volume_trend: 33.3, ema_crossover: 75.5 }
         )
       end
 
