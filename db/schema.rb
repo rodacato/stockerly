@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_04_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_04_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -435,8 +435,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_120000) do
     t.index ["key"], name: "index_site_configs_on_key", unique: true
   end
 
+  create_table "split_adjustments", force: :cascade do |t|
+    t.bigint "asset_id", null: false
+    t.datetime "created_at", null: false
+    t.date "ex_date", null: false
+    t.integer "ratio_from", null: false
+    t.integer "ratio_to", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id", "ex_date"], name: "index_split_adjustments_on_asset_id_and_ex_date", unique: true
+    t.index ["asset_id"], name: "index_split_adjustments_on_asset_id"
+  end
+
   create_table "stock_splits", force: :cascade do |t|
-    t.datetime "applied_at"
     t.bigint "asset_id", null: false
     t.datetime "created_at", null: false
     t.date "ex_date", null: false
@@ -572,6 +582,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_120000) do
   add_foreign_key "positions", "portfolios"
   add_foreign_key "push_subscriptions", "users"
   add_foreign_key "site_config_changes", "users", column: "admin_id"
+  add_foreign_key "split_adjustments", "assets"
   add_foreign_key "stock_splits", "assets"
   add_foreign_key "technical_observations", "assets"
   add_foreign_key "technical_readings", "assets"

@@ -33,7 +33,9 @@ RSpec.describe SyncSplitsJob, type: :job do
 
     described_class.perform_now
 
-    expect(handler).to have_received(:call).with(an_instance_of(Trading::Events::SplitDetected))
+    expect(handler).to have_received(:call).with(
+      have_attributes(asset_id: asset.id, ex_date: Date.new(2026, 2, 20), ratio_from: 1, ratio_to: 2)
+    )
   end
 
   it "skips already-known splits" do

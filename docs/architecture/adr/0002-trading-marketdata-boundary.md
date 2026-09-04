@@ -253,3 +253,46 @@ is watching an earnings date — the one direction this ADR calls absolute — a
 `Trading::Handlers::AdjustPositionsOnSplit` reads `StockSplit`. The baseline is a ratchet, not an
 amnesty: exceeding a file's recorded count fails the build, and a row the code has fallen below is
 reported as stale.
+
+---
+
+## Amendment, 2026-09-04 — an event carries the facts, not a key into the publisher's table
+
+`Trading::Events::SplitDetected` used to carry `stock_split_id`, and
+`Trading::Handlers::AdjustPositionsOnSplit` resolved it against `StockSplit` — a corporate-action
+row MarketData owns. `bin/checks boundaries` found it the day the check landed, and it was the
+convention's only baseline row.
+
+The id is the whole problem. `SyncSplitsJob` writes the row, publishes the id, and the handler runs
+**asynchronously** through `ProcessEventJob`, so between publish and consume the row can change or
+disappear — and the handler reads whatever it finds then, not what was detected. An event is a fact
+that already happened; a fact does not need a lookup to be true.
+
+**So the event carries the split: `asset_id`, `ex_date`, `ratio_from`, `ratio_to`.** The handler
+adjusts from the payload alone and names no MarketData constant. The `boundaries` baseline is now
+empty.
+
+**This is a rule, not a one-off.** A cross-context event carries the facts its subscribers act on.
+Passing a primary key makes every subscriber a reader of the publisher's tables, which is the
+dependency the read API exists to route — and it re-opens a window the event was supposed to close.
+Where a payload would be genuinely large, the answer is a narrower event, not an id.
+
+### What it cost, and why the cheaper answer was refused
+
+Idempotency was the catch. `#503` made a Mission Control retry safe by writing `applied_at` on the
+split row — Trading's bookkeeping, kept on MarketData's table. The cheap fix was to declare
+`stock_splits` co-owned by column, which is the vocabulary [ADR-024](./0024-asset-ownership-by-column.md)
+already supplies. It was refused twice over: it re-opens a kernel ADR-024 closed at one entry the
+same day, and it leaves the handler resolving a row it does not own, which is the finding.
+
+Instead the marker moved to Trading: `split_adjustments`, one row per `(asset_id, ex_date)` with a
+unique index. `Trading::Domain::SplitAdjuster` inserts it first, inside the same transaction as the
+rewrites it authorises, so the index — not a lock and not a read-then-write — is what makes a second
+delivery a no-op, and a failure halfway rolls the marker back with the numbers. `applied_at` is
+dropped, backfilled into the new table by the migration.
+
+**One in-flight risk, accepted.** A `ProcessEventJob` enqueued before this deploy carries
+`stock_split_id` and none of the facts. The handler returns without adjusting rather than
+misreading the payload, and `SyncSplitsJob` will not re-detect that split — it publishes only for a
+row it just created. The exposure is a job queued in the seconds around a deploy of a sync that runs
+daily on one instance; the alternative is keeping the id the amendment exists to remove.

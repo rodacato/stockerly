@@ -3,27 +3,37 @@
 module Trading
   module Domain
     class SplitAdjuster
-      def initialize(stock_split)
-        @split = stock_split
-        @ratio = stock_split.ratio
+      def initialize(asset_id:, ex_date:, ratio_from:, ratio_to:)
+        @asset_id = asset_id
+        @ex_date = ex_date.to_date
+        @ratio_from = ratio_from
+        @ratio_to = ratio_to
+        @ratio = ratio_to.to_f / ratio_from
       end
 
-      # Locking the split makes the already-applied check and the write atomic,
-      # and Mission Control's retry button reaches this handler.
+      # The adjustment is recorded first: its unique index is what makes a
+      # Mission Control retry a no-op, and it rolls back with the rewrites.
       def adjust!
-        @split.with_lock do
-          return if @split.applied_at?
-
+        SplitAdjustment.transaction do
+          record_adjustment!
           adjust_positions!
           adjust_trades!
-          @split.update!(applied_at: Time.current)
         end
+      rescue ActiveRecord::RecordNotUnique
+        nil
       end
 
       private
 
+      def record_adjustment!
+        SplitAdjustment.create!(
+          asset_id: @asset_id, ex_date: @ex_date,
+          ratio_from: @ratio_from, ratio_to: @ratio_to
+        )
+      end
+
       def adjust_positions!
-        Position.where(asset: @split.asset).find_each do |position|
+        Position.where(asset_id: @asset_id).find_each do |position|
           position.update!(
             shares: position.shares * @ratio,
             avg_cost: position.avg_cost / @ratio
@@ -32,9 +42,9 @@ module Trading
       end
 
       def adjust_trades!
-        Trade.where(asset: @split.asset)
+        Trade.where(asset_id: @asset_id)
           .kept
-          .where(executed_at: ...@split.ex_date)
+          .where(executed_at: ...@ex_date)
           .find_each do |trade|
             trade.update!(
               shares: trade.shares * @ratio,

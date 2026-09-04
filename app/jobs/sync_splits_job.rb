@@ -32,7 +32,7 @@ class SyncSplitsJob < ApplicationJob
 
         EventBus.publish(Trading::Events::SplitDetected.new(
           asset_id: asset.id,
-          stock_split_id: split.id,
+          ex_date: split.ex_date,
           ratio_from: split.ratio_from,
           ratio_to: split.ratio_to
         ))
