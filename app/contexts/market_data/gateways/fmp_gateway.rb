@@ -4,6 +4,7 @@ module MarketData
     # Free tier: 250 calls/day. Docs: https://financialmodelingprep.com/developer/docs
     class FmpGateway < MarketDataGateway
     include ResolvesApiKey
+    include MarketData::Domain::SafeDecimal
     include Dry::Monads[:result]
 
     BASE_URL = "https://financialmodelingprep.com"
@@ -121,14 +122,6 @@ module MarketData
         forward_pe: nil,
         peg_ratio: nil
       })
-    end
-
-    # FMP returns "None" or empty strings for missing values.
-    def safe_decimal(value)
-      return nil if value.blank? || value == "None" || value == "-"
-      BigDecimal(value.to_s)
-    rescue ArgumentError
-      nil
     end
 
     def parse_dividends(body)

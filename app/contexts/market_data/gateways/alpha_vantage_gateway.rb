@@ -5,6 +5,7 @@ module MarketData
     # CRITICAL: Rate limits return HTTP 200 with "Note" key (NOT 429).
     class AlphaVantageGateway < FundamentalsGateway
     include ResolvesApiKey
+    include MarketData::Domain::SafeDecimal
     BASE_URL = "https://www.alphavantage.co"
     PROVIDER = "Alpha Vantage"
     QUERY_PATH = "/query"
@@ -195,14 +196,6 @@ module MarketData
         quarterly_earnings_growth: safe_decimal(body["QuarterlyEarningsGrowthYOY"]),
         quarterly_revenue_growth: safe_decimal(body["QuarterlyRevenueGrowthYOY"])
       })
-    end
-
-    # Alpha Vantage returns "None" for missing values
-    def safe_decimal(value)
-      return nil if value.blank? || value == "None" || value == "-"
-      BigDecimal(value.to_s)
-    rescue ArgumentError
-      nil
     end
     end
   end

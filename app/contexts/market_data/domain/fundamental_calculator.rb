@@ -5,6 +5,8 @@ module MarketData
     # No DB reads, no I/O, no side effects.
     class FundamentalCalculator
     class << self
+      include SafeDecimal
+
       # Main entry point: latest annual statements → calculated metrics hash.
       def calculate(income_data:, balance_data:, cash_flow_data:, overview_metrics: {})
         metrics = {}
@@ -151,13 +153,6 @@ module MarketData
         assets = safe_decimal(balance["total_assets"])
         return nil unless net && assets&.nonzero?
         (net / assets).round(4)
-      end
-
-      def safe_decimal(value)
-        return nil if value.blank? || value == "None" || value == "-"
-        BigDecimal(value.to_s)
-      rescue ArgumentError
-        nil
       end
     end
     end
