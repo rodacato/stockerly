@@ -4,7 +4,7 @@ class NotifyEarningsJob < ApplicationJob
   queue_as :default
 
   def perform
-    sent = MarketData::UseCases::NotifyApproachingEarnings.call
+    sent = Trading::UseCases::NotifyApproachingEarnings.call
 
     log_sync_success("Earnings Notifications", message: "#{sent} notifications sent")
   rescue StandardError => e

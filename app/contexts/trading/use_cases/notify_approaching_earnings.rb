@@ -1,18 +1,27 @@
-module MarketData
+module Trading
   module UseCases
+    # Fires a once-per-asset notification for each earnings date landing inside
+    # the lookahead window, to whoever is following that asset — the watchlist
+    # and the open-position sets merged.
+    #
+    # Trading-owned because the audience lives in this context: WatchlistItem
+    # and Position answer "who is following this asset", and ADR-002 makes the
+    # Trading -> MarketData read one-directional, so the earnings dates arrive
+    # through MarketData::Queries::UpcomingEarnings rather than the reverse.
+    #
+    # Copy is descriptive per ADR-001: "AAPL reporta resultados el 3 sep" —
+    # never an action verb directed at the user.
     class NotifyApproachingEarnings < SimpleUseCase
       LOOKAHEAD_DAYS = 3
 
       def call
-        upcoming_events = EarningsEvent
-          .where(report_date: Date.current..(Date.current + LOOKAHEAD_DAYS.days))
-          .includes(:asset)
+        upcoming_events = MarketData::Queries::UpcomingEarnings.within(days: LOOKAHEAD_DAYS)
 
         return 0 if upcoming_events.empty?
 
         count = 0
         upcoming_events.each do |event|
-          users_watching(event.asset).each do |user|
+          users_following(event.asset).each do |user|
             next if already_notified?(user, event)
 
             Notifications::UseCases::CreateNotification.call(
@@ -33,10 +42,10 @@ module MarketData
 
       private
 
-      def users_watching(asset)
-        user_ids = WatchlistItem.where(asset: asset).pluck(:user_id)
-        position_user_ids = Position.where(asset: asset, status: :open).joins(:portfolio).pluck("portfolios.user_id")
-        User.where(id: (user_ids + position_user_ids).uniq)
+      def users_following(asset)
+        watching = WatchlistItem.where(asset: asset).pluck(:user_id)
+        holding = Position.where(asset: asset, status: :open).joins(:portfolio).pluck("portfolios.user_id")
+        User.where(id: (watching + holding).uniq)
       end
 
       def already_notified?(user, event)

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarketData::UseCases::NotifyApproachingEarnings do
+RSpec.describe Trading::UseCases::NotifyApproachingEarnings do
   let!(:user) { create(:user) }
   let!(:portfolio) { create(:portfolio, user: user) }
   let!(:asset) { create(:asset, :stock, symbol: "AAPL", name: "Apple Inc.") }
