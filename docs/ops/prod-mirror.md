@@ -1,8 +1,18 @@
 # Mirroring production locally
 
-Production is the only instance that should spend API quota. It already syncs
-prices, fundamentals and FX on a schedule; local work reads a copy of what it
-fetched instead of fetching again. That is what `bin/prod-sync` is for.
+Production is the only instance that spends API quota — the rule is
+[ADR-0024](../architecture/adr/0024-production-is-the-only-instance-that-spends-quota.md),
+and this is how it is obeyed. Production already syncs prices, fundamentals and
+FX on a schedule; local work reads a copy of what it fetched instead of fetching
+again. That is what `bin/prod-sync` is for.
+
+When the copy is missing history rather than freshness, deepen it **in
+production** and re-sync:
+
+```bash
+bin/rails 'data:deepen[NVDA,10]'    # one symbol
+bin/rails 'data:deepen_all[10]'     # every active asset, paced
+```
 
 ## The one-time setup
 
