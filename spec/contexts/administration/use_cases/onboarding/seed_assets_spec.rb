@@ -5,8 +5,7 @@ RSpec.describe Administration::UseCases::Onboarding::SeedAssets do
     it "creates assets from the catalog" do
       result = described_class.call(symbols: %w[AAPL BTC SPY])
 
-      expect(result).to be_success
-      expect(result.value![:created]).to eq(3)
+      expect(result[:created]).to eq(3)
       expect(Asset.pluck(:symbol)).to include("AAPL", "BTC", "SPY")
     end
 
@@ -21,24 +20,19 @@ RSpec.describe Administration::UseCases::Onboarding::SeedAssets do
     end
 
     it "skips symbols not in catalog" do
-      result = described_class.call(symbols: %w[AAPL UNKNOWN_XYZ])
-
-      expect(result).to be_success
+      expect(described_class.call(symbols: %w[AAPL UNKNOWN_XYZ])[:created]).to eq(1)
       expect(Asset.count).to eq(1)
     end
 
     it "skips duplicates when assets already exist" do
       create(:asset, symbol: "AAPL")
-      result = described_class.call(symbols: %w[AAPL BTC])
-
-      expect(result).to be_success
+      expect(described_class.call(symbols: %w[AAPL BTC])[:created]).to eq(2)
       expect(Asset.count).to eq(2)
     end
 
     it "returns zero when symbols is blank" do
       result = described_class.call(symbols: [])
-      expect(result).to be_success
-      expect(result.value![:created]).to eq(0)
+      expect(result[:created]).to eq(0)
     end
   end
 end

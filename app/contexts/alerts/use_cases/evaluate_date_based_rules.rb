@@ -4,14 +4,14 @@ module Alerts
     # dividend_ex_date). Publishes AlertRuleTriggered for each rule that
     # matches today's window so the existing handlers can record an event
     # and create a notification.
-    class EvaluateDateBasedRules < ApplicationUseCase
+    class EvaluateDateBasedRules < SimpleUseCase
       def call(today: Date.current)
         rules = AlertRule.date_based.where(status: :active)
         results = Domain::DateBasedAlertEvaluator.evaluate(rules, today: today)
 
         results.each { |r| publish_triggered(r) }
 
-        Success(results)
+        results
       end
 
       private

@@ -11,8 +11,7 @@ RSpec.describe Alerts::UseCases::LoadDashboard do
 
       result = described_class.call(user: user)
 
-      expect(result).to be_success
-      data = result.value!
+      data = result
       # One list, paused rules included: reglas-lista draws them wearing a
       # "pausada" pill rather than hiding them behind a tab.
       expect(data[:rules].count).to eq(2)
@@ -26,8 +25,7 @@ RSpec.describe Alerts::UseCases::LoadDashboard do
     it "returns empty collections for user with no alerts" do
       result = described_class.call(user: user)
 
-      expect(result).to be_success
-      data = result.value!
+      data = result
       expect(data[:rules]).to be_empty
       expect(data[:triggered_today]).to eq(0)
       expect(data[:counts]).to eq(active: 0, paused: 0, all: 0)
@@ -38,8 +36,8 @@ RSpec.describe Alerts::UseCases::LoadDashboard do
       create(:alert_rule, user: user, asset_symbol: "NVDA", status: :paused)
 
       result = described_class.call(user: user, filter: "paused")
-      expect(result.value![:rules].count).to eq(1)
-      expect(result.value![:rules].first.asset_symbol).to eq("NVDA")
+      expect(result[:rules].count).to eq(1)
+      expect(result[:rules].first.asset_symbol).to eq("NVDA")
     end
 
     it "filters by 'all' when requested" do
@@ -47,7 +45,7 @@ RSpec.describe Alerts::UseCases::LoadDashboard do
       create(:alert_rule, user: user, asset_symbol: "NVDA", status: :paused)
 
       result = described_class.call(user: user, filter: "all")
-      expect(result.value![:rules].count).to eq(2)
+      expect(result[:rules].count).to eq(2)
     end
 
     it "falls back to 'all' on unknown filter" do
@@ -55,15 +53,15 @@ RSpec.describe Alerts::UseCases::LoadDashboard do
       create(:alert_rule, user: user, asset_symbol: "NVDA", status: :paused)
 
       result = described_class.call(user: user, filter: "garbage")
-      expect(result.value![:filter]).to eq("all")
-      expect(result.value![:rules].count).to eq(2)
+      expect(result[:filter]).to eq("all")
+      expect(result[:rules].count).to eq(2)
     end
 
     it "still honours an explicit filter, for a URL that asks for one" do
       create(:alert_rule, user: user, asset_symbol: "AAPL", status: :active)
       create(:alert_rule, user: user, asset_symbol: "NVDA", status: :paused)
 
-      expect(described_class.call(user: user, filter: "paused").value![:rules].count).to eq(1)
+      expect(described_class.call(user: user, filter: "paused")[:rules].count).to eq(1)
     end
   end
 end

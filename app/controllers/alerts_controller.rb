@@ -2,8 +2,7 @@ class AlertsController < AuthenticatedController
   ALERT_RULE_PARTIAL = "alerts/alert_rule"
 
   def index
-    result = Alerts::UseCases::LoadDashboard.call(user: current_user, filter: params[:filter])
-    data = result.value!
+    data = Alerts::UseCases::LoadDashboard.call(user: current_user, filter: params[:filter])
 
     @rules           = data[:rules]
     @events          = data[:events]

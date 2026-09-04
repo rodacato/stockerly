@@ -12,9 +12,7 @@ RSpec.describe Alerts::UseCases::EvaluateDateBasedRules do
       published = []
       EventBus.subscribe(Alerts::Events::AlertRuleTriggered, ->(event) { published << event })
 
-      result = described_class.call
-
-      expect(result).to be_success
+      expect(described_class.call.size).to eq(1)
       expect(published.size).to eq(1)
       expect(published.first.alert_rule_id).to eq(rule.id)
       expect(published.first.asset_symbol).to eq(rule.asset_symbol)
@@ -27,8 +25,7 @@ RSpec.describe Alerts::UseCases::EvaluateDateBasedRules do
       published = []
       EventBus.subscribe(Alerts::Events::AlertRuleTriggered, ->(event) { published << event })
 
-      result = described_class.call
-      expect(result).to be_success
+      expect(described_class.call).to be_empty
       expect(published).to be_empty
     end
 

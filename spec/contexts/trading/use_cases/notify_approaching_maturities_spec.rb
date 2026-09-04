@@ -64,8 +64,7 @@ RSpec.describe Trading::UseCases::NotifyApproachingMaturities do
       maturing_in(3, asset: create(:asset, :fixed_income, symbol: "CETES_91D"))
 
       result = use_case.call
-      expect(result).to be_success
-      expect(result.value!).to eq(2)
+      expect(result).to eq(2)
     end
 
     it "does NOT fire outside threshold days (e.g. 5 days remaining)" do

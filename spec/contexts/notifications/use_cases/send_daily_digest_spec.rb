@@ -63,6 +63,6 @@ RSpec.describe Notifications::UseCases::SendDailyDigest do
     create(:alert_preference, user: user, email_digest: true)
     notify
 
-    expect(described_class.call.value!).to eq(1)
+    expect(described_class.call).to eq(1)
   end
 end

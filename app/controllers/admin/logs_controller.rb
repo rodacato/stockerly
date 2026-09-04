@@ -1,13 +1,10 @@
 module Admin
   class LogsController < BaseController
     def index
-      result = Administration::UseCases::Logs::ListLogs.call(params: filter_params, request: request)
+      data  = Administration::UseCases::Logs::ListLogs.call(params: filter_params, request: request)
 
-      if result.success?
-        data  = result.value!
-        @pagy = data[:pagy]
-        @logs = data[:logs]
-      end
+      @pagy = data[:pagy]
+      @logs = data[:logs]
     end
 
     def export_csv

@@ -1,9 +1,12 @@
 module Notifications
   module UseCases
-    class CreateNotification < ApplicationUseCase
+    # Returns the notification, or nil when there is nobody to notify or the
+    # record will not save. Every caller is a job or handler that carries on
+    # either way, so nil is the whole vocabulary the callers ever read.
+    class CreateNotification < SimpleUseCase
       def call(user_id:, title:, body: nil, notification_type: :system, notifiable: nil)
         user = User.find_by(id: user_id)
-        return Failure([ :not_found, "User not found" ]) unless user
+        return unless user
 
         notification = user.notifications.create!(
           title: title,
@@ -19,9 +22,9 @@ module Notifications
           title: title
         ))
 
-        Success(notification)
-      rescue ActiveRecord::RecordInvalid => e
-        Failure([ :validation, e.record.errors.to_hash ])
+        notification
+      rescue ActiveRecord::RecordInvalid
+        nil
       end
     end
   end

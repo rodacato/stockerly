@@ -19,7 +19,7 @@ class OnboardingController < AuthenticatedController
     keys = params[:api_keys]&.to_unsafe_h || {}
     result = Administration::UseCases::Onboarding::SaveApiKeys.call(keys: keys)
 
-    redirect_to onboarding_assets_path, notice: fx_notice(result.value![:fx])
+    redirect_to onboarding_assets_path, notice: fx_notice(result[:fx])
   end
 
   def assets

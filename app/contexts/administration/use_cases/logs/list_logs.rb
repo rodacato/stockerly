@@ -1,7 +1,7 @@
 module Administration
   module UseCases
     module Logs
-      class ListLogs < ApplicationUseCase
+      class ListLogs < SimpleUseCase
         include Pagy::Method
 
         KNOWN_MODULES = %w[sync alerts auth admin].freeze
@@ -24,7 +24,7 @@ module Administration
 
           # No unfiltered SystemLog.count: the header chip it fed is gone, and
           # the footer reports the filtered total pagy already carries.
-          Success({ pagy: pagy, logs: logs })
+          { pagy: pagy, logs: logs }
         end
 
         private

@@ -4,7 +4,7 @@ module Notifications
     # app produced since the last digest. Users with nothing to report get no
     # email — an empty digest is noise, and noise is what the beta complained
     # about.
-    class SendDailyDigest < ApplicationUseCase
+    class SendDailyDigest < SimpleUseCase
       WINDOW = 24.hours
 
       def call(since: WINDOW.ago)
@@ -18,7 +18,7 @@ module Notifications
           sent += 1
         end
 
-        Success(sent)
+        sent
       end
 
       private

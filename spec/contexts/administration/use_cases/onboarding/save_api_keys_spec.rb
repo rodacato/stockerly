@@ -11,8 +11,7 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
         coingecko.id.to_s => "cg_key_456"
       })
 
-      expect(result).to be_success
-      expect(result.value![:updated]).to eq(2)
+      expect(result[:updated]).to eq(2)
       default_key = polygon.reload
       expect(default_key.api_key_encrypted).to eq("poly_key_123")
       expect(polygon.connection_status).to eq("connected")
@@ -24,15 +23,13 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
         coingecko.id.to_s => ""
       })
 
-      expect(result).to be_success
-      expect(result.value![:updated]).to eq(1)
+      expect(result[:updated]).to eq(1)
     end
 
     it "skips unknown integration ids" do
       result = described_class.call(keys: { "999999" => "some_key" })
 
-      expect(result).to be_success
-      expect(result.value![:updated]).to eq(0)
+      expect(result[:updated]).to eq(0)
     end
   end
   # Setup writes no FX rate, so the wizard is where real history first arrives —
@@ -54,7 +51,7 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
 
       result = described_class.call(keys: { banxico.id.to_s => "token-123" })
 
-      expect(result.value![:fx]).to eq(1)
+      expect(result[:fx]).to eq(1)
       expect(FxRateHistory.count).to eq(1)
     end
 
@@ -63,7 +60,7 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
 
       result = described_class.call(keys: { banxico.id.to_s => "bad-token" })
 
-      expect(result.value![:fx]).to eq(:failed)
+      expect(result[:fx]).to eq(:failed)
       expect(FxRateHistory.count).to eq(0)
       expect(FxRate.count).to eq(0)
     end
@@ -73,7 +70,7 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
 
       result = described_class.call(keys: { other.id.to_s => "cg-key" })
 
-      expect(result.value![:fx]).to eq(:skipped)
+      expect(result[:fx]).to eq(:skipped)
     end
   end
 end

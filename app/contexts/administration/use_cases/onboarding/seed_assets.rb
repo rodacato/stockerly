@@ -1,9 +1,9 @@
 module Administration
   module UseCases
     module Onboarding
-      class SeedAssets < ApplicationUseCase
+      class SeedAssets < SimpleUseCase
         def call(symbols:)
-          return Success({ created: 0 }) if symbols.blank?
+          return { created: 0 } if symbols.blank?
 
           entries = Administration::Domain::AssetCatalog.find_by_symbols(symbols)
           created = 0
@@ -21,7 +21,7 @@ module Administration
             created += 1
           end
 
-          Success({ created: created })
+          { created: created }
         end
       end
     end
