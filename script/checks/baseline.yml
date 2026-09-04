@@ -5,6 +5,15 @@
 #
 # `count` is per file. Exceed it and the run fails.
 
+use-cases:
+  app/contexts/market_data/use_cases/store_fundamentals.rb:
+    count: 1
+    reason: >-
+      Ends on base-class publish(, so it returns Success(event) and can never
+      fail; both callers in app/jobs/ discard the result. ADR-006's gray zone
+      makes this a SimpleUseCase with an inline EventBus.publish — the payload
+      is mechanical. Found by this check on 2026-09-04.
+
 boundaries:
   app/contexts/trading/handlers/adjust_positions_on_split.rb:
     count: 1
