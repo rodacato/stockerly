@@ -10,6 +10,14 @@
 # holidays follow the exchange rule — Saturday observed the preceding Friday,
 # Sunday the following Monday.
 #
+# Coverage: BMV and Banxico through 2026-12-25, NYSE and NASDAQ through
+# 2027-12-24. MarketHours reads NYSE and BMV to gate its sessions, and a year
+# with no rows here answers "no holidays" — so past the last date below every
+# holiday reads as a trading day again and the monitor resumes alerting on
+# them. CheckSyncHealthJob watches how far this file reaches and tells the
+# owner a month before it runs out; that notice is the only thing standing
+# between an un-updated calendar and a quiet wrong answer.
+#
 # Update annually before December — add the next year's dates as soon as each
 # exchange publishes its calendar. Idempotent: re-running this seed is safe.
 

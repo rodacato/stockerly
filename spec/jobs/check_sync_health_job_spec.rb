@@ -18,6 +18,16 @@ RSpec.describe CheckSyncHealthJob, type: :job do
     Rails.cache = original_cache
   end
 
+  # Every example that is not about the calendar needs one that reaches past
+  # the runway, or the exhaustion watch answers for it.
+  before { stock_the_calendar }
+
+  def stock_the_calendar(through: Date.new(2027, 12, 24))
+    described_class::CALENDARS.each_value do |market|
+      MarketHoliday.find_or_create_by!(market: market, date: through) { |h| h.name = "Seeded" }
+    end
+  end
+
   # The alert is what the owner can actually see: a health row in Registros and
   # a notification. Counting those is counting the alert.
   def health_alerts(task_name = nil)
@@ -60,7 +70,7 @@ RSpec.describe CheckSyncHealthJob, type: :job do
     # watches alike. i18n-tasks cannot see a key assembled at runtime, so this
     # is the check that stands in for the scan.
     it "has owner-facing copy for every watch it can alert on" do
-      keys = DataFreshness::CHECKS.keys + described_class::LOG_WATCHES.keys
+      keys = DataFreshness::CHECKS.keys + described_class::LOG_WATCHES.keys + described_class::CALENDARS.keys
 
       keys.each do |key|
         phrase = I18n.t("notificaciones.sincronizacion.titulo.#{key}", tiempo: "una hora")
@@ -315,6 +325,89 @@ RSpec.describe CheckSyncHealthJob, type: :job do
         described_class.new.perform
 
         expect(freshness_alerts(:prices_fixed_income).sole.error_message).to include("más de 9 días")
+      end
+    end
+
+    # A holiday is a day the schedule legitimately produces nothing, and until
+    # MarketHours read the calendar the gate could not tell it from a dead
+    # feed. Nine or ten days a year, per market.
+    describe "on a market holiday" do
+      before do
+        travel_to Time.zone.parse("2026-11-26 11:00:00 -0500") # Thanksgiving, a Thursday
+        silence_log_derived_sources
+        MarketHoliday.create!(market: :NYSE, date: Date.new(2026, 11, 26), name: "Thanksgiving Day")
+      end
+
+      it "does not alert on US prices the exchange itself is not refreshing" do
+        create(:asset, country: "US", price_updated_at: 20.hours.ago)
+
+        described_class.new.perform
+
+        expect(freshness_alerts(:prices_us)).to be_empty
+      end
+
+      # The negative that makes the fix falsifiable: the holiday gate must
+      # close the question for one day, not mute the watch.
+      it "still alerts on the same dead feed the next trading day" do
+        create(:asset, country: "US", price_updated_at: 20.hours.ago)
+
+        travel_to Time.zone.parse("2026-11-27 11:00:00 -0500")
+        described_class.new.perform
+
+        expect(freshness_alerts(:prices_us).count).to eq(1)
+      end
+
+      it "leaves the BMV watch alone, since the BMV trades that day" do
+        create(:asset, :mexican, price_updated_at: 20.hours.ago)
+
+        described_class.new.perform
+
+        expect(freshness_alerts(:prices_mx).count).to eq(1)
+      end
+    end
+
+    # The gating is only as good as the calendar behind it, and past its last
+    # seeded date it fails open — every holiday reads as a trading day again.
+    # That is silent by construction, so it gets said out loud.
+    describe "the holiday calendar running out" do
+      before { silence_log_derived_sources }
+
+      it "stays quiet while the calendar reaches past the runway" do
+        described_class.new.perform
+
+        expect(health_alerts("Calendar: NYSE")).to be_empty
+      end
+
+      it "names the last date the calendar reaches once the runway is gone" do
+        MarketHoliday.delete_all
+        stock_the_calendar(through: Date.new(2026, 1, 20))
+
+        described_class.new.perform
+
+        expect(health_alerts("Calendar: NYSE").sole.error_message)
+          .to include("20 de enero de 2026").and include("días hábiles")
+      end
+
+      it "says so when no calendar was ever seeded" do
+        MarketHoliday.delete_all
+
+        described_class.new.perform
+
+        entry = health_alerts("Calendar: BMV").sole
+        expect(entry.error_message).to include("No hay fechas cargadas")
+      end
+
+      # A chore with a month of runway asks once a week, not four times a day
+      # like a stale sync does.
+      it "nags weekly rather than on the six-hour sync cadence" do
+        MarketHoliday.delete_all
+
+        described_class.new.perform
+
+        travel 2.days
+        described_class.new.perform
+
+        expect(health_alerts("Calendar: NYSE").count).to eq(1)
       end
     end
 

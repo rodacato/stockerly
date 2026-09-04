@@ -931,6 +931,11 @@ es-MX:
         one: Di de alta 1 símbolo de tu archivo
         other: Di de alta %{count} símbolos de tu archivo
     sincronizacion:
+      cuerpo_calendario: El calendario llega hasta el %{fecha}. Después de esa fecha
+        los días festivos se leen como días hábiles. Actualiza db/seeds/market_holidays.rb
+        y vuelve a correr las semillas.
+      cuerpo_calendario_vacio: No hay fechas cargadas, así que todos los días festivos
+        se leen como días hábiles. Corre las semillas para cargarlas.
       cuerpo_error: 'Último error: %{error}. Revisa Registros para el detalle.'
       cuerpo_sin_datos: Revisa Registros para ver si algún proveedor dejó de responder.
       cuerpo_sin_registros: No hay registros de esta sincronización en la ventana.
@@ -947,6 +952,8 @@ es-MX:
       registro_sin_registros: Sin sincronización exitosa desde hace más de %{tiempo}.
         Sin registros en la ventana.
       titulo:
+        calendar_bmv: Faltan días festivos por cargar para la BMV
+        calendar_us: Faltan días festivos por cargar para la bolsa de Estados Unidos
         earnings: El calendario de reportes no se ha actualizado en más de %{tiempo}
         fx_rates: El tipo de cambio no se ha actualizado en más de %{tiempo}
         indices: Los índices no se han actualizado en más de %{tiempo}

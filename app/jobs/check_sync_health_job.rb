@@ -19,8 +19,11 @@
 class CheckSyncHealthJob < ApplicationJob
   queue_as :default
 
-  DEDUP_TTL       = 6.hours
-  CACHE_NAMESPACE = "sync_health_alert".freeze
+  # A stale sync is acute and six hours is the right nag. An exhausted calendar
+  # is a chore with a month of runway, so it asks once a week instead.
+  DEDUP_TTL          = 6.hours
+  CALENDAR_DEDUP_TTL = 7.days
+  CACHE_NAMESPACE    = "sync_health_alert".freeze
 
   # window: the longest silence this sync's own cadence can legitimately
   # produce. task_name must match the string the job passes to SyncLogging
@@ -30,9 +33,20 @@ class CheckSyncHealthJob < ApplicationJob
     earnings: { task_name: "Earnings Sync", window: 26.hours }   # daily 09:00
   }.freeze
 
+  # Every gate in this job and in /health rests on MarketHours knowing the
+  # holidays, and MarketHours rests on a seed file somebody has to update. It
+  # fails open — past the last seeded date every holiday reads as a trading day
+  # and the false alarms come back — so the shortfall has to be said out loud
+  # before it arrives. Banxico is seeded too but nothing here reads it; its
+  # consumer is the CETE auction evaluator, and its runway is that owner's.
+  CALENDARS = { calendar_us: :NYSE, calendar_bmv: :BMV }.freeze
+
+  CALENDAR_RUNWAY = 30.days
+
   def perform
     LOG_WATCHES.each { |key, watch| check_log(key, watch) }
     DataFreshness.stale_for_owner.each { |key, window| alert_stale(key, window) }
+    CALENDARS.each { |key, market| check_calendar(key, market) }
   end
 
   private
@@ -69,6 +83,27 @@ class CheckSyncHealthJob < ApplicationJob
       record: I18n.t("notificaciones.sincronizacion.registro_datos", tiempo: phrase),
       body: I18n.t("notificaciones.sincronizacion.cuerpo_sin_datos")
     )
+  end
+
+  def check_calendar(key, market)
+    through = MarketData::Queries::MarketCalendar.covered_through(market: market)
+    return if through && through > CALENDAR_RUNWAY.from_now.to_date
+
+    statement = calendar_statement(through)
+
+    alert(
+      key,
+      task_name: "Calendar: #{market}",
+      title: title_for(key),
+      record: statement,
+      body: statement
+    )
+  end
+
+  def calendar_statement(through)
+    return I18n.t("notificaciones.sincronizacion.cuerpo_calendario_vacio") if through.nil?
+
+    I18n.t("notificaciones.sincronizacion.cuerpo_calendario", fecha: I18n.l(through, format: :long))
   end
 
   # Two readers, one dedup. The SystemLog row is the record Registros can show,
@@ -128,7 +163,7 @@ class CheckSyncHealthJob < ApplicationJob
     I18n.t("notificaciones.sincronizacion.cuerpo_sin_registros")
   end
 
-  def title_for(key, phrase)
+  def title_for(key, phrase = nil)
     I18n.t("notificaciones.sincronizacion.titulo.#{key}", tiempo: phrase)
   end
 
@@ -149,7 +184,8 @@ class CheckSyncHealthJob < ApplicationJob
   end
 
   def mark_alerted(key)
-    Rails.cache.write(dedup_key(key), Time.current.iso8601, expires_in: DEDUP_TTL)
+    ttl = CALENDARS.key?(key) ? CALENDAR_DEDUP_TTL : DEDUP_TTL
+    Rails.cache.write(dedup_key(key), Time.current.iso8601, expires_in: ttl)
   rescue StandardError => e
     Rails.logger.error("CheckSyncHealthJob: dedup write failed for #{key}: #{e.class} #{e.message}")
   end
