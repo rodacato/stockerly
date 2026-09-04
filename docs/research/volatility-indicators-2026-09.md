@@ -18,9 +18,10 @@ DATABASE_PREFIX=prodmirror bin/rails runner script/research/confluence.rb
 
 ## The corpus, and what it can carry
 
-Production holds **11,217 daily bars over 47 assets, 2025-08-29 to 2026-09-04** —
-one year, because `BackfillPriceHistoryJob::DAYS` is 365. Every one of the 47 has
-complete `high`/`low`, so ATR is computable everywhere.
+Production holds **13,476 daily bars over 47 assets**. Forty-six of them span one
+year, because `BackfillPriceHistoryJob::DAYS` is 365; NVDA reaches back to
+2016-09-06 after the first run of `data:deepen`. Every one of the 47 has complete
+`high`/`low`, so ATR is computable everywhere.
 
 One year is enough for some of these theses and not others, and the difference is
 not a matter of degree:
@@ -29,7 +30,7 @@ not a matter of degree:
 |---|---|---|
 | 1 · ATR — volatility is asset-specific | **yes** | 47/47 assets, measured below |
 | 2 · LILO layers | **partly** | the layers are arithmetic over ATR; DCAS needs the Mayer Multiple, which has 2.6 months of values for stocks |
-| 3 · Confluence / mean reversion | **measured, confounded** | 117 episodes, but the rule version is starved — see below |
+| 3 · Confluence / mean reversion | **measured, confounded** | 60 episodes, and the rule version is starved to nothing — see below |
 | 4 · Rotation (dual momentum) | **no** | a 12-month lookback over a 12-month window leaves zero rebalance points |
 | 5 · Pairs / co-integration | **no** | needs long simultaneous series |
 
@@ -91,9 +92,11 @@ The design's window — *"día 2 de ~3.5"*, with invalidation after a week — i
 therefore wrong by roughly an order of magnitude. That number was invented; this
 one is measured.
 
-**The two lights are not mirrors.** Overbought beats oversold at 5 and 10 days
-and decays to a coin flip at 20 (median +0.28%, win 50%). Rendering them as one
-component in two colours implies a symmetry the data does not have.
+**The two lights are not mirrors.** Overbought beats oversold at every horizon
+and fires more than twice as often (137 episodes against 63), yet its own median
+collapses to +0.82% at twenty days on a 50% win rate — a mean carried by
+outliers. Rendering the two as one component in two colours implies a symmetry
+the data does not have in either direction.
 
 ### The finding that matters
 
@@ -125,16 +128,21 @@ The same split asked with only what existed on the day:
 
 | Filter | +20 days, above | +20 days, below |
 |---|---|---|
-| SMA(50) | +0.26% (**n=2**) | +3.42% (n=101) |
-| SMA(200) | +10.76% (n=8, win 88%) | +1.71% (n=13, win 69%) |
+| SMA(50) | **n=0** | +2.84% (n=58) |
+| SMA(200) | **n=1** | +0.28% (n=13) |
 
-**SMA(50) is collinear with the signal.** A bar that is oversold *and* below its
-lower Bollinger band is essentially never above its 50-day average — 2 events out
-of 133. It cannot serve as the independent confirmation a confluence needs.
+**SMA(50) is not merely correlated with the signal — it is implied by it.** In 71
+oversold episodes, *not one* occurred above the 50-day average. A bar that is
+oversold on RSI and below its lower Bollinger band is, mechanically, a bar below
+its 50-day mean. Pairing light 1 with a 50-day trend test pairs a fact with
+itself, and no vote is taken.
 
-**SMA(200) is the independent one**, and it points the same way as the diagnostic
-split at every horizon. But it needs 200 bars *before* the event, and a 255-bar
-series grants that eight times. n=8 is a direction, not a result.
+**SMA(200) is the independent test**, and the corpus grants it once. It needs 200
+bars *before* the event, which a 255-bar series almost never has. n=1 is not a
+direction, it is an absence.
+
+Correcting the RSI sharpened both rows: under the previous definition SMA(50)
+showed 2 events above, which read as "nearly collinear". It is exact.
 
 ## What this settles
 
