@@ -54,17 +54,6 @@ module MarketData
         summed
       end
 
-      # CAGR: (end_value / start_value)^(1/years) - 1
-      def cagr(end_value, start_value, years)
-        return nil if end_value.nil? || start_value.nil? || years.nil? || years.zero?
-        return nil if start_value.zero? || start_value.negative?
-        return nil if end_value.negative?
-
-        ((end_value.to_d / start_value.to_d) ** (1.0 / years) - 1).round(4)
-      rescue Math::DomainError
-        nil
-      end
-
       private
 
       # --- Health ---
