@@ -5,6 +5,60 @@
 #
 # `count` is per file. Exceed it and the run fails.
 
+design-tokens:
+  # #489 counted these; #548 migrated the opacity modifiers around them. The
+  # helpers and the Stimulus controllers hold state colours that never got a
+  # semantic token; the two market charts inline an SVG palette; legal/ and
+  # shared/ carry amber warning boxes older than the token set.
+  app/helpers/alerts_helper.rb:
+    count: 6
+  app/helpers/earnings_helper.rb:
+    count: 4
+  app/helpers/market_helper.rb:
+    count: 11
+  app/helpers/notifications_helper.rb:
+    count: 1
+  app/helpers/price_chart_helper.rb:
+    count: 2
+  app/javascript/controllers/onboarding_form_controller.js:
+    count: 2
+  app/javascript/controllers/selectable_card_controller.js:
+    count: 2
+  app/javascript/controllers/ticker_search_controller.js:
+    count: 4
+  app/views/legal/risk_disclosure.html.erb:
+    count: 3
+  app/views/legal/terms.html.erb:
+    count: 3
+  app/views/market/_analyst_target.html.erb:
+    count: 3
+  app/views/market/_pe_chart.html.erb:
+    count: 13
+  app/views/market/_price_chart.html.erb:
+    count: 3
+  app/views/shared/_flash_message.html.erb:
+    count: 1
+  app/views/shared/maintenance.html.erb:
+    count: 2
+  app/views/watchlist_items/_watchlist_button.html.erb:
+    count: 1
+
+number-format:
+  # The five files #541 names: number_to_percentage in a view, while
+  # signed_percent is the other convention across 8 files. #541 picks one; this
+  # is what keeps it picked. The money half has no rows — number_to_currency
+  # appears nowhere, so that part of the check starts at zero.
+  app/views/components/_watch_row.html.erb:
+    count: 1
+  app/views/discover/show.html.erb:
+    count: 1
+  app/views/market/_market_context.html.erb:
+    count: 3
+  app/views/market/_range_52w.html.erb:
+    count: 1
+  app/views/market/_vs_plan.html.erb:
+    count: 1
+
 use-cases:
   app/contexts/market_data/use_cases/store_fundamentals.rb:
     count: 1

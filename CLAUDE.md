@@ -40,8 +40,12 @@ bin/quality             # RubyCritic on Ruby files changed vs origin/master
 bin/quality app lib     # whole-repo baseline (noise tuned in .reek.yml)
 
 # ADR conventions a grep can see — runs in CI, no Rails boot
-bin/checks              # all of them
+bin/checks              # boundaries, use-cases, design-tokens, number-format
 bin/checks boundaries   # one, by id
+# A false positive is answered with `stockerly:allow(<check>) <reason>` on the
+# offending line, or a row in script/checks/baseline.yml — never by removing
+# the check. Baseline counts are a ratchet: exceeding one fails, and a row the
+# code has fallen below is reported as stale so it can be trimmed.
 
 # Local CI pipeline (setup + rubocop + checks + bundler-audit + importmap audit + brakeman)
 # config/ci.rb declares NO rspec step — run the suite separately.
