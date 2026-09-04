@@ -22,7 +22,8 @@ module MarketData
     private
 
     def connection
-      build_connection(url: BASE_URL, timeout: TIMEOUT, retry_options: { max: 2, interval: 0.5 })
+      build_connection(url: BASE_URL, timeout: TIMEOUT,
+                       retry_options: { max: 2, interval: 0.5, backoff_factor: 2, retry_statuses: [ 500, 502, 503 ] })
     end
 
     def parse(body)
