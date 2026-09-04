@@ -43,6 +43,14 @@ module MarketData
         rows.reject { |row| row.date >= Date.current }.map(&:volume)
       end
 
+      # Same bargain for the fields ATR reads: today's high and low widen with
+      # every sync, so a range taken before the close understates itself. A row
+      # missing either is dropped rather than half-read.
+      def self.closed_bars(rows)
+        rows.reject { |row| row.date >= Date.current || row.high.nil? || row.low.nil? }
+            .map { |row| { high: row.high.to_f, low: row.low.to_f, close: row.close.to_f } }
+      end
+
       def initialize(asset, interval: DAILY)
         @asset = asset
         @interval = interval

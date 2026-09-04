@@ -12,12 +12,17 @@ module MarketData
       # The keys a persisted reading may carry. Like TrendScoreCalculator's
       # FACTORS, this minus a row's keys is what that reading could not compute
       # — absence is the signal, never a zero.
-      READINGS = %i[close rsi sma_50 sma_200 bb_upper bb_middle bb_lower].freeze
+      READINGS = %i[close rsi sma_50 sma_200 bb_upper bb_middle bb_lower atr].freeze
 
       class << self
         # Every indicator this object computes, as one dated reading. The single
         # shape persisted to `technical_readings`; nothing else writes that table.
-        def current_reading(closes)
+        #
+        # `bars` are separate from `closes` because they must be: high and low
+        # grow all session, so ATR reads closed bars only, while today's close
+        # is the current price and is exactly what RSI should see (#483). Pass
+        # no bars and the reading simply carries no ATR.
+        def current_reading(closes, bars: [])
           bands = bollinger_bands(closes)
 
           {
@@ -27,11 +32,11 @@ module MarketData
             sma_200: sma(closes, period: 200),
             bb_upper: bands&.fetch(:upper),
             bb_middle: bands&.fetch(:middle),
-            bb_lower: bands&.fetch(:lower)
+            bb_lower: bands&.fetch(:lower),
+            atr: atr(bars)
           }.compact
         end
 
-        # RSI for the last close. Returns nil if size < period + 1.
         # Wilder's RSI: the averages are seeded once and smoothed across the
         # whole series, which is the definition 70 and 30 were calibrated
         # against. A plain mean of the last fourteen deltas is a different
@@ -59,6 +64,22 @@ module MarketData
           (100.0 - (100.0 / (1.0 + rs))).round(2)
         end
 
+        # Wilder's Average True Range (1978), over bars carrying high, low and
+        # close, oldest first. True range counts the gap between sessions, which
+        # is why Bollinger's standard deviation of closes is not a substitute:
+        # a limit-down open that never trades through yesterday's range is
+        # invisible to one and the whole point of the other.
+        #
+        # Smoothed by the same recursion as RSI, not by a mean over the window.
+        def atr(bars, period: 14)
+          return nil if bars.size < period + 1
+
+          ranges = true_ranges(bars)
+          seed = ranges.first(period).sum / period.to_f
+
+          ranges.drop(period).reduce(seed) { |avg, range| ((avg * (period - 1)) + range) / period.to_f }.round(4)
+        end
+
         # Simple Moving Average over the last `period` closes.
         def sma(closes, period:)
           return nil if closes.size < period
@@ -81,6 +102,18 @@ module MarketData
             middle: middle.round(4),
             lower:  (middle - (stddev * std)).round(4)
           }
+        end
+
+        private
+
+        # Each bar's range measured against the previous close, so an opening
+        # gap counts as movement rather than as the sliver traded after it.
+        def true_ranges(bars)
+          bars.each_cons(2).map do |previous, current|
+            [ current[:high] - current[:low],
+              (current[:high] - previous[:close]).abs,
+              (current[:low] - previous[:close]).abs ].max.to_f
+          end
         end
       end
     end
