@@ -79,7 +79,7 @@
                   case event.beat_miss
                   when :beat then [ "trending_up",   t(".supero"),     "bg-positive-bg text-positive-fg" ]
                   when :miss then [ "trending_down", t(".por_debajo"), "bg-negative-bg text-negative-fg" ]
-                  else            [ "schedule",      t(".pendiente"),  "bg-warning/10 text-warning" ]
+                  else            [ "schedule",      t(".pendiente"),  "bg-warning-bg text-warning" ]
                   end
               %>
               <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold <%= tone %>">
