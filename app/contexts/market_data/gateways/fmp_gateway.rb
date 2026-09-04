@@ -3,6 +3,7 @@ module MarketData
     # Driven adapter: Financial Modeling Prep API for fundamentals, dividends, and splits.
     # Free tier: 250 calls/day. Docs: https://financialmodelingprep.com/developer/docs
     class FmpGateway < MarketDataGateway
+    include PerformsRequests
     include ResolvesApiKey
     include MarketData::Domain::SafeDecimal
     include Dry::Monads[:result]
@@ -69,13 +70,7 @@ module MarketData
     private
 
     def connection
-      @connection ||= Faraday.new(url: BASE_URL) do |f|
-        f.request :retry, RetryPolicy.options(max: 2, interval: 0.5, backoff_factor: 2,
-                                              retry_statuses: [ 500, 502, 503 ])
-        f.response :json
-        f.options.timeout = TIMEOUT
-        f.options.open_timeout = TIMEOUT
-      end
+      build_connection(url: BASE_URL, timeout: TIMEOUT, retry_options: { max: 2, interval: 0.5, backoff_factor: 2, retry_statuses: [ 500, 502, 503 ] })
     end
 
     def parse_overview(body)
