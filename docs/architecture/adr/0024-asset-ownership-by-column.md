@@ -88,7 +88,7 @@ conflating them is what made this look like a large decision:
 | Model | Classification | Rule |
 |---|---|---|
 | `Asset` | **Shared kernel, co-owned** | This ADR. Ownership by column. |
-| `DividendPayment` | **Shared kernel, co-owned** | Same principle by lifecycle: Trading owns *who held what on the ex-date*, MarketData owns *the dividend fact*. Today its only writer is `sync_dividends_job.rb:91`, which runs a Trading query inside a MarketData job. Named here as direction; the move is BND-08's own issue, not this one. |
+| `DividendPayment` | **Single-owner (Trading)** | ⚠️ **Amended 2026-09-04** — see the amendment at the foot. This ADR called it the kernel's second co-owned entry; the code says Trading owns every column of it. `sync_dividends_job.rb:91` writes it on Trading's behalf, the shape clause 2 already names. |
 | `SystemLog` | **Infrastructure** | ~15 writers across MarketData, Administration, `app/shared/` and `app/jobs/`. Not an aggregate and not a kernel — a cross-cutting log, like the Rails logger. Any context may write it. Declared, not resolved. |
 | `AuditLog` | **Infrastructure** | 10 writers across Identity, Administration and Trading, every one an event handler doing the same thing. Same as above. Any context may write it. |
 | `User` | **Single-owner (Identity)** | Written only by Identity. Read everywhere through associations, which is what made it look shared. No change. |
@@ -97,8 +97,10 @@ conflating them is what made this look like a large decision:
 | `Notification` | **Single-owner (Notifications)** | Already had exactly one writer, `Notifications::UseCases::CreateNotification`, correctly called from three contexts. Its gap was a missing *read* API, not ownership. |
 
 **The kernel is closed at two entries.** `Asset` and `DividendPayment` are the only models resolved
-by co-ownership. "Declare it shared" is not available as an answer to the next model that looks
-contested — the alternative to writing a query object is writing a query object.
+by co-ownership. (⚠️ **Amended 2026-09-04: it closes at one.** `DividendPayment` turned out to have
+a single owner — see the amendment at the foot.) "Declare it shared" is not available as an answer
+to the next model that looks contested — the alternative to writing a query object is writing a
+query object.
 
 ## Consequences
 
@@ -129,7 +131,8 @@ contested — the alternative to writing a query object is writing a query objec
   honest price of choosing the ~16-file answer over the ~35–40-file one, and it is the trade this
   ADR makes deliberately: a rule that is true today and unenforced beats a rule that is enforced and
   aspirational for three months.
-- **`DividendPayment` is named, not moved.** BND-08 stays open.
+- **`DividendPayment` is named, not moved.** BND-08 stays open. (⚠️ **Closed 2026-09-04** by the
+  amendment at the foot: nothing moved because nothing had to.)
 - **BND-13's other half stays open.** Alerts reading `Asset` and `MarketHoliday` is an
   Alerts→MarketData dependency with no ADR of its own. The `MarketHoliday` read now goes through a
   query object; the *pair* still needs its own one-paragraph ADR, which no ownership model here
@@ -138,3 +141,39 @@ contested — the alternative to writing a query object is writing a query objec
   `SyncCetes` creates `CETES_28D`. Both are live and a fresh instance gets both rows. Unifying them
   is a data change on symbols that positions and trades reference, so it is its own issue, not a
   side effect of a boundary ADR.
+
+---
+
+## Amendment, 2026-09-04 — `DividendPayment` has one owner, and the kernel closes at one
+
+The Decision above made `DividendPayment` the kernel's second co-owned entry and deferred the move
+to BND-08 ([#560](https://github.com/rodacato/stockerly/issues/560)). Re-measured on `master`, there
+is no move to make: the code answers the ownership question in four places and every one of them
+says Trading.
+
+| Evidence | What it says |
+|---|---|
+| `app/models/dividend_payment.rb:2` | `belongs_to :portfolio` — the row hangs off a Trading aggregate |
+| `app/models/portfolio.rb:7` | `has_many :dividend_payments, dependent: :destroy` — Portfolio's lifecycle destroys it |
+| `app/contexts/trading/use_cases/reset_portfolio_data.rb:11` | `TABLES` wipes it on a re-import, beside trades, positions and snapshots |
+| `app/contexts/trading/use_cases/assemble_historial.rb:22` | the only reader in the tree, and it is Trading's own screen |
+
+**The row is not the dividend.** `Dividend` — the announcement, its dates and its amount per share —
+is MarketData's fact and stays MarketData's. `DividendPayment` is *"my portfolio held N shares on
+that ex-date and received this much"*: `shares_held` and `total_amount`, both derived from a
+position. No file under `app/contexts/market_data/` reads or writes one.
+
+**What made it look ownerless is where its writer sits.** `app/jobs/sync_dividends_job.rb:91` is the
+only writer, and it runs inside a market-data sync. That is clause 2's shape seen from the other
+side: a job writes for a context, and the owner is the context whose columns it writes, not the
+job's neighbourhood. The same sentence is what lets the `sync_*` jobs write MarketData's price
+columns on `Asset`. Ownership is a claim about columns; the file that happens to execute the
+`INSERT` is not the claim.
+
+Consequently **no code moves.** `script/checks/boundaries.rb` moves it out of `SHARED` and into
+`OWNERS["trading"]`, which is the only place the claim can be checked at all — and which now fails
+a PR that reads `DividendPayment` from `app/contexts/market_data/`.
+
+**The kernel closes at one.** `Asset` is the single co-owned model, and its reasoning is the bar the
+next candidate has to clear: a model is co-owned only when two contexts each protect an invariant
+over disjoint columns of it. `DividendPayment` never met that bar — one context protects all of them.
