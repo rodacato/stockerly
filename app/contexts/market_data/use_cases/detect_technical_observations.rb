@@ -34,13 +34,10 @@ module MarketData
       end
 
       def detect_for(asset)
-        # Bounded fetch: trailing window only, ordered oldest→newest after the
-        # reverse. Avoids loading years of history per asset into memory.
-        closes = asset.asset_price_histories
-                      .order(date: :desc)
-                      .limit(WINDOW_SIZE)
-                      .pluck(:close)
-                      .reverse
+        # Bounded fetch: trailing window only, oldest→newest. Whole rows rather
+        # than closes, because ATR needs the high and the low as well.
+        rows = Queries::PriceSeries.for(asset).latest(WINDOW_SIZE)
+        closes = rows.map(&:close)
         return 0 if closes.size < 16 # RSI(14) needs 15 + we look back 1 day
 
         observed_at = Time.current
@@ -49,7 +46,7 @@ module MarketData
         events += ma_crossings(closes, period: 200, type_above: "ma200_crossed_above", type_below: "ma200_crossed_below")
         events += bollinger_breaches(closes)
 
-        persist_reading(asset, closes, observed_at)
+        persist_reading(asset, closes, Queries::PriceSeries.closed_bars(rows), observed_at)
         events.count { |e| persist_if_fresh(asset, e[:type], observed_at, e[:snapshot]) }
       end
 
@@ -57,8 +54,8 @@ module MarketData
       # test for a crossing, and used to discard them when none fired. One row
       # per asset, overwritten — nothing reads indicator history, and an
       # appended row would need its own prune job (X16).
-      def persist_reading(asset, closes, calculated_at)
-        reading = Domain::TechnicalIndicators.current_reading(closes)
+      def persist_reading(asset, closes, bars, calculated_at)
+        reading = Domain::TechnicalIndicators.current_reading(closes, bars: bars)
         return if reading.blank?
 
         record = asset.technical_reading || asset.build_technical_reading

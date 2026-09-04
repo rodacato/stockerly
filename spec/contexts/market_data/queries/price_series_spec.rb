@@ -100,6 +100,31 @@ RSpec.describe MarketData::Queries::PriceSeries do
     end
   end
 
+  describe ".closed_bars" do
+    def ohlc(days_ago, high:, low:, close:)
+      create(:asset_price_history, asset: asset, date: days_ago.days.ago.to_date,
+                                   high: high, low: low, close: close, interval: "1d")
+    end
+
+    it "drops today's bar, whose high and low are still widening" do
+      rows = [ ohlc(2, high: 11, low: 9, close: 10), ohlc(1, high: 12, low: 10, close: 11),
+               ohlc(0, high: 99, low: 98, close: 98) ]
+
+      expect(described_class.closed_bars(rows)).to eq([
+        { high: 11.0, low: 9.0, close: 10.0 }, { high: 12.0, low: 10.0, close: 11.0 }
+      ])
+    end
+
+    # DataBursatil reports a close and nothing else, and a range with no high
+    # is not a narrower range — it is no reading at all.
+    it "drops a bar missing either side of its range rather than half-reading it" do
+      rows = [ ohlc(3, high: 11, low: 9, close: 10), ohlc(2, high: nil, low: 9, close: 10),
+               ohlc(1, high: 11, low: nil, close: 10) ]
+
+      expect(described_class.closed_bars(rows).size).to eq(1)
+    end
+  end
+
   describe "#closed" do
     it "stops at yesterday" do
       bar(1, close: 102)

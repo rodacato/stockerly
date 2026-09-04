@@ -31,6 +31,27 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
       expect(asset.reload.technical_reading.calculated_at).to be > first.calculated_at
     end
 
+    it "writes an ATR, which needs the high and low the closes alone do not carry" do
+      asset = create(:asset, symbol: "RANGE", current_price: 100)
+      seed_history(asset, Array.new(60, 100.0))
+      use_case.call
+
+      expect(asset.reload.technical_reading.readings["atr"]).to be_present
+    end
+
+    # A close-only provider gives no range to average, and an ATR of zero would
+    # claim the asset never moved.
+    it "omits the ATR when the provider reported no range" do
+      asset = create(:asset, symbol: "CLOSEONLY", current_price: 100)
+      60.times do |i|
+        create(:asset_price_history, asset: asset, date: (60 - i).days.ago.to_date,
+                                     close: 100.0, high: nil, low: nil)
+      end
+      use_case.call
+
+      expect(asset.reload.technical_reading.readings).not_to have_key("atr")
+    end
+
     # Absence is the signal: SMA200 needs 200 closes, so a young asset carries
     # the keys it could compute and not a zero for the ones it could not.
     it "omits an indicator it could not compute rather than storing zero" do
