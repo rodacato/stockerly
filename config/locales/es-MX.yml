@@ -930,6 +930,31 @@ es-MX:
       titulo:
         one: Di de alta 1 símbolo de tu archivo
         other: Di de alta %{count} símbolos de tu archivo
+    sincronizacion:
+      cuerpo_error: 'Último error: %{error}. Revisa Registros para el detalle.'
+      cuerpo_sin_datos: Revisa Registros para ver si algún proveedor dejó de responder.
+      cuerpo_sin_registros: No hay registros de esta sincronización en la ventana.
+        Revisa Registros para el detalle.
+      dias:
+        one: un día
+        other: "%{count} días"
+      horas:
+        one: una hora
+        other: "%{count} horas"
+      registro_datos: Los datos no se han actualizado desde hace más de %{tiempo}.
+      registro_error: 'Sin sincronización exitosa desde hace más de %{tiempo}. Último
+        error: %{error}.'
+      registro_sin_registros: Sin sincronización exitosa desde hace más de %{tiempo}.
+        Sin registros en la ventana.
+      titulo:
+        earnings: El calendario de reportes no se ha actualizado en más de %{tiempo}
+        fx_rates: El tipo de cambio no se ha actualizado en más de %{tiempo}
+        indices: Los índices no se han actualizado en más de %{tiempo}
+        news: Las noticias no se han actualizado en más de %{tiempo}
+        prices_crypto: Tus criptomonedas no se han actualizado en más de %{tiempo}
+        prices_fixed_income: Las tasas de CETES no se han actualizado en más de %{tiempo}
+        prices_mx: Tus acciones mexicanas no se han actualizado en más de %{tiempo}
+        prices_us: Tus acciones estadounidenses no se han actualizado en más de %{tiempo}
   notifications:
     flash:
       eliminadas:

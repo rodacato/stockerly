@@ -26,6 +26,11 @@ ignore_unused:
   # them by design. asset_state_spec asserts every state resolves in both
   # readings, which is a stronger guarantee than the scan it replaces.
   - market.estado.*
+  # Same shape: CheckSyncHealthJob builds this key from the watch it is
+  # reporting on, so the scanner cannot see them. check_sync_health_job_spec
+  # asserts every watch — freshness route and log watch alike — resolves to a
+  # title, which is the guarantee the scan would have given.
+  - notificaciones.sincronizacion.titulo.*
   # Same shape: the preview builds this key from the Failure tag ImportTrades
   # returned, so the scanner cannot see them either. trade_imports_spec asserts
   # every tag the use case can emit resolves to a phrase.
