@@ -81,26 +81,34 @@ module MarketData
       series
     end
 
+    # The fast EMA seeds `long - short` values earlier than the slow one, so it
+    # is trimmed to the overlap before the two can be read against each other.
+    # nil when either series is too short to leave any overlap at all.
+    def aligned_ema_pair(closes, short:, long:)
+      fast = compute_ema_series(closes, short)
+      slow = compute_ema_series(closes, long)
+      return nil if fast.empty? || slow.empty?
+
+      offset = long - short
+      return nil if fast.size <= offset
+
+      [ fast[offset..], slow ]
+    end
+
     def macd_signal(closes)
-      ema12 = compute_ema_series(closes, 12)
-      ema26 = compute_ema_series(closes, 26)
-      return nil if ema12.empty? || ema26.empty?
+      fast, slow = aligned_ema_pair(closes, short: 12, long: 26)
+      return nil unless fast
 
-      # Align: ema12 starts at index 12, ema26 at index 26
-      # MACD line length = ema12.size - (26 - 12) = ema12.size - 14
-      offset = 26 - 12
-      return nil if ema12.size <= offset
-
-      macd_line = ema12[offset..].zip(ema26).map { |e12, e26| e12 - e26 }
+      macd_line = fast.zip(slow).map { |fast_ema, slow_ema| fast_ema - slow_ema }
       signal_line = compute_ema_series(macd_line, 9)
       return nil if signal_line.empty?
 
       histogram = macd_line.last - signal_line.last
-      # Normalize histogram to 0-100: positive histogram → >50, negative → <50
-      # Typical histogram range ~±2% of price, so normalize by last close
       last_price = closes.last.to_f
       return 50.0 if last_price.zero?
 
+      # The histogram is a price difference, so it is read per-mille of the last
+      # close: ±50‰ of price spans the whole 0-100 range around a neutral 50.
       normalized = (histogram / last_price) * 1000.0
       (normalized.clamp(-50, 50) + 50).clamp(0, 100)
     end
@@ -123,21 +131,14 @@ module MarketData
     end
 
     def ema_crossover(closes)
-      ema9 = compute_ema_series(closes, 9)
-      ema21 = compute_ema_series(closes, 21)
-      return nil if ema9.empty? || ema21.empty?
+      fast, slow = aligned_ema_pair(closes, short: 9, long: 21)
+      return nil unless fast
 
-      # Align to the shorter series
-      offset = 21 - 9
-      return nil if ema9.size <= offset
-
-      short_val = ema9.last
-      long_val = ema21.last
       last_price = closes.last.to_f
       return 50.0 if last_price.zero?
 
-      spread = (short_val - long_val) / last_price * 100.0
-      # Normalize spread (-5% to +5%) to 0-100
+      spread = (fast.last - slow.last) / last_price * 100.0
+      # A spread of ±5% of the last close spans the whole 0-100 range.
       ((spread.clamp(-5, 5) * 10.0) + 50.0).clamp(0, 100)
     end
 
