@@ -16,11 +16,11 @@ module FundamentalsHelper
   }.freeze
 
   CHIP_TONES = {
-    volatil:           "bg-warning-bg text-warning",
+    volatil:           "bg-warning-bg text-warning-fg",
     defensivo:         "bg-bg-muted text-fg-subtle",
     como_el_mercado:   "bg-bg-muted text-fg-subtle",
     sobre_utilidades:  "bg-negative-bg text-negative-fg",
-    liquidez_corta:    "bg-warning-bg text-warning",
+    liquidez_corta:    "bg-warning-bg text-warning-fg",
     cubre_corto_plazo: "bg-positive-bg text-positive-fg"
   }.freeze
 
