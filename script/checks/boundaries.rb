@@ -29,12 +29,14 @@ module Checks
         NewsArticle StockSplit TechnicalObservation TechnicalReading TrendScore
       ],
       "notifications"  => %w[Notification PushSubscription],
-      "trading"        => %w[Portfolio PortfolioSnapshot Position Trade WatchlistItem]
+      "trading"        => %w[
+        DividendPayment Portfolio PortfolioSnapshot Position Trade WatchlistItem
+      ]
     }.freeze
 
     # ADR-024 §"The other seven models": shared kernel, infrastructure, or a
     # single owner whose reads are explicitly permitted from anywhere.
-    SHARED = %w[ApplicationRecord Asset AuditLog DividendPayment FxRate FxRateHistory SystemLog User].freeze
+    SHARED = %w[ApplicationRecord Asset AuditLog FxRate FxRateHistory SystemLog User].freeze
 
     ENFORCED_PAIR = %w[trading market_data].freeze
 
