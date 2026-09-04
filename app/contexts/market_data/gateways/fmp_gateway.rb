@@ -62,9 +62,9 @@ module MarketData
       return Failure([ :not_found, "No profile data from FMP" ]) unless body.is_a?(Array) && body.first.present?
 
       profile = body.first
-      safe_decimal(profile["price"])
-      safe_decimal(profile["eps"] || profile["lastDiv"])
 
+      # No price key and no lastDiv fallback for eps, deliberately (#554): the
+      # price chain owns Asset#current_price, and lastDiv is mapped as itself.
       Success({
         symbol: profile["symbol"],
         name: profile["companyName"],
