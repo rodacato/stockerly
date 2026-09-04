@@ -2,8 +2,7 @@ module Trading
   module UseCases
     # Fires a once-per-day notification for each open fixed-income position
     # whose lot-level maturity falls on a configured threshold (7, 3, 1 days
-    # away). Mirrors MarketData::UseCases::NotifyApproachingEarnings but is
-    # Trading-owned because Position.maturity_date lives in this context
+    # away). Mirrors NotifyApproachingEarnings, its sibling in this context
     # (#29 JTBD #3).
     #
     # Copy is descriptive per ADR-001: "CETES_28D expires in 5 days" — never

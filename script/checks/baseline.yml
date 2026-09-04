@@ -74,9 +74,3 @@ boundaries:
     reason: >-
       Reads StockSplit, a corporate-action fact MarketData owns. Found by this
       check on 2026-09-04; it has no writer in app/ and no ADR names it.
-  app/contexts/market_data/use_cases/notify_approaching_earnings.rb:
-    count: 2
-    reason: >-
-      Reads WatchlistItem and Position to find who is watching an earnings date.
-      ADR-002 §Forbidden, and the one direction the ADR calls absolute. Needs a
-      Trading::Queries::* for "users watching this asset".
