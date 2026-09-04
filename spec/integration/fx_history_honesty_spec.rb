@@ -37,10 +37,20 @@ RSpec.describe "Historical FX in period figures", type: :model do
     expect(naive - honest).to eq(1_500)
   end
 
-  it "falls back to today's rate rather than raising when history is empty" do
+  # #537 reversed this: it used to fall back to today's rate, which valued a
+  # March figure at August's and said nothing. Absence is the honest answer.
+  it "absents the figure rather than valuing yesterday at today's rate" do
     FxRateHistory.delete_all
 
-    expect(portfolio.convert(3_000, from: "USD", to: "MXN", at_date: yesterday)).to eq(52_500)
+    expect { portfolio.convert(3_000, from: "USD", to: "MXN", at_date: yesterday) }
+      .to raise_error(Trading::Domain::MissingFxRate)
+  end
+
+  it "settles a bank holiday against the last published FIX" do
+    FxRateHistory.delete_all
+    FxRateHistory.record(base: "USD", quote: "MXN", date: yesterday - 4, rate: 17.0, source: "banxico_fix")
+
+    expect(portfolio.convert(3_000, from: "USD", to: "MXN", at_date: yesterday)).to eq(51_000)
   end
 
   it "reports day_gain against yesterday's own rate, not today's" do

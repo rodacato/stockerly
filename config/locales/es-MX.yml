@@ -340,8 +340,9 @@ es-MX:
       very_bearish: Muy pesimista
       very_bullish: Muy optimista
     guardar: Guardar
-    sin_tc_cuerpo: Falta el tipo de cambio del día, así que no puedo sumar tu patrimonio
-      en una sola moneda. Cada posición se muestra en la suya.
+    sin_tc_cuerpo: Me falta el tipo de cambio de alguna de las fechas, así que no
+      puedo sumar tu patrimonio en una sola moneda. Cada posición se muestra en la
+      suya.
     sin_tc_titulo: Sin consolidar
     tipo_activo:
       crypto: Cripto

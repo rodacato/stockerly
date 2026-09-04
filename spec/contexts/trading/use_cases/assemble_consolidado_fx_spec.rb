@@ -42,7 +42,24 @@ RSpec.describe Trading::UseCases::AssembleConsolidado do
 
   it "stops saying so once the rate exists" do
     create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.1)
+    record_fix_series(from: 60.days.ago.to_date, to: Date.current, rate: 17.1)
 
     expect(data[:fx_unavailable]).to be(false)
+  end
+
+  # #537: today's rate no longer answers for a snapshot dated a month back, so
+  # the series each figure needs has to be there for the banner to clear.
+  it "keeps saying so when only today's rate exists" do
+    create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 17.1)
+
+    expect(data[:fx_unavailable]).to be(true)
+  end
+
+  def record_fix_series(from:, to:, rate:)
+    FxRateHistory.record_all(
+      (from..to).map do |date|
+        { base_currency: "USD", quote_currency: "MXN", rate_date: date, rate: rate, source: "banxico_fix" }
+      end
+    )
   end
 end

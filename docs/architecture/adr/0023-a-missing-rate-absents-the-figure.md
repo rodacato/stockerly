@@ -1,9 +1,9 @@
 # ADR-023 — A missing exchange rate absents the figure, and never fabricates one
 
 - **Status:** Accepted
-- **Date:** 2026-08-30
+- **Date:** 2026-08-30, amended 2026-09-04
 - **Author:** Adrian Castillo
-- **Related:** [ADR-009](./0009-banxico-fix-as-the-fx-source.md), [ADR-002](./0002-trading-marketdata-boundary.md), issues #494, #496, `AUDIT-2026-08-30` UC-02, UC-06, HELP-01
+- **Related:** [ADR-009](./0009-fx-history-strategy.md), [ADR-002](./0002-trading-marketdata-boundary.md), issues #494, #496, #537, `AUDIT-2026-08-30` UC-02, UC-06, HELP-01
 
 ---
 
@@ -63,6 +63,46 @@ Three outcomes, by layer:
 every conversion that a screen can survive goes through `#figure`, which returns the caller's
 fallback and remembers that it had to. `#degraded?` is what sets `fx_unavailable`, so the banner
 now reflects *any* figure that had to absent itself rather than only the summary.
+
+## Amendment 2026-09-04 — a rate from another date is a missing rate past seven days (#537)
+
+The decision above covered the case where there is **no** rate. It did not cover the one where
+there is a rate from the wrong date, and `Portfolio#historical_rate` had its own answer for that:
+
+```ruby
+FxRateHistory.rate_on(base: from, quote: to, date: date) || current_rate(from, to)
+```
+
+Two unbounded reaches, stacked. `quote_on` walks back to the newest row on or before the date with
+no bound at all, and when that finds nothing the `||` falls **forward** to today's rate. A March
+snapshot was valued at August's rate and presented as March's, with nothing marking it — which is
+not a degraded figure, it is a different question answered.
+
+**C1 Lucía Ramírez (Mexican financial domain):** *"El hueco de FIX es normal — fin de semana,
+feriado, Jueves y Viernes Santo. Tomar el anterior más cercano es lo que hace un broker, y es lo que
+liquida. Tomar el de hoy para una fecha de marzo es responder otra pregunta y no decirlo."*
+
+**Decided:** a historical figure settles against the nearest **prior** rate within
+`Portfolio::MAX_RATE_STALENESS_DAYS` (**7**), and absents itself past that under the policy above.
+Seven days is sized on the longest legitimate hole in the series — Jueves Santo, Viernes Santo and
+the weekend behind them, four days without a publication — with room for one missed publication on
+either side. Inside the window the figure is not degraded and carries no marking: settling against
+Friday's FIX on a Sunday is the convention, not an approximation. Outside it, the figure is absent
+and `fx_unavailable` says so, which is the vocabulary this ADR already built rather than a second
+one.
+
+The forward fallback to `current_rate` is **removed**, not bounded. It was the fabricating half:
+`current_rate` reads `fx_rates`, which holds one row per pair with no date, so it can only ever
+answer "today" — there is no window in which today's rate is the right answer for a past date.
+`current_rate` keeps its one honest caller, `convert` without an `at_date`.
+
+Scoped to `Portfolio#historical_rate` deliberately. `FxRateHistory.quote_on` keeps its unbounded
+walk-back because its other callers want it: `/fx_rates` renders `Quote#rate_date` and so already
+tells the reader which date answered, and `Trading::Domain::ExecutionRate` is a write path governed
+by outcome 1 above. Bounding the store would change trade entry as a side effect of a read fix.
+
+`comun.sin_tc_cuerpo` moves from "el tipo de cambio del día" to "de alguna de las fechas" — the
+banner can now fire for a hole in the past, and naming today would be false when it does.
 
 ## Consequences
 

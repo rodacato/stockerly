@@ -192,18 +192,15 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
     end
   end
 
-  describe "Snapshot-based calculators — cross-currency edge case (KNOWN GAP, see #183)" do
+  describe "Snapshot-based calculators — cross-currency, with no FIX for the date" do
     # Edge case: user toggled preferred_currency mid-stream (UI added in S11 #146).
-    # Old snapshots remain in the old currency. Portfolio#convert only knows TODAY's
-    # FX rate, so revaluing historical snapshots at today's rate effectively zeroes
-    # the FX-on-principal effect. This contradicts total_unrealized_gain's contract
-    # (which preserves historical FX). The gap is documented in #183 with a
-    # decision matrix (FX-history table, lazy recompute, lock the toggle, accept
-    # imperfection). Caught by gemini-code-assist in PR #181 review.
+    # Old snapshots remain in the old currency, so they need the FIX of their own
+    # date to be revalued. #183 gave them one — the FxRateHistory series — and
+    # #537 closed the hole it left: when the series has nothing within a week of
+    # the date, the figure is absent rather than revalued at today's rate.
     #
-    # These specs ASSERT THE CURRENT BEHAVIOR — they're a regression guard so the
-    # gap doesn't widen, NOT a statement that this is correct. When #183 lands,
-    # update these assertions to the honest values.
+    # These specs used to assert 1,750 and 10.71% — the numbers today's rate
+    # produced — as a guard on a gap that is now closed.
 
     let!(:yesterday_snap_in_usd) do
       create(:portfolio_snapshot,
@@ -213,21 +210,28 @@ RSpec.describe "Multi-currency calculator audit (#168 — Lucía scenario)" do
              currency: "USD")
     end
 
-    it "day_gain revalues yesterday's USD snapshot at TODAY's FX (FX-on-principal ignored)" do
+    it "day_gain absents itself rather than revaluing yesterday at today's FX" do
       summary = Trading::Domain::PortfolioSummary.new(portfolio)
-      # Current behavior: 3,000 USD × 17.50 = 52,500 baseline. day_gain = 1,750.
-      # Honest behavior would need yesterday's FX: 3,000 × 17.00 = 51,000 → day_gain = 3,250.
-      # Until #183 lands, current behavior captures incomplete picture.
-      expect(summary.day_gain.absolute).to be_within(0.01).of(1_750.0)
+
+      # Today's 17.50 would have said 1,750; yesterday's own FIX is what the
+      # honest 3,250 needs, and neither is available here.
+      expect { summary.day_gain }.to raise_error(Trading::Domain::MissingFxRate)
     end
 
-    it "period_returns revalues each cross-currency snapshot at TODAY's FX (FX-on-principal ignored)" do
+    it "day_gain answers once the FIX of that day exists" do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: Date.yesterday, rate: 17.0, source: "banxico_fix")
+      summary = Trading::Domain::PortfolioSummary.new(portfolio)
+
+      # 3,000 USD × 17.00 = 51,000 baseline against 54,250 today.
+      expect(summary.day_gain.absolute).to be_within(0.01).of(3_250.0)
+    end
+
+    it "period_returns absents itself rather than revaluing each snapshot at today's FX" do
       create(:portfolio_snapshot, portfolio: portfolio, date: 30.days.ago,
              total_value: 2_800.0, currency: "USD")
-      result = Trading::Domain::PeriodReturnsCalculator.new(portfolio).calculate
-      # Current: 30-day USD 2,800 × today's 17.50 = 49,000 baseline → 10.71%
-      # Honest: need historical FX from 30 days ago to compute true MXN baseline
-      expect(result["1M"].percent).to be_within(0.01).of(10.71)
+
+      expect { Trading::Domain::PeriodReturnsCalculator.new(portfolio).calculate }
+        .to raise_error(Trading::Domain::MissingFxRate)
     end
   end
 

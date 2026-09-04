@@ -6,6 +6,12 @@ class Portfolio < ApplicationRecord
   has_many   :snapshots,          class_name: "PortfolioSnapshot", dependent: :destroy
   has_many   :dividend_payments,  dependent: :destroy
 
+  # How far back a historical figure may reach for the rate that settles it.
+  # The longest legitimate hole in Banxico's FIX is Jueves and Viernes Santo
+  # plus the weekend behind them — four days without a publication — and one
+  # week leaves room for a missed publication on either side of it.
+  MAX_RATE_STALENESS_DAYS = 7
+
   def open_positions
     positions.where(status: :open)
   end
@@ -85,12 +91,23 @@ class Portfolio < ApplicationRecord
     fx_rate_cache[[ from, to ]] ||= FxRate.find_by(base_currency: from, quote_currency: to)&.rate
   end
 
-  # Falls back to today's rate when history has no entry on or before the date,
-  # which is what an instance sees before its first backfill. Better a current
-  # rate than a raised exception on a screen.
+  # Banxico's FIX has no row for a weekend, a bank holiday or a publication it
+  # missed, so a figure dated inside one of those holes settles against the
+  # nearest prior rate — which is what a Mexican broker does. Past the window
+  # the nearest prior rate answers a different question, so the figure absents
+  # itself under ADR-0023 instead of being valued at a rate from another month.
   def historical_rate(from, to, date)
-    fx_rate_cache[[ from, to, date ]] ||=
-      FxRateHistory.rate_on(base: from, quote: to, date: date) || current_rate(from, to)
+    key = [ from, to, date ]
+    return fx_rate_cache[key] if fx_rate_cache.key?(key)
+
+    fx_rate_cache[key] = settling_rate(from, to, date)
+  end
+
+  def settling_rate(from, to, date)
+    quote = FxRateHistory.quote_on(base: from, quote: to, date: date)
+    return nil if quote.nil?
+
+    quote.rate if (date.to_date - quote.rate_date).to_i <= MAX_RATE_STALENESS_DAYS
   end
 
   def open_positions_with_assets
