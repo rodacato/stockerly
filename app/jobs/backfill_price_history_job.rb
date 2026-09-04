@@ -7,7 +7,11 @@ class BackfillPriceHistoryJob < ApplicationJob
 
   queue_as :default
 
-  DAYS = 365
+  # Ten years, because the deepest history a source will give costs the same one
+  # request as a year of it, and an asset added today otherwise waits a year
+  # before its 200-day average exists. Each source clamps this to what it
+  # actually serves — see MarketDataGateway.max_history_days.
+  DAYS = 3650
 
   def perform(asset_id)
     asset = Asset.find_by(id: asset_id)

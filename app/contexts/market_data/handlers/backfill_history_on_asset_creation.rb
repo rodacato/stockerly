@@ -1,7 +1,7 @@
 module MarketData
   module Handlers
-    # Enqueues a 30-day price history backfill when a new asset is created.
-    # Runs async so the asset creation response is not delayed.
+    # Enqueues the price history backfill when a new asset is created. Runs
+    # async so the asset creation response is not delayed by a provider.
     class BackfillHistoryOnAssetCreation
       def self.async? = true
 
