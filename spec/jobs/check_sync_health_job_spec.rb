@@ -177,6 +177,86 @@ RSpec.describe CheckSyncHealthJob, type: :job do
         expect(health_alerts.pluck(:task_name)).to match_array(described_class::CRITICAL_SYNCS)
       end
     end
+
+    # The false alarms #504 measured. Each one was a real notification the owner
+    # received on a day when nothing was wrong, and an alert channel that cries
+    # wolf on a Saturday is one that gets muted by December.
+    describe "syncs that do not run daily and unconditionally" do
+      # The BMV closed Friday at 15:00 CST and reopens Monday. Under one 25h
+      # window the last success expired Saturday evening, so every weekend
+      # produced "Tus acciones mexicanas no se han actualizado".
+      it "stays quiet on Saturday for the syncs that only run while a market is open" do
+        make_log("Bulk BMV Sync", severity: :success, at: Time.zone.parse("2026-01-16 15:00:00 -0600"))
+        make_log("Market Indices Sync", severity: :success, at: Time.zone.parse("2026-01-16 16:00:00 -0500"))
+
+        travel_to Time.zone.parse("2026-01-17 12:00:00 -0500")
+        described_class.new.perform
+
+        expect(health_alerts("Bulk BMV Sync")).to be_empty
+        expect(health_alerts("Market Indices Sync")).to be_empty
+      end
+
+      # Same defect, weekday shape: at 07:00 ET neither market has opened, so
+      # overnight silence is the schedule working, not the sync dying.
+      it "stays quiet before the opening bell on a weekday" do
+        travel_to Time.zone.parse("2026-01-14 07:00:00 -0500")
+        described_class.new.perform
+
+        expect(health_alerts("Bulk BMV Sync")).to be_empty
+        expect(health_alerts("Market Indices Sync")).to be_empty
+      end
+
+      # Fifteen minutes after the bell a sync on a 30-minute cadence may
+      # legitimately not have run yet. Alerting there just moves the false
+      # alarm from Saturday to 09:45 every weekday.
+      it "waits out the first hour of the session before reading silence as failure" do
+        travel_to Time.zone.parse("2026-01-14 09:45:00 -0500")
+        described_class.new.perform
+
+        expect(health_alerts("Bulk BMV Sync")).to be_empty
+      end
+
+      # And the gate must not become a mute button: an hour into the session,
+      # nothing logged is a real failure and still has to reach the owner.
+      it "alerts once the session is underway and the sync still has nothing to show" do
+        make_log("Bulk BMV Sync", severity: :error, at: 2.hours.ago, message: "DataBursatil 500")
+
+        described_class.new.perform
+
+        expect(health_alerts("Bulk BMV Sync").sole.error_message).to include("DataBursatil 500")
+      end
+
+      # US DST pulls the two sessions apart: at 16:30 ET the US has closed but
+      # the BMV trades until 17:00 ET, and the indices job runs for either one.
+      it "evaluates the indices while only the Mexican session is open" do
+        travel_to Time.zone.parse("2026-07-15 16:30:00 -0400")
+        described_class.new.perform
+
+        expect(health_alerts("Market Indices Sync").count).to eq(1)
+      end
+
+      # CETES is auctioned weekly and synced Sunday at 10:00. Against a 25h
+      # window it looked dead from Monday evening onwards — six days in seven.
+      it "stays quiet six days after the weekly CETES sync succeeded" do
+        silence_other_syncs(except: "CETES Sync")
+        make_log("CETES Sync", severity: :success, at: 6.days.ago)
+
+        described_class.new.perform
+
+        expect(health_alerts).to be_empty
+      end
+
+      # Past two missed auctions it is genuinely dead, and the nine-day window
+      # is only worth having if it still says so.
+      it "alerts when the weekly CETES sync has missed more than one auction" do
+        silence_other_syncs(except: "CETES Sync")
+        make_log("CETES Sync", severity: :success, at: 10.days.ago)
+
+        described_class.new.perform
+
+        expect(health_alerts("CETES Sync").sole.error_message).to include("más de 9 días")
+      end
+    end
   end
   describe "telling the owner" do
     let!(:owner) { create(:user) }
