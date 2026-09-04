@@ -1,0 +1,19 @@
+# What the conventions in script/checks/ already find on master, so each one can
+# be green while still failing anything new. Same bargain as .rubocop_todo.yml:
+# debt to shrink, not a permanent exemption. A row whose count the code has
+# fallen below is reported as stale — trim it rather than leave it padding.
+#
+# `count` is per file. Exceed it and the run fails.
+
+boundaries:
+  app/contexts/trading/handlers/adjust_positions_on_split.rb:
+    count: 1
+    reason: >-
+      Reads StockSplit, a corporate-action fact MarketData owns. Found by this
+      check on 2026-09-04; it has no writer in app/ and no ADR names it.
+  app/contexts/market_data/use_cases/notify_approaching_earnings.rb:
+    count: 2
+    reason: >-
+      Reads WatchlistItem and Position to find who is watching an earnings date.
+      ADR-002 §Forbidden, and the one direction the ADR calls absolute. Needs a
+      Trading::Queries::* for "users watching this asset".

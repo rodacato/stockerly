@@ -89,7 +89,7 @@ This is the DDD **customer/supplier (supporting subdomain)** pattern, applied to
 
 ### Mitigations
 
-- **Periodic boundary audit.** The `audit-entropy.sh` script can be extended to count direct AR model reads from Trading into MarketData. Establish a baseline at #33 close and watch for regressions.
+- **A CI check, not a periodic audit.** `bin/checks boundaries` fails a PR that adds a bare read of the other context's AR models, or a MarketData reference to `Trading::`, or a Trading reference to `MarketData::Gateways::`. What exists today is recorded in `script/checks/baseline.yml` with a reason per file, so the check is a ratchet rather than a report. See the amendment of 2026-09-04 for what it replaced.
 - **Reviewer checklist.** PR review for Trading should ask: *"is this reading MarketData? if so, is it going through a use case or query, not an AR model?"*
 - **The shared kernel (top-level `Asset`, `FxRate`, etc.) is explicitly out of scope.** A future ADR (TBD) can decide whether to migrate those into MarketData properly.
 
@@ -220,3 +220,36 @@ Two of this ADR's deferrals were written down on 2026-09-04 as
 any context stays sanctioned exactly as written above; the guess in that clause — *"the right fix
 may be a future move of `Asset` into `MarketData::Models::Asset`"* — is the option ADR-024 measured
 at ~35–40 files and rejected.
+
+---
+
+## Amendment, 2026-09-04 — the boundary gets a check, and `audit-entropy.sh` is deleted
+
+The Mitigations section above proposed extending `script/audit-entropy.sh` to count direct AR
+reads across the boundary. It was never extended, and [issue #540](https://github.com/rodacato/stockerly/issues/540)
+measured what it was doing instead: **nothing invoked it** — no workflow, no `bin/` script, no Rake
+task, no git hook — and its cross-context metric matched *namespaced* constants, so the leak shape
+this ADR actually names (`MarketIndex.major`, `FearGreedReading.latest_*`, `TechnicalObservation`,
+all bare) was invisible to it. On `master` it reported 6 hits, every one of them a
+`MarketData::Domain::*` call this ADR sanctions.
+
+A file in the tree implies a guard. That one was a report nobody read, measuring a shape nobody
+leaks, and it is deleted.
+
+What replaces it is narrower on purpose: **`script/checks/boundaries.rb`, run by `bin/checks` in
+CI**, enforces this ADR's decision and only this ADR's decision —
+
+- Trading must not name an AR model MarketData owns, and MarketData must not name one Trading owns;
+- MarketData must not reference `Trading::` at all;
+- Trading must not reach into `MarketData::Gateways::`.
+
+Identity reading `NewsArticle`, Alerts reading `MarketHoliday`, and MarketData reading `Integration`
+are cross-context too, and this ADR's §Deferred says none of them has been decided. They are left
+out rather than enforced by a script's opinion — a check that invents policy is worse than no check.
+
+**Three pre-existing violations were found and recorded**, in `script/checks/baseline.yml`:
+`MarketData::UseCases::NotifyApproachingEarnings` reads `WatchlistItem` and `Position` to find who
+is watching an earnings date — the one direction this ADR calls absolute — and
+`Trading::Handlers::AdjustPositionsOnSplit` reads `StockSplit`. The baseline is a ratchet, not an
+amnesty: exceeding a file's recorded count fails the build, and a row the code has fallen below is
+reported as stale.
