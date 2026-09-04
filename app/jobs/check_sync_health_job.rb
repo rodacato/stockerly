@@ -1,171 +1,160 @@
 # Hourly observability sweep that turns silent sync failures into a notice the
 # owner actually receives (#328).
 #
-# For each watched sync we look at SystemLog entries inside that sync's own
-# window. No success in the window means the sync is either failing or not
-# running at all, and either way the owner hears about it once. A recent
-# success "cures" prior errors — a sync that hiccupped but recovered is healthy.
+# There is one measure of health and two renderings of it (#504). DataFreshness
+# holds the measure — per-route age, its thresholds and the market gating — and
+# /health renders it for the operator while this job renders it for the owner.
+# Reading SystemLog per sync name instead meant the two could disagree, and
+# they did: a dead US price feed degraded /health and notified nobody, because
+# SyncPriorityAssetsJob fans out to one job per ticker and writes no summary
+# row for a monitor to watch.
 #
-# One window for all seven was wrong (#504): three of them do not run daily and
-# unconditionally, so a normal Saturday read as three dead syncs.
+# Two syncs stay on their logs. News and Earnings report counts, and zero new
+# items is legitimately not an error, so the only dated fact that means
+# "healthy" is the success row itself. Neither writes data with a threshold on
+# it, and inventing one would be the check making up policy.
 #
-#   - "Bulk BMV Sync" only runs while the BMV is open (SyncPriorityAssetsJob)
-#   - "Market Indices Sync" returns early unless a US or MX market is open
-#   - "CETES Sync" runs once a week, Sunday 10:00
-#
-# So each watch carries its own window, and the two market-gated ones are only
-# evaluated once their session is genuinely underway. Outside the session the
-# question is not asked, so silence is never mistaken for failure.
-#
-# Dedup: Solid Cache (Rails.cache) keyed by task name, 6h TTL. Two consecutive
+# Dedup: Solid Cache (Rails.cache) keyed by watch, 6h TTL. Two consecutive
 # hourly runs against the same stuck sync produce only one alert.
-#
-# Task names must match the strings the sync jobs pass to SyncLogging exactly
-# (see app/jobs/concerns/sync_logging.rb).
-#
-# Out of scope: per-asset Price Sync entries (too granular for hourly cadence),
-# Fundamentals/Statements (bursty multi-day), Fear & Greed (auxiliary signal).
 class CheckSyncHealthJob < ApplicationJob
   queue_as :default
 
   DEDUP_TTL       = 6.hours
   CACHE_NAMESPACE = "sync_health_alert".freeze
 
-  # An hour into a session a sync on a 5-30 minute cadence has had several
-  # turns. Before that, silence only means the opening bell just rang.
-  SESSION_GRACE = 60.minutes
-
   # window: the longest silence this sync's own cadence can legitimately
-  # produce. market: the session it depends on, or nil when it runs regardless.
-  WATCHES = {
-    "FX Rate Refresh"     => { window: 25.hours, market: nil },        # hourly
-    "Bulk Crypto Sync"    => { window: 25.hours, market: nil },        # every 5 min, 24/7
-    "News Sync"           => { window: 25.hours, market: nil },        # every 30 min
-    "Earnings Sync"       => { window: 26.hours, market: nil },        # daily 09:00
-    "CETES Sync"          => { window: 9.days,   market: nil },        # weekly, Sun 10:00
-    "Bulk BMV Sync"       => { window: 25.hours, market: :bmv },       # 5-30 min while BMV open
-    "Market Indices Sync" => { window: 25.hours, market: :us_or_bmv }  # 10 min while either open
-  }.freeze
-
-  CRITICAL_SYNCS = WATCHES.keys.freeze
-
-  # What each sync means to the person affected. "Bulk BMV Sync" is the
-  # developer's name for it; the owner holds Mexican shares.
-  OWNER_FACING = {
-    "FX Rate Refresh"     => "El tipo de cambio no se ha actualizado en más de un día",
-    "Bulk BMV Sync"       => "Tus acciones mexicanas no se han actualizado en más de un día",
-    "Bulk Crypto Sync"    => "Tus criptomonedas no se han actualizado en más de un día",
-    "News Sync"           => "Las noticias no se han actualizado en más de un día",
-    "Earnings Sync"       => "El calendario de reportes no se ha actualizado en más de un día",
-    "CETES Sync"          => "Las tasas de CETES no se han actualizado en más de una semana",
-    "Market Indices Sync" => "Los índices no se han actualizado en más de un día"
+  # produce. task_name must match the string the job passes to SyncLogging
+  # exactly (see app/jobs/concerns/sync_logging.rb).
+  LOG_WATCHES = {
+    news:     { task_name: "News Sync",     window: 25.hours },  # every 30 min
+    earnings: { task_name: "Earnings Sync", window: 26.hours }   # daily 09:00
   }.freeze
 
   def perform
-    WATCHES.each { |task_name, watch| check(task_name, watch) }
+    LOG_WATCHES.each { |key, watch| check_log(key, watch) }
+    DataFreshness.stale_for_owner.each { |key, window| alert_stale(key, window) }
   end
 
   private
 
-  def check(task_name, watch)
-    return unless due?(watch[:market])
-
-    logs = SystemLog.where(task_name: task_name)
+  def check_log(key, watch)
+    logs = SystemLog.where(task_name: watch[:task_name])
                     .where("created_at > ?", watch[:window].ago)
 
     return if logs.exists?(severity: :success) # recent success cures prior errors
 
+    last_error = logs.where(severity: :error).order(created_at: :desc).first
+    phrase     = window_phrase(watch[:window])
+
     alert(
-      task_name,
-      window: watch[:window],
-      last_error: logs.where(severity: :error).order(created_at: :desc).first
+      key,
+      task_name: watch[:task_name],
+      title: title_for(key, phrase),
+      record: log_record_message(phrase, last_error),
+      body: log_body(last_error)
     )
   end
 
-  # A sync that only runs while a market is open cannot be judged while it is
-  # closed. Asking anyway is what alerted every weekend.
-  def due?(market)
-    case market
-    when :bmv       then session_underway?(MarketHours.bmv_minutes_since_open)
-    when :us_or_bmv then session_underway?(MarketHours.us_minutes_since_open) ||
-                         session_underway?(MarketHours.bmv_minutes_since_open)
-    else true
-    end
-  end
+  # Freshness knows the data is old; it does not know why. Saying so and
+  # pointing at Registros is the honest shape — naming whichever error happens
+  # to be most recent would present one ticker's 404 as the reason a whole
+  # route went quiet.
+  def alert_stale(key, window)
+    phrase = window_phrase(window)
 
-  def session_underway?(minutes_since_open)
-    minutes_since_open.present? && minutes_since_open.minutes >= SESSION_GRACE
+    alert(
+      key,
+      task_name: "Freshness: #{key}",
+      title: title_for(key, phrase),
+      record: I18n.t("notificaciones.sincronizacion.registro_datos", tiempo: phrase),
+      body: I18n.t("notificaciones.sincronizacion.cuerpo_sin_datos")
+    )
   end
 
   # Two readers, one dedup. The SystemLog row is the record Registros can show,
   # and the notification is the only one that goes looking for the owner
   # instead of waiting to be looked at.
-  def alert(task_name, window:, last_error:)
-    return if recently_alerted?(task_name)
+  def alert(key, task_name:, title:, record:, body:)
+    return if recently_alerted?(key)
 
-    record(task_name, window: window, last_error: last_error)
-    notify_owner(task_name, last_error: last_error)
-    mark_alerted(task_name)
+    record_finding(task_name, record)
+    notify_owner(title, body)
+    mark_alerted(key)
   rescue StandardError => e
     # Never let an observability sweep crash itself — log and move on so the
     # next hour's run still happens.
-    Rails.logger.error("CheckSyncHealthJob: failed to alert on #{task_name}: #{e.class} #{e.message}")
+    Rails.logger.error("CheckSyncHealthJob: failed to alert on #{key}: #{e.class} #{e.message}")
   end
 
   # The individual errors are already in Registros; this row is the pattern
   # over them, which is what the notification points back to.
-  def record(task_name, window:, last_error:)
+  def record_finding(task_name, message)
     SystemLog.create!(
       task_name: task_name,
       module_name: "health",
       severity: :error,
-      error_message: "Sin sincronización exitosa desde hace más de #{window_phrase(window)}. " \
-                     "#{detail_for(last_error)}"
+      error_message: message
     )
-  end
-
-  # The window is part of the finding: "no success in 25 h" and "no success in
-  # 9 days" are different facts about two syncs with different cadences.
-  def window_phrase(window)
-    window < 2.days ? "#{(window / 1.hour).to_i} h" : "#{(window / 1.day).to_i} días"
-  end
-
-  # A sync that logged nothing at all is not healthy, it is unobserved — so the
-  # summary has to say that rather than dereference an error that is not there.
-  def detail_for(last_error)
-    return "Sin registros en la ventana." if last_error.nil?
-
-    "Último error: #{last_error.error_message}"
   end
 
   # One account per instance by design (ADR-0010), so the first user is the
   # owner. No user at all means setup never ran and there is nobody to tell.
-  def notify_owner(task_name, last_error:)
+  def notify_owner(title, body)
     owner = User.first
     return if owner.nil?
 
     Notifications::UseCases::CreateNotification.call(
       user_id: owner.id,
-      title: OWNER_FACING.fetch(task_name, task_name),
-      body: "#{last_error&.error_message || 'Sin registros en la ventana'}. Revisa Registros para el detalle.",
+      title: title,
+      body: body,
       notification_type: :system
     )
   end
 
-  def recently_alerted?(task_name)
-    Rails.cache.read(dedup_key(task_name)).present?
+  def log_record_message(phrase, last_error)
+    if last_error
+      return I18n.t("notificaciones.sincronizacion.registro_error",
+                    tiempo: phrase, error: last_error.error_message)
+    end
+
+    I18n.t("notificaciones.sincronizacion.registro_sin_registros", tiempo: phrase)
+  end
+
+  # A sync that logged nothing at all is not healthy, it is unobserved — so the
+  # notification says that rather than dereference an error that is not there.
+  def log_body(last_error)
+    return I18n.t("notificaciones.sincronizacion.cuerpo_error", error: last_error.error_message) if last_error
+
+    I18n.t("notificaciones.sincronizacion.cuerpo_sin_registros")
+  end
+
+  def title_for(key, phrase)
+    I18n.t("notificaciones.sincronizacion.titulo.#{key}", tiempo: phrase)
+  end
+
+  # The window is part of the finding: "no success in 6 hours" and "no success
+  # in 9 days" are different facts about two syncs with different cadences.
+  def window_phrase(window)
+    hours = (window / 1.hour).to_i
+    return I18n.t("notificaciones.sincronizacion.horas", count: hours) if hours < 24
+
+    I18n.t("notificaciones.sincronizacion.dias", count: (window / 1.day).to_i)
+  end
+
+  def recently_alerted?(key)
+    Rails.cache.read(dedup_key(key)).present?
   rescue StandardError => e
-    Rails.logger.error("CheckSyncHealthJob: dedup read failed for #{task_name}: #{e.class} #{e.message}")
+    Rails.logger.error("CheckSyncHealthJob: dedup read failed for #{key}: #{e.class} #{e.message}")
     false
   end
 
-  def mark_alerted(task_name)
-    Rails.cache.write(dedup_key(task_name), Time.current.iso8601, expires_in: DEDUP_TTL)
+  def mark_alerted(key)
+    Rails.cache.write(dedup_key(key), Time.current.iso8601, expires_in: DEDUP_TTL)
   rescue StandardError => e
-    Rails.logger.error("CheckSyncHealthJob: dedup write failed for #{task_name}: #{e.class} #{e.message}")
+    Rails.logger.error("CheckSyncHealthJob: dedup write failed for #{key}: #{e.class} #{e.message}")
   end
 
-  def dedup_key(task_name)
-    "#{CACHE_NAMESPACE}:#{task_name}"
+  def dedup_key(key)
+    "#{CACHE_NAMESPACE}:#{key}"
   end
 end

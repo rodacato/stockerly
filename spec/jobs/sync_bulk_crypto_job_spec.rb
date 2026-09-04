@@ -21,11 +21,14 @@ RSpec.describe SyncBulkCryptoJob, type: :job do
         expect(eth.current_price.to_f).to eq(3_450.0)
       end
 
-      it "updates price_updated_at for each asset" do
+      # Health is measured off this column now (#504), so a run that priced the
+      # coins without stamping it would leave the monitor reading a dead feed.
+      it "updates price_updated_at, which is what the health monitor reads" do
         described_class.perform_now([ btc.id, eth.id ])
 
         btc.reload
         expect(btc.price_updated_at).to be_within(2.seconds).of(Time.current)
+        expect(DataFreshness.checks[:prices_crypto]).to eq("ok")
       end
 
       it "publishes AssetPriceUpdated events for changed prices" do
@@ -42,8 +45,6 @@ RSpec.describe SyncBulkCryptoJob, type: :job do
         log = SystemLog.last
         expect(log.severity).to eq("success")
         expect(log.task_name).to eq("Bulk Crypto Sync")
-        # The monitor matches exactly; a suffix here is a blind spot there.
-        expect(CheckSyncHealthJob::CRITICAL_SYNCS).to include(log.task_name)
         expect(log.module_name).to eq("sync")
       end
     end

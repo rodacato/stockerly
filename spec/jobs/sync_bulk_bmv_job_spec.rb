@@ -24,11 +24,14 @@ RSpec.describe SyncBulkBmvJob, type: :job do
         expect(ivv.current_price.to_f).to eq(48.3)
       end
 
-      it "updates price_updated_at for each asset" do
+      # Health is measured off this column now (#504), so a run that priced the
+      # issuers without stamping it would leave the monitor reading a dead feed.
+      it "updates price_updated_at, which is what the health monitor reads" do
         described_class.perform_now([ genius.id, ivv.id ])
 
         genius.reload
         expect(genius.price_updated_at).to be_within(2.seconds).of(Time.current)
+        expect(DataFreshness.latest_price_sync_for(:prices_mx)).to be_within(2.seconds).of(Time.current)
       end
 
       it "publishes AssetPriceUpdated events for changed prices" do
@@ -45,8 +48,6 @@ RSpec.describe SyncBulkBmvJob, type: :job do
         log = SystemLog.last
         expect(log.severity).to eq("success")
         expect(log.task_name).to eq("Bulk BMV Sync")
-        # The monitor matches exactly; a suffix here is a blind spot there.
-        expect(CheckSyncHealthJob::CRITICAL_SYNCS).to include(log.task_name)
       end
     end
 
