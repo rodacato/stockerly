@@ -14,7 +14,7 @@
            [ :price_per_share, t("trades.new.precio") ], [ :fee, t("trades.new.comision") ] ].each do |field, label| %>
         <label class="flex flex-col gap-1">
           <span class="text-[11px] font-semibold uppercase tracking-wide text-fg-subtle"><%= label %></span>
-          <% classes = "rounded-lg border border-border-default bg-bg-surface px-2 py-1.5 font-mono text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+          <% classes = "rounded-lg border border-border-default bg-bg-surface px-2 py-1.5 font-mono text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-focus" %>
           <% if field == :executed_at %>
             <%= f.datetime_local_field field, value: trade.executed_at.strftime("%Y-%m-%dT%H:%M"), class: classes %>
           <% else %>

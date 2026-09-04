@@ -42,8 +42,11 @@
   --color-info-bg:           #EEF0FF;
   --color-info-fg:           #4757E3;
 
-  /* --- Overlay + shape — from the kit (0.3.0 scrim, D1 radii). ---------- */
+  /* --- Overlay + shape — from the kit (0.3.0 scrim, D1 radii). An alpha is
+     the correct implementation for both: they composite over whatever
+     surface they land on, so the row carries it (D60). ------------------- */
   --color-scrim:             #0F172A99;
+  --color-focus:             #5B6CFF33;
   --radius-card:             20px;
 
   /* --- Typography ------------------------------------------------------ */
@@ -125,6 +128,7 @@
     --color-chart-neutral:     #94A3B8;
 
     --color-scrim:             #000000B3;
+    --color-focus:             #7B89FF33;
 
     --color-sentiment-1:       #FB7185;
     --color-sentiment-2:       #FBBF24;

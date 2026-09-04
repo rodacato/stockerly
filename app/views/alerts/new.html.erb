@@ -18,7 +18,7 @@
           <span class="text-sm text-fg-subtle"><%= t(".activo") %></span>
           <%= f.text_field :asset_symbol, placeholder: t(".activo_placeholder"), autocomplete: "off",
                 data: { alert_form_target: "ticker", action: "input->alert-form#refreshPreview" },
-                class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base uppercase text-fg-default placeholder:font-sans placeholder:normal-case placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+                class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base uppercase text-fg-default placeholder:font-sans placeholder:normal-case placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-focus" %>
         </label>
 
         <div class="flex flex-col gap-3">
@@ -49,14 +49,14 @@
             <%= f.number_field :threshold_value, step: "any", inputmode: "decimal", autocomplete: "off",
                   placeholder: "200.00",
                   data: { alert_form_target: "threshold", action: "input->alert-form#refreshPreview" },
-                  class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+                  class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-focus" %>
           </label>
 
           <label class="flex flex-col gap-1.5">
             <span class="text-sm text-fg-subtle"><%= t(".espera") %></span>
             <%= f.number_field :cooldown_minutes, step: 1, min: 1, inputmode: "numeric",
                   value: AlertRule::DEFAULT_COOLDOWN_MINUTES,
-                  class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+                  class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default focus:border-primary focus:outline-none focus:ring-2 focus:ring-focus" %>
           </label>
         </div>
 
@@ -66,7 +66,7 @@
           <span class="text-sm text-fg-subtle"><%= t(".ventana") %></span>
           <%= f.number_field :window_days, step: 1, min: 1, value: 7, inputmode: "numeric",
                 data: { alert_form_target: "windowDays", action: "input->alert-form#refreshPreview" },
-                class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" %>
+                class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default focus:border-primary focus:outline-none focus:ring-2 focus:ring-focus" %>
         </div>
 
         <%# Only a price cross has a direction. The controller shows this when
