@@ -22,4 +22,14 @@ RSpec.describe SendDailyDigestJob, type: :job do
 
     expect(SystemLog.where(task_name: "Daily Digest").last.error_message).to eq("0 digest(s) sent")
   end
+
+  it "logs the failure and re-raises when the digest blows up" do
+    allow(Notifications::UseCases::SendDailyDigest).to receive(:call).and_raise(StandardError, "boom")
+
+    expect { described_class.perform_now }.to raise_error(StandardError, "boom")
+
+    log = SystemLog.where(task_name: "Daily Digest").last
+    expect(log.severity).to eq("error")
+    expect(log.error_message).to eq("boom")
+  end
 end

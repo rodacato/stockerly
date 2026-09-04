@@ -4,12 +4,11 @@ class NotifyEarningsJob < ApplicationJob
   queue_as :default
 
   def perform
-    result = MarketData::UseCases::NotifyApproachingEarnings.call
+    sent = MarketData::UseCases::NotifyApproachingEarnings.call.value!
 
-    if result.success?
-      log_sync_success("Earnings Notifications", message: "#{result.value!} notifications sent")
-    else
-      log_sync_failure("Earnings Notifications", result.failure[1])
-    end
+    log_sync_success("Earnings Notifications", message: "#{sent} notifications sent")
+  rescue StandardError => e
+    log_sync_failure("Earnings Notifications", e.message)
+    raise
   end
 end

@@ -4,12 +4,11 @@ class NotifyMaturitiesJob < ApplicationJob
   queue_as :default
 
   def perform
-    result = Trading::UseCases::NotifyApproachingMaturities.call
+    sent = Trading::UseCases::NotifyApproachingMaturities.call.value!
 
-    if result.success?
-      log_sync_success("Maturity Notifications", message: "#{result.value!} notifications sent")
-    else
-      log_sync_failure("Maturity Notifications", result.failure[1])
-    end
+    log_sync_success("Maturity Notifications", message: "#{sent} notifications sent")
+  rescue StandardError => e
+    log_sync_failure("Maturity Notifications", e.message)
+    raise
   end
 end
