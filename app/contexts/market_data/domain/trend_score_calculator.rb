@@ -41,17 +41,15 @@ module MarketData
 
     private
 
+    # A plain 14-period mean of gains and losses, not Wilder's smoothing: every
+    # score already stored was computed this way, so the choice is load-bearing.
     def rsi_14(closes)
       return nil if closes.size < 15
 
-      deltas = closes.last(15).each_cons(2).map { |a, b| b - a }
-      gains = deltas.map { |d| d.positive? ? d : 0.0 }
-      losses = deltas.map { |d| d.negative? ? d.abs : 0.0 }
-
-      avg_gain = gains.sum / 14.0
-      avg_loss = losses.sum / 14.0
-      return 50.0 if avg_gain.zero? && avg_loss.zero?
-      return 100.0 if avg_loss.zero?
+      deltas = closes.last(15).each_cons(2).map { |previous, current| current - previous }
+      avg_gain = deltas.sum { |delta| delta.positive? ? delta : 0.0 } / 14.0
+      avg_loss = deltas.sum { |delta| delta.negative? ? delta.abs : 0.0 } / 14.0
+      return avg_gain.zero? ? 50.0 : 100.0 if avg_loss.zero?
 
       rs = avg_gain / avg_loss
       (100.0 - (100.0 / (1.0 + rs))).round(2)
