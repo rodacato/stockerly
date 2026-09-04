@@ -281,6 +281,13 @@ RSpec.describe MarketData::Domain::TrendScoreCalculator do
       it "answers the midpoint instead of dividing by a zero 20-day average" do
         expect(described_class.send(:volume_trend, Array.new(40, 0), 5.0)).to eq(50.0)
       end
+
+      it "stays a Float when the ratio falls under the low bound, so the factor never changes type" do
+        quiet_tail = Array.new(40, 1_000_000.0)
+        [ 36, 37, 38 ].each { |i| quiet_tail[i] = 0.0 }
+
+        expect(described_class.send(:volume_trend, quiet_tail, 5.0)).to be_a(Float)
+      end
     end
 
     describe "blend_5_factor" do

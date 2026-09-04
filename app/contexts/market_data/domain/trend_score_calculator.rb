@@ -121,7 +121,7 @@ module MarketData
       # Invert ratio when bearish: high volume in downtrend = bearish signal
       ratio = 1.0 / ratio if momentum < 0 && ratio > 0
       # Normalize ratio (0.5-2.0) to 0-100
-      ((ratio - 0.5) / 1.5 * 100.0).clamp(0, 100)
+      ((ratio - 0.5) / 1.5 * 100.0).clamp(0.0, 100.0)
     end
 
     def ema_crossover(closes)
