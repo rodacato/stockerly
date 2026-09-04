@@ -159,16 +159,13 @@ module MarketHelper
     end
   end
 
-  ASSET_MONTHS_ES_LOWER = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
-
   # "13 may 2026" — used in dividend tables, FY headers, etc.
   # Pass `include_year: false` for compact contexts (chart x-axis labels)
   # where horizontal space is tight and the year is redundant.
   def short_date_es(date, include_year: true)
     return "—" if date.nil?
 
-    base = "#{date.day} #{ASSET_MONTHS_ES_LOWER[date.month - 1]}"
-    include_year ? "#{base} #{date.year}" : base
+    l(date, format: include_year ? :day_month_year : :day_month)
   end
 
   # "may 26" — the EPS chart's x-axis, where a month and a two-digit year is all
@@ -176,15 +173,14 @@ module MarketHelper
   def short_month_year_es(date)
     return "—" if date.nil?
 
-    "#{ASSET_MONTHS_ES_LOWER[date.month - 1]} #{date.strftime('%y')}"
+    l(date, format: :month_year)
   end
 
   # "13 MAY 2026" — uppercase variant for compact eyebrow contexts.
   def short_date_upper_es(date, include_year: true)
     return "—" if date.nil?
 
-    base = "#{date.day} #{DatetimeEsHelper::MONTHS_ES[date.month - 1]}"
-    include_year ? "#{base} #{date.year}" : base
+    l(date, format: include_year ? :day_month_year_upper : :day_month_upper)
   end
 
   # Es-MX caption shown below the chart card. It reads the provenance actually

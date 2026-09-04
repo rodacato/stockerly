@@ -74,8 +74,7 @@ module NotificationsHelper
 
   def format_date_header(date)
     weekday = DatetimeEsHelper::WEEKDAYS_ES[date.wday]
-    month   = DatetimeEsHelper::MONTHS_ES[date.month - 1]
-    "#{weekday} #{date.day} #{month} #{date.year}"
+    "#{weekday} #{l(date, format: :day_month_year_upper)}"
   end
 
   def format_notification_time(notification)

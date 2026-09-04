@@ -423,8 +423,13 @@ es-MX:
     - sábado
     formats:
       calendar: "%a %-d %b"
+      day_month: "%-d %b"
+      day_month_upper: "%-d %^b"
+      day_month_year: "%-d %b %Y"
+      day_month_year_upper: "%-d %^b %Y"
       default: "%d/%m/%Y"
       long: "%-d de %B de %Y"
+      month_year: "%b %y"
       short: "%-d de %b"
     month_names:
     -
@@ -1183,6 +1188,8 @@ es-MX:
       default: "%d/%m/%Y %H:%M"
       long: "%-d de %B de %Y %H:%M"
       short: "%-d de %b %H:%M"
+      stamp: "%d %^b %Y · %H:%M"
+      stamp_seconds: "%d %^b %Y · %H:%M:%S"
     pm: p.m.
   totp_enrollments:
     new:

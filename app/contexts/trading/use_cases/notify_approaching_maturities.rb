@@ -33,8 +33,6 @@ module Trading
         sent
       end
 
-      MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
-
       private
 
       def approaching_positions
@@ -78,7 +76,7 @@ module Trading
       end
 
       def format_date_es(date)
-        "#{date.day} #{MONTHS_ES[date.month - 1]} #{date.year}"
+        I18n.l(date, format: :day_month_year)
       end
     end
   end

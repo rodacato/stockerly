@@ -1,10 +1,10 @@
 module DatetimeEsHelper
   # Shared es-MX date parts and the two time formats every surface reads:
-  #   MONTHS_ES[date.month - 1]  → "ENE".."DIC"
   #   WEEKDAYS_ES[date.wday]     → "DOM".."SÁB"
   #   relative_age(t)            → "hace 20 min"
   #   absolute_stamp(t)          → "03 AGO 2026 · 14:32"
-  MONTHS_ES   = %w[ENE FEB MAR ABR MAY JUN JUL AGO SEP OCT NOV DIC].freeze
+  # Month names are not restated here: they are the locale's own
+  # date.abbr_month_names, read through the date.formats that upcase them.
   WEEKDAYS_ES = %w[DOM LUN MAR MIÉ JUE VIE SÁB].freeze
 
   CDMX = "America/Mexico_City".freeze
@@ -29,9 +29,6 @@ module DatetimeEsHelper
 
     # Date and time both come from this one conversion: reading the date off the
     # raw timestamp dated an 18:00 CDMX row tomorrow, because the app runs in UTC.
-    t = time.in_time_zone(CDMX)
-    clock = t.strftime(seconds ? "%H:%M:%S" : "%H:%M")
-
-    "#{t.day.to_s.rjust(2, '0')} #{MONTHS_ES[t.month - 1]} #{t.year} · #{clock}"
+    l(time.in_time_zone(CDMX), format: seconds ? :stamp_seconds : :stamp)
   end
 end
