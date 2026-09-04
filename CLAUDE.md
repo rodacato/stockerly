@@ -199,7 +199,7 @@ Decision rule — four tests, all of them: if the use case needs `yield`, `valid
 
 ### Models
 
-38 files in `app/models/` — 37 models plus `ApplicationRecord`. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
+39 files in `app/models/` — 38 models plus `ApplicationRecord`. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
 
 ### Frontend Stack
 

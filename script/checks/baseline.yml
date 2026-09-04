@@ -51,9 +51,8 @@ number-format:
 # already reads as debt.
 use-cases:
 
+# Empty on purpose: the one row this convention started with (#560) is fixed,
+# not exempted. SplitDetected carries the split's facts now, so Trading's
+# handler resolves no MarketData row. Keep the key so a new finding lands under
+# a heading that already reads as debt.
 boundaries:
-  app/contexts/trading/handlers/adjust_positions_on_split.rb:
-    count: 1
-    reason: >-
-      Reads StockSplit, a corporate-action fact MarketData owns. Found by this
-      check on 2026-09-04; it has no writer in app/ and no ADR names it.

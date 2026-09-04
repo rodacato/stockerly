@@ -30,7 +30,8 @@ module Checks
       ],
       "notifications"  => %w[Notification PushSubscription],
       "trading"        => %w[
-        DividendPayment Portfolio PortfolioSnapshot Position Trade WatchlistItem
+        DividendPayment Portfolio PortfolioSnapshot Position SplitAdjustment Trade
+        WatchlistItem
       ]
     }.freeze
 
