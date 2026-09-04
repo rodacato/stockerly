@@ -29,12 +29,12 @@ module MarketData
 
       score = blend_5_factor(rsi, momentum, macd, vol, ema)
       factors = {
-        rsi: rsi.round(1),
-        momentum: normalize_momentum(momentum).round(1),
-        macd: macd&.round(1),
-        volume_trend: vol&.round(1),
-        ema_crossover: ema&.round(1)
-      }.compact
+        rsi: rsi,
+        momentum: normalize_momentum(momentum),
+        macd: macd,
+        volume_trend: vol,
+        ema_crossover: ema
+      }.compact.transform_values { |factor| factor.round(1) }
 
       { score: score, label: label_for(score), direction: momentum >= 0 ? :upward : :downward, factors: factors }
     end
