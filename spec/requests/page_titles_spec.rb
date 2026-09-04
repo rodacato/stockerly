@@ -23,7 +23,7 @@ RSpec.describe "Page titles", type: :request do
   end
 
   it "no longer writes a key nothing reads" do
-    expect(Dir.glob(Rails.root.join("app/views/**/*.erb")).select { |f|
+    expect(Rails.root.glob("app/views/**/*.erb").select { |f|
       File.read(f).include?("admin_page_title")
     }).to be_empty
   end

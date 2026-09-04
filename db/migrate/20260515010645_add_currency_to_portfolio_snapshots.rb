@@ -6,7 +6,7 @@ class AddCurrencyToPortfolioSnapshots < ActiveRecord::Migration[8.1]
     # Existing snapshots were written before currency was tracked; the
     # only safe assumption is they were in the user's preferred_currency
     # at the time of write (the value the dashboard would have rendered).
-    execute <<~SQL
+    execute <<~SQL.squish
       UPDATE portfolio_snapshots
       SET currency = users.preferred_currency
       FROM portfolios, users

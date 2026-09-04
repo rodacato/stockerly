@@ -23,7 +23,7 @@ RSpec.describe MarketData::Domain::ProviderDirectory do
     it "has an entry for every provider the first-boot setup creates" do
       # Drift guard: an Integration created in CreateFirstAdmin with no directory
       # entry would render an onboarding card with no description or source link.
-      created = File.read(Rails.root.join("app/contexts/identity/use_cases/create_first_admin.rb"))
+      created = Rails.root.join("app/contexts/identity/use_cases/create_first_admin.rb").read
                     .scan(/provider_name: "([^"]+)"/).flatten.uniq
       missing = created.reject { |name| described_class.for(name) }
       expect(missing).to be_empty, "providers with no ProviderDirectory entry: #{missing.inspect}"

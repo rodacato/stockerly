@@ -34,6 +34,8 @@ module Trading
         sent
       end
 
+      MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
+
       private
 
       def approaching_positions
@@ -62,8 +64,6 @@ module Trading
           notification_type: :maturity_reminder
         )
       end
-
-      MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
 
       def title_for(position, days)
         "#{position.asset.symbol} vence #{when_phrase(days)}"

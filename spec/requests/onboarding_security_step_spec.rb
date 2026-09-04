@@ -54,7 +54,7 @@ RSpec.describe "Onboarding · enrolling from inside the wizard", type: :request 
   # "Ajustes" tab, so `not_to include(settings_path)` would fail for a reason
   # that has nothing to do with where the button goes.
   def cta_href(label)
-    Nokogiri::HTML(response.body).css("a").find { |a| a.text.strip == label }&.[](:href)
+    response.parsed_body.css("a").find { |a| a.text.strip == label }&.[](:href)
   end
 
   it "returns to the wizard's summary, not to Ajustes, once the codes are shown" do

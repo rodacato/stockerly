@@ -29,6 +29,8 @@ module MarketData
         count
       end
 
+      MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
+
       private
 
       def users_watching(asset)
@@ -44,8 +46,6 @@ module MarketData
           notification_type: :earnings_reminder
         )
       end
-
-      MONTHS_ES = %w[ene feb mar abr may jun jul ago sep oct nov dic].freeze
 
       def format_date_es(date)
         "#{date.day} #{MONTHS_ES[date.month - 1]}"

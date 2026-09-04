@@ -8,7 +8,7 @@ RSpec.describe "The trade sheet's FX lookup", type: :request do
 
   def body_for(date)
     get fx_rate_path, params: { currency: "USD", date: date.to_s }
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   it "answers with the rate for the date asked" do

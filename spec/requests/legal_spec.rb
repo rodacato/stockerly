@@ -70,13 +70,13 @@ RSpec.describe "Legal pages", type: :request do
     end
 
     it "documents the 20 días hábiles deadline" do
-      content = File.read(Rails.root.join("docs/ops/arco-procedure.md"))
+      content = Rails.root.join("docs/ops/arco-procedure.md").read
       expect(content).to include("20 días hábiles")
       expect(content).to include("Art. 32")
     end
 
     it "documents identity validation steps" do
-      content = File.read(Rails.root.join("docs/ops/arco-procedure.md"))
+      content = Rails.root.join("docs/ops/arco-procedure.md").read
       expect(content).to match(/validación de identidad/i)
     end
   end

@@ -19,6 +19,12 @@ module MarketData
         detected
       end
 
+      # Trailing window is SMA200's 201 closes + 1 to compare yesterday/today.
+      # +8 buffer absorbs any future indicator that needs a slightly longer
+      # lookback without forcing a redeploy. Anything older than this is dead
+      # weight for the detector.
+      WINDOW_SIZE = 210
+
       private
 
       def scannable_assets
@@ -26,12 +32,6 @@ module MarketData
         # assets that never synced have nil and zero point in scanning.
         Asset.where.not(current_price: nil)
       end
-
-      # Trailing window is SMA200's 201 closes + 1 to compare yesterday/today.
-      # +8 buffer absorbs any future indicator that needs a slightly longer
-      # lookback without forcing a redeploy. Anything older than this is dead
-      # weight for the detector.
-      WINDOW_SIZE = 210
 
       def detect_for(asset)
         # Bounded fetch: trailing window only, ordered oldest→newest after the
