@@ -21,6 +21,18 @@ Performance:
 Migration:
   Enabled: true
 
+# The cop covers two different things. `params.expect(model: [...])` replaces
+# require/permit and is adopted. It also flags `params[:id]` passed to a raising
+# finder — but these three read route segments, which the router will not match
+# without, and path parameters are merged last so a query string cannot make one
+# an array. The raise it would add is unreachable, and spelling one route param
+# two ways in the same controller is the cost.
+Rails/StrongParametersExpect:
+  Exclude:
+    - 'app/controllers/market_controller.rb'
+    - 'app/controllers/admin/errors_controller.rb'
+    - 'app/controllers/admin/settings_controller.rb'
+
 # Both of these assume every receiver is an ActiveRecord relation, and the domain
 # layer is full of plain Ruby classes that answer to the same names. Their
 # autocorrections raise: AssetCatalog.find_by_symbols is a select over an array,

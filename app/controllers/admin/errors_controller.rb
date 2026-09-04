@@ -10,13 +10,13 @@ module Admin
     end
 
     def show
-      @error_event = ErrorEvent.find(params.expect(:id))
+      @error_event = ErrorEvent.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       redirect_to admin_errors_path, alert: t(".no_encontrado")
     end
 
     def destroy
-      ErrorEvent.find(params.expect(:id)).destroy!
+      ErrorEvent.find(params[:id]).destroy!
       redirect_to admin_errors_path, notice: t(".eliminado")
     rescue ActiveRecord::RecordNotFound
       redirect_to admin_errors_path, alert: t("admin.errors.show.no_encontrado")

@@ -41,7 +41,7 @@ class MarketController < AuthenticatedController
   # CKP-7: a read no longer enqueues. The reader asks, and the block swaps
   # itself in when MarketData::Handlers::BroadcastFundamentalsUpdate fires.
   def request_fundamentals
-    asset = Asset.find_by!(symbol: params.expect(:symbol).upcase)
+    asset = Asset.find_by!(symbol: params[:symbol].upcase)
     pending = MarketData::UseCases::RequestFundamentalSync.call(asset: asset)
 
     render turbo_stream: turbo_stream.replace(
@@ -52,13 +52,13 @@ class MarketController < AuthenticatedController
   end
 
   def earnings_tab
-    @asset = Asset.find_by!(symbol: params.expect(:symbol).upcase)
+    @asset = Asset.find_by!(symbol: params[:symbol].upcase)
     @earnings_events = @asset.earnings_events.order(report_date: :desc).limit(8)
     render layout: false
   end
 
   def statements_tab
-    @asset = Asset.find_by!(symbol: params.expect(:symbol).upcase)
+    @asset = Asset.find_by!(symbol: params[:symbol].upcase)
     render layout: false
   end
 end
