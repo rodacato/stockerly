@@ -78,7 +78,7 @@ RSpec.describe "data:resolve_bmv_symbols" do
   # CETES are Mexican and priced by Banxico, not by an exchange. Probing them
   # spends requests to learn nothing and lists them as unresolvable forever.
   it "never probes an asset type this provider does not serve" do
-    asset = create(:asset, :fixed_income, symbol: "CETE28D", country: "MX",
+    asset = create(:asset, :fixed_income, symbol: "CETES_28D", country: "MX",
                                           sync_status: :active, provider_symbols: {})
 
     task.invoke

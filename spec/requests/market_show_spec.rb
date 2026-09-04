@@ -164,6 +164,21 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("Banxico")
       expect(response.body).to include("Avance al vencimiento")
     end
+
+    # #552: the view parsed a term out of `CETES_28D` while the catalogue
+    # created `CETE28D`, so the progress band never rendered for the only CETES
+    # the app ships. The symbol comes from the catalogue on purpose — renaming
+    # it there without the view has to fail here.
+    it "renders the maturity progress band for the catalogue's own CETES symbol" do
+      symbol = Administration::Domain::AssetCatalog.all[:fixed_income].first[:symbol]
+      cetes = create(:asset, :fixed_income, symbol: symbol, name: "CETES 28 días",
+                     yield_rate: 11.15, face_value: 10.0, maturity_date: 20.days.from_now.to_date)
+
+      get market_asset_path(cetes.symbol)
+
+      expect(response.body).to include(I18n.t("market.fixed_income_detail.transcurridos", count: 8))
+      expect(response.body).to include(I18n.t("market.fixed_income_detail.restantes", count: 20))
+    end
   end
   # X14: the chart drew a 30-day window and its heading never said so, while a
   # row's sparkline draws seven sessions. Same silhouette, different scale.

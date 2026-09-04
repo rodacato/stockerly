@@ -68,8 +68,8 @@ RSpec.describe AlertRule, type: :model do
   end
   describe "#currency" do
     it "reads MXN off a CETE, which carries no .MX suffix" do
-      create(:asset, symbol: "CETE28D", asset_type: :fixed_income, currency: "MXN")
-      rule = build(:alert_rule, asset_symbol: "CETE28D")
+      create(:asset, symbol: "CETES_28D", asset_type: :fixed_income, currency: "MXN")
+      rule = build(:alert_rule, asset_symbol: "CETES_28D")
 
       expect(rule.currency).to eq("MXN")
     end

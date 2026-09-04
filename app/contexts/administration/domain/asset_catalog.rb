@@ -55,10 +55,10 @@ module Administration
           { symbol: "IVVPESO.MX", name: "iShares S&P 500 MXN", asset_type: "etf", exchange: "BMV", country: "MX", currency: "MXN", data_source: DATA_SOURCE_YAHOO }
         ],
         fixed_income: [
-          { symbol: "CETE28D", name: "CETES 28 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" },
-          { symbol: "CETE91D", name: "CETES 91 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" },
-          { symbol: "CETE182D", name: "CETES 182 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" },
-          { symbol: "CETE364D", name: "CETES 364 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" }
+          { symbol: "CETES_28D", name: "CETES 28 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" },
+          { symbol: "CETES_91D", name: "CETES 91 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" },
+          { symbol: "CETES_182D", name: "CETES 182 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" },
+          { symbol: "CETES_364D", name: "CETES 364 Dias", asset_type: "fixed_income", exchange: "Banxico", country: "MX", currency: "MXN" }
         ]
       }.freeze
 

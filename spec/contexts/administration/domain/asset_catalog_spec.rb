@@ -21,7 +21,7 @@ RSpec.describe Administration::Domain::AssetCatalog do
   describe ".symbols" do
     it "returns all symbols" do
       symbols = described_class.symbols
-      expect(symbols).to include("AAPL", "BTC", "SPY", "CETE28D")
+      expect(symbols).to include("AAPL", "BTC", "SPY", "CETES_28D")
     end
   end
 
@@ -86,7 +86,7 @@ RSpec.describe Administration::Domain::AssetCatalog do
     end
 
     it "has no logo for the kinds nobody publishes one for" do
-      expect(described_class.logo_url_for(symbol: "CETE28D", asset_type: "fixed_income", country: "MX")).to be_nil
+      expect(described_class.logo_url_for(symbol: "CETES_28D", asset_type: "fixed_income", country: "MX")).to be_nil
       expect(described_class.logo_url_for(symbol: "VIX", asset_type: "index", country: "US")).to be_nil
       expect(described_class.logo_url_for(symbol: "IVVPESO.MX", asset_type: "etf", country: "MX")).to be_nil
     end

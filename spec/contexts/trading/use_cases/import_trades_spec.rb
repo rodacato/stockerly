@@ -85,10 +85,10 @@ RSpec.describe Trading::UseCases::ImportTrades do
     end
 
     it "refuses fixed income, whose lots need a maturity the CSV cannot carry" do
-      create(:asset, :fixed_income, symbol: "CETE28D")
-      result = described_class.call(user: user, rows: [ row(asset_symbol: "CETE28D", currency: "MXN", net_amount: nil) ], dry_run: false)
+      create(:asset, :fixed_income, symbol: "CETES_28D")
+      result = described_class.call(user: user, rows: [ row(asset_symbol: "CETES_28D", currency: "MXN", net_amount: nil) ], dry_run: false)
 
-      expect(result.failure).to eq([ :unsupported_asset_type, [ "CETE28D" ] ])
+      expect(result.failure).to eq([ :unsupported_asset_type, [ "CETES_28D" ] ])
     end
 
     it "refuses when no historical rate exists on or before the trade date" do
