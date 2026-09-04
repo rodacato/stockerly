@@ -73,7 +73,7 @@ class CheckSyncHealthJob < ApplicationJob
     logs = SystemLog.where(task_name: task_name)
                     .where("created_at > ?", watch[:window].ago)
 
-    return if logs.where(severity: :success).exists? # recent success cures prior errors
+    return if logs.exists?(severity: :success) # recent success cures prior errors
 
     alert(
       task_name,
