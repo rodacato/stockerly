@@ -42,6 +42,8 @@ namespace :stockerly do
   # That is deliberate -- it protects a tuned limit -- but silent drift is how a
   # provider ends up throttled to a number nobody chose.
   def report_limit_drift(provider_names)
+    quota_fields = %i[max_requests_per_minute daily_call_limit]
+
     drifted = provider_names.filter_map do |name|
       defaults = MarketData::Domain::ProviderDefaults::ALL[name]
       next if defaults.nil?
@@ -49,7 +51,7 @@ namespace :stockerly do
       integration = Integration.find_by(provider_name: name)
       next if integration.nil?
 
-      changes = %i[max_requests_per_minute daily_call_limit].filter_map do |field|
+      changes = quota_fields.filter_map do |field|
         next if integration.public_send(field) == defaults[field]
 
         "#{field}: #{integration.public_send(field).inspect} vs #{defaults[field].inspect}"

@@ -55,6 +55,67 @@ Rails/ResponseParsedBody:
   Exclude:
     - 'spec/requests/pwa_spec.rb'
 
+# TOTP is defined on Unix time (RFC 6238), so the step counter is derived from
+# Time.now.to_i on purpose. A zone here would say the opposite of what it means.
+Rails/TimeZone:
+  Exclude:
+    - 'app/contexts/identity/use_cases/enable_totp.rb'
+    - 'app/contexts/identity/use_cases/verify_totp_code.rb'
+    - 'app/controllers/two_factor_controller.rb'
+    - 'app/helpers/totp_helper.rb'
+    - 'spec/contexts/identity/domain/totp_spec.rb'
+    - 'spec/contexts/market_data/gateways/alpaca_gateway_spec.rb'
+
+# The QR is rendered from the provisioning URI in-process (ADR-019); the SVG is
+# generated here, not received, so there is no untrusted markup to escape.
+Rails/OutputSafety:
+  Exclude:
+    - 'app/helpers/totp_helper.rb'
+
+# Each of these writes a mapping and its default in full, and the default
+# repeats a branch on purpose — reading `when "Equity" then "EQUITY"` beside
+# `else "EQUITY"` is the point. The breaker's is a state machine, where folding
+# :half_open into :open's timeout branch would hide the transition.
+Lint/DuplicateBranch:
+  Exclude:
+    - 'app/shared/domain/circuit_breaker.rb'
+    - 'app/contexts/market_data/gateways/alpha_vantage_gateway.rb'
+    - 'app/helpers/fundamentals_helper.rb'
+    - 'app/helpers/statements_helper.rb'
+
+# Per-request memoisation, which is what an instance variable is for in a helper
+# that a partial calls once per row.
+Rails/HelperInstanceVariable:
+  Exclude:
+    - 'app/helpers/alerts_helper.rb'
+
+# Hoisting a literal out of a loop buys nothing in an example that runs once.
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'spec/**/*'
+
+# Read one by one, and every one is deliberate. Two shapes: bookkeeping that must
+# not fail — recording a sync error through a validation would lose the error it
+# is recording — and bulk writes where per-row validation is the wrong shape.
+# The cop stays on so a new file has to justify itself.
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'spec/**/*'
+    # A backfill runs against the schema of its own moment, where the model class
+    # may not match the table it is writing.
+    - 'db/migrate/**/*'
+    - 'app/contexts/administration/use_cases/errors/record_error.rb'
+    - 'app/contexts/market_data/gateways/fx_rates_gateway.rb'
+    - 'app/contexts/notifications/domain/web_push_delivery.rb'
+    - 'app/contexts/notifications/use_cases/mark_as_read.rb'
+    - 'app/jobs/sync_bulk_bmv_job.rb'
+    - 'app/jobs/sync_integration_job.rb'
+    - 'app/jobs/sync_market_indices_job.rb'
+    - 'app/jobs/sync_single_asset_job.rb'
+    - 'app/models/fx_rate_history.rb'
+    - 'app/models/integration.rb'
+    - 'lib/tasks/fx_rate_backfill.rake'
+
 # It is right that `2.minutes.ago` in a constant is evaluated once, and that is
 # exactly what a seed script wants. Its autocorrection turns the constant into a
 # method, which the script below then cannot reference.

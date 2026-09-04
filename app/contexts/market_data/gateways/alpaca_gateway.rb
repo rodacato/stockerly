@@ -203,7 +203,7 @@ module MarketData
 
       def parse_bar(bar)
         {
-          date: Time.parse(bar["t"]).to_date,
+          date: Time.parse(bar["t"]).utc.to_date,
           open: bar["o"].to_d,
           high: bar["h"].to_d,
           low: bar["l"].to_d,
@@ -222,7 +222,7 @@ module MarketData
             source: item["source"].presence || PROVIDER,
             url: item["url"],
             image_url: item["images"]&.first&.dig("url"),
-            published_at: item["created_at"].present? ? Time.parse(item["created_at"]) : nil,
+            published_at: item["created_at"].present? ? Time.zone.parse(item["created_at"]) : nil,
             related_ticker: matching_ticker(item, ticker)
           }
         end

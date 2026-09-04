@@ -129,7 +129,7 @@ module MarketData
 
       bars = closes.each_with_index.map do |_close, i|
         {
-          date: Time.at(body["t"][i]).to_date,
+          date: Time.at(body["t"][i]).utc.to_date,
           open: body["o"][i].to_d,
           high: body["h"][i].to_d,
           low: body["l"][i].to_d,

@@ -8,7 +8,7 @@ module PriceChartHelper
   def price_chart_data(price_histories, width: 500, height: 160)
     return nil if price_histories.size < 2
 
-    closes = price_histories.map(&:close).map(&:to_f)
+    closes = price_histories.map { |history| history.close.to_f }
     dates = price_histories.map(&:date)
 
     min_price = closes.min
