@@ -71,14 +71,22 @@ overlap. Forward returns against the same assets' unconditional base rate:
 
 | Horizon | Base rate | Oversold | Overbought |
 |---|---|---|---|
-| +5 days | +0.59% | **+0.27%** (n=139) | +2.00% (n=143) |
-| +10 days | +1.14% | +1.46% (n=117) | +2.54% (n=126) |
-| +20 days | +2.09% | +3.45% (n=109, win 66%) | +3.02% (n=104, win 50%) |
+| +5 days | +0.60% | **−0.33%** (n=73) | +2.01% (n=153) |
+| +10 days | +1.17% | **−0.07%** (n=63) | +3.33% (n=134) |
+| +20 days | +2.16% | +2.76% (n=60, win 57%) | +5.48% (n=112, win 50%) |
+
+> **Corrected 2026-09-04.** The first run of this table used the RSI that shipped
+> at the time, which was not Wilder's — see
+> [`indicator-audit-2026-09.md`](indicator-audit-2026-09.md). Fixing the
+> definition roughly halved the oversold episode count (109 → 60 at +20 days) and
+> moved the light's returns down at every horizon. The conclusion below did not
+> soften; it hardened.
 
 Two things fall out immediately.
 
-**At five days the oversold light is worse than doing nothing** (+0.27% against a
-+0.59% base). Whatever it carries appears at twenty trading days, not at five.
+**At five and ten days the oversold light loses to doing nothing** (−0.33% and
+−0.07% against base rates of +0.60% and +1.17%). Whatever it carries appears at
+twenty trading days, and even there it barely clears the base rate.
 The design's window — *"día 2 de ~3.5"*, with invalidation after a week — is
 therefore wrong by roughly an order of magnitude. That number was invented; this
 one is measured.
@@ -93,11 +101,11 @@ Splitting the oversold episodes by the asset's own direction over the window:
 
 | Horizon | On assets that rose | On assets that fell |
 |---|---|---|
-| +5 days | +3.13% (n=84, win 68%) | **−4.10%** (n=55, win 36%) |
-| +10 days | +5.53% (n=74, win 77%) | **−5.55%** (n=43, win 26%) |
-| +20 days | +8.15% (n=69, win 86%) | **−4.66%** (n=40, win 32%) |
+| +5 days | +2.00% (n=32, win 69%) | **−2.15%** (n=41, win 54%) |
+| +10 days | +3.05% (n=28, win 71%) | **−2.57%** (n=35, win 40%) |
+| +20 days | +7.16% (n=27, win 78%) | **−0.84%** (n=33, win 39%) |
 
-The flat +3.45% is the average of two opposite behaviours. **The light does not
+The flat +2.76% is the average of two opposite behaviours. **The light does not
 carry a sign of its own** — it means "buy the pullback" or "catch the knife"
 depending entirely on a fact it does not contain.
 
