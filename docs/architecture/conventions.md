@@ -74,8 +74,12 @@ end
 
 ### Decision rule
 
-If the use case needs `yield`, `validate`, or `publish` → `ApplicationUseCase`.
-Otherwise → `SimpleUseCase`.
+If the use case needs `yield`, `validate`, base-class `publish`, **or has a caller that
+pattern-matches its result**, it is an `ApplicationUseCase`. Otherwise → `SimpleUseCase`.
+
+The fourth test is the one that gets dropped, so read it as load-bearing: an inline
+`EventBus.publish(...)` is not `publish`, and a use case that never returns a `Failure` must not
+return a `Result` at all. See [ADR-006](adr/0006-simple-use-case-criterion.md#the-criterion--four-tests-all-of-them).
 
 ---
 

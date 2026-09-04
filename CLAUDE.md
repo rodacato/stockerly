@@ -165,7 +165,7 @@ Two base classes per [ADR-006](docs/architecture/adr/0006-simple-use-case-criter
 - Use for pure reads (returns the value directly), single-resource mutations with a canonical 404 (use `find!`; let `ActiveRecord::RecordNotFound` propagate), and predicates (returns true/false).
 - Returns raw value. Callers consume it directly; controllers `rescue ActiveRecord::RecordNotFound` / `rescue ActiveRecord::RecordInvalid` for the failure paths.
 
-Decision rule: if `yield`, `validate`, or `publish` is needed → `ApplicationUseCase`. Otherwise → `SimpleUseCase`. See `docs/architecture/conventions.md` for examples.
+Decision rule — four tests, all of them: if the use case needs `yield`, `validate`, base-class `publish`, **or has a caller that pattern-matches its result**, it stays on `ApplicationUseCase`. Otherwise → `SimpleUseCase`. An inline `EventBus.publish(...)` is not `publish`. The invariant behind the rule: **a use case that never returns a `Failure` must not return a `Result`.** See `docs/architecture/conventions.md` for examples and [ADR-006](docs/architecture/adr/0006-simple-use-case-criterion.md) for the reasoning.
 
 ### EventBus
 
