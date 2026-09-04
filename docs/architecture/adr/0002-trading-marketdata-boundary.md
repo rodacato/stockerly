@@ -192,7 +192,12 @@ narrower lesson: refresh-on-miss and *historical* accuracy pull in opposite dire
 must be dated should not have a live-refresh fallback behind it.
 
 The live examples of the read contract are the `MarketData::Queries::*` objects — `CurrentFearGreed`,
-`NotableObservations`, `PriceSeries`, `UpcomingDividends` and the rest.
+`NotableObservations`, `PriceSeries` and the rest, each of which has a caller.
+
+`UpcomingDividends` was named here and is gone (#542, 2026-09-04). It never had one: its consumer,
+the `/positions` "próximos dividendos" panel, was deleted when Historial replaced that screen, and
+Historial answers dividends from `portfolio.dividend_payments` — what was received, not what is
+announced. Teaching the read contract from an unwired case is how the pattern rots.
 
 ---
 
