@@ -26,7 +26,13 @@ RSpec.describe MarketData::Domain::TechnicalIndicators do
     it "divides average gain by average loss when the window holds both, the branch the three constants never reach" do
       closes = (1..40).map { |i| 100.0 + (i * 0.5) + (i.even? ? 1.5 : -1.5) }
 
-      expect(described_class.rsi(closes)).to eq(58.33)
+      expect(described_class.rsi(closes)).to eq(60.4)
+    end
+
+    it "smooths across the series, so closes before the last window still move the answer" do
+      recent = (1..40).map { |i| 100.0 + (i * 0.5) + (i.even? ? 1.5 : -1.5) }
+
+      expect(described_class.rsi(Array.new(25, 1.0) + recent)).to eq(65.09)
     end
 
     it "respects custom period" do

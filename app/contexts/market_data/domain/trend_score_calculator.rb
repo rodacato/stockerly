@@ -41,19 +41,14 @@ module MarketData
 
     private
 
-    # A plain 14-period mean of gains and losses, not Wilder's smoothing: every
-    # score already stored was computed this way, so the choice is load-bearing.
+    # One definition of RSI for the whole app. This method kept its own, on the
+    # ground that "every score already stored was computed this way" — but
+    # PruneTrendScoresJob deletes those rows after 30 days and says outright
+    # that nothing reads their history, so there is nothing for them to stay
+    # comparable with. What the second copy did buy was a score and a detail
+    # screen disagreeing about the same fourteen days.
     def rsi_14(closes)
-      return nil if closes.size < 15
-
-      deltas = closes.last(15).each_cons(2).map { |previous, current| current - previous }
-      gains, losses = deltas.partition(&:positive?)
-      avg_gain = gains.sum / 14.0
-      avg_loss = losses.sum.abs / 14.0
-      return avg_gain.zero? ? 50.0 : 100.0 if avg_loss.zero?
-
-      rs = avg_gain / avg_loss
-      (100.0 - (100.0 / (1.0 + rs))).round(2)
+      TechnicalIndicators.rsi(closes.map(&:to_f))
     end
 
     def momentum_7d(closes)
