@@ -19,7 +19,7 @@
             <% assets.each do |asset| %>
               <% default_selected = Administration::Domain::AssetCatalog::DEFAULT_SELECTED.include?(asset[:symbol]) %>
               <label class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all
-                            <%= default_selected ? 'border-primary bg-primary/5' : 'border-border-default bg-bg-surface hover:border-primary/50' %>">
+                            <%= default_selected ? 'border-primary bg-primary-muted' : 'border-border-default bg-bg-surface hover:border-primary/50' %>">
                 <input type="checkbox" name="symbols[]" value="<%= asset[:symbol] %>"
                        <%= 'checked' if default_selected %>
                        class="size-5 rounded-full border-border-default text-primary focus:ring-primary">

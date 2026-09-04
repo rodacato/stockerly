@@ -53,7 +53,7 @@ export default class AlertFormController extends Controller {
       const active = chip.dataset.condition === value || this.sameFamily(chip.dataset.condition, value)
       chip.dataset.active = active ? "true" : "false"
       chip.classList.toggle("border-primary", active)
-      chip.classList.toggle("bg-primary/10", active)
+      chip.classList.toggle("bg-primary-muted", active)
       chip.classList.toggle("text-primary", active)
       chip.classList.toggle("font-semibold", active)
       chip.classList.toggle("border-border-default", !active)

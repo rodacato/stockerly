@@ -34,7 +34,7 @@
                           data-condition="<%= slug %>"
                           data-active="<%= first %>"
                           data-action="click->alert-form#selectChip"
-                          class="rounded-full border px-4 py-2 text-sm transition-colors <%= first ? 'border-primary bg-primary/10 font-semibold text-primary' : 'border-border-default text-fg-default' %>">
+                          class="rounded-full border px-4 py-2 text-sm transition-colors <%= first ? 'border-primary bg-primary-muted font-semibold text-primary' : 'border-border-default text-fg-default' %>">
                     <%= label %>
                   </button>
                 <% end %>
@@ -83,7 +83,7 @@
           <% end %>
         </div>
 
-        <div class="rounded-xl bg-primary/5 p-4">
+        <div class="rounded-xl bg-primary-muted p-4">
           <p class="font-mono text-xs uppercase tracking-widest text-primary"><%= t(".preview_label") %></p>
           <p class="mt-1 text-base font-semibold text-fg-default" data-alert-form-target="preview">
             <%= t(".preview_default") %>

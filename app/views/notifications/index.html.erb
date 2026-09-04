@@ -22,7 +22,7 @@
          [ "cetes", t(".cetes"), @counts[:cetes] ] ].each do |slug, label, count| %>
       <% on = (@tipo == slug) %>
       <%= link_to notifications_path(tipo: slug, estado: @estado),
-            class: "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors #{on ? 'border-primary bg-primary/10 font-semibold text-primary' : 'border-border-default text-fg-default'}" do %>
+            class: "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors #{on ? 'border-primary bg-primary-muted font-semibold text-primary' : 'border-border-default text-fg-default'}" do %>
         <%= label %>
         <span class="font-mono text-xs"><%= count.to_i %></span>
       <% end %>

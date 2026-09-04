@@ -20,7 +20,7 @@ export default class OnboardingSelectController extends Controller {
 
   select() {
     this.element.dataset.selected = "true"
-    this.element.classList.add("bg-primary/5", "border-primary/10")
+    this.element.classList.add("bg-primary-muted", "border-primary/10")
     this.element.classList.remove("border-transparent")
 
     const btn = this.element.querySelector("[data-role='toggle-btn']")
@@ -31,7 +31,7 @@ export default class OnboardingSelectController extends Controller {
 
   deselect() {
     this.element.dataset.selected = "false"
-    this.element.classList.remove("bg-primary/5", "border-primary/10")
+    this.element.classList.remove("bg-primary-muted", "border-primary/10")
     this.element.classList.add("border-transparent")
 
     const btn = this.element.querySelector("[data-role='toggle-btn']")

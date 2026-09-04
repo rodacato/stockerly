@@ -20,7 +20,7 @@
     <% Admin::LogsHelper::SEVERITY_OPTIONS.each do |slug, label, value| %>
       <% active = (params[:severity].presence || "todos") == slug %>
       <%= link_to admin_logs_path(search: params[:search], module_name: params[:module_name], range: params[:range], severity: value),
-            class: "rounded-full border px-4 py-2 text-sm transition-colors #{active ? 'border-primary bg-primary/10 font-semibold text-primary' : 'border-border-default text-fg-default'}" do %>
+            class: "rounded-full border px-4 py-2 text-sm transition-colors #{active ? 'border-primary bg-primary-muted font-semibold text-primary' : 'border-border-default text-fg-default'}" do %>
         <%= label %>
       <% end %>
     <% end %>

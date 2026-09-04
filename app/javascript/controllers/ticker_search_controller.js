@@ -124,7 +124,7 @@ export default class TickerSearchController extends Controller {
 
   highlightItem(items) {
     items.forEach((item, index) => {
-      item.classList.toggle("bg-primary/10", index === this.selectedIndex)
+      item.classList.toggle("bg-primary-muted", index === this.selectedIndex)
     })
     if (this.selectedIndex >= 0) {
       items[this.selectedIndex].scrollIntoView({ block: "nearest" })
