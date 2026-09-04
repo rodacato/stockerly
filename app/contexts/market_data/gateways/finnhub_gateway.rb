@@ -8,7 +8,7 @@ module MarketData
     include ResolvesApiKey
     include Dry::Monads[:result]
 
-    BASE_URL = "https://finnhub.io/api/v1"
+    BASE_URL = "https://finnhub.io"
     PROVIDER = "Finnhub"
     TIMEOUT  = 5
 
