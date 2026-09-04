@@ -11,6 +11,6 @@ class AssetPriceHistory < ApplicationRecord
   validates :status, inclusion: { in: STATUSES }
 
   scope :for_period, ->(from, to) { where(date: from..to).order(:date) }
-  scope :recent,     ->(days = 30) { where("date >= ?", days.days.ago).order(:date) }
+  scope :recent,     ->(days = 30) { where(date: days.days.ago..).order(:date) }
   scope :daily,      -> { where(interval: "1d") }
 end

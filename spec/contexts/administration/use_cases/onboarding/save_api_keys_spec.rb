@@ -38,7 +38,7 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
     let!(:banxico) { create(:integration, :keyless, provider_name: "Banxico") }
 
     def banxico_returns(status:, body: nil)
-      stub_request(:get, %r{series/#{MarketData::Gateways::BanxicoGateway::FIX_SERIES}/datos/})
+      stub_request(:get, %r{series/#{MarketData::Gateways::BanxicoGateway::FIX_SERIES}/datos/}o)
         .to_return(status: status, body: body.to_s, headers: { "Content-Type" => "application/json" })
     end
 

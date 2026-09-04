@@ -21,6 +21,16 @@ Performance:
 Migration:
   Enabled: true
 
+# Both of these assume every receiver is an ActiveRecord relation, and the domain
+# layer is full of plain Ruby classes that answer to the same names. Their
+# autocorrections raise: AssetCatalog.find_by_symbols is a select over an array,
+# and MetricDefinitions.all is its own registry, not a scope.
+Rails/DynamicFindBy:
+  Enabled: false
+
+Rails/RedundantActiveRecordAllMethod:
+  Enabled: false
+
 # A new defect-catching cop should arrive enabled rather than wait to be noticed.
 # The cost is that a rubocop bump can fail CI — which is where it should fail.
 AllCops:

@@ -4,7 +4,7 @@ class MarketHoliday < ApplicationRecord
   validates :date, presence: true, uniqueness: { scope: :market }
   validates :name, presence: true
 
-  scope :upcoming, -> { where("date >= ?", Date.current).order(:date) }
+  scope :upcoming, -> { where(date: Date.current..).order(:date) }
 
   # `next_business_day(market: ..., from: ...)` — first weekday on/after `from`
   # that is not a holiday for the given market. Used by the CETE auction
@@ -18,7 +18,7 @@ class MarketHoliday < ApplicationRecord
   end
 
   def self.holiday?(market:, date:)
-    where(market: market, date: date).exists?
+    exists?(market: market, date: date)
   end
 
   def self.weekday?(date)

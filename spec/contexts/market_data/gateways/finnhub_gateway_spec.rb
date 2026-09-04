@@ -77,7 +77,7 @@ RSpec.describe MarketData::Gateways::FinnhubGateway do
 
       expect(result).to be_success
       expect(result.value!.size).to eq(2)
-      expect(result.value!.map { |d| d[:symbol] }).to contain_exactly("AAPL", "MSFT")
+      expect(result.value!.pluck(:symbol)).to contain_exactly("AAPL", "MSFT")
     end
 
     context "when one symbol fails" do

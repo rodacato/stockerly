@@ -120,7 +120,7 @@ module MarketData
 
     def auctions_from(datos, term)
       Array(datos).filter_map do |dato|
-        yield_rate = dato["dato"]&.gsub(",", "")&.to_f
+        yield_rate = dato["dato"]&.delete(",")&.to_f
         next unless yield_rate&.positive?
 
         {
@@ -155,7 +155,7 @@ module MarketData
     end
 
     def calculate_discount_price(face_value, annual_yield, days)
-      (face_value / (1 + annual_yield / 100.0 * days / 360.0)).round(6)
+      (face_value / (1 + (annual_yield / 100.0 * days / 360.0))).round(6)
     end
 
     def empty_fixes_failure

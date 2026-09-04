@@ -66,9 +66,9 @@ module MarketData
           std = Math.sqrt(variance)
 
           {
-            upper:  (middle + stddev * std).round(4),
+            upper:  (middle + (stddev * std)).round(4),
             middle: middle.round(4),
-            lower:  (middle - stddev * std).round(4)
+            lower:  (middle - (stddev * std)).round(4)
           }
         end
       end

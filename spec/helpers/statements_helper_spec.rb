@@ -4,7 +4,7 @@ RSpec.describe StatementsHelper, type: :helper do
   describe "#line_items_for" do
     it "returns income statement line items in es-MX (BMV-emisora nomenclature)" do
       items = helper.line_items_for(:income_statement)
-      labels = items.reject { |i| i[:section] }.map { |i| i[:label] }
+      labels = items.reject { |i| i[:section] }.pluck(:label)
 
       expect(labels).to include("Ingresos", "Utilidad bruta", "Utilidad de operación", "Utilidad neta")
       expect(labels).to include("UPA diluida")
@@ -12,7 +12,7 @@ RSpec.describe StatementsHelper, type: :helper do
 
     it "returns balance sheet line items in es-MX" do
       items = helper.line_items_for(:balance_sheet)
-      labels = items.reject { |i| i[:section] }.map { |i| i[:label] }
+      labels = items.reject { |i| i[:section] }.pluck(:label)
 
       expect(labels).to include("Activos totales", "Pasivos totales", "Capital contable")
       expect(labels).to include("Efectivo y equivalentes", "Crédito mercantil")
@@ -20,7 +20,7 @@ RSpec.describe StatementsHelper, type: :helper do
 
     it "returns cash flow line items in es-MX" do
       items = helper.line_items_for(:cash_flow)
-      labels = items.reject { |i| i[:section] }.map { |i| i[:label] }
+      labels = items.reject { |i| i[:section] }.pluck(:label)
 
       expect(labels).to include("Flujo de efectivo operativo",
                                 "Inversión en activos fijos (CAPEX)",
@@ -28,9 +28,9 @@ RSpec.describe StatementsHelper, type: :helper do
     end
 
     it "translates the section headings to es-MX" do
-      income_sections = helper.line_items_for(:income_statement).select { |i| i[:section] }.map { |i| i[:section] }
-      balance_sections = helper.line_items_for(:balance_sheet).select { |i| i[:section] }.map { |i| i[:section] }
-      cashflow_sections = helper.line_items_for(:cash_flow).select { |i| i[:section] }.map { |i| i[:section] }
+      income_sections = helper.line_items_for(:income_statement).select { |i| i[:section] }.pluck(:section)
+      balance_sections = helper.line_items_for(:balance_sheet).select { |i| i[:section] }.pluck(:section)
+      cashflow_sections = helper.line_items_for(:cash_flow).select { |i| i[:section] }.pluck(:section)
 
       expect(income_sections).to include("Ingresos y rentabilidad", "Desempeño operativo", "Resultado final")
       expect(balance_sections).to include("Activos", "Pasivos", "Capital")
@@ -40,7 +40,7 @@ RSpec.describe StatementsHelper, type: :helper do
 
     it "preserves Alpha Vantage JSON keys (enum identifiers, not translated)" do
       items = helper.line_items_for(:income_statement)
-      keys = items.reject { |i| i[:section] }.map { |i| i[:key] }
+      keys = items.reject { |i| i[:section] }.pluck(:key)
 
       # The gateway-to-view contract is keyed on the Alpha Vantage JSON field
       # names; translating the keys would break it. Translation lives on :label.

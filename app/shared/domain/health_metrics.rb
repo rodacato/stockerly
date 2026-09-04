@@ -41,14 +41,14 @@ class HealthMetrics
 
     def circuit_breaker_events(since: 24.hours.ago)
       SystemLog.by_module("resilience")
-               .where("created_at >= ?", since)
+               .where(created_at: since..)
                .recent
                .limit(10)
     end
 
     def open_circuits_count(since: 24.hours.ago)
       SystemLog.by_module("resilience")
-               .where("created_at >= ?", since)
+               .where(created_at: since..)
                .where(severity: :warning)
                .select(:task_name)
                .distinct

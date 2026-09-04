@@ -74,7 +74,7 @@ RSpec.describe MarketData::Gateways::CoingeckoGateway do
         expect(result).to be_success
         data = result.value!
         expect(data.size).to eq(2)
-        expect(data.map { |d| d[:symbol] }).to contain_exactly("BTC", "ETH")
+        expect(data.pluck(:symbol)).to contain_exactly("BTC", "ETH")
       end
     end
 

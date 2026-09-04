@@ -34,7 +34,7 @@ RSpec.describe "PWA", type: :request do
 
       maskable, plain = icons.partition { |icon| icon["purpose"].to_s.include?("maskable") }
       expect(maskable).not_to be_empty
-      expect(plain.map { |icon| icon["src"] }).not_to include(*maskable.map { |icon| icon["src"] })
+      expect(plain.pluck("src")).not_to include(*maskable.pluck("src"))
     end
 
     # Android mints the home-screen icon from a raster source; an SVG-only

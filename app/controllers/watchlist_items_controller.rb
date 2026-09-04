@@ -15,7 +15,7 @@ class WatchlistItemsController < AuthenticatedController
               partial: FLASH_PARTIAL, locals: { type: "notice", message: t("watchlist_items.flash.agregado") })
           ]
         end
-        format.html { redirect_back fallback_location: dashboard_path, notice: t("watchlist_items.flash.agregado") }
+        format.html { redirect_back_or_to(dashboard_path, notice: t("watchlist_items.flash.agregado")) }
       end
     in Dry::Monads::Failure[ :validation, errors ]
       message = errors.values.flatten.first
@@ -24,7 +24,7 @@ class WatchlistItemsController < AuthenticatedController
           render turbo_stream: turbo_stream.prepend("flash_messages",
             partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
-        format.html { redirect_back fallback_location: assets_path, alert: message }
+        format.html { redirect_back_or_to(assets_path, alert: message) }
       end
     in Dry::Monads::Failure[ :not_found, message ]
       respond_to do |format|
@@ -32,7 +32,7 @@ class WatchlistItemsController < AuthenticatedController
           render turbo_stream: turbo_stream.prepend("flash_messages",
             partial: FLASH_PARTIAL, locals: { type: "alert", message: message })
         end
-        format.html { redirect_back fallback_location: assets_path, alert: message }
+        format.html { redirect_back_or_to(assets_path, alert: message) }
       end
     end
   end
@@ -41,9 +41,9 @@ class WatchlistItemsController < AuthenticatedController
     item = Trading::UseCases::RemoveFromWatchlist.call(user: current_user, watchlist_item_id: params[:id])
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.remove(item) }
-      format.html { redirect_back fallback_location: profile_path, notice: t("watchlist_items.flash.eliminado") }
+      format.html { redirect_back_or_to(profile_path, notice: t("watchlist_items.flash.eliminado")) }
     end
   rescue ActiveRecord::RecordNotFound
-    redirect_back fallback_location: profile_path, alert: t("watchlist_items.flash.no_encontrado")
+    redirect_back_or_to(profile_path, alert: t("watchlist_items.flash.no_encontrado"))
   end
 end

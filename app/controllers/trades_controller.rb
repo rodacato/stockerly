@@ -10,6 +10,14 @@ class TradesController < AuthenticatedController
     @held = held_position
   end
 
+  def edit
+    return unless (trade = find_trade_or_redirect)
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(trade, partial: "trades/edit_row", locals: { trade: trade }) }
+      format.html { redirect_to positions_path }
+    end
+  end
   def create
     result = Trading::UseCases::ExecuteTrade.call(user: current_user, params: trade_params.to_h)
 
@@ -35,14 +43,6 @@ class TradesController < AuthenticatedController
     end
   end
 
-  def edit
-    return unless (trade = find_trade_or_redirect)
-
-    respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.replace(trade, partial: "trades/edit_row", locals: { trade: trade }) }
-      format.html { redirect_to positions_path }
-    end
-  end
 
   # Inline delete-confirm row replaces the trade row when the user clicks
   # delete. Lets the destroy action run without a JS confirm() dialog,

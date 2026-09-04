@@ -36,7 +36,7 @@ class SyncAllStatementsJob < ApplicationJob
 
   def eligible_assets
     Asset.where(asset_type: [ :stock, :etf ], sync_status: :active)
-         .where("fundamentals_synced_at IS NOT NULL")
+         .where.not(fundamentals_synced_at: nil)
          .where(
            "id NOT IN (SELECT DISTINCT asset_id FROM financial_statements WHERE fetched_at > ?)",
            7.days.ago

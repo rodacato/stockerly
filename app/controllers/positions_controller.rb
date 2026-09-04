@@ -10,7 +10,7 @@ class PositionsController < AuthenticatedController
       @dividends = data[:dividends]
       @closed    = data[:closed]
     in Dry::Monads::Failure[ :not_found, _ ]
-      redirect_to portfolio_path, alert: t("positions.index.sin_cartera")
+      redirect_to portfolio_path, alert: t(".sin_cartera")
     end
   end
 end

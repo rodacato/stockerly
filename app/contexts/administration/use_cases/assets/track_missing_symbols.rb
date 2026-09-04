@@ -33,7 +33,7 @@ module Administration
         def adopt_renames(wanted, renames, user)
           normalize(renames.keys).filter_map do |former|
             current = renames[former].to_s.strip.upcase.presence
-            next if current.blank? || !wanted.include?(former)
+            next if current.blank? || wanted.exclude?(former)
 
             asset = Asset.find_by(symbol: current) || create_from_provider(current, user)
             next if asset.nil?
@@ -67,7 +67,7 @@ module Administration
         end
 
         def normalize(symbols)
-          Array(symbols).map { |symbol| symbol.to_s.strip.upcase }.reject(&:blank?).uniq
+          Array(symbols).map { |symbol| symbol.to_s.strip.upcase }.compact_blank.uniq
         end
 
         # These cost no provider call and cannot be wrong: the catalogue carries

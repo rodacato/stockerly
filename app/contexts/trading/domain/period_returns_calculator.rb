@@ -39,7 +39,7 @@ module Trading
         start_date = duration.ago.to_date
 
         @portfolio.snapshots
-          .where("date >= ?", start_date)
+          .where(date: start_date..)
           .order(:date)
           .map { |snap| { date: snap.date, value: snapshot_value(snap).to_f } }
       end

@@ -70,7 +70,7 @@ class TradeImportsController < AuthenticatedController
   end
 
   def catalogued(details)
-    Administration::Domain::AssetCatalog.find_by_symbols(Array(details)).map { |entry| entry[:symbol] }.to_set
+    Administration::Domain::AssetCatalog.find_by_symbols(Array(details)).pluck(:symbol).to_set
   end
 
   # Full keys, not lazy lookups: this is a helper, and a lazy key here resolves

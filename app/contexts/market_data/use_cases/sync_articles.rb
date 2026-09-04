@@ -20,7 +20,7 @@ module MarketData
 
     def upsert_articles(articles)
       created = 0
-      recent_titles = NewsArticle.where("published_at >= ?", 48.hours.ago).pluck(:title)
+      recent_titles = NewsArticle.where(published_at: 48.hours.ago..).pluck(:title)
 
       articles.each do |data|
         next if data[:url].blank?

@@ -34,7 +34,7 @@ module MarketData
         first = closes.first
         return nil unless first.positive?
 
-        ((closes.last / first - 1) * 100).round(1)
+        (((closes.last / first) - 1) * 100).round(1)
       end
       private_class_method :change_for
     end

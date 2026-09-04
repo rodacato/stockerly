@@ -114,7 +114,7 @@ module MarketData
     end
 
     def apply_auth(req)
-      return unless @api_key.present?
+      return if @api_key.blank?
 
       header = @pro ? "x-cg-pro-api-key" : "x-cg-demo-api-key"
       req.headers[header] = @api_key

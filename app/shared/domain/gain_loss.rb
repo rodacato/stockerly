@@ -10,9 +10,7 @@ class GainLoss < Dry::Struct
     absolute < 0
   end
 
-  def zero?
-    absolute.zero?
-  end
+  delegate :zero?, to: :absolute
 
   def to_s
     sign = positive? ? "+" : ""

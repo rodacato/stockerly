@@ -33,7 +33,7 @@ RSpec.describe MarketData::Discover::VisitLog do
     end
 
     it "ignores weeks that fell out of the window" do
-      described_class.record(now: Time.current - 20.weeks)
+      described_class.record(now: 20.weeks.ago)
       described_class.record(now: Time.current)
 
       expect(described_class.weeks_seen).to eq(1)

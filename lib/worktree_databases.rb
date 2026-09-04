@@ -18,7 +18,7 @@ module WorktreeDatabases
   def groups(database_names: existing_database_names, worktree_paths: live_worktree_paths)
     raise Error, "no worktrees found — refusing to treat every database as an orphan" if worktree_paths.empty?
 
-    by_prefix = worktree_paths.to_h { |path| [ Stockerly::Checkout.prefix_for(path), path ] }
+    by_prefix = worktree_paths.index_by { |path| Stockerly::Checkout.prefix_for(path) }
     scope = by_prefix.keys.first
 
     database_names

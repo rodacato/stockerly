@@ -11,7 +11,7 @@ RSpec.describe "Backfill Flows (E2E)", type: :model do
     let!(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active) }
 
     before do
-      stub_alpaca_bars({ "AAPL" => 7.times.map { |i| alpaca_bar(date: (7 - i).days.ago.to_date.to_s, close: 180.0 + i) } })
+      stub_alpaca_bars({ "AAPL" => Array.new(7) { |i| alpaca_bar(date: (7 - i).days.ago.to_date.to_s, close: 180.0 + i) } })
     end
 
     it "detects asset with no history and backfills via BackfillMissingHistoriesJob" do

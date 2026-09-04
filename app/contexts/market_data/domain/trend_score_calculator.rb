@@ -76,7 +76,7 @@ module MarketData
       series = [ ema ]
 
       values[period..].each do |val|
-        ema = (val - ema) * multiplier + ema
+        ema = ((val - ema) * multiplier) + ema
         series << ema
       end
 
@@ -140,7 +140,7 @@ module MarketData
 
       spread = (short_val - long_val) / last_price * 100.0
       # Normalize spread (-5% to +5%) to 0-100
-      (spread.clamp(-5, 5) * 10.0 + 50.0).clamp(0, 100)
+      ((spread.clamp(-5, 5) * 10.0) + 50.0).clamp(0, 100)
     end
 
     def blend_5_factor(rsi, momentum, macd, vol, ema)
@@ -148,7 +148,7 @@ module MarketData
       norm_momentum = normalize_momentum(momentum)
 
       total_weight = 0.3 + 0.2 # RSI + momentum always present
-      weighted = 0.3 * norm_rsi + 0.2 * norm_momentum
+      weighted = (0.3 * norm_rsi) + (0.2 * norm_momentum)
 
       if macd
         weighted += 0.2 * macd

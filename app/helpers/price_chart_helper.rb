@@ -68,7 +68,7 @@ module PriceChartHelper
 
     volumes.each_with_index.map do |vol, i|
       bar_h = (vol.to_f / max_volume * max_bar_height).round(1)
-      x = (i * step_x - bar_width / 2).round(1)
+      x = ((i * step_x) - (bar_width / 2)).round(1)
       y = (height - bar_h).round(1)
       { x: x, y: y, width: bar_width.round(1), height: bar_h, volume: vol }
     end

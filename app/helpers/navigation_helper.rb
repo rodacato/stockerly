@@ -23,7 +23,7 @@ module NavigationHelper
   # the screens it owns — /trades belongs to Activos even though the tab links
   # to /portfolio.
   def nav_active?(item)
-    item[:controllers].include?(controller_path.sub(%r{\Aadmin/}, "")) ||
+    item[:controllers].include?(controller_path.delete_prefix("admin/")) ||
       (item[:key] == "ajustes" && controller_path.start_with?("admin/"))
   end
 end

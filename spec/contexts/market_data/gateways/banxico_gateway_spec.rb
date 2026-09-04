@@ -16,7 +16,7 @@ RSpec.describe MarketData::Gateways::BanxicoGateway do
       result = gateway.fetch_auction_series(term: "28", from: from, to: to)
 
       expect(result).to be_success
-      expect(result.value!.map { |a| a[:yield_rate] }).to eq([ 10.15, 10.05 ])
+      expect(result.value!.pluck(:yield_rate)).to eq([ 10.15, 10.05 ])
       expect(result.value!.first[:auction_date]).to eq(Date.new(2026, 1, 8))
     end
 
@@ -140,7 +140,7 @@ RSpec.describe MarketData::Gateways::BanxicoGateway do
         result = gateway.fetch_all_terms
 
         expect(result).to be_success
-        expect(result.value!.map { |d| d[:term] }).to contain_exactly("28", "91", "182", "364")
+        expect(result.value!.pluck(:term)).to contain_exactly("28", "91", "182", "364")
       end
 
       # Banxico answers in its own order. Matching by position rather than by

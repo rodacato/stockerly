@@ -21,7 +21,7 @@ module Alerts
         events = user.alert_events.recent.includes(:alert_rule)
         preference = user.alert_preference
         triggered_today = user.alert_events
-                              .where("triggered_at >= ?", Date.current.beginning_of_day)
+                              .where(triggered_at: Date.current.beginning_of_day..)
                               .count
 
         # Single GROUP BY status aggregation instead of three round-trips.

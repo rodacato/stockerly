@@ -36,7 +36,7 @@ class SyncBulkBmvJob < ApplicationJob
   # answer used to log "N assets" and leave the missing one stale with nothing
   # said, which is the quietest way to be wrong.
   def report(assets, quotes)
-    missing = assets.keys - quotes.map { |quote| quote[:symbol] }
+    missing = assets.keys - quotes.pluck(:symbol)
 
     if missing.empty?
       log_sync_success("Bulk BMV Sync", message: "#{quotes.size} assets")

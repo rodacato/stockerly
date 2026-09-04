@@ -72,7 +72,7 @@ module Administration
 
       def self.all = CATALOG
       def self.flat = CATALOG.values.flatten
-      def self.symbols = flat.map { |a| a[:symbol] }
+      def self.symbols = flat.pluck(:symbol)
       def self.categories = CATALOG.keys
       def self.find_by_symbols(symbols) = seedable.select { |a| symbols.include?(a[:symbol]) }
 

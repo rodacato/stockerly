@@ -18,7 +18,7 @@ RSpec.describe MarketData::Domain::TechnicalIndicators do
     end
 
     it "returns a value below 30 for a steadily declining series (oversold zone)" do
-      closes = (1..20).map { |i| 100.0 - i * 2 }
+      closes = (1..20).map { |i| 100.0 - (i * 2) }
       rsi = described_class.rsi(closes)
       expect(rsi).to be < 30.0
     end

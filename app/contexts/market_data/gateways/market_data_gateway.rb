@@ -12,9 +12,7 @@ module MarketData
         const_defined?(:PROVIDER) ? const_get(:PROVIDER) : name
       end
 
-      def source_id
-        self.class.source_id
-      end
+      delegate :source_id, to: :class
 
       def fetch_price(_symbol)
         raise NotImplementedError, "#{self.class}#fetch_price not implemented"

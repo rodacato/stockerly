@@ -8,7 +8,7 @@ module MarketData
     class BasketCatalogue
       Basket = Data.define(:symbol, :name, :group, :referents)
 
-      PATH = Rails.root.join("config", "discover_baskets.yml")
+      PATH = Rails.root.join("config/discover_baskets.yml")
 
       class << self
         def all

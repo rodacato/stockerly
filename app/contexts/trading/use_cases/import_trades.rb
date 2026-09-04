@@ -143,7 +143,7 @@ module Trading
         ids = parsed.filter_map { |row| row[:external_id].presence }
         taken = ids.any? ? portfolio.trades.where(external_id: ids).pluck(:external_id).to_set : Set.new
 
-        parsed.partition { |row| row[:external_id].blank? || !taken.include?(row[:external_id]) }
+        parsed.partition { |row| row[:external_id].blank? || taken.exclude?(row[:external_id]) }
       end
 
       # A batch whose every row was already imported is the normal outcome of

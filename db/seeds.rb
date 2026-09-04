@@ -133,7 +133,7 @@ if Rails.env.development? && (alex = User.find_by(email: "alex.thompson@example.
   portfolio = alex.portfolio
   portfolio.update!(inception_date: Date.new(2023, 1, 12))
 
-  unless Position.where(portfolio: portfolio).exists?
+  unless Position.exists?(portfolio: portfolio)
     [
       { asset: aapl, shares: 50,  price: 150.20, currency: "USD", date: 1.year.ago },
       { asset: msft, shares: 30,  price: 280.15, currency: "USD", date: 10.months.ago },
@@ -162,14 +162,14 @@ if Rails.env.development? && (alex = User.find_by(email: "alex.thompson@example.
   end
 
   # --- Alert Rules for Alex ---
-  unless AlertRule.where(user: alex).exists?
+  unless AlertRule.exists?(user: alex)
     AlertRule.create!(user: alex, asset_symbol: "AAPL",    condition: :price_crosses_above, threshold_value: 195.00, status: :active)
     AlertRule.create!(user: alex, asset_symbol: "TSLA",    condition: :rsi_oversold,        threshold_value: 30,     status: :paused)
     AlertRule.create!(user: alex, asset_symbol: "BTC/USD", condition: :day_change_percent,  threshold_value: 5.0,    status: :active)
   end
 
   # --- Alert Events ---
-  unless AlertEvent.where(user: alex).exists?
+  unless AlertEvent.exists?(user: alex)
     AlertEvent.create!(user: alex, asset_symbol: "MSFT", message: "Price crossed above resistance at $420.50", event_status: :triggered, triggered_at: 2.minutes.ago)
     AlertEvent.create!(user: alex, asset_symbol: "AMZN", message: "Fell below target of $175.00",              event_status: :triggered, triggered_at: 15.minutes.ago)
     AlertEvent.create!(user: alex, asset_symbol: "NVDA", message: "24h volume spiked by 12.5%",                event_status: :settled,   triggered_at: 1.hour.ago)
@@ -282,7 +282,7 @@ if Rails.env.development?
 end
 
   # --- Portfolio Snapshots for Alex ---
-  unless PortfolioSnapshot.where(portfolio: portfolio).exists?
+  unless PortfolioSnapshot.exists?(portfolio: portfolio)
     5.downto(1).each do |days_ago|
       # The currency is part of the reading, not decoration: a snapshot without
       # one cannot be compared to the next.
@@ -302,7 +302,7 @@ end
   end
 
   # --- Notifications for Alex ---
-  unless Notification.where(user: alex).exists?
+  unless Notification.exists?(user: alex)
     Notification.create!(user: alex, title: "MSFT crossed $420.50", body: "Your price alert for Microsoft was triggered.", notification_type: :alert_triggered, notifiable: AlertEvent.first)
     Notification.create!(user: alex, title: "AAPL earnings tomorrow", body: "Apple reports Q4 earnings after market close.", notification_type: :earnings_reminder)
   end

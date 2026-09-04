@@ -8,6 +8,11 @@ class PasswordResetsController < ApplicationController
   # GET /forgot-password — state 1: forgot form
   def new; end
 
+  # GET /reset-password/:token — state 3: reset form (or state 4 expired).
+  # `find_user_by_token` renders `expired` instead of redirecting with a
+  # flash when the token cannot be resolved, so the user gets an explicit
+  # explanation page with a CTA back to /forgot-password.
+  def edit; end
   # POST /forgot-password — state 2: forgot-sent confirmation.
   # Renders a dedicated `sent` template (no flash-and-redirect) so the
   # user lands on a clear "revisa tu correo" page they can dwell on.
@@ -19,11 +24,6 @@ class PasswordResetsController < ApplicationController
     render :sent
   end
 
-  # GET /reset-password/:token — state 3: reset form (or state 4 expired).
-  # `find_user_by_token` renders `expired` instead of redirecting with a
-  # flash when the token cannot be resolved, so the user gets an explicit
-  # explanation page with a CTA back to /forgot-password.
-  def edit; end
 
   # PATCH /reset-password/:token — state 5: reset-success on success,
   # back to the form (with errors) on validation failure, expired page

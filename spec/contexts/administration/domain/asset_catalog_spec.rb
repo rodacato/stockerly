@@ -29,7 +29,7 @@ RSpec.describe Administration::Domain::AssetCatalog do
     it "returns matching entries" do
       results = described_class.find_by_symbols(%w[AAPL BTC])
       expect(results.size).to eq(2)
-      expect(results.map { |r| r[:symbol] }).to contain_exactly("AAPL", "BTC")
+      expect(results.pluck(:symbol)).to contain_exactly("AAPL", "BTC")
     end
 
     it "ignores unknown symbols" do
@@ -59,7 +59,7 @@ RSpec.describe Administration::Domain::AssetCatalog do
     it "seeds the picker plus the system rows, and offers only the picker" do
       expect(described_class.seedable.size).to eq(described_class.flat.size + described_class::SYSTEM.size)
       expect(described_class.symbols).not_to include("VIX")
-      expect(described_class.seedable.map { |a| a[:symbol] }).to include("VIX")
+      expect(described_class.seedable.pluck(:symbol)).to include("VIX")
     end
 
     # Every MX row used to omit currency, so each was created with the column
@@ -68,7 +68,7 @@ RSpec.describe Administration::Domain::AssetCatalog do
       mx = described_class.seedable.select { |a| a[:country] == "MX" }
 
       expect(mx).not_to be_empty
-      expect(mx.map { |a| a[:currency] }.uniq).to eq([ "MXN" ])
+      expect(mx.pluck(:currency).uniq).to eq([ "MXN" ])
     end
 
     it "gives every row the fields an Asset needs to be valid" do

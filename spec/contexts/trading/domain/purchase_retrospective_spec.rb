@@ -16,7 +16,7 @@ RSpec.describe Trading::Domain::PurchaseRetrospective do
   def seed_closes(days: 60)
     days.downto(0) do |i|
       create(:asset_price_history, asset: asset, date: i.days.ago.to_date,
-                                   close: 150 - (i % 12) * 4)
+                                   close: 150 - ((i % 12) * 4))
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe Trading::Domain::PurchaseRetrospective do
     summary = described_class.call(position.reload)
 
     expect(summary.count).to eq(2)
-    expect(summary.average_price).to be_within(0.01).of((25 * 110 + 15 * 137) / 40.0)
+    expect(summary.average_price).to be_within(0.01).of(((25 * 110) + (15 * 137)) / 40.0)
     expect(summary.currency).to eq("USD")
   end
 

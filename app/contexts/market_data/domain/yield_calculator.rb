@@ -9,7 +9,7 @@ module MarketData
       def discount_price(face_value:, annual_yield:, days:)
         return face_value.to_d if days.to_i <= 0
 
-        (face_value.to_d / (1 + annual_yield.to_d / 100 * days.to_d / 360)).round(6)
+        (face_value.to_d / (1 + (annual_yield.to_d / 100 * days.to_d / 360))).round(6)
       end
 
       # Yield to maturity from known purchase price, face value, and days.

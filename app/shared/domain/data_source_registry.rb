@@ -71,9 +71,7 @@ class DataSourceRegistry
       sources
     end
 
-    def keys
-      @sources.keys
-    end
+    delegate :keys, to: :@sources
 
     def serves?(declared, wanted)
       declared.nil? || declared.include?(wanted.to_sym)
