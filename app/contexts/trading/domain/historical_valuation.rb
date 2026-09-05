@@ -32,6 +32,24 @@ module Trading
         held.select { |_, shares| shares.positive? }
       end
 
+      # One asset's value on a past date. `market_value_on` answers the same
+      # question for the whole portfolio; the block that asks this one is per
+      # position, and re-deriving it there would be a second calculation of a
+      # sum this class already knows how to take.
+      #
+      # nil, not zero, when nothing was held: "you did not own this yet" and
+      # "it was worth nothing" are different answers.
+      def asset_value_on(asset, date)
+        shares = shares_on(date)[asset]
+        return nil if shares.nil? || shares.zero?
+        # value_of answers 0 for an unpriceable asset, which is right when it is
+        # one term of a portfolio sum and wrong as the whole answer: here it
+        # would read as "worth nothing" rather than "we cannot say".
+        return nil if adjusted_close(asset, date).nil?
+
+        value_of(asset, shares, date)
+      end
+
       private
 
       def value_of(asset, shares, date)

@@ -1,0 +1,38 @@
+<%# Rendimiento (#611, D95). Money first: the percentage for 1D is the day
+    change the header already shows, so the pesos are what this block adds.
+    A window shorter than the position's own life is absent, not zero.
+    Locals: returns, currency. %>
+<% if returns.windows.any? %>
+  <section class="<%= card_classes("p-5") %>">
+    <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
+      <%= t(".titulo") %>
+    </h3>
+
+    <dl class="mt-4 flex items-start justify-between gap-2">
+      <% returns.windows.each do |window| %>
+        <div class="flex min-w-0 flex-col gap-1">
+          <dt class="font-mono text-[10px] uppercase tracking-[0.08em] text-fg-subtle">
+            <%= t(".ventana.#{window.key.downcase}") %>
+          </dt>
+          <dd class="font-mono text-sm font-semibold <%= gain_color(window.amount) %>">
+            <%= signed_currency_mx(window.amount, currency: currency, precision: 0) %>
+          </dd>
+          <% if window.percent %>
+            <dd class="font-mono text-[11px] text-fg-subtle">
+              <%= signed_percent(window.percent) %>
+            </dd>
+          <% end %>
+        </div>
+      <% end %>
+    </dl>
+  </section>
+<% elsif returns.degraded? %>
+  <%# ADR-0023: absent, and the screen says why rather than showing a zero. %>
+  <section class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
+    <span class="material-symbols-outlined text-xl text-warning-fg" aria-hidden="true">currency_exchange</span>
+    <div>
+      <p class="text-sm font-semibold text-warning-fg"><%= t("comun.sin_tc_titulo") %></p>
+      <p class="mt-0.5 text-xs text-warning-fg"><%= t("comun.sin_tc_cuerpo") %></p>
+    </div>
+  </section>
+<% end %>
