@@ -49,12 +49,16 @@ class Position < ApplicationRecord
     update!(avg_cost: cost)
   end
 
+  def shares_from_trades
+    trades.kept.buys.sum(:shares) - trades.kept.sells.sum(:shares)
+  end
+
   # After a trade is added, edited or discarded the position is re-derived from
   # its trades rather than adjusted in place, so the two agree by construction.
   def resync_from_trades!
     recalculate_avg_cost!
 
-    remaining = trades.kept.buys.sum(:shares) - trades.kept.sells.sum(:shares)
+    remaining = shares_from_trades
     if remaining.zero?
       update!(status: :closed, shares: remaining, closed_at: Time.current)
     else

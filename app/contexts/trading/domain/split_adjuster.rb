@@ -1,5 +1,5 @@
 # Adjusts positions and historical trades for a stock split.
-# Multiplies shares by split ratio and divides avg_cost/price by ratio.
+# Trades are rewritten into post-split terms; positions are re-derived from them.
 module Trading
   module Domain
     class SplitAdjuster
@@ -16,8 +16,8 @@ module Trading
       def adjust!
         SplitAdjustment.transaction do
           record_adjustment!
-          adjust_positions!
           adjust_trades!
+          adjust_positions!
         end
       rescue ActiveRecord::RecordNotUnique
         nil
@@ -32,15 +32,6 @@ module Trading
         )
       end
 
-      def adjust_positions!
-        Position.where(asset_id: @asset_id).find_each do |position|
-          position.update!(
-            shares: position.shares * @ratio,
-            avg_cost: position.avg_cost / @ratio
-          )
-        end
-      end
-
       def adjust_trades!
         Trade.where(asset_id: @asset_id)
           .kept
@@ -51,6 +42,34 @@ module Trading
               price_per_share: trade.price_per_share / @ratio
             )
           end
+      end
+
+      # The row lock is what makes two splits landing at once compose instead of
+      # overwriting each other: the second waits, then re-reads what the first left.
+      def adjust_positions!
+        Position.where(asset_id: @asset_id).find_each do |position|
+          position.with_lock { rewrite(position) }
+        end
+      end
+
+      # A split neither buys nor sells, so the position's lifecycle is not its
+      # business — only the numbers the rewritten trades now imply.
+      def rewrite(position)
+        return scale(position) if position.trades.kept.empty?
+
+        position.recalculate_avg_cost!
+        position.update!(shares: position.shares_from_trades)
+      end
+
+      # Shares entered without a trade history have nothing to re-derive from, so
+      # they are scaled — but only when they were held before the split happened.
+      def scale(position)
+        return unless position.opened_at&.to_date&.< @ex_date
+
+        position.update!(
+          shares: position.shares * @ratio,
+          avg_cost: position.avg_cost / @ratio
+        )
       end
     end
   end
