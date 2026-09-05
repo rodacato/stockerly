@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The 'Activos' tab — three tiers of interest in a symbol, drawn as a ladder (D9).\n\nTracked (assets.sync_status active) → Watchlist (watchlist_items) → Holdings (open positions). The tier is not taxonomy, it is BUDGET: SyncAllFundamentalsJob orders positions → watchlist → rest against DAILY_BUDGET = 25 calls/day, and only open positions get dividends + splits synced at all. The segmented control stays at two (the two daily questions); Tracked is a foot-of-list entry with its own screen.\n\n⚠ VOCABULARY — D48. The ladder moved to industry-standard English: Poseo → Holdings, Sigo → Watchlist, Rastreado(s) → Tracked. D9's three-tier SHAPE is untouched; only the words changed. Two things this file learned the hard way:\n(a) the code shipped it first (#364), so here the artboards FOLLOWED the code instead of leading it — the reverse of design/README rule 1, and correct in this one case;\n(b) Adrian extended it to the tab itself, so the segmented reads 'Holdings | Watchlist' while the code still says assets.index.cartera: Cartera. That single string is a code change this file is now ahead of — CODE_CHANGES §13.\n'cartera' in lowercase prose still means the portfolio and is NOT the tier. The code keeps it (radar_subtitulo: 'De tu cartera y watchlist'). Do not sweep it.\n\nEntry: bottom-nav 'Activos'. Rows link to the asset detail in cockpit.pen.\nScreens: Holdings · Watchlist · Holdings vacía (first run) · Historial · Registrar movimiento (sheet) · Registrar movimiento con teclado (the real mobile spec, D11) · Tracked · Tracked·Buscar · Importar CSV (Default · Revisión · Símbolos desconocidos).\n\nGrounding: positions (shares, avg_cost, market_value, total_gain, cost_basis_in(MXN) via fx_rate_at_execution) · watchlist_items.entry_price captured on add → 'sigues +X%', which _watch_row DOES render (assets_helper#followed_since_percent) — the brief said otherwise until 2026-08-29. The row now shows distance to the active alert threshold instead: entry_price is history, not a target (D67) · assets (current_price, change_percent_24h, currency, exchange, asset_type, price_updated_at, sync_status) · latest_trend_score → the semáforo dots. You can only follow what is already Tracked: search hits `assets`, so the search screen IS the catalogue browser.\n\nCETES rows drop the sparkline and the semáforo — technical lights don't apply to fixed income — and carry days-to-maturity + annual rate instead (C1 Lucía).\n\nMoney per D10: the section header declares the currency, rows drop the symbol; off-currency values keep the ISO prefix (USD 172.40).\n\nDesktop (1280): three artboards — Holdings, Registrar movimiento (the same <dialog>, centered) and Tracked. Tracked earns one because it absorbs /admin/assets: curating a catalogue against a daily call budget is desk work, and desktop is where the budget sits beside the list instead of above it.\n\n⚠ Touch targets: segmented controls, rows and the keypad clear 44pt; filter chips sit at ~35pt + 8pt gap — below the floor, accepted for a secondary control, flagged rather than hidden.\n\nFlow-local components (kit candidates, not promoted): WatchRow and TierChip. Segmented, OptionCard and the `scrim` token are NOT candidates — all three are already in the kit.\n\nNavRow: vendored, and the four hand-built copies are gone — the Tracked foot entry plus the three paths of the empty state now instance one master. Measuring them first changed what the job was. They were NOT four copies of one row: three had drifted about 6% larger (36px icon wrap, 18px icon, padding 14/16, description at 12) and snapped back to the kit's numbers, which is the point. But 'Captura lo que ya tienes' also carried a deliberate PRIMARY accent — $primary stroke at 1.5, $primary-muted wrap, $primary icon — because it is the recommended path out of an empty portfolio. Replacing all four with the plain kit row would have flattened that hierarchy while calling it consistency.\n\nIt is kept as an instance override rather than a new kit variant, since the method says not to promote unasked. ⚠ KIT GAP: NavRow has no recommended/primary state. If a second flow needs one, that override earns a variant instead of being copied.\n\nDesktop findings (panel C1/C5/C4): (a) the position list becomes a GRID of cards at their native ~309 width, never one stretched column — measured first: the list is grouped by asset type, not ranked by value (BTC at 61,200 sits third), so a grid breaks no ranking; (b) the Resumen became a bar — patrimonio left, freshness and 'Ver mi consolidado' right — because a stacked card stretched to 976 is the same 'river of air' mistake as a stretched AssetRow; (c) CETES is the only card with no sparkline and no semáforo, carrying maturity and annual rate instead. A grid makes that difference more visible, not less, which is the correct outcome (C1).\n\nThe dialog measures 480x785 inside 920 — it FITS, centered by math. It was 649 inside 800 until the sheet gained the Moneda field and the average-cost projection. None of D11's mobile machinery applies on desktop: no 85dvh, no internal scroll, no sticky footer, no visualViewport listener. Those exist because the iOS keyboard covers a bottom-anchored sheet; a centered desktop dialog has no such problem. Do not port them for symmetry.\n\nHistorial: the depth /positions never had. D35 kept that route with a date — an artboard by the time #294 closed, or it goes — and #294 closed on 2026-08-26 with none. Measured before drawing: it has ONE inbound link from outside itself (market/_position_trades to the trades tab), and three of its four tabs have none at all. It cannot be deleted the way admin/dashboard and admin/assets were (D34), because that deletion only worked when every card already had a 2.0 home: closed positions, the dividend history and the trade log have none. So the screen keeps those three and DROPS 'posiciones abiertas', which duplicated Holdings and is the likeliest reason nobody linked to it.\n\nIts build was gated on a discovery card; Adrian un-gated it — see D43.\n\nNo tab control: the three stack as sections in the scroll, which is what #294 decided for the asset detail's sub-tabs and what the Bandeja does with its date groups. Rows are MovementItem, promoted in kit 0.2.0 for exactly this ('reused for trade log rows'). Money per D10 — each section header declares its currency, the trade rows keep the ISO prefix because they genuinely mix.\n\n'Movimiento' means a trade — here, and everywhere. D43 flagged that it named three things; D48 settled it by moving the technical-observation sense to 'Señales' (the word market_helper already fell back to). The cockpit screen takes the block's full name. Nothing on this screen changes.\n\nCopy: es-MX. kit-version-source 0.8.1.\n⚠ The TopBar grew 57 → 76 in kit 0.8.0 — the 44pt touch target the kit had been missing since 0.5.0, which the code always had. Every artboard here moved its content down 19px. Cartera and Watchlist grew with it (1116→1135, 1289→1308); the fixed-844 screens absorbed it in their slack. Verified: nothing clips.\n\n⚠ TRACKED · SIN FUENTE (#329, cut down; registered as D46 — the entry this brief once said was owed and unwritten). The BMV addresses an issuer by name AND serie — WALMEX is rejected 400, only WALMEX* resolves — and Yahoo omits the serie when it is an asterisk. Measured against the real provider, not inferred.\n\nWhat this state exists for got narrower by measuring. #311 assumed one unmapped issuer failed the whole batch; it does not — the provider answers 200 with the rest and simply omits the one it cannot name. So nothing breaks loudly. The asset stops being priced while the row keeps rendering the last number it had. The failure is silence, and this state is what ends it.\n\n#329 asked for a row per provider that serves the asset — a mapping panel. Dropped: `rake data:resolve_bmv_symbols` resolves these by probing the bare name then the starred one, so a panel would be configuration for a problem that mostly fixes itself. What is left for a screen is the one the task could not confirm, which is one field, not a table.\n\nThe row carries it, because the row already had the slot. NVAX established it: where a healthy row says 'hace 12 min', a paused one says 'en pausa desde el 12 ago'. A sourceless one says 'sin cotizar desde el 21 ago' in warning, and its action turns from pause to wrench. It does NOT dim like a paused row — pausing is a choice the owner made, this is the instance failing, and the two must not read alike.\n\nThe fix opens in place under the row: what the provider said, the field pre-filled with the candidate the task already tried, and the promise the task already keeps — 'Guardamos el nombre solo si la fuente contesta con él'. A wrong mapping is worse than none, so nothing is written unconfirmed.\n\n🐞 The row's subtitle is single-line and clips as soon as the text grows. Here it wraps and the row goes 55 → 72. HALF-FIXED IN CODE: assets/_tracked_row.html.erb wraps, but components/_asset_row.html.erb:15 still truncates, so every other list keeps the fragility. Open.\n\nNOT drawn, deliberately: pinning an asset to a source, which #329 asked for as its second half. The chain order plus the mapping already answers it — a Mexican crypto CoinGecko does not list resolves through DataBursatil on its own. A control to choose the source would be a button for a problem the mapping closes. If an ordering turns out to be wrong, that is its own card with its own trigger.\n\nDesktop reflows: the fix is a full-width band inside the list, so `Tracked · Desktop` needs no variant.\n\nIMPORTAR CSV (#401). Three artboards for the second door of Holdings/Vacío. The engine shipped first (#400: ImportTrades, UndoImport, the rake pair) so these artboards FOLLOW the code — the screens draw what the use case already refuses and reports, not a wish.\n\nDefault: file picker OR paste, because the deployed instance has no filesystem the operator can reach — a rake task there needs `kamal shell` plus getting the file into the container, which is the same data-entry friction this removes. The column list is the contract of ImportTradeRowContract; required and optional are drawn apart.\n\nRevisión is the dry run made visible: nothing is written, the batch totals and the skipped duplicates are stated before any button commits. Duplicates are normal, not exceptional — the broker reissues the same confirmation under a new filename, so identity is external_id.\n\nSímbolos desconocidos is the refusal, and it is the screen that carries the product decision: the batch is all-or-nothing. A partial import leaves the portfolio silently wrong, and auto-creating an asset from a row that holds only a ticker produces one with no type, market or country. The screen says why, then routes to Tracked.\n\nStates not drawn: in-flight parse (the file is local and the batch is ~50 rows), success (it returns to Holdings, already drawn), and the inline SearchTicker resolution of unknown symbols — deferred out of #401 on purpose.\n\nOpen findings: D64 — the Agregar activo typeahead in assets/_track_form queries a provider and fills symbol, name, exchange and country, and has no artboard. `Tracked · Buscar` draws the LIST FILTER, a different control, and the code now ships both on the same screen. Adrian's call. D62 (the door's broker claim) resolved 2026-08-28 — one format, Stockerly's, and the door now says so.\n\n✅ THE TRADE SHEET CAUGHT UP TO THE CODE (D78, 2026-09-05). Three divergences, all in the code's favour. (a) A Moneda select the artboards never drew — it opens BLANK now ('¿En qué moneda pagaste?'), which is why the FX card is hidden on first open: trade_sheet_controller hides it whenever the currency is empty or equals the MXN reference. (b) The field pairing was wrong: the code reads Fecha | Moneda, then Títulos | Precio, with Comisión full-width on its own. The artboards paired Fecha | Títulos and Precio | Comisión. (c) The average-cost projection (issue 428) — 'Tu costo promedio pasaría de X a Y' — sits between the price row and Comisión, and stays absent until every input it needs is present, so it never shows a half-answered figure.\n\nThe Sheet artboard grew 844 → 940 to hold the longer form with a visible scrim, anchored by math. In code the body is overflow-y-auto under a sticky footer, which is the pattern `Con teclado` draws — and that artboard now CUTS at Comisión with the FX card below the fold. That clipping is the state, not drift: D11's whole point is that the keyboard eats the lower half and only Total + Guardar survive it. A future audit should read those two clipped nodes as the fold.",
+          "content": "The 'Activos' tab — three tiers of interest in a symbol, drawn as a ladder (D9).\n\nTracked (assets.sync_status active) → Watchlist (watchlist_items) → Holdings (open positions). The tier is not taxonomy, it is BUDGET: SyncAllFundamentalsJob orders positions → watchlist → rest against DAILY_BUDGET = 25 calls/day, and only open positions get dividends + splits synced at all. The segmented control stays at two (the two daily questions); Tracked is a foot-of-list entry with its own screen.\n\n⚠ VOCABULARY — D48. The ladder moved to industry-standard English: Poseo → Holdings, Sigo → Watchlist, Rastreado(s) → Tracked. D9's three-tier SHAPE is untouched; only the words changed. Two things this file learned the hard way:\n(a) the code shipped it first (#364), so here the artboards FOLLOWED the code instead of leading it — the reverse of design/README rule 1, and correct in this one case;\n(b) Adrian extended it to the tab itself, so the segmented reads 'Holdings | Watchlist' while the code still says assets.index.cartera: Cartera. That single string is a code change this file is now ahead of — CODE_CHANGES §13.\n'cartera' in lowercase prose still means the portfolio and is NOT the tier. The code keeps it (radar_subtitulo: 'De tu cartera y watchlist'). Do not sweep it.\n\nEntry: bottom-nav 'Activos'. Rows link to the asset detail in cockpit.pen.\nScreens: Holdings · Watchlist · Holdings vacía (first run) · Historial · Registrar movimiento (sheet) · Registrar movimiento con teclado (the real mobile spec, D11) · Tracked · Tracked·Buscar · Importar CSV (Default · Revisión · Símbolos desconocidos).\n\nGrounding: positions (shares, avg_cost, market_value, total_gain, cost_basis_in(MXN) via fx_rate_at_execution) · watchlist_items.entry_price captured on add → 'sigues +X%', which _watch_row DOES render (assets_helper#followed_since_percent) — the brief said otherwise until 2026-08-29. The row now shows distance to the active alert threshold instead: entry_price is history, not a target (D67) · assets (current_price, change_percent_24h, currency, exchange, asset_type, price_updated_at, sync_status) · latest_trend_score → the semáforo dots. You can only follow what is already Tracked: search hits `assets`, so the search screen IS the catalogue browser.\n\nCETES rows drop the sparkline and the semáforo — technical lights don't apply to fixed income — and carry days-to-maturity + annual rate instead (C1 Lucía).\n\nMoney per D10: the section header declares the currency, rows drop the symbol; off-currency values keep the ISO prefix (USD 172.40).\n\nDesktop (1280): three artboards — Holdings, Registrar movimiento (the same <dialog>, centered) and Tracked. Tracked earns one because it absorbs /admin/assets: curating a catalogue against a daily call budget is desk work, and desktop is where the budget sits beside the list instead of above it.\n\n⚠ Touch targets: segmented controls, rows and the keypad clear 44pt; filter chips sit at ~35pt + 8pt gap — below the floor, accepted for a secondary control, flagged rather than hidden.\n\nFlow-local components (kit candidates, not promoted): WatchRow and TierChip. Segmented, OptionCard and the `scrim` token are NOT candidates — all three are already in the kit.\n\nNavRow: vendored, and the four hand-built copies are gone — the Tracked foot entry plus the three paths of the empty state now instance one master. Measuring them first changed what the job was. They were NOT four copies of one row: three had drifted about 6% larger (36px icon wrap, 18px icon, padding 14/16, description at 12) and snapped back to the kit's numbers, which is the point. But 'Captura lo que ya tienes' also carried a deliberate PRIMARY accent — $primary stroke at 1.5, $primary-muted wrap, $primary icon — because it is the recommended path out of an empty portfolio. Replacing all four with the plain kit row would have flattened that hierarchy while calling it consistency.\n\nIt is kept as an instance override rather than a new kit variant, since the method says not to promote unasked. ⚠ KIT GAP: NavRow has no recommended/primary state. If a second flow needs one, that override earns a variant instead of being copied.\n\nDesktop findings (panel C1/C5/C4): (a) the position list becomes a GRID of cards at their native ~309 width, never one stretched column — measured first: the list is grouped by asset type, not ranked by value (BTC at 61,200 sits third), so a grid breaks no ranking; (b) the Resumen became a bar — patrimonio left, freshness and 'Ver mi consolidado' right — because a stacked card stretched to 976 is the same 'river of air' mistake as a stretched AssetRow; (c) CETES is the only card with no sparkline and no semáforo, carrying maturity and annual rate instead. A grid makes that difference more visible, not less, which is the correct outcome (C1).\n\nThe dialog measures 480x785 inside 920 — it FITS, centered by math. It was 649 inside 800 until the sheet gained the Moneda field and the average-cost projection. None of D11's mobile machinery applies on desktop: no 85dvh, no internal scroll, no sticky footer, no visualViewport listener. Those exist because the iOS keyboard covers a bottom-anchored sheet; a centered desktop dialog has no such problem. Do not port them for symmetry.\n\nHistorial: the depth /positions never had. D35 kept that route with a date — an artboard by the time #294 closed, or it goes — and #294 closed on 2026-08-26 with none. Measured before drawing: it has ONE inbound link from outside itself (market/_position_trades to the trades tab), and three of its four tabs have none at all. It cannot be deleted the way admin/dashboard and admin/assets were (D34), because that deletion only worked when every card already had a 2.0 home: closed positions, the dividend history and the trade log have none. So the screen keeps those three and DROPS 'posiciones abiertas', which duplicated Holdings and is the likeliest reason nobody linked to it.\n\nIts build was gated on a discovery card; Adrian un-gated it — see D43.\n\nNo tab control: the three stack as sections in the scroll, which is what #294 decided for the asset detail's sub-tabs and what the Bandeja does with its date groups. Rows are MovementItem, promoted in kit 0.2.0 for exactly this ('reused for trade log rows'). Money per D10 — each section header declares its currency, the trade rows keep the ISO prefix because they genuinely mix.\n\n'Movimiento' means a trade — here, and everywhere. D43 flagged that it named three things; D48 settled it by moving the technical-observation sense to 'Señales' (the word market_helper already fell back to). The cockpit screen takes the block's full name. Nothing on this screen changes.\n\nCopy: es-MX. kit-version-source 0.8.1.\n⚠ The TopBar grew 57 → 76 in kit 0.8.0 — the 44pt touch target the kit had been missing since 0.5.0, which the code always had. Every artboard here moved its content down 19px. Cartera and Watchlist grew with it (1116→1135, 1289→1308); the fixed-844 screens absorbed it in their slack. Verified: nothing clips.\n\n⚠ TRACKED · SIN FUENTE (#329, cut down; registered as D46 — the entry this brief once said was owed and unwritten). The BMV addresses an issuer by name AND serie — WALMEX is rejected 400, only WALMEX* resolves — and Yahoo omits the serie when it is an asterisk. Measured against the real provider, not inferred.\n\nWhat this state exists for got narrower by measuring. #311 assumed one unmapped issuer failed the whole batch; it does not — the provider answers 200 with the rest and simply omits the one it cannot name. So nothing breaks loudly. The asset stops being priced while the row keeps rendering the last number it had. The failure is silence, and this state is what ends it.\n\n#329 asked for a row per provider that serves the asset — a mapping panel. Dropped: `rake data:resolve_bmv_symbols` resolves these by probing the bare name then the starred one, so a panel would be configuration for a problem that mostly fixes itself. What is left for a screen is the one the task could not confirm, which is one field, not a table.\n\nThe row carries it, because the row already had the slot. NVAX established it: where a healthy row says 'hace 12 min', a paused one says 'en pausa desde el 12 ago'. A sourceless one says 'sin cotizar desde el 21 ago' in warning, and its action turns from pause to wrench. It does NOT dim like a paused row — pausing is a choice the owner made, this is the instance failing, and the two must not read alike.\n\nThe fix opens in place under the row: what the provider said, the field pre-filled with the candidate the task already tried, and the promise the task already keeps — 'Guardamos el nombre solo si la fuente contesta con él'. A wrong mapping is worse than none, so nothing is written unconfirmed.\n\n🐞 The row's subtitle is single-line and clips as soon as the text grows. Here it wraps and the row goes 55 → 72. HALF-FIXED IN CODE: assets/_tracked_row.html.erb wraps, but components/_asset_row.html.erb:15 still truncates, so every other list keeps the fragility. Open.\n\nNOT drawn, deliberately: pinning an asset to a source, which #329 asked for as its second half. The chain order plus the mapping already answers it — a Mexican crypto CoinGecko does not list resolves through DataBursatil on its own. A control to choose the source would be a button for a problem the mapping closes. If an ordering turns out to be wrong, that is its own card with its own trigger.\n\nDesktop reflows: the fix is a full-width band inside the list, so `Tracked · Desktop` needs no variant.\n\nIMPORTAR CSV (#401). Three artboards for the second door of Holdings/Vacío. The engine shipped first (#400: ImportTrades, UndoImport, the rake pair) so these artboards FOLLOW the code — the screens draw what the use case already refuses and reports, not a wish.\n\nDefault: file picker OR paste, because the deployed instance has no filesystem the operator can reach — a rake task there needs `kamal shell` plus getting the file into the container, which is the same data-entry friction this removes. The column list is the contract of ImportTradeRowContract; required and optional are drawn apart.\n\nRevisión is the dry run made visible: nothing is written, the batch totals and the skipped duplicates are stated before any button commits. Duplicates are normal, not exceptional — the broker reissues the same confirmation under a new filename, so identity is external_id.\n\nSímbolos desconocidos is the refusal, and it is the screen that carries the product decision: the batch is all-or-nothing. A partial import leaves the portfolio silently wrong, and auto-creating an asset from a row that holds only a ticker produces one with no type, market or country. The screen says why, then routes to Tracked.\n\nStates not drawn: in-flight parse (the file is local and the batch is ~50 rows), success (it returns to Holdings, already drawn), and the inline SearchTicker resolution of unknown symbols — deferred out of #401 on purpose.\n\nOpen findings: D64 — the Agregar activo typeahead in assets/_track_form queries a provider and fills symbol, name, exchange and country, and has no artboard. `Tracked · Buscar` draws the LIST FILTER, a different control, and the code now ships both on the same screen. Adrian's call. D62 (the door's broker claim) resolved 2026-08-28 — one format, Stockerly's, and the door now says so.\n\n✅ THE TRADE SHEET CAUGHT UP TO THE CODE (D78, 2026-09-05). Three divergences, all in the code's favour. (a) A Moneda select the artboards never drew — it opens BLANK now ('¿En qué moneda pagaste?'), which is why the FX card is hidden on first open: trade_sheet_controller hides it whenever the currency is empty or equals the MXN reference. (b) The field pairing was wrong: the code reads Fecha | Moneda, then Títulos | Precio, with Comisión full-width on its own. The artboards paired Fecha | Títulos and Precio | Comisión. (c) The average-cost projection (issue 428) — 'Tu costo promedio pasaría de X a Y' — sits between the price row and Comisión, and stays absent until every input it needs is present, so it never shows a half-answered figure.\n\nThe Sheet artboard grew 844 → 940 to hold the longer form with a visible scrim, anchored by math. In code the body is overflow-y-auto under a sticky footer, which is the pattern `Con teclado` draws — and that artboard now CUTS at Comisión with the FX card below the fold. That clipping is the state, not drift: D11's whole point is that the keyboard eats the lower half and only Total + Guardar survive it. A future audit should read those two clipped nodes as the fold.\n\n✅ THE EMPTY STATE HAS TWO DOORS, NOT THREE (C-3, 2026-09-05). Holdings/Vacío drew Captura lo que ya tienes, Importar movimientos and Explorar con datos de ejemplo. **The CSV door shipped** — /trades/import, two views, three artboards in this file — so what was left undrawn-in-code was the demo one, and Adrian retired it rather than building it. The importer is the answer to data-entry friction and it exists; a seeded demo portfolio would have to answer whether it can be undone, what happens when movements already exist, and whether its prices are real or frozen — a feature behind a four-filter card, not a third button on an empty screen.\n\nThe accent stays on Captura lo que ya tienes: two doors still have a recommended one.\n\n✅ AssetRow LOST ITS Estado CHIP AND CONFLUENCE DOTS (#586, D85, 2026-09-05). Both were drawn here, in cockpit.pen and in the kit, and the code backed neither — components/_asset_row said so in its own comment. They are gone rather than deferred: the semáforo they belonged to was retired when combining its lights measured no better than the strongest one alone, and a per-row chip was declined because the edge behind it is measured inside a basket returning roughly twice the index before any signal. WatchRow carried the same slot with a different word — `en rango` instead of `oportunidad` — and lost it too; components/_watch_row renders no chip and no dots either. It is flow-local, so it costs no kit version. AssetRow's removal did: the kit went to 1.0.0 by its own rule (major = removal). This flow keeps its kit-version-source, because two components were corrected and no full re-vendor happened.\n\n✅ WATCHLIST LOSES ITS Resumen BLOCK (#586 fallout, 2026-09-05). It read `CON SEÑAL HOY · 3 de 6 que sigues` over `Los otros 3 están en rango: nada que hacer hoy`, and both halves rest on the state taxonomy D85 retired — a count of assets 'with a signal' needs the chip that is not being built. The code never had it either: assets/index.html.erb renders its summary card for the Cartera tab only, and Watchlist has none.\n\nOne sentence in it was true and is worth keeping somewhere: *Aquí no tienes dinero invertido; cuando compres, el activo pasa a Holdings.* That is D9's ladder explained in one line, it needs no data, and the Watchlist tab currently explains itself nowhere. It is NOT drawn back in here — under D78 designing ahead is a deliberate act per screen, so this is a proposal for the code, recorded rather than smuggled onto the canvas.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -438,71 +438,6 @@
               "strokeWidth": 2,
               "strokeLinejoin": "round",
               "strokeLinecap": "round"
-            },
-            {
-              "type": "frame",
-              "id": "h91J1",
-              "name": "Sig",
-              "gap": "$space-2",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "Byt54",
-                  "name": "Estado",
-                  "fill": "$positive-bg",
-                  "cornerRadius": 99,
-                  "padding": [
-                    3,
-                    9
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "UXdX8",
-                      "name": "ET",
-                      "fill": "$positive-fg",
-                      "content": "oportunidad",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "stJL1",
-                  "name": "Dots",
-                  "gap": 3,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "i825em",
-                      "name": "D",
-                      "fill": "$positive",
-                      "width": 7,
-                      "height": 7
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "IpSIf",
-                      "name": "D",
-                      "fill": "$positive",
-                      "width": 7,
-                      "height": 7
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "lDurG",
-                      "name": "D",
-                      "fill": "$border-strong",
-                      "width": 7,
-                      "height": 7
-                    }
-                  ]
-                }
-              ]
             }
           ]
         }
@@ -959,22 +894,6 @@
                     "ryGTQ": {
                       "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
                       "stroke": "$positive"
-                    },
-                    "Byt54": {
-                      "fill": "$bg-muted"
-                    },
-                    "UXdX8": {
-                      "content": "en rango",
-                      "fill": "$fg-subtle"
-                    },
-                    "i825em": {
-                      "fill": "$positive"
-                    },
-                    "IpSIf": {
-                      "fill": "$border-strong"
-                    },
-                    "lDurG": {
-                      "fill": "$border-strong"
                     }
                   }
                 },
@@ -1001,22 +920,6 @@
                     "ryGTQ": {
                       "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
                       "stroke": "$positive"
-                    },
-                    "Byt54": {
-                      "fill": "$warning-bg"
-                    },
-                    "UXdX8": {
-                      "content": "sobrecompra",
-                      "fill": "$warning-fg"
-                    },
-                    "i825em": {
-                      "fill": "$warning"
-                    },
-                    "IpSIf": {
-                      "fill": "$warning"
-                    },
-                    "lDurG": {
-                      "fill": "$border-strong"
                     }
                   }
                 },
@@ -1043,22 +946,6 @@
                     "ryGTQ": {
                       "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
                       "stroke": "$negative"
-                    },
-                    "Byt54": {
-                      "fill": "$positive-bg"
-                    },
-                    "UXdX8": {
-                      "content": "oportunidad",
-                      "fill": "$positive-fg"
-                    },
-                    "i825em": {
-                      "fill": "$positive"
-                    },
-                    "IpSIf": {
-                      "fill": "$positive"
-                    },
-                    "lDurG": {
-                      "fill": "$border-strong"
                     }
                   }
                 },
@@ -1085,22 +972,6 @@
                     "ryGTQ": {
                       "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
                       "stroke": "$positive"
-                    },
-                    "Byt54": {
-                      "fill": "$bg-muted"
-                    },
-                    "UXdX8": {
-                      "content": "en rango",
-                      "fill": "$fg-subtle"
-                    },
-                    "i825em": {
-                      "fill": "$positive"
-                    },
-                    "IpSIf": {
-                      "fill": "$border-strong"
-                    },
-                    "lDurG": {
-                      "fill": "$border-strong"
                     }
                   }
                 },
@@ -1127,16 +998,6 @@
                     "ryGTQ": {
                       "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
                       "stroke": "$fg-subtle",
-                      "enabled": false
-                    },
-                    "Byt54": {
-                      "fill": "$info-bg"
-                    },
-                    "UXdX8": {
-                      "content": "9.10% anual",
-                      "fill": "$info-fg"
-                    },
-                    "stJL1": {
                       "enabled": false
                     }
                   }
@@ -1351,71 +1212,6 @@
               "fontFamily": "$font-mono",
               "fontSize": 11,
               "fontWeight": "normal"
-            },
-            {
-              "type": "frame",
-              "id": "kUe3V",
-              "name": "Sig",
-              "gap": "$space-2",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "kMlyd",
-                  "name": "Estado",
-                  "fill": "$bg-muted",
-                  "cornerRadius": 99,
-                  "padding": [
-                    3,
-                    9
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "yEzmS",
-                      "name": "ET",
-                      "fill": "$fg-subtle",
-                      "content": "en rango",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "x8Wsnx",
-                  "name": "Dots",
-                  "gap": 3,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "j4FCtx",
-                      "name": "D",
-                      "fill": "$positive",
-                      "width": 7,
-                      "height": 7
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "JUJzH",
-                      "name": "D",
-                      "fill": "$border-strong",
-                      "width": 7,
-                      "height": 7
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "SYLEE",
-                      "name": "D",
-                      "fill": "$border-strong",
-                      "width": 7,
-                      "height": 7
-                    }
-                  ]
-                }
-              ]
             }
           ]
         }
@@ -1453,88 +1249,6 @@
             24
           ],
           "children": [
-            {
-              "type": "frame",
-              "id": "nhb4B",
-              "name": "Resumen",
-              "width": "fill_container",
-              "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
-              "stroke": "$border-default",
-              "strokeWidth": 1,
-              "layout": "vertical",
-              "gap": "$space-3",
-              "padding": "$space-5",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "ahFWS",
-                  "name": "Lab",
-                  "fill": "$fg-subtle",
-                  "content": "CON SEÑAL HOY",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1
-                },
-                {
-                  "type": "frame",
-                  "id": "ltLET",
-                  "name": "VR",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "end",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "AvdmO",
-                      "name": "Val",
-                      "fill": "$fg-default",
-                      "content": "3",
-                      "fontFamily": "$font-display",
-                      "fontSize": 30,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "NHcXd",
-                      "name": "Chip",
-                      "fill": "$bg-muted",
-                      "cornerRadius": 99,
-                      "padding": [
-                        3,
-                        10
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "oA0ll",
-                          "name": "CT",
-                          "fill": "$fg-subtle",
-                          "content": "de 6 que sigues",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "EtD0c",
-                  "name": "Sub",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Los otros 3 están en rango: nada que hacer hoy. Aquí no tienes dinero invertido; cuando compres, el activo pasa a Holdings.",
-                  "lineHeight": 1.4,
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
             {
               "id": "I2y29E",
               "type": "ref",
@@ -1716,22 +1430,6 @@
                     },
                     "apjig": {
                       "content": "falta 4.4%"
-                    },
-                    "kMlyd": {
-                      "fill": "$bg-muted"
-                    },
-                    "yEzmS": {
-                      "content": "en rango",
-                      "fill": "$fg-subtle"
-                    },
-                    "j4FCtx": {
-                      "fill": "$positive"
-                    },
-                    "JUJzH": {
-                      "fill": "$border-strong"
-                    },
-                    "SYLEE": {
-                      "fill": "$border-strong"
                     }
                   }
                 },
@@ -1761,22 +1459,6 @@
                     },
                     "apjig": {
                       "content": "falta 4.5%"
-                    },
-                    "kMlyd": {
-                      "fill": "$bg-muted"
-                    },
-                    "yEzmS": {
-                      "content": "en rango",
-                      "fill": "$fg-subtle"
-                    },
-                    "j4FCtx": {
-                      "fill": "$border-strong"
-                    },
-                    "JUJzH": {
-                      "fill": "$border-strong"
-                    },
-                    "SYLEE": {
-                      "fill": "$border-strong"
                     }
                   }
                 },
@@ -1806,22 +1488,6 @@
                     },
                     "apjig": {
                       "content": "falta 5.1%"
-                    },
-                    "kMlyd": {
-                      "fill": "$positive-bg"
-                    },
-                    "yEzmS": {
-                      "content": "oportunidad",
-                      "fill": "$positive-fg"
-                    },
-                    "j4FCtx": {
-                      "fill": "$positive"
-                    },
-                    "JUJzH": {
-                      "fill": "$positive"
-                    },
-                    "SYLEE": {
-                      "fill": "$border-strong"
                     }
                   }
                 },
@@ -1851,22 +1517,6 @@
                     },
                     "apjig": {
                       "content": "falta 6.2%"
-                    },
-                    "kMlyd": {
-                      "fill": "$positive-bg"
-                    },
-                    "yEzmS": {
-                      "content": "oportunidad",
-                      "fill": "$positive-fg"
-                    },
-                    "j4FCtx": {
-                      "fill": "$positive"
-                    },
-                    "JUJzH": {
-                      "fill": "$positive"
-                    },
-                    "SYLEE": {
-                      "fill": "$border-strong"
                     }
                   }
                 },
@@ -1896,22 +1546,6 @@
                     },
                     "apjig": {
                       "content": "falta 11.5%"
-                    },
-                    "kMlyd": {
-                      "fill": "$bg-muted"
-                    },
-                    "yEzmS": {
-                      "content": "en rango",
-                      "fill": "$fg-subtle"
-                    },
-                    "j4FCtx": {
-                      "fill": "$positive"
-                    },
-                    "JUJzH": {
-                      "fill": "$border-strong"
-                    },
-                    "SYLEE": {
-                      "fill": "$border-strong"
                     }
                   }
                 },
@@ -1941,22 +1575,6 @@
                     },
                     "apjig": {
                       "content": "falta 11.6%"
-                    },
-                    "kMlyd": {
-                      "fill": "$warning-bg"
-                    },
-                    "yEzmS": {
-                      "content": "sobrecompra",
-                      "fill": "$warning-fg"
-                    },
-                    "j4FCtx": {
-                      "fill": "$warning"
-                    },
-                    "JUJzH": {
-                      "fill": "$warning"
-                    },
-                    "SYLEE": {
-                      "fill": "$border-strong"
                     }
                   }
                 }
@@ -2195,27 +1813,6 @@
                     },
                     "R3qJ4": {
                       "content": "Carga el formato de Stockerly, de archivo o pegado."
-                    },
-                    "bYSwp": {
-                      "enabled": false
-                    }
-                  }
-                },
-                {
-                  "id": "hOERH",
-                  "type": "ref",
-                  "ref": "mAarI",
-                  "name": "Explorar con datos de ejemplo",
-                  "width": "fill_container",
-                  "descendants": {
-                    "oYFom": {
-                      "icon": "play"
-                    },
-                    "JlIU1": {
-                      "content": "Explorar con datos de ejemplo"
-                    },
-                    "R3qJ4": {
-                      "content": "Una cartera de demostración para ver cómo se lee todo."
                     },
                     "bYSwp": {
                       "enabled": false
@@ -6131,22 +5728,6 @@
                             "ryGTQ": {
                               "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
                               "stroke": "$positive"
-                            },
-                            "Byt54": {
-                              "fill": "$bg-muted"
-                            },
-                            "UXdX8": {
-                              "content": "en rango",
-                              "fill": "$fg-subtle"
-                            },
-                            "i825em": {
-                              "fill": "$positive"
-                            },
-                            "IpSIf": {
-                              "fill": "$border-strong"
-                            },
-                            "lDurG": {
-                              "fill": "$border-strong"
                             }
                           }
                         },
@@ -6173,22 +5754,6 @@
                             "ryGTQ": {
                               "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
                               "stroke": "$positive"
-                            },
-                            "Byt54": {
-                              "fill": "$warning-bg"
-                            },
-                            "UXdX8": {
-                              "content": "sobrecompra",
-                              "fill": "$warning-fg"
-                            },
-                            "i825em": {
-                              "fill": "$warning"
-                            },
-                            "IpSIf": {
-                              "fill": "$warning"
-                            },
-                            "lDurG": {
-                              "fill": "$border-strong"
                             }
                           }
                         },
@@ -6215,22 +5780,6 @@
                             "ryGTQ": {
                               "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
                               "stroke": "$negative"
-                            },
-                            "Byt54": {
-                              "fill": "$positive-bg"
-                            },
-                            "UXdX8": {
-                              "content": "oportunidad",
-                              "fill": "$positive-fg"
-                            },
-                            "i825em": {
-                              "fill": "$positive"
-                            },
-                            "IpSIf": {
-                              "fill": "$positive"
-                            },
-                            "lDurG": {
-                              "fill": "$border-strong"
                             }
                           }
                         }
@@ -6266,22 +5815,6 @@
                             "ryGTQ": {
                               "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
                               "stroke": "$positive"
-                            },
-                            "Byt54": {
-                              "fill": "$bg-muted"
-                            },
-                            "UXdX8": {
-                              "content": "en rango",
-                              "fill": "$fg-subtle"
-                            },
-                            "i825em": {
-                              "fill": "$positive"
-                            },
-                            "IpSIf": {
-                              "fill": "$border-strong"
-                            },
-                            "lDurG": {
-                              "fill": "$border-strong"
                             }
                           }
                         },
@@ -6308,16 +5841,6 @@
                             "ryGTQ": {
                               "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
                               "stroke": "$fg-subtle",
-                              "enabled": false
-                            },
-                            "Byt54": {
-                              "fill": "$info-bg"
-                            },
-                            "UXdX8": {
-                              "content": "9.10% anual",
-                              "fill": "$info-fg"
-                            },
-                            "stJL1": {
                               "enabled": false
                             }
                           }
@@ -6811,22 +6334,6 @@
                             "ryGTQ": {
                               "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
                               "stroke": "$positive"
-                            },
-                            "Byt54": {
-                              "fill": "$bg-muted"
-                            },
-                            "UXdX8": {
-                              "content": "en rango",
-                              "fill": "$fg-subtle"
-                            },
-                            "i825em": {
-                              "fill": "$positive"
-                            },
-                            "IpSIf": {
-                              "fill": "$border-strong"
-                            },
-                            "lDurG": {
-                              "fill": "$border-strong"
                             }
                           }
                         },
@@ -6853,22 +6360,6 @@
                             "ryGTQ": {
                               "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
                               "stroke": "$positive"
-                            },
-                            "Byt54": {
-                              "fill": "$warning-bg"
-                            },
-                            "UXdX8": {
-                              "content": "sobrecompra",
-                              "fill": "$warning-fg"
-                            },
-                            "i825em": {
-                              "fill": "$warning"
-                            },
-                            "IpSIf": {
-                              "fill": "$warning"
-                            },
-                            "lDurG": {
-                              "fill": "$border-strong"
                             }
                           }
                         },
@@ -6895,22 +6386,6 @@
                             "ryGTQ": {
                               "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
                               "stroke": "$negative"
-                            },
-                            "Byt54": {
-                              "fill": "$positive-bg"
-                            },
-                            "UXdX8": {
-                              "content": "oportunidad",
-                              "fill": "$positive-fg"
-                            },
-                            "i825em": {
-                              "fill": "$positive"
-                            },
-                            "IpSIf": {
-                              "fill": "$positive"
-                            },
-                            "lDurG": {
-                              "fill": "$border-strong"
                             }
                           }
                         }
@@ -6946,22 +6421,6 @@
                             "ryGTQ": {
                               "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
                               "stroke": "$positive"
-                            },
-                            "Byt54": {
-                              "fill": "$bg-muted"
-                            },
-                            "UXdX8": {
-                              "content": "en rango",
-                              "fill": "$fg-subtle"
-                            },
-                            "i825em": {
-                              "fill": "$positive"
-                            },
-                            "IpSIf": {
-                              "fill": "$border-strong"
-                            },
-                            "lDurG": {
-                              "fill": "$border-strong"
                             }
                           }
                         },
@@ -6988,16 +6447,6 @@
                             "ryGTQ": {
                               "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
                               "stroke": "$fg-subtle",
-                              "enabled": false
-                            },
-                            "Byt54": {
-                              "fill": "$info-bg"
-                            },
-                            "UXdX8": {
-                              "content": "9.10% anual",
-                              "fill": "$info-fg"
-                            },
-                            "stJL1": {
                               "enabled": false
                             }
                           }
@@ -11803,7 +11252,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
+          "content": "2026-09-05 · D85 fallout · Watchlist's Resumen block deleted — a 'con señal hoy' count needs the chip that is not being built, and the code never had the block\n2026-09-05 · #586 · AssetRow drops Estado and Dots here too — three files carried them, the code backed none\n2026-09-05 · C-3 · Holdings/Vacío drops the demo door; the CSV one it also drew has shipped, so the state now draws what exists\n2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
           "lineHeight": 1.6,
           "fontFamily": "$font-sans",
           "fontSize": 12,
