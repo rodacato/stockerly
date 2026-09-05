@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Login + recovery for the single-user self-hosted instance. NO signup — the sole account is created at first-boot /setup (onboarding flow).\n\nEntry: root → /login. Recovery: /forgot-password → email → /reset-password/:token.\n\nScreens: Login (+ notice/error) · 2FA (TOTP) · Verificación en dos pasos (enrollment) · Códigos de recuperación · Código de recuperación (entry at login) · Forgot password · Email sent · Reset password.\n\nRules: single account; password + TOTP with recovery codes. Design-led, code is reference (D8).\n\n⚠ TOTP IS BEING BUILT — ADR-018 (2026-08-27) supersedes D23. This brief used to call it 'settled' while nothing existed in code, and the screen was drawn on nothing. That is resolved in the other direction than D23 expected: the audience changed. A packaged product cannot answer a stranger's threat model with 'put Cloudflare Access in front of it', because Access is one maintainer's infrastructure and a self-hoster inherits the exposed login and none of the mitigation.\n\nThree boundaries from ADR-018, so they are not re-litigated per PR:\n· Recovery codes ship WITH enrollment, not after it. One account, no support desk: a lost authenticator locks the owner out of their own server permanently. Generation, hashing, one-time consumption and regeneration are all in scope.\n· Email OTP is OUT. This brief named it the fallback; it is not one. It dies on a self-hosted box whose mail is misconfigured — the same permanent lockout by another door, on the deployment where mail is the single most likely thing to be wrong. The 2FA screen's 'Enviar código por correo' link is now 'Usar un código de recuperación'.\n· No SMS. Never in question.\n\nCloudflare Access is still worth doing and is now independent of this — defence in depth for the maintainer's own instance, not a substitute. Whether an Access policy already fronts the hostname is an unanswered fact, not a decision, and blocks nothing.\n\nD52 (2026-08-27) answered where the product ASKS for enrollment: BOTH. The first-boot wizard offers it and lets the reader skip, and Ajustes is where it is turned on later and the codes are regenerated. That is the most expensive of the three options and it is deliberate — an opt-in buried in settings is the one nobody finds, and a mandatory wizard step blocks first boot on a phone the reader may not have in hand. The wizard side is flows/onboarding.pen's work (a Stepper stage across nine artboards); the Ajustes side is flows/settings.pen's Seguridad section. This file owns the three screens themselves.\n\nDesktop (1280): ONE artboard — Login, built as the SAME split-panel as onboarding's Setup (900 card = 420 brand + 480 form). They are the two doors into one instance and they now look alike; a plain centered card did not. Per D4 the other screens keep the centered-card treatment and inherit the form width — including the three TOTP screens, which are forms in a card and diverge on nothing. Drawing them ×2 is the option D4 rejects.\n\nThe brand panel carries the mark and one line: '100% libre y open source'. Deliberately nothing else. Setup's panel has a title, a subtitle and a checklist because a wizard has something to promise; a login does not, and the product has no tagline that survived the pivot — the ones in the public footer and the meta tags ('Open Source Market Intelligence Platform', 'Private by Design') are pre-pivot copy for the audience ADR-0010 dropped. The claim used here is real: setup/new.html.erb:30 renders it, and onboarding.pen already carries its es-MX form. If the panel should say more, that is a copy decision for Adrian, not a blank to fill.\n\nPanel · V1…V4 were the exploration behind that panel. They MOVED to _playground.pen on 2026-08-27 — moved, not deleted: they are the reasoning, and a flow file is not where exploration lives.\n\nThis flow vendors no shell — auth screens have no TopBar or BottomNav, so kit 0.8.0's 57 → 76 growth does not reach it. The migration here was tokens plus the new screens.\n\nCopy: es-MX. kit-version-source 0.8.0.",
+          "content": "Login + recovery for the single-user self-hosted instance. NO signup — the sole account is created at first-boot /setup (onboarding flow).\n\nEntry: root → /login. Recovery: /forgot-password → email → /reset-password/:token.\n\nScreens: Login (+ notice/error) · 2FA (TOTP) · Verificación en dos pasos (enrollment) · Códigos de recuperación · Código de recuperación (entry at login) · Forgot password · Email sent · Reset password · Enlace expirado · Contraseña actualizada.\n\nRules: single account; password + TOTP with recovery codes. The code is the mirror (D78, which retired D8) — this brief said design-led until D78 landed.\n\n⚠ TOTP IS BUILT — ADR-018 supersedes D23. This brief used to call it 'settled' while nothing existed in code, and the screen was drawn on nothing. That is resolved in the other direction than D23 expected: the audience changed. A packaged product cannot answer a stranger's threat model with 'put Cloudflare Access in front of it', because Access is one maintainer's infrastructure and a self-hoster inherits the exposed login and none of the mitigation.\n\nThree boundaries from ADR-018, so they are not re-litigated per PR:\n· Recovery codes ship WITH enrollment, not after it. One account, no support desk: a lost authenticator locks the owner out of their own server permanently. Generation, hashing, one-time consumption and regeneration are all in scope.\n· Email OTP is OUT. This brief named it the fallback; it is not one. It dies on a self-hosted box whose mail is misconfigured — the same permanent lockout by another door, on the deployment where mail is the single most likely thing to be wrong. The 2FA screen's 'Enviar código por correo' link is now 'Usar un código de recuperación'.\n· No SMS. Never in question.\n\nCloudflare Access is still worth doing and is now independent of this — defence in depth for the maintainer's own instance, not a substitute. Whether an Access policy already fronts the hostname is an unanswered fact, not a decision, and blocks nothing.\n\nD52 answered where the product ASKS for enrollment: BOTH. The first-boot wizard offers it and lets the reader skip, and Ajustes is where it is turned on later and the codes are regenerated. That is the most expensive of the three options and it is deliberate — an opt-in buried in settings is the one nobody finds, and a mandatory wizard step blocks first boot on a phone the reader may not have in hand. The wizard side is flows/onboarding.pen's work (a Stepper stage across nine artboards); the Ajustes side is flows/settings.pen's Seguridad section. This file owns the three screens themselves.\n\nDesktop (1280): ONE artboard — Login, built as the SAME split-panel as onboarding's Setup (900 card = 420 brand + 480 form). They are the two doors into one instance and they now look alike; a plain centered card did not. Per D4 the other screens keep the centered-card treatment and inherit the form width — including the three TOTP screens, which are forms in a card and diverge on nothing. Drawing them ×2 is the option D4 rejects.\n\nThe brand panel carries the mark and one line: '100% libre y open source'. Deliberately nothing else. Setup's panel has a title, a subtitle and a checklist because a wizard has something to promise; a login does not, and the product has no tagline that survived the pivot — the ones in the public footer and the meta tags ('Open Source Market Intelligence Platform', 'Private by Design') are pre-pivot copy for the audience ADR-0010 dropped. The claim used here is real: setup/new.html.erb:30 renders it, and onboarding.pen already carries its es-MX form. If the panel should say more, that is a copy decision for Adrian, not a blank to fill.\n\nPanel · V1…V4 were the exploration behind that panel. They MOVED to _playground.pen — moved, not deleted: they are the reasoning, and a flow file is not where exploration lives.\n\nThis flow vendors no shell — auth screens have no TopBar or BottomNav, so kit 0.8.0's 57 → 76 growth does not reach it. The migration here was tokens plus the new screens.\n\nCopy: es-MX. The kit version lives in this file's `kit-version-source` variable and is NOT restated here — the line that used to said 0.8.0 against a variable reading 0.8.1, which is X4's exact shape and D53's whole argument.\n\n✅ THE RESET FLOW HAS BOTH OUTCOMES NOW. Forgot, Email sent and Reset were drawn and the two screens the journey actually ends on were not: `Enlace expirado`, rendered when the token is invalid or aged out — or when it dies between the GET and the PATCH — and `Contraseña actualizada`. `V2_REMAINING` had them as AUTH-2 and §1 counted `password_resets` as three of five.\n\nThey were also the last screens in this flow with zero i18n keys; their copy joined the `auth.*` namespace their three siblings already used. `Enlace expirado` states the window from `User::PASSWORD_RESET_EXPIRES_IN` rather than repeating two hours in prose, so the screen cannot drift from the constant.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -2242,6 +2242,353 @@
               "fontWeight": "500"
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "FShXN",
+      "x": 5200,
+      "y": 0,
+      "name": "[Auth] / Enlace expirado / Default",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "padding": [
+        40,
+        24
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "P9rNY",
+          "name": "Card",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-card",
+          "stroke": "$border-default",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": "$space-5",
+          "padding": "$space-6",
+          "children": [
+            {
+              "type": "frame",
+              "id": "p823y",
+              "name": "Ring",
+              "width": 56,
+              "height": 56,
+              "fill": "$negative-bg",
+              "cornerRadius": 16,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "JfZuJ",
+                  "name": "Ic",
+                  "width": 28,
+                  "height": 28,
+                  "icon": "link-2-off",
+                  "library": "lucide",
+                  "fill": "$negative"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "B96p1B",
+              "name": "Head",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-1",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "uyF9o",
+                  "name": "Kicker",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "RESTABLECER CONTRASEÑA",
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "700",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "Ja4YB",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Enlace inválido o expirado",
+                  "lineHeight": 1.25,
+                  "textAlign": "center",
+                  "fontFamily": "$font-display",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "s0hIyk",
+                  "name": "S",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Este enlace ya no funciona. Los enlaces de recuperación expiran después de 2 horas.",
+                  "lineHeight": 1.5,
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KXYC1",
+              "name": "CTA",
+              "width": "fill_container",
+              "fill": "$primary",
+              "cornerRadius": "$radius-md",
+              "gap": "$space-2",
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Acx07",
+                  "name": "t",
+                  "fill": "$fg-inverse",
+                  "content": "Solicitar enlace nuevo",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "icon",
+                  "id": "U9IqS1",
+                  "name": "a",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "arrow-right",
+                  "library": "lucide",
+                  "fill": "$fg-inverse"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "P1SShQ",
+              "name": "Link",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "¿Recordaste tu contraseña? Inicia sesión.",
+              "textAlign": "center",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "500"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "I7IW3",
+      "x": 5690,
+      "y": 0,
+      "name": "[Auth] / Contraseña actualizada / Default",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "padding": [
+        40,
+        24
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "d7QVd",
+          "name": "Card",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-card",
+          "stroke": "$border-default",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": "$space-5",
+          "padding": "$space-6",
+          "children": [
+            {
+              "type": "frame",
+              "id": "GQ7W6",
+              "name": "Ring",
+              "width": 56,
+              "height": 56,
+              "fill": "$positive-bg",
+              "cornerRadius": 16,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "EEtNi",
+                  "name": "Ic",
+                  "width": 28,
+                  "height": 28,
+                  "icon": "circle-check",
+                  "library": "lucide",
+                  "fill": "$positive"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jj7r0",
+              "name": "Head",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-1",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "xTFUj",
+                  "name": "Kicker",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "RESTABLECER CONTRASEÑA",
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "700",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "EyeDl",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Contraseña actualizada",
+                  "lineHeight": 1.25,
+                  "textAlign": "center",
+                  "fontFamily": "$font-display",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "EYXFe",
+                  "name": "S",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Inicia sesión con tu nueva contraseña.",
+                  "lineHeight": 1.5,
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uM5Rf",
+              "name": "CTA",
+              "width": "fill_container",
+              "fill": "$primary",
+              "cornerRadius": "$radius-md",
+              "gap": "$space-2",
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Ew7wS",
+                  "name": "t",
+                  "fill": "$fg-inverse",
+                  "content": "Ir a iniciar sesión",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "icon",
+                  "id": "uaUPe",
+                  "name": "a",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "arrow-right",
+                  "library": "lucide",
+                  "fill": "$fg-inverse"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "LZCBr",
+      "x": 880,
+      "y": 2727,
+      "name": "Log · Auth",
+      "width": 360,
+      "fill": "$bg-muted",
+      "cornerRadius": "$radius-md",
+      "layout": "vertical",
+      "gap": "$space-4",
+      "padding": "$space-5",
+      "children": [
+        {
+          "type": "text",
+          "id": "z2nlAe",
+          "name": "T",
+          "fill": "$fg-default",
+          "content": "Log · Auth",
+          "fontFamily": "$font-display",
+          "fontSize": 18,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "TfiOj",
+          "name": "Entries",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-09-05 · Enlace expirado and Contraseña actualizada drawn — the reset journey's two endings, AUTH-2\n2026-09-05 · the brief stopped saying 'design-led, code is reference (D8)'; D78 retired that posture\n2026-09-05 · the brief stopped restating the kit version, which read 0.8.0 against a variable saying 0.8.1 (X4)\n2026-09-05 · this file adopted the Log frame; the brief's three dated lines moved here\n2026-08-27 · ADR-018 supersedes D23 — TOTP with recovery codes is built, and the brief had called it settled while nothing existed\n2026-08-27 · D52 · the product asks for enrollment in BOTH the first-boot wizard and Ajustes\n2026-08-27 · Panel · V1…V4 moved to _playground.pen — moved, not deleted: they are the reasoning",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
         }
       ]
     }
