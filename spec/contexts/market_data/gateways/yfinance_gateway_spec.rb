@@ -99,6 +99,53 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
     end
   end
 
+  # The bug this pins was invisible to every spec above: they stub the bridge
+  # by symbol, so asking for a ticker Yahoo does not have still came back
+  # Success. What has to be asserted is the symbol Yahoo is ASKED for.
+  describe "the symbol Yahoo is asked for" do
+    it "puts the caret back on an index the catalogue stores without one" do
+      stub_bridge([])
+      expect(PythonRunner).to receive(:call).with("yahoo.py", "history", "^VIX", anything)
+        .and_return(Dry::Monads::Success([]))
+
+      gateway.fetch_historical("VIX")
+    end
+
+    it "does it for every index in the map, not only the one that was reported" do
+      described_class::INDEX_SYMBOL_MAP.each do |yahoo_symbol, stored_symbol|
+        stub_bridge({ "price" => "1", "change_percent" => "0", "volume" => nil, "as_of" => nil })
+        expect(PythonRunner).to receive(:call).with("yahoo.py", "quote", yahoo_symbol)
+          .and_return(Dry::Monads::Success({ "price" => "1", "change_percent" => "0" }))
+
+        gateway.fetch_price(stored_symbol)
+      end
+    end
+
+    it "leaves an ordinary ticker alone" do
+      stub_bridge([])
+      expect(PythonRunner).to receive(:call).with("yahoo.py", "history", "WALMEX.MX", anything)
+        .and_return(Dry::Monads::Success([]))
+
+      gateway.fetch_historical("WALMEX.MX")
+    end
+
+    # SyncIndexHistoryJob addresses the same indices by Yahoo's own ticker, so
+    # both directions have to survive the same translation.
+    it "leaves Yahoo's own ticker alone, which the index sync still passes" do
+      stub_bridge([])
+      expect(PythonRunner).to receive(:call).with("yahoo.py", "history", "^GSPC", anything)
+        .and_return(Dry::Monads::Success([]))
+
+      gateway.fetch_historical("^GSPC")
+    end
+
+    it "reports the symbol it was asked about, not the one it asked Yahoo" do
+      stub_bridge({ "price" => "14.33", "change_percent" => "-1.2" })
+
+      expect(gateway.fetch_price("VIX").value!).to include(symbol: "VIX")
+    end
+  end
+
   describe "#fetch_earnings" do
     it "returns the estimate and the actual, which quoteSummary never could" do
       stub_bridge([ { "date" => 5.days.from_now.to_date.to_s, "hour" => 16,
