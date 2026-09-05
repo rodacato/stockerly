@@ -301,7 +301,7 @@ screen have **no fill at all**.
 **Fixed:** both now read `bg-primary-muted`, the token the pair was reaching for. It was listed
 first because it is invisible in review and visible on screen.
 
-### X3 🟡 Drawn screens with no code — one left of six
+### X3 ✅ Drawn screens with no code — none left of six
 
 Counted across flows, so it does not read as four separate small gaps:
 
@@ -318,8 +318,8 @@ Counted across flows, so it does not read as four separate small gaps:
 one build (ADR-018 + D52), which is how they were built — [#391](https://github.com/rodacato/stockerly/issues/391),
 [CODE_CHANGES §14](CODE_CHANGES.md).
 
-**`Movimientos` is the one left**, and it was always its own: un-gated by D42, the query exists, and
-nothing about TOTP touched it. See CKP-1.
+**The sixth shipped 2026-09-05** as `/signals`, and it was always its own: un-gated by D42, the
+query already existed, and nothing about TOTP touched it. See CKP-1 and D79.
 
 ### X4 ⚪ Six briefs disagree with their own file about the kit version they vendor
 
@@ -1167,7 +1167,12 @@ panel is the last one that costs three.
 **9 artboards.** Panorama, the asset detail's two tabs and Consolidado are built and faithful. One
 whole screen is not.
 
-### CKP-1 🔴 `Movimientos` — a designed screen with no route
+### CKP-1 ✅ `Movimientos` — BUILT 2026-09-05 as `/signals`
+
+**Closed by D79.** D42 had un-gated it naming the usage metric — a week in which the Panorama's three-day window hid something — and that phrase decided the screen's window: seven days. `NotableObservations` already took `limit` and `window_days`, so lifting the cap needed no change to the query the Panorama shares, and the screen reuses `dashboard/_signal_row` rather than drawing a second row. The Panorama's *Ver más*, absent on purpose because nothing listed observations, now has somewhere to go.
+
+**Two things the artboard asked for and did not get.** Its subtitle read *Desde tu última visita* and `users` carries no last-visit column; adding one for a subtitle fails the four-filter, so the screen states its window instead. And its header was a `TopBarDetail` with two parts switched off, which was a kit-version lag rather than a design: `cockpit.pen` vendors 0.8.1 and `HeaderBar` landed in 0.9.0.
+
 
 The observation feed (`lNpAd`): date-grouped `compra`/`vende` readings with the footer *"Solo
 aparecen los cruces con lectura de compra o venta"*. There is no route, no controller, no view.
@@ -1262,7 +1267,12 @@ inference the data does not carry and was left out rather than defended.
 **`Más análisis` stays open** and is not part of this closure — it waits on the usage metric #306
 records. `Distancia a máx/mín 52 sem` left this entry earlier as `CKP-9`.
 
-### CKP-4 🟡 `Mi posición` is missing `Rendimiento` and `Cerrar posición` (#301)
+### CKP-4 🟡 `Cerrar posición` shipped; `Rendimiento` is deferred with its blocker disproved
+
+**Half closed 2026-09-05.** `Cerrar posición` shipped as a shortcut into the sell sheet (D88), and #301's open question — *sell trade or state change?* — turned out to be answered by the code already: selling everything is what closes a position, and it has to stay a trade because `RealizedGain` nets the sell legs at each leg's own `fx_rate_at_execution`. A state-change close would leave the realised gain undefined. It also gave the tab the actions it never had.
+
+**`Rendimiento` is deferred (D89), and the blocker this entry inherited from #301 is not real.** `HistoricalValuation` already derives shares-on-date from the trade log, values them at the split-adjusted close and converts through Banxico's dated FIX; what is missing is a per-asset entry point, not a calculation. What is genuinely missing is the trigger.
+
 
 Both are recorded in the code itself
 ([`_position_summary.html.erb`](../app/views/market/_position_summary.html.erb): *"Cerrar posición
@@ -1277,7 +1287,12 @@ is drawn beside it and still not built"*):
 The FX split the product exists for — `DEL ACTIVO +45% / DEL PESO · TC +8%` — **is built** and
 reconstructs the total exactly.
 
-### CKP-5 🟡 Radar rows carry no state chip and no semáforo dots
+### CKP-5 ✅ Radar rows carry neither, and that is now a decision
+
+**Closed by D85, with a reason rather than a build.** The evidence for a chip is real — light 1 alone beat the base rate at every horizon, +4.04% against +2.11% at twenty days, win 67%, n=423. The reason not to print it is on the same page: the corpus is the assets held in 2026 measured over the decade that made them worth holding, its own base rate is roughly twice the index before any signal, and its author wrote that *every number improving at once is the symptom, not the reassurance*.
+
+A chip on every row is the most confident presentation of the least confident evidence. On the detail the state keeps the reading that produced it beside it; in a row it would stand alone. The `Estado` chip and the dots came out of the kit's `AssetRow`, both flows that vendor it, and `WatchRow` — which carried the same slot with a different word.
+
 
 `components/_asset_row.html.erb` says so in its own header comment: the design draws both, the code
 backs neither — the chip taxonomy does not exist and the semáforo is D3, whose engine is gated. The
@@ -1455,7 +1470,12 @@ shaped for it.
 
 **12 artboards.** The largest flow and the one with the most unbuilt surface.
 
-### ACT-1 🔴 The empty state offers three doors; the code has one, and two of them are the product's own named fixes
+### ACT-1 ✅ The empty state has two doors, and the third was withdrawn
+
+**Closed 2026-09-05, and it had been half closed for a while without anyone updating this entry.** The CSV door shipped — `/trades/import`, two views, three artboards in `assets.pen` — so what was actually missing was the demo door alone, not two of three.
+
+**Adrian withdrew it (C-3) rather than building it.** A seeded demo portfolio has to answer whether it can be undone, what it does when movements already exist, and whether its prices are real or frozen. That is a feature behind a four-filter card, not a third button on an empty screen — and the importer, which is the answer to the data-entry friction this finding cites, exists.
+
 
 `Holdings / Vacío` draws three paths out of an empty portfolio, plus a watchlist escape hatch:
 
@@ -1587,7 +1607,12 @@ a violation.
 
 **5 artboards.** Reglas and the Bandeja are the closest match in the app. Two gaps.
 
-### ALR-1 🔴 `Confluencia` is a screen in the design and a partial in the code
+### ALR-1 ✅ `Confluencia` is neither now — the screen went, then the block did
+
+**Closed twice, and the second reason is better than the first.** D80 demoted it from a screen to the block it already was: `market/_confluence` renders the lights where the question is actually asked, and what the standalone artboard added — a five-day window control and a *Convertir en regla* action — existed nowhere.
+
+**Then D84 retired the subject itself** (#586). Re-measured on ten years instead of one, combining the lights beat nothing, and light 1 mechanically implies light 3's test: 483 episodes, none above the 50-day mean. The block is deleted too, not shrunk to two lights, because the code showed it was already duplication — light 1 is rendered by `_state_verdict` and by `_signals`, light 3 by `_signals`, and light 2 by nothing.
+
 
 The artboard (`N0Uajy`) is a standalone screen reached from Reglas: three lights with their
 provenance (*Se calcula hoy con technical_observations* / *Motor pendiente* / *Se calcula hoy con
@@ -1642,7 +1667,14 @@ edits, one sitting.
 **8 artboards.** Every screen behind the hub exists. The hub itself is missing one row, and the
 screen it links to was never redesigned.
 
-### AJU-1 🔴 `/profile` is the largest un-redesigned surface in the app, and the hub links to it twice
+### AJU-1 ✅ `/profile` is retired — D5 finally executed
+
+**Closed by D90.** Measured before deciding: 197 lines, five partials, three tabs, zero i18n keys, and its unique content was two small forms. Everything else duplicated the hub or contradicted it.
+
+**The contradiction was the half that was a defect rather than debt:** its *Datos y sesión* tab told the owner to email support under an ARCO procedure to delete an account the hub already deletes in-app. Two answers to one question, in one app.
+
+The two forms are `/settings/account` and `/settings/password`, each a HeaderBar and one card — the pattern the hub already keeps four times, because a NavRow's chevron is a promise. The IdentityCard's counts did not come across: drawn in no artboard, and one tap away on the screens that own them.
+
 
 The design's premise is *one Ajustes, no admin zone* — `/profile` and `/admin` merged into one hub
 (D5). The hub was built. `/profile` was not retired, and
