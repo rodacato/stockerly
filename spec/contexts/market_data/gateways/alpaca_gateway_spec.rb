@@ -78,6 +78,41 @@ RSpec.describe MarketData::Gateways::AlpacaGateway do
         .to eq([ Date.new(2026, 8, 17), Date.new(2026, 8, 18) ])
     end
 
+    # This is the whole reason #558 collapsed the 23 checks into get_json. The
+    # limiter counts requests -- RateLimiter increments daily_api_calls once per
+    # call -- and this was the one method in the layer that made more than one
+    # per check, so it reported a fifth of a page-limited fetch as one call.
+    it "spends one call per page, not one per fetch" do
+      integration = create(:integration, provider_name: "Alpaca", daily_api_calls: 0,
+                                         daily_call_limit: 50_000, calls_reset_at: Time.current)
+      stub_request(:get, %r{data\.alpaca\.markets/v2/stocks/bars})
+        .to_return(
+          { status: 200, headers: { "Content-Type" => "application/json" },
+            body: { bars: { "AAPL" => [ alpaca_bar(date: "2026-08-17") ] }, next_page_token: "page-2" }.to_json },
+          { status: 200, headers: { "Content-Type" => "application/json" },
+            body: { bars: { "AAPL" => [ alpaca_bar(date: "2026-08-18") ] }, next_page_token: nil }.to_json }
+        )
+
+      gateway.fetch_daily_bars(%w[AAPL], "2026-08-17", "2026-08-18")
+
+      expect(integration.reload.daily_api_calls).to eq(2)
+    end
+
+    it "stops paging the moment the budget runs out, mid-fetch" do
+      create(:integration, provider_name: "Alpaca", daily_api_calls: 0, daily_call_limit: 1,
+                           calls_reset_at: Time.current)
+      stub_request(:get, %r{data\.alpaca\.markets/v2/stocks/bars})
+        .to_return(
+          { status: 200, headers: { "Content-Type" => "application/json" },
+            body: { bars: { "AAPL" => [ alpaca_bar(date: "2026-08-17") ] }, next_page_token: "page-2" }.to_json }
+        )
+
+      result = gateway.fetch_daily_bars(%w[AAPL], "2026-08-17", "2026-08-18")
+
+      expect(result.failure[0]).to eq(:rate_limited)
+      expect(a_request(:get, %r{data\.alpaca\.markets/v2/stocks/bars})).to have_been_made.once
+    end
+
     it "tags a 403 as a missing entitlement, not a generic gateway error" do
       stub_alpaca_recent_denied
 

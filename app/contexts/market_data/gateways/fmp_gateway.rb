@@ -19,9 +19,6 @@ module MarketData
     # Fetch company overview (profile + key metrics).
     # Returns Success({ symbol:, name:, eps:, market_cap:, ... }) matching AlphaVantageGateway schema.
     def fetch_overview(symbol)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json("/api/v3/profile/#{symbol}", { apikey: @api_key })
       return result if result.failure?
 
@@ -31,9 +28,6 @@ module MarketData
     # Fetch historical dividends for a stock symbol.
     # Returns Success([{ ex_date:, pay_date:, amount_per_share:, currency: }, ...])
     def fetch_dividends(symbol)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json("/api/v3/historical-price-full/stock_dividend/#{symbol}", { apikey: @api_key })
       return result if result.failure?
 
@@ -43,9 +37,6 @@ module MarketData
     # Fetch historical stock splits for a symbol.
     # Returns Success([{ date:, numerator:, denominator: }, ...])
     def fetch_splits(symbol)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json("/api/v3/historical-price-full/stock_split/#{symbol}", { apikey: @api_key })
       return result if result.failure?
 

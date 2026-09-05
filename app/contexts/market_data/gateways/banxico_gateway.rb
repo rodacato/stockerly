@@ -54,9 +54,6 @@ module MarketData
     # Returns Success([{ date:, rate: }, ...]) — a range so history can be
     # backfilled in one call instead of one request per day (ADR-009).
     def fetch_fx_fixes(from: Date.current, to: Date.current)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json("series/#{FIX_SERIES}/datos/#{format_date(from)}/#{format_date(to)}")
       return result if result.failure?
 
@@ -77,9 +74,6 @@ module MarketData
     # the stack.
     # Returns Success([{ term:, yield_rate:, price:, auction_date: }, ...])
     def fetch_all_terms
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json("series/#{CETES_SERIES.values.join(',')}/datos/oportuno")
       return result if result.failure?
 
@@ -99,9 +93,6 @@ module MarketData
     def auctions_for(term, path_segment)
       series_id = CETES_SERIES[term.to_s]
       return Failure([ :not_found, "Unknown CETES term: #{term}" ]) unless series_id
-
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
 
       result = get_json("series/#{series_id}/datos/#{path_segment}")
       return result if result.failure?

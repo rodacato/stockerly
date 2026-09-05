@@ -37,9 +37,6 @@ module MarketData
       # Daily bars for several symbols in one paginated call.
       # Returns Success({ "AAPL" => [{ date:, open:, high:, low:, close:, volume: }, ...] })
       def fetch_daily_bars(symbols, from_date, to_date)
-        check = RateLimiter.check!(PROVIDER)
-        return check if check.failure?
-
         collected = Hash.new { |hash, key| hash[key] = [] }
         page_token = nil
 
@@ -150,9 +147,6 @@ module MarketData
 
       # Returns Success([{ title:, summary:, source:, url:, image_url:, published_at:, related_ticker: }, ...])
       def fetch_news(ticker: nil, limit: 20)
-        check = RateLimiter.check!(PROVIDER)
-        return check if check.failure?
-
         params = { limit: limit.clamp(1, 50), sort: "desc" }
         params[:symbols] = ticker if ticker.present?
 
@@ -165,9 +159,6 @@ module MarketData
       private
 
       def corporate_actions(symbol, types, from_date, to_date)
-        check = RateLimiter.check!(PROVIDER)
-        return check if check.failure?
-
         get_json("/v1/corporate-actions", {
           symbols: symbol, types: types, start: from_date.to_s, end: to_date.to_s, limit: 1000
         }).fmap { |body| body["corporate_actions"] || {} }

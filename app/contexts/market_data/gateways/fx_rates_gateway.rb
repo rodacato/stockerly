@@ -19,9 +19,6 @@ module MarketData
     # Refresh FX rates for given base → target currencies.
     # Upserts FxRate records and returns Success(:rates_refreshed).
     def refresh_rates(base: "USD", targets: %w[EUR MXN GBP JPY])
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json("/v6/#{@api_key}/latest/#{base}")
       return result if result.failure?
 
