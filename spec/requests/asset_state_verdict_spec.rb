@@ -68,23 +68,23 @@ RSpec.describe "The asset detail's verdict card", type: :request do
   end
 
   # D2, and the reason it was decided: the widget shipped the symbol being
-  # viewed to a third party on every page load.
+  # viewed to a third party on every page load. D66 permits one behind a click,
+  # which is a different thing — so what is guarded here narrowed from "the
+  # widget does not exist" to "nothing reaches TradingView unasked".
   describe "the third-party chart widget" do
-    it "is gone, script and all" do
+    it "reaches no TradingView origin on page load" do
       get market_asset_path(asset.symbol)
 
-      expect(response.body).not_to include("tradingview")
       expect(response.body).not_to include("s3.tradingview.com")
+      expect(response.body).not_to include("tradingview-widget.com")
     end
 
-    # Functional references only — a comment explaining why the widget was
-    # removed is the opposite of a regression.
-    it "leaves no way to load it anywhere in the app" do
-      wiring = /data-controller="tradingview"|tradingview_symbol|s3\.tradingview\.com|TradingviewController/
-      sources = Dir.glob("app/**/*.{rb,erb,js}")
-      offenders = sources.select { |f| File.read(f).match?(wiring) }
+    # The exact defect D2 named, and the one D66 condition 1 forbids by name:
+    # mounting from a Stimulus connect() would reinstate it under a new name.
+    it "cannot mount itself — the controller has no connect()" do
+      source = File.read("app/javascript/controllers/tradingview_controller.js")
 
-      expect(offenders).to be_empty, "still wired in: #{offenders.join(", ")}"
+      expect(source).not_to match(/\bconnect\s*\(/)
     end
   end
 end

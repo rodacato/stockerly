@@ -63,6 +63,13 @@ module MarketHelper
     format_currency_mx(asset.current_price * rate, currency: user.preferred_currency, precision: 0)
   end
 
+  # D2 rejected a widget that loaded on every page load; D66 permits one behind
+  # a click. Stocks and ETFs only: fixed income has no TradingView symbol, and
+  # crypto needs an exchange prefix that `assets.exchange` does not always hold.
+  def tradingview_available?(asset)
+    asset.asset_type_stock? || asset.asset_type_etf?
+  end
+
   # One series for the chart controller, from the closes we already sync.
   # Replaces the TradingView widget, which shipped the symbol being viewed to
   # a third party on every page load (D2).

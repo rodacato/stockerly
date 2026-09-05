@@ -12,10 +12,13 @@ Rails.application.configure do
     policy.object_src  :none
     policy.script_src  :self, "https://s3.tradingview.com"
     policy.style_src   :self, "https://fonts.googleapis.com", :unsafe_inline
-    policy.connect_src :self, "https://*.tradingview.com", "wss://*.tradingview.com"
-    policy.frame_src   "https://*.tradingview.com"
-    # The tradingview.com allowances are kept for D66's opt-in chart toggle, not
-    # by omission; nothing loads them today, and they go if D66 is dropped (X17).
+    policy.connect_src :self
+    policy.frame_src   "https://www.tradingview-widget.com"
+    # Two hosts, and only these two: s3 serves the embed script, and the iframe
+    # it injects comes from tradingview-widget.com — a different registrable
+    # domain, which *.tradingview.com never covered. The websockets live inside
+    # that iframe, under its own origin, so connect_src needs nothing. All of it
+    # goes if D66 is dropped (X17).
     policy.frame_ancestors :none
   end
 

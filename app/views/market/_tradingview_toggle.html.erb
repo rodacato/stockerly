@@ -1,0 +1,42 @@
+<%# The opt-in chart (D66). The frame below is empty on purpose: nothing reaches
+    TradingView until the link is followed, which is what D2 rejected doing on
+    every page load. Locals: asset. %>
+<div class="mt-4 border-t border-border-default pt-4" data-controller="tradingview">
+  <div class="flex items-center justify-between gap-3">
+    <div>
+      <p class="text-sm font-semibold text-fg-default"><%= t(".titulo") %></p>
+      <p class="text-xs text-fg-subtle"><%= t(".subtitulo") %></p>
+    </div>
+
+    <%= link_to t(".mostrar"), market_asset_tradingview_path(asset.symbol),
+                class: button_classes(:secondary, :sm, "shrink-0"),
+                data: { turbo_frame: "asset_tradingview",
+                        tradingview_target: "link",
+                        action: "tradingview#open" } %>
+  </div>
+
+  <%= turbo_frame_tag "asset_tradingview" %>
+
+  <div data-tradingview-target="notice" hidden
+       class="fixed inset-0 z-50 flex items-end justify-center bg-scrim">
+    <div class="<%= card_classes("w-full max-w-md rounded-b-none p-6") %>">
+      <h2 class="font-display text-lg font-semibold tracking-tight text-fg-default">
+        <%= t(".aviso.titulo") %>
+      </h2>
+      <p class="mt-4 text-sm text-fg-subtle"><%= t(".aviso.envio") %></p>
+      <p class="mt-3 text-sm text-fg-subtle"><%= t(".aviso.atribucion") %></p>
+      <p class="mt-3 text-xs text-fg-subtle"><%= t(".aviso.una_vez") %></p>
+
+      <div class="mt-6 flex gap-3">
+        <button type="button" data-action="tradingview#dismiss"
+                class="<%= button_classes(:secondary, :md, "flex-1") %>">
+          <%= t(".aviso.cancelar") %>
+        </button>
+        <button type="button" data-action="tradingview#accept"
+                class="<%= button_classes(:primary, :md, "flex-1") %>">
+          <%= t(".aviso.aceptar") %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

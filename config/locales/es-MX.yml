@@ -929,6 +929,20 @@ es-MX:
       vacio_cta: Traerlos ahora
       vacio_cuerpo: Todavía no los hemos pedido para este activo.
       vacio_titulo: Sin datos fundamentales
+    tradingview_toggle:
+      aviso:
+        aceptar: Mostrar gráfico
+        atribucion: TradingView exige que su atribución siga visible tal como viene.
+          Quien opera esta instancia asume esa obligación.
+        cancelar: Ahora no
+        envio: Al mostrarlo, tu navegador le pide el gráfico a TradingView y le indica
+          qué símbolo estás viendo. No se envía nada más, y no ocurre hasta que lo
+          pides.
+        titulo: Este gráfico sale de tu instancia
+        una_vez: Se muestra una sola vez.
+      mostrar: Mostrar
+      subtitulo: Medias largas y MACD · se carga desde TradingView
+      titulo: Gráfico de TradingView
     vs_plan:
       activa: activa
       costo: Tu costo · %{value}
