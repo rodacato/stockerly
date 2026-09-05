@@ -27,6 +27,11 @@ module MarketData
         "^MXX"  => "IPC",
         "^VIX"  => "VIX"
       }.freeze
+      # The same knowledge the other way round. An index reaches this gateway
+      # as an Asset under the symbol the catalogue stores -- VIX, not ^VIX --
+      # and Yahoo answers to its own ticker only, so the caret is put back here
+      # rather than kept as one provider_symbols row per index in production.
+      YAHOO_SYMBOLS = INDEX_SYMBOL_MAP.invert.freeze
 
       def self.source_id
         "#{PROVIDER}/yfinance"
@@ -149,7 +154,7 @@ module MarketData
         check = RateLimiter.check!(PROVIDER)
         return check if check.failure?
 
-        PythonRunner.call(SCRIPT, command, symbol, *extra)
+        PythonRunner.call(SCRIPT, command, YAHOO_SYMBOLS.fetch(symbol, symbol), *extra)
       end
 
       # The hour Yahoo publishes is the only signal separating a pre-open report
