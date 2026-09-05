@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "band: happy path (left → right) · desktop stacks below it\nkit-version-source: 0.8.1 · brief-schema: 1 · updated: 2026-08-29\n\n1. PURPOSE\n   The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile first.\n\n2. ENTRY POINTS\n   - Login lands here — /dashboard (config/routes.rb)\n   - A radar or signal row opens the asset detail — /market/:symbol (config/routes.rb)\n   - Panorama's patrimonio hero and Holdings' summary card both open Consolidado — one screen, two doors\n\n3. SCREENS  (left → right)\n   - Panorama — Default, Tranquilo — bha3e, H9a5cH\n   - Señales — Default — lNpAd (the observation feed; D42, renamed from Movimientos by D57)\n   - Asset detail — Análisis, Mi posición — e8CjG, fP4zv\n   - Consolidado — Default — tHAu1\n   - Desktop (1280) — Panorama, Asset · Análisis, Consolidado — FL7Uk, pM2rP, lc9x8\n\n4. BUSINESS RULES\n   - The radar draws Holdings and Watchlist together, ordered by what moved (app/contexts/trading/use_cases/assemble_panorama.rb)\n   - A watched row is told from a holding by the ISO prefix its price keeps; a holding's value drops it (D10)\n   - Rows lead with the change in the radar and with the value in Cartera — same component, D69/D72\n   - The price chart states its own window; heading and query read one constant (app/contexts/market_data/use_cases/load_asset_detail.rb)\n   - The anchor reads cost when you hold, the alert threshold when you watch (D67)\n   - Fundamentals are asked for, never enqueued by the read (app/controllers/market_controller.rb)\n   - Copy: es-MX. Read ADR-001 → ADR-013 → ADR-014 forward before touching any of it. A verb is allowed when it is a lookup over a persisted observation; a sentence is allowed when it comes from a closed catalogue. Neither may be composed in a template.\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, market.*, posicion.*. Nothing on this band is hardcoded.\n\n6. STATES NOT DRAWN\n   - Panorama / Black swan — nothing computes market breadth, so there is no state to draw (D25, D51)\n   - Stocks Fear & Greed — no equivalent source exists and relabelling another indicator would be a lie (D38)\n   - Confluence light 2 — the engine is build-gated (D3)\n   - Rango52 with no data, and the anchor with neither position nor rule — both render absent, which is a swap not a state\n\n7. OPEN FINDINGS\n   D3\n\n8. HISTORY\n   → LOG — Cockpit, bottom of this file.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2) — do not copy the pinned width into the ERB.",
+          "content": "band: happy path (left → right) · desktop stacks below it\nkit-version-source: 0.8.1 · brief-schema: 1\n\n1. PURPOSE\n   The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile first.\n\n2. ENTRY POINTS\n   - Login lands here — /dashboard (config/routes.rb)\n   - A radar or signal row opens the asset detail — /market/:symbol (config/routes.rb)\n   - Panorama's patrimonio hero and Holdings' summary card both open Consolidado — one screen, two doors\n\n3. SCREENS  (left → right)\n   - Panorama — Default, Tranquilo — bha3e, H9a5cH\n   - Señales — Default — lNpAd (the observation feed; D42, renamed from Movimientos by D57)\n   - Asset detail — Análisis, Mi posición — e8CjG, fP4zv\n   - Consolidado — Default — tHAu1\n   - Desktop (1280) — Panorama, Asset · Análisis, Consolidado — FL7Uk, pM2rP, lc9x8\n\n4. BUSINESS RULES\n   - The radar draws Holdings and Watchlist together, ordered by what moved (app/contexts/trading/use_cases/assemble_panorama.rb)\n   - A watched row is told from a holding by the ISO prefix its price keeps; a holding's value drops it (D10)\n   - Rows lead with the change in the radar and with the value in Cartera — same component, D69/D72\n   - The price chart states its own window; heading and query read one constant (app/contexts/market_data/use_cases/load_asset_detail.rb)\n   - The anchor reads cost when you hold, the alert threshold when you watch (D67)\n   - Fundamentals are asked for, never enqueued by the read (app/controllers/market_controller.rb)\n   - Copy: es-MX. Read ADR-001 → ADR-013 → ADR-014 forward before touching any of it. A verb is allowed when it is a lookup over a persisted observation; a sentence is allowed when it comes from a closed catalogue. Neither may be composed in a template.\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, market.*, posicion.*.\n   NOT all of it: seven partials under app/views/market carry zero t() and are hardcoded es-MX — _analyst_target, _company_facts, _disclaimer, _pe_chart, _price_chart, earnings_tab, statements_tab. The directory-level count hides them because the rest of market/ is dense with keys. Razón P/U histórica and Acerca de la empresa are drawn from that hardcoded copy, which is the honest source until they are migrated.\n\n6. STATES NOT DRAWN\n   - Panorama / Black swan — nothing computes market breadth, so there is no state to draw (D25, D51)\n   - Stocks Fear & Greed — no equivalent source exists and relabelling another indicator would be a lie (D38)\n   - Confluence light 2 — DEFINED by D3 (volume against its own trailing average, per-asset threshold) and still unbuilt; the code and the artboard both say próximamente. The gate moved from 'no definition' to 'no engine'\n   - Rango52 with no data, and the anchor with neither position nor rule — both render absent, which is a swap not a state\n\n7. OPEN FINDINGS\n   none open on this band. D3 resolved 2026-08-29; what remains is the build, tracked on the board\n\n8. HISTORY\n   → LOG — Cockpit, bottom of this file.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2) — do not copy the pinned width into the ERB.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -3246,150 +3246,6 @@
             },
             {
               "type": "frame",
-              "id": "cjtnW",
-              "name": "MasAnalisis",
-              "width": "fill_container",
-              "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
-              "stroke": "$border-default",
-              "strokeWidth": 1,
-              "layout": "vertical",
-              "gap": "$space-3",
-              "padding": "$space-5",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "B49mrD",
-                  "name": "H",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "J7Sn1",
-                      "name": "T",
-                      "fill": "$fg-default",
-                      "content": "Más análisis",
-                      "fontFamily": "$font-display",
-                      "fontSize": 16,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "d1X1qW",
-                      "name": "Chev",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "chevron-up",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "dHGNo",
-                  "name": "dl",
-                  "fill": "$fg-subtle",
-                  "content": "DISPARADORES",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 0.8
-                },
-                {
-                  "type": "text",
-                  "id": "LylP0",
-                  "name": "d1",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Una compra pediría: RSI < 30 + precio bajo la banda inferior de Bollinger.",
-                  "lineHeight": 1.5,
-                  "fontFamily": "$font-sans",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "WTOUy",
-                  "name": "d2",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Una venta se confirma si: RSI sigue > 70 y el precio cruza la MA50 a la baja.",
-                  "lineHeight": 1.5,
-                  "fontFamily": "$font-sans",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "FarQm",
-                  "name": "Div",
-                  "width": "fill_container",
-                  "height": 1,
-                  "fill": "$border-default"
-                },
-                {
-                  "type": "text",
-                  "id": "LjO5O",
-                  "name": "vl",
-                  "fill": "$fg-subtle",
-                  "content": "VOLUMEN",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 0.8
-                },
-                {
-                  "type": "frame",
-                  "id": "WtTg8",
-                  "name": "vr",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "c7VmiF",
-                      "name": "a",
-                      "fill": "$fg-default",
-                      "content": "48M hoy · arriba de lo normal",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "sIzi9",
-                      "name": "c",
-                      "fill": "$primary-muted",
-                      "cornerRadius": 99,
-                      "padding": [
-                        2,
-                        8
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "lH8kt",
-                          "name": "t",
-                          "fill": "$primary-hover",
-                          "content": "1.3× prom.",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "UFV5T",
               "name": "Observaciones notables",
               "width": "fill_container",
@@ -3529,6 +3385,173 @@
                       "lineHeight": 1.4,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "gXPUU",
+              "name": "Noticias",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-card",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-3",
+              "padding": "$space-5",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Sj77W",
+                  "name": "H",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gQsGK",
+                      "name": "T",
+                      "fill": "$fg-default",
+                      "content": "Noticias",
+                      "fontFamily": "$font-display",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "WQpqS",
+                      "name": "F",
+                      "fill": "$fg-subtle",
+                      "content": "Filtradas a NVDA · últimos 7 días",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "SIQoj",
+                  "name": "Atribución",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Titulares de sus fuentes, sin editar.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "fontStyle": "italic"
+                },
+                {
+                  "type": "frame",
+                  "id": "kWUmq",
+                  "name": "Titular",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qhQVJ",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Nvidia amplía su acuerdo de suministro con un fabricante asiático",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "K4WMNw",
+                      "name": "f",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Reuters · hace 6 h",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "jzvmm",
+                  "name": "Titular",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wLqto",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Los reguladores europeos abren consulta sobre chips de IA",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "dhAF8",
+                      "name": "f",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Bloomberg · hace 1 d",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "H9gtWM",
+                  "name": "Titular",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "idd1D",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Reporte trimestral: ingresos por centro de datos al alza",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kSxxI",
+                      "name": "f",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "MarketWatch · hace 3 d",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
                       "fontWeight": "normal"
                     }
                   ]
@@ -3946,6 +3969,184 @@
                   "fontFamily": "$font-sans",
                   "fontSize": 13,
                   "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mpFo5",
+              "name": "Razón P/U histórica",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-card",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-4",
+              "padding": "$space-5",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "BY2gx",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Razón P/U histórica · últimos 90 días",
+                  "lineHeight": 1.3,
+                  "fontFamily": "$font-display",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "QnizL",
+                  "name": "Gráfica",
+                  "width": "fill_container",
+                  "height": 120,
+                  "fill": "$bg-muted",
+                  "cornerRadius": "$radius-md"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "h9xLHL",
+              "name": "Acerca de la empresa",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-card",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-4",
+              "padding": "$space-5",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "M4JyID",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Acerca de la empresa",
+                  "fontFamily": "$font-display",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "x6CZwF",
+                  "name": "Descripción",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Descripción de la emisora tal como la publica la fuente de fundamentales, sin re-editar.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "ObdBD",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Ficha",
+                  "fontFamily": "$font-display",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "T9xBY6",
+                  "name": "Sector",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "z7wwzf",
+                      "name": "k",
+                      "fill": "$fg-subtle",
+                      "content": "Sector",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "hl3iv",
+                      "name": "v",
+                      "fill": "$fg-default",
+                      "content": "Tecnología",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oKwo2",
+                  "name": "Bolsa",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "GkqeW",
+                      "name": "k",
+                      "fill": "$fg-subtle",
+                      "content": "Bolsa",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "I1T4SQ",
+                      "name": "v",
+                      "fill": "$fg-default",
+                      "content": "NASDAQ",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "d5wE6",
+                  "name": "País",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jr2tY",
+                      "name": "k",
+                      "fill": "$fg-subtle",
+                      "content": "País",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "S7yv0",
+                      "name": "v",
+                      "fill": "$fg-default",
+                      "content": "Estados Unidos",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
                 }
               ]
             },
@@ -7417,7 +7618,7 @@
       "name": "[Cockpit] / Asset · Análisis · Desktop / Default",
       "clip": true,
       "width": 1280,
-      "height": 1400,
+      "height": 1680,
       "fill": "$bg-canvas",
       "children": [
         {
@@ -9146,6 +9347,173 @@
                                   ]
                                 }
                               ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "PSFdA",
+                              "name": "Noticias",
+                              "width": "fill_container",
+                              "fill": "$bg-surface",
+                              "cornerRadius": "$radius-card",
+                              "stroke": "$border-default",
+                              "strokeWidth": 1,
+                              "layout": "vertical",
+                              "gap": "$space-3",
+                              "padding": "$space-5",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "m8VxeK",
+                                  "name": "H",
+                                  "width": "fill_container",
+                                  "gap": "$space-2",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "Vu5RY",
+                                      "name": "T",
+                                      "fill": "$fg-default",
+                                      "content": "Noticias",
+                                      "fontFamily": "$font-display",
+                                      "fontSize": 16,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "t8vrL",
+                                      "name": "F",
+                                      "fill": "$fg-subtle",
+                                      "content": "Filtradas a NVDA · últimos 7 días",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "n5evR",
+                                  "name": "Atribución",
+                                  "fill": "$fg-subtle",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Titulares de sus fuentes, sin editar.",
+                                  "lineHeight": 1.4,
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "fontStyle": "italic"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "Y3ZJF",
+                                  "name": "Titular",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "GvGRf",
+                                      "name": "t",
+                                      "fill": "$fg-default",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Nvidia amplía su acuerdo de suministro con un fabricante asiático",
+                                      "lineHeight": 1.4,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "Q7PFU",
+                                      "name": "f",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Reuters · hace 6 h",
+                                      "lineHeight": 1.4,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "bpU7U",
+                                  "name": "Titular",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "oNFJe",
+                                      "name": "t",
+                                      "fill": "$fg-default",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Los reguladores europeos abren consulta sobre chips de IA",
+                                      "lineHeight": 1.4,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "Behdr",
+                                      "name": "f",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Bloomberg · hace 1 d",
+                                      "lineHeight": 1.4,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "zsCEY",
+                                  "name": "Titular",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "WkBxS",
+                                      "name": "t",
+                                      "fill": "$fg-default",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Reporte trimestral: ingresos por centro de datos al alza",
+                                      "lineHeight": 1.4,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "EA9sd",
+                                      "name": "f",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "MarketWatch · hace 3 d",
+                                      "lineHeight": 1.4,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
                             }
                           ]
                         },
@@ -9396,150 +9764,6 @@
                                   "fontFamily": "$font-sans",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "iAwHn",
-                              "name": "MasAnalisis",
-                              "width": "fill_container",
-                              "fill": "$bg-surface",
-                              "cornerRadius": "$radius-card",
-                              "stroke": "$border-default",
-                              "strokeWidth": 1,
-                              "layout": "vertical",
-                              "gap": "$space-3",
-                              "padding": "$space-5",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "fPHvi",
-                                  "name": "H",
-                                  "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "bqD99",
-                                      "name": "T",
-                                      "fill": "$fg-default",
-                                      "content": "Más análisis",
-                                      "fontFamily": "$font-display",
-                                      "fontSize": 16,
-                                      "fontWeight": "600"
-                                    },
-                                    {
-                                      "type": "icon",
-                                      "id": "FMGXy",
-                                      "name": "Chev",
-                                      "width": 18,
-                                      "height": 18,
-                                      "icon": "chevron-up",
-                                      "library": "lucide",
-                                      "fill": "$fg-subtle"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "q92kFq",
-                                  "name": "dl",
-                                  "fill": "$fg-subtle",
-                                  "content": "DISPARADORES",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "normal",
-                                  "letterSpacing": 0.8
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "sWpdO",
-                                  "name": "d1",
-                                  "fill": "$fg-default",
-                                  "textGrowth": "fixed-width",
-                                  "width": "fill_container",
-                                  "content": "Una compra pediría: RSI < 30 + precio bajo la banda inferior de Bollinger.",
-                                  "lineHeight": 1.5,
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "lHvp2",
-                                  "name": "d2",
-                                  "fill": "$fg-default",
-                                  "textGrowth": "fixed-width",
-                                  "width": "fill_container",
-                                  "content": "Una venta se confirma si: RSI sigue > 70 y el precio cruza la MA50 a la baja.",
-                                  "lineHeight": 1.5,
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "v6etxO",
-                                  "name": "Div",
-                                  "width": "fill_container",
-                                  "height": 1,
-                                  "fill": "$border-default"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "x0aIk0",
-                                  "name": "vl",
-                                  "fill": "$fg-subtle",
-                                  "content": "VOLUMEN",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "normal",
-                                  "letterSpacing": 0.8
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "M3nXQ0",
-                                  "name": "vr",
-                                  "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "s2h5v",
-                                      "name": "a",
-                                      "fill": "$fg-default",
-                                      "content": "48M hoy · arriba de lo normal",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "d2u0w",
-                                      "name": "c",
-                                      "fill": "$primary-muted",
-                                      "cornerRadius": 99,
-                                      "padding": [
-                                        2,
-                                        8
-                                      ],
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "hyDXs",
-                                          "name": "t",
-                                          "fill": "$primary-hover",
-                                          "content": "1.3× prom.",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 11,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
-                                    }
-                                  ]
                                 }
                               ]
                             },
@@ -9954,6 +10178,184 @@
                                   "fontFamily": "$font-sans",
                                   "fontSize": 13,
                                   "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "HQdT4",
+                              "name": "Razón P/U histórica",
+                              "width": "fill_container",
+                              "fill": "$bg-surface",
+                              "cornerRadius": "$radius-card",
+                              "stroke": "$border-default",
+                              "strokeWidth": 1,
+                              "layout": "vertical",
+                              "gap": "$space-4",
+                              "padding": "$space-5",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "l5EcrU",
+                                  "name": "T",
+                                  "fill": "$fg-default",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Razón P/U histórica · últimos 90 días",
+                                  "lineHeight": 1.3,
+                                  "fontFamily": "$font-display",
+                                  "fontSize": 16,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "JFOoL",
+                                  "name": "Gráfica",
+                                  "width": "fill_container",
+                                  "height": 120,
+                                  "fill": "$bg-muted",
+                                  "cornerRadius": "$radius-md"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Uzgcv",
+                              "name": "Acerca de la empresa",
+                              "width": "fill_container",
+                              "fill": "$bg-surface",
+                              "cornerRadius": "$radius-card",
+                              "stroke": "$border-default",
+                              "strokeWidth": 1,
+                              "layout": "vertical",
+                              "gap": "$space-4",
+                              "padding": "$space-5",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Dp23m",
+                                  "name": "T",
+                                  "fill": "$fg-default",
+                                  "content": "Acerca de la empresa",
+                                  "fontFamily": "$font-display",
+                                  "fontSize": 16,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "TUltT",
+                                  "name": "Descripción",
+                                  "fill": "$fg-subtle",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Descripción de la emisora tal como la publica la fuente de fundamentales, sin re-editar.",
+                                  "lineHeight": 1.4,
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "I8Iuo",
+                                  "name": "T",
+                                  "fill": "$fg-default",
+                                  "content": "Ficha",
+                                  "fontFamily": "$font-display",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "tTVFU",
+                                  "name": "Sector",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "lqHJi",
+                                      "name": "k",
+                                      "fill": "$fg-subtle",
+                                      "content": "Sector",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "a0kfMM",
+                                      "name": "v",
+                                      "fill": "$fg-default",
+                                      "content": "Tecnología",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "xhcne",
+                                  "name": "Bolsa",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "KlTbq",
+                                      "name": "k",
+                                      "fill": "$fg-subtle",
+                                      "content": "Bolsa",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "QA4VS",
+                                      "name": "v",
+                                      "fill": "$fg-default",
+                                      "content": "NASDAQ",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "D5N2I",
+                                  "name": "País",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "LSkxk",
+                                      "name": "k",
+                                      "fill": "$fg-subtle",
+                                      "content": "País",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "CL8Ch",
+                                      "name": "v",
+                                      "fill": "$fg-default",
+                                      "content": "Estados Unidos",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
                                 }
                               ]
                             }
@@ -11784,7 +12186,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-08-29 · reflowed band 0 onto the declared grid: every gutter is 100 now, a 590px hole between Tranquilo and Análisis is gone, and Señales moved from x3700 y−780 — the components zone — into the band in reading order. Desktop stack shifted to respect grid-row-gap (3148 → 3244)\n2026-08-29 · brief rewritten into the eight fixed sections. The prose it replaces carried the why and the dates inline; those live in DECISIONS and here now, and the brief cites numbers\n2026-08-29 · Panorama + Panorama · Desktop: the Radar draws a watchlist row at last. Its own subtitle has read 'De tu cartera y watchlist' all along while every row was a holding, so the artboard was incomplete rather than in conflict with the code. Drawn as an AssetRow instance per D72 — the ISO prefix (USD 248.50) is what tells it from a position, since a holding's value drops the symbol under D10. Desktop grew 860 → 963 and the two artboards below it moved down 103 · X12\n2026-08-29 · Panorama: the Radar's ten AssetRow instances (5 mobile, 5 desktop) now lead with the change and demote the value. AssetRow stays generic — the component defines emphasis positions, not what goes in them, so no kit change and no second component · D69, D72, X12\n2026-08-29 · kit 0.8.1 · Asset · Análisis: the 52-week range moved OUT of Señales to sit under the price as Rango52. Señales is #306-blocked and that row is the one part of it buildable today, so it no longer waits on the rest · CKP-9, #426. Applied to the Desktop artboard in the same pass\n2026-08-29 · kit 0.8.1 · Asset · Análisis: VsPlan's second row now reads the alert threshold instead of a Meta — no target_price will exist · D67, CKP-8. Applied to the Desktop artboard in the same pass\n2026-08-29 · declared grid-x0/brief-w/gutter/y0/row-gap and opened this Log; the file predated both conventions\n2026-08-29 · brief corrected: kit-version-source said 0.8.0 against the file's 0.8.1, and the detail height moved 3037 → 2984 (the hoist freed more than Rango52 added)",
+          "content": "2026-09-05 · D78 · Análisis draws Noticias, Razón P/U histórica and Acerca de la empresa — three sections the code ships and this flow had not drawn\n2026-09-05 · C-4 · MasAnalisis deleted from both Análisis artboards: its volume line is the input D3 gave confluence light 2, and its DISPARADORES are threshold copy ADR-014 does not allow\n2026-09-05 · brief §5 corrected — seven market partials are hardcoded es-MX; it claimed nothing on the band was\n2026-09-05 · brief §6/§7 — D3 is resolved; the gate moved from no-definition to no-engine\n2026-09-05 · Asset · Análisis · Desktop grows 1400 → 1680 to hold the three new cards\n2026-08-29 · reflowed band 0 onto the declared grid: every gutter is 100 now, a 590px hole between Tranquilo and Análisis is gone, and Señales moved from x3700 y−780 — the components zone — into the band in reading order. Desktop stack shifted to respect grid-row-gap (3148 → 3244)\n2026-08-29 · brief rewritten into the eight fixed sections. The prose it replaces carried the why and the dates inline; those live in DECISIONS and here now, and the brief cites numbers\n2026-08-29 · Panorama + Panorama · Desktop: the Radar draws a watchlist row at last. Its own subtitle has read 'De tu cartera y watchlist' all along while every row was a holding, so the artboard was incomplete rather than in conflict with the code. Drawn as an AssetRow instance per D72 — the ISO prefix (USD 248.50) is what tells it from a position, since a holding's value drops the symbol under D10. Desktop grew 860 → 963 and the two artboards below it moved down 103 · X12\n2026-08-29 · Panorama: the Radar's ten AssetRow instances (5 mobile, 5 desktop) now lead with the change and demote the value. AssetRow stays generic — the component defines emphasis positions, not what goes in them, so no kit change and no second component · D69, D72, X12\n2026-08-29 · kit 0.8.1 · Asset · Análisis: the 52-week range moved OUT of Señales to sit under the price as Rango52. Señales is #306-blocked and that row is the one part of it buildable today, so it no longer waits on the rest · CKP-9, #426. Applied to the Desktop artboard in the same pass\n2026-08-29 · kit 0.8.1 · Asset · Análisis: VsPlan's second row now reads the alert threshold instead of a Meta — no target_price will exist · D67, CKP-8. Applied to the Desktop artboard in the same pass\n2026-08-29 · declared grid-x0/brief-w/gutter/y0/row-gap and opened this Log; the file predated both conventions\n2026-08-29 · brief corrected: kit-version-source said 0.8.0 against the file's 0.8.1, and the detail height moved 3037 → 2984 (the hoist freed more than Rango52 added)",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
