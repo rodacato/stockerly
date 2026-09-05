@@ -21,9 +21,6 @@ module MarketData
     # Fetch company overview (50+ metrics in one call).
     # Returns Success({ symbol:, eps:, book_value:, ... })
     def fetch_overview(symbol)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json(QUERY_PATH, { function: "OVERVIEW", symbol: symbol, apikey: @api_key })
       return result if result.failure?
 
@@ -54,9 +51,6 @@ module MarketData
     # Search tickers by keyword via SYMBOL_SEARCH endpoint.
     # Returns Success([{ symbol:, name:, quote_type:, exchange:, exchange_display: }, ...])
     def search_tickers(query)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json(QUERY_PATH, { function: "SYMBOL_SEARCH", keywords: query, apikey: @api_key })
       return result if result.failure?
 
@@ -95,9 +89,6 @@ module MarketData
 
     # Shared fetch + parse logic for all 3 statement types.
     def fetch_statement(symbol, function)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json(QUERY_PATH, { function: function, symbol: symbol, apikey: @api_key })
       return result if result.failure?
 

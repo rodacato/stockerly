@@ -19,9 +19,6 @@ module MarketData
     # Fetch real-time quote for a single symbol.
     # Returns Success({ symbol:, price:, volume: })
     def fetch_price(symbol)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json("/api/v1/quote", { symbol: symbol, token: @api_key })
       return result if result.failure?
 
@@ -42,9 +39,6 @@ module MarketData
     # Fetch daily OHLCV candles for a date range.
     # Returns Success([{ date:, open:, high:, low:, close:, volume: }, ...])
     def fetch_historical(symbol, from_date, to_date)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       from_ts = Date.parse(from_date.to_s).to_time.to_i
       to_ts   = Date.parse(to_date.to_s).to_time.to_i
 
@@ -61,9 +55,6 @@ module MarketData
     def fetch_news(ticker: nil, limit: 20)
       return Failure([ :not_supported, "Finnhub requires a ticker for news" ]) if ticker.blank?
 
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       from_date = 7.days.ago.to_date.to_s
       to_date = Date.current.to_s
 
@@ -78,9 +69,6 @@ module MarketData
     # Fetch earnings calendar for a ticker.
     # Returns Success([{ report_date:, fiscal_quarter:, fiscal_year:, estimated_eps:, actual_eps:, timing: }, ...])
     def fetch_earnings(ticker)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       from_date = 6.months.ago.to_date.to_s
       to_date = (Date.current + 6.months).to_s
 
@@ -95,9 +83,6 @@ module MarketData
     # Search tickers by name or symbol.
     # Returns Success([{ symbol:, name:, display_symbol:, type: }, ...])
     def search_tickers(query)
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json("/api/v1/search", { q: query, token: @api_key })
       return result if result.failure?
 

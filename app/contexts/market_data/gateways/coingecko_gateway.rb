@@ -66,9 +66,6 @@ module MarketData
       coin_id = SYMBOL_TO_ID[symbol.upcase]
       return Failure([ :not_found, "Unknown crypto symbol: #{symbol}" ]) unless coin_id
 
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
-
       result = get_json("/api/v3/coins/#{coin_id}/market_chart", {
         vs_currency: QUOTE_CURRENCY, days: days.to_s, interval: "daily"
       }) { |req| apply_auth(req) }
@@ -82,9 +79,6 @@ module MarketData
     def fetch_bulk_prices(symbols)
       ids = symbols.filter_map { |s| SYMBOL_TO_ID[s.upcase] }
       return Success([]) if ids.empty?
-
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
 
       result = get_json("/api/v3/simple/price", {
         ids: ids.join(","), vs_currencies: QUOTE_CURRENCY,
@@ -100,9 +94,6 @@ module MarketData
     def fetch_market_data(symbols)
       ids = symbols.filter_map { |s| SYMBOL_TO_ID[s.upcase] }
       return Success([]) if ids.empty?
-
-      check = RateLimiter.check!(PROVIDER)
-      return check if check.failure?
 
       result = get_json("/api/v3/coins/markets", {
         vs_currency: QUOTE_CURRENCY, ids: ids.join(","),

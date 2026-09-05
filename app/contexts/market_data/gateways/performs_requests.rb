@@ -24,7 +24,15 @@ module MarketData
       end
 
       # Returns Success(the parsed body) or the failure the hooks below decide.
+      #
+      # The budget is asked here because a request is the only thing the limiter
+      # can count -- RateLimiter increments daily_api_calls, one per call. It
+      # used to be asked once per public method instead, which was right only
+      # while every one of them made exactly one request (#558).
       def get_json(path, params = {}, &block)
+        check = RateLimiter.check!(self.class::PROVIDER)
+        return check if check.failure?
+
         response = connection.get(path) do |req|
           req.params.update(params.transform_keys(&:to_s))
           block&.call(req)

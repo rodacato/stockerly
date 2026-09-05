@@ -149,12 +149,9 @@ module MarketData
         }
       end
 
-      # Every request goes through here, so the budget is counted once rather than
-      # at each of the four public methods the way the other gateways do it.
+      # Only the token, now that the budget is asked in get_json for every
+      # gateway. This method is what said the request was the right place first.
       def get(path, params)
-        check = RateLimiter.check!(PROVIDER)
-        return check if check.failure?
-
         get_json(path, params.merge(token: @token))
       end
 
