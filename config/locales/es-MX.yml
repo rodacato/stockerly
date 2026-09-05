@@ -901,6 +901,14 @@ es-MX:
       high: a %{percent} de su máximo del año
       low: a %{percent} de su mínimo del año
       titulo: RANGO 52 SEMANAS
+    returns:
+      titulo: Rendimiento
+      ventana:
+        1a: 1 año
+        1d: 1 día
+        1m: 1 mes
+        1s: 1 sem
+        3m: 3 meses
     signals:
       bollinger:
         above_upper: Precio por arriba de la banda superior de Bollinger

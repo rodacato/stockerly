@@ -32,6 +32,7 @@
 
       <div data-tabs-target="panel" class="hidden space-y-6">
         <%= render "market/position_summary", data: @position_data %>
+        <%= render "market/returns", returns: @returns, currency: current_user.preferred_currency if @returns %>
         <% if @position_data[:retrospective] %>
           <%= render "market/purchase_retrospective", retrospective: @position_data[:retrospective] %>
         <% end %>

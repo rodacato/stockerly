@@ -4,16 +4,27 @@ module Trading
     # With no cash model (D26) every buy is an inflow and every sell an
     # outflow, so the trades are the only record of them.
     class ExternalFlows
-      def initialize(portfolio, currency:)
+      # `asset` narrows every flow to one position's trades. The arithmetic is
+      # identical — a buy is still an inflow — so the scope is a filter rather
+      # than a second calculation.
+      def initialize(portfolio, currency:, asset: nil)
         @portfolio = portfolio
         @currency  = currency
+        @asset     = asset
+      end
+
+      # Net capital put into this scope between two dates, inclusive of both.
+      # A window's return is what is left after removing it: money you added
+      # is not money the position earned (D12, at position scope).
+      def between(from, to)
+        total_of(trades.where(executed_at: from.beginning_of_day..to.end_of_day))
       end
 
       # Flows a snapshot could not have seen. Keyed on when the trade was
       # recorded, because that is what decides whether the snapshot includes
       # it — the date typed on the form does not.
       def since(time)
-        total_of(@portfolio.trades.kept.where(created_at: time..))
+        total_of(trades.where(created_at: time..))
       end
 
       # Flows per day across a range, for a history that has been rebuilt to
@@ -23,13 +34,18 @@ module Trading
       # Returns a Hash defaulting to 0, built from one query — a year of daily
       # sub-periods would otherwise ask 365 times.
       def by_date(range)
-        trades = @portfolio.trades.kept.where(executed_at: range.first.beginning_of_day..range.last.end_of_day)
+        rows = trades.where(executed_at: range.first.beginning_of_day..range.last.end_of_day)
 
-        trades.group_by { |trade| trade.executed_at.to_date }
+        rows.group_by { |trade| trade.executed_at.to_date }
               .each_with_object(Hash.new(0)) { |(date, group), acc| acc[date] = total_of(group) }
       end
 
       private
+
+      def trades
+        scope = @portfolio.trades.kept
+        @asset ? scope.where(asset_id: @asset.id) : scope
+      end
 
       def total_of(trades)
         trades.sum do |trade|

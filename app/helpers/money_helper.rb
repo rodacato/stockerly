@@ -5,6 +5,14 @@ module MoneyHelper
     "#{currency} #{number_with_precision(amount || 0, precision: precision, delimiter: ",")}"
   end
 
+  # A gain or loss carries its sign, and the sign is the typographic minus for
+  # the same reason signed_percent's is: a hyphen is a separator, not a sign.
+  # The sign leads because the reader is scanning for direction before amount.
+  def signed_currency_mx(amount, currency:, precision: 2)
+    value = amount.to_d
+    "#{value.negative? ? "−" : "+"}#{format_currency_mx(value.abs, currency: currency, precision: precision)}"
+  end
+
   SIGNIFICANT_DIGITS = 4
   MAX_DECIMALS = 8
 

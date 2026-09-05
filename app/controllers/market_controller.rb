@@ -29,6 +29,10 @@ class MarketController < AuthenticatedController
       # readings are composed here from their own contexts.
       @position_data = Trading::UseCases::LoadAssetPosition.call(user: current_user, asset: @asset)
       @holding = @position_data.present?
+      @returns = if @holding && current_user.portfolio
+                   Trading::Domain::PositionReturns.new(current_user.portfolio, @asset,
+                                                        currency: current_user.preferred_currency)
+      end
       @asset_rules = Alerts::UseCases::LoadAssetRules.call(user: current_user, symbol: @asset.symbol)
       @is_watchlisted = current_user.watchlist_items.exists?(asset_id: @asset.id)
       @anchors = Trading::UseCases::LoadAssetAnchors.call(
