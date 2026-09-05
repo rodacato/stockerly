@@ -49,7 +49,7 @@
                 <label class="flex items-center gap-2">
                   <span class="text-[10px] text-fg-subtle"><%= t(".rechazo.renombrado") %></span>
                   <%= text_field_tag "renames[#{symbol}]", nil, placeholder: t(".rechazo.renombrado_ph"),
-                        class: "w-24 rounded border border-border-default bg-bg-canvas px-2 py-1 font-mono text-[11px] uppercase text-fg-default" %>
+                        class: field_classes(:sm, "w-24 bg-bg-canvas font-mono uppercase") %>
                 </label>
                 <label class="flex cursor-pointer items-center gap-2">
                   <%= check_box_tag "delisted[]", symbol, false, id: "dead_#{symbol.downcase.gsub(/[^a-z0-9]+/, "-")}",

@@ -51,9 +51,15 @@ module ApplicationHelper
                 BUTTON_SIZES.fetch(size), BUTTON_VARIANTS.fetch(variant), extra)
   end
 
-  # Field takes the same weight axis, minus the inline one — an input is never
-  # the small case, it is the thing the small case sits beside (D86).
-  FIELD_SIZES = { lg: "rounded-xl px-4 py-3 text-base", md: "rounded-lg px-3 py-2.5 text-sm" }.freeze
+  # Field takes the same three-step axis. The decision first said it had two —
+  # that an input is never the small case — and the measurement disagreed:
+  # the narrow numeric fields inside a row carry a smaller PADDING, not just a
+  # smaller width, so the third step is real (D86, amended).
+  FIELD_SIZES = {
+    lg: "rounded-xl px-4 py-3 text-base",
+    md: "rounded-lg px-3 py-2.5 text-sm",
+    sm: "rounded-lg px-2 py-1.5 text-sm"
+  }.freeze
 
   def field_classes(size = :md, extra = nil)
     class_names("border border-border-default bg-bg-surface text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-focus",

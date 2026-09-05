@@ -31,7 +31,7 @@
          [ :range, Admin::LogsHelper::RANGE_OPTIONS.map { |_s, label, value| [ "#{t('admin.logs.index.rango')}: #{label}", value ] }, (params[:range].presence || Admin::LogsHelper::DEFAULT_RANGE) ] ].each do |field, options, selected| %>
       <%= f.select field, options_for_select(options, selected), {},
             onchange: "this.form.requestSubmit()",
-            class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-sm text-fg-default outline-none focus:ring-2 focus:ring-focus" %>
+            class: field_classes(:md) %>
     <% end %>
 
     <% if admin_logs_any_filter_active? %>
