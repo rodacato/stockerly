@@ -136,6 +136,32 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("Razón P/U histórica")
     end
 
+    # D36: the chart used to shade three bands and label them Atractiva (<15) /
+    # Neutral (15-25) / Cara (>25). Those thresholds were universal and invented
+    # — 25 is cheap for software and expensive for a utility — and a chart that
+    # judges is what D36 forbids.
+    it "draws the P/U series without judging it" do
+      create(:asset_fundamental, asset: asset, period_label: "OVERVIEW", metrics: { "eps" => "6.07" })
+      3.times { |i| create(:asset_price_history, asset: asset, date: (i + 1).days.ago.to_date, close: 200 + i) }
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).not_to include("Atractiva", "Cara (")
+      expect(response.body).to include("<polyline")
+    end
+
+    # The line moves with the price, not with the company: PeHistoryCalculator
+    # divides the close series by a static EPS. A reader who takes it for the
+    # issuer's own history is reading it wrong, so the chart says so.
+    it "says the line follows the price rather than the results" do
+      create(:asset_fundamental, asset: asset, period_label: "OVERVIEW", metrics: { "eps" => "6.07" })
+      3.times { |i| create(:asset_price_history, asset: asset, date: (i + 1).days.ago.to_date, close: 200 + i) }
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include("La línea se mueve con el precio")
+    end
+
     it "charts from our own closes, with no third-party widget" do
       3.times { |i| create(:asset_price_history, asset: asset, date: i.days.ago.to_date, close: 100 + i) }
 

@@ -4,6 +4,9 @@ module MarketData
       # The chart's window, named so the heading that states it and the query
       # that fetches it cannot drift apart.
       CHART_DAYS = 30
+      # The heading and the query read one value, so the window cannot drift
+      # between what the chart says and what it plots.
+      PE_CHART_DAYS = 90
 
       def call(symbol:)
         asset = Asset.find_by(symbol: symbol.upcase)
@@ -27,7 +30,7 @@ module MarketData
 
         pe_history = if asset.asset_type_stock?
                        eps = fundamental&.metrics&.dig("eps")&.to_d
-                       pe_histories = MarketData::Queries::PriceSeries.for(asset).since(90.days.ago.to_date)
+                       pe_histories = MarketData::Queries::PriceSeries.for(asset).since(PE_CHART_DAYS.days.ago.to_date)
                        Domain::PeHistoryCalculator.calculate(price_histories: pe_histories, eps: eps)
         end
 
