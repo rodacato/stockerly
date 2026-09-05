@@ -3,23 +3,28 @@
 Everything about Stockerly's design lives here. Read this before touching a `.pen`. It doubles
 as context for AI agents.
 
-> **Stockerly is mid-REDESIGN** (pivot 2026-08-20, [ADR-0010](../docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)):
-> a self-hosted single-user "decision cockpit". This `design/` is the **redesign-target system —
-> it runs ahead of the code**, which still shows the old look. That inverts the usual rule below,
-> so read the adaptation carefully.
+> **The redesign landed. D8 is retired ([D78](DECISIONS.md), 2026-09-05).** Stockerly pivoted
+> 2026-08-20 ([ADR-0010](../docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md))
+> to a self-hosted single-user "decision cockpit", and for that revamp this `design/` ran **ahead of
+> the code**. It no longer does: all twenty `CODE_CHANGES.md` sections shipped, the pre-2.0 palette
+> is at zero across every view directory, and the last `.pen` write predates the last `app/views`
+> write by a week. **The kit is a 1:1 mirror again**, which is the rule below.
 
-## The two rules — adapted for a redesign
+## The two rules
 
-1. **Design-led; code is reference (D8).** We design the best product UX/UI — the code is **not a
-   spec to replicate**, it is later revamped to match (these `.pen` files guide the implementation).
-   The code still **grounds** the work: what data/indicators actually exist, the real constraints
-   (single-user, free-tier, es-MX), domain concepts, and existing copy — so we design nothing that
-   can't be built. Structure and UX are ours; grounding is the code's. New copy is es-MX.
+1. **The code is the mirror (D78, retiring D8).** The kit and the flows reflect what ships: on
+   style, tokens, structure and copy the **code wins and the artboard is amended** — the X8
+   precedent (#417), generalized. Designing ahead is now a deliberate act per screen, not the
+   standing posture: it needs a build-or-retire verdict, not just an artboard. The code also still
+   **grounds** the work — what data/indicators actually exist, the real constraints (single-user,
+   free-tier, es-MX), domain concepts, existing copy. New copy is es-MX.
 2. **Don't dedupe or promote into the kit unless asked.** No live propagation; every kit change
    is manual re-vendor across consumers. A resemblance is a note, not a task.
 
-When the redesign lands in code, [CODE_CHANGES.md](CODE_CHANGES.md) tracks it and the kit stops
-being "ahead" and becomes a 1:1 mirror again.
+**D78's carve-out, which is the part a mirror rule would erase:** three screens are drawn and
+unbuilt — `Movimientos` (CKP-1), the empty state's demo and CSV doors (ACT-1) and `Confluencia`
+(ALR-1). **The rule change does not retire them.** Each owes an explicit verdict, because two of
+them are failures the vision says the 2.0 must fix and one was un-gated by D42.
 
 ## What's here
 
