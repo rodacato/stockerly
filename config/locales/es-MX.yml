@@ -850,6 +850,12 @@ es-MX:
       atribucion: Titulares de sus fuentes, sin editar.
       filtro_html: Filtradas a %{symbol} · últimos %{days} días
       titulo: Noticias
+    pe_chart:
+      actual: 'P/U actual:'
+      como_se_calcula: Se traza dividiendo el precio de cada día entre la utilidad
+        por acción más reciente. La línea se mueve con el precio, no con los resultados
+        de la empresa.
+      titulo: Razón P/U histórica · últimos %{days} días
     precio:
       titulo: Precio · %{currency} · %{days} días · cierre diario
     range_52w:

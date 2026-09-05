@@ -1,21 +1,25 @@
-<%# Historical P/E Ratio chart — 90-day SVG polyline with value/neutral/expensive
-    bands. es-MX labels (S10 #93). %>
+<%# The P/U series, drawn and NOT judged. It used to shade three bands and
+    label them Atractiva (<15) / Neutral (15-25) / Cara (>25) — universal
+    thresholds applied to every issuer, which is exactly the invented threshold
+    D36 forbids: 25 is cheap for software and expensive for a utility.
+
+    The footnote is not decoration either. PeHistoryCalculator divides the price
+    series by a STATIC eps, so this line moved because the price moved, and a
+    reader who takes it for the company's own history is reading it wrong. %>
 <% if @pe_history.present? && @pe_history.size >= 2 %>
   <section class="<%= card_classes("shadow-sm overflow-hidden") %>">
-    <div class="px-5 py-4 border-b border-border-default bg-bg-muted">
-      <h3 class="text-sm font-semibold flex items-center gap-2 text-fg-default">
-        <span class="material-symbols-outlined text-base text-primary">analytics</span>
-        Razón P/U histórica · últimos 90 días
+    <div class="border-b border-border-default bg-bg-muted px-5 py-4">
+      <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
+        <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">analytics</span>
+        <%= t(".titulo", days: MarketData::UseCases::LoadAssetDetail::PE_CHART_DAYS) %>
       </h3>
     </div>
     <div class="p-5">
       <%
         points = @pe_history
         pe_values = points.map { |p| p[:pe_ratio].to_f }
-        min_pe = pe_values.min
-        max_pe = pe_values.max
-        pe_range = max_pe - min_pe
-        pe_range = 1.0 if pe_range.zero?
+        min_pe, max_pe = pe_values.minmax
+        pe_range = (max_pe - min_pe).zero? ? 1.0 : max_pe - min_pe
 
         left_margin = 45
         right_margin = 10
@@ -27,80 +31,44 @@
         usable_height = height - padding_y - bottom_margin
         step_x = chart_width.to_f / (points.size - 1)
 
+        y_for = ->(pe) { height - bottom_margin - (((pe - min_pe) / pe_range) * usable_height) }
         polyline_pts = points.each_with_index.map { |point, i|
-          normalized = (point[:pe_ratio].to_f - min_pe) / pe_range
-          y = height - bottom_margin - (normalized * usable_height)
-          x = left_margin + (i * step_x)
-          "#{x.round(1)},#{y.round(1)}"
+          "#{(left_margin + (i * step_x)).round(1)},#{y_for.call(point[:pe_ratio].to_f).round(1)}"
         }.join(" ")
 
         last_pe = pe_values.last
-        line_color = if last_pe < 15
-                       "#22c55e"
-                     elsif last_pe <= 25
-                       "#f59e0b"
-                     else
-                       "#ef4444"
-                     end
-
         mid_pe = (min_pe + max_pe) / 2.0
-        y_ticks = [
-          { value: max_pe, y: padding_y },
-          { value: mid_pe, y: padding_y + (usable_height / 2.0) },
-          { value: min_pe, y: height - bottom_margin }
-        ]
-
-        band_15_y = height - bottom_margin - (([15 - min_pe, 0].max / pe_range) * usable_height)
-        band_25_y = height - bottom_margin - (([25 - min_pe, 0].max / pe_range) * usable_height)
-
-        date_indices = [0, points.size / 3, (points.size * 2) / 3, points.size - 1].uniq
+        y_ticks = [ [ max_pe, padding_y ], [ mid_pe, padding_y + (usable_height / 2.0) ], [ min_pe, height - bottom_margin ] ]
+        date_indices = [ 0, points.size / 3, (points.size * 2) / 3, points.size - 1 ].uniq
       %>
-      <svg viewBox="0 0 <%= total_width %> <%= height %>" class="w-full" style="height: 180px;" preserveAspectRatio="xMidYMid meet">
-        <% if min_pe < 25 && max_pe > 15 %>
-          <% green_bottom = [band_15_y, height - bottom_margin].min %>
-          <% if 15 > min_pe %>
-            <rect x="<%= left_margin %>" y="<%= green_bottom.round(1) %>" width="<%= chart_width + right_margin %>" height="<%= (height - bottom_margin - green_bottom).round(1) %>" fill="#22c55e" opacity="0.06"/>
-          <% end %>
-          <% neutral_top = [band_25_y, padding_y].max %>
-          <% neutral_bottom = [band_15_y, height - bottom_margin].min %>
-          <rect x="<%= left_margin %>" y="<%= neutral_top.round(1) %>" width="<%= chart_width + right_margin %>" height="<%= (neutral_bottom - neutral_top).abs.round(1) %>" fill="#f59e0b" opacity="0.06"/>
-          <% if 25 < max_pe %>
-            <rect x="<%= left_margin %>" y="<%= padding_y %>" width="<%= chart_width + right_margin %>" height="<%= (neutral_top - padding_y).round(1) %>" fill="#ef4444" opacity="0.06"/>
-          <% end %>
-        <% end %>
-
-        <% y_ticks.each do |tick| %>
-          <text x="<%= left_margin - 5 %>" y="<%= tick[:y].round(1) %>" text-anchor="end" dominant-baseline="middle"
-                fill="#94a3b8" font-size="10" font-weight="500"><%= tick[:value].round(1) %></text>
-          <line x1="<%= left_margin %>" y1="<%= tick[:y].round(1) %>" x2="<%= total_width - right_margin %>" y2="<%= tick[:y].round(1) %>"
-                stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+      <svg viewBox="0 0 <%= total_width %> <%= height %>" class="w-full" style="height: 180px;" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="<%= t(".titulo", days: MarketData::UseCases::LoadAssetDetail::PE_CHART_DAYS) %>">
+        <% y_ticks.each do |value, y| %>
+          <text x="<%= left_margin - 5 %>" y="<%= y.round(1) %>" text-anchor="end" dominant-baseline="middle"
+                class="fill-fg-subtle" font-size="10" font-weight="500"><%= value.round(1) %></text>
+          <line x1="<%= left_margin %>" y1="<%= y.round(1) %>" x2="<%= total_width - right_margin %>" y2="<%= y.round(1) %>"
+                class="stroke-border-default" stroke-width="0.5" stroke-dasharray="4,4"/>
         <% end %>
 
         <% date_indices.each do |idx| %>
-          <% x_pos = left_margin + (idx * step_x) %>
-          <text x="<%= x_pos.round(1) %>" y="<%= height - 3 %>" text-anchor="middle"
-                fill="#94a3b8" font-size="9" font-weight="500"><%= short_date_es(points[idx][:date], include_year: false) %></text>
-          <line x1="<%= x_pos.round(1) %>" y1="<%= padding_y %>" x2="<%= x_pos.round(1) %>" y2="<%= height - bottom_margin %>"
-                stroke="#e2e8f0" stroke-width="0.3" stroke-dasharray="2,4"/>
+          <% x_pos = (left_margin + (idx * step_x)).round(1) %>
+          <text x="<%= x_pos %>" y="<%= height - 3 %>" text-anchor="middle"
+                class="fill-fg-subtle" font-size="9" font-weight="500"><%= short_date_es(points[idx][:date], include_year: false) %></text>
+          <line x1="<%= x_pos %>" y1="<%= padding_y %>" x2="<%= x_pos %>" y2="<%= height - bottom_margin %>"
+                class="stroke-border-default" stroke-width="0.3" stroke-dasharray="2,4"/>
         <% end %>
 
-        <polyline points="<%= polyline_pts %>"
-                  fill="none" stroke="<%= line_color %>" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-
-        <% last_x = left_margin + ((points.size - 1) * step_x)
-           last_normalized = (last_pe - min_pe) / pe_range
-           last_y = height - bottom_margin - (last_normalized * usable_height) %>
-        <circle cx="<%= last_x.round(1) %>" cy="<%= last_y.round(1) %>" r="3" fill="<%= line_color %>"/>
+        <polyline points="<%= polyline_pts %>" fill="none" class="stroke-primary"
+                  stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="<%= (left_margin + ((points.size - 1) * step_x)).round(1) %>" cy="<%= y_for.call(last_pe).round(1) %>"
+                r="3" class="fill-primary"/>
       </svg>
 
-      <div class="flex justify-center gap-4 mt-2 text-[10.5px] font-medium">
-        <span class="text-emerald-600 dark:text-emerald-400">Atractiva (&lt;15)</span>
-        <span class="text-amber-600 dark:text-amber-400">Neutral (15-25)</span>
-        <span class="text-rose-600 dark:text-rose-400">Cara (&gt;25)</span>
-      </div>
-      <p class="mt-2 text-xs text-fg-subtle">
-        P/U actual: <span class="font-mono font-semibold text-fg-default"><%= last_pe.round(2) %></span>
+      <p class="mt-3 text-xs text-fg-subtle">
+        <%= t(".actual") %>
+        <span class="font-mono font-semibold text-fg-default"><%= last_pe.round(2) %></span>
       </p>
+      <p class="mt-1 text-[11px] text-fg-subtle"><%= t(".como_se_calcula") %></p>
     </div>
   </section>
 <% end %>

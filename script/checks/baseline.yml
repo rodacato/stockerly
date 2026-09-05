@@ -30,8 +30,6 @@ design-tokens:
     count: 3
   app/views/market/_analyst_target.html.erb:
     count: 3
-  app/views/market/_pe_chart.html.erb:
-    count: 13
   app/views/market/_price_chart.html.erb:
     count: 3
   app/views/shared/_flash_message.html.erb:
