@@ -1080,6 +1080,7 @@ es-MX:
       vs_hold_cuerpo_positivo: Si no hubieras movido nada desde el %{from}, hoy tendrías
         %{value}. Tus compras y ventas sumaron %{points} puntos.
   posicion:
+    cerrar: Cerrar posición
     costo_prom: Costo prom.
     del_activo: DEL ACTIVO
     del_peso: DEL PESO · TC
