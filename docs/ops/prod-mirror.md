@@ -28,14 +28,28 @@ bin/kamal db
 ```sql
 CREATE ROLE stockerly_ro LOGIN;
 GRANT CONNECT ON DATABASE stockerly_production TO stockerly_ro;
-GRANT USAGE ON SCHEMA public TO stockerly_ro;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO stockerly_ro;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO stockerly_ro;
+GRANT USAGE  ON SCHEMA public TO stockerly_ro;
+GRANT SELECT ON ALL TABLES    IN SCHEMA public TO stockerly_ro;
+GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO stockerly_ro;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES    TO stockerly_ro;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON SEQUENCES TO stockerly_ro;
 ```
+
+Sequences are granted on their own line because `ALL TABLES` does not reach
+them, and `pg_dump` reads every sequence's `last_value`. Without that grant the
+dump stops at the first one: `permission denied for sequence <name>`.
+
+Run all of it as `stockerly`, which is what the alias above connects as and what
+the migrations run as. `ALTER DEFAULT PRIVILEGES` only covers objects created by
+the role that ran it, so from any other role the next migration's tables would
+arrive unreadable and the dump would start failing for no visible reason.
 
 No password: the accessory container authenticates local socket connections by
 trust, which is the same reason `bin/kamal db` opens a `psql` without one. The
 role is reachable only from inside that container, and the only way in is SSH.
+
+`bin/prod-sync dump` is the check — it uses `stockerly_ro` by default, so it
+should write a file without being told which role to use.
 
 ### 2. Nothing, if the Kamal environment already loads
 
