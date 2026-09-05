@@ -95,6 +95,19 @@ RSpec.describe MarketData::Gateways::FmpGateway do
 
         expect(data).not_to have_key(:price)
       end
+
+      # /profile answers sixteen fields. The rest of Alpha Vantage's shape used
+      # to be spelled out here as nil, which is over half the method's flog and
+      # says nothing: the row is jsonb and FundamentalPresenter#metric reads
+      # through present?, so an absent key and a null one are one value (#559).
+      it "carries only what /profile answers, not the shape of another provider" do
+        data = gateway.fetch_overview("AAPL").value!
+
+        expect(data.keys).to all(satisfy { |key| data[key].present? || key == :description })
+        expect(data).not_to have_key(:ebitda)
+        expect(data).not_to have_key(:return_on_equity)
+        expect(data).not_to have_key(:peg_ratio)
+      end
     end
 
     context "when FMP returns empty response" do

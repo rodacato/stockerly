@@ -50,12 +50,18 @@ module MarketData
     end
 
     def parse_overview(body)
-      return Failure([ :not_found, "No profile data from FMP" ]) unless body.is_a?(Array) && body.first.present?
+      profile = body.first if body.is_a?(Array)
+      return Failure([ :not_found, "No profile data from FMP" ]) if profile.blank?
 
-      profile = body.first
+      low, high = profile["range"].to_s.split("-")
 
       # No price key and no lastDiv fallback for eps, deliberately (#554): the
       # price chain owns Asset#current_price, and lastDiv is mapped as itself.
+      #
+      # Only what /profile answers. The nineteen keys FMP does not serve used to
+      # be spelled out as nil to match Alpha Vantage's shape; the row is jsonb
+      # and every reader goes through present?, so an absent key and a null one
+      # are the same value read twice (#559).
       Success({
         symbol: profile["symbol"],
         name: profile["companyName"],
@@ -67,31 +73,12 @@ module MarketData
         country: profile["country"],
         market_cap: safe_decimal(profile["mktCap"]),
         pe_ratio: safe_decimal(profile["pe"]),
-        book_value: nil,
         eps: safe_decimal(profile["eps"]),
         dividend_per_share: safe_decimal(profile["lastDiv"]),
-        dividend_yield: nil,
-        profit_margin: nil,
-        operating_margin: nil,
-        return_on_equity: nil,
-        return_on_assets: nil,
-        revenue_ttm: nil,
-        gross_profit_ttm: nil,
-        ebitda: nil,
-        revenue_per_share: nil,
         beta: safe_decimal(profile["beta"]),
-        shares_outstanding: nil,
-        ev_to_revenue: nil,
-        ev_to_ebitda: nil,
-        price_to_sales: nil,
-        price_to_book: nil,
-        fifty_two_week_high: safe_decimal(profile["range"]&.split("-")&.last),
-        fifty_two_week_low: safe_decimal(profile["range"]&.split("-")&.first),
-        analyst_target_price: safe_decimal(profile["dcf"]),
-        quarterly_earnings_growth: nil,
-        quarterly_revenue_growth: nil,
-        forward_pe: nil,
-        peg_ratio: nil
+        fifty_two_week_high: safe_decimal(high),
+        fifty_two_week_low: safe_decimal(low),
+        analyst_target_price: safe_decimal(profile["dcf"])
       })
     end
 
@@ -100,12 +87,13 @@ module MarketData
       return Success([]) unless historical.is_a?(Array)
 
       dividends = historical.filter_map do |entry|
-        next unless entry["date"].present? && entry["dividend"].present?
+        ex_date, amount, pay_date = entry.values_at("date", "dividend", "paymentDate")
+        next unless ex_date.present? && amount.present?
 
         {
-          ex_date: Date.parse(entry["date"]),
-          pay_date: entry["paymentDate"].present? ? Date.parse(entry["paymentDate"]) : nil,
-          amount_per_share: entry["dividend"].to_d,
+          ex_date: Date.parse(ex_date),
+          pay_date: pay_date.present? ? Date.parse(pay_date) : nil,
+          amount_per_share: amount.to_d,
           currency: "USD"
         }
       rescue Date::Error
@@ -120,12 +108,13 @@ module MarketData
       return Success([]) unless historical.is_a?(Array)
 
       splits = historical.filter_map do |entry|
-        next unless entry["date"].present? && entry["numerator"].present? && entry["denominator"].present?
+        date, numerator, denominator = entry.values_at("date", "numerator", "denominator")
+        next if [ date, numerator, denominator ].any?(&:blank?)
 
         {
-          date: Date.parse(entry["date"]),
-          numerator: entry["numerator"].to_i,
-          denominator: entry["denominator"].to_i
+          date: Date.parse(date),
+          numerator: numerator.to_i,
+          denominator: denominator.to_i
         }
       rescue Date::Error
         next
