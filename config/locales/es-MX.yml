@@ -516,11 +516,16 @@ es-MX:
       conecta_titulo: Conecta Alpaca
       descripcion: Lo que se mueve afuera, no en tu cartera
       olas_desde: desde tu última visita · %{since}
+      olas_grupo:
+        geografia: geografía
+        sectores: sector
+        temas: tema
+        termometros: termómetro
       olas_sin_exposicion: sin exposición
       olas_titulo: Olas
-      olas_total:
-        one: 1 canasta con datos en la ventana.
-        other: "%{count} canastas con datos en la ventana."
+      olas_ver_todas:
+        one: Ver la canasta con datos en la ventana
+        other: Ver las %{count} canastas con datos en la ventana
       olas_via: ya vía %{symbol}
       olas_vs: vs %{baseline} %{value}
       sin_datos: Todavía no hay datos del mundo
