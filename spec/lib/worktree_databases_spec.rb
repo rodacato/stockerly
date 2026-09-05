@@ -58,6 +58,35 @@ RSpec.describe WorktreeDatabases do
 
       expect(orphans.map(&:prefix)).not_to include("some_other_app")
     end
+
+    # Measured on 2026-09-05: 92 orphan databases on the server and this module
+    # reported none. Worktrees moved under .claude/worktrees/ and named their
+    # databases after their own directory alone, so no prefix began with the
+    # main checkout's name and the scope filter -- which is what stops this from
+    # touching another project -- excluded every one of them. Checkout now puts
+    # the main checkout's name in the prefix, which is what makes these visible.
+    it "sees a worktree that lives under the main checkout rather than beside it" do
+      real = %w[
+        stockerly_development stockerly_test
+        stockerly__vix_index_symbols_test stockerly__vix_index_symbols_test_cache
+        stockerly__patrimonio_jump_test stockerly__patrimonio_jump_test_cable
+        stockerly__agent_af3bbcdf4df475440_test
+      ]
+
+      orphans = described_class.orphans(database_names: real, worktree_paths: [ "/workspaces/stockerly" ])
+
+      expect(orphans.map(&:prefix)).to contain_exactly(
+        "stockerly__vix_index_symbols", "stockerly__patrimonio_jump", "stockerly__agent_af3bbcdf4df475440"
+      )
+    end
+
+    it "would have missed every one of them under the old naming" do
+      old_naming = %w[stockerly_development vix_index_symbols_test patrimonio_jump_test agent_af3bbcdf4df475440_test]
+
+      orphans = described_class.orphans(database_names: old_naming, worktree_paths: [ "/workspaces/stockerly" ])
+
+      expect(orphans).to be_empty
+    end
   end
 
   describe ".drop!" do

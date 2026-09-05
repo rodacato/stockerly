@@ -51,7 +51,9 @@ bin/checks boundaries   # one, by id
 # config/ci.rb declares NO rspec step — run the suite separately.
 bin/ci
 
-# Database — names derive from the checkout directory, so each git worktree has its own
+# Database — names derive from the checkout directory, so each git worktree has its own.
+# A worktree's carry the main checkout too (stockerly__<worktree>), which is what lets
+# db:worktrees see them once the worktree is gone.
 bin/rails db:migrate
 bin/rails db:seed
 bin/rails db:reset      # drop + create + migrate + seed
