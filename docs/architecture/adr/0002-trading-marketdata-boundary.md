@@ -296,3 +296,45 @@ dropped, backfilled into the new table by the migration.
 misreading the payload, and `SyncSplitsJob` will not re-detect that split — it publishes only for a
 row it just created. The exposure is a job queued in the seconds around a deploy of a sync that runs
 daily on one instance; the alternative is keeping the id the amendment exists to remove.
+
+---
+
+## Amendment, 2026-09-04 — the two Alerts pairs, measured and declared
+
+The "Pattern reference for future BC boundaries" above asked whether **Alerts → Trading** needed a
+read API, and [ADR-024](./0024-asset-ownership-by-column.md) left **Alerts → MarketData** open as
+BND-13's other half. Enumerating what Alerts actually references answers both. Measured across the
+17 files under `app/contexts/alerts/` on 2026-09-04:
+
+| Referenced from Alerts | What it is |
+|---|---|
+| `AlertRule`, `AlertEvent` | Alerts' own models |
+| `Asset` | shared by ADR-024 clause 4 — reading it is not a crossing |
+| `MarketData::Queries::PriceSeries`, `MarketData::Queries::MarketCalendar` | the supplier's read API, exactly as the Decision above prescribes |
+| `MarketData::Domain::DayChange.from_closes` | a domain service carrying `@api public — read by Alerts (ADR-002 read API)` |
+| `Notifications::UseCases::CreateNotification` | Notifications' sole writer, called as ADR-024's row for `Notification` describes |
+
+That is the whole list. No other model constant, and no other context's namespace, appears anywhere
+in Alerts.
+
+**Alerts → Trading is declared out of scope: the dependency does not exist.** No Trading model and
+no `Trading::` reference occurs in the context. Alert rules key on `asset_symbol`, never on a
+position, so there is nothing for a Trading read API to serve. A rule written for a dependency that
+does not exist is an opinion, and it would be the widening this issue's negative criterion forbids.
+
+**Alerts → MarketData is a customer/supplier pair on the same terms as Trading → MarketData**, and
+it already runs on them. Nothing needed building: the `MarketHoliday` read went through
+`MarketData::Queries::MarketCalendar` (#549), the `Notification` dedup went through
+`Notifications::Queries::AlreadySent` in the same wave, and `DayChange` was marked read API when
+Alerts began calling it. The finding was that no ADR said so — not that the code was wrong. This
+paragraph is what was missing, and it is what should stop the next audit re-raising BND-13.
+
+**What is still unenforced, deliberately.** `bin/checks boundaries` enforces one pair,
+Trading↔MarketData. Extending it to Alerts is permitted by this amendment and would land green
+today, since Alerts names no foreign model — but that is a change to the check, not to the
+boundary, so it is left as an option rather than folded into the decision.
+
+**Identity is not covered here.** The Gray zone above cites `Identity::UseCases::GlobalSearch`
+reading `NewsArticle`; that read no longer exists. What Identity does reach for is
+`Integration` and `MarketIndex` in `CreateFirstAdmin` — the first-boot leak ADR-024 records as
+BND-02 and tracks separately. This amendment declares the two Alerts pairs and nothing else.
