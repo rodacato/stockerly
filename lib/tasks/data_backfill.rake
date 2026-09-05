@@ -62,3 +62,24 @@ namespace :data do
     end
   end
 end
+
+namespace :data do
+  desc "Seed CetesRateHistory with every term's auction series — data:backfill_cetes_history[1980-01-01]"
+  task :backfill_cetes_history, [ :from ] => :environment do |_task, args|
+    gateway = MarketData::Gateways::BanxicoGateway
+    from = args[:from] ? Date.parse(args[:from]) : gateway::CETES_HISTORY_FLOOR
+
+    puts "Fetching every CETES term from #{from} — one ranged request each."
+
+    gateway.cetes_terms.each do |term|
+      case MarketData::UseCases::SyncCetesHistory.call(term: term, from: from, to: Date.current)
+      in Dry::Monads::Success(stored:, **)
+        scope = CetesRateHistory.where(term: term)
+        puts format("  %-5s %5d stored · now %5d rows, %s..%s",
+                    term, stored, scope.count, scope.minimum(:auction_date), scope.maximum(:auction_date))
+      in Dry::Monads::Failure[ _, message ]
+        puts format("  %-5s failed: %s", term, message)
+      end
+    end
+  end
+end

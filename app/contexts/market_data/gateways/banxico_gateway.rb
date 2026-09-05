@@ -26,6 +26,16 @@ module MarketData
       "364" => "SF43945"
     }.freeze
 
+    # A floor to ask from, not a documented series start. Banxico answers with
+    # whatever the series actually holds, so the first deep run is what reveals
+    # where each term begins — the same way Alpaca's 2016 floor was found.
+    CETES_HISTORY_FLOOR = Date.new(1980, 1, 1)
+
+    # The terms that can be fetched at all: a term with no series id cannot.
+    CETES_TERMS = CETES_SERIES.keys.freeze
+
+    def self.cetes_terms = CETES_TERMS
+
     def initialize(api_key: nil)
       @api_token = api_key || resolve_api_key
     end

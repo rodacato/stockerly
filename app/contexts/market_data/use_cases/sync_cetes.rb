@@ -1,7 +1,9 @@
 module MarketData
   module UseCases
     class SyncCetes < ApplicationUseCase
-      TERMS = %w[28 91 182 364].freeze
+      # One list of terms, held where the series ids are: a second copy here
+      # would have to agree with that map and nothing would check that it did.
+      TERMS = Gateways::BanxicoGateway.cetes_terms
 
       def call
         synced = 0

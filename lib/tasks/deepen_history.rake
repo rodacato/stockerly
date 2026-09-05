@@ -52,7 +52,9 @@ namespace :data do
     assets = Asset.where(sync_status: :active).order(:symbol)
 
     puts "Deepening #{assets.count} assets to #{years} years"
-    assets.find_each.with_index do |asset, index|
+    # `each`, not `find_each`: batching drops the order that makes the output
+    # scannable, and fifty rows do not need batching.
+    assets.each.with_index do |asset, index|
       sleep(DeepenHistory::PACING) unless index.zero?
       DeepenHistory.call(asset, years)
     end
