@@ -1,5 +1,18 @@
 # The volatility-calibrated family, measured — 2026-09-04
 
+> ## ⚠ Two of these conclusions were withdrawn the next day
+>
+> This page was measured on one year, because that was the corpus. `data:deepen_all`
+> took it to ten, and on the deeper sample the mean-reversion light **beats** the
+> base rate at every horizon rather than losing to it, and the trend filter that
+> looked decisive at n=8 reverses at n=96. See
+> [`deep-corpus-2026-09.md`](deep-corpus-2026-09.md), which also states the
+> survivorship problem that applies to both pages.
+>
+> Kept because the reasoning and the structural findings hold — the SMA(50)
+> collinearity and the ATR spread are unchanged — and because what a measurement
+> looked like before it had sample is worth being able to read back.
+
 Eight board cards descend from InvestAnswers' indicator set, and the research
 card that fathers them states the debt plainly: *"none has been backtested
 against our own data. What these models offer is decision structure, not edge.
