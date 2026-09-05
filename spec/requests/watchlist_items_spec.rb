@@ -41,7 +41,7 @@ RSpec.describe "WatchlistItems", type: :request do
         delete watchlist_item_path(item)
       }.to change(WatchlistItem, :count).by(-1)
 
-      expect(response).to redirect_to(profile_path)
+      expect(response).to redirect_to(assets_path(tab: "watchlist"))
     end
 
     it "responds with turbo_stream format" do

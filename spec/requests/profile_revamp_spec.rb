@@ -8,70 +8,56 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
 
   before { login_as(user) }
 
-  describe "GET /profile" do
-    before { get profile_path }
+  # /profile is retired (D5, finally executed). Its two real forms are their own
+  # screens now; everything else it held either duplicated the Ajustes hub or
+  # contradicted it — the Datos y sesión tab told the owner to email support to
+  # delete an account the hub already deletes in-app.
+  describe "the screens that replaced it" do
+    # Asked of the route set rather than of a response, so the assertion does
+    # not depend on how this environment renders an unmatched route.
+    it "no longer routes GET /profile, while the form it submits to stays" do
+      expect { Rails.application.routes.recognize_path("/profile", method: :get) }
+        .to raise_error(ActionController::RoutingError)
+      expect(Rails.application.routes.recognize_path("/profile", method: :patch))
+        .to include(controller: "profiles", action: "update")
+    end
 
-    it "responds 200" do
+    it "puts name and email on their own screen, with a way back to the hub" do
+      get edit_account_settings_path
+
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Adrian Castillo", I18n.t("settings.account.nombre"), I18n.t("settings.account.correo"))
+      expect(response.body).to include(settings_path)
     end
 
-    it "renders the es-MX header (kicker, name, member-since line)" do
-      expect(response.body).to include("Tu perfil")
-      expect(response.body).to include("Adrian Castillo")
-      expect(response.body).to include("Miembro desde")
+    it "puts the password change on its own screen" do
+      get edit_password_settings_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(
+        I18n.t("settings.password.current_password"),
+        I18n.t("settings.password.password"),
+        I18n.t("settings.password.password_confirmation")
+      )
     end
 
-    it "renders the three tabbed settings" do
-      # Tab labels live in <button> nodes; match label text rather than
-      # exact node delimiters since the buttons carry many class names.
-      expect(response.body).to include("Información")
-      expect(response.body).to include("Seguridad")
-      expect(response.body).to include("Datos y sesión")
+    # Negative: the hub owns theme, currency and the two email switches, and a
+    # second copy is what this assertion exists to prevent.
+    it "does not repeat the preferences the hub owns" do
+      get edit_account_settings_path
+
+      expect(response.body).not_to include(I18n.t("settings.show.avisos_titulo"))
+      expect(response.body).not_to include(I18n.t("settings.show.moneda"))
     end
 
-    it "renders the Información tab content (form labels in es-MX)" do
-      expect(response.body).to include("Información personal")
-      expect(response.body).to include("Nombre completo")
-      expect(response.body).to include("Correo electrónico")
-      expect(response.body).to include("Guardar cambios")
-    end
+    # The defect that retiring it fixed: two contradictory answers to "how do I
+    # delete my account", in the same app.
+    it "leaves one answer for deleting the account, and it is the hub's" do
+      get edit_account_settings_path
+      expect(response.body).not_to include("ARCO")
 
-    it "renders the Seguridad tab (password fields es-MX)" do
-      expect(response.body).to include("Contraseña actual")
-      expect(response.body).to include("Nueva contraseña")
-      expect(response.body).to include("Confirmar nueva contraseña")
-      expect(response.body).to include("Cambiar contraseña")
-    end
-
-    # Theme, currency and the two email switches live on /settings, which owns
-    # them without a Guardar to forget. Keeping a second copy here is what this
-    # assertion exists to prevent.
-    it "does not repeat the preferences /settings owns" do
-      expect(response.body).not_to include("Preferencias")
-      expect(response.body).not_to include("Moneda preferida")
-      expect(response.body).not_to include("data-toggle-field-value")
-      expect(response.body).not_to include('data-controller="theme"')
-    end
-
-    it "renders the Datos y sesión tab with ARCO export + delete-account links + sign-out" do
-      expect(response.body).to include("Tus datos")
-      expect(response.body).to include("derechos ARCO")
-      expect(response.body).to include("Solicitar acceso a mis datos")
-      expect(response.body).to include("Eliminar mi cuenta")
-      expect(response.body).to include("Cerrar sesión")
-      expect(response.body).to include(Stockerly::SUPPORT_EMAIL)
-    end
-
-    it "does NOT embed the watchlist (lives in /dashboard + /market per S09 #97)" do
-      # Old layout rendered "My Watchlist" + the table here; should be gone.
-      expect(response.body).not_to include("My Watchlist")
-    end
-
-    it "does NOT contain the previous English copy" do
-      expect(response.body).not_to include("Personal Information")
-      expect(response.body).not_to include("Account Settings")
-      expect(response.body).not_to include("Edit Settings")
-      expect(response.body).not_to include("Member since")
+      get settings_path
+      expect(response.body).to include(I18n.t("settings.show.borrar_cuenta_cta"))
     end
   end
 
@@ -79,7 +65,7 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
     it "persists the new currency and redirects with es-MX notice" do
       patch profile_path, params: { profile: { full_name: user.full_name, email: user.email, preferred_currency: "USD" } }
 
-      expect(response).to redirect_to(profile_path)
+      expect(response).to redirect_to(edit_account_settings_path)
       follow_redirect!
       expect(response.body).to include("Perfil actualizado")
       expect(user.reload.preferred_currency).to eq("USD")

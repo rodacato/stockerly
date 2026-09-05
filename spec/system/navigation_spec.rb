@@ -51,9 +51,10 @@ RSpec.describe "Navigation", type: :system do
       click_button "Iniciar sesión"
       expect(page).to have_current_path(dashboard_path)
 
-      # The 2.0 shell has no logout in the chrome: it lives inside Ajustes.
-      # The settings slice moves it to the hub's foot; today it is /profile.
-      visit profile_path
+      # The 2.0 shell has no logout in the chrome: it lives inside Ajustes,
+      # at the foot of the hub. /profile carried a second copy until D5 was
+      # finally executed and the screen retired.
+      visit settings_path
       click_button "Cerrar sesión"
       expect(page).to have_current_path(login_path)
     end

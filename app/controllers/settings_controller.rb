@@ -10,6 +10,16 @@ class SettingsController < AuthenticatedController
     @trading_counts = trading_counts
   end
 
+  # The two forms /profile used to hold, each on its own screen. They are
+  # separate because a password change deserves a focused surface rather than
+  # a section of a long scroll, and because the hub's rows carry a chevron —
+  # which promises a destination.
+  def account
+    @user = current_user
+  end
+
+  def password; end
+
   # Reloading a broker archive means clearing what is there first. Everything
   # this removes descends from a trade; the catalogue and the rate history stay,
   # because re-fetching them costs provider calls and neither is personal data.

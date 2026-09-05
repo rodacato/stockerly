@@ -115,10 +115,13 @@ RSpec.describe "Ajustes", type: :request do
       expect(response.body).to include(%(href="#{settings_path}"))
     end
 
-    it "keeps the tab lit on the profile screen it links to" do
-      get profile_path
+    it "keeps the tab lit on the account screens it links to" do
+      [ edit_account_settings_path, edit_password_settings_path ].each do |path|
+        get path
 
-      expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(%(href="#{settings_path}"))
+      end
     end
   end
 

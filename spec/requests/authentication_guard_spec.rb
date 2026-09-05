@@ -22,8 +22,8 @@ RSpec.describe "Authentication guard", type: :request do
     expect(response).to redirect_to(login_path)
   end
 
-  it "redirects /profile to login when not authenticated" do
-    get profile_path
+  it "redirects /settings/account to login when not authenticated" do
+    get edit_account_settings_path
     expect(response).to redirect_to(login_path)
   end
 end

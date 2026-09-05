@@ -49,14 +49,14 @@ RSpec.describe "Refactored controller flows", type: :request do
     end
   end
 
-  describe "Profile page (S09 #97 — watchlist removed)" do
-    it "loads profile successfully (watchlist no longer rendered here per S09 #97)" do
-      get profile_path
+  describe "The account screens the hub links to" do
+    it "loads the name-and-email form (it used to be a tab on /profile)" do
+      get edit_account_settings_path
 
       expect(response).to have_http_status(:ok)
       # The watchlist lives on /dashboard and /market now; profile is
       # purely user settings.
-      expect(response.body).to include("Información personal")
+      expect(response.body).to include(I18n.t("settings.account.titulo"))
     end
   end
 
