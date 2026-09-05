@@ -783,6 +783,11 @@ missing was not a removal but a **reader** — `content_security_policy.rb` now 
 reason and the condition that ends it, so the next person to read that file finds a decision instead
 of residue. If D66 is ever dropped, the allowances go with it.
 
+**The research has since run (2026-09-05) and confirms the origin rather than merely justifying it.**
+The Advanced Chart embed loads `https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js`
+— the exact host `script_src` already permits. The allowances are no longer a permission held for a
+feature with no build date: `D66` is unblocked and its four conditions are buildable as written.
+
 ### X18 ✅ Provenance stays on the detail — decided 2026-08-29 (D74, #458)
 
 [`_asset_price`](../app/views/components/_asset_price.html.erb) shows the approximate value in your
