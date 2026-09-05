@@ -46,7 +46,13 @@
 
 **Triggers:** none. It's data always visible when opening the app.
 
-**Usage metric:** Adrian opens the dashboard ≥1 time per week on weekends. If it drops below 1/month, the JTBD is not being fulfilled.
+**Usage metric:** Adrian opens the dashboard **≥1 time per weekday**. Below ~3 times a week for two
+consecutive weeks, the JTBD is not being fulfilled.
+
+Recalibrated 2026-09-05 against measured behaviour. It read *"≥1 time per week on weekends... below
+1/month"*, which was written for a weekly reviewer and cannot detect decay in a daily one: at 2–3
+opens a day, use could collapse by 95% and this metric would still report the job fulfilled. A
+threshold met sixty times over is not a threshold.
 
 **Blocked by:** nothing. The P0 is fixed — `ExecuteTrade` takes the currency from the trade or the asset and captures `fx_rate_at_execution` against MXN through `Trading::Domain::ExecutionRate`, and `PortfolioSummary#total_invested` derives cost basis at historical FX (ADR-009).
 
