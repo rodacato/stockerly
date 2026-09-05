@@ -201,13 +201,22 @@ After the first deploy, visit `https://stockerly.notdefined.dev/setup` to run th
 > route along with the rest of the multi-user surface; there is no toggle for it anywhere. `/setup`
 > is the only path that creates an account, and it stops answering as soon as one exists.
 
-Once the Banxico key is configured, seed the FX history so a backdated trade values at its own day's rate:
+Once the Banxico key is configured, seed the two series it serves — the FX history, so a backdated
+trade values at its own day's rate, and the CETES auction curve, which is what a position is
+compared against:
 
 ```bash
-bin/kamal app exec 'bin/rails data:backfill_fx_history'
+bin/kamal app exec --reuse 'bin/rails data:backfill_fx_history'
+bin/kamal app exec --reuse 'bin/rails "data:backfill_cetes_history[1980-01-01]"'
 ```
 
-It is one free request for the whole USD/MXN FIX back to 1991, and it is idempotent — re-run it any time a gap appears.
+The first is one request for the whole USD/MXN FIX back to 1991; the second is one per CETES term,
+four in total against Banxico's thousand a day. Both are idempotent — re-run either any time a gap
+appears.
+
+**`--reuse` is not optional.** Without it Kamal starts a fresh container, which needs a registry
+login, which needs `KAMAL_REGISTRY_PASSWORD` — a token that lives in CI and not on your machine.
+The quotes around a task with arguments are not optional either: `[` and `]` are shell globs.
 
 ### Starting over from an empty database
 

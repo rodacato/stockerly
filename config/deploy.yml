@@ -87,9 +87,11 @@ accessories:
     directories:
       - data:/var/lib/postgresql/data
 
+# Every alias reuses the running container. Without it Kamal starts a fresh one,
+# which means a registry login, which means a token nobody has outside CI.
 aliases:
   console: app exec --reuse --interactive 'bin/rails console'
-  shell: app exec --interactive 'bash'
+  shell: app exec --reuse --interactive 'bash'
   db: accessory exec postgres --interactive 'psql -U stockerly stockerly_production'
   logs: app logs -f
   migrate: app exec --reuse 'bin/rails db:migrate'
