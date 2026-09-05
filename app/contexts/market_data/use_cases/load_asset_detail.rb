@@ -46,7 +46,8 @@ module MarketData
           news: Queries::RecentNews.call(asset: asset),
           range_52w: fifty_two_week_range(asset, presenter),
           reading: reading_record,
-          signals: Domain::IndicatorSignals.for(reading_record)
+          signals: Domain::IndicatorSignals.for(reading_record),
+          layers: layers_for(asset, reading_record)
         ))
       end
 
@@ -66,6 +67,28 @@ module MarketData
           day_change: day_change,
           market_context: Queries::AssetMarketContext.call(asset: asset, day_change: day_change)
         }
+      end
+
+      # Levels priced off the asset's own daily range. Absent, not empty, when
+      # the reading carries no ATR: the levels exist only as far as it does.
+      def layers_for(asset, reading)
+        atr = reading&.[](:atr)
+        return nil if atr.blank?
+
+        {
+          atr: atr,
+          calculated_at: reading.calculated_at,
+          entries: Domain::VolatilityLayers.entries(price: asset.current_price, atr: atr),
+          exit: Domain::VolatilityLayers.trailing_exit(highest_high: recent_high(asset), atr: atr)
+        }
+      end
+
+      # Closed bars only, for the same reason ATR reads them: today's high goes
+      # on widening until the session ends.
+      def recent_high(asset)
+        rows = Queries::PriceSeries.for(asset).latest(Domain::VolatilityLayers::TRAILING_LOOKBACK + 1)
+        Queries::PriceSeries.closed_bars(rows).last(Domain::VolatilityLayers::TRAILING_LOOKBACK)
+                            .pluck(:high).max
       end
 
       # The 52-week range is this context's own reading — asset price against two

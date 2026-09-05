@@ -646,6 +646,17 @@ es-MX:
       quitar_watchlist: Quitar de watchlist
       sin_cambio_dia: sin dato del día
       sin_precio: Precio no disponible
+    layers:
+      disclaimer: Niveles, no recomendaciones.
+      distancia_abajo: "%{atr} ATR por abajo del precio actual"
+      distancia_maximo: "%{atr} ATR por abajo del máximo de %{sesiones} sesiones"
+      etiquetas:
+        entrada: CAPA %{n}
+        salida: SALIDA
+      explicacion: Escalonados por el rango diario de este activo, no por números
+        redondos. Un mismo porcentaje es ruido en un activo y un evento en otro.
+      procedencia: ATR %{atr} · lectura del %{fecha}
+      titulo: Niveles por volatilidad
     market_context:
       abierto: abierto
       cerrado: cerrado

@@ -1,0 +1,57 @@
+<%# Levels priced off the asset's own daily range (ATR). Descriptive only: a
+    projected level has no observation behind it, so ADR-013 allows it no
+    action verb. Locals: layers, holding. %>
+<% if layers.present? && layers[:entries].any? %>
+  <section class="<%= card_classes("shadow-sm overflow-hidden") %>">
+    <header class="flex flex-wrap items-baseline gap-2 px-5 pt-4 pb-1">
+      <h2 class="font-display text-base font-semibold tracking-tight text-fg-default">
+        <%= t(".titulo") %>
+      </h2>
+      <span class="ml-auto text-[11px] italic text-fg-subtle">
+        <%= t(".disclaimer") %>
+      </span>
+    </header>
+
+    <p class="px-5 pb-3 text-xs text-fg-subtle leading-relaxed">
+      <%= t(".explicacion") %>
+    </p>
+
+    <ul class="divide-y divide-border-default">
+      <% layers[:entries].each do |layer| %>
+        <li class="grid grid-cols-[1fr_auto] sm:grid-cols-[140px_1fr_auto] items-center gap-3.5 px-5 py-3">
+          <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+            <%= t(".etiquetas.entrada", n: layer.step) %>
+          </span>
+          <p class="text-sm text-fg-default leading-snug">
+            <%= t(".distancia_abajo", atr: number_with_precision(layer.atr_distance, precision: 1)) %>
+          </p>
+          <span class="text-right font-mono text-xs text-fg-default">
+            <%= format_currency_mx(layer.price, currency: asset.currency) %>
+          </span>
+        </li>
+      <% end %>
+
+      <% if holding && layers[:exit].present? %>
+        <li class="grid grid-cols-[1fr_auto] sm:grid-cols-[140px_1fr_auto] items-center gap-3.5 px-5 py-3 bg-bg-muted">
+          <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+            <%= t(".etiquetas.salida") %>
+          </span>
+          <p class="text-sm text-fg-default leading-snug">
+            <%= t(".distancia_maximo",
+                  atr: number_with_precision(layers[:exit].atr_distance, precision: 1),
+                  sesiones: MarketData::Domain::VolatilityLayers::TRAILING_LOOKBACK) %>
+          </p>
+          <span class="text-right font-mono text-xs text-fg-default">
+            <%= format_currency_mx(layers[:exit].price, currency: asset.currency) %>
+          </span>
+        </li>
+      <% end %>
+    </ul>
+
+    <footer class="border-t border-border-default px-5 py-2.5 text-[11px] text-fg-subtle">
+      <%= t(".procedencia",
+            atr: number_with_precision(layers[:atr], precision: 2),
+            fecha: short_date_es(layers[:calculated_at].to_date)) %>
+    </footer>
+  </section>
+<% end %>
