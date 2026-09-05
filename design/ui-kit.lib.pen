@@ -1469,71 +1469,6 @@
               "strokeWidth": 2,
               "strokeLinejoin": "round",
               "strokeLinecap": "round"
-            },
-            {
-              "type": "frame",
-              "id": "MwLDa",
-              "name": "Sig",
-              "gap": "$space-2",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "xZrOC",
-                  "name": "Estado",
-                  "fill": "$positive-bg",
-                  "cornerRadius": 99,
-                  "padding": [
-                    3,
-                    9
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "w3ATg",
-                      "name": "ET",
-                      "fill": "$positive-fg",
-                      "content": "oportunidad",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "owddk",
-                  "name": "Dots",
-                  "gap": 3,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "Q4g272",
-                      "name": "D",
-                      "fill": "$positive",
-                      "width": 7,
-                      "height": 7
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "AA0U4",
-                      "name": "D",
-                      "fill": "$positive",
-                      "width": 7,
-                      "height": 7
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "ggfAh",
-                      "name": "D",
-                      "fill": "$border-strong",
-                      "width": 7,
-                      "height": 7
-                    }
-                  ]
-                }
-              ]
             }
           ]
         }
@@ -2750,7 +2685,7 @@
   "variables": {
     "kit-version": {
       "type": "string",
-      "value": "0.9.0"
+      "value": "1.0.0"
     },
     "font-display": {
       "type": "string",
