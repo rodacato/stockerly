@@ -68,5 +68,22 @@ RSpec.describe MarketData::Gateways::CryptoFearGreedGateway do
         expect(result.failure[0]).to eq(:gateway_error)
       end
     end
+
+    # This gateway was the one of ten that requested without asking, while
+    # ProviderDefaults declares Alternative.me at 100 calls a day. A limit
+    # nothing consults is not a limit.
+    context "when the provider budget is spent" do
+      before do
+        create(:integration, provider_name: "Alternative.me", daily_api_calls: 100,
+                             daily_call_limit: 100, calls_reset_at: Time.current)
+      end
+
+      it "refuses to call the provider" do
+        result = gateway.fetch_index
+
+        expect(result.failure[0]).to eq(:rate_limited)
+        expect(a_request(:get, %r{api\.alternative\.me/fng/})).not_to have_been_made
+      end
+    end
   end
 end
