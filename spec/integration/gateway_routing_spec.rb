@@ -53,13 +53,14 @@ RSpec.describe "Gateway routing", type: :job do
 
     it "sends US ETFs and indices through the same chain as stocks" do
       %i[etf index].each do |type|
-        asset = create(:asset, type, symbol: "SPY#{type}", price_updated_at: 10.minutes.ago)
-        stub_finnhub_quote("SPY#{type}", current: 500.00)
+        symbol = "SPY#{type.to_s.upcase}"
+        asset = create(:asset, type, symbol: symbol, price_updated_at: 10.minutes.ago)
+        stub_finnhub_quote(symbol, current: 500.00)
 
         SyncSingleAssetJob.perform_now(asset.id)
 
         expect(
-          a_request(:get, finnhub_quote).with(query: hash_including("symbol" => "SPY#{type}"))
+          a_request(:get, finnhub_quote).with(query: hash_including("symbol" => symbol))
         ).to have_been_made
       end
     end

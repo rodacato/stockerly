@@ -25,6 +25,61 @@ RSpec.describe Asset, type: :model do
       expect(asset.errors[:symbol]).to include("has already been taken")
     end
 
+    describe "symbol format" do
+      # Every shape below is one production actually holds, or one it does not.
+      it "accepts a plain US ticker" do
+        asset.symbol = "NVDA"
+        expect(asset).to be_valid
+      end
+
+      it "accepts the .MX suffix the BMV assets carry" do
+        asset.symbol = "GENIUSSACV.MX"
+        expect(asset).to be_valid
+      end
+
+      it "accepts a hyphen" do
+        asset.symbol = "BRK-B"
+        expect(asset).to be_valid
+      end
+
+      it "accepts the underscore on the Banxico identifiers, which are not tickers" do
+        cete = build(:asset, :fixed_income, symbol: "CETES_182D")
+        expect(cete).to be_valid
+      end
+
+      it "refuses the underscore on a stock, so it cannot reach the widget" do
+        asset.symbol = "FOO_BAR"
+        expect(asset).not_to be_valid
+      end
+
+      it "refuses lowercase" do
+        asset.symbol = "nvda"
+        expect(asset).not_to be_valid
+      end
+
+      it "refuses provider notation, which belongs in provider_symbols" do
+        asset.symbol = "WALMEX*"
+        expect(asset).not_to be_valid
+      end
+
+      it "refuses a slash, which no route can carry" do
+        asset.symbol = "BTC/USD"
+        expect(asset).not_to be_valid
+      end
+
+      it "refuses more than 20 characters" do
+        asset.symbol = "A" * 21
+        expect(asset).not_to be_valid
+      end
+
+      # The alert that started this: the value can no longer be stored at all,
+      # so no consumer has to refuse it on the way out.
+      it "refuses a symbol carrying a script tag" do
+        asset.symbol = "</script><script>alert(1)</script>"
+        expect(asset).not_to be_valid
+      end
+    end
+
     describe "currency" do
       it "requires currency" do
         asset.currency = nil

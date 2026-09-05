@@ -86,19 +86,12 @@ module MarketHelper
     end
   end
 
-  # The symbol is interpolated into the widget's <script> body, and `symbol` is
-  # validated for presence and uniqueness only — never for shape. Everything
-  # outside a ticker's alphabet is refused the toggle rather than escaped into
-  # it, so the view interpolates a value this predicate already vouched for.
-  TRADINGVIEW_SYMBOL = /\A[A-Z0-9.\-]{1,20}\z/
-
   # D2 rejected a widget that loaded on every page load; D66 permits one behind
   # a click. Stocks and ETFs only: fixed income has no TradingView symbol, and
   # crypto needs an exchange prefix that `assets.exchange` does not always hold.
+  # Both types are held to Asset::SYMBOL_FORMAT, so the shape is not re-derived.
   def tradingview_available?(asset)
-    return false unless asset.asset_type_stock? || asset.asset_type_etf?
-
-    asset.symbol.to_s.match?(TRADINGVIEW_SYMBOL)
+    asset.asset_type_stock? || asset.asset_type_etf?
   end
 
   # Travels to the browser as a Stimulus value, so ERB escapes it as an
