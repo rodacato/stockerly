@@ -527,7 +527,10 @@ and the "establish it with a live call" line above was asking for work the regis
 done. **That is D53's failure mode committed by the entry that cites D53** — a conclusion current
 with what had been looked at rather than with what exists.
 
-**Resolved 2026-08-29.** `DAYS` is 365 (D71), `MIN_HISTORIES` is 200 and converges, the yfinance
+**Resolved 2026-08-29.** `DAYS` is 3650 (365 when this line was written; widened since by
+`a9e9222f`, which asks each source only as far back as it will answer), `MIN_HISTORIES` is 200 and
+converges — **measured 2026-09-05: 42 assets at 200+ bars, min 315, max 2952, one open position
+short** — the yfinance
 ladder gained its bounded step, and the five-factor mode now actually runs — which took two further
 changes this entry did not foresee: the calculator's `>= 35` gate (it withheld `ema_crossover` and
 `volume_trend`, whose minimums are 21 and 20) and `X19`'s row window. Widening the table was
