@@ -103,6 +103,30 @@ RSpec.describe "Descubrir", type: :request do
       expect(response.body).to include("SMH", "Semiconductores", "8.4%", "5.2")
     end
 
+    # D94: D73 dropped the artboard's arrow for want of anyone asking to browse
+    # the rest. Somebody asked, so the seventeen open in place.
+    it "names what each basket is, not only which one it is" do
+      get discover_path
+
+      expect(response.body).to include("Semiconductores · sector")
+    end
+
+    it "opens the rest in place rather than on a fourth screen" do
+      other = MarketData::Discover::WaveRanking::Wave.new(
+        symbol: "EWW", name: "México", group: "geografia", change_percent: -1.2,
+        vs_baseline: nil, closes: [ 100.0, 99.0 ], referents: []
+      )
+      memory.write(WarmDiscoverJob::CACHE_KEY,
+                   { waves: [ wave, other ], since: 8.days.ago.to_date, generated_at: Time.current })
+
+      get discover_path
+
+      expect(response.body).to include("Ver las 2 canastas con datos en la ventana")
+      expect(response.body).to include("México")
+      expect(response.body).to include("geografía")
+      expect(response.body).not_to match(/href="[^"]*canastas/)
+    end
+
     it "says there is no exposure when none of the referents is held" do
       get discover_path
 
