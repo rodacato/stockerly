@@ -47,24 +47,6 @@ module MarketData
           .max_by(&:observed_at)
       end
 
-      # The trend events `for` deliberately drops. They are not extension, so
-      # they must not move the state — but they are the confluence semaphore's
-      # third light, and nothing rendered them before.
-      # @api public
-      def self.trend(observations)
-        Array(observations)
-          .select { |o| TREND_ONLY.include?(o.observation_type) }
-          .max_by(&:observed_at)
-      end
-
-      # :bullish when the last crossing was upward, :bearish when downward.
-      # @api public
-      def self.trend_direction(observation)
-        return nil if observation.nil?
-
-        observation.observation_type.end_with?("above") ? :bullish : :bearish
-      end
-
       # @api public
       def self.phrase_key(state, holding:)
         state = :neutral unless STATES.include?(state)

@@ -63,7 +63,6 @@ module MarketData
           recent_observations: observations,
           state: Domain::AssetState.for(observations),
           state_source: Domain::AssetState.source(observations),
-          trend_source: Domain::AssetState.trend(observations),
           day_change: day_change,
           market_context: Queries::AssetMarketContext.call(asset: asset, day_change: day_change)
         }

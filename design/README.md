@@ -21,10 +21,12 @@ as context for AI agents.
 2. **Don't dedupe or promote into the kit unless asked.** No live propagation; every kit change
    is manual re-vendor across consumers. A resemblance is a note, not a task.
 
-**D78's carve-out, which is the part a mirror rule would erase:** three screens are drawn and
-unbuilt — `Movimientos` (CKP-1), the empty state's demo and CSV doors (ACT-1) and `Confluencia`
-(ALR-1). **The rule change does not retire them.** Each owes an explicit verdict, because two of
-them are failures the vision says the 2.0 must fix and one was un-gated by D42.
+**D78's carve-out, and what it produced.** Three screens were drawn and unbuilt when D8 was
+retired, and the rule change deliberately did not decide them — each got its own verdict instead:
+`Movimientos` was **built** (D79, `/signals`), `Confluencia` was **demoted to the block it already
+was** (D80, then retired outright by D84), and the empty state's demo door was **withdrawn** (C-3)
+once its CSV sibling turned out to have shipped. That is the carve-out working: a blind mirror rule
+would have deleted all three, including one D42 had explicitly un-gated.
 
 ## What's here
 
@@ -32,7 +34,7 @@ _Listing verified against the directory 2026-08-27._
 
 | Path | What it is |
 |---|---|
-| `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Currently **0.9.0, 20 components** |
+| `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Read the version from its `kit-version` variable, never from this row |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed, plus the live **Open kit gaps** list |
 | `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
 | `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 0.9.0 since 2026-08-27** |

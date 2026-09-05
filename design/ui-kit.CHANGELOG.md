@@ -452,3 +452,40 @@ Height 68 at rest, 44 of it the touch target.
 
 `flows/settings.pen` (4 instances) and `flows/alerts.pen` (1 master replaced by the kit's shape).
 `cockpit.pen` is untouched — its detail bar is a different component.
+
+---
+
+## 1.0.0 — `AssetRow` loses its state chip and its confluence dots
+
+The first major, and it is a removal rather than an arrival. The bump rule at the top of this file
+decides the number on its own: *major = breaking rename/removal*.
+
+### What came out
+
+`AssetRow`'s `Sig` slot — an `Estado` chip reading *oportunidad* and three `Dots`. It was in the
+kit and in both flows that vendor the component (`cockpit.pen`, `assets.pen`), and
+`app/views/components/_asset_row.html.erb` had said for months that the code backed neither:
+
+> *No state chip and no confluence dots: the design draws both, the code backs neither.*
+
+### Why now, and why removal rather than a build
+
+[#586](https://github.com/rodacato/stockerly/issues/586) retired the semáforo the dots belonged to
+(D84): re-measured on ten years, combining the lights beat nothing, and light 1 mechanically implies
+light 3's test — 483 episodes, none above the 50-day mean. The chip was then its own question, and
+D85 declined it: the edge that would justify it is measured inside a basket returning roughly twice
+the index before any signal.
+
+So the slot is not deferred pending a build. There is no build.
+
+### What this does NOT do
+
+**It does not re-vendor the flows.** One component was corrected in all three files so nothing
+diverges, but `cockpit.pen` and `assets.pen` keep their `kit-version-source` at `0.8.1` — no full
+token-and-component sync happened, and claiming one in the variable is how six briefs came to
+contradict their own files (D53).
+
+### Consumers
+
+`cockpit.pen` (Panorama radar, Holdings summary) and `assets.pen` (Holdings, Watchlist). Both
+corrected in the same pass.
