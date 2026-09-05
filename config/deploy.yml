@@ -92,6 +92,6 @@ accessories:
 aliases:
   console: app exec --reuse --interactive 'bin/rails console'
   shell: app exec --reuse --interactive 'bash'
-  db: accessory exec postgres --interactive 'psql -U stockerly stockerly_production'
+  db: accessory exec postgres --reuse --interactive 'psql -U stockerly stockerly_production'
   logs: app logs -f
   migrate: app exec --reuse 'bin/rails db:migrate'
