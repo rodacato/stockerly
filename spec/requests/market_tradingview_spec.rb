@@ -47,6 +47,14 @@ RSpec.describe "Market TradingView toggle", type: :request do
       expect(response.body).not_to include("Gráfico de TradingView")
     end
 
+    it "refuses a symbol outside a ticker's alphabet, rather than escaping it into the script" do
+      asset = with_history(create(:asset, symbol: "</script><script>alert(1)</script>"))
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).not_to include("Gráfico de TradingView")
+    end
+
     it "reaches no TradingView origin on page load — the frame ships empty" do
       asset = with_history(create(:asset, symbol: "AAPL"))
 
@@ -55,6 +63,7 @@ RSpec.describe "Market TradingView toggle", type: :request do
       expect(response.body).to include('id="asset_tradingview"')
       expect(response.body).not_to include("s3.tradingview.com")
       expect(response.body).not_to include("tradingview-widget.com")
+      expect(response.body).not_to include("tradingview-embed")
     end
   end
 
@@ -65,9 +74,17 @@ RSpec.describe "Market TradingView toggle", type: :request do
       get market_asset_tradingview_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js")
+      expect(response.body).to include('data-controller="tradingview-embed"')
       expect(response.body).to include("tradingview-widget-copyright")
       expect(response.body).to include("by TradingView")
+    end
+
+    # The loader URL lives in the controller now, so the host it reaches is
+    # pinned there rather than in a response body.
+    it "loads the embed from the host the CSP names" do
+      source = File.read("app/javascript/controllers/tradingview_embed_controller.js")
+
+      expect(source).to include("https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js")
     end
 
     it "presets MACD and no moving average, whose period it cannot carry" do
@@ -82,6 +99,14 @@ RSpec.describe "Market TradingView toggle", type: :request do
         .to change { SystemLog.where(module_name: "tradingview").count }.by(1)
 
       expect(SystemLog.last.error_message).to eq("NVDA")
+    end
+
+    it "is not reachable for a symbol the toggle refuses" do
+      odd = with_history(create(:asset, symbol: "BAD SYMBOL!"))
+
+      get market_asset_tradingview_path(odd.symbol)
+
+      expect(response).to have_http_status(:not_found)
     end
 
     it "is not reachable for an asset that renders no toggle" do

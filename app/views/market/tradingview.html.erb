@@ -1,24 +1,24 @@
-<%# The embed, verbatim from TradingView's own generator. The copyright div and
-    the 32px the container reserves for it are theirs, not decoration: the terms
-    require the attribution to remain as it was designed (D66).
+<%# The embed, from TradingView's own generator. The copyright div and the 32px
+    the container reserves for it are theirs, not decoration: the terms require
+    the attribution to remain as it was designed (D66).
+
+    The loader's <script> is built by tradingview_embed_controller rather than
+    printed here, so the config travels as an attribute ERB escapes and no
+    database value is ever marked html_safe.
 
     Only MACD is preset. `studies` takes ids without inputs, so a moving average
     would arrive at its default period — an MA200 cannot be asked for here, and
     shipping a default-period MA labelled as the long one would be a lie. The
-    reader adds it from the widget's own Indicators menu. %>
+    reader adds it from the widget's own Indicadores menu. %>
 <%= turbo_frame_tag "asset_tradingview" do %>
-  <div class="tradingview-widget-container mt-4" style="height: 420px">
+  <div class="tradingview-widget-container mt-4" style="height: 420px"
+       data-controller="tradingview-embed"
+       data-tradingview-embed-config-value="<%= tradingview_config(@asset) %>">
     <div class="tradingview-widget-container__widget" style="height: calc(100% - 32px)"></div>
     <div class="tradingview-widget-copyright text-xs text-fg-subtle">
       <a href="https://www.tradingview.com/symbols/<%= @asset.symbol %>/" rel="noopener nofollow" target="_blank">
         <span class="text-primary"><%= @asset.symbol %></span>
       </a><span> by TradingView</span>
     </div>
-    <script type="text/javascript" nonce="<%= request.content_security_policy_nonce %>"
-            src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-      <%= raw({ symbol: @asset.symbol, interval: "D", locale: "es", theme: "light",
-                style: "1", autosize: true, hide_side_toolbar: false,
-                studies: [ "STD;MACD" ] }.to_json) %>
-    </script>
   </div>
 <% end %>
