@@ -1226,7 +1226,7 @@ es-MX:
     ya_completado: Esta instancia ya está configurada.
   shared:
     welcome_body:
-      bug_enlace: Repórtalo aquí.
+      bug_enlace: Ábrelo en GitHub.
       bug_pregunta: "¿Encontraste un bug?"
       contacto_pregunta: "¿Otra pregunta? Escríbenos a"
       desarrollo_cuerpo: Stockerly está en desarrollo activo. Las cosas pueden cambiar
