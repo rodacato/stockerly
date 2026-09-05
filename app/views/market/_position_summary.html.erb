@@ -38,15 +38,6 @@
     <p class="mt-2 text-sm text-warning-fg"><%= t("posicion.sin_desglose") %></p>
   <% end %>
 
-  <%# Back where the artboard puts it: the header dropped its three buttons in
-      the 2.0 pass, so this is no longer a duplicate. The sheet partial carries
-      its own dialog and frame — a bare link would have nothing to load into.
-      "Cerrar posición" is drawn beside it and still not built: closing out is
-      an action the code does not have, and a sell is already a movement. %>
-  <div class="mt-4">
-    <%= render "components/sheet_dialog", frame_id: "trade_sheet", url: new_trade_path, label: t("trades.new.titulo") %>
-  </div>
-
   <div class="mt-4 grid grid-cols-3 gap-3 border-t border-border-default pt-4">
     <div>
       <p class="text-[11px] text-fg-subtle"><%= t("posicion.titulos") %></p>
