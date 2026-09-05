@@ -73,18 +73,18 @@
         <%= f.password_field :api_key_encrypted, name: "integration[api_key_encrypted]", value: nil,
               placeholder: integration_key_placeholder(integration),
               autocomplete: "off",
-              class: "min-w-[160px] flex-1 rounded-lg border border-border-default bg-bg-canvas px-3 py-2 font-mono text-sm text-fg-default placeholder:font-sans placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-focus" %>
+              class: field_classes(:md, "min-w-[160px] flex-1 bg-bg-canvas font-mono placeholder:font-sans") %>
         <label class="flex flex-col gap-1">
           <span class="text-[11px] uppercase tracking-wide text-fg-subtle"><%= t("admin.integrations.index.limite_diario") %></span>
           <%= f.number_field :daily_call_limit, name: "integration[daily_call_limit]", value: integration.daily_call_limit,
                 placeholder: t("admin.integrations.index.sin_limite"),
-                class: "w-24 rounded-lg border border-border-default bg-bg-canvas px-2 py-2 font-mono text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-focus" %>
+                class: field_classes(:sm, "w-24 bg-bg-canvas font-mono") %>
         </label>
         <label class="flex flex-col gap-1">
           <span class="text-[11px] uppercase tracking-wide text-fg-subtle"><%= t("admin.integrations.index.limite_minuto") %></span>
           <%= f.number_field :max_requests_per_minute, name: "integration[max_requests_per_minute]", value: integration.max_requests_per_minute,
                 placeholder: t("admin.integrations.index.sin_limite"),
-                class: "w-24 rounded-lg border border-border-default bg-bg-canvas px-2 py-2 font-mono text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-focus" %>
+                class: field_classes(:sm, "w-24 bg-bg-canvas font-mono") %>
         </label>
         <%= f.submit t("admin.integrations.index.guardar"),
               class: "cursor-pointer rounded-lg border border-border-default px-3 py-2 text-sm font-medium text-fg-default" %>

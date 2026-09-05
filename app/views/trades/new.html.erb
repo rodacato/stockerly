@@ -97,7 +97,7 @@
                   data-template="<%= t("trades.new.tc_titulo", base: "%{base}", target: "%{target}") %>"></span>
             <%= f.text_field :fx_rate_at_execution, inputmode: "decimal",
                              data: { trade_sheet_target: "fxRate", action: "input->trade-sheet#recalculate" },
-                             class: "w-28 rounded-lg border border-border-default bg-bg-surface px-2 py-1.5 text-right font-mono text-sm text-fg-default" %>
+                             class: field_classes(:sm, "w-28 text-right font-mono") %>
           </div>
           <%# Copy lives in the catalogue, not in the JS (ADR-011). %>
           <p class="text-[11px] text-fg-subtle"

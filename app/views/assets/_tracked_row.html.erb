@@ -53,7 +53,7 @@
         <%= f.hidden_field :provider, value: source %>
         <%= f.text_field :symbol, value: asset.symbol_for(source), autocomplete: "off",
               aria: { label: t("assets.tracked.sin_fuente_campo", provider: source) },
-              class: "min-w-[140px] flex-1 rounded-lg border border-border-default bg-bg-canvas px-3 py-2 font-mono text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-focus" %>
+              class: field_classes(:md, "min-w-[140px] flex-1 bg-bg-canvas font-mono") %>
         <%= f.submit t("assets.tracked.probar"),
               class: "cursor-pointer rounded-lg bg-warning-fg px-3 py-2 text-sm font-semibold text-bg-surface" %>
       <% end %>
