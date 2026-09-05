@@ -1073,7 +1073,10 @@ reader meets immediately after `Complete`.
 It was always `ACT-1` seen from the onboarding side, never separate work. The board item for
 `ACT-1` carries this entry's text in full.
 
-### ONB-3 🟡 `/welcome` and `/help` are the only authenticated screens with zero i18n keys
+### ONB-3 ✅ `/welcome` and `/help` are keyed
+
+**Closed — measured 2026-09-05.** `welcome/show` has 4 `t()` calls, `help/show` 3, and the `shared/_welcome_body` they share has 7. This entry described a state that ended without anyone recording it.
+
 
 `app/views/welcome/` and `app/views/help/` are at **0 `t(...)` lookups** and 2 token uses each; the
 copy lives inline in [`shared/_welcome_body.html.erb`](../app/views/shared/_welcome_body.html.erb).
@@ -1427,7 +1430,12 @@ values** (CoinGecko does not fill them, and `ath_price` is a different question)
 local fallback** until X9 lands — a 52-week range computed from thirty bars would be a lie with a
 number's formatting.
 
-### CKP-10 🟡 Fundamentals are ten bare numbers behind a popover that costs ten clicks
+### CKP-10 ✅ The extract is five, and comparing them against their own history is retired
+
+**Closed by D87, and the title was stale before that.** `SUMMARY_METRICS` is five — `pe_ratio net_margin revenue_growth debt_to_equity dividend_yield` — not ten, so D70's step 1 was already done.
+
+Step 2 died on measurement: `asset_fundamentals` carries a unique index on `(asset_id, period_label)` and four label values that are all constants, so **no metric has a history to compare against**. Exactly one of the five can be reconstructed — `pe_ratio`, from the price series over a static EPS — and it already ships. The comprehension problem the trigger names is real and unfixed; what died is the approach, which is why #429 went back to Draft rather than Done.
+
 
 `SUMMARY_METRICS` is a fixed ten, identical for every equity, with the remaining ~26 in a *Ver
 todos* accordion. [`_metric_card`](../app/views/market/_metric_card.html.erb) already carries a
@@ -1549,7 +1557,12 @@ controller's filter methods deleted; the HTML fallbacks that redirect to `trades
 `trades#new/create/edit/update/destroy` all stay — the sheet and the inline row flows are not this
 route.
 
-### ACT-4 🟡 The Tracked budget panel states a total; the design breaks it down by tier
+### ACT-4 ✅ The Tracked panel breaks the budget down, as one bar
+
+**Closed by D82.** The panel drew the tier counts as a three-row list under a second bar measuring something else — quota spent, which the line beneath already states in words. One bar now, segmented by tier, because the question the panel answers is which assets get synced first.
+
+**What was measured and deliberately NOT built:** a marker for where the budget runs out. `SyncAllStatementsJob` spends the same quota and a statements sync costs three calls, and the day's queue holds only the assets stale past 24h — so *"the budget runs out here"* is precision the data does not have.
+
 
 Artboard: `25 llamadas · 34 activos en Tracked · 5 en Holdings · 6 en Watchlist · 23 al final`, with
 *"Se gastan en ese orden. Si el presupuesto se acaba, los últimos esperan al día siguiente."*
@@ -1568,7 +1581,10 @@ one-line locale change and it is a precondition for TD9: retiring Alpha Vantage 
 panel, and a title that already says what it counts survives that, while *Presupuesto de hoy* does
 not.
 
-### ACT-5 🟡 The Tracked list has no search
+### ACT-5 ✅ The Tracked list filters
+
+**Closed — `assets/tracked.html.erb` renders a search form that filters what you already track.** It is a different control from the typeahead in the add form above it, which queries the catalogue; that distinction is D64, still open.
+
 
 The artboard draws `Buscar entre tus 34 activos` above the list and a `Ver los 28 restantes` foot.
 The code renders every tracked asset with no filter and no truncation.
@@ -1764,7 +1780,10 @@ number the screen will not have. One edit, grouped with ALR-3.
 **3 artboards.** The closest design↔code match in the app, and the only flow built after its own
 artboards were finished. Two small items and no gaps.
 
-### DSC-1 🟡 `Ver las 17 canastas →` is a link in the design and a sentence in the code
+### DSC-1 ✅ The arrow is gone from the artboard
+
+**Closed by D73 — the code was the honest half and it stayed.** `discover/show` states the count instead of linking it, and had carried a comment saying so since the screen shipped. The artboard drew a link to a fourth Descubrir screen that does not exist.
+
 
 [`discover/show.html.erb:72-74`](../app/views/discover/show.html.erb#L72) states the count instead
 of linking it, with a comment saying there is no screen behind it. Same shape as CKP-1: an artboard
