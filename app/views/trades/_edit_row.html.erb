@@ -28,7 +28,7 @@
       <%= link_to t("comun.cancelar"), positions_path,
             class: "rounded-lg border border-border-default px-3 py-1.5 text-sm font-semibold text-fg-subtle transition-colors hover:border-border-strong" %>
       <%= f.submit t("comun.guardar"),
-            class: "cursor-pointer rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" %>
+            class: button_classes(:primary, :sm, "cursor-pointer") %>
     </div>
   <% end %>
 </li>

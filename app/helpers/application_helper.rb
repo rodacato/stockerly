@@ -24,6 +24,42 @@ module ApplicationHelper
     class_names(CARD_SHAPE, extra)
   end
 
+  # The kit's three button weights (D86). The size is chosen by what the button
+  # is FOR, not by which surface it sits on: `lg` is the action the screen
+  # exists for, `md` a full-width action that is not the point of the screen,
+  # `sm` an inline one beside a control. Measured before deciding — 18 of the
+  # 35 sites already agreed, and password_resets settled the axis by using both
+  # correctly across four screens of one controller.
+  #
+  # Width and layout stay at the call site, the way D75 left padding on Card's.
+  BUTTON_SIZES = {
+    lg: "rounded-xl px-4 py-3.5 text-base",
+    md: "rounded-lg px-4 py-3 text-sm",
+    sm: "rounded-lg px-3 py-2 text-sm"
+  }.freeze
+
+  # `text-fg-inverse` and not `text-white`: the token is #0F172A in dark, where
+  # white on the dark-mode primary measures 3.06:1 and fails AA.
+  BUTTON_VARIANTS = {
+    primary: "bg-primary text-fg-inverse hover:bg-primary-hover",
+    secondary: "border border-border-default bg-bg-surface text-fg-default hover:border-border-strong",
+    danger: "border border-negative bg-bg-surface text-negative hover:bg-negative-bg"
+  }.freeze
+
+  def button_classes(variant = :primary, size = :md, extra = nil)
+    class_names("font-semibold transition-colors",
+                BUTTON_SIZES.fetch(size), BUTTON_VARIANTS.fetch(variant), extra)
+  end
+
+  # Field takes the same weight axis, minus the inline one — an input is never
+  # the small case, it is the thing the small case sits beside (D86).
+  FIELD_SIZES = { lg: "rounded-xl px-4 py-3 text-base", md: "rounded-lg px-3 py-2.5 text-sm" }.freeze
+
+  def field_classes(size = :md, extra = nil)
+    class_names("border border-border-default bg-bg-surface text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-focus",
+                FIELD_SIZES.fetch(size), extra)
+  end
+
   # Renders a duration in es-MX human form: "2 horas", "1 hora", "30 minutos".
   # Rails' `distance_of_time_in_words` rounds ("about 1 day"); these are exact,
   # because they state a configured limit rather than an elapsed time.

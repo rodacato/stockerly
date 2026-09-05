@@ -31,7 +31,7 @@
       <p class="font-semibold text-fg-default"><%= t(".vacio_titulo") %></p>
       <p class="max-w-sm text-sm text-fg-subtle"><%= t(".vacio_cuerpo") %></p>
       <%= link_to t(".configurar"), onboarding_integrations_path,
-            class: "rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" %>
+            class: button_classes(:primary, :sm) %>
     </div>
   <% end %>
 </div>

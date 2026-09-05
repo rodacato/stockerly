@@ -5,7 +5,7 @@
   <h3 class="mb-2 font-display text-lg font-semibold text-fg-default"><%= title %></h3>
   <p class="mb-6 max-w-[320px] text-sm text-fg-subtle"><%= description %></p>
   <% if local_assigns[:cta_text] && local_assigns[:cta_path] %>
-    <% cta_class = "inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-fg-inverse transition-colors hover:bg-primary-hover" %>
+    <% cta_class = button_classes(:primary, :sm, "inline-flex items-center gap-2") %>
     <% if local_assigns[:cta_method] == :post %>
       <%= button_to cta_text, cta_path, class: cta_class %>
     <% else %>

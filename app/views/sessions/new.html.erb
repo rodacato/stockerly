@@ -16,7 +16,7 @@
                label: t("auth.contrasena"), autocomplete: "current-password" %>
 
     <button type="submit"
-            class="mt-2 w-full rounded-xl bg-primary px-4 py-3.5 text-base font-semibold text-fg-inverse transition-colors hover:bg-primary-hover">
+            class="<%= button_classes(:primary, :lg, "mt-2 w-full") %>">
       <%= t("auth.login.submit") %>
     </button>
   <% end %>

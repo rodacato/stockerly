@@ -5,7 +5,7 @@
     <div class="flex items-center justify-between gap-3">
       <p class="text-sm text-fg-subtle"><%= t("assets.tracked.conteo", count: @assets.size) %></p>
       <button type="button" data-action="reveal#toggle"
-              class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-fg-inverse transition-colors hover:bg-primary-hover">
+              class="<%= button_classes(:primary, :sm, "inline-flex shrink-0 items-center gap-1.5") %>">
         <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
         <%= t("assets.tracked.agregar") %>
       </button>

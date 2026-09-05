@@ -119,7 +119,7 @@
             the form still filled, which invited saving the same movement twice.
             "y otro" stays in the frame and comes back empty. %>
         <%= f.submit t("trades.new.guardar"), data: { turbo_frame: "_top" },
-                     class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-fg-inverse" %>
+                     class: button_classes(:primary, :lg, "w-full cursor-pointer") %>
         <%= f.submit t("trades.new.guardar_y_otro"), name: "and_another",
                      class: "w-full cursor-pointer rounded-lg border border-border-default bg-bg-surface px-4 py-3 text-sm font-semibold text-fg-default" %>
       </div>

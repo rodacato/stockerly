@@ -48,7 +48,7 @@
     </div>
 
     <div class="flex flex-col items-center gap-2 pt-1">
-      <%= f.submit t(".revisar"), class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-fg-inverse" %>
+      <%= f.submit t(".revisar"), class: button_classes(:primary, :lg, "w-full cursor-pointer") %>
       <p class="text-xs text-fg-subtle"><%= t(".nada_aun") %></p>
     </div>
   <% end %>
