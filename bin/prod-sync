@@ -51,10 +51,17 @@ dump() {
   say "Wrote $file ($(du -h "$file" | cut -f1))"
 }
 
+# Asked of the catalogue rather than by grepping a listing: under `pipefail`,
+# `grep -q` closing the pipe early makes psql die of SIGPIPE and the whole
+# pipeline report failure on the runs where it did match.
+mirror_exists() {
+  [ "$(psql -tAc "SELECT 1 FROM pg_database WHERE datname = '$MIRROR_DB'")" = "1" ]
+}
+
 restore() {
   [ -e "$LATEST" ] || die "No dump in $DUMP_DIR — run 'bin/prod-sync dump' where you deploy from."
 
-  if psql -lqt | cut -d'|' -f1 | grep -qw "$MIRROR_DB"; then
+  if mirror_exists; then
     if [ "${FORCE:-}" != "1" ]; then
       read -rp "Replace $MIRROR_DB with $(readlink "$LATEST")? [y/N] " reply
       [ "$reply" = "y" ] || die "Aborted, nothing was touched."
@@ -82,7 +89,7 @@ restore() {
 }
 
 status() {
-  psql -lqt | cut -d'|' -f1 | grep -qw "$MIRROR_DB" || die "$MIRROR_DB does not exist yet."
+  mirror_exists || die "$MIRROR_DB does not exist yet."
 
   psql -d "$MIRROR_DB" -P border=2 -v ON_ERROR_STOP=1 <<'SQL'
 SELECT 'assets'          AS table, count(*)::text AS rows, ''                                         AS span FROM assets
