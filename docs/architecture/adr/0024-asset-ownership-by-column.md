@@ -136,7 +136,9 @@ query object.
 - **BND-13's other half stays open.** Alerts reading `Asset` and `MarketHoliday` is an
   Alerts→MarketData dependency with no ADR of its own. The `MarketHoliday` read now goes through a
   query object; the *pair* still needs its own one-paragraph ADR, which no ownership model here
-  supplies.
+  supplies. (⚠️ **Closed 2026-09-04** by the
+  [amendment to ADR-002](./0002-trading-marketdata-boundary.md#amendment-2026-09-04--the-two-alerts-pairs-measured-and-declared):
+  the pair is declared, and Alerts→Trading turned out not to exist.)
 - **A pre-existing symbol divergence surfaced and was left alone.** `AssetCatalog` seeds `CETE28D`;
   `SyncCetes` creates `CETES_28D`. Both are live and a fresh instance gets both rows. Unifying them
   is a data change on symbols that positions and trades reference, so it is its own issue, not a

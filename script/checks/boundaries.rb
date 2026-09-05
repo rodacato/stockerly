@@ -8,10 +8,12 @@ module Checks
   # *bare* constant — MarketIndex.major, FearGreedReading.latest_* — which is
   # why this looks for model names rather than namespaces.
   #
-  # Only that pair is enforced. Identity reading NewsArticle and Alerts reading
-  # MarketHoliday are cross-context too, and ADR-002 §Deferred / ADR-024 both
-  # record that no ADR has decided them. A check that invented the rule would be
-  # enforcing an opinion, so those are left out until an ADR exists.
+  # Only that pair is enforced. ADR-002's amendment of 2026-09-04 declares the
+  # Alerts pairs too — Alerts→MarketData on the same terms, Alerts→Trading as a
+  # dependency that does not exist — and extending this check to Alerts would
+  # land green today. Identity reaching for Integration and MarketIndex in
+  # CreateFirstAdmin is BND-02, still undecided; a check that invented that rule
+  # would be enforcing an opinion.
   #
   # What this cannot see, per ADR-024: ownership by column. A job writing
   # Asset#name is a violation of ADR-024 and is invisible to a constant grep.
