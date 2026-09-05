@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "band: happy path (left → right) · desktop stacks below it\nkit-version-source: 0.8.1 · brief-schema: 1\n\n1. PURPOSE\n   The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile first.\n\n2. ENTRY POINTS\n   - Login lands here — /dashboard (config/routes.rb)\n   - A radar or signal row opens the asset detail — /market/:symbol (config/routes.rb)\n   - Panorama's patrimonio hero and Holdings' summary card both open Consolidado — one screen, two doors\n\n3. SCREENS  (left → right)\n   - Panorama — Default, Tranquilo — bha3e, H9a5cH\n   - Señales — Default — lNpAd (the observation feed; D42, renamed from Movimientos by D57). BUILT 2026-09-05 at /signals (D79)\n   - Asset detail — Análisis, Mi posición — e8CjG, fP4zv\n   - Consolidado — Default — tHAu1\n   - Desktop (1280) — Panorama, Asset · Análisis, Consolidado — FL7Uk, pM2rP, lc9x8\n\n4. BUSINESS RULES\n   - The radar draws Holdings and Watchlist together, ordered by what moved (app/contexts/trading/use_cases/assemble_panorama.rb)\n   - A watched row is told from a holding by the ISO prefix its price keeps; a holding's value drops it (D10)\n   - Rows lead with the change in the radar and with the value in Cartera — same component, D69/D72\n   - The price chart states its own window; heading and query read one constant (app/contexts/market_data/use_cases/load_asset_detail.rb)\n   - The anchor reads cost when you hold, the alert threshold when you watch (D67)\n   - Block order on the asset detail, stated once rather than implied by the order they were added: Lectura (what today is) → Señales (the readings behind it) → Niveles (how far this asset moves) → Observaciones (what already happened). Verdict, evidence, distance, history\n   - Fundamentals are asked for, never enqueued by the read (app/controllers/market_controller.rb)\n   - Copy: es-MX. Read ADR-001 → ADR-013 → ADR-014 forward before touching any of it. A verb is allowed when it is a lookup over a persisted observation; a sentence is allowed when it comes from a closed catalogue. Neither may be composed in a template.\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, market.*, posicion.*.\n   NOT all of it: seven partials under app/views/market carry zero t() and are hardcoded es-MX — _analyst_target, _company_facts, _disclaimer, _pe_chart, _price_chart, earnings_tab, statements_tab. The directory-level count hides them because the rest of market/ is dense with keys. Razón P/U histórica and Acerca de la empresa are drawn from that hardcoded copy, which is the honest source until they are migrated.\n\n6. STATES NOT DRAWN\n   - Panorama / Black swan — nothing computes market breadth, so there is no state to draw (D25, D51)\n   - Stocks Fear & Greed — no equivalent source exists and relabelling another indicator would be a lie (D38)\n   - The confluence semáforo — RETIRED, not deferred (#586, D84). It is not a state left undrawn: the engine measured no better than its strongest light alone, and light 1 mechanically implies light 3's 50-day test (0 of 483 episodes fired above it). The block is gone from both Análisis artboards and from market/_confluence\n   - A state chip on a radar row — DECLINED with a reason (D85, closing CKP-5). The evidence for it is real and is measured inside a basket that returns roughly twice the index before any signal\n   - Mi posición / Rendimiento — DRAWN AND DEFERRED (D89), not undrawn. It stays on canvas because it is buildable, not because it is pending design: HistoricalValuation already derives shares-on-date from the trade log, values them at the split-adjusted close and converts through Banxico's dated FIX, so what is missing is a per-asset entry point. What is missing for real is the trigger — nobody has asked for the windowed view, and Tu posición already answers how much and from where\n   - Rango52 with no data, and the anchor with neither position nor rule — both render absent, which is a swap not a state\n   - Señales / Vacío — components/_empty_state, already drawn elsewhere; a swap, not a state\n\n7. OPEN FINDINGS\n   none open on this band. D3 resolved 2026-08-29; what remains is the build, tracked on the board\n\n8. HISTORY\n   → LOG — Cockpit, bottom of this file.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2) — do not copy the pinned width into the ERB.",
+          "content": "band: happy path (left → right) · desktop stacks below it\nkit-version-source: 0.8.1 · brief-schema: 1\n\n1. PURPOSE\n   The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile first.\n\n2. ENTRY POINTS\n   - Login lands here — /dashboard (config/routes.rb)\n   - A radar or signal row opens the asset detail — /market/:symbol (config/routes.rb)\n   - Panorama's patrimonio hero and Holdings' summary card both open Consolidado — one screen, two doors\n\n3. SCREENS  (left → right)\n   - Panorama — Default, Tranquilo — bha3e, H9a5cH\n   - Señales — Default — lNpAd (the observation feed; D42, renamed from Movimientos by D57). BUILT 2026-09-05 at /signals (D79)\n   - Asset detail — Análisis (+ Aviso TradingView), Mi posición — e8CjG, L0HacI, fP4zv\n   - Consolidado — Default — tHAu1\n   - Desktop (1280) — Panorama, Asset · Análisis, Consolidado — FL7Uk, pM2rP, lc9x8\n\n4. BUSINESS RULES\n   - The radar draws Holdings and Watchlist together, ordered by what moved (app/contexts/trading/use_cases/assemble_panorama.rb)\n   - A watched row is told from a holding by the ISO prefix its price keeps; a holding's value drops it (D10)\n   - Rows lead with the change in the radar and with the value in Cartera — same component, D69/D72\n   - The price chart states its own window; heading and query read one constant (app/contexts/market_data/use_cases/load_asset_detail.rb)\n   - The anchor reads cost when you hold, the alert threshold when you watch (D67)\n   - Block order on the asset detail, stated once rather than implied by the order they were added: Lectura (what today is) → Señales (the readings behind it) → Niveles (how far this asset moves) → Observaciones (what already happened). Verdict, evidence, distance, history\n   - Fundamentals are asked for, never enqueued by the read (app/controllers/market_controller.rb)\n   - The TradingView chart is opt-in and mounts only on click; lightweight-charts stays the default view. The notice is shown once and names both what leaves the instance and who carries TradingView's attribution. Stocks and ETFs only — fixed income and crypto render no toggle (D66, #606)\n   - Copy: es-MX. Read ADR-001 → ADR-013 → ADR-014 forward before touching any of it. A verb is allowed when it is a lookup over a persisted observation; a sentence is allowed when it comes from a closed catalogue. Neither may be composed in a template.\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, market.*, posicion.*.\n   NOT all of it: seven partials under app/views/market carry zero t() and are hardcoded es-MX — _analyst_target, _company_facts, _disclaimer, _pe_chart, _price_chart, earnings_tab, statements_tab. The directory-level count hides them because the rest of market/ is dense with keys. Razón P/U histórica and Acerca de la empresa are drawn from that hardcoded copy, which is the honest source until they are migrated.\n\n6. STATES NOT DRAWN\n   - Panorama / Black swan — nothing computes market breadth, so there is no state to draw (D25, D51)\n   - Stocks Fear & Greed — no equivalent source exists and relabelling another indicator would be a lie (D38)\n   - The confluence semáforo — RETIRED, not deferred (#586, D84). It is not a state left undrawn: the engine measured no better than its strongest light alone, and light 1 mechanically implies light 3's 50-day test (0 of 483 episodes fired above it). The block is gone from both Análisis artboards and from market/_confluence\n   - A state chip on a radar row — DECLINED with a reason (D85, closing CKP-5). The evidence for it is real and is measured inside a basket that returns roughly twice the index before any signal\n   - Mi posición / Rendimiento — DRAWN AND DEFERRED (D89), not undrawn. It stays on canvas because it is buildable, not because it is pending design: HistoricalValuation already derives shares-on-date from the trade log, values them at the split-adjusted close and converts through Banxico's dated FIX, so what is missing is a per-asset entry point. What is missing for real is the trigger — nobody has asked for the windowed view, and Tu posición already answers how much and from where\n   - Rango52 with no data, and the anchor with neither position nor rule — both render absent, which is a swap not a state\n   - Señales / Vacío — components/_empty_state, already drawn elsewhere; a swap, not a state\n\n7. OPEN FINDINGS\n   none open on this band. D3 resolved 2026-08-29; what remains is the build, tracked on the board\n\n8. HISTORY\n   → LOG — Cockpit, bottom of this file.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2) — do not copy the pinned width into the ERB.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -2313,6 +2313,84 @@
                       "strokeLinecap": "round"
                     }
                   ]
+                },
+                {
+                  "type": "frame",
+                  "id": "l1NUH",
+                  "name": "DvTV",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "$border-default"
+                },
+                {
+                  "type": "frame",
+                  "id": "Xf8i2",
+                  "name": "TradingViewToggle",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "EfqgP",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "P3dUBd",
+                          "name": "Title",
+                          "fill": "$fg-default",
+                          "content": "Gráfico de TradingView",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "tUgiW",
+                          "name": "Sub",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Medias largas y MACD · se carga desde TradingView",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BnT7O",
+                      "name": "Btn",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-strong",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        14
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "CeUEq",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Mostrar",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -3818,7 +3896,7 @@
     {
       "type": "frame",
       "id": "fP4zv",
-      "x": 2420,
+      "x": 2910,
       "y": 0,
       "name": "[Cockpit] / Asset · Mi posición / Default",
       "clip": true,
@@ -5054,7 +5132,7 @@
     {
       "type": "frame",
       "id": "tHAu1",
-      "x": 2910,
+      "x": 3400,
       "y": 0,
       "name": "[Cockpit] / Consolidado / Default",
       "clip": true,
@@ -6085,7 +6163,7 @@
     {
       "type": "note",
       "id": "rh2GA",
-      "x": 3400,
+      "x": 3890,
       "y": 0,
       "name": "Nota · D12",
       "width": 320,
@@ -8163,6 +8241,84 @@
                                       "strokeWidth": 2,
                                       "strokeLinejoin": "round",
                                       "strokeLinecap": "round"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "w0sC9",
+                                  "name": "DvTV",
+                                  "width": "fill_container",
+                                  "height": 1,
+                                  "fill": "$border-default"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "b2m4t",
+                                  "name": "TradingViewToggle",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "nfsZ8",
+                                      "name": "Copy",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "SQfYh",
+                                          "name": "Title",
+                                          "fill": "$fg-default",
+                                          "content": "Gráfico de TradingView",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 13,
+                                          "fontWeight": "600"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "zdS8I",
+                                          "name": "Sub",
+                                          "fill": "$fg-subtle",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Medias largas y MACD · se carga desde TradingView",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 11,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "UNptT",
+                                      "name": "Btn",
+                                      "fill": "$bg-surface",
+                                      "cornerRadius": "$radius-md",
+                                      "stroke": "$border-strong",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        8,
+                                        14
+                                      ],
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "XJWQC",
+                                          "name": "t",
+                                          "fill": "$fg-default",
+                                          "content": "Mostrar",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 13,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
@@ -11447,11 +11603,897 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-05 · D88 · Cerrar posición is BUILT as a shortcut into the sell sheet — the artboard drew it and the tab had no actions at all\n2026-09-05 · D89 · Rendimiento stays drawn and deferred; the brief records that its declared blocker is not real\n2026-09-05 · #586 · the Semáforo block is deleted from both Análisis artboards — the engine is retired, not pending\n2026-09-05 · #586 · AssetRow drops its Estado chip and confluence dots (CKP-5 declined with a reason); kit goes to 1.0.0 by its own removal rule\n2026-09-05 · #586 · the detail's block order is stated in the brief instead of implied\n2026-09-05 · D80 · the Semáforo block adopts the code's own copy: the 'Tres señales, leídas por separado' subtitle, and light 1 and 3 bodies read what market/_confluence renders rather than a live-looking reading it does not compute\n2026-09-05 · D79 · Señales BUILT at /signals; the artboard's 'Desde tu última visita' subtitle replaced by the window it actually reads — users carry no last-visit column\n2026-09-05 · D79 · the header here is a TopBarDetail with two parts switched off; the code uses HeaderBar (kit 0.9.0) and this file vendors 0.8.1 — a version lag, not a divergence\n2026-09-05 · D78 · Análisis draws Noticias, Razón P/U histórica and Acerca de la empresa — three sections the code ships and this flow had not drawn\n2026-09-05 · C-4 · MasAnalisis deleted from both Análisis artboards: its volume line is the input D3 gave confluence light 2, and its DISPARADORES are threshold copy ADR-014 does not allow\n2026-09-05 · brief §5 corrected — seven market partials are hardcoded es-MX; it claimed nothing on the band was\n2026-09-05 · brief §6/§7 — D3 is resolved; the gate moved from no-definition to no-engine\n2026-09-05 · Asset · Análisis · Desktop grows 1400 → 1680 to hold the three new cards\n2026-08-29 · reflowed band 0 onto the declared grid: every gutter is 100 now, a 590px hole between Tranquilo and Análisis is gone, and Señales moved from x3700 y−780 — the components zone — into the band in reading order. Desktop stack shifted to respect grid-row-gap (3148 → 3244)\n2026-08-29 · brief rewritten into the eight fixed sections. The prose it replaces carried the why and the dates inline; those live in DECISIONS and here now, and the brief cites numbers\n2026-08-29 · Panorama + Panorama · Desktop: the Radar draws a watchlist row at last. Its own subtitle has read 'De tu cartera y watchlist' all along while every row was a holding, so the artboard was incomplete rather than in conflict with the code. Drawn as an AssetRow instance per D72 — the ISO prefix (USD 248.50) is what tells it from a position, since a holding's value drops the symbol under D10. Desktop grew 860 → 963 and the two artboards below it moved down 103 · X12\n2026-08-29 · Panorama: the Radar's ten AssetRow instances (5 mobile, 5 desktop) now lead with the change and demote the value. AssetRow stays generic — the component defines emphasis positions, not what goes in them, so no kit change and no second component · D69, D72, X12\n2026-08-29 · kit 0.8.1 · Asset · Análisis: the 52-week range moved OUT of Señales to sit under the price as Rango52. Señales is #306-blocked and that row is the one part of it buildable today, so it no longer waits on the rest · CKP-9, #426. Applied to the Desktop artboard in the same pass\n2026-08-29 · kit 0.8.1 · Asset · Análisis: VsPlan's second row now reads the alert threshold instead of a Meta — no target_price will exist · D67, CKP-8. Applied to the Desktop artboard in the same pass\n2026-08-29 · declared grid-x0/brief-w/gutter/y0/row-gap and opened this Log; the file predated both conventions\n2026-08-29 · brief corrected: kit-version-source said 0.8.0 against the file's 0.8.1, and the detail height moved 3037 → 2984 (the hoist freed more than Rango52 added)",
+          "content": "2026-09-05 · kit 0.8.1 · TradingView opt-in toggle drawn at the foot of Chart (mobile + desktop) and the one-time notice added as Aviso TradingView; band reflowed · D66 · #606\n2026-09-05 · D88 · Cerrar posición is BUILT as a shortcut into the sell sheet — the artboard drew it and the tab had no actions at all\n2026-09-05 · D89 · Rendimiento stays drawn and deferred; the brief records that its declared blocker is not real\n2026-09-05 · #586 · the Semáforo block is deleted from both Análisis artboards — the engine is retired, not pending\n2026-09-05 · #586 · AssetRow drops its Estado chip and confluence dots (CKP-5 declined with a reason); kit goes to 1.0.0 by its own removal rule\n2026-09-05 · #586 · the detail's block order is stated in the brief instead of implied\n2026-09-05 · D80 · the Semáforo block adopts the code's own copy: the 'Tres señales, leídas por separado' subtitle, and light 1 and 3 bodies read what market/_confluence renders rather than a live-looking reading it does not compute\n2026-09-05 · D79 · Señales BUILT at /signals; the artboard's 'Desde tu última visita' subtitle replaced by the window it actually reads — users carry no last-visit column\n2026-09-05 · D79 · the header here is a TopBarDetail with two parts switched off; the code uses HeaderBar (kit 0.9.0) and this file vendors 0.8.1 — a version lag, not a divergence\n2026-09-05 · D78 · Análisis draws Noticias, Razón P/U histórica and Acerca de la empresa — three sections the code ships and this flow had not drawn\n2026-09-05 · C-4 · MasAnalisis deleted from both Análisis artboards: its volume line is the input D3 gave confluence light 2, and its DISPARADORES are threshold copy ADR-014 does not allow\n2026-09-05 · brief §5 corrected — seven market partials are hardcoded es-MX; it claimed nothing on the band was\n2026-09-05 · brief §6/§7 — D3 is resolved; the gate moved from no-definition to no-engine\n2026-09-05 · Asset · Análisis · Desktop grows 1400 → 1680 to hold the three new cards\n2026-08-29 · reflowed band 0 onto the declared grid: every gutter is 100 now, a 590px hole between Tranquilo and Análisis is gone, and Señales moved from x3700 y−780 — the components zone — into the band in reading order. Desktop stack shifted to respect grid-row-gap (3148 → 3244)\n2026-08-29 · brief rewritten into the eight fixed sections. The prose it replaces carried the why and the dates inline; those live in DECISIONS and here now, and the brief cites numbers\n2026-08-29 · Panorama + Panorama · Desktop: the Radar draws a watchlist row at last. Its own subtitle has read 'De tu cartera y watchlist' all along while every row was a holding, so the artboard was incomplete rather than in conflict with the code. Drawn as an AssetRow instance per D72 — the ISO prefix (USD 248.50) is what tells it from a position, since a holding's value drops the symbol under D10. Desktop grew 860 → 963 and the two artboards below it moved down 103 · X12\n2026-08-29 · Panorama: the Radar's ten AssetRow instances (5 mobile, 5 desktop) now lead with the change and demote the value. AssetRow stays generic — the component defines emphasis positions, not what goes in them, so no kit change and no second component · D69, D72, X12\n2026-08-29 · kit 0.8.1 · Asset · Análisis: the 52-week range moved OUT of Señales to sit under the price as Rango52. Señales is #306-blocked and that row is the one part of it buildable today, so it no longer waits on the rest · CKP-9, #426. Applied to the Desktop artboard in the same pass\n2026-08-29 · kit 0.8.1 · Asset · Análisis: VsPlan's second row now reads the alert threshold instead of a Meta — no target_price will exist · D67, CKP-8. Applied to the Desktop artboard in the same pass\n2026-08-29 · declared grid-x0/brief-w/gutter/y0/row-gap and opened this Log; the file predated both conventions\n2026-08-29 · brief corrected: kit-version-source said 0.8.0 against the file's 0.8.1, and the detail height moved 3037 → 2984 (the hoist freed more than Rango52 added)",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
           "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "L0HacI",
+      "x": 2420,
+      "y": 0,
+      "name": "[Cockpit] / Asset · Análisis / Aviso TradingView",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "F5o7b",
+          "type": "ref",
+          "ref": "zVp8W",
+          "name": "TopBarDetail"
+        },
+        {
+          "type": "frame",
+          "id": "OIxi7",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-5",
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "nxdu0",
+              "name": "Chart",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-card",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-3",
+              "padding": "$space-4",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "cGIaR",
+                  "name": "Plot",
+                  "width": 318,
+                  "height": 160,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "et3G8",
+                      "x": 0,
+                      "y": 0,
+                      "name": "BBUp",
+                      "geometry": "M0 110l35-12 35 8 36-32 35 10 36-34 35 10 35-34 36-6 35-8",
+                      "viewBox": [
+                        0,
+                        0,
+                        318,
+                        160
+                      ],
+                      "fill": "#00000000",
+                      "width": 318,
+                      "height": 160,
+                      "stroke": "$border-strong",
+                      "strokeWidth": 1.5,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
+                    },
+                    {
+                      "type": "path",
+                      "id": "eIsTC",
+                      "x": 0,
+                      "y": 0,
+                      "name": "BBLo",
+                      "geometry": "M0 160l35-14 35 8 36-32 35 10 36-36 35 12 35-36 36-10 35-12",
+                      "viewBox": [
+                        0,
+                        0,
+                        318,
+                        160
+                      ],
+                      "fill": "#00000000",
+                      "width": 318,
+                      "height": 160,
+                      "stroke": "$border-strong",
+                      "strokeWidth": 1.5,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
+                    },
+                    {
+                      "type": "path",
+                      "id": "KCKxK",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Price",
+                      "geometry": "M0 135l35-13 35 8 36-32 35 10 36-36 35 12 35-36 36-8 35-10",
+                      "viewBox": [
+                        0,
+                        0,
+                        318,
+                        160
+                      ],
+                      "fill": "#00000000",
+                      "width": 318,
+                      "height": 160,
+                      "stroke": "$primary",
+                      "strokeWidth": 2.5,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Wwzv5",
+                      "x": 286,
+                      "y": 4,
+                      "name": "vUp",
+                      "fill": "$fg-subtle",
+                      "content": "190",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "wZgTl",
+                      "x": 286,
+                      "y": 22,
+                      "name": "vPx",
+                      "fill": "$primary",
+                      "content": "184",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "pbJ5m",
+                      "x": 286,
+                      "y": 44,
+                      "name": "vLo",
+                      "fill": "$fg-subtle",
+                      "content": "150",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "B1aLa",
+                      "x": 247,
+                      "y": 0,
+                      "name": "CrossV",
+                      "opacity": 0.35,
+                      "width": 1,
+                      "height": 160,
+                      "fill": "$fg-subtle"
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "AIbVv",
+                      "x": 243,
+                      "y": 44,
+                      "name": "CrossDot",
+                      "fill": "$primary",
+                      "width": 9,
+                      "height": 9,
+                      "stroke": "$bg-surface",
+                      "strokeWidth": 2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xDAwo",
+                      "x": 168,
+                      "y": 0,
+                      "name": "Tip",
+                      "fill": "$fg-default",
+                      "cornerRadius": "$radius-sm",
+                      "padding": [
+                        4,
+                        8
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "O8IzhY",
+                          "name": "t",
+                          "fill": "$fg-inverse",
+                          "content": "23 ago · 186",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JSuii",
+                      "x": 0,
+                      "y": 122,
+                      "name": "CostLine",
+                      "opacity": 0.45,
+                      "width": 318,
+                      "height": 1,
+                      "fill": "$positive"
+                    },
+                    {
+                      "type": "text",
+                      "id": "rfaFu",
+                      "x": 2,
+                      "y": 111,
+                      "name": "CostLbl",
+                      "fill": "$positive-fg",
+                      "content": "tu costo 120",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Y8O1G",
+                  "name": "XAxis",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "FXiNn",
+                      "name": "jun",
+                      "fill": "$fg-subtle",
+                      "content": "jun",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "s31kCo",
+                      "name": "jul",
+                      "fill": "$fg-subtle",
+                      "content": "jul",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "sTduB",
+                      "name": "ago",
+                      "fill": "$fg-subtle",
+                      "content": "ago",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "aIV0H",
+                  "name": "TF",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "pUu93",
+                      "name": "1S",
+                      "fill": "#00000000",
+                      "cornerRadius": "$radius-sm",
+                      "padding": [
+                        5,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "eezNq",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "1S",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cLn7d",
+                      "name": "1M",
+                      "fill": "#00000000",
+                      "cornerRadius": "$radius-sm",
+                      "padding": [
+                        5,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MBH64",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "1M",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "CgzX7",
+                      "name": "3M",
+                      "fill": "$primary-muted",
+                      "cornerRadius": "$radius-sm",
+                      "padding": [
+                        5,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iCmk2",
+                          "name": "t",
+                          "fill": "$primary-hover",
+                          "content": "3M",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ESDFJ",
+                      "name": "1A",
+                      "fill": "#00000000",
+                      "cornerRadius": "$radius-sm",
+                      "padding": [
+                        5,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KIM8M",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "1A",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "b3kT4",
+                      "name": "Máx",
+                      "fill": "#00000000",
+                      "cornerRadius": "$radius-sm",
+                      "padding": [
+                        5,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "VXSNM",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "Máx",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "IMJmU",
+                  "name": "Stats",
+                  "width": "fill_container",
+                  "fill": "$bg-muted",
+                  "cornerRadius": "$radius-md",
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "justifyContent": "space_between",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x2EaN",
+                      "name": "O",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WD6GH",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "O",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "T4ACTe",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "172",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HaQbZ",
+                      "name": "H",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Mh6sT",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "H",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "XG4am",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "186",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yXoOc",
+                      "name": "L",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SDeCQ",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "L",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "W4Jz9",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "170",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O76ztP",
+                      "name": "C",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EGYYb",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "C",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "xmjt6",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "184",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q4AS78",
+                      "name": "Vol",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UJYYK",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "Vol",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gjCga",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "48M",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "QOX0W",
+                  "name": "Dv",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "$border-default"
+                },
+                {
+                  "type": "frame",
+                  "id": "fyewW",
+                  "name": "RsiHdr",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "LTxCi",
+                      "name": "l",
+                      "fill": "$fg-subtle",
+                      "content": "RSI (14)",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "aBa3u",
+                      "name": "v",
+                      "fill": "$warning-fg",
+                      "content": "72 · sobrecomprado",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gKmm0",
+                  "name": "RsiPlot",
+                  "width": 318,
+                  "height": 44,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "pEuU5",
+                      "x": 0,
+                      "y": 13,
+                      "name": "l70",
+                      "opacity": 0.35,
+                      "width": 318,
+                      "height": 1,
+                      "fill": "$negative"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "h7Py2",
+                      "x": 0,
+                      "y": 31,
+                      "name": "l30",
+                      "opacity": 0.35,
+                      "width": 318,
+                      "height": 1,
+                      "fill": "$positive"
+                    },
+                    {
+                      "type": "text",
+                      "id": "O0vbU9",
+                      "x": 0,
+                      "y": 4,
+                      "name": "t70",
+                      "fill": "$fg-subtle",
+                      "content": "70",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 8,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ye7sj",
+                      "x": 0,
+                      "y": 33,
+                      "name": "t30",
+                      "fill": "$fg-subtle",
+                      "content": "30",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 8,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "path",
+                      "id": "G86mY",
+                      "x": 0,
+                      "y": 0,
+                      "name": "RsiLine",
+                      "geometry": "M0 30l40-4 40 2 40-8 40 4 40-8 40 2 40-6 38-1",
+                      "viewBox": [
+                        0,
+                        0,
+                        318,
+                        44
+                      ],
+                      "fill": "#00000000",
+                      "width": 318,
+                      "height": 44,
+                      "stroke": "$fg-default",
+                      "strokeWidth": 2,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "U4Reaa",
+                  "name": "DvTV",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "$border-default"
+                },
+                {
+                  "type": "frame",
+                  "id": "WQPtA",
+                  "name": "TradingViewToggle",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "mCezT",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "F4sMN",
+                          "name": "Title",
+                          "fill": "$fg-default",
+                          "content": "Gráfico de TradingView",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GqtVR",
+                          "name": "Sub",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Medias largas y MACD · se carga desde TradingView",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yi6pA",
+                      "name": "Btn",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-strong",
+                      "strokeWidth": 1,
+                      "padding": [
+                        8,
+                        14
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Tk9eB",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Mostrar",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "P3IMea",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "width": 390,
+          "height": 844,
+          "fill": "$scrim"
+        },
+        {
+          "type": "frame",
+          "id": "xnwsa",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 558,
+          "name": "Sheet",
+          "width": 390,
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-card",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": "$space-5",
+          "children": [
+            {
+              "type": "text",
+              "id": "l35x7",
+              "name": "Title",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Este gráfico sale de tu instancia",
+              "fontFamily": "$font-display",
+              "fontSize": 17,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "o2xrW6",
+              "name": "Body1",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Al mostrarlo, tu navegador le pide el gráfico a TradingView y le indica qué símbolo estás viendo. No se envía nada más, y no ocurre hasta que lo pides.",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "eAutK",
+              "name": "Body2",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "TradingView exige que su atribución siga visible tal como viene. Quien opera esta instancia asume esa obligación.",
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "EfFCH",
+              "name": "Once",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Se muestra una sola vez.",
+              "fontFamily": "$font-sans",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "IV56T",
+              "name": "Actions",
+              "width": "fill_container",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Nbk8V",
+                  "name": "Cancelar",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-strong",
+                  "strokeWidth": 1,
+                  "padding": [
+                    13,
+                    20
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fxrKi",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Ahora no",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "B1ihl",
+                  "name": "Mostrar",
+                  "width": "fill_container",
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-md",
+                  "padding": [
+                    13,
+                    20
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p5Lei",
+                      "name": "t",
+                      "fill": "$fg-inverse",
+                      "content": "Mostrar gráfico",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     }
