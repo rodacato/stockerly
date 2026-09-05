@@ -63,11 +63,28 @@ module MarketHelper
     format_currency_mx(asset.current_price * rate, currency: user.preferred_currency, precision: 0)
   end
 
+  # The symbol is interpolated into the widget's <script> body, and `symbol` is
+  # validated for presence and uniqueness only — never for shape. Everything
+  # outside a ticker's alphabet is refused the toggle rather than escaped into
+  # it, so the view interpolates a value this predicate already vouched for.
+  TRADINGVIEW_SYMBOL = /\A[A-Z0-9.\-]{1,20}\z/
+
   # D2 rejected a widget that loaded on every page load; D66 permits one behind
   # a click. Stocks and ETFs only: fixed income has no TradingView symbol, and
   # crypto needs an exchange prefix that `assets.exchange` does not always hold.
   def tradingview_available?(asset)
-    asset.asset_type_stock? || asset.asset_type_etf?
+    return false unless asset.asset_type_stock? || asset.asset_type_etf?
+
+    asset.symbol.to_s.match?(TRADINGVIEW_SYMBOL)
+  end
+
+  # Travels to the browser as a Stimulus value, so ERB escapes it as an
+  # attribute and nothing here is ever marked html_safe. `locale: "es"` and the
+  # MACD id are both verified against the live widget, not assumed.
+  def tradingview_config(asset)
+    { symbol: asset.symbol, interval: "D", locale: "es", theme: "light",
+      style: "1", autosize: true, hide_side_toolbar: false,
+      studies: [ "STD;MACD" ] }.to_json
   end
 
   # One series for the chart controller, from the closes we already sync.
