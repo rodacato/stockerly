@@ -26,10 +26,14 @@ module MarketData
       "364" => "SF43945"
     }.freeze
 
-    # A floor to ask from, not a documented series start. Banxico answers with
-    # whatever the series actually holds, so the first deep run is what reveals
-    # where each term begins — the same way Alpaca's 2016 floor was found.
-    CETES_HISTORY_FLOOR = Date.new(1980, 1, 1)
+    # Measured, not guessed. Asking from 1970 returned 1978-01-19 for the 91-day
+    # series and nothing earlier for any of them: 28 begins 1982-09-02, 182 on
+    # 1984-09-13, 364 on 1990-11-15. An earlier floor buys no rows.
+    #
+    # It stood at 1980-01-01 for a day, invented, and it was truncating the
+    # 91-day series by 75 auctions — which is what a floor that claims to be a
+    # start does when nobody checks.
+    CETES_HISTORY_FLOOR = Date.new(1978, 1, 1)
 
     # The terms that can be fetched at all: a term with no series id cannot.
     CETES_TERMS = CETES_SERIES.keys.freeze

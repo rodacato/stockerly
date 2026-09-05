@@ -206,13 +206,17 @@ trade values at its own day's rate, and the CETES auction curve, which is what a
 compared against:
 
 ```bash
-bin/kamal app exec --reuse 'bin/rails data:backfill_fx_history'
-bin/kamal app exec --reuse 'bin/rails "data:backfill_cetes_history[1980-01-01]"'
+bin/kamal app exec --reuse --roles web 'bin/rails data:backfill_fx_history'
+bin/kamal app exec --reuse --roles web 'bin/rails data:backfill_cetes_history'
 ```
 
 The first is one request for the whole USD/MXN FIX back to 1991; the second is one per CETES term,
-four in total against Banxico's thousand a day. Both are idempotent — re-run either any time a gap
-appears.
+four in total against Banxico's thousand a day, reaching back to 1978. Both are idempotent — re-run
+either any time a gap appears.
+
+**`--roles web` is not optional either.** This instance runs `web` and `job`, and `app exec` without
+a role runs the command on **both** — the same backfill twice, doubling every provider request for
+rows the second run then discards as duplicates.
 
 **`--reuse` is not optional.** Without it Kamal starts a fresh container, which needs a registry
 login, which needs `KAMAL_REGISTRY_PASSWORD` — a token that lives in CI and not on your machine.
