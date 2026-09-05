@@ -1,14 +1,29 @@
 module MarketData
   module UseCases
     class LoadAssetDetail < ApplicationUseCase
-      # The chart's window, named so the heading that states it and the query
-      # that fetches it cannot drift apart.
-      CHART_DAYS = 30
+      # The chart's windows (CKP-2). The heading, the control and the query all
+      # read this one map, so what the chart says it plots is what it plots.
+      # `nil` is the whole series, which is what MAX means.
+      RANGES = {
+        "1S"  => -> { 1.week.ago.to_date },
+        "1M"  => -> { 1.month.ago.to_date },
+        "3M"  => -> { 3.months.ago.to_date },
+        "1A"  => -> { 1.year.ago.to_date },
+        "MAX" => -> { nil }
+      }.freeze
+
+      # The artboard leads with 3M, and the table now holds years rather than
+      # the thirty days the old fixed window assumed (X9, measured 2026-09-05).
+      # MAX on the deepest asset here (2952 bars) serialises 104 KB of JSON into
+      # a 190 KB attribute. It is a deliberate click, not the default, and it
+      # gzips well — but downsampling it would change what the chart plots, so
+      # that stays a design call rather than a silent optimisation.
+      DEFAULT_RANGE = "3M"
       # The heading and the query read one value, so the window cannot drift
       # between what the chart says and what it plots.
       PE_CHART_DAYS = 90
 
-      def call(symbol:)
+      def call(symbol:, range: nil)
         asset = Asset.find_by(symbol: symbol.upcase)
         return Failure([ :not_found, "Asset not found" ]) unless asset
 
@@ -26,7 +41,10 @@ module MarketData
         fundamental = resolve_fundamental(asset)
         presenter = Domain::FundamentalPresenter.new(asset: asset, fundamental: fundamental)
 
-        price_histories = MarketData::Queries::PriceSeries.for(asset).since(CHART_DAYS.days.ago.to_date)
+        chart_range = RANGES.key?(range) ? range : DEFAULT_RANGE
+        from = RANGES.fetch(chart_range).call
+        series = MarketData::Queries::PriceSeries.for(asset)
+        price_histories = from ? series.since(from) : series.all
 
         pe_history = if asset.asset_type_stock?
                        eps = fundamental&.metrics&.dig("eps")&.to_d
@@ -43,6 +61,7 @@ module MarketData
           has_fundamentals: fundamental.present?,
           has_statements: has_statements,
           price_histories: price_histories,
+          chart_range: chart_range,
           pe_history: pe_history,
           dividends: dividends,
           company_overview: company_overview,

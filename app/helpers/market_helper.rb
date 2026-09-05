@@ -63,6 +63,29 @@ module MarketHelper
     format_currency_mx(asset.current_price * rate, currency: user.preferred_currency, precision: 0)
   end
 
+  # The chart's range pills (CKP-2). Labels live in the locale keyed like
+  # Consolidado's, so the two period controls read the same in es-MX.
+  CHART_RANGE_KEYS = { "1S" => "s1", "1M" => "m1", "3M" => "m3", "1A" => "y1", "MAX" => "max" }.freeze
+
+  def chart_range_options(asset, active)
+    MarketData::UseCases::LoadAssetDetail::RANGES.keys.map do |key|
+      [ t("market.precio.rango.#{CHART_RANGE_KEYS.fetch(key)}"),
+        market_asset_path(asset.symbol, range: key),
+        active == key ]
+    end
+  end
+
+  # Volume is a share count, not money, so it does not go through
+  # format_large_currency — a currency prefix on a number of shares is a lie.
+  def format_compact_count(value)
+    v = value.to_f
+    if v.abs >= 1_000_000_000 then "#{number_with_precision(v / 1e9, precision: 1)}B"
+    elsif v.abs >= 1_000_000  then "#{number_with_precision(v / 1e6, precision: 1)}M"
+    elsif v.abs >= 1_000      then "#{number_with_precision(v / 1e3, precision: 1)}K"
+    else number_with_delimiter(v.round)
+    end
+  end
+
   # The symbol is interpolated into the widget's <script> body, and `symbol` is
   # validated for presence and uniqueness only — never for shape. Everything
   # outside a ticker's alphabet is refused the toggle rather than escaped into
