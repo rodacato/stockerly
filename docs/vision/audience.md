@@ -8,7 +8,20 @@
 
 - Personal investor with patrimony split between **MXN (CETES, possibly Cetesdirecto)** and **USD (NYSE/NASDAQ-listed equities, bought via a Mexican broker that operates in USD for MX residents)**, plus **crypto**.
 - The same stocks are quoted in USD; common flow: convert MXN→USD to invest, eventually convert USD→MXN.
-- Reviews portfolio **weekly**, not daily. Not a day trader.
+- **Checks the portfolio 2–3 times a day**, in his own words: *"me gusta saber si voy ganando o
+  perdiendo dinero al momento, como 2-3 veces al día reviso mis apps"* (2026-09-05). This line read
+  *"Reviews portfolio weekly, not daily"* from 2026-05-14 until then, and it was never measured.
+- **Trades on 1–2 days a week, in batches.** Measured against production 2026-09-05 — trading days
+  per month since the account opened: `8, 13, 13, 12, 6, 2, 8, 8, 4, 4`, about five trades on a day
+  he trades. Not a day trader, which is the half of the old line that was right.
+
+> **The two cadences are not the same premise, and only one of them moved.** Reviewing is how often
+> he *looks*; trading is how often he *decides*. [ADR-0001](../architecture/adr/0001-descriptive-not-prescriptive-language.md)
+> and [ADR-0013](../architecture/adr/0013-action-labels-on-persisted-observations.md) both argue
+> from *"retail investors on a weekly cadence rarely generate alpha"* — that is the **decision**
+> cadence, the measurement above confirms it, and neither ADR is affected. Do not "correct" them
+> from this entry.
+
 - Knows how to code, values clean architecture, but is fed up with his own over-engineering.
 
 **Jobs to be Done (JTBD):**

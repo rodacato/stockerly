@@ -19,7 +19,7 @@ This north supersedes the 2026-05-14 reset, which set the audience as Adrian + a
 
 See [`audience.md`](./audience.md). In summary:
 
-- **Primary (and only real) user:** Adrian (dogfood) — MX investor with mixed MXN+USD patrimony plus crypto, weekly cadence.
+- **Primary (and only real) user:** Adrian (dogfood) — MX investor with mixed MXN+USD patrimony plus crypto. **Reads it 2–3 times a day, trades on 1–2 days a week** — two cadences, not one; see [audience.md](audience.md).
 - **Packaging target (not a managed audience):** a technically capable self-hoster who can run a container. We build for Adrian; the third party is served by keeping setup and onboarding clean — never by building features for users who don't exist yet.
 - **Non-users:** multi-user / teams, day traders, advisors, gringo investors, accountants, aggregator-sync seekers.
 
