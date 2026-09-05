@@ -47,27 +47,41 @@
 
   <aside class="<%= card_classes("flex w-full shrink-0 flex-col gap-3 p-5 lg:w-80") %>">
     <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("assets.tracked.presupuesto_titulo") %></p>
-    <p class="font-display text-3xl font-bold tracking-tight text-fg-default"><%= @budget.remaining %></p>
-    <div class="h-2 overflow-hidden rounded-full bg-bg-muted">
-      <div class="h-full rounded-full <%= @budget.exhausted? ? "bg-negative" : "bg-primary" %>"
-           style="width: <%= @budget.used_percent %>%"></div>
+    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <p class="font-display text-3xl font-bold tracking-tight text-fg-default">
+        <%= @budget.unlimited? ? t("assets.tracked.presupuesto_sin_limite") : t("assets.tracked.presupuesto_llamadas", count: @budget.remaining) %>
+      </p>
+      <span class="rounded-full bg-warning-bg px-2.5 py-0.5 text-xs font-medium text-warning-fg">
+        <%= t("assets.tracked.conteo", count: @total) %>
+      </span>
     </div>
+
+    <%# The ladder in spend order (D9): one bar, segmented by tier, because the
+        question the panel answers is who gets synced first — not how much quota
+        is spent, which the line below already states. No cutoff marker: a
+        statements sync spends three calls and the day's queue is only the stale
+        assets, so "the budget runs out here" is precision the data lacks. %>
+    <% eligible = @tier_counts.values.sum %>
+    <% if eligible.positive? %>
+      <div class="flex h-2 gap-0.5 overflow-hidden rounded-full bg-bg-muted">
+        <% [ [ :held, "bg-primary" ], [ :followed, "bg-primary-hover" ] ].each do |tier, fill| %>
+          <div class="<%= fill %>" style="width: <%= (@tier_counts[tier] * 100.0 / eligible).round(1) %>%"></div>
+        <% end %>
+      </div>
+      <ul class="flex flex-wrap gap-x-4 gap-y-1">
+        <% [ [ :held, "bg-primary" ], [ :followed, "bg-primary-hover" ], [ :tracked, "bg-bg-muted" ] ].each do |tier, dot| %>
+          <li class="flex items-center gap-1.5 text-xs text-fg-subtle">
+            <span class="size-2 shrink-0 rounded-full <%= dot %>" aria-hidden="true"></span>
+            <%= t("assets.tracked.tier_conteo", count: @tier_counts[tier], tier: t("assets.tracked.tier_#{tier}")) %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <p class="text-xs text-fg-subtle"><%= t("assets.tracked.orden_de_gasto") %></p>
     <p class="text-xs text-fg-subtle">
       <%= @budget.exhausted? ? t("assets.tracked.presupuesto_agotado") : t("assets.tracked.presupuesto_detalle", used: @budget.used, limit: @budget.limit) %>
     </p>
-
-    <%# The ladder in spend order (D9): the tier is the budget, so the panel
-        breaks the queue down instead of only stating a total. %>
-    <dl class="flex flex-col gap-1.5 border-t border-border-default pt-3">
-      <% [ :held, :followed, :tracked ].each do |tier| %>
-        <div class="flex items-baseline justify-between gap-3">
-          <dt class="text-xs text-fg-subtle"><%= t("assets.tracked.tier_#{tier}") %></dt>
-          <dd class="font-mono text-xs text-fg-default"><%= @tier_counts[tier] %></dd>
-        </div>
-      <% end %>
-    </dl>
-    <p class="text-xs text-fg-subtle"><%= t("assets.tracked.orden_de_gasto") %></p>
-
     <p class="text-xs text-fg-subtle"><%= t("assets.tracked.intro") %></p>
   </aside>
 </div>

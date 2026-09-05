@@ -28,6 +28,31 @@ RSpec.describe "Activos › Tracked", type: :request do
       expect(response.body).to include("Holdings", "Watchlist", "Tracked")
     end
 
+    it "draws the spend order as one bar, sized by each tier's share" do
+      held = create(:asset, :stock, symbol: "HELD", currency: "MXN")
+      followed = create(:asset, :stock, symbol: "FOLLOWED", currency: "MXN")
+      create(:asset, :stock, symbol: "PLAIN", currency: "MXN")
+      create(:position, portfolio: portfolio, asset: held, shares: 1, avg_cost: 1, status: :open)
+      create(:watchlist_item, user: user, asset: followed)
+
+      get tracked_assets_path
+
+      # One of three on each of the first two rungs; the third is the bar's
+      # own ground, which is why only two segments are drawn.
+      expect(response.body).to include("width: 33.3%")
+      expect(response.body).to include("1 en Holdings", "1 en Watchlist", "1 en Tracked")
+    end
+
+    # Negative: nothing eligible means no bar, rather than a bar divided by zero.
+    it "draws no bar when nothing can spend the budget" do
+      create(:asset, :crypto, symbol: "BTC", currency: "USD")
+
+      get tracked_assets_path
+
+      expect(response.body).not_to include("en Holdings")
+      expect(response.body).to include("Presupuesto diario")
+    end
+
     it "offers Seguir only on the tier that has not crossed yet" do
       create(:asset, :stock, symbol: "PLAIN", currency: "MXN")
       followed = create(:asset, :stock, symbol: "FOLLOWED", currency: "MXN")
