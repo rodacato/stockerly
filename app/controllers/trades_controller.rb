@@ -6,6 +6,10 @@ class TradesController < AuthenticatedController
   def new
     @side = params[:side] == "sell" ? "sell" : "buy"
     @symbol = params[:symbol]
+    # Cerrar posición prefills the share count and nothing else. Price and date
+    # are what you actually got, and guessing them is exactly what
+    # fx_rate_at_execution exists to stop.
+    @shares = params[:shares].presence
     @currency = current_user.preferred_currency
     @held = held_position
   end

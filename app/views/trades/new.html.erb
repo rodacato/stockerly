@@ -60,7 +60,7 @@
         <div class="grid grid-cols-2 gap-3">
           <label class="flex flex-col gap-1.5">
             <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.titulos") %></span>
-            <%= f.number_field :shares, step: "any", required: true, inputmode: "decimal",
+            <%= f.number_field :shares, value: @shares, step: "any", required: true, inputmode: "decimal",
                                data: { trade_sheet_target: "shares", action: "input->trade-sheet#recalculate" },
                                class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-right font-mono text-sm text-fg-default" %>
           </label>

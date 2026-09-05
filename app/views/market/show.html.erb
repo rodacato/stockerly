@@ -39,6 +39,20 @@
         <% if @dividends.present? %>
           <%= render "market/dividend_history" %>
         <% end %>
+
+        <%# The tab had no actions at all: the pair at the foot of Análisis sits
+            inside that panel, so switching here lost them. Cerrar posición is a
+            shortcut into the sell sheet, not a second way to close — selling
+            everything is what closes a position (execute_trade.rb), and it has
+            to stay a trade so RealizedGain has legs to read. %>
+        <div class="flex flex-wrap gap-3">
+          <%= link_to t("posicion.cerrar"),
+                new_trade_path(symbol: @asset.symbol, side: "sell", shares: @position_data[:position].shares),
+                data: { turbo_frame: "trade_sheet", turbo_action: "advance" },
+                class: button_classes(:secondary, :md, "flex-1 text-center") %>
+          <%= render "components/sheet_dialog", frame_id: "trade_sheet", url: new_trade_path(symbol: @asset.symbol),
+                     label: t("trades.new.titulo") %>
+        </div>
       </div>
     </div>
   <% else %>

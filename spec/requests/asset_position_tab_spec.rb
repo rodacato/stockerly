@@ -88,4 +88,26 @@ RSpec.describe "The asset detail's Mi posición tab", type: :request do
       expect(response.body).not_to include(I18n.t("posicion.retrospectiva_titulo"))
     end
   end
+  describe "Cerrar posición" do
+    it "is a shortcut into the sell sheet with the share count already filled" do
+      hold(shares: 40)
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include("Cerrar posición")
+      expect(response.body).to include("side=sell", "shares=40")
+    end
+
+    # It must stay a trade. Selling everything is what closes a position
+    # (execute_trade.rb), and RealizedGain reads the sell legs at their own
+    # fx_rate_at_execution — a state-change close would leave it nothing.
+    it "prefills the count and nothing else, so price and date stay what you got" do
+      hold(shares: 40)
+
+      get new_trade_path(symbol: asset.symbol, side: "sell", shares: 40)
+
+      expect(response.body).to include('value="40"')
+      expect(response.body).not_to include("price_per_share\" value=")
+    end
+  end
 end
