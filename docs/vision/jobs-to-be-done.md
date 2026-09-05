@@ -166,9 +166,14 @@
 **Statement:** *When one of my positions (or a watchlist asset) enters a notable technical zone (oversold/overbought per RSI, Bollinger Bands breakout, moving-average crossover), I want to see it described in context, so I can factor it into my weekly portfolio reflection.*
 
 **Required data:**
-- Historical daily prices ≥200 days — **does not exist.** `BackfillPriceHistoryJob::DAYS` fetched
-  30 until 2026-08-29; the table accumulates one row a day from there, so no asset has ever had
-  the 200 this line claims. Corrected 2026-08-29 — see `design/V2_REMAINING.md` X9
+- Historical daily prices ≥200 days — **it exists now, measured 2026-09-05.** Production holds
+  **42 assets at 200+ bars** (min 315, max 2952) against 5 below, and exactly **one open position**
+  short of 200. `BackfillPriceHistoryJob::DAYS` is 3650 and `BackfillMissingHistoriesJob`
+  re-fetches anything under 200, so the window converges rather than accumulating a row a day.
+  This line read *"does not exist"* from 2026-05-14 until today, and stayed wrong for the week
+  after X9 fixed it — the correction landed in `design/V2_REMAINING.md` and never reached here.
+  Re-derive it, do not read it: `SELECT count(*) FROM (SELECT asset_id, count(*) n FROM
+  asset_price_histories GROUP BY asset_id) t WHERE n >= 200`
 - Per-asset computed indicators (RSI(14), MACD, BB, MA50, MA200, EMA9/21)
 - TrendScore 5-factor (already exists)
 - User holdings + watchlist
@@ -190,12 +195,16 @@
 
 **Usage metric:** Adrian opens ≥1 asset detail per week from a surfaced notable observation. If he ignores them, the JTBD isn't working or the observations are too noisy.
 
-**Blocked by:** the data precondition above, for the half of this JTBD that needs long windows.
-Dedup and copy are fine — dedup happens at write time (`persist_if_fresh`) and the phrases live in
-`MarketHelper::OBSERVATION_PHRASES`. But MACD, MA50 and MA200 all need more closes than the app
-has ever held, so the indicators this JTBD lists have never run in production. **This line read
-"nothing" from 2026-05-14 to 2026-08-29**, which is why the gap survived three audits: the
-requirement was written down, marked satisfied, and never measured.
+**Blocked by:** nothing, as of 2026-09-05. The data precondition above is met, `TechnicalIndicators`
+computes `sma_50` and `sma_200` from the closes, and `IndicatorSignals` renders them — so MACD, MA50
+and MA200 do now run on real data. Dedup and copy were never the problem (`persist_if_fresh` and
+`MarketHelper::OBSERVATION_PHRASES`).
+
+**The failure mode this line keeps demonstrating is the reason to re-derive it rather than read it.**
+It said "nothing" from 2026-05-14 to 2026-08-29 while the gap was real, then said the gap was real
+from 2026-08-29 to 2026-09-05 after it had been closed. Both times the sentence was current with
+what someone had last looked at rather than with what the database held — and the second time it
+was quoted, in good faith, as the documented trigger for a feature ([#606](https://github.com/rodacato/stockerly/issues/606)).
 
 **Current status:** delivered on three surfaces — the Panorama's "Movimientos de interés", the asset detail's verdict card, and its "Observaciones recientes". The verdict card reads a state out loud under [ADR-014](../architecture/adr/0014-state-phrases-from-a-closed-catalogue.md); the observations block stays purely descriptive. Threshold tuning is still untouched.
 
