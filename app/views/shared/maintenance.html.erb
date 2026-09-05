@@ -1,17 +1,20 @@
-<% content_for(:title, "Maintenance | Stockerly") %>
+<% content_for(:title, "#{t('mantenimiento.titulo')} | Stockerly") %>
+<%# Rendered with a 503 by ApplicationController#check_maintenance_mode while
+    SiteConfig.maintenance_mode? is on. It said "administrator" in English until
+    2026-09-05: the only user-facing screen in the app that was not es-MX, and
+    the last of the admin framing D1-onb removed. One person owns this box. %>
 
-<main class="grow flex items-center justify-center p-4">
-  <div class="text-center max-w-md">
-    <div class="size-20 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-      <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-4xl">construction</span>
+<main class="flex grow items-center justify-center p-4">
+  <div class="max-w-md text-center">
+    <div class="mx-auto mb-6 flex size-20 items-center justify-center rounded-full bg-warning-bg">
+      <span class="material-symbols-outlined text-4xl text-warning-fg" aria-hidden="true">construction</span>
     </div>
-    <h1 class="text-2xl font-bold text-fg-default mb-2">Under Maintenance</h1>
-    <p class="text-fg-subtle mb-6">
-      Stockerly is temporarily unavailable while we perform scheduled maintenance.
-      We'll be back shortly.
-    </p>
+    <h1 class="mb-2 text-2xl font-bold text-fg-default"><%= t("mantenimiento.titulo") %></h1>
+    <p class="mb-6 text-fg-subtle"><%= t("mantenimiento.cuerpo") %></p>
     <p class="text-xs text-fg-subtle">
-      If you're an administrator, <%= link_to "sign in", login_path, class: "text-primary underline hover:text-primary-hover" %> to access the site.
+      <%= t("mantenimiento.duenio_html",
+            enlace: link_to(t("mantenimiento.duenio_enlace"), login_path,
+                            class: "text-primary underline hover:text-primary-hover")) %>
     </p>
   </div>
 </main>

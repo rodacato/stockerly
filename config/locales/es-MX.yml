@@ -290,6 +290,19 @@ es-MX:
     contrasena: Contraseña
     correo: Correo electrónico
     correo_placeholder: tu@correo.com
+    exito:
+      cuerpo: Inicia sesión con tu nueva contraseña.
+      ir: Ir a iniciar sesión
+      kicker: Restablecer contraseña
+      titulo: Contraseña actualizada
+    expirado:
+      cuerpo_html: Este enlace ya no funciona. Los enlaces de recuperación expiran
+        después de %{duration}.
+      kicker: Restablecer contraseña
+      recordaste: "¿Recordaste tu contraseña?"
+      solicitar: Solicitar enlace nuevo
+      titulo: Enlace inválido o expirado
+      volver: Inicia sesión.
     flash:
       bienvenida: "¡Qué gusto verte de vuelta, %{nombre}!"
       codigo_recuperacion_usado: Entraste con un código de recuperación. Te quedan
@@ -520,6 +533,12 @@ es-MX:
     show:
       subtitulo: Cómo empezar con Stockerly, qué hacer cuando algo falla, y cómo contactarnos.
       titulo: Ayuda y soporte
+  mantenimiento:
+    cuerpo: Stockerly está fuera de servicio mientras se hace mantenimiento. Vuelve
+      en un rato.
+    duenio_enlace: inicia sesión
+    duenio_html: Si esta instancia es tuya, %{enlace} para entrar.
+    titulo: En mantenimiento
   market:
     actions:
       crear_regla: Crear regla
