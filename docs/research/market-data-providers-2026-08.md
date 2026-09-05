@@ -50,18 +50,35 @@ and traded amount only, no OHLC**; `concepto` is rejected here), `/v2/intradia` 
 **The credit model is measured, not cited: 1 credit = 1 KiB (base 1024), rounded up, out of 200,000
 a month.** A 9,791-byte response cost 10 credits. Two consequences the code must respect: querying
 the balance **itself costs a credit**, so it has to be cached rather than polled; and `/v2/emisoras`
-unfiltered returns **2.23 MB ≈ 2,181 credits — about 1% of the monthly quota in one call** — with no
-filter parameter found, so the catalogue is a rare, cached fetch. `concepto` selects which fields are
-returned, making payload size **caller-controlled**: one field cost 65 bytes against 184 for eleven,
-a 2.8× difference. No other provider in the stack has that lever.
+unfiltered returns **2.23 MB ≈ 2,181 credits — about 1% of the monthly quota in one call**.
+
+**`/v2/emisoras` does take a filter, and this document said otherwise until 2026-09-05
+([#379](https://github.com/rodacato/stockerly/issues/379)).** The docs were unreadable during the
+August audit — `databursatil.com/docs.html` 403s a bare client — and the conclusion *"no filter
+parameter found"* was inferred rather than read. Sending a browser `User-Agent` returns the page.
+Two optional parameters: **`letra`**, which *"filtra las emisoras por la letra o palabra completa
+ingresada"* and accepts a whole ticker (the docs' own example is `letra=NFLX`), and **`mercado`**,
+`local` and/or `global`. Measured: `letra=AC&mercado=local` returned **6,538 bytes ≈ 6 credits**
+against the catalogue's 2,181 — **roughly 350× cheaper** — and the row carries `isin`,
+`acciones_en_circulacion`, `rango_historicos` and `rango_financieros`. **So `/v2/financieros` is not
+blocked by a 2,181-credit catalogue fetch**; one filtered call per issuer answers both the emisora
+key and which periods exist. `concepto` selects which fields are returned, making payload size
+**caller-controlled**: one field cost 65 bytes against 184 for eleven, a 2.8× difference. No other
+provider in the stack has that lever.
 
 ⚠️ **Three documented capabilities did not work.** `/v2/indices` answers, but the IPC came back
 stamped `2026-06-26` — **two months stale, byte-identical across calls minutes apart** — while
 `/v2/cotizaciones` served same-day data, so it cannot replace `^MXX`. `/v1/dividendos` **404s**
-although the docs table lists it, and so does `/v2/dividendos`. `/v2/descargas` with `archivo=guber`
-never rejected the archive name but returned *"La fecha ingresada no esta disponible"* on three
-separate dates, leaving Q-8 unresolved. `/v2/financieros` remains blocked on an unknown emisora key
-(the period format `1T_2026` is correct; the lookup lives in the 2,181-credit catalogue).
+although the docs table lists it, and so does `/v2/dividendos`. **`/v2/descargas` with
+`archivo=guber` is documented, accepted and served by no date — Q-8 closed 2026-09-05
+([#380](https://github.com/rodacato/stockerly/issues/380)).** The docs describe it as *"valuaciones
+de instrumentos de mercado de dinero gubernamental mexicano"*, delivered as CSV. The archive name is
+not the problem: an invalid one answers *"Solo hay dos opciones disponibles: 'guber' o 'hechos'"*,
+while `guber` answers *"La fecha ingresada no esta disponible o no existe"*. The control settles it
+— on **2026-09-02, 09-03, 09-04 and 2026-08-28**, `archivo=hechos` returned a 3 MB zip on every one
+and `guber` 404'd on every one, **including the date the documentation uses as its own example**
+(`2025-06-02`). A documented capability with no file behind it. **`/v2/financieros`'s blocker was
+misdiagnosed** — see the `letra` finding above; the emisora key is one cheap filtered call away.
 
 **Banxico SIE** — the Mexican backbone and the least replaceable provider. Publishes the FIX in **two
 series carrying the same numbers two banking days apart** — measured 2026-08-26, 663 of 666 points over
@@ -251,7 +268,7 @@ this table is the reasoning behind it, not its source of truth.
 | Crypto | CoinGecko, **quoted in USD on purpose** | — | ⛔ **reversed** — CoinGecko computes MXN from an undisclosed rate 0.11% off the FIX; requesting it would hide the FX hop, not remove it ([#320](https://github.com/rodacato/stockerly/issues/320)) |
 | FX — valuation basis | **Banxico FIX `SF60653`** (`:fx_history`) | — | ✅ landed ([#318](https://github.com/rodacato/stockerly/issues/318)) |
 | FX — current rates | `FxRatesGateway` (`:fx_current`) | — | a different capability, not a fallback for the above |
-| CETES | Banxico | ~~DataBursatil `guber`~~ | ❌ three dates, none available |
+| CETES | Banxico | ~~DataBursatil `guber`~~ | ❌ **closed 2026-09-05** — no date serves it, the docs' own example date included, while `hechos` served the same days |
 
 **The correction that matters: Yahoo carries more weight after this research, not less.** The first
 draft concluded that DataBursatil ends BMV's sole dependency on an unsanctioned endpoint. It ends it
@@ -295,15 +312,17 @@ answering the question they asked — the question stopped mattering:
   screen renders all stand as built. Revisit if the project ever outgrows that ceiling — not
   before.
 
-**Now tracked as issues:**
+**Answered 2026-09-05, both by reading the docs the audit could not open** (they 403 a bare client
+and return 200 to a browser `User-Agent` — worth knowing before the next question is deferred as
+unanswerable):
 
-- **`/v2/emisoras` filtering** — [#379](https://github.com/rodacato/stockerly/issues/379). No
-  filter parameter was found and the unfiltered call costs ~2,181 credits, which is what blocks
-  `/v2/financieros`. The docs section for it has not been read.
+- **`/v2/emisoras` filtering** — [#379](https://github.com/rodacato/stockerly/issues/379). ✅ **The
+  filter exists**: `letra` (a letter or a whole ticker) and `mercado` (`local` / `global`). A
+  filtered call is ~350× cheaper than the catalogue and carries `rango_financieros`, so
+  `/v2/financieros` was never blocked on the 2,181-credit fetch. See §the credit model above.
 - **Q-8, `descargas` with `archivo=guber`** — [#380](https://github.com/rodacato/stockerly/issues/380).
-  Probed on **three separate dates**; the archive name was **never rejected**, only the dates
-  (*"La fecha ingresada no esta disponible"*). Unresolved rather than answered — the capability
-  may well exist behind a date that does.
+  ✅ **Closed as unavailable.** The archive name is valid and accepted; no date holds a file, and
+  `hechos` served every date `guber` refused. See §the three documented capabilities above.
 
 Still open, and still unticketed — verifications the audit owed and never paid:
 
