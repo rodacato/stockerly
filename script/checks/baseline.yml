@@ -34,8 +34,6 @@ design-tokens:
     count: 3
   app/views/shared/_flash_message.html.erb:
     count: 1
-  app/views/shared/maintenance.html.erb:
-    count: 2
   app/views/watchlist_items/_watchlist_button.html.erb:
     count: 1
 

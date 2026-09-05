@@ -1,17 +1,17 @@
-<% content_for(:title, "Contraseña actualizada | Stockerly") %>
-<%# State 5 — reset-success. Per S11 #147. %>
+<% content_for(:title, "#{t('auth.exito.titulo')} | Stockerly") %>
+<%# State 5 — reset-success. %>
 
-<div class="flex flex-col items-center text-center space-y-3">
-      <div class="size-14 rounded-2xl bg-positive-bg text-positive flex items-center justify-center mb-2">
-        <span class="material-symbols-outlined text-3xl">check_circle</span>
-      </div>
-      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle">Restablecer contraseña</p>
-      <h2 class="text-2xl font-extrabold tracking-tight text-fg-default">Contraseña actualizada</h2>
-      <p class="text-sm text-fg-subtle max-w-sm">Inicia sesión con tu nueva contraseña.</p>
-    </div>
+<div class="flex flex-col items-center space-y-3 text-center">
+  <div class="mb-2 flex size-14 items-center justify-center rounded-2xl bg-positive-bg text-positive">
+    <span class="material-symbols-outlined text-3xl" aria-hidden="true">check_circle</span>
+  </div>
+  <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle"><%= t("auth.exito.kicker") %></p>
+  <h2 class="text-2xl font-extrabold tracking-tight text-fg-default"><%= t("auth.exito.titulo") %></h2>
+  <p class="max-w-sm text-sm text-fg-subtle"><%= t("auth.exito.cuerpo") %></p>
+</div>
 
-    <%= link_to login_path,
-          class: button_classes(:primary, :md, "mt-6 flex w-full items-center justify-center gap-2 shadow-md") do %>
-      Ir a iniciar sesión
-      <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-    <% end %>
+<%= link_to login_path,
+      class: button_classes(:primary, :md, "mt-6 flex w-full items-center justify-center gap-2 shadow-md") do %>
+  <%= t("auth.exito.ir") %>
+  <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+<% end %>
