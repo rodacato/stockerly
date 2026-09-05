@@ -44,14 +44,21 @@
             inside that panel, so switching here lost them. Cerrar posición is a
             shortcut into the sell sheet, not a second way to close — selling
             everything is what closes a position (execute_trade.rb), and it has
-            to stay a trade so RealizedGain has legs to read. %>
+            to stay a trade so RealizedGain has legs to read.
+
+            Both are plain links into the frame _analysis already mounts. A
+            second components/sheet_dialog here would mount a SECOND turbo frame
+            under the same name: Turbo fills the first, so the button on this
+            tab would open an empty drawer. %>
         <div class="flex flex-wrap gap-3">
           <%= link_to t("posicion.cerrar"),
                 new_trade_path(symbol: @asset.symbol, side: "sell", shares: @position_data[:position].shares),
                 data: { turbo_frame: "trade_sheet", turbo_action: "advance" },
                 class: button_classes(:secondary, :md, "flex-1 text-center") %>
-          <%= render "components/sheet_dialog", frame_id: "trade_sheet", url: new_trade_path(symbol: @asset.symbol),
-                     label: t("trades.new.titulo") %>
+          <%= link_to t("trades.new.titulo"),
+                new_trade_path(symbol: @asset.symbol),
+                data: { turbo_frame: "trade_sheet", turbo_action: "advance" },
+                class: button_classes(:primary, :md, "flex-1 text-center") %>
         </div>
       </div>
     </div>
