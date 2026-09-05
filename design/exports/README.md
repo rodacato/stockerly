@@ -39,6 +39,7 @@ tells a reviewer nothing.
 | `cockpit-panorama-default.png` | `[Cockpit] / Panorama / Default` |
 | `cockpit-panorama-tranquilo.png` | `[Cockpit] / Panorama / Tranquilo` |
 | `cockpit-asset-analisis.png` | `[Cockpit] / Asset · Análisis / Default` |
+| `cockpit-asset-analisis-aviso.png` | `[Cockpit] / Asset · Análisis / Aviso TradingView` |
 | `cockpit-asset-mi-posicion.png` | `[Cockpit] / Asset · Mi posición / Default` |
 | `cockpit-consolidado.png` | `[Cockpit] / Consolidado / Default` |
 | `cockpit-movimientos.png` | `[Cockpit] / Movimientos / Default` — D42's gate was lifted 2026-08-27 |
