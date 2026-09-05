@@ -13,6 +13,9 @@ module MarketData
     TIMEOUT  = 5
 
     def fetch_index
+      check = RateLimiter.check!(PROVIDER)
+      return check if check.failure?
+
       result = get_json("/fng/", { limit: 1 })
       return result if result.failure?
 
