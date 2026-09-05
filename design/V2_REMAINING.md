@@ -783,10 +783,14 @@ missing was not a removal but a **reader** — `content_security_policy.rb` now 
 reason and the condition that ends it, so the next person to read that file finds a decision instead
 of residue. If D66 is ever dropped, the allowances go with it.
 
-**The research has since run (2026-09-05) and confirms the origin rather than merely justifying it.**
-The Advanced Chart embed loads `https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js`
-— the exact host `script_src` already permits. The allowances are no longer a permission held for a
-feature with no build date: `D66` is unblocked and its four conditions are buildable as written.
+**The research ran 2026-09-05, and building it the same day found this entry's premise wrong.**
+The script does load from `s3.tradingview.com`, which `script_src` permits. The **iframe that script
+injects does not** — it comes from `www.tradingview-widget.com`, a different registrable domain that
+`frame_src "https://*.tradingview.com"` never covered. Kept as written, these allowances would have
+let the script run and killed the frame, silently. The corrected set is *smaller*: `frame_src` names
+the widget domain, and the `connect_src` / `wss` tradingview entries are **removed** — the websockets
+live inside that iframe, under its own origin, so our CSP never governed them. That is the removal
+this entry argued for and could not justify; it took mounting the widget to earn it.
 
 ### X18 ✅ Provenance stays on the detail — decided 2026-08-29 (D74, #458)
 

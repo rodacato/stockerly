@@ -77,6 +77,7 @@ Rails.application.routes.draw do
   get "market/:symbol",                to: "market#show",           as: :market_asset
   get "market/:symbol/earnings_tab",   to: "market#earnings_tab",   as: :market_asset_earnings_tab
   get "market/:symbol/statements_tab", to: "market#statements_tab", as: :market_asset_statements_tab
+  get "market/:symbol/tradingview",    to: "market#tradingview",    as: :market_asset_tradingview
   # The fundamentals sync used to fire from the GET above (CKP-7). It is a
   # write, so it asks for a verb.
   post "market/:symbol/fundamentals",  to: "market#request_fundamentals", as: :market_asset_fundamentals

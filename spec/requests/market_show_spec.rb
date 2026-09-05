@@ -169,7 +169,7 @@ RSpec.describe "Market Asset Detail", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('data-controller="chart"')
-      expect(response.body).not_to include("tradingview")
+      expect(response.body).not_to include("s3.tradingview.com")
     end
 
     it "renders the es-MX data-source caption" do

@@ -61,4 +61,16 @@ class MarketController < AuthenticatedController
     @asset = Asset.find_by!(symbol: params[:symbol].upcase)
     render layout: false
   end
+
+  # The frame is empty until this responds, so nothing reaches TradingView
+  # until the reader asks (D66). That is also why the usage metric #606 owes
+  # is written here: the request IS the mount.
+  def tradingview
+    @asset = Asset.find_by!(symbol: params[:symbol].upcase)
+    raise ActiveRecord::RecordNotFound unless helpers.tradingview_available?(@asset)
+
+    SystemLog.create!(task_name: "TradingView Chart", module_name: "tradingview",
+                     severity: :success, error_message: @asset.symbol)
+    render layout: false
+  end
 end
