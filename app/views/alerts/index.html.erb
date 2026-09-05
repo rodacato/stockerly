@@ -2,12 +2,12 @@
 
 <div class="mx-auto flex max-w-3xl flex-col gap-8">
   <div class="grid grid-cols-2 gap-3">
-    <div class="rounded-xl border border-border-default bg-bg-surface px-4 py-3">
+    <div class="<%= card_classes("px-4 py-3") %>">
       <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t(".disparadas_hoy") %></p>
       <p class="mt-1 font-mono text-3xl font-bold text-fg-default"><%= @triggered_today %></p>
       <p class="text-sm text-fg-subtle"><%= t(".de_reglas", count: @counts[:all]) %></p>
     </div>
-    <div class="rounded-xl border border-border-default bg-bg-surface px-4 py-3">
+    <div class="<%= card_classes("px-4 py-3") %>">
       <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t(".reglas_activas") %></p>
       <p class="mt-1 font-mono text-3xl font-bold text-fg-default"><%= @counts[:active] %></p>
       <p class="text-sm text-fg-subtle"><%= t(".en_pausa", count: @counts[:paused]) %></p>

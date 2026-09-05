@@ -26,7 +26,7 @@
       <%= t(".api_key_nota") %>
     </p>
   <% else %>
-    <div class="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border-default bg-bg-surface px-6 py-10 text-center">
+    <div class="<%= card_classes("flex flex-col items-center gap-3 border-dashed px-6 py-10 text-center") %>">
       <span class="material-symbols-outlined text-3xl text-fg-subtle" aria-hidden="true">hub</span>
       <p class="font-semibold text-fg-default"><%= t(".vacio_titulo") %></p>
       <p class="max-w-sm text-sm text-fg-subtle"><%= t(".vacio_cuerpo") %></p>

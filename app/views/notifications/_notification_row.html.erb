@@ -1,7 +1,7 @@
 <%# One notice as a card, per `reglas-bandeja`. Turbo-Stream prepend targets
     this too, so the id stays. %>
 <% unread = !notification.read? %>
-<li id="<%= dom_id(notification) %>" class="flex items-start gap-3 rounded-xl border border-border-default bg-bg-surface p-4">
+<li id="<%= dom_id(notification) %>" class="<%= card_classes("flex items-start gap-3 p-4") %>">
   <span class="flex size-10 shrink-0 items-center justify-center rounded-lg <%= notification_icon_style(notification) %>">
     <span class="material-symbols-outlined text-xl" aria-hidden="true"><%= notification_icon(notification) %></span>
   </span>

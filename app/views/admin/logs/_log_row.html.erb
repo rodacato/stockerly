@@ -8,7 +8,7 @@
   message = admin_log_message(log)
   log_id = log.log_uid.presence || "log_#{log.id}"
 %>
-<li data-controller="reveal" class="rounded-xl border border-border-default bg-bg-surface p-4">
+<li data-controller="reveal" class="<%= card_classes("p-4") %>">
   <div class="flex items-start gap-3">
     <span class="mt-1.5 size-2 shrink-0 rounded-full <%= admin_log_severity_dot_classes(log.severity) %>"
           title="<%= log.severity.to_s.capitalize %>" aria-hidden="true"></span>

@@ -9,7 +9,7 @@
       what you can change about it. %>
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".diagnostico") %></h2>
-    <dl class="divide-y divide-border-default rounded-xl border border-border-default bg-bg-surface px-4">
+    <dl class="<%= card_classes("divide-y divide-border-default px-4") %>">
       <% [ [ t(".version"),     @diagnostics[:version] ],
            [ "Ruby",            @diagnostics[:ruby] ],
            [ "Rails",           @diagnostics[:rails] ],
@@ -33,7 +33,7 @@
     <%# No Guardar button: the artboard has none, and the controller already
         accepts a partial payload, so each switch is its own PATCH. The audit
         trail is unchanged — SiteConfigChange still records every flip. %>
-    <div class="divide-y divide-border-default rounded-xl border border-border-default bg-bg-surface px-4">
+    <div class="<%= card_classes("divide-y divide-border-default px-4") %>">
       <% [ [ "auto_sync_enabled", t(".sync"), t(".sync_desc"), @auto_sync_enabled ],
            [ "email_notifications_enabled", t(".correo"), t(".correo_desc"), @email_notifications_enabled ],
            [ "maintenance_mode", t(".mantenimiento"), t(".mantenimiento_desc"), @maintenance_mode ],
@@ -92,7 +92,7 @@
       <%= link_to t(".ver_todos"), admin_logs_path(module_name: "admin"),
             class: "self-start text-sm font-semibold text-primary hover:underline" %>
     <% else %>
-      <p class="rounded-xl border border-border-default bg-bg-surface p-4 text-sm text-fg-subtle"><%= t(".sin_cambios") %></p>
+      <p class="<%= card_classes("p-4 text-sm text-fg-subtle") %>"><%= t(".sin_cambios") %></p>
     <% end %>
   </section>
 </div>

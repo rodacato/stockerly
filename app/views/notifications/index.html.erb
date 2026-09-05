@@ -54,7 +54,7 @@
   <% else %>
     <%# An empty bucket is not an empty inbox. Saying "nothing here yet" while
         two notices sit one chip away is a lie the filter would tell daily. %>
-    <p class="rounded-xl border border-border-default bg-bg-surface p-6 text-center text-sm text-fg-subtle">
+    <p class="<%= card_classes("p-6 text-center text-sm text-fg-subtle") %>">
       <%= @counts[:all].to_i.positive? ? t(".sin_coincidencias") : t(".vacio") %>
     </p>
   <% end %>
