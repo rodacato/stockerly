@@ -13,8 +13,10 @@ module Administration
           optional(:currency).maybe(:string, included_in?: Asset::SUPPORTED_CURRENCIES)
         end
 
+        # Deferred to the model rather than re-derived: this rule only turns the
+        # same shape into a message the wizard can show.
         rule(:symbol) do
-          key.failure("must be 1-20 uppercase alphanumeric characters") unless /\A[A-Z0-9.\-\/]{1,20}\z/.match?(value)
+          key.failure("must be 1-20 uppercase alphanumeric characters") unless Asset::SYMBOL_FORMAT.match?(value)
         end
 
         rule(:symbol) do

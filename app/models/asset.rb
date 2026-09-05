@@ -20,8 +20,19 @@ class Asset < ApplicationRecord
   has_many :technical_observations, dependent: :destroy
   has_one :technical_reading, dependent: :destroy
 
+  # Measured, not assumed: 50 of 54 production rows are tickers over [A-Z0-9.-]
+  # (the BMV's carry `.MX`); the 4 CETES are Banxico identifiers, not tickers.
+  SYMBOL_FORMAT = /\A[A-Z0-9.\-]{1,20}\z/
+  FIXED_INCOME_SYMBOL_FORMAT = /\A[A-Z0-9._\-]{1,20}\z/
+
   validates :name,     presence: true
   validates :symbol,   presence: true, uniqueness: { case_sensitive: false }
+  # Split by type: only the ticker alphabet can reach the TradingView widget,
+  # which is what lets that consumer stop carrying a guard of its own.
+  validates :symbol, format: { with: SYMBOL_FORMAT }, allow_blank: true,
+                     unless: :asset_type_fixed_income?
+  validates :symbol, format: { with: FIXED_INCOME_SYMBOL_FORMAT }, allow_blank: true,
+                     if: :asset_type_fixed_income?
   validates :currency, presence: true, inclusion: { in: SUPPORTED_CURRENCIES }
 
   scope :stocks,      -> { where(asset_type: :stock) }

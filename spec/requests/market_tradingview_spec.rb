@@ -3,6 +3,8 @@ require "rails_helper"
 # The opt-in TradingView chart (D66, #606). The load-bearing assertion is the
 # negative one: D2's defect was a widget that reached a third party on every
 # page load, and the whole design is that nothing does until the reader asks.
+# Symbol shape is no longer asserted here — the catalogue cannot hold a
+# non-ticker, and spec/models/asset_spec.rb owns that.
 RSpec.describe "Market TradingView toggle", type: :request do
   let!(:user) { create(:user, email: "tv@example.com", password: "password123") }
 
@@ -41,14 +43,6 @@ RSpec.describe "Market TradingView toggle", type: :request do
 
     it "does not offer it on fixed income, which TradingView has no symbol for" do
       asset = with_history(create(:asset, :fixed_income, symbol: "CETE28"))
-
-      get market_asset_path(asset.symbol)
-
-      expect(response.body).not_to include("Gráfico de TradingView")
-    end
-
-    it "refuses a symbol outside a ticker's alphabet, rather than escaping it into the script" do
-      asset = with_history(create(:asset, symbol: "</script><script>alert(1)</script>"))
 
       get market_asset_path(asset.symbol)
 
@@ -101,10 +95,10 @@ RSpec.describe "Market TradingView toggle", type: :request do
       expect(SystemLog.last.error_message).to eq("NVDA")
     end
 
-    it "is not reachable for a symbol the toggle refuses" do
-      odd = with_history(create(:asset, symbol: "BAD SYMBOL!"))
+    it "is not reachable for fixed income, which the toggle refuses" do
+      cete = with_history(create(:asset, :fixed_income, symbol: "CETES_28D"))
 
-      get market_asset_tradingview_path(odd.symbol)
+      get market_asset_tradingview_path(cete.symbol)
 
       expect(response).to have_http_status(:not_found)
     end

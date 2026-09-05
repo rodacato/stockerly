@@ -63,9 +63,15 @@ RSpec.describe Administration::Contracts::Assets::CreateContract do
     expect(result.errors[:symbol]).to include("must be 1-20 uppercase alphanumeric characters")
   end
 
-  it "allows dots, hyphens and slashes in symbol" do
+  it "allows the dots and hyphens real tickers carry" do
     result = contract.call(valid_params.merge(symbol: "BRK.A"))
     expect(result).to be_success
+  end
+
+  # The rule used to admit a slash the model refuses and no route can carry.
+  it "rejects a slash, which no production symbol holds" do
+    result = contract.call(valid_params.merge(symbol: "BTC/USD"))
+    expect(result).to be_failure
   end
 
   it "fails with duplicate symbol" do
