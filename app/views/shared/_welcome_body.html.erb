@@ -33,6 +33,6 @@
 
 <%# Support footer %>
 <div class="text-sm text-fg-subtle space-y-1.5">
-  <p><%= t(".bug_pregunta") %> <%= link_to t(".bug_enlace"), new_bug_report_path, class: "text-primary border-b border-primary transition-colors" %></p>
+  <p><%= t(".bug_pregunta") %> <%= link_to t(".bug_enlace"), Stockerly::ISSUES_URL, target: "_blank", rel: "noopener noreferrer", class: "text-primary border-b border-primary transition-colors" %></p>
   <p><%= t(".contacto_pregunta") %> <%= mail_to Stockerly::SUPPORT_EMAIL, nil, class: "text-primary border-b border-primary transition-colors" %>.</p>
 </div>

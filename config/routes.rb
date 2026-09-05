@@ -65,8 +65,6 @@ Rails.application.routes.draw do
   get  "welcome",     to: "welcome#show",     as: :welcome
   post "welcome",     to: "welcome#complete", as: :complete_welcome
   get  "help",        to: "help#show",        as: :help
-  get  "report-bug",  to: "bug_reports#new",  as: :new_bug_report
-  post "report-bug",  to: "bug_reports#create", as: :bug_reports
 
   get "dashboard",           to: "dashboard#show"
   # D31's disposability contract: zero tables, zero rows. Deleting Descubrir is

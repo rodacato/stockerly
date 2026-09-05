@@ -4,7 +4,7 @@ class AlertMailer < ApplicationMailer
   #
   # Deliberately not on ApplicationMailer: UserMailer#password_reset is the way
   # back into an account, and a single-user instance with no support desk cannot
-  # afford a switch that locks its owner out. BugReportMailer is the same shape.
+  # afford a switch that locks its owner out.
   after_action :respect_notification_setting
 
   # One email a day with everything the app noticed. Descriptive per ADR-0001:

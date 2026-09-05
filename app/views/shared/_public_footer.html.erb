@@ -34,7 +34,7 @@
             <h4 class="text-xs font-bold text-fg-default uppercase tracking-wider mb-3">Soporte</h4>
             <ul class="space-y-2">
               <li><%= link_to "Ayuda", help_path, class: "text-xs text-fg-subtle hover:text-primary transition-colors" %></li>
-              <li><%= link_to "Reportar un bug", new_bug_report_path, class: "text-xs text-fg-subtle hover:text-primary transition-colors" %></li>
+              <li><%= link_to "Reportar un bug", Stockerly::ISSUES_URL, target: "_blank", rel: "noopener noreferrer", class: "text-xs text-fg-subtle hover:text-primary transition-colors" %></li>
             </ul>
           </div>
         <% end %>
