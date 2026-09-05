@@ -380,6 +380,7 @@ es-MX:
       senales_subtitulo: Oportunidades de compra y venta hoy
       senales_titulo: Señales de interés
       senales_vacio: Nada que destaque hoy. Tus reglas están tranquilas — vuelve mañana.
+      senales_ver_mas: Ver todas
       sentimiento_watchlist: SENTIMIENTO · TU WATCHLIST
       titulo: Panorama
       ver_todos: Ver todos
@@ -1231,6 +1232,22 @@ es-MX:
       guia_regla_titulo: Configura una regla
       guia_watchlist_cuerpo: Sigue los activos que te interesan sin tenerlos en cartera.
       guia_watchlist_titulo: Crea una watchlist
+  signals:
+    index:
+      alcance: Solo aparecen los cruces con lectura de compra o venta. Salir de sobrecompra
+        o sobreventa no es una acción.
+      alcance_ventana:
+        one: Lecturas con acción del último día, de lo que tienes y de lo que sigues.
+        other: Lecturas con acción de los últimos %{count} días, de lo que tienes
+          y de lo que sigues.
+      ayer: Ayer
+      hoy: Hoy
+      titulo: Señales
+      vacio:
+        one: Ningún cruce con lectura de compra o venta en el último día.
+        other: Ningún cruce con lectura de compra o venta en los últimos %{count}
+          días.
+      vacio_titulo: Sin señales
   time:
     am: a.m.
     formats:

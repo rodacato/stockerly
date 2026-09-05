@@ -72,6 +72,7 @@ Rails.application.routes.draw do
   # D31's disposability contract: zero tables, zero rows. Deleting Descubrir is
   # this line, one nav entry, one controller, one view folder and two YAMLs.
   get "discover",            to: "discover#show"
+  get "signals",             to: "signals#index"
   # D31 deleted /market's listing, /news and /earnings: all three read the
   # instance's own catalogue, which is the bubble Descubrir exists to leave.
   # The asset detail below is a different screen and stays.
