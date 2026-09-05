@@ -1,0 +1,29 @@
+<% content_for :page_title, t(".titulo") %>
+
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: dashboard_path %>
+<% end %>
+
+<div class="mx-auto flex max-w-3xl flex-col gap-6">
+  <p class="text-sm text-fg-subtle"><%= t(".alcance_ventana", count: @window_days) %></p>
+
+  <% if @signals.any? %>
+    <% group_signals_by_date(@signals).each do |heading, rows| %>
+      <section class="flex flex-col gap-3">
+        <h2 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= heading %></h2>
+        <% rows.each do |observation| %>
+          <%= render "dashboard/signal_row", observation: observation %>
+        <% end %>
+      </section>
+    <% end %>
+
+    <%# ADR-013: the screen states its own filter, because a list that silently
+        drops readings reads as a list with nothing in it. %>
+    <p class="text-sm text-fg-subtle"><%= t(".alcance") %></p>
+  <% else %>
+    <%= render "components/empty_state",
+               icon: "radar",
+               title: t(".vacio_titulo"),
+               description: t(".vacio", count: @window_days) %>
+  <% end %>
+</div>

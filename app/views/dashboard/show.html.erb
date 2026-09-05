@@ -23,10 +23,13 @@
   <% end %>
 
   <section class="lg:order-3 lg:col-span-4">
-    <%# The artboard's "Ver más" is absent until something lists observations:
-        no screen does, and they never reach the Bandeja either, so it pointed
-        at Activos — the Radar's destination, under a different label. %>
-    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".senales_titulo") %></h2>
+    <%# The artboard's "Ver más" now has somewhere to go: /signals lifts the
+        three-reading, three-day cap this section is held to (D79). %>
+    <div class="flex items-baseline justify-between gap-3">
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".senales_titulo") %></h2>
+      <%= link_to t(".senales_ver_mas"), signals_path,
+                  class: "shrink-0 text-sm font-semibold text-primary hover:underline" %>
+    </div>
 
     <% if @signals.any? %>
       <p class="mt-1 text-sm text-fg-subtle"><%= t(".senales_subtitulo") %></p>
