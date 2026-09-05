@@ -111,15 +111,14 @@ RSpec.describe MarketData::UseCases::LoadAssetDetail do
     end
 
     context "the technical reading" do
-      it "derives the state, its source and the trend from recent observations" do
+      it "derives the state and its source from recent observations" do
         create(:technical_observation, asset: asset, observation_type: "bb_upper_breached", observed_at: 2.days.ago)
-        trend = create(:technical_observation, asset: asset, observation_type: "ma200_crossed_above", observed_at: 1.day.ago)
+        create(:technical_observation, asset: asset, observation_type: "ma200_crossed_above", observed_at: 1.day.ago)
 
         data = described_class.call(symbol: "AAPL").value!
 
         expect(data[:state]).to eq(:stretched)
         expect(data[:state_source].observation_type).to eq("bb_upper_breached")
-        expect(data[:trend_source]).to eq(trend)
       end
 
       it "ignores observations older than the 30-day window" do

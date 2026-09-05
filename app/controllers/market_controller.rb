@@ -16,7 +16,6 @@ class MarketController < AuthenticatedController
       @recent_observations = data[:recent_observations]
       @state = data[:state]
       @state_source = data[:state_source]
-      @trend_source = data[:trend_source]
       @market_context = data[:market_context]
       @day_change = data[:day_change]
       @news = data[:news] || []

@@ -32,7 +32,6 @@
   <%= render "market/fixed_income_detail", asset: @asset, yield_data: @yield_data %>
 <% else %>
   <%= render "market/market_context", asset: @asset, context: @market_context %>
-  <%= render "market/confluence", state: @state, trend: @trend_source %>
   <%= render "market/signals", signals: @signals, reading: @reading %>
   <%= render "market/layers", layers: @layers, asset: @asset, holding: @holding %>
   <%= render "market/recent_observations", asset: @asset, observations: @recent_observations %>

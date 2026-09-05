@@ -539,20 +539,6 @@ es-MX:
       liquidez_corta: liquidez corta
       sobre_utilidades: paga más de lo que gana
       volatil: volátil
-    confluence:
-      confirmacion: Señal de confirmación
-      confirmacion_pendiente: En camino — próximamente.
-      extension_detalle: Lectura de RSI y bandas de Bollinger sobre los últimos 30
-        días.
-      extension_neutral: Sin extremos
-      extension_oversold: Sobreventa activa
-      extension_stretched: Sobrecompra activa
-      subtitulo: Tres señales, leídas por separado
-      tendencia: Cambio de tendencia
-      tendencia_bearish: El precio cruzó su media a la baja · %{when}
-      tendencia_bullish: El precio cruzó su media al alza · %{when}
-      tendencia_sin_datos: Sin cruces de medias en los últimos 30 días.
-      titulo: Semáforo de confluencia
     divergencia:
       aligned: "%{symbol} se movió %{asset_change} hoy, en línea con %{index} (%{index_change})."
       asset_led: "%{symbol} se movió %{asset_change} hoy contra %{index_change} de
