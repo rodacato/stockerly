@@ -14,7 +14,7 @@
     <%# Primary CTA %>
     <%= button_to complete_welcome_path,
           method: :post,
-          class: "w-full inline-flex items-center justify-center gap-2 cursor-pointer rounded-lg bg-primary px-4 py-3 font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" do %>
+          class: button_classes(:primary, :lg, "w-full inline-flex items-center justify-center gap-2 cursor-pointer") do %>
       <span><%= t(".cta") %></span>
       <span class="material-symbols-outlined text-lg">arrow_forward</span>
     <% end %>

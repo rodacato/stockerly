@@ -8,7 +8,7 @@
       only presents the result. Setting frame.src by hand skips the push. %>
   <%= link_to url,
               data: { turbo_frame: frame_id, turbo_action: "advance" },
-              class: "flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" do %>
+              class: button_classes(:primary, :md, "flex w-full items-center justify-center gap-2") do %>
     <span class="material-symbols-outlined text-xl" aria-hidden="true"><%= local_assigns.fetch(:icon, "add") %></span>
     <%= label %>
   <% end %>

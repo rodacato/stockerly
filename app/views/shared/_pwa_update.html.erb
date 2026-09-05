@@ -2,7 +2,7 @@
      class="fixed inset-x-4 bottom-20 z-50 flex items-center justify-between gap-3 rounded-xl border border-border-default bg-bg-surface px-4 py-3 shadow-lg lg:inset-x-auto lg:bottom-6 lg:right-6 lg:max-w-sm">
   <p class="text-sm text-fg-default"><%= t("pwa.update.aviso") %></p>
   <button type="button" data-action="pwa-update#apply"
-          class="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-white">
+          class="<%= button_classes(:primary, :sm, "shrink-0") %>">
     <%= t("pwa.update.accion") %>
   </button>
 </div>

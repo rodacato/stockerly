@@ -22,7 +22,7 @@
 
   <div class="flex flex-col gap-3">
     <%= link_to t(".activar"), totp_enrollment_path,
-          class: "w-full rounded-xl bg-primary px-4 py-3.5 text-center text-base font-semibold text-fg-inverse transition-colors hover:bg-primary-hover" %>
+          class: button_classes(:primary, :lg, "w-full text-center") %>
     <%# The skip is a real option, not a dark pattern: a reader without their
         phone in hand must be able to finish first boot (D52). %>
     <%= link_to t(".ahora_no"), onboarding_complete_path,

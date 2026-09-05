@@ -63,7 +63,7 @@
 
         <p class="rounded-2xl bg-bg-muted px-4 py-3.5 text-xs leading-relaxed text-fg-subtle"><%= t(".rechazo.porque") %></p>
         <%= f.submit t(".rechazo.dar_alta"),
-              class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-fg-inverse" %>
+              class: button_classes(:primary, :lg, "w-full cursor-pointer text-center") %>
       <% end %>
 
       <%# The refusal is all-or-nothing so a portfolio is never quietly short a
@@ -130,7 +130,7 @@
                   data: { turbo_submits_with: t(".confirmando") } do |f| %>
       <%= f.hidden_field :contenido, value: @csv_text %>
       <%= f.submit t(".confirmar", count: @report[:imported]),
-                   class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-fg-inverse" %>
+                   class: button_classes(:primary, :md, "w-full cursor-pointer") %>
       <%= link_to t(".cancelar"), new_trade_import_path, class: "text-sm font-semibold text-fg-subtle" %>
     <% end %>
   <% end %>

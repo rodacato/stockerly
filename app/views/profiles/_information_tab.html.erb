@@ -16,6 +16,6 @@
       <%= f.label :email, "Correo electrónico", class: label_classes %>
       <%= f.email_field :email, value: user.email, required: true, autocomplete: "email", class: input_classes %>
     </div>
-    <%= f.submit "Guardar cambios", class: "inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover shadow-sm cursor-pointer" %>
+    <%= f.submit "Guardar cambios", class: button_classes(:primary, :md, "inline-flex items-center gap-2 shadow-sm cursor-pointer") %>
   <% end %>
 </section>
