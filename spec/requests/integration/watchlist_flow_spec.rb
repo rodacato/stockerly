@@ -30,7 +30,7 @@ RSpec.describe "Watchlist flow", type: :request do
     item = create(:watchlist_item, user: user, asset: apple)
 
     delete watchlist_item_path(item)
-    expect(response).to redirect_to(profile_path)
+    expect(response).to redirect_to(assets_path(tab: "watchlist"))
     expect(user.watchlist_items.count).to eq(0)
   end
 end

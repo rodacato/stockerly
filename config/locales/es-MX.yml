@@ -1135,10 +1135,24 @@ es-MX:
       accion: Actualizar
       aviso: Hay una versión nueva lista.
   settings:
+    account:
+      correo: Correo
+      correo_ayuda: A esta dirección llegan el resumen diario y los avisos urgentes.
+      descripcion: Cómo te llamas y a dónde llegan los correos de esta instancia.
+      guardar: Guardar cambios
+      nombre: Nombre
+      titulo: Nombre y correo
     destroy_account:
       listo: Tu cuenta y tus datos se borraron.
     destroy_trading_data:
       listo: Listo. Tus movimientos se borraron; ya puedes importar de nuevo.
+    password:
+      current_password: Contraseña actual
+      descripcion: Mínimo 8 caracteres. La actual sigue siendo válida hasta que confirmes.
+      guardar: Actualizar contraseña
+      password: Nueva contraseña
+      password_confirmation: Confirmar nueva contraseña
+      titulo: Contraseña
     show:
       avisos_campana: Todo aviso llega a tu campana; eso no se apaga. El correo sí.
       avisos_titulo: Avisos

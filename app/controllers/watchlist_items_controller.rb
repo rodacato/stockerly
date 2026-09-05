@@ -41,9 +41,9 @@ class WatchlistItemsController < AuthenticatedController
     item = Trading::UseCases::RemoveFromWatchlist.call(user: current_user, watchlist_item_id: params[:id])
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.remove(item) }
-      format.html { redirect_back_or_to(profile_path, notice: t("watchlist_items.flash.eliminado")) }
+      format.html { redirect_back_or_to(assets_path(tab: "watchlist"), notice: t("watchlist_items.flash.eliminado")) }
     end
   rescue ActiveRecord::RecordNotFound
-    redirect_back_or_to(profile_path, alert: t("watchlist_items.flash.no_encontrado"))
+    redirect_back_or_to(assets_path(tab: "watchlist"), alert: t("watchlist_items.flash.no_encontrado"))
   end
 end

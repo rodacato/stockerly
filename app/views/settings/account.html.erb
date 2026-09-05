@@ -1,0 +1,27 @@
+<% content_for :page_title, t(".titulo") %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: settings_path %>
+<% end %>
+
+<div class="mx-auto flex w-full max-w-xl flex-col gap-5">
+  <p class="text-sm text-fg-subtle"><%= t(".descripcion") %></p>
+
+  <section class="<%= card_classes("flex flex-col gap-4 p-5") %>">
+    <%= form_with scope: :profile, url: profile_path, method: :patch, class: "flex flex-col gap-4" do |f| %>
+      <label class="flex flex-col gap-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t(".nombre") %></span>
+        <%= f.text_field :full_name, value: @user.full_name, required: true, autocomplete: "name",
+                         class: field_classes(:md, "w-full") %>
+      </label>
+
+      <label class="flex flex-col gap-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t(".correo") %></span>
+        <%= f.email_field :email, value: @user.email, required: true, autocomplete: "email",
+                          class: field_classes(:md, "w-full") %>
+        <span class="text-xs text-fg-subtle"><%= t(".correo_ayuda") %></span>
+      </label>
+
+      <%= f.submit t(".guardar"), class: button_classes(:primary, :md, "cursor-pointer") %>
+    <% end %>
+  </section>
+</div>

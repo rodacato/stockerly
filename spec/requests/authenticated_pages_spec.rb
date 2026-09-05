@@ -72,30 +72,30 @@ RSpec.describe "Authenticated pages", type: :request do
     end
   end
 
-  describe "GET /profile" do
-    it "renders the profile with user info" do
-      get profile_path
+  describe "GET /settings/account" do
+    it "renders the name-and-email form with the values it will submit" do
+      get edit_account_settings_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(user.full_name)
-      expect(response.body).to include("Información personal")
+      expect(response.body).to include(I18n.t("settings.account.titulo"))
     end
   end
 
   describe "PATCH /profile" do
-    it "updates profile and redirects back" do
+    it "updates the account and lands back on the screen that submitted it" do
       patch profile_path, params: { profile: { full_name: user.full_name, email: user.email } }
-      expect(response).to redirect_to(profile_path)
+      expect(response).to redirect_to(edit_account_settings_path)
       follow_redirect!
       expect(response.body).to include("Perfil actualizado")
     end
   end
 
   describe "PATCH /profile/password" do
-    it "changes password and redirects back" do
+    it "changes password and lands back on the screen that submitted it" do
       patch change_password_path, params: {
         password_change: { current_password: "password123", password: "newpassword456", password_confirmation: "newpassword456" }
       }
-      expect(response).to redirect_to(profile_path)
+      expect(response).to redirect_to(edit_password_settings_path)
       follow_redirect!
       expect(response.body).to include("Contraseña cambiada")
     end

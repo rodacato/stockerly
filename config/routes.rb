@@ -128,10 +128,14 @@ Rails.application.routes.draw do
     end
   end
   resource :settings,  only: [ :show ] do
+    # D5 finally executed: /profile is retired and its two real forms land here
+    # as their own screens, which is the pattern the hub's other four rows use.
+    get    "account",      to: "settings#account",              as: :edit_account
+    get    "password",     to: "settings#password",             as: :edit_password
     delete "trading-data", to: "settings#destroy_trading_data", as: :trading_data
     delete "account",      to: "settings#destroy_account",      as: :account
   end
-  resource :profile,   only: [ :show, :update ]
+  resource :profile,   only: [ :update ]
   patch  "profile/password",    to: "profiles#change_password",    as: :change_password
   patch  "profile/preferences", to: "profiles#update_preferences", as: :update_preferences
 

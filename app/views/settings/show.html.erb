@@ -14,9 +14,9 @@
 
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".cuenta") %></h2>
-    <%= render "settings/nav_row", icon: "person", path: profile_path,
+    <%= render "settings/nav_row", icon: "person", path: edit_account_settings_path,
                title: t(".nombre_correo"), description: t(".nombre_correo_desc") %>
-    <%= render "settings/nav_row", icon: "lock", path: profile_path(tab: "seguridad"),
+    <%= render "settings/nav_row", icon: "lock", path: edit_password_settings_path,
                title: t(".contrasena"), description: t(".contrasena_desc") %>
     <%# D52's Seguridad row. The description reads the account's real state, so
         the row says whether the factor is on rather than only offering it. %>

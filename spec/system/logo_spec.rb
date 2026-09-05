@@ -36,8 +36,8 @@ RSpec.describe "Stockerly wordmark across surfaces", type: :system do
       expect(page).to have_css("img[alt='Stockerly']")
     end
 
-    it "renders the wordmark on the profile page" do
-      visit profile_path
+    it "renders the wordmark on the account screen" do
+      visit edit_account_settings_path
       expect(page).to have_css("img[alt='Stockerly']")
     end
   end

@@ -1,20 +1,13 @@
 class ProfilesController < AuthenticatedController
-  # Loads the data the IdentityCard sidebar needs once at the
-  # controller level so the view doesn't perform DB queries inline.
-  # Keeps MVC clean and lets us compose a cheap counts query.
-  def show
-    @sidebar = identity_card_counts
-  end
-
   def update
     result = Identity::UseCases::UpdateInfo.call(user: current_user, params: profile_params.to_h)
 
     case result
     in Dry::Monads::Success
-      redirect_to profile_path, notice: t("profiles.flash.actualizado")
+      redirect_to edit_account_settings_path, notice: t("profiles.flash.actualizado")
     in Dry::Monads::Failure[ :validation, errors ]
       flash.now[:alert] = errors.values.flatten.first
-      render :show, status: :unprocessable_content
+      render "settings/account", status: :unprocessable_content
     end
   end
 
@@ -54,11 +47,11 @@ class ProfilesController < AuthenticatedController
 
     case result
     in Dry::Monads::Success
-      redirect_to profile_path, notice: t("profiles.flash.contrasena_cambiada")
+      redirect_to edit_password_settings_path, notice: t("profiles.flash.contrasena_cambiada")
     in Dry::Monads::Failure[ :unauthorized, message ]
-      redirect_to profile_path, alert: message
+      redirect_to edit_password_settings_path, alert: message
     in Dry::Monads::Failure[ :validation, errors ]
-      redirect_to profile_path, alert: errors.values.flatten.first
+      redirect_to edit_password_settings_path, alert: errors.values.flatten.first
     end
   end
 
@@ -74,17 +67,5 @@ class ProfilesController < AuthenticatedController
 
   def preference_params
     params.permit(:email_digest, :urgent_email, :push)
-  end
-
-  # Precompute the IdentityCard sidebar counts at the controller layer
-  # so the view doesn't issue DB queries. Three COUNTs run in parallel
-  # at the SQL level when the relation is laid out this way.
-  def identity_card_counts
-    portfolio = current_user.portfolio
-    {
-      open_positions:   portfolio&.positions&.where(status: :open)&.count || 0,
-      watchlist_items:  current_user.watchlist_items.count,
-      active_alerts:    current_user.alert_rules.where(status: :active).count
-    }
   end
 end

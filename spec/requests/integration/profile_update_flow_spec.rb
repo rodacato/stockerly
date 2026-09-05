@@ -7,9 +7,9 @@ RSpec.describe "Profile update flow", type: :request do
     login_as(user)
   end
 
-  it "updates name and reflects on profile page" do
+  it "updates name and reflects on the account screen" do
     patch profile_path, params: { profile: { full_name: "Jane Smith", email: user.email } }
-    expect(response).to redirect_to(profile_path)
+    expect(response).to redirect_to(edit_account_settings_path)
 
     follow_redirect!
     expect(response.body).to include("Jane Smith")
@@ -24,7 +24,7 @@ RSpec.describe "Profile update flow", type: :request do
         password_confirmation: "newpassword456"
       }
     }
-    expect(response).to redirect_to(profile_path)
+    expect(response).to redirect_to(edit_password_settings_path)
     expect(user.reload.authenticate("newpassword456")).to be_truthy
   end
 end
