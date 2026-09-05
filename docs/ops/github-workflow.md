@@ -177,6 +177,24 @@ Required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:projec
    state, which is what `bin/board-check` reads. With `Item closed` off, `Closes #N` closes the
    issue and leaves the board item in a live status; with `Auto-add to project` off, a new issue
    never reaches the board at all.
+8. **Reading a card as current.** A card states the world on the day it was written, and nothing
+   re-measures it. On 2026-09-05, five in a row had moved before anyone opened them:
+
+   | Card | What it said | What was true |
+   |---|---|---|
+   | `CKP-2` | gated on a bar count | the gate had been lifted a week earlier |
+   | `JTBD #6` | *"no asset has ever held 200 closes"* | 42 assets hold 200+, min 315 |
+   | `SWEEP` / `X4` | four briefs disagree with their kit version | `cockpit.pen`'s agrees |
+   | `DSC-1` | presents an open choice | `D73` had closed it, in the code's own comment |
+   | `audience.md` | *"reviews portfolio weekly"* | 2–3 times a day |
+
+   None was wrong when written. All five were read as current, and one — `JTBD #6`'s — was quoted
+   in good faith as the documented trigger for a feature that then shipped on it.
+
+   **Re-measure before working a card, not after.** Where a card names the measurement that would
+   settle it, run that first; `CKP-2` said *"re-measure before treating this as blocked or as
+   buildable"* and was right. Where it does not, the cheap check is whether the code still says what
+   the card says it says.
 
 ---
 
