@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "One Ajustes, no admin zone. On a single-user instance the /admin split is a costume (D5): the same person owns the account and the box, so the design merges /profile and /admin into one hub with sections.\n\nThe scope shrank twice on its way here: D9 moved the asset catalogue to Activos › Tracked, and D16 reduced the notification panel to the two channels that actually deliver. What is left: cuenta, apariencia y región, avisos, instancia, datos.\n\nScreens: Ajustes (hub) · Nombre y correo · Contraseña · Integraciones (+ Estados) · Registros · Estado y mantenimiento.\n\nGrounding: /profile tabs · admin/integrations 'Conectividad de mercado' with one key per provider · admin/logs 'Registros · últimos 90 días' · admin/settings SiteConfig toggles audited through SiteConfigChange · Mission Control at /admin/jobs.\n\n✅ D17 IS FIXED — this brief used to carry a ⚠ and a 🔴 saying two of the three SiteConfig toggles did nothing. Re-measured 2026-08-27: auto_sync_enabled is read by app/jobs/concerns/pausable_sync.rb and email_notifications_enabled by app/mailers/alert_mailer.rb, which disables delivery when the flag is off and deliberately does NOT guard UserMailer#password_reset — a single-user instance with no support desk cannot afford a switch that locks its owner out. maintenance_mode was always real. All three toggles now do what they say, and the desktop layout that 'made the lie louder' no longer has a lie to amplify.\n\n✅ D18 REVERSED (2026-08-26 → ADR-015): one key per provider. Four sources — Alpaca, Finnhub, CoinGecko and the ex-Polygon host — explicitly prohibit several credentials to beat a free tier. The multi-key count and the rotation note are gone from the artboard; the fallback that remains is across sources, not across keys of one source, which is what GatewayChain already does.\n\n✅ D52 (2026-08-27): a Seguridad row lives in Cuenta — 'Verificación en dos pasos · TOTP y códigos de recuperación'. ADR-018 builds TOTP with recovery codes, and D52 put the ask in BOTH the first-boot wizard and here: the wizard offers and lets you skip, Ajustes is where it is turned on later and the codes are regenerated. The three screens themselves live in flows/auth.pen.\n\n✅ The Trabajos badge question is ANSWERED, and the answer was already in the repo. CODE_CHANGES §8 records that counting SolidQueue::FailedExecution put a cross-database query in the hub's request path and aborted the transaction outright in test. The hub's row carried a hardcoded '0'; it now carries nothing and simply links to Mission Control. The real numbers are not lost — admin/settings/show.html.erb:14 already renders '<n> en proceso · <n> fallidos · <n> programados' on Estado y mantenimiento, a screen you open on purpose. The cost is paid where it is chosen.\n\n✅ Guardar vs auto-save is SETTLED (D58, CODE_CHANGES §15). The screen used to commit two ways: theme and the notification switches on click, Moneda behind an explicit Guardar submit — the same segmented pill drawn twice with two different contracts. Moneda now commits on select like everything else; the button is gone. This brief carried the open question for days after it shipped.\n\nDesktop (1280): Hub, Integraciones and Estado y mantenimiento. Registros is NOT drawn — it is a list and reflows; a real desktop log TABLE would be a new component, so it waits for a decision rather than being invented here.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the Hub splits into two semantic columns — cuenta y preferencias | instancia y datos — not an arbitrary half; (b) the Tema and Moneda segmented controls were stretching to the 476 column and are pinned to their native 342. A control is not a container. That kit gap is now settled in code too: D49 shipped as w-full sm:w-fit on components/_segmented (CODE_CHANGES §12); (c) Integraciones as a 3x2 grid puts the quota bars side by side, so Alpha Vantage's 25 calls/day and Yahoo's 6/min stop being isolated facts and become a comparable budget (C1).\n\n⚠ INTEGRACIONES REBUILT 2026-08-26, against verified providers rather than the roster the screen inherited. Every claim was probed live with a real key; see docs/research/market-data-providers-2026-08.md.\n\nOut: Polygon. It served four roles and free-tier kept none — index quotes and earnings became paid products, its host is announced for phase-out, and the code routes US history to Alpaca and US quotes to Finnhub. Keeping a configurable key nobody calls is dead config on a screen whose job is configuration. 🐞 A Registros row still read 'Polygon Sync · Rate limit alcanzado · 5 llamadas por minuto' — sample data naming a retired provider, fixed 2026-08-27 to Yahoo Finance and its real 6/min cap from ProviderDefaults (ADR-017).\n\nIn: DataBursatil (BMV and BIVA — prices, history, intraday, sanctioned) and Yahoo Finance. Yahoo is drawn last on purpose and gets the full-width row on desktop: it is the ONLY source for index levels and BMV dividends, AND the last link in every other chain. If it goes, indices and Mexican corporate actions go with it — the chip says 'única fuente' for that reason.\n\nRoles are drawn. Each card states primaria / única fuente, which is what the reader needs before deciding whether a missing key matters. 'nueva' was dropped: it is a launch-week affordance and the role is permanent.\n\nCopy that contradicted the code, fixed: Alpaca claimed crypto (the gateway has none), Finnhub said 'precios de acciones' when it is the current-quote primary, and every card carried '1 llave ·' — noise since ADR-015 made one key per provider the rule.\n\n🐞 Found while migrating to 0.9.0 (2026-08-27): the vendored BottomNav had TWO active items baked into its master — Descubrir AND Ajustes, both in $primary, with no instance override hiding it. When Descubrir became the fifth destination (D31) the active state was set on it and never cleared from Ajustes, so every one of these eight artboards drew two highlighted tabs. Only Ajustes is active now.\n\nVendored here: TopBar (57 → 76), BottomNav, TopBarDesktop (76 → 80), SidebarNav, SwitchRow, NavRow — and HeaderBar, PROMOTED to the kit at 0.9.0. This flow hand-built the same back-header four times and flows/alerts.pen had built it twice; two consumers is the bar the 0.8.0 kit-gap note set for promotion, and measuring confirmed they are the same bar (an 18px display title with an optional action) rather than cockpit's TopBarDetail (a two-line ticker title with a bookmark). All four back buttons were 20px and are 44 now.\n\nRegistros grew 670 → 844 to meet D7's floor, a pre-existing breach.\n\nCopy: es-MX. kit-version-source 0.9.0 (the brief claimed 0.5.0 against a variable reading 0.7.0 — the SEVENTH brief in a row found contradicting its own file, which is now every brief in the system without a single exception. That is what D53 is parked about).\n\n✅ CAUGHT UP TO THE CODE (D78, which retires D8). The code is the mirror again, so four things the hub had shipped and this flow had not drawn are now drawn. (a) Tus datos holds TWO doors, not a mailto link: Borrar mis movimientos, which states its counts and clears trades, positions and the value curve while keeping the account, and Borrar mi cuenta y empezar de cero, which returns the instance to the setup wizard. The artboard used to say deletion happens by email under an ARCO procedure and was pending in the app — it stopped being true and the artboard was the last place still saying it. (b) Apariencia y región names the instance timezone, read-only: every date on every screen renders in it, so naming it is what makes a timestamp readable. (c) Tu instancia draws an Errores row. It is CONDITIONAL — ADR-020 gates it behind the developer_mode switch, so a reader should expect it absent on a default instance; it is drawn because a row nobody drew is how a screen drifts, not because it is always there. (d) The Card shape underneath all of this is card_classes now (D75), which is why the radii here read as one family.\n\n✅ /profile IS RETIRED, AND ITS TWO FORMS ARE SCREENS HERE (D90, 2026-09-05, closing AJU-1). D5 ruled one Ajustes and merged /profile into this hub; the hub was built and the origin was never closed, so both existed side by side for months. Measured before deciding: 197 lines, five partials, three tabs, zero i18n keys, and its unique content was these two forms. Everything else duplicated the hub — the avatar card, Cerrar sesión — or CONTRADICTED it: its Datos y sesión tab told the owner to email support under an ARCO procedure to delete an account this hub already deletes in-app.\n\nTwo screens rather than forms inlined in the hub, because a NavRow's chevron is a promise and this flow already keeps it four times. A password change also earns a focused surface rather than a section of a long scroll.\n\nWhat did NOT come across: the IdentityCard's counts (open positions, watchlist, active rules). They were drawn in no artboard and live one tap away on the screens that own them.\n\nNo desktop artboards for either, per D4: both are a single centred card and reflow into the two-column shell without diverging.",
+          "content": "One Ajustes, no admin zone. On a single-user instance the /admin split is a costume (D5): the same person owns the account and the box, so the design merges /profile and /admin into one hub with sections.\n\nThe scope shrank twice on its way here: D9 moved the asset catalogue to Activos › Tracked, and D16 reduced the notification panel to the two channels that actually deliver. What is left: cuenta, apariencia y región, avisos, instancia, datos.\n\nScreens: Ajustes (hub) · Nombre y correo · Contraseña · Integraciones (+ Estados) · Registros · Estado y mantenimiento · Errores (+ Detalle).\n\nGrounding: /profile tabs · admin/integrations 'Conectividad de mercado' with one key per provider · admin/logs 'Registros · últimos 90 días' · admin/settings SiteConfig toggles audited through SiteConfigChange · Mission Control at /admin/jobs.\n\n✅ D17 IS FIXED — this brief used to carry a ⚠ and a 🔴 saying two of the three SiteConfig toggles did nothing. Re-measured 2026-08-27: auto_sync_enabled is read by app/jobs/concerns/pausable_sync.rb and email_notifications_enabled by app/mailers/alert_mailer.rb, which disables delivery when the flag is off and deliberately does NOT guard UserMailer#password_reset — a single-user instance with no support desk cannot afford a switch that locks its owner out. maintenance_mode was always real. All three toggles now do what they say, and the desktop layout that 'made the lie louder' no longer has a lie to amplify.\n\n✅ D18 REVERSED (2026-08-26 → ADR-015): one key per provider. Four sources — Alpaca, Finnhub, CoinGecko and the ex-Polygon host — explicitly prohibit several credentials to beat a free tier. The multi-key count and the rotation note are gone from the artboard; the fallback that remains is across sources, not across keys of one source, which is what GatewayChain already does.\n\n✅ D52 (2026-08-27): a Seguridad row lives in Cuenta — 'Verificación en dos pasos · TOTP y códigos de recuperación'. ADR-018 builds TOTP with recovery codes, and D52 put the ask in BOTH the first-boot wizard and here: the wizard offers and lets you skip, Ajustes is where it is turned on later and the codes are regenerated. The three screens themselves live in flows/auth.pen.\n\n✅ The Trabajos badge question is ANSWERED, and the answer was already in the repo. CODE_CHANGES §8 records that counting SolidQueue::FailedExecution put a cross-database query in the hub's request path and aborted the transaction outright in test. The hub's row carried a hardcoded '0'; it now carries nothing and simply links to Mission Control. The real numbers are not lost — admin/settings/show.html.erb:14 already renders '<n> en proceso · <n> fallidos · <n> programados' on Estado y mantenimiento, a screen you open on purpose. The cost is paid where it is chosen.\n\n✅ Guardar vs auto-save is SETTLED (D58, CODE_CHANGES §15). The screen used to commit two ways: theme and the notification switches on click, Moneda behind an explicit Guardar submit — the same segmented pill drawn twice with two different contracts. Moneda now commits on select like everything else; the button is gone. This brief carried the open question for days after it shipped.\n\nDesktop (1280): Hub, Integraciones and Estado y mantenimiento. Registros is NOT drawn — it is a list and reflows; a real desktop log TABLE would be a new component, so it waits for a decision rather than being invented here.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the Hub splits into two semantic columns — cuenta y preferencias | instancia y datos — not an arbitrary half; (b) the Tema and Moneda segmented controls were stretching to the 476 column and are pinned to their native 342. A control is not a container. That kit gap is now settled in code too: D49 shipped as w-full sm:w-fit on components/_segmented (CODE_CHANGES §12); (c) Integraciones as a 3x2 grid puts the quota bars side by side, so Alpha Vantage's 25 calls/day and Yahoo's 6/min stop being isolated facts and become a comparable budget (C1).\n\n⚠ INTEGRACIONES REBUILT 2026-08-26, against verified providers rather than the roster the screen inherited. Every claim was probed live with a real key; see docs/research/market-data-providers-2026-08.md.\n\nOut: Polygon. It served four roles and free-tier kept none — index quotes and earnings became paid products, its host is announced for phase-out, and the code routes US history to Alpaca and US quotes to Finnhub. Keeping a configurable key nobody calls is dead config on a screen whose job is configuration. 🐞 A Registros row still read 'Polygon Sync · Rate limit alcanzado · 5 llamadas por minuto' — sample data naming a retired provider, fixed 2026-08-27 to Yahoo Finance and its real 6/min cap from ProviderDefaults (ADR-017).\n\nIn: DataBursatil (BMV and BIVA — prices, history, intraday, sanctioned) and Yahoo Finance. Yahoo is drawn last on purpose and gets the full-width row on desktop: it is the ONLY source for index levels and BMV dividends, AND the last link in every other chain. If it goes, indices and Mexican corporate actions go with it — the chip says 'única fuente' for that reason.\n\nRoles are drawn. Each card states primaria / única fuente, which is what the reader needs before deciding whether a missing key matters. 'nueva' was dropped: it is a launch-week affordance and the role is permanent.\n\nCopy that contradicted the code, fixed: Alpaca claimed crypto (the gateway has none), Finnhub said 'precios de acciones' when it is the current-quote primary, and every card carried '1 llave ·' — noise since ADR-015 made one key per provider the rule.\n\n🐞 Found while migrating to 0.9.0 (2026-08-27): the vendored BottomNav had TWO active items baked into its master — Descubrir AND Ajustes, both in $primary, with no instance override hiding it. When Descubrir became the fifth destination (D31) the active state was set on it and never cleared from Ajustes, so every one of these eight artboards drew two highlighted tabs. Only Ajustes is active now.\n\nVendored here: TopBar (57 → 76), BottomNav, TopBarDesktop (76 → 80), SidebarNav, SwitchRow, NavRow — and HeaderBar, PROMOTED to the kit at 0.9.0. This flow hand-built the same back-header four times and flows/alerts.pen had built it twice; two consumers is the bar the 0.8.0 kit-gap note set for promotion, and measuring confirmed they are the same bar (an 18px display title with an optional action) rather than cockpit's TopBarDetail (a two-line ticker title with a bookmark). All four back buttons were 20px and are 44 now.\n\nRegistros grew 670 → 844 to meet D7's floor, a pre-existing breach.\n\nCopy: es-MX. kit-version-source 0.9.0 (the brief claimed 0.5.0 against a variable reading 0.7.0 — the SEVENTH brief in a row found contradicting its own file, which is now every brief in the system without a single exception. That is what D53 is parked about).\n\n✅ CAUGHT UP TO THE CODE (D78, which retires D8). The code is the mirror again, so four things the hub had shipped and this flow had not drawn are now drawn. (a) Tus datos holds TWO doors, not a mailto link: Borrar mis movimientos, which states its counts and clears trades, positions and the value curve while keeping the account, and Borrar mi cuenta y empezar de cero, which returns the instance to the setup wizard. The artboard used to say deletion happens by email under an ARCO procedure and was pending in the app — it stopped being true and the artboard was the last place still saying it. (b) Apariencia y región names the instance timezone, read-only: every date on every screen renders in it, so naming it is what makes a timestamp readable. (c) Tu instancia draws an Errores row. It is CONDITIONAL — ADR-020 gates it behind the developer_mode switch, so a reader should expect it absent on a default instance; it is drawn because a row nobody drew is how a screen drifts, not because it is always there. (d) The Card shape underneath all of this is card_classes now (D75), which is why the radii here read as one family.\n\n✅ /profile IS RETIRED, AND ITS TWO FORMS ARE SCREENS HERE (D90, 2026-09-05, closing AJU-1). D5 ruled one Ajustes and merged /profile into this hub; the hub was built and the origin was never closed, so both existed side by side for months. Measured before deciding: 197 lines, five partials, three tabs, zero i18n keys, and its unique content was these two forms. Everything else duplicated the hub — the avatar card, Cerrar sesión — or CONTRADICTED it: its Datos y sesión tab told the owner to email support under an ARCO procedure to delete an account this hub already deletes in-app.\n\nTwo screens rather than forms inlined in the hub, because a NavRow's chevron is a promise and this flow already keeps it four times. A password change also earns a focused surface rather than a section of a long scroll.\n\nWhat did NOT come across: the IdentityCard's counts (open positions, watchlist, active rules). They were drawn in no artboard and live one tap away on the screens that own them.\n\nNo desktop artboards for either, per D4: both are a single centred card and reflow into the two-column shell without diverging.\n\n✅ ERRORES IS DRAWN (A2, 2026-09-05), and it is the only one of that batch that turned out to be artboard work. Two screens: the grouped list — search, the four source filters from `Admin::ErrorsHelper::SOURCE_OPTIONS`, one card per distinct failure with its class, message, origin, occurrence count and last-seen stamp — and the detail, which adds Contexto as a definition list, the backtrace, the parameters with their [FILTERED] note, and the delete action in the HeaderBar.\n\n**Both are gated by ADR-020's `developer_mode` switch**, like the hub row that reaches them: expect them absent on a default instance. Drawn anyway, because a screen nobody drew is how a screen drifts.\n\nThe row's meta line wraps: origin and occurrence chips sit together and the timestamp drops to its own line. That is not a layout choice, it is what `flex flex-wrap` renders at 342 — the artboard shows the wrapped result rather than a line that fits only on canvas.\n\nCopy is already in the catalogue (23 keys under `admin.errors`), so nothing here was invented.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -9261,7 +9261,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
+          "content": "2026-09-05 · A2 · Errores and Errores · Detalle drawn — the last undrawn surface in this flow\n2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -9749,6 +9749,1155 @@
         },
         {
           "id": "O6SYrQ",
+          "type": "ref",
+          "ref": "PzVx9",
+          "name": "BottomNav",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "gZIaa",
+      "x": 3690,
+      "y": 0,
+      "name": "[Ajustes] / Errores / Default",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "Av4pj",
+          "type": "ref",
+          "ref": "B3jgA",
+          "name": "Header",
+          "width": "fill_container",
+          "descendants": {
+            "rBnzV": {
+              "content": "Errores"
+            },
+            "bcqqH": {
+              "width": 44,
+              "padding": 0,
+              "enabled": false
+            },
+            "MEluP": {
+              "icon": "download",
+              "width": 20,
+              "height": 20,
+              "enabled": false
+            },
+            "L00Xqd": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "uIYBw",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-3",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "FxFOz",
+              "name": "Intro",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Fallos que tu instancia registró sola en los últimos 30 días, agrupados por error.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "CTcA9",
+              "name": "Buscar",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-2",
+              "padding": [
+                12,
+                15
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "m8uZh",
+                  "name": "i",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "oWL1f",
+                  "name": "ph",
+                  "fill": "$fg-subtle",
+                  "content": "Buscar por clase, mensaje, ruta o referencia…",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "k51CPs",
+              "name": "Filtros",
+              "width": "fill_container",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "oXraA",
+                  "name": "Todos",
+                  "fill": "$primary-muted",
+                  "cornerRadius": 999,
+                  "stroke": "$primary",
+                  "strokeWidth": 1,
+                  "padding": [
+                    7,
+                    13
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qbvH6",
+                      "name": "t",
+                      "fill": "$primary",
+                      "content": "Todos",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "E8eh4y",
+                  "name": "Peticiones",
+                  "fill": "$bg-surface",
+                  "cornerRadius": 999,
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "padding": [
+                    7,
+                    13
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "U3zH3",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Peticiones",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "CXSqP",
+                  "name": "Trabajos",
+                  "fill": "$bg-surface",
+                  "cornerRadius": 999,
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "padding": [
+                    7,
+                    13
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ruxZs",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Trabajos",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "X7KIvL",
+                  "name": "Otros",
+                  "fill": "$bg-surface",
+                  "cornerRadius": 999,
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "padding": [
+                    7,
+                    13
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "QZ1MV",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Otros",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "fh7G2",
+              "name": "ActiveRecord::RecordNotFound",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 6,
+              "padding": [
+                14,
+                15
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "FpFmG",
+                  "name": "H",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "H1L2p",
+                      "name": "dot",
+                      "width": 8,
+                      "height": 8,
+                      "fill": "$negative",
+                      "cornerRadius": 999
+                    },
+                    {
+                      "type": "frame",
+                      "id": "A6Nbo9",
+                      "name": "col",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Y7XdP8",
+                          "name": "class",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "ActiveRecord::RecordNotFound",
+                          "lineHeight": 1.35,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "rD0tt",
+                          "name": "msg",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Couldn't find Asset with symbol=SATS",
+                          "lineHeight": 1.4,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ZNbte",
+                          "name": "meta",
+                          "width": "fill_container",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "kqG40",
+                              "name": "origen",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                3,
+                                7
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "UdgHO",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "GET /market/SATS",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "ws1By",
+                              "name": "veces",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                3,
+                                7
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "DodGX",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "4 veces",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Ooeev",
+                          "name": "when",
+                          "fill": "$fg-subtle",
+                          "content": "hoy 09:14:02",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "VIIAG",
+                      "name": "chev",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "v8eHGB",
+              "name": "Faraday::TimeoutError",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 6,
+              "padding": [
+                14,
+                15
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "k72iY",
+                  "name": "H",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dzzB7",
+                      "name": "dot",
+                      "width": 8,
+                      "height": 8,
+                      "fill": "$negative",
+                      "cornerRadius": 999
+                    },
+                    {
+                      "type": "frame",
+                      "id": "W5sZA",
+                      "name": "col",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "J4qCa",
+                          "name": "class",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Faraday::TimeoutError",
+                          "lineHeight": 1.35,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "xcD7Q",
+                          "name": "msg",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "execution expired después de 30s contra Alpha Vantage",
+                          "lineHeight": 1.4,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Z00pi",
+                          "name": "meta",
+                          "width": "fill_container",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "FbE63",
+                              "name": "origen",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                3,
+                                7
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "kQwku",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "SyncFundamentalJob",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "i4fUA",
+                              "name": "veces",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                3,
+                                7
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "xc2jc",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "12 veces",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "EQ0s4",
+                          "name": "when",
+                          "fill": "$fg-subtle",
+                          "content": "hoy 06:12:41",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "UcWOR",
+                      "name": "chev",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Z6KTL",
+              "name": "NoMethodError",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 6,
+              "padding": [
+                14,
+                15
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "qy7Yh",
+                  "name": "H",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kk6qf",
+                      "name": "dot",
+                      "width": 8,
+                      "height": 8,
+                      "fill": "$negative",
+                      "cornerRadius": 999
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QvoiF",
+                      "name": "col",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "izYaf",
+                          "name": "class",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "NoMethodError",
+                          "lineHeight": 1.35,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "yOTNS",
+                          "name": "msg",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "undefined method `rate' for nil",
+                          "lineHeight": 1.4,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "MMEun",
+                          "name": "meta",
+                          "width": "fill_container",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "oxmnP",
+                              "name": "origen",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                3,
+                                7
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "WTRan",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "FxRateResolver",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "N59xV",
+                              "name": "when",
+                              "fill": "$fg-subtle",
+                              "content": "ayer 18:30:07",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "KxfzF",
+                      "name": "chev",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "TlksX",
+              "name": "Conteo",
+              "fill": "$fg-subtle",
+              "content": "Mostrando 3 de 47 errores",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "id": "ZmjUl",
+          "type": "ref",
+          "ref": "PzVx9",
+          "name": "BottomNav",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "YV9je",
+      "x": 4150,
+      "y": 0,
+      "name": "[Ajustes] / Errores · Detalle / Default",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "E908t",
+          "type": "ref",
+          "ref": "B3jgA",
+          "name": "Header",
+          "width": "fill_container",
+          "descendants": {
+            "rBnzV": {
+              "content": "Detalle del error"
+            },
+            "bcqqH": {
+              "width": 44,
+              "padding": 0
+            },
+            "MEluP": {
+              "icon": "delete",
+              "width": 20,
+              "height": 20
+            },
+            "L00Xqd": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "ZjwpR",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-3",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "ofyN6",
+              "name": "Identidad",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 6,
+              "padding": [
+                14,
+                15
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zHcHI",
+                  "name": "class",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Faraday::TimeoutError",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "E4ZIt",
+                  "name": "msg",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "execution expired después de 30s contra Alpha Vantage",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FPQrg",
+              "name": "Contexto",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "c0hJ4",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Contexto",
+                  "fontFamily": "$font-display",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "I0WM6g",
+                  "name": "dl",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "padding": [
+                    4,
+                    15
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "RmHE1",
+                      "name": "Origen",
+                      "width": "fill_container",
+                      "gap": "$space-3",
+                      "padding": [
+                        10,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "HQZEE",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "Origen",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "l35kq7",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "SyncFundamentalJob",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "p19ZrD",
+                      "name": "Ocurrencias",
+                      "width": "fill_container",
+                      "gap": "$space-3",
+                      "padding": [
+                        10,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "YCNOg",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "Ocurrencias",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "x7ZuO",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "12",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "p5xfaJ",
+                      "name": "Primera vez",
+                      "width": "fill_container",
+                      "gap": "$space-3",
+                      "padding": [
+                        10,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ipwWl",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "Primera vez",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gjIOQ",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "28 ago 2026 06:12:41",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "r8ZuZ",
+                      "name": "Última vez",
+                      "width": "fill_container",
+                      "gap": "$space-3",
+                      "padding": [
+                        10,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SPnAK",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "Última vez",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZtRT3",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "hoy 06:12:41",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "RvGI8",
+                      "name": "Referencia",
+                      "width": "fill_container",
+                      "gap": "$space-3",
+                      "padding": [
+                        10,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zrnA0",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "Referencia",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ekx6J",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "—",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "y7WXs",
+              "name": "Traza",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "S6pO4K",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Traza",
+                  "fontFamily": "$font-display",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "qCoYb",
+                  "name": "code",
+                  "width": "fill_container",
+                  "fill": "$bg-muted",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    12,
+                    14
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "hdzey",
+                      "name": "l",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "app/contexts/market_data/gateways/performs_requests.rb:41:in `get_json'",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "X7pJa",
+                      "name": "l",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "app/contexts/market_data/gateways/alpha_vantage_gateway.rb:22:in `fetch'",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "D5cOJ",
+                      "name": "l",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "app/jobs/sync_fundamental_job.rb:14:in `perform'",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Cu1PA",
+              "name": "Parámetros",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "MCrZI",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "content": "Parámetros",
+                  "fontFamily": "$font-display",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "j8Bao",
+                  "name": "code",
+                  "width": "fill_container",
+                  "fill": "$bg-muted",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    12,
+                    14
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YvOjX",
+                      "name": "l",
+                      "fill": "$fg-subtle",
+                      "content": "{ \"symbol\" => \"NVDA\",",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "YEYce",
+                      "name": "l",
+                      "fill": "$fg-subtle",
+                      "content": "  \"apikey\" => \"[FILTERED]\" }",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "xtFK8",
+                  "name": "nota",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Las contraseñas, tokens y correos se guardan como [FILTERED].",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mwonb",
+              "name": "Borrar",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$negative",
+              "strokeWidth": 1,
+              "padding": [
+                11,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "gCcZG",
+                  "name": "t",
+                  "fill": "$negative",
+                  "content": "Borrar del registro",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "k4V95",
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
