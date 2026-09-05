@@ -1,6 +1,6 @@
 class MarketController < AuthenticatedController
   def show
-    result = MarketData::UseCases::LoadAssetDetail.call(symbol: params[:symbol])
+    result = MarketData::UseCases::LoadAssetDetail.call(symbol: params[:symbol], range: params[:range])
 
     case result
     in Dry::Monads::Success(data)
@@ -10,6 +10,7 @@ class MarketController < AuthenticatedController
       @has_statements = data[:has_statements]
       @yield_data = data[:yield_data]
       @price_histories = data[:price_histories] || []
+      @chart_range = data[:chart_range]
       @pe_history = data[:pe_history]
       @dividends = data[:dividends] || []
       @company_overview = data[:company_overview]

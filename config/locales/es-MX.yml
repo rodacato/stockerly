@@ -876,7 +876,20 @@ es-MX:
         de la empresa.
       titulo: Razón P/U histórica · últimos %{days} días
     precio:
-      titulo: Precio · %{currency} · %{days} días · cierre diario
+      ohlc:
+        c: C
+        h: H
+        l: L
+        o: O
+        vol: Vol
+      rango:
+        m1: 1M
+        m3: 3M
+        max: Máx
+        s1: 1S
+        y1: 1A
+      rango_label: Rango del gráfico
+      titulo: Precio · %{currency} · cierre diario
     range_52w:
       above_high: "%{percent} arriba de su máximo del año"
       below_low: "%{percent} abajo de su mínimo del año"

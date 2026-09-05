@@ -215,10 +215,7 @@ RSpec.describe "Market Asset Detail", type: :request do
 
       get market_asset_path(asset.symbol)
 
-      expect(response.body).to include(
-        I18n.t("market.precio.titulo", currency: "USD",
-                                       days: MarketData::UseCases::LoadAssetDetail::CHART_DAYS)
-      )
+      expect(response.body).to include(I18n.t("market.precio.titulo", currency: "USD"))
     end
   end
 end

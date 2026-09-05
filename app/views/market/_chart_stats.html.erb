@@ -1,0 +1,25 @@
+<%# The latest closed bar's O/H/L/C and volume (CKP-2). One row, not the range's
+    aggregate: the strip sits beside a range control and answers "what did the
+    last session do", which is the question every chart puts there.
+    Locals: bar, currency. %>
+<dl class="mt-4 flex items-start justify-between gap-2">
+  <% { o: bar.open, h: bar.high, l: bar.low, c: bar.close }.each do |key, value| %>
+    <div class="flex flex-col gap-0.5">
+      <dt class="font-mono text-[10px] uppercase tracking-[0.08em] text-fg-subtle">
+        <%= t("market.precio.ohlc.#{key}") %>
+      </dt>
+      <dd class="font-mono text-sm text-fg-default">
+        <%= value ? format_currency_mx(value, currency: currency, precision: 2) : "—" %>
+      </dd>
+    </div>
+  <% end %>
+
+  <div class="flex flex-col gap-0.5">
+    <dt class="font-mono text-[10px] uppercase tracking-[0.08em] text-fg-subtle">
+      <%= t("market.precio.ohlc.vol") %>
+    </dt>
+    <dd class="font-mono text-sm text-fg-default">
+      <%= bar.volume ? format_compact_count(bar.volume) : "—" %>
+    </dd>
+  </div>
+</dl>
