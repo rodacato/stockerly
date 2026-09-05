@@ -1,7 +1,7 @@
 <%# Statement table — renders financial data in a multi-year table using structured line items %>
 <% line_items = line_items_for(statement_type) %>
 
-<div class="overflow-hidden rounded-xl border border-border-default bg-bg-surface">
+<div class="<%= card_classes("overflow-hidden") %>">
   <div class="overflow-x-auto">
     <table class="w-full border-collapse">
       <thead>

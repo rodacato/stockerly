@@ -2,7 +2,7 @@
     many times. The class gets the full width — it is what identifies the error,
     and sharing a line with the timestamp truncated exactly that. The backtrace
     lives on the detail screen. Locals: event %>
-<li class="rounded-xl border border-border-default bg-bg-surface">
+<li class="<%= card_classes %>">
   <%= link_to admin_error_path(event), class: "flex items-start gap-3 p-4" do %>
     <span class="mt-1.5 size-2 shrink-0 rounded-full bg-negative" aria-hidden="true"></span>
 

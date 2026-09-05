@@ -2,7 +2,7 @@
     that overflowed a phone — the last column was cut mid-word.
     locals: (rule:) %>
 <% is_active = rule.active? %>
-<%= tag.li id: dom_id(rule), class: "flex flex-col gap-1 rounded-xl border border-border-default bg-bg-surface p-4" do %>
+<%= tag.li id: dom_id(rule), class: card_classes("flex flex-col gap-1 p-4") do %>
   <div class="flex items-start justify-between gap-3">
     <div class="flex items-center gap-2 min-w-0">
       <% if rule.asset_symbol.present? %>

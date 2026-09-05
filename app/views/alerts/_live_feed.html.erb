@@ -8,7 +8,7 @@
   </div>
 
   <% if events.any? %>
-    <ul class="flex flex-col gap-3 rounded-xl border border-border-default bg-bg-surface p-4">
+    <ul class="<%= card_classes("flex flex-col gap-3 p-4") %>">
       <% events.each do |event| %>
         <li class="grid grid-cols-[8px_1fr] gap-3">
           <span class="mt-2 size-2 rounded-full <%= alert_event_accent(event) %>" aria-hidden="true"></span>
@@ -20,7 +20,7 @@
       <% end %>
     </ul>
   <% else %>
-    <p class="rounded-xl border border-border-default bg-bg-surface p-4 text-sm text-fg-subtle">
+    <p class="<%= card_classes("p-4 text-sm text-fg-subtle") %>">
       <%= t("alerts.index.sin_disparos") %>
     </p>
   <% end %>

@@ -5,7 +5,7 @@
 <%= form_with(url: admin_logs_path, method: :get, data: { turbo_action: "replace" },
       class: "flex flex-col gap-3") do |f| %>
 
-  <div class="flex items-center gap-2 rounded-xl border border-border-default bg-bg-surface px-4 py-3">
+  <div class="<%= card_classes("flex items-center gap-2 px-4 py-3") %>">
     <span class="material-symbols-outlined text-lg text-fg-subtle" aria-hidden="true">search</span>
     <%= f.text_field :search, value: params[:search],
         placeholder: t("admin.logs.index.buscar"),

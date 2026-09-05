@@ -5,7 +5,7 @@
 <% end %>
 
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
-  <section class="flex flex-col gap-2 rounded-xl border border-border-default bg-bg-surface p-4">
+  <section class="<%= card_classes("flex flex-col gap-2 p-4") %>">
     <p class="font-mono text-lg font-semibold text-fg-default"><%= @error_event.exception_class %></p>
     <p class="whitespace-pre-wrap break-words text-sm text-fg-subtle"><%= @error_event.message %></p>
     <% if @error_event.app_line.present? %>
@@ -15,7 +15,7 @@
 
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold text-fg-default"><%= t(".contexto") %></h2>
-    <dl class="divide-y divide-border-default rounded-xl border border-border-default bg-bg-surface px-4">
+    <dl class="<%= card_classes("divide-y divide-border-default px-4") %>">
       <% [ [ t(".origen"),     admin_error_origin(@error_event) ],
            [ t(".veces"),      @error_event.occurrences ],
            [ t(".primera"),    absolute_stamp(@error_event.first_seen_at, seconds: true) ],
