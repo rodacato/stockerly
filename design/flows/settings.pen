@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "One Ajustes, no admin zone. On a single-user instance the /admin split is a costume (D5): the same person owns the account and the box, so the design merges /profile and /admin into one hub with sections.\n\nThe scope shrank twice on its way here: D9 moved the asset catalogue to Activos › Tracked, and D16 reduced the notification panel to the two channels that actually deliver. What is left: cuenta, apariencia y región, avisos, instancia, datos.\n\nScreens: Ajustes (hub) · Integraciones (+ Estados) · Registros · Estado y mantenimiento.\n\nGrounding: /profile tabs · admin/integrations 'Conectividad de mercado' with one key per provider · admin/logs 'Registros · últimos 90 días' · admin/settings SiteConfig toggles audited through SiteConfigChange · Mission Control at /admin/jobs.\n\n✅ D17 IS FIXED — this brief used to carry a ⚠ and a 🔴 saying two of the three SiteConfig toggles did nothing. Re-measured 2026-08-27: auto_sync_enabled is read by app/jobs/concerns/pausable_sync.rb and email_notifications_enabled by app/mailers/alert_mailer.rb, which disables delivery when the flag is off and deliberately does NOT guard UserMailer#password_reset — a single-user instance with no support desk cannot afford a switch that locks its owner out. maintenance_mode was always real. All three toggles now do what they say, and the desktop layout that 'made the lie louder' no longer has a lie to amplify.\n\n✅ D18 REVERSED (2026-08-26 → ADR-015): one key per provider. Four sources — Alpaca, Finnhub, CoinGecko and the ex-Polygon host — explicitly prohibit several credentials to beat a free tier. The multi-key count and the rotation note are gone from the artboard; the fallback that remains is across sources, not across keys of one source, which is what GatewayChain already does.\n\n✅ D52 (2026-08-27): a Seguridad row lives in Cuenta — 'Verificación en dos pasos · TOTP y códigos de recuperación'. ADR-018 builds TOTP with recovery codes, and D52 put the ask in BOTH the first-boot wizard and here: the wizard offers and lets you skip, Ajustes is where it is turned on later and the codes are regenerated. The three screens themselves live in flows/auth.pen.\n\n✅ The Trabajos badge question is ANSWERED, and the answer was already in the repo. CODE_CHANGES §8 records that counting SolidQueue::FailedExecution put a cross-database query in the hub's request path and aborted the transaction outright in test. The hub's row carried a hardcoded '0'; it now carries nothing and simply links to Mission Control. The real numbers are not lost — admin/settings/show.html.erb:14 already renders '<n> en proceso · <n> fallidos · <n> programados' on Estado y mantenimiento, a screen you open on purpose. The cost is paid where it is chosen.\n\n❓ Guardar vs auto-save: the code does BOTH, split by kind, and that split is not visible to the reader. Theme writes to localStorage and applies on click (data-controller=theme). The notification switches POST on toggle (data-controller=toggle). Currency is a form with an explicit 'Guardar' submit. Theme and Moneda are the SAME segmented pill drawn twice, and one commits instantly while the other waits for a button — that is the defect, not which behaviour is right. Recommendation, unbuilt: move Moneda to auto-save; update_currency_path already exists and only writes preferred_currency, so the toggle pattern applies directly. Owner's call, and the artboard draws today's behaviour until it is made.\n\nDesktop (1280): Hub, Integraciones and Estado y mantenimiento. Registros is NOT drawn — it is a list and reflows; a real desktop log TABLE would be a new component, so it waits for a decision rather than being invented here.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the Hub splits into two semantic columns — cuenta y preferencias | instancia y datos — not an arbitrary half; (b) the Tema and Moneda segmented controls were stretching to the 476 column and are pinned to their native 342. A control is not a container. That kit gap is now settled in code too: D49 shipped as w-full sm:w-fit on components/_segmented (CODE_CHANGES §12); (c) Integraciones as a 3x2 grid puts the quota bars side by side, so Alpha Vantage's 25 calls/day and Yahoo's 6/min stop being isolated facts and become a comparable budget (C1).\n\n⚠ INTEGRACIONES REBUILT 2026-08-26, against verified providers rather than the roster the screen inherited. Every claim was probed live with a real key; see docs/research/market-data-providers-2026-08.md.\n\nOut: Polygon. It served four roles and free-tier kept none — index quotes and earnings became paid products, its host is announced for phase-out, and the code routes US history to Alpaca and US quotes to Finnhub. Keeping a configurable key nobody calls is dead config on a screen whose job is configuration. 🐞 A Registros row still read 'Polygon Sync · Rate limit alcanzado · 5 llamadas por minuto' — sample data naming a retired provider, fixed 2026-08-27 to Yahoo Finance and its real 6/min cap from ProviderDefaults (ADR-017).\n\nIn: DataBursatil (BMV and BIVA — prices, history, intraday, sanctioned) and Yahoo Finance. Yahoo is drawn last on purpose and gets the full-width row on desktop: it is the ONLY source for index levels and BMV dividends, AND the last link in every other chain. If it goes, indices and Mexican corporate actions go with it — the chip says 'única fuente' for that reason.\n\nRoles are drawn. Each card states primaria / única fuente, which is what the reader needs before deciding whether a missing key matters. 'nueva' was dropped: it is a launch-week affordance and the role is permanent.\n\nCopy that contradicted the code, fixed: Alpaca claimed crypto (the gateway has none), Finnhub said 'precios de acciones' when it is the current-quote primary, and every card carried '1 llave ·' — noise since ADR-015 made one key per provider the rule.\n\n🐞 Found while migrating to 0.9.0 (2026-08-27): the vendored BottomNav had TWO active items baked into its master — Descubrir AND Ajustes, both in $primary, with no instance override hiding it. When Descubrir became the fifth destination (D31) the active state was set on it and never cleared from Ajustes, so every one of these eight artboards drew two highlighted tabs. Only Ajustes is active now.\n\nVendored here: TopBar (57 → 76), BottomNav, TopBarDesktop (76 → 80), SidebarNav, SwitchRow, NavRow — and HeaderBar, PROMOTED to the kit at 0.9.0. This flow hand-built the same back-header four times and flows/alerts.pen had built it twice; two consumers is the bar the 0.8.0 kit-gap note set for promotion, and measuring confirmed they are the same bar (an 18px display title with an optional action) rather than cockpit's TopBarDetail (a two-line ticker title with a bookmark). All four back buttons were 20px and are 44 now.\n\nRegistros grew 670 → 844 to meet D7's floor, a pre-existing breach.\n\nCopy: es-MX. kit-version-source 0.9.0 (the brief claimed 0.5.0 against a variable reading 0.7.0 — the SEVENTH brief in a row found contradicting its own file, which is now every brief in the system without a single exception. That is what D53 is parked about).",
+          "content": "One Ajustes, no admin zone. On a single-user instance the /admin split is a costume (D5): the same person owns the account and the box, so the design merges /profile and /admin into one hub with sections.\n\nThe scope shrank twice on its way here: D9 moved the asset catalogue to Activos › Tracked, and D16 reduced the notification panel to the two channels that actually deliver. What is left: cuenta, apariencia y región, avisos, instancia, datos.\n\nScreens: Ajustes (hub) · Integraciones (+ Estados) · Registros · Estado y mantenimiento.\n\nGrounding: /profile tabs · admin/integrations 'Conectividad de mercado' with one key per provider · admin/logs 'Registros · últimos 90 días' · admin/settings SiteConfig toggles audited through SiteConfigChange · Mission Control at /admin/jobs.\n\n✅ D17 IS FIXED — this brief used to carry a ⚠ and a 🔴 saying two of the three SiteConfig toggles did nothing. Re-measured 2026-08-27: auto_sync_enabled is read by app/jobs/concerns/pausable_sync.rb and email_notifications_enabled by app/mailers/alert_mailer.rb, which disables delivery when the flag is off and deliberately does NOT guard UserMailer#password_reset — a single-user instance with no support desk cannot afford a switch that locks its owner out. maintenance_mode was always real. All three toggles now do what they say, and the desktop layout that 'made the lie louder' no longer has a lie to amplify.\n\n✅ D18 REVERSED (2026-08-26 → ADR-015): one key per provider. Four sources — Alpaca, Finnhub, CoinGecko and the ex-Polygon host — explicitly prohibit several credentials to beat a free tier. The multi-key count and the rotation note are gone from the artboard; the fallback that remains is across sources, not across keys of one source, which is what GatewayChain already does.\n\n✅ D52 (2026-08-27): a Seguridad row lives in Cuenta — 'Verificación en dos pasos · TOTP y códigos de recuperación'. ADR-018 builds TOTP with recovery codes, and D52 put the ask in BOTH the first-boot wizard and here: the wizard offers and lets you skip, Ajustes is where it is turned on later and the codes are regenerated. The three screens themselves live in flows/auth.pen.\n\n✅ The Trabajos badge question is ANSWERED, and the answer was already in the repo. CODE_CHANGES §8 records that counting SolidQueue::FailedExecution put a cross-database query in the hub's request path and aborted the transaction outright in test. The hub's row carried a hardcoded '0'; it now carries nothing and simply links to Mission Control. The real numbers are not lost — admin/settings/show.html.erb:14 already renders '<n> en proceso · <n> fallidos · <n> programados' on Estado y mantenimiento, a screen you open on purpose. The cost is paid where it is chosen.\n\n✅ Guardar vs auto-save is SETTLED (D58, CODE_CHANGES §15). The screen used to commit two ways: theme and the notification switches on click, Moneda behind an explicit Guardar submit — the same segmented pill drawn twice with two different contracts. Moneda now commits on select like everything else; the button is gone. This brief carried the open question for days after it shipped.\n\nDesktop (1280): Hub, Integraciones and Estado y mantenimiento. Registros is NOT drawn — it is a list and reflows; a real desktop log TABLE would be a new component, so it waits for a decision rather than being invented here.\n\nDesktop findings (2026-08-24, panel C1/C5/C4): (a) the Hub splits into two semantic columns — cuenta y preferencias | instancia y datos — not an arbitrary half; (b) the Tema and Moneda segmented controls were stretching to the 476 column and are pinned to their native 342. A control is not a container. That kit gap is now settled in code too: D49 shipped as w-full sm:w-fit on components/_segmented (CODE_CHANGES §12); (c) Integraciones as a 3x2 grid puts the quota bars side by side, so Alpha Vantage's 25 calls/day and Yahoo's 6/min stop being isolated facts and become a comparable budget (C1).\n\n⚠ INTEGRACIONES REBUILT 2026-08-26, against verified providers rather than the roster the screen inherited. Every claim was probed live with a real key; see docs/research/market-data-providers-2026-08.md.\n\nOut: Polygon. It served four roles and free-tier kept none — index quotes and earnings became paid products, its host is announced for phase-out, and the code routes US history to Alpaca and US quotes to Finnhub. Keeping a configurable key nobody calls is dead config on a screen whose job is configuration. 🐞 A Registros row still read 'Polygon Sync · Rate limit alcanzado · 5 llamadas por minuto' — sample data naming a retired provider, fixed 2026-08-27 to Yahoo Finance and its real 6/min cap from ProviderDefaults (ADR-017).\n\nIn: DataBursatil (BMV and BIVA — prices, history, intraday, sanctioned) and Yahoo Finance. Yahoo is drawn last on purpose and gets the full-width row on desktop: it is the ONLY source for index levels and BMV dividends, AND the last link in every other chain. If it goes, indices and Mexican corporate actions go with it — the chip says 'única fuente' for that reason.\n\nRoles are drawn. Each card states primaria / única fuente, which is what the reader needs before deciding whether a missing key matters. 'nueva' was dropped: it is a launch-week affordance and the role is permanent.\n\nCopy that contradicted the code, fixed: Alpaca claimed crypto (the gateway has none), Finnhub said 'precios de acciones' when it is the current-quote primary, and every card carried '1 llave ·' — noise since ADR-015 made one key per provider the rule.\n\n🐞 Found while migrating to 0.9.0 (2026-08-27): the vendored BottomNav had TWO active items baked into its master — Descubrir AND Ajustes, both in $primary, with no instance override hiding it. When Descubrir became the fifth destination (D31) the active state was set on it and never cleared from Ajustes, so every one of these eight artboards drew two highlighted tabs. Only Ajustes is active now.\n\nVendored here: TopBar (57 → 76), BottomNav, TopBarDesktop (76 → 80), SidebarNav, SwitchRow, NavRow — and HeaderBar, PROMOTED to the kit at 0.9.0. This flow hand-built the same back-header four times and flows/alerts.pen had built it twice; two consumers is the bar the 0.8.0 kit-gap note set for promotion, and measuring confirmed they are the same bar (an 18px display title with an optional action) rather than cockpit's TopBarDetail (a two-line ticker title with a bookmark). All four back buttons were 20px and are 44 now.\n\nRegistros grew 670 → 844 to meet D7's floor, a pre-existing breach.\n\nCopy: es-MX. kit-version-source 0.9.0 (the brief claimed 0.5.0 against a variable reading 0.7.0 — the SEVENTH brief in a row found contradicting its own file, which is now every brief in the system without a single exception. That is what D53 is parked about).\n\n✅ CAUGHT UP TO THE CODE (D78, which retires D8). The code is the mirror again, so four things the hub had shipped and this flow had not drawn are now drawn. (a) Tus datos holds TWO doors, not a mailto link: Borrar mis movimientos, which states its counts and clears trades, positions and the value curve while keeping the account, and Borrar mi cuenta y empezar de cero, which returns the instance to the setup wizard. The artboard used to say deletion happens by email under an ARCO procedure and was pending in the app — it stopped being true and the artboard was the last place still saying it. (b) Apariencia y región names the instance timezone, read-only: every date on every screen renders in it, so naming it is what makes a timestamp readable. (c) Tu instancia draws an Errores row. It is CONDITIONAL — ADR-020 gates it behind the developer_mode switch, so a reader should expect it absent on a default instance; it is drawn because a row nobody drew is how a screen drifts, not because it is always there. (d) The Card shape underneath all of this is card_classes now (D75), which is why the radii here read as one family.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -503,7 +503,7 @@
       "name": "[Ajustes] / Hub / Default",
       "clip": true,
       "width": 390,
-      "height": 1684,
+      "height": 2140,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -936,6 +936,50 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oY74m",
+                  "name": "Zona horaria",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "UP53T",
+                      "name": "l",
+                      "fill": "$fg-subtle",
+                      "content": "Zona horaria",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YrXuY",
+                      "name": "Valor",
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-md",
+                      "padding": [
+                        8,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SFBiX",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "América/Ciudad de México · CDMX",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -1173,6 +1217,27 @@
                       "content": ""
                     }
                   }
+                },
+                {
+                  "id": "bRiu6",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Errores",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "bug"
+                    },
+                    "GueOK": {
+                      "content": "Errores"
+                    },
+                    "uH4YA": {
+                      "content": "Qué falló, dónde y cuántas veces"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
                 }
               ]
             },
@@ -1255,27 +1320,171 @@
                       "fontWeight": "normal"
                     },
                     {
-                      "type": "text",
-                      "id": "F4Z1GF",
-                      "name": "l",
-                      "fill": "$primary",
-                      "content": "Eliminar mi cuenta y mis datos",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "600"
+                      "type": "frame",
+                      "id": "xd4Yf",
+                      "name": "Puerta · Movimientos",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "padding": [
+                        13,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "EwUiW",
+                          "name": "Divisor",
+                          "width": "fill_container",
+                          "height": 1,
+                          "fill": "$border-default"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Cuxez",
+                          "name": "Título",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Borrar mis movimientos",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "neo3E",
+                          "name": "Detalle",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Elimina operaciones, posiciones y la curva de valor de tu portafolio. Conserva tu cuenta, los símbolos que sigues y los tipos de cambio, para que puedas volver a importar sin reconfigurar nada.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "y3YLdp",
+                          "name": "Conteo",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "128 operaciones · 12 posiciones · 340 días de historial",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "xqNKv",
+                          "name": "Acción",
+                          "fill": "$bg-surface",
+                          "cornerRadius": "$radius-md",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "padding": [
+                            9,
+                            15
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "l1Zeb",
+                              "name": "t",
+                              "fill": "$fg-default",
+                              "content": "Borrar movimientos",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 13,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
                     },
                     {
-                      "type": "text",
-                      "id": "R5etb",
-                      "name": "c",
-                      "fill": "$fg-subtle",
-                      "textGrowth": "fixed-width",
+                      "type": "frame",
+                      "id": "mxJ1e",
+                      "name": "Puerta · Cuenta",
                       "width": "fill_container",
-                      "content": "Hoy se hace por correo (procedimiento ARCO). En la app: pendiente.",
-                      "lineHeight": 1.4,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "padding": [
+                        13,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "WorGX",
+                          "name": "Divisor",
+                          "width": "fill_container",
+                          "height": 1,
+                          "fill": "$border-default"
+                        },
+                        {
+                          "type": "text",
+                          "id": "h3N71L",
+                          "name": "Título",
+                          "fill": "$negative",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Borrar mi cuenta y empezar de cero",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "pqJaR",
+                          "name": "Detalle",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Elimina la cuenta y todo lo tuyo — movimientos, alertas, seguimiento y notificaciones. La instancia vuelve al asistente de instalación. Conserva el catálogo, los tipos de cambio y tus integraciones.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "LexGw",
+                          "name": "Acción",
+                          "fill": "$bg-surface",
+                          "cornerRadius": "$radius-md",
+                          "stroke": "$negative",
+                          "strokeWidth": 1,
+                          "padding": [
+                            9,
+                            15
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "HZ1vc",
+                              "name": "t",
+                              "fill": "$negative",
+                              "content": "Borrar cuenta",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 13,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 }
@@ -4627,7 +4836,7 @@
       "name": "[Ajustes] / Hub · Desktop / Default",
       "clip": true,
       "width": 1280,
-      "height": 880,
+      "height": 1235,
       "fill": "$bg-canvas",
       "children": [
         {
@@ -5064,6 +5273,50 @@
                                   ]
                                 }
                               ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "WWxGc",
+                              "name": "Zona horaria",
+                              "width": "fill_container",
+                              "gap": "$space-3",
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "wHaVU",
+                                  "name": "l",
+                                  "fill": "$fg-subtle",
+                                  "content": "Zona horaria",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "ZI4Nl",
+                                  "name": "Valor",
+                                  "fill": "$bg-muted",
+                                  "cornerRadius": "$radius-md",
+                                  "padding": [
+                                    8,
+                                    12
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "EmwHa",
+                                      "name": "t",
+                                      "fill": "$fg-default",
+                                      "content": "América/Ciudad de México · CDMX",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 13,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
+                                }
+                              ]
                             }
                           ]
                         },
@@ -5311,6 +5564,27 @@
                                   "content": "0"
                                 }
                               }
+                            },
+                            {
+                              "id": "tMNGE",
+                              "type": "ref",
+                              "ref": "bZ59N",
+                              "name": "Errores",
+                              "width": "fill_container",
+                              "descendants": {
+                                "sfEQs": {
+                                  "icon": "bug"
+                                },
+                                "GueOK": {
+                                  "content": "Errores"
+                                },
+                                "uH4YA": {
+                                  "content": "Qué falló, dónde y cuántas veces"
+                                },
+                                "AgU5u": {
+                                  "content": ""
+                                }
+                              }
                             }
                           ]
                         },
@@ -5393,27 +5667,171 @@
                                   "fontWeight": "normal"
                                 },
                                 {
-                                  "type": "text",
-                                  "id": "Y9fdQR",
-                                  "name": "l",
-                                  "fill": "$primary",
-                                  "content": "Eliminar mi cuenta y mis datos",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 13,
-                                  "fontWeight": "600"
+                                  "type": "frame",
+                                  "id": "WrmXG",
+                                  "name": "Puerta · Movimientos",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": "$space-2",
+                                  "padding": [
+                                    13,
+                                    0,
+                                    0,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "c6LPz",
+                                      "name": "Divisor",
+                                      "width": "fill_container",
+                                      "height": 1,
+                                      "fill": "$border-default"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "DkuYx",
+                                      "name": "Título",
+                                      "fill": "$fg-default",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Borrar mis movimientos",
+                                      "lineHeight": 1.5,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "iUA8a",
+                                      "name": "Detalle",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Elimina operaciones, posiciones y la curva de valor de tu portafolio. Conserva tu cuenta, los símbolos que sigues y los tipos de cambio, para que puedas volver a importar sin reconfigurar nada.",
+                                      "lineHeight": 1.5,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "IbDZT",
+                                      "name": "Conteo",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "128 operaciones · 12 posiciones · 340 días de historial",
+                                      "lineHeight": 1.5,
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "w7g5tJ",
+                                      "name": "Acción",
+                                      "fill": "$bg-surface",
+                                      "cornerRadius": "$radius-md",
+                                      "stroke": "$border-default",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        9,
+                                        15
+                                      ],
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "h77zK",
+                                          "name": "t",
+                                          "fill": "$fg-default",
+                                          "content": "Borrar movimientos",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 13,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    }
+                                  ]
                                 },
                                 {
-                                  "type": "text",
-                                  "id": "NLtIv",
-                                  "name": "c",
-                                  "fill": "$fg-subtle",
-                                  "textGrowth": "fixed-width",
+                                  "type": "frame",
+                                  "id": "B5ncw",
+                                  "name": "Puerta · Cuenta",
                                   "width": "fill_container",
-                                  "content": "Hoy se hace por correo (procedimiento ARCO). En la app: pendiente.",
-                                  "lineHeight": 1.4,
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 11,
-                                  "fontWeight": "normal"
+                                  "layout": "vertical",
+                                  "gap": "$space-2",
+                                  "padding": [
+                                    13,
+                                    0,
+                                    0,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "Bp1pJ",
+                                      "name": "Divisor",
+                                      "width": "fill_container",
+                                      "height": 1,
+                                      "fill": "$border-default"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "dMasx",
+                                      "name": "Título",
+                                      "fill": "$negative",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Borrar mi cuenta y empezar de cero",
+                                      "lineHeight": 1.5,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "yUJOM",
+                                      "name": "Detalle",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Elimina la cuenta y todo lo tuyo — movimientos, alertas, seguimiento y notificaciones. La instancia vuelve al asistente de instalación. Conserva el catálogo, los tipos de cambio y tus integraciones.",
+                                      "lineHeight": 1.5,
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "VeNNQ",
+                                      "name": "Acción",
+                                      "fill": "$bg-surface",
+                                      "cornerRadius": "$radius-md",
+                                      "stroke": "$negative",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        9,
+                                        15
+                                      ],
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "j5FVV",
+                                          "name": "t",
+                                          "fill": "$negative",
+                                          "content": "Borrar cuenta",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 13,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    }
+                                  ]
                                 }
                               ]
                             }
@@ -8843,7 +9261,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
+          "content": "2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
