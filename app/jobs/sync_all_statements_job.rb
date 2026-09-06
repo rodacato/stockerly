@@ -1,7 +1,13 @@
 # Orchestrator: enqueues SyncStatementsJob for eligible assets, weekly.
-# Shares the daily Alpha Vantage budget with SyncAllFundamentalsJob, through
-# FundamentalsBudget rather than a second count of its own.
-# 3 API calls per asset (income + balance + cash flow).
+# 3 calls per asset (income + balance + cash flow).
+#
+# D109: it no longer rations against FundamentalsBudget. That budget is Alpha
+# Vantage's 25 a day, and since the statements moved to yfinance this job does
+# not spend it -- yet it was still dividing it by three and capping a run at
+# eight assets. Yahoo has its own ceiling, enforced per call by RateLimiter in
+# the gateway, and the stagger below keeps this job well inside it. The Alpha
+# Vantage fallback can still spend the budget, which is what its own limiter is
+# for; SyncAllFundamentalsJob remains the job that rations against it.
 class SyncAllStatementsJob < ApplicationJob
   include PausableSync
   include SyncLogging
@@ -12,24 +18,14 @@ class SyncAllStatementsJob < ApplicationJob
   queue_as :default
 
   def perform
-    budget = MarketData::Domain::FundamentalsBudget.today
-    asset_slots = budget.unlimited? ? nil : budget.remaining / CALLS_PER_ASSET
-
-    if asset_slots && asset_slots <= 0
-      log_sync_failure("Statements: all",
-        "Daily budget exhausted (#{budget.used}/#{budget.limit})", severity: :warning)
-      return
-    end
-
-    assets = asset_slots ? eligible_assets.limit(asset_slots) : eligible_assets
+    assets = eligible_assets
 
     assets.each_with_index do |asset, index|
       SyncStatementsJob.set(wait: index * CALLS_PER_ASSET * STAGGER_SECONDS.seconds)
                        .perform_later(asset.id)
     end
 
-    log_sync_success("Statements: all",
-      message: "Enqueued #{assets.size} assets (budget: #{budget.remaining}/#{budget.limit})")
+    log_sync_success("Statements: all", message: "Enqueued #{assets.size} assets")
   end
 
   private
