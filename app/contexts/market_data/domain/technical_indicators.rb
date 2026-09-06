@@ -42,8 +42,23 @@ module MarketData
         # against. A plain mean of the last fourteen deltas is a different
         # indicator — on ten years of NVDA the two sit 6.45 points apart and
         # disagree about "oversold" four times out of five.
+        #
+        # The last value of the series, so a chart and a card reading the same
+        # closes cannot report different numbers.
         def rsi(closes, period: 14)
-          return nil if closes.size < period + 1
+          rsi_series(closes, period: period).last
+        end
+
+        # Wilder's smoothing already carries its state forward, so the whole
+        # series costs one pass. Re-running `rsi` per date would be quadratic:
+        # on the deepest asset on file that is 2952 whole-series smoothings to
+        # draw one line.
+        #
+        # Aligned with `closes` and `nil` until the seed window closes — absence
+        # is what "not enough history yet" looks like, never a zero.
+        def rsi_series(closes, period: 14)
+          values = Array.new(closes.size)
+          return values if closes.size < period + 1
 
           deltas = closes.each_cons(2).map { |a, b| b.to_f - a.to_f }
           gains  = deltas.map { |d| d.positive? ? d : 0.0 }
@@ -51,17 +66,15 @@ module MarketData
 
           avg_gain = gains.first(period).sum / period.to_f
           avg_loss = losses.first(period).sum / period.to_f
+          values[period] = wilder_index(avg_gain, avg_loss)
 
           gains.drop(period).each_with_index do |gain, index|
             avg_gain = ((avg_gain * (period - 1)) + gain) / period.to_f
             avg_loss = ((avg_loss * (period - 1)) + losses[period + index]) / period.to_f
+            values[period + index + 1] = wilder_index(avg_gain, avg_loss)
           end
 
-          return 50.0  if avg_gain.zero? && avg_loss.zero?
-          return 100.0 if avg_loss.zero?
-
-          rs = avg_gain / avg_loss
-          (100.0 - (100.0 / (1.0 + rs))).round(2)
+          values
         end
 
         # Wilder's Average True Range (1978), over bars carrying high, low and
@@ -87,6 +100,19 @@ module MarketData
           (closes.last(period).sum(&:to_f) / period.to_f).round(4)
         end
 
+        # The bands at every date, aligned with `closes`. Each entry is computed
+        # from its own window rather than from a running total: the window is
+        # twenty closes, so the direct form is cheap, and it makes the last
+        # entry identical to `bollinger_bands` by construction instead of by
+        # floating-point luck.
+        def bollinger_series(closes, period: 20, stddev: 2.0)
+          Array.new(closes.size) do |index|
+            next if index < period - 1
+
+            bollinger_bands(closes[(index - period + 1)..index], period: period, stddev: stddev)
+          end
+        end
+
         # Bollinger Bands (default 20-period, 2σ). Returns `nil` when
         # insufficient data, otherwise `{ upper:, middle:, lower: }`.
         def bollinger_bands(closes, period: 20, stddev: 2.0)
@@ -105,6 +131,14 @@ module MarketData
         end
 
         private
+
+        def wilder_index(avg_gain, avg_loss)
+          return 50.0  if avg_gain.zero? && avg_loss.zero?
+          return 100.0 if avg_loss.zero?
+
+          rs = avg_gain / avg_loss
+          (100.0 - (100.0 / (1.0 + rs))).round(2)
+        end
 
         # Each bar's range measured against the previous close, so an opening
         # gap counts as movement rather than as the sliver traded after it.

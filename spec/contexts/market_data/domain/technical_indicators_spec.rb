@@ -41,6 +41,65 @@ RSpec.describe MarketData::Domain::TechnicalIndicators do
     end
   end
 
+  describe ".rsi_series" do
+    # The invariant the chart exists to keep: the plot's last point and the
+    # Señales card's number come from one definition, so they cannot disagree.
+    it "ends on exactly what .rsi reports for the same closes" do
+      closes = (1..60).map { |i| 100.0 + (i * 0.5) + (i.even? ? 1.5 : -1.5) }
+
+      expect(described_class.rsi_series(closes).last).to eq(described_class.rsi(closes))
+    end
+
+    it "is aligned with the closes and absent until the seed window closes" do
+      closes = (1..20).map(&:to_f)
+      series = described_class.rsi_series(closes)
+
+      expect(series.size).to eq(20)
+      expect(series.first(14)).to all(be_nil)
+      expect(series[14]).not_to be_nil
+    end
+
+    it "carries the smoothing forward rather than restarting at each date" do
+      closes = (1..40).map { |i| 100.0 + (i * 0.5) + (i.even? ? 1.5 : -1.5) }
+      series = described_class.rsi_series(closes)
+
+      expect(series[30]).to eq(described_class.rsi(closes.first(31)))
+    end
+
+    it "carries no values at all when there is not enough history to seed one" do
+      expect(described_class.rsi_series((1..14).map(&:to_f))).to all(be_nil)
+    end
+  end
+
+  describe ".bollinger_series" do
+    it "ends on exactly what .bollinger_bands reports for the same closes" do
+      closes = (1..60).map { |i| 100.0 + (i % 7) }
+
+      expect(described_class.bollinger_series(closes).last).to eq(described_class.bollinger_bands(closes))
+    end
+
+    it "is aligned with the closes and absent until the first window closes" do
+      closes = (1..25).map(&:to_f)
+      series = described_class.bollinger_series(closes)
+
+      expect(series.size).to eq(25)
+      expect(series.first(19)).to all(be_nil)
+      expect(series[19]).to include(:upper, :middle, :lower)
+    end
+
+    it "reads only its own window, so a distant close cannot move a band" do
+      recent = (1..30).map { |i| 100.0 + (i % 7) }
+      series = described_class.bollinger_series(recent)
+      with_history = described_class.bollinger_series(Array.new(50, 1.0) + recent)
+
+      expect(with_history.last).to eq(series.last)
+    end
+
+    it "carries no bands at all when there is not enough history for one window" do
+      expect(described_class.bollinger_series((1..19).map(&:to_f))).to all(be_nil)
+    end
+  end
+
   describe ".current_reading" do
     let(:closes) { (1..220).map { |i| 100.0 + (i * 0.5) } }
     let(:bars) { Array.new(30) { |i| { high: 11.0 + i, low: 9.0 + i, close: 10.0 + i } } }
