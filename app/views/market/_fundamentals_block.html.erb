@@ -12,7 +12,10 @@
   <section data-controller="reveal" class="<%= card_classes("flex flex-col gap-4 p-5") %>">
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default"><%= t(".titulo") %></h3>
   
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <%# D111: one card holding divided rows, which is what the artboard has
+        always drawn. A grid of bordered cards inside a bordered card reads as
+        chrome about chrome, and the rows are what the reader scans. %>
+    <div class="-mx-5 divide-y divide-border-default border-y border-border-default">
       <% summary.each do |key| %>
         <% defn = MarketData::Domain::MetricDefinitions.find(key) rescue nil %>
         <% next unless defn %>
@@ -37,7 +40,7 @@
             <h4 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
               <%= t("market.categorias.#{category}") %>
             </h4>
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div class="-mx-5 divide-y divide-border-default border-y border-border-default">
               <% defns.each do |defn| %>
                 <%= render "market/metric_card", definition: defn, value: resolve_metric_value(presenter, defn.key), currency: asset.currency %>
               <% end %>
