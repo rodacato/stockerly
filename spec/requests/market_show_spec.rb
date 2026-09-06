@@ -205,6 +205,22 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include(I18n.t("market.fixed_income_detail.transcurridos", count: 8))
       expect(response.body).to include(I18n.t("market.fixed_income_detail.restantes", count: 20))
     end
+
+    # D98: fixed income has no price chart, and the absence is deliberate.
+    # Nothing writes `asset_price_histories` for a CETE — no registered source
+    # carries :historical for the type — so closes on the asset are a fixture
+    # nothing in production produces, and a chart could never fill itself.
+    it "draws no chart at all for fixed income, even with closes on file" do
+      cetes = create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28 días",
+                     yield_rate: 11.15, face_value: 10.0, maturity_date: 20.days.from_now.to_date)
+      5.times { |d| create(:asset_price_history, asset: cetes, date: Date.current - d, close: 9.8 + (d * 0.01)) }
+
+      get market_asset_path(cetes.symbol)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("chart-tooltip")
+      expect(response.body).not_to include('data-controller="chart"')
+    end
   end
   # X14: the chart drew a 30-day window and its heading never said so, while a
   # row's sparkline draws seven sessions. Same silhouette, different scale.

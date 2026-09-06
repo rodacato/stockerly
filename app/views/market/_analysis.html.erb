@@ -7,11 +7,11 @@
 
 <%= render "market/state_verdict", state: @state, state_source: @state_source, holding: @holding %>
 
-<% if @asset.asset_type_fixed_income? %>
-  <%# Fixed income charts a rate, which the SVG already renders with its own
-      min/max badges. %>
-  <%= render "market/price_chart" %>
-<% elsif @price_histories.size >= 2 %>
+<%# No price chart for fixed income (D98). Nothing writes `asset_price_histories`
+    for a CETE — no registered source carries :historical for the type, and the
+    auction curve lands in CetesRateHistory instead — so the branch that used to
+    render one could never have data. Its absence is the honest state. %>
+<% if @price_histories.size >= 2 && !@asset.asset_type_fixed_income? %>
   <section class="<%= card_classes("p-5") %>">
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
       <%= t("market.precio.titulo", currency: @asset.currency) %>
