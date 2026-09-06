@@ -556,6 +556,8 @@ es-MX:
       profitability: Rentabilidad
       risk: Riesgo
       valuation: Valuación
+    chart_layers:
+      niveles: Niveles
     chips:
       como_el_mercado: se mueve como el mercado
       cubre_corto_plazo: cubre el corto plazo
@@ -901,6 +903,7 @@ es-MX:
       high: a %{percent} de su máximo del año
       low: a %{percent} de su mínimo del año
       titulo: RANGO 52 SEMANAS
+      tu_costo: tu costo %{value}
     returns:
       titulo: Rendimiento
       ventana:

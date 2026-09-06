@@ -46,4 +46,20 @@ RSpec.describe MarketData::Domain::FiftyTwoWeekRange do
       expect(described_class.for(price: 150, low: 150, high: 150)).to be_nil
     end
   end
+
+  describe "#position_of" do
+    it "places any other price on the track the reading already describes" do
+      expect(reading(150).position_of(125)).to eq(0.25)
+      expect(reading(150).position_of(200)).to eq(1)
+    end
+
+    it "clamps a cost older than the year rather than running off the bar" do
+      expect(reading(150).position_of(40)).to eq(0)
+      expect(reading(150).position_of(260)).to eq(1)
+    end
+
+    it "returns nil when there is no price to place, so nothing is drawn" do
+      expect(reading(150).position_of(nil)).to be_nil
+    end
+  end
 end

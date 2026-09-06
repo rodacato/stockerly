@@ -6,11 +6,18 @@ import { createChart, LineSeries } from "lightweight-charts"
 //
 // `series` is an array of { data: [{time, value}], token, width } — the
 // Consolidado draws two (value and contributed), the asset detail one.
+// `levels` are the ATR price lines (D96); the legend's checkbox adds and
+// removes them, and the choice is remembered per browser.
+const LEVEL_ALPHA = { entry: "38", exit: "4d" }
+const STORAGE_KEY = "stockerly:chart-layers"
+
 export default class ChartController extends Controller {
-  static values = { series: Array, height: { type: Number, default: 220 } }
+  static targets = ["canvas", "layerToggle"]
+  static values = { series: Array, height: { type: Number, default: 220 }, levels: Array }
 
   connect() {
-    this.chart = createChart(this.element, {
+    this.priceLines = []
+    this.chart = createChart(this.container, {
       height: this.heightValue,
       layout: {
         attributionLogo: false,
@@ -27,22 +34,93 @@ export default class ChartController extends Controller {
     })
 
     this.seriesValue.forEach(({ data, token, width }) => {
-      this.chart
-        .addSeries(LineSeries, { color: this.token(token || "--color-chart-1"), lineWidth: width || 2 })
-        .setData(data)
+      const series = this.chart.addSeries(LineSeries, {
+        color: this.token(token || "--color-chart-1"),
+        lineWidth: width || 2
+      })
+      series.setData(data)
+      this.mainSeries ||= series
     })
 
+    this.restoreLayers()
     this.chart.timeScale().fitContent()
     this.resizeObserver = new ResizeObserver(([entry]) =>
       this.chart.applyOptions({ width: entry.contentRect.width })
     )
-    this.resizeObserver.observe(this.element)
+    this.resizeObserver.observe(this.container)
   }
 
   disconnect() {
     this.resizeObserver?.disconnect()
     this.chart?.remove()
     this.chart = null
+    this.mainSeries = null
+    this.priceLines = []
+  }
+
+  toggleLayer(event) {
+    const { layer, checked } = { layer: event.target.dataset.layer, checked: event.target.checked }
+
+    if (layer === "levels") checked ? this.drawLevels() : this.clearLevels()
+    this.remember(layer, checked)
+  }
+
+  // A checkbox the server rendered checked is authoritative until this browser
+  // has said otherwise, so only a stored `false` turns a layer off.
+  restoreLayers() {
+    const stored = this.storedLayers()
+
+    this.layerToggleTargets.forEach((input) => {
+      const layer = input.dataset.layer
+      if (layer in stored) input.checked = stored[layer]
+    })
+
+    if (this.layerChecked("levels")) this.drawLevels()
+  }
+
+  drawLevels() {
+    if (!this.mainSeries || this.priceLines.length) return
+
+    this.priceLines = this.levelsValue.map(({ price, kind }) =>
+      this.mainSeries.createPriceLine({
+        price,
+        color: this.token("--color-fg-subtle") + (LEVEL_ALPHA[kind] || LEVEL_ALPHA.entry),
+        lineWidth: 1,
+        axisLabelVisible: false
+      })
+    )
+  }
+
+  clearLevels() {
+    this.priceLines.forEach((line) => this.mainSeries?.removePriceLine(line))
+    this.priceLines = []
+  }
+
+  layerChecked(layer) {
+    const input = this.layerToggleTargets.find((target) => target.dataset.layer === layer)
+    return input ? input.checked : false
+  }
+
+  // A private window, cleared site data or a browser that refuses storage all
+  // land here; the server-rendered state is the answer in every one of them.
+  storedLayers() {
+    try {
+      return JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || {}
+    } catch {
+      return {}
+    }
+  }
+
+  remember(layer, checked) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...this.storedLayers(), [layer]: checked }))
+    } catch {
+      // storage is a convenience here, never the source of what is drawn
+    }
+  }
+
+  get container() {
+    return this.hasCanvasTarget ? this.canvasTarget : this.element
   }
 
   token(name) {

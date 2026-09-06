@@ -62,4 +62,33 @@ RSpec.describe MarketHelper, type: :helper do
       expect(helper.observation_dot_class("neutral")).to eq("bg-primary")
     end
   end
+
+  describe "#chart_levels_json" do
+    def layer(price, distance) = MarketData::Domain::VolatilityLayers::Layer.new(step: 1, price: price, atr_distance: distance)
+
+    it "tells the trailing exit from an entry layer, which its price cannot" do
+      levels = helper.chart_levels_json({ atr: 4.0, entries: [ layer(96.0, 1.0) ], exit: layer(88.0, 3.0) }, holding: true)
+
+      expect(JSON.parse(levels)).to eq([
+        { "price" => 96.0, "kind" => "entry" },
+        { "price" => 88.0, "kind" => "exit" }
+      ])
+    end
+
+    it "withholds the exit from an asset you only watch, exactly as the card does" do
+      levels = helper.chart_levels_json({ atr: 4.0, entries: [ layer(96.0, 1.0) ], exit: layer(88.0, 3.0) }, holding: false)
+
+      expect(JSON.parse(levels).pluck("kind")).to eq([ "entry" ])
+    end
+
+    it "carries only the entries when the reading produced no trailing exit" do
+      levels = helper.chart_levels_json({ atr: 4.0, entries: [ layer(96.0, 1.0) ], exit: nil }, holding: true)
+
+      expect(JSON.parse(levels).pluck("kind")).to eq([ "entry" ])
+    end
+
+    it "draws nothing when the reading carried no ATR at all" do
+      expect(helper.chart_levels_json(nil)).to eq("[]")
+    end
+  end
 end
