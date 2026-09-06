@@ -601,23 +601,25 @@ es-MX:
       vacio_titulo: Sin reportes disponibles
     estado:
       neutral:
-        holding: Sin extremos técnicos hoy. Ni sobrecompra ni sobreventa en RSI ni
-          en las bandas.
-        label: Sin extremos
-        watching: Sin extremos técnicos hoy. Ni sobrecompra ni sobreventa en RSI ni
-          en las bandas.
+        holding: Ni por arriba ni por abajo de su rango habitual. El RSI y las bandas
+          están en zona media.
+        label: Dentro de lo normal
+        watching: Ni por arriba ni por abajo de su rango habitual. El RSI y las bandas
+          están en zona media.
       oversold:
-        holding: Zona de sobreventa. Si ya tienes, es donde el activo ha caído más
-          de lo habitual, no una señal de vender.
-        label: Sobrevendido
-        watching: Zona de sobreventa. Es donde una compra ha entrado históricamente
-          más barata, con el riesgo de que siga bajando.
+        holding: Cotiza por debajo de su rango habitual. Es donde el activo ha caído
+          más de lo que acostumbra, medido contra sí mismo.
+        label: Cayó más que de costumbre
+        watching: 'Cotiza por debajo de su rango habitual. Desde aquí, un límite por
+          debajo del precio se ha llenado menos seguido que en un día cualquiera:
+          54% contra 58% a 10 sesiones.'
       stretched:
-        holding: Estirado — no es momento de comprar. Si tienes, es zona de tomar
-          ganancias parciales, no de entrar.
-        label: Estirado
-        watching: Estirado — no es momento de entrar. El activo cotiza por encima
-          de su rango habitual.
+        holding: Cotiza por encima de su rango habitual. Es donde el activo ha subido
+          más de lo que acostumbra, medido contra sí mismo.
+        label: Subió más que de costumbre
+        watching: 'Cotiza por encima de su rango habitual. Desde aquí, un límite por
+          debajo del precio se ha llenado más seguido que en un día cualquiera: 62%
+          contra 58% a 10 sesiones.'
     fixed_income_detail:
       antes_isr: Rendimiento anualizado · antes de ISR
       avance: Avance al vencimiento
@@ -676,10 +678,11 @@ es-MX:
       etiquetas_plot:
         entrada: C%{n}
         salida: SAL
+      evidencia: "−1 ATR se llenó 45% de las veces en 5 sesiones · 94,282 días medidos"
       explicacion: Escalonados por el rango diario de este activo, no por números
         redondos. Un mismo porcentaje es ruido en un activo y un evento en otro.
       procedencia: ATR %{atr} · lectura del %{fecha}
-      titulo: Niveles por volatilidad
+      seccion: Dónde se cruzan tus precios
     market_context:
       abierto: abierto
       cerrado: cerrado
@@ -913,6 +916,11 @@ es-MX:
       low: a %{percent} de su mínimo del año
       titulo: RANGO 52 SEMANAS
       tu_costo: tu costo %{value}
+    reading:
+      titulo: Qué dicen los indicadores
+    recent_observations:
+      alcance: Zonas técnicas que %{symbol} cruzó en los últimos %{dias} días
+      seccion: Lo que pasó recientemente
     returns:
       titulo: Rendimiento
       ventana:
@@ -950,7 +958,6 @@ es-MX:
         neutral: Fuera de las zonas de sobrecompra y sobreventa
         overbought: En zona de sobrecompra (RSI(14) por encima de 70)
         oversold: En zona de sobreventa (RSI(14) por debajo de 30)
-      titulo: Señales
     statement_table:
       concepto: Concepto
       margen: Margen %

@@ -1,0 +1,30 @@
+<%# D114: one card where there used to be three. Señales, Niveles and
+    Observaciones each answered "what do the indicators say" with a border of
+    its own, so the screen offered three glances at one question. This is the
+    move D111 made for the fundamentals — sections in a card, not cards in a
+    card — applied one level up.
+
+    The card draws when any of the three has something, because the reader's
+    question does not disappear when one source is empty.
+    Locals: asset, signals, reading, layers, holding, observations. %>
+<% sections = [ signals.any?,
+                layers.present? && layers[:entries].any?,
+                observations.any? ] %>
+<% if sections.any? %>
+  <section class="<%= card_classes("shadow-sm overflow-hidden") %>">
+    <header class="flex flex-wrap items-baseline gap-2 px-5 pt-4 pb-3">
+      <h2 class="font-display text-base font-semibold tracking-tight text-fg-default">
+        <%= t(".titulo") %>
+      </h2>
+      <% if reading&.stale? %>
+        <span class="rounded-full bg-bg-muted px-2 py-0.5 text-[11px] font-medium text-fg-subtle">
+          <%= t("market.signals.desactualizado", fecha: short_date_es(reading.calculated_at.to_date)) %>
+        </span>
+      <% end %>
+    </header>
+
+    <%= render "market/signals", signals: signals %>
+    <%= render "market/layers", layers: layers, asset: asset, holding: holding %>
+    <%= render "market/recent_observations", asset: asset, observations: observations %>
+  </section>
+<% end %>

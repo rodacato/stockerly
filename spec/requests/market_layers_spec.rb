@@ -19,7 +19,7 @@ RSpec.describe "Market Asset Detail — niveles por volatilidad", type: :request
 
     get market_asset_path(asset.symbol)
 
-    expect(response.body).to include(I18n.t("market.layers.titulo"))
+    expect(response.body).to include(I18n.t("market.layers.seccion"))
     expect(response.body).to include("96.00", "92.00", "88.00")
   end
 
@@ -43,7 +43,7 @@ RSpec.describe "Market Asset Detail — niveles por volatilidad", type: :request
     get market_asset_path(asset.symbol)
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).not_to include(I18n.t("market.layers.titulo"))
+    expect(response.body).not_to include(I18n.t("market.layers.seccion"))
   end
 
   # An exit level for something you do not hold is a plan for a position that
@@ -61,7 +61,7 @@ RSpec.describe "Market Asset Detail — niveles por volatilidad", type: :request
     it "is absent for an asset that is only watched" do
       get market_asset_path(asset.symbol)
 
-      expect(response.body).to include(I18n.t("market.layers.titulo"))
+      expect(response.body).to include(I18n.t("market.layers.seccion"))
       expect(response.body).not_to include(I18n.t("market.layers.etiquetas.salida"))
     end
 

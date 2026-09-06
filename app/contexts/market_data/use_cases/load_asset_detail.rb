@@ -29,6 +29,10 @@ module MarketData
       # The heading and the query read one value, so the window cannot drift
       # between what the chart says and what it plots.
       PE_CHART_DAYS = 90
+      # The heading and the query read one value, for the same reason
+      # PE_CHART_DAYS exists: the copy cannot claim a window the query does not
+      # use.
+      OBSERVATION_WINDOW_DAYS = 30
 
       def call(symbol:, range: nil)
         asset = Asset.find_by(symbol: symbol.upcase)
@@ -85,7 +89,7 @@ module MarketData
 
       # ADR-014: the state is derived, the phrase is selected, neither is composed downstream.
       def reading_for(asset)
-        observations = asset.technical_observations.recent.within_last(30).limit(5)
+        observations = asset.technical_observations.recent.within_last(OBSERVATION_WINDOW_DAYS).limit(5)
         day_change = Domain::DayChange.from_closes(Queries::PriceSeries.for(asset).latest(2).map(&:close))
 
         {

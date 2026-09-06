@@ -236,7 +236,7 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
     it "renders the es-MX panel with descriptive copy and a tag column" do
       visit market_asset_path(apple.symbol)
 
-      expect(page).to have_content("Observaciones recientes")
+      expect(page).to have_content(I18n.t("market.recent_observations.seccion"))
       expect(page).to have_content("entró en zona de sobreventa")
       expect(page).to have_content("cruzó al alza su MA50")
       expect(page).to have_content("RSI")

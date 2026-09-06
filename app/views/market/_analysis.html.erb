@@ -64,9 +64,10 @@
   <%= render "market/fixed_income_detail", asset: @asset, yield_data: @yield_data %>
 <% else %>
   <%= render "market/market_context", asset: @asset, context: @market_context %>
-  <%= render "market/signals", signals: @signals, reading: @reading %>
-  <%= render "market/layers", layers: @layers, asset: @asset, holding: @holding %>
-  <%= render "market/recent_observations", asset: @asset, observations: @recent_observations %>
+  <%# D114: one card, three sections. It used to be three cards answering the
+      same question, which is three glances at one question. %>
+  <%= render "market/reading", asset: @asset, signals: @signals, reading: @reading,
+             layers: @layers, holding: @holding, observations: @recent_observations %>
   <%= render "market/news", asset: @asset, news: @news %>
   <%= render "market/fundamentals_block", asset: @asset, presenter: @presenter, has_fundamentals: @has_fundamentals %>
   <%= render "market/pe_chart" if @asset.asset_type_stock? %>

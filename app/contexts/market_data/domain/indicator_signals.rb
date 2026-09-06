@@ -17,7 +17,10 @@ module MarketData
       def self.for(reading)
         return [] if reading.nil?
 
-        [ rsi_row(reading), moving_average_row(reading),
+        # D114: the moving averages lead. Measured over 94,282 days, the MA200
+        # side is the only one of these that moves whether an entry held; the
+        # RSI moves whether it fills. The order follows the evidence.
+        [ moving_average_row(reading), rsi_row(reading),
           bollinger_row(reading), atr_row(reading) ].compact
       end
 
