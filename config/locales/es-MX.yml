@@ -668,7 +668,6 @@ es-MX:
       sin_cambio_dia: sin dato del día
       sin_precio: Precio no disponible
     layers:
-      disclaimer: Niveles, no recomendaciones.
       distancia_abajo: "%{atr} ATR por abajo del precio actual"
       distancia_maximo: "%{atr} ATR por abajo del máximo de %{sesiones} sesiones"
       etiquetas:
@@ -930,7 +929,6 @@ es-MX:
         below_lower: Precio por abajo de la banda inferior de Bollinger
         inside: Precio dentro de las bandas de Bollinger
       desactualizado: Lectura del %{fecha}
-      disclaimer: Lecturas, no recomendaciones.
       etiquetas:
         atr: ATR (14)
         bollinger: BANDAS
