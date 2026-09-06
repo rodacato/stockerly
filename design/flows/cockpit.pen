@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "band: happy path (left → right) · desktop stacks below it\nkit-version-source: 0.8.1 · brief-schema: 1\n\n1. PURPOSE\n   The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile first.\n\n2. ENTRY POINTS\n   - Login lands here — /dashboard (config/routes.rb)\n   - A radar or signal row opens the asset detail — /market/:symbol (config/routes.rb)\n   - Panorama's patrimonio hero and Holdings' summary card both open Consolidado — one screen, two doors\n\n3. SCREENS  (left → right)\n   - Panorama — Default, Tranquilo — bha3e, H9a5cH\n   - Señales — Default — lNpAd (the observation feed, /signals)\n   - Asset detail — Análisis (+ Aviso TradingView), Mi posición — EPRHp, L0HacI, fP4zv\n   - Consolidado — Default — tHAu1\n   - Desktop (1280) — Panorama, Asset · Análisis, Consolidado — FL7Uk, K5e985, lc9x8\n\n4. BUSINESS RULES\n\n   RADAR AND ROWS\n   - The radar draws Holdings and Watchlist together, ordered by what moved (assemble_panorama.rb)\n   - A watched row is told from a holding by the ISO prefix its price keeps; a holding's value drops it (D10)\n   - Rows lead with the change in the radar and with the value in Cartera — same component (D69/D72)\n\n   THE CHART — every value on it comes from one real series (D103)\n   - The canvas plots NVDA's own production closes. Price, bands, RSI, the ATR levels, the cost line and the 52-week bar are all derived from that one series through the app's own TechnicalIndicators and VolatilityLayers. Nothing on the chart is drawn by hand\n   - The price→y transform is a declared variable set, measured from the shipping chart rather than assumed: chart-scale-* below. A number that cannot be derived is not drawn\n   - The window is a control, not a constant: 1S/1M/3M/1A/Máx, default 3M, and the heading states no window because the active pill does (D93)\n   - Overlays are layers behind a legend — Niveles, Bollinger, RSI — all on by default, each hideable, and the range pills lead the card above the plot (D96)\n   - The legend carries one checkbox per layer this range can draw, so its count varies: Bollinger and RSI exist on 1S/1M/3M only, and 1A/Máx offer neither (D101)\n   - Every level names itself and prices itself; the plot takes the short form (C1/C2/C3/SAL) and the Niveles card spells each one out and prices it in ATR (D102, D106)\n   - Colour on a level says which side of the ladder it is on — positive for the entry rungs, negative for the trailing exit. A kind, never a forecast, and it deliberately borrows two tokens that mean gain and loss everywhere else (D102)\n   - The RSI pane is a different measurement and says so: its own header, its own 0–100 scale, and guides at the thresholds the Señales card already reads (D108)\n   - The time axis is es-MX. The library formats it, so it is the one string the locale file cannot reach and the only place a month name is not produced by l() (D105)\n   - Tu costo is drawn over the plot in neutral and as a primary tick on the 52-week bar, never in a semantic colour — a cost is a reference, not a verdict (D98). It carries its name on the line and its number on the axis (D104), and it is absent, with the legend saying so, when it falls outside what the price did in this window (D107)\n   - The O/H/L/C/Vol strip sits with the range control and reads the LATEST bar, not the range's aggregate: the control says what is plotted, the strip says what the last session did. It drops the currency prefix because the heading already declares it (D10)\n   - The TradingView embed asks for an explicit height rather than measuring the frame it mounts into, and the button that opens it also closes it. It is opt-in, mounts only on click, and its notice is shown once; stocks and ETFs only (D66)\n\n   THE REST OF THE DETAIL\n   - Block order, stated once rather than implied by the order they were added: Lectura (what today is) → Señales (the readings behind it) → Niveles (how far this asset moves) → Observaciones (what already happened). Verdict, evidence, distance, history\n   - Rendimiento has five windows — 1D/1S/1M/3M/1A — money leading and the percentage following, and it is money-weighted, counting no money you added (D95)\n   - The anchor reads cost when you hold, the alert threshold when you watch (D67)\n   - Fundamentals are asked for, never enqueued by the read (market_controller.rb)\n\n   COPY\n   - es-MX. Read ADR-001 → ADR-013 → ADR-014 forward before touching any of it. A verb is allowed when it is a lookup over a persisted observation; a sentence is allowed when it comes from a closed catalogue. Neither may be composed in a template\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, market.*, posicion.*.\n   NOT all of it: seven partials under app/views/market carry zero t() and are hardcoded es-MX —\n   _analyst_target, _company_facts, _disclaimer, _pe_chart, _price_chart, earnings_tab,\n   statements_tab. The directory-level count hides them because the rest of market/ is dense with\n   keys. Razón P/U histórica and Acerca de la empresa are drawn from that hardcoded copy, which is\n   the honest source until they are migrated.\n\n6. STATES NOT DRAWN\n   - Panorama / Black swan — nothing computes market breadth, so there is no state to draw (D25, D51)\n   - Stocks Fear & Greed — no equivalent source exists and relabelling another indicator would be a lie (D38)\n   - The confluence semáforo — RETIRED, not deferred (D84). Not a state left undrawn: the engine measured no better than its strongest light alone\n   - A state chip on a radar row — DECLINED with a reason (D85)\n   - Rango52 with no data, and the anchor with neither position nor rule — both render absent, which is a swap not a state\n   - Señales / Vacío — components/_empty_state, already drawn elsewhere; a swap, not a state\n   - The chart with the cost line withheld — a legend note, not a state (D107)\n\n7. OPEN FINDINGS\n   D106 — the level badges no longer cover the series, but SALIDA and CAPA 2 still collide vertically (8.2px apart on NVDA). Abbreviation is horizontal; the gap is the price scale, and it is data-dependent rather than permanent.\n   The chart is still three separate copies — this artboard, Aviso TradingView and the desktop one. They agree today because all three were re-cut from one corrected source, but nothing keeps them in step, which is exactly how they drifted before (D103). Promoting Chart to a reusable frame is the fix and has not been done.\n   Señales diverges from what the code renders. market/_signals draws label | phrase | value and nothing else; the artboard adds a 0–100 mini scale with a marker and a note row under each reading. Design-ahead, so it owes a build-or-retire verdict rather than a quiet deletion.\n   Lectura splits the state into a verdict line and a subtitle; market/_state_verdict renders the label and then the whole phrase from the catalogue. The artboard's split is not a shape the code can produce.\n   The ≈ MXN row does not render on the reference instance. approximate_in_preferred returns nil when the asset already quotes in the reader's preferred currency, and the account this artboard is drawn from prefers USD. Honest for an MXN reader, absent for this one — worth deciding which the artboard should show.\n   Asset · Mi posición still carries the old invented set — its header reads 184.20 for the same asset whose Análisis tab now reads 230.72. It was left alone rather than half-corrected: its position figures all derive from that price, so changing one number would make it less coherent, not more. It is the next artboard to redo from the same series.\n\n8. HISTORY\n   → LOG — Cockpit, bottom of this file.\n\nTHE SCALE, so the chart can be checked rather than admired (D103). Measured on the shipping chart,\n3M at 318px, all layers on:\n   chart-scale-price-y0 = 44.91   y of the last close (230.72)\n   chart-scale-px-unit  = 2.4919  pixels per price unit, y increasing downward\n   chart-scale-pane-h   = 167     price pane; the RSI pane is 64 inside CHART_HEIGHT 260\n   y = chart-scale-price-y0 + (230.72 − price) × chart-scale-px-unit\nThe plot's own width is pinned to 318 on canvas because a path cannot reflow; in code\nlightweight-charts is responsive (D2) — do not copy the pinned width into the ERB.",
+          "content": "band: happy path (left → right) · desktop stacks below it\nkit-version-source: 0.8.1 · brief-schema: 1\n\n1. PURPOSE\n   The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile first.\n\n2. ENTRY POINTS\n   - Login lands here — /dashboard (config/routes.rb)\n   - A radar or signal row opens the asset detail — /market/:symbol (config/routes.rb)\n   - Panorama's patrimonio hero and Holdings' summary card both open Consolidado — one screen, two doors\n\n3. SCREENS  (left → right)\n   - Panorama — Default, Tranquilo — bha3e, H9a5cH\n   - Señales — Default — lNpAd (the observation feed, /signals)\n   - Asset detail — Análisis (+ Aviso TradingView), Mi posición — EPRHp, L0HacI, fP4zv\n   - Consolidado — Default — tHAu1\n   - Desktop (1280) — Panorama, Asset · Análisis, Consolidado — FL7Uk, K5e985, lc9x8\n\n4. BUSINESS RULES\n\n   RADAR AND ROWS\n   - The radar draws Holdings and Watchlist together, ordered by what moved (assemble_panorama.rb)\n   - A watched row is told from a holding by the ISO prefix its price keeps; a holding's value drops it (D10)\n   - Rows lead with the change in the radar and with the value in Cartera — same component (D69/D72)\n\n   THE CHART — every value on it comes from one real series (D103)\n   - The canvas plots NVDA's own production closes. Price, bands, RSI, the ATR levels, the cost line and the 52-week bar are all derived from that one series through the app's own TechnicalIndicators and VolatilityLayers. Nothing on the chart is drawn by hand\n   - The price→y transform is a declared variable set, measured from the shipping chart rather than assumed: chart-scale-* below. A number that cannot be derived is not drawn\n   - The window is a control, not a constant: 1S/1M/3M/1A/Máx, default 3M, and the heading states no window because the active pill does (D93)\n   - Overlays are layers behind a legend — Niveles, Bollinger, RSI — all on by default, each hideable, and the range pills lead the card above the plot (D96)\n   - The legend carries one checkbox per layer this range can draw, so its count varies: Bollinger and RSI exist on 1S/1M/3M only, and 1A/Máx offer neither (D101)\n   - Every level names itself and prices itself; the plot takes the short form (C1/C2/C3/SAL) and the Niveles card spells each one out and prices it in ATR (D102, D106)\n   - Colour on a level says which side of the ladder it is on — positive for the entry rungs, negative for the trailing exit. A kind, never a forecast, and it deliberately borrows two tokens that mean gain and loss everywhere else (D102)\n   - The RSI pane is a different measurement and says so: its own header, its own 0–100 scale, and guides at the thresholds the Señales card already reads (D108)\n   - The time axis is es-MX. The library formats it, so it is the one string the locale file cannot reach and the only place a month name is not produced by l() (D105)\n   - Tu costo is drawn over the plot in neutral and as a primary tick on the 52-week bar, never in a semantic colour — a cost is a reference, not a verdict (D98). It carries its name on the line and its number on the axis (D104), and it is absent, with the legend saying so, when it falls outside what the price did in this window (D107)\n   - The O/H/L/C/Vol strip sits with the range control and reads the LATEST bar, not the range's aggregate: the control says what is plotted, the strip says what the last session did. It drops the currency prefix because the heading already declares it (D10)\n   - The TradingView embed asks for an explicit height rather than measuring the frame it mounts into, and the button that opens it also closes it. It is opt-in, mounts only on click, and its notice is shown once; stocks and ETFs only (D66)\n\n   THE REST OF THE DETAIL\n   - Block order, stated once rather than implied by the order they were added: Lectura (what today is) → Señales (the readings behind it) → Niveles (how far this asset moves) → Observaciones (what already happened). Verdict, evidence, distance, history\n   - Rendimiento has five windows — 1D/1S/1M/3M/1A — money leading and the percentage following, and it is money-weighted, counting no money you added (D95)\n   - The anchor reads cost when you hold, the alert threshold when you watch (D67)\n   - Fundamentals are asked for, never enqueued by the read (market_controller.rb)\n\n   COPY\n   - es-MX. Read ADR-001 → ADR-013 → ADR-014 forward before touching any of it. A verb is allowed when it is a lookup over a persisted observation; a sentence is allowed when it comes from a closed catalogue. Neither may be composed in a template\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, market.*, posicion.*.\n   NOT all of it: seven partials under app/views/market carry zero t() and are hardcoded es-MX —\n   _analyst_target, _company_facts, _disclaimer, _pe_chart, _price_chart, earnings_tab,\n   statements_tab. The directory-level count hides them because the rest of market/ is dense with\n   keys. Razón P/U histórica and Acerca de la empresa are drawn from that hardcoded copy, which is\n   the honest source until they are migrated.\n\n6. STATES NOT DRAWN\n   - Panorama / Black swan — nothing computes market breadth, so there is no state to draw (D25, D51)\n   - Stocks Fear & Greed — no equivalent source exists and relabelling another indicator would be a lie (D38)\n   - The confluence semáforo — RETIRED, not deferred (D84). Not a state left undrawn: the engine measured no better than its strongest light alone\n   - A state chip on a radar row — DECLINED with a reason (D85)\n   - Rango52 with no data, and the anchor with neither position nor rule — both render absent, which is a swap not a state\n   - Señales / Vacío — components/_empty_state, already drawn elsewhere; a swap, not a state\n   - The chart with the cost line withheld — a legend note, not a state (D107)\n\n7. OPEN FINDINGS\n   D106 — the level badges no longer cover the series, but SALIDA and CAPA 2 still collide vertically (8.2px apart on NVDA). Abbreviation is horizontal; the gap is the price scale, and it is data-dependent rather than permanent.\n   The chart is still three separate copies — this artboard, Aviso TradingView and the desktop one. They agree today because all three were re-cut from one corrected source, but nothing keeps them in step, which is exactly how they drifted before (D103). Promoting Chart to a reusable frame is the fix and has not been done.\n   Señales diverges from what the code renders. market/_signals draws label | phrase | value and nothing else; the artboard adds a 0–100 mini scale with a marker and a note row under each reading. Design-ahead, so it owes a build-or-retire verdict rather than a quiet deletion.\n   Lectura splits the state into a verdict line and a subtitle; market/_state_verdict renders the label and then the whole phrase from the catalogue. The artboard's split is not a shape the code can produce.\n   The ≈ MXN row does not render on the reference instance. approximate_in_preferred returns nil when the asset already quotes in the reader's preferred currency, and the account this artboard is drawn from prefers USD. Honest for an MXN reader, absent for this one — worth deciding which the artboard should show.\n   Asset · Mi posición still carries the old invented set — its header reads 184.20 for the same asset whose Análisis tab now reads 230.72. It was left alone rather than half-corrected: its position figures all derive from that price, so changing one number would make it less coherent, not more. It is the next artboard to redo from the same series.\n   Fundamentales draws a different shape from the one the code renders. market/_fundamentals_block renders a responsive GRID of metric cards, each with its own ⓘ popover carrying 'qué mide' and 'cómo leerlo', and it groups by category only inside the 'Ver todos' expansion. The artboard draws a flat two-column list with the category headers always visible and no popovers. Both are defensible; they are not the same screen, and the difference has never been decided.\n   Only three metrics can carry a chip, and that is deliberate (D36): beta, payout_ratio and current_ratio, the ones whose threshold is part of the metric's own definition. FundamentalsHelper names 'caro vs su historia' in a comment as excluded on purpose, because it needs the asset's own P/E history the partial is never given. The tones do span the full range — cubre_corto_plazo is positive, sobre_utilidades is negative, volatil and liquidez_corta are warning, defensivo and como_el_mercado are neutral — so what the removed chips lacked was not a positive/negative vocabulary but a defensible threshold. **And none of the three is in the extract**: SUMMARY_METRICS is pe_ratio, net_margin, revenue_growth, debt_to_equity and dividend_yield, so all five cards a reader meets carry zero interpretation and Beta's chip lives behind Ver todos. That is [#429](https://github.com/rodacato/stockerly/issues/429) in one line, and it is why this artboard now draws those five and no chip — it drew P/E, P/S, ROE, Margen neto, Ingresos and a Beta chip, which is a set the summary never shows.\n\n8. HISTORY\n   → LOG — Cockpit, bottom of this file.\n\nTHE SCALE, so the chart can be checked rather than admired (D103). Measured on the shipping chart,\n3M at 318px, all layers on:\n   chart-scale-price-y0 = 44.91   y of the last close (230.72)\n   chart-scale-px-unit  = 2.4919  pixels per price unit, y increasing downward\n   chart-scale-pane-h   = 167     price pane; the RSI pane is 64 inside CHART_HEIGHT 260\n   y = chart-scale-price-y0 + (230.72 − price) × chart-scale-px-unit\nThe plot's own width is pinned to 318 on canvas because a path cannot reflow; in code\nlightweight-charts is responsive (D2) — do not copy the pinned width into the ERB.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -10633,44 +10633,34 @@
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "Ip8Ej",
-                  "name": "L",
-                  "fill": "$fg-subtle",
-                  "content": "VALUACIÓN",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 0.8
-                },
-                {
                   "type": "frame",
-                  "id": "GG6nm",
-                  "name": "P/E",
+                  "id": "i9fYp",
+                  "name": "P/U",
                   "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
+                  "layout": "vertical",
+                  "gap": 2,
                   "children": [
                     {
-                      "type": "text",
-                      "id": "m2Fao",
-                      "name": "lb",
-                      "fill": "$fg-default",
-                      "content": "P/E",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
                       "type": "frame",
-                      "id": "o64zSY",
-                      "name": "rt",
-                      "gap": "$space-2",
+                      "id": "G0YJx",
+                      "name": "top",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "g3Pg6r",
+                          "id": "l8uSey",
+                          "name": "lb",
+                          "fill": "$fg-default",
+                          "content": "P/U",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "D1uVU",
                           "name": "v",
                           "fill": "$fg-default",
                           "content": "28.24",
@@ -10679,126 +10669,50 @@
                           "fontWeight": "600"
                         }
                       ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "OyLoS",
-                  "name": "P/S",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "d44wpn",
-                      "name": "lb",
-                      "fill": "$fg-default",
-                      "content": "P/S",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
                     },
                     {
-                      "type": "frame",
-                      "id": "srCOZ",
-                      "name": "rt",
-                      "gap": "$space-2",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "ouMHB",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "18.49",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "JAHTf",
-                  "name": "L",
-                  "fill": "$fg-subtle",
-                  "content": "RENTABILIDAD",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 0.8
-                },
-                {
-                  "type": "frame",
-                  "id": "dDDqM",
-                  "name": "ROE",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
                       "type": "text",
-                      "id": "pM4X0",
-                      "name": "lb",
-                      "fill": "$fg-default",
-                      "content": "ROE",
+                      "id": "w1gTa",
+                      "name": "d",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Precio entre la utilidad por acción",
                       "fontFamily": "$font-sans",
-                      "fontSize": 13,
+                      "fontSize": 12,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "R946o",
-                      "name": "rt",
-                      "gap": "$space-2",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "zLkc6",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "117.2%",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        }
-                      ]
                     }
                   ]
                 },
                 {
                   "type": "frame",
-                  "id": "Aj1Hh",
+                  "id": "MS0v5",
                   "name": "Margen neto",
                   "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
+                  "layout": "vertical",
+                  "gap": 2,
                   "children": [
                     {
-                      "type": "text",
-                      "id": "xOGRJ",
-                      "name": "lb",
-                      "fill": "$fg-default",
-                      "content": "Margen neto",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
                       "type": "frame",
-                      "id": "LLO9q",
-                      "name": "rt",
-                      "gap": "$space-2",
+                      "id": "JCPZe",
+                      "name": "top",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "npz3S",
+                          "id": "KnR3f",
+                          "name": "lb",
+                          "fill": "$fg-default",
+                          "content": "Margen neto",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "dckF5",
                           "name": "v",
                           "fill": "$fg-default",
                           "content": "63.7%",
@@ -10807,118 +10721,174 @@
                           "fontWeight": "600"
                         }
                       ]
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "LMPz7",
-                  "name": "L",
-                  "fill": "$fg-subtle",
-                  "content": "CRECIMIENTO Y RIESGO",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 0.8
-                },
-                {
-                  "type": "frame",
-                  "id": "J2ESQ",
-                  "name": "Ingresos (TTM)",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "GjYHl",
-                      "name": "lb",
-                      "fill": "$fg-default",
-                      "content": "Ingresos (TTM)",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
                     },
                     {
-                      "type": "frame",
-                      "id": "q5wQsy",
-                      "name": "rt",
-                      "gap": "$space-2",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "WfEoP",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "USD 303.0B",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "sCs47",
+                      "name": "d",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Utilidad neta como porcentaje de los ingresos",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
                 {
                   "type": "frame",
-                  "id": "sUM68",
-                  "name": "Beta",
+                  "id": "DLmfr",
+                  "name": "Crecimiento de ingresos",
                   "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
+                  "layout": "vertical",
+                  "gap": 2,
                   "children": [
                     {
-                      "type": "text",
-                      "id": "qRmxR",
-                      "name": "lb",
-                      "fill": "$fg-default",
-                      "content": "Beta",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
                       "type": "frame",
-                      "id": "r0VAC",
-                      "name": "rt",
-                      "gap": "$space-2",
+                      "id": "MW1i8",
+                      "name": "top",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "RlKcK",
-                          "name": "v",
+                          "id": "G2ooi",
+                          "name": "lb",
                           "fill": "$fg-default",
-                          "content": "2.22",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 14,
-                          "fontWeight": "600"
+                          "content": "Crecimiento de ingresos",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         },
                         {
-                          "type": "frame",
-                          "id": "r3oHp",
-                          "name": "c",
-                          "fill": "$warning-bg",
-                          "cornerRadius": 99,
-                          "padding": [
-                            2,
-                            8
-                          ],
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "R4MKC",
-                              "name": "t",
-                              "fill": "$warning-fg",
-                              "content": "volátil",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 11,
-                              "fontWeight": "600"
-                            }
-                          ]
+                          "type": "text",
+                          "id": "yCnIj",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "105.9%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 14,
+                          "fontWeight": "600"
                         }
                       ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "RwXm0",
+                      "name": "d",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Cambio en ingresos contra el trimestre anterior",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "HQUYx",
+                  "name": "Deuda / Capital",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Hypcb",
+                      "name": "top",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "HRH1F",
+                          "name": "lb",
+                          "fill": "$fg-default",
+                          "content": "Deuda / Capital",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "BmsYe",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "—",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "AJr0L",
+                      "name": "d",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Deuda total frente al capital contable",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "w6p6F",
+                  "name": "Rendimiento por dividendo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "u7hul",
+                      "name": "top",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "jj6RN",
+                          "name": "lb",
+                          "fill": "$fg-default",
+                          "content": "Rendimiento por dividendo",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Uou1U",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "0.1%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "BIUKM",
+                      "name": "d",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Dividendo anual frente al precio de la acción",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -13925,44 +13895,34 @@
                                   ]
                                 },
                                 {
-                                  "type": "text",
-                                  "id": "thOJU",
-                                  "name": "L",
-                                  "fill": "$fg-subtle",
-                                  "content": "VALUACIÓN",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "normal",
-                                  "letterSpacing": 0.8
-                                },
-                                {
                                   "type": "frame",
-                                  "id": "Ah5PY",
-                                  "name": "P/E",
+                                  "id": "HYwxv",
+                                  "name": "P/U",
                                   "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
+                                  "layout": "vertical",
+                                  "gap": 2,
                                   "children": [
                                     {
-                                      "type": "text",
-                                      "id": "lMyjv",
-                                      "name": "lb",
-                                      "fill": "$fg-default",
-                                      "content": "P/E",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    },
-                                    {
                                       "type": "frame",
-                                      "id": "gXuc7",
-                                      "name": "rt",
-                                      "gap": "$space-2",
+                                      "id": "ayijS",
+                                      "name": "top",
+                                      "width": "fill_container",
+                                      "justifyContent": "space_between",
                                       "alignItems": "center",
                                       "children": [
                                         {
                                           "type": "text",
-                                          "id": "lCkr9",
+                                          "id": "z4uDh8",
+                                          "name": "lb",
+                                          "fill": "$fg-default",
+                                          "content": "P/U",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "TaMym",
                                           "name": "v",
                                           "fill": "$fg-default",
                                           "content": "28.24",
@@ -13971,126 +13931,50 @@
                                           "fontWeight": "600"
                                         }
                                       ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "HwhKu",
-                                  "name": "P/S",
-                                  "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "u0h9S",
-                                      "name": "lb",
-                                      "fill": "$fg-default",
-                                      "content": "P/S",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
                                     },
                                     {
-                                      "type": "frame",
-                                      "id": "d2GhEn",
-                                      "name": "rt",
-                                      "gap": "$space-2",
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "S8jcR",
-                                          "name": "v",
-                                          "fill": "$fg-default",
-                                          "content": "18.49",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 14,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "Y9VkZ",
-                                  "name": "L",
-                                  "fill": "$fg-subtle",
-                                  "content": "RENTABILIDAD",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "normal",
-                                  "letterSpacing": 0.8
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "Emafz",
-                                  "name": "ROE",
-                                  "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
                                       "type": "text",
-                                      "id": "boVao",
-                                      "name": "lb",
-                                      "fill": "$fg-default",
-                                      "content": "ROE",
+                                      "id": "mDTd1",
+                                      "name": "d",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Precio entre la utilidad por acción",
                                       "fontFamily": "$font-sans",
-                                      "fontSize": 13,
+                                      "fontSize": 12,
                                       "fontWeight": "normal"
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "wKKdY",
-                                      "name": "rt",
-                                      "gap": "$space-2",
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "g04U0x",
-                                          "name": "v",
-                                          "fill": "$fg-default",
-                                          "content": "117.2%",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 14,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
                                     }
                                   ]
                                 },
                                 {
                                   "type": "frame",
-                                  "id": "ScQJC",
+                                  "id": "Gg765",
                                   "name": "Margen neto",
                                   "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
+                                  "layout": "vertical",
+                                  "gap": 2,
                                   "children": [
                                     {
-                                      "type": "text",
-                                      "id": "CtnFz",
-                                      "name": "lb",
-                                      "fill": "$fg-default",
-                                      "content": "Margen neto",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    },
-                                    {
                                       "type": "frame",
-                                      "id": "C6XK6a",
-                                      "name": "rt",
-                                      "gap": "$space-2",
+                                      "id": "OuFu8",
+                                      "name": "top",
+                                      "width": "fill_container",
+                                      "justifyContent": "space_between",
                                       "alignItems": "center",
                                       "children": [
                                         {
                                           "type": "text",
-                                          "id": "I9eQz",
+                                          "id": "vmiEl",
+                                          "name": "lb",
+                                          "fill": "$fg-default",
+                                          "content": "Margen neto",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "t2RWqH",
                                           "name": "v",
                                           "fill": "$fg-default",
                                           "content": "63.7%",
@@ -14099,118 +13983,174 @@
                                           "fontWeight": "600"
                                         }
                                       ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "CyPXr",
-                                  "name": "L",
-                                  "fill": "$fg-subtle",
-                                  "content": "CRECIMIENTO Y RIESGO",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "normal",
-                                  "letterSpacing": 0.8
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "jZddt",
-                                  "name": "Ingresos (TTM)",
-                                  "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "f5hJ5",
-                                      "name": "lb",
-                                      "fill": "$fg-default",
-                                      "content": "Ingresos (TTM)",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
                                     },
                                     {
-                                      "type": "frame",
-                                      "id": "AlHYR",
-                                      "name": "rt",
-                                      "gap": "$space-2",
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "g1mjTO",
-                                          "name": "v",
-                                          "fill": "$fg-default",
-                                          "content": "USD 303.0B",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 14,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
+                                      "type": "text",
+                                      "id": "H0qzTW",
+                                      "name": "d",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Utilidad neta como porcentaje de los ingresos",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
                                 {
                                   "type": "frame",
-                                  "id": "D1s2h",
-                                  "name": "Beta",
+                                  "id": "DY9rV",
+                                  "name": "Crecimiento de ingresos",
                                   "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
+                                  "layout": "vertical",
+                                  "gap": 2,
                                   "children": [
                                     {
-                                      "type": "text",
-                                      "id": "XiJfV",
-                                      "name": "lb",
-                                      "fill": "$fg-default",
-                                      "content": "Beta",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    },
-                                    {
                                       "type": "frame",
-                                      "id": "iJqW0",
-                                      "name": "rt",
-                                      "gap": "$space-2",
+                                      "id": "k9ZdAK",
+                                      "name": "top",
+                                      "width": "fill_container",
+                                      "justifyContent": "space_between",
                                       "alignItems": "center",
                                       "children": [
                                         {
                                           "type": "text",
-                                          "id": "rLSHP",
-                                          "name": "v",
+                                          "id": "oZRIz",
+                                          "name": "lb",
                                           "fill": "$fg-default",
-                                          "content": "2.22",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 14,
-                                          "fontWeight": "600"
+                                          "content": "Crecimiento de ingresos",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
                                         },
                                         {
-                                          "type": "frame",
-                                          "id": "X6luYr",
-                                          "name": "c",
-                                          "fill": "$warning-bg",
-                                          "cornerRadius": 99,
-                                          "padding": [
-                                            2,
-                                            8
-                                          ],
-                                          "children": [
-                                            {
-                                              "type": "text",
-                                              "id": "Pf3HN",
-                                              "name": "t",
-                                              "fill": "$warning-fg",
-                                              "content": "volátil",
-                                              "fontFamily": "$font-sans",
-                                              "fontSize": 11,
-                                              "fontWeight": "600"
-                                            }
-                                          ]
+                                          "type": "text",
+                                          "id": "PZnfx",
+                                          "name": "v",
+                                          "fill": "$fg-default",
+                                          "content": "105.9%",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 14,
+                                          "fontWeight": "600"
                                         }
                                       ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "SJncn",
+                                      "name": "d",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Cambio en ingresos contra el trimestre anterior",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "aRsqR",
+                                  "name": "Deuda / Capital",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "GYY7o",
+                                      "name": "top",
+                                      "width": "fill_container",
+                                      "justifyContent": "space_between",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "hWvUw",
+                                          "name": "lb",
+                                          "fill": "$fg-default",
+                                          "content": "Deuda / Capital",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "oQiVh",
+                                          "name": "v",
+                                          "fill": "$fg-default",
+                                          "content": "—",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 14,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "yaxwA",
+                                      "name": "d",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Deuda total frente al capital contable",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "u5MwZ8",
+                                  "name": "Rendimiento por dividendo",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "HhsOy",
+                                      "name": "top",
+                                      "width": "fill_container",
+                                      "justifyContent": "space_between",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "d71TYj",
+                                          "name": "lb",
+                                          "fill": "$fg-default",
+                                          "content": "Rendimiento por dividendo",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "d14V5",
+                                          "name": "v",
+                                          "fill": "$fg-default",
+                                          "content": "0.1%",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 14,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "ZeqnJ",
+                                      "name": "d",
+                                      "fill": "$fg-subtle",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Dividendo anual frente al precio de la acción",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
