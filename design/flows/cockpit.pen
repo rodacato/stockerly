@@ -9721,79 +9721,6 @@
                       "fontWeight": "600"
                     }
                   ]
-                },
-                {
-                  "type": "frame",
-                  "id": "RljrB",
-                  "name": "r2",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "HXbMM",
-                      "name": "a",
-                      "fill": "$fg-default",
-                      "content": "Tu umbral · 150",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "ZjigA",
-                      "name": "b",
-                      "fill": "$fg-subtle",
-                      "content": "necesita bajar 18.6%",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "cRbAh",
-                  "name": "r3",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "TaZsH",
-                      "name": "a",
-                      "fill": "$fg-default",
-                      "content": "Regla · vender si RSI>70 3 días",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "rGljk",
-                      "name": "c",
-                      "fill": "$warning-bg",
-                      "cornerRadius": 99,
-                      "padding": [
-                        2,
-                        8
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "qDTuW",
-                          "name": "t",
-                          "fill": "$warning-fg",
-                          "content": "día 1 / 3",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 11,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    }
-                  ]
                 }
               ]
             },
@@ -10567,7 +10494,7 @@
                       "fill": "$fg-default",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Nvidia amplía su acuerdo de suministro con un fabricante asiático",
+                      "content": "Nvidia's Next AI Customer Isn't Building Chatbots—It's Building Humanoid Robots",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -10580,7 +10507,7 @@
                       "fill": "$fg-subtle",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Reuters · hace 6 h",
+                      "content": "benzinga · ayer",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-sans",
                       "fontSize": 11,
@@ -10603,7 +10530,7 @@
                       "fill": "$fg-default",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Los reguladores europeos abren consulta sobre chips de IA",
+                      "content": "Nvidia Is Backstopping AI Boom as 'Buyer of Last Resort,' Prominent Economist Tells 'Prof G'",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -10616,7 +10543,7 @@
                       "fill": "$fg-subtle",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Bloomberg · hace 1 d",
+                      "content": "benzinga · ayer",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-sans",
                       "fontSize": 11,
@@ -10639,7 +10566,7 @@
                       "fill": "$fg-default",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Reporte trimestral: ingresos por centro de datos al alza",
+                      "content": "Musk Could Need $1 Trillion to Build Enough Chips for His AI Ambitions, ARK Says",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -10652,7 +10579,7 @@
                       "fill": "$fg-subtle",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "MarketWatch · hace 3 d",
+                      "content": "benzinga · ayer",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-sans",
                       "fontSize": 11,
@@ -10746,33 +10673,10 @@
                           "id": "g3Pg6r",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "58",
+                          "content": "28.24",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "600"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "U7imQm",
-                          "name": "c",
-                          "fill": "$warning-bg",
-                          "cornerRadius": 99,
-                          "padding": [
-                            2,
-                            8
-                          ],
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "vaNb4",
-                              "name": "t",
-                              "fill": "$warning-fg",
-                              "content": "caro vs su historia",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 11,
-                              "fontWeight": "600"
-                            }
-                          ]
                         }
                       ]
                     }
@@ -10808,7 +10712,7 @@
                           "id": "ouMHB",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "28",
+                          "content": "18.49",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "600"
@@ -10858,33 +10762,10 @@
                           "id": "zLkc6",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "41%",
+                          "content": "117.2%",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "600"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "dBjmp",
-                          "name": "c",
-                          "fill": "$positive-bg",
-                          "cornerRadius": 99,
-                          "padding": [
-                            2,
-                            8
-                          ],
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "e5MqJC",
-                              "name": "t",
-                              "fill": "$positive-fg",
-                              "content": "muy rentable",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 11,
-                              "fontWeight": "600"
-                            }
-                          ]
                         }
                       ]
                     }
@@ -10920,7 +10801,7 @@
                           "id": "npz3S",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "56%",
+                          "content": "63.7%",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "600"
@@ -10970,33 +10851,10 @@
                           "id": "WfEoP",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "+122%",
+                          "content": "USD 303.0B",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "600"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "WBWbl",
-                          "name": "c",
-                          "fill": "$positive-bg",
-                          "cornerRadius": 99,
-                          "padding": [
-                            2,
-                            8
-                          ],
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "KF6uf",
-                              "name": "t",
-                              "fill": "$positive-fg",
-                              "content": "fuerte",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 11,
-                              "fontWeight": "600"
-                            }
-                          ]
                         }
                       ]
                     }
@@ -11032,7 +10890,7 @@
                           "id": "RlKcK",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "1.68",
+                          "content": "2.22",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "600"
@@ -11143,7 +11001,7 @@
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Descripción de la emisora tal como la publica la fuente de fundamentales, sin re-editar.",
+                  "content": "Nvidia Corporation is an American multinational technology company incorporated in Delaware and based in Santa Clara, California. It designs graphics processing units (GPUs) for the gaming and professional markets, as well as system on a chip units (SoCs) for the mobile computing and automotive market.",
                   "lineHeight": 1.4,
                   "fontFamily": "$font-sans",
                   "fontSize": 13,
@@ -11183,7 +11041,7 @@
                       "id": "JB20b",
                       "name": "v",
                       "fill": "$fg-default",
-                      "content": "Tecnología",
+                      "content": "TECHNOLOGY",
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
                       "fontWeight": "600"
@@ -11204,7 +11062,7 @@
                       "id": "UZTN9",
                       "name": "k",
                       "fill": "$fg-subtle",
-                      "content": "Bolsa",
+                      "content": "País",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
                       "fontWeight": "normal"
@@ -11214,7 +11072,7 @@
                       "id": "rt73C",
                       "name": "v",
                       "fill": "$fg-default",
-                      "content": "NASDAQ",
+                      "content": "USA",
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
                       "fontWeight": "600"
@@ -11235,7 +11093,7 @@
                       "id": "zVOlB",
                       "name": "k",
                       "fill": "$fg-subtle",
-                      "content": "País",
+                      "content": "Bolsa",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
                       "fontWeight": "normal"
@@ -11245,7 +11103,7 @@
                       "id": "ju21c",
                       "name": "v",
                       "fill": "$fg-default",
-                      "content": "Estados Unidos",
+                      "content": "NASDAQ",
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
                       "fontWeight": "600"
@@ -13749,7 +13607,7 @@
                                       "fill": "$fg-default",
                                       "textGrowth": "fixed-width",
                                       "width": "fill_container",
-                                      "content": "Nvidia amplía su acuerdo de suministro con un fabricante asiático",
+                                      "content": "Nvidia's Next AI Customer Isn't Building Chatbots—It's Building Humanoid Robots",
                                       "lineHeight": 1.4,
                                       "fontFamily": "$font-sans",
                                       "fontSize": 13,
@@ -13762,7 +13620,7 @@
                                       "fill": "$fg-subtle",
                                       "textGrowth": "fixed-width",
                                       "width": "fill_container",
-                                      "content": "Reuters · hace 6 h",
+                                      "content": "benzinga · ayer",
                                       "lineHeight": 1.4,
                                       "fontFamily": "$font-sans",
                                       "fontSize": 11,
@@ -13785,7 +13643,7 @@
                                       "fill": "$fg-default",
                                       "textGrowth": "fixed-width",
                                       "width": "fill_container",
-                                      "content": "Los reguladores europeos abren consulta sobre chips de IA",
+                                      "content": "Nvidia Is Backstopping AI Boom as 'Buyer of Last Resort,' Prominent Economist Tells 'Prof G'",
                                       "lineHeight": 1.4,
                                       "fontFamily": "$font-sans",
                                       "fontSize": 13,
@@ -13798,7 +13656,7 @@
                                       "fill": "$fg-subtle",
                                       "textGrowth": "fixed-width",
                                       "width": "fill_container",
-                                      "content": "Bloomberg · hace 1 d",
+                                      "content": "benzinga · ayer",
                                       "lineHeight": 1.4,
                                       "fontFamily": "$font-sans",
                                       "fontSize": 11,
@@ -13821,7 +13679,7 @@
                                       "fill": "$fg-default",
                                       "textGrowth": "fixed-width",
                                       "width": "fill_container",
-                                      "content": "Reporte trimestral: ingresos por centro de datos al alza",
+                                      "content": "Musk Could Need $1 Trillion to Build Enough Chips for His AI Ambitions, ARK Says",
                                       "lineHeight": 1.4,
                                       "fontFamily": "$font-sans",
                                       "fontSize": 13,
@@ -13834,7 +13692,7 @@
                                       "fill": "$fg-subtle",
                                       "textGrowth": "fixed-width",
                                       "width": "fill_container",
-                                      "content": "MarketWatch · hace 3 d",
+                                      "content": "benzinga · ayer",
                                       "lineHeight": 1.4,
                                       "fontFamily": "$font-sans",
                                       "fontSize": 11,
@@ -13903,79 +13761,6 @@
                                       "fontFamily": "$font-mono",
                                       "fontSize": 13,
                                       "fontWeight": "600"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "yYcwU",
-                                  "name": "r2",
-                                  "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "E5f4tK",
-                                      "name": "a",
-                                      "fill": "$fg-default",
-                                      "content": "Tu umbral · 150",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "uzns8",
-                                      "name": "b",
-                                      "fill": "$fg-subtle",
-                                      "content": "necesita bajar 18.6%",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "Hgk42",
-                                  "name": "r3",
-                                  "width": "fill_container",
-                                  "justifyContent": "space_between",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "yyo8o",
-                                      "name": "a",
-                                      "fill": "$fg-default",
-                                      "content": "Regla · vender si RSI>70 3 días",
-                                      "fontFamily": "$font-sans",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "YDaSd",
-                                      "name": "c",
-                                      "fill": "$warning-bg",
-                                      "cornerRadius": 99,
-                                      "padding": [
-                                        2,
-                                        8
-                                      ],
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "Spn8A",
-                                          "name": "t",
-                                          "fill": "$warning-fg",
-                                          "content": "día 1 / 3",
-                                          "fontFamily": "$font-sans",
-                                          "fontSize": 11,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
                                     }
                                   ]
                                 }
@@ -14180,33 +13965,10 @@
                                           "id": "lCkr9",
                                           "name": "v",
                                           "fill": "$fg-default",
-                                          "content": "58",
+                                          "content": "28.24",
                                           "fontFamily": "$font-mono",
                                           "fontSize": 14,
                                           "fontWeight": "600"
-                                        },
-                                        {
-                                          "type": "frame",
-                                          "id": "WwfDn",
-                                          "name": "c",
-                                          "fill": "$warning-bg",
-                                          "cornerRadius": 99,
-                                          "padding": [
-                                            2,
-                                            8
-                                          ],
-                                          "children": [
-                                            {
-                                              "type": "text",
-                                              "id": "MRFEN",
-                                              "name": "t",
-                                              "fill": "$warning-fg",
-                                              "content": "caro vs su historia",
-                                              "fontFamily": "$font-sans",
-                                              "fontSize": 11,
-                                              "fontWeight": "600"
-                                            }
-                                          ]
                                         }
                                       ]
                                     }
@@ -14242,7 +14004,7 @@
                                           "id": "S8jcR",
                                           "name": "v",
                                           "fill": "$fg-default",
-                                          "content": "28",
+                                          "content": "18.49",
                                           "fontFamily": "$font-mono",
                                           "fontSize": 14,
                                           "fontWeight": "600"
@@ -14292,33 +14054,10 @@
                                           "id": "g04U0x",
                                           "name": "v",
                                           "fill": "$fg-default",
-                                          "content": "41%",
+                                          "content": "117.2%",
                                           "fontFamily": "$font-mono",
                                           "fontSize": 14,
                                           "fontWeight": "600"
-                                        },
-                                        {
-                                          "type": "frame",
-                                          "id": "N6kdfx",
-                                          "name": "c",
-                                          "fill": "$positive-bg",
-                                          "cornerRadius": 99,
-                                          "padding": [
-                                            2,
-                                            8
-                                          ],
-                                          "children": [
-                                            {
-                                              "type": "text",
-                                              "id": "XL9bN",
-                                              "name": "t",
-                                              "fill": "$positive-fg",
-                                              "content": "muy rentable",
-                                              "fontFamily": "$font-sans",
-                                              "fontSize": 11,
-                                              "fontWeight": "600"
-                                            }
-                                          ]
                                         }
                                       ]
                                     }
@@ -14354,7 +14093,7 @@
                                           "id": "I9eQz",
                                           "name": "v",
                                           "fill": "$fg-default",
-                                          "content": "56%",
+                                          "content": "63.7%",
                                           "fontFamily": "$font-mono",
                                           "fontSize": 14,
                                           "fontWeight": "600"
@@ -14404,33 +14143,10 @@
                                           "id": "g1mjTO",
                                           "name": "v",
                                           "fill": "$fg-default",
-                                          "content": "+122%",
+                                          "content": "USD 303.0B",
                                           "fontFamily": "$font-mono",
                                           "fontSize": 14,
                                           "fontWeight": "600"
-                                        },
-                                        {
-                                          "type": "frame",
-                                          "id": "NR1YC",
-                                          "name": "c",
-                                          "fill": "$positive-bg",
-                                          "cornerRadius": 99,
-                                          "padding": [
-                                            2,
-                                            8
-                                          ],
-                                          "children": [
-                                            {
-                                              "type": "text",
-                                              "id": "LfuYF",
-                                              "name": "t",
-                                              "fill": "$positive-fg",
-                                              "content": "fuerte",
-                                              "fontFamily": "$font-sans",
-                                              "fontSize": 11,
-                                              "fontWeight": "600"
-                                            }
-                                          ]
                                         }
                                       ]
                                     }
@@ -14466,7 +14182,7 @@
                                           "id": "rLSHP",
                                           "name": "v",
                                           "fill": "$fg-default",
-                                          "content": "1.68",
+                                          "content": "2.22",
                                           "fontFamily": "$font-mono",
                                           "fontSize": 14,
                                           "fontWeight": "600"
@@ -14577,7 +14293,7 @@
                                   "fill": "$fg-subtle",
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
-                                  "content": "Descripción de la emisora tal como la publica la fuente de fundamentales, sin re-editar.",
+                                  "content": "Nvidia Corporation is an American multinational technology company incorporated in Delaware and based in Santa Clara, California. It designs graphics processing units (GPUs) for the gaming and professional markets, as well as system on a chip units (SoCs) for the mobile computing and automotive market.",
                                   "lineHeight": 1.4,
                                   "fontFamily": "$font-sans",
                                   "fontSize": 13,
@@ -14617,7 +14333,7 @@
                                       "id": "JpRZ3",
                                       "name": "v",
                                       "fill": "$fg-default",
-                                      "content": "Tecnología",
+                                      "content": "TECHNOLOGY",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 13,
                                       "fontWeight": "600"
@@ -14638,7 +14354,7 @@
                                       "id": "rbqIq",
                                       "name": "k",
                                       "fill": "$fg-subtle",
-                                      "content": "Bolsa",
+                                      "content": "País",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 12,
                                       "fontWeight": "normal"
@@ -14648,7 +14364,7 @@
                                       "id": "HbRKu",
                                       "name": "v",
                                       "fill": "$fg-default",
-                                      "content": "NASDAQ",
+                                      "content": "USA",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 13,
                                       "fontWeight": "600"
@@ -14669,7 +14385,7 @@
                                       "id": "Prxya",
                                       "name": "k",
                                       "fill": "$fg-subtle",
-                                      "content": "País",
+                                      "content": "Bolsa",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 12,
                                       "fontWeight": "normal"
@@ -14679,7 +14395,7 @@
                                       "id": "agkZ8",
                                       "name": "v",
                                       "fill": "$fg-default",
-                                      "content": "Estados Unidos",
+                                      "content": "NASDAQ",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 13,
                                       "fontWeight": "600"
