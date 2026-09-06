@@ -20,8 +20,6 @@ design-tokens:
     count: 11
   app/helpers/notifications_helper.rb:
     count: 1
-  app/helpers/price_chart_helper.rb:
-    count: 2
   app/javascript/controllers/ticker_search_controller.js:
     count: 4
   app/views/legal/risk_disclosure.html.erb:
@@ -29,8 +27,6 @@ design-tokens:
   app/views/legal/terms.html.erb:
     count: 3
   app/views/market/_analyst_target.html.erb:
-    count: 3
-  app/views/market/_price_chart.html.erb:
     count: 3
   app/views/shared/_flash_message.html.erb:
     count: 1
