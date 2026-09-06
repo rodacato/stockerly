@@ -21,6 +21,14 @@ const RSI_PANE_HEIGHT = 64
 // D105: the library formats the time axis itself, and without this it formats
 // it in en-US — the one string on the screen no locale file could reach.
 const LOCALE = "es-MX"
+// D108, second pass: a second pane only reads as a different measurement if it
+// is visibly a second pane. The library's default separator is #E0E3EB, which
+// is invisible on our surface, so the two sat flush and looked like one canvas
+// with a gap in it. The margins are the other half — without room under the
+// price series and above the indicator, a separator alone still draws two
+// things that touch. Applied only when there IS a second pane, so a range that
+// draws no indicator keeps the price on the full height.
+const PANE_MARGINS = { price: { top: 0.2, bottom: 0.16 }, indicator: { top: 0.2, bottom: 0.12 } }
 
 export default class ChartController extends Controller {
   static targets = ["canvas", "layerToggle"]
@@ -34,7 +42,11 @@ export default class ChartController extends Controller {
         attributionLogo: false,
         background: { color: "transparent" },
         textColor: this.token("--color-fg-subtle"),
-        fontFamily: this.token("--font-sans")
+        fontFamily: this.token("--font-sans"),
+        panes: {
+          separatorColor: this.token("--color-border-strong"),
+          separatorHoverColor: this.token("--color-border-default")
+        }
       },
       grid: {
         horzLines: { color: this.token("--color-border-default") },
@@ -50,6 +62,7 @@ export default class ChartController extends Controller {
 
     this.drawAnchors()
     this.restoreLayers()
+    this.separatePanes()
     this.chart.timeScale().fitContent()
     this.resizeObserver = new ResizeObserver(([entry]) =>
       this.chart.applyOptions({ width: entry.contentRect.width })
@@ -93,6 +106,7 @@ export default class ChartController extends Controller {
   // read against fixed thresholds must never do.
   decoratePane(series, spec) {
     this.chart.panes()[spec.pane]?.setHeight(RSI_PANE_HEIGHT)
+    series.priceScale().applyOptions({ scaleMargins: PANE_MARGINS.indicator })
 
     ;(spec.guides || []).forEach((value) =>
       series.createPriceLine({
@@ -130,6 +144,18 @@ export default class ChartController extends Controller {
     delete this.layerSeries[name]
   }
 
+  // The price gives up room only while something is drawn under it, so turning
+  // the indicator off puts the full height back rather than leaving a gap where
+  // a pane used to be.
+  separatePanes() {
+    if (!this.mainSeries) return
+
+    const stacked = this.chart.panes().length > 1
+    this.mainSeries.priceScale().applyOptions({
+      scaleMargins: stacked ? PANE_MARGINS.price : { top: 0.2, bottom: 0.1 }
+    })
+  }
+
   applyLayer(name, on) {
     if (name === "levels") return on ? this.drawLevels() : this.clearLevels()
 
@@ -140,6 +166,7 @@ export default class ChartController extends Controller {
     const { layer, checked } = { layer: event.target.dataset.layer, checked: event.target.checked }
 
     this.applyLayer(layer, checked)
+    this.separatePanes()
     this.remember(layer, checked)
   }
 
