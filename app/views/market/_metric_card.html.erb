@@ -1,35 +1,39 @@
-<%# One metric, with its educational popover. Locals: definition, value, currency.
+<%# One metric, as a row. Locals: definition, value, currency.
     The name, description and guidance come from `market.metricas.<key>.*`;
     the domain carries the key only. The chip is built for the three metrics
-    whose threshold is definitional (D36) and omitted everywhere else. %>
-<% chip = metric_chip(definition, value) %>
-<div class="<%= card_classes("relative flex flex-col gap-3 p-5") %>"
-     data-controller="metric-tooltip">
-  <div class="flex items-center justify-between gap-2">
-    <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
-      <%= metric_name(definition) %>
-    </p>
-    <button type="button" data-action="click->metric-tooltip#toggle"
-            class="shrink-0 cursor-help text-fg-subtle transition-colors hover:text-primary"
-            aria-label="<%= t("market.metricas_detalle", metric: metric_name(definition)) %>">
-      <span class="material-symbols-outlined text-sm" aria-hidden="true">info</span>
-    </button>
-  </div>
+    whose threshold is definitional (D36) and omitted everywhere else.
 
-  <div class="flex flex-col gap-1.5">
-    <div class="flex flex-wrap items-baseline gap-2">
-      <p class="font-mono text-2xl font-medium tracking-tight text-fg-default">
+    D111: a row, not a card. This rendered as a bordered card inside the
+    bordered card that lists them, which reads as chrome about chrome — the
+    artboard has always drawn one card holding divided rows. The ⓘ stays: it
+    carries "cómo leerlo", which is the half of this block that answers why it
+    is here at all. %>
+<% chip = metric_chip(definition, value) %>
+<div class="relative flex flex-col gap-1 px-5 py-3.5" data-controller="metric-tooltip">
+  <div class="flex items-baseline justify-between gap-3">
+    <div class="flex items-center gap-1.5">
+      <span class="text-sm text-fg-default"><%= metric_name(definition) %></span>
+      <button type="button" data-action="click->metric-tooltip#toggle"
+              class="shrink-0 cursor-help text-fg-subtle transition-colors hover:text-primary"
+              aria-label="<%= t("market.metricas_detalle", metric: metric_name(definition)) %>">
+        <span class="material-symbols-outlined text-sm" aria-hidden="true">info</span>
+      </button>
+    </div>
+
+    <div class="flex flex-wrap items-baseline justify-end gap-2">
+      <span class="font-mono text-sm font-semibold text-fg-default">
         <%= format_metric_value(value, definition.format_type, currency: currency) %>
-      </p>
+      </span>
       <% if chip %>
         <span class="rounded-full px-2 py-0.5 text-[11px] font-semibold <%= chip.last %>"><%= chip.first %></span>
       <% end %>
     </div>
-    <p class="text-sm text-fg-subtle"><%= metric_desc(definition) %></p>
   </div>
 
+  <p class="text-xs leading-snug text-fg-subtle"><%= metric_desc(definition) %></p>
+
   <div data-metric-tooltip-target="popover"
-       class="absolute left-0 top-full z-20 mt-3 hidden w-full overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-xl">
+       class="absolute left-0 top-full z-20 mt-1 hidden w-full overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-xl">
     <div class="flex items-center justify-between gap-2 border-b border-border-default px-4 py-3">
       <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
         <span class="material-symbols-outlined text-lg text-primary" aria-hidden="true">school</span>
