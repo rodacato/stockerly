@@ -101,4 +101,78 @@ RSpec.describe SyncStatementsJob, type: :job do
       end
     end
   end
+
+  # D109: yfinance leads because Alpha Vantage's free tier refuses BALANCE_SHEET
+  # as a premium endpoint. The specs above reach Alpha Vantage precisely because
+  # the bridge is unavailable in test, which is the fallback working; these pin
+  # the order rather than leaving it to that accident.
+  describe "source priority" do
+    let(:reports) do
+      { symbol: "AAPL",
+        annual_reports: [ { "fiscal_date_ending" => "2025-09-30", "reported_currency" => "USD",
+                            "total_revenue" => "391035000000" } ],
+        quarterly_reports: [] }
+    end
+
+    def yfinance_answers
+      instance_double(MarketData::Gateways::YfinanceGateway).tap do |gateway|
+        allow(MarketData::Gateways::YfinanceGateway).to receive(:new).and_return(gateway)
+        SyncStatementsJob::STATEMENT_KINDS.each do |kind|
+          allow(gateway).to receive(:"fetch_#{kind}").and_return(Dry::Monads::Success(reports))
+        end
+      end
+    end
+
+    it "takes the statements from yfinance when it answers" do
+      yfinance_answers
+
+      described_class.perform_now(asset.id)
+
+      expect(asset.financial_statements.pluck(:source).uniq).to eq([ "yfinance" ])
+    end
+
+    it "never asks Alpha Vantage for a statement yfinance already gave" do
+      yfinance_answers
+      allow(MarketData::Gateways::AlphaVantageGateway).to receive(:new).and_call_original
+
+      described_class.perform_now(asset.id)
+
+      expect(MarketData::Gateways::AlphaVantageGateway).not_to have_received(:new)
+    end
+
+    it "falls back to Alpha Vantage for the statement yfinance could not give" do
+      gateway = instance_double(MarketData::Gateways::YfinanceGateway)
+      allow(MarketData::Gateways::YfinanceGateway).to receive(:new).and_return(gateway)
+      allow(gateway).to receive(:fetch_income_statement).and_return(Dry::Monads::Success(reports))
+      allow(gateway).to receive(:fetch_balance_sheet).and_return(Dry::Monads::Failure([ :not_found, "no data" ]))
+      allow(gateway).to receive(:fetch_cash_flow).and_return(Dry::Monads::Failure([ :not_found, "no data" ]))
+
+      described_class.perform_now(asset.id)
+
+      expect(asset.financial_statements.income_statements.pluck(:source).uniq).to eq([ "yfinance" ])
+      expect(asset.financial_statements.balance_sheets.pluck(:source).uniq).to eq([ "alpha_vantage" ])
+    end
+
+    # A self-hoster with no Alpha Vantage key still gets all three from Yahoo,
+    # so a missing key is skipped rather than raised.
+    it "skips a provider whose key is not configured" do
+      Integration.where(provider_name: "Alpha Vantage").destroy_all
+      yfinance_answers
+
+      expect { described_class.perform_now(asset.id) }.not_to raise_error
+      expect(asset.financial_statements.pluck(:source).uniq).to eq([ "yfinance" ])
+    end
+
+    # Negative: the statement that has no source anywhere is simply absent.
+    it "writes nothing for a statement no provider could give" do
+      gateway = instance_double(MarketData::Gateways::YfinanceGateway)
+      allow(MarketData::Gateways::YfinanceGateway).to receive(:new).and_return(gateway)
+      SyncStatementsJob::STATEMENT_KINDS.each do |kind|
+        allow(gateway).to receive(:"fetch_#{kind}").and_return(Dry::Monads::Failure([ :not_found, "no data" ]))
+      end
+      Integration.where(provider_name: "Alpha Vantage").destroy_all
+
+      expect { described_class.perform_now(asset.id) }.not_to change(FinancialStatement, :count)
+    end
+  end
 end
