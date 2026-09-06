@@ -2,7 +2,14 @@ module MoneyHelper
   # "MXN 1,247,580.40" — the shape D10 asks for whenever a figure is not in the
   # currency its list already declared. Use precision 4 for yields and FX rates.
   def format_currency_mx(amount, currency:, precision: 2)
-    "#{currency} #{number_with_precision(amount || 0, precision: precision, delimiter: ",")}"
+    "#{currency} #{bare_amount_mx(amount, precision: precision)}"
+  end
+
+  # D10: a section that declares its currency once drops the prefix from every
+  # row. The amount alone still comes from here, so precision and the delimiter
+  # are decided in one place rather than per view.
+  def bare_amount_mx(amount, precision: 2)
+    number_with_precision(amount || 0, precision: precision, delimiter: ",")
   end
 
   # A gain or loss carries its sign, and the sign is the typographic minus for

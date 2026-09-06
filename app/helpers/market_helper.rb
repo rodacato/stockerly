@@ -94,13 +94,25 @@ module MarketHelper
     asset.asset_type_stock? || asset.asset_type_etf?
   end
 
+  # Our own plot's height, and the embed's. TradingView draws a toolbar, a
+  # legend and a MACD pane inside its box, so asking for a plot the size of ours
+  # means asking for more than ours.
+  CHART_HEIGHT = 260
+  TRADINGVIEW_CHROME = 160
+  TRADINGVIEW_HEIGHT = CHART_HEIGHT + TRADINGVIEW_CHROME
+  TRADINGVIEW_ATTRIBUTION = 32
+
   # Travels to the browser as a Stimulus value, so ERB escapes it as an
   # attribute and nothing here is ever marked html_safe. `locale: "es"` and the
   # MACD id are both verified against the live widget, not assumed.
+  #
+  # `autosize` is off on purpose: it measures the container, the container lives
+  # in a turbo frame that is empty until the click, and the widget was reading a
+  # height the frame did not have yet. An explicit number cannot be mismeasured.
   def tradingview_config(asset)
     { symbol: asset.symbol, interval: "D", locale: "es", theme: "light",
-      style: "1", autosize: true, hide_side_toolbar: false,
-      studies: [ "STD;MACD" ] }.to_json
+      style: "1", autosize: false, width: "100%", height: TRADINGVIEW_HEIGHT,
+      hide_side_toolbar: false, studies: [ "STD;MACD" ] }.to_json
   end
 
   # One series for the chart controller, from the closes we already sync.
@@ -111,17 +123,25 @@ module MarketHelper
         token: "--color-chart-1", width: 2 } ].to_json
   end
 
-  # The ATR levels as chart price lines. The kind travels with each level
-  # because the trailing exit can land between two entry layers — its price
-  # does not say which it is.
+  # The ATR levels as chart price lines. Each carries the card's own label, so
+  # a line on the plot and a row in the card name the same level the same way.
+  # The kind travels too: the trailing exit can land between two entry layers,
+  # so its price does not say which it is.
   #
   # `holding` gates the exit for the reason the card gates it: an exit level for
   # something you do not own is a plan for a position that does not exist.
   def chart_levels_json(layers, holding: false)
     return "[]" if layers.blank?
 
-    entries = layers[:entries].map { |layer| { price: layer.price.to_f, kind: "entry" } }
-    trailing = holding && layers[:exit] ? [ { price: layers[:exit].price.to_f, kind: "exit" } ] : []
+    entries = layers[:entries].map do |layer|
+      { price: layer.price.to_f, kind: "entry", label: t("market.layers.etiquetas.entrada", n: layer.step) }
+    end
+    trailing = if holding && layers[:exit]
+      [ { price: layers[:exit].price.to_f, kind: "exit", label: t("market.layers.etiquetas.salida") } ]
+    else
+      []
+    end
+
     (entries + trailing).to_json
   end
 

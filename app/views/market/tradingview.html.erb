@@ -11,7 +11,8 @@
     shipping a default-period MA labelled as the long one would be a lie. The
     reader adds it from the widget's own Indicadores menu. %>
 <%= turbo_frame_tag "asset_tradingview" do %>
-  <div class="tradingview-widget-container mt-4" style="height: 420px"
+  <div class="tradingview-widget-container mt-4"
+       style="height: <%= MarketHelper::TRADINGVIEW_HEIGHT + MarketHelper::TRADINGVIEW_ATTRIBUTION %>px"
        data-controller="tradingview-embed"
        data-tradingview-embed-config-value="<%= tradingview_config(@asset) %>">
     <div class="tradingview-widget-container__widget" style="height: calc(100% - 32px)"></div>

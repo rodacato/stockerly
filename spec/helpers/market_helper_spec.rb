@@ -85,8 +85,23 @@ RSpec.describe MarketHelper, type: :helper do
       levels = helper.chart_levels_json({ atr: 4.0, entries: [ layer(96.0, 1.0) ], exit: layer(88.0, 3.0) }, holding: true)
 
       expect(JSON.parse(levels)).to eq([
-        { "price" => 96.0, "kind" => "entry" },
-        { "price" => 88.0, "kind" => "exit" }
+        { "price" => 96.0, "kind" => "entry", "label" => I18n.t("market.layers.etiquetas.entrada", n: 1) },
+        { "price" => 88.0, "kind" => "exit", "label" => I18n.t("market.layers.etiquetas.salida") }
+      ])
+    end
+
+    # A line the reader cannot price is a line they cannot use. The card already
+    # names every level; the plot now carries the same name onto the line, and
+    # the layer's own step is what tells one from the next.
+    it "labels each line with the card's own words, numbered by its own step" do
+      entries = [ MarketData::Domain::VolatilityLayers::Layer.new(step: 1, price: 96.0, atr_distance: 1.0),
+                  MarketData::Domain::VolatilityLayers::Layer.new(step: 2, price: 92.0, atr_distance: 2.0) ]
+
+      levels = helper.chart_levels_json({ atr: 4.0, entries: entries, exit: nil }, holding: true)
+
+      expect(JSON.parse(levels).pluck("label")).to eq([
+        I18n.t("market.layers.etiquetas.entrada", n: 1),
+        I18n.t("market.layers.etiquetas.entrada", n: 2)
       ])
     end
 

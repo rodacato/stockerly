@@ -1,7 +1,9 @@
 <%# The opt-in chart (D66). The frame below is empty on purpose: nothing reaches
     TradingView until the link is followed, which is what D2 rejected doing on
     every page load. Locals: asset. %>
-<div class="mt-4 border-t border-border-default pt-4" data-controller="tradingview">
+<div class="mt-4 border-t border-border-default pt-4" data-controller="tradingview"
+     data-tradingview-show-label-value="<%= t(".mostrar") %>"
+     data-tradingview-hide-label-value="<%= t(".ocultar") %>">
   <div class="flex items-center justify-between gap-3">
     <div>
       <p class="text-sm font-semibold text-fg-default"><%= t(".titulo") %></p>
@@ -12,10 +14,14 @@
                 class: button_classes(:secondary, :sm, "shrink-0"),
                 data: { turbo_frame: "asset_tradingview",
                         tradingview_target: "link",
-                        action: "tradingview#open" } %>
+                        action: "tradingview#toggle" } %>
   </div>
 
-  <%= turbo_frame_tag "asset_tradingview" %>
+  <%# Hidden rather than emptied: the embed is fetched once, and taking it back
+      out would ask TradingView for the symbol again on every re-open. %>
+  <%= turbo_frame_tag "asset_tradingview",
+        data: { tradingview_target: "frame",
+                action: "turbo:frame-load->tradingview#shown" } %>
 
   <div data-tradingview-target="notice" hidden
        class="fixed inset-0 z-50 flex items-end justify-center bg-scrim">

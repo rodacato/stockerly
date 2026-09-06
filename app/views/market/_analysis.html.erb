@@ -16,13 +16,16 @@
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
       <%= t("market.precio.titulo", currency: @asset.currency) %>
     </h3>
-    <div class="mt-3">
+    <%# The window control and the last session's numbers read as one row: the
+        control says what is plotted, the strip says what the latest bar did. %>
+    <div class="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
       <%= render "components/segmented",
                  label: t("market.precio.rango_label"),
                  options: chart_range_options(@asset, @chart_range) %>
+      <%= render "market/chart_stats", bar: @price_histories.last, currency: @asset.currency if @price_histories.last %>
     </div>
 
-    <div data-controller="chart" data-chart-height-value="260"
+    <div data-controller="chart" data-chart-height-value="<%= MarketHelper::CHART_HEIGHT %>"
          data-chart-series-value="<%= price_series_json(@price_histories) %>"
          data-chart-levels-value="<%= chart_levels_json(@layers, holding: @holding) %>"
          data-chart-anchors-value="<%= chart_anchors_json(@anchors[:cost]&.reference, @asset.currency) %>">
@@ -35,7 +38,6 @@
       <% end %>
     </div>
 
-    <%= render "market/chart_stats", bar: @price_histories.last, currency: @asset.currency if @price_histories.last %>
     <%= render "market/tradingview_toggle", asset: @asset if tradingview_available?(@asset) %>
   </section>
 <% end %>
