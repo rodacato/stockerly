@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "band: happy path (left → right) · desktop stacks below it\nkit-version-source: 0.8.1 · brief-schema: 1\n\n1. PURPOSE\n   The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile first.\n\n2. ENTRY POINTS\n   - Login lands here — /dashboard (config/routes.rb)\n   - A radar or signal row opens the asset detail — /market/:symbol (config/routes.rb)\n   - Panorama's patrimonio hero and Holdings' summary card both open Consolidado — one screen, two doors\n\n3. SCREENS  (left → right)\n   - Panorama — Default, Tranquilo — bha3e, H9a5cH\n   - Señales — Default — lNpAd (the observation feed; D42, renamed from Movimientos by D57). BUILT 2026-09-05 at /signals (D79)\n   - Asset detail — Análisis (+ Aviso TradingView), Mi posición — EPRHp, L0HacI, fP4zv. The toggle and its notice are BUILT 2026-09-05 (#607, D66)\n   - Consolidado — Default — tHAu1\n   - Desktop (1280) — Panorama, Asset · Análisis, Consolidado — FL7Uk, K5e985, lc9x8\n\n4. BUSINESS RULES\n   - The radar draws Holdings and Watchlist together, ordered by what moved (app/contexts/trading/use_cases/assemble_panorama.rb)\n   - A watched row is told from a holding by the ISO prefix its price keeps; a holding's value drops it (D10)\n   - Rows lead with the change in the radar and with the value in Cartera — same component, D69/D72\n   - The price chart's window is a control, not a constant: 1S/1M/3M/1A/Máx over LoadAssetDetail::RANGES, default 3M, and the heading no longer states a window because the active pill does. BUILT 2026-09-05 (CKP-2, D93)\n   - The chart draws its overlays as layers behind a legend — Niveles, Bollinger, RSI — all three on by default and each hideable. The range pills lead the card, above the plot. DRAWN, not built (D96)\n   - Tu costo is drawn twice and never in a semantic colour: neutral over the plot, primary as a tick on the 52-week bar. A cost is a reference, not a verdict (D96)\n   - Rendimiento is BUILT 2026-09-05 (#611, D95) with FIVE windows — 1D/1S/1M/3M/1A. Total came off: Tu posición already is it. Money leads and the percentage follows, because 1D as a percentage is the day change the header already shows\n   - Rendimiento is money-weighted, the opposite of D12's call for the portfolio, and deliberately: it compares against nothing, so the answer counts pesos. Only the flows come out\n   - The O/H/L/C/Vol strip reads the LATEST bar, not the range's aggregate — it answers what the last session did, and does not move with the pills\n   - The anchor reads cost when you hold, the alert threshold when you watch (D67)\n   - Block order on the asset detail, stated once rather than implied by the order they were added: Lectura (what today is) → Señales (the readings behind it) → Niveles (how far this asset moves) → Observaciones (what already happened). Verdict, evidence, distance, history\n   - Fundamentals are asked for, never enqueued by the read (app/controllers/market_controller.rb)\n   - The TradingView chart is opt-in and mounts only on click; lightweight-charts stays the default view. The notice is shown once and names both what leaves the instance and who carries TradingView's attribution. Stocks and ETFs only — fixed income and crypto render no toggle (D66, #606)\n   - Copy: es-MX. Read ADR-001 → ADR-013 → ADR-014 forward before touching any of it. A verb is allowed when it is a lookup over a persisted observation; a sentence is allowed when it comes from a closed catalogue. Neither may be composed in a template.\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, market.*, posicion.*.\n   NOT all of it: seven partials under app/views/market carry zero t() and are hardcoded es-MX — _analyst_target, _company_facts, _disclaimer, _pe_chart, _price_chart, earnings_tab, statements_tab. The directory-level count hides them because the rest of market/ is dense with keys. Razón P/U histórica and Acerca de la empresa are drawn from that hardcoded copy, which is the honest source until they are migrated.\n\n6. STATES NOT DRAWN\n   - Panorama / Black swan — nothing computes market breadth, so there is no state to draw (D25, D51)\n   - Stocks Fear & Greed — no equivalent source exists and relabelling another indicator would be a lie (D38)\n   - The confluence semáforo — RETIRED, not deferred (#586, D84). It is not a state left undrawn: the engine measured no better than its strongest light alone, and light 1 mechanically implies light 3's 50-day test (0 of 483 episodes fired above it). The block is gone from both Análisis artboards and from market/_confluence\n   - A state chip on a radar row — DECLINED with a reason (D85, closing CKP-5). The evidence for it is real and is measured inside a basket that returns roughly twice the index before any signal\n   - Rango52 with no data, and the anchor with neither position nor rule — both render absent, which is a swap not a state\n   - Señales / Vacío — components/_empty_state, already drawn elsewhere; a swap, not a state\n\n7. OPEN FINDINGS\n   none open on this band. D3 resolved 2026-08-29; what remains is the build, tracked on the board\n\n8. HISTORY\n   → LOG — Cockpit, bottom of this file.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2) — do not copy the pinned width into the ERB.",
+          "content": "band: happy path (left → right) · desktop stacks below it\nkit-version-source: 0.8.1 · brief-schema: 1\n\n1. PURPOSE\n   The daily-driver dashboard — the decision cockpit: one screen, ~20 min, mobile first.\n\n2. ENTRY POINTS\n   - Login lands here — /dashboard (config/routes.rb)\n   - A radar or signal row opens the asset detail — /market/:symbol (config/routes.rb)\n   - Panorama's patrimonio hero and Holdings' summary card both open Consolidado — one screen, two doors\n\n3. SCREENS  (left → right)\n   - Panorama — Default, Tranquilo — bha3e, H9a5cH\n   - Señales — Default — lNpAd (the observation feed; D42, renamed from Movimientos by D57). BUILT 2026-09-05 at /signals (D79)\n   - Asset detail — Análisis (+ Aviso TradingView), Mi posición — EPRHp, L0HacI, fP4zv. The toggle and its notice are BUILT 2026-09-05 (#607, D66)\n   - Consolidado — Default — tHAu1\n   - Desktop (1280) — Panorama, Asset · Análisis, Consolidado — FL7Uk, K5e985, lc9x8\n\n4. BUSINESS RULES\n   - The radar draws Holdings and Watchlist together, ordered by what moved (app/contexts/trading/use_cases/assemble_panorama.rb)\n   - A watched row is told from a holding by the ISO prefix its price keeps; a holding's value drops it (D10)\n   - Rows lead with the change in the radar and with the value in Cartera — same component, D69/D72\n   - The price chart's window is a control, not a constant: 1S/1M/3M/1A/Máx over LoadAssetDetail::RANGES, default 3M, and the heading no longer states a window because the active pill does. BUILT 2026-09-05 (CKP-2, D93)\n   - The chart draws its overlays as layers behind a legend — Niveles, Bollinger, RSI — all three on by default and each hideable. The range pills lead the card, above the plot. BUILT 2026-09-06 (D96, #620/#624)\n   - The legend carries one checkbox per layer this range can draw, so its count varies: Bollinger and RSI exist on 1S/1M/3M only and 1A/Máx offer neither. Bollinger(20) and RSI(14) describe weeks — over a year the bands collapse onto the price and the RSI pane is noise (D101)\n   - Every level names itself and prices itself. D96 left them bare and that failed in use; the canvas draws the name and price together for legibility at this scale, while the code puts the name on the line and the price on the axis (D102)\n   - Colour on a level says which side of the ladder it is on — positive for the entry rungs, negative for the trailing exit. It is a kind, never a forecast, and it deliberately borrows two tokens that mean gain and loss everywhere else (D102)\n   - The O/H/L/C/Vol strip sits with the range control, not below the plot: the control says what is plotted and the strip says what the last session did. It drops the currency prefix because the heading already declares it (D10)\n   - The TradingView embed asks for an explicit height rather than measuring the frame it mounts into, and the button that opens it also closes it. A label swap, so no artboard (D66, #623)\n   - Tu costo is drawn twice and never in a semantic colour: neutral over the plot, primary as a tick on the 52-week bar. A cost is a reference, not a verdict (D96)\n   - Rendimiento is BUILT 2026-09-05 (#611, D95) with FIVE windows — 1D/1S/1M/3M/1A. Total came off: Tu posición already is it. Money leads and the percentage follows, because 1D as a percentage is the day change the header already shows\n   - Rendimiento is money-weighted, the opposite of D12's call for the portfolio, and deliberately: it compares against nothing, so the answer counts pesos. Only the flows come out\n   - The O/H/L/C/Vol strip reads the LATEST bar, not the range's aggregate — it answers what the last session did, and does not move with the pills\n   - The anchor reads cost when you hold, the alert threshold when you watch (D67)\n   - Block order on the asset detail, stated once rather than implied by the order they were added: Lectura (what today is) → Señales (the readings behind it) → Niveles (how far this asset moves) → Observaciones (what already happened). Verdict, evidence, distance, history\n   - Fundamentals are asked for, never enqueued by the read (app/controllers/market_controller.rb)\n   - The TradingView chart is opt-in and mounts only on click; lightweight-charts stays the default view. The notice is shown once and names both what leaves the instance and who carries TradingView's attribution. Stocks and ETFs only — fixed income and crypto render no toggle (D66, #606)\n   - Copy: es-MX. Read ADR-001 → ADR-013 → ADR-014 forward before touching any of it. A verb is allowed when it is a lookup over a persisted observation; a sentence is allowed when it comes from a closed catalogue. Neither may be composed in a template.\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, market.*, posicion.*.\n   NOT all of it: seven partials under app/views/market carry zero t() and are hardcoded es-MX — _analyst_target, _company_facts, _disclaimer, _pe_chart, _price_chart, earnings_tab, statements_tab. The directory-level count hides them because the rest of market/ is dense with keys. Razón P/U histórica and Acerca de la empresa are drawn from that hardcoded copy, which is the honest source until they are migrated.\n\n6. STATES NOT DRAWN\n   - Panorama / Black swan — nothing computes market breadth, so there is no state to draw (D25, D51)\n   - Stocks Fear & Greed — no equivalent source exists and relabelling another indicator would be a lie (D38)\n   - The confluence semáforo — RETIRED, not deferred (#586, D84). It is not a state left undrawn: the engine measured no better than its strongest light alone, and light 1 mechanically implies light 3's 50-day test (0 of 483 episodes fired above it). The block is gone from both Análisis artboards and from market/_confluence\n   - A state chip on a radar row — DECLINED with a reason (D85, closing CKP-5). The evidence for it is real and is measured inside a basket that returns roughly twice the index before any signal\n   - Rango52 with no data, and the anchor with neither position nor rule — both render absent, which is a swap not a state\n   - Señales / Vacío — components/_empty_state, already drawn elsewhere; a swap, not a state\n\n7. OPEN FINDINGS\n   none open on this band. D3 resolved 2026-08-29; what remains is the build, tracked on the board\n\n8. HISTORY\n   → LOG — Cockpit, bottom of this file.\n\nKnown canvas limit, not a product constraint: the Chart's plot and its RSI plot are fixed-width drawings (318), so their column is pinned to 350. In code lightweight-charts is responsive (D2) — do not copy the pinned width into the ERB.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -6428,6 +6428,19 @@
         },
         {
           "type": "text",
+          "id": "x0uZ5",
+          "name": "Entries",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-09-06 · The canvas catches up to the chart that shipped — levels named, priced and coloured by kind; the O/H/L/C strip moved up beside the range control and dropped its currency prefix; the legend's checkbox count made conditional on the range · D101, D102",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "yKX6B",
           "name": "Entries",
           "fill": "$fg-subtle",
@@ -6633,6 +6646,162 @@
                 },
                 {
                   "type": "frame",
+                  "id": "IMJmU",
+                  "name": "Stats",
+                  "width": "fill_container",
+                  "fill": "#00000000",
+                  "gap": "$space-3",
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x2EaN",
+                      "name": "O",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WD6GH",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "O",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "T4ACTe",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "172",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HaQbZ",
+                      "name": "H",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Mh6sT",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "H",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "XG4am",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "186",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yXoOc",
+                      "name": "L",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SDeCQ",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "L",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "W4Jz9",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "170",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O76ztP",
+                      "name": "C",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EGYYb",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "C",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "xmjt6",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "184",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q4AS78",
+                      "name": "Vol",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UJYYK",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "Vol",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gjCga",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "48M",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
                   "id": "cGIaR",
                   "name": "Plot",
                   "width": 318,
@@ -6645,10 +6814,10 @@
                       "x": 0,
                       "y": 46,
                       "name": "NivelCapa1",
-                      "opacity": 0.22,
-                      "width": 278,
+                      "opacity": 0.55,
+                      "width": 318,
                       "height": 1,
-                      "fill": "$fg-subtle"
+                      "fill": "$positive"
                     },
                     {
                       "type": "frame",
@@ -6656,10 +6825,10 @@
                       "x": 0,
                       "y": 62,
                       "name": "NivelCapa2",
-                      "opacity": 0.22,
-                      "width": 278,
+                      "opacity": 0.55,
+                      "width": 318,
                       "height": 1,
-                      "fill": "$fg-subtle"
+                      "fill": "$positive"
                     },
                     {
                       "type": "frame",
@@ -6667,10 +6836,10 @@
                       "x": 0,
                       "y": 70,
                       "name": "NivelSalida",
-                      "opacity": 0.3,
-                      "width": 150,
+                      "opacity": 0.55,
+                      "width": 318,
                       "height": 1,
-                      "fill": "$fg-subtle"
+                      "fill": "$negative"
                     },
                     {
                       "type": "frame",
@@ -6678,10 +6847,10 @@
                       "x": 0,
                       "y": 77,
                       "name": "NivelCapa3",
-                      "opacity": 0.22,
-                      "width": 278,
+                      "opacity": 0.55,
+                      "width": 318,
                       "height": 1,
-                      "fill": "$fg-subtle"
+                      "fill": "$positive"
                     },
                     {
                       "type": "path",
@@ -6849,6 +7018,54 @@
                       "name": "CostLbl",
                       "fill": "$fg-default",
                       "content": "tu costo 120",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "H4b3q",
+                      "x": 2,
+                      "y": 35,
+                      "name": "NivelLbl",
+                      "fill": "$positive-fg",
+                      "content": "CAPA 1 · 178.00",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "M45DG4",
+                      "x": 2,
+                      "y": 51,
+                      "name": "NivelLbl",
+                      "fill": "$positive-fg",
+                      "content": "CAPA 2 · 172.00",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "iRLJJ",
+                      "x": 2,
+                      "y": 66,
+                      "name": "NivelLbl",
+                      "fill": "$positive-fg",
+                      "content": "CAPA 3 · 166.00",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "p5E1W",
+                      "x": 232,
+                      "y": 59,
+                      "name": "SalidaLbl",
+                      "fill": "$negative-fg",
+                      "content": "SALIDA · 169.00",
                       "fontFamily": "$font-mono",
                       "fontSize": 9,
                       "fontWeight": "700"
@@ -7052,171 +7269,6 @@
                       "fontFamily": "$font-mono",
                       "fontSize": 9,
                       "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "IMJmU",
-                  "name": "Stats",
-                  "width": "fill_container",
-                  "fill": "$bg-muted",
-                  "cornerRadius": "$radius-md",
-                  "padding": [
-                    10,
-                    12
-                  ],
-                  "justifyContent": "space_between",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "x2EaN",
-                      "name": "O",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "WD6GH",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "O",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "T4ACTe",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "172",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "HaQbZ",
-                      "name": "H",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "Mh6sT",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "H",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "XG4am",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "186",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "yXoOc",
-                      "name": "L",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "SDeCQ",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "L",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "W4Jz9",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "170",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "O76ztP",
-                      "name": "C",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "EGYYb",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "C",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "xmjt6",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "184",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "Q4AS78",
-                      "name": "Vol",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "UJYYK",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "Vol",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "gjCga",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "48M",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
                     }
                   ]
                 },
@@ -8069,6 +8121,162 @@
                 },
                 {
                   "type": "frame",
+                  "id": "d1Zjnz",
+                  "name": "Stats",
+                  "width": "fill_container",
+                  "fill": "#00000000",
+                  "gap": "$space-3",
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Jealg",
+                      "name": "O",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "FtRun",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "O",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "wseJC",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "172",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KMcR8",
+                      "name": "H",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "j6daee",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "H",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "erqSM",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "186",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FyYay",
+                      "name": "L",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "u8inV",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "L",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "PmFt2",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "170",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jJ50X",
+                      "name": "C",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Xbw5b",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "C",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ltqKD",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "184",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IB39V",
+                      "name": "Vol",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "IIFLp",
+                          "name": "k",
+                          "fill": "$fg-subtle",
+                          "content": "Vol",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 9,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "l2TgF",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "48M",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
                   "id": "WlzUc",
                   "name": "Plot",
                   "width": 318,
@@ -8081,10 +8289,10 @@
                       "x": 0,
                       "y": 46,
                       "name": "NivelCapa1",
-                      "opacity": 0.22,
-                      "width": 278,
+                      "opacity": 0.55,
+                      "width": 318,
                       "height": 1,
-                      "fill": "$fg-subtle"
+                      "fill": "$positive"
                     },
                     {
                       "type": "frame",
@@ -8092,10 +8300,10 @@
                       "x": 0,
                       "y": 62,
                       "name": "NivelCapa2",
-                      "opacity": 0.22,
-                      "width": 278,
+                      "opacity": 0.55,
+                      "width": 318,
                       "height": 1,
-                      "fill": "$fg-subtle"
+                      "fill": "$positive"
                     },
                     {
                       "type": "frame",
@@ -8103,10 +8311,10 @@
                       "x": 0,
                       "y": 70,
                       "name": "NivelSalida",
-                      "opacity": 0.3,
-                      "width": 150,
+                      "opacity": 0.55,
+                      "width": 318,
                       "height": 1,
-                      "fill": "$fg-subtle"
+                      "fill": "$negative"
                     },
                     {
                       "type": "frame",
@@ -8114,10 +8322,10 @@
                       "x": 0,
                       "y": 77,
                       "name": "NivelCapa3",
-                      "opacity": 0.22,
-                      "width": 278,
+                      "opacity": 0.55,
+                      "width": 318,
                       "height": 1,
-                      "fill": "$fg-subtle"
+                      "fill": "$positive"
                     },
                     {
                       "type": "path",
@@ -8285,6 +8493,54 @@
                       "name": "CostLbl",
                       "fill": "$fg-default",
                       "content": "tu costo 120",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "b6U0q",
+                      "x": 2,
+                      "y": 35,
+                      "name": "NivelLbl",
+                      "fill": "$positive-fg",
+                      "content": "CAPA 1 · 178.00",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "a0sxTG",
+                      "x": 2,
+                      "y": 51,
+                      "name": "NivelLbl",
+                      "fill": "$positive-fg",
+                      "content": "CAPA 2 · 172.00",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Iefl6",
+                      "x": 2,
+                      "y": 66,
+                      "name": "NivelLbl",
+                      "fill": "$positive-fg",
+                      "content": "CAPA 3 · 166.00",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 9,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ykHeo",
+                      "x": 232,
+                      "y": 59,
+                      "name": "SalidaLbl",
+                      "fill": "$negative-fg",
+                      "content": "SALIDA · 169.00",
                       "fontFamily": "$font-mono",
                       "fontSize": 9,
                       "fontWeight": "700"
@@ -8488,171 +8744,6 @@
                       "fontFamily": "$font-mono",
                       "fontSize": 9,
                       "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "d1Zjnz",
-                  "name": "Stats",
-                  "width": "fill_container",
-                  "fill": "$bg-muted",
-                  "cornerRadius": "$radius-md",
-                  "padding": [
-                    10,
-                    12
-                  ],
-                  "justifyContent": "space_between",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "Jealg",
-                      "name": "O",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "FtRun",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "O",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "wseJC",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "172",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "KMcR8",
-                      "name": "H",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "j6daee",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "H",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "erqSM",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "186",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "FyYay",
-                      "name": "L",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "u8inV",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "L",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "PmFt2",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "170",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "jJ50X",
-                      "name": "C",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "Xbw5b",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "C",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ltqKD",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "184",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "IB39V",
-                      "name": "Vol",
-                      "layout": "vertical",
-                      "gap": 1,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "IIFLp",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "Vol",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 9,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "l2TgF",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "48M",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
                     }
                   ]
                 },
@@ -11173,6 +11264,162 @@
                                 },
                                 {
                                   "type": "frame",
+                                  "id": "vtV3k",
+                                  "name": "Stats",
+                                  "width": "fill_container",
+                                  "fill": "#00000000",
+                                  "gap": "$space-3",
+                                  "alignItems": "end",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "YBH3E",
+                                      "name": "O",
+                                      "gap": 4,
+                                      "alignItems": "end",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "yTIIy",
+                                          "name": "k",
+                                          "fill": "$fg-subtle",
+                                          "content": "O",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "WVSsm",
+                                          "name": "v",
+                                          "fill": "$fg-default",
+                                          "content": "172",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "RdxTU",
+                                      "name": "H",
+                                      "gap": 4,
+                                      "alignItems": "end",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "Wl0a5",
+                                          "name": "k",
+                                          "fill": "$fg-subtle",
+                                          "content": "H",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "X0RHOF",
+                                          "name": "v",
+                                          "fill": "$fg-default",
+                                          "content": "186",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "yBhk2",
+                                      "name": "L",
+                                      "gap": 4,
+                                      "alignItems": "end",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "BsNgT",
+                                          "name": "k",
+                                          "fill": "$fg-subtle",
+                                          "content": "L",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Tm2dA",
+                                          "name": "v",
+                                          "fill": "$fg-default",
+                                          "content": "170",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "L9PL1",
+                                      "name": "C",
+                                      "gap": 4,
+                                      "alignItems": "end",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "nxRGQ",
+                                          "name": "k",
+                                          "fill": "$fg-subtle",
+                                          "content": "C",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "tbwtp",
+                                          "name": "v",
+                                          "fill": "$fg-default",
+                                          "content": "184",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "lwcko",
+                                      "name": "Vol",
+                                      "gap": 4,
+                                      "alignItems": "end",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "R3fyC",
+                                          "name": "k",
+                                          "fill": "$fg-subtle",
+                                          "content": "Vol",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Z8jLc",
+                                          "name": "v",
+                                          "fill": "$fg-default",
+                                          "content": "48M",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
                                   "id": "U11Kd",
                                   "name": "Plot",
                                   "width": 318,
@@ -11185,10 +11432,10 @@
                                       "x": 0,
                                       "y": 46,
                                       "name": "NivelCapa1",
-                                      "opacity": 0.22,
-                                      "width": 278,
+                                      "opacity": 0.55,
+                                      "width": 318,
                                       "height": 1,
-                                      "fill": "$fg-subtle"
+                                      "fill": "$positive"
                                     },
                                     {
                                       "type": "frame",
@@ -11196,10 +11443,10 @@
                                       "x": 0,
                                       "y": 62,
                                       "name": "NivelCapa2",
-                                      "opacity": 0.22,
-                                      "width": 278,
+                                      "opacity": 0.55,
+                                      "width": 318,
                                       "height": 1,
-                                      "fill": "$fg-subtle"
+                                      "fill": "$positive"
                                     },
                                     {
                                       "type": "frame",
@@ -11207,10 +11454,10 @@
                                       "x": 0,
                                       "y": 70,
                                       "name": "NivelSalida",
-                                      "opacity": 0.3,
-                                      "width": 150,
+                                      "opacity": 0.55,
+                                      "width": 318,
                                       "height": 1,
-                                      "fill": "$fg-subtle"
+                                      "fill": "$negative"
                                     },
                                     {
                                       "type": "frame",
@@ -11218,10 +11465,10 @@
                                       "x": 0,
                                       "y": 77,
                                       "name": "NivelCapa3",
-                                      "opacity": 0.22,
-                                      "width": 278,
+                                      "opacity": 0.55,
+                                      "width": 318,
                                       "height": 1,
-                                      "fill": "$fg-subtle"
+                                      "fill": "$positive"
                                     },
                                     {
                                       "type": "path",
@@ -11389,6 +11636,54 @@
                                       "name": "CostLbl",
                                       "fill": "$fg-default",
                                       "content": "tu costo 120",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 9,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "O9fgP",
+                                      "x": 2,
+                                      "y": 35,
+                                      "name": "NivelLbl",
+                                      "fill": "$positive-fg",
+                                      "content": "CAPA 1 · 178.00",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 9,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "l8YFkc",
+                                      "x": 2,
+                                      "y": 51,
+                                      "name": "NivelLbl",
+                                      "fill": "$positive-fg",
+                                      "content": "CAPA 2 · 172.00",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 9,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "huOQW",
+                                      "x": 2,
+                                      "y": 66,
+                                      "name": "NivelLbl",
+                                      "fill": "$positive-fg",
+                                      "content": "CAPA 3 · 166.00",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 9,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "OcrOc",
+                                      "x": 232,
+                                      "y": 59,
+                                      "name": "SalidaLbl",
+                                      "fill": "$negative-fg",
+                                      "content": "SALIDA · 169.00",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 9,
                                       "fontWeight": "700"
@@ -11592,171 +11887,6 @@
                                       "fontFamily": "$font-mono",
                                       "fontSize": 9,
                                       "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "vtV3k",
-                                  "name": "Stats",
-                                  "width": "fill_container",
-                                  "fill": "$bg-muted",
-                                  "cornerRadius": "$radius-md",
-                                  "padding": [
-                                    10,
-                                    12
-                                  ],
-                                  "justifyContent": "space_between",
-                                  "children": [
-                                    {
-                                      "type": "frame",
-                                      "id": "YBH3E",
-                                      "name": "O",
-                                      "layout": "vertical",
-                                      "gap": 1,
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "yTIIy",
-                                          "name": "k",
-                                          "fill": "$fg-subtle",
-                                          "content": "O",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 9,
-                                          "fontWeight": "normal"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "WVSsm",
-                                          "name": "v",
-                                          "fill": "$fg-default",
-                                          "content": "172",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 13,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "RdxTU",
-                                      "name": "H",
-                                      "layout": "vertical",
-                                      "gap": 1,
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "Wl0a5",
-                                          "name": "k",
-                                          "fill": "$fg-subtle",
-                                          "content": "H",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 9,
-                                          "fontWeight": "normal"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "X0RHOF",
-                                          "name": "v",
-                                          "fill": "$fg-default",
-                                          "content": "186",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 13,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "yBhk2",
-                                      "name": "L",
-                                      "layout": "vertical",
-                                      "gap": 1,
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "BsNgT",
-                                          "name": "k",
-                                          "fill": "$fg-subtle",
-                                          "content": "L",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 9,
-                                          "fontWeight": "normal"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "Tm2dA",
-                                          "name": "v",
-                                          "fill": "$fg-default",
-                                          "content": "170",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 13,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "L9PL1",
-                                      "name": "C",
-                                      "layout": "vertical",
-                                      "gap": 1,
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "nxRGQ",
-                                          "name": "k",
-                                          "fill": "$fg-subtle",
-                                          "content": "C",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 9,
-                                          "fontWeight": "normal"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "tbwtp",
-                                          "name": "v",
-                                          "fill": "$fg-default",
-                                          "content": "184",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 13,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "lwcko",
-                                      "name": "Vol",
-                                      "layout": "vertical",
-                                      "gap": 1,
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "text",
-                                          "id": "R3fyC",
-                                          "name": "k",
-                                          "fill": "$fg-subtle",
-                                          "content": "Vol",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 9,
-                                          "fontWeight": "normal"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "Z8jLc",
-                                          "name": "v",
-                                          "fill": "$fg-default",
-                                          "content": "48M",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 13,
-                                          "fontWeight": "600"
-                                        }
-                                      ]
                                     }
                                   ]
                                 },
