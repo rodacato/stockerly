@@ -6,8 +6,9 @@ import { createChart, LineSeries } from "lightweight-charts"
 //
 // `series` is an array of { data: [{time, value}], token, width } — the
 // Consolidado draws two (value and contributed), the asset detail one.
-// `levels` are the ATR price lines (D96); the legend's checkbox adds and
-// removes them, and the choice is remembered per browser.
+// `levels` are the ATR price lines (D96) and a series carrying `layer` is one
+// the legend adds and removes; both choices are remembered per browser.
+//
 // Colour separates the two kinds of level, the way the card separates them with
 // a heading — it says which side of the ladder a line is on, never a forecast.
 const LEVEL_STYLE = {
@@ -16,6 +17,7 @@ const LEVEL_STYLE = {
 }
 const ANCHOR_ALPHA = "59"
 const STORAGE_KEY = "stockerly:chart-layers"
+const RSI_PANE_HEIGHT = 64
 
 export default class ChartController extends Controller {
   static targets = ["canvas", "layerToggle"]
@@ -39,14 +41,8 @@ export default class ChartController extends Controller {
       timeScale: { borderColor: this.token("--color-border-default") }
     })
 
-    this.seriesValue.forEach(({ data, token, width }) => {
-      const series = this.chart.addSeries(LineSeries, {
-        color: this.token(token || "--color-chart-1"),
-        lineWidth: width || 2
-      })
-      series.setData(data)
-      this.mainSeries ||= series
-    })
+    this.layerSeries = {}
+    this.seriesValue.filter((spec) => !spec.layer).forEach((spec) => this.addSeries(spec))
 
     this.drawAnchors()
     this.restoreLayers()
@@ -63,12 +59,52 @@ export default class ChartController extends Controller {
     this.chart = null
     this.mainSeries = null
     this.priceLines = []
+    this.layerSeries = {}
+  }
+
+  addSeries(spec) {
+    const series = this.chart.addSeries(
+      LineSeries,
+      {
+        color: this.token(spec.token || "--color-chart-1"),
+        lineWidth: spec.width || 2,
+        priceLineVisible: !spec.layer,
+        lastValueVisible: !spec.layer
+      },
+      spec.pane || 0
+    )
+    series.setData(spec.data)
+    if (spec.pane) this.chart.panes()[spec.pane]?.setHeight(RSI_PANE_HEIGHT)
+    if (!spec.layer) this.mainSeries ||= series
+
+    return series
+  }
+
+  // A layer is added and removed rather than hidden: an RSI series left
+  // invisible keeps its pane, and an empty pane is a gap with no explanation.
+  showLayer(name) {
+    if (this.layerSeries[name]) return
+
+    this.layerSeries[name] = this.seriesValue
+      .filter((spec) => spec.layer === name)
+      .map((spec) => this.addSeries(spec))
+  }
+
+  hideLayer(name) {
+    ;(this.layerSeries[name] || []).forEach((series) => this.chart.removeSeries(series))
+    delete this.layerSeries[name]
+  }
+
+  applyLayer(name, on) {
+    if (name === "levels") return on ? this.drawLevels() : this.clearLevels()
+
+    return on ? this.showLayer(name) : this.hideLayer(name)
   }
 
   toggleLayer(event) {
     const { layer, checked } = { layer: event.target.dataset.layer, checked: event.target.checked }
 
-    if (layer === "levels") checked ? this.drawLevels() : this.clearLevels()
+    this.applyLayer(layer, checked)
     this.remember(layer, checked)
   }
 
@@ -80,9 +116,8 @@ export default class ChartController extends Controller {
     this.layerToggleTargets.forEach((input) => {
       const layer = input.dataset.layer
       if (layer in stored) input.checked = stored[layer]
+      this.applyLayer(layer, input.checked)
     })
-
-    if (this.layerChecked("levels")) this.drawLevels()
   }
 
   // D98's colour rule: your cost takes whatever colour the price is not, so it
@@ -120,11 +155,6 @@ export default class ChartController extends Controller {
   clearLevels() {
     this.priceLines.forEach((line) => this.mainSeries?.removePriceLine(line))
     this.priceLines = []
-  }
-
-  layerChecked(layer) {
-    const input = this.layerToggleTargets.find((target) => target.dataset.layer === layer)
-    return input ? input.checked : false
   }
 
   // A private window, cleared site data or a browser that refuses storage all

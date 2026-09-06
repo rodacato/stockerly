@@ -63,6 +63,36 @@ RSpec.describe MarketHelper, type: :helper do
     end
   end
 
+  describe "#indicator_layers and #chart_layer_keys" do
+    let(:indicators) do
+      { rsi: [ { time: "2026-09-01", value: 61.2 } ],
+        bb_upper: [ { time: "2026-09-01", value: 190.0 } ],
+        bb_lower: [ { time: "2026-09-01", value: 170.0 } ] }
+    end
+
+    it "puts the RSI in its own pane and leaves the bands on the price scale" do
+      layers = helper.indicator_layers(indicators)
+
+      expect(layers.pluck(:layer)).to eq(%w[bollinger bollinger rsi])
+      expect(layers.find { |layer| layer[:layer] == "rsi" }[:pane]).to eq(1)
+      expect(layers.select { |layer| layer[:layer] == "bollinger" }.pluck(:pane)).to all(be_nil)
+    end
+
+    it "offers nothing outside the ranges the indicators describe" do
+      expect(helper.indicator_layers(nil)).to be_empty
+      expect(helper.chart_layer_keys(nil, nil)).to be_empty
+    end
+
+    it "names one key per layer the legend has something to draw for" do
+      entry = MarketData::Domain::VolatilityLayers::Layer.new(step: 1, price: 96.0, atr_distance: 1.0)
+      layers = { atr: 4.0, entries: [ entry ], exit: nil }
+
+      expect(helper.chart_layer_keys(layers, indicators)).to eq(%w[levels bollinger rsi])
+      expect(helper.chart_layer_keys(layers, nil)).to eq(%w[levels])
+      expect(helper.chart_layer_keys(nil, indicators)).to eq(%w[bollinger rsi])
+    end
+  end
+
   describe "#chart_anchors_json" do
     it "labels your cost with the phrase the 52-week bar already uses for it" do
       anchor = JSON.parse(helper.chart_anchors_json(172.4, "USD")).first

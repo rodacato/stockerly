@@ -19,6 +19,11 @@ module MarketData
       # gzips well — but downsampling it would change what the chart plots, so
       # that stays a design call rather than a silent optimisation.
       DEFAULT_RANGE = "3M"
+      # Bollinger(20) and RSI(14) describe weeks, not years. Over 1A and Máx the
+      # bands collapse onto the price line and the RSI pane is a block of noise,
+      # so the layers are offered where they say something (D101). That the
+      # payload stays small is a consequence, not the reason.
+      INDICATOR_RANGES = %w[1S 1M 3M].freeze
       # The heading and the query read one value, so the window cannot drift
       # between what the chart says and what it plots.
       PE_CHART_DAYS = 90
@@ -69,7 +74,8 @@ module MarketData
           range_52w: fifty_two_week_range(asset, presenter),
           reading: reading_record,
           signals: Domain::IndicatorSignals.for(reading_record),
-          layers: layers_for(asset, reading_record)
+          layers: layers_for(asset, reading_record),
+          indicator_series: indicator_series_for(asset, chart_range, from)
         ))
       end
 
@@ -88,6 +94,14 @@ module MarketData
           day_change: day_change,
           market_context: Queries::AssetMarketContext.call(asset: asset, day_change: day_change)
         }
+      end
+
+      # Absent rather than empty outside the ranges the indicators describe, so
+      # the legend has nothing to offer instead of offering a dead checkbox.
+      def indicator_series_for(asset, chart_range, from)
+        return nil unless INDICATOR_RANGES.include?(chart_range)
+
+        Queries::IndicatorSeries.call(asset: asset, from: from)
       end
 
       # Levels priced off the asset's own daily range. Absent, not empty, when

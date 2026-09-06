@@ -119,8 +119,37 @@ module MarketHelper
   # Replaces the TradingView widget, which shipped the symbol being viewed to
   # a third party on every page load (D2).
   def price_series_json(histories)
+    price_series(histories).to_json
+  end
+
+  def price_series(histories)
     [ { data: histories.map { |row| { time: row.date.to_s, value: row.close.to_f } },
-        token: "--color-chart-1", width: 2 } ].to_json
+        token: "--color-chart-1", width: 2 } ]
+  end
+
+  # The price plus whichever indicator layers this range carries (D101). A
+  # series with a `layer` is one the legend can add and remove; the price has
+  # none, because it is the chart.
+  def asset_chart_series_json(histories, indicators)
+    (price_series(histories) + indicator_layers(indicators)).to_json
+  end
+
+  # Tokens per the kit's 0.9.0 call: the bands and the RSI line reuse roles that
+  # already exist rather than earning their own. RSI takes pane 1 — it is an
+  # index between 0 and 100, and sharing the price scale would flatten both.
+  def indicator_layers(indicators)
+    return [] if indicators.blank?
+
+    [ { data: indicators[:bb_upper], layer: "bollinger", token: "--color-border-strong", width: 1 },
+      { data: indicators[:bb_lower], layer: "bollinger", token: "--color-border-strong", width: 1 },
+      { data: indicators[:rsi], layer: "rsi", token: "--color-fg-default", width: 1, pane: 1 } ]
+      .reject { |series| series[:data].blank? }
+  end
+
+  # Which checkboxes the legend has anything to offer for.
+  def chart_layer_keys(layers, indicators)
+    keys = layers.present? ? [ "levels" ] : []
+    keys + indicator_layers(indicators).pluck(:layer).uniq
   end
 
   # The ATR levels as chart price lines. Each carries the card's own label, so

@@ -24,6 +24,7 @@ class MarketController < AuthenticatedController
       @range_52w = data[:range_52w]
       @signals = data[:signals] || []
       @layers = data[:layers]
+      @indicator_series = data[:indicator_series]
 
       # ADR-002 forbids MarketData reading Trading or Alerts, so the user-side
       # readings are composed here from their own contexts.

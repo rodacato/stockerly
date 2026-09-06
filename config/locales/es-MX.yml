@@ -557,7 +557,9 @@ es-MX:
       risk: Riesgo
       valuation: Valuación
     chart_layers:
-      niveles: Niveles
+      bollinger: Bollinger
+      levels: Niveles
+      rsi: RSI
     chips:
       como_el_mercado: se mueve como el mercado
       cubre_corto_plazo: cubre el corto plazo
