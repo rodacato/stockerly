@@ -63,6 +63,21 @@ RSpec.describe MarketHelper, type: :helper do
     end
   end
 
+  describe "#chart_anchors_json" do
+    it "labels your cost with the phrase the 52-week bar already uses for it" do
+      anchor = JSON.parse(helper.chart_anchors_json(172.4, "USD")).first
+
+      expect(anchor["price"]).to eq(172.4)
+      expect(anchor["label"]).to eq(
+        I18n.t("market.range_52w.tu_costo", value: helper.format_currency_mx(172.4, currency: "USD"))
+      )
+    end
+
+    it "draws nothing over the price when there is no position to anchor to" do
+      expect(helper.chart_anchors_json(nil, "USD")).to eq("[]")
+    end
+  end
+
   describe "#chart_levels_json" do
     def layer(price, distance) = MarketData::Domain::VolatilityLayers::Layer.new(step: 1, price: price, atr_distance: distance)
 
