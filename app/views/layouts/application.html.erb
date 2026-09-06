@@ -48,7 +48,14 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500..800&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+    <%# Two links, because `display` is per request and the two kinds of font
+        want opposite answers. Text swaps: reading a fallback beats reading
+        nothing. Material Symbols blocks: it is a LIGATURE font, so a fallback
+        renders the word `info` where the icon belongs, which is what shipped —
+        icons showing as text on mobile, and only correct on desktop once the
+        font was cached. `block` draws nothing until the file lands. %>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500..800&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%# Early-paint theme apply — reads the same localStorage key the
