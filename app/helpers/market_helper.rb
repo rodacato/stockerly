@@ -137,12 +137,22 @@ module MarketHelper
   # Tokens per the kit's 0.9.0 call: the bands and the RSI line reuse roles that
   # already exist rather than earning their own. RSI takes pane 1 — it is an
   # index between 0 and 100, and sharing the price scale would flatten both.
+  #
+  # D108: the pane says what it is and holds still. Left to autoscale it filled
+  # itself with whatever the window happened to contain, so a quiet month and a
+  # real oversold spike drew the same picture — and unlabelled under the price,
+  # it read as more price chart. The thresholds are IndicatorSignals' own, so
+  # the pane and the Señales row cannot disagree about what 70 means.
   def indicator_layers(indicators)
     return [] if indicators.blank?
 
     [ { data: indicators[:bb_upper], layer: "bollinger", token: "--color-border-strong", width: 1 },
       { data: indicators[:bb_lower], layer: "bollinger", token: "--color-border-strong", width: 1 },
-      { data: indicators[:rsi], layer: "rsi", token: "--color-fg-default", width: 1, pane: 1 } ]
+      { data: indicators[:rsi], layer: "rsi", token: "--color-fg-default", width: 1, pane: 1,
+        title: t("market.precio.rsi.titulo", period: MarketData::Domain::TechnicalIndicators::RSI_PERIOD),
+        scale: { min: 0, max: 100 },
+        guides: [ MarketData::Domain::IndicatorSignals::OVERBOUGHT,
+                  MarketData::Domain::IndicatorSignals::OVERSOLD ] } ]
       .reject { |series| series[:data].blank? }
   end
 
@@ -159,14 +169,19 @@ module MarketHelper
   #
   # `holding` gates the exit for the reason the card gates it: an exit level for
   # something you do not own is a plan for a position that does not exist.
+  # D106: the plot takes the short form of the card's label, not the card's own.
+  # `lightweight-charts` butts the title against the axis price badge at the
+  # right edge, so on a 318px plot the four full names covered ~40% of the
+  # series — the most recent 40%, which is the part being read. `C1` still names
+  # the level; the card two blocks down spells it out and prices it in ATR.
   def chart_levels_json(layers, holding: false)
     return "[]" if layers.blank?
 
     entries = layers[:entries].map do |layer|
-      { price: layer.price.to_f, kind: "entry", label: t("market.layers.etiquetas.entrada", n: layer.step) }
+      { price: layer.price.to_f, kind: "entry", label: t("market.layers.etiquetas_plot.entrada", n: layer.step) }
     end
     trailing = if holding && layers[:exit]
-      [ { price: layers[:exit].price.to_f, kind: "exit", label: t("market.layers.etiquetas.salida") } ]
+      [ { price: layers[:exit].price.to_f, kind: "exit", label: t("market.layers.etiquetas_plot.salida") } ]
     else
       []
     end
@@ -176,14 +191,32 @@ module MarketHelper
 
   # What the plot draws over the price without asking: your cost, when you hold
   # it. Not a layer — it has no checkbox because it is not an indicator, it is
-  # the one line on the chart that is about you. The phrase is the 52-week bar's
-  # own, so the two marks of the same number read the same.
-  def chart_anchors_json(cost, currency)
-    return "[]" if cost.blank?
+  # the one line on the chart that is about you.
+  #
+  # D104: it now carries an axis label, because `lightweight-charts` draws a
+  # price line's title ONLY alongside that label — with `axisLabelVisible` off
+  # the title was computed, serialised, and thrown away, which left the bare
+  # grey line D102 was opened to stop. The name goes on the line and the number
+  # on the axis, the way a level does; the 52-week bar still spells the phrase.
+  #
+  # D107: absent, rather than drawn off-screen, when the cost falls outside what
+  # the price did in this window. Price lines do not participate in autoscale,
+  # so on a short range the line silently landed past the edge of the pane.
+  def chart_anchors_json(cost, histories)
+    return "[]" if cost.blank? || cost_outside_plot?(cost, histories)
 
-    [ { price: cost.to_f,
-        label: t("market.range_52w.tu_costo",
-                 value: format_currency_mx(cost, currency: currency)) } ].to_json
+    [ { price: cost.to_f, label: t("market.precio.anclas.costo") } ].to_json
+  end
+
+  # Measured against the closes alone, which is the one series every range
+  # plots. Bollinger widens the scale when it is on, so judging by the visible
+  # range would make the cost line appear and disappear with a checkbox — and
+  # the honest statement is about the price window either way.
+  def cost_outside_plot?(cost, histories)
+    return false if cost.blank? || histories.blank?
+
+    closes = histories.map { |row| row.close.to_f }
+    cost.to_f < closes.min || cost.to_f > closes.max
   end
 
   # The three references the Análisis anchor reads against (CKP-8, D67). The

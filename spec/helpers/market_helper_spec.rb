@@ -78,6 +78,30 @@ RSpec.describe MarketHelper, type: :helper do
       expect(layers.select { |layer| layer[:layer] == "bollinger" }.pluck(:pane)).to all(be_nil)
     end
 
+    # D108: autoscaled and unnamed, the pane filled itself with whatever the
+    # window held, so a quiet month drew the same picture as a real extreme.
+    it "pins the RSI pane to 0-100 and names it, so its shape means something" do
+      rsi = helper.indicator_layers(indicators).find { |layer| layer[:layer] == "rsi" }
+
+      expect(rsi[:scale]).to eq(min: 0, max: 100)
+      expect(rsi[:title]).to eq(I18n.t("market.precio.rsi.titulo",
+                                       period: MarketData::Domain::TechnicalIndicators::RSI_PERIOD))
+    end
+
+    # The thresholds are IndicatorSignals' own, so the pane and the Senales row
+    # cannot disagree about where overbought starts.
+    it "draws its guides at the thresholds the Senales card already reads" do
+      rsi = helper.indicator_layers(indicators).find { |layer| layer[:layer] == "rsi" }
+
+      expect(rsi[:guides]).to eq([ MarketData::Domain::IndicatorSignals::OVERBOUGHT,
+                                   MarketData::Domain::IndicatorSignals::OVERSOLD ])
+    end
+
+    it "gives the price series no pane scale of its own to override" do
+      expect(helper.indicator_layers(indicators).select { |layer| layer[:layer] == "bollinger" }
+                   .pluck(:scale)).to all(be_nil)
+    end
+
     it "offers nothing outside the ranges the indicators describe" do
       expect(helper.indicator_layers(nil)).to be_empty
       expect(helper.chart_layer_keys(nil, nil)).to be_empty
@@ -94,17 +118,49 @@ RSpec.describe MarketHelper, type: :helper do
   end
 
   describe "#chart_anchors_json" do
-    it "labels your cost with the phrase the 52-week bar already uses for it" do
-      anchor = JSON.parse(helper.chart_anchors_json(172.4, "USD")).first
+    def bars(*closes) = closes.map { |close| double(close: close) }
+
+    it "names the line, because the library draws a title only beside its axis label" do
+      anchor = JSON.parse(helper.chart_anchors_json(172.4, bars(160.0, 180.0))).first
 
       expect(anchor["price"]).to eq(172.4)
-      expect(anchor["label"]).to eq(
-        I18n.t("market.range_52w.tu_costo", value: helper.format_currency_mx(172.4, currency: "USD"))
-      )
+      expect(anchor["label"]).to eq(I18n.t("market.precio.anclas.costo"))
     end
 
     it "draws nothing over the price when there is no position to anchor to" do
-      expect(helper.chart_anchors_json(nil, "USD")).to eq("[]")
+      expect(helper.chart_anchors_json(nil, bars(160.0, 180.0))).to eq("[]")
+    end
+
+    # D107: price lines do not widen the scale, so a cost outside the window
+    # lands past the edge of the pane. Absent and stated beats drawn and unseen.
+    it "withholds the line when the cost sits outside what the price did here" do
+      expect(helper.chart_anchors_json(120.0, bars(160.0, 180.0))).to eq("[]")
+      expect(helper.chart_anchors_json(220.0, bars(160.0, 180.0))).to eq("[]")
+    end
+
+    it "keeps the line when the cost sits inside the window, edges included" do
+      expect(JSON.parse(helper.chart_anchors_json(160.0, bars(160.0, 180.0))).size).to eq(1)
+      expect(JSON.parse(helper.chart_anchors_json(180.0, bars(160.0, 180.0))).size).to eq(1)
+    end
+
+    # Judged on the closes alone: Bollinger widens the scale when it is on, so
+    # reading the visible range would make the line blink with a checkbox.
+    it "keeps drawing when there is no series to judge the cost against" do
+      expect(JSON.parse(helper.chart_anchors_json(172.4, [])).size).to eq(1)
+    end
+  end
+
+  describe "#cost_outside_plot?" do
+    def bars(*closes) = closes.map { |close| double(close: close) }
+
+    it "answers false when there is nothing to judge" do
+      expect(helper.cost_outside_plot?(nil, bars(160.0))).to be(false)
+      expect(helper.cost_outside_plot?(172.4, [])).to be(false)
+    end
+
+    it "answers on the closes, not on the bands that happen to be drawn" do
+      expect(helper.cost_outside_plot?(150.0, bars(160.0, 180.0))).to be(true)
+      expect(helper.cost_outside_plot?(170.0, bars(160.0, 180.0))).to be(false)
     end
   end
 
@@ -115,23 +171,23 @@ RSpec.describe MarketHelper, type: :helper do
       levels = helper.chart_levels_json({ atr: 4.0, entries: [ layer(96.0, 1.0) ], exit: layer(88.0, 3.0) }, holding: true)
 
       expect(JSON.parse(levels)).to eq([
-        { "price" => 96.0, "kind" => "entry", "label" => I18n.t("market.layers.etiquetas.entrada", n: 1) },
-        { "price" => 88.0, "kind" => "exit", "label" => I18n.t("market.layers.etiquetas.salida") }
+        { "price" => 96.0, "kind" => "entry", "label" => I18n.t("market.layers.etiquetas_plot.entrada", n: 1) },
+        { "price" => 88.0, "kind" => "exit", "label" => I18n.t("market.layers.etiquetas_plot.salida") }
       ])
     end
 
-    # A line the reader cannot price is a line they cannot use. The card already
-    # names every level; the plot now carries the same name onto the line, and
-    # the layer's own step is what tells one from the next.
-    it "labels each line with the card's own words, numbered by its own step" do
+    # D106: the plot takes the short form. The badge butts against the axis
+    # price, so four full names covered ~40% of a 318px series -- the recent
+    # 40%, which is the part being read. The card two blocks down spells it out.
+    it "labels each line with the short form, numbered by its own step" do
       entries = [ MarketData::Domain::VolatilityLayers::Layer.new(step: 1, price: 96.0, atr_distance: 1.0),
                   MarketData::Domain::VolatilityLayers::Layer.new(step: 2, price: 92.0, atr_distance: 2.0) ]
 
       levels = helper.chart_levels_json({ atr: 4.0, entries: entries, exit: nil }, holding: true)
 
       expect(JSON.parse(levels).pluck("label")).to eq([
-        I18n.t("market.layers.etiquetas.entrada", n: 1),
-        I18n.t("market.layers.etiquetas.entrada", n: 2)
+        I18n.t("market.layers.etiquetas_plot.entrada", n: 1),
+        I18n.t("market.layers.etiquetas_plot.entrada", n: 2)
       ])
     end
 

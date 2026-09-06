@@ -122,8 +122,12 @@ RSpec.describe "The asset detail's price anchor", type: :request do
   # D100: the same number, drawn twice — a tick on the year's track and a line
   # over the plot. Neither is an indicator, so neither hides behind a checkbox.
   describe "your cost over the plot" do
-    def with_closes
-      (1..5).each { |d| create(:asset_price_history, asset: asset, date: d.days.ago.to_date, close: 120) }
+    # A range rather than a flat line, because whether the cost falls inside it
+    # is the whole question D107 asks.
+    def with_closes(from: 90, to: 130)
+      [ from, to ].each_with_index do |close, index|
+        create(:asset_price_history, asset: asset, date: (index + 1).days.ago.to_date, close: close)
+      end
     end
 
     def chart_anchors(body)
@@ -139,12 +143,46 @@ RSpec.describe "The asset detail's price anchor", type: :request do
       expect(chart_anchors(response.body).pluck("price")).to eq([ 100.0 ])
     end
 
+    it "names the line, since the library draws a title only beside its axis label" do
+      hold(avg_cost: 100)
+      with_closes
+
+      get market_asset_path(asset.symbol)
+
+      expect(chart_anchors(response.body).pluck("label")).to eq([ I18n.t("market.precio.anclas.costo") ])
+    end
+
     it "draws nothing over the price for an asset you only watch" do
       with_closes
 
       get market_asset_path(asset.symbol)
 
       expect(chart_anchors(response.body)).to be_empty
+    end
+
+    # D107: price lines do not widen the scale, so a cost outside the window
+    # lands past the edge of the pane — drawn, and invisible, and unexplained.
+    it "withholds the line and says so when the cost is outside this window" do
+      hold(avg_cost: 40)
+      with_closes
+
+      get market_asset_path(asset.symbol)
+
+      expect(chart_anchors(response.body)).to be_empty
+      expect(response.body).to include(
+        I18n.t("market.precio.anclas.costo_fuera",
+               value: ActionController::Base.helpers.strip_tags(
+                 ApplicationController.helpers.format_currency_mx(40, currency: "USD")))
+      )
+    end
+
+    it "says nothing about a cost that is inside the window" do
+      hold(avg_cost: 100)
+      with_closes
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).not_to include(I18n.t("market.precio.anclas.costo_fuera", value: ""))
     end
   end
 end

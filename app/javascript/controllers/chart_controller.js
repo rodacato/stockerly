@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { createChart, LineSeries } from "lightweight-charts"
+import { createChart, LineSeries, createTextWatermark } from "lightweight-charts"
 
 // D2: our own series, never a third-party iframe. Colors read the resolved
 // @theme tokens, so the chart follows the palette and the dark class for free.
@@ -18,6 +18,9 @@ const LEVEL_STYLE = {
 const ANCHOR_ALPHA = "59"
 const STORAGE_KEY = "stockerly:chart-layers"
 const RSI_PANE_HEIGHT = 64
+// D105: the library formats the time axis itself, and without this it formats
+// it in en-US — the one string on the screen no locale file could reach.
+const LOCALE = "es-MX"
 
 export default class ChartController extends Controller {
   static targets = ["canvas", "layerToggle"]
@@ -38,7 +41,8 @@ export default class ChartController extends Controller {
         vertLines: { visible: false }
       },
       rightPriceScale: { borderColor: this.token("--color-border-default") },
-      timeScale: { borderColor: this.token("--color-border-default") }
+      timeScale: { borderColor: this.token("--color-border-default") },
+      localization: { locale: LOCALE }
     })
 
     this.layerSeries = {}
@@ -69,15 +73,46 @@ export default class ChartController extends Controller {
         color: this.token(spec.token || "--color-chart-1"),
         lineWidth: spec.width || 2,
         priceLineVisible: !spec.layer,
-        lastValueVisible: !spec.layer
+        lastValueVisible: !spec.layer,
+        ...(spec.scale && {
+          autoscaleInfoProvider: () => ({ priceRange: { minValue: spec.scale.min, maxValue: spec.scale.max } })
+        })
       },
       spec.pane || 0
     )
     series.setData(spec.data)
-    if (spec.pane) this.chart.panes()[spec.pane]?.setHeight(RSI_PANE_HEIGHT)
+    if (spec.pane) this.decoratePane(series, spec)
     if (!spec.layer) this.mainSeries ||= series
 
     return series
+  }
+
+  // D108: a second pane is a different measurement, so it says which one and
+  // holds a scale of its own. Autoscaled and unnamed it read as more price
+  // chart, and every window filled the pane — which is the one thing an index
+  // read against fixed thresholds must never do.
+  decoratePane(series, spec) {
+    this.chart.panes()[spec.pane]?.setHeight(RSI_PANE_HEIGHT)
+
+    ;(spec.guides || []).forEach((value) =>
+      series.createPriceLine({
+        price: value,
+        color: this.token("--color-border-strong"),
+        lineWidth: 1,
+        lineStyle: 2,
+        axisLabelVisible: true,
+        title: ""
+      })
+    )
+
+    if (spec.title) {
+      createTextWatermark(this.chart.panes()[spec.pane], {
+        horzAlign: "left",
+        vertAlign: "top",
+        lines: [ { text: spec.title, color: this.token("--color-fg-subtle"), fontSize: 11,
+                   fontFamily: this.token("--font-mono") } ]
+      })
+    }
   }
 
   // A layer is added and removed rather than hidden: an RSI series left
@@ -122,6 +157,9 @@ export default class ChartController extends Controller {
 
   // D98's colour rule: your cost takes whatever colour the price is not, so it
   // reads as a reference and never as a verdict about being up or down.
+  //
+  // D104: the axis label is what makes the title render at all — the two are
+  // one badge in this library, so hiding the number also hid the name.
   drawAnchors() {
     if (!this.mainSeries) return
 
@@ -130,7 +168,7 @@ export default class ChartController extends Controller {
         price,
         color: this.token("--color-fg-default") + ANCHOR_ALPHA,
         lineWidth: 1,
-        axisLabelVisible: false,
+        axisLabelVisible: true,
         title: label
       })
     )
