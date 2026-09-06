@@ -116,6 +116,29 @@ RSpec.describe "Market chart range", type: :request do
 
       expect(short).to eq(long)
     end
+
+    # D112 follows the crosshair, which only the browser can do. What a request
+    # proves is the two halves that make it possible: a row of figures for every
+    # bar the chart plots, and a cell for the crosshair to write each one into.
+    it "ships one row of figures per plotted bar" do
+      get market_asset_path(asset.symbol, range: "1M")
+
+      node = response.parsed_body.at_css("[data-chart-bars-value]")
+      bars = JSON.parse(node["data-chart-bars-value"])
+
+      expect(bars.size).to eq(series_points(response.body))
+      expect(bars.last).to eq([ "100.00", "110.00", "90.00", "100.00", "1.5M" ])
+    end
+
+    # The controller wraps the card rather than the plot, because the strip sits
+    # beside the range control and the crosshair has to reach both.
+    it "keeps the strip and the plot under one controller" do
+      get market_asset_path(asset.symbol)
+      card = response.parsed_body.at_css("[data-controller='chart']")
+
+      expect(card.css("[data-chart-target='stat']").size).to eq(MarketHelper::OHLC_KEYS.size)
+      expect(card.at_css("[data-chart-target='canvas']")).to be_present
+    end
   end
 
   # The active pill, read from the control itself rather than from a class

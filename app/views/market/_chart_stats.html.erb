@@ -1,29 +1,23 @@
-<%# The latest closed bar's O/H/L/C and volume (CKP-2), read as one inline line
-    next to the range control — the shape every chart puts there. One row, not
-    the range's aggregate: it answers "what did the last session do", which is
-    the question that belongs beside a window control.
+<%# The O/H/L/C and volume of one bar (CKP-2), read as one inline line next to
+    the range control — the shape every chart puts there.
+
+    D93 pinned this to the latest bar and answered "what did the last session
+    do". D112 adds the question it did not consider — "what did THAT day do" —
+    so the strip follows the crosshair and falls back here when the pointer
+    leaves. The server still paints the latest bar: it is what a reader sees
+    before touching anything, and what they get back when they let go.
 
     D10: the card's heading already declares the currency, so the rows drop the
     prefix. Repeating `USD` four times is what that rule exists to stop.
-    Locals: bar, currency. %>
+    Locals: bar. %>
 <dl class="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono">
-  <% { o: bar.open, h: bar.high, l: bar.low, c: bar.close }.each do |key, value| %>
+  <% chart_stat_values(bar).each_with_index do |value, index| %>
     <div class="flex items-baseline gap-1">
       <dt class="text-[10px] uppercase tracking-[0.08em] text-fg-subtle">
-        <%= t("market.precio.ohlc.#{key}") %>
+        <%= t("market.precio.ohlc.#{MarketHelper::OHLC_KEYS.fetch(index)}") %>
       </dt>
-      <dd class="text-xs font-semibold text-fg-default">
-        <%= value ? bare_amount_mx(value) : "—" %>
-      </dd>
+      <dd class="text-xs font-semibold text-fg-default"
+          data-chart-target="stat"><%= value %></dd>
     </div>
   <% end %>
-
-  <div class="flex items-baseline gap-1">
-    <dt class="text-[10px] uppercase tracking-[0.08em] text-fg-subtle">
-      <%= t("market.precio.ohlc.vol") %>
-    </dt>
-    <dd class="text-xs font-semibold text-fg-default">
-      <%= bar.volume ? format_compact_count(bar.volume) : "—" %>
-    </dd>
-  </div>
 </dl>
