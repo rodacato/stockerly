@@ -1,22 +1,29 @@
-<%# D96: the chart's layers, one checkbox each. Only Niveles has a series to
-    draw today — Bollinger and RSI need a history `technical_readings` does not
-    keep, so they join this legend when that history exists, not before.
-    Locals: layers. %>
+<%# D96/D101: the chart's layers, one checkbox each. Bollinger and RSI exist
+    only on the short ranges — over a year the bands collapse onto the price
+    line and the RSI pane is a block of noise, so the legend has nothing to
+    offer there rather than a dead checkbox.
+    Locals: keys, layers. %>
 <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
-  <label class="flex cursor-pointer items-center gap-1.5">
-    <input type="checkbox" checked
-           data-chart-target="layerToggle"
-           data-layer="levels"
-           data-action="change->chart#toggleLayer"
-           class="size-3.5 cursor-pointer rounded-sm border-border-strong accent-primary">
-    <span class="font-mono text-[11px] font-semibold text-fg-default"><%= t(".niveles") %></span>
-  </label>
+  <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+    <% keys.each do |key| %>
+      <label class="flex cursor-pointer items-center gap-1.5">
+        <input type="checkbox" checked
+               data-chart-target="layerToggle"
+               data-layer="<%= key %>"
+               data-action="change->chart#toggleLayer"
+               class="size-3.5 cursor-pointer rounded-sm border-border-strong accent-primary">
+        <span class="font-mono text-[11px] font-semibold text-fg-default"><%= t(".#{key}") %></span>
+      </label>
+    <% end %>
+  </div>
 
   <%# The Niveles card's own provenance line — the same ATR and the same
       reading date, so it is stated once and read from here. %>
-  <span class="font-mono text-[10px] text-fg-subtle">
-    <%= t("market.layers.procedencia",
-          atr: number_with_precision(layers[:atr], precision: 2),
-          fecha: short_date_es(layers[:calculated_at].to_date)) %>
-  </span>
+  <% if layers.present? %>
+    <span class="font-mono text-[10px] text-fg-subtle">
+      <%= t("market.layers.procedencia",
+            atr: number_with_precision(layers[:atr], precision: 2),
+            fecha: short_date_es(layers[:calculated_at].to_date)) %>
+    </span>
+  <% end %>
 </div>

@@ -117,7 +117,7 @@ RSpec.describe "Market Asset Detail — niveles por volatilidad", type: :request
       get market_asset_path(asset.symbol)
 
       expect(response.body).to include('data-layer="levels"')
-      expect(response.body).to include(I18n.t("market.chart_layers.niveles"))
+      expect(response.body).to include(I18n.t("market.chart_layers.levels"))
     end
 
     it "offers no layer at all when the reading carries no ATR" do

@@ -16,8 +16,11 @@ RSpec.describe "Market chart range", type: :request do
     end
   end
 
+  # The price series only. Counting `time` keys across the attribute used to do
+  # it, and stopped when D101 put Bollinger and RSI in the same payload.
   def series_points(body)
-    body.scan(/&quot;time&quot;/).size
+    node = Nokogiri::HTML(body).at_css("[data-chart-series-value]")
+    JSON.parse(node["data-chart-series-value"]).first["data"].size
   end
 
   describe "the range control" do
@@ -59,6 +62,39 @@ RSpec.describe "Market chart range", type: :request do
       MarketData::UseCases::LoadAssetDetail::RANGES.each_key do |key|
         expect(response.body).to include(market_asset_path(asset.symbol, range: key))
       end
+    end
+  end
+
+  # D101: Bollinger(20) and RSI(14) describe weeks. Over a year the bands
+  # collapse onto the price line and the RSI pane is a block of noise, so the
+  # legend has nothing to offer there rather than a dead checkbox.
+  describe "the indicator layers" do
+    def chart_layers(body)
+      node = Nokogiri::HTML(body).at_css("[data-chart-series-value]")
+      JSON.parse(node["data-chart-series-value"]).filter_map { |series| series["layer"] }.uniq
+    end
+
+    it "carries Bollinger and RSI on the ranges those indicators describe" do
+      get market_asset_path(asset.symbol, range: "3M")
+
+      expect(chart_layers(response.body)).to contain_exactly("bollinger", "rsi")
+      expect(response.body).to include(I18n.t("market.chart_layers.bollinger"))
+    end
+
+    it "carries neither on Máx, and offers no checkbox for what it cannot draw" do
+      get market_asset_path(asset.symbol, range: "MAX")
+
+      expect(chart_layers(response.body)).to be_empty
+      expect(response.body).not_to include('data-layer="bollinger"')
+    end
+
+    it "puts the RSI in its own pane, because an index is not a price" do
+      get market_asset_path(asset.symbol, range: "3M")
+
+      node = response.parsed_body.at_css("[data-chart-series-value]")
+      rsi = JSON.parse(node["data-chart-series-value"]).find { |series| series["layer"] == "rsi" }
+
+      expect(rsi["pane"]).to eq(1)
     end
   end
 
