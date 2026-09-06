@@ -27,7 +27,11 @@
           <p class="text-sm text-fg-default leading-snug">
             <%= t(".#{signal[:indicator]}.#{signal[:state]}") %>
           </p>
-          <span class="text-right font-mono text-xs text-fg-subtle">
+          <%# D110: the figure carries the accent, because the figure is what the
+              reader could not place — the phrase beside it already reads. A row
+              with no single side takes no pill and stays subtle. %>
+          <% accent = signal_accent_class(signal) %>
+          <span class="text-right font-mono text-xs <%= accent ? "rounded-full px-2 py-0.5 font-semibold #{accent}" : "text-fg-subtle" %>">
             <%= signal_value(signal) %>
           </span>
         </li>

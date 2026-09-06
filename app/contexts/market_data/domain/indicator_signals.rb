@@ -17,7 +17,8 @@ module MarketData
       def self.for(reading)
         return [] if reading.nil?
 
-        [ rsi_row(reading), moving_average_row(reading), bollinger_row(reading) ].compact
+        [ rsi_row(reading), moving_average_row(reading),
+          bollinger_row(reading), atr_row(reading) ].compact
       end
 
       def self.rsi_row(reading)
@@ -54,6 +55,20 @@ module MarketData
         { indicator: :moving_average, state: state, value: nil, ma50: ma50, ma200: ma200 }
       end
       private_class_method :moving_average_row
+
+      # How far this asset travels in a normal day, as a share of its own price.
+      # It carries no state, and deliberately: measured across the assets on
+      # file the figure spans 0.27% to 7.2%, so any threshold for "volatile"
+      # would be invented and D36 forbids that. The magnitude reads on its own
+      # and is the one number here that compares across assets.
+      def self.atr_row(reading)
+        atr = reading[:atr]
+        close = reading[:close]
+        return nil if atr.nil? || close.nil? || !close.positive?
+
+        { indicator: :atr, state: :rango_diario, value: (atr.to_d / close.to_d * 100) }
+      end
+      private_class_method :atr_row
 
       def self.bollinger_row(reading)
         close = reading[:close]

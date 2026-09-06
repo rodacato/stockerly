@@ -222,16 +222,54 @@ module MarketHelper
   # The three references the Análisis anchor reads against (CKP-8, D67). The
   # controller already loads all of them; nothing new is fetched here.
   # Used for technical observations in the asset detail page.
-  # The numbers behind a Señales row, in the reading's own units: RSI is a
-  # bare index, the other two are prices the phrase already named.
+  # D110: the accent says which SIDE the reading is on, never whether that side
+  # is good. It is the same overload D102 accepted on the ATR levels, extended
+  # here because these states ARE sides by construction — above or below a
+  # band, a moving average, or the ends of RSI's own range. A state with no
+  # single side takes no accent: `above_50_below_200` is above one line and
+  # below the other, and colouring it would have to pick one and be wrong.
+  #
+  # 🔴 Recorded because it was raised before the call and taken anyway: an
+  # oversold RSI drawn in `negative` will read as "bad" to someone scanning,
+  # which is the reading ADR-013 exists to prevent. Adrian's decision.
+  SIGNAL_ACCENTS = {
+    overbought: :positive, oversold: :negative,
+    above_both: :positive, below_both: :negative,
+    above_50: :positive,   below_50: :negative,
+    above_upper: :positive, below_lower: :negative
+  }.freeze
+
+  SIGNAL_ACCENT_CLASSES = {
+    positive: "bg-positive-bg text-positive-fg",
+    negative: "bg-negative-bg text-negative-fg"
+  }.freeze
+
+  # Absent rather than neutral-coloured: a row with no side gets no pill, so
+  # the eye lands only on the readings that are at one end of something.
+  def signal_accent_class(signal)
+    SIGNAL_ACCENT_CLASSES[SIGNAL_ACCENTS[signal[:state]]]
+  end
+
+  # The numbers behind a Señales row, in the reading's own units. Each figure
+  # names itself: "210.56 · 196.52" is two moving averages the reader cannot
+  # tell apart, and the phrase beside it names them in the other order.
   def signal_value(signal)
     case signal[:indicator]
-    when :rsi           then number_with_precision(signal[:value], precision: 1)
-    when :moving_average then [ signal[:ma50], signal[:ma200] ].compact
-                              .map { |v| number_with_precision(v, precision: 2, delimiter: ",") }.join(" · ")
-    when :bollinger     then [ signal[:lower], signal[:upper] ]
-                              .map { |v| number_with_precision(v, precision: 2, delimiter: ",") }.join(" – ")
+    when :rsi then number_with_precision(signal[:value], precision: 1)
+    when :atr then "#{number_with_precision(signal[:value], precision: 1)}%"
+    when :moving_average
+      [ [ :ma50, signal[:ma50] ], [ :ma200, signal[:ma200] ] ]
+        .filter_map { |key, value| labelled_signal_figure(key, value) }.join(" · ")
+    when :bollinger
+      [ [ :inferior, signal[:lower] ], [ :superior, signal[:upper] ] ]
+        .filter_map { |key, value| labelled_signal_figure(key, value) }.join(" · ")
     end
+  end
+
+  def labelled_signal_figure(key, value)
+    return nil if value.nil?
+
+    t("market.signals.figuras.#{key}", value: number_with_precision(value, precision: 2, delimiter: ","))
   end
 
   # Descriptive es-MX label for a technical observation, per ADR-001 —
