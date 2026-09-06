@@ -13,6 +13,55 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
     allow(PythonRunner).to receive(:call).and_return(Dry::Monads::Failure([ tag, message ]))
   end
 
+  describe "the three financial statements" do
+    let(:payload) do
+      { "annual_reports" => [ { "fiscal_date_ending" => "2026-01-31", "reported_currency" => "USD",
+                                "total_debt" => "11040000000", "short_term_debt" => "999000000",
+                                "long_term_debt" => "7469000000",
+                                "total_shareholder_equity" => "157293000000" } ],
+        "quarterly_reports" => [ { "fiscal_date_ending" => "2025-10-26", "reported_currency" => "USD" } ] }
+    end
+
+    # D109: Alpha Vantage's free tier refuses BALANCE_SHEET as premium, which
+    # left debt_to_equity, current_ratio and quick_ratio empty on every asset.
+    it "returns the balance sheet in the shape the sync job persists" do
+      stub_bridge(payload)
+
+      result = gateway.fetch_balance_sheet("NVDA")
+
+      expect(result).to be_success
+      expect(result.value![:symbol]).to eq("NVDA")
+      expect(result.value!.dig(:annual_reports, 0, "fiscal_date_ending")).to eq("2026-01-31")
+      expect(result.value!.dig(:quarterly_reports, 0, "reported_currency")).to eq("USD")
+    end
+
+    # The keys are aliased to Alpha Vantage's names in the bridge, because
+    # FundamentalCalculator reads those and must not learn a second vocabulary.
+    it "carries the keys FundamentalCalculator reads, not Yahoo's own labels" do
+      stub_bridge(payload)
+
+      report = gateway.fetch_balance_sheet("NVDA").value![:annual_reports].first
+
+      expect(report).to include("short_term_debt", "long_term_debt", "total_shareholder_equity")
+    end
+
+    it "asks the bridge for the statement it was asked for" do
+      stub_bridge(payload)
+
+      gateway.fetch_income_statement("NVDA")
+      expect(PythonRunner).to have_received(:call).with("yahoo.py", "income_statement", "NVDA")
+
+      gateway.fetch_cash_flow("NVDA")
+      expect(PythonRunner).to have_received(:call).with("yahoo.py", "cash_flow", "NVDA")
+    end
+
+    it "passes a bridge failure through rather than returning empty reports" do
+      stub_bridge_failure(:not_found)
+
+      expect(gateway.fetch_balance_sheet("NVDA")).to be_failure
+    end
+  end
+
   describe "#search_tickers" do
     it "maps the bridge payload to the shape Administration consumes" do
       stub_bridge([ { "symbol" => "ALAB", "name" => "Astera Labs, Inc.", "quote_type" => "EQUITY",

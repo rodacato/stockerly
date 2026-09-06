@@ -123,3 +123,46 @@ to DataBursatil. If Yahoo closes this door, four capabilities degrade now instea
 search degrades to nothing rather than to Alpha Vantage — `MarketData::UseCases::SearchTickers` names
 one gateway, with no chain behind it. That is a real cost of this amendment and is left open
 deliberately: a fallback nobody exercises is how a provider quietly stops working.
+
+## Amendment — 2026-09-06: the three financial statements moved here, and this one keeps its fallback
+
+**"Nothing that a sanctioned provider serves is routed here" bends again, and for a harder reason
+than the search did.** Alpha Vantage was not merely impractical for balance sheets. It **refuses
+them**: `BALANCE_SHEET` is a premium endpoint on the free tier, and production said so on every
+attempt, once per asset —
+
+> `Statements: NVDA (BALANCE_SHEET) :: …subscribe to any of the premium plans… instantly unlock all
+> premium endpoints`
+
+Measured on the production mirror: **0 balance-sheet rows** against 1,172 statements, all of them
+`income_statement` and `cash_flow`. `FundamentalCalculator.calculate` takes `balance_data`, so with
+none it returned `nil` and **no `CALCULATED` row was ever written for any asset**. Every metric
+derived from it read empty across all 22 equities on file — `debt_to_equity`, `current_ratio`,
+`quick_ratio`, `gross_margin`, `fcf_yield`, `roe_calculated`, `roa_calculated`. One of those,
+`debt_to_equity`, is a card in the fundamentals extract, so a fifth of that block had never once
+rendered a value; two of them, `current_ratio` and `payout_ratio`, are chip-bearing, so two of the
+three metrics that can interpret themselves could never do it.
+
+The call also cost more than nothing. Three requests per asset against a 25-a-day ceiling, one of
+them guaranteed to fail, and the failures opened the `alpha_vantage` breaker — production logs show
+`Circuit breaker 'alpha_vantage_gateway' is open` taking down a `CASH_FLOW` that would have
+succeeded. **8 of 50 assets have statements at all**, and this is a large part of why.
+
+Yahoo answers all three for free, with **five annual periods and five to seven quarterly** per
+statement, and every line item the calculator reads.
+
+**What is different from the search amendment: this one keeps the fallback, deliberately.** That
+amendment recorded its own cost — *"the search degrades to nothing rather than to Alpha Vantage …
+a fallback nobody exercises is how a provider quietly stops working"*. `SyncStatementsJob` now tries
+yfinance first and falls through to Alpha Vantage per statement, and the fallback is exercised by
+specs rather than assumed. Alpha Vantage still serves `OVERVIEW`, which Yahoo is not asked for.
+
+**Volume stays well inside the ceiling.** Three calls per asset over ~50 assets is ~150 a day
+against the 2,000 this ADR set in the previous amendment.
+
+**Still quarantined, with one fewer wall again.** US prices still go to Alpaca, US quotes to
+Finnhub, BMV to DataBursatil. If Yahoo closes this door, statements degrade **to Alpha Vantage** —
+two of three types, which is what shipped before — rather than to nothing.
+
+The finding and the decision are recorded as **D109** in `design/DECISIONS.md`; the reader problem
+it unblocks is [#429](https://github.com/rodacato/stockerly/issues/429).

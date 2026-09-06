@@ -110,6 +110,27 @@ module MarketData
         end
       end
 
+      # The three financial statements, in the shape `SyncStatementsJob` already
+      # persists — `{ symbol:, annual_reports:, quarterly_reports: }` with
+      # snake_case keys. Yahoo answers all three for free and returns five
+      # annual periods; Alpha Vantage's free tier serves two of the three and
+      # refuses BALANCE_SHEET outright as premium, which is what left the whole
+      # `health` category — and two of the three chip-bearing metrics — empty on
+      # every asset. See D109.
+      #
+      # Returns Success({ symbol:, annual_reports: [...], quarterly_reports: [...] })
+      def fetch_balance_sheet(symbol)
+        fetch_statement(symbol, "balance_sheet")
+      end
+
+      def fetch_income_statement(symbol)
+        fetch_statement(symbol, "income_statement")
+      end
+
+      def fetch_cash_flow(symbol)
+        fetch_statement(symbol, "cash_flow")
+      end
+
       # Index levels have no sanctioned source: Alpaca has none, Massive charges
       # for them, and DataBursatil's feed has been frozen since 2026-06-26.
       # Returns Success([{ symbol:, value:, change_percent:, is_open: }, ...])
@@ -149,6 +170,16 @@ module MarketData
       end
 
       private
+
+      # A statement with no periods at all is a failure the script already
+      # names, so an empty Success can never reach the job and write nothing.
+      def fetch_statement(symbol, kind)
+        run(kind, symbol).fmap do |payload|
+          { symbol: symbol,
+            annual_reports: payload["annual_reports"] || [],
+            quarterly_reports: payload["quarterly_reports"] || [] }
+        end
+      end
 
       def run(command, symbol, *extra)
         check = RateLimiter.check!(PROVIDER)
