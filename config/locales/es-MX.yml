@@ -923,14 +923,14 @@ es-MX:
         1s: 1 sem
         3m: 3 meses
     signals:
+      atr:
+        rango_diario: Rango que recorre en un día típico
       bollinger:
         above_upper: Precio por arriba de la banda superior de Bollinger
         below_lower: Precio por abajo de la banda inferior de Bollinger
         inside: Precio dentro de las bandas de Bollinger
       desactualizado: Lectura del %{fecha}
       disclaimer: Lecturas, no recomendaciones.
-      atr:
-        rango_diario: Rango que recorre en un día típico
       etiquetas:
         atr: ATR (14)
         bollinger: BANDAS
