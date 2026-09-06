@@ -111,6 +111,20 @@ module MarketHelper
         token: "--color-chart-1", width: 2 } ].to_json
   end
 
+  # The ATR levels as chart price lines. The kind travels with each level
+  # because the trailing exit can land between two entry layers — its price
+  # does not say which it is.
+  #
+  # `holding` gates the exit for the reason the card gates it: an exit level for
+  # something you do not own is a plan for a position that does not exist.
+  def chart_levels_json(layers, holding: false)
+    return "[]" if layers.blank?
+
+    entries = layers[:entries].map { |layer| { price: layer.price.to_f, kind: "entry" } }
+    trailing = holding && layers[:exit] ? [ { price: layers[:exit].price.to_f, kind: "exit" } ] : []
+    (entries + trailing).to_json
+  end
+
   # The three references the Análisis anchor reads against (CKP-8, D67). The
   # controller already loads all of them; nothing new is fetched here.
   # Used for technical observations in the asset detail page.

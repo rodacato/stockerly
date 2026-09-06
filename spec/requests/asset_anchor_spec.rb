@@ -95,5 +95,27 @@ RSpec.describe "The asset detail's price anchor", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).not_to include(I18n.t("market.range_52w.titulo"))
     end
+
+    # D96: your cost on the same track answers "¿compré caro?" against the only
+    # reference the screen already had for it.
+    it "marks your average cost on the same track when you hold it" do
+      hold(avg_cost: 100)
+      with_range(low: 80, high: 200)
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include(
+        I18n.t("market.range_52w.tu_costo", value: ApplicationController.helpers.format_currency_mx(100, currency: "USD"))
+      )
+    end
+
+    it "marks nothing but the price when the asset is only watched" do
+      with_range(low: 80, high: 200)
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include(I18n.t("market.range_52w.titulo"))
+      expect(response.body).not_to include(I18n.t("market.range_52w.tu_costo", value: ""))
+    end
   end
 end

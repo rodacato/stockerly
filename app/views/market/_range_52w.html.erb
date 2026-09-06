@@ -1,7 +1,11 @@
 <%# Where the price sits in its own year — the reading that answers "¿está caro?"
     without asking the reader to learn an indicator. Hoisted out of Señales,
     which is #306-blocked, so this ships on its own (CKP-9).
-    Locals: range (MarketData::Domain::FiftyTwoWeekRange::Reading), currency. %>
+
+    D96 puts your cost on the same track: the year's range is the reference the
+    question "¿compré caro?" needs, and it was already drawn here.
+    Locals: range (MarketData::Domain::FiftyTwoWeekRange::Reading), currency, cost. %>
+<% cost_position = range.position_of(cost) %>
 <section class="<%= card_classes("flex flex-col gap-2 p-5") %>">
   <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
     <h3 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".titulo") %></h3>
@@ -12,10 +16,25 @@
 
   <div class="relative h-2.5">
     <div class="absolute inset-x-0 top-1 h-1.5 rounded-full bg-bg-muted"></div>
+    <% if cost_position %>
+      <span class="absolute top-0 h-2.5 w-0.5 -translate-x-1/2 rounded-full bg-primary"
+            style="left: <%= (cost_position * 100).round(2) %>%"
+            aria-hidden="true"></span>
+    <% end %>
     <span class="absolute top-0 size-2.5 -translate-x-1/2 rounded-full bg-fg-default"
           style="left: <%= (range.position * 100).round(2) %>%"
           aria-hidden="true"></span>
   </div>
+
+  <%# The label is centred on its tick, so it needs room at both ends of the track. %>
+  <% if cost_position %>
+    <div class="relative h-3">
+      <span class="absolute -translate-x-1/2 whitespace-nowrap font-mono text-[10px] font-semibold text-primary"
+            style="left: <%= (cost_position * 100).clamp(6, 94).round(2) %>%">
+        <%= t(".tu_costo", value: format_currency_mx(cost, currency: currency)) %>
+      </span>
+    </div>
+  <% end %>
 
   <div class="flex justify-between font-mono text-[11px] text-fg-subtle">
     <span><%= format_currency_mx(range.low, currency: currency) %></span>

@@ -2,7 +2,8 @@
     continuous scroll, so the sub-tabs that used to hold the fundamentals are
     gone (D36): Estados financieros keeps its lazy frame at the foot, and the
     rest reads top to bottom. Locals: asset. %>
-<%= render "market/range_52w", range: @range_52w, currency: @asset.currency if @range_52w %>
+<%= render "market/range_52w", range: @range_52w, currency: @asset.currency,
+           cost: @anchors[:cost]&.reference if @range_52w %>
 
 <%= render "market/state_verdict", state: @state, state_source: @state_source, holding: @holding %>
 
@@ -15,13 +16,22 @@
     <h3 class="font-display text-base font-semibold tracking-tight text-fg-default">
       <%= t("market.precio.titulo", currency: @asset.currency) %>
     </h3>
-    <div class="mt-4" data-controller="chart" data-chart-height-value="260"
-         data-chart-series-value="<%= price_series_json(@price_histories) %>"></div>
-
-    <div class="mt-4">
+    <div class="mt-3">
       <%= render "components/segmented",
                  label: t("market.precio.rango_label"),
                  options: chart_range_options(@asset, @chart_range) %>
+    </div>
+
+    <div data-controller="chart" data-chart-height-value="260"
+         data-chart-series-value="<%= price_series_json(@price_histories) %>"
+         data-chart-levels-value="<%= chart_levels_json(@layers, holding: @holding) %>">
+      <div class="mt-4" data-chart-target="canvas"></div>
+
+      <% if @layers.present? %>
+        <div class="mt-3">
+          <%= render "market/chart_layers", layers: @layers %>
+        </div>
+      <% end %>
     </div>
 
     <%= render "market/chart_stats", bar: @price_histories.last, currency: @asset.currency if @price_histories.last %>
