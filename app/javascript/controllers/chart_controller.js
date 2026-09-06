@@ -8,7 +8,12 @@ import { createChart, LineSeries } from "lightweight-charts"
 // Consolidado draws two (value and contributed), the asset detail one.
 // `levels` are the ATR price lines (D96); the legend's checkbox adds and
 // removes them, and the choice is remembered per browser.
-const LEVEL_ALPHA = { entry: "38", exit: "4d" }
+// Colour separates the two kinds of level, the way the card separates them with
+// a heading — it says which side of the ladder a line is on, never a forecast.
+const LEVEL_STYLE = {
+  entry: { token: "--color-positive", alpha: "8c" },
+  exit: { token: "--color-negative", alpha: "8c" }
+}
 const ANCHOR_ALPHA = "59"
 const STORAGE_KEY = "stockerly:chart-layers"
 
@@ -99,14 +104,17 @@ export default class ChartController extends Controller {
   drawLevels() {
     if (!this.mainSeries || this.priceLines.length) return
 
-    this.priceLines = this.levelsValue.map(({ price, kind }) =>
-      this.mainSeries.createPriceLine({
+    this.priceLines = this.levelsValue.map(({ price, kind, label }) => {
+      const style = LEVEL_STYLE[kind] || LEVEL_STYLE.entry
+
+      return this.mainSeries.createPriceLine({
         price,
-        color: this.token("--color-fg-subtle") + (LEVEL_ALPHA[kind] || LEVEL_ALPHA.entry),
+        color: this.token(style.token) + style.alpha,
         lineWidth: 1,
-        axisLabelVisible: false
+        axisLabelVisible: true,
+        title: label
       })
-    )
+    })
   }
 
   clearLevels() {

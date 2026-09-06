@@ -25,6 +25,17 @@ RSpec.describe "Market TradingView toggle", type: :request do
       expect(response.body).to include(market_asset_tradingview_path(asset.symbol))
     end
 
+    # The embed took the whole card and there was no way back. One button does
+    # both, because a second one would sit there dead until the first was used.
+    it "carries both labels, so the button that opened it can also close it" do
+      asset = with_history(create(:asset, symbol: "NVDA"))
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include(I18n.t("market.tradingview_toggle.ocultar"))
+      expect(response.body).to include('data-action="tradingview#toggle"')
+    end
+
     it "offers it on an ETF too" do
       asset = with_history(create(:asset, :etf, symbol: "SPY"))
 
@@ -79,6 +90,17 @@ RSpec.describe "Market TradingView toggle", type: :request do
       source = File.read("app/javascript/controllers/tradingview_embed_controller.js")
 
       expect(source).to include("https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js")
+    end
+
+    # `autosize` measured a container that lives in a frame the click had not
+    # filled yet, so the widget drew itself far shorter than the box it was
+    # given. An explicit number cannot be mismeasured.
+    it "asks for a height rather than letting the widget measure an empty frame" do
+      get market_asset_tradingview_path(asset.symbol)
+
+      expect(response.body).to include("&quot;autosize&quot;:false")
+      expect(response.body).to include("&quot;height&quot;:#{MarketHelper::TRADINGVIEW_HEIGHT}")
+      expect(response.body).to include("height: #{MarketHelper::TRADINGVIEW_HEIGHT + MarketHelper::TRADINGVIEW_ATTRIBUTION}px")
     end
 
     it "presets MACD and no moving average, whose period it cannot carry" do

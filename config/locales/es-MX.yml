@@ -970,6 +970,7 @@ es-MX:
         titulo: Este gráfico sale de tu instancia
         una_vez: Se muestra una sola vez.
       mostrar: Mostrar
+      ocultar: Ocultar
       subtitulo: Medias largas y MACD · se carga desde TradingView
       titulo: Gráfico de TradingView
     vs_plan:
