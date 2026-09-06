@@ -75,4 +75,30 @@ RSpec.describe MarketData::Domain::IndicatorSignals do
       expect(described_class.for(r).pluck(:indicator)).not_to include(:bollinger)
     end
   end
+
+  # D110: the one row here with no state. Measured across the assets on file the
+  # figure spans 0.27% to 7.2%, so a "volatile" threshold would be invented and
+  # D36 forbids it -- the magnitude is the whole reading.
+  describe "the ATR row" do
+    def reading(atr:, close:)
+      { atr: atr, close: close }
+    end
+
+    it "states the daily range as a share of the asset's own price" do
+      row = described_class.for(reading(atr: 7.2478, close: 230.72)).find { |s| s[:indicator] == :atr }
+
+      expect(row[:state]).to eq(:rango_diario)
+      expect(row[:value].to_f).to be_within(0.01).of(3.14)
+    end
+
+    it "is absent when the reading carried no ATR" do
+      expect(described_class.for(reading(atr: nil, close: 230.72)).pluck(:indicator)).not_to include(:atr)
+    end
+
+    # A percentage of nothing is not a reading.
+    it "is absent when there is no close to divide by" do
+      expect(described_class.for(reading(atr: 7.2478, close: nil)).pluck(:indicator)).not_to include(:atr)
+      expect(described_class.for(reading(atr: 7.2478, close: 0)).pluck(:indicator)).not_to include(:atr)
+    end
+  end
 end

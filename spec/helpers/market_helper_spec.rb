@@ -207,4 +207,46 @@ RSpec.describe MarketHelper, type: :helper do
       expect(helper.chart_levels_json(nil)).to eq("[]")
     end
   end
+
+  # D110: the accent says which SIDE a reading is on, never whether it is good.
+  describe "#signal_accent_class and #signal_value" do
+    it "accents the two ends and leaves the middle bare" do
+      expect(helper.signal_accent_class(state: :overbought)).to include("positive")
+      expect(helper.signal_accent_class(state: :oversold)).to include("negative")
+      expect(helper.signal_accent_class(state: :neutral)).to be_nil
+      expect(helper.signal_accent_class(state: :inside)).to be_nil
+    end
+
+    # A state that is above one line and below the other has no single side, so
+    # colouring it would have to pick one and be wrong.
+    it "leaves a mixed moving-average state unaccented" do
+      expect(helper.signal_accent_class(state: :above_50_below_200)).to be_nil
+      expect(helper.signal_accent_class(state: :below_50_above_200)).to be_nil
+    end
+
+    # ATR carries no side, because no defensible threshold for one exists.
+    it "never accents the ATR row" do
+      expect(helper.signal_accent_class(state: :rango_diario)).to be_nil
+    end
+
+    it "names each figure, since the phrase names them in the other order" do
+      value = helper.signal_value(indicator: :moving_average, ma50: 210.56, ma200: 196.52)
+
+      expect(value).to eq("MA50 210.56 · MA200 196.52")
+    end
+
+    it "names the bands rather than printing a bare range" do
+      value = helper.signal_value(indicator: :bollinger, lower: 208.02, upper: 232.10)
+
+      expect(value).to eq("inferior 208.02 · superior 232.10")
+    end
+
+    it "drops the figure a reading could not compute rather than printing a gap" do
+      expect(helper.signal_value(indicator: :moving_average, ma50: 210.56, ma200: nil)).to eq("MA50 210.56")
+    end
+
+    it "prints the ATR row as a percentage" do
+      expect(helper.signal_value(indicator: :atr, value: 3.1415)).to eq("3.1%")
+    end
+  end
 end

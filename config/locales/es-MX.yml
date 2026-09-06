@@ -929,10 +929,18 @@ es-MX:
         inside: Precio dentro de las bandas de Bollinger
       desactualizado: Lectura del %{fecha}
       disclaimer: Lecturas, no recomendaciones.
+      atr:
+        rango_diario: Rango que recorre en un día típico
       etiquetas:
+        atr: ATR (14)
         bollinger: BANDAS
         moving_average: MEDIA MÓVIL
         rsi: RSI
+      figuras:
+        inferior: inferior %{value}
+        ma200: MA200 %{value}
+        ma50: MA50 %{value}
+        superior: superior %{value}
       moving_average:
         above_50: Precio por arriba de su MA50
         above_50_below_200: Precio por arriba de su MA50 y por abajo de su MA200
