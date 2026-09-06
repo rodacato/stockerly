@@ -16,7 +16,7 @@ RSpec.describe "Market detail — Recent Observations block (#40 JTBD #6)", type
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Observaciones recientes")
+      expect(response.body).to include(I18n.t("market.recent_observations.seccion"))
       expect(response.body).to include("entró en zona de sobreventa")
       expect(response.body).to include("cruzó a la baja su MA200")
     end
@@ -24,7 +24,7 @@ RSpec.describe "Market detail — Recent Observations block (#40 JTBD #6)", type
     it "does not render the panel when the asset has no observations" do
       get market_asset_path(asset.symbol)
       expect(response).to have_http_status(:ok)
-      expect(response.body).not_to include("Observaciones recientes")
+      expect(response.body).not_to include(I18n.t("market.recent_observations.seccion"))
     end
 
     it "filters to observations within the last 30 days" do
@@ -43,7 +43,7 @@ RSpec.describe "Market detail — Recent Observations block (#40 JTBD #6)", type
       create(:technical_observation, asset: asset, observation_type: "bb_upper_breached", observed_at: 1.hour.ago)
 
       get market_asset_path(asset.symbol)
-      block = response.body[/Observaciones recientes.*?<\/section>/m].to_s
+      block = response.body[/#{Regexp.escape(I18n.t("market.recent_observations.seccion"))}.*?<\/ul>/m].to_s
 
       expect(block).to include("rompió la banda de Bollinger superior")
       expect(block).not_to match(/\b(comprar|vender|rebalancear|considera|considere|deberías?|debes|es momento)\b/i)

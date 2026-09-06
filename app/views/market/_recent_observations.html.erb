@@ -1,37 +1,34 @@
-<%# Recent technical-zone transitions — Stockerly-2.0 (S10 #93). Prominent
-    panel shown above the chart with descriptive copy per ADR-001
-    ("AAPL entró en zona de sobreventa…"). Tags + relative time + accent dot
-    mirror the mockup. Phrases/tags/accents come from MarketHelper. %>
-<% if observations.any? %>
-  <section class="<%= card_classes("shadow-sm overflow-hidden") %>">
-    <header class="flex flex-wrap items-baseline gap-2 px-5 pt-4 pb-3">
-      <h2 class="font-display text-base font-semibold tracking-tight text-fg-default">
-        Observaciones recientes
-      </h2>
-      <span class="text-xs text-fg-subtle">
-        Filtradas a <span class="font-mono text-fg-default"><%= asset.symbol %></span> · últimos 30 días
-      </span>
-      <span class="ml-auto text-[11px] italic text-fg-subtle">
-        Lecturas, no recomendaciones.
-      </span>
-    </header>
+<%# Recent technical-zone transitions (S10 #93), descriptive per ADR-001.
+    Phrases, tags and accents come from MarketHelper.
 
-    <ul class="divide-y divide-border-default">
-      <% observations.each do |observation| %>
-        <li class="grid grid-cols-[8px_1fr_auto] sm:grid-cols-[8px_1fr_140px_120px] items-center gap-3.5 px-5 py-3.5">
-          <span class="inline-block h-1.5 w-1.5 rounded-full <%= observation_dot_class(observation_accent(observation)) %>"></span>
-          <p class="text-sm text-fg-default leading-snug">
-            <span class="font-mono font-semibold text-primary"><%= asset.symbol %></span>
-            <%= observation_phrase(observation) %>
-          </p>
-          <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
-            <%= observation_tag(observation) %>
-          </span>
-          <span class="text-right text-xs text-fg-subtle">
-            <%= relative_age(observation.observed_at) %>
-          </span>
-        </li>
-      <% end %>
-    </ul>
-  </section>
+    D114: a section of `market/reading`. Its copy moves to the locale with this
+    slice, per ADR-0011 — it was the last of the three carrying hardcoded
+    es-MX, which is why the "no recomendaciones" line survived here after it
+    was dropped from its two siblings. Locals: asset, observations. %>
+<% if observations.any? %>
+  <div class="border-t border-border-default px-5 pt-4 pb-1">
+    <h3 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-fg-subtle">
+      <%= t(".seccion") %>
+    </h3>
+    <p class="mt-1 text-[11px] leading-relaxed text-fg-subtle">
+      <%= t(".alcance", symbol: asset.symbol, dias: MarketData::UseCases::LoadAssetDetail::OBSERVATION_WINDOW_DAYS) %>
+    </p>
+  </div>
+
+  <ul class="divide-y divide-border-default border-t border-border-default">
+    <% observations.each do |observation| %>
+      <li class="grid grid-cols-[8px_1fr_auto] sm:grid-cols-[8px_1fr_140px_120px] items-center gap-3.5 px-5 py-3.5">
+        <span class="inline-block h-1.5 w-1.5 rounded-full <%= observation_dot_class(observation_accent(observation)) %>"></span>
+        <p class="text-sm text-fg-default leading-snug">
+          <%= observation_phrase(observation) %>
+        </p>
+        <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+          <%= observation_tag(observation) %>
+        </span>
+        <span class="text-right text-xs text-fg-subtle">
+          <%= relative_age(observation.observed_at) %>
+        </span>
+      </li>
+    <% end %>
+  </ul>
 <% end %>

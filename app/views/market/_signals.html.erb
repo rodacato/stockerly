@@ -1,38 +1,31 @@
-<%# CKP-3 / #306: the Señales block, read from the daily `technical_readings`
+<%# CKP-3 / #306: the Señales rows, read from the daily `technical_readings`
     row. Phrases come from MarketData::Domain::IndicatorSignals (ADR-014's
-    closed catalogue); the template chooses none of them. Locals: signals,
-    reading. %>
-<% if signals.any? %>
-  <section class="<%= card_classes("shadow-sm overflow-hidden") %>">
-    <header class="flex flex-wrap items-baseline gap-2 px-5 pt-4 pb-3">
-      <h2 class="font-display text-base font-semibold tracking-tight text-fg-default">
-        <%= t(".titulo") %>
-      </h2>
-      <% if reading.stale? %>
-        <span class="rounded-full bg-bg-muted px-2 py-0.5 text-[11px] font-medium text-fg-subtle">
-          <%= t(".desactualizado", fecha: short_date_es(reading.calculated_at.to_date)) %>
-        </span>
-      <% end %>
-    </header>
+    closed catalogue); the template chooses none of them.
 
-    <ul class="divide-y divide-border-default">
-      <% signals.each do |signal| %>
-        <li class="grid grid-cols-[1fr_auto] sm:grid-cols-[140px_1fr_auto] items-center gap-3.5 px-5 py-3.5">
-          <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
-            <%= t(".etiquetas.#{signal[:indicator]}") %>
-          </span>
-          <p class="text-sm text-fg-default leading-snug">
-            <%= t(".#{signal[:indicator]}.#{signal[:state]}") %>
-          </p>
-          <%# D110: the figure carries the accent, because the figure is what the
-              reader could not place — the phrase beside it already reads. A row
-              with no single side takes no pill and stays subtle. %>
-          <% accent = signal_accent_class(signal) %>
-          <span class="text-right font-mono text-xs <%= accent ? "rounded-full px-2 py-0.5 font-semibold #{accent}" : "text-fg-subtle" %>">
-            <%= signal_value(signal) %>
-          </span>
-        </li>
-      <% end %>
-    </ul>
-  </section>
+    D114: a section of `market/reading`, not a card. It leads the card because
+    it answers the card's title first; the heading and the stale chip live on
+    the card now. Locals: signals. %>
+<% if signals.any? %>
+  <ul class="divide-y divide-border-default border-t border-border-default">
+    <% signals.each do |signal| %>
+      <%# The figure sits beside the phrase only where there is room for both.
+          At 390px "MA50 145.00 · MA200 130.00" squeezed the sentence beside it
+          into five lines, so below `sm` the figure takes a line of its own. %>
+      <li class="flex flex-col gap-1.5 px-5 py-3.5 sm:grid sm:grid-cols-[140px_1fr_auto] sm:items-center sm:gap-3.5">
+        <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+          <%= t(".etiquetas.#{signal[:indicator]}") %>
+        </span>
+        <p class="text-sm text-fg-default leading-snug">
+          <%= t(".#{signal[:indicator]}.#{signal[:state]}") %>
+        </p>
+        <%# D110: the figure carries the accent, because the figure is what the
+            reader could not place — the phrase beside it already reads. A row
+            with no single side takes no pill and stays subtle. %>
+        <% accent = signal_accent_class(signal) %>
+        <span class="self-start font-mono text-xs sm:self-auto sm:text-right <%= accent ? "rounded-full px-2 py-0.5 font-semibold #{accent}" : "text-fg-subtle" %>">
+          <%= signal_value(signal) %>
+        </span>
+      </li>
+    <% end %>
+  </ul>
 <% end %>

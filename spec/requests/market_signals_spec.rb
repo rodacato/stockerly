@@ -20,7 +20,7 @@ RSpec.describe "Market Asset Detail — Señales", type: :request do
 
     get market_asset_path(asset.symbol)
 
-    expect(response.body).to include(I18n.t("market.signals.titulo"))
+    expect(response.body).to include(I18n.t("market.reading.titulo"))
     expect(response.body).to include(I18n.t("market.signals.rsi.overbought"))
     expect(response.body).to include(I18n.t("market.signals.moving_average.above_both"))
     expect(response.body).to include(I18n.t("market.signals.bollinger.inside"))
@@ -30,7 +30,7 @@ RSpec.describe "Market Asset Detail — Señales", type: :request do
     get market_asset_path(asset.symbol)
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).not_to include(I18n.t("market.signals.titulo"))
+    expect(response.body).not_to include(I18n.t("market.reading.titulo"))
   end
 
   # A phrase in the present tense over an old reading is worse than a stale
@@ -50,7 +50,7 @@ RSpec.describe "Market Asset Detail — Señales", type: :request do
 
     get market_asset_path(asset.symbol)
 
-    expect(response.body).to include(I18n.t("market.signals.titulo"))
+    expect(response.body).to include(I18n.t("market.reading.titulo"))
     expect(response.body).not_to match(/Lectura del/)
   end
 
