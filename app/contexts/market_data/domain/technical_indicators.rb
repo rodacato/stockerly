@@ -13,6 +13,9 @@ module MarketData
       # FACTORS, this minus a row's keys is what that reading could not compute
       # — absence is the signal, never a zero.
       READINGS = %i[close rsi sma_50 sma_200 bb_upper bb_middle bb_lower atr].freeze
+      # Named because the chart prints it — a pane labelled `RSI (14)` computed
+      # over some other window is the drift this constant exists to prevent.
+      RSI_PERIOD = 14
 
       class << self
         # Every indicator this object computes, as one dated reading. The single
@@ -45,7 +48,7 @@ module MarketData
         #
         # The last value of the series, so a chart and a card reading the same
         # closes cannot report different numbers.
-        def rsi(closes, period: 14)
+        def rsi(closes, period: RSI_PERIOD)
           rsi_series(closes, period: period).last
         end
 
@@ -56,7 +59,7 @@ module MarketData
         #
         # Aligned with `closes` and `nil` until the seed window closes — absence
         # is what "not enough history yet" looks like, never a zero.
-        def rsi_series(closes, period: 14)
+        def rsi_series(closes, period: RSI_PERIOD)
           values = Array.new(closes.size)
           return values if closes.size < period + 1
 

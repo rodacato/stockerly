@@ -2,7 +2,11 @@
     only on the short ranges — over a year the bands collapse onto the price
     line and the RSI pane is a block of noise, so the legend has nothing to
     offer there rather than a dead checkbox.
-    Locals: keys, layers. %>
+    D107: `cost_outside` is the formatted cost when it falls outside the plotted
+    window, false otherwise. The line is not drawn there — price lines do not
+    widen the scale, so it would land past the edge of the pane — and this is
+    where the chart says so instead of omitting it silently.
+    Locals: keys, layers, cost_outside. %>
 <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
   <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
     <% keys.each do |key| %>
@@ -16,6 +20,12 @@
       </label>
     <% end %>
   </div>
+
+  <% if cost_outside %>
+    <span class="font-mono text-[10px] text-fg-subtle">
+      <%= t("market.precio.anclas.costo_fuera", value: cost_outside) %>
+    </span>
+  <% end %>
 
   <%# The Niveles card's own provenance line — the same ATR and the same
       reading date, so it is stated once and read from here. %>

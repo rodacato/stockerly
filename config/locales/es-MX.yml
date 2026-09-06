@@ -674,6 +674,9 @@ es-MX:
       etiquetas:
         entrada: CAPA %{n}
         salida: SALIDA
+      etiquetas_plot:
+        entrada: C%{n}
+        salida: SAL
       explicacion: Escalonados por el rango diario de este activo, no por números
         redondos. Un mismo porcentaje es ruido en un activo y un evento en otro.
       procedencia: ATR %{atr} · lectura del %{fecha}
@@ -885,6 +888,9 @@ es-MX:
         de la empresa.
       titulo: Razón P/U histórica · últimos %{days} días
     precio:
+      anclas:
+        costo: TU COSTO
+        costo_fuera: tu costo %{value} · fuera de este rango
       ohlc:
         c: C
         h: H
@@ -898,6 +904,8 @@ es-MX:
         s1: 1S
         y1: 1A
       rango_label: Rango del gráfico
+      rsi:
+        titulo: RSI (%{period})
       titulo: Precio · %{currency} · cierre diario
     range_52w:
       above_high: "%{percent} arriba de su máximo del año"
