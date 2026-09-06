@@ -148,7 +148,7 @@ re-vendor each when it is next opened for edits.
 | ~~`OptionCard`~~ | **Resolved into `NavRow` in 0.4.0** — it was the same shape. Still worth checking `onboarding.pen` for a third consumer when that file is next open. |
 | `TopBarBack` (back + title + action) | Two artboards in `assets.pen`; `cockpit.pen`'s asset-detail bar is close but stacks ticker + name. Similar, not identical — do not force one master over both. |
 | Categorical palette (allocation slices) | The Consolidado donut needed four non-semantic category colors and the kit has none — green/red are reserved for gain/loss, so it borrowed `primary`, `primary-hover`, `warning` and `fg-subtle`. `warning` on a crypto slice reads as a caution it does not mean. A real 4–6 colour categorical ramp is the fix. |
-| PriceChart tokens (axis, band fill, RSI line) | From 0.1.0, still open — the chart component may need its own color roles. Tokenize, don't hardcode. |
+| ~~PriceChart tokens (axis, band fill, RSI line)~~ | **Closed 2026-09-06 — reuse, do not tokenize (D96).** 0.9.0 deferred this on a condition it wrote down: *"no band and no RSI series are drawn yet — when they are, they are a decision, not a backfill."* D96 drew them, and the decision is that they need no roles of their own. The artboard paints the RSI line `fg-default`, the Bollinger bands `border-strong` and the new ATR levels `fg-subtle` at low opacity — three tokens that already exist and already read in both themes. A `chart-rsi` token would ship with exactly one consumer. |
 | Semáforo "live vs próximamente" states | From 0.1.0, still open — needs a distinct treatment, not color alone (D3). |
 
 ---
