@@ -125,6 +125,18 @@ module MarketHelper
     (entries + trailing).to_json
   end
 
+  # What the plot draws over the price without asking: your cost, when you hold
+  # it. Not a layer — it has no checkbox because it is not an indicator, it is
+  # the one line on the chart that is about you. The phrase is the 52-week bar's
+  # own, so the two marks of the same number read the same.
+  def chart_anchors_json(cost, currency)
+    return "[]" if cost.blank?
+
+    [ { price: cost.to_f,
+        label: t("market.range_52w.tu_costo",
+                 value: format_currency_mx(cost, currency: currency)) } ].to_json
+  end
+
   # The three references the Análisis anchor reads against (CKP-8, D67). The
   # controller already loads all of them; nothing new is fetched here.
   # Used for technical observations in the asset detail page.

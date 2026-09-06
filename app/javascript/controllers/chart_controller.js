@@ -9,11 +9,12 @@ import { createChart, LineSeries } from "lightweight-charts"
 // `levels` are the ATR price lines (D96); the legend's checkbox adds and
 // removes them, and the choice is remembered per browser.
 const LEVEL_ALPHA = { entry: "38", exit: "4d" }
+const ANCHOR_ALPHA = "59"
 const STORAGE_KEY = "stockerly:chart-layers"
 
 export default class ChartController extends Controller {
   static targets = ["canvas", "layerToggle"]
-  static values = { series: Array, height: { type: Number, default: 220 }, levels: Array }
+  static values = { series: Array, height: { type: Number, default: 220 }, levels: Array, anchors: Array }
 
   connect() {
     this.priceLines = []
@@ -42,6 +43,7 @@ export default class ChartController extends Controller {
       this.mainSeries ||= series
     })
 
+    this.drawAnchors()
     this.restoreLayers()
     this.chart.timeScale().fitContent()
     this.resizeObserver = new ResizeObserver(([entry]) =>
@@ -76,6 +78,22 @@ export default class ChartController extends Controller {
     })
 
     if (this.layerChecked("levels")) this.drawLevels()
+  }
+
+  // D98's colour rule: your cost takes whatever colour the price is not, so it
+  // reads as a reference and never as a verdict about being up or down.
+  drawAnchors() {
+    if (!this.mainSeries) return
+
+    this.anchorsValue.forEach(({ price, label }) =>
+      this.mainSeries.createPriceLine({
+        price,
+        color: this.token("--color-fg-default") + ANCHOR_ALPHA,
+        lineWidth: 1,
+        axisLabelVisible: false,
+        title: label
+      })
+    )
   }
 
   drawLevels() {

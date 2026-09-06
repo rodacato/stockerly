@@ -118,4 +118,33 @@ RSpec.describe "The asset detail's price anchor", type: :request do
       expect(response.body).not_to include(I18n.t("market.range_52w.tu_costo", value: ""))
     end
   end
+
+  # D100: the same number, drawn twice — a tick on the year's track and a line
+  # over the plot. Neither is an indicator, so neither hides behind a checkbox.
+  describe "your cost over the plot" do
+    def with_closes
+      (1..5).each { |d| create(:asset_price_history, asset: asset, date: d.days.ago.to_date, close: 120) }
+    end
+
+    def chart_anchors(body)
+      JSON.parse(Nokogiri::HTML(body).at_css("[data-chart-anchors-value]")["data-chart-anchors-value"])
+    end
+
+    it "draws your average cost over the price when you hold it" do
+      hold(avg_cost: 100)
+      with_closes
+
+      get market_asset_path(asset.symbol)
+
+      expect(chart_anchors(response.body).pluck("price")).to eq([ 100.0 ])
+    end
+
+    it "draws nothing over the price for an asset you only watch" do
+      with_closes
+
+      get market_asset_path(asset.symbol)
+
+      expect(chart_anchors(response.body)).to be_empty
+    end
+  end
 end
