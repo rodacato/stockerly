@@ -31,8 +31,9 @@ const LOCALE = "es-MX"
 const PANE_MARGINS = { price: { top: 0.2, bottom: 0.16 }, indicator: { top: 0.2, bottom: 0.12 } }
 
 export default class ChartController extends Controller {
-  static targets = ["canvas", "layerToggle"]
-  static values = { series: Array, height: { type: Number, default: 220 }, levels: Array, anchors: Array }
+  static targets = ["canvas", "layerToggle", "stat"]
+  static values = { series: Array, height: { type: Number, default: 220 }, levels: Array, anchors: Array,
+                    bars: Array }
 
   connect() {
     this.priceLines = []
@@ -63,6 +64,7 @@ export default class ChartController extends Controller {
     this.drawAnchors()
     this.restoreLayers()
     this.separatePanes()
+    this.trackCrosshair()
     this.chart.timeScale().fitContent()
     this.resizeObserver = new ResizeObserver(([entry]) =>
       this.chart.applyOptions({ width: entry.contentRect.width })
@@ -77,6 +79,35 @@ export default class ChartController extends Controller {
     this.mainSeries = null
     this.priceLines = []
     this.layerSeries = {}
+    this.barIndex = null
+  }
+
+  // D112: the strip reads the bar under the crosshair and falls back to the
+  // latest when the pointer leaves — which is the third question D93 did not
+  // consider, not a replacement for the one it answered. Touch needs no branch:
+  // the library's default `trackingMode` holds the crosshair after the finger
+  // lifts and drops it on the next tap, so a tap-and-read works as it stands.
+  //
+  // The index map is built from the series' own data rather than from what the
+  // server sent, so the key is whatever shape the library normalised the time
+  // into and the lookup cannot miss on a format it did not expect.
+  trackCrosshair() {
+    const bars = this.mainSeries?.data() || []
+    if (!this.hasStatTarget || bars.length !== this.barsValue.length) return
+
+    this.barIndex = new Map(bars.map((bar, index) => [ JSON.stringify(bar.time), index ]))
+    this.chart.subscribeCrosshairMove(({ time }) =>
+      this.showBar(this.barIndex.get(JSON.stringify(time)) ?? this.barsValue.length - 1)
+    )
+  }
+
+  showBar(index) {
+    if (index === this.shownBar) return
+
+    this.shownBar = index
+    this.statTargets.forEach((cell, position) => {
+      cell.textContent = this.barsValue[index][position]
+    })
   }
 
   addSeries(spec) {

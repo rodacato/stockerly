@@ -15,9 +15,11 @@ module MarketData
       # The artboard leads with 3M, and the table now holds years rather than
       # the thirty days the old fixed window assumed (X9, measured 2026-09-05).
       # MAX on the deepest asset here (2952 bars) serialises 104 KB of JSON into
-      # a 190 KB attribute. It is a deliberate click, not the default, and it
-      # gzips well — but downsampling it would change what the chart plots, so
-      # that stays a design call rather than a silent optimisation.
+      # a 190 KB attribute, and D112's O/H/L/C/Vol rows roughly double that: a
+      # measured 132 KB more at MAX, 2.8 KB at the 3M default. It is a
+      # deliberate click, not the default, and it gzips well — but downsampling
+      # it would change what the chart plots, so that stays a design call rather
+      # than a silent optimisation.
       DEFAULT_RANGE = "3M"
       # Bollinger(20) and RSI(14) describe weeks, not years. Over 1A and Máx the
       # bands collapse onto the price line and the RSI pane is a block of noise,

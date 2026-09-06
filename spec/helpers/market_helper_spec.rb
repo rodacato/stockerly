@@ -117,6 +117,41 @@ RSpec.describe MarketHelper, type: :helper do
     end
   end
 
+  describe "#chart_stat_values and #chart_bars_json (D112)" do
+    def bar(open: 251.0, high: 261.25, low: 251.72, close: 260.5, volume: 55_310, date: Date.new(2026, 9, 4))
+      double(open:, high:, low:, close:, volume:, date:)
+    end
+
+    it "formats the five figures the strip prints, in the order it prints them" do
+      values = helper.chart_stat_values(bar(open: 1234.5))
+
+      expect(values).to eq([ "1,234.50", "261.25", "251.72", "260.50", "55.3K" ])
+      expect(values.size).to eq(MarketHelper::OHLC_KEYS.size)
+    end
+
+    # D112's call: the hole in the stored volume is permanent, so a bar over it
+    # says the figure is missing rather than dropping the row or the strip.
+    it "prints an em dash for a figure the history does not hold" do
+      expect(helper.chart_stat_values(bar(open: nil, volume: nil)))
+        .to eq([ "—", "261.25", "251.72", "260.50", "—" ])
+    end
+
+    # The crosshair finds its row by index. A payload that drifts from the
+    # series by one entry would print yesterday's numbers for today's bar.
+    it "stays aligned with the price series entry for entry" do
+      rows = [ bar(date: Date.new(2026, 9, 3), close: 250.0, volume: 1_500),
+               bar(date: Date.new(2026, 9, 4), close: 260.5, volume: 2_500) ]
+
+      bars = JSON.parse(helper.chart_bars_json(rows))
+      series = JSON.parse(helper.asset_chart_series_json(rows, nil)).first["data"]
+
+      expect(bars.size).to eq(series.size)
+      expect(series.pluck("value")).to eq([ 250.0, 260.5 ])
+      expect(bars.map { |values| values.fetch(3) }).to eq([ "250.00", "260.50" ])
+      expect(bars.map(&:last)).to eq([ "1.5K", "2.5K" ])
+    end
+  end
+
   describe "#chart_anchors_json" do
     def bars(*closes) = closes.map { |close| double(close: close) }
 

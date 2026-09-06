@@ -134,6 +134,28 @@ module MarketHelper
     (price_series(histories) + indicator_layers(indicators)).to_json
   end
 
+  # The O/H/L/C/Vol strip's five figures for one bar, in the order the strip
+  # draws them.
+  OHLC_KEYS = %w[o h l c vol].freeze
+
+  # Formatted here rather than in the browser so that the bar the server paints
+  # and the bar the crosshair lands on cannot be formatted by two different
+  # rules — es-MX number formatting stays in Ruby (D112).
+  def chart_stat_values(bar)
+    prices = [ bar.open, bar.high, bar.low, bar.close ].map { |value| value ? bare_amount_mx(value) : "—" }
+
+    prices + [ bar.volume ? format_compact_count(bar.volume) : "—" ]
+  end
+
+  # One entry per bar, aligned by index with `price_series`, which is what lets
+  # the crosshair's time find its row without the payload repeating the date.
+  # Strings, not numbers: it is what the strip prints, and formatting here costs
+  # a measured 7.4 bytes a bar over raw figures — cheaper than a second set of
+  # es-MX number rules living in JavaScript.
+  def chart_bars_json(histories)
+    histories.map { |bar| chart_stat_values(bar) }.to_json
+  end
+
   # Tokens per the kit's 0.9.0 call: the bands and the RSI line reuse roles that
   # already exist rather than earning their own. RSI takes pane 1 — it is an
   # index between 0 and 100, and sharing the price scale would flatten both.
