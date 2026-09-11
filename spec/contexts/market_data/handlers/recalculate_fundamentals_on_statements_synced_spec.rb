@@ -68,6 +68,56 @@ RSpec.describe MarketData::Handlers::RecalculateFundamentalsOnStatementsSynced d
       .not_to change(AssetFundamental, :count)
   end
 
+  # D116: the annual statement can be a year old, and the overview beside it is TTM.
+  describe "the window the ratios describe" do
+    def quarter(type, date, data)
+      create(:financial_statement, asset: asset, statement_type: type, period_type: :quarterly,
+        fiscal_date_ending: date, data: data)
+    end
+
+    def quarters(count, income: {})
+      %w[2024-06-29 2024-03-30 2023-12-30 2023-10-28].first(count).each do |date|
+        quarter(:income_statement, date, { "total_revenue" => "100000000000", "net_income" => "10000000000",
+          "operating_income" => "20000000000", "interest_expense" => "1000000000" }.merge(income.fetch(date, {})))
+        quarter(:cash_flow, date, { "operating_cashflow" => "30000000000", "capital_expenditures" => "-3000000000" })
+      end
+    end
+
+    def calculated_metrics
+      described_class.call(event)
+      AssetFundamental.find_by(asset: asset, period_label: "CALCULATED").metrics
+    end
+
+    it "reads the last four quarters when all four are on file" do
+      quarters(4)
+
+      metrics = calculated_metrics
+
+      expect(metrics["net_margin"].to_d).to eq(BigDecimal("0.1"))
+      expect(metrics["interest_coverage"].to_d).to eq(BigDecimal("20"))
+      expect(metrics["free_cash_flow"].to_d).to eq(BigDecimal("108000000000"))
+    end
+
+    it "falls back to the annual statement when the quarters are incomplete" do
+      quarters(3)
+
+      expect(calculated_metrics["net_margin"].to_d).to eq(BigDecimal("0.2531"))
+    end
+
+    it "reads the balance ratios from the latest balance sheet, quarterly or annual" do
+      quarter(:balance_sheet, "2024-06-29", { "total_current_assets" => "150000000000",
+        "total_current_liabilities" => "100000000000", "total_shareholder_equity" => "70000000000" })
+
+      expect(calculated_metrics["current_ratio"].to_d).to eq(BigDecimal("1.5"))
+    end
+
+    it "leaves a ratio out rather than divide one window by another" do
+      quarters(4, income: { "2023-12-30" => { "interest_expense" => nil } })
+
+      expect(calculated_metrics).not_to have_key("interest_coverage")
+    end
+  end
+
   it "handles Hash events (async deserialization)" do
     hash_event = { asset_id: asset.id, symbol: asset.symbol,
                    statement_types: %w[income_statement balance_sheet cash_flow] }
