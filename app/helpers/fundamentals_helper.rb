@@ -44,6 +44,45 @@ module FundamentalsHelper
     [ t("market.chips.#{key}"), CHIP_TONES.fetch(key) ]
   end
 
+  # D115: a value read in words, never judged. Each rule picks which phrase of
+  # market.lecturas.<metric>.* applies and the figures it carries; none is composed here.
+  READINGS = {
+    pe_ratio: ->(v) { v.negative? ? [ :perdida ] : [ :multiplo, { veces: v } ] },
+    net_margin: ->(v) {
+      return [ :queda, { de_cien: v * 100 } ] unless v.negative?
+
+      v > -1 ? [ :pierde, { de_cien: -v * 100 } ] : [ :pierde_veces, { veces: -v } ]
+    },
+    revenue_growth: ->(v) {
+      return [ :menos, { pct: -v * 100 } ] if v.negative?
+
+      v >= 1 ? [ :veces, { veces: 1 + v } ] : [ :mas, { pct: v * 100 } ]
+    },
+    debt_to_equity: ->(v) {
+      return [ :sin_deuda ] if v.zero?
+
+      v.negative? ? [ :capital_negativo ] : [ :proporcion, { pct: v * 100 } ]
+    },
+    dividend_yield: ->(v) { [ :por_cien, { centavos: v * 100 } ] }
+  }.freeze
+
+  READING_FIGURES = {
+    veces: ->(f) { number_with_precision(f, precision: f < 10 ? 1 : 0) },
+    pct: ->(f) { unsigned_percent(f) },
+    de_cien: ->(f) { number_with_precision(f, precision: 1) },
+    centavos: ->(f) { number_with_precision(f, precision: 2) }
+  }.freeze
+
+  def metric_reading(definition, value)
+    key = definition.key
+    rule = READINGS[key]
+    return unless rule && value
+
+    variant, figures = rule.call(value.to_f)
+    formatted = (figures || {}).to_h { |name, figure| [ name, instance_exec(figure, &READING_FIGURES.fetch(name)) ] }
+    t("market.lecturas.#{key}.#{variant}", **formatted)
+  end
+
   def format_metric_value(value, format_type, currency:)
     return "—" if value.nil?
 

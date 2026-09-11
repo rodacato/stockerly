@@ -19,7 +19,9 @@
       <% summary.each do |key| %>
         <% defn = MarketData::Domain::MetricDefinitions.find(key) rescue nil %>
         <% next unless defn %>
-        <%= render "market/metric_card", definition: defn, value: resolve_metric_value(presenter, key), currency: asset.currency %>
+        <% value = resolve_metric_value(presenter, key) %>
+        <%# D115: the extract reads its value in words; the accordion names what each metric measures. %>
+        <%= render "market/metric_card", definition: defn, value: value, currency: asset.currency, reading: metric_reading(defn, value) %>
       <% end %>
     </div>
   

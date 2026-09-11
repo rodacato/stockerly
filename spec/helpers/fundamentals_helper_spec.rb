@@ -66,6 +66,39 @@ RSpec.describe FundamentalsHelper, type: :helper do
       expect(helper.metric_chip(defn(:beta), nil)).to be_nil
     end
   end
+
+  # D115: the extract's five read in words — one phrase per case the data
+  # actually shows, figured at the precision beside it, never a verdict.
+  describe "#metric_reading" do
+    def read(key, value) = helper.metric_reading(MarketData::Domain::MetricDefinitions.find(key), value)
+
+    {
+      [ :pe_ratio, 28.24 ] => "Pagas 28 veces lo que gana por acción en un año",
+      [ :pe_ratio, -45.89 ] => "Perdió dinero en el último año, así que el P/U no se lee como múltiplo",
+      [ :net_margin, 0.6366 ] => "De cada 100 que vende, le quedan 63.7 de utilidad",
+      [ :net_margin, -0.157 ] => "De cada 100 que vende, pierde 15.7",
+      [ :net_margin, -61.03 ] => "Sus pérdidas equivalen a 61 veces lo que vende",
+      [ :revenue_growth, 1.059 ] => "Vende 2.1 veces lo del mismo trimestre del año pasado",
+      [ :revenue_growth, 0.254 ] => "Vende 25.4% más que en el mismo trimestre del año pasado",
+      [ :revenue_growth, -0.173 ] => "Vende 17.3% menos que en el mismo trimestre del año pasado",
+      [ :debt_to_equity, 0.1457 ] => "Su deuda equivale al 14.6% de su capital propio",
+      [ :debt_to_equity, 0 ] => "No tiene deuda",
+      [ :debt_to_equity, -0.8 ] => "Su capital contable es negativo: debe más de lo que tiene",
+      [ :dividend_yield, 0.0013 ] => "Por cada 100 invertidos, paga 0.13 al año en dividendos"
+    }.each do |(key, value), phrase|
+      it "reads #{key} #{value} as “#{phrase}”" do
+        expect(read(key, value)).to eq(phrase)
+      end
+    end
+
+    it "reads nothing when there is no value to read" do
+      expect(read(:net_margin, nil)).to be_nil
+    end
+
+    it "reads nothing for a metric outside the extract" do
+      expect(read(:beta, 1.24)).to be_nil
+    end
+  end
 end
 
 RSpec.describe FundamentalsHelper, "#remaining_metrics_by_category", type: :helper do

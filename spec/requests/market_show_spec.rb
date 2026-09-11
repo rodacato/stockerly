@@ -46,6 +46,18 @@ RSpec.describe "Market Asset Detail", type: :request do
       expect(response.body).to include("Beta")
     end
 
+    # D115: the extract reads each value in words; the accordion keeps naming what a metric measures.
+    it "reads the extract's values in words and keeps the description in the accordion" do
+      create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
+        metrics: { "eps" => "6.07", "beta" => "1.24", "profit_margin" => "0.2461" })
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include("Pagas 37 veces lo que gana por acción en un año")
+      expect(response.body).to include("De cada 100 que vende, le quedan 24.6 de utilidad")
+      expect(response.body).to include(I18n.t("market.metricas.beta.desc"))
+    end
+
     it "shows the es-MX empty state when no fundamentals" do
       get market_asset_path(asset.symbol)
 

@@ -685,6 +685,24 @@ es-MX:
         redondos. Un mismo porcentaje es ruido en un activo y un evento en otro.
       procedencia: ATR %{atr} · lectura del %{fecha}
       seccion: Dónde se cruzan tus precios
+    lecturas:
+      debt_to_equity:
+        capital_negativo: 'Su capital contable es negativo: debe más de lo que tiene'
+        proporcion: Su deuda equivale al %{pct} de su capital propio
+        sin_deuda: No tiene deuda
+      dividend_yield:
+        por_cien: Por cada 100 invertidos, paga %{centavos} al año en dividendos
+      net_margin:
+        pierde: De cada 100 que vende, pierde %{de_cien}
+        pierde_veces: Sus pérdidas equivalen a %{veces} veces lo que vende
+        queda: De cada 100 que vende, le quedan %{de_cien} de utilidad
+      pe_ratio:
+        multiplo: Pagas %{veces} veces lo que gana por acción en un año
+        perdida: Perdió dinero en el último año, así que el P/U no se lee como múltiplo
+      revenue_growth:
+        mas: Vende %{pct} más que en el mismo trimestre del año pasado
+        menos: Vende %{pct} menos que en el mismo trimestre del año pasado
+        veces: Vende %{veces} veces lo del mismo trimestre del año pasado
     market_context:
       abierto: abierto
       cerrado: cerrado
@@ -738,7 +756,7 @@ es-MX:
           de rentabilidad por acción que usa el cálculo del P/U.
         nombre: UPA (diluida)
       eps_growth:
-        desc: Cambio en la utilidad por acción contra el trimestre anterior
+        desc: Cambio en la utilidad por acción contra el mismo trimestre del año anterior
         guia: Mide el impulso de las utilidades. Una UPA que acelera suele empujar
           el precio de la acción.
         nombre: Crecimiento de UPA
@@ -841,7 +859,7 @@ es-MX:
           relevante en empresas de servicios.'
         nombre: Prueba del ácido
       revenue_growth:
-        desc: Cambio en ingresos contra el trimestre anterior
+        desc: Cambio en ingresos contra el mismo trimestre del año anterior
         guia: Indica el impulso del negocio. Un crecimiento sostenido puede señalar
           más participación de mercado o productos nuevos que funcionan.
         nombre: Crecimiento de ingresos
