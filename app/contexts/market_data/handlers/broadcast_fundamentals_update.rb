@@ -8,14 +8,14 @@ module MarketData
         asset = Asset.find_by(id: asset_id)
         return unless asset
 
-        fundamental = asset.asset_fundamentals.where(period_label: "CALCULATED").latest.first ||
-                      asset.asset_fundamentals.overview.latest.first
+        fundamental, fallback = AssetFundamental.for_reading(asset)
 
         Turbo::StreamsChannel.broadcast_replace_to(
           "asset_#{asset.id}",
           target: "asset_fundamentals_#{asset.id}",
           partial: "market/fundamentals_block",
-          locals: { asset: asset, presenter: Domain::FundamentalPresenter.new(asset: asset, fundamental: fundamental),
+          locals: { asset: asset,
+                    presenter: Domain::FundamentalPresenter.new(asset: asset, fundamental: fundamental, fallback: fallback),
                     has_fundamentals: fundamental.present?, pending: false }
         )
       end
