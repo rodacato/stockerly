@@ -128,7 +128,7 @@ module MarketData
       end
 
       def fetch_cash_flow(symbol)
-        fetch_statement(symbol, "cash_flow")
+        fetch_statement(symbol, "cash_flow") { |report| with_common_dividends(report) }
       end
 
       # Index levels have no sanctioned source: Alpaca has none, Massive charges
@@ -173,12 +173,23 @@ module MarketData
 
       # A statement with no periods at all is a failure the script already
       # names, so an empty Success can never reach the job and write nothing.
-      def fetch_statement(symbol, kind)
+      def fetch_statement(symbol, kind, &normalize)
+        normalize ||= :itself.to_proc
         run(kind, symbol).fmap do |payload|
           { symbol: symbol,
-            annual_reports: payload["annual_reports"] || [],
-            quarterly_reports: payload["quarterly_reports"] || [] }
+            annual_reports: (payload["annual_reports"] || []).map(&normalize),
+            quarterly_reports: (payload["quarterly_reports"] || []).map(&normalize) }
         end
+      end
+
+      # Some issuers file common dividends only inside Cash Dividends Paid, which
+      # also carries preferred: ASML's is all common, MSTR's all preferred.
+      def with_common_dividends(report)
+        cash = report["cash_dividends_paid"]
+        return report if report["dividend_payout"] || !cash
+
+        common = cash.to_d - report["preferred_stock_dividend_paid"].to_d
+        common.zero? ? report : report.merge("dividend_payout" => common.to_s("F"))
       end
 
       def run(command, symbol, *extra)
