@@ -1,4 +1,4 @@
-<%# One metric, as a row. Locals: definition, value, currency.
+<%# One metric, as a row. Locals: definition, value, currency; optional reading (D115).
     The name, description and guidance come from `market.metricas.<key>.*`;
     the domain carries the key only. The chip is built for the three metrics
     whose threshold is definitional (D36) and omitted everywhere else.
@@ -30,7 +30,7 @@
     </div>
   </div>
 
-  <p class="text-xs leading-snug text-fg-subtle"><%= metric_desc(definition) %></p>
+  <p class="text-xs leading-snug text-fg-subtle"><%= local_assigns[:reading] || metric_desc(definition) %></p>
 
   <div data-metric-tooltip-target="popover"
        class="absolute left-0 top-full z-20 mt-1 hidden w-full overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-xl">
