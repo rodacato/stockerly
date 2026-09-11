@@ -1,6 +1,9 @@
 module MarketData
   module Handlers
     class RecalculateFundamentalsOnStatementsSynced
+      INCOME_ANCHOR = "total_revenue".freeze
+      CASH_FLOW_ANCHOR = "operating_cashflow".freeze
+
       def self.call(event)
         asset_id = event.is_a?(Hash) ? event[:asset_id] : event.asset_id
         symbol   = event.is_a?(Hash) ? event[:symbol] : event.symbol
@@ -16,16 +19,16 @@ module MarketData
 
         overview = asset.asset_fundamentals.overview.first
 
-        quarterly_income = asset.financial_statements.income_statements.quarterly.recent.limit(4).map(&:data)
-        quarterly_cf = asset.financial_statements.cash_flows.quarterly.recent.limit(4).map(&:data)
+        quarterly_income = reported_quarters(asset.financial_statements.income_statements, anchor: INCOME_ANCHOR)
+        quarterly_cf = reported_quarters(asset.financial_statements.cash_flows, anchor: CASH_FLOW_ANCHOR)
 
         ttm_income = Domain::FundamentalCalculator.calculate_ttm(quarterly_income)
         ttm_cf = Domain::FundamentalCalculator.calculate_ttm(quarterly_cf)
 
         metrics = Domain::FundamentalCalculator.calculate(
-          income_data: trailing_or_annual(ttm_income, income.data, anchor: "total_revenue"),
+          income_data: trailing_or_annual(ttm_income, income.data, anchor: INCOME_ANCHOR),
           balance_data: balance.data,
-          cash_flow_data: trailing_or_annual(ttm_cf, cash_flow.data, anchor: "operating_cashflow"),
+          cash_flow_data: trailing_or_annual(ttm_cf, cash_flow.data, anchor: CASH_FLOW_ANCHOR),
           overview_metrics: overview&.metrics || {}
         )
 
@@ -52,6 +55,13 @@ module MarketData
         ttm.key?(anchor) ? ttm : annual
       end
       private_class_method :trailing_or_annual
+
+      # Earnings land before the statements, so the newest quarter can arrive as
+      # EPS alone. The four start at the newest one with the anchor, never past a gap.
+      def self.reported_quarters(statements, anchor:)
+        statements.quarterly.recent.limit(5).map(&:data).drop_while { |data| data[anchor].blank? }.first(4)
+      end
+      private_class_method :reported_quarters
     end
   end
 end

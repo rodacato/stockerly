@@ -116,6 +116,20 @@ RSpec.describe MarketData::Handlers::RecalculateFundamentalsOnStatementsSynced d
 
       expect(calculated_metrics).not_to have_key("interest_coverage")
     end
+
+    it "starts the four at the newest quarter whose statements are out, past one that carries only EPS" do
+      quarters(4)
+      quarter(:income_statement, "2024-09-28", { "basic_eps" => "1.2", "diluted_eps" => "1.19" })
+
+      expect(calculated_metrics["net_margin"].to_d).to eq(BigDecimal("0.1"))
+    end
+
+    it "never skips a quarter missing in the middle, which would sum a year that was not" do
+      quarters(4, income: { "2023-12-30" => { "total_revenue" => nil } })
+      quarter(:income_statement, "2023-07-01", { "total_revenue" => "100000000000", "net_income" => "10000000000" })
+
+      expect(calculated_metrics["net_margin"].to_d).to eq(BigDecimal("0.2531"))
+    end
   end
 
   it "handles Hash events (async deserialization)" do
