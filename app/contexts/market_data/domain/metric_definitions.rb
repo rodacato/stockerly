@@ -98,6 +98,12 @@ module MarketData
     register :quick_ratio,
       category: :health, format_type: :ratio, display_order: 3, icon: "bolt"
 
+    register :interest_coverage,
+      category: :health, format_type: :ratio, display_order: 4, icon: "shield"
+
+    register :free_cash_flow,
+      category: :health, format_type: :currency, display_order: 5, icon: "local_atm"
+
     # ── Growth ─────────────────────────────────────────────────
     register :revenue_growth,
       category: :growth, format_type: :percentage, display_order: 1, icon: "show_chart"

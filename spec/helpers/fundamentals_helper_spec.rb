@@ -40,6 +40,22 @@ RSpec.describe FundamentalsHelper, type: :helper do
       expect(helper.metric_chip(defn(:payout_ratio), 0.4)).to be_nil
     end
 
+    it "says an operating profit below its interest does not cover it" do
+      expect(helper.metric_chip(defn(:interest_coverage), 0.4).first).to eq(I18n.t("market.chips.no_cubre_intereses"))
+    end
+
+    it "says nothing about a coverage that pays its interest" do
+      expect(helper.metric_chip(defn(:interest_coverage), 3.75)).to be_nil
+    end
+
+    it "calls a negative free cash flow burning cash" do
+      expect(helper.metric_chip(defn(:free_cash_flow), -4_949_000_000).first).to eq(I18n.t("market.chips.quema_efectivo"))
+    end
+
+    it "says nothing about a free cash flow above zero" do
+      expect(helper.metric_chip(defn(:free_cash_flow), 281_762_000)).to be_nil
+    end
+
     # D36: a chip is only built where the threshold is definitional. Net margin
     # varies by industry, so inventing one would read as analysis and be a guess.
     it "builds no chip for a metric whose threshold varies by industry" do
@@ -57,6 +73,14 @@ RSpec.describe FundamentalsHelper, "#remaining_metrics_by_category", type: :help
     MarketData::Domain::FundamentalPresenter.new(
       asset: asset, fundamental: build(:asset_fundamental, metrics: metrics)
     )
+  end
+
+  it "files interest coverage and free cash flow under health once the calculated row carries them" do
+    asset = build(:asset, :stock, current_price: 100)
+    rest = helper.remaining_metrics_by_category(asset,
+      presenter_for(asset, "interest_coverage" => "3.7", "free_cash_flow" => "-4949000000"))
+
+    expect(rest[:health].map(&:key)).to include(:interest_coverage, :free_cash_flow)
   end
 
   it "never offers crypto categories on an equity" do

@@ -565,6 +565,8 @@ es-MX:
       cubre_corto_plazo: cubre el corto plazo
       defensivo: defensivo
       liquidez_corta: liquidez corta
+      no_cubre_intereses: no cubre sus intereses
+      quema_efectivo: quema efectivo
       sobre_utilidades: paga más de lo que gana
       volatil: volátil
     divergencia:
@@ -770,6 +772,12 @@ es-MX:
         guia: Usa el consenso de analistas para la UPA de los próximos 12 meses. Compáralo
           con el P/U actual para leer qué crecimiento espera el mercado.
         nombre: P/U estimado
+      free_cash_flow:
+        desc: Efectivo de la operación menos la inversión en activos
+        guia: Lo que deja la operación después de invertir en el negocio. Negativo
+          significa que gastó más efectivo del que generó, algo común en empresas
+          que invierten para crecer.
+        nombre: Flujo de efectivo libre
       fully_diluted_valuation:
         desc: Valuación totalmente diluida
         guia: El valor de mercado si todas las monedas posibles estuvieran en circulación.
@@ -780,6 +788,11 @@ es-MX:
         guia: Indica poder de fijación de precios y eficiencia productiva. Márgenes
           altos suelen señalar ventajas competitivas.
         nombre: Margen bruto
+      interest_coverage:
+        desc: Utilidad operativa entre los intereses que paga
+        guia: Cuántas veces alcanza la utilidad de la operación para pagar los intereses
+          de su deuda. Por debajo de 1.0 no le alcanza.
+        nombre: Cobertura de intereses
       market_cap:
         desc: Valor total de las acciones en circulación
         guia: Indica el tamaño de la empresa. Las de gran capitalización (más de 10
