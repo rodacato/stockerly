@@ -97,7 +97,7 @@ module MarketHelper
   # Our own plot's height, and the embed's. TradingView draws a toolbar, a
   # legend and a MACD pane inside its box, so asking for a plot the size of ours
   # means asking for more than ours.
-  CHART_HEIGHT = 260
+  CHART_HEIGHT = 333
   TRADINGVIEW_CHROME = 160
   TRADINGVIEW_HEIGHT = CHART_HEIGHT + TRADINGVIEW_CHROME
   TRADINGVIEW_ATTRIBUTION = 32
