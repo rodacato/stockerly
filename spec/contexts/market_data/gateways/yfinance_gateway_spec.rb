@@ -60,6 +60,31 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
 
       expect(gateway.fetch_balance_sheet("NVDA")).to be_failure
     end
+
+    describe "common dividends, which Yahoo does not always label as such" do
+      def cash_flow_quarter(report)
+        stub_bridge("annual_reports" => [], "quarterly_reports" => [ { "fiscal_date_ending" => "2026-03-31" }.merge(report) ])
+        gateway.fetch_cash_flow("ASML").value![:quarterly_reports].first
+      end
+
+      it "reads them out of Cash Dividends Paid when that is the only label" do
+        report = cash_flow_quarter("cash_dividends_paid" => "-617000000")
+
+        expect(report["dividend_payout"].to_d).to eq(-617_000_000)
+      end
+
+      it "leaves the preferred share out, so a preferred-only payer carries none" do
+        report = cash_flow_quarter("cash_dividends_paid" => "-399648000", "preferred_stock_dividend_paid" => "-399648000")
+
+        expect(report).not_to have_key("dividend_payout")
+      end
+
+      it "keeps the figure the bridge already named" do
+        report = cash_flow_quarter("dividend_payout" => "-619200000", "cash_dividends_paid" => "-700000000")
+
+        expect(report["dividend_payout"]).to eq("-619200000")
+      end
+    end
   end
 
   describe "#search_tickers" do
