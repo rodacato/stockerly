@@ -12,16 +12,20 @@ module FundamentalsHelper
       :como_el_mercado
     },
     payout_ratio: ->(v) { :sobre_utilidades if v > 1.0 },
-    current_ratio: ->(v) { v < 1.0 ? :liquidez_corta : :cubre_corto_plazo }
+    current_ratio: ->(v) { v < 1.0 ? :liquidez_corta : :cubre_corto_plazo },
+    interest_coverage: ->(v) { :no_cubre_intereses if v < 1.0 },
+    free_cash_flow: ->(v) { :quema_efectivo if v.negative? }
   }.freeze
 
   CHIP_TONES = {
-    volatil:           "bg-warning-bg text-warning-fg",
-    defensivo:         "bg-bg-muted text-fg-subtle",
-    como_el_mercado:   "bg-bg-muted text-fg-subtle",
-    sobre_utilidades:  "bg-negative-bg text-negative-fg",
-    liquidez_corta:    "bg-warning-bg text-warning-fg",
-    cubre_corto_plazo: "bg-positive-bg text-positive-fg"
+    volatil:            "bg-warning-bg text-warning-fg",
+    defensivo:          "bg-bg-muted text-fg-subtle",
+    como_el_mercado:    "bg-bg-muted text-fg-subtle",
+    sobre_utilidades:   "bg-negative-bg text-negative-fg",
+    liquidez_corta:     "bg-warning-bg text-warning-fg",
+    cubre_corto_plazo:  "bg-positive-bg text-positive-fg",
+    no_cubre_intereses: "bg-negative-bg text-negative-fg",
+    quema_efectivo:     "bg-warning-bg text-warning-fg"
   }.freeze
 
   def metric_name(definition)     = t("market.metricas.#{definition.key}.nombre")
