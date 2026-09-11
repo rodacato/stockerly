@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The 'Activos' tab — three tiers of interest in a symbol, drawn as a ladder (D9).\n\nTracked (assets.sync_status active) → Watchlist (watchlist_items) → Holdings (open positions). The tier is not taxonomy, it is BUDGET: SyncAllFundamentalsJob orders positions → watchlist → rest against DAILY_BUDGET = 25 calls/day, and only open positions get dividends + splits synced at all. The segmented control stays at two (the two daily questions); Tracked is a foot-of-list entry with its own screen.\n\n⚠ VOCABULARY — D48. The ladder moved to industry-standard English: Poseo → Holdings, Sigo → Watchlist, Rastreado(s) → Tracked. D9's three-tier SHAPE is untouched; only the words changed. Two things this file learned the hard way:\n(a) the code shipped it first (#364), so here the artboards FOLLOWED the code instead of leading it — the reverse of design/README rule 1, and correct in this one case;\n(b) Adrian extended it to the tab itself, so the segmented reads 'Holdings | Watchlist' while the code still says assets.index.cartera: Cartera. That single string is a code change this file is now ahead of — CODE_CHANGES §13.\n'cartera' in lowercase prose still means the portfolio and is NOT the tier. The code keeps it (radar_subtitulo: 'De tu cartera y watchlist'). Do not sweep it.\n\nEntry: bottom-nav 'Activos'. Rows link to the asset detail in cockpit.pen.\nScreens: Holdings · Watchlist · Holdings vacía (first run) · Historial · Registrar movimiento (sheet) · Registrar movimiento con teclado (the real mobile spec, D11) · Tracked · Tracked·Buscar · Importar CSV (Default · Revisión · Símbolos desconocidos).\n\nGrounding: positions (shares, avg_cost, market_value, total_gain, cost_basis_in(MXN) via fx_rate_at_execution) · watchlist_items.entry_price captured on add → 'sigues +X%', which _watch_row DOES render (assets_helper#followed_since_percent) — the brief said otherwise until 2026-08-29. The row now shows distance to the active alert threshold instead: entry_price is history, not a target (D67) · assets (current_price, change_percent_24h, currency, exchange, asset_type, price_updated_at, sync_status) · latest_trend_score → the semáforo dots. You can only follow what is already Tracked: search hits `assets`, so the search screen IS the catalogue browser.\n\nCETES rows drop the sparkline and the semáforo — technical lights don't apply to fixed income — and carry days-to-maturity + annual rate instead (C1 Lucía).\n\nMoney per D10: the section header declares the currency, rows drop the symbol; off-currency values keep the ISO prefix (USD 172.40).\n\nDesktop (1280): three artboards — Holdings, Registrar movimiento (the same <dialog>, centered) and Tracked. Tracked earns one because it absorbs /admin/assets: curating a catalogue against a daily call budget is desk work, and desktop is where the budget sits beside the list instead of above it.\n\n⚠ Touch targets: segmented controls, rows and the keypad clear 44pt; filter chips sit at ~35pt + 8pt gap — below the floor, accepted for a secondary control, flagged rather than hidden.\n\nFlow-local components (kit candidates, not promoted): WatchRow and TierChip. Segmented, OptionCard and the `scrim` token are NOT candidates — all three are already in the kit.\n\nNavRow: vendored, and the four hand-built copies are gone — the Tracked foot entry plus the three paths of the empty state now instance one master. Measuring them first changed what the job was. They were NOT four copies of one row: three had drifted about 6% larger (36px icon wrap, 18px icon, padding 14/16, description at 12) and snapped back to the kit's numbers, which is the point. But 'Captura lo que ya tienes' also carried a deliberate PRIMARY accent — $primary stroke at 1.5, $primary-muted wrap, $primary icon — because it is the recommended path out of an empty portfolio. Replacing all four with the plain kit row would have flattened that hierarchy while calling it consistency.\n\nIt is kept as an instance override rather than a new kit variant, since the method says not to promote unasked. ⚠ KIT GAP: NavRow has no recommended/primary state. If a second flow needs one, that override earns a variant instead of being copied.\n\nDesktop findings (panel C1/C5/C4): (a) the position list becomes a GRID of cards at their native ~309 width, never one stretched column — measured first: the list is grouped by asset type, not ranked by value (BTC at 61,200 sits third), so a grid breaks no ranking; (b) the Resumen became a bar — patrimonio left, freshness and 'Ver mi consolidado' right — because a stacked card stretched to 976 is the same 'river of air' mistake as a stretched AssetRow; (c) CETES is the only card with no sparkline and no semáforo, carrying maturity and annual rate instead. A grid makes that difference more visible, not less, which is the correct outcome (C1).\n\nThe dialog measures 480x785 inside 920 — it FITS, centered by math. It was 649 inside 800 until the sheet gained the Moneda field and the average-cost projection. None of D11's mobile machinery applies on desktop: no 85dvh, no internal scroll, no sticky footer, no visualViewport listener. Those exist because the iOS keyboard covers a bottom-anchored sheet; a centered desktop dialog has no such problem. Do not port them for symmetry.\n\nHistorial: the depth /positions never had. D35 kept that route with a date — an artboard by the time #294 closed, or it goes — and #294 closed on 2026-08-26 with none. Measured before drawing: it has ONE inbound link from outside itself (market/_position_trades to the trades tab), and three of its four tabs have none at all. It cannot be deleted the way admin/dashboard and admin/assets were (D34), because that deletion only worked when every card already had a 2.0 home: closed positions, the dividend history and the trade log have none. So the screen keeps those three and DROPS 'posiciones abiertas', which duplicated Holdings and is the likeliest reason nobody linked to it.\n\nIts build was gated on a discovery card; Adrian un-gated it — see D43.\n\nNo tab control: the three stack as sections in the scroll, which is what #294 decided for the asset detail's sub-tabs and what the Bandeja does with its date groups. Rows are MovementItem, promoted in kit 0.2.0 for exactly this ('reused for trade log rows'). Money per D10 — each section header declares its currency, the trade rows keep the ISO prefix because they genuinely mix.\n\n'Movimiento' means a trade — here, and everywhere. D43 flagged that it named three things; D48 settled it by moving the technical-observation sense to 'Señales' (the word market_helper already fell back to). The cockpit screen takes the block's full name. Nothing on this screen changes.\n\nCopy: es-MX. kit-version-source 0.8.1.\n⚠ The TopBar grew 57 → 76 in kit 0.8.0 — the 44pt touch target the kit had been missing since 0.5.0, which the code always had. Every artboard here moved its content down 19px. Cartera and Watchlist grew with it (1116→1135, 1289→1308); the fixed-844 screens absorbed it in their slack. Verified: nothing clips.\n\n⚠ TRACKED · SIN FUENTE (#329, cut down; registered as D46 — the entry this brief once said was owed and unwritten). The BMV addresses an issuer by name AND serie — WALMEX is rejected 400, only WALMEX* resolves — and Yahoo omits the serie when it is an asterisk. Measured against the real provider, not inferred.\n\nWhat this state exists for got narrower by measuring. #311 assumed one unmapped issuer failed the whole batch; it does not — the provider answers 200 with the rest and simply omits the one it cannot name. So nothing breaks loudly. The asset stops being priced while the row keeps rendering the last number it had. The failure is silence, and this state is what ends it.\n\n#329 asked for a row per provider that serves the asset — a mapping panel. Dropped: `rake data:resolve_bmv_symbols` resolves these by probing the bare name then the starred one, so a panel would be configuration for a problem that mostly fixes itself. What is left for a screen is the one the task could not confirm, which is one field, not a table.\n\nThe row carries it, because the row already had the slot. NVAX established it: where a healthy row says 'hace 12 min', a paused one says 'en pausa desde el 12 ago'. A sourceless one says 'sin cotizar desde el 21 ago' in warning, and its action turns from pause to wrench. It does NOT dim like a paused row — pausing is a choice the owner made, this is the instance failing, and the two must not read alike.\n\nThe fix opens in place under the row: what the provider said, the field pre-filled with the candidate the task already tried, and the promise the task already keeps — 'Guardamos el nombre solo si la fuente contesta con él'. A wrong mapping is worse than none, so nothing is written unconfirmed.\n\n🐞 The row's subtitle is single-line and clips as soon as the text grows. Here it wraps and the row goes 55 → 72. HALF-FIXED IN CODE: assets/_tracked_row.html.erb wraps, but components/_asset_row.html.erb:15 still truncates, so every other list keeps the fragility. Open.\n\nNOT drawn, deliberately: pinning an asset to a source, which #329 asked for as its second half. The chain order plus the mapping already answers it — a Mexican crypto CoinGecko does not list resolves through DataBursatil on its own. A control to choose the source would be a button for a problem the mapping closes. If an ordering turns out to be wrong, that is its own card with its own trigger.\n\nDesktop reflows: the fix is a full-width band inside the list, so `Tracked · Desktop` needs no variant.\n\nIMPORTAR CSV (#401). Three artboards for the second door of Holdings/Vacío. The engine shipped first (#400: ImportTrades, UndoImport, the rake pair) so these artboards FOLLOW the code — the screens draw what the use case already refuses and reports, not a wish.\n\nDefault: file picker OR paste, because the deployed instance has no filesystem the operator can reach — a rake task there needs `kamal shell` plus getting the file into the container, which is the same data-entry friction this removes. The column list is the contract of ImportTradeRowContract; required and optional are drawn apart.\n\nRevisión is the dry run made visible: nothing is written, the batch totals and the skipped duplicates are stated before any button commits. Duplicates are normal, not exceptional — the broker reissues the same confirmation under a new filename, so identity is external_id.\n\nSímbolos desconocidos is the refusal, and it is the screen that carries the product decision: the batch is all-or-nothing. A partial import leaves the portfolio silently wrong, and auto-creating an asset from a row that holds only a ticker produces one with no type, market or country. The screen says why, then routes to Tracked.\n\nStates not drawn: in-flight parse (the file is local and the batch is ~50 rows), success (it returns to Holdings, already drawn), and the inline SearchTicker resolution of unknown symbols — deferred out of #401 on purpose.\n\nOpen findings: D64 — the Agregar activo typeahead in assets/_track_form queries a provider and fills symbol, name, exchange and country, and has no artboard. `Tracked · Buscar` draws the LIST FILTER, a different control, and the code now ships both on the same screen. Adrian's call. D62 (the door's broker claim) resolved 2026-08-28 — one format, Stockerly's, and the door now says so.\n\n✅ THE TRADE SHEET CAUGHT UP TO THE CODE (D78, 2026-09-05). Three divergences, all in the code's favour. (a) A Moneda select the artboards never drew — it opens BLANK now ('¿En qué moneda pagaste?'), which is why the FX card is hidden on first open: trade_sheet_controller hides it whenever the currency is empty or equals the MXN reference. (b) The field pairing was wrong: the code reads Fecha | Moneda, then Títulos | Precio, with Comisión full-width on its own. The artboards paired Fecha | Títulos and Precio | Comisión. (c) The average-cost projection (issue 428) — 'Tu costo promedio pasaría de X a Y' — sits between the price row and Comisión, and stays absent until every input it needs is present, so it never shows a half-answered figure.\n\nThe Sheet artboard grew 844 → 940 to hold the longer form with a visible scrim, anchored by math. In code the body is overflow-y-auto under a sticky footer, which is the pattern `Con teclado` draws — and that artboard now CUTS at Comisión with the FX card below the fold. That clipping is the state, not drift: D11's whole point is that the keyboard eats the lower half and only Total + Guardar survive it. A future audit should read those two clipped nodes as the fold.\n\n✅ THE EMPTY STATE HAS TWO DOORS, NOT THREE (C-3, 2026-09-05). Holdings/Vacío drew Captura lo que ya tienes, Importar movimientos and Explorar con datos de ejemplo. **The CSV door shipped** — /trades/import, two views, three artboards in this file — so what was left undrawn-in-code was the demo one, and Adrian retired it rather than building it. The importer is the answer to data-entry friction and it exists; a seeded demo portfolio would have to answer whether it can be undone, what happens when movements already exist, and whether its prices are real or frozen — a feature behind a four-filter card, not a third button on an empty screen.\n\nThe accent stays on Captura lo que ya tienes: two doors still have a recommended one.\n\n✅ AssetRow LOST ITS Estado CHIP AND CONFLUENCE DOTS (#586, D85, 2026-09-05). Both were drawn here, in cockpit.pen and in the kit, and the code backed neither — components/_asset_row said so in its own comment. They are gone rather than deferred: the semáforo they belonged to was retired when combining its lights measured no better than the strongest one alone, and a per-row chip was declined because the edge behind it is measured inside a basket returning roughly twice the index before any signal. WatchRow carried the same slot with a different word — `en rango` instead of `oportunidad` — and lost it too; components/_watch_row renders no chip and no dots either. It is flow-local, so it costs no kit version. AssetRow's removal did: the kit went to 1.0.0 by its own rule (major = removal). This flow keeps its kit-version-source, because two components were corrected and no full re-vendor happened.\n\n✅ WATCHLIST LOSES ITS Resumen BLOCK (#586 fallout, 2026-09-05). It read `CON SEÑAL HOY · 3 de 6 que sigues` over `Los otros 3 están en rango: nada que hacer hoy`, and both halves rest on the state taxonomy D85 retired — a count of assets 'with a signal' needs the chip that is not being built. The code never had it either: assets/index.html.erb renders its summary card for the Cartera tab only, and Watchlist has none.\n\nOne sentence in it was true and is worth keeping somewhere: *Aquí no tienes dinero invertido; cuando compres, el activo pasa a Holdings.* That is D9's ladder explained in one line, it needs no data, and the Watchlist tab currently explains itself nowhere. It is NOT drawn back in here — under D78 designing ahead is a deliberate act per screen, so this is a proposal for the code, recorded rather than smuggled onto the canvas.",
+          "content": "The 'Activos' tab — three tiers of interest in a symbol, drawn as a ladder (D9).\n\nTracked (assets.sync_status active) → Watchlist (watchlist_items) → Holdings (open positions). The tier is not taxonomy, it is BUDGET: SyncAllFundamentalsJob orders positions → watchlist → rest against DAILY_BUDGET = 25 calls/day, and only open positions get dividends + splits synced at all. The segmented control stays at two (the two daily questions); Tracked is a foot-of-list entry with its own screen.\n\n⚠ VOCABULARY — D48. The ladder moved to industry-standard English: Poseo → Holdings, Sigo → Watchlist, Rastreado(s) → Tracked. D9's three-tier SHAPE is untouched; only the words changed. Two things this file learned the hard way:\n(a) the code shipped it first (#364), so here the artboards FOLLOWED the code instead of leading it — the reverse of design/README rule 1, and correct in this one case;\n(b) Adrian extended it to the tab itself, so the segmented reads 'Holdings | Watchlist' while the code still says assets.index.cartera: Cartera. That single string is a code change this file is now ahead of — CODE_CHANGES §13.\n'cartera' in lowercase prose still means the portfolio and is NOT the tier. The code keeps it (radar_subtitulo: 'De tu cartera y watchlist'). Do not sweep it.\n\nEntry: bottom-nav 'Activos'. Rows link to the asset detail in cockpit.pen.\nScreens: Holdings · Watchlist · Holdings vacía (first run) · Historial · Registrar movimiento (sheet) · Registrar movimiento con teclado (the real mobile spec, D11) · Tracked · Tracked·Buscar · Tracked·Agregar activo · Importar CSV (Default · Revisión · Símbolos desconocidos).\n\nGrounding: positions (shares, avg_cost, market_value, total_gain, cost_basis_in(MXN) via fx_rate_at_execution) · watchlist_items.entry_price captured on add → 'sigues +X%', which _watch_row DOES render (assets_helper#followed_since_percent) — the brief said otherwise until 2026-08-29. The row now shows distance to the active alert threshold instead: entry_price is history, not a target (D67) · assets (current_price, change_percent_24h, currency, exchange, asset_type, price_updated_at, sync_status) · latest_trend_score → the semáforo dots. You can only follow what is already Tracked: search hits `assets`, so the search screen IS the catalogue browser.\n\nCETES rows drop the sparkline and the semáforo — technical lights don't apply to fixed income — and carry days-to-maturity + annual rate instead (C1 Lucía).\n\nMoney per D10: the section header declares the currency, rows drop the symbol; off-currency values keep the ISO prefix (USD 172.40).\n\nDesktop (1280): three artboards — Holdings, Registrar movimiento (the same <dialog>, centered) and Tracked. Tracked earns one because it absorbs /admin/assets: curating a catalogue against a daily call budget is desk work, and desktop is where the budget sits beside the list instead of above it.\n\n⚠ Touch targets: segmented controls, rows and the keypad clear 44pt; filter chips sit at ~35pt + 8pt gap — below the floor, accepted for a secondary control, flagged rather than hidden.\n\nFlow-local components (kit candidates, not promoted): WatchRow and TierChip. Segmented, OptionCard and the `scrim` token are NOT candidates — all three are already in the kit.\n\nNavRow: vendored, and the four hand-built copies are gone — the Tracked foot entry plus the three paths of the empty state now instance one master. Measuring them first changed what the job was. They were NOT four copies of one row: three had drifted about 6% larger (36px icon wrap, 18px icon, padding 14/16, description at 12) and snapped back to the kit's numbers, which is the point. But 'Captura lo que ya tienes' also carried a deliberate PRIMARY accent — $primary stroke at 1.5, $primary-muted wrap, $primary icon — because it is the recommended path out of an empty portfolio. Replacing all four with the plain kit row would have flattened that hierarchy while calling it consistency.\n\nIt is kept as an instance override rather than a new kit variant, since the method says not to promote unasked. ⚠ KIT GAP: NavRow has no recommended/primary state. If a second flow needs one, that override earns a variant instead of being copied.\n\nDesktop findings (panel C1/C5/C4): (a) the position list becomes a GRID of cards at their native ~309 width, never one stretched column — measured first: the list is grouped by asset type, not ranked by value (BTC at 61,200 sits third), so a grid breaks no ranking; (b) the Resumen became a bar — patrimonio left, freshness and 'Ver mi consolidado' right — because a stacked card stretched to 976 is the same 'river of air' mistake as a stretched AssetRow; (c) CETES is the only card with no sparkline and no semáforo, carrying maturity and annual rate instead. A grid makes that difference more visible, not less, which is the correct outcome (C1).\n\nThe dialog measures 480x785 inside 920 — it FITS, centered by math. It was 649 inside 800 until the sheet gained the Moneda field and the average-cost projection. None of D11's mobile machinery applies on desktop: no 85dvh, no internal scroll, no sticky footer, no visualViewport listener. Those exist because the iOS keyboard covers a bottom-anchored sheet; a centered desktop dialog has no such problem. Do not port them for symmetry.\n\nHistorial: the depth /positions never had. D35 kept that route with a date — an artboard by the time #294 closed, or it goes — and #294 closed on 2026-08-26 with none. Measured before drawing: it has ONE inbound link from outside itself (market/_position_trades to the trades tab), and three of its four tabs have none at all. It cannot be deleted the way admin/dashboard and admin/assets were (D34), because that deletion only worked when every card already had a 2.0 home: closed positions, the dividend history and the trade log have none. So the screen keeps those three and DROPS 'posiciones abiertas', which duplicated Holdings and is the likeliest reason nobody linked to it.\n\nIts build was gated on a discovery card; Adrian un-gated it — see D43.\n\nNo tab control: the three stack as sections in the scroll, which is what #294 decided for the asset detail's sub-tabs and what the Bandeja does with its date groups. Rows are MovementItem, promoted in kit 0.2.0 for exactly this ('reused for trade log rows'). Money per D10 — each section header declares its currency, the trade rows keep the ISO prefix because they genuinely mix.\n\n'Movimiento' means a trade — here, and everywhere. D43 flagged that it named three things; D48 settled it by moving the technical-observation sense to 'Señales' (the word market_helper already fell back to). The cockpit screen takes the block's full name. Nothing on this screen changes.\n\nCopy: es-MX. kit-version-source 0.8.1.\n⚠ The TopBar grew 57 → 76 in kit 0.8.0 — the 44pt touch target the kit had been missing since 0.5.0, which the code always had. Every artboard here moved its content down 19px. Cartera and Watchlist grew with it (1116→1135, 1289→1308); the fixed-844 screens absorbed it in their slack. Verified: nothing clips.\n\n⚠ TRACKED · SIN FUENTE (#329, cut down; registered as D46 — the entry this brief once said was owed and unwritten). The BMV addresses an issuer by name AND serie — WALMEX is rejected 400, only WALMEX* resolves — and Yahoo omits the serie when it is an asterisk. Measured against the real provider, not inferred.\n\nWhat this state exists for got narrower by measuring. #311 assumed one unmapped issuer failed the whole batch; it does not — the provider answers 200 with the rest and simply omits the one it cannot name. So nothing breaks loudly. The asset stops being priced while the row keeps rendering the last number it had. The failure is silence, and this state is what ends it.\n\n#329 asked for a row per provider that serves the asset — a mapping panel. Dropped: `rake data:resolve_bmv_symbols` resolves these by probing the bare name then the starred one, so a panel would be configuration for a problem that mostly fixes itself. What is left for a screen is the one the task could not confirm, which is one field, not a table.\n\nThe row carries it, because the row already had the slot. NVAX established it: where a healthy row says 'hace 12 min', a paused one says 'en pausa desde el 12 ago'. A sourceless one says 'sin cotizar desde el 21 ago' in warning, and its action turns from pause to wrench. It does NOT dim like a paused row — pausing is a choice the owner made, this is the instance failing, and the two must not read alike.\n\nThe fix opens in place under the row: what the provider said, the field pre-filled with the candidate the task already tried, and the promise the task already keeps — 'Guardamos el nombre solo si la fuente contesta con él'. A wrong mapping is worse than none, so nothing is written unconfirmed.\n\n🐞 The row's subtitle is single-line and clips as soon as the text grows. Here it wraps and the row goes 55 → 72. HALF-FIXED IN CODE: assets/_tracked_row.html.erb wraps, but components/_asset_row.html.erb:15 still truncates, so every other list keeps the fragility. Open.\n\nNOT drawn, deliberately: pinning an asset to a source, which #329 asked for as its second half. The chain order plus the mapping already answers it — a Mexican crypto CoinGecko does not list resolves through DataBursatil on its own. A control to choose the source would be a button for a problem the mapping closes. If an ordering turns out to be wrong, that is its own card with its own trigger.\n\nDesktop reflows: the fix is a full-width band inside the list, so `Tracked · Desktop` needs no variant.\n\nIMPORTAR CSV (#401). Three artboards for the second door of Holdings/Vacío. The engine shipped first (#400: ImportTrades, UndoImport, the rake pair) so these artboards FOLLOW the code — the screens draw what the use case already refuses and reports, not a wish.\n\nDefault: file picker OR paste, because the deployed instance has no filesystem the operator can reach — a rake task there needs `kamal shell` plus getting the file into the container, which is the same data-entry friction this removes. The column list is the contract of ImportTradeRowContract; required and optional are drawn apart.\n\nRevisión is the dry run made visible: nothing is written, the batch totals and the skipped duplicates are stated before any button commits. Duplicates are normal, not exceptional — the broker reissues the same confirmation under a new filename, so identity is external_id.\n\nSímbolos desconocidos is the refusal, and it is the screen that carries the product decision: the batch is all-or-nothing. A partial import leaves the portfolio silently wrong, and auto-creating an asset from a row that holds only a ticker produces one with no type, market or country. The screen says why, then routes to Tracked.\n\nStates not drawn: in-flight parse (the file is local and the batch is ~50 rows), success (it returns to Holdings, already drawn), and the inline SearchTicker resolution of unknown symbols — deferred out of #401 on purpose.\n\nOpen findings: two drifts in `Tracked`, recorded rather than fixed because each is a composition call, not a value. (1) The door to the add form is a PRIMARY BUTTON beside the count, not the header's + icon this flow still draws. (2) On mobile the budget is an aside that renders LAST, after the list; the artboard draws it second. D64 is closed — `Tracked · Agregar activo` draws the typeahead, its results and the six fields the gateway fills. D62 (the door's broker claim) resolved 2026-08-28 — one format, Stockerly's, and the door now says so.\n\n✅ THE TRADE SHEET CAUGHT UP TO THE CODE (D78, 2026-09-05). Three divergences, all in the code's favour. (a) A Moneda select the artboards never drew — it opens BLANK now ('¿En qué moneda pagaste?'), which is why the FX card is hidden on first open: trade_sheet_controller hides it whenever the currency is empty or equals the MXN reference. (b) The field pairing was wrong: the code reads Fecha | Moneda, then Títulos | Precio, with Comisión full-width on its own. The artboards paired Fecha | Títulos and Precio | Comisión. (c) The average-cost projection (issue 428) — 'Tu costo promedio pasaría de X a Y' — sits between the price row and Comisión, and stays absent until every input it needs is present, so it never shows a half-answered figure.\n\nThe Sheet artboard grew 844 → 940 to hold the longer form with a visible scrim, anchored by math. In code the body is overflow-y-auto under a sticky footer, which is the pattern `Con teclado` draws — and that artboard now CUTS at Comisión with the FX card below the fold. That clipping is the state, not drift: D11's whole point is that the keyboard eats the lower half and only Total + Guardar survive it. A future audit should read those two clipped nodes as the fold.\n\n✅ THE EMPTY STATE HAS TWO DOORS, NOT THREE (C-3, 2026-09-05). Holdings/Vacío drew Captura lo que ya tienes, Importar movimientos and Explorar con datos de ejemplo. **The CSV door shipped** — /trades/import, two views, three artboards in this file — so what was left undrawn-in-code was the demo one, and Adrian retired it rather than building it. The importer is the answer to data-entry friction and it exists; a seeded demo portfolio would have to answer whether it can be undone, what happens when movements already exist, and whether its prices are real or frozen — a feature behind a four-filter card, not a third button on an empty screen.\n\nThe accent stays on Captura lo que ya tienes: two doors still have a recommended one.\n\n✅ AssetRow LOST ITS Estado CHIP AND CONFLUENCE DOTS (#586, D85, 2026-09-05). Both were drawn here, in cockpit.pen and in the kit, and the code backed neither — components/_asset_row said so in its own comment. They are gone rather than deferred: the semáforo they belonged to was retired when combining its lights measured no better than the strongest one alone, and a per-row chip was declined because the edge behind it is measured inside a basket returning roughly twice the index before any signal. WatchRow carried the same slot with a different word — `en rango` instead of `oportunidad` — and lost it too; components/_watch_row renders no chip and no dots either. It is flow-local, so it costs no kit version. AssetRow's removal did: the kit went to 1.0.0 by its own rule (major = removal). This flow keeps its kit-version-source, because two components were corrected and no full re-vendor happened.\n\n✅ WATCHLIST LOSES ITS Resumen BLOCK (#586 fallout, 2026-09-05). It read `CON SEÑAL HOY · 3 de 6 que sigues` over `Los otros 3 están en rango: nada que hacer hoy`, and both halves rest on the state taxonomy D85 retired — a count of assets 'with a signal' needs the chip that is not being built. The code never had it either: assets/index.html.erb renders its summary card for the Cartera tab only, and Watchlist has none.\n\nOne sentence in it was true and is worth keeping somewhere: *Aquí no tienes dinero invertido; cuando compres, el activo pasa a Holdings.* That is D9's ladder explained in one line, it needs no data, and the Watchlist tab currently explains itself nowhere. It is NOT drawn back in here — under D78 designing ahead is a deliberate act per screen, so this is a proposal for the code, recorded rather than smuggled onto the canvas.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -3970,7 +3970,7 @@
     {
       "type": "frame",
       "id": "P3XXf",
-      "x": 3190,
+      "x": 3650,
       "y": 0,
       "name": "[Activos] / Registrar movimiento / Con teclado",
       "clip": true,
@@ -4809,7 +4809,7 @@
     {
       "type": "note",
       "id": "xl9an",
-      "x": 3650,
+      "x": 4110,
       "y": 0,
       "name": "Nota · D11",
       "width": 300,
@@ -7848,7 +7848,7 @@
     {
       "type": "frame",
       "id": "Y6vkn",
-      "x": 4020,
+      "x": 4480,
       "y": 0,
       "name": "[Activos] / Historial / Default",
       "clip": true,
@@ -8237,7 +8237,7 @@
     {
       "type": "frame",
       "id": "NWdKM",
-      "x": 4480,
+      "x": 4940,
       "y": 0,
       "name": "[Activos] / Tracked / Sin fuente",
       "clip": true,
@@ -9405,7 +9405,7 @@
     {
       "type": "frame",
       "id": "j10hHq",
-      "x": 4940,
+      "x": 5400,
       "y": 0,
       "name": "[Activos] / Importar CSV / Default",
       "clip": true,
@@ -9732,7 +9732,7 @@
     {
       "type": "frame",
       "id": "C3l3m",
-      "x": 5400,
+      "x": 5860,
       "y": 0,
       "name": "[Activos] / Importar CSV / Revisión",
       "clip": true,
@@ -10130,7 +10130,7 @@
     {
       "type": "frame",
       "id": "YXPNk",
-      "x": 5860,
+      "x": 6320,
       "y": 0,
       "name": "[Activos] / Importar CSV / Símbolos desconocidos",
       "clip": true,
@@ -11247,6 +11247,19 @@
         },
         {
           "type": "text",
+          "id": "o5GvO",
+          "name": "Log 2026-09-11 D64",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-09-11 · Tracked · Agregar activo drawn, closing D64: the search field with the placeholder the locale carries, three typeahead results in the row shape Tracked·Buscar already uses, the six fields the gateway fills with the code's own placeholders, and the two actions. Copied from Tracked / Default so the shell stays one thing, and the band was reflowed so the screen reads where it belongs. Two drifts recorded in the brief rather than fixed here: the entry point is a button, not the header icon, and the budget renders last on mobile · D64",
+          "lineHeight": 1.6,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "Szaca",
           "name": "B",
           "fill": "$fg-subtle",
@@ -11257,6 +11270,1518 @@
           "fontFamily": "$font-sans",
           "fontSize": 12,
           "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "qzqqA",
+      "x": 3190,
+      "y": 0,
+      "name": "[Activos] / Tracked · Agregar activo / Default",
+      "clip": true,
+      "width": 390,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "IwVdA",
+          "name": "Header",
+          "width": "fill_container",
+          "fill": "$bg-surface",
+          "stroke": "$border-default",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": "$space-3",
+          "padding": [
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "lXgPW",
+              "name": "Back",
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "$fg-default"
+            },
+            {
+              "type": "text",
+              "id": "U9xqDO",
+              "name": "T",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tracked",
+              "fontFamily": "$font-display",
+              "fontSize": 18,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "pwUdy",
+              "name": "Add",
+              "width": 20,
+              "height": 20,
+              "icon": "plus",
+              "library": "lucide",
+              "fill": "$primary"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Z7lfoU",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "f9XUZl",
+              "name": "Intro",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Los activos que tu instancia sincroniza a diario. Seguir uno o comprarlo le da prioridad; pausarlo libera presupuesto.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "w0s6ov",
+              "name": "FormAgregar",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-card",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-4",
+              "padding": "$space-5",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "S4hnD",
+                  "name": "Buscar",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "q8bkY",
+                      "name": "Lab",
+                      "fill": "$fg-subtle",
+                      "content": "BUSCAR ACTIVO",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fV7Sh",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-canvas",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "gap": "$space-2",
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KRu3M",
+                          "name": "q",
+                          "fill": "$fg-subtle",
+                          "content": "Símbolo o nombre — AAPL, Apple, Bitcoin…",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "b6aroK",
+                      "name": "Resultados",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-lg",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cXNcM",
+                          "name": "NVDA",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JNQZx",
+                              "name": "Tk",
+                              "fill": "$fg-default",
+                              "content": "NVDA",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 15,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "TOrRQ",
+                              "name": "Nm",
+                              "fill": "$fg-subtle",
+                              "content": "NVIDIA Corp · NASDAQ · Acción",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "xyLNP",
+                          "name": "NVMI",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Sdqon",
+                              "name": "Tk",
+                              "fill": "$fg-default",
+                              "content": "NVMI",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 15,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "VFCNo",
+                              "name": "Nm",
+                              "fill": "$fg-subtle",
+                              "content": "Nova Ltd · NASDAQ · Acción",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "FwuM3",
+                          "name": "NVAX",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ED10X",
+                              "name": "Tk",
+                              "fill": "$fg-default",
+                              "content": "NVAX",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 15,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "jm6xZ",
+                              "name": "Nm",
+                              "fill": "$fg-subtle",
+                              "content": "Novavax Inc · NASDAQ · Acción",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "NLOuI",
+                  "name": "Fila",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dwedk",
+                      "name": "SÍMBOLO",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "K1jrN",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "content": "SÍMBOLO",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "IKbPV",
+                          "name": "Input",
+                          "width": "fill_container",
+                          "fill": "$bg-canvas",
+                          "cornerRadius": "$radius-md",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "padding": [
+                            9,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "iIQyn",
+                              "name": "ph",
+                              "fill": "$fg-subtle",
+                              "content": "AAPL",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "N4jPC",
+                      "name": "NOMBRE",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "dCPFc",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "content": "NOMBRE",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "iWhOY",
+                          "name": "Input",
+                          "width": "fill_container",
+                          "fill": "$bg-canvas",
+                          "cornerRadius": "$radius-md",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "padding": [
+                            9,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "HQHV2",
+                              "name": "ph",
+                              "fill": "$fg-subtle",
+                              "content": "Apple Inc.",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GFUvO",
+                  "name": "Fila",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "V3p6VU",
+                      "name": "BOLSA",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "HQtcy",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "content": "BOLSA",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "TbH4o",
+                          "name": "Input",
+                          "width": "fill_container",
+                          "fill": "$bg-canvas",
+                          "cornerRadius": "$radius-md",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "padding": [
+                            9,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "amGdO",
+                              "name": "ph",
+                              "fill": "$fg-subtle",
+                              "content": "NASDAQ · BMV",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "GxKCU",
+                      "name": "PAÍS",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "mUL5B",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "content": "PAÍS",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "A2Seq",
+                          "name": "Input",
+                          "width": "fill_container",
+                          "fill": "$bg-canvas",
+                          "cornerRadius": "$radius-md",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "padding": [
+                            9,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "LpdqM",
+                              "name": "ph",
+                              "fill": "$fg-subtle",
+                              "content": "US · MX",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xjg92",
+                  "name": "Fila",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "QPOsx",
+                      "name": "SECTOR",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "K7uzcM",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "content": "SECTOR",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "TzfyQ",
+                          "name": "Input",
+                          "width": "fill_container",
+                          "fill": "$bg-canvas",
+                          "cornerRadius": "$radius-md",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "padding": [
+                            9,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "KI4s4",
+                              "name": "ph",
+                              "fill": "$fg-subtle",
+                              "content": "Technology",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "b3jp0N",
+                      "name": "TIPO",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "I0fkjT",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "content": "TIPO",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "B5J0qr",
+                          "name": "Input",
+                          "width": "fill_container",
+                          "fill": "$bg-canvas",
+                          "cornerRadius": "$radius-md",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "padding": [
+                            9,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "UvJ1O",
+                              "name": "ph",
+                              "fill": "$fg-subtle",
+                              "content": "Selecciona…",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cNaeq",
+                  "name": "Acciones",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "DJ6sX",
+                      "name": "Cancelar",
+                      "cornerRadius": "$radius-md",
+                      "padding": [
+                        8,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wOlLi",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "Cancelar",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "m9g74L",
+                      "name": "Agregar",
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-md",
+                      "padding": [
+                        8,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Wg5vC",
+                          "name": "t",
+                          "fill": "$fg-inverse",
+                          "content": "Agregar activo",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "R53cDR",
+              "name": "Presupuesto",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-card",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-3",
+              "padding": "$space-5",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "m4ODX",
+                  "name": "Lab",
+                  "fill": "$fg-subtle",
+                  "content": "PRESUPUESTO DIARIO · FUNDAMENTALES",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "w3uSF",
+                  "name": "VR",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jzeWn",
+                      "name": "Val",
+                      "fill": "$fg-default",
+                      "content": "25 llamadas",
+                      "fontFamily": "$font-display",
+                      "fontSize": 24,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NfPvH",
+                      "name": "Chip",
+                      "fill": "$warning-bg",
+                      "cornerRadius": 99,
+                      "padding": [
+                        3,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "H05mI",
+                          "name": "CT",
+                          "fill": "$warning-fg",
+                          "content": "34 activos en Tracked",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "jJwah",
+                  "name": "Track",
+                  "width": "fill_container",
+                  "height": 8,
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "VEPp4",
+                      "name": "Seg",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$primary",
+                      "cornerRadius": 2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "D43Sk",
+                      "name": "Seg",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$primary-hover",
+                      "cornerRadius": 2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "gBt3h",
+                      "name": "Seg",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$border-default",
+                      "cornerRadius": 2
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "R8lJyW",
+                  "name": "Leyenda",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "QNcwE",
+                      "name": "5 en cartera",
+                      "gap": 5,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "FMF9m",
+                          "name": "d",
+                          "fill": "$primary",
+                          "width": 7,
+                          "height": 7
+                        },
+                        {
+                          "type": "text",
+                          "id": "L2AGS",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "5 en Holdings",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HwXHZ",
+                      "name": "6 que sigues",
+                      "gap": 5,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "NefNi",
+                          "name": "d",
+                          "fill": "$primary-hover",
+                          "width": 7,
+                          "height": 7
+                        },
+                        {
+                          "type": "text",
+                          "id": "ITEeA",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "6 en Watchlist",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yFLto",
+                      "name": "23 al final",
+                      "gap": 5,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "AMX3o",
+                          "name": "d",
+                          "fill": "$border-default",
+                          "width": 7,
+                          "height": 7
+                        },
+                        {
+                          "type": "text",
+                          "id": "CidpP",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "23 al final",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "cCD4z",
+                  "name": "Cap",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Se gastan en ese orden. Si el presupuesto se acaba, los últimos esperan al día siguiente.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "z8evP",
+              "name": "Search",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-2",
+              "padding": [
+                11,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "WDiia",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "x8sQL",
+                  "name": "q",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Buscar entre tus 34 activos",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "pQlOu",
+              "name": "Lista",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "u7Cyo",
+                  "name": "Cap",
+                  "fill": "$fg-subtle",
+                  "content": "34 ACTIVOS · 1 EN PAUSA",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "sOk5D",
+                  "name": "AAPL",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    11,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "o1aGC",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "z9KFvn",
+                          "name": "TR",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nZsxO",
+                              "name": "Tk",
+                              "fill": "$fg-default",
+                              "content": "AAPL",
+                              "fontFamily": "$font-display",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "xrQNE",
+                              "name": "Chip",
+                              "fill": "$primary-muted",
+                              "cornerRadius": 99,
+                              "padding": [
+                                2,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "MkkDv",
+                                  "name": "t",
+                                  "fill": "$primary-hover",
+                                  "content": "Holdings",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 10,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "GkHfI",
+                          "name": "M",
+                          "fill": "$fg-subtle",
+                          "content": "Apple · NASDAQ · hace 12 min",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "pqIVs",
+                      "name": "Act",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "A77gP",
+                          "name": "i",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "pause",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DYI46",
+                  "name": "NVDA",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    11,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "nlpd6",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "oPTvA",
+                          "name": "TR",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "TugK1",
+                              "name": "Tk",
+                              "fill": "$fg-default",
+                              "content": "NVDA",
+                              "fontFamily": "$font-display",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "j7t5x1",
+                              "name": "Chip",
+                              "fill": "$primary-muted",
+                              "cornerRadius": 99,
+                              "padding": [
+                                2,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "kuCkd",
+                                  "name": "t",
+                                  "fill": "$primary-hover",
+                                  "content": "Holdings",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 10,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Y4zeh",
+                          "name": "M",
+                          "fill": "$fg-subtle",
+                          "content": "NVIDIA · NASDAQ · hace 12 min",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "OEypW",
+                      "name": "Act",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "I3vke",
+                          "name": "i",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "pause",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "a6Vqtt",
+                  "name": "GOOGL",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    11,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "E9LnH",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "C4407v",
+                          "name": "TR",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "e60dUW",
+                              "name": "Tk",
+                              "fill": "$fg-default",
+                              "content": "GOOGL",
+                              "fontFamily": "$font-display",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "EqAuB",
+                              "name": "Chip",
+                              "fill": "$bg-muted",
+                              "cornerRadius": 99,
+                              "padding": [
+                                2,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "jtr3d",
+                                  "name": "t",
+                                  "fill": "$fg-default",
+                                  "content": "Watchlist",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 10,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "an0nM",
+                          "name": "M",
+                          "fill": "$fg-subtle",
+                          "content": "Alphabet · NASDAQ · hace 12 min",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jqiY0",
+                      "name": "Act",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "QWK8t",
+                          "name": "i",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "pause",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q2tHE",
+                  "name": "WALMEX",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    11,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Sa6PA",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "MLhkL",
+                          "name": "TR",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "uLGka",
+                              "name": "Tk",
+                              "fill": "$fg-default",
+                              "content": "WALMEX",
+                              "fontFamily": "$font-display",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "qpD83",
+                              "name": "Chip",
+                              "fill": "$bg-muted",
+                              "cornerRadius": 99,
+                              "padding": [
+                                2,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Y2Xp0K",
+                                  "name": "t",
+                                  "fill": "$fg-default",
+                                  "content": "Watchlist",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 10,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "yPXxf",
+                          "name": "M",
+                          "fill": "$fg-subtle",
+                          "content": "Walmart de México · BMV · hace 12 min",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "LVt66",
+                      "name": "Act",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "wSESL",
+                          "name": "i",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "pause",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "M4HuC",
+                  "name": "AMXL",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    11,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "EXGWr",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ayhSo",
+                          "name": "TR",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "GGblP",
+                              "name": "Tk",
+                              "fill": "$fg-default",
+                              "content": "AMXL",
+                              "fontFamily": "$font-display",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "I0LkB",
+                          "name": "M",
+                          "fill": "$fg-subtle",
+                          "content": "América Móvil · BMV · hace 3 h",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fSB8P",
+                      "name": "Act",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "yTPag",
+                          "name": "i",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "pause",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "W05gdS",
+                  "name": "NVAX",
+                  "opacity": 0.65,
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": [
+                    11,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "YsVu7",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "f0N7ZZ",
+                          "name": "TR",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "odzRI",
+                              "name": "Tk",
+                              "fill": "$fg-default",
+                              "content": "NVAX",
+                              "fontFamily": "$font-display",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "k7oNz",
+                          "name": "M",
+                          "fill": "$fg-subtle",
+                          "content": "Novavax · NASDAQ · en pausa desde el 12 ago",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "p1fGo",
+                      "name": "Act",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "HXKn5",
+                          "name": "i",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "play",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cTUtB",
+                  "name": "VerMas",
+                  "width": "fill_container",
+                  "padding": [
+                    10,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ItdcY",
+                      "name": "t",
+                      "fill": "$primary",
+                      "content": "Ver los 28 restantes",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tnWGN",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container"
         }
       ]
     }
