@@ -39,6 +39,15 @@ module MarketData
       (fcf / market_cap).round(4)
     end
 
+    # Undefined, not negative, when nothing was earned: a negative ratio would hide D36's chip.
+    def payout_ratio
+      paid = metric("ttm_dividend_payout")&.to_d
+      earned = metric("ttm_net_income")&.to_d
+      return nil unless paid && earned&.positive?
+
+      (paid.abs / earned).round(4)
+    end
+
     # How much of a coin's cap trades in a day. CoinGecko serves both figures
     # and not the ratio, which is the number that says whether the price is thin.
     def volume_market_cap_ratio

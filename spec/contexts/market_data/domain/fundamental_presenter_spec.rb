@@ -144,6 +144,28 @@ RSpec.describe MarketData::Domain::FundamentalPresenter do
     end
   end
 
+  describe "#payout_ratio" do
+    def presenter_with(metrics)
+      described_class.new(asset: asset, fundamental: build(:asset_fundamental, period_label: "CALCULATED", metrics: metrics))
+    end
+
+    it "divides the dividends paid by the net income, both over the trailing four quarters" do
+      presenter = presenter_with("ttm_dividend_payout" => "-15640000000", "ttm_net_income" => "112010000000")
+
+      expect(presenter.payout_ratio).to eq(0.1396)
+    end
+
+    it "is undefined when nothing was earned, rather than a negative ratio" do
+      presenter = presenter_with("ttm_dividend_payout" => "-500000000", "ttm_net_income" => "-2000000000")
+
+      expect(presenter.payout_ratio).to be_nil
+    end
+
+    it "is absent for a company that pays no dividend" do
+      expect(presenter_with("ttm_net_income" => "5000000000").payout_ratio).to be_nil
+    end
+  end
+
   describe "with nil fundamental" do
     let(:presenter) { described_class.new(asset: asset, fundamental: nil) }
 
