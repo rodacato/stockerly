@@ -6,10 +6,11 @@ module MarketData
     class FundamentalPresenter
     attr_reader :asset, :fundamental
 
-    def initialize(asset:, fundamental:)
+    # `fallback` answers only where `fundamental` is silent (D116).
+    def initialize(asset:, fundamental:, fallback: nil)
       @asset = asset
       @fundamental = fundamental
-      @metrics = fundamental&.metrics&.with_indifferent_access || {}
+      @metrics = (fallback&.metrics || {}).with_indifferent_access.merge(fundamental&.metrics || {})
     end
 
     # Price-dependent metrics (computed live)

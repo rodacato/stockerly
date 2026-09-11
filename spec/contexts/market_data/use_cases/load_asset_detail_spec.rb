@@ -17,14 +17,18 @@ RSpec.describe MarketData::UseCases::LoadAssetDetail do
         expect(data[:has_fundamentals]).to be(true)
       end
 
-      it "prefers CALCULATED over OVERVIEW fundamentals" do
-        calculated = create(:asset_fundamental, asset: asset, period_label: "CALCULATED",
-          metrics: { "net_margin" => "0.25" }, source: "calculated")
+      # D116: reading the calculated row alone hid every metric only the overview carries.
+      it "reads the calculated row first and fills its gaps from the overview" do
+        overview.update!(metrics: overview.metrics.merge("operating_margin" => "0.33"))
+        create(:asset_fundamental, asset: asset, period_label: "CALCULATED", source: "calculated",
+          metrics: { "operating_margin" => "0.25", "debt_to_equity" => "1.1" })
 
-        result = described_class.call(symbol: "AAPL")
-        data = result.value!
+        presenter = described_class.call(symbol: "AAPL").value![:presenter]
 
-        expect(data[:presenter].fundamental).to eq(calculated)
+        expect(presenter.metric("operating_margin")).to eq("0.25")
+        expect(presenter.metric("debt_to_equity")).to eq("1.1")
+        expect(presenter.metric("beta")).to eq("1.24")
+        expect(presenter.pe_ratio).to eq((227.44 / 6.07).round(2))
       end
 
       it "is case-insensitive for symbol lookup" do
@@ -62,6 +66,29 @@ RSpec.describe MarketData::UseCases::LoadAssetDetail do
         expect(data[:pe_history]).to be_an(Array)
         expect(data[:pe_history].size).to eq(2)
         expect(data[:pe_history].first[:pe_ratio]).to be_present
+      end
+
+      # D116: the EPS lives in the overview, and reading the calculated row alone blanked the chart.
+      it "draws the P/E history from the overview's EPS when a calculated row exists" do
+        create(:asset_fundamental, asset: asset, period_label: "CALCULATED", source: "calculated",
+          metrics: { "net_margin" => "0.25" })
+        create(:asset_price_history, asset: asset, date: 5.days.ago.to_date, close: 200.0)
+        create(:asset_price_history, asset: asset, date: 3.days.ago.to_date, close: 210.0)
+
+        expect(described_class.call(symbol: "AAPL").value![:pe_history].size).to eq(2)
+      end
+    end
+
+    context "when asset is crypto" do
+      it "never fills a coin's gaps from an equity row" do
+        btc = create(:asset, symbol: "BTC", asset_type: :crypto, current_price: 60_000)
+        create(:asset_fundamental, asset: btc, period_label: "CRYPTO_MARKET", metrics: { "ath_price" => "73750" })
+        create(:asset_fundamental, asset: btc, period_label: "OVERVIEW", metrics: { "beta" => "1.8" })
+
+        presenter = described_class.call(symbol: "BTC").value![:presenter]
+
+        expect(presenter.metric("ath_price")).to eq("73750")
+        expect(presenter.metric("beta")).to be_nil
       end
     end
 

@@ -49,8 +49,8 @@ module MarketData
         end
 
         reading_record = asset.technical_reading
-        fundamental = resolve_fundamental(asset)
-        presenter = Domain::FundamentalPresenter.new(asset: asset, fundamental: fundamental)
+        fundamental, fallback = AssetFundamental.for_reading(asset)
+        presenter = Domain::FundamentalPresenter.new(asset: asset, fundamental: fundamental, fallback: fallback)
 
         chart_range = RANGES.key?(range) ? range : DEFAULT_RANGE
         from = RANGES.fetch(chart_range).call
@@ -58,7 +58,7 @@ module MarketData
         price_histories = from ? series.since(from) : series.all
 
         pe_history = if asset.asset_type_stock?
-                       eps = fundamental&.metrics&.dig("eps")&.to_d
+                       eps = presenter.metric("eps")&.to_d
                        pe_histories = MarketData::Queries::PriceSeries.for(asset).since(PE_CHART_DAYS.days.ago.to_date)
                        Domain::PeHistoryCalculator.calculate(price_histories: pe_histories, eps: eps)
         end
@@ -167,15 +167,6 @@ module MarketData
           investment_cost_100: discount_price ? (discount_price * quantity_example).round(2) : nil,
           face_value_100: Domain::YieldCalculator.investment_value(face_value: asset.face_value || 10.0, quantity: quantity_example)
         }
-      end
-
-      def resolve_fundamental(asset)
-        if asset.asset_type_crypto?
-          asset.asset_fundamentals.where(period_label: "CRYPTO_MARKET").latest.first
-        else
-          calculated = asset.asset_fundamentals.where(period_label: "CALCULATED").latest.first
-          calculated || asset.asset_fundamentals.overview.latest.first
-        end
       end
 
       # Read-only "Ficha de empresa" payload — descriptive fields from the
