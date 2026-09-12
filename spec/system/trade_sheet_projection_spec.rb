@@ -62,7 +62,7 @@ RSpec.describe "Registrar movimiento — proyección del costo promedio", type: 
       open_sheet_for("AAPL")
       fill_in "trade[price_per_share]", with: "100"
 
-      expect(page).to have_no_css("[data-trade-sheet-target='projection']", visible: :visible)
+      expect(page).to have_css("[data-trade-sheet-target='projection'][hidden]", visible: :hidden)
     end
 
     # Averaging a USD price against a USD basis is arithmetic; against an MXN
@@ -71,12 +71,12 @@ RSpec.describe "Registrar movimiento — proyección del costo promedio", type: 
       open_sheet_for("AAPL")
       fill_in "trade[shares]", with: "10"
       fill_in "trade[price_per_share]", with: "100"
-      expect(page).to have_css("[data-trade-sheet-target='projection']", visible: :visible)
+      expect(page).to have_css("[data-trade-sheet-target='projection']:not([hidden])")
 
       select "MXN", from: "trade[currency]"
       fill_in "trade[price_per_share]", with: "100"
 
-      expect(page).to have_no_css("[data-trade-sheet-target='projection']", visible: :visible)
+      expect(page).to have_css("[data-trade-sheet-target='projection'][hidden]", visible: :hidden)
     end
 
     # The symbol field is free text, so the sheet can stop being about the
@@ -85,11 +85,11 @@ RSpec.describe "Registrar movimiento — proyección del costo promedio", type: 
       open_sheet_for("AAPL")
       fill_in "trade[shares]", with: "10"
       fill_in "trade[price_per_share]", with: "100"
-      expect(page).to have_css("[data-trade-sheet-target='projection']", visible: :visible)
+      expect(page).to have_css("[data-trade-sheet-target='projection']:not([hidden])")
 
       fill_in "trade[asset_symbol]", with: "MSFT"
 
-      expect(page).to have_no_css("[data-trade-sheet-target='projection']", visible: :visible)
+      expect(page).to have_css("[data-trade-sheet-target='projection'][hidden]", visible: :hidden)
     end
 
     it "persists nothing by being used" do
@@ -98,7 +98,7 @@ RSpec.describe "Registrar movimiento — proyección del costo promedio", type: 
       expect {
         fill_in "trade[shares]", with: "10"
         fill_in "trade[price_per_share]", with: "100"
-        expect(page).to have_css("[data-trade-sheet-target='projection']", visible: :visible)
+        expect(page).to have_css("[data-trade-sheet-target='projection']:not([hidden])")
       }.not_to(change { [ Trade.count, Position.last.avg_cost, Position.last.shares ] })
     end
   end
@@ -108,7 +108,7 @@ RSpec.describe "Registrar movimiento — proyección del costo promedio", type: 
     fill_in "trade[shares]", with: "10"
     fill_in "trade[price_per_share]", with: "100"
 
-    expect(page).to have_no_css("[data-trade-sheet-target='projection']", visible: :visible)
+    expect(page).to have_css("[data-trade-sheet-target='projection'][hidden]", visible: :hidden)
   end
 
   it "is absent for fixed income, which has no average to move" do
@@ -119,6 +119,6 @@ RSpec.describe "Registrar movimiento — proyección del costo promedio", type: 
     fill_in "trade[shares]", with: "100"
     fill_in "trade[price_per_share]", with: "9.7"
 
-    expect(page).to have_no_css("[data-trade-sheet-target='projection']", visible: :visible)
+    expect(page).to have_css("[data-trade-sheet-target='projection'][hidden]", visible: :hidden)
   end
 end
