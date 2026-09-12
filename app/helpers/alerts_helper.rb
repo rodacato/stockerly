@@ -153,6 +153,42 @@ module AlertsHelper
     asset.asset_type_stock? && asset.symbol.to_s.match?(/\.MX\z/i) ? "#{label} MX" : label
   end
 
+  # A suggestion carries the shape of a rule, never its wording (ALR-2), so the
+  # three phrases are assembled here against one key per condition.
+  def suggested_rule_title(suggestion)
+    t("alerts.index.sugerencias.#{suggestion.condition}.titulo",
+      symbol: suggestion.asset_symbol,
+      percent: suggested_percent(suggestion))
+  end
+
+  def suggested_rule_reason(suggestion)
+    t("alerts.index.sugerencias.#{suggestion.condition}.porque",
+      percent: suggested_percent(suggestion),
+      threshold: suggestion.threshold_value.to_i,
+      days: suggestion.window_days.to_i)
+  end
+
+  # count picks the plural form, amount is what gets read: a fractional crypto
+  # holding must not round to "0 títulos" just to satisfy pluralization.
+  def suggested_rule_context(suggestion)
+    return if suggestion.shares.blank?
+
+    t("alerts.index.sugerencias.contexto",
+      count: suggestion.shares.to_i,
+      amount: format_threshold(suggestion.shares))
+  end
+
+  def suggested_percent(suggestion)
+    format_threshold(suggestion.threshold_value) if suggestion.threshold_value.present?
+  end
+
+  def suggested_rule_path(suggestion)
+    new_alert_path(asset_symbol: suggestion.asset_symbol,
+                   condition: suggestion.condition,
+                   threshold_value: suggestion.threshold_value,
+                   window_days: suggestion.window_days)
+  end
+
   def kind_label_from_symbol(symbol)
     case symbol
     when /\ACETES?_/i, /\ACETE\b/i then asset_type_label_es(:fixed_income)

@@ -172,13 +172,31 @@ es-MX:
       pausar: Pausar regla
       reglas_activas: Reglas activas
       sin_disparos: Todavía no se ha disparado ninguna regla.
+      sugerencias:
+        cete_auction:
+          porque: Banxico subasta CETES cada semana; el aviso llega %{days} días antes,
+            para que decidas si reinviertes.
+          titulo: Tus %{symbol} están por vencer
+        contexto:
+          one: Tienes %{amount} título
+          other: Tienes %{amount} títulos
+        crear: Crear
+        day_change_percent:
+          porque: Avisa cuando el precio sube o baja más de %{percent}% en una sola jornada.
+          titulo: "%{symbol} se mueve %{percent}% en un día"
+        desde_cero: Crear una desde cero
+        rsi_overbought:
+          porque: El RSI mide si un activo subió mucho muy rápido; arriba de %{threshold}
+            suele llamarse sobrecompra.
+          titulo: "%{symbol} entra en sobrecompra"
+        titulo: A partir de lo que ya tienes
       smtp_nota: Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP,
         sólo quedan los avisos en la app.
       titulo: Reglas
       tus_reglas: Tus reglas
       ultimos_disparos: Últimos disparos
-      vacio_cuerpo: Una regla vigila un precio, una señal o una fecha y te avisa cuando
-        pasa. Puedes pausarla o borrarla cuando quieras.
+      vacio_cuerpo: "Una regla vigila algo que tú definiste y te avisa cuando pasa.
+        No decide por ti, no compra, no vende: sólo te ahorra estar mirando la pantalla."
       vacio_titulo: Todavía no tienes reglas
       ver_bandeja: Ver bandeja
     new:

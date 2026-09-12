@@ -33,7 +33,7 @@
         <% end %>
       </ul>
     <% else %>
-      <%= render "alerts/empty_rules" %>
+      <%= render "alerts/empty_rules", suggestions: @suggestions %>
     <% end %>
   </section>
 
