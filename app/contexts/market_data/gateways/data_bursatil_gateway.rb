@@ -76,6 +76,22 @@ module MarketData
         Success(quotes)
       end
 
+      # The issuer catalogue, filtered. `letra` takes a whole ticker (the docs'
+      # own example is `letra=NFLX`) and `mercado` narrows to the local market,
+      # which is what makes this ~6 credits instead of the 2,181 an unfiltered
+      # fetch costs (#379).
+      #
+      # Returns the body as the provider sent it, deliberately unparsed: the
+      # row's shape has never been seen from this repo, and a parser written
+      # against a guess would be worse than none. The first caller to run this
+      # with a token is what settles the shape.
+      # Returns Success(Hash | Array)
+      def fetch_issuers(query, market: "local")
+        return Failure([ :invalid_request, "An issuer query is required" ]) if query.blank?
+
+        get("/v2/emisoras", { letra: query.to_s.upcase.delete_suffix(".MX"), mercado: market })
+      end
+
       # The IPC's own feed froze at 2026-06-26, so the index is read through
       # NAFTRAC, the ETF that tracks it. Only the day's percentage crosses over:
       # an ETF price in pesos is not an index level, so `value` stays nil rather
