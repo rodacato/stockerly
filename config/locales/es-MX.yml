@@ -172,6 +172,8 @@ es-MX:
       pausar: Pausar regla
       reglas_activas: Reglas activas
       sin_disparos: Todavía no se ha disparado ninguna regla.
+      smtp_nota: Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP,
+        sólo quedan los avisos en la app.
       sugerencias:
         cete_auction:
           porque: Banxico subasta CETES cada semana; el aviso llega %{days} días antes,
@@ -182,7 +184,8 @@ es-MX:
           other: Tienes %{amount} títulos
         crear: Crear
         day_change_percent:
-          porque: Avisa cuando el precio sube o baja más de %{percent}% en una sola jornada.
+          porque: Avisa cuando el precio sube o baja más de %{percent}% en una sola
+            jornada.
           titulo: "%{symbol} se mueve %{percent}% en un día"
         desde_cero: Crear una desde cero
         rsi_overbought:
@@ -190,13 +193,11 @@ es-MX:
             suele llamarse sobrecompra.
           titulo: "%{symbol} entra en sobrecompra"
         titulo: A partir de lo que ya tienes
-      smtp_nota: Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP,
-        sólo quedan los avisos en la app.
       titulo: Reglas
       tus_reglas: Tus reglas
       ultimos_disparos: Últimos disparos
-      vacio_cuerpo: "Una regla vigila algo que tú definiste y te avisa cuando pasa.
-        No decide por ti, no compra, no vende: sólo te ahorra estar mirando la pantalla."
+      vacio_cuerpo: 'Una regla vigila algo que tú definiste y te avisa cuando pasa.
+        No decide por ti, no compra, no vende: sólo te ahorra estar mirando la pantalla.'
       vacio_titulo: Todavía no tienes reglas
       ver_bandeja: Ver bandeja
     new:
