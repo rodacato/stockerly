@@ -4,7 +4,6 @@
 class SyncSingleAssetJob < ApplicationJob
   include PausableSync
   include SyncLogging
-  include AdaptiveScheduling
 
   queue_as :default
 
@@ -19,11 +18,7 @@ class SyncSingleAssetJob < ApplicationJob
     if result.success?
       update_asset(asset, result.value!)
       log_sync_success("Price Sync: #{asset.symbol}")
-      adaptive_reset(asset.asset_type)
-    elsif result.failure[0] == :rate_limited
-      adaptive_backoff(asset.asset_type)
-      log_sync_failure("Price Sync: #{asset.symbol}", result.failure[1], severity: :warning)
-    elsif result.failure[0] == :circuit_open
+    elsif [ :rate_limited, :circuit_open ].include?(result.failure[0])
       log_sync_failure("Price Sync: #{asset.symbol}", result.failure[1], severity: :warning)
     elsif result.failure[0] == :all_gateways_failed
       publish_all_gateways_failed(asset, result.failure[2])
