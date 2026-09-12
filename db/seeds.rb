@@ -208,9 +208,11 @@ MarketIndex.find_or_create_by!(symbol: "UKX") do |i|
   i.exchange = "LSE"
   i.is_open = false
 end
+# The name is what the screen reads, and it says what the figure is: the day's
+# move comes from NAFTRAC, the ETF that tracks the IPC, because the index's own
+# feed is frozen. No level — an ETF price is not an index level.
 MarketIndex.find_or_create_by!(symbol: "IPC") do |i|
-  i.name = "IPC Mexico"
-  i.value = 52_180.50
+  i.name = "NAFTRAC · sigue al IPC"
   i.change_percent = -0.30
   i.exchange = "BMV"
   i.is_open = false

@@ -76,6 +76,34 @@ module MarketData
         Success(quotes)
       end
 
+      # The IPC's own feed froze at 2026-06-26, so the index is read through
+      # NAFTRAC, the ETF that tracks it. Only the day's percentage crosses over:
+      # an ETF price in pesos is not an index level, so `value` stays nil rather
+      # than asserting the IPC is worth sixty-odd pesos. Nothing renders the
+      # level; `_market_context` renders the name and the percentage.
+      INDEX_PROXIES = { "IPC" => "NAFTRACISHRS" }.freeze
+
+      # Returns Success([{ symbol:, value:, change_percent:, is_open: }, ...])
+      # — the same shape the bridge returns, so the job routes by market rather
+      # than chaining (ADR-021: an index with two providers could drift between
+      # syncs, which is the defect that ADR closed for assets).
+      def fetch_index_quotes(symbols = INDEX_PROXIES.keys)
+        wanted = Array(symbols).map(&:to_s) & INDEX_PROXIES.keys
+        return Failure([ :not_supported, "#{PROVIDER} proxies no index in #{Array(symbols).join(", ")}" ]) if wanted.empty?
+
+        result = get("/v2/cotizaciones", {
+          concepto: QUOTE_FIELDS,
+          emisora_serie: wanted.map { |index| INDEX_PROXIES.fetch(index) }.join(","),
+          bolsa: DEFAULT_EXCHANGE
+        })
+        return result if result.failure?
+
+        quotes = wanted.filter_map { |index| parse_index_quote(index, result.value!) }
+        return Failure([ :not_found, "No #{PROVIDER} index proxy quotes" ]) if quotes.empty?
+
+        Success(quotes)
+      end
+
       # End-of-day closes. This provider serves close and traded amount only —
       # there is no daily candle to be had, so open/high/low stay nil.
       # Returns Success([{ date:, close:, amount: }, ...])
@@ -146,6 +174,18 @@ module MarketData
           price: venue["u"].to_d,
           volume: venue["v"]&.to_i,
           as_of: venue["f"].present? ? Time.zone.parse(venue["f"]) : nil
+        }
+      end
+
+      def parse_index_quote(index_symbol, body)
+        venue = body[INDEX_PROXIES.fetch(index_symbol)]&.dig(DEFAULT_EXCHANGE.downcase)
+        return if venue.nil? || venue["c"].blank?
+
+        {
+          symbol: index_symbol,
+          value: nil,
+          change_percent: venue["c"].to_d,
+          is_open: MarketHours.bmv_market_open?
         }
       end
 

@@ -1,31 +1,66 @@
 # Fetches latest market index quotes and updates MarketIndex records.
-# Index levels come through the yfinance bridge because no sanctioned provider
-# serves them: Alpaca has none, Massive charges for them, and DataBursatil's
-# index feed has been frozen since 2026-06-26.
+# US index levels come through the yfinance bridge: Alpaca has none and Massive
+# charges for them. The IPC no longer does — DataBursatil's own index feed is
+# still frozen at 2026-06-26, but NAFTRAC, the ETF that tracks the index, quotes
+# live on /v2/cotizaciones, so the one MX index reads from a provider under
+# contract instead of the bridge.
 class SyncMarketIndicesJob < ApplicationJob
   include PausableSync
   include SyncLogging
 
   queue_as :default
 
+  US_INDICES = %w[SPX NDX DJI UKX VIX].freeze
+  MX_INDEX = "IPC".freeze
+
   def perform
     return close_indices unless markets_open?
 
-    chain = GatewayChain.new(
-      gateways: [ MarketData::Gateways::YfinanceGateway.new ]
-    )
-    result = chain.fetch_index_quotes
+    quotes = routed_quotes
 
-    if result.success?
-      updated = upsert_indices(result.value!)
+    if quotes.any?
+      updated = upsert_indices(quotes)
       log_sync_success("Market Indices Sync", message: "#{updated} indices updated")
       EventBus.publish(MarketData::Events::MarketIndicesUpdated.new(count: updated))
     else
-      log_sync_failure("Market Indices Sync", result.failure[1])
+      log_sync_failure("Market Indices Sync", "No index quotes from any route")
     end
   end
 
   private
+
+  # Routed by market, deliberately not chained. ADR-021 tolerates
+  # MarketIndex#change_percent being the provider's own field because each index
+  # has exactly one provider — "no fallback to drift across". A chain would give
+  # the IPC two and the figure could change measure between syncs, which is the
+  # defect that ADR closed for assets. Earnings are routed the same way.
+  def routed_quotes
+    routes.flat_map do |gateway_class, symbols|
+      result = gateway_class.new.fetch_index_quotes(symbols)
+      next [] if result.failure?
+
+      result.value!
+    rescue StandardError => e
+      log_sync_failure("Market Indices Sync", "#{gateway_class}: #{e.message}", severity: :warning)
+      []
+    end
+  end
+
+  # The IPC reads from DataBursatil through NAFTRAC when that provider is
+  # configured, and from the bridge when it is not — an instance without the
+  # token keeps the index it had rather than losing it. The choice is made by
+  # configuration, which is stable: it cannot flip between one sync and the
+  # next, so the figure's meaning does not drift (ADR-021).
+  def routes
+    if ApiKeyResolver.for(MarketData::Gateways::DataBursatilGateway::PROVIDER).present?
+      {
+        MarketData::Gateways::DataBursatilGateway => [ MX_INDEX ],
+        MarketData::Gateways::YfinanceGateway => US_INDICES
+      }
+    else
+      { MarketData::Gateways::YfinanceGateway => US_INDICES + [ MX_INDEX ] }
+    end
+  end
 
   def markets_open?
     MarketHours.us_market_open? || MarketHours.bmv_market_open?
