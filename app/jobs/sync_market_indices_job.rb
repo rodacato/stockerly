@@ -5,7 +5,6 @@
 class SyncMarketIndicesJob < ApplicationJob
   include PausableSync
   include SyncLogging
-  include AdaptiveScheduling
 
   queue_as :default
 
@@ -21,9 +20,7 @@ class SyncMarketIndicesJob < ApplicationJob
       updated = upsert_indices(result.value!)
       log_sync_success("Market Indices Sync", message: "#{updated} indices updated")
       EventBus.publish(MarketData::Events::MarketIndicesUpdated.new(count: updated))
-      adaptive_reset("market_indices")
     else
-      adaptive_backoff("market_indices")
       log_sync_failure("Market Indices Sync", result.failure[1])
     end
   end
