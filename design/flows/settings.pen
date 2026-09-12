@@ -4294,45 +4294,6 @@
                       }
                     }
                   ]
-                },
-                {
-                  "type": "frame",
-                  "id": "f7wmAx",
-                  "name": "Aviso",
-                  "width": "fill_container",
-                  "fill": "$warning-bg",
-                  "cornerRadius": "$radius-lg",
-                  "gap": "$space-3",
-                  "padding": [
-                    12,
-                    14
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "nExIk",
-                      "name": "i",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "info",
-                      "library": "lucide",
-                      "fill": "$warning-fg"
-                    },
-                    {
-                      "type": "text",
-                      "id": "rcy22",
-                      "name": "t",
-                      "fill": "$warning-fg",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Los primeros dos interruptores hoy se guardan pero no apagan nada: ningún job ni mailer los consulta. Se conectan antes de implementar esta pantalla (D17).",
-                      "lineHeight": 1.4,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
                 }
               ]
             },
@@ -5561,7 +5522,7 @@
                                   "content": "Mission Control: colas, reintentos y fallos"
                                 },
                                 "AgU5u": {
-                                  "content": "0"
+                                  "content": ""
                                 }
                               }
                             },
@@ -8208,45 +8169,6 @@
                                   "x": 3
                                 }
                               }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "P1zsUX",
-                          "name": "Aviso",
-                          "width": "fill_container",
-                          "fill": "$warning-bg",
-                          "cornerRadius": "$radius-lg",
-                          "gap": "$space-3",
-                          "padding": [
-                            12,
-                            14
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "DVEk9",
-                              "name": "i",
-                              "width": 16,
-                              "height": 16,
-                              "icon": "info",
-                              "library": "lucide",
-                              "fill": "$warning-fg"
-                            },
-                            {
-                              "type": "text",
-                              "id": "YQcel",
-                              "name": "t",
-                              "fill": "$warning-fg",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "Los primeros dos interruptores hoy se guardan pero no apagan nada: ningún job ni mailer los consulta. Se conectan antes de implementar esta pantalla (D17).",
-                              "lineHeight": 1.4,
-                              "fontFamily": "$font-sans",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
                             }
                           ]
                         }
