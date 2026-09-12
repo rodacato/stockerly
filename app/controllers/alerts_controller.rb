@@ -10,15 +10,19 @@ class AlertsController < AuthenticatedController
     @triggered_today = data[:triggered_today]
     @counts          = data[:counts]
     @filter          = data[:filter]
+    @suggestions     = data[:suggestions]
   end
 
   # D14: the rule form is a route rendered into a frame and presented as a
   # sheet — the shape /trades/new settled in slice 2b.
   def new
     # The asset detail's "Crear regla" arrives with a symbol; /alerts does not.
-    @rule = AlertRule.new(condition: :price_crosses_above,
+    # A suggestion from the empty state arrives with the whole shape (ALR-2).
+    @rule = AlertRule.new(condition: prefill_condition,
                           cooldown_minutes: AlertRule::DEFAULT_COOLDOWN_MINUTES,
-                          asset_symbol: params[:asset_symbol].presence&.upcase)
+                          asset_symbol: params[:asset_symbol].presence&.upcase,
+                          threshold_value: params[:threshold_value].presence,
+                          window_days: params[:window_days].presence)
   end
 
   def create
@@ -75,5 +79,11 @@ class AlertsController < AuthenticatedController
 
   def alert_params
     params.expect(alert: [ :asset_symbol, :condition, :threshold_value, :window_days ])
+  end
+
+  # A condition that is not in the enum falls back rather than raising, so a
+  # hand-edited link cannot 500 the form.
+  def prefill_condition
+    AlertRule.conditions.key?(params[:condition].to_s) ? params[:condition] : :price_crosses_above
   end
 end

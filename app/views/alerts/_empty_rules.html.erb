@@ -1,7 +1,44 @@
+<%# Locals: suggestions (may be empty). %>
 <%# `reglas-vacio`: the first rule is the point, so the empty state says what
-    one does rather than apologising for the absence. %>
-<div class="<%= card_classes("flex flex-col items-center gap-2 border-dashed px-6 py-10 text-center") %>">
-  <span class="material-symbols-outlined text-3xl text-fg-subtle" aria-hidden="true">notifications</span>
-  <p class="font-semibold text-fg-default"><%= t("alerts.index.vacio_titulo") %></p>
-  <p class="max-w-sm text-sm text-fg-subtle"><%= t("alerts.index.vacio_cuerpo") %></p>
+    one does rather than apologising for the absence. It also proposes three
+    derived from what is held, because an owner who does not read technical
+    analysis cannot name what to watch — each carries what the indicator means,
+    never what to do about it (ALR-2, ADR-001). %>
+<div class="flex flex-col gap-4">
+  <div class="<%= card_classes("flex flex-col items-center gap-2 border-dashed px-6 py-10 text-center") %>">
+    <span class="material-symbols-outlined text-3xl text-fg-subtle" aria-hidden="true">notifications</span>
+    <p class="font-semibold text-fg-default"><%= t("alerts.index.vacio_titulo") %></p>
+    <p class="max-w-sm text-sm text-fg-subtle"><%= t("alerts.index.vacio_cuerpo") %></p>
+  </div>
+
+  <% if suggestions.any? %>
+    <section class="flex flex-col gap-3">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+        <%= t("alerts.index.sugerencias.titulo") %>
+      </p>
+
+      <% suggestions.each do |suggestion| %>
+        <div class="<%= card_classes("flex items-center gap-3 px-4 py-3") %>">
+          <div class="flex min-w-0 flex-1 flex-col gap-1">
+            <p class="text-sm font-semibold text-fg-default"><%= suggested_rule_title(suggestion) %></p>
+            <% if (context = suggested_rule_context(suggestion)) %>
+              <p class="text-xs text-fg-subtle"><%= context %></p>
+            <% end %>
+            <p class="text-xs text-fg-subtle"><%= suggested_rule_reason(suggestion) %></p>
+          </div>
+
+          <%= link_to suggested_rule_path(suggestion),
+                      class: button_classes(:primary, :sm, "inline-flex shrink-0 items-center gap-1.5") do %>
+            <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
+            <%= t("alerts.index.sugerencias.crear") %>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= link_to new_alert_path, class: "inline-flex items-center gap-1.5 self-start text-sm font-semibold text-primary-hover" do %>
+        <span class="material-symbols-outlined text-base" aria-hidden="true">edit</span>
+        <%= t("alerts.index.sugerencias.desde_cero") %>
+      <% end %>
+    </section>
+  <% end %>
 </div>

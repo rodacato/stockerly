@@ -322,6 +322,13 @@ no `Trading::` reference occurs in the context. Alert rules key on `asset_symbol
 position, so there is nothing for a Trading read API to serve. A rule written for a dependency that
 does not exist is an opinion, and it would be the widening this issue's negative criterion forbids.
 
+> ⚠️ **This paragraph is superseded by [ADR-025](./0025-alerts-reads-trading.md), 2026-09-12.** The
+> dependency now exists: `ALR-2` proposes rules from what the owner holds, which needs a holdings
+> read. Everything above stays true of how a rule is **evaluated** — rules still key on
+> `asset_symbol` and the evaluator still needs no position. What changed is that a second consumer
+> appeared, so the pair is declared there and holdings cross as plain data rather than as `Position`
+> records.
+
 **Alerts → MarketData is a customer/supplier pair on the same terms as Trading → MarketData**, and
 it already runs on them. Nothing needed building: the `MarketHoliday` read went through
 `MarketData::Queries::MarketCalendar` (#549), the `Notification` dedup went through

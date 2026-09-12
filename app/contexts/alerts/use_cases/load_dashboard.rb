@@ -40,8 +40,19 @@ module Alerts
           preference: preference,
           triggered_today: triggered_today,
           counts: counts,
-          filter: filter
+          filter: filter,
+          suggestions: suggestions_for(user, all_rules)
         }
+      end
+
+      private
+
+      # Only the empty state shows them, so a dashboard with rules never pays
+      # for the holdings read (ADR-025).
+      def suggestions_for(user, all_rules)
+        return [] if all_rules.exists?
+
+        Domain::RuleSuggestions.call(holdings: Trading::Queries::OpenHoldings.call(user: user))
       end
     end
   end
