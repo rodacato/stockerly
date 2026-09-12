@@ -5,6 +5,43 @@ RSpec.describe MarketData::Gateways::DataBursatilGateway do
 
   before { Rails.cache.clear }
 
+  describe "#fetch_issuers" do
+    it "filters the catalogue by whole ticker and local market, which is what makes it cheap" do
+      stub = stub_request(:get, "https://api.databursatil.com/v2/emisoras")
+        .with(query: hash_including("letra" => "WALMEX", "mercado" => "local"))
+        .to_return(status: 200, headers: { "Content-Type" => "application/json" },
+                   body: { "WALMEX" => { "series" => [ "*" ] } }.to_json)
+
+      gateway.fetch_issuers("WALMEX.MX")
+
+      expect(stub).to have_been_requested
+    end
+
+    # The row's shape has never been seen from this repo, so the gateway hands
+    # back what the provider sent. A parser written against a guess would be
+    # worse than none (ONB-5).
+    it "returns the body unparsed" do
+      body = { "GFNORTE" => { "series" => %w[O], "isin" => "MX01GF000004" } }
+      stub_databursatil("/v2/emisoras", body)
+
+      expect(gateway.fetch_issuers("GFNORTEO").value!).to eq(body)
+    end
+
+    it "refuses an empty query rather than fetching the 2,181-credit catalogue" do
+      result = gateway.fetch_issuers("  ")
+
+      expect(result.failure).to eq([ :invalid_request, "An issuer query is required" ])
+    end
+
+    it "does not reach the network when the query is empty" do
+      stub = stub_request(:get, /api\.databursatil\.com/)
+
+      gateway.fetch_issuers(nil)
+
+      expect(stub).not_to have_been_requested
+    end
+  end
+
   describe "#fetch_bulk_prices" do
     it "returns one quote per requested symbol, keyed back to our symbol" do
       stub_databursatil("/v2/cotizaciones", {
