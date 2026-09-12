@@ -196,6 +196,41 @@ Required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:projec
    buildable"* and was right. Where it does not, the cheap check is whether the code still says what
    the card says it says.
 
+   > ### This rule failed again on 2026-09-12, and the failure is the useful part
+   >
+   > Seven days after the table above was written, **eleven more cards were read as current in one
+   > session**. The rule was loaded, correct, and unread. Its form is why: *"re-measure before
+   > working a card"* is a thing to remember, and nothing in a card makes you remember it.
+   >
+   > **So the requirement is now on the card, not on the reader. Every measurable claim in a card
+   > carries what it was measured against:**
+   >
+   > ```
+   > > Measured 2026-09-12 against 28bb15e6 — `alert_rules` carries no urgency column.
+   > ```
+   >
+   > A date and a short SHA. That is the whole convention. It does not make anyone re-measure, and
+   > it is not meant to: it makes the card state its own age, so doubting it stops depending on
+   > memory. A claim with no stamp is a claim nobody has checked since it was typed.
+   >
+   > **The seven shapes the 2026-09-12 sweep found**, which is more useful than the count — when
+   > re-measuring, these are what to look for:
+   >
+   > | Shape | Example |
+   > |---|---|
+   > | The work is already done | `AUTH-2` — both artboards exist; `CKP-6` — the brief line is gone; `ACT-8` — the 11 chips are gone |
+   > | The premise **inverted** | `ALR-3` said browser push was deleted; it was revived four days later, and the brief had been wrong in *both* directions |
+   > | It was never a card | `#638` was a **merged PR**, sitting in a board column with no status |
+   > | It points at the wrong code | `ACT-6` named `search_ticker`; the artboard was the list filter, which D64 had already separated |
+   > | Alive, but for another reason | the volume-history card rests on the confluence semaphore, which D84 retired — `volume_spike` keeps it real |
+   > | Dead in part | `X7` — two of its three instances (the retired tally, a deleted branch) no longer exist |
+   > | **Alive though it looks dead** | `TD10` — `adaptive_backoff` had callers, so a shallow read called it stale. The callers *wrote*; the value had no reader. The inverse error is as easy to make |
+   >
+   > And the one that should settle any argument about whether this is worth a paragraph: **`D117`
+   > was written and corrected in the same session.** It claimed a canvas amendment was pending;
+   > `D97` had done it five days earlier. Its author had spent that same session naming this exact
+   > failure in other people's cards.
+
 ---
 
 ## References
