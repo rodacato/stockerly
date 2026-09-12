@@ -253,7 +253,7 @@ this table is the reasoning behind it, not its source of truth.
 |---|---|---|---|
 | BMV quotes + EOD + intraday | **DataBursatil** | the yfinance bridge (prices, EOD) | ✅ verified |
 | BMV fundamentals + statements | DataBursatil `/v2/financieros` | — | ⚠️ still blocked on the emisora key |
-| **IPC / MX indices** | **the yfinance bridge** | — | ⚠️ **changed** — DataBursatil's index feed is frozen at 2026-06-26 |
+| **IPC / MX indices** | **the yfinance bridge** | — | ⚠️ **changed** — DataBursatil's index feed is frozen at 2026-06-26. **NAFTRAC (`NAFTRACISHRS`) quotes live on `/v2/cotizaciones`** and tracks the IPC — a proxy, undecided, see §6 |
 | **BMV dividends + splits** | **the yfinance bridge** | — | ⛔ **moved** — the same Yahoo data, now behind the bridge and routed by market ([#312](https://github.com/rodacato/stockerly/issues/312)) |
 | MX rates (TIIE) | DataBursatil | — | not probed |
 | MX news | DataBursatil (`get_cables`) | — | not probed |
@@ -324,10 +324,31 @@ unanswerable):
   ✅ **Closed as unavailable.** The archive name is valid and accepted; no date holds a file, and
   `hechos` served every date `guber` refused. See §the three documented capabilities above.
 
-Still open, and still unticketed — verifications the audit owed and never paid:
+Still open — and **ticketed since 2026-08-29**, when ADR-022 made the board the system of record.
+This list is the reasoning; their status is read from the board, not from here:
 
-- Alpha Vantage's BMV coverage via `.MEX` — reported, not probed.
-- DataBursatil's `tasas`, `divisas`, `cables` and `noticias` endpoints — not probed.
+```sh
+gh project item-list 6 --owner rodacato --format json --limit 200 \
+  | jq -r '.items[] | select(.title | test("^\\[research\\]")) | "\(.status)\t\(.title)"'
+```
+
+- Alpha Vantage's BMV coverage via `.MEX` — reported, not probed. Closes when a `.MEX` symbol is
+  fetched and the response recorded under `redesign/probes/out/`.
+- DataBursatil's `tasas`, `divisas`, `cables` and `noticias` endpoints — not probed. These are the
+  two *"not probed"* rows in the table above, and closing them prices the last capabilities that
+  provider might serve.
 - Whether any **sanctioned alternative to Yahoo** exists for MX indices and corporate actions. The
   bridge made Yahoo reachable; it did not make it sanctioned, and ADR-017 quarantines it precisely
   because this question is still open.
+
+  > 🎯 **A candidate for the index half, found 2026-09-12 in the probes already on disk and
+  > recorded nowhere until now.** The `symbols` probe of 2026-08-26 fetched **`NAFTRACISHRS`**
+  > through `/v2/cotizaciones` and got a live quote — `{"u": 66.01, "c": 0.21, "v": 563960.0,
+  > "f": "2026-08-26 11:24:00"}`. NAFTRAC is the ETF that tracks the IPC, so the index whose feed
+  > is frozen has a **BMV-traded proxy with volume, from a provider under contract**, priced at
+  > about one credit per quote by the credit model above.
+  >
+  > **It is a proxy, not the index**, and whether that is acceptable — and how a screen would have
+  > to say so — is a product call, not a research one. **The corporate-actions half is untouched by
+  > this:** Alpaca serves US dividends and splits on a Basic key, and BMV corporate actions remain
+  > what line 111 calls *"available from no other configured source"*.
