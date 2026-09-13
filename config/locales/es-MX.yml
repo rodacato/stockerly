@@ -340,10 +340,8 @@ es-MX:
       recuperala: Recupérala.
       submit: Iniciar sesión
       subtitulo: Accede a tu cuenta.
-      terminos_html: Al iniciar sesión aceptas los %{terms} y el %{privacy}.
       titulo: Inicia sesión
     open_source: 100% libre y open source
-    privacidad: Aviso de privacidad
     reset:
       confirmar: Confirmar contraseña
       confirmar_placeholder: Repite tu contraseña
@@ -362,7 +360,6 @@ es-MX:
     session:
       expirada: Tu sesión expiró. Inicia sesión de nuevo.
       inactividad: Cerramos tu sesión por inactividad.
-    terminos: Términos
     volver: Volver a iniciar sesión
     volver_login: Volver a iniciar sesión
   brand:
@@ -1364,7 +1361,6 @@ es-MX:
     welcome_body:
       bug_enlace: Ábrelo en GitHub.
       bug_pregunta: "¿Encontraste un bug?"
-      contacto_pregunta: "¿Otra pregunta? Escríbenos a"
       desarrollo_cuerpo: Stockerly está en desarrollo activo. Las cosas pueden cambiar
         o romperse; si algo no funciona como esperas, probablemente es un bug — repórtalo.
       desarrollo_titulo: Software en desarrollo

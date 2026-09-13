@@ -20,10 +20,6 @@ Rails.application.routes.draw do
   # don't aggressively cache the redirect — we may re-route `/` later.
   root to: redirect("/login", status: 302)
 
-  # --- Legal ---
-  get "privacy",         to: "legal#privacy"
-  get "terms",           to: "legal#terms"
-  get "risk-disclosure", to: "legal#risk_disclosure", as: :risk_disclosure
 
   # --- Authentication ---
   get    "login",    to: "sessions#new"

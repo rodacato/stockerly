@@ -9,7 +9,7 @@ design-tokens:
   # #489 counted these; #548 migrated the opacity modifiers around them and #561
   # the tail. The helpers and the Stimulus controllers hold state colours that
   # never got a semantic token; the two market charts inline an SVG palette;
-  # legal/ and shared/ carry amber warning boxes older than the token set.
+  # shared/ carries an amber warning box older than the token set.
   # Three controllers left the tree in #561 because nothing mounted them, taking
   # onboarding_form_controller.js and selectable_card_controller.js off this list.
   app/helpers/alerts_helper.rb:
@@ -22,10 +22,6 @@ design-tokens:
     count: 1
   app/javascript/controllers/ticker_search_controller.js:
     count: 4
-  app/views/legal/risk_disclosure.html.erb:
-    count: 3
-  app/views/legal/terms.html.erb:
-    count: 3
   app/views/market/_analyst_target.html.erb:
     count: 3
   app/views/shared/_flash_message.html.erb:
