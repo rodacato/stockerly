@@ -28,8 +28,8 @@ green checkmark as a clearance.
 - [ ] `bin/importmap audit` passes (job `scan_js`)
 - [ ] `bundle exec rspec` and `bin/rubocop` pass
 
-**Report-only — read the findings by hand** (`.github/workflows/quality.yml` → `rodacato/sector-7g`
-reusable `security.yml`, called with `blocking: false`, which sets `continue-on-error` on all three):
+**Report-only — read the findings by hand** (`.github/workflows/quality.yml`, with
+`SECURITY_BLOCKING: "false"`, which sets `continue-on-error` on all three):
 
 - [ ] Reviewed the **Semgrep** (SAST) findings
 - [ ] Reviewed the **Trivy** (deps + secrets + IaC) findings
@@ -37,11 +37,11 @@ reusable `security.yml`, called with `blocking: false`, which sets `continue-on-
 
 > Gitleaks **cannot fail a PR here.** A leaked secret shows up as a passing check with findings
 > buried in the job log. The blocking defence is `bin/pre-commit` on your machine — install it.
-> Flipping any of the three to enforcing is a one-line change (`blocking: true`) in
+> Flipping the three to enforcing is a one-line change (`SECURITY_BLOCKING: "true"`) in
 > `quality.yml`; it is a deliberate decision, not an oversight to fix in passing.
 
-SonarQube also lives in `quality.yml` but is `workflow_dispatch`-only — it does not run on a PR at
-all.
+SonarQube also lives in `quality.yml` but is `workflow_dispatch`-only, and skipped unless the
+`SONAR_HOST_URL` variable is set — it does not run on a PR at all.
 
 - [ ] New env vars are documented only in `.env.example` without values
 - [ ] No logs or screenshots include tokens, API keys, or user-sensitive data
