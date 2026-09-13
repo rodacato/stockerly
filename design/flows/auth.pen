@@ -296,20 +296,6 @@
               "fontFamily": "$font-sans",
               "fontSize": 13,
               "fontWeight": "500"
-            },
-            {
-              "type": "text",
-              "id": "equtM",
-              "name": "Legal",
-              "fill": "$fg-subtle",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Al iniciar sesión aceptas los Términos y el Aviso de privacidad.",
-              "lineHeight": 1.5,
-              "textAlign": "center",
-              "fontFamily": "$font-sans",
-              "fontSize": 11,
-              "fontWeight": "normal"
             }
           ]
         }
@@ -1328,20 +1314,6 @@
                   "fontFamily": "$font-sans",
                   "fontSize": 13,
                   "fontWeight": "500"
-                },
-                {
-                  "type": "text",
-                  "id": "vBdiX",
-                  "name": "Legal",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Al iniciar sesión aceptas los Términos y el Aviso de privacidad.",
-                  "lineHeight": 1.5,
-                  "textAlign": "center",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
                 }
               ]
             }
@@ -2584,7 +2556,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-05 · Enlace expirado and Contraseña actualizada drawn — the reset journey's two endings, AUTH-2\n2026-09-05 · the brief stopped saying 'design-led, code is reference (D8)'; D78 retired that posture\n2026-09-05 · the brief stopped restating the kit version, which read 0.8.0 against a variable saying 0.8.1 (X4)\n2026-09-05 · this file adopted the Log frame; the brief's three dated lines moved here\n2026-08-27 · ADR-018 supersedes D23 — TOTP with recovery codes is built, and the brief had called it settled while nothing existed\n2026-08-27 · D52 · the product asks for enrollment in BOTH the first-boot wizard and Ajustes\n2026-08-27 · Panel · V1…V4 moved to _playground.pen — moved, not deleted: they are the reasoning",
+          "content": "2026-09-13 · Login (mobile + desktop) drops the terms line — the legal pages are gone, ADR-026 · D118\n2026-09-05 · Enlace expirado and Contraseña actualizada drawn — the reset journey's two endings, AUTH-2\n2026-09-05 · the brief stopped saying 'design-led, code is reference (D8)'; D78 retired that posture\n2026-09-05 · the brief stopped restating the kit version, which read 0.8.0 against a variable saying 0.8.1 (X4)\n2026-09-05 · this file adopted the Log frame; the brief's three dated lines moved here\n2026-08-27 · ADR-018 supersedes D23 — TOTP with recovery codes is built, and the brief had called it settled while nothing existed\n2026-08-27 · D52 · the product asks for enrollment in BOTH the first-boot wizard and Ajustes\n2026-08-27 · Panel · V1…V4 moved to _playground.pen — moved, not deleted: they are the reasoning",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,

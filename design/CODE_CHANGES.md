@@ -204,8 +204,9 @@ stayed pre-2.0.
   exists (S11 #147), and `RequestPasswordReset` does the silent no-op. **"Reenviar enlace" returns
   to the form** rather than resending, for the same reason: a real resend needs the address held
   somewhere.
-- ⚠ **Risk disclosure is no longer one click from login.** The auth layout has no public footer, and
-  the artboard's terms line carries two links. It stays reachable from the legal pages.
+- ~~⚠ **Risk disclosure is no longer one click from login.** The auth layout has no public footer, and
+  the artboard's terms line carries two links. It stays reachable from the legal pages.~~ Moot since
+  2026-09-13: the legal pages and the login's terms line are gone (D118).
 - 🐞 **The wordmark has been cut off across the entire site.** `logo_light.svg` and `logo_dark.svg`
   declare `viewBox="0 0 130 40"`, and the text starts at `x="32"` at `font-size="22"` — roughly
   142px of artwork in a 130px box, so the final "y" was clipped everywhere the logo renders. Widened
