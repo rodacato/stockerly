@@ -156,7 +156,7 @@ grep -rcE '\bt\('                          app/views/<dir> | awk -F: '{x+=$NF} E
 | `shared` | 0 | 40 | **0** | ◐ copy | mixed |
 | `welcome` · `help` | 0 | 2 · 2 | **0** | ◐ copy | yes · no — ONB-3 |
 | `bug_reports` | 0 | 11 | **0** | ◐ copy | **no** |
-| `legal` | 0 | 89 | **0** | ◐ copy | **no** — deliberate, S5 |
+| ~~`legal`~~ | — | — | — | — | **removed 2026-09-13** — D118 / ADR-026 |
 | mailers (`alert` · `user` · `bug_report`) | 0 | 0 | **0** | ◐ copy | **no** |
 
 **The pre-2.0 palette is gone from `app/views` entirely** — `grep -rcE '\b(slate|gray)-[0-9]+'
@@ -1856,7 +1856,7 @@ tell unfinished work from a decision, and these are the rows where the test cann
 | Surface | i18n | Note |
 |---|---:|---|
 | `/profile` | 0 keys | AJU-1 — the one that matters |
-| `/privacy`, `/terms`, `/risk-disclosure` | 0 keys | legal; deliberately verbatim, per S5 |
+| ~~`/privacy`, `/terms`, `/risk-disclosure`~~ | — | removed 2026-09-13 — D118 / ADR-026 |
 | `/help` | 0 keys | shares `_welcome_body` with `/welcome`, which *is* drawn |
 | `/report-bug` | 0 keys | |
 | `/trades` (index) | 16 keys | ACT-3 — and unreachable |
