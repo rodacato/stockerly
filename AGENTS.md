@@ -82,8 +82,8 @@ evaporates.
 
 **Stack:** Rails 8 + Ruby 3.3.6, dry-rb (Contracts at the boundary, monads in
 Use Cases), Hotwire (Turbo + Stimulus), Tailwind 4, PostgreSQL. Deploy via Kamal
-to andys-room, public ingress through Cloudflare Tunnel. Security + Sonar gates
-are centralized in `rodacato/sector-7g` (called from `.github/workflows/quality.yml`).
+to andys-room, public ingress through Cloudflare Tunnel. Security scans (Semgrep,
+Trivy, Gitleaks) and the opt-in Sonar scan live in `.github/workflows/quality.yml`.
 
 **Architectural direction:** DDD + Hexagonal + Event-Driven in a Rails monolith.
 Pragmatic, not ceremonial — don't wrap a boolean flip in Contract + monad

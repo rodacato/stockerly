@@ -1,6 +1,4 @@
-# Standardized quality + security gate — calls rodacato/sector-7g.
-# Update the reusable workflows there → this repo inherits the change.
-name: Sector 7g - Quality
+name: Quality
 
 on:
   workflow_dispatch:
@@ -11,17 +9,65 @@ on:
 permissions:
   contents: read
 
+env:
+  # Report-only: findings show in the job log without failing the check.
+  # Set to "true" to make Semgrep, Trivy and Gitleaks block a merge.
+  SECURITY_BLOCKING: "false"
+
 jobs:
-  security:
-    uses: rodacato/sector-7g/.github/workflows/security.yml@master
-    with:
-      blocking: false # report-only for now; flip to true (or remove) to enforce
+  semgrep:
+    name: semgrep (SAST)
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Scan
+        continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' }}
+        run: semgrep scan --config p/default --config p/security-audit --error
+
+  trivy:
+    name: trivy (deps + secrets + IaC)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' }}
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+  gitleaks:
+    name: gitleaks (secret scan)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Scan
+        uses: gitleaks/gitleaks-action@v3
+        continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Free for personal accounts; a repo under an organization needs this secret.
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
 
   sonar:
-    # Manual-only for now: runs on "Run workflow", not on every push/PR.
-    # Runs the suite first so SimpleCov writes coverage/.resultset.json — the
-    # scan reads it via sonar.ruby.coverage.reportPaths.
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    # Opt-in and manual: runs on "Run workflow" only, and only where a SonarQube
+    # server is configured (SONAR_HOST_URL variable + SONAR_TOKEN secret). The suite
+    # runs first so SimpleCov writes the report sonar-project.properties points at.
+    if: ${{ github.event_name == 'workflow_dispatch' && vars.SONAR_HOST_URL != '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -59,14 +105,27 @@ jobs:
         with:
           bundler-cache: true
 
+      - name: Install Chrome for the cuprite system specs
+        id: chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+
       - name: Set up database
         run: bin/rails db:create db:schema:load
 
+      - name: Build CSS
+        run: bin/rails tailwindcss:build
+
       - name: Run tests with coverage
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
         run: bundle exec rspec
 
       - name: SonarQube scan
-        uses: rodacato/sector-7g/actions/sonar-scan@master
+        uses: sonarsource/sonarqube-scan-action@v8.2.0
         with:
-          host_url: ${{ vars.SONAR_HOST_URL }}
-          token: ${{ secrets.SONAR_TOKEN }}
+          args: -Dsonar.projectVersion=${{ github.sha }}
+        env:
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

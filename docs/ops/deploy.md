@@ -250,7 +250,7 @@ git fetch origin
 git checkout production && git merge --ff-only origin/master && git push origin production
 ```
 
-The workflow gates the deploy on the suite, brakeman and bundler-audit, then runs Kamal.
+The workflow gates the deploy on the whole CI workflow (`ci.yml`), then runs Kamal.
 
 You can also trigger it from the GitHub Actions tab with **Run workflow**, which takes an `action`
 input:
