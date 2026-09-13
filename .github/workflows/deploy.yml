@@ -43,6 +43,7 @@ jobs:
       GITHUB_REPOSITORY: ${{ github.repository }}
       GITHUB_ACTOR: ${{ github.actor }}
       HOST_IP: ${{ secrets.HOST_IP }}
+      APP_HOST: ${{ vars.APP_HOST }}
       SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: ${{ secrets.ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY }}
@@ -56,6 +57,10 @@ jobs:
       VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT }}
 
     steps:
+      - name: Require APP_HOST
+        run: |
+          [ -n "$APP_HOST" ] || { echo "::error::Set the APP_HOST variable on the production environment"; exit 1; }
+
       - name: Checkout code
         uses: actions/checkout@v7
 

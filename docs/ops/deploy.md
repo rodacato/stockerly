@@ -87,11 +87,11 @@ cloudflared service install <TUNNEL_TOKEN>
 | Field | Value |
 |---|---|
 | Subdomain | `stockerly` |
-| Domain | `notdefined.dev` |
+| Domain | `example.com` — together, the hostname you set as `APP_HOST` |
 | Type | `HTTP` |
 | URL | `localhost:80` |
 
-7. Go to **SSL/TLS** settings for `notdefined.dev` and set encryption mode to **Full**
+7. Go to **SSL/TLS** settings for `example.com` and set encryption mode to **Full**
 
 The tunnel is now running as a systemd service and will auto-start on reboot.
 
@@ -136,6 +136,7 @@ These are plain values, so set them under **Variables**, not Secrets, in the sam
 
 | Variable | Default if unset | Effect |
 |---|---|---|
+| `APP_HOST` | **none — required** | Public hostname (`stockerly.example.com`). Kamal's proxy host, the Rails Host allowlist, mail links and the mail sender (`noreply@APP_HOST`) all derive from it. The deploy stops before Kamal runs without it, and the app refuses to boot |
 | `METRICS_ENABLED` | `false` | Master switch for the Prometheus endpoint |
 | `VAPID_SUBJECT` | `mailto:stockerly@localhost` | Contact the push service reaches you at |
 
@@ -161,6 +162,7 @@ export KAMAL_REGISTRY_PASSWORD=your-github-pat   # GitHub PAT with packages:writ
 export GITHUB_REPOSITORY=rodacato/stockerly
 export GITHUB_ACTOR=rodacato
 export HOST_IP=YOUR_SERVER_IP
+export APP_HOST=stockerly.example.com
 export SECRET_KEY_BASE=$(bin/rails secret)
 export POSTGRES_PASSWORD=$(openssl rand -hex 32)
 
@@ -185,11 +187,11 @@ This will:
 - Build and push the Docker image
 - Deploy the app
 
-After this, verify at `https://stockerly.notdefined.dev`
+After this, verify at `https://$APP_HOST`
 
 ## 5. Initial Setup
 
-After the first deploy, visit `https://stockerly.notdefined.dev/setup` to run the **Setup Wizard**. It is only accessible when no users exist in the database and will:
+After the first deploy, visit `https://$APP_HOST/setup` to run the **Setup Wizard**. It is only accessible when no users exist in the database and will:
 
 1. Create your admin account (name, email, password)
 2. Bootstrap platform defaults (site config, integrations, market indices, FX rates)
@@ -277,7 +279,7 @@ or keep your own untracked file and source it:
 set -a && source ~/.stockerly.production.env && set +a   # your own file, outside the repo
 ```
 
-At minimum `HOST_IP`, `POSTGRES_PASSWORD` and `SECRET_KEY_BASE` must be set, or the command
+At minimum `HOST_IP`, `APP_HOST`, `POSTGRES_PASSWORD` and `SECRET_KEY_BASE` must be set, or the command
 connects to the wrong place or boots a container with empty secrets.
 
 Then:
@@ -322,11 +324,11 @@ once and set the server IP:
 
 ```bash
 cp .devcontainer/local.env.example .devcontainer/local.env
-$EDITOR .devcontainer/local.env      # set HOST_IP; the file is gitignored
+$EDITOR .devcontainer/local.env      # set HOST_IP and APP_HOST; the file is gitignored
 ```
 
 `.devcontainer/kamal-env.sh` is sourced by every shell and supplies what GitHub Actions supplies for
-free in CI: `GITHUB_REPOSITORY` and `GITHUB_ACTOR` derived from the git remote, plus `HOST_IP` from
+free in CI: `GITHUB_REPOSITORY` and `GITHUB_ACTOR` derived from the git remote, plus `HOST_IP` and `APP_HOST` from
 that file. Without it the ERB in `config/deploy.yml` renders nil and Kamal aborts with
 `image: should be a string`.
 
@@ -357,7 +359,7 @@ bearer token. No tunnel changes, no private port, no VPN required.
   endpoint, no middleware, no overhead. The flag is separate from the token so
   you can toggle metrics off (flip the variable) without deleting the secret;
   enabling without a token fails closed (stays off, logs a warning).
-- **Endpoint:** `GET https://stockerly.notdefined.dev/metrics`
+- **Endpoint:** `GET https://<APP_HOST>/metrics`
 - **Port inside the container:** `3000` (same Puma the app runs on; routed by
   kamal-proxy). No extra port is published.
 - **Auth:** `Authorization: Bearer <METRICS_TOKEN>`. Without a valid token the
@@ -375,7 +377,7 @@ scrape_configs:
       type: Bearer
       credentials: "<METRICS_TOKEN>"
     static_configs:
-      - targets: ["stockerly.notdefined.dev"]
+      - targets: ["stockerly.example.com"]  # your APP_HOST
 ```
 
 Exposed metrics include `stockerly_data_age_seconds` (age of the freshest
