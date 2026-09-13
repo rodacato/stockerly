@@ -252,6 +252,16 @@ has no artboard:
 
 </details>
 
+## Disclaimer
+
+Stockerly shows market information, not investment advice. Prices, fundamentals and FX rates come
+from third-party providers and can be late or wrong; check anything you act on against your broker.
+
+You run your own instance and you answer for it. It is software you host, not a service anyone
+provides to you, which is why it ships no privacy notice or terms of service
+([ADR-026](docs/architecture/adr/0026-no-legal-pages-on-a-self-hosted-instance.md)). If you open
+your instance to other people, the data-protection obligations that brings are yours.
+
 ## License
 
-[MIT](LICENSE) — 100% free and open source.
+[MIT](LICENSE) — 100% free and open source. Provided "as is", without warranty of any kind.

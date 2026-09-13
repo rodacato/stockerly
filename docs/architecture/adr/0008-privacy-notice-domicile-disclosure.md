@@ -1,6 +1,6 @@
 # ADR-008 — Privacy notice does not publish the responsible party's full domicile inline
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-026](./0026-no-legal-pages-on-a-self-hosted-instance.md) (2026-09-13) — the privacy notice was removed
 - **Date:** 2026-05-18
 - **Author:** Adrian Castillo
 - **Supersedes:** —

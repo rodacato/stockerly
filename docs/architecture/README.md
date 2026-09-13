@@ -157,7 +157,7 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [002](./adr/0002-trading-marketdata-boundary.md) | Trading reads MarketData via a formalized read API | Accepted 2026-05-15 |
 | [006](./adr/0006-simple-use-case-criterion.md) | `SimpleUseCase`: when NOT to use `ApplicationUseCase` | Accepted 2026-05-15 |
 | [007](./adr/0007-defer-i18n-adoption.md) | Defer I18n until multi-locale is real | **Superseded by 011** (2026-08-24) |
-| [008](./adr/0008-privacy-notice-domicile-disclosure.md) | Privacy notice omits the full domicile inline | Accepted 2026-05-18 · premise outdated by 010 |
+| [008](./adr/0008-privacy-notice-domicile-disclosure.md) | Privacy notice omits the full domicile inline | **Superseded by 026** (2026-09-13) |
 | [009](./adr/0009-fx-history-strategy.md) | Historical FX rates for cross-currency revaluation | Accepted 2026-06-27 · implemented and amended 2026-08-26 |
 | [010](./adr/0010-pivot-to-self-hosted-single-user-tracker.md) | Pivot to a self-hosted, single-user asset tracker | Accepted 2026-08-20 · addendum 2026-08-22 |
 | [011](./adr/0011-adopt-i18n-for-the-2.0-rewrite.md) | Adopt Rails I18n (single locale, es-MX) | Accepted 2026-08-24 · supersedes 007 |
@@ -174,6 +174,7 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [022](./adr/0022-github-as-the-system-of-record.md) | GitHub is the system of record for outstanding work | Accepted 2026-08-29 · retires the sprint protocol |
 | [023](./adr/0023-a-missing-rate-absents-the-figure.md) | A missing exchange rate absents the figure, never fabricates one | Accepted 2026-08-30 |
 | [024](./adr/0024-asset-ownership-by-column.md) | `Asset` is owned by column: Administration lists it, MarketData measures it | Accepted 2026-09-04 · writes the shared-kernel decision 002 deferred |
+| [026](./adr/0026-no-legal-pages-on-a-self-hosted-instance.md) | A self-hosted instance serves no legal pages; the license carries what applies | Accepted 2026-09-13 · supersedes 008 |
 
 Twenty-one ADRs: **0001, 0002 and 0006–0024**. The gap is explained below.
 

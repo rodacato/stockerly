@@ -212,11 +212,11 @@ Decision rule — four tests, all of them: if the use case needs `yield`, `valid
 
 ### Layouts
 
-8 layout files in `app/views/layouts/`: `application` (base), `app`, `auth`, `legal`, `onboarding`, `public`, plus `mailer.html.erb` / `mailer.text.erb`. There is **no** `admin` layout — the admin screens render under `app`.
+7 layout files in `app/views/layouts/`: `application` (base), `app`, `auth`, `onboarding`, `public`, plus `mailer.html.erb` / `mailer.text.erb`. There is **no** `admin` layout — the admin screens render under `app`.
 
 ### Access Zones
 
-- **Public:** `/` (302 → `/login`), `/privacy`, `/terms`, `/risk-disclosure`, `/login`
+- **Public:** `/` (302 → `/login`), `/login`. There are no legal pages ([ADR-026](docs/architecture/adr/0026-no-legal-pages-on-a-self-hosted-instance.md)): the MIT license carries the terms
 - **First boot:** `/setup` — `ApplicationController#redirect_to_setup` sends every request here while no user exists; `SetupController#require_no_users` redirects away once one does. Then `/onboarding/*` → `/welcome`.
 - **Authenticated:** `/dashboard`, `/discover`, `/portfolio`, `/alerts`, `/assets`, `/tracked`, `/positions` (Historial), `/trades/import`, `/market/:symbol`, `/notifications`, `/settings`, `/profile`, `/help`, `/report-bug`
 - **Password Reset:** `/forgot-password`, `/reset-password/:token`
