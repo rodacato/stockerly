@@ -260,7 +260,7 @@ The count is deterministic across seeds — that is what #526 established. Cover
 
 ## Environment Gotchas
 
-- **`RAILS_ENV=development`** is set in the devcontainer shell — `rails_helper.rb` uses `ENV['RAILS_ENV'] = 'test'` (forced, not `||=`)
+- **`rails_helper.rb` forces `ENV['RAILS_ENV'] = 'test'`** (not `||=`) — a shell that exports `RAILS_ENV=development` would otherwise run the suite against the development database
 - **Rails 8.1 host authorization** blocks unknown hosts (403) — disabled in `test.rb` with `config.hosts.clear`
 - **`allow_browser versions: :modern`** returns 406 (not 403), only fires when User-Agent contains a recognized version string
 - **`:unprocessable_content`** replaces deprecated `:unprocessable_entity` in Rails 8.1
