@@ -14,6 +14,10 @@ RSpec.describe UserMailer, type: :mailer do
     it "sends to the user's email" do
       expect(mail.to).to eq([ "test@example.com" ])
     end
+
+    it "sends from the instance's own host, not a hardcoded domain" do
+      expect(mail.from).to eq([ "noreply@example.com" ])
+    end
   end
 
   describe "#password_reset" do

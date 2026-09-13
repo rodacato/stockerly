@@ -70,8 +70,10 @@ Rails.application.configure do
   # Raise delivery errors to detect SMTP issues early.
   config.action_mailer.raise_delivery_errors = true
 
-  # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "stockerly.notdefined.dev", protocol: "https" }
+  # The instance's public hostname. Links in mail, the mail sender and the Host allowlist derive from it.
+  app_host = ENV["APP_HOST"].presence or raise "APP_HOST must be set to the instance's public hostname"
+
+  config.action_mailer.default_url_options = { host: app_host, protocol: "https" }
 
   # Resend SMTP configuration.
   config.action_mailer.delivery_method = :smtp
@@ -95,11 +97,8 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  config.hosts = [
-    "stockerly.notdefined.dev",
-    /.*\.stockerly\.notdefined\.dev/,
-    ENV["HOST_IP"]
-  ].compact
+  # The leading dot allows the host and its subdomains.
+  config.hosts = [ ".#{app_host}", ENV["HOST_IP"] ].compact
 
   # Skip DNS rebinding protection for the health check and Prometheus metrics
   # endpoints — both are reached by infra (Kamal probe, external scraper) whose
