@@ -25,12 +25,4 @@
     <%= link_to "#{t("auth.login.olvidaste")} #{t("auth.login.recuperala")}", forgot_password_path,
                 class: "font-medium text-primary hover:underline" %>
   </p>
-
-  <p class="text-center text-xs text-fg-subtle">
-    <%# Rails treats an _html key as safe, so the links interpolate without
-        html_safe on our side. %>
-    <%= t("auth.login.terminos_html",
-          terms: link_to(t("auth.terminos"), terms_path, class: "underline"),
-          privacy: link_to(t("auth.privacidad"), privacy_path, class: "underline")) %>
-  </p>
 </div>

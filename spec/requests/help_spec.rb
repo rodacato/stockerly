@@ -14,7 +14,7 @@ RSpec.describe "Help", type: :request do
       expect(response.body).to include(I18n.t("shared.welcome_body.bug_enlace"))
     end
 
-    # /report-bug was a hosted-beta surface: it mailed support@notdefined.dev
+    # /report-bug was a hosted-beta surface: it mailed the maintainer's inbox
     # from whatever instance rendered it, and ADR-0010 dropped that audience.
     # A bug goes to the public tracker now, which the owner of any instance
     # can actually read.

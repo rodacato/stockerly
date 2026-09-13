@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Content Security Policy", type: :request do
   subject(:directives) do
-    get privacy_path
+    get login_path
     response.headers["content-security-policy"].split(";").map(&:strip)
   end
 
