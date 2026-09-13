@@ -9,17 +9,13 @@ services:
     init: true
     volumes:
       - ../..:/workspaces:cached
-      - bundle_cache:/usr/local/bundle
       # The shell-history feature writes here (/dc/shellhistory, per its
       # devcontainer-feature.json); without the volume every rebuild starts empty.
       - commandhistory:/dc/shellhistory
-    ports:
-      - "4100:4100"
     environment:
       DATABASE_HOST: db
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: postgres
-      RAILS_ENV: development
     command: sleep infinity
     depends_on:
       - db
@@ -38,5 +34,4 @@ services:
 
 volumes:
   postgres_data:
-  bundle_cache:
   commandhistory:
