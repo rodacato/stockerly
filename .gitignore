@@ -90,3 +90,6 @@ lib/python/__pycache__/
 
 # RSpec --only-failures state, regenerated on every run
 spec/examples.txt
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
