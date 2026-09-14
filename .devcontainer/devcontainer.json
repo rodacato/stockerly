@@ -23,6 +23,7 @@
   },
 
   "postCreateCommand": ".devcontainer/post-create.sh",
+  "waitFor": "postCreateCommand",
 
   "customizations": {
     "vscode": {
