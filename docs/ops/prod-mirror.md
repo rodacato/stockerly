@@ -51,19 +51,15 @@ role is reachable only from inside that container, and the only way in is SSH.
 `bin/prod-sync dump` is the check — it uses `stockerly_ro` by default, so it
 should write a file without being told which role to use.
 
-### 2. Nothing, if the Kamal environment already loads
+### 2. Nothing, if `HOST_IP` is in the environment
 
-`bin/prod-sync` sources `.devcontainer/kamal-env.sh`, which is where `HOST_IP`
-and the GitHub slug already come from — the same file Kamal itself depends on.
-If `bin/kamal config` renders, the sync has what it needs. Everything else has a
-default: `PROD_SSH_USER=deploy`, `PROD_PG_CONTAINER=stockerly-postgres`,
+`bin/prod-sync` reads `HOST_IP` from the environment — the same variable Kamal
+reads. In the devcontainer it comes from `.devcontainer/local.env`, loaded when
+the container is created ([.devcontainer/README.md](../../.devcontainer/README.md));
+on the host, a `.env` at the repository root fills it in. If `bin/kamal config`
+renders, the sync has what it needs. Everything else has a default:
+`PROD_SSH_USER=deploy`, `PROD_PG_CONTAINER=stockerly-postgres`,
 `PROD_PG_DB=stockerly_production`, `PROD_PG_ROLE=stockerly_ro`.
-
-That environment is wired into the shell by `.devcontainer/post-create.sh`, and
-only when the container is created. A container older than that hook has no
-`STOCKERLY_ROOT` in its `~/.bashrc`, and Kamal fails there with
-`image: should be a string` — which reads like a config error and is a missing
-environment. Append the two lines the hook writes, or rebuild.
 
 ## The sync
 
