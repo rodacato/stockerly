@@ -33,8 +33,6 @@ jobs:
       ACTION: ${{ inputs.action || 'deploy' }}
       DOCKER_BUILDKIT: 1
       KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      GITHUB_REPOSITORY: ${{ github.repository }}
-      GITHUB_ACTOR: ${{ github.actor }}
       HOST_IP: ${{ secrets.HOST_IP }}
       APP_HOST: ${{ vars.APP_HOST }}
       SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
@@ -62,8 +60,9 @@ jobs:
             *) echo "::error::$GITHUB_SHA is not on master ($status); only merged commits deploy"; exit 1 ;;
           esac
 
-      - name: Require APP_HOST
+      - name: Require HOST_IP and APP_HOST
         run: |
+          [ -n "$HOST_IP" ] || { echo "::error::Set the HOST_IP secret on the production environment"; exit 1; }
           [ -n "$APP_HOST" ] || { echo "::error::Set the APP_HOST variable on the production environment"; exit 1; }
 
       - name: Checkout code
