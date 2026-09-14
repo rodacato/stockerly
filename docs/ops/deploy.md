@@ -252,7 +252,9 @@ git fetch origin
 git checkout production && git merge --ff-only origin/master && git push origin production
 ```
 
-The workflow gates the deploy on the whole CI workflow (`ci.yml`), then runs Kamal.
+The workflow does not re-run CI: it deploys only a commit that is on `master`, where every commit
+arrived through a PR whose required checks passed on a branch up to date with `master`. A dispatch
+from another branch, or a push to `production` that is not on `master`, stops before Kamal runs.
 
 You can also trigger it from the GitHub Actions tab with **Run workflow**, which takes an `action`
 input:

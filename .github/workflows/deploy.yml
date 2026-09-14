@@ -23,15 +23,8 @@ permissions:
   contents: read
 
 jobs:
-  ci:
-    # A first-time host bootstrap is not blocked on tests: the commit already passed them.
-    if: ${{ inputs.action != 'setup' }}
-    uses: ./.github/workflows/ci.yml
-
   deploy:
     name: Deploy (${{ inputs.action || 'deploy' }})
-    needs: ci
-    if: ${{ always() && (needs.ci.result == 'success' || needs.ci.result == 'skipped') }}
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 20
@@ -57,6 +50,18 @@ jobs:
       VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT }}
 
     steps:
+      # master only takes PRs whose required checks passed on an up-to-date branch, so a
+      # commit on master is a tested commit. Anything else never went through that gate.
+      - name: Require a commit that is on master
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          status=$(gh api "repos/$GITHUB_REPOSITORY/compare/master...$GITHUB_SHA" --jq .status)
+          case "$status" in
+            identical|behind) ;;
+            *) echo "::error::$GITHUB_SHA is not on master ($status); only merged commits deploy"; exit 1 ;;
+          esac
+
       - name: Require APP_HOST
         run: |
           [ -n "$APP_HOST" ] || { echo "::error::Set the APP_HOST variable on the production environment"; exit 1; }

@@ -4,7 +4,6 @@ on:
   pull_request:
   push:
     branches: [master]
-  workflow_call:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -15,8 +14,9 @@ permissions:
 
 jobs:
   test:
-    # A push to master already passed this on its PR; a deploy calls it for real.
-    if: github.event_name != 'push' || github.ref_name != 'master'
+    # Required on PRs, which must be up to date with master before merging, so the
+    # merged tree is the tested one.
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
