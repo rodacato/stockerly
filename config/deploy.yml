@@ -1,21 +1,28 @@
+<%
+  # A bare ENV read renders nil, and Kamal then names the YAML path instead of the variable.
+  required = ->(name) { ENV[name].to_s.empty? ? raise("#{name} is not set") : ENV[name] }
+  image = required.("GITHUB_REPOSITORY").downcase
+  host_ip = required.("HOST_IP")
+%>
 service: stockerly
 
 # Image name without registry prefix; Kamal prepends `registry.server` automatically.
-image: <%= ENV["GITHUB_REPOSITORY"] %>
+# Lowercase because GHCR rejects uppercase repository names.
+image: <%= image %>
 
 registry:
   server: ghcr.io
-  username: <%= ENV["GITHUB_ACTOR"] %>
+  username: <%= required.("GITHUB_ACTOR") %>
   password:
     - KAMAL_REGISTRY_PASSWORD
 
 servers:
   web:
     hosts:
-      - <%= ENV["HOST_IP"] %>
+      - <%= host_ip %>
   job:
     hosts:
-      - <%= ENV["HOST_IP"] %>
+      - <%= host_ip %>
     cmd: bundle exec rails solid_queue:start
 
 ssh:
@@ -67,7 +74,7 @@ builder:
   cache:
     type: registry
     options: mode=max
-    image: ghcr.io/<%= ENV["GITHUB_REPOSITORY"] %>:build-cache
+    image: ghcr.io/<%= image %>:build-cache
 
 logging:
   driver: json-file
@@ -78,7 +85,7 @@ logging:
 accessories:
   postgres:
     image: postgres:16
-    host: <%= ENV["HOST_IP"] %>
+    host: <%= host_ip %>
     env:
       clear:
         POSTGRES_USER: stockerly

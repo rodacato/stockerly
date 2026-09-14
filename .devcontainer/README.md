@@ -105,8 +105,8 @@ host with the secrets exported, per [docs/ops/deploy.md](../docs/ops/deploy.md).
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Kamal aborts with `image: should be a string` | `GITHUB_REPOSITORY` is not in the environment: no `origin` remote, `initialize.sh` did not run, or the container predates it | On the host, `cat .devcontainer/.host.env`; then **Rebuild Container** |
-| Kamal raises `key not found: "APP_HOST"` | No `local.env`, or the container predates it | Create it from `local.env.example`, then **Rebuild Container** |
+| Kamal aborts with `GITHUB_REPOSITORY is not set` (or `GITHUB_ACTOR`) | The variable is not in the environment: no `origin` remote, `initialize.sh` did not run, or the container predates it | On the host, `cat .devcontainer/.host.env`; then **Rebuild Container** |
+| Kamal aborts with `HOST_IP is not set` or `key not found: "APP_HOST"` | No `local.env`, or the container predates it | Create it from `local.env.example`, then **Rebuild Container** |
 | `gh` asks you to log in | The host's `gh` is not logged in, is not on the `PATH` VS Code starts with, or was logged in after the container was created | `gh auth status` on the host, then **Rebuild Container** |
 | An edit to `local.env` has no effect | Environment files are read at creation; reopening does not recreate | **Rebuild Container** |
 | `ssh-add -l` says it cannot connect to the agent, or SSH fails with `Permission denied (publickey)` | The agent is forwarded only to processes VS Code starts; `docker exec` and outside terminals have no `SSH_AUTH_SOCK`, and the host agent may hold no key | Use a VS Code terminal; on the host, `ssh-add` your key |
