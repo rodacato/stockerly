@@ -326,9 +326,8 @@ authority: what the container inherits, the `local.env` it needs, and which Kama
 there without a secret. In short, commands that read or `--reuse` a running container work; anything
 that boots a container or pushes an image runs through GitHub Actions or from the host.
 
-The interactive aliases (`console`, `shell`, `db`) were listed here as unavailable from the
-devcontainer. Kamal's source says `--reuse --interactive` needs no registry login, so that is
-probably no longer true — **to verify** from a rebuilt container.
+The interactive aliases work there too: they use `--reuse --interactive`, which needs no registry
+login. `bin/kamal console` was confirmed from a rebuilt devcontainer on 2026-09-14.
 
 ## Prometheus Metrics (optional)
 
