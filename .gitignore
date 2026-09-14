@@ -69,11 +69,8 @@
 .continue/
 .windsurf/
 
-# Personal AI assistant memory and local overrides — never committed
-.kwik-e/
+# Per-contributor instructions for AI assistants — see AGENTS.md
 CLAUDE.local.md
-CLAUDE.kwik.md
-.mcp.json
 
 # redesign/: 2.0 discovery + design hub — kept local while we clean up in place
 /redesign/
