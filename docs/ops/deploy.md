@@ -95,25 +95,32 @@ cloudflared service install <TUNNEL_TOKEN>
 
 The tunnel is now running as a systemd service and will auto-start on reboot.
 
-## 3. Set Up GitHub Environment Secrets
+## 3. Set Up the GitHub Environment
 
 Go to **GitHub repo > Settings > Environments > New environment** and create `production`.
 
-Add these secrets:
+Add each row under **Secrets** or **Variables**, as the *Kind* column says. Secrets are masked in
+the workflow logs; variables are printed in plain text, and this repository's logs are public.
 
-| Secret | Required | How to get it |
-|---|---|---|
-| `HOST_IP` | yes | Your Hetzner server IP |
-| `SSH_PRIVATE_KEY` | yes | Private SSH key whose public half you installed for `deploy` in step 1b |
-| `POSTGRES_PASSWORD` | yes | Generate with `openssl rand -hex 32` |
-| `SECRET_KEY_BASE` | yes | Generate with `bin/rails secret` |
-| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | yes | `bin/rails db:encryption:init` prints all three at once |
-| `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | yes | idem |
-| `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | yes | idem |
-| `RESEND_API_KEY` | no | From the Resend dashboard |
-| `METRICS_TOKEN` | no | Generate with `openssl rand -hex 32` — enables the Prometheus endpoint |
-| `VAPID_PUBLIC_KEY` | no | `bin/rails stockerly:vapid_keys` prints a pair — enables push notifications |
-| `VAPID_PRIVATE_KEY` | no | idem, from the same run as the public half |
+| Name | Kind | Required | How to get it |
+|---|---|---|---|
+| `HOST_IP` | secret | yes | Your Hetzner server IP. A secret, not a variable: Kamal and `ssh-keyscan` print it |
+| `SSH_PRIVATE_KEY` | secret | yes | Private SSH key whose public half you installed for `deploy` in step 1b |
+| `POSTGRES_PASSWORD` | secret | yes | Generate with `openssl rand -hex 32` |
+| `SECRET_KEY_BASE` | secret | yes | Generate with `bin/rails secret` |
+| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | secret | yes | `bin/rails db:encryption:init` prints all three at once |
+| `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | secret | yes | idem |
+| `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | secret | yes | idem |
+| `APP_HOST` | variable | yes | Public hostname (`stockerly.example.com`). Kamal's proxy host, the Rails Host allowlist, mail links and the mail sender (`noreply@APP_HOST`) all derive from it. The deploy stops before Kamal runs without it, and the app refuses to boot |
+| `RESEND_API_KEY` | secret | no | From the Resend dashboard |
+| `METRICS_TOKEN` | secret | no | Generate with `openssl rand -hex 32` — enables the Prometheus endpoint |
+| `METRICS_ENABLED` | variable | no — `false` | Master switch for the Prometheus endpoint |
+| `VAPID_PUBLIC_KEY` | secret | no | `bin/rails stockerly:vapid_keys` prints a pair — enables push notifications |
+| `VAPID_PRIVATE_KEY` | secret | no | idem, from the same run as the public half |
+| `VAPID_SUBJECT` | variable | no — `mailto:stockerly@localhost` | Contact the push service reaches you at |
+
+Nothing else is read. `DATABASE_URL` is built by `.kamal/secrets` from `POSTGRES_PASSWORD`, and
+provider API keys are entered in **Admin > Integrations**, not here.
 
 > **The VAPID pair is generated once and kept.** Replacing it invalidates every browser
 > subscription already recorded, and each device has to be re-enabled by hand from **Ajustes >
@@ -130,44 +137,40 @@ The same silent-empty behaviour applies to the optional rows: no warning, the fe
 absent. Error tracking is not among them — it runs inside the instance and needs no key
 (ADR-020).
 
-### Environment **variables** (not secrets)
-
-These are plain values, so set them under **Variables**, not Secrets, in the same environment:
-
-| Variable | Default if unset | Effect |
-|---|---|---|
-| `APP_HOST` | **none — required** | Public hostname (`stockerly.example.com`). Kamal's proxy host, the Rails Host allowlist, mail links and the mail sender (`noreply@APP_HOST`) all derive from it. The deploy stops before Kamal runs without it, and the app refuses to boot |
-| `METRICS_ENABLED` | `false` | Master switch for the Prometheus endpoint |
-| `VAPID_SUBJECT` | `mailto:stockerly@localhost` | Contact the push service reaches you at |
-
 > **Note:** The registry uses GHCR (GitHub Container Registry) with `GITHUB_TOKEN` — no Docker Hub credentials needed.
 
 ## 4. First Deploy (kamal setup)
 
-The first deploy needs `kamal setup` to bootstrap kamal-proxy and accessories.
+The first deploy needs `kamal setup` to bootstrap kamal-proxy and accessories. It runs in GitHub
+Actions, like every other deploy:
 
-Run locally (requires SSH access as `deploy` and every secret exported).
+1. Generate the encryption keys locally with `bin/rails db:encryption:init` and store them in the
+   Environment (step 3), along with every other required row.
+2. **Actions > Deploy > Run workflow**, from `master`, with `action` set to `setup`.
 
-Generate the encryption keys **first** — the command prints all three and you paste them below and
-into the GitHub Environment. Use the same values in both places:
+This will:
+- Install kamal-proxy on the server (listens on port 80)
+- Start the PostgreSQL accessory container
+- Build and push the Docker image
+- Deploy the app
 
-```bash
-bin/rails db:encryption:init
-```
+After this, verify at `https://$APP_HOST`
 
-Then export everything and run setup:
+### Emergency: setup from the host
+
+Only when Actions cannot run it. Every secret has to be exported in your shell, with the same values
+as the Environment — `.kamal/secrets` turns a missing one into an empty string without a word:
 
 ```bash
 export KAMAL_REGISTRY_PASSWORD=your-github-pat   # GitHub PAT with packages:write scope
-export GITHUB_REPOSITORY=rodacato/stockerly
-export GITHUB_ACTOR=rodacato
+export GITHUB_REPOSITORY=<owner>/stockerly
+export GITHUB_ACTOR=<owner>
 export HOST_IP=YOUR_SERVER_IP
 export APP_HOST=stockerly.example.com
-export SECRET_KEY_BASE=$(bin/rails secret)
-export POSTGRES_PASSWORD=$(openssl rand -hex 32)
+export SECRET_KEY_BASE=...
+export POSTGRES_PASSWORD=...
 
-# Required — from `bin/rails db:encryption:init` above. Omit any of these and Kamal
-# does NOT fail; it ships an empty string and the app encrypts with no key.
+# Required — omit any of these and Kamal does NOT fail; it ships an empty string.
 export ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=...
 export ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=...
 export ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=...
@@ -178,16 +181,6 @@ export METRICS_TOKEN=...
 
 bin/kamal setup
 ```
-
-`DATABASE_URL` is not exported by hand: `.kamal/secrets` builds it from `POSTGRES_PASSWORD`.
-
-This will:
-- Install kamal-proxy on the server (listens on port 80)
-- Start the PostgreSQL accessory container
-- Build and push the Docker image
-- Deploy the app
-
-After this, verify at `https://$APP_HOST`
 
 ## 5. Initial Setup
 
@@ -245,12 +238,15 @@ boot the instance has no users, so it answers at `/setup` again.
 ## 6. Subsequent Deploys
 
 `.github/workflows/deploy.yml` triggers on **push to the `production` branch** — not `master`.
-Merging to `master` runs CI and nothing else; production only moves when you advance `production`:
+Merging to `master` runs CI and nothing else; production only moves when you advance `production`
+to a commit already on `master`:
 
 ```bash
-git fetch origin
-git checkout production && git merge --ff-only origin/master && git push origin production
+git fetch origin && git push origin origin/master:production
 ```
+
+Without `--force`, git rejects a push that is not a fast-forward, so `production` can only move
+forward along `master`.
 
 The workflow does not re-run CI: it deploys only a commit that is on `master`, where every commit
 arrived through a PR whose required checks passed on a branch up to date with `master`. A dispatch
@@ -267,6 +263,12 @@ input:
 
 Deploys are serialized (`concurrency: deploy`, no cancel-in-progress).
 
+### Hotfix
+
+There is no branch that goes straight to `production`. The fix lands on `master` through a PR like
+any other change, then `master` is promoted with the command above. The guard would stop anything
+else before Kamal runs.
+
 ## 7. Useful Kamal Commands
 
 All Kamal commands run from your **local machine** (not the VPS). Commands that *change* the
@@ -274,7 +276,7 @@ deployment need the same variables the first deploy needed — `.kamal/secrets` 
 from your shell. Read-only commands do not; see [From the devcontainer](#from-the-devcontainer).
 
 There is no `.env.production` in this repo: nothing creates it and `.gitignore` ignores `/.env*`, so
-`source .env.production` fails. Either re-export the step 4 block in the shell you are working in,
+`source .env.production` fails. Either re-export the emergency block from step 4 in the shell you are working in,
 or keep your own untracked file and source it:
 
 ```bash
@@ -321,13 +323,7 @@ someone else's instance ([ADR-019](../architecture/adr/0019-self-contained-by-de
 
 ### From the devcontainer
 
-[.devcontainer/README.md](../../.devcontainer/README.md#deploy-tooling-from-the-container) is the
-authority: what the container inherits, the `local.env` it needs, and which Kamal commands run
-there without a secret. In short, commands that read or `--reuse` a running container work; anything
-that boots a container or pushes an image runs through GitHub Actions or from the host.
-
-The interactive aliases work there too: they use `--reuse --interactive`, which needs no registry
-login. `bin/kamal console` was confirmed from a rebuilt devcontainer on 2026-09-14.
+See [.devcontainer/README.md](../../.devcontainer/README.md#deploy-tooling-from-the-container).
 
 ## Prometheus Metrics (optional)
 
