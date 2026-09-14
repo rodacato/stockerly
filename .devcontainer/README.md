@@ -71,7 +71,10 @@ bin/prod-sync status
 a registry login on the server — `KAMAL_REGISTRY_PASSWORD`, which exists only in CI. With
 `--reuse --interactive` Kamal runs `docker exec` over SSH into the running container and never
 logs in (`Kamal::Cli::App#exec`, Kamal 2.12). Confirmed with `bin/kamal console` from a rebuilt
-container; `shell` and `db` pass the same `--reuse --interactive` flags but were not run separately.
+container; `shell` passes the same flags to the same command.
+
+**To verify:** `bin/kamal db` goes through `accessory exec --reuse --interactive`, a different
+command path that has not been run from a container yet.
 
 **What does not work here**, and must not be forced: `deploy`, `redeploy`, `rollback`, `setup`,
 `build`, `app boot`, and `app exec` without `--reuse`. They push an image, need the registry, or
