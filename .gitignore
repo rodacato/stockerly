@@ -19,8 +19,10 @@
 /.env*
 !/.env.example
 
-# Local, non-secret Kamal values for the devcontainer.
+# Devcontainer environment: deploy targets you set, and what initialize.sh copies from the host.
 /.devcontainer/local.env
+/.devcontainer/.host.env
+/.devcontainer/.host.env.tmp
 
 # Ignore all logfiles and tempfiles.
 /log/*
