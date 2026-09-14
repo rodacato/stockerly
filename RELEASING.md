@@ -37,22 +37,12 @@ so "real users" is not the bar. It reaches `v1.0.0` when:
 
 ## Release Process
 
-### 1. Prepare the release
+A release is an annotated tag on a commit that is already on `master`. Releasing and deploying are
+independent: tagging does not deploy, and deploying does not tag ([docs/ops/deploy.md](docs/ops/deploy.md)).
 
-```bash
-# Ensure all tests pass
-bundle exec rspec
+### 1. Open the release PR
 
-# Ensure no linting issues
-bin/rubocop
-
-# Run security checks
-bin/ci
-```
-
-### 2. Bump the version
-
-Update `lib/stockerly/version.rb` with the new version:
+On a branch from `master`, bump `lib/stockerly/version.rb`:
 
 ```ruby
 module Stockerly
@@ -65,63 +55,44 @@ unhandled exceptions land in `error_events` and are read at `/admin/errors`. The
 error service and no release marker to publish. `lib/stockerly/version.rb` is the human-facing
 version used for tags and the changelog.
 
-### 3. Update CHANGELOG.md
-
-Move entries from `[Unreleased]` to the new version section. The `[Unreleased]` section
-must be empty (or removed) — this ensures the changelog is always up to date before tagging.
-
-```markdown
-## [Unreleased]
-
-## [0.2.0-alpha] - 2026-XX-XX
-
-### Added
-- ...
-```
-
-Update the comparison links at the bottom of the file:
+In `CHANGELOG.md`, rename `## [Unreleased]` to `## [0.2.0-alpha] - YYYY-MM-DD`, add a new empty
+`## [Unreleased]` above it, and update the comparison links at the bottom:
 
 ```markdown
 [Unreleased]: https://github.com/rodacato/stockerly/compare/v0.2.0-alpha...HEAD
-[0.2.0-alpha]: https://github.com/rodacato/stockerly/compare/v0.1.0-alpha...v0.2.0-alpha
-[0.1.0-alpha]: https://github.com/rodacato/stockerly/releases/tag/v0.1.0-alpha
+[0.2.0-alpha]: https://github.com/rodacato/stockerly/compare/v0.1.0-rc1...v0.2.0-alpha
 ```
 
-### 4. Commit the release
+The PR runs the same required checks as any other change. Merge it.
+
+### 2. Tag the merged commit
 
 ```bash
-git add lib/stockerly/version.rb CHANGELOG.md
-git commit -m "Bump version to v0.2.0-alpha"
+git fetch origin
+sha=$(git rev-parse origin/master)   # or the merge commit of the release PR
+git merge-base --is-ancestor "$sha" origin/master && git tag -a v0.2.0-alpha "$sha" -m "Release v0.2.0-alpha"
 ```
 
-### 5. Create the tag
+### 3. Publish the tag, and only the tag
 
 ```bash
-git tag -a v0.2.0-alpha -m "Release v0.2.0-alpha"
+git push origin v0.2.0-alpha
 ```
 
-### 6. Push
+Never `git push origin master --tags`: it pushes to the protected branch and publishes every local
+tag at once.
+
+### 4. Create the GitHub Release
+
+Every `v*` tag has one. The notes are the version's section of the changelog:
 
 ```bash
-git push origin master --tags
+v=0.2.0-alpha
+awk -v h="## [$v]" 'index($0, h) == 1 { f = 1; next } f && /^## \[/ { exit } f' CHANGELOG.md > /tmp/notes.md
+gh release create "v$v" --verify-tag --title "v$v" --notes-file /tmp/notes.md --prerelease
 ```
 
-### 7. Create GitHub Release
-
-```bash
-gh release create v0.2.0-alpha \
-  --title "v0.2.0-alpha" \
-  --notes-file - <<'EOF'
-## Highlights
-
-- Feature 1
-- Feature 2
-
-See [CHANGELOG.md](CHANGELOG.md) for the full list of changes.
-EOF
-```
-
-Or use the GitHub web UI: **Releases > Draft a new release > Choose the tag**.
+Drop `--prerelease` for a version without a pre-release suffix.
 
 ## Release Cadence
 
@@ -129,7 +100,7 @@ There is no fixed schedule. Releases happen when a meaningful set of changes is 
 
 - **Alpha releases** (`0.x.0-alpha`): after completing a roadmap phase or a set of related features
 - **Patch releases** (`0.x.Y`): for urgent bug fixes or security patches
-- **Major milestones**: aligned with GitHub Project milestones (sprint-based since 2026-05-14). Product history is summarized in [docs/1.0-retrospective.md](docs/1.0-retrospective.md).
+- **Major milestones**: when the scope of a major version is done. Product history is summarized in [docs/1.0-retrospective.md](docs/1.0-retrospective.md).
 
 ## Mapping Roadmap Phases to Versions
 
@@ -141,21 +112,17 @@ There is no fixed schedule. Releases happen when a meaningful set of changes is 
 
 ## Hotfix Process
 
-For critical bugs or security issues on a released version:
+A hotfix is a normal change on `master`: a PR with the fix and its tests, then a patch release from
+step 1. There are no branches cut from a tag, and no tag on a commit that is not on `master`. To put
+the fix in production, promote `master` as [docs/ops/deploy.md](docs/ops/deploy.md) describes.
 
-1. Create a branch from the tag: `git checkout -b hotfix/description v0.1.0-alpha`
-2. Fix the issue with tests
-3. Update CHANGELOG.md under the new patch version
-4. Tag and release: `v0.1.1-alpha`
-5. Cherry-pick or merge back to `master`
+## Tags that are not releases
+
+Only `v*` tags are releases. A tag that marks a point in history, such as `pre-2.0-evolve`, has no
+GitHub Release and no changelog section.
 
 ## Docker Images
 
-Each release should have a corresponding Docker image tagged in GitHub Container Registry:
-
-```
-ghcr.io/rodacato/stockerly:v0.1.0-alpha
-ghcr.io/rodacato/stockerly:latest
-```
-
-The CI/CD pipeline handles image building and pushing on deploy.
+Releases do not produce images. `kamal deploy` builds and pushes the production image to
+`ghcr.io/<owner>/stockerly`, tagged with the deployed commit's SHA and with `latest`, which is
+whatever was deployed last, not the latest release. There is no `:vX.Y.Z` image.
