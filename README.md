@@ -176,7 +176,7 @@ tunnel is how *this* instance is exposed, not a dependency you inherit —
 any of the maintainer's infrastructure.
 
 See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide, including
-[running the read-only Kamal commands from the devcontainer](docs/ops/deploy.md#from-the-devcontainer).
+[running the read-only Kamal commands from the devcontainer](.devcontainer/README.md#deploy-tooling-from-the-container).
 
 ## Documentation
 
