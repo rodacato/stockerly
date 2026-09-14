@@ -54,23 +54,13 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
-# LLM / AI tool files
-.claude/
-.cursor/
-.cursorignore
-.cursorindexingignore
-.cursorrules
-.gemini/
-.aider*
-.copilot/
-.github/copilot*
-.openai/
-.codeium/
-.continue/
-.windsurf/
-
-# Per-contributor instructions for AI assistants — see AGENTS.md
+# AI assistants: only per-contributor state each tool documents as local; shared config stays committable
 CLAUDE.local.md
+.claude/settings.local.json
+.claude/worktrees/
+.claude/agent-memory-local/
+.aider*
+.continue/.env
 
 # redesign/: 2.0 discovery + design hub — kept local while we clean up in place
 /redesign/
