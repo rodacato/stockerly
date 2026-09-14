@@ -159,6 +159,15 @@ protocol lives in [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md).
 
 ---
 
+## Local instructions
+
+`CLAUDE.local.md` at the repo root is a contributor's personal, per-machine instruction file —
+gitignored, never committed. Claude Code loads it automatically; any other agent should read it at
+session start when it exists. It layers that person's preferences on top of this file; where the two
+conflict on a project rule, ask instead of picking one.
+
+---
+
 ## Communication Style
 
 - Chat in **Spanish** (es-MX); everything committed to the repo in **English**
