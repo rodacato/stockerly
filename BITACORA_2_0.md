@@ -88,7 +88,7 @@ not a rebuild. That's the story: *good architecture is what lets you be wrong ch
   were actually dead. *Blog beat: an AI audit is a lead, not a verdict — the cost of trusting it
   blind is a broken prod; the cost of verifying is five minutes. The verification is the work.*
 - **Cut over production to the 2.0 — live, and it worked.** Merged to master, deployed to
-  andys-room, and instead of wiping the whole DB we did the smarter thing (Adrian's call): delete
+  production, and instead of wiping the whole DB we did the smarter thing (Adrian's call): delete
   only the user-dependent rows (`User.destroy_all` + the two audit tables with dangling FKs) and
   **keep every non-user table** — the accumulated price history, symbols, fundamentals, news, and
   the configured integrations + API keys. The fresh single-user instance booted straight into

@@ -46,12 +46,3 @@
 | [`/RELEASING.md`](../RELEASING.md) | Release process |
 | [`/CHANGELOG.md`](../CHANGELOG.md) | Significant changes history |
 | [`/SECURITY.md`](../SECURITY.md) | Vulnerability reporting |
-
----
-
-## AI assistant's persistent memory
-
-Lives at `../.kwik-e/`, which is **gitignored** (`.gitignore`) — it is not part of this repo and
-is not visible to anyone cloning it. It is Adrian's private working memory, synced separately, and
-auto-loaded by the assistant at session start. Anything a contributor needs belongs in `docs/`
-instead. Documents here may not link into it: those links resolve for nobody else.

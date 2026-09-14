@@ -82,7 +82,7 @@ evaporates.
 
 **Stack:** Rails 8 + Ruby 3.3.6, dry-rb (Contracts at the boundary, monads in
 Use Cases), Hotwire (Turbo + Stimulus), Tailwind 4, PostgreSQL. Deploy via Kamal
-to andys-room, public ingress through Cloudflare Tunnel. Security scans (Semgrep,
+to a single VPS, public ingress through Cloudflare Tunnel. Security scans (Semgrep,
 Trivy, Gitleaks) and the opt-in Sonar scan live in `.github/workflows/quality.yml`.
 
 **Architectural direction:** DDD + Hexagonal + Event-Driven in a Rails monolith.
@@ -156,16 +156,6 @@ protocol lives in [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md).
 | "tengo una idea" | Don't build. Open a discovery card (GitHub Issue) with the 4 filters. If the trigger isn't documented, say so. |
 | "¿dónde estamos?" / "estado del proyecto" | Read the open Milestone + the open Issues + `docs/vision/`. Summarize: goal, done vs pending, what's next. |
 | "consulta a los expertos" / "que el panel evalúe" | Activate the relevant experts from `docs/research/experts.md`; end with recommendation + risks + rollback. |
-
----
-
-## Persistent memory (kwik-e)
-
-Adrian's cross-project AI memory lives in `.kwik-e/memory/`
-(gitignored, synced via `rodacato/kwik-e-mart`). At session start, read
-`.kwik-e/memory/MEMORY.md` if present — it indexes the
-user profile, working-method feedback, and project notes. This replaces the old
-`.claude/memory/` location.
 
 ---
 
