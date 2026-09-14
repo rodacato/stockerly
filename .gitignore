@@ -69,7 +69,7 @@
 .continue/
 .windsurf/
 
-# kwik-e: personal AI memory + local overrides — synced via rodacato/kwik-e-mart, never committed
+# Personal AI assistant memory and local overrides — never committed
 .kwik-e/
 CLAUDE.local.md
 CLAUDE.kwik.md
