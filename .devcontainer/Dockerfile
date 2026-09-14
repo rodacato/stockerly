@@ -1,4 +1,4 @@
-ARG RUBY_VERSION=3.3.6
+ARG RUBY_VERSION=4.0.6
 FROM ghcr.io/rails/devcontainer/images/ruby:${RUBY_VERSION}
 
 USER root

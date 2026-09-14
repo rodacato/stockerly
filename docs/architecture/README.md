@@ -6,7 +6,7 @@
 
 ## Stack
 
-- **Backend:** Rails 8.1.2, Ruby 3.3.6
+- **Backend:** Rails 8.1.2, Ruby 4.0.6
 - **DB:** PostgreSQL 16 (primary + Solid Cache + Solid Queue + Solid Cable)
 - **Frontend:** Hotwire (Turbo + Stimulus) + Tailwind CSS 4 + Propshaft + Import Maps
 - **Domain stack:** dry-monads, dry-validation, dry-types, dry-struct, dry-initializer

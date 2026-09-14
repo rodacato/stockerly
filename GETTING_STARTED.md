@@ -12,7 +12,7 @@ app is fully functional without one.
 ## Prerequisites
 
 - **Docker** (for the Dev Container path), or
-- **Ruby 3.3.6** + **PostgreSQL 16** (for the bare-metal path)
+- **Ruby 4.0.6** + **PostgreSQL 16** (for the bare-metal path)
 
 Node.js is **not** required — JS ships via import maps and CSS via the `tailwindcss-rails`
 standalone compiler.
@@ -34,7 +34,7 @@ Open **`http://localhost:4100`**.
 
 ## Path 2 — Bare metal
 
-Requires Ruby 3.3.6 and a PostgreSQL 16 reachable on `localhost` with a `postgres` role.
+Requires Ruby 4.0.6 and a PostgreSQL 16 reachable on `localhost` with a `postgres` role.
 
 ```bash
 git clone https://github.com/rodacato/stockerly.git
