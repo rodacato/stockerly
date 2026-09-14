@@ -98,7 +98,7 @@ Rails.application.configure do
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # The leading dot allows the host and its subdomains.
-  config.hosts = [ ".#{app_host}", ENV["HOST_IP"] ].compact
+  config.hosts = [ ".#{app_host}" ]
 
   # Skip DNS rebinding protection for the health check and Prometheus metrics
   # endpoints — both are reached by infra (Kamal probe, external scraper) whose
