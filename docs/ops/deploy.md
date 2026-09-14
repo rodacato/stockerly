@@ -321,32 +321,14 @@ someone else's instance ([ADR-019](../architecture/adr/0019-self-contained-by-de
 
 ### From the devcontainer
 
-The devcontainer can run the read-only commands without holding any secret. Copy the example file
-once and set the server IP:
+[.devcontainer/README.md](../../.devcontainer/README.md#deploy-tooling-from-the-container) is the
+authority: what the container inherits, the `local.env` it needs, and which Kamal commands run
+there without a secret. In short, commands that read or `--reuse` a running container work; anything
+that boots a container or pushes an image runs through GitHub Actions or from the host.
 
-```bash
-cp .devcontainer/local.env.example .devcontainer/local.env
-$EDITOR .devcontainer/local.env      # set HOST_IP and APP_HOST; the file is gitignored
-```
-
-`.devcontainer/kamal-env.sh` is sourced by every shell and supplies what GitHub Actions supplies for
-free in CI: `GITHUB_REPOSITORY` and `GITHUB_ACTOR` derived from the git remote, plus `HOST_IP` and `APP_HOST` from
-that file. Without it the ERB in `config/deploy.yml` renders nil and Kamal aborts with
-`image: should be a string`.
-
-Available, since these only read:
-
-```bash
-bin/kamal config                      # Resolved config — verify before changing anything
-bin/kamal app details                 # Running containers, image and uptime
-bin/kamal accessory details postgres  # PostgreSQL accessory status
-bin/kamal app logs -r job -n 200      # Production logs, per role
-bin/kamal audit                       # Deploy history with timestamps
-```
-
-Not available, because they need the secrets or a local Docker daemon: `deploy`, `rollback`,
-`migrate`, `build`, and the interactive aliases (`console`, `shell`, `db`). Run those from the host,
-or deploy through GitHub Actions as usual.
+The interactive aliases (`console`, `shell`, `db`) were listed here as unavailable from the
+devcontainer. Kamal's source says `--reuse --interactive` needs no registry login, so that is
+probably no longer true — **to verify** from a rebuilt container.
 
 ## Prometheus Metrics (optional)
 

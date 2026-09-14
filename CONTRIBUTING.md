@@ -10,6 +10,7 @@ Thank you for your interest in contributing! Stockerly is 100% open source and w
 2. Clone your fork
 3. Open in VS Code and select **"Reopen in Container"** (or launch in GitHub Codespaces)
 4. The `postCreateCommand` script installs dependencies, creates the database, and runs migrations automatically
+5. For credentials — git over SSH, `gh`, deploy tooling — see [.devcontainer/README.md](.devcontainer/README.md)
 
 ### Option 2: Manual Setup
 

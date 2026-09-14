@@ -32,6 +32,9 @@ Works in VS Code or GitHub Codespaces.
 
 Open **`http://localhost:4100`**.
 
+What the container inherits from your machine — git over SSH, the `gh` login, deploy targets — and
+what it does not is in [.devcontainer/README.md](.devcontainer/README.md).
+
 ## Path 2 — Bare metal
 
 Requires Ruby 4.0.6 and a PostgreSQL 16 reachable on `localhost` with a `postgres` role.
@@ -43,6 +46,9 @@ bin/setup        # installs gems, prepares the databases (seeding on first creat
 ```
 
 Open **`http://localhost:4100`**.
+
+What the container inherits from your machine — git over SSH, the `gh` login, deploy targets — and
+what it does not is in [.devcontainer/README.md](.devcontainer/README.md).
 
 `bin/setup` connects with the `config/database.yml` defaults (`host=localhost`,
 `user=postgres`, empty password). Override with `DATABASE_HOST` / `DATABASE_USERNAME` /
