@@ -80,7 +80,7 @@ evaporates.
 | [`design/`](design/) | The design system — Pencil `.pen` files, ui-kit, brand, `DECISIONS.md`. **This is the source of truth** |
 | [`design/exports/`](design/exports/) | The artboards as PNGs — the only reviewable form of an encrypted `.pen`, and the README's imagery |
 
-**Stack:** Rails 8 + Ruby 3.3.6, dry-rb (Contracts at the boundary, monads in
+**Stack:** Rails 8 + Ruby 4.0.6, dry-rb (Contracts at the boundary, monads in
 Use Cases), Hotwire (Turbo + Stimulus), Tailwind 4, PostgreSQL. Deploy via Kamal
 to a single VPS, public ingress through Cloudflare Tunnel. Security scans (Semgrep,
 Trivy, Gitleaks) and the opt-in Sonar scan live in `.github/workflows/quality.yml`.
