@@ -73,8 +73,12 @@ its own set and none of them can corrupt another's. `/workspaces/stockerly` uses
 reads the directory name and the main checkout the worktree points at, and `DATABASE_PREFIX`
 overrides it — which is also the answer if two checkouts ever sit in directories that share a name.
 
-Worktrees live inside the checkout, under the gitignored `.claude/worktrees/`: the devcontainer
-mounts only this repository, so a sibling directory would not exist inside it.
+The devcontainer mounts only this repository, so a worktree has to sit inside the checkout, in a
+gitignored directory, to exist in the container. The examples use `.claude/worktrees/`, where Claude
+Code already creates its own. Git records a worktree by absolute path, so work it from the side that
+created it: one made in the container is not a repository from the host, and a `git worktree prune`
+on the host deletes its metadata. Don't pass `--relative-paths` — `Stockerly::Checkout` expects the
+absolute path, and the extension it sets makes Git older than 2.48 refuse the whole repository.
 
 This matters because worktrees otherwise share one Postgres: a migration run in one changes the
 schema every other one reads, and two suites on different branches purge and reload the same test
