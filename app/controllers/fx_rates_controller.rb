@@ -6,7 +6,7 @@ class FxRatesController < AuthenticatedController
   # needs to show a running total in the currency the user reads in.
   def show
     base = params[:currency].to_s.upcase
-    reference = Trading::Domain::ExecutionRate::REFERENCE
+    reference = Trading::Domain::FxConversion::REFERENCE
     date = parsed_date
 
     quote = FxRateHistory.quote_on(base: base, quote: reference, date: date)

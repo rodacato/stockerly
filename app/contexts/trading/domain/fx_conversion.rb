@@ -13,7 +13,7 @@ module Trading
     #
     # Both conversions are dated to the execution, so a peso gain earned at
     # 17.20 does not become a different number because today's rate is 18.40.
-    class ExecutionRate
+    class FxConversion
       REFERENCE = "MXN".freeze
 
       def self.multiplier(trade:, target:)

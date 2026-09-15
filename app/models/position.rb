@@ -72,7 +72,7 @@ class Position < ApplicationRecord
     total_shares = buys.sum(&:shares)
     return 0.to_d if total_shares.zero?
 
-    total = buys.sum { |t| t.shares * t.price_per_share * Trading::Domain::ExecutionRate.multiplier(trade: t, target: target_currency) }
+    total = buys.sum { |t| t.shares * t.price_per_share * Trading::Domain::FxConversion.multiplier(trade: t, target: target_currency) }
     (total / total_shares).to_d
   end
 end

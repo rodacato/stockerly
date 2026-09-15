@@ -128,7 +128,7 @@ stable reference, and a preference is not.
 
 **What follows from it.**
 
-- `Trading::Domain::ExecutionRate` owns both halves. `capture` writes the reference rate;
+- `Trading::Domain::FxConversion` owns both halves. `capture` writes the reference rate;
   `multiplier(trade:, target:)` reads it back as `stored ÷ (target→MXN on that day)` — one expression
   that is correct for all four currency/target combinations, where the previous code was correct for
   three and silently wrong for the fourth (a peso trade read in dollars valued one peso as one

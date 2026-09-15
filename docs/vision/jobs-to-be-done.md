@@ -54,7 +54,7 @@ Recalibrated 2026-09-05 against measured behaviour. It read *"≥1 time per week
 opens a day, use could collapse by 95% and this metric would still report the job fulfilled. A
 threshold met sixty times over is not a threshold.
 
-**Blocked by:** nothing. The P0 is fixed — `ExecuteTrade` takes the currency from the trade or the asset and captures `fx_rate_at_execution` against MXN through `Trading::Domain::ExecutionRate`, and `PortfolioSummary#total_invested` derives cost basis at historical FX (ADR-009).
+**Blocked by:** nothing. The P0 is fixed — `ExecuteTrade` takes the currency from the trade or the asset and captures `fx_rate_at_execution` against MXN through `Trading::Domain::FxConversion`, and `PortfolioSummary#total_invested` derives cost basis at historical FX (ADR-009).
 
 **Current status:** delivered. The Consolidado (`/portfolio`) shows the total in MXN, its history, and how it compares against CETES; the Panorama's strip carries it daily. `day_gain` subtracts capital flows so a late-recorded purchase no longer reads as a gain (D27).
 

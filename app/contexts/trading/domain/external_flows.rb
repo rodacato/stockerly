@@ -59,7 +59,7 @@ module Trading
       # A trade with no captured rate predates the column; the portfolio's own
       # dated conversion is the only thing left to value it with.
       def rate_for(trade)
-        return Trading::Domain::ExecutionRate.multiplier(trade: trade, target: @currency) if trade.fx_rate_at_execution
+        return Trading::Domain::FxConversion.multiplier(trade: trade, target: @currency) if trade.fx_rate_at_execution
         return 1 if trade.currency == @currency
 
         @portfolio.convert(1, from: trade.currency, to: @currency, at_date: trade.executed_at.to_date)

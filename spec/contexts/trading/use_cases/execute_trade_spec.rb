@@ -227,7 +227,7 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
   end
 
   describe "currency and fx_rate capture (#42, #405)" do
-    # Branch coverage lives in spec/contexts/trading/domain/execution_rate_spec.rb.
+    # Branch coverage lives in spec/contexts/trading/domain/fx_conversion_spec.rb.
     # These cover what the use case alone owns: deriving currency from the asset,
     # propagating the override, and persisting a rate captured against MXN rather
     # than against whatever the user happens to prefer.

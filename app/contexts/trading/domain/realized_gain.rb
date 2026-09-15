@@ -56,7 +56,7 @@ module Trading
 
       # Fails loud rather than silently valuing a leg at 1:1 — a wrong gain on a
       # money screen is worse than a page that says it cannot compute one.
-      def rate(trade) = Trading::Domain::ExecutionRate.multiplier(trade: trade, target: currency)
+      def rate(trade) = Trading::Domain::FxConversion.multiplier(trade: trade, target: currency)
     end
   end
 end

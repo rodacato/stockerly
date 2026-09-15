@@ -40,7 +40,7 @@ module Trading
       # instance, whose FX history has not run yet, could not record anything at
       # all. The read path still fails loud rather than valuing NULL at 1:1.
       def capture_fx(currency, attrs)
-        Success(Trading::Domain::ExecutionRate.capture(
+        Success(Trading::Domain::FxConversion.capture(
           currency: currency,
           at_date: attrs[:executed_at]&.to_date,
           override: attrs[:fx_rate_at_execution]

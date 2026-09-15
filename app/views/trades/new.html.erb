@@ -7,7 +7,7 @@
        data-controller="trade-sheet"
        data-trade-sheet-fx-url-value="<%= fx_rate_path %>"
        data-trade-sheet-preferred-currency-value="<%= @currency %>"
-       data-trade-sheet-reference-currency-value="<%= Trading::Domain::ExecutionRate::REFERENCE %>"
+       data-trade-sheet-reference-currency-value="<%= Trading::Domain::FxConversion::REFERENCE %>"
        data-trade-sheet-held-shares-value="<%= @held&.shares %>"
        data-trade-sheet-held-avg-cost-value="<%= @held&.avg_cost %>"
        data-trade-sheet-held-symbol-value="<%= @held&.asset&.symbol %>"

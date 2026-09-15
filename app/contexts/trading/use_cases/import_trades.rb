@@ -132,8 +132,8 @@ module Trading
         missing = []
 
         pairs.each do |currency, date|
-          rate = Trading::Domain::ExecutionRate.capture(currency: currency, at_date: date)
-          rate ? rates[[ currency, date ]] = rate : missing << "#{currency}->#{Trading::Domain::ExecutionRate::REFERENCE} on #{date}"
+          rate = Trading::Domain::FxConversion.capture(currency: currency, at_date: date)
+          rate ? rates[[ currency, date ]] = rate : missing << "#{currency}->#{Trading::Domain::FxConversion::REFERENCE} on #{date}"
         end
 
         missing.any? ? Failure([ :missing_fx_history, missing.sort ]) : Success(rates)
@@ -259,7 +259,7 @@ module Trading
           currency = currency_of(row)
           date = executed_on(row)
 
-          row[:shares] * row[:price_per_share] * Trading::Domain::ExecutionRate.factor(
+          row[:shares] * row[:price_per_share] * Trading::Domain::FxConversion.factor(
             currency: currency, stored: rates[[ currency, date ]], on: date, target: target
           )
         end

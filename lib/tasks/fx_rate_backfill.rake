@@ -10,7 +10,7 @@ namespace :fx_rate_backfill do
       next
     end
 
-    reference = Trading::Domain::ExecutionRate::REFERENCE
+    reference = Trading::Domain::FxConversion::REFERENCE
     puts "fx_rate_backfill:trades — processing #{total} trade(s) against #{reference}"
 
     filled = 0
@@ -18,7 +18,7 @@ namespace :fx_rate_backfill do
 
     pending.find_each do |trade|
       executed_on = trade.executed_at.to_date
-      rate = Trading::Domain::ExecutionRate.capture(currency: trade.currency, at_date: executed_on)
+      rate = Trading::Domain::FxConversion.capture(currency: trade.currency, at_date: executed_on)
 
       if rate
         trade.update_column(:fx_rate_at_execution, rate)

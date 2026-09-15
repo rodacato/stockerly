@@ -98,7 +98,7 @@ answer "today" — there is no window in which today's rate is the right answer 
 
 Scoped to `Portfolio#historical_rate` deliberately. `FxRateHistory.quote_on` keeps its unbounded
 walk-back because its other callers want it: `/fx_rates` renders `Quote#rate_date` and so already
-tells the reader which date answered, and `Trading::Domain::ExecutionRate` is a write path governed
+tells the reader which date answered, and `Trading::Domain::FxConversion` is a write path governed
 by outcome 1 above. Bounding the store would change trade entry as a side effect of a read fix.
 
 `comun.sin_tc_cuerpo` moves from "el tipo de cambio del día" to "de alguna de las fechas" — the

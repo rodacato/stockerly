@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::Domain::ExecutionRate do
+RSpec.describe Trading::Domain::FxConversion do
   let(:on) { Date.new(2025, 12, 8) }
   let(:usd_asset) { create(:asset, symbol: "VT", currency: "USD") }
   let(:mxn_asset) { create(:asset, :mexican, symbol: "WALMEX.MX") }
