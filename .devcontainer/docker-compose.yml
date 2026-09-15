@@ -26,13 +26,13 @@ services:
     depends_on:
       - db
 
+  # No host port: the app reaches db over the compose network, and forwardPorts exposes it on a
+  # free local port, so repos sharing a host never collide.
   db:
     image: postgres:16
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "6543:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
