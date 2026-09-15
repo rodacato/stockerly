@@ -1,5 +1,5 @@
 {
-  "name": "stockerly",
+  "name": "stockerly-dev",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
@@ -17,13 +17,17 @@
     "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
   },
 
-  "forwardPorts": [4100],
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": true,
+
+  "forwardPorts": [4100, "db:5432"],
   "portsAttributes": {
-    "4100": { "label": "Rails (bin/dev)" }
+    "4100": { "label": "Rails (bin/dev)" },
+    "db:5432": { "label": "PostgreSQL", "onAutoForward": "silent" }
   },
 
   "initializeCommand": "sh .devcontainer/initialize.sh || exit 0",
-  "postCreateCommand": ".devcontainer/post-create.sh",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
   "waitFor": "postCreateCommand",
 
   "customizations": {
