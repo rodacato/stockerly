@@ -128,6 +128,20 @@ Asset.find_by!(symbol: "VIX")
   end
 end
 
+# --- FX Rate History (dated USD->MXN series) ---
+# Stating a mixed-currency portfolio in a non-reference target walks this dated
+# series, not the single current rate above (ADR-0009). Without a row on a
+# trade's date, valuing a USD-preferring account's MXN holding raises
+# MissingFxRate and /assets 500s. Seed a flat, representative USD->MXN across the
+# demo's trade range through today; a real instance backfills Banxico. quote_on
+# inverts the pair, so USD->MXN alone answers MXN->USD too.
+usd_mxn = FxRate.find_by(base_currency: "USD", quote_currency: "MXN")&.rate || BigDecimal("17.25")
+FxRateHistory.record_all(
+  ((Date.current - 400)..Date.current).map do |day|
+    { base_currency: "USD", quote_currency: "MXN", rate_date: day, rate: usd_mxn, source: "seed" }
+  end
+)
+
 # --- Demo data for Alex (development only) ---
 if Rails.env.development? && (alex = User.find_by(email: "alex.thompson@example.com"))
   portfolio = alex.portfolio
@@ -145,11 +159,23 @@ if Rails.env.development? && (alex = User.find_by(email: "alex.thompson@example.
         portfolio: portfolio, asset: t[:asset], shares: t[:shares],
         avg_cost: t[:price], status: :open, opened_at: t[:date]
       )
+      # Capture the execution FX rate the way a real trade does: how many MXN
+      # (ExecutionRate::REFERENCE) one unit of the trade's currency bought that
+      # day. Without it, valuing the MXN holding in a USD-preferring account
+      # raises MissingFxRate and /assets 500s. No FxRateHistory is seeded, so
+      # fall back to the current pair rate for a representative demo figure.
+      reference = Trading::Domain::ExecutionRate::REFERENCE
+      captured =
+        if t[:currency] == reference
+          BigDecimal(1)
+        else
+          FxRate.find_by(base_currency: t[:currency], quote_currency: reference)&.rate
+        end
       Trade.create!(
         portfolio: portfolio, asset: t[:asset], position: position,
         side: :buy, shares: t[:shares], price_per_share: t[:price],
         total_amount: t[:shares] * t[:price], currency: t[:currency],
-        executed_at: t[:date]
+        executed_at: t[:date], fx_rate_at_execution: captured
       )
     end
   end
