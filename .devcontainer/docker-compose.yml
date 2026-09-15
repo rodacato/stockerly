@@ -1,5 +1,3 @@
-name: stockerly-notdefined
-
 services:
   app:
     build:
@@ -8,7 +6,7 @@ services:
     # tini as PID 1 — `sleep infinity` never reaps, so git/node/claude zombies pile up.
     init: true
     volumes:
-      - ../..:/workspaces:cached
+      - ..:/workspaces/stockerly:cached
       # The shell-history feature writes here (/dc/shellhistory, per its
       # devcontainer-feature.json); without the volume every rebuild starts empty.
       - commandhistory:/dc/shellhistory
