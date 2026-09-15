@@ -2,7 +2,7 @@
   "name": "stockerly-dev",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/workspaces/stockerly",
 
   "features": {
     "ghcr.io/devcontainers/features/node:2": {

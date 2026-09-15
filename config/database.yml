@@ -1,4 +1,4 @@
-<%# The name is derived from the checkout directory so sibling git worktrees
+<%# The name is derived from the checkout directory so git worktrees
     do not share databases — see Stockerly::Checkout and CONTRIBUTING.md. %>
 <% prefix = Stockerly::Checkout.database_prefix %>
 
