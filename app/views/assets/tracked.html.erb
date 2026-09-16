@@ -50,7 +50,7 @@
   </div>
 
   <aside class="<%= card_classes("flex w-full shrink-0 flex-col gap-3 p-5 lg:w-80") %>">
-    <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("assets.tracked.presupuesto_titulo") %></p>
+    <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("assets.tracked.presupuesto_titulo", provider: @budget.provider) %></p>
     <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
       <p class="font-display text-3xl font-bold tracking-tight text-fg-default">
         <%= @budget.unlimited? ? t("assets.tracked.presupuesto_sin_limite") : t("assets.tracked.presupuesto_llamadas", count: @budget.remaining) %>
@@ -86,6 +86,7 @@
     <p class="text-xs text-fg-subtle">
       <%= @budget.exhausted? ? t("assets.tracked.presupuesto_agotado") : t("assets.tracked.presupuesto_detalle", used: @budget.used, limit: @budget.limit) %>
     </p>
+    <p class="text-xs text-fg-subtle"><%= t("assets.tracked.presupuesto_compartido", provider: @budget.provider) %></p>
     <p class="text-xs text-fg-subtle"><%= t("assets.tracked.intro") %></p>
   </aside>
 </div>

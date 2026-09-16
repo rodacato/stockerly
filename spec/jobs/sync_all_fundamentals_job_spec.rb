@@ -41,16 +41,26 @@ RSpec.describe SyncAllFundamentalsJob, type: :job do
     # The budget reads the calls RateLimiter actually made, so spending it is
     # what stops the job -- not how many log lines happen to carry a prefix.
     it "respects daily budget limit" do
-      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 25,
-                           daily_call_limit: 25, calls_reset_at: Time.current)
+      create(:integration, provider_name: "Yahoo Finance", daily_api_calls: 4_000,
+                           daily_call_limit: 4_000, calls_reset_at: Time.current)
 
       expect { described_class.perform_now }
         .not_to have_enqueued_job(SyncFundamentalJob)
     end
 
-    it "is not fooled by log lines that spent no quota" do
-      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 0,
+    # The budget belongs to whichever provider leads the fundamentals chain; a
+    # spent quota elsewhere must not stop the job.
+    it "ignores the quota of a provider that does not lead fundamentals" do
+      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 25,
                            daily_call_limit: 25, calls_reset_at: Time.current)
+
+      expect { described_class.perform_now }
+        .to have_enqueued_job(SyncFundamentalJob).exactly(3).times
+    end
+
+    it "is not fooled by log lines that spent no quota" do
+      create(:integration, provider_name: "Yahoo Finance", daily_api_calls: 0,
+                           daily_call_limit: 4_000, calls_reset_at: Time.current)
       25.times do |i|
         SystemLog.create!(task_name: "Fundamentals: STOCK#{i}", module_name: "sync",
                           severity: :success, duration_seconds: 0)

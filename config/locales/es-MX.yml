@@ -310,13 +310,15 @@ es-MX:
       pausado: "%{symbol} en pausa. Su presupuesto queda libre."
       pausar: Pausar
       presupuesto_agotado: Agotado hasta mañana
+      presupuesto_compartido: Es la cuota completa de %{provider}, no una parte reservada
+        para fundamentales.
       presupuesto_detalle: "%{used} de %{limit} llamadas usadas"
       presupuesto_llamadas:
         one: 1 llamada
         other: "%{count} llamadas"
         zero: Sin llamadas
       presupuesto_sin_limite: Sin límite
-      presupuesto_titulo: Presupuesto diario · Fundamentales
+      presupuesto_titulo: Presupuesto diario · %{provider}
       probar: Probar
       reanudado: "%{symbol} vuelve a sincronizarse."
       reanudar: Reanudar

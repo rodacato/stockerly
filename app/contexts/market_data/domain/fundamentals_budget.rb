@@ -1,7 +1,8 @@
 module MarketData
   module Domain
-    # The Alpha Vantage free tier gives a fixed number of fundamentals calls a
-    # day, and that budget is what decides which assets get synced (D9).
+    # The daily quota of the provider that leads the fundamentals chain, which
+    # is what decides which assets get synced (D9). It is that provider's whole
+    # day — prices and indices spend it too — not a share set aside (D123).
     #
     # It counts the calls RateLimiter actually made, not log lines. Counting
     # logs was wrong three ways: a statements sync spends three calls and logs
@@ -9,14 +10,12 @@ module MarketData
     # reason statements consumption was counted at all was a copy-pasted log
     # prefix. The free tier could be exhausted while the screen showed headroom.
     class FundamentalsBudget
-      PROVIDER = "Alpha Vantage".freeze
-      DAILY_LIMIT = 25
-
       def self.today
-        integration = Integration.find_by(provider_name: PROVIDER)
-        return new(used: 0) if integration.nil?
+        provider = DataSourceRegistry.for_capability(:fundamentals).first&.integration_name
+        integration = Integration.find_by(provider_name: provider)
+        return new(used: 0, limit: nil, provider: provider) if integration.nil?
 
-        new(used: calls_today(integration), limit: integration.daily_call_limit || DAILY_LIMIT)
+        new(used: calls_today(integration), limit: integration.daily_call_limit, provider: provider)
       end
 
       # The counter resets lazily on the next call rather than at midnight, so
@@ -27,11 +26,13 @@ module MarketData
         integration.daily_api_calls
       end
 
-      attr_reader :used, :limit
+      attr_reader :used, :limit, :provider
 
-      def initialize(used:, limit: DAILY_LIMIT)
+      # A nil limit is unlimited, as RateLimiter reads it.
+      def initialize(used:, limit:, provider: nil)
         @used = used
         @limit = limit
+        @provider = provider
       end
 
       def remaining

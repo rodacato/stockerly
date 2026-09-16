@@ -18,12 +18,22 @@ RSpec.describe "Activos › Tracked", type: :request do
     end
 
     it "shows the daily budget the sync job actually spends" do
-      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 3,
-                           daily_call_limit: 25, calls_reset_at: Time.current)
+      create(:integration, provider_name: "Yahoo Finance", daily_api_calls: 3,
+                           daily_call_limit: 4_000, calls_reset_at: Time.current)
 
       get tracked_assets_path
 
-      expect(response.body).to include("3 de 25 llamadas usadas")
+      expect(response.body).to include("3 de 4000 llamadas usadas")
+    end
+
+    # The quota is the provider's whole day, so the panel names whose it is.
+    it "names the provider whose quota the budget is" do
+      create(:integration, provider_name: "Yahoo Finance", daily_api_calls: 3,
+                           daily_call_limit: 4_000, calls_reset_at: Time.current)
+
+      get tracked_assets_path
+
+      expect(response.body).to include("Presupuesto diario · Yahoo Finance")
     end
 
     it "labels each asset with the tier that decides its sync priority" do
@@ -144,8 +154,8 @@ RSpec.describe "Activos › Tracked", type: :request do
 
   describe "the budget the screen shows and the job spends" do
     it "is one calculation, not two" do
-      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 4,
-                           daily_call_limit: 25, calls_reset_at: Time.current)
+      create(:integration, provider_name: "Yahoo Finance", daily_api_calls: 4,
+                           daily_call_limit: 4_000, calls_reset_at: Time.current)
 
       expect(MarketData::Domain::FundamentalsBudget.today.used).to eq(4)
 
@@ -239,8 +249,8 @@ RSpec.describe "Activos › Tracked", type: :request do
     # A statements sync spends three calls and logs one, and failures spend
     # quota without logging success at all. Counting logs missed both.
     it "counts the calls made, not the successes logged" do
-      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 9,
-                           daily_call_limit: 25, calls_reset_at: Time.current)
+      create(:integration, provider_name: "Yahoo Finance", daily_api_calls: 9,
+                           daily_call_limit: 4_000, calls_reset_at: Time.current)
       create_list(:system_log, 3, task_name: "Fundamentals: X", severity: :success)
 
       expect(MarketData::Domain::FundamentalsBudget.today.used).to eq(9)
@@ -249,14 +259,14 @@ RSpec.describe "Activos › Tracked", type: :request do
     # The counter resets lazily on the next call, so a stale stamp would
     # otherwise carry yesterday's spend into today's headroom.
     it "ignores a counter that was never reset today" do
-      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 25,
-                           daily_call_limit: 25, calls_reset_at: 2.days.ago)
+      create(:integration, provider_name: "Yahoo Finance", daily_api_calls: 4_000,
+                           daily_call_limit: 4_000, calls_reset_at: 2.days.ago)
 
       expect(MarketData::Domain::FundamentalsBudget.today.used).to eq(0)
     end
 
     it "never reports negative headroom" do
-      budget = MarketData::Domain::FundamentalsBudget.new(used: 40)
+      budget = MarketData::Domain::FundamentalsBudget.new(used: 40, limit: 25)
 
       expect(budget.remaining).to eq(0)
       expect(budget).to be_exhausted

@@ -1,5 +1,5 @@
 # Orchestrator: enqueues SyncFundamentalJob for each eligible asset,
-# respecting the Alpha Vantage daily budget through FundamentalsBudget — both
+# respecting the lead provider's daily budget through FundamentalsBudget — both
 # the calls already spent and the limit the integration declares.
 # Priority: portfolio assets > watchlist > rest.
 class SyncAllFundamentalsJob < ApplicationJob
