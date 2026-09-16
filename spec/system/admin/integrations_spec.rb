@@ -44,6 +44,14 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
     expect(page).to have_no_link(href: onboarding_integrations_path)
   end
 
+  it "counts sources and blocked ones in words, not with a (s)" do
+    create(:integration, provider_name: "Alpaca", provider_type: "Stocks", connection_status: :connected)
+    visit admin_integrations_path
+
+    expect(page).to have_content("1 fuente · 0 cerca del límite · 0 bloqueadas")
+    expect(page).to have_no_content("bloqueada(s)")
+  end
+
   it "shows a connected source with its quota in the provider's own unit" do
     create(:integration, provider_name: "Alpaca", provider_type: "Stocks",
                          connection_status: :connected, daily_call_limit: 500, max_requests_per_minute: 5)

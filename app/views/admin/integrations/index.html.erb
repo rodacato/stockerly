@@ -12,7 +12,7 @@
       <%= t(".resumen",
             count: @sources.size,
             near: @sources.count { |s| s.state == :connected && s.quota.near_limit? },
-            blocked: @sources.count { |s| s.state == :blocked }) %>
+            blocked: t(".bloqueadas", count: @sources.count { |s| s.state == :blocked })) %>
     </p>
 
     <ul class="flex flex-col gap-3">
