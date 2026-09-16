@@ -23,6 +23,14 @@ RSpec.describe "Market Crypto Asset Detail", type: :request do
   before { login_as(user) }
 
   describe "GET /market/:symbol for crypto" do
+    # D36 folded the tabs into one scroll, so there is no Mercado tab to send the reader to.
+    it "does not point to a tab the page no longer has" do
+      get market_asset_path(crypto_asset.symbol)
+
+      expect(response.body).to include("ni reportes trimestrales.")
+      expect(response.body).not_to include("consulta la pestaña")
+    end
+
     it "renders the es-MX Cripto type chip" do
       get market_asset_path(crypto_asset.symbol)
 
