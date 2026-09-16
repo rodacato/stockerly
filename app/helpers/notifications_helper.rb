@@ -30,18 +30,6 @@ module NotificationsHelper
     ICON_STYLES.fetch(notification.notification_type, "bg-bg-muted text-fg-subtle")
   end
 
-  def notification_category_chip_classes(notification)
-    if notification.kind == "alerta"
-      "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400"
-    else
-      "bg-primary-muted text-primary"
-    end
-  end
-
-  def notification_category_label(notification)
-    notification.kind == "alerta" ? "Alerta" : "Sistema"
-  end
-
   # Buckets a relation of notifications into the inbox's date groups, in
   # display order. Returns an Array<[heading_string, Array<Notification>]>.
   # Headings follow the mockup: "Hoy · MIÉ 14 MAY 2026", "Ayer · ...",
@@ -85,18 +73,6 @@ module NotificationsHelper
       "ayer · #{notification.created_at.in_time_zone('America/Mexico_City').strftime('%H:%M')} CDMX"
     else
       "#{absolute_stamp(notification.created_at)} CDMX"
-    end
-  end
-
-  # Returns the asset symbol associated with the notification, or nil. The
-  # inbox row links to /market/:symbol — the Asset record itself isn't
-  # needed, so we read the symbol straight off the already-loaded notifiable
-  # (preloaded by ListRecent) instead of per-row Asset.find_by hits.
-  def notifiable_asset_symbol(notification)
-    case notification.notifiable
-    when AlertRule               then notification.notifiable.asset_symbol
-    when EarningsEvent, Position then notification.notifiable.asset&.symbol
-    else nil
     end
   end
 end

@@ -14,11 +14,6 @@ class Notification < ApplicationRecord
     "cetes"    => %w[maturity_reminder]
   }.freeze
 
-  # Kept: AlertsHelper and the mailer still ask "is this a rule firing or the
-  # instance talking?", which is a different question from the inbox filter.
-  ALERTA_TYPES  = %w[alert_triggered earnings_reminder maturity_reminder].freeze
-  SISTEMA_TYPES = %w[system].freeze
-
   validates :title, presence: true
 
   scope :unread,  -> { where(read: false) }
@@ -40,12 +35,5 @@ class Notification < ApplicationRecord
 
   def mark_as_read!
     update!(read: true, read_at: Time.current)
-  end
-
-  # Binary grouping used by the inbox UI: alerts (user-relevant triggers) vs
-  # system (platform-wide notices). Reminder types live under "alertas"
-  # because they fire on user-held assets.
-  def kind
-    Notification::ALERTA_TYPES.include?(notification_type) ? "alerta" : "sistema"
   end
 end
