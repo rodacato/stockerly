@@ -23,9 +23,10 @@ module Trading
 
       # Percent for the whole range, not annualized: the screen compares
       # periods of the same length against each other.
+      # nil below two periods: a return that cannot be measured is unknown, not flat (ADR-021).
       def between(from:, to: Date.current)
         periods = periods_in(from, to)
-        return 0.0 if periods.size < 2
+        return nil if periods.size < 2
 
         growth = periods.each_cons(2).reduce(1.0) do |acc, (previous, current)|
           acc * (1 + sub_period_return(previous, current))

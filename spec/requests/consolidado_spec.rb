@@ -57,6 +57,18 @@ RSpec.describe "Consolidado", type: :request do
       expect(hole[:class]).not_to match(/bg-white|bg-bg-canvas/)
     end
 
+    # A day-old portfolio has no return to compare, so nothing claims a flat one.
+    it "states no return and no comparison before the curve exists" do
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 10, status: :open)
+      snapshot(0, 1_200)
+
+      get portfolio_path
+
+      expect(response.body).not_to include("en el periodo")
+      expect(response.body.scan(I18n.t("portfolios.show.sin_comparacion")).size).to eq(2)
+      expect(response.body).not_to include(I18n.t("portfolios.show.twr_nota"))
+    end
+
     it "does not offer a cash breakdown the instance cannot back" do
       with_history
 
