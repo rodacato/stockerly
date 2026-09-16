@@ -659,7 +659,7 @@
                   "id": "w2FQh",
                   "name": "Val",
                   "fill": "$fg-default",
-                  "content": "38,000",
+                  "content": "$38,000",
                   "fontFamily": "$font-mono",
                   "fontSize": 15,
                   "fontWeight": "600"
@@ -2559,6 +2559,7 @@
       "x": 760,
       "y": -520,
       "name": "Segmented",
+      "context": "Mirrors components/_segmented: full width on a phone, fit-content from sm up (D49). The artboard width is a phone measurement, not a constraint on desktop.",
       "reusable": true,
       "width": 342,
       "fill": "$bg-muted",
@@ -3849,7 +3850,7 @@
                   "height": 20,
                   "icon": "layout-grid",
                   "library": "lucide",
-                  "fill": "$primary"
+                  "fill": "$primary-hover"
                 },
                 {
                   "type": "text",
@@ -4047,14 +4048,13 @@
             },
             {
               "type": "text",
-              "id": "l7TEip",
+              "id": "RQ1dh",
               "name": "Sub",
               "fill": "$fg-subtle",
-              "content": "LUN · 24 AGO 2026 · CDMX",
+              "content": "Lunes 24 ago · CDMX",
               "fontFamily": "$font-sans",
-              "fontSize": 11,
-              "fontWeight": "normal",
-              "letterSpacing": 0.6
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4133,7 +4133,12 @@
               "type": "ref",
               "ref": "PagJU",
               "name": "TopBarDesktop",
-              "width": "fill_container"
+              "width": "fill_container",
+              "descendants": {
+                "RQ1dh": {
+                  "content": "LUN · 24 AGO 2026 · CDMX"
+                }
+              }
             },
             {
               "type": "frame",
@@ -4707,7 +4712,7 @@
                 "J2BxOk": {
                   "content": "Consolidado"
                 },
-                "l7TEip": {
+                "RQ1dh": {
                   "content": "TU PATRIMONIO · MXN"
                 }
               }
@@ -8072,10 +8077,10 @@
               "fill": "$primary-muted"
             },
             "s6GTU": {
-              "fill": "$primary"
+              "fill": "$primary-hover"
             },
             "fItNx": {
-              "fill": "$primary",
+              "fill": "$primary-hover",
               "fontWeight": "600"
             }
           }
@@ -8098,7 +8103,7 @@
                 "J2BxOk": {
                   "content": "NVDA"
                 },
-                "l7TEip": {
+                "RQ1dh": {
                   "content": "Nvidia · NASDAQ · Acción"
                 }
               }
@@ -14494,7 +14499,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.8.1"
+      "value": "1.0.0"
     },
     "font-display": {
       "type": "string",
