@@ -23,7 +23,6 @@ leaves this list by shipping or by being declined on the record.
 |---|---|---|
 | **`NavRow` has no recommended/primary state** | 0.8.0, vendoring into `assets.pen` — three copies had drifted and snapped back, a fourth carried a deliberate `$primary` accent because it is the recommended path out of an empty portfolio | An instance override in `assets.pen`. A second consumer earns the variant |
 | **No detail `TopBar`** | 0.8.0, `cockpit.pen` — the kit ships the root bar (`Brand`/`Bell`) only | `TopBarDetail` local to `cockpit.pen`: two-line ticker title plus a bookmark. **Measured against `HeaderBar` and they are different components**, so 0.9.0 did not absorb it. Its `Bookmark` slot is asset-specific and would come off in a kit version |
-| **`TopBar` has no count badge** | 0.8.1, `alerts.pen` — the kit ships `UnreadDot`, an 8px dot | A numbered badge local to `alerts.pen`, which is the flow that owns the inbox: a count says more than a dot. If a second flow wants the number, the variant is earned |
 | **No `focus` token** | #489, 2026-09-04 — the app's most common focus ring (18 inputs) had no kit name | Shipped in the code contract as `--color-focus` (`#5B6CFF33` / `#7B89FF33`), D76. The kit has not taken it: rule 2 makes every kit change a manual re-vendor across ten consumers, so it is promoted when a `.pen` needs it. **19 consumers as of #561**, and the newest is not a focus ring: the metric card's open-state ring takes the same value, because it marks the control the reader just activated. If a `.pen` ever promotes this, weigh `ring-accent` as the name — the row was left as `focus` in #561 rather than renamed one PR after it landed (D77) |
 | **No `transparent` token** | The consistency sweep, 2026-08-27 | `cockpit.pen` carries 44 `#00000000` literals — transparency, not colour. `README.md` says *"tokens only — zero hex in a flow"*, and the kit gives no way to spell "no fill", so **the rule currently forbids its own only spelling**. Either a token or a sentence in the rule |
 
@@ -489,3 +488,16 @@ contradict their own files (D53).
 
 `cockpit.pen` (Panorama radar, Holdings summary) and `assets.pen` (Holdings, Watchlist). Both
 corrected in the same pass.
+
+### `alerts.pen` re-vendored to 1.0.0 — 2026-09-16
+
+The first flow onto 1.0.0, and a full sync: tokens equal by value, and all six kit components it
+instances match the masters. Three had drifted:
+
+- **`TopBar` drew a numbered badge.** The *"TopBar has no count badge"* gap is **declined, not
+  shipped**: `components/_notification_badge` paints an 8px dot and keeps the number in the
+  screen-reader text, and under D78 the artboard follows the code. The flow's local badge is gone.
+- **`BottomNav`'s master had Reglas lit.** The active tab belongs to the instance, so the master is
+  back to the kit and each of the three screens overrides its own tab.
+- **`HeaderBar`'s `Accion` carried a corner radius the kit lacks.** Bandeja's instance now hides the
+  slot, which it only ever filled with the placeholder — its action lives in the body.
