@@ -25,6 +25,14 @@ RSpec.describe "Activos sub-screens › way back", type: :request do
     end
   end
 
+  it "keeps the tab the sub-screens belong to lit" do
+    get new_trade_import_path
+    expect(page_body).to have_css("a[aria-current='page']", text: "Activos")
+
+    get totp_enrollment_path
+    expect(page_body).to have_css("a[aria-current='page']", text: "Ajustes")
+  end
+
   it "leads the import review back to the file picker" do
     create(:asset, :etf, symbol: "VT", currency: "USD")
     FxRateHistory.record(base: "USD", quote: "MXN", date: Date.new(2025, 12, 1), rate: 18.2293, source: "banxico")
