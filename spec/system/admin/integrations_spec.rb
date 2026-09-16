@@ -32,8 +32,16 @@ RSpec.describe "Admin integrations (Lumen)", type: :system do
     visit admin_integrations_path
 
     expect(page).to have_content("No hay fuentes configuradas")
-    expect(page).to have_content("Agrégalas desde el wizard inicial")
-    expect(page).to have_link("Configurar integraciones", href: onboarding_integrations_path)
+    expect(page).to have_content("bin/rails stockerly:sync")
+  end
+
+  # The wizard sends an onboarded owner straight to the dashboard, so a link
+  # into it was a door back to Panorama, not to the sources.
+  it "does not send an onboarded owner into the setup wizard to restore sources" do
+    Integration.destroy_all
+    visit admin_integrations_path
+
+    expect(page).to have_no_link(href: onboarding_integrations_path)
   end
 
   it "shows a connected source with its quota in the provider's own unit" do
