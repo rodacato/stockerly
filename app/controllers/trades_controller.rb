@@ -12,6 +12,7 @@ class TradesController < AuthenticatedController
     @shares = params[:shares].presence
     @currency = current_user.preferred_currency
     @held = held_position
+    @fixed_income_symbols = fixed_income_symbols
   end
 
   def edit
@@ -119,6 +120,12 @@ class TradesController < AuthenticatedController
     current_user.portfolio&.open_positions&.find_by(asset_id: asset.id)
   end
 
+  # A fixed-income buy opens a lot with its own maturity (#29), so the sheet
+  # asks for the date only when the symbol typed is one of these.
+  def fixed_income_symbols
+    Asset.asset_type_fixed_income.pluck(:symbol)
+  end
+
   # Six call sites differed only in the message and the non-Turbo fallback.
   def respond_with_alert(message, fallback:)
     respond_to do |format|
@@ -150,6 +157,7 @@ class TradesController < AuthenticatedController
     @side = trade.side
     @symbol = nil
     @currency = current_user.preferred_currency
+    @fixed_income_symbols = fixed_income_symbols
     @saved_notice = trade_notice(trade)
 
     respond_to do |format|
@@ -159,7 +167,7 @@ class TradesController < AuthenticatedController
   end
 
   def trade_params
-    raw = params.expect(trade: [ :asset_symbol, :side, :shares, :price_per_share, :fee, :executed_at, :currency, :fx_rate_at_execution ]).to_h
+    raw = params.expect(trade: [ :asset_symbol, :side, :shares, :price_per_share, :fee, :executed_at, :currency, :fx_rate_at_execution, :maturity_date ]).to_h
     # Treat empty strings from the form's optional selectors as "not provided"
     # so the contract's `optional(:currency).maybe(...)` rule applies and
     # ExecuteTrade falls back to the asset's native currency.

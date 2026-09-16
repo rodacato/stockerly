@@ -32,6 +32,17 @@ RSpec.describe "Trades", type: :request do
       expect(response).to redirect_to(assets_path)
     end
 
+    it "opens a fixed-income lot with the maturity the sheet sent" do
+      create(:asset, :fixed_income, symbol: "CETES_28D")
+      maturity = 28.days.from_now.to_date
+
+      post trades_path, params: { trade: { asset_symbol: "CETES_28D", side: "buy", shares: "100",
+                                           price_per_share: "9.85", currency: "MXN", maturity_date: maturity.iso8601 } }
+
+      expect(response).to redirect_to(assets_path)
+      expect(portfolio.positions.last.maturity_date).to eq(maturity)
+    end
+
     it "redirects with alert on invalid params" do
       post trades_path, params: { trade: { asset_symbol: "", side: "buy", shares: "0", price_per_share: "0" } }
 

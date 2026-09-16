@@ -27,6 +27,12 @@ RSpec.describe "The trade sheet's FX lookup", type: :request do
     expect(body_for(Date.new(2026, 5, 4))).to include("rate" => 17.403, "date" => "2026-04-30")
   end
 
+  it "labels that date the way the rest of the app writes one" do
+    FxRateHistory.record(base: "USD", quote: "MXN", date: Date.new(2026, 4, 30), rate: 17.4030, source: source)
+
+    expect(body_for(Date.new(2026, 5, 4))["date_label"]).to eq("30 abr 2026")
+  end
+
   it "names the source from the row instead of assuming one" do
     FxRateHistory.record(base: "USD", quote: "MXN", date: Date.new(2026, 5, 4), rate: 17.4948, source: "manual")
 

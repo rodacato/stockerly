@@ -58,6 +58,19 @@ RSpec.describe "Registrar movimiento — proyección del costo promedio", type: 
       expect(projection).to have_text("USD 150.00")
     end
 
+    # A sale leaves the average of what remains where it was, so projecting one
+    # would state a number the position will never show.
+    it "stays hidden for a sale" do
+      open_sheet_for("AAPL")
+      fill_in "trade[shares]", with: "10"
+      fill_in "trade[price_per_share]", with: "100"
+      expect(page).to have_css("[data-trade-sheet-target='projection']:not([hidden])")
+
+      find("label", text: "Venta").click
+
+      expect(page).to have_css("[data-trade-sheet-target='projection'][hidden]", visible: :hidden)
+    end
+
     it "stays hidden until a quantity is entered" do
       open_sheet_for("AAPL")
       fill_in "trade[price_per_share]", with: "100"

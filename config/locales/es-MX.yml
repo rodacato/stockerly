@@ -1562,7 +1562,7 @@ es-MX:
       side_venta: Venta
     new:
       activo: Activo
-      activo_ayuda: Ticker o nombre
+      activo_ayuda: Ticker
       cerrar: Cerrar
       comision: Comisión
       compra: Compra
@@ -1582,6 +1582,7 @@ es-MX:
       titulo: Registrar movimiento
       titulos: Títulos
       total: Total
+      vencimiento: Vencimiento
       venta: Venta
   two_factor:
     new:

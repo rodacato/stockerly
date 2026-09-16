@@ -54,6 +54,20 @@ RSpec.describe "Registrar movimiento", type: :system, js: true do
     expect(page).to have_field("trade[fx_rate_at_execution]", with: "17")
   end
 
+  it "asks for the maturity only when buying fixed income" do
+    create(:asset, :fixed_income, symbol: "CETES_28D", name: "CETES 28 días")
+    click_link "Registrar movimiento"
+
+    fill_in "trade[asset_symbol]", with: "AAPL"
+    expect(page).to have_no_field("trade[maturity_date]")
+
+    fill_in "trade[asset_symbol]", with: "cetes_28d"
+    expect(page).to have_field("trade[maturity_date]")
+
+    find("label", text: "Venta").click
+    expect(page).to have_no_field("trade[maturity_date]")
+  end
+
   it "hides the FX field when there is nothing to convert" do
     click_link "Registrar movimiento"
     select "MXN", from: "trade[currency]"

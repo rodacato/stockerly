@@ -11,6 +11,7 @@ class FxRatesController < AuthenticatedController
 
     quote = FxRateHistory.quote_on(base: base, quote: reference, date: date)
     divisor = FxRateHistory.rate_on(base: current_user.preferred_currency, quote: reference, date: date)
+    rate_date = quote&.rate_date || date
 
     render json: {
       rate: quote&.rate&.to_f,
@@ -18,7 +19,8 @@ class FxRatesController < AuthenticatedController
       target: reference,
       display_currency: current_user.preferred_currency,
       display_divisor: divisor&.to_f,
-      date: (quote&.rate_date || date).to_s,
+      date: rate_date.to_s,
+      date_label: I18n.l(rate_date, format: :day_month_year),
       source: quote&.source
     }
   end

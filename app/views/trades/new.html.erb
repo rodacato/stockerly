@@ -11,10 +11,13 @@
        data-trade-sheet-held-shares-value="<%= @held&.shares %>"
        data-trade-sheet-held-avg-cost-value="<%= @held&.avg_cost %>"
        data-trade-sheet-held-symbol-value="<%= @held&.asset&.symbol %>"
-       data-trade-sheet-held-currency-value="<%= @held&.asset&.currency %>">
+       data-trade-sheet-held-currency-value="<%= @held&.asset&.currency %>"
+       data-trade-sheet-fixed-income-symbols-value="<%= @fixed_income_symbols.to_json %>">
 
     <%= form_with url: trades_path, scope: :trade, class: "flex min-h-0 flex-col" do |f| %>
       <div class="flex flex-col gap-4 overflow-y-auto px-1 pb-4">
+        <h2 class="font-display text-2xl font-bold text-fg-default"><%= t("trades.new.titulo") %></h2>
+
         <%# The flash lives behind the dialog, so a sheet that stays open has to
             confirm inside itself or the save looks like nothing happened. %>
         <% if @saved_notice %>
@@ -26,7 +29,8 @@
         <div role="tablist" class="flex gap-1 rounded-xl bg-bg-muted p-1">
           <% [ [ "buy", t("trades.new.compra") ], [ "sell", t("trades.new.venta") ] ].each do |value, label| %>
             <label class="flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors has-[:checked]:bg-bg-surface has-[:checked]:text-fg-default text-fg-subtle">
-              <%= f.radio_button :side, value, checked: @side == value, class: "sr-only" %>
+              <%= f.radio_button :side, value, checked: @side == value, class: "sr-only",
+                               data: { trade_sheet_target: "side", action: "change->trade-sheet#sideChanged" } %>
               <%= label %>
             </label>
           <% end %>
@@ -36,7 +40,7 @@
           <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.activo") %></span>
           <%= f.text_field :asset_symbol, value: @symbol, required: true, autocomplete: "off",
                            placeholder: t("trades.new.activo_ayuda"),
-                           data: { trade_sheet_target: "symbol", action: "input->trade-sheet#recalculate" },
+                           data: { trade_sheet_target: "symbol", action: "input->trade-sheet#symbolChanged" },
                            class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
         </label>
 
@@ -56,6 +60,13 @@
                          class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
           </label>
         </div>
+
+        <label class="flex flex-col gap-1.5" data-trade-sheet-target="maturityField" hidden>
+          <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.vencimiento") %></span>
+          <%= f.date_field :maturity_date, required: true, disabled: true,
+                           data: { trade_sheet_target: "maturity" },
+                           class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
+        </label>
 
         <div class="grid grid-cols-2 gap-3">
           <label class="flex flex-col gap-1.5">
