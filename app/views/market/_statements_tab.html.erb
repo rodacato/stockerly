@@ -8,7 +8,9 @@
       [ t(".flujo"),      :cash_flow,        t(".sin_flujo") ]
     ]
   %>
-  <div data-controller="tabs" class="flex flex-col gap-6">
+  <div data-controller="tabs" class="flex flex-col gap-6"
+       data-tabs-active-class="bg-bg-surface text-fg-default shadow-sm"
+       data-tabs-inactive-class="text-fg-subtle hover:text-fg-default">
     <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div class="inline-flex items-center gap-1 rounded-lg border border-border-default bg-bg-muted p-1">
         <% panels.each_with_index do |(label, _type, _empty), idx| %>
