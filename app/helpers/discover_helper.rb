@@ -7,4 +7,12 @@ module DiscoverHelper
 
     held ? t("discover.show.olas_via", symbol: held) : t("discover.show.olas_sin_exposicion")
   end
+
+  # A difference carries its sign, with the typographic minus signed_percent uses.
+  def wave_vs_baseline(wave)
+    value = wave.vs_baseline.to_f
+    figure = "#{value.negative? ? "−" : "+"}#{number_with_precision(value.abs, precision: 1)}"
+
+    t("discover.show.olas_vs", baseline: MarketData::Discover::BasketCatalogue.baseline, value: figure)
+  end
 end
