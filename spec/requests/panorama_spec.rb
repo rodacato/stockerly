@@ -91,6 +91,17 @@ RSpec.describe "Panorama", type: :request do
       expect(response.body).to include("RSI 31")
     end
 
+    # The query reads three days, so a subtitle saying "hoy" contradicts the
+    # "hace 2 días" the row itself prints.
+    it "states the window the readings come from" do
+      observe("rsi_overbought_entered", at: 2.days.ago)
+
+      get dashboard_path
+
+      expect(response.body).to include("Oportunidades de compra y venta de los últimos 3 días")
+      expect(response.body).not_to include("Oportunidades de compra y venta hoy")
+    end
+
     it "shows no verb for an observation type that carries none" do
       observe("rsi_oversold_exited")
 

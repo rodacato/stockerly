@@ -7,6 +7,7 @@ class DashboardController < AuthenticatedController
     @fx_unavailable  = data[:fx_unavailable]
     @sentiment_cards = data[:sentiment_cards]
     @signals         = data[:signals]
+    @signals_window_days = data[:signals_window_days]
     @radar           = data[:radar]
     @sparkline_closes = data[:sparkline_closes]
     @day_changes     = data[:day_changes]
