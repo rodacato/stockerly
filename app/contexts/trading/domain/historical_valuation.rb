@@ -7,7 +7,7 @@ module Trading
       def initialize(portfolio, currency:)
         @portfolio = portfolio
         @currency  = currency
-        @trades    = portfolio.trades.kept.includes(:asset).order(:executed_at).to_a
+        @trades    = portfolio.trades.kept.includes(asset: :stock_splits).order(:executed_at).to_a
         @closes    = {}
         @splits    = {}
       end
