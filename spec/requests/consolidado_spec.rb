@@ -105,6 +105,26 @@ RSpec.describe "Consolidado", type: :request do
     end
   end
 
+  # Bullet caught one stock_splits query per asset once a portfolio held two.
+  describe "valuing a portfolio of several assets" do
+    it "loads every asset's splits with its trades" do
+      other = create(:asset, :stock, symbol: "AMXL", currency: "MXN", current_price: 15)
+      [ asset, other ].each do |held|
+        position = create(:position, portfolio: portfolio, asset: held, shares: 100, avg_cost: 10, status: :open)
+        create(:trade, portfolio: portfolio, position: position, asset: held, side: :buy, shares: 100,
+                       price_per_share: 10, currency: "MXN", executed_at: 400.days.ago)
+        create(:asset_price_history, asset: held, date: 380.days.ago.to_date, open: 10, high: 10, low: 10, close: 10)
+      end
+      snapshot(60, 1_000)
+      snapshot(1, 2_700)
+      CetesRateHistory.record(term: "28", date: 2.years.ago.to_date, rate: 10.0)
+
+      get portfolio_path
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "the period selector" do
     it "honours the period asked for" do
       with_history
