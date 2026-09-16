@@ -56,13 +56,6 @@ export default class TickerSearchController extends Controller {
       return
     }
 
-    const typeColors = {
-      stock: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-      etf: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-      crypto: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-      index: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
-    }
-
     this.resultsTarget.innerHTML = results.map((r, i) => `
       <button type="button"
         data-action="ticker-search#select"
@@ -77,7 +70,7 @@ export default class TickerSearchController extends Controller {
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
             <span class="font-semibold text-sm text-fg-default">${this.escapeHtml(r.symbol)}</span>
-            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${typeColors[r.asset_type] || typeColors.stock}">${r.asset_type.toUpperCase()}</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-bg-muted text-fg-subtle">${r.asset_type.toUpperCase()}</span>
           </div>
           <p class="text-xs text-fg-subtle truncate">${this.escapeHtml(r.name)}</p>
         </div>
