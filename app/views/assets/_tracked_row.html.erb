@@ -3,10 +3,10 @@
     owner's choice, this is the instance failing, and the two must not read
     alike (D46). %>
 <% unnamed = asset.last_sync_error == SyncBulkBmvJob::UNNAMED %>
-<div class="flex flex-col gap-3 rounded-2xl border bg-bg-surface px-4 py-3 <%= unnamed ? "border-warning" : "border-border-default" %> <%= "opacity-60" unless asset.active? %>">
+<div class="flex min-w-0 flex-col gap-3 rounded-2xl border bg-bg-surface px-4 py-3 <%= unnamed ? "border-warning" : "border-border-default" %> <%= "opacity-60" unless asset.active? %>">
   <div class="flex items-center gap-3">
     <div class="min-w-0 flex-1">
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
         <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
         <span class="rounded-full bg-bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-fg-subtle">
           <%= t("assets.tracked.tier_#{tier}") %>
