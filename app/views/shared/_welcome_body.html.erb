@@ -1,4 +1,5 @@
-<%# Shared body between /welcome and /help. Context note + 3 starting guide cards + support footer. %>
+<%# Shared body between /welcome and /help. On /welcome (complete: true) each
+    door is a POST that finishes onboarding first — a plain link would bounce. %>
 
 <%# Context card %>
 <div class="rounded-2xl bg-primary-muted p-5 flex gap-4">
@@ -14,11 +15,12 @@
 <%# Starting guide — 3 cards %>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
   <% [
-    { icon: "add_chart",            title: t(".guia_movimiento_titulo"), body: t(".guia_movimiento_cuerpo"), href: portfolio_path },
-    { icon: "visibility",           title: t(".guia_watchlist_titulo"),  body: t(".guia_watchlist_cuerpo"),  href: assets_path },
-    { icon: "notifications_active", title: t(".guia_regla_titulo"),      body: t(".guia_regla_cuerpo"),      href: alerts_path }
+    { icon: "add_chart",            title: t(".guia_movimiento_titulo"), body: t(".guia_movimiento_cuerpo"), door: "portfolio" },
+    { icon: "visibility",           title: t(".guia_watchlist_titulo"),  body: t(".guia_watchlist_cuerpo"),  door: "assets" },
+    { icon: "notifications_active", title: t(".guia_regla_titulo"),      body: t(".guia_regla_cuerpo"),      door: "alerts" }
   ].each do |card| %>
-    <%= link_to card[:href], class: "group flex flex-col p-5 rounded-2xl bg-bg-surface border border-border-default hover:border-primary hover:bg-bg-muted transition-colors no-underline text-fg-default" do %>
+    <% door_classes = card_classes("group flex h-full w-full flex-col p-5 text-left text-fg-default no-underline transition-colors hover:border-primary hover:bg-bg-muted cursor-pointer") %>
+    <% content = capture do %>
       <div class="size-8 rounded-lg bg-bg-muted text-fg-default inline-flex items-center justify-center mb-4">
         <span class="material-symbols-outlined text-lg"><%= card[:icon] %></span>
       </div>
@@ -27,6 +29,13 @@
       <span class="text-fg-subtle group-hover:text-primary transition-colors mt-3 inline-flex items-center text-sm">
         <span class="material-symbols-outlined text-sm">arrow_forward</span>
       </span>
+    <% end %>
+    <% if local_assigns[:complete] %>
+      <%= button_to complete_welcome_path, params: { destino: card[:door] }, method: :post, form_class: "flex", class: door_classes do %>
+        <%= content %>
+      <% end %>
+    <% else %>
+      <%= link_to content, send("#{card[:door]}_path"), class: door_classes %>
     <% end %>
   <% end %>
 </div>
