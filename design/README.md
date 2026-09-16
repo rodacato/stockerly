@@ -6,7 +6,7 @@ as context for AI agents.
 > **The redesign landed. D8 is retired ([D78](DECISIONS.md), 2026-09-05).** Stockerly pivoted
 > 2026-08-20 ([ADR-0010](../docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md))
 > to a self-hosted single-user "decision cockpit", and for that revamp this `design/` ran **ahead of
-> the code**. It no longer does: all twenty `CODE_CHANGES.md` sections shipped, the pre-2.0 palette
+> the code**. It no longer does: all twenty sections of the work order that landed it shipped, the pre-2.0 palette
 > is at zero across every view directory, and the last `.pen` write predates the last `app/views`
 > write by a week. **The kit is a 1:1 mirror again**, which is the rule below.
 
@@ -41,17 +41,19 @@ _Listing verified against the directory 2026-08-27._
 | `brand/` | The exported identity assets the repo consumes: `glyph.svg`, `wordmark.svg`, `wordmark.png` |
 | `_playground.pen` | Experiments — inside the system (kit installed at 0.8.0 on 2026-08-27; holds `Panel · V1…V4`, the login brand-panel exploration) |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |
-| `CODE_CHANGES.md` | Work order for landing the redesign in code |
-| `V2_REMAINING.md` | **Where the migration stands and what is left** — the 2.0 contract measurement, the kit-to-code crossing, and the punch list. Retired and replaced `FIDELITY_AUDIT.md` + `COMPONENT_INVENTORY.md` on 2026-08-28 |
 | `exports/` | Canvas PNGs for review — **committed** (they must travel) |
 | `references/` | Local-only device captures — **never commit: real data** (gitignored) |
+
+`CODE_CHANGES.md` (the work order that landed the redesign) and `V2_REMAINING.md` (its punch list
+and post-mortems) were retired on 2026-09-16 with nothing left open in either — ADR-022's
+amendment. Read them with `git show 120600bb:design/CODE_CHANGES.md`; their finding IDs
+(`CKP-1`, `X13`, …) live on in the board's `Finding ID` field.
 
 ## Flows
 
 One `.pen` per domain, derived from the app's routes (`config/routes.rb`), not invented. Each flow
-**re-skins the screens that already exist in code** with the new identity; the code revamp to make
-the app match is tracked in [CODE_CHANGES.md](CODE_CHANGES.md). A flow earns its own file at ~3+
-screens; smaller ones may merge into a neighbor.
+**mirrors the screens that exist in code** (D78). A flow earns its own file at ~3+ screens; smaller
+ones may merge into a neighbor.
 
 > **The kit 0.8.0 → 0.9.0 migration closed 2026-08-27.** All ten `.pen` files are on the kit —
 > `ui-kit`, `alerts`, `settings`, `onboarding` and `brand` at **0.9.0**, the rest at **0.8.1**. The
@@ -60,18 +62,9 @@ screens; smaller ones may merge into a neighbor.
 > **values**, not names. `MIGRATION.md` tracked that work and was deleted on close, per its own
 > first line — the durable parts are here, in `ui-kit.CHANGELOG.md`'s gap list, and in D53/D57/D58/D59.
 
-> **Status below is the `.pen` file's, not the ERB's.** How closely the code matches each flow
-> is measured in [V2_REMAINING.md](V2_REMAINING.md) — read that before taking **done · in
-> review** as "the screen looks like this".
->
-> **No running count lives here any more, and that is the point.** This line used to carry one, and
-> it was wrong every time it was read: `19 closed and 33 open` against V2_REMAINING's `22 and 32`,
-> and both wrong against a recount. Re-derive it from V2_REMAINING's own commands — that file
-> prints them, and their output is current by construction.
->
-> **The code caught up on three flows on 2026-08-28.** `auth` gained its three TOTP screens and the
-> second factor at login; `onboarding` gained the Seguridad step and went to four; `assets` gained
-> `Historial`, which absorbed `/trades`. What is left per flow is in `V2_REMAINING.md`, not here.
+> **Status below is the `.pen` file's, not the ERB's.** How closely the code matches a flow is
+> measured, never recorded — see *Measuring design against code*. No running count lives here: every
+> hand-kept count this folder ever carried went stale.
 
 > **Vocabulary renamed 2026-08-27 (D48).** The tier ladder is now **Holdings** (was Poseo),
 > **Watchlist** (was Sigo) and **Tracked** (was Rastreados), and the observation sense of
@@ -81,7 +74,7 @@ screens; smaller ones may merge into a neighbor.
 > not.
 >
 > Adrian extended the rename to the segmented control itself, so the first tab reads **Holdings**.
-> The code caught up the same day ([CODE_CHANGES.md](CODE_CHANGES.md) §13) — the design leads the
+> The code caught up the same day — the design leads the
 > code on nothing here now. **Lowercase `cartera` in prose is not the tier**; it means the portfolio
 > and stays.
 
@@ -97,7 +90,8 @@ screens; smaller ones may merge into a neighbor.
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for
 structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit · **(3)** review/feel ·
-**(4)** land the ERB revamp to match, tracked in CODE_CHANGES.md.
+**(4)** where the two disagree, amend the artboard — or, when the code is what should change, log a
+`D<n>` and a board item.
 
 ### Desktop pass (2026-08-24, kit 0.5.0 — counts re-checked 2026-08-27)
 
@@ -206,6 +200,41 @@ Get(n => n.type === "frame" && !n.reusable &&
      Print("LOCAL COPY |", n.name, "|", n.id));
 Get((n, c) => c.problems && Print("LAYOUT |", n.id, n.name || n.type, "|", c.problems));
 ```
+
+## Measuring design against code
+
+What the retired audit files taught, kept because each one cost a wrong number.
+
+- **Tokens, in the code:** `bin/checks design-tokens` catches colour literals in views, helpers and
+  Stimulus controllers, and `script/checks/baseline.yml` lists what is still tolerated. The retired
+  audit scanned `app/views` alone and called the palette gone while the typeahead controller still
+  painted it.
+- **Tokens, across `.pen` files:** compare the sorted `name=value` list, not the names. Membership
+  and equality are two checks.
+- **Kit → code:** cross each component against all of `app/views`, not only `components/` — `NavRow`
+  is `settings/_nav_row`, `MarketCard` is `dashboard/_sentiment_card`. Count render sites with
+  `grep -rc "components/<name>" app lib spec`.
+- **Defect or decision:** a screen off the contract *with* an artboard is unfinished work; one
+  *without* is either deliberate or a surface nobody drew, and drawing it is design, not a fix.
+- **Counting lines:** `grep -c` counts matching lines, not matches — a pass that counts the other way
+  reads a regression that is not there. Use `\b(slate|gray)-`, not `slate-`, which matches inside
+  `translate-`.
+
+| Kit component | In code |
+|---|---|
+| `TopBar` · `BottomNav` · `SidebarNav` · `TopBarDesktop` · `HeaderBar` | `components/_<name>` |
+| `AppShellDesktop` | composed in `layouts/app`, not a partial |
+| `AssetRow` | `components/_asset_row`; its Watchlist sibling is `components/_watch_row`, which the kit lacks |
+| `Segmented` · `Segmented3` | one N-ary `components/_segmented` — the two masters are Pencil's limit, not a split to mirror |
+| `MovementItem` | `trades/_trade_row` and `dashboard/_signal_row` |
+| `MarketCard` · `NavRow` · `SwitchRow` · `Stepper` | `dashboard/_sentiment_card` · `settings/_nav_row` · `settings/_notification_switches` · `onboarding/_step_header` |
+| `Card` · `ButtonPrimary`/`Secondary` · `Field` | helpers, not partials: `card_classes` (D75), `button_classes` and `field_classes` (D86) |
+| `Logo` · `LogoMark` | `shared/_logo` · `shared/_logo_mark` |
+
+**`HeaderBar`'s `Accion` slot has no code on purpose.** The two screens that draw an action
+(Registros, Bandeja) already carry it in the body, and the bar is `lg:hidden` — moving the control
+into it would delete it on desktop. The slot ships when a screen needs an action its body has no
+home for.
 
 ## Team workflow
 
