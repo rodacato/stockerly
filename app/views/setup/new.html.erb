@@ -21,9 +21,9 @@
 
   <%= form_with url: setup_path, method: :post, class: "flex flex-col gap-4" do %>
     <%= render "shared/auth_field", name: "full_name", type: "text", label: t("setup.new.nombre"),
-               placeholder: t("setup.new.nombre_placeholder"), autocomplete: "name", autofocus: true %>
+               value: params[:full_name], placeholder: t("setup.new.nombre_placeholder"), autocomplete: "name", autofocus: true %>
     <%= render "shared/auth_field", name: "email", type: "email", label: t("auth.correo"),
-               placeholder: t("auth.correo_placeholder"), autocomplete: "email" %>
+               value: params[:email], placeholder: t("auth.correo_placeholder"), autocomplete: "email" %>
     <%= render "shared/auth_field", name: "password", type: "password", label: t("auth.contrasena"),
                placeholder: t("auth.reset.nueva_placeholder"), autocomplete: "new-password" %>
     <%= render "shared/auth_field", name: "password_confirmation", type: "password",
