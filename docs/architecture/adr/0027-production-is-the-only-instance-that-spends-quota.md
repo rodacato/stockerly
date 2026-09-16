@@ -60,7 +60,8 @@ already has, which keeps provenance stable and makes the task safe to re-run.
 A **provider probe** — establishing whether an endpoint exists, what a response
 looks like, what a plan actually serves — is not covered by this rule. It is a
 handful of calls whose product is knowledge, not rows, and it has to happen
-wherever the person doing the work is. `redesign/probes/` is where those live.
+wherever the person doing the work is.
+[`script/research/provider_probe.rb`](../../../script/research/provider_probe.rb) is where those live.
 
 The line is what the call is *for*: filling the database is production's job;
 finding out what a provider does is not.
