@@ -78,7 +78,7 @@ class AlertsController < AuthenticatedController
   private
 
   def alert_params
-    params.expect(alert: [ :asset_symbol, :condition, :threshold_value, :window_days ])
+    params.expect(alert: [ :asset_symbol, :condition, :threshold_value, :window_days, :cooldown_minutes ])
   end
 
   # A condition that is not in the enum falls back rather than raising, so a

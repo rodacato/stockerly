@@ -208,7 +208,6 @@ es-MX:
       condicion: Condición
       espera: Espera entre avisos · min
       etiqueta:
-        calendario: Días antes del evento
         porcentaje: Cambio en el día · %
         precio: Umbral de precio
         rsi: Nivel RSI
