@@ -501,3 +501,21 @@ instances match the masters. Three had drifted:
   back to the kit and each of the three screens overrides its own tab.
 - **`HeaderBar`'s `Accion` carried a corner radius the kit lacks.** Bandeja's instance now hides the
   slot, which it only ever filled with the placeholder — its action lives in the body.
+
+### `assets.pen` re-vendored to 1.0.0 — 2026-09-16
+
+A full sync from 0.8.1: tokens equal by value, and the nine kit components it instances match the
+masters. Five had drifted, none in shape:
+
+- **`BottomNav` and `SidebarNav` masters had Activos lit.** Both are back to the kit, and each of
+  the twelve screens that instance them lights its own tab.
+- **`TopBarDesktop`'s master carried this flow's title and a restyled subtitle** (11px, tracked).
+  The master is back to the kit; the three desktop screens override the title. The subtitle's
+  style against the code's mono uppercase is the kit deviation already on the board, not this
+  flow's to fix.
+- **`Segmented` lacked the kit's `context` note**, and **`MovementItem` carried a different sample
+  `Reason`** that every instance already overrides.
+
+The six hand-built back-headers are not vendoring leftovers: `HeaderBar` would not replace them,
+because none of their screens renders `components/_header_bar`. They are a code discrepancy,
+handled with the flow's code pass.
