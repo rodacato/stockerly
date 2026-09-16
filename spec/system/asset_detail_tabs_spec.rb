@@ -19,6 +19,15 @@ RSpec.describe "Asset detail tabs", type: :system, js: true do
 
   def tab(label) = find("[role='tab']", text: label)
 
+  # sm:w-fit shrinks the strip to its content, and a two-word label broke onto a second line.
+  it "keeps each label on one line on a wide screen" do
+    page.driver.resize(1280, 900)
+    visit market_asset_path(asset.symbol)
+
+    heights = page.evaluate_script("[...document.querySelectorAll('[role=tab]')].map((tab) => tab.getBoundingClientRect().height)")
+    expect(heights).to all(be < 50)
+  end
+
   it "lights the tab whose panel is showing" do
     expect(tab(I18n.t("posicion.tab_analisis"))).to match_css(".bg-bg-surface[aria-selected='true']")
     expect(tab(I18n.t("posicion.tab_posicion"))).to match_css(".text-fg-subtle[aria-selected='false']")
