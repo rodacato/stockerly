@@ -77,7 +77,7 @@ evaporates.
 | [`docs/vision/audience.md`](docs/vision/audience.md) | Primary user / packaging target / non-users |
 | [`docs/vision/non-goals.md`](docs/vision/non-goals.md) | What we explicitly are NOT |
 | [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | The 6 canonical JTBDs |
-| [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions — 19 ADRs, numbered to 0022. Read before deciding; ADR-0007 is superseded by ADR-0011 |
+| [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions — the index and each one's status are in [`docs/architecture/README.md`](docs/architecture/README.md). Read before deciding |
 | [`docs/vision/experts.md`](docs/vision/experts.md) | The advisory panel |
 | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | Issues + Projects v2 + Milestones |
 | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare |
