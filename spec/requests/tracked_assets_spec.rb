@@ -7,6 +7,16 @@ RSpec.describe "Activos › Tracked", type: :request do
   before { login_as(user) }
 
   describe "GET /tracked" do
+    it "counts the catalogue, not the rows a filter left" do
+      create(:asset, :stock, symbol: "AAPL")
+      create(:asset, :stock, symbol: "MSFT")
+
+      get tracked_assets_path, params: { q: "zzz" }
+
+      expect(response.body).to include("Sin coincidencias")
+      expect(response.body).not_to include("Ningún activo en Tracked")
+    end
+
     it "shows the daily budget the sync job actually spends" do
       create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 3,
                            daily_call_limit: 25, calls_reset_at: Time.current)
