@@ -14,16 +14,18 @@
       hold the asset, so a watched asset shows Análisis alone rather than an
       empty second tab. %>
   <% if @position_data %>
-    <div data-controller="tabs" class="space-y-6">
-      <div class="flex gap-1 rounded-xl bg-bg-muted p-1">
-        <button data-tabs-target="tab" data-action="tabs#switch"
-                class="flex-1 rounded-lg px-4 py-2 text-sm font-bold text-fg-default">
-          <%= t("posicion.tab_analisis") %>
-        </button>
-        <button data-tabs-target="tab" data-action="tabs#switch"
-                class="flex-1 rounded-lg px-4 py-2 text-sm font-medium text-fg-subtle">
-          <%= t("posicion.tab_posicion") %>
-        </button>
+    <%# The look of components/_segmented, which renders links; these switch panels in place. %>
+    <div data-controller="tabs" class="space-y-6"
+         data-tabs-active-class="bg-bg-surface font-semibold text-fg-default shadow-sm"
+         data-tabs-inactive-class="font-normal text-fg-subtle hover:text-fg-default">
+      <div role="tablist" class="flex w-full gap-1 rounded-xl bg-bg-muted p-1 sm:w-fit">
+        <% [ t("posicion.tab_analisis"), t("posicion.tab_posicion") ].each_with_index do |label, index| %>
+          <button type="button" role="tab" data-tabs-target="tab" data-action="tabs#switch"
+                  aria-selected="<%= index.zero? %>"
+                  class="flex-1 rounded-lg px-4 py-2.5 text-center text-sm transition-colors <%= index.zero? ? "bg-bg-surface font-semibold text-fg-default shadow-sm" : "font-normal text-fg-subtle hover:text-fg-default" %>">
+            <%= label %>
+          </button>
+        <% end %>
       </div>
 
       <div data-tabs-target="panel" class="space-y-6">
