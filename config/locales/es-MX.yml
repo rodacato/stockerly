@@ -1357,7 +1357,7 @@ es-MX:
       estado: Estado y mantenimiento
       estado_desc: Diagnóstico, modo mantenimiento y cambios recientes
       importar: Importar movimientos
-      importar_desc: Sube el CSV de tu broker o pega su contenido
+      importar_desc: Carga movimientos en el formato de Stockerly, de archivo o pegados.
       instancia_cuerpo: 'Esto es tuyo: corre en tu servidor y nadie más lo ve.'
       instancia_titulo: Tu instancia
       integraciones: Integraciones
