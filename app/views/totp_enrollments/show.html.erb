@@ -1,11 +1,5 @@
 <% content_for :page_title, t(".titulo") %>
-<% content_for :header_bar do %>
-  <%= render "components/header_bar", title: t(".titulo"), back_path: @return_path %>
-<% end %>
-
-<div class="mx-auto flex max-w-md flex-col gap-6">
-  <p class="text-sm text-fg-default"><%= t(".subtitulo", count: @codes.size) %></p>
-
+<% body = capture do %>
   <%# select-all on the list, so "copy them somewhere" is one gesture. There is
       no download: a file write is the browser's business and the codes are ten
       short strings, not a document. %>
@@ -24,4 +18,5 @@
 
   <%= link_to t(".ya_los_guarde"), @return_path,
         class: button_classes(:primary, :lg, "w-full text-center") %>
-</div>
+<% end %>
+<%= render "totp_enrollments/frame", title: t(".titulo"), subtitle: t(".subtitulo", count: @codes.size), subtitle_tone: "text-fg-default", body: body %>

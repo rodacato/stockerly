@@ -4,6 +4,9 @@ class TotpEnrollmentsController < AuthenticatedController
   # step 1 of the wizard it lives inside.
   skip_before_action :redirect_to_onboarding
 
+  # Mid-wizard the app shell only offers exits that bounce back to step 1 (D122).
+  layout -> { current_user.onboarded? ? "app" : "onboarding" }
+
   rate_limit to: 10, within: 1.minute, only: :create
 
   # First, so the guards below can redirect to it.

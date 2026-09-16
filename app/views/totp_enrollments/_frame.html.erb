@@ -1,0 +1,29 @@
+<%# Enrolment opens from Ajustes or from the wizard's security step, and wears
+    the frame of whichever it came from (D122). Locals: title, subtitle, subtitle_tone, body. %>
+<% if current_user.onboarded? %>
+  <% content_for :header_bar do %>
+    <%= render "components/header_bar", title: title, back_path: @return_path %>
+  <% end %>
+
+  <div class="mx-auto flex max-w-md flex-col gap-6">
+    <p class="text-sm <%= subtitle_tone %>"><%= subtitle %></p>
+    <%= body %>
+  </div>
+<% else %>
+  <% content_for(:title, "#{title} | Stockerly") %>
+
+  <main class="flex-1 flex flex-col items-center py-10 px-4">
+    <div class="w-full max-w-2xl">
+      <%= render "onboarding/step_header", step: 3 %>
+
+      <div class="mb-8">
+        <h1 class="font-display text-3xl font-bold text-fg-default leading-tight mb-2"><%= title %></h1>
+        <p class="text-fg-subtle"><%= subtitle %></p>
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <%= body %>
+      </div>
+    </div>
+  </main>
+<% end %>
