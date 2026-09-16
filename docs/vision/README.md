@@ -13,6 +13,26 @@
 
 This north supersedes the 2026-05-14 reset, which set the audience as Adrian + a closed beta of ≤20 invited friends. **That beta was run and failed** — friends didn't know what to do inside the app, couldn't read the indicators, and found loading trades a *fastidio*. Those are UX failures, not code failures. The full decision, including why this is a pivot-in-place and not a rewrite, is [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md).
 
+### What it is for, in the user's words
+
+> *"no soy un analista de tiempo completo ni quiero serlo, pero sí me gustaría tener mis flujos,
+> ver si funcionaron o no, tener mis indicadores, mis reglas duras sin corazón, mis metas fijas u
+> objetivos, comparativas, un budget de inversión — todo no para que se decida por mí, sino para
+> que de forma fácil, en una pantalla, pueda yo tomar decisiones de qué hacer, tal vez 15 o 20
+> minutos al día, en cualquier lugar que esté o tenga el tiempo."* — Adrian, 2026-08-22
+
+A **decision cockpit, not a robo-advisor.** It informs and structures; the decision stays with the
+user. *"No para que se decida por mí"* is the same line [ADR-001](../architecture/adr/0001-descriptive-not-prescriptive-language.md)
+draws in the product's language, and the *reglas duras sin corazón* are the user's own
+deterministic rules, which the app evaluates without emotion and never invents.
+
+The quote names seven things — flows and whether they worked, indicators, hard rules, goals,
+comparisons, an investment budget, and the one screen that holds them. Read them as vocabulary, not
+as a backlog: each is a whole feature behind one word and gets its own 4-filter card before anything
+is built. What keeps them from sprawling into the analyst platform the quote refuses is the
+constraint in the same sentence — **one screen, 15–20 minutes, on a phone.** A block that cannot
+earn a place there inside that time does not ship.
+
 ---
 
 ## Audience
