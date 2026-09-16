@@ -12,8 +12,6 @@ design-tokens:
   # shared/ carries an amber warning box older than the token set.
   # Three controllers left the tree in #561 because nothing mounted them, taking
   # onboarding_form_controller.js and selectable_card_controller.js off this list.
-  app/helpers/alerts_helper.rb:
-    count: 6
   app/helpers/market_helper.rb:
     count: 11
   app/views/market/_analyst_target.html.erb:
