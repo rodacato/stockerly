@@ -15,6 +15,22 @@ RSpec.describe Trading::UseCases::LoadAssets do
     (tab == "watchlist" ? data[:watchlist_items] : data[:positions]).map { |row| row.asset.symbol }
   end
 
+  describe "the summary" do
+    it "is absent while nothing is held, on either tab" do
+      portfolio
+
+      expect(described_class.call(user: user, tab: "cartera")[:summary]).to be_nil
+      expect(described_class.call(user: user, tab: "watchlist")[:summary]).to be_nil
+    end
+
+    it "is present on both tabs once something is held" do
+      hold(mxn_asset(symbol: "AMXL", current_price: 15), shares: 1)
+
+      expect(described_class.call(user: user, tab: "cartera")[:summary]).to be_present
+      expect(described_class.call(user: user, tab: "watchlist")[:summary]).to be_present
+    end
+  end
+
   describe "Cartera's order (D68)" do
     it "leads with the largest holding, not with insertion order" do
       hold(mxn_asset(symbol: "SMALL", current_price: 10), shares: 1)
