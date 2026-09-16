@@ -47,5 +47,5 @@ body:
     attributes:
       label: Expertos a consultar
       description: |
-        From the panel in `docs/research/experts.md`. By name or role.
+        From the panel in `docs/vision/experts.md`. By name or role.
       placeholder: "C1 Lucía (financial), C6 Esther (scope), ..."

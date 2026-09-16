@@ -302,7 +302,7 @@ Follow `CONTRIBUTING.md` conventions:
 |-----|------|
 | Vision (norte + audience + JTBDs + non-goals) | `docs/vision/` |
 | Architecture map + ADRs | `docs/architecture/` |
-| Expert Panel v2 (8 Core + 8 Situational) | `docs/research/experts.md` |
+| Expert Panel (core, situational, and the user's seat) | `docs/vision/experts.md` |
 | **How work is tracked (board, issues, research)** | `docs/ops/github-workflow.md` |
 | Deployment Guide | `docs/ops/deploy.md` |
 | Design system (source of truth, Pencil-based) | `design/` |

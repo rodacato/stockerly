@@ -12,11 +12,11 @@
 
 | If you're looking for... | Go to |
 |---|---|
-| Why Stockerly exists, for whom | [`vision/`](./vision/) |
+| Why Stockerly exists, for whom — and the panel consulted on it | [`vision/`](./vision/) |
 | Immutable architecture decisions | [`architecture/adr/`](./architecture/adr/) |
 | How bounded contexts are organized | [`architecture/README.md`](./architecture/README.md) |
 | Design system (source of truth, Pencil-based) | [`../design/`](../design/) |
-| Research: expert panel, competitive survey, provider audit (**dated snapshots**) | [`research/`](./research/) |
+| Research: competitive survey, provider audit, code audits (**dated snapshots**) | [`research/`](./research/) |
 | Deploy, security, runbooks | [`ops/`](./ops/) |
 | How work moves: the board, issues, research | [`ops/github-workflow.md`](./ops/github-workflow.md) |
 | Artboards used as the README's imagery | [`../design/exports/`](../design/exports/) |

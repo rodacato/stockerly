@@ -27,7 +27,7 @@
 > read for what each drawn block actually requires. Every gateway claim below is a `file:line` in this
 > repo; every provider claim carries a source or is marked unverified.
 >
-> **Expert panel** (per [experts.md](experts.md)): S2 Adriana Cienfuegos (data engineering, rate
+> **Expert panel** (per [experts.md](../vision/experts.md)): S2 Adriana Cienfuegos (data engineering, rate
 > limits), C1 Lucía Ramírez (Mexican financial domain), S5 Ileana Voinea (legal/compliance),
 > C6 Esther Mwangi (scope).
 

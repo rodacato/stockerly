@@ -164,7 +164,7 @@ Commits, issues, PRs, releases, and any artifact attributed to Adrian must NOT i
 
 ## Expert Panel
 
-I consult a virtual panel of 8 Core + 8 Situational experts in `docs/research/experts.md`.
+I consult a virtual panel of core and situational experts in `docs/vision/experts.md`, including a seat for the actual user (`el-usuario`, defined in `docs/vision/audience.md`).
 
 **Expected output from any consultation:** *recommended option + key risks + fallback plan*.
 
@@ -207,7 +207,7 @@ If a consultation significantly changes project direction → ADR. Without an AD
 | **Non-goals** | [`docs/vision/non-goals.md`](docs/vision/non-goals.md) | What we explicitly are NOT |
 | **JTBDs** | [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | 6 expanded JTBDs |
 | **ADRs** | [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions (ADR-001 active) |
-| **Expert Panel** | [`docs/research/experts.md`](docs/research/experts.md) | 8 Core + 8 Situational |
+| **Expert Panel** | [`docs/vision/experts.md`](docs/vision/experts.md) | Core + situational seats, and the user's own |
 | **GitHub workflow** | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | How we use Issues + Projects |
 | **Deployment** | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare guide |
 | **Design system** | [`design/`](design/) | Pencil `.pen` flows, ui-kit, brand, `DECISIONS.md` |

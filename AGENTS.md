@@ -41,21 +41,25 @@ one, name it out loud.
 
 When the user asks for debate, alternatives, tradeoffs, or a recommendation — or
 when a decision has lasting consequences — consult the panel. Full profiles and
-activation rules in [`docs/research/experts.md`](docs/research/experts.md).
+activation rules in [`docs/vision/experts.md`](docs/vision/experts.md); the user's
+own seat, `el-usuario`, is defined in [`docs/vision/audience.md`](docs/vision/audience.md).
 
-| ID | Expert | Specialty | Activate when |
+| ID | Handle | Lens | Activate when |
 |---|---|---|---|
-| C1 | Lucía Ramírez | MX financial domain (CETES, multi-currency, withholding) | Money, currency, fiscal, MarketData |
-| C2 | Hiroto Watanabe | DDD + Hexagonal + Event-Driven (Rails monolith) | New BC, use case, event, boundary change |
-| C3 | Sven Kowalski | Rails 8 backend (AR, dry-rb, contracts, Use Cases) | Server-side impl, migrations, controllers |
-| C4 | Marisol Aguirre | Hotwire (Turbo + Stimulus) + Tailwind 4 | Views, partials, interactivity |
-| C5 | Renata Câmara | Fintech UX/UI, design tokens, descriptive copy | New/rewritten screen, copy, hierarchy |
-| C6 | Esther Mwangi | Product strategy, scope discipline, MVP creep | Sprint planning, "it would be cool to add…" |
-| C7 | Fadia Haddad | Security (auth, IDOR, sensitive data, audit) | Auth, encryption, new controllers |
-| C8 | Bram Hendriks | OSS maintainer + public portfolio | README, releases, what to expose publicly |
+| C1 | `lucia` | MX financial domain (CETES, historical FX, MXN/USD) | Money, currency, FX, MarketData |
+| C3 | `sven` | Rails 8 backend (AR, dry-rb, contracts, use cases) | Server-side impl, migrations, controllers |
+| C4 | `marisol` | Hotwire (Turbo + Stimulus) + Tailwind 4 | Views, partials, interactivity |
+| C5 | `renata` | Fintech UX/UI, descriptive copy | New/rewritten screen, copy, hierarchy |
+| C6 | `esther` | Product scope, the 4-filter | Promoting a draft, "it would be cool to add…" |
+| C7 | `fadia` | Security (auth, keys, sensitive data) | Auth, encryption, new routes |
+| C9 | `dhh` | Pragmatic monolith, anti-ceremony | A new layer, abstraction or service |
+| C10 | `joaquin` | Retail technical-analysis investor | Indicators, hard rules, signals |
+| C11 | `el-usuario` | The actual user, phone in hand | Every screen, every data-entry flow |
+| C12 | `vernon` | DDD: aggregates, language, boundaries | New concept, boundary change |
 
-Eight Situational experts (DevOps, data engineering, performance, l10n,
-compliance, migrations, DX, QA) — see the panel doc.
+Situational seats (data engineering, performance, l10n, third-party terms,
+migrations, DX, QA, refactoring, events, self-hosted DevEx) — see the panel doc.
+C2, C8 and S1 are retired; the panel doc says where their lenses went.
 
 Panel output must end with: **recommended option, key risks, fallback/rollback.**
 A consultation that significantly changes direction → write an ADR, or it
@@ -74,7 +78,7 @@ evaporates.
 | [`docs/vision/non-goals.md`](docs/vision/non-goals.md) | What we explicitly are NOT |
 | [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | The 6 canonical JTBDs |
 | [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions — 19 ADRs, numbered to 0022. Read before deciding; ADR-0007 is superseded by ADR-0011 |
-| [`docs/research/experts.md`](docs/research/experts.md) | The advisory panel |
+| [`docs/vision/experts.md`](docs/vision/experts.md) | The advisory panel |
 | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | Issues + Projects v2 + Milestones |
 | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare |
 | [`design/`](design/) | The design system — Pencil `.pen` files, ui-kit, brand, `DECISIONS.md`. **This is the source of truth** |
@@ -155,7 +159,7 @@ protocol lives in [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md).
 |---|---|
 | "tengo una idea" | Don't build. Open a discovery card (GitHub Issue) with the 4 filters. If the trigger isn't documented, say so. |
 | "¿dónde estamos?" / "estado del proyecto" | Read the open Milestone + the open Issues + `docs/vision/`. Summarize: goal, done vs pending, what's next. |
-| "consulta a los expertos" / "que el panel evalúe" | Activate the relevant experts from `docs/research/experts.md`; end with recommendation + risks + rollback. |
+| "consulta a los expertos" / "que el panel evalúe" | Activate the relevant experts from `docs/vision/experts.md`; end with recommendation + risks + rollback. |
 
 ---
 

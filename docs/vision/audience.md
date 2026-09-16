@@ -33,6 +33,22 @@
 6. *When one of my positions (or a watchlist asset) enters a notable technical zone (oversold/overbought per RSI, Bollinger Bands break, moving-average crossover), I want to see it described in context — with a one-sentence explanation of what the indicator means — so I can factor it into my weekly reflection.* **(Now carries the inline-explanation requirement — failure #2.)*
 7. *When I open a symbol I hold or watch, I want to see what was published about it recently, so a move I do not understand has somewhere to be explained.* **(Added 2026-08-29 with the per-symbol news block.)*
 
+### Consult as `el-usuario`
+
+The primary user is also a seat on the [expert panel](./experts.md) — **C11 `el-usuario`**: Adrian on
+the couch on a Sunday night, phone in hand. Kept apart from builder-Adrian on purpose, because the
+builder is the one who wants the events table and the user is the one who wants to know whether he
+is up or down.
+
+- **Who he is in that moment:** part-time, on a phone, 15–20 minutes, wants a *decision* rather than
+  a dashboard, and abandons anything that feels like a chore. He is the person the closed beta
+  failed.
+- **Consult on:** every screen, every data-entry flow, every "should we add X".
+- **His job is to veto** a proposal that serves builder ambition over that moment — backend rigor
+  before a usable screen, a feature for a self-hoster who does not exist, a step that makes capture
+  slower.
+- **His voice:** plain and impatient. *"Beautiful plumbing for a house I still can't live in."*
+
 **Product language constraint (formalized in ADR-001):**
 - Stockerly speaks descriptively: *"AAPL appears oversold per RSI(14)"*.
 - Stockerly does NOT speak prescriptively: *"buy AAPL"*, *"consider selling"*, *"good time to..."*.
