@@ -78,10 +78,17 @@ tells a reviewer nothing.
 | `descubrir-olas-sin-datos.png` | `[Descubrir] / Olas / Sin datos` |
 | `descubrir-olas-calendario-agotado.png` | `[Descubrir] / Olas / Calendario agotado` — past the YAML's horizon (D33) |
 | `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
+| `ajustes-nombre-correo.png` | `[Ajustes] / Nombre y correo / Default` |
+| `ajustes-contrasena.png` | `[Ajustes] / Contraseña / Default` |
 | `ajustes-integraciones.png` | `[Ajustes] / Integraciones / Default` |
+| `ajustes-integraciones-administrar.png` | `[Ajustes] / Integraciones · Administrar / Default` — one source opened: verify, key, limits, delete |
 | `ajustes-integraciones-estados.png` | `[Ajustes] / Integraciones · Estados / Default` |
 | `ajustes-registros.png` | `[Ajustes] / Registros / Default` |
+| `ajustes-registros-detalle.png` | `[Ajustes] / Registros · Detalle / Default` — one entry opened: payload and detail |
 | `ajustes-estado.png` | `[Ajustes] / Estado y mantenimiento / Default` |
+| `ajustes-errores.png` | `[Ajustes] / Errores / Default` — only with developer_mode (ADR-020) |
+| `ajustes-errores-detalle.png` | `[Ajustes] / Errores · Detalle / Default` |
+| `ajustes-en-mantenimiento.png` | `[Ajustes] / En mantenimiento / Default` — the 503 page a visitor gets while maintenance_mode is on |
 
 **Desktop (1280).** Drawn for the screens whose layout genuinely diverges, per D4 — the rest
 reflow. The kit's shell variant is included because it is what every desktop artboard instances.
@@ -94,15 +101,11 @@ reflow. The kit's shell variant is included because it is what every desktop art
 | `activos-holdings-desktop.png` | `[Activos] / Holdings · Desktop / Default` |
 | `activos-registrar-movimiento-desktop.png` | `[Activos] / Registrar movimiento · Desktop / Dialog` |
 | `activos-tracked-desktop.png` | `[Activos] / Tracked · Desktop / Default` |
-| `ajustes-hub-desktop.png` | `[Ajustes] / Hub · Desktop / Default` |
-| `ajustes-integraciones-desktop.png` | `[Ajustes] / Integraciones · Desktop / Default` |
-| `ajustes-estado-desktop.png` | `[Ajustes] / Estado y mantenimiento · Desktop / Default` |
 
 Not drawn on desktop, on purpose: `Watchlist`, `Holdings vacía`, the `Activos` empty and
 notice states, the `Reglas` states, `Descubrir · Sin datos` (it reflows into the same two-column shell with the
-notice and the Calendario alone), and `Registros` — each reflows into a pattern one of the ones above already
-settles. `Registros` would want a real log table, which is a new component and therefore a
-decision, not a redraw.
+notice and the Calendario alone), and every Ajustes screen — each reflows into a pattern one of the ones above already
+settles.
 
 **Nothing missing.** `flows/auth.pen` and `flows/onboarding.pen` shipped before this convention
 existed; both were caught up on 2026-08-24. Every artboard in every flow now has a PNG here.
@@ -111,6 +114,11 @@ existed; both were caught up on 2026-08-24. Every artboard in every flow now has
 (D52), and `Assets` split its combined `ETFS · RENTA FIJA MX` card into two, catching up to a
 locale that has had five separate categories all along. `Seguridad` gets no desktop artboard, the
 same reason `Complete` gets none: both inherit the wizard frame exactly.
+
+**Ajustes re-shot 2026-09-16** — every artboard, mirrored to the code (D78), plus `Integraciones · Administrar`
+and `Registros · Detalle`. The three desktop PNGs are gone with their artboards: every Ajustes screen is one
+column (D4). The five rows this index lacked (nombre y correo, contraseña, errores, errores · detalle, en
+mantenimiento) are in.
 
 **Onboarding re-shot 2026-09-16** — every artboard, mirrored to the code (D78), plus `Setup / Error`.
 `onboarding-integrations-desktop.png` and `onboarding-assets-desktop.png` are gone with their
