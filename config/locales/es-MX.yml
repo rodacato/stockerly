@@ -1339,6 +1339,9 @@ es-MX:
       registros: Registros
       registros_desc: Sincronizaciones y avisos de los últimos 90 días
       tema: Apariencia y región
+      tema_claro: Claro
+      tema_oscuro: Oscuro
+      tema_sistema: Sistema
       titulo: Ajustes
       trabajos: Trabajos en segundo plano
       trabajos_desc: 'Mission Control: colas, reintentos y fallos'
