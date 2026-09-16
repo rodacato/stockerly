@@ -31,7 +31,7 @@
   <section class="flex flex-col gap-3">
     <div>
       <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".dividendos") %></h2>
-      <p class="mt-0.5 text-sm text-fg-subtle"><%= t(".valores_en", currency: @currency) %></p>
+      <p class="mt-0.5 text-sm text-fg-subtle"><%= t(".dividendos_moneda") %></p>
     </div>
 
     <% if @dividends.any? %>
@@ -82,7 +82,7 @@
                 saying so beats printing a number derived from a guess. %>
             <% if entry[:gain] %>
               <p class="shrink-0 font-mono text-sm font-bold <%= gain_color(entry[:gain]) %>">
-                <%= entry[:gain].negative? ? "−" : "+" %><%= format_currency_mx(entry[:gain].abs, currency: @currency, precision: 0) %>
+                <%= entry[:gain].negative? ? "−" : "+" %><%= money_cell(entry[:gain].abs, currency: @currency, declared: @currency, precision: 0) %>
               </p>
             <% else %>
               <p class="shrink-0 font-mono text-xs text-warning-fg"><%= t(".sin_tc") %></p>
