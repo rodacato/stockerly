@@ -666,7 +666,7 @@
                           "id": "Iqg7a",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "SMH · Reuters · hace 3 horas",
+                          "content": "SMH · Reuters · hace 3 h",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -706,7 +706,7 @@
                           "id": "eG38f",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "EWW · El Financiero · hace 8 horas",
+                          "content": "EWW · El Financiero · hace 8 h",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -746,7 +746,7 @@
                           "id": "MRT9o",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "GLD · Bloomberg Línea · hace 11 horas",
+                          "content": "GLD · Bloomberg Línea · hace 11 h",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -786,7 +786,7 @@
                           "id": "e9Bc6i",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "XLE · Reuters · hace 1 día",
+                          "content": "XLE · Reuters · ayer",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -826,7 +826,7 @@
                           "id": "bZTUo",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "URA · Financial Times · hace 1 día",
+                          "content": "URA · Financial Times · ayer",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -2796,7 +2796,7 @@
                           "id": "GgTne",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "SMH · Reuters · hace 3 horas",
+                          "content": "SMH · Reuters · hace 3 h",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -2836,7 +2836,7 @@
                           "id": "P2sJV",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "EWW · El Financiero · hace 8 horas",
+                          "content": "EWW · El Financiero · hace 8 h",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -2876,7 +2876,7 @@
                           "id": "ZxJLI",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "GLD · Bloomberg Línea · hace 11 horas",
+                          "content": "GLD · Bloomberg Línea · hace 11 h",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -2916,7 +2916,7 @@
                           "id": "aMN8j",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "XLE · Reuters · hace 1 día",
+                          "content": "XLE · Reuters · ayer",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -2956,7 +2956,7 @@
                           "id": "ZsuSs",
                           "name": "S",
                           "fill": "$fg-subtle",
-                          "content": "URA · Financial Times · hace 1 día",
+                          "content": "URA · Financial Times · ayer",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -3486,7 +3486,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-16 · Through CHECKLIST.md under D78. Kit 1.0.0; the shell masters back to the kit with Descubrir lit per screen. Olas, Titulares and Calendario mirrored to the code: its order, its copy, WaveRow rebuilt as the row the view renders, the Alpaca notice on primary-muted. The desktop artboard retired — the page reflows. Drawn: Todas las canastas and Calendario agotado. The basket is sixteen waves, not seventeen: SPY is the baseline. Code side: the distance from SPY carries its sign. The \"Dato viejo\" state this brief promised was never built and is now an open finding",
+          "content": "2026-09-16 · Through CHECKLIST.md under D78. Kit 1.0.0; the shell masters back to the kit with Descubrir lit per screen. Olas, Titulares and Calendario mirrored to the code: its order, its copy, WaveRow rebuilt as the row the view renders, the Alpaca notice on primary-muted. The desktop artboard retired — the page reflows. Drawn: Todas las canastas and Calendario agotado. The basket is sixteen waves, not seventeen: SPY is the baseline. Code side: the distance from SPY carries its sign. The \"Dato viejo\" state this brief promised was never built and is now an open finding. Closing pass: the rows read gain_color, a headline's age reads relative_age like the asset detail's news, external links drop the referrer, and Calendario agotado was checked against the rendered page",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
