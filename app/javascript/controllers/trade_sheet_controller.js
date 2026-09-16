@@ -4,16 +4,41 @@ import { Controller } from "@hotwired/stimulus"
 // date the movement actually happened rather than for today, and what the buy
 // would do to an average cost you already hold.
 export default class TradeSheetController extends Controller {
-  static targets = ["date", "currency", "shares", "price", "fee", "fxRate", "fxCard", "fxLabel", "fxNote", "total", "projection", "symbol"]
+  static targets = ["date", "currency", "shares", "price", "fee", "fxRate", "fxCard", "fxLabel", "fxNote", "total", "projection", "symbol", "side", "maturityField", "maturity"]
   static values = {
     fxUrl: String, preferredCurrency: String, referenceCurrency: String,
-    heldShares: Number, heldAvgCost: Number, heldSymbol: String, heldCurrency: String
+    heldShares: Number, heldAvgCost: Number, heldSymbol: String, heldCurrency: String,
+    fixedIncomeSymbols: Array
   }
 
   connect() {
     // Until a lookup lands, one reference unit is worth one reference unit.
     this.displayDivisor = 1
+    this.toggleMaturity()
     this.refreshRate()
+  }
+
+  symbolChanged() {
+    this.toggleMaturity()
+    this.recalculate()
+  }
+
+  sideChanged() {
+    this.toggleMaturity()
+    this.recalculate()
+  }
+
+  // A fixed-income buy opens its own lot, and a lot needs the date it matures.
+  // Disabled while hidden so a stock never submits or requires it.
+  toggleMaturity() {
+    const symbol = this.symbolTarget.value.trim().toUpperCase()
+    const needed = this.side === "buy" && this.fixedIncomeSymbolsValue.includes(symbol)
+    this.maturityFieldTarget.hidden = !needed
+    this.maturityTarget.disabled = !needed
+  }
+
+  get side() {
+    return this.sideTargets.find(radio => radio.checked)?.value
   }
 
   async refreshRate() {
@@ -44,11 +69,11 @@ export default class TradeSheetController extends Controller {
     this.recalculate()
   }
 
-  applyRate({ rate, date, display_divisor: divisor }) {
+  applyRate({ rate, date_label: dateLabel, display_divisor: divisor }) {
     this.displayDivisor = divisor || 1
     if (rate) {
       this.fxRateTarget.value = rate
-      this.fxNoteTarget.textContent = this.fxNoteTarget.dataset.banxico.replace("%{date}", date)
+      this.fxNoteTarget.textContent = this.fxNoteTarget.dataset.banxico.replace("%{date}", dateLabel)
     } else {
       this.fxRateTarget.value = ""
       this.fxNoteTarget.textContent = this.fxNoteTarget.dataset.manual
@@ -88,7 +113,7 @@ export default class TradeSheetController extends Controller {
     const held = this.heldSharesValue
     const avg = this.heldAvgCostValue
     const symbol = (this.hasSymbolTarget ? this.symbolTarget.value : "").trim().toUpperCase()
-    const usable = held > 0 && avg > 0 &&
+    const usable = this.side === "buy" && held > 0 && avg > 0 &&
       symbol === this.heldSymbolValue &&
       this.currencyTarget.value === this.heldCurrencyValue &&
       shares > 0 && price > 0

@@ -74,6 +74,10 @@ RSpec.describe Trading::Contracts::ExecuteTradeContract do
       expect(result.errors[:maturity_date]).to include("required for fixed-income assets")
     end
 
+    it "does not ask a sell for a maturity, since only a buy opens a lot" do
+      expect(contract.call(cetes_params.merge(side: "sell"))).to be_success
+    end
+
     it "accepts a future maturity_date for fixed_income" do
       result = contract.call(cetes_params.merge(maturity_date: 28.days.from_now.to_date.iso8601))
       expect(result).to be_success

@@ -39,6 +39,8 @@ module Trading
       # only for the fixed_income asset_type; other types stay backward-
       # compatible (Asset existence is validated above; nil asset short-circuits).
       rule(:maturity_date, :asset_symbol) do
+        next unless values[:side] == "buy"
+
         asset = Asset.find_by(symbol: values[:asset_symbol]&.upcase)
         next unless asset&.asset_type_fixed_income?
 
