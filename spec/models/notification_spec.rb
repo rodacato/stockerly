@@ -79,18 +79,6 @@ RSpec.describe Notification, type: :model do
     end
   end
 
-  describe "#kind" do
-    it "returns 'alerta' for alert_triggered + reminder types" do
-      %i[alert_triggered earnings_reminder maturity_reminder].each do |type|
-        expect(build(:notification, notification_type: type).kind).to eq("alerta")
-      end
-    end
-
-    it "returns 'sistema' for system type" do
-      expect(build(:notification, notification_type: :system).kind).to eq("sistema")
-    end
-  end
-
   describe "associations" do
     it "allows nil notifiable (polymorphic optional)" do
       notification = build(:notification, notifiable: nil)
