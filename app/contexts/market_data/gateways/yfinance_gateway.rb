@@ -11,6 +11,7 @@ module MarketData
     # It is deliberately rate limited well below anything Yahoo would notice.
     class YfinanceGateway < MarketDataGateway
       include Dry::Monads[:result]
+      include MarketData::Domain::SafeDecimal
 
       PROVIDER = "Yahoo Finance"
       SCRIPT = "yahoo.py".freeze
@@ -32,6 +33,23 @@ module MarketData
       # and Yahoo answers to its own ticker only, so the caret is put back here
       # rather than kept as one provider_symbols row per index in production.
       YAHOO_SYMBOLS = INDEX_SYMBOL_MAP.invert.freeze
+      OVERVIEW_TEXT = {
+        name: "longName", description: "longBusinessSummary", sector: "sector",
+        industry: "industry", currency: "currency", country: "country"
+      }.freeze
+      OVERVIEW_NUMBERS = {
+        market_cap: "marketCap", pe_ratio: "trailingPE", forward_pe: "forwardPE",
+        peg_ratio: "pegRatio", book_value: "bookValue", eps: "trailingEps",
+        dividend_per_share: "dividendRate", profit_margin: "profitMargins",
+        operating_margin: "operatingMargins", return_on_equity: "returnOnEquity",
+        return_on_assets: "returnOnAssets", revenue_ttm: "totalRevenue",
+        gross_profit_ttm: "grossProfits", ebitda: "ebitda", revenue_per_share: "revenuePerShare",
+        beta: "beta", shares_outstanding: "sharesOutstanding", ev_to_revenue: "enterpriseToRevenue",
+        ev_to_ebitda: "enterpriseToEbitda", price_to_sales: "priceToSalesTrailing12Months",
+        price_to_book: "priceToBook", fifty_two_week_high: "fiftyTwoWeekHigh",
+        fifty_two_week_low: "fiftyTwoWeekLow", analyst_target_price: "targetMeanPrice",
+        quarterly_earnings_growth: "earningsQuarterlyGrowth", quarterly_revenue_growth: "revenueGrowth"
+      }.freeze
 
       def self.source_id
         "#{PROVIDER}/yfinance"
@@ -129,6 +147,21 @@ module MarketData
 
       def fetch_cash_flow(symbol)
         fetch_statement(symbol, "cash_flow") { |report| with_common_dividends(report) }
+      end
+
+      # Company profile and trailing ratios, keyed the way `AssetFundamental`'s
+      # OVERVIEW row has always stored them.
+      #
+      # Returns Success({ symbol:, name:, eps:, market_cap:, ... })
+      def fetch_overview(symbol)
+        run("overview", symbol).fmap do |info|
+          numbers = OVERVIEW_NUMBERS.transform_values { |key| safe_decimal(info[key]) }
+          # `dividendYield` is the one ratio in `info` that arrives as a percent.
+          yield_fraction = safe_decimal(info["dividendYield"])&./(100)
+
+          { symbol: symbol, **OVERVIEW_TEXT.transform_values { |key| info[key] }, **numbers,
+            dividend_yield: yield_fraction }
+        end
       end
 
       # Index levels have no sanctioned source: Alpaca has none, Massive charges
