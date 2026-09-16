@@ -40,7 +40,7 @@
           <label class="block text-sm text-fg-subtle mb-1" for="api_key_<%= integration.id %>"><%= t(".api_key") %></label>
           <input type="text" id="api_key_<%= integration.id %>" name="api_keys[<%= integration.id %>]" autocomplete="off"
                  placeholder="<%= t('.api_key_placeholder', provider: integration.provider_name) %>"
-                 class="w-full px-3 py-2.5 text-sm bg-bg-canvas border border-border-default rounded-lg text-fg-default placeholder:text-fg-subtle outline-none focus:ring-2 focus:ring-primary">
+                 class="<%= field_classes(:md, "w-full") %>">
           <% if info&.url %>
             <a href="<%= info.url %>" target="_blank" rel="noopener noreferrer"
                class="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-primary hover:underline">
