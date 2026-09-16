@@ -1,13 +1,10 @@
 <% content_for :page_title, t(".titulo") %>
 
-<div class="mx-auto flex w-full max-w-lg flex-col gap-4">
-  <div class="flex items-center gap-3">
-    <%= link_to portfolio_path, class: "text-fg-default", aria: { label: t(".volver") } do %>
-      <span class="material-symbols-outlined text-xl">arrow_back</span>
-    <% end %>
-    <h1 class="font-display text-lg font-bold text-fg-default"><%= t(".titulo") %></h1>
-  </div>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: assets_path %>
+<% end %>
 
+<div class="mx-auto flex w-full max-w-lg flex-col gap-4">
   <p class="text-sm text-fg-subtle"><%= t(".intro") %></p>
 
   <% if @error.present? %>

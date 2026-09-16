@@ -4,6 +4,10 @@
     is deliberately absent: it duplicated Holdings. %>
 <% content_for :page_title, t(".titulo") %>
 
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: assets_path %>
+<% end %>
+
 <div class="mx-auto flex max-w-3xl flex-col gap-8">
   <section class="flex flex-col gap-3">
     <div>
