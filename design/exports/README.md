@@ -139,7 +139,9 @@ so an export that is never renamed survives as an orphan nobody can identify.
 | `onboarding-setup-desktop.png` | `[Onboarding] / Setup / Desktop` |
 | `onboarding-integrations.png` | `[Onboarding] / Integrations / Default` |
 | `onboarding-assets.png` | `[Onboarding] / Assets / Default` |
-| `onboarding-seguridad.png` | `[Onboarding] / Seguridad / Default` — the D52 step; it offers TOTP and lets you skip, the enrolment screens live in `auth.pen` |
+| `onboarding-seguridad.png` | `[Onboarding] / Seguridad / Default` — the D52 step; it offers TOTP and lets you skip |
+| `onboarding-seguridad-alta.png` | `[Onboarding] / Seguridad · Alta / Default` — enrolment opened from the wizard, in its frame (D122); the Ajustes entry is `auth-totp-alta.png` and `auth-codigos-recuperacion.png` |
+| `onboarding-seguridad-codigos.png` | `[Onboarding] / Seguridad · Códigos / Default` — the recovery codes, same frame |
 | `onboarding-complete.png` | `[Onboarding] / Complete / Default` |
 | `onboarding-welcome.png` | `[Onboarding] / Welcome / Default` |
 | `onboarding-welcome-desktop.png` | `[Onboarding] / Welcome / Desktop` |
