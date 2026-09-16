@@ -25,6 +25,7 @@ module Alerts
         required(:condition).filled(:string, included_in?: ALLOWED_CONDITIONS)
         optional(:threshold_value).maybe(:float)
         optional(:window_days).maybe(:integer)
+        optional(:cooldown_minutes).maybe(:integer)
       end
 
       rule(:asset_symbol, :condition) do
@@ -35,6 +36,10 @@ module Alerts
       rule(:threshold_value, :condition) do
         next if DATE_BASED_CONDITIONS.include?(values[:condition])
         key(:threshold_value).failure("requerido") if values[:threshold_value].nil?
+      end
+
+      rule(:cooldown_minutes) do
+        key.failure("debe ser al menos 1 minuto") if value && value < 1
       end
 
       rule(:window_days, :condition) do

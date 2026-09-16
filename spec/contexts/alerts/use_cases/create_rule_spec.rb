@@ -17,6 +17,24 @@ RSpec.describe Alerts::UseCases::CreateRule do
       expect(rule).to be_active
     end
 
+    it "persists the cooldown the form asks for" do
+      result = described_class.call(user: user, params: valid_params.merge(cooldown_minutes: 240))
+
+      expect(result.value!.cooldown_minutes).to eq(240)
+    end
+
+    it "keeps the default cooldown when the form leaves it blank" do
+      result = described_class.call(user: user, params: valid_params.merge(cooldown_minutes: nil))
+
+      expect(result.value!.cooldown_minutes).to eq(AlertRule::DEFAULT_COOLDOWN_MINUTES)
+    end
+
+    it "rejects a cooldown under a minute" do
+      result = described_class.call(user: user, params: valid_params.merge(cooldown_minutes: 0))
+
+      expect(result).to be_failure
+    end
+
     it "uppercases the asset symbol" do
       result = described_class.call(user: user, params: valid_params.merge(asset_symbol: "aapl"))
       expect(result.value!.asset_symbol).to eq("AAPL")

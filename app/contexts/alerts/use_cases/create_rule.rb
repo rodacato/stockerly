@@ -16,6 +16,7 @@ module Alerts
           condition: attrs[:condition],
           threshold_value: attrs[:threshold_value],
           window_days: attrs[:window_days],
+          cooldown_minutes: attrs[:cooldown_minutes] || AlertRule::DEFAULT_COOLDOWN_MINUTES,
           status: :active
         )
         Success(rule)

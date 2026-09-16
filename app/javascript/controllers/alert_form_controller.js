@@ -129,10 +129,6 @@ export default class AlertFormController extends Controller {
         return labels.volumen
       case "day_change_percent":
         return labels.porcentaje
-      case "dividend_ex_date":
-      case "bmv_holiday":
-      case "cete_auction":
-        return labels.calendario
       default:
         return labels.precio
     }
