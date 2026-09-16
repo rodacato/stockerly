@@ -219,6 +219,26 @@ es-MX:
       preview_default: Te avisamos cuando se cumpla la condición.
       preview_label: Así se va a leer
       preview_nota: Te avisa cuando pase. No te dice qué hacer con ello.
+      previews:
+        activo: ACTIVO
+        bmv_holiday: Te avisaremos %{window} día(s) antes de cada festivo de la BMV.
+        cete_auction: Te avisaremos %{window} día(s) antes de la próxima subasta de
+          CETES.
+        day_change_percent: Te avisaremos cuando %{ticker} se mueva %{threshold}%
+          o más en el día.
+        default: Te avisaremos cuando se cumpla la condición en %{ticker}.
+        dividend_ex_date: Te avisaremos %{window} día(s) antes del próximo ex-date
+          de dividendo de %{ticker}.
+        price_crosses_above: Te avisaremos cuando %{ticker} cruce %{threshold} al
+          alza.
+        price_crosses_below: Te avisaremos cuando %{ticker} cruce %{threshold} a la
+          baja.
+        rsi_overbought: Te avisaremos cuando el RSI(14) de %{ticker} esté en %{threshold}
+          o más.
+        rsi_oversold: Te avisaremos cuando el RSI(14) de %{ticker} esté en %{threshold}
+          o menos.
+        volume_spike: Te avisaremos cuando %{ticker} registre volumen de %{threshold}×
+          o más sobre su promedio.
       submit: Crear regla
       titulo: Nueva regla
       ventana: Días antes

@@ -22,7 +22,7 @@ export default class AlertFormController extends Controller {
 
   // price_crosses_above and price_crosses_below share one chip; the direction
   // control picks between them, which is how the artboard draws it.
-  static values = { labels: Object }
+  static values = { labels: Object, previews: Object }
 
   static DIRECTIONAL = ["price_crosses_above", "price_crosses_below"]
 
@@ -83,40 +83,13 @@ export default class AlertFormController extends Controller {
     if (!this.hasPreviewTarget) return
 
     const condition = this.conditionInputTarget.value
-    const ticker = (this.tickerTarget.value || "ACTIVO").toUpperCase()
-    const threshold = this.thresholdTarget.value || "—"
-    const window = this.hasWindowDaysTarget ? (this.windowDaysTarget.value || "—") : "—"
-
-    let text
-    switch (condition) {
-      case "price_crosses_above":
-        text = `Te avisaremos cuando ${ticker} cruce ${threshold} al alza.`
-        break
-      case "price_crosses_below":
-        text = `Te avisaremos cuando ${ticker} cruce ${threshold} a la baja.`
-        break
-      case "rsi_oversold":
-        text = `Te avisaremos cuando el RSI(14) de ${ticker} baje de ${threshold}.`
-        break
-      case "rsi_overbought":
-        text = `Te avisaremos cuando el RSI(14) de ${ticker} pase de ${threshold}.`
-        break
-      case "volume_spike":
-        text = `Te avisaremos cuando ${ticker} registre volumen mayor a ${threshold}× su promedio.`
-        break
-      case "dividend_ex_date":
-        text = `Te avisaremos ${window} día(s) antes del próximo ex-date de dividendo de ${ticker}.`
-        break
-      case "bmv_holiday":
-        text = `Te avisaremos ${window} día(s) antes de cada festivo de la BMV.`
-        break
-      case "cete_auction":
-        text = `Te avisaremos ${window} día(s) antes de la próxima subasta de CETES.`
-        break
-      default:
-        text = `Te avisaremos cuando se cumpla la condición en ${ticker}.`
+    const template = this.previewsValue[condition] || this.previewsValue.default
+    const values = {
+      ticker: (this.tickerTarget.value || this.previewsValue.activo).toUpperCase(),
+      threshold: this.thresholdTarget.value || "—",
+      window: this.hasWindowDaysTarget ? (this.windowDaysTarget.value || "—") : "—"
     }
-    this.previewTarget.textContent = text
+    this.previewTarget.textContent = template.replace(/%\{(\w+)\}/g, (_, key) => values[key] ?? "")
   }
 
   thresholdLabelFor(condition) {
