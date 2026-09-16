@@ -24,17 +24,40 @@ it there.
 
 ## 2. Against the code (D78: the code wins)
 
-- [ ] Every artboard crossed with the views behind its route: structure, states, spacing
-- [ ] Every string exists in `config/locales/es-MX.yml` — never invent copy
+Measure first, decide second, write last — the owner picks before anything is edited.
+
+- [ ] Dump every artboard's text and styles (`resolveInstances: true`) and read the code that renders
+      it: the view, its partials, the helpers, and **whatever writes the copy** — a notification's text
+      lives in its producer (use case, job, domain object), not in the view that lists it
+- [ ] Sample data (tickers, amounts, dates) is not a discrepancy; the *shape* of a string is
+- [ ] One table per screen — `ID | design | code | recommendation` — covering structure, copy format,
+      states and style. The default recommendation is **code**
+- [ ] Where the design says something the code does not, give a recommendation with a reason, never a
+      bare "?": better information for the reader, the beta's failures (unreadable indicators, data-entry
+      friction), ADR-001's descriptive rule
+- [ ] Before recommending, check the behaviour behind the copy. A string that contradicts what the code
+      does is **a bug, not a choice** — fix it in the code (`más de` over an evaluator that uses `>=`)
+- [ ] Separately, list drift **inside the code**: tokens off contract, `text-primary` on
+      `primary-muted` (kit 0.8.1), inputs and buttons that skip `field_classes` / `button_classes`
+- [ ] The owner decides; then:
+  - [ ] code wins → the artboard is amended
+  - [ ] design wins on copy or layout → a code change in the same PR
+  - [ ] design wins on **what information** a screen or notice carries → a `D<n>` in
+        [DECISIONS](DECISIONS.md) first, then the code
+  - [ ] a finding bigger than the flow (app-wide naming, a new column) → a board item, not this PR
+- [ ] Every string on the artboard exists in `config/locales/es-MX.yml` or its producer — never invent copy
 - [ ] Tokens only: zero hex in the flow ([Open kit gaps](ui-kit.CHANGELOG.md#open-kit-gaps) for the one known exception)
 - [ ] D48 vocabulary: Holdings · Watchlist · Tracked · Señales
-- [ ] A disagreement is fixed **in the artboard**; when the code is what should change, a `D<n>` in [DECISIONS](DECISIONS.md) and a board item
-- [ ] Drift found in the code itself goes to the board, not into the brief
 
-## 3. Coverage
+## 3. Coverage — missing screens and states
 
-- [ ] Every route and state in code has an artboard, or the brief's *States not drawn* says why
+- [ ] List every state the code can render for each route: empty, empty-with-a-filter, first run
+      with no holdings, each variant a form shows (fields that appear per option), anything behind a
+      configuration flag (SMTP, VAPID)
+- [ ] A state that changes **layout or content** gets an artboard; a pure string swap goes to the
+      brief's *States not drawn* with its string
 - [ ] A screen drawn with no code gets a build-or-retire verdict (D78's carve-out)
+- [ ] An artboard that draws something the code never produces is removed from the artboard, not kept as intent
 - [ ] Desktop artboards only where the layout diverges (D4); mobile ≥ 390×844, desktop ≥ 1280×800 (D7)
 
 ## 4. Brief and Log
