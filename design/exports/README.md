@@ -112,6 +112,10 @@ existed; both were caught up on 2026-08-24. Every artboard in every flow now has
 locale that has had five separate categories all along. `Seguridad` gets no desktop artboard, the
 same reason `Complete` gets none: both inherit the wizard frame exactly.
 
+**Onboarding re-shot 2026-09-16** — every artboard, mirrored to the code (D78), plus `Setup / Error`.
+`onboarding-integrations-desktop.png` and `onboarding-assets-desktop.png` are gone with their
+artboards: the wizard steps have no `lg:` layout (D4).
+
 **Descubrir re-shot 2026-08-27** — all three artboards, for the same reason Cockpit was: the
 vendored `TopBar` grew 57 → 76 and `TopBarDesktop` 76 → 80.
 
@@ -131,14 +135,13 @@ so an export that is never renamed survives as an orphan nobody can identify.
 | File | Artboard |
 |---|---|
 | `onboarding-setup.png` | `[Onboarding] / Setup / Default` |
+| `onboarding-setup-error.png` | `[Onboarding] / Setup / Error` — the contract's failures, listed as the app renders them |
 | `onboarding-setup-desktop.png` | `[Onboarding] / Setup / Desktop` |
 | `onboarding-integrations.png` | `[Onboarding] / Integrations / Default` |
 | `onboarding-assets.png` | `[Onboarding] / Assets / Default` |
 | `onboarding-seguridad.png` | `[Onboarding] / Seguridad / Default` — the D52 step; it offers TOTP and lets you skip, the enrolment screens live in `auth.pen` |
 | `onboarding-complete.png` | `[Onboarding] / Complete / Default` |
 | `onboarding-welcome.png` | `[Onboarding] / Welcome / Default` |
-| `onboarding-integrations-desktop.png` | `[Onboarding] / Integrations / Desktop` |
-| `onboarding-assets-desktop.png` | `[Onboarding] / Assets / Desktop` |
 | `onboarding-welcome-desktop.png` | `[Onboarding] / Welcome / Desktop` |
 
 | File | Artboard |
