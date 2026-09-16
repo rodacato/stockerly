@@ -8,10 +8,11 @@ module Alerts
     class TriggerNotice
       FALLBACK_TITLE = "Una de tus reglas se disparó".freeze
 
-      def initialize(rule:, asset_symbol:, price: nil)
-        @rule   = rule
-        @symbol = asset_symbol
-        @price  = price
+      def initialize(rule:, asset_symbol:, price: nil, day_change: nil)
+        @rule       = rule
+        @symbol     = asset_symbol
+        @price      = price
+        @day_change = day_change
       end
 
       def title
@@ -33,15 +34,26 @@ module Alerts
         case @rule.condition
         when "price_crosses_above" then "cruzó #{money(@rule.threshold_value)} al alza"
         when "price_crosses_below" then "cruzó #{money(@rule.threshold_value)} a la baja"
-        when "day_change_percent"  then "se movió más de #{threshold}% en el día"
-        when "rsi_overbought"      then "entró en zona de sobrecompra (RSI(14) ≥ #{threshold})"
-        when "rsi_oversold"        then "entró en zona de sobreventa (RSI(14) ≤ #{threshold})"
-        when "volume_spike"        then "operó con volumen #{threshold}× arriba de su promedio"
+        when "day_change_percent"  then day_move
+        when "rsi_overbought"      then "entró en zona de sobrecompra (RSI(14) en #{threshold} o más)"
+        when "rsi_oversold"        then "entró en zona de sobreventa (RSI(14) en #{threshold} o menos)"
+        when "volume_spike"        then "operó con volumen #{threshold}× o más sobre su promedio"
         when "dividend_ex_date"    then "se acerca a su fecha ex-dividendo"
         when "bmv_holiday"         then "La BMV cierra por día festivo"
         when "cete_auction"        then "Banxico publicó una nueva subasta de CETES"
         else                            "cumplió una de tus reglas"
         end
+      end
+
+      # The rule fires in both directions, so the threshold alone hides the one
+      # thing the reader needs: which way it went.
+      def day_move
+        return "se movió #{threshold}% o más en el día" if @day_change.blank?
+
+        change = @day_change.to_d
+        sign = change.negative? ? "−" : "+"
+        amount = ActiveSupport::NumberHelper.number_to_rounded(change.abs, precision: 1)
+        "se movió #{sign}#{amount}% en el día"
       end
 
       def trigger_price

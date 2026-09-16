@@ -47,6 +47,19 @@ RSpec.describe Alerts::UseCases::EvaluateRules do
       end
     end
 
+    context "when a day-change rule triggers" do
+      it "carries the measured move, so the notice can say which way it went" do
+        create(:asset_price_history, asset: asset, date: 1.day.ago.to_date, close: 150.0)
+        create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :day_change_percent, threshold_value: 5, status: :active)
+        published = []
+        EventBus.subscribe(Alerts::Events::AlertRuleTriggered, ->(event) { published << event })
+
+        use_case.call(asset_id: asset.id, new_price: "141.0")
+
+        expect(published.first.context[:day_change].to_d.round(2)).to eq(-6.0)
+      end
+    end
+
     context "when rule is paused" do
       before do
         create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above, threshold_value: 155, status: :paused)

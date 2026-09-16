@@ -30,6 +30,22 @@ RSpec.describe Alerts::Domain::TriggerNotice do
       expect(notice_for(rule, symbol: nil).title).to eq("Banxico publicó una nueva subasta de CETES")
     end
 
+    it "reports the day move with its sign, since the rule fires both ways" do
+      rule = build(:alert_rule, asset_symbol: "BTC", condition: :day_change_percent, threshold_value: 6)
+
+      down = described_class.new(rule: rule, asset_symbol: "BTC", day_change: "-6.43")
+      up   = described_class.new(rule: rule, asset_symbol: "BTC", day_change: "7.01")
+
+      expect(down.title).to eq("BTC se movió −6.4% en el día")
+      expect(up.title).to eq("BTC se movió +7.0% en el día")
+    end
+
+    it "states the threshold as inclusive when the move is unknown" do
+      rule = build(:alert_rule, asset_symbol: "BTC", condition: :day_change_percent, threshold_value: 6)
+
+      expect(notice_for(rule).title).to eq("BTC se movió 6% o más en el día")
+    end
+
     it "falls back to a generic line when the rule is already gone" do
       expect(notice_for(nil, symbol: "AAPL").title).to eq("Una de tus reglas se disparó")
     end

@@ -1,6 +1,8 @@
 module Alerts
   module Domain
     class AlertEvaluator
+      VOLUME_AVERAGE_DAYS = 5
+
       def self.evaluate(rules, asset, new_price)
         rules.select do |rule|
           next false if rule.daily_once? && rule.fired_today?
@@ -62,11 +64,11 @@ module Alerts
         MarketData::Domain::DayChange.from_closes([ previous.close, new_price ])
       end
 
-      def self.average_volume(asset, days: 5)
+      def self.average_volume(asset, days: VOLUME_AVERAGE_DAYS)
         MarketData::Queries::PriceSeries.for(asset).average_volume(days)
       end
 
-      private_class_method :triggered?, :average_volume, :day_change
+      private_class_method :triggered?, :average_volume
     end
   end
 end
