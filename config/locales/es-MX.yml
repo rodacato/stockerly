@@ -1274,6 +1274,7 @@ es-MX:
       confirmar_borrado: "¿Eliminar este movimiento permanentemente?"
       dividendo_linea: "%{fecha} · %{titulos} · %{por_titulo} por título"
       dividendos: Dividendos cobrados
+      dividendos_moneda: Valores en la moneda de cada pago
       dividendos_vacio: Aún no has cobrado dividendos
       dividendos_vacio_cuerpo: Los pagos aparecen aquí cuando la fuente los reporta.
       editar: Editar movimiento
@@ -1289,7 +1290,6 @@ es-MX:
       sin_cartera: No encontramos tu cartera.
       sin_tc: sin TC
       titulo: Historial
-      valores_en: Valores en %{currency}
   profiles:
     flash:
       actualizado: Perfil actualizado.

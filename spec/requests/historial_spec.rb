@@ -24,6 +24,9 @@ RSpec.describe "Historial", type: :request do
 
       expect(response.body).to include("Valores en la moneda de cada operación")
       expect(response.body).to include("Ganancia realizada, en MXN")
+      # Dividends are listed in the currency they were paid in, never converted.
+      expect(response.body).to include("Valores en la moneda de cada pago")
+      expect(response.body).not_to include("Valores en MXN")
     end
 
     it "shows an empty state per section rather than one for the page" do
@@ -74,7 +77,8 @@ RSpec.describe "Historial", type: :request do
       get positions_path
 
       # 10*120*18 − 10*100*17 = 4,600
-      expect(response.body).to include("4,600")
+      expect(response.body).to include("+4,600")
+      expect(response.body).not_to include("MXN 4,600")
     end
 
     it "says so rather than guessing when a leg lost its captured rate" do
