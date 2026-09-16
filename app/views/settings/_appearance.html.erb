@@ -10,7 +10,7 @@
   <div class="<%= card_classes("flex flex-col gap-4 p-4") %>">
     <div data-controller="theme" data-theme-storage-key-value="stockerly.theme"
          class="flex gap-1 rounded-xl bg-bg-muted p-1">
-      <% [ [ "light", "Claro" ], [ "dark", "Oscuro" ], [ "system", "Sistema" ] ].each do |mode, label| %>
+      <% { "light" => t("settings.show.tema_claro"), "dark" => t("settings.show.tema_oscuro"), "system" => t("settings.show.tema_sistema") }.each do |mode, label| %>
         <button type="button" data-theme-target="option" data-theme-mode="<%= mode %>"
                 data-action="click->theme#select"
                 class="flex-1 rounded-lg px-3 py-2 text-sm font-medium text-fg-subtle data-[theme-active=true]:bg-bg-surface data-[theme-active=true]:text-fg-default data-[theme-active=true]:shadow-sm">
