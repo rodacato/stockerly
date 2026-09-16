@@ -519,3 +519,15 @@ masters. Five had drifted, none in shape:
 The six hand-built back-headers are not vendoring leftovers: `HeaderBar` would not replace them,
 because none of their screens renders `components/_header_bar`. They are a code discrepancy,
 handled with the flow's code pass.
+
+### `auth.pen` re-vendored to 1.0.0 — 2026-09-16
+
+A full sync from 0.8.1: tokens equal by value, and both kit components it instances match the
+masters. Both had drifted without changing shape:
+
+- **`ButtonPrimary` and `Field` carried 13px vertical padding** against the kit's 12, and `Field`'s
+  label a 500 weight the kit does not have. Every instance overrides its own text, so only the
+  metrics moved.
+
+The eight `Brand` groups are not a local copy of `Logo`: they are the TopBar's mark-and-wordmark at
+26/18, where the kit's `Logo` is 44/32, and an instance cannot scale. They stay local.
