@@ -188,17 +188,17 @@
               "height": 22,
               "icon": "layout-grid",
               "library": "lucide",
-              "fill": "$fg-subtle"
+              "fill": "$primary"
             },
             {
               "type": "text",
               "id": "JaKDl",
               "name": "t",
-              "fill": "$fg-subtle",
+              "fill": "$primary",
               "content": "Panorama",
               "fontFamily": "$font-sans",
               "fontSize": 11,
-              "fontWeight": "normal"
+              "fontWeight": "600"
             }
           ]
         },
@@ -288,7 +288,7 @@
               "content": "Descubrir",
               "fontFamily": "$font-sans",
               "fontSize": 11,
-              "fontWeight": "600"
+              "fontWeight": "normal"
             }
           ]
         },
@@ -308,17 +308,17 @@
               "height": 22,
               "icon": "settings",
               "library": "lucide",
-              "fill": "$primary"
+              "fill": "$fg-subtle"
             },
             {
               "type": "text",
               "id": "NXLgt",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$fg-subtle",
               "content": "Ajustes",
               "fontFamily": "$font-sans",
               "fontSize": 11,
-              "fontWeight": "600"
+              "fontWeight": "normal"
             }
           ]
         }
@@ -367,7 +367,7 @@
               "fill": "$fg-subtle",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Descripción de lo que hace.",
+              "content": "Qué hace, en una línea.",
               "lineHeight": 1.4,
               "fontFamily": "$font-sans",
               "fontSize": 11,
@@ -466,7 +466,7 @@
               "fill": "$fg-subtle",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Descripción",
+              "content": "Descripción de una línea",
               "lineHeight": 1.4,
               "fontFamily": "$font-sans",
               "fontSize": 11,
@@ -1536,7 +1536,23 @@
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -3228,7 +3244,23 @@
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -3832,7 +3864,23 @@
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -4418,7 +4466,23 @@
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -4518,6 +4582,7 @@
               "id": "XWbVd",
               "name": "Panorama",
               "width": "fill_container",
+              "fill": "$primary-muted",
               "cornerRadius": "$radius-sm",
               "gap": "$space-3",
               "padding": [
@@ -4534,17 +4599,17 @@
                   "height": 20,
                   "icon": "layout-grid",
                   "library": "lucide",
-                  "fill": "$fg-subtle"
+                  "fill": "$primary-hover"
                 },
                 {
                   "type": "text",
                   "id": "o3rIs",
                   "name": "t",
-                  "fill": "$fg-subtle",
+                  "fill": "$primary-hover",
                   "content": "Panorama",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
-                  "fontWeight": "normal"
+                  "fontWeight": "600"
                 }
               ]
             },
@@ -4623,7 +4688,6 @@
               "id": "amfHA",
               "name": "Descubrir",
               "width": "fill_container",
-              "fill": "$primary-muted",
               "cornerRadius": "$radius-sm",
               "gap": "$space-3",
               "padding": [
@@ -4640,17 +4704,17 @@
                   "height": 20,
                   "icon": "compass",
                   "library": "lucide",
-                  "fill": "$primary"
+                  "fill": "$fg-subtle"
                 },
                 {
                   "type": "text",
                   "id": "S32JT",
                   "name": "t",
-                  "fill": "$primary-hover",
+                  "fill": "$fg-subtle",
                   "content": "Descubrir",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
-                  "fontWeight": "600"
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -4659,7 +4723,6 @@
               "id": "ndKuJ",
               "name": "Ajustes",
               "width": "fill_container",
-              "fill": "$primary-muted",
               "cornerRadius": "$radius-sm",
               "gap": "$space-3",
               "padding": [
@@ -4676,17 +4739,17 @@
                   "height": 20,
                   "icon": "settings",
                   "library": "lucide",
-                  "fill": "$primary"
+                  "fill": "$fg-subtle"
                 },
                 {
                   "type": "text",
                   "id": "EAxVV",
                   "name": "t",
-                  "fill": "$primary-hover",
+                  "fill": "$fg-subtle",
                   "content": "Ajustes",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
-                  "fontWeight": "600"
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -4726,7 +4789,7 @@
               "id": "w6bel",
               "name": "Title",
               "fill": "$fg-default",
-              "content": "Ajustes",
+              "content": "Panorama",
               "fontFamily": "$font-display",
               "fontSize": 20,
               "fontWeight": "700",
@@ -4734,14 +4797,13 @@
             },
             {
               "type": "text",
-              "id": "K2aKw",
+              "id": "pfw6Z",
               "name": "Sub",
               "fill": "$fg-subtle",
-              "content": "ESTA INSTANCIA · ÚNICA CUENTA",
+              "content": "Lunes 24 ago · CDMX",
               "fontFamily": "$font-sans",
-              "fontSize": 11,
-              "fontWeight": "normal",
-              "letterSpacing": 0.6
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4805,7 +4867,29 @@
           "type": "ref",
           "ref": "nUyqb",
           "name": "SidebarNav",
-          "height": "fill_container"
+          "height": "fill_container",
+          "descendants": {
+            "XWbVd": {
+              "fill": []
+            },
+            "H8IoaH": {
+              "fill": "$fg-subtle"
+            },
+            "o3rIs": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ndKuJ": {
+              "fill": "$primary-muted"
+            },
+            "u8OZVI": {
+              "fill": "$primary-hover"
+            },
+            "EAxVV": {
+              "fill": "$primary-hover",
+              "fontWeight": "600"
+            }
+          }
         },
         {
           "type": "frame",
@@ -4820,7 +4904,15 @@
               "type": "ref",
               "ref": "oCDzS",
               "name": "TopBarDesktop",
-              "width": "fill_container"
+              "width": "fill_container",
+              "descendants": {
+                "w6bel": {
+                  "content": "Ajustes"
+                },
+                "pfw6Z": {
+                  "content": "ESTA INSTANCIA · ÚNICA CUENTA"
+                }
+              }
             },
             {
               "type": "frame",
@@ -5863,7 +5955,29 @@
           "type": "ref",
           "ref": "nUyqb",
           "name": "SidebarNav",
-          "height": "fill_container"
+          "height": "fill_container",
+          "descendants": {
+            "XWbVd": {
+              "fill": []
+            },
+            "H8IoaH": {
+              "fill": "$fg-subtle"
+            },
+            "o3rIs": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ndKuJ": {
+              "fill": "$primary-muted"
+            },
+            "u8OZVI": {
+              "fill": "$primary-hover"
+            },
+            "EAxVV": {
+              "fill": "$primary-hover",
+              "fontWeight": "600"
+            }
+          }
         },
         {
           "type": "frame",
@@ -5883,7 +5997,7 @@
                 "w6bel": {
                   "content": "Integraciones"
                 },
-                "K2aKw": {
+                "pfw6Z": {
                   "content": "7 FUENTES · 1 CERCA DEL LÍMITE · 2 NUEVAS"
                 }
               }
@@ -7587,7 +7701,29 @@
           "type": "ref",
           "ref": "nUyqb",
           "name": "SidebarNav",
-          "height": "fill_container"
+          "height": "fill_container",
+          "descendants": {
+            "XWbVd": {
+              "fill": []
+            },
+            "H8IoaH": {
+              "fill": "$fg-subtle"
+            },
+            "o3rIs": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ndKuJ": {
+              "fill": "$primary-muted"
+            },
+            "u8OZVI": {
+              "fill": "$primary-hover"
+            },
+            "EAxVV": {
+              "fill": "$primary-hover",
+              "fontWeight": "600"
+            }
+          }
         },
         {
           "type": "frame",
@@ -7607,7 +7743,7 @@
                 "w6bel": {
                   "content": "Estado y mantenimiento"
                 },
-                "K2aKw": {
+                "pfw6Z": {
                   "content": "DIAGNÓSTICO · CONTROLES · CAMBIOS RECIENTES"
                 }
               }
@@ -9058,7 +9194,23 @@
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -9413,7 +9565,23 @@
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -9674,7 +9842,23 @@
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -10329,7 +10513,23 @@
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -10823,7 +11023,23 @@
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -11002,7 +11218,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.9.0"
+      "value": "1.0.0"
     },
     "font-display": {
       "type": "string",

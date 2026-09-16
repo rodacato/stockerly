@@ -583,3 +583,18 @@ masters. All three had drifted, none in shape:
   kit, and the two Integrations instances that leaned on it now override their own step. The kit's
   `Paso 1 de 3` against `OnboardingController::STEPS = 4` is the kit deviation already on the
   board, not this flow's to fix.
+
+### `settings.pen` re-vendored to 1.0.0 — 2026-09-16
+
+A full sync from 0.9.0: tokens equal by value, and the seven kit components it instances match the
+masters. `TopBar` and `HeaderBar` already did; five had drifted, none in shape:
+
+- **`BottomNav` and `SidebarNav` masters had Ajustes lit, and Descubrir half-lit** — its label in
+  600 on the mobile bar, the whole row on the sidebar. Both masters are back to the kit, and each of
+  the twelve screens that instance them lights Ajustes itself.
+- **`TopBarDesktop`'s master carried this flow's title and a restyled subtitle** (11px, tracked). The
+  master is back to the kit, and Hub · Desktop now overrides both lines like the other two desktop
+  screens. The subtitle's style against the code's mono uppercase is the kit deviation already on
+  the board.
+- **`SwitchRow` and `NavRow` carried a different sample description** that every instance already
+  overrides.
