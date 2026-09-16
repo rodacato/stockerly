@@ -11,7 +11,7 @@ module Trading
         currency = user.preferred_currency
 
         fx = Trading::Domain::FxDegradation.new
-        summary = fx.figure { Trading::Domain::PortfolioSummary.prewarmed(portfolio, currency: currency, day_gain: false) }
+        summary = summarize(fx, portfolio, currency)
         gaps = tab == "watchlist" ? watchlist_gaps(user) : {}
         rows = tab == "cartera" ? positions_for(fx, portfolio, currency) : user.watchlist_items.includes(:asset).to_a
         closes = MarketData::Queries::PriceSeries.recent_closes(rows.map(&:asset))
@@ -33,6 +33,14 @@ module Trading
       end
 
       private
+
+      # A card of zeros on a first run says nothing the empty state does not
+      # say better, so a portfolio with nothing open gets no summary.
+      def summarize(fx, portfolio, currency)
+        return nil unless portfolio&.open_positions&.exists?
+
+        fx.figure { Trading::Domain::PortfolioSummary.prewarmed(portfolio, currency: currency, day_gain: false) }
+      end
 
       # Portfolio#convert fails loud on a missing rate — correct for a
       # calculation, wrong for a screen, where it means a 500 instead of your
