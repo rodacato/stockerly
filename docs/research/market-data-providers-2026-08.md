@@ -36,7 +36,7 @@
 ## 1. Per-provider findings
 
 **DataBursatil** — Mexican market (BMV + BIVA), token-authenticated, explicitly non-profit. The only
-sanctioned MX source found. **Verified live 2026-08-26** (`redesign/probes/probe.rb`): base
+sanctioned MX source found. **Verified live 2026-08-26** (`script/research/provider_probe.rb`): base
 `https://api.databursatil.com`, auth is `?token=` in the query string and **nothing else** — header
 auth is rejected. Errors come back as a **map keyed by parameter** (`{"Error": {"concepto": [...]}}`),
 which makes failures diagnosable without parsing prose, and **failed requests cost no credits**.
@@ -287,7 +287,7 @@ client presents a browser handshake, quarantined to exactly the three capabiliti
 
 ## 6. Verified, and what is still open
 
-**Settled by live probes on 2026-08-26** (`redesign/probes/probe.rb`, output under `out/`):
+**Settled by live probes on 2026-08-26** (`script/research/provider_probe.rb`, output under `tmp/probes/`):
 DataBursatil's base URL, auth shape, error format, working endpoints and **credit model** (1 KiB,
 rounded up — a 9,791-byte response cost 10); Alpaca's feed default, its hard 403 inside 15 minutes,
 its absent indices and earnings, and its free news and corporate actions.
@@ -333,7 +333,7 @@ gh project item-list 6 --owner rodacato --format json --limit 200 \
 ```
 
 - Alpha Vantage's BMV coverage via `.MEX` — reported, not probed. Closes when a `.MEX` symbol is
-  fetched and the response recorded under `redesign/probes/out/`.
+  fetched through `script/research/provider_probe.rb` and the response recorded.
 - DataBursatil's `tasas`, `divisas`, `cables` and `noticias` endpoints — not probed. These are the
   two *"not probed"* rows in the table above, and closing them prices the last capabilities that
   provider might serve.
