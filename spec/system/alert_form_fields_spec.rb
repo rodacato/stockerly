@@ -23,6 +23,22 @@ RSpec.describe "Rule form fields", type: :system, js: true do
     expect(page).to have_no_content("Umbral de precio")
   end
 
+  it "previews an inclusive threshold, the way the evaluator compares it" do
+    click_button "RSI sobrecomprado"
+    fill_in "alert[asset_symbol]", with: "nvda"
+    fill_in "alert[threshold_value]", with: "70"
+
+    expect(page).to have_content("Te avisaremos cuando el RSI(14) de NVDA esté en 70 o más.")
+  end
+
+  it "previews a day-change rule instead of the generic sentence" do
+    click_button "% cambio en el día"
+    fill_in "alert[asset_symbol]", with: "BTC"
+    fill_in "alert[threshold_value]", with: "6"
+
+    expect(page).to have_content("Te avisaremos cuando BTC se mueva 6% o más en el día.")
+  end
+
   it "hides the threshold for a calendar rule and the asset for a marketwide one" do
     click_button "Subasta CETES"
 
