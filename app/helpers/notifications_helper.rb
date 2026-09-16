@@ -30,39 +30,25 @@ module NotificationsHelper
     ICON_STYLES.fetch(notification.notification_type, "bg-bg-muted text-fg-subtle")
   end
 
-  # Buckets a relation of notifications into the inbox's date groups, in
-  # display order. Returns an Array<[heading_string, Array<Notification>]>.
-  # Headings follow the mockup: "Hoy · MIÉ 14 MAY 2026", "Ayer · ...",
-  # "Más temprano · DD MMM YYYY y antes".
+  # One group per day, newest first. The owner reads weekly, so collapsing
+  # everything before yesterday into one bucket would hide the dates he reads by.
   def group_notifications_by_date(notifications)
-    today     = Date.current
-    yesterday = today - 1
-
-    buckets = { today: [], yesterday: [], earlier: [] }
-    notifications.each do |n|
-      d = n.created_at.to_date
-      if d == today
-        buckets[:today] << n
-      elsif d == yesterday
-        buckets[:yesterday] << n
-      else
-        buckets[:earlier] << n
-      end
+    notifications.group_by { |n| n.created_at.to_date }.map do |date, notices|
+      [ notification_day_heading(date), notices ]
     end
+  end
 
-    out = []
-    out << [ "Hoy · #{format_date_header(today)}",      buckets[:today] ]      if buckets[:today].any?
-    out << [ "Ayer · #{format_date_header(yesterday)}", buckets[:yesterday] ] if buckets[:yesterday].any?
-    if buckets[:earlier].any?
-      first_date = buckets[:earlier].first.created_at.to_date
-      out << [ "Más temprano · #{format_date_header(first_date)} y antes", buckets[:earlier] ]
-    end
-    out
+  def notification_day_heading(date)
+    return "Hoy" if date == Date.current
+    return "Ayer" if date == Date.current - 1
+
+    format_date_header(date)
   end
 
   def format_date_header(date)
     weekday = DatetimeEsHelper::WEEKDAYS_ES[date.wday]
-    "#{weekday} #{l(date, format: :day_month_year_upper)}"
+    format = date.year == Date.current.year ? :day_month_upper : :day_month_year_upper
+    "#{weekday} #{l(date, format: format)}"
   end
 
   def format_notification_time(notification)

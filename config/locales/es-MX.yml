@@ -1066,6 +1066,13 @@ es-MX:
     reglas: Reglas
     regresar: Regresar
   notificaciones:
+    reportes:
+      cuando: Reporte %{cuando}
+      en_watchlist: en tu watchlist
+      titulo: "%{symbol} reporta el %{fecha}"
+      tus_titulos:
+        one: tienes %{amount} título
+        other: tienes %{amount} títulos
     simbolos:
       agregados: 'Ya están en Tracked: %{symbols}.'
       reintenta: Vuelve a subir tu CSV.
@@ -1105,6 +1112,8 @@ es-MX:
         prices_fixed_income: Las tasas de CETES no se han actualizado en más de %{tiempo}
         prices_mx: Tus acciones mexicanas no se han actualizado en más de %{tiempo}
         prices_us: Tus acciones estadounidenses no se han actualizado en más de %{tiempo}
+    vencimientos:
+      cuerpo: Vence el %{fecha} · %{monto}
   notifications:
     flash:
       eliminadas:
@@ -1117,8 +1126,8 @@ es-MX:
       borrar_leidas: Borrar las leídas
       cetes: CETES
       confirmar_borrado: "¿Borrar los avisos que ya leíste?"
-      descripcion: Todo lo que la app decidió contarte, reglas disparadas, reportes
-        que se acercan, CETES por vencer y avisos del sistema.
+      descripcion: 'Todo lo que la app decidió contarte: reglas disparadas, reportes
+        que se acercan, CETES por vencer y avisos del sistema.'
       marcar_leida: Marcar como leída
       marcar_todas: Marcar leídas
       reportes: Reportes
