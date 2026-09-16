@@ -50,7 +50,7 @@
       "cornerRadius": "$radius-md",
       "gap": "$space-2",
       "padding": [
-        13,
+        12,
         20
       ],
       "justifyContent": "center",
@@ -84,10 +84,10 @@
           "id": "cJADr",
           "name": "FieldLabel",
           "fill": "$fg-subtle",
-          "content": "Etiqueta",
+          "content": "Correo",
           "fontFamily": "$font-sans",
           "fontSize": 13,
-          "fontWeight": "500"
+          "fontWeight": "normal"
         },
         {
           "type": "frame",
@@ -99,7 +99,7 @@
           "stroke": "$border-default",
           "strokeWidth": 1,
           "padding": [
-            13,
+            12,
             14
           ],
           "alignItems": "center",
@@ -109,7 +109,7 @@
               "id": "c8Y8au",
               "name": "Placeholder",
               "fill": "$fg-subtle",
-              "content": "Placeholder",
+              "content": "tu@correo.com",
               "fontFamily": "$font-sans",
               "fontSize": 15,
               "fontWeight": "normal"
@@ -2574,7 +2574,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.8.1"
+      "value": "1.0.0"
     },
     "font-display": {
       "type": "string",
