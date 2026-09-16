@@ -5,7 +5,9 @@
 <%= turbo_frame_tag "rule_sheet" do %>
   <div class="mx-auto flex w-full max-w-lg flex-col">
     <%= form_with url: alerts_path, scope: :alert, method: :post,
-                  data: { controller: "alert-form" }, class: "flex min-h-0 flex-col" do |f| %>
+                  data: { controller: "alert-form",
+                          alert_form_labels_value: %w[precio porcentaje rsi volumen calendario].index_with { |k| t(".etiqueta.#{k}") } },
+                  class: "flex min-h-0 flex-col" do |f| %>
       <div class="flex flex-col gap-5 overflow-y-auto px-1 pb-4">
         <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".titulo") %></h2>
 
@@ -19,7 +21,7 @@
           <%= f.text_field :asset_symbol, value: @rule.asset_symbol,
                 placeholder: t(".activo_placeholder"), autocomplete: "off",
                 data: { alert_form_target: "ticker", action: "input->alert-form#refreshPreview" },
-                class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base uppercase text-fg-default placeholder:font-sans placeholder:normal-case placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-focus" %>
+                class: field_classes(:lg, "font-mono uppercase placeholder:font-sans placeholder:normal-case focus:border-primary") %>
         </label>
 
         <div class="flex flex-col gap-3">
@@ -35,7 +37,7 @@
                           data-condition="<%= slug %>"
                           data-active="<%= first %>"
                           data-action="click->alert-form#selectChip"
-                          class="rounded-full border px-4 py-2 text-sm transition-colors <%= first ? 'border-primary bg-primary-muted font-semibold text-primary' : 'border-border-default text-fg-default' %>">
+                          class="rounded-full border px-4 py-2 text-sm transition-colors <%= first ? 'border-primary bg-primary-muted font-semibold text-primary-hover' : 'border-border-default text-fg-default' %>">
                     <%= label %>
                   </button>
                 <% end %>
@@ -46,19 +48,19 @@
 
         <div class="grid grid-cols-2 gap-3">
           <label class="flex flex-col gap-1.5">
-            <span class="text-sm text-fg-subtle" data-alert-form-target="thresholdLabel"><%= t(".umbral") %></span>
+            <span class="text-sm text-fg-subtle" data-alert-form-target="thresholdLabel"><%= t(".etiqueta.precio") %></span>
             <%= f.number_field :threshold_value, value: @rule.threshold_value,
                   step: "any", inputmode: "decimal", autocomplete: "off",
                   placeholder: "200.00",
                   data: { alert_form_target: "threshold", action: "input->alert-form#refreshPreview" },
-                  class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-focus" %>
+                  class: field_classes(:lg, "font-mono focus:border-primary") %>
           </label>
 
           <label class="flex flex-col gap-1.5">
             <span class="text-sm text-fg-subtle"><%= t(".espera") %></span>
             <%= f.number_field :cooldown_minutes, step: 1, min: 1, inputmode: "numeric",
                   value: @rule.cooldown_minutes,
-                  class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default focus:border-primary focus:outline-none focus:ring-2 focus:ring-focus" %>
+                  class: field_classes(:lg, "font-mono focus:border-primary") %>
           </label>
         </div>
 
@@ -68,7 +70,7 @@
           <span class="text-sm text-fg-subtle"><%= t(".ventana") %></span>
           <%= f.number_field :window_days, step: 1, min: 1, value: @rule.window_days || 7, inputmode: "numeric",
                 data: { alert_form_target: "windowDays", action: "input->alert-form#refreshPreview" },
-                class: "rounded-xl border border-border-default bg-bg-surface px-4 py-3 font-mono text-base text-fg-default focus:border-primary focus:outline-none focus:ring-2 focus:ring-focus" %>
+                class: field_classes(:lg, "font-mono focus:border-primary") %>
         </div>
 
         <%# Only a price cross has a direction. The controller shows this when
@@ -86,7 +88,7 @@
         </div>
 
         <div class="rounded-xl bg-primary-muted p-4">
-          <p class="font-mono text-xs uppercase tracking-widest text-primary"><%= t(".preview_label") %></p>
+          <p class="font-mono text-xs uppercase tracking-widest text-primary-hover"><%= t(".preview_label") %></p>
           <p class="mt-1 text-base font-semibold text-fg-default" data-alert-form-target="preview">
             <%= t(".preview_default") %>
           </p>

@@ -22,6 +22,8 @@ export default class AlertFormController extends Controller {
 
   // price_crosses_above and price_crosses_below share one chip; the direction
   // control picks between them, which is how the artboard draws it.
+  static values = { labels: Object }
+
   static DIRECTIONAL = ["price_crosses_above", "price_crosses_below"]
 
   connect() {
@@ -54,7 +56,7 @@ export default class AlertFormController extends Controller {
       chip.dataset.active = active ? "true" : "false"
       chip.classList.toggle("border-primary", active)
       chip.classList.toggle("bg-primary-muted", active)
-      chip.classList.toggle("text-primary", active)
+      chip.classList.toggle("text-primary-hover", active)
       chip.classList.toggle("font-semibold", active)
       chip.classList.toggle("border-border-default", !active)
       chip.classList.toggle("text-fg-default", !active)
@@ -118,18 +120,21 @@ export default class AlertFormController extends Controller {
   }
 
   thresholdLabelFor(condition) {
+    const labels = this.labelsValue
     switch (condition) {
       case "rsi_oversold":
       case "rsi_overbought":
-        return "Nivel RSI"
+        return labels.rsi
       case "volume_spike":
-        return "Múltiplo del promedio"
+        return labels.volumen
+      case "day_change_percent":
+        return labels.porcentaje
       case "dividend_ex_date":
       case "bmv_holiday":
       case "cete_auction":
-        return "Días antes del evento"
+        return labels.calendario
       default:
-        return "Umbral de precio"
+        return labels.precio
     }
   }
 }

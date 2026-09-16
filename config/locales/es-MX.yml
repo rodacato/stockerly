@@ -172,8 +172,8 @@ es-MX:
       pausar: Pausar regla
       reglas_activas: Reglas activas
       sin_disparos: Todavía no se ha disparado ninguna regla.
-      smtp_nota: Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP,
-        sólo quedan los avisos en la app.
+      smtp_nota: Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP
+        no hay correos; la bandeja y el teléfono siguen avisándote.
       sugerencias:
         cete_auction:
           porque: Banxico subasta CETES cada semana; el aviso llega %{days} días antes,
@@ -206,7 +206,13 @@ es-MX:
       activo_placeholder: NVDA, WALMEX.MX, BTC…
       al_alza: Al alza
       condicion: Condición
-      espera: Espera entre avisos
+      espera: Espera entre avisos · min
+      etiqueta:
+        calendario: Días antes del evento
+        porcentaje: Cambio en el día · %
+        precio: Umbral de precio
+        rsi: Nivel RSI
+        volumen: Múltiplo del promedio
       familia:
         calendario: De calendario
         precio: De precio
@@ -216,7 +222,6 @@ es-MX:
       preview_nota: Te avisa cuando pase. No te dice qué hacer con ello.
       submit: Crear regla
       titulo: Nueva regla
-      umbral: Umbral
       ventana: Días antes
   assets:
     index:
