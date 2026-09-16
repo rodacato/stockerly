@@ -2,7 +2,8 @@ require "capybara/cuprite"
 
 # Only specs that genuinely depend on JS opt in, with `type: :system, js: true`.
 # Everything else stays on rack_test — converting the ~40 existing system specs
-# would cost minutes per run to prove what they already prove.
+# would cost minutes per run to prove what they already prove. Node + vitest was
+# rejected for the controllers: importmap exists to keep Node out of the build.
 #
 # The options go through Rails' own `driven_by`, which has native cuprite
 # support and *overrides* any Capybara.register_driver(:cuprite) we write — such

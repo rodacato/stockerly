@@ -81,7 +81,8 @@ Rails.application.routes.draw do
   # Propshaft owns the /assets prefix. It lets the exact path /assets through to
   # the router, but swallows anything nested under it — /assets/tracked is
   # recognised by the router and still 404s. Sub-screens of Activos therefore
-  # live at their own top-level paths.
+  # live at their own top-level paths. Moving config.assets.prefix instead was
+  # rejected: the Cloudflare cache rules key on asset paths.
   get    "assets",                  to: "assets#index"
   get    "tracked",                 to: "assets#tracked",      as: :tracked_assets
   get    "fx_rate",                 to: "fx_rates#show"
