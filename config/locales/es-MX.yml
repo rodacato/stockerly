@@ -385,7 +385,6 @@ es-MX:
       expirada: Tu sesión expiró. Inicia sesión de nuevo.
       inactividad: Cerramos tu sesión por inactividad.
     volver: Volver a iniciar sesión
-    volver_login: Volver a iniciar sesión
   brand:
     description: 'Tracker self-hosted de patrimonio invertido: acciones, cripto y
       renta fija MX, con multi-divisa MXN/USD correcta.'
@@ -1449,8 +1448,7 @@ es-MX:
         autenticación, son la única forma de entrar a tu instancia.
       titulo: Guarda tus códigos de recuperación
       ya_los_guarde: Ya los guardé, continuar
-      ya_no_disponibles: Los códigos solo se muestran una vez. Genera unos nuevos
-        si los necesitas.
+      ya_no_disponibles: Los códigos solo se muestran una vez. Podrás generar unos nuevos desde Ajustes.
   trade_imports:
     create:
       listo:

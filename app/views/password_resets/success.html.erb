@@ -6,12 +6,12 @@
     <span class="material-symbols-outlined text-3xl" aria-hidden="true">check_circle</span>
   </div>
   <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle"><%= t("auth.exito.kicker") %></p>
-  <h2 class="text-2xl font-extrabold tracking-tight text-fg-default"><%= t("auth.exito.titulo") %></h2>
+  <h1 class="font-display text-3xl font-bold tracking-tight text-fg-default"><%= t("auth.exito.titulo") %></h1>
   <p class="max-w-sm text-sm text-fg-subtle"><%= t("auth.exito.cuerpo") %></p>
 </div>
 
 <%= link_to login_path,
-      class: button_classes(:primary, :md, "mt-6 flex w-full items-center justify-center gap-2 shadow-md") do %>
+      class: button_classes(:primary, :lg, "mt-6 flex w-full items-center justify-center gap-2") do %>
   <%= t("auth.exito.ir") %>
   <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
 <% end %>

@@ -58,7 +58,7 @@ RSpec.describe "PasswordResets", type: :request do
     it "renders the expired view for an invalid token (no redirect)" do
       get reset_password_path("invalid-token")
       expect(response).to have_http_status(:not_found)
-      expect(response.body).to include("Enlace inválido o expirado")
+      expect(Capybara.string(response.body)).to have_css("h1", text: "Enlace inválido o expirado")
       expect(response.body).to include("Solicitar enlace nuevo")
     end
   end
@@ -72,7 +72,7 @@ RSpec.describe "PasswordResets", type: :request do
         password_confirmation: "newpassword123"
       }
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Contraseña actualizada")
+      expect(Capybara.string(response.body)).to have_css("h1", text: "Contraseña actualizada")
       expect(user.reload.authenticate("newpassword123")).to be_truthy
     end
 
