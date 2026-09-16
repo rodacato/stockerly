@@ -29,6 +29,7 @@ module Trading
           signals: signals(positions, watched),
           signals_window_days: MarketData::Queries::NotableObservations::WINDOW_DAYS,
           radar: radar(positions, watched, day_changes),
+          tracks_anything: positions.any? || watched.any?,
           sparkline_closes: closes,
           day_changes: day_changes
         }

@@ -77,7 +77,7 @@
         <%= render "components/empty_state",
                    icon: "bedtime",
                    title: t(".radar_vacio"),
-                   description: t("assets.index.vacio_cartera_cuerpo") %>
+                   description: (t("assets.index.vacio_cartera_cuerpo") unless @tracks_anything) %>
       </div>
     <% end %>
   </section>
