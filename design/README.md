@@ -41,6 +41,7 @@ _Listing verified against the directory 2026-08-27._
 | `brand/` | The exported identity assets the repo consumes: `glyph.svg`, `wordmark.svg`, `wordmark.png` |
 | `_playground.pen` | Experiments — inside the system (kit installed at 0.8.0 on 2026-08-27; holds `Panel · V1…V4`, the login brand-panel exploration) |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |
+| `CHECKLIST.md` | What to run, in order, every time a `.pen` is opened for real work |
 | `exports/` | Canvas PNGs for review — **committed** (they must travel) |
 | `references/` | Local-only device captures — **never commit: real data** (gitignored) |
 
