@@ -5162,7 +5162,7 @@
       "name": "[Onboarding] / Welcome / Default",
       "clip": true,
       "width": 390,
-      "height": 1048,
+      "height": 1098,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -5273,7 +5273,7 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Stockerly está en desarrollo activo. Las cosas pueden cambiar o romperse; si algo no funciona como esperas, probablemente es un bug — repórtalo.",
-                      "lineHeight": 1.5,
+                      "lineHeight": 1.625,
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
@@ -5300,41 +5300,68 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "layout": "vertical",
-                  "gap": "$space-2",
                   "padding": 20,
                   "children": [
                     {
                       "type": "frame",
-                      "id": "CwKY0",
-                      "name": "IW",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "$bg-muted",
-                      "cornerRadius": "$radius-sm",
-                      "justifyContent": "center",
-                      "alignItems": "center",
+                      "id": "kMvMq",
+                      "name": "IconRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        16,
+                        0
+                      ],
                       "children": [
                         {
-                          "type": "icon",
-                          "id": "euKQd",
-                          "name": "Ic",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "chart-column-increasing",
-                          "library": "lucide",
-                          "fill": "$fg-default"
+                          "type": "frame",
+                          "id": "CwKY0",
+                          "name": "IW",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$bg-muted",
+                          "cornerRadius": "$radius-sm",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "euKQd",
+                              "name": "Ic",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "chart-column-increasing",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "type": "text",
-                      "id": "LvhWx",
-                      "name": "T",
-                      "fill": "$fg-default",
-                      "content": "Registra tu primer movimiento",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 16,
-                      "fontWeight": "600"
+                      "type": "frame",
+                      "id": "ZVmcK",
+                      "name": "TitleRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        6,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "LvhWx",
+                          "name": "T",
+                          "fill": "$fg-default",
+                          "content": "Registra tu primer movimiento",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        }
+                      ]
                     },
                     {
                       "type": "text",
@@ -5344,20 +5371,34 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Carga una compra o venta para empezar a calcular tu rendimiento.",
-                      "lineHeight": 1.5,
+                      "lineHeight": 1.625,
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
                     },
                     {
-                      "type": "icon",
-                      "id": "mrmx0",
-                      "name": "Arrow",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "arrow-right",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
+                      "type": "frame",
+                      "id": "UJCw7",
+                      "name": "ArrowRow",
+                      "width": "fill_container",
+                      "padding": [
+                        12,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "mrmx0",
+                          "name": "Arrow",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "arrow-right",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
                     }
                   ]
                 },
@@ -5371,41 +5412,68 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "layout": "vertical",
-                  "gap": "$space-2",
                   "padding": 20,
                   "children": [
                     {
                       "type": "frame",
-                      "id": "JxOO8",
-                      "name": "IW",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "$bg-muted",
-                      "cornerRadius": "$radius-sm",
-                      "justifyContent": "center",
-                      "alignItems": "center",
+                      "id": "KdFOB",
+                      "name": "IconRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        16,
+                        0
+                      ],
                       "children": [
                         {
-                          "type": "icon",
-                          "id": "W6B9Yn",
-                          "name": "Ic",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "eye",
-                          "library": "lucide",
-                          "fill": "$fg-default"
+                          "type": "frame",
+                          "id": "JxOO8",
+                          "name": "IW",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$bg-muted",
+                          "cornerRadius": "$radius-sm",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "W6B9Yn",
+                              "name": "Ic",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "eye",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "type": "text",
-                      "id": "X1iWg",
-                      "name": "T",
-                      "fill": "$fg-default",
-                      "content": "Crea una watchlist",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 16,
-                      "fontWeight": "600"
+                      "type": "frame",
+                      "id": "GHrdA",
+                      "name": "TitleRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        6,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "X1iWg",
+                          "name": "T",
+                          "fill": "$fg-default",
+                          "content": "Crea una watchlist",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        }
+                      ]
                     },
                     {
                       "type": "text",
@@ -5415,20 +5483,34 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Sigue los activos que te interesan sin tenerlos en cartera.",
-                      "lineHeight": 1.5,
+                      "lineHeight": 1.625,
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
                     },
                     {
-                      "type": "icon",
-                      "id": "KbbvY",
-                      "name": "Arrow",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "arrow-right",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
+                      "type": "frame",
+                      "id": "uI2Rl",
+                      "name": "ArrowRow",
+                      "width": "fill_container",
+                      "padding": [
+                        12,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "KbbvY",
+                          "name": "Arrow",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "arrow-right",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
                     }
                   ]
                 },
@@ -5442,41 +5524,68 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "layout": "vertical",
-                  "gap": "$space-2",
                   "padding": 20,
                   "children": [
                     {
                       "type": "frame",
-                      "id": "hszDC",
-                      "name": "IW",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "$bg-muted",
-                      "cornerRadius": "$radius-sm",
-                      "justifyContent": "center",
-                      "alignItems": "center",
+                      "id": "r62IXS",
+                      "name": "IconRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        16,
+                        0
+                      ],
                       "children": [
                         {
-                          "type": "icon",
-                          "id": "Ze27N",
-                          "name": "Ic",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "bell-ring",
-                          "library": "lucide",
-                          "fill": "$fg-default"
+                          "type": "frame",
+                          "id": "hszDC",
+                          "name": "IW",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$bg-muted",
+                          "cornerRadius": "$radius-sm",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "Ze27N",
+                              "name": "Ic",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "bell-ring",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "type": "text",
-                      "id": "NPl1r",
-                      "name": "T",
-                      "fill": "$fg-default",
-                      "content": "Configura una regla",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 16,
-                      "fontWeight": "600"
+                      "type": "frame",
+                      "id": "NdVu3",
+                      "name": "TitleRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        6,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NPl1r",
+                          "name": "T",
+                          "fill": "$fg-default",
+                          "content": "Configura una regla",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        }
+                      ]
                     },
                     {
                       "type": "text",
@@ -5486,20 +5595,34 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Recibe avisos cuando un precio o métrica cruce un umbral.",
-                      "lineHeight": 1.5,
+                      "lineHeight": 1.625,
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
                     },
                     {
-                      "type": "icon",
-                      "id": "y2u8lp",
-                      "name": "Arrow",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "arrow-right",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
+                      "type": "frame",
+                      "id": "hvTi3",
+                      "name": "ArrowRow",
+                      "width": "fill_container",
+                      "padding": [
+                        12,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "y2u8lp",
+                          "name": "Arrow",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "arrow-right",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -5695,7 +5818,7 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Stockerly está en desarrollo activo. Las cosas pueden cambiar o romperse; si algo no funciona como esperas, probablemente es un bug — repórtalo.",
-                      "lineHeight": 1.5,
+                      "lineHeight": 1.625,
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
@@ -5721,41 +5844,68 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "layout": "vertical",
-                  "gap": "$space-2",
                   "padding": 20,
                   "children": [
                     {
                       "type": "frame",
-                      "id": "p6r5Y",
-                      "name": "IW",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "$bg-muted",
-                      "cornerRadius": "$radius-sm",
-                      "justifyContent": "center",
-                      "alignItems": "center",
+                      "id": "JOTS3",
+                      "name": "IconRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        16,
+                        0
+                      ],
                       "children": [
                         {
-                          "type": "icon",
-                          "id": "vlMEV",
-                          "name": "Ic",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "chart-column-increasing",
-                          "library": "lucide",
-                          "fill": "$fg-default"
+                          "type": "frame",
+                          "id": "p6r5Y",
+                          "name": "IW",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$bg-muted",
+                          "cornerRadius": "$radius-sm",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "vlMEV",
+                              "name": "Ic",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "chart-column-increasing",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "type": "text",
-                      "id": "YXuBF",
-                      "name": "T",
-                      "fill": "$fg-default",
-                      "content": "Registra tu primer movimiento",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 16,
-                      "fontWeight": "600"
+                      "type": "frame",
+                      "id": "H4PZWX",
+                      "name": "TitleRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        6,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "YXuBF",
+                          "name": "T",
+                          "fill": "$fg-default",
+                          "content": "Registra tu primer movimiento",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        }
+                      ]
                     },
                     {
                       "type": "text",
@@ -5765,20 +5915,34 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Carga una compra o venta para empezar a calcular tu rendimiento.",
-                      "lineHeight": 1.5,
+                      "lineHeight": 1.625,
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
                     },
                     {
-                      "type": "icon",
-                      "id": "y4OFh",
-                      "name": "Arrow",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "arrow-right",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
+                      "type": "frame",
+                      "id": "S42kT",
+                      "name": "ArrowRow",
+                      "width": "fill_container",
+                      "padding": [
+                        12,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "y4OFh",
+                          "name": "Arrow",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "arrow-right",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
                     }
                   ]
                 },
@@ -5792,41 +5956,68 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "layout": "vertical",
-                  "gap": "$space-2",
                   "padding": 20,
                   "children": [
                     {
                       "type": "frame",
-                      "id": "hIGG4",
-                      "name": "IW",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "$bg-muted",
-                      "cornerRadius": "$radius-sm",
-                      "justifyContent": "center",
-                      "alignItems": "center",
+                      "id": "SeUck",
+                      "name": "IconRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        16,
+                        0
+                      ],
                       "children": [
                         {
-                          "type": "icon",
-                          "id": "di3VF",
-                          "name": "Ic",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "eye",
-                          "library": "lucide",
-                          "fill": "$fg-default"
+                          "type": "frame",
+                          "id": "hIGG4",
+                          "name": "IW",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$bg-muted",
+                          "cornerRadius": "$radius-sm",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "di3VF",
+                              "name": "Ic",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "eye",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "type": "text",
-                      "id": "J96zPb",
-                      "name": "T",
-                      "fill": "$fg-default",
-                      "content": "Crea una watchlist",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 16,
-                      "fontWeight": "600"
+                      "type": "frame",
+                      "id": "WIbTQ",
+                      "name": "TitleRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        6,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "J96zPb",
+                          "name": "T",
+                          "fill": "$fg-default",
+                          "content": "Crea una watchlist",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        }
+                      ]
                     },
                     {
                       "type": "text",
@@ -5836,20 +6027,34 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Sigue los activos que te interesan sin tenerlos en cartera.",
-                      "lineHeight": 1.5,
+                      "lineHeight": 1.625,
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
                     },
                     {
-                      "type": "icon",
-                      "id": "Vbn2S",
-                      "name": "Arrow",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "arrow-right",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
+                      "type": "frame",
+                      "id": "n1J2jN",
+                      "name": "ArrowRow",
+                      "width": "fill_container",
+                      "padding": [
+                        12,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Vbn2S",
+                          "name": "Arrow",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "arrow-right",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
                     }
                   ]
                 },
@@ -5863,41 +6068,68 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "layout": "vertical",
-                  "gap": "$space-2",
                   "padding": 20,
                   "children": [
                     {
                       "type": "frame",
-                      "id": "H1LhW",
-                      "name": "IW",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "$bg-muted",
-                      "cornerRadius": "$radius-sm",
-                      "justifyContent": "center",
-                      "alignItems": "center",
+                      "id": "TDjSv",
+                      "name": "IconRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        16,
+                        0
+                      ],
                       "children": [
                         {
-                          "type": "icon",
-                          "id": "mpD91",
-                          "name": "Ic",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "bell-ring",
-                          "library": "lucide",
-                          "fill": "$fg-default"
+                          "type": "frame",
+                          "id": "H1LhW",
+                          "name": "IW",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$bg-muted",
+                          "cornerRadius": "$radius-sm",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "mpD91",
+                              "name": "Ic",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "bell-ring",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "type": "text",
-                      "id": "gZrL8",
-                      "name": "T",
-                      "fill": "$fg-default",
-                      "content": "Configura una regla",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 16,
-                      "fontWeight": "600"
+                      "type": "frame",
+                      "id": "XoKdO",
+                      "name": "TitleRow",
+                      "width": "fill_container",
+                      "padding": [
+                        0,
+                        0,
+                        6,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "gZrL8",
+                          "name": "T",
+                          "fill": "$fg-default",
+                          "content": "Configura una regla",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        }
+                      ]
                     },
                     {
                       "type": "text",
@@ -5907,20 +6139,34 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Recibe avisos cuando un precio o métrica cruce un umbral.",
-                      "lineHeight": 1.5,
+                      "lineHeight": 1.625,
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
                     },
                     {
-                      "type": "icon",
-                      "id": "qBKM4",
-                      "name": "Arrow",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "arrow-right",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
+                      "type": "frame",
+                      "id": "vJ8AI",
+                      "name": "ArrowRow",
+                      "width": "fill_container",
+                      "padding": [
+                        12,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "qBKM4",
+                          "name": "Arrow",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "arrow-right",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -6055,7 +6301,7 @@
               "name": "Head",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": "$space-1",
+              "gap": "$space-2",
               "children": [
                 {
                   "type": "text",
@@ -6064,7 +6310,7 @@
                   "fill": "$fg-default",
                   "content": "Protege tu cuenta",
                   "fontFamily": "$font-display",
-                  "fontSize": 24,
+                  "fontSize": 30,
                   "fontWeight": "700"
                 },
                 {
@@ -6077,7 +6323,7 @@
                   "content": "Nadie más puede recuperarte: esta instancia es tuya y no tiene mesa de ayuda.",
                   "lineHeight": 1.45,
                   "fontFamily": "$font-sans",
-                  "fontSize": 14,
+                  "fontSize": 16,
                   "fontWeight": "normal"
                 }
               ]
