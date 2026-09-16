@@ -86,7 +86,7 @@ ones may merge into a neighbor.
 | `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default · tranquilo · primera vez), señales (default · vacío), asset detail (análisis · aviso TradingView · mi posición · CETES), consolidado (default · sin historial) (+ Panorama/Consolidado desktop) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings (default · vacía · sin consolidar), watchlist (default · vacía), registrar movimiento (sheet · con teclado · CETES), historial (default · vacío), tracked (default · agregar activo · sin fuente · sin coincidencias), importar CSV (default · revisión · símbolos desconocidos) + Holdings/Registrar/Tracked desktop | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (vacío · default), nueva regla (sheet · calendario), bandeja (default · vacía) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
-| `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, integraciones (+ estados), registros, estado y mantenimiento | **done · in review** — **migrated to kit 0.9.0 on 2026-08-27**: `HeaderBar` promoted from four hand-built copies, the BottomNav's double active state fixed, the `Trabajos` badge dropped against §8's documented reason, D52's `Seguridad` row added |
+| `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, nombre y correo, contraseña, integraciones (+ administrar · estados), registros (+ detalle), estado y mantenimiento, errores (+ detalle), en mantenimiento — no desktop artboard, every screen is one column | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default · todas las canastas · sin datos · calendario agotado) — no desktop artboard, the page reflows | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for
@@ -97,9 +97,9 @@ structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit �
 ### Desktop pass (2026-08-24, kit 0.5.0 — counts re-checked 2026-08-27)
 
 Every flow has been through it. D4 still governs **which** screens get an artboard: one is drawn
-only where the layout genuinely diverges, and the rest reflow — so **11 desktop artboards cover
-five of the seven flows**, not 30. `alerts` and `discover` draw none, which is why the table has
-seven rows and five of them are non-empty. Counted against `design/exports/*-desktop.png`, which holds those 11
+only where the layout genuinely diverges, and the rest reflow — so **8 desktop artboards cover
+four of the seven flows**, not 30. `alerts`, `discover` and `settings` draw none, which is why the table has
+seven rows and four of them are non-empty. Counted against `design/exports/*-desktop.png`, which holds those 8
 plus the kit's own `ui-kit-shell-desktop`.
 
 | Flow | Desktop artboards | Not drawn, because |
@@ -109,7 +109,7 @@ plus the kit's own `ui-kit-shell-desktop`.
 | `cockpit` | Panorama · Consolidado | The asset detail reflows into one column |
 | `assets` | Holdings · Registrar movimiento · Tracked | Watchlist, Holdings vacía and the search states reuse patterns above |
 | `alerts` | — | Its list and sheet are the patterns Cartera and Registrar movimiento settle |
-| `settings` | Hub · Integraciones · Estado | Registros reflows; a real log table is a new component, so a decision |
+| `settings` | — | Every screen is one column inside the shell |
 | `discover` | — | The page is one column at every width |
 
 The shell variant lives in the kit (`SidebarNav`, `TopBarDesktop`, `AppShellDesktop`, 0.5.0) and is
