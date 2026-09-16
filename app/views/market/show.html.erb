@@ -23,7 +23,7 @@
         <% [ t("posicion.tab_analisis"), t("posicion.tab_posicion") ].each_with_index do |label, index| %>
           <button type="button" role="tab" data-tabs-target="tab" data-action="tabs#switch"
                   aria-selected="<%= index.zero? %>"
-                  class="flex-1 rounded-lg px-4 py-2.5 text-center text-sm transition-colors <%= index.zero? ? "bg-bg-surface font-semibold text-fg-default shadow-sm" : "font-normal text-fg-subtle hover:text-fg-default" %>">
+                  class="flex-1 whitespace-nowrap rounded-lg px-4 py-2.5 text-center text-sm transition-colors <%= index.zero? ? "bg-bg-surface font-semibold text-fg-default shadow-sm" : "font-normal text-fg-subtle hover:text-fg-default" %>">
             <%= label %>
           </button>
         <% end %>
