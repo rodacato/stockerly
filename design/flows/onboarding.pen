@@ -50,7 +50,7 @@
       "cornerRadius": "$radius-md",
       "gap": "$space-2",
       "padding": [
-        13,
+        12,
         20
       ],
       "justifyContent": "center",
@@ -84,10 +84,10 @@
           "id": "EAmR6",
           "name": "FieldLabel",
           "fill": "$fg-subtle",
-          "content": "Etiqueta",
+          "content": "Correo",
           "fontFamily": "$font-sans",
           "fontSize": 13,
-          "fontWeight": "500"
+          "fontWeight": "normal"
         },
         {
           "type": "frame",
@@ -99,7 +99,7 @@
           "stroke": "$border-default",
           "strokeWidth": 1,
           "padding": [
-            13,
+            12,
             14
           ],
           "alignItems": "center",
@@ -109,7 +109,7 @@
               "id": "oVSsu",
               "name": "Placeholder",
               "fill": "$fg-subtle",
-              "content": "Placeholder",
+              "content": "tu@correo.com",
               "fontFamily": "$font-sans",
               "fontSize": 15,
               "fontWeight": "normal"
@@ -748,7 +748,7 @@
               "id": "zm21X",
               "name": "Step",
               "fill": "$fg-subtle",
-              "content": "Paso 1 de 4",
+              "content": "Paso 1 de 3",
               "fontFamily": "$font-mono",
               "fontSize": 12,
               "fontWeight": "normal"
@@ -758,7 +758,7 @@
               "id": "nLwuL",
               "name": "Pct",
               "fill": "$fg-subtle",
-              "content": "25%",
+              "content": "33%",
               "fontFamily": "$font-mono",
               "fontSize": 12,
               "fontWeight": "normal"
@@ -779,7 +779,7 @@
               "type": "frame",
               "id": "ePQce",
               "name": "Bar",
-              "width": 80,
+              "width": 100,
               "height": 6,
               "fill": "$primary",
               "cornerRadius": "$radius-sm"
@@ -819,6 +819,12 @@
               "name": "Progress",
               "width": "fill_container",
               "descendants": {
+                "zm21X": {
+                  "content": "Paso 1 de 4"
+                },
+                "nLwuL": {
+                  "content": "25%"
+                },
                 "ePQce": {
                   "width": 80
                 }
@@ -2992,6 +2998,12 @@
                   "name": "Progress",
                   "width": "fill_container",
                   "descendants": {
+                    "zm21X": {
+                      "content": "Paso 1 de 4"
+                    },
+                    "nLwuL": {
+                      "content": "25%"
+                    },
                     "ePQce": {
                       "width": 80
                     }
@@ -5196,7 +5208,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.9.0"
+      "value": "1.0.0"
     },
     "font-display": {
       "type": "string",

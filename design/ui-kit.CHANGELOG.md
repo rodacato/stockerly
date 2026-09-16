@@ -570,3 +570,16 @@ masters. Three had drifted, none in shape:
 `WaveRow` is not a kit component and stays local. Later the same day, with the flow's code pass,
 the desktop artboard was retired (the page reflows), which left `SidebarNav` and `TopBarDesktop`
 with no instance; both were removed from the file rather than vendored unused.
+
+### `onboarding.pen` re-vendored to 1.0.0 — 2026-09-16
+
+A full sync from 0.9.0: tokens equal by value, and the three kit components it instances match the
+masters. All three had drifted, none in shape:
+
+- **`ButtonPrimary` and `Field` carried 13px vertical padding** against the kit's 12, and `Field`'s
+  label a 500 weight the kit does not have — the same drift `auth.pen` had. Every instance
+  overrides its own text, so only the metrics moved.
+- **`Stepper`'s master carried this flow's step** (`Paso 1 de 4`, 25%). The master is back to the
+  kit, and the two Integrations instances that leaned on it now override their own step. The kit's
+  `Paso 1 de 3` against `OnboardingController::STEPS = 4` is the kit deviation already on the
+  board, not this flow's to fix.
