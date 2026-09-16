@@ -55,6 +55,14 @@ RSpec.describe "Setup", type: :request, setup_bypass: false do
         post setup_path, params: valid_params.merge(email: "bad")
         expect(response).to have_http_status(:unprocessable_content)
       end
+
+      it "keeps the name and email the reader already typed, but never the password" do
+        post setup_path, params: valid_params.merge(email: "bad")
+
+        expect(response.body).to include(%(value="#{valid_params[:full_name]}"))
+        expect(response.body).to include(%(value="bad"))
+        expect(response.body).not_to include(%(value="#{valid_params[:password]}"))
+      end
     end
 
     context "when users already exist" do
