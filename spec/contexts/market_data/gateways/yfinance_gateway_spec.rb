@@ -87,6 +87,78 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
     end
   end
 
+  describe "#fetch_overview" do
+    # A trimmed copy of what yfinance 1.7.0 answered for AAPL on 2026-09-16.
+    let(:info) do
+      { "symbol" => "AAPL", "quoteType" => "EQUITY", "longName" => "Apple Inc.",
+        "longBusinessSummary" => "Apple Inc. designs, manufactures, and markets smartphones.",
+        "sector" => "Technology", "industry" => "Consumer Electronics", "exchange" => "NMS",
+        "currency" => "USD", "country" => "United States",
+        "marketCap" => 4851251544064, "trailingPE" => 38.16418, "forwardPE" => 34.688007,
+        "pegRatio" => 2.67, "bookValue" => 7.36, "trailingEps" => 8.71, "dividendRate" => 1.08,
+        "dividendYield" => 0.33, "profitMargins" => 0.27618998, "operatingMargins" => 0.32623002,
+        "returnOnEquity" => 1.4875101, "returnOnAssets" => 0.27082002, "totalRevenue" => 466822987776,
+        "grossProfits" => 227123003392, "ebitda" => 167959003136, "revenuePerShare" => 31.707,
+        "beta" => 1.085, "sharesOutstanding" => 14594180000, "enterpriseToRevenue" => 10.406,
+        "enterpriseToEbitda" => 28.921, "priceToSalesTrailing12Months" => 10.392058,
+        "priceToBook" => 45.164402, "fiftyTwoWeekHigh" => 344.57, "fiftyTwoWeekLow" => 236.65,
+        "targetMeanPrice" => 327.1964, "earningsQuarterlyGrowth" => 0.271, "revenueGrowth" => 0.164 }
+    end
+
+    it "asks the bridge for the overview of the symbol" do
+      stub_bridge(info)
+
+      gateway.fetch_overview("AAPL")
+
+      expect(PythonRunner).to have_received(:call).with("yahoo.py", "overview", "AAPL")
+    end
+
+    it "returns the fields under the names AssetFundamental already stores" do
+      stub_bridge(info)
+
+      overview = gateway.fetch_overview("AAPL").value!
+
+      expect(overview).to include(symbol: "AAPL", name: "Apple Inc.", sector: "Technology",
+                                  industry: "Consumer Electronics", currency: "USD", country: "United States")
+      expect(overview).to include(eps: BigDecimal("8.71"), pe_ratio: BigDecimal("38.16418"),
+                                  book_value: BigDecimal("7.36"), market_cap: BigDecimal("4851251544064"),
+                                  profit_margin: BigDecimal("0.27618998"), beta: BigDecimal("1.085"),
+                                  fifty_two_week_high: BigDecimal("344.57"),
+                                  quarterly_revenue_growth: BigDecimal("0.164"))
+    end
+
+    # Every other ratio in `info` is a fraction; this one is already a percent,
+    # and FundamentalsHelper formats a fraction.
+    it "stores the dividend yield as a fraction, not as Yahoo's percent" do
+      stub_bridge(info)
+
+      expect(gateway.fetch_overview("AAPL").value![:dividend_yield]).to eq(BigDecimal("0.0033"))
+    end
+
+    # Yahoo's venue codes (NMS, NYQ, MEX) read worse than the catalogue's own
+    # exchange, which the Ficha falls back to.
+    it "leaves the exchange to the catalogue" do
+      stub_bridge(info)
+
+      expect(gateway.fetch_overview("AAPL").value!).not_to have_key(:exchange)
+    end
+
+    it "leaves a field Yahoo does not carry empty rather than zero" do
+      stub_bridge(info.except("trailingEps", "dividendYield"))
+
+      overview = gateway.fetch_overview("SPY").value!
+
+      expect(overview[:eps]).to be_nil
+      expect(overview[:dividend_yield]).to be_nil
+    end
+
+    it "passes a bridge failure through" do
+      stub_bridge_failure(:not_found)
+
+      expect(gateway.fetch_overview("NOPE")).to be_failure
+    end
+  end
+
   describe "#search_tickers" do
     it "maps the bridge payload to the shape Administration consumes" do
       stub_bridge([ { "symbol" => "ALAB", "name" => "Astera Labs, Inc.", "quote_type" => "EQUITY",

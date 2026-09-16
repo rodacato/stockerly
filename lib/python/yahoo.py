@@ -150,6 +150,13 @@ def statements(ticker, kind):
     }
 
 
+# Sent whole: the Ruby side picks and renames the fields, where a spec can pin it.
+# An unknown ticker still answers a near-empty dict, so quoteType is the tell.
+def overview(ticker):
+    info = ticker.info or {}
+    return info if info.get("quoteType") else None
+
+
 def search(yfinance, query, limit=8):
     return [
         {
@@ -166,7 +173,7 @@ def search(yfinance, query, limit=8):
 
 def main():
     if len(sys.argv) < 3:
-        fail("usage: yahoo.py <quote|history|dividends|splits|earnings|search> <symbol|query> [period]", "invalid_request")
+        fail("usage: yahoo.py <quote|history|dividends|splits|earnings|overview|search> <symbol|query> [period]", "invalid_request")
 
     command, argument = sys.argv[1], sys.argv[2]
     period = sys.argv[3] if len(sys.argv) > 3 else "1mo"
@@ -195,6 +202,8 @@ def main():
             payload = actions(ticker.splits, "ratio")
         elif command == "earnings":
             payload = earnings(ticker)
+        elif command == "overview":
+            payload = overview(ticker)
         elif command in STATEMENT_FRAMES:
             payload = statements(ticker, command)
         else:
