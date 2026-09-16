@@ -57,8 +57,8 @@ RSpec.describe MarketHelper, type: :helper do
 
   describe "#observation_dot_class" do
     it "maps accents to static Tailwind dot classes" do
-      expect(helper.observation_dot_class("pos")).to eq("bg-emerald-500")
-      expect(helper.observation_dot_class("warn")).to eq("bg-amber-500")
+      expect(helper.observation_dot_class("pos")).to eq("bg-positive")
+      expect(helper.observation_dot_class("warn")).to eq("bg-warning")
       expect(helper.observation_dot_class("neutral")).to eq("bg-primary")
     end
   end

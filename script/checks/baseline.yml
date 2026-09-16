@@ -6,16 +6,9 @@
 # `count` is per file. Exceed it and the run fails.
 
 design-tokens:
-  # #489 counted these; #548 migrated the opacity modifiers around them and #561
-  # the tail. The helpers and the Stimulus controllers hold state colours that
-  # never got a semantic token; the two market charts inline an SVG palette;
-  # shared/ carries an amber warning box older than the token set.
-  # Three controllers left the tree in #561 because nothing mounted them, taking
-  # onboarding_form_controller.js and selectable_card_controller.js off this list.
-  app/helpers/market_helper.rb:
-    count: 11
-  app/views/market/_analyst_target.html.erb:
-    count: 3
+  # #489 counted these; #548, #561 and the cockpit pass migrated or deleted the
+  # rest. What remains is the flash box's green/red pair and the watchlist
+  # button's emerald, both older than the token set.
   app/views/shared/_flash_message.html.erb:
     count: 1
   app/views/watchlist_items/_watchlist_button.html.erb:
