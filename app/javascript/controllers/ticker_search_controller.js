@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class TickerSearchController extends Controller {
   static targets = ["input", "results", "symbol", "name", "assetType", "exchange", "country", "sector"]
-  static values = { url: String, emptyText: String, loadingText: String, errorText: String }
+  static values = { url: String, emptyText: String, loadingText: String, errorText: String, typeLabels: Object }
 
   connect() {
     this.debounceTimer = null
@@ -70,7 +70,7 @@ export default class TickerSearchController extends Controller {
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
             <span class="font-semibold text-sm text-fg-default">${this.escapeHtml(r.symbol)}</span>
-            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-bg-muted text-fg-subtle">${r.asset_type.toUpperCase()}</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-bg-muted text-fg-subtle">${this.escapeHtml((this.typeLabelsValue[r.asset_type] || r.asset_type).toUpperCase())}</span>
           </div>
           <p class="text-xs text-fg-subtle truncate">${this.escapeHtml(r.name)}</p>
         </div>
