@@ -6,6 +6,9 @@ module MarketData
     # A Basic key serves the SIP consolidated tape for anything older than 15
     # minutes and returns 403 for anything newer, so this gateway covers
     # end-of-day history and never current prices.
+    #
+    # Market Data API only: Alpaca is a broker, so the stored key must never
+    # carry trading permissions — trade execution is a product non-goal.
     class AlpacaGateway < MarketDataGateway
       include PerformsRequests
       include ResolvesApiKey
