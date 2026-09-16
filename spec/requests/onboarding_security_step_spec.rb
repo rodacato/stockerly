@@ -13,6 +13,13 @@ RSpec.describe "Onboarding · the security step", type: :request do
     expect(OnboardingController::STEPS).to eq(4)
   end
 
+  it "sits inside the wizard's column, like the other steps" do
+    get onboarding_security_path
+
+    expect(response.body).to include("<main")
+    expect(response.body).to include("<title>#{I18n.t('onboarding.security.titulo')} | Stockerly</title>")
+  end
+
   it "sits between the assets step and the summary" do
     post onboarding_assets_path, params: { symbols: [] }
 

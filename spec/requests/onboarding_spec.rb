@@ -34,6 +34,14 @@ RSpec.describe "Onboarding", type: :request do
       get onboarding_assets_path
       expect(response).to have_http_status(:ok)
     end
+
+    # Skipping the assets must not skip the security step behind them (D52).
+    it "skips to the security step, not past it" do
+      get onboarding_assets_path
+
+      expect(response.body).to include(%(href="#{onboarding_security_path}"))
+      expect(response.body).not_to include(%(href="#{onboarding_complete_path}"))
+    end
   end
 
   describe "POST /onboarding/assets" do
@@ -52,6 +60,30 @@ RSpec.describe "Onboarding", type: :request do
     it "renders the summary" do
       get onboarding_complete_path
       expect(response).to have_http_status(:ok)
+    end
+
+    it "is the last of the four steps" do
+      get onboarding_complete_path
+
+      expect(response.body).to include("Paso 4 de 4")
+    end
+
+    it "leads back to the step before it, which is security" do
+      get onboarding_complete_path
+
+      expect(response.body).to include(%(href="#{onboarding_security_path}"))
+    end
+
+    # A keyless source cannot take a key, so counting it promises a total the
+    # reader can never reach.
+    it "counts only the sources that take a key" do
+      create(:integration, provider_name: "Alpaca")
+      create(:integration, :keyless, provider_name: "Finnhub")
+      create(:integration, :keyless, provider_name: "Yahoo Finance")
+
+      get onboarding_complete_path
+
+      expect(response.body).to include("1/2")
     end
   end
 

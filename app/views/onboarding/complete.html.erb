@@ -2,7 +2,7 @@
 
 <main class="flex-1 flex flex-col items-center py-10 px-4">
   <div class="w-full max-w-2xl">
-    <%= render "onboarding/step_header", step: 3 %>
+    <%= render "onboarding/step_header", step: 4 %>
 
     <div class="mb-8 text-center">
       <div class="size-16 rounded-full bg-positive-bg flex items-center justify-center mx-auto mb-4">
@@ -52,7 +52,7 @@
       <% end %>
       <%= button_to t(".sin_sincronizar"), onboarding_launch_path(launch_sync: "false"), method: :post,
             class: "text-sm font-medium text-fg-subtle hover:text-primary transition-colors py-2" %>
-      <%= link_to onboarding_assets_path, class: "inline-flex items-center gap-1 text-sm font-medium text-fg-subtle hover:text-primary transition-colors" do %>
+      <%= link_to onboarding_security_path, class: "inline-flex items-center gap-1 text-sm font-medium text-fg-subtle hover:text-primary transition-colors" do %>
         <span class="material-symbols-outlined text-base">arrow_back</span>
         <%= t(".atras") %>
       <% end %>
