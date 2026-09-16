@@ -21,13 +21,39 @@ RSpec.describe "TOTP enrollment", type: :request do
       expect(Capybara.string(response.body)).to have_css("header a[aria-label='Regresar'][href='#{settings_path}']")
     end
 
+    it "renders inside the app shell once onboarded" do
+      get totp_enrollment_path
+
+      expect(response.body).to include(%(aria-label="#{I18n.t('nav.principal')}"))
+    end
+
+    # Mid-wizard, every app link bounces back to step 1, so the shell would
+    # offer exits that all lead to the same place (D122, after D121).
     context "when opened from the setup wizard" do
       before { user.update!(onboarded_at: nil) }
 
-      it "leads back into the wizard, not to Ajustes" do
+      it "stays inside the wizard's frame, on its security step" do
         get totp_enrollment_path
 
-        expect(Capybara.string(response.body)).to have_css("header a[aria-label='Regresar'][href='#{onboarding_complete_path}']")
+        expect(response.body).not_to include(%(aria-label="#{I18n.t('nav.principal')}"))
+        expect(response.body).to include("Paso 3 de 4")
+      end
+
+      it "leads on into the wizard, not to Ajustes" do
+        get totp_enrollment_path
+
+        expect(response.body).to include(%(href="#{onboarding_complete_path}"))
+        expect(response.body).not_to include(%(href="#{settings_path}"))
+      end
+
+      it "shows the recovery codes inside the wizard too" do
+        get totp_enrollment_path
+        post totp_enrollment_path, params: { code: ROTP::TOTP.new(user.reload.otp_secret).now }
+        get recovery_codes_path
+
+        expect(response.body).not_to include(%(aria-label="#{I18n.t('nav.principal')}"))
+        expect(response.body).to include("Paso 3 de 4")
+        expect(response.body).to include(%(href="#{onboarding_complete_path}"))
       end
     end
 
