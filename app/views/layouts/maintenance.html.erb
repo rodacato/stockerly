@@ -1,0 +1,16 @@
+<%# The 503 page's whole chrome: the brand, the page, the claim. Nothing to
+    click but the login link the page itself carries. %>
+<% content_for(:body) do %>
+  <div class="flex min-h-screen flex-col bg-bg-canvas">
+    <header class="flex justify-center px-4 py-6">
+      <%= render "shared/logo", height_class: "h-8" %>
+    </header>
+
+    <%= yield %>
+
+    <footer class="px-4 py-6 text-center font-mono text-xs text-fg-subtle">
+      <%= t("auth.open_source") %>
+    </footer>
+  </div>
+<% end %>
+<%= render template: "layouts/application" %>

@@ -27,6 +27,18 @@ RSpec.describe "Maintenance mode", type: :request do
     expect(response.body).not_to include("Under Maintenance", "temporarily unavailable")
   end
 
+  # The page wore the public navbar and footer, which were English ("Login",
+  # "Open source under MIT License") and existed for no other screen.
+  it "carries only the brand, the message and the door back in" do
+    enable!
+
+    get dashboard_path
+
+    expect(response.body).not_to include(">Login<", "Open source under MIT License", "Project")
+    expect(response.body).to include(I18n.t("auth.open_source"))
+    expect(response.body.scan("<main").size).to eq(1)
+  end
+
   # D1-onb removed the admin framing: on a single-user instance there is no
   # administrator, there is the person whose box this is.
   it "addresses the owner, not an administrator" do
