@@ -21,6 +21,14 @@ RSpec.describe "The asset detail header", type: :request do
     expect(response.body).to include("MXN 3,680")
   end
 
+  # The desktop bar and the phone's sr-only heading fell back to the lit tab.
+  it "names the asset, not the tab it belongs to, in the page heading" do
+    get market_asset_path(asset.symbol)
+
+    headings = Capybara.string(response.body).all("h1").map { |h1| h1.text.strip }
+    expect(headings).to eq(%w[NVDA NVDA])
+  end
+
   it "omits the approximation for an asset that already quotes in it" do
     mxn = create(:asset, :stock, symbol: "WALMEX", currency: "MXN", current_price: 70, sync_status: :active)
 
