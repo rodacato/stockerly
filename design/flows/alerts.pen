@@ -124,13 +124,12 @@
           "width": 44,
           "height": 44,
           "cornerRadius": "$radius-md",
-          "layout": "none",
+          "justifyContent": "center",
+          "alignItems": "center",
           "children": [
             {
               "type": "icon",
               "id": "EIfs7",
-              "x": 12,
-              "y": 12,
               "name": "Bell",
               "width": 20,
               "height": 20,
@@ -139,31 +138,15 @@
               "fill": "$fg-subtle"
             },
             {
-              "type": "frame",
-              "id": "iskR5",
-              "x": 23,
-              "y": 9,
-              "name": "Badge",
+              "type": "ellipse",
+              "id": "r1I7h",
+              "layoutPosition": "absolute",
+              "x": 26,
+              "y": 10,
+              "name": "UnreadDot",
               "fill": "$negative",
-              "cornerRadius": 99,
-              "padding": [
-                1,
-                5
-              ],
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Ht5pe",
-                  "name": "t",
-                  "fill": "$fg-inverse",
-                  "content": "3",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 9,
-                  "fontWeight": "700"
-                }
-              ]
+              "width": 8,
+              "height": 8
             }
           ]
         }
@@ -205,17 +188,17 @@
               "height": 22,
               "icon": "layout-grid",
               "library": "lucide",
-              "fill": "$fg-subtle"
+              "fill": "$primary"
             },
             {
               "type": "text",
               "id": "rL1Sg",
               "name": "t",
-              "fill": "$fg-subtle",
+              "fill": "$primary",
               "content": "Panorama",
               "fontFamily": "$font-sans",
               "fontSize": 11,
-              "fontWeight": "normal"
+              "fontWeight": "600"
             }
           ]
         },
@@ -265,17 +248,17 @@
               "height": 22,
               "icon": "bell",
               "library": "lucide",
-              "fill": "$primary"
+              "fill": "$fg-subtle"
             },
             {
               "type": "text",
               "id": "yHFcJ",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$fg-subtle",
               "content": "Reglas",
               "fontFamily": "$font-sans",
               "fontSize": 11,
-              "fontWeight": "600"
+              "fontWeight": "normal"
             }
           ]
         },
@@ -1252,7 +1235,23 @@
           "type": "ref",
           "ref": "fSLY4",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "io1U1": {
+              "fill": "$fg-subtle"
+            },
+            "rL1Sg": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "nlqo5": {
+              "fill": "$primary"
+            },
+            "yHFcJ": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -1374,6 +1373,9 @@
           "descendants": {
             "N5SoFK": {
               "content": "Bandeja"
+            },
+            "ZMFXA": {
+              "enabled": false
             }
           }
         },
@@ -1904,7 +1906,23 @@
           "type": "ref",
           "ref": "fSLY4",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "io1U1": {
+              "fill": "$fg-subtle"
+            },
+            "rL1Sg": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "nlqo5": {
+              "fill": "$primary"
+            },
+            "yHFcJ": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -2548,7 +2566,7 @@
           "name": "TopBar",
           "width": "fill_container",
           "descendants": {
-            "iskR5": {
+            "r1I7h": {
               "enabled": false
             }
           }
@@ -2945,7 +2963,23 @@
           "type": "ref",
           "ref": "fSLY4",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "io1U1": {
+              "fill": "$fg-subtle"
+            },
+            "rL1Sg": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "nlqo5": {
+              "fill": "$primary"
+            },
+            "yHFcJ": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -3083,7 +3117,6 @@
           "id": "ZMFXA",
           "name": "Accion",
           "height": 44,
-          "cornerRadius": "$radius-md",
           "gap": 5,
           "padding": [
             0,
@@ -3164,7 +3197,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.9.0"
+      "value": "1.0.0"
     },
     "font-display": {
       "type": "string",
