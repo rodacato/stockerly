@@ -110,13 +110,15 @@ es-MX:
       flash:
         guardados: Ajustes guardados.
       show:
-        banner_activo: La app está bloqueada y muestra un banner. Tu sesión sigue
-          viva.
+        activado: activado
+        banner_activo: Quien no haya iniciado sesión ve la página de mantenimiento.
+          Tu sesión sigue viva.
         cache: Caché
         cambios: Cambios recientes
         correo: Envío de correo
         correo_desc: Permite que salgan digests, avisos urgentes y recuperación de
           contraseña.
+        desactivado: desactivado
         desarrollador: Modo desarrollador
         desarrollador_desc: Muestra la sección de errores con la traza completa de
           cada fallo. No cambia lo que se registra.
@@ -131,7 +133,8 @@ es-MX:
         errores: Errores (24 h)
         interruptores: Interruptores de la instancia
         mantenimiento: Modo mantenimiento
-        mantenimiento_desc: Bloquea la app y muestra un banner. Tu sesión sigue viva.
+        mantenimiento_desc: Muestra la página de mantenimiento a quien no haya iniciado
+          sesión. Tu sesión sigue viva.
         manual: Sincronización manual
         manual_desc: Encola ahora la fuente que elijas, sin esperar a su siguiente
           corrida. Respeta el límite de llamadas configurado.
@@ -140,7 +143,6 @@ es-MX:
         sync_desc: Deja correr los jobs de precios, CETES, cripto y TC.
         titulo: Estado y mantenimiento
         trabajos: Trabajos
-        ver_todos: Ver todos en Registros
         version: Versión
       trigger_data_source:
         desconocida: Fuente de datos desconocida.

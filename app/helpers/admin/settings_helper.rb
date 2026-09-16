@@ -1,28 +1,24 @@
 module Admin
   module SettingsHelper
-    SETTING_LABELS = {
-      "maintenance_mode"            => "modo_mantenimiento",
-      "auto_sync_enabled"           => "sincronizacion_automatica",
-      "email_notifications_enabled" => "notificaciones_por_correo"
+    SETTING_LABEL_KEYS = {
+      "maintenance_mode"            => "mantenimiento",
+      "auto_sync_enabled"           => "sync",
+      "email_notifications_enabled" => "correo",
+      "developer_mode"              => "desarrollador"
     }.freeze
 
     def setting_audit_key(key)
-      SETTING_LABELS[key.to_s] || key.to_s
+      label = SETTING_LABEL_KEYS[key.to_s]
+      label ? t("admin.settings.show.#{label}") : key.to_s
     end
 
     def setting_audit_value(value)
       case value.to_s
-      when "true"  then "on"
-      when "false" then "off"
+      when "true"  then t("admin.settings.show.activado")
+      when "false" then t("admin.settings.show.desactivado")
       when "", nil then "—"
       else value.to_s
       end
-    end
-
-    # "hace 6 días · 15 MAY 2026" — combined relative + absolute (Stripe-style).
-    def setting_applied_label(time)
-      return "sin cambios registrados" unless time
-      "#{relative_age(time)} · #{absolute_stamp(time)}"
     end
   end
 end

@@ -8,7 +8,7 @@
   <%# `ajustes-estado` puts the diagnosis first: what the instance is, before
       what you can change about it. %>
   <section class="flex flex-col gap-3">
-    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".diagnostico") %></h2>
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".diagnostico") %></h2>
     <dl class="<%= card_classes("divide-y divide-border-default px-4") %>">
       <% [ [ t(".version"),     @diagnostics[:version] ],
            [ "Ruby",            @diagnostics[:ruby] ],
@@ -28,7 +28,7 @@
   </section>
 
   <section class="flex flex-col gap-3">
-    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".interruptores") %></h2>
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".interruptores") %></h2>
 
     <%# No Guardar button: the artboard has none, and the controller already
         accepts a partial payload, so each switch is its own PATCH. The audit
@@ -65,7 +65,7 @@
       does not draw them, but losing them leaves a failed source with no way
       back before its next scheduled run. %>
   <section class="flex flex-col gap-3">
-    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".manual") %></h2>
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".manual") %></h2>
     <p class="text-sm text-fg-subtle"><%= t(".manual_desc") %></p>
     <div class="flex flex-wrap gap-2">
       <% @data_sources.each do |source| %>
@@ -82,15 +82,13 @@
   </section>
 
   <section class="flex flex-col gap-3">
-    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".cambios") %></h2>
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".cambios") %></h2>
     <% if @recent_changes.any? %>
       <ul class="flex flex-col gap-2">
         <% @recent_changes.each do |change| %>
           <%= render "audit_entry", change: change %>
         <% end %>
       </ul>
-      <%= link_to t(".ver_todos"), admin_logs_path(module_name: "admin"),
-            class: "self-start text-sm font-semibold text-primary hover:underline" %>
     <% else %>
       <p class="<%= card_classes("p-4 text-sm text-fg-subtle") %>"><%= t(".sin_cambios") %></p>
     <% end %>
