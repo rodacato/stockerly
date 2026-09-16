@@ -32,6 +32,13 @@ RSpec.describe "Sessions", type: :request do
       expect(response.body).to match(/Correo o contraseña/)
     end
 
+    it "states a failed login once, inside the card, not again as a toast" do
+      post login_path, params: { email: user.email, password: "wrongpassword" }
+
+      expect(response.body.scan("Correo o contraseña inválidos.").size).to eq(1)
+      expect(Capybara.string(response.body)).to have_css("main [role='alert']", text: "Correo o contraseña inválidos.")
+    end
+
     it "rejects unknown email" do
       post login_path, params: { email: "nobody@example.com", password: "password123" }
       expect(response).to have_http_status(:unprocessable_content)
