@@ -567,4 +567,6 @@ masters. Three had drifted, none in shape:
   The master is back to the kit; Olas · Desktop overrides both lines. The subtitle's style against
   the code's mono uppercase is the kit deviation already on the board.
 
-`WaveRow` is not a kit component and stays local.
+`WaveRow` is not a kit component and stays local. Later the same day, with the flow's code pass,
+the desktop artboard was retired (the page reflows), which left `SidebarNav` and `TopBarDesktop`
+with no instance; both were removed from the file rather than vendored unused.
