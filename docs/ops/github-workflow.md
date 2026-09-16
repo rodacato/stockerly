@@ -70,7 +70,7 @@ quietly becoming a second board.
 | **Status** | `Draft` · `Researching` · `Ready` · `In progress` · `Blocked` · `Done` |
 | **Severidad** | 🔴 the 2.0 is not done while this stands · 🟡 a real gap inside a working screen · ⚪ debt or hygiene |
 | **Flow** | `Auth` `Onboarding` `Cockpit` `Activos` `Alerts` `Ajustes` `Descubrir` `Kit` `Cross-cutting` `Tech debt` `Market data` |
-| **Finding ID** | the `design/V2_REMAINING.md` ID (`CKP-1`, `ACT-4`, …) where one exists, so a `.pen` brief citing it still resolves |
+| **Finding ID** | the 2.0 audit's ID (`CKP-1`, `ACT-4`, …) where one exists, so a `.pen` brief citing it still resolves — the audit file is retired, readable at `git show 120600bb:design/V2_REMAINING.md` |
 
 `Severidad` and `Flow` are the design audit's own scales, carried over deliberately — they were
 already the axes the work was organized along.
@@ -239,5 +239,4 @@ Required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:projec
 - [Vision](../vision/README.md) · [JTBDs](../vision/jobs-to-be-done.md) · [Non-goals](../vision/non-goals.md)
 - [ADR-001](../architecture/adr/0001-descriptive-not-prescriptive-language.md) — product language
 - [Expert Panel](../vision/experts.md) — structured consultations
-- [`design/V2_REMAINING.md`](../../design/V2_REMAINING.md) — the migration's measurement record (no longer a board)
 - [IDENTITY.md](../../IDENTITY.md) — the AI assistant's role and its 7 anti-patterns

@@ -136,3 +136,27 @@ starts growing, the board is wrong and this decision gets revisited rather than 
 **The honest risk.** Nothing here makes the flow self-enforcing. There is no hook, no CI check, and
 no gate that fails when an item is worked without being on the board. This decision rests on the
 flow being small enough to keep, which is an argument, not a guarantee.
+
+## Amendment, 2026-09-16 — the two migration records are retired, not kept
+
+Consequence 3 kept `CODE_CHANGES.md` as the execution record and `V2_REMAINING.md` as the
+measurement record and its post-mortems. Three weeks on, that reasoning layer was misleading more
+than it explained:
+
+- **Its markers read as state.** Both files still carried 🟡 and ⚪ headings and a *Decisions owed*
+  list. Re-verified against the code and the board on 2026-09-16, every open item was closed but
+  one decision (TD9) and one blocked build (ONB-5), both already board drafts. Seven board items
+  marked Done were 🟡 in the file — consequence 1's failure, reached through the back door.
+- **`design/README.md` told readers to trust them.** It sent anyone checking a flow's status to
+  `V2_REMAINING.md` first, so the stale markers were the first thing a reader met.
+- **Freezing them in place would not fix that.** Editing 3,200 lines of markers is rewriting the
+  record; leaving them is keeping the lie.
+
+So both files are deleted. What was still a rule moved to where it is used — the measurement
+lessons and the kit-to-code map to `design/README.md`, five rationales to comments beside the code
+they protect. Everything else, post-mortems included, stays readable at the last commit that held
+it: `git show 120600bb:design/V2_REMAINING.md`. Finding IDs survive as the board's `Finding ID`
+field, and citations of either file in ADRs and `DECISIONS.md` resolve through that pointer.
+
+`DECISIONS.md` keeps its role. It is a registry of calls taken, not an inventory, and consequence 3
+stands for it.
