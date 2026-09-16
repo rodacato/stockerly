@@ -108,7 +108,7 @@ data** — the repo is public; use synthetic examples.
 **Research** → the *Research* template: the open question, why it matters now, the hypothesis, and
 **the criterion that closes it**. A research issue that cannot say what would end it is a reading
 list, not work. Its output is a decision — an ADR, or a `Dn` in `design/DECISIONS.md` — or a
-promoted issue. List the experts to consult from [`docs/research/experts.md`](../research/experts.md).
+promoted issue. List the experts to consult from [`docs/vision/experts.md`](../vision/experts.md).
 
 ---
 
@@ -238,6 +238,6 @@ Required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:projec
 - [ADR-022](../architecture/adr/0022-github-as-the-system-of-record.md) — why GitHub, and why the first attempt failed
 - [Vision](../vision/README.md) · [JTBDs](../vision/jobs-to-be-done.md) · [Non-goals](../vision/non-goals.md)
 - [ADR-001](../architecture/adr/0001-descriptive-not-prescriptive-language.md) — product language
-- [Expert Panel](../research/experts.md) — structured consultations
+- [Expert Panel](../vision/experts.md) — structured consultations
 - [`design/V2_REMAINING.md`](../../design/V2_REMAINING.md) — the migration's measurement record (no longer a board)
 - [IDENTITY.md](../../IDENTITY.md) — the AI assistant's role and its 7 anti-patterns

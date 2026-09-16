@@ -86,7 +86,7 @@ Stockerly speaks in **descriptive language, never prescriptively**. Interpreted 
 
 ## How this north changes
 
-- Edits to `README.md`, `audience.md`, `non-goals.md`, `jobs-to-be-done.md` require a commit message with reason.
+- Edits to `README.md`, `audience.md`, `non-goals.md`, `jobs-to-be-done.md` require a commit message with reason. `experts.md` is a working tool, not the north: its seats change without an ADR.
 - Structural changes (audience, scope, product language) require a **new ADR** referencing the change. This pivot is [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md).
 - **Periodic audit:** a sprint retro question is *"Is the north still true, and does Adrian actually use it?"*. The 2026-05-14 audience failed that audit; this is the correction.
 
@@ -97,6 +97,7 @@ Stockerly speaks in **descriptive language, never prescriptively**. Interpreted 
 | Doc | Purpose |
 |---|---|
 | [`audience.md`](./audience.md) | The single real user, the packaging target, non-users |
+| [`experts.md`](./experts.md) | The advisory panel, including the user's own seat |
 | [`non-goals.md`](./non-goals.md) | What we explicitly are NOT (audience, scope, market) |
 | [`jobs-to-be-done.md`](./jobs-to-be-done.md) | The 7 JTBDs expanded with data, surfaces, triggers, metrics |
 | [`../research/competitive-trackers-2026-08.md`](../research/competitive-trackers-2026-08.md) | How other self-hosted trackers solve onboarding / indicators / data-entry |
