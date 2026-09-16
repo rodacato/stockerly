@@ -49,7 +49,16 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
     SiteConfig.set("maintenance_mode", true)
     visit admin_settings_path
 
-    expect(page).to have_content("La app está bloqueada y muestra un banner.")
+    expect(page).to have_content("Quien no haya iniciado sesión ve la página de mantenimiento.")
+  end
+
+  # The switch used to promise a banner. The owner is exempt and everyone else
+  # gets the 503 page; no banner is rendered anywhere.
+  it "describes maintenance by what it does, not by a banner that does not exist" do
+    SiteConfig.set("maintenance_mode", true)
+    visit admin_settings_path
+
+    expect(page).to have_no_content("banner")
   end
 
   # D5 gave Ajustes one hub, and it already carries rows for Trabajos and for
@@ -87,8 +96,25 @@ RSpec.describe "Admin settings (Lumen)", type: :system do
     visit admin_settings_path
     # D5: one account, so naming who flipped it is a costume. The artboard
     # shows what changed and when, and SiteConfigChange still records the actor.
-    expect(page).to have_content("modo_mantenimiento")
+    expect(page).to have_content("Modo mantenimiento · desactivado → activado")
+    expect(page).to have_no_content("modo_mantenimiento")
     expect(page).to have_no_content("adrian cambió")
+  end
+
+  it "names the developer switch in the audit trail like the other three" do
+    create(:site_config_change, admin: admin, key: "developer_mode", old_value: "false", new_value: "true")
+    visit admin_settings_path
+
+    expect(page).to have_content("Modo desarrollador · desactivado → activado")
+  end
+
+  # Nothing writes a SystemLog under the admin module, so the link opened an
+  # empty list every time.
+  it "does not link to a Registros filter that is always empty" do
+    create(:site_config_change, admin: admin, key: "maintenance_mode", old_value: "false", new_value: "true")
+    visit admin_settings_path
+
+    expect(page).to have_no_link(href: admin_logs_path(module_name: "admin"))
   end
 
   it "renders the empty audit message when no changes are recorded" do

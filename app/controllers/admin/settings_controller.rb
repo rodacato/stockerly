@@ -12,7 +12,6 @@ module Admin
       @email_notifications_enabled = enabled?(configs["email_notifications_enabled"])
       @developer_mode              = enabled?(configs["developer_mode"])
 
-      @applied_at     = TOGGLE_KEYS.index_with { |key| configs[key]&.updated_at }
       @recent_changes = SiteConfigChange.recent.includes(:admin).limit(8)
       @diagnostics    = build_diagnostics
       @data_sources   = DataSourceRegistry.all
