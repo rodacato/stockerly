@@ -3,7 +3,8 @@
 > Living project documentation. `vision/`, `architecture/` and `ops/` are kept current. **`research/` is not** — each research note is a dated snapshot of what was known on
 > the day it was written, and carries an as-of banner naming what has superseded it since. Read
 > those for how a decision was reached, not for what the code does today. For the history that
-> led to the current single-user pivot, see [`1.0-retrospective.md`](./1.0-retrospective.md).
+> led to the current single-user pivot, see
+> [ADR-0010](./architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md).
 
 ---
 
@@ -20,7 +21,7 @@
 | How work moves: the board, issues, research | [`ops/github-workflow.md`](./ops/github-workflow.md) |
 | Artboards used as the README's imagery | [`../design/exports/`](../design/exports/) |
 | Captures of a running instance (only where no artboard exists) | [`screenshots/`](./screenshots/) |
-| Why Stockerly pivoted to a single-user tracker | [`1.0-retrospective.md`](./1.0-retrospective.md) |
+| Why Stockerly pivoted to a single-user tracker | [ADR-0010](./architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) |
 
 ---
 

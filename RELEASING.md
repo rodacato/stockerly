@@ -100,7 +100,7 @@ There is no fixed schedule. Releases happen when a meaningful set of changes is 
 
 - **Alpha releases** (`0.x.0-alpha`): after completing a roadmap phase or a set of related features
 - **Patch releases** (`0.x.Y`): for urgent bug fixes or security patches
-- **Major milestones**: when the scope of a major version is done. Product history is summarized in [docs/1.0-retrospective.md](docs/1.0-retrospective.md).
+- **Major milestones**: when the scope of a major version is done. The 2.0 pivot is recorded in [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md).
 
 ## Mapping Roadmap Phases to Versions
 

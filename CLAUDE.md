@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Stockerly is a **self-hosted, single-user** asset tracker — stocks (USD), crypto, and Mexican fixed income (CETES) — with correct MXN/USD multi-currency tracking. Built with Rails 8.1.2, PostgreSQL 16, Hotwire, and Tailwind CSS 4. It uses a pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts: Identity, Trading (includes Watchlist), Alerts, Market Data, Administration, Notifications.
 
-The multi-user closed beta was run and failed on UX grounds; the audience was dropped and the multi-user surface deleted in place — see [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) and [docs/1.0-retrospective.md](docs/1.0-retrospective.md). There is one account, created by the first-boot Setup Wizard. "Self-hosted for anyone" is packaging discipline, not a mandate to build for hypothetical users.
+The multi-user closed beta was run and failed on UX grounds; the audience was dropped and the multi-user surface deleted in place — see [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md). There is one account, created by the first-boot Setup Wizard. "Self-hosted for anyone" is packaging discipline, not a mandate to build for hypothetical users.
 
 100% open source — no pricing tiers, no premium features.
 
@@ -305,7 +305,6 @@ Follow `CONTRIBUTING.md` conventions:
 | Expert Panel v2 (8 Core + 8 Situational) | `docs/research/experts.md` |
 | **How work is tracked (board, issues, research)** | `docs/ops/github-workflow.md` |
 | Deployment Guide | `docs/ops/deploy.md` |
-| 1.0 retrospective (why the pivot happened) | `docs/1.0-retrospective.md` |
 | Design system (source of truth, Pencil-based) | `design/` |
 | AI Identity & Principles | `IDENTITY.md` |
 | Contributing Guide | `CONTRIBUTING.md` |

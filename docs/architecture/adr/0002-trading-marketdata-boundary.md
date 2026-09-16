@@ -4,7 +4,7 @@
 - **Date:** 2026-05-15
 - **Author:** Adrian Castillo (with synthesis from the documented expert panel — C2 Hiroto, C6 Esther, C1 Lucía)
 - **Supersedes:** —
-- **Related:** [Issue #33](https://github.com/rodacato/stockerly/issues/33), [Issue #59](https://github.com/rodacato/stockerly/issues/59), [1.0 retrospective](../../1.0-retrospective.md)
+- **Related:** [Issue #33](https://github.com/rodacato/stockerly/issues/33), [Issue #59](https://github.com/rodacato/stockerly/issues/59), [ADR-0010](0010-pivot-to-self-hosted-single-user-tracker.md)
 
 ---
 
