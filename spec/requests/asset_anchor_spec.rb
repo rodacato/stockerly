@@ -49,7 +49,7 @@ RSpec.describe "The asset detail's price anchor", type: :request do
 
       get market_asset_path(asset.symbol)
 
-      expect(response.body).to include("RSI(14) ≥ 70")
+      expect(response.body).to include("RSI(14) en 70 o más")
     end
 
     it "does not show another asset's rules" do
@@ -58,7 +58,7 @@ RSpec.describe "The asset detail's price anchor", type: :request do
 
       get market_asset_path(asset.symbol)
 
-      expect(response.body).not_to include("RSI(14) ≤ 30")
+      expect(response.body).not_to include("RSI(14) en 30 o menos")
     end
 
     # The block is absent rather than empty: with nothing to anchor against,

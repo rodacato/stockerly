@@ -67,7 +67,7 @@ RSpec.describe Alerts::Handlers::CreateAlertEventOnTrigger do
         triggered_price: "0"
       )
       msg = AlertEvent.last.message
-      expect(msg).to include("NVDA aparece sobrevendido")
+      expect(msg).to eq("NVDA entró en zona de sobreventa (RSI(14) en 30 o menos)")
       expect(msg).not_to match(/comprar|vender|considera/i)
     end
 

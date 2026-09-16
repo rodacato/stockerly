@@ -18,12 +18,12 @@ module AlertsHelper
   # rule's condition (not the localized message text) so the mapping
   # survives copy edits and locale changes.
   CONDITION_ACCENTS = {
-    "price_crosses_above" => "bg-emerald-500",
-    "price_crosses_below" => "bg-rose-500",
-    "day_change_percent"  => "bg-amber-500",
-    "rsi_overbought"      => "bg-amber-500",
-    "rsi_oversold"        => "bg-amber-500",
-    "volume_spike"        => "bg-amber-500",
+    "price_crosses_above" => "bg-positive",
+    "price_crosses_below" => "bg-negative",
+    "day_change_percent"  => "bg-warning",
+    "rsi_overbought"      => "bg-warning",
+    "rsi_oversold"        => "bg-warning",
+    "volume_spike"        => "bg-warning",
     "dividend_ex_date"    => "bg-primary",
     "bmv_holiday"         => "bg-primary",
     "cete_auction"        => "bg-primary"
@@ -56,13 +56,13 @@ module AlertsHelper
     when "price_crosses_below"
       "cruza #{rule.currency} #{format_threshold(rule.threshold_value)} a la baja"
     when "day_change_percent"
-      "se mueve más de #{format_threshold(rule.threshold_value)}% en el día"
+      "se mueve #{format_threshold(rule.threshold_value)}% o más en el día"
     when "rsi_overbought"
-      "RSI(14) ≥ #{rule.threshold_value.to_i}"
+      "RSI(14) en #{rule.threshold_value.to_i} o más"
     when "rsi_oversold"
-      "RSI(14) ≤ #{rule.threshold_value.to_i}"
+      "RSI(14) en #{rule.threshold_value.to_i} o menos"
     when "volume_spike"
-      "volumen > #{format_threshold(rule.threshold_value)}× promedio 30d"
+      "volumen #{format_threshold(rule.threshold_value)}× o más sobre su promedio de #{Alerts::Domain::AlertEvaluator::VOLUME_AVERAGE_DAYS} días"
     when "dividend_ex_date"
       "#{rule.window_days.to_i} día(s) antes del ex-date"
     when "bmv_holiday"

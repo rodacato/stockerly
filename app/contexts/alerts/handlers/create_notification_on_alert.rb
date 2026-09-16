@@ -8,9 +8,10 @@ module Alerts
         symbol  = event.is_a?(Hash) ? event[:asset_symbol] : event.asset_symbol
         price   = event.is_a?(Hash) ? event[:triggered_price] : event.triggered_price
         rule_id = event.is_a?(Hash) ? event[:alert_rule_id] : event.alert_rule_id
+        context = (event.is_a?(Hash) ? event[:context] : event.context).to_h.with_indifferent_access
 
         rule   = AlertRule.find_by(id: rule_id)
-        notice = Domain::TriggerNotice.new(rule: rule, asset_symbol: symbol, price: price)
+        notice = Domain::TriggerNotice.new(rule: rule, asset_symbol: symbol, price: price, day_change: context[:day_change])
 
         Notifications::UseCases::CreateNotification.new.call(
           user_id: user_id,

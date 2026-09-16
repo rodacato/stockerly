@@ -34,21 +34,12 @@ module Alerts
       def self.build_message(rule, symbol, value, context = nil)
         return "#{symbol}: regla disparada" unless rule
 
-        ctx = (context || {}).to_h
+        ctx = (context || {}).to_h.with_indifferent_access
 
         case rule.condition
-        when "price_crosses_above"
-          "#{symbol} cruzó #{format_threshold(rule)} al alza (precio: #{value})."
-        when "price_crosses_below"
-          "#{symbol} cruzó #{format_threshold(rule)} a la baja (precio: #{value})."
-        when "day_change_percent"
-          "#{symbol} se movió más de #{rule.threshold_value.to_f.round(2)}% en el día (precio: #{value})."
-        when "rsi_overbought"
-          "#{symbol} aparece sobrecomprado (RSI ≥ #{rule.threshold_value.to_i})."
-        when "rsi_oversold"
-          "#{symbol} aparece sobrevendido (RSI ≤ #{rule.threshold_value.to_i})."
-        when "volume_spike"
-          "#{symbol} registró volumen anómalo (más de #{rule.threshold_value.to_f.round(1)}× el promedio)."
+        when "price_crosses_above", "price_crosses_below", "day_change_percent",
+             "rsi_overbought", "rsi_oversold", "volume_spike"
+          Domain::TriggerNotice.new(rule: rule, asset_symbol: symbol, day_change: ctx[:day_change]).title
         when "dividend_ex_date"
           "#{symbol}: ex-date de dividendo el #{value}."
         when "bmv_holiday"
@@ -63,11 +54,7 @@ module Alerts
         end
       end
 
-      def self.format_threshold(rule)
-        "#{rule.currency} #{format('%.2f', rule.threshold_value.to_f)}"
-      end
-
-      private_class_method :build_message, :format_threshold
+      private_class_method :build_message
     end
   end
 end
