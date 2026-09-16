@@ -82,7 +82,7 @@ ones may merge into a neighbor.
 | File | Domain | Screens (from code) | Status |
 |---|---|---|---|
 | `flows/auth.pen` | Auth | login (default · error), 2FA, código de recuperación, forgot, email sent, reset, enlace expirado, contraseña actualizada (+ Login desktop); TOTP · alta and códigos de recuperación, which render in the app shell — no signup (account created in onboarding) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
-| `flows/onboarding.pen` | Onboarding | setup, integrations, assets, **seguridad**, complete, welcome (+ Setup/Integrations/Assets/Welcome desktop) | **done · in review** — **migrated to kit 0.9.0 on 2026-08-27**: D52's fourth step drawn and the Stepper moved 3 → 4, VOO/CETES split to catch up to the locale's five categories, the stale auth-coherence flag retired |
+| `flows/onboarding.pen` | Onboarding | setup (default · error), integrations, assets, seguridad, complete, welcome (+ Setup/Welcome desktop) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default · tranquilo · primera vez), señales (default · vacío), asset detail (análisis · aviso TradingView · mi posición · CETES), consolidado (default · sin historial) (+ Panorama/Consolidado desktop) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings (default · vacía · sin consolidar), watchlist (default · vacía), registrar movimiento (sheet · con teclado · CETES), historial (default · vacío), tracked (default · agregar activo · sin fuente · sin coincidencias), importar CSV (default · revisión · símbolos desconocidos) + Holdings/Registrar/Tracked desktop | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (vacío · default), nueva regla (sheet · calendario), bandeja (default · vacía) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
@@ -97,15 +97,15 @@ structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit �
 ### Desktop pass (2026-08-24, kit 0.5.0 — counts re-checked 2026-08-27)
 
 Every flow has been through it. D4 still governs **which** screens get an artboard: one is drawn
-only where the layout genuinely diverges, and the rest reflow — so **13 desktop artboards cover
+only where the layout genuinely diverges, and the rest reflow — so **11 desktop artboards cover
 five of the seven flows**, not 30. `alerts` and `discover` draw none, which is why the table has
-seven rows and five of them are non-empty. Counted against `design/exports/*-desktop.png`, which holds those 13
+seven rows and five of them are non-empty. Counted against `design/exports/*-desktop.png`, which holds those 11
 plus the kit's own `ui-kit-shell-desktop`.
 
 | Flow | Desktop artboards | Not drawn, because |
 |---|---|---|
 | `auth` | Login | Same split-panel as Setup — the two doors match. The other four keep the centered card |
-| `onboarding` | Setup · Integrations · Assets · Welcome | Complete inherits the wizard frame exactly |
+| `onboarding` | Setup · Welcome | The wizard steps are one centred column at every width |
 | `cockpit` | Panorama · Consolidado | The asset detail reflows into one column |
 | `assets` | Holdings · Registrar movimiento · Tracked | Watchlist, Holdings vacía and the search states reuse patterns above |
 | `alerts` | — | Its list and sheet are the patterns Cartera and Registrar movimiento settle |
