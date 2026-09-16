@@ -49,6 +49,13 @@ The following files contain or reference secrets and **must never be committed**
 5. **Keep dependencies updated** — run `bundle audit` periodically to check for known vulnerabilities
 6. **Review `.gitignore`** before committing — ensure no sensitive files are staged
 
+## What CI Does Not Block
+
+The Gitleaks, Semgrep and Trivy jobs in `.github/workflows/quality.yml` are **report-only**
+(`SECURITY_BLOCKING: "false"`): a leaked secret shows up as a passing check with findings in the job
+log. The blocking defence is the local pre-commit hook — install it once per clone with
+`bin/setup-hooks`. The PR gates are `brakeman`, `bundler-audit` and `importmap audit` in `ci.yml`.
+
 ## Secret Leak Response
 
 If a secret is accidentally committed:
