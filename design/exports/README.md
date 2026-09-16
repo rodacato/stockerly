@@ -74,7 +74,9 @@ tells a reviewer nothing.
 | `auth-codigos-recuperacion.png` | `[Auth] / Códigos de recuperación / Default` — ADR-018 |
 | `auth-codigo-recuperacion.png` | `[Auth] / Código de recuperación / Default` — ADR-018 |
 | `descubrir-olas.png` | `[Descubrir] / Olas / Default` |
+| `descubrir-olas-todas.png` | `[Descubrir] / Olas / Todas las canastas` — the basket opened in place (D94) |
 | `descubrir-olas-sin-datos.png` | `[Descubrir] / Olas / Sin datos` |
+| `descubrir-olas-calendario-agotado.png` | `[Descubrir] / Olas / Calendario agotado` — past the YAML's horizon (D33) |
 | `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
 | `ajustes-integraciones.png` | `[Ajustes] / Integraciones / Default` |
 | `ajustes-integraciones-estados.png` | `[Ajustes] / Integraciones · Estados / Default` |
@@ -92,7 +94,6 @@ reflow. The kit's shell variant is included because it is what every desktop art
 | `activos-holdings-desktop.png` | `[Activos] / Holdings · Desktop / Default` |
 | `activos-registrar-movimiento-desktop.png` | `[Activos] / Registrar movimiento · Desktop / Dialog` |
 | `activos-tracked-desktop.png` | `[Activos] / Tracked · Desktop / Default` |
-| `descubrir-olas-desktop.png` | `[Descubrir] / Olas · Desktop / Default` |
 | `ajustes-hub-desktop.png` | `[Ajustes] / Hub · Desktop / Default` |
 | `ajustes-integraciones-desktop.png` | `[Ajustes] / Integraciones · Desktop / Default` |
 | `ajustes-estado-desktop.png` | `[Ajustes] / Estado y mantenimiento · Desktop / Default` |
