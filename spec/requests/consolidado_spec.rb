@@ -46,6 +46,17 @@ RSpec.describe "Consolidado", type: :request do
       expect(response.body).to include("--color-border-strong")
     end
 
+    # The hole used bg-white, and bg-bg-canvas in dark, inside a card on bg-bg-surface.
+    it "cuts the donut's hole out of the card's own surface" do
+      with_history
+
+      get portfolio_path
+
+      hole = Capybara.string(response.body).find("[style*='conic-gradient']").find(:xpath, "following-sibling::div")
+      expect(hole[:class].split).to include("bg-bg-surface")
+      expect(hole[:class]).not_to match(/bg-white|bg-bg-canvas/)
+    end
+
     it "does not offer a cash breakdown the instance cannot back" do
       with_history
 

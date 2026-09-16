@@ -1,8 +1,6 @@
-<%# Usage: render "components/donut_chart", segments: [{label: "Tecnología", pct: 45, color: "var(--color-chart-1)"}, ...], center_label: "Invertido", center_value: "92.4%" %>
+<%# Usage: render "components/donut_chart", segments: [{label: "Tecnología", pct: 45, color: "var(--color-chart-1)"}, ...] %>
 <%# Segment colors must come from the --color-chart-* token set, never raw hex. %>
 <% segments ||= [] %>
-<% center_label ||= "" %>
-<% center_value ||= "" %>
 
 <%
   gradient_stops = []
@@ -14,18 +12,14 @@
 %>
 
 <div class="flex flex-col items-center">
-  <%# Donut Chart %>
+  <%# The hole takes the card's own surface, so it reads as a hole in both themes. %>
   <div class="relative size-48">
-    <div class="size-48 rounded-full border-8 border-border-default shadow-inner"
+    <div class="size-48 rounded-full border-8 border-border-default"
          style="background: conic-gradient(<%= gradient_stops.join(', ') %>);">
     </div>
-    <div class="absolute inset-0 size-32 m-auto bg-white dark:bg-bg-canvas rounded-full flex flex-col items-center justify-center shadow-sm">
-      <p class="text-xs font-medium text-fg-subtle"><%= center_label %></p>
-      <p class="text-2xl font-black text-fg-default"><%= center_value %></p>
-    </div>
+    <div class="absolute inset-0 m-auto size-32 rounded-full bg-bg-surface"></div>
   </div>
 
-  <%# Legend %>
   <div class="mt-6 grid grid-cols-2 gap-3 w-full">
     <% segments.each do |seg| %>
       <div class="flex items-center gap-2">
