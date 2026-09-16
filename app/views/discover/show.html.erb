@@ -63,8 +63,7 @@
               </p>
               <% if wave.vs_baseline %>
                 <p class="font-mono text-xs text-fg-subtle">
-                  <%= t(".olas_vs", baseline: MarketData::Discover::BasketCatalogue.baseline,
-                        value: number_with_precision(wave.vs_baseline, precision: 1)) %>
+                  <%= wave_vs_baseline(wave) %>
                 </p>
               <% end %>
             </div>
