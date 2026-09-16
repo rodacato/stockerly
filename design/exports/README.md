@@ -55,11 +55,12 @@ tells a reviewer nothing.
 | `activos-importar.png` | `[Activos] / Importar CSV / Default` |
 | `activos-importar-revision.png` | `[Activos] / Importar CSV / Revisión` — the dry run: nothing written yet |
 | `activos-importar-desconocidos.png` | `[Activos] / Importar CSV / Símbolos desconocidos` — the all-or-nothing refusal |
-| `reglas-lista.png` | `[Reglas] / Reglas / Default` |
 | `reglas-vacio.png` | `[Reglas] / Reglas / Vacío` |
 | `reglas-nueva-regla.png` | `[Reglas] / Nueva regla / Sheet` |
+| `reglas-nueva-regla-calendario.png` | `[Reglas] / Nueva regla / Calendario` |
+| `reglas-lista.png` | `[Reglas] / Reglas / Default` |
 | `reglas-bandeja.png` | `[Reglas] / Bandeja / Default` |
-| `reglas-confluencia.png` | `[Reglas] / Confluencia / Default` |
+| `reglas-bandeja-vacia.png` | `[Reglas] / Bandeja / Vacía` |
 | `auth-totp-alta.png` | `[Auth] / TOTP · Alta / Default` — ADR-018 |
 | `auth-codigos-recuperacion.png` | `[Auth] / Códigos de recuperación / Default` — ADR-018 |
 | `auth-codigo-recuperacion.png` | `[Auth] / Código de recuperación / Default` — ADR-018 |
