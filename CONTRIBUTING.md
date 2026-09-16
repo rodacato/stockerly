@@ -16,14 +16,12 @@ Thank you for your interest in contributing! Stockerly is 100% open source and w
 
 1. Fork the repository
 2. Clone your fork
-3. Install dependencies:
+3. Install dependencies and prepare the databases:
    ```bash
-   bundle install
+   bin/setup --skip-server
    ```
-4. Set up the database:
-   ```bash
-   bin/rails db:create db:migrate db:seed
-   ```
+
+Requirements and troubleshooting for both paths are in [GETTING_STARTED.md](GETTING_STARTED.md).
 
 ## Development
 
@@ -40,7 +38,7 @@ create four demo users, all non-admin; sign in as `demo@stockerly.com` / `passwo
 ### Running Tests
 
 ```bash
-bundle exec rspec                                    # Full suite (3,007 examples as of 2026-08-29)
+bundle exec rspec                                    # Full suite
 bundle exec rspec spec/contexts/trading/             # One context
 bundle exec rspec spec/contexts/trading/use_cases/execute_trade_spec.rb      # One file
 bundle exec rspec spec/contexts/trading/use_cases/execute_trade_spec.rb:15   # One example
@@ -256,6 +254,6 @@ See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability re
 - Open an [issue](https://github.com/rodacato/stockerly/issues) for bugs or feature requests
 - How work is tracked: [docs/ops/github-workflow.md](docs/ops/github-workflow.md) — the board, drafts, issues, PRs
 - Review [docs/vision/](docs/vision/) to understand product direction
-- Architecture map: [docs/architecture/](docs/architecture/) — bounded contexts and 19 ADRs
+- Architecture map: [docs/architecture/](docs/architecture/) — bounded contexts and the ADRs
 - Design system: [design/](design/) — Pencil files, ui-kit, and the exported artboards
 - Product history: [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) — why Stockerly pivoted to a single-user tracker

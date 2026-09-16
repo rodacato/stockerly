@@ -47,9 +47,6 @@ bin/setup        # installs gems, prepares the databases (seeding on first creat
 
 Open **`http://localhost:4100`**.
 
-What the container inherits from your machine — git over SSH, the `gh` login, deploy targets — and
-what it does not is in [.devcontainer/README.md](.devcontainer/README.md).
-
 `bin/setup` connects with the `config/database.yml` defaults (`host=localhost`,
 `user=postgres`, empty password). Override with `DATABASE_HOST` / `DATABASE_USERNAME` /
 `DATABASE_PASSWORD` if your Postgres differs (copy `.env.example` to `.env` and edit).
@@ -95,14 +92,9 @@ seeded dev path always creates four, the wizard is not reachable after a normal 
 To walk the first-boot experience a self-hoster gets, delete the users:
 
 ```bash
-bin/rails runner 'AuditLog.delete_all; SiteConfigChange.delete_all; User.destroy_all'
+bin/rails runner 'User.destroy_all'
 bin/dev
 ```
-
-`User` declares `dependent: :destroy` for portfolios, alert preferences, alert rules, alert
-events, notifications and watchlist items, but **not** for `audit_logs` or
-`site_config_changes` (`admin_id`) — both hold a foreign key to `users`, so clearing them first
-is what keeps `destroy_all` from raising.
 
 Then open `http://localhost:4100`. `ApplicationController#redirect_to_setup` sends every
 request to `/setup` while no user exists, so the wizard runs. (This mirrors what the 2.0
