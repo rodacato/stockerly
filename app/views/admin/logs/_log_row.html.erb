@@ -1,7 +1,7 @@
 <%# One entry as a card, per `ajustes-registros`: severity dot, task, message,
-    timestamp. The payload panel the artboard does not draw stays behind the
-    card — an error you cannot open is a log entry that tells you nothing.
-    Locals: log %>
+    module and timestamp. The task gets the full width, as on `_error_row`. The
+    payload panel the artboard does not draw stays behind the card — an error
+    you cannot open is a log entry that tells you nothing. Locals: log %>
 <%
   payload = admin_log_payload(log)
   has_details = log.error_message.present?
@@ -14,14 +14,14 @@
           title="<%= log.severity.to_s.capitalize %>" aria-hidden="true"></span>
 
     <div class="min-w-0 flex-1">
-      <div class="flex items-baseline justify-between gap-3">
-        <p class="truncate font-mono font-semibold text-fg-default"><%= log.task_name %></p>
-        <span class="shrink-0 font-mono text-xs text-fg-subtle"><%= absolute_stamp(log.created_at, seconds: true) %></span>
-      </div>
+      <p class="break-all font-mono font-semibold text-fg-default"><%= log.task_name %></p>
       <p class="text-sm text-fg-subtle"><%= message %></p>
-      <% if log.module_name.present? %>
-        <span class="mt-1 inline-block rounded bg-bg-muted px-2 py-0.5 font-mono text-xs text-fg-subtle"><%= log.module_name %></span>
-      <% end %>
+      <div class="mt-2 flex flex-wrap items-center gap-2">
+        <% if log.module_name.present? %>
+          <span class="rounded bg-bg-muted px-2 py-0.5 font-mono text-xs text-fg-subtle"><%= log.module_name %></span>
+        <% end %>
+        <span class="font-mono text-xs text-fg-subtle"><%= absolute_stamp(log.created_at, seconds: true) %></span>
+      </div>
     </div>
 
     <% if has_details %>
