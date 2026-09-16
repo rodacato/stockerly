@@ -20,7 +20,6 @@
 | Deploy, security, runbooks | [`ops/`](./ops/) |
 | How work moves: the board, issues, research | [`ops/github-workflow.md`](./ops/github-workflow.md) |
 | Artboards used as the README's imagery | [`../design/exports/`](../design/exports/) |
-| Captures of a running instance (only where no artboard exists) | [`screenshots/`](./screenshots/) |
 | Why Stockerly pivoted to a single-user tracker | [ADR-0010](./architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) |
 
 ---
