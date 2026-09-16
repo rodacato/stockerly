@@ -531,3 +531,20 @@ masters. Both had drifted without changing shape:
 
 The eight `Brand` groups are not a local copy of `Logo`: they are the TopBar's mark-and-wordmark at
 26/18, where the kit's `Logo` is 44/32, and an instance cannot scale. They stay local.
+
+### `cockpit.pen` re-vendored to 1.0.0 — 2026-09-16
+
+A full sync from 0.8.1: the kit's tokens equal by value, and all eight kit components it instances
+match the masters. The six `chart-scale-*` variables are the flow's own and stay. Four masters had
+drifted, none in shape:
+
+- **`SidebarNav` lit Panorama's icon in `$primary`** against the kit's `$primary-hover`, which is
+  what `components/_sidebar_nav` paints the whole active item in. Asset · Análisis · Desktop lit
+  Activos the same way; its instance now uses `$primary-hover` too.
+- **`TopBarDesktop`'s master carried a restyled subtitle** (11px, tracked). The master is back to
+  the kit and Panorama · Desktop overrides its own line; the style against the code's mono uppercase
+  is the kit deviation already on the board.
+- **`Segmented` lacked the kit's `context` note**, and **`AssetRow` carried a different sample
+  `Val`** that every instance already overrides.
+
+`TopBarDetail` and `PatrimonioStrip` are not kit components and stay local.
