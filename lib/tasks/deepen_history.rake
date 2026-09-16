@@ -1,6 +1,6 @@
 # One-off deepening of daily history. The fetching and writing are
 # MarketData::UseCases::SyncPriceHistory, the same action the routine backfill
-# job runs — this only chooses the range and never rewrites. See ADR-0024.
+# job runs — this only chooses the range and never rewrites. See ADR-027.
 module DeepenHistory
   YEARS = 10
   PACING = 2.seconds
