@@ -707,6 +707,14 @@ module WebmockHelpers
       .and_return(Dry::Monads::Success(entries))
   end
 
+  def stub_yfinance_overview(symbol, info = {})
+    info = { "symbol" => symbol, "quoteType" => "EQUITY", "longName" => "#{symbol} Inc.",
+             "sector" => "Technology", "trailingEps" => 8.71, "trailingPE" => 38.16,
+             "dividendYield" => 0.33, "beta" => 1.085 }.merge(info)
+    allow(PythonRunner).to receive(:call).with("yahoo.py", "overview", symbol)
+      .and_return(Dry::Monads::Success(info))
+  end
+
   def stub_yfinance_search(query, results: [])
     allow(PythonRunner).to receive(:call).with("yahoo.py", "search", query)
       .and_return(Dry::Monads::Success(results))

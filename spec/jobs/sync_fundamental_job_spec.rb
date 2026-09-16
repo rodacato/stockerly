@@ -3,11 +3,7 @@ require "rails_helper"
 RSpec.describe SyncFundamentalJob, type: :job do
   let(:asset) { create(:asset, symbol: "AAPL", asset_type: :stock, sync_status: :active, current_price: 189.43) }
 
-  before do
-    create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "test_key")
-    create(:integration, provider_name: "FMP", api_key_encrypted: "test_key")
-    stub_alpha_vantage_overview("AAPL")
-  end
+  before { stub_yfinance_overview("AAPL") }
 
   describe "#perform" do
     it "fetches overview and stores AssetFundamental" do
@@ -20,11 +16,12 @@ RSpec.describe SyncFundamentalJob, type: :job do
       expect(fundamental.metrics["eps"]).to be_present
     end
 
-    it "stores data_source from the gateway that succeeded" do
+    # A self-hosted instance with no provider key at all still gets its overview.
+    it "takes it from Yahoo, with no API key configured" do
       described_class.perform_now(asset.id)
 
-      fundamental = AssetFundamental.last
-      expect(fundamental.source).to include("AlphaVantageGateway")
+      expect(Integration.count).to eq(0)
+      expect(AssetFundamental.last.source).to include("YfinanceGateway")
     end
 
     it "updates asset fundamentals_synced_at" do
@@ -72,47 +69,13 @@ RSpec.describe SyncFundamentalJob, type: :job do
       end
     end
 
-    context "when Alpha Vantage is rate limited" do
-      before do
-        WebMock.reset!
-        stub_alpha_vantage_rate_limited
-      end
+    context "when Yahoo has nothing for the symbol" do
+      before { stub_yfinance_not_found("AAPL") }
 
-      # Real coverage on a 25-call budget where the key predates the gate, and
-      # a declared nothing where it does not — which is why the source stays
-      # and the card says who it works for (#312).
-      it "falls back to FMP when available" do
-        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/AAPL})
-          .to_return(
-            status: 200,
-            headers: { "Content-Type" => "application/json" },
-            body: [ {
-              symbol: "AAPL", companyName: "Apple Inc.", sector: "Technology",
-              industry: "Consumer Electronics", exchangeShortName: "NASDAQ",
-              currency: "USD", country: "US", mktCap: 3_100_000_000_000,
-              pe: 31.5, eps: 6.42, beta: 1.24, lastDiv: 1.0,
-              range: "164.08-237.49", price: 202.25, dcf: 158.32
-            } ].to_json
-          )
-
+      it "logs the failure without creating a fundamental" do
         expect { described_class.perform_now(asset.id) }
-          .to change(AssetFundamental, :count).by(1)
-
-        expect(AssetFundamental.last.source).to include("FmpGateway")
-      end
-    end
-
-    context "when all gateways fail" do
-      before do
-        WebMock.reset!
-        stub_alpha_vantage_rate_limited
-        stub_request(:get, %r{financialmodelingprep\.com/api/v3/profile/})
-          .to_return(status: 429, body: "Rate limit exceeded")
-      end
-
-      it "logs failure without creating fundamental" do
-        expect { described_class.perform_now(asset.id) }
-          .not_to change(AssetFundamental, :count)
+          .to change { SystemLog.where(severity: :error).count }.by(1)
+        expect(AssetFundamental.count).to eq(0)
       end
     end
 
