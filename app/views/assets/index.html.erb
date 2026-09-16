@@ -72,38 +72,12 @@
     <% end %>
   <% end %>
 
-  <%# The design drew Historial without a door (D60): its only inbound link was
-      from one asset's detail. This follows the foot-of-list pattern the screen
-      already uses for Tracked (D9) rather than inventing one. %>
-  <%= link_to positions_path,
-              class: "flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
-    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">receipt_long</span>
-    <span class="min-w-0 flex-1">
-      <span class="block text-sm font-semibold text-fg-default"><%= t("positions.index.titulo") %></span>
-      <span class="block text-xs text-fg-subtle"><%= t("assets.index.ver_historial_desc") %></span>
-    </span>
-    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">chevron_right</span>
-  <% end %>
-
-  <%# The second door of Holdings/Vacío (ACT-1), as a foot-of-list row so it is
-      reachable once the portfolio has holdings too. One format only, per D62. %>
-  <%= link_to new_trade_import_path,
-              class: "flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
-    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">upload_file</span>
-    <span class="min-w-0 flex-1">
-      <span class="block text-sm font-semibold text-fg-default"><%= t("assets.index.importar") %></span>
-      <span class="block text-xs text-fg-subtle"><%= t("assets.index.importar_desc") %></span>
-    </span>
-    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">chevron_right</span>
-  <% end %>
-
-  <%= link_to tracked_assets_path,
-              class: "flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
-    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">radar</span>
-    <span class="min-w-0 flex-1">
-      <span class="block text-sm font-semibold text-fg-default"><%= t("assets.index.ver_tracked") %></span>
-      <span class="block text-xs text-fg-subtle"><%= t("assets.index.ver_tracked_desc") %></span>
-    </span>
-    <span class="material-symbols-outlined text-xl text-fg-subtle" aria-hidden="true">chevron_right</span>
-  <% end %>
+  <%# Historial (D60) and the importer (ACT-1) sit beside Tracked (D9), so both
+      stay reachable once holdings exist. %>
+  <%= render "settings/nav_row", icon: "receipt_long", path: positions_path,
+             title: t("positions.index.titulo"), description: t("assets.index.ver_historial_desc") %>
+  <%= render "settings/nav_row", icon: "upload_file", path: new_trade_import_path,
+             title: t("assets.index.importar"), description: t("assets.index.importar_desc") %>
+  <%= render "settings/nav_row", icon: "radar", path: tracked_assets_path,
+             title: t("assets.index.ver_tracked"), description: t("assets.index.ver_tracked_desc") %>
 </div>
