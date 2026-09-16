@@ -2566,8 +2566,8 @@
     {
       "type": "frame",
       "id": "LZCBr",
-      "x": 0,
-      "y": 2107,
+      "x": -416,
+      "y": 0,
       "name": "Log · Auth",
       "width": 360,
       "fill": "$bg-muted",
