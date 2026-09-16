@@ -37,6 +37,7 @@ RSpec.describe "Trade imports", type: :request do
 
       expect(response.body).to include("Nada se ha guardado todavía")
       expect(response.body).to include("VT")
+      expect(response.body).to include("8 dic 2025 → 8 dic 2025")
     end
 
     it "accepts an uploaded file as well as pasted text" do
