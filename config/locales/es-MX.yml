@@ -1448,7 +1448,8 @@ es-MX:
         autenticación, son la única forma de entrar a tu instancia.
       titulo: Guarda tus códigos de recuperación
       ya_los_guarde: Ya los guardé, continuar
-      ya_no_disponibles: Los códigos solo se muestran una vez. Podrás generar unos nuevos desde Ajustes.
+      ya_no_disponibles: Los códigos solo se muestran una vez. Podrás generar unos
+        nuevos desde Ajustes.
   trade_imports:
     create:
       listo:
