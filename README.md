@@ -16,8 +16,8 @@ trade's own date, not at import time. Built with Rails 8, PostgreSQL, Hotwire, a
 The interface is **es-MX**; the code, routes and docs are English.
 
 100% free and open source — no pricing tiers, no premium features. See
-[docs/1.0-retrospective.md](docs/1.0-retrospective.md) for why Stockerly pivoted from a multi-user
-beta to a single-user tracker.
+[ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) for why Stockerly pivoted
+from a multi-user beta to a single-user tracker.
 
 ![Panorama](design/exports/cockpit-panorama-desktop.png)
 
@@ -194,7 +194,6 @@ See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide, 
 | [RELEASING.md](RELEASING.md) | Versioning and release process |
 | [SECURITY.md](SECURITY.md) | Security policy and vulnerability reporting |
 | [CLAUDE.md](CLAUDE.md) | Architecture reference (DDD, bounded contexts, conventions) |
-| [docs/1.0-retrospective.md](docs/1.0-retrospective.md) | Why Stockerly pivoted from a multi-user beta to a single-user tracker |
 
 ## Contributing
 

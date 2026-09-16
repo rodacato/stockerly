@@ -258,4 +258,4 @@ See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability re
 - Review [docs/vision/](docs/vision/) to understand product direction
 - Architecture map: [docs/architecture/](docs/architecture/) — bounded contexts and 19 ADRs
 - Design system: [design/](design/) — Pencil files, ui-kit, and the exported artboards
-- Product history: [docs/1.0-retrospective.md](docs/1.0-retrospective.md) — why Stockerly pivoted to a single-user tracker
+- Product history: [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) — why Stockerly pivoted to a single-user tracker

@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Stockerly pivoted from a multi-user closed-beta fintech app to a self-hosted,
 single-user asset tracker after the closed beta failed on UX grounds. See
 [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)
-and [docs/1.0-retrospective.md](docs/1.0-retrospective.md).
+.
 
 #### Changed
 - Reframed the product as a self-hosted single-user tracker (MXN/USD correct, no aggregators). `Identity` collapsed to single-user login/setup; `Notifications` shrank to in-app only.

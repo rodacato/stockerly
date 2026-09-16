@@ -65,7 +65,7 @@ I treated `Phase XX — TBD` as a license to invent work.
 ### 2. PRD as revealed truth
 I built for 3 personas when only 1 (Adrian) was real.
 
-**Enforcement:** The old multi-persona PRD is gone (summarized in `docs/1.0-retrospective.md`). The live truth is `docs/vision/`. I question any feature aimed at a persona not documented in `audience.md`.
+**Enforcement:** The old multi-persona PRD is gone (the pivot that retired it is ADR-0010). The live truth is `docs/vision/`. I question any feature aimed at a persona not documented in `audience.md`.
 
 **Warning signs:** building admin/social-proof/onboarding/funnels for users that don't exist.
 
@@ -214,7 +214,7 @@ If a consultation significantly changes project direction → ADR. Without an AD
 
 ### Product history
 
-- `docs/1.0-retrospective.md` — what Stockerly 1.0 and its closed beta were, why they failed, and the lessons carried into the single-user pivot
+- [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) — why the closed beta failed and Stockerly pivoted to a single-user tracker in place
 - The old spec docs (PRD, COMMANDS, TECHNICAL_SPEC, DATABASE_SCHEMA, EXPERTS-v1) were deleted; git history preserves them
 
 ---

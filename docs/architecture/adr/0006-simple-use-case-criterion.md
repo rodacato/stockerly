@@ -4,7 +4,7 @@
 - **Date:** 2026-05-15
 - **Author:** Adrian Castillo (with synthesis from the documented expert panel — C2 Hiroto, C6 Esther)
 - **Supersedes:** —
-- **Related:** [Issue #38](https://github.com/rodacato/stockerly/issues/38), [1.0 retrospective](../../1.0-retrospective.md), [`CLAUDE.md` — Use Case Base Classes](../../../CLAUDE.md#use-case-base-classes), [conventions.md](../conventions.md)
+- **Related:** [Issue #38](https://github.com/rodacato/stockerly/issues/38), [ADR-0010](0010-pivot-to-self-hosted-single-user-tracker.md), [`CLAUDE.md` — Use Case Base Classes](../../../CLAUDE.md#use-case-base-classes), [conventions.md](../conventions.md)
 
 ---
 
