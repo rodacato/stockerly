@@ -99,7 +99,7 @@ Rails.application.config.after_initialize do
     # BMV earnings are served through an explicit route in SyncEarnings, not
     # through a chain: declaring :earnings here would put the bridge in the US
     # chain too, where Finnhub already answers.
-    capabilities: %i[prices historical indices dividends splits]
+    capabilities: %i[prices historical indices dividends splits fundamentals]
   )
 
   DataSourceRegistry.register(:alpha_vantage_fundamentals,

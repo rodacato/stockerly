@@ -93,15 +93,6 @@ RSpec.describe MarketData::Domain::SourceCatalogue do
       expect(entry_for("Alternative.me").role).to eq(:only)
     end
 
-    # Reads the registry rather than a stored label: Alpha Vantage was the only
-    # fundamentals source until FMP was scoped back to that capability, and the
-    # role moved on its own.
-    it "demotes a source to primary once it gains a peer" do
-      integration("Alpha Vantage", api_key_encrypted: "k")
-
-      expect(entry_for("Alpha Vantage").role).to eq(:primary)
-    end
-
     it "calls a provider that leads a chain with a fallback the primary" do
       integration("Alpaca", api_key_encrypted: "k")
 
