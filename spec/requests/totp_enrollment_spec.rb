@@ -15,6 +15,22 @@ RSpec.describe "TOTP enrollment", type: :request do
       expect(response.body).to include(Identity::Domain::Totp.format_for_display(user.otp_secret))
     end
 
+    it "gives a way back to Ajustes, where it was opened from" do
+      get totp_enrollment_path
+
+      expect(Capybara.string(response.body)).to have_css("header a[aria-label='Regresar'][href='#{settings_path}']")
+    end
+
+    context "when opened from the setup wizard" do
+      before { user.update!(onboarded_at: nil) }
+
+      it "leads back into the wizard, not to Ajustes" do
+        get totp_enrollment_path
+
+        expect(Capybara.string(response.body)).to have_css("header a[aria-label='Regresar'][href='#{onboarding_complete_path}']")
+      end
+    end
+
     it "leaves the account unenrolled until a code is verified" do
       get totp_enrollment_path
 
@@ -64,6 +80,8 @@ RSpec.describe "TOTP enrollment", type: :request do
       get recovery_codes_path
 
       expect(response).to redirect_to(settings_path)
+      follow_redirect!
+      expect(response.body).to include("Podrás generar unos nuevos desde Ajustes.")
     end
   end
 
