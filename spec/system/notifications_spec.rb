@@ -22,8 +22,8 @@ RSpec.describe "Notifications inbox", type: :system do
   it "renders grouped notifications with filter chip counts" do
     # Noon-anchored timestamps so the test doesn't flake when CI runs near
     # midnight UTC (relative offsets like `1.hour.ago` would otherwise spill
-    # into the previous calendar day and break the "Hoy ·" / "Ayer ·"
-    # bucket assertions below).
+    # into the previous calendar day and break the "Hoy" / "Ayer"
+    # group assertions below).
     today_noon     = Date.current.beginning_of_day + 12.hours
     yesterday_noon = today_noon - 1.day
     create(:notification, user: user, notification_type: :alert_triggered, title: "NVDA cruzó USD 600", created_at: today_noon, read: false)
@@ -33,8 +33,8 @@ RSpec.describe "Notifications inbox", type: :system do
 
     expect(page).to have_content("NVDA cruzó USD 600")
     expect(page).to have_content("BMV cerrado el lunes")
-    expect(page).to have_content("Hoy ·")
-    expect(page).to have_content("Ayer ·")
+    # D119: one group per day, headed by the day alone.
+    expect(page.all("section h2").map(&:text)).to eq([ "Hoy", "Ayer" ])
     # Each bucket carries its own count on its chip; "Mostrando X de Y" was
     # the old summary line and the artboard has none.
     expect(page).to have_content("Todas 2")
