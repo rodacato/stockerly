@@ -35,8 +35,9 @@ class OnboardingController < AuthenticatedController
   end
 
   def complete
-    @integrations_configured = Integration.where.not(api_key_encrypted: nil).count
-    @integrations_total = Integration.count
+    keyed = Integration.all.select { |i| MarketData::Domain::ProviderDirectory.for(i.provider_name)&.requires_key }
+    @integrations_configured = keyed.count { |i| i.api_key_encrypted.present? }
+    @integrations_total = keyed.size
     @assets_count = Asset.count
   end
 
