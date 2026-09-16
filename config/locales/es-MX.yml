@@ -52,6 +52,9 @@ es-MX:
           misma.
         bloqueada_razon: 'Es el proveedor: está rechazando las llamadas, no es tu
           cuota. Lo que sirve esta fuente no se actualiza mientras dure.'
+        bloqueadas:
+          one: 1 bloqueada
+          other: "%{count} bloqueadas"
         confirmar_fuente: "¿Eliminar %{provider}? Se borra también su API key."
         cuota_desconocida: Sin lectura de cuota
         descripcion: De dónde salen tus precios. Cada fuente trae su propio límite
@@ -65,7 +68,9 @@ es-MX:
         guardar: Guardar
         limite_diario: Límite diario
         limite_minuto: Por minuto
-        resumen: "%{count} fuentes · %{near} cerca del límite · %{blocked} bloqueada(s)"
+        resumen:
+          one: 1 fuente · %{near} cerca del límite · %{blocked}
+          other: "%{count} fuentes · %{near} cerca del límite · %{blocked}"
         rol:
           fallback: respaldo
           only: única fuente
