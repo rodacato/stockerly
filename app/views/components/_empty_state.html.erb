@@ -3,7 +3,9 @@
 <div class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-default px-4 py-16 text-center">
   <span class="material-symbols-outlined mb-4 text-6xl text-border-strong" aria-hidden="true"><%= icon %></span>
   <h3 class="mb-2 font-display text-lg font-semibold text-fg-default"><%= title %></h3>
-  <p class="mb-6 max-w-[320px] text-sm text-fg-subtle"><%= description %></p>
+  <% if description.present? %>
+    <p class="mb-6 max-w-[320px] text-sm text-fg-subtle"><%= description %></p>
+  <% end %>
   <% if local_assigns[:cta_text] && local_assigns[:cta_path] %>
     <% cta_class = button_classes(:primary, :sm, "inline-flex items-center gap-2") %>
     <% if local_assigns[:cta_method] == :post %>

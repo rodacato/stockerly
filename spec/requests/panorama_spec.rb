@@ -249,6 +249,24 @@ RSpec.describe "Panorama", type: :request do
       expect(response.body).to match(%r{text-sm font-bold text-warning-fg">\s*vence en 3 días\s*</p>})
     end
 
+    it "invites a first trade when there is nothing to watch" do
+      get dashboard_path
+
+      expect(response.body).to include(I18n.t("dashboard.show.radar_vacio"))
+      expect(response.body).to include(I18n.t("assets.index.vacio_cartera_cuerpo"))
+    end
+
+    # Negative: a holding that did not move today is quiet, not missing.
+    it "does not ask a holder for a first trade on a quiet day" do
+      still = mxn_asset(symbol: "STILL", current_price: 10)
+      create(:position, portfolio: portfolio, asset: still, shares: 10, avg_cost: 10, status: :open)
+
+      get dashboard_path
+
+      expect(response.body).to include(I18n.t("dashboard.show.radar_vacio"))
+      expect(response.body).not_to include(I18n.t("assets.index.vacio_cartera_cuerpo"))
+    end
+
     # X15: the sparkline used to read PriceSeries once per row.
   end
 
