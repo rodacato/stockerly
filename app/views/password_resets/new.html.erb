@@ -6,7 +6,7 @@
   <%= render "shared/auth_header", title: t("auth.forgot.titulo"), subtitle: t("auth.forgot.subtitulo") %>
 
   <% if flash[:alert].present? %>
-    <%= render "shared/flash_alert", message: flash[:alert] %>
+    <%= render "shared/flash_alert", message: take_flash(:alert) %>
   <% end %>
 
   <%= form_with url: forgot_password_path, method: :post, class: "flex flex-col gap-4" do %>

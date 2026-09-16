@@ -66,6 +66,12 @@ module ApplicationHelper
                 FIELD_SIZES.fetch(size), extra)
   end
 
+  # A screen that shows a flash inline takes it, so the layout does not repeat
+  # it as a toast. FlashHash#delete returns the hash, not the message.
+  def take_flash(key)
+    flash[key].tap { flash.delete(key) }
+  end
+
   # Renders a duration in es-MX human form: "2 horas", "1 hora", "30 minutos".
   # Rails' `distance_of_time_in_words` rounds ("about 1 day"); these are exact,
   # because they state a configured limit rather than an elapsed time.
