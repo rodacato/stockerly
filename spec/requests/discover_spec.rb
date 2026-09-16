@@ -39,6 +39,30 @@ RSpec.describe "Descubrir", type: :request do
     end
   end
 
+  # A headline's age reads the way the asset detail's news does, and the link
+  # leaves without telling the source where it came from.
+  describe "titulares" do
+    around do |example|
+      original = Rails.cache
+      Rails.cache = ActiveSupport::Cache::MemoryStore.new
+      example.run
+    ensure
+      Rails.cache = original
+    end
+
+    it "dates a headline with the app's relative age and opens it without a referrer" do
+      Rails.cache.write(WarmDiscoverJob::HEADLINES_KEY, { headlines: [
+        { title: "TSMC eleva su guía", source: "Reuters", related_ticker: "SMH",
+          published_at: 3.hours.ago, url: "https://example.com/tsmc" }
+      ], generated_at: Time.current })
+
+      get discover_path
+
+      expect(response.body).to include("SMH · Reuters · hace 3 h")
+      expect(Capybara.string(response.body).find_link("TSMC eleva su guía")[:rel]).to eq("noopener noreferrer")
+    end
+  end
+
   # The mobile bar carries no title, so the shell emits an sr-only h1 for the
   # screens whose artboard has none. This one's does, so it renders its own —
   # and the shell must stand down, because two h1s on a page is a defect.

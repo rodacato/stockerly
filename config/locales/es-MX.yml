@@ -571,7 +571,6 @@ es-MX:
       olas_vs: vs %{baseline} %{value}
       sin_datos: Todavía no hay datos del mundo
       tentativa: tentativa
-      titulares_hace: hace %{time}
       titulares_meta: de tus canastas
       titulares_titulo: Titulares
       titulo: Descubrir
