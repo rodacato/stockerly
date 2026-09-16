@@ -87,7 +87,7 @@
                 class: field_classes(:sm, "w-24 bg-bg-canvas! font-mono") %>
         </label>
         <%= f.submit t("admin.integrations.index.guardar"),
-              class: "cursor-pointer rounded-lg border border-border-default px-3 py-2 text-sm font-medium text-fg-default" %>
+              class: button_classes(:secondary, :sm, "cursor-pointer") %>
       <% end %>
       <%= button_to admin_integration_path(integration), method: :delete,
             form: { class: "inline-flex", data: { turbo_confirm: t("admin.integrations.index.confirmar_fuente", provider: entry.provider) } },
