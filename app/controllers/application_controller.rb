@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
     return if is_a?(SessionsController)
     return if controller_path == "rails/health" || controller_name == "health"
 
-    render "shared/maintenance", layout: "public", status: :service_unavailable
+    render "shared/maintenance", layout: "maintenance", status: :service_unavailable
   end
 
   def current_user
