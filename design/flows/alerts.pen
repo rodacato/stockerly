@@ -43,7 +43,7 @@
       "type": "frame",
       "id": "Y1ViY0",
       "x": 0,
-      "y": -760,
+      "y": -573,
       "name": "TopBar",
       "reusable": true,
       "width": 390,
@@ -172,8 +172,8 @@
     {
       "type": "frame",
       "id": "fSLY4",
-      "x": 0,
-      "y": -660,
+      "x": 1020,
+      "y": -573,
       "name": "BottomNav",
       "reusable": true,
       "width": 390,
@@ -344,8 +344,8 @@
     {
       "type": "frame",
       "id": "gv2fU",
-      "x": 0,
-      "y": -580,
+      "x": 1530,
+      "y": -573,
       "name": "Segmented",
       "reusable": true,
       "width": 342,
@@ -411,8 +411,8 @@
     {
       "type": "frame",
       "id": "tAAai",
-      "x": 0,
-      "y": -500,
+      "x": 1992,
+      "y": -573,
       "name": "Field",
       "reusable": true,
       "width": 320,
@@ -462,7 +462,7 @@
       "type": "frame",
       "id": "mG9ST",
       "x": 0,
-      "y": -400,
+      "y": -377,
       "name": "RuleRow",
       "reusable": true,
       "width": 342,
@@ -604,8 +604,8 @@
     {
       "type": "frame",
       "id": "G2rk1",
-      "x": 0,
-      "y": -280,
+      "x": 462,
+      "y": -377,
       "name": "EventRow",
       "reusable": true,
       "width": 342,
@@ -662,7 +662,7 @@
     {
       "type": "frame",
       "id": "Bn1Lk",
-      "x": 460,
+      "x": 1500,
       "y": 0,
       "name": "[Reglas] / Reglas / Default",
       "clip": true,
@@ -1259,8 +1259,8 @@
     {
       "type": "frame",
       "id": "rPPff",
-      "x": 0,
-      "y": -180,
+      "x": 924,
+      "y": -377,
       "name": "NotiRow",
       "reusable": true,
       "width": 342,
@@ -1356,7 +1356,7 @@
     {
       "type": "frame",
       "id": "MYHxK",
-      "x": 920,
+      "x": 2010,
       "y": 0,
       "name": "[Reglas] / Bandeja / Default",
       "clip": true,
@@ -1911,7 +1911,7 @@
     {
       "type": "frame",
       "id": "vuJEp",
-      "x": 1380,
+      "x": 990,
       "y": 0,
       "name": "[Reglas] / Nueva regla / Sheet",
       "clip": true,
@@ -2532,7 +2532,7 @@
     {
       "type": "frame",
       "id": "VcOde",
-      "x": 1840,
+      "x": 480,
       "y": 0,
       "name": "[Reglas] / Reglas / Vacío",
       "clip": true,
@@ -2952,8 +2952,8 @@
     {
       "type": "frame",
       "id": "a8AyYs",
-      "x": 0,
-      "y": -920,
+      "x": 2432,
+      "y": -573,
       "name": "SwitchRow",
       "reusable": true,
       "width": 342,
@@ -3027,8 +3027,8 @@
     {
       "type": "frame",
       "id": "jVzSz",
-      "x": 0,
-      "y": -1090,
+      "x": 510,
+      "y": -573,
       "name": "HeaderBar",
       "reusable": true,
       "width": 390,
@@ -3120,7 +3120,7 @@
       "type": "frame",
       "id": "nloxs",
       "x": 0,
-      "y": 2180,
+      "y": 3127,
       "name": "Log · Reglas y avisos",
       "width": 360,
       "fill": "$bg-muted",
@@ -3863,6 +3863,26 @@
           }
         }
       ]
+    },
+    "grid-x0": {
+      "type": "number",
+      "value": 0
+    },
+    "grid-brief-w": {
+      "type": "number",
+      "value": 360
+    },
+    "grid-gutter": {
+      "type": "number",
+      "value": 120
+    },
+    "grid-y0": {
+      "type": "number",
+      "value": 0
+    },
+    "grid-row-gap": {
+      "type": "number",
+      "value": 260
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"
