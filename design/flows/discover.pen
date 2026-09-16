@@ -363,17 +363,17 @@
               "height": 22,
               "icon": "layout-grid",
               "library": "lucide",
-              "fill": "$fg-subtle"
+              "fill": "$primary"
             },
             {
               "type": "text",
               "id": "OhmuG",
               "name": "t",
-              "fill": "$fg-subtle",
+              "fill": "$primary",
               "content": "Panorama",
               "fontFamily": "$font-sans",
               "fontSize": 11,
-              "fontWeight": "normal"
+              "fontWeight": "600"
             }
           ]
         },
@@ -453,17 +453,17 @@
               "height": 22,
               "icon": "compass",
               "library": "lucide",
-              "fill": "$primary"
+              "fill": "$fg-subtle"
             },
             {
               "type": "text",
               "id": "v2otE",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$fg-subtle",
               "content": "Descubrir",
               "fontFamily": "$font-sans",
               "fontSize": 11,
-              "fontWeight": "600"
+              "fontWeight": "normal"
             }
           ]
         },
@@ -737,6 +737,7 @@
               "id": "HR1sd",
               "name": "Panorama",
               "width": "fill_container",
+              "fill": "$primary-muted",
               "cornerRadius": "$radius-sm",
               "gap": "$space-3",
               "padding": [
@@ -753,17 +754,17 @@
                   "height": 20,
                   "icon": "layout-grid",
                   "library": "lucide",
-                  "fill": "$fg-subtle"
+                  "fill": "$primary-hover"
                 },
                 {
                   "type": "text",
                   "id": "JQJGo",
                   "name": "t",
-                  "fill": "$fg-subtle",
+                  "fill": "$primary-hover",
                   "content": "Panorama",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
-                  "fontWeight": "normal"
+                  "fontWeight": "600"
                 }
               ]
             },
@@ -842,7 +843,6 @@
               "id": "McmvA",
               "name": "Descubrir",
               "width": "fill_container",
-              "fill": "$primary-muted",
               "cornerRadius": "$radius-sm",
               "gap": "$space-3",
               "padding": [
@@ -859,17 +859,17 @@
                   "height": 20,
                   "icon": "compass",
                   "library": "lucide",
-                  "fill": "$primary"
+                  "fill": "$fg-subtle"
                 },
                 {
                   "type": "text",
                   "id": "kbcoj",
                   "name": "t",
-                  "fill": "$primary-hover",
+                  "fill": "$fg-subtle",
                   "content": "Descubrir",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
-                  "fontWeight": "600"
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -944,7 +944,7 @@
               "id": "O4lFy4",
               "name": "Title",
               "fill": "$fg-default",
-              "content": "Descubrir",
+              "content": "Panorama",
               "fontFamily": "$font-display",
               "fontSize": 20,
               "fontWeight": "700",
@@ -952,14 +952,13 @@
             },
             {
               "type": "text",
-              "id": "NJ1Zg",
+              "id": "LlZct",
               "name": "Sub",
               "fill": "$fg-subtle",
-              "content": "17 CANASTAS · DESDE TU ÚLTIMA VISITA",
+              "content": "Lunes 24 ago · CDMX",
               "fontFamily": "$font-sans",
-              "fontSize": 11,
-              "fontWeight": "normal",
-              "letterSpacing": 0.6
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -1649,7 +1648,23 @@
           "type": "ref",
           "ref": "A887Ra",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "rVxMx": {
+              "fill": "$fg-subtle"
+            },
+            "OhmuG": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "h7Pb0": {
+              "fill": "$primary"
+            },
+            "v2otE": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -1930,7 +1945,23 @@
           "type": "ref",
           "ref": "A887Ra",
           "name": "BottomNav",
-          "width": "fill_container"
+          "width": "fill_container",
+          "descendants": {
+            "rVxMx": {
+              "fill": "$fg-subtle"
+            },
+            "OhmuG": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "h7Pb0": {
+              "fill": "$primary"
+            },
+            "v2otE": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
         }
       ]
     },
@@ -1950,7 +1981,29 @@
           "type": "ref",
           "ref": "KBG5l",
           "name": "SidebarNav",
-          "height": "fill_container"
+          "height": "fill_container",
+          "descendants": {
+            "HR1sd": {
+              "fill": []
+            },
+            "oY0fM": {
+              "fill": "$fg-subtle"
+            },
+            "JQJGo": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "McmvA": {
+              "fill": "$primary-muted"
+            },
+            "rlrlc": {
+              "fill": "$primary-hover"
+            },
+            "kbcoj": {
+              "fill": "$primary-hover",
+              "fontWeight": "600"
+            }
+          }
         },
         {
           "type": "frame",
@@ -1970,7 +2023,7 @@
                 "O4lFy4": {
                   "content": "Descubrir"
                 },
-                "NJ1Zg": {
+                "LlZct": {
                   "content": "17 CANASTAS · DESDE TU ÚLTIMA VISITA"
                 }
               }
@@ -2613,7 +2666,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.8.1"
+      "value": "1.0.0"
     },
     "font-display": {
       "type": "string",

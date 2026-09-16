@@ -555,3 +555,16 @@ pass:
   in the body, so the local bar lost its last consumer, and the *"No detail TopBar"* gap is declined.
 - **The *"No transparent token"* gap is declined.** An empty fill is spelled `[]`, which needs no
   token; the flow's 44 `#00000000` literals are gone.
+
+### `discover.pen` re-vendored to 1.0.0 — 2026-09-16
+
+A full sync from 0.8.1: tokens equal by value, and the four kit components it instances match the
+masters. Three had drifted, none in shape:
+
+- **`BottomNav` and `SidebarNav` masters had Descubrir lit.** Both are back to the kit, and each
+  screen lights its own tab.
+- **`TopBarDesktop`'s master carried this flow's title and a restyled subtitle** (11px, tracked).
+  The master is back to the kit; Olas · Desktop overrides both lines. The subtitle's style against
+  the code's mono uppercase is the kit deviation already on the board.
+
+`WaveRow` is not a kit component and stays local.
