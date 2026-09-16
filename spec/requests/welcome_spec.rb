@@ -21,6 +21,17 @@ RSpec.describe "Welcome", type: :request do
       expect(response.body).to include("Configura una regla")
     end
 
+    # The reader is not onboarded until they leave this screen, so every link
+    # to the app would bounce them back to the first wizard step (D121).
+    it "offers no way out that lands back in the wizard" do
+      login_as_without_onboarding(user)
+      get welcome_path
+
+      expect(response.body).not_to include(%(aria-label="#{I18n.t('nav.principal')}"))
+      expect(response.body).not_to include(%(href="#{portfolio_path}"))
+      expect(response.body).not_to include(%(href="#{alerts_path}"))
+    end
+
     it "redirects to dashboard for an already-onboarded user" do
       user.update!(onboarded_at: Time.current)
       login_as(user)
@@ -52,6 +63,21 @@ RSpec.describe "Welcome", type: :request do
 
       expect(response).to redirect_to(dashboard_path)
       expect(user.reload).to be_onboarded
+    end
+
+    it "finishes onboarding on the door the reader chose" do
+      login_as_without_onboarding(user)
+      post complete_welcome_path, params: { destino: "alerts" }
+
+      expect(response).to redirect_to(alerts_path)
+      expect(user.reload).to be_onboarded
+    end
+
+    it "ignores a destination that is not one of the doors" do
+      login_as_without_onboarding(user)
+      post complete_welcome_path, params: { destino: "https://example.com" }
+
+      expect(response).to redirect_to(dashboard_path)
     end
 
     it "blocks anonymous users" do

@@ -4,12 +4,12 @@
   <div class="w-full max-w-[900px] space-y-8">
     <%# Greeting %>
     <div>
-      <h1 class="text-3xl font-bold text-fg-default tracking-tight"><%= t(".saludo", name: current_user.full_name.split.first) %></h1>
+      <h1 class="font-display text-3xl font-bold text-fg-default tracking-tight"><%= t(".saludo", name: current_user.full_name.split.first) %></h1>
       <p class="text-sm text-fg-subtle mt-2"><%= t(".subtitulo") %></p>
     </div>
 
     <%# Context card + starting guide %>
-    <%= render "shared/welcome_body" %>
+    <%= render "shared/welcome_body", complete: true %>
 
     <%# Primary CTA %>
     <%= button_to complete_welcome_path,
