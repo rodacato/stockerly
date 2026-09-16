@@ -46,12 +46,17 @@ tells a reviewer nothing.
 | `activos-holdings.png` | `[Activos] / Holdings / Default` |
 | `activos-watchlist.png` | `[Activos] / Watchlist / Default` |
 | `activos-holdings-vacia.png` | `[Activos] / Holdings / Vacío` |
+| `activos-watchlist-vacia.png` | `[Activos] / Watchlist / Vacía` |
+| `activos-holdings-sin-consolidar.png` | `[Activos] / Holdings / Sin consolidar` — no FX rate: rows keep their own currency |
 | `activos-registrar-movimiento.png` | `[Activos] / Registrar movimiento / Sheet` |
 | `activos-registrar-con-teclado.png` | `[Activos] / Registrar movimiento / Con teclado` |
+| `activos-registrar-movimiento-cetes.png` | `[Activos] / Registrar movimiento / CETES` — a fixed-income buy asks for Vencimiento |
 | `activos-tracked.png` | `[Activos] / Tracked / Default` |
+| `activos-tracked-agregar.png` | `[Activos] / Tracked · Agregar activo / Default` — D64 |
 | `activos-tracked-sin-fuente.png` | `[Activos] / Tracked / Sin fuente` |
-| `activos-tracked-buscar.png` | `[Activos] / Tracked · Buscar / Default` |
+| `activos-tracked-sin-coincidencias.png` | `[Activos] / Tracked / Sin coincidencias` |
 | `activos-historial.png` | `[Activos] / Historial / Default` — ⚠ see D43, designed after /positions hit its D35 deadline |
+| `activos-historial-vacio.png` | `[Activos] / Historial / Vacío` |
 | `activos-importar.png` | `[Activos] / Importar CSV / Default` |
 | `activos-importar-revision.png` | `[Activos] / Importar CSV / Revisión` — the dry run: nothing written yet |
 | `activos-importar-desconocidos.png` | `[Activos] / Importar CSV / Símbolos desconocidos` — the all-or-nothing refusal |
@@ -89,8 +94,8 @@ reflow. The kit's shell variant is included because it is what every desktop art
 | `ajustes-integraciones-desktop.png` | `[Ajustes] / Integraciones · Desktop / Default` |
 | `ajustes-estado-desktop.png` | `[Ajustes] / Estado y mantenimiento · Desktop / Default` |
 
-Not drawn on desktop, on purpose: `Watchlist`, `Holdings vacía`, the two `Tracked · Buscar` and
-`Reglas` states, `Descubrir · Sin datos` (it reflows into the same two-column shell with the
+Not drawn on desktop, on purpose: `Watchlist`, `Holdings vacía`, the `Activos` empty and
+notice states, the `Reglas` states, `Descubrir · Sin datos` (it reflows into the same two-column shell with the
 notice and the Calendario alone), and `Registros` — each reflows into a pattern one of the ones above already
 settles. `Registros` would want a real log table, which is a new component and therefore a
 decision, not a redraw.
