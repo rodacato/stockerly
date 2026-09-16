@@ -107,8 +107,8 @@ four-database setup, background jobs via `bin/jobs`, first-run check, and troubl
 ### API Keys
 
 Stockerly ships **10 market-data gateways** —
-[`app/contexts/market_data/gateways/`](app/contexts/market_data/gateways/) holds 14 files: the 10
-concrete providers, 2 base classes, 1 error class and 1 retry policy. API keys are configured
+[`app/contexts/market_data/gateways/`](app/contexts/market_data/gateways/) holds the 10
+concrete providers plus their shared base classes, error class, retry policy and HTTP plumbing. API keys are configured
 during the Setup Wizard, later under Integrations, or via Rails credentials. The registrations in
 [`config/initializers/data_sources.rb`](config/initializers/data_sources.rb) are the source of truth:
 
@@ -133,7 +133,7 @@ table.
 ## Running Tests
 
 ```bash
-# Full suite (3,007 examples as of 2026-08-29)
+# Full suite
 bundle exec rspec
 
 # Single file
@@ -185,7 +185,7 @@ See [docs/ops/deploy.md](docs/ops/deploy.md) for the complete deployment guide, 
 | [GETTING_STARTED.md](GETTING_STARTED.md) | Run Stockerly locally — both paths, databases, jobs, troubleshooting |
 | [docs/](docs/) | Documentation index (vision, architecture, ops) |
 | [docs/vision/](docs/vision/) | Product north, audience, JTBDs, non-goals |
-| [docs/architecture/](docs/architecture/) | Bounded contexts map + 19 ADRs |
+| [docs/architecture/](docs/architecture/) | Bounded contexts map + ADRs |
 | [design/](design/) | The design system — Pencil files, ui-kit, brand, exported artboards |
 | [docs/ops/github-workflow.md](docs/ops/github-workflow.md) | How work is tracked: the board, issues, PRs |
 | [docs/ops/deploy.md](docs/ops/deploy.md) | Production deployment guide |
