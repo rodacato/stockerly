@@ -140,10 +140,13 @@ so an export that is never renamed survives as an orphan nobody can identify.
 | File | Artboard |
 |---|---|
 | `auth-login.png` | `[Auth] / Login / Default` |
-| `auth-2fa.png` | `[Auth] / 2FA / Default` — ⚠ see D23, this screen has no code behind it |
+| `auth-login-error.png` | `[Auth] / Login / Error` — the inline alert every auth form shares |
+| `auth-2fa.png` | `[Auth] / 2FA / Default` — ADR-018 |
 | `auth-forgot.png` | `[Auth] / Forgot / Default` |
 | `auth-email-sent.png` | `[Auth] / Email sent / Default` |
 | `auth-reset.png` | `[Auth] / Reset / Default` |
+| `auth-enlace-expirado.png` | `[Auth] / Enlace expirado / Default` |
+| `auth-contrasena-actualizada.png` | `[Auth] / Contraseña actualizada / Default` |
 | `auth-login-desktop.png` | `[Auth] / Login · Desktop / Default` |
 
 ## Brand (`brand.pen`)
