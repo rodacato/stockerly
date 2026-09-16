@@ -103,7 +103,7 @@
       </div>
       <span class="h-px bg-border-default"></span>
       <p class="text-xs text-fg-subtle">
-        <%= t(".rango", desde: l(@report[:earliest_on]), hasta: l(@report[:latest_on]), count: @report[:symbols].size) %>
+        <%= t(".rango", desde: l(@report[:earliest_on], format: :day_month_year), hasta: l(@report[:latest_on], format: :day_month_year), count: @report[:symbols].size) %>
       </p>
     </div>
 
