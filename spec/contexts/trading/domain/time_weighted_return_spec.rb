@@ -80,11 +80,11 @@ RSpec.describe Trading::Domain::TimeWeightedReturn do
     expect(twr).to be_within(0.01).of(-10.0)
   end
 
-  it "returns zero when there is not enough history to compare" do
+  it "reports no return rather than a flat one when there is not enough history to compare" do
     snapshot(1, 1_000)
 
-    expect(twr).to eq(0.0)
-    expect(described_class.new(portfolio, currency: "MXN").between(from: 10.days.ago.to_date)).to eq(0.0)
+    expect(twr).to be_nil
+    expect(described_class.new(portfolio, currency: "MXN").between(from: 10.days.ago.to_date)).to be_nil
   end
 
   it "honours the range it was given" do
