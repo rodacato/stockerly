@@ -27,6 +27,7 @@ module Trading
           fx_unavailable: portfolio.present? && fx.degraded?,
           sentiment_cards: sentiment_cards(user),
           signals: signals(positions, watched),
+          signals_window_days: MarketData::Queries::NotableObservations::WINDOW_DAYS,
           radar: radar(positions, watched, day_changes),
           sparkline_closes: closes,
           day_changes: day_changes

@@ -429,7 +429,9 @@ es-MX:
         %{currency}
       radar_titulo: Radar
       radar_vacio: Ninguno de tus activos tuvo actividad hoy.
-      senales_subtitulo: Oportunidades de compra y venta hoy
+      senales_subtitulo:
+        one: Oportunidades de compra y venta del último día
+        other: Oportunidades de compra y venta de los últimos %{count} días
       senales_titulo: Señales de interés
       senales_vacio: Nada que destaque hoy. Tus reglas están tranquilas — vuelve mañana.
       senales_ver_mas: Ver todas
