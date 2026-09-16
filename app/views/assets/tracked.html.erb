@@ -7,7 +7,7 @@
 <div data-controller="reveal" class="flex flex-col gap-5 lg:flex-row lg:items-start">
   <div class="flex min-w-0 flex-1 flex-col gap-4">
     <div class="flex items-center justify-between gap-3">
-      <p class="text-sm text-fg-subtle"><%= t("assets.tracked.conteo", count: @assets.size) %></p>
+      <p class="text-sm text-fg-subtle"><%= t("assets.tracked.conteo", count: @total) %></p>
       <button type="button" data-action="reveal#toggle"
               class="<%= button_classes(:primary, :sm, "inline-flex shrink-0 items-center gap-1.5") %>">
         <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
