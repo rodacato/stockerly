@@ -101,6 +101,15 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).to include(I18n.t("settings.show.importar"))
   end
 
+  # The importer reads Stockerly's own columns (Trading::Domain::CsvRows), so a
+  # broker's export fails; the row used to promise exactly that.
+  it "describes the importer by the format it actually reads" do
+    get settings_path
+
+    expect(response.body).to include("formato de Stockerly")
+    expect(response.body).not_to include("CSV de tu broker")
+  end
+
   it "offers both deletions, and says which one keeps the account" do
     get settings_path
 
