@@ -174,9 +174,11 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [022](./adr/0022-github-as-the-system-of-record.md) | GitHub is the system of record for outstanding work | Accepted 2026-08-29 · retires the sprint protocol |
 | [023](./adr/0023-a-missing-rate-absents-the-figure.md) | A missing exchange rate absents the figure, never fabricates one | Accepted 2026-08-30 |
 | [024](./adr/0024-asset-ownership-by-column.md) | `Asset` is owned by column: Administration lists it, MarketData measures it | Accepted 2026-09-04 · writes the shared-kernel decision 002 deferred |
+| [025](./adr/0025-alerts-reads-trading.md) | Alerts may read Trading's public API, and holdings cross as plain data | Accepted 2026-09-12 · amends 002's 2026-09-04 amendment |
 | [026](./adr/0026-no-legal-pages-on-a-self-hosted-instance.md) | A self-hosted instance serves no legal pages; the license carries what applies | Accepted 2026-09-13 · supersedes 008 |
+| [027](./adr/0027-production-is-the-only-instance-that-spends-quota.md) | Production is the only instance that spends quota | Accepted 2026-09-04 · numbered 024 by mistake until 2026-09-16 |
 
-Twenty-one ADRs: **0001, 0002 and 0006–0024**. The gap is explained below.
+Twenty-four ADRs: **0001, 0002 and 0006–0027**. The gap is explained below.
 
 **ADR-018 is the only one that reverses a decision this project had already published.** Design decision D23 recommended *against* building TOTP, and it was right for the
 audience it was written for: one person, who could put Cloudflare Access in front of his own tunnel.
