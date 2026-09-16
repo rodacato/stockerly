@@ -12,6 +12,12 @@ RSpec.describe "Cockpit › Señales", type: :request do
   end
 
   describe "GET /signals" do
+    it "keeps Panorama lit, the screen its Ver todas link leaves from" do
+      get "/signals"
+
+      expect(Capybara.string(response.body)).to have_css("a[aria-current='page']", text: "Panorama")
+    end
+
     it "lifts the Panorama's three-row, three-day cap" do
       held = create(:asset, :stock, symbol: "HELD", currency: "USD")
       create(:position, portfolio: portfolio, asset: held, shares: 1, avg_cost: 1, status: :open)
