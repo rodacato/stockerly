@@ -342,7 +342,7 @@
                           "content": "Ver todos →",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
-                          "fontWeight": "500"
+                          "fontWeight": "600"
                         }
                       ]
                     }
@@ -1147,7 +1147,7 @@
                           "content": "Ver todos →",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
-                          "fontWeight": "500"
+                          "fontWeight": "600"
                         }
                       ]
                     }
@@ -2087,7 +2087,7 @@
                       "content": "Ver todas →",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
-                      "fontWeight": "500"
+                      "fontWeight": "600"
                     }
                   ]
                 },
@@ -4251,7 +4251,7 @@
                                       "content": "Ver todos →",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 14,
-                                      "fontWeight": "500"
+                                      "fontWeight": "600"
                                     }
                                   ]
                                 }
@@ -12667,7 +12667,7 @@
                           "content": "Ver todos →",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
-                          "fontWeight": "500"
+                          "fontWeight": "600"
                         }
                       ]
                     }
