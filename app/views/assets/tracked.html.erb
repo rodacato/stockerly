@@ -1,5 +1,9 @@
 <% content_for :page_title, t("assets.tracked.titulo") %>
 
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t("assets.tracked.titulo"), back_path: assets_path %>
+<% end %>
+
 <div data-controller="reveal" class="flex flex-col gap-5 lg:flex-row lg:items-start">
   <div class="flex min-w-0 flex-1 flex-col gap-4">
     <div class="flex items-center justify-between gap-3">

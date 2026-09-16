@@ -1473,7 +1473,6 @@ es-MX:
       revisando: Leyendo el archivo…
       revisar: Revisar
       titulo: Importar movimientos
-      volver: Volver a tu cartera
     preview:
       cancelar: Cancelar
       confirmando: Importando…
@@ -1536,7 +1535,6 @@ es-MX:
           other: 'La renta fija necesita su fecha de vencimiento, y el CSV no la trae:'
       simbolos: Símbolos
       titulo: Revisión
-      volver: Elegir otro archivo
     track_missing:
       alta:
         one: Di de alta 1 símbolo. Vuelve a subir tu archivo.
