@@ -83,7 +83,7 @@ ones may merge into a neighbor.
 |---|---|---|---|
 | `flows/auth.pen` | Auth | login (default · error), 2FA, código de recuperación, forgot, email sent, reset, enlace expirado, contraseña actualizada (+ Login desktop); TOTP · alta and códigos de recuperación, which render in the app shell — no signup (account created in onboarding) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/onboarding.pen` | Onboarding | setup, integrations, assets, **seguridad**, complete, welcome (+ Setup/Integrations/Assets/Welcome desktop) | **done · in review** — **migrated to kit 0.9.0 on 2026-08-27**: D52's fourth step drawn and the Stepper moved 3 → 4, VOO/CETES split to catch up to the locale's five categories, the stale auth-coherence flag retired |
-| `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default/tranquilo), movimientos, asset detail (Análisis · Mi posición), consolidado | **done · in review** — **migrated to kit 0.8.0 on 2026-08-27**: six TopBars and four BottomNavs consolidated into three vendored components, `Black swan` deleted (D51), the brief rewritten, all nine exports re-shot |
+| `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default · tranquilo · primera vez), señales (default · vacío), asset detail (análisis · aviso TradingView · mi posición · CETES), consolidado (default · sin historial) (+ Panorama/Consolidado desktop) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings (default · vacía · sin consolidar), watchlist (default · vacía), registrar movimiento (sheet · con teclado · CETES), historial (default · vacío), tracked (default · agregar activo · sin fuente · sin coincidencias), importar CSV (default · revisión · símbolos desconocidos) + Holdings/Registrar/Tracked desktop | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (vacío · default), nueva regla (sheet · calendario), bandeja (default · vacía) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
 | `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, integraciones (+ estados), registros, estado y mantenimiento | **done · in review** — **migrated to kit 0.9.0 on 2026-08-27**: `HeaderBar` promoted from four hand-built copies, the BottomNav's double active state fixed, the `Trabajos` badge dropped against §8's documented reason, D52's `Seguridad` row added |
@@ -97,16 +97,16 @@ structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit �
 ### Desktop pass (2026-08-24, kit 0.5.0 — counts re-checked 2026-08-27)
 
 Every flow has been through it. D4 still governs **which** screens get an artboard: one is drawn
-only where the layout genuinely diverges, and the rest reflow — so **15 desktop artboards cover
+only where the layout genuinely diverges, and the rest reflow — so **14 desktop artboards cover
 six of the seven flows**, not 30. `alerts` draws none, which is why the table has seven rows and
-six of them are non-empty. Counted against `design/exports/*-desktop.png`, which holds those 15
+six of them are non-empty. Counted against `design/exports/*-desktop.png`, which holds those 14
 plus the kit's own `ui-kit-shell-desktop`.
 
 | Flow | Desktop artboards | Not drawn, because |
 |---|---|---|
 | `auth` | Login | Same split-panel as Setup — the two doors match. The other four keep the centered card |
 | `onboarding` | Setup · Integrations · Assets · Welcome | Complete inherits the wizard frame exactly |
-| `cockpit` | Panorama · Asset·Análisis · Consolidado | — |
+| `cockpit` | Panorama · Consolidado | The asset detail reflows into one column |
 | `assets` | Holdings · Registrar movimiento · Tracked | Watchlist, Holdings vacía and the search states reuse patterns above |
 | `alerts` | — | Its list and sheet are the patterns Cartera and Registrar movimiento settle |
 | `settings` | Hub · Integraciones · Estado | Registros reflows; a real log table is a new component, so a decision |

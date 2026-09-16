@@ -22,9 +22,8 @@ leaves this list by shipping or by being declined on the record.
 | Gap | Found | Where it lives meanwhile |
 |---|---|---|
 | **`NavRow` has no recommended/primary state** | 0.8.0, vendoring into `assets.pen` — three copies had drifted and snapped back, a fourth carried a deliberate `$primary` accent because it is the recommended path out of an empty portfolio | An instance override in `assets.pen`. A second consumer earns the variant |
-| **No detail `TopBar`** | 0.8.0, `cockpit.pen` — the kit ships the root bar (`Brand`/`Bell`) only | `TopBarDetail` local to `cockpit.pen`: two-line ticker title plus a bookmark. **Measured against `HeaderBar` and they are different components**, so 0.9.0 did not absorb it. Its `Bookmark` slot is asset-specific and would come off in a kit version |
 | **No `focus` token** | #489, 2026-09-04 — the app's most common focus ring (18 inputs) had no kit name | Shipped in the code contract as `--color-focus` (`#5B6CFF33` / `#7B89FF33`), D76. The kit has not taken it: rule 2 makes every kit change a manual re-vendor across ten consumers, so it is promoted when a `.pen` needs it. **19 consumers as of #561**, and the newest is not a focus ring: the metric card's open-state ring takes the same value, because it marks the control the reader just activated. If a `.pen` ever promotes this, weigh `ring-accent` as the name — the row was left as `focus` in #561 rather than renamed one PR after it landed (D77) |
-| **No `transparent` token** | The consistency sweep, 2026-08-27 | `cockpit.pen` carries 44 `#00000000` literals — transparency, not colour. `README.md` says *"tokens only — zero hex in a flow"*, and the kit gives no way to spell "no fill", so **the rule currently forbids its own only spelling**. Either a token or a sentence in the rule |
+| **No five-option `Segmented`** | `cockpit.pen`, 2026-09-16 — Consolidado's period control and the chart's range both render `components/_segmented` with five options | Drawn local to the flow with `_segmented`'s tokens. The kit has two and three; an instance cannot add a slot |
 
 
 **The version lives in the `kit-version` variable inside `ui-kit.lib.pen`** — that is the only
@@ -547,4 +546,11 @@ drifted, none in shape:
 - **`Segmented` lacked the kit's `context` note**, and **`AssetRow` carried a different sample
   `Val`** that every instance already overrides.
 
-`TopBarDetail` and `PatrimonioStrip` are not kit components and stay local.
+`PatrimonioStrip` is not a kit component and stays local. Later the same day, under the flow's code
+pass:
+
+- **`HeaderBar` vendored** for Señales, recreated from the kit's JSON and hash-equal to the master.
+- **`TopBarDetail` deleted.** The asset detail renders the root `TopBar` and carries its back link
+  in the body, so the local bar lost its last consumer, and the *"No detail TopBar"* gap is declined.
+- **The *"No transparent token"* gap is declined.** An empty fill is spelled `[]`, which needs no
+  token; the flow's 44 `#00000000` literals are gone.

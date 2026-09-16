@@ -37,12 +37,16 @@ tells a reviewer nothing.
 | File | Artboard |
 |---|---|
 | `cockpit-panorama-default.png` | `[Cockpit] / Panorama / Default` |
-| `cockpit-panorama-tranquilo.png` | `[Cockpit] / Panorama / Tranquilo` |
+| `cockpit-panorama-tranquilo.png` | `[Cockpit] / Panorama / Tranquilo` — nothing moved today |
+| `cockpit-panorama-primera-vez.png` | `[Cockpit] / Panorama / Primera vez` — nothing held or watched yet |
+| `cockpit-senales.png` | `[Cockpit] / Señales / Default` |
+| `cockpit-senales-vacio.png` | `[Cockpit] / Señales / Vacío` |
 | `cockpit-asset-analisis.png` | `[Cockpit] / Asset · Análisis / Default` |
 | `cockpit-asset-analisis-aviso.png` | `[Cockpit] / Asset · Análisis / Aviso TradingView` |
 | `cockpit-asset-mi-posicion.png` | `[Cockpit] / Asset · Mi posición / Default` |
+| `cockpit-asset-cetes.png` | `[Cockpit] / Asset · CETES / Default` — fixed income, no chart (D98) |
 | `cockpit-consolidado.png` | `[Cockpit] / Consolidado / Default` |
-| `cockpit-movimientos.png` | `[Cockpit] / Movimientos / Default` — D42's gate was lifted 2026-08-27 |
+| `cockpit-consolidado-sin-historial.png` | `[Cockpit] / Consolidado / Sin historial` — no curve and no comparison yet |
 | `activos-holdings.png` | `[Activos] / Holdings / Default` |
 | `activos-watchlist.png` | `[Activos] / Watchlist / Default` |
 | `activos-holdings-vacia.png` | `[Activos] / Holdings / Vacío` |
@@ -84,7 +88,6 @@ reflow. The kit's shell variant is included because it is what every desktop art
 |---|---|
 | `ui-kit-shell-desktop.png` | `AppShellDesktop` (`ui-kit.lib.pen`) |
 | `cockpit-panorama-desktop.png` | `[Cockpit] / Panorama · Desktop / Default` |
-| `cockpit-asset-analisis-desktop.png` | `[Cockpit] / Asset · Análisis · Desktop / Default` |
 | `cockpit-consolidado-desktop.png` | `[Cockpit] / Consolidado · Desktop / Default` |
 | `activos-holdings-desktop.png` | `[Activos] / Holdings · Desktop / Default` |
 | `activos-registrar-movimiento-desktop.png` | `[Activos] / Registrar movimiento · Desktop / Dialog` |
