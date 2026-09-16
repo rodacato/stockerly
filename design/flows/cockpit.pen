@@ -12200,8 +12200,8 @@
               "id": "DMlbh",
               "name": "Actions",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 12,
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
@@ -13686,7 +13686,6 @@
                   "type": "frame",
                   "id": "zgKqv",
                   "name": "Back",
-                  "clip": true,
                   "width": "fill_container",
                   "gap": 8,
                   "alignItems": "center",
@@ -13702,25 +13701,36 @@
                       "fill": "$fg-default"
                     },
                     {
-                      "type": "text",
-                      "id": "Z2kV75",
-                      "name": "Symbol",
-                      "fill": "$fg-default",
-                      "content": "CETES_28D",
-                      "fontFamily": "$font-display",
-                      "fontSize": 20,
-                      "fontWeight": "700",
-                      "letterSpacing": -0.5
-                    },
-                    {
-                      "type": "text",
-                      "id": "GfjNY",
-                      "name": "Name",
-                      "fill": "$fg-subtle",
-                      "content": "CETES 28 Dias",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 16,
-                      "fontWeight": "normal"
+                      "type": "frame",
+                      "id": "gE39G",
+                      "name": "Names",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Z2kV75",
+                          "name": "Symbol",
+                          "fill": "$fg-default",
+                          "content": "CETES_28D",
+                          "fontFamily": "$font-display",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "letterSpacing": -0.5
+                        },
+                        {
+                          "type": "text",
+                          "id": "GfjNY",
+                          "name": "Name",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "CETES 28 Dias",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "normal"
+                        }
+                      ]
                     }
                   ]
                 },
@@ -14593,8 +14603,8 @@
               "id": "m1TZpp",
               "name": "Actions",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 12,
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
