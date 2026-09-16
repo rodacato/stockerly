@@ -52,7 +52,6 @@ es-MX:
           misma.
         bloqueada_razon: 'Es el proveedor: está rechazando las llamadas, no es tu
           cuota. Lo que sirve esta fuente no se actualiza mientras dure.'
-        configurar: Configurar integraciones
         confirmar_fuente: "¿Eliminar %{provider}? Se borra también su API key."
         cuota_desconocida: Sin lectura de cuota
         descripcion: De dónde salen tus precios. Cada fuente trae su propio límite
@@ -84,8 +83,8 @@ es-MX:
           calls_per_minute: por minuto
           kib_per_month: KiB este mes
         uso: "%{used} / %{limit} %{unit}"
-        vacio_cuerpo: Agrégalas desde el wizard inicial para empezar a sincronizar
-          datos.
+        vacio_cuerpo_html: Vuelven al correr <code class="font-mono">bin/rails stockerly:sync</code>
+          en tu servidor.
         vacio_titulo: No hay fuentes configuradas
         verificar: Verificar conexión
     logs:
