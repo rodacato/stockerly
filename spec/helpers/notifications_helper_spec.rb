@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe NotificationsHelper, type: :helper do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe "#notification_icon" do
     {
       alert_triggered:   "notifications_active",
@@ -56,20 +58,24 @@ RSpec.describe NotificationsHelper, type: :helper do
     let(:noon_yesterday)  { noon_today - 1.day }
     let(:noon_5_days_ago) { noon_today - 5.days }
 
-    it "buckets into Hoy / Ayer / Más temprano in display order" do
+    it "groups by day in display order, naming the two days that have a word" do
       today_n     = create(:notification, user: user, created_at: noon_today)
       yesterday_n = create(:notification, user: user, created_at: noon_yesterday)
       earlier_n   = create(:notification, user: user, created_at: noon_5_days_ago)
 
       groups = helper.group_notifications_by_date([ today_n, yesterday_n, earlier_n ])
 
-      expect(groups.length).to eq(3)
-      expect(groups[0][0]).to start_with("Hoy")
-      expect(groups[0][1]).to contain_exactly(today_n)
-      expect(groups[1][0]).to start_with("Ayer")
-      expect(groups[1][1]).to contain_exactly(yesterday_n)
-      expect(groups[2][0]).to start_with("Más temprano")
-      expect(groups[2][1]).to contain_exactly(earlier_n)
+      expect(groups.map(&:first)).to eq([ "Hoy", "Ayer", helper.format_date_header(noon_5_days_ago.to_date) ])
+      expect(groups.map(&:last)).to eq([ [ today_n ], [ yesterday_n ], [ earlier_n ] ])
+    end
+
+    it "keeps two older days apart instead of one bucket for everything before yesterday" do
+      five  = create(:notification, user: user, created_at: noon_5_days_ago)
+      six   = create(:notification, user: user, created_at: noon_5_days_ago - 1.day)
+
+      groups = helper.group_notifications_by_date([ five, six ])
+
+      expect(groups.length).to eq(2)
     end
 
     it "omits empty buckets" do
@@ -81,9 +87,16 @@ RSpec.describe NotificationsHelper, type: :helper do
   end
 
   describe "#format_date_header" do
-    it "formats with es-MX weekday + month abbreviations" do
-      # Wednesday 2026-05-13
-      expect(helper.format_date_header(Date.new(2026, 5, 13))).to eq("MIÉ 13 MAY 2026")
+    it "drops the year inside the current one" do
+      travel_to Date.new(2026, 9, 16) do
+        expect(helper.format_date_header(Date.new(2026, 5, 13))).to eq("MIÉ 13 MAY")
+      end
+    end
+
+    it "keeps the year for a date from another one" do
+      travel_to Date.new(2026, 9, 16) do
+        expect(helper.format_date_header(Date.new(2025, 12, 31))).to eq("MIÉ 31 DIC 2025")
+      end
     end
   end
 end

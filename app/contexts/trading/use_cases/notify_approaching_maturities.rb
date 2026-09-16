@@ -66,17 +66,16 @@ module Trading
         "#{position.asset.symbol} vence #{when_phrase(days)}"
       end
 
-      def body_for(position, days)
-        "Tu posición en #{position.asset.name} (#{position.shares.to_i} unidades, " \
-          "vence el #{format_date_es(position.maturity_date)}) #{when_phrase(days)}."
+      def body_for(position, _days)
+        currency = position.asset.currency
+        amount = ActiveSupport::NumberHelper.number_to_rounded(position.cost_basis_in(currency), precision: 0, delimiter: ",")
+        I18n.t("notificaciones.vencimientos.cuerpo",
+               fecha: I18n.l(position.maturity_date, format: :day_month),
+               monto: "#{currency} #{amount}")
       end
 
       def when_phrase(days)
         days == 1 ? "mañana" : "en #{days} días"
-      end
-
-      def format_date_es(date)
-        I18n.l(date, format: :day_month_year)
       end
     end
   end

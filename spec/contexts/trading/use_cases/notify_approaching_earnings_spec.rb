@@ -36,9 +36,8 @@ RSpec.describe Trading::UseCases::NotifyApproachingEarnings do
 
         notification = Notification.last
         expect(notification.notification_type).to eq("earnings_reminder")
-        expect(notification.title).to include("AAPL")
-        expect(notification.body).to include("Apple Inc.")
-        expect(notification.body).to include("en 2 días")
+        expect(notification.title).to start_with("AAPL reporta el ")
+        expect(notification.body).to eq("Reporte en 2 días · en tu watchlist")
         expect(notification.notifiable).to eq(event)
       end
 
@@ -58,7 +57,8 @@ RSpec.describe Trading::UseCases::NotifyApproachingEarnings do
         expect { described_class.call }.to change(Notification, :count).by(1)
 
         notification = Notification.last
-        expect(notification.body).to include("hoy")
+        expect(notification.body).to eq("Reporte hoy · tienes 10 títulos")
+        expect(notification.body).not_to include("EPS")
       end
     end
 

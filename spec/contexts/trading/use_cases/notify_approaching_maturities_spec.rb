@@ -43,7 +43,7 @@ RSpec.describe Trading::UseCases::NotifyApproachingMaturities do
         expect(notification.notifiable).to eq(position)
         expect(notification.user).to eq(user)
         expect(notification.title).to include("CETES_28D")
-        expect(notification.body).to include("CETES 28 Days")
+        expect(notification.body).to eq("Vence el #{I18n.l(days.days.from_now.to_date, format: :day_month)} · MXN 985")
       end
     end
 

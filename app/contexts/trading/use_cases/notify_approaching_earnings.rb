@@ -9,7 +9,7 @@ module Trading
     # Trading -> MarketData read one-directional, so the earnings dates arrive
     # through MarketData::Queries::UpcomingEarnings rather than the reverse.
     #
-    # Copy is descriptive per ADR-001: "AAPL reporta resultados el 3 sep" —
+    # Copy is descriptive per ADR-001: "AAPL reporta el 3 sep" —
     # never an action verb directed at the user.
     class NotifyApproachingEarnings < SimpleUseCase
       LOOKAHEAD_DAYS = 3
@@ -26,8 +26,8 @@ module Trading
 
             Notifications::UseCases::CreateNotification.call(
               user_id: user.id,
-              title: "#{event.asset.symbol} reporta resultados el #{format_date_es(event.report_date)}",
-              body:  "#{event.asset.name} reporta #{when_phrase_es(event.report_date)}. EPS estimado: #{event.estimated_eps || 'N/D'}.",
+              title: I18n.t("notificaciones.reportes.titulo", symbol: event.asset.symbol, fecha: format_date_es(event.report_date)),
+              body:  body_for(user, event),
               notification_type: :earnings_reminder,
               notifiable: event
             )
@@ -52,6 +52,22 @@ module Trading
           notifiable: event,
           notification_type: :earnings_reminder
         )
+      end
+
+      # Why it matters to this reader, not the estimate: an EPS figure is exactly
+      # the indicator jargon the owner said he cannot read.
+      def body_for(user, event)
+        shares = Position.joins(:portfolio)
+                         .where(asset: event.asset, status: :open, portfolios: { user_id: user.id })
+                         .sum(:shares)
+        stake = if shares.positive?
+          I18n.t("notificaciones.reportes.tus_titulos", count: shares.to_i,
+                 amount: ActiveSupport::NumberHelper.number_to_rounded(shares, precision: 4, strip_insignificant_zeros: true, delimiter: ","))
+        else
+          I18n.t("notificaciones.reportes.en_watchlist")
+        end
+
+        "#{I18n.t('notificaciones.reportes.cuando', cuando: when_phrase_es(event.report_date))} · #{stake}"
       end
 
       def format_date_es(date)
