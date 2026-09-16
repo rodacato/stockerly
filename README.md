@@ -238,11 +238,7 @@ Desktop artboards unless noted. The full index, artboard by artboard, is in
 
 ![Integraciones](design/exports/ajustes-integraciones-desktop.png)
 ![Estado y mantenimiento](design/exports/ajustes-estado-desktop.png)
-
-**The one capture of a running instance** — the error tracker shipped after the design pass, so it
-has no artboard:
-
-![Admin — Errores](docs/screenshots/admin-errors.png)
+![Errores](design/exports/ajustes-errores.png)
 
 </details>
 
