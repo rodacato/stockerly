@@ -53,9 +53,9 @@
         <%= f.hidden_field :provider, value: source %>
         <%= f.text_field :symbol, value: asset.symbol_for(source), autocomplete: "off",
               aria: { label: t("assets.tracked.sin_fuente_campo", provider: source) },
-              class: field_classes(:md, "min-w-[140px] flex-1 bg-bg-canvas font-mono") %>
+              class: field_classes(:md, "min-w-[140px] flex-1 bg-bg-canvas! font-mono") %>
         <%= f.submit t("assets.tracked.probar"),
-              class: "cursor-pointer rounded-lg bg-warning-fg px-3 py-2 text-sm font-semibold text-bg-surface" %>
+              class: "cursor-pointer rounded-lg bg-warning-fg px-3 py-2 text-sm font-semibold text-fg-inverse" %>
       <% end %>
       <p class="text-[11px] text-warning-fg"><%= t("assets.tracked.sin_fuente_promesa") %></p>
     </div>

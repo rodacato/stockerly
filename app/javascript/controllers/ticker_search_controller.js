@@ -69,7 +69,7 @@ export default class TickerSearchController extends Controller {
         class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-bg-muted transition-colors text-left cursor-pointer">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
-            <span class="font-semibold text-sm text-fg-default">${this.escapeHtml(r.symbol)}</span>
+            <span class="font-mono text-sm font-bold text-fg-default">${this.escapeHtml(r.symbol)}</span>
             <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-bg-muted text-fg-subtle">${this.escapeHtml((this.typeLabelsValue[r.asset_type] || r.asset_type).toUpperCase())}</span>
           </div>
           <p class="text-xs text-fg-subtle truncate">${this.escapeHtml(r.name)}</p>

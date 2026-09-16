@@ -41,7 +41,7 @@
           <%= f.text_field :asset_symbol, value: @symbol, required: true, autocomplete: "off",
                            placeholder: t("trades.new.activo_ayuda"),
                            data: { trade_sheet_target: "symbol", action: "input->trade-sheet#symbolChanged" },
-                           class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
+                           class: field_classes %>
         </label>
 
         <div class="grid grid-cols-2 gap-3">
@@ -49,7 +49,7 @@
             <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.fecha") %></span>
             <%= f.date_field :executed_at, value: Date.current,
                              data: { trade_sheet_target: "date", action: "change->trade-sheet#refreshRate" },
-                             class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
+                             class: field_classes %>
           </label>
 
           <label class="flex flex-col gap-1.5">
@@ -57,7 +57,7 @@
             <%= f.select :currency, Asset::SUPPORTED_CURRENCIES, { include_blank: t("trades.new.moneda_prompt") },
                          required: true,
                          data: { trade_sheet_target: "currency", action: "change->trade-sheet#refreshRate" },
-                         class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
+                         class: field_classes %>
           </label>
         </div>
 
@@ -65,7 +65,7 @@
           <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.vencimiento") %></span>
           <%= f.date_field :maturity_date, required: true, disabled: true,
                            data: { trade_sheet_target: "maturity" },
-                           class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-sm text-fg-default" %>
+                           class: field_classes %>
         </label>
 
         <div class="grid grid-cols-2 gap-3">
@@ -73,14 +73,14 @@
             <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.titulos") %></span>
             <%= f.number_field :shares, value: @shares, step: "any", required: true, inputmode: "decimal",
                                data: { trade_sheet_target: "shares", action: "input->trade-sheet#recalculate" },
-                               class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-right font-mono text-sm text-fg-default" %>
+                               class: field_classes(:md, "text-right font-mono") %>
           </label>
 
           <label class="flex flex-col gap-1.5">
             <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t("trades.new.precio") %></span>
             <%= f.number_field :price_per_share, step: "any", required: true, inputmode: "decimal",
                                data: { trade_sheet_target: "price", action: "input->trade-sheet#recalculate" },
-                               class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-right font-mono text-sm text-fg-default" %>
+                               class: field_classes(:md, "text-right font-mono") %>
           </label>
         </div>
 
@@ -97,7 +97,7 @@
           </span>
           <%= f.number_field :fee, step: "any", inputmode: "decimal",
                              data: { trade_sheet_target: "fee", action: "input->trade-sheet#recalculate" },
-                             class: "rounded-lg border border-border-default bg-bg-surface px-3 py-2.5 text-right font-mono text-sm text-fg-default" %>
+                             class: field_classes(:md, "text-right font-mono") %>
         </label>
 
         <div class="flex flex-col gap-2 rounded-xl border border-border-default bg-bg-muted p-3"
@@ -132,7 +132,7 @@
         <%= f.submit t("trades.new.guardar"), data: { turbo_frame: "_top" },
                      class: button_classes(:primary, :lg, "w-full cursor-pointer") %>
         <%= f.submit t("trades.new.guardar_y_otro"), name: "and_another",
-                     class: "w-full cursor-pointer rounded-lg border border-border-default bg-bg-surface px-4 py-3 text-sm font-semibold text-fg-default" %>
+                     class: button_classes(:secondary, :md, "w-full cursor-pointer") %>
       </div>
     <% end %>
   </div>
