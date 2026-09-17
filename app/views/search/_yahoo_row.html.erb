@@ -1,0 +1,18 @@
+<%# Locals: result (a SearchTicker result). Tracks at once and lands on the asset (D125). %>
+<div class="flex items-center gap-3 px-4 py-3">
+  <div class="min-w-0 flex-1">
+    <div class="flex items-center gap-2">
+      <span class="font-mono text-sm font-bold text-fg-default"><%= result[:symbol] %></span>
+      <span class="rounded bg-bg-muted px-1.5 py-0.5 text-[10px] font-bold uppercase text-fg-subtle"><%= t("comun.tipo_activo.#{result[:asset_type]}") %></span>
+    </div>
+    <p class="text-xs text-fg-subtle"><%= [ result[:name], result[:exchange].presence ].compact.join(" · ") %></p>
+  </div>
+  <%= button_to track_asset_path, method: :post,
+        params: { return_to: "market",
+                  asset: result.slice(:symbol, :name, :asset_type, :country, :exchange, :sector) },
+        form: { data: { turbo_frame: "_top" } },
+        class: button_classes(:primary, :sm, "inline-flex shrink-0 items-center gap-1.5 cursor-pointer") do %>
+    <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
+    <%= t("search.results.rastrear") %>
+  <% end %>
+</div>

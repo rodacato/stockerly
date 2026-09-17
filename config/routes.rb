@@ -90,6 +90,7 @@ Rails.application.routes.draw do
   # to and removed from here, not from an admin console. `search` is declared
   # before `:id` so a literal segment is not read as an identifier.
   get    "tracked/search",          to: "assets#search_ticker", as: :search_tickers
+  get    "search",                  to: "search#show",          as: :search
   post   "tracked",                 to: "assets#track",         as: :track_asset
   delete "tracked/:id",             to: "assets#untrack",       as: :untrack_asset
   patch  "tracked/:id/toggle_sync", to: "assets#toggle_sync",   as: :toggle_sync_asset

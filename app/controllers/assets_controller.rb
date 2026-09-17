@@ -34,7 +34,8 @@ class AssetsController < AuthenticatedController
 
     case result
     in Dry::Monads::Success(asset)
-      redirect_to tracked_assets_path, notice: t("assets.tracked.agregado", symbol: asset.symbol)
+      landing = params[:return_to] == "market" ? market_asset_path(asset.symbol) : tracked_assets_path
+      redirect_to landing, notice: t("assets.tracked.agregado", symbol: asset.symbol)
     in Dry::Monads::Failure[ _, errors ]
       redirect_to tracked_assets_path, alert: first_error(errors)
     end

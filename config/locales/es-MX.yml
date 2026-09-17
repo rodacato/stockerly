@@ -1087,6 +1087,7 @@ es-MX:
     avisos_sin_leer:
       one: 1 aviso sin leer
       other: "%{count} avisos sin leer"
+    buscar: Buscar activo
     discover: Descubrir
     ir_al_panorama: Ir al Panorama
     panorama: Panorama
@@ -1304,6 +1305,15 @@ es-MX:
     update:
       accion: Actualizar
       aviso: Hay una versión nueva lista.
+  search:
+    results:
+      buscar_en_yahoo: Buscar «%{query}» en Yahoo Finance
+      en_tu_catalogo: En tu catálogo
+      en_yahoo: En Yahoo Finance
+      nada: Ni tu catálogo ni Yahoo Finance tienen «%{query}».
+      rastrear: Rastrear
+      yahoo_caido: La búsqueda en Yahoo Finance no responde. Intenta de nuevo en un
+        momento.
   settings:
     account:
       correo: Correo
