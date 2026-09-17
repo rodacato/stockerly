@@ -43,6 +43,7 @@ RSpec.describe PausableSync do
     expect(CalculateTrendScoresJob.included_modules).not_to include(described_class)
     expect(TakeSnapshotsJob.included_modules).not_to include(described_class)
     expect(DetectTechnicalObservationsJob.included_modules).not_to include(described_class)
+    expect(CalculateTechnicalReadingsJob.included_modules).not_to include(described_class)
   end
 
   it "leaves notification jobs running — they are not what this switch names" do
