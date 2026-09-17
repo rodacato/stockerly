@@ -1,4 +1,4 @@
-<%# Locals: query, catalogue ([{asset:, tier:, change:}]), asked_yahoo, yahoo, yahoo_failed %>
+<%# Locals: query, catalogue ([{asset:, tier:, change:}]), asked_yahoo, yahoo, yahoo_failed, frame %>
 <% if query.present? %>
   <div class="flex flex-col gap-4">
     <% if catalogue.any? %>
@@ -29,7 +29,7 @@
           <% end %>
         </ul>
         <% unless asked_yahoo %>
-          <%= link_to search_path(q: query, scope: "yahoo"), data: { turbo_frame: "search_results" },
+          <%= link_to search_path(q: query, scope: "yahoo"), data: { turbo_frame: frame },
                 class: "flex items-center gap-2 self-start px-1 py-1 text-sm font-semibold text-primary hover:text-primary-hover" do %>
             <span class="material-symbols-outlined text-base" aria-hidden="true">public</span>
             <%= t(".buscar_en_yahoo", query: query) %>

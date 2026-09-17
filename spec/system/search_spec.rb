@@ -25,4 +25,30 @@ RSpec.describe "Searching from the top bar", type: :system, js: true do
 
     expect(page).to have_current_path("/market/ALAB")
   end
+
+  it "opens the results under the desktop bar's field" do
+    page.driver.resize(1280, 800)
+    visit dashboard_path
+
+    within("header", text: "Panorama") { find("input[name=q]").fill_in(with: "alab") }
+
+    within("#search_dropdown") { click_link href: "/market/ALAB" }
+    expect(page).to have_current_path("/market/ALAB")
+  end
+
+  # Escape closes the dropdown, and the next search still has somewhere to land.
+  it "closes on Escape and opens again on the next search" do
+    page.driver.resize(1280, 800)
+    visit dashboard_path
+    field = within("header", text: "Panorama") { find("input[name=q]") }
+
+    field.fill_in(with: "alab")
+    expect(page).to have_css("#search_dropdown a[href='/market/ALAB']")
+
+    field.send_keys(:escape)
+    expect(page).to have_no_css("#search_dropdown a[href='/market/ALAB']")
+
+    field.fill_in(with: "astera")
+    expect(page).to have_css("#search_dropdown a[href='/market/ALAB']")
+  end
 end

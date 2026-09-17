@@ -5,19 +5,19 @@
 
 <div class="mx-auto flex w-full max-w-2xl flex-col gap-4">
   <%= form_with url: search_path, method: :get,
-        data: { controller: "search", turbo_frame: "search_results", turbo_action: "advance" } do %>
+        data: { controller: "search", search_target: "form", turbo_frame: "search_results", turbo_action: "advance" } do %>
     <label class="relative block">
       <span class="sr-only"><%= t("assets.tracked.buscar") %></span>
       <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-fg-subtle" aria-hidden="true">search</span>
       <input type="search" name="q" value="<%= @query %>" autocomplete="off" autofocus
              placeholder="<%= t("assets.tracked.buscar_placeholder") %>"
-             data-action="input->search#queue"
+             data-action="input->search#queue keydown.esc->search#clear"
              class="<%= field_classes(:md, "w-full pl-10") %>" />
     </label>
   <% end %>
 
   <%= turbo_frame_tag "search_results", target: "_top" do %>
     <%= render "search/results", query: @query, catalogue: @catalogue, asked_yahoo: @asked_yahoo,
-                                 yahoo: @yahoo, yahoo_failed: @yahoo_failed %>
+                                 yahoo: @yahoo, yahoo_failed: @yahoo_failed, frame: "search_results" %>
   <% end %>
 </div>
