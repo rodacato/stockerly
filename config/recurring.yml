@@ -124,17 +124,18 @@ production:
     class: SyncCetesHistoryJob
     schedule: "30 10 * * 1"
 
+  # The server clock is UTC; the zone is named so the morning is Mexico City's.
   notify_earnings:
     class: NotifyEarningsJob
-    schedule: at 7am every day
+    schedule: "0 7 * * * America/Mexico_City"
 
   notify_maturities:
     class: NotifyMaturitiesJob
-    schedule: at 7:15am every day
+    schedule: "15 7 * * * America/Mexico_City"
 
   evaluate_date_based_alerts:
     class: EvaluateDateBasedAlertsJob
-    schedule: at 7:30am every day
+    schedule: "30 7 * * * America/Mexico_City"
 
   # 18:30 CDMX. Mexico dropped DST in 2022, so CST (UTC-6) holds year-round
   # and 00:30 UTC is always 18:30 in Mexico City.
