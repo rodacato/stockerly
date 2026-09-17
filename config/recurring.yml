@@ -56,9 +56,18 @@ production:
     class: CalculateTrendScoresJob
     schedule: at 11:30pm every day
 
-  detect_technical_observations:
+  # D126: signals at each calendar's close. 15:30 CDMX is past the BMV (15:00)
+  # and the NYSE (14:00 or 15:00 CDMX, with US daylight time) all year.
+  detect_equity_observations:
     class: DetectTechnicalObservationsJob
-    schedule: at 11:45pm every day
+    args: [ "equities" ]
+    schedule: "30 15 * * 1-5 America/Mexico_City"
+
+  # Crypto's day is the UTC day; this starts once it has ended.
+  detect_crypto_observations:
+    class: DetectTechnicalObservationsJob
+    args: [ "crypto" ]
+    schedule: "15 0 * * *"
 
   cleanup_old_logs:
     command: "SystemLog.where('created_at < ?', 90.days.ago).delete_all"
