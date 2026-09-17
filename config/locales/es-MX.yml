@@ -1009,6 +1009,7 @@ es-MX:
         above_upper: Precio por arriba de la banda superior de Bollinger
         below_lower: Precio por abajo de la banda inferior de Bollinger
         inside: Precio dentro de las bandas de Bollinger
+      de_hoy: Lectura de las %{hora}
       desactualizado: Lectura del %{fecha}
       etiquetas:
         atr: ATR (14)
