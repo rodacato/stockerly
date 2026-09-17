@@ -411,6 +411,9 @@ es-MX:
       very_bearish: Muy pesimista
       very_bullish: Muy optimista
     guardar: Guardar
+    logica_senal:
+      reversion: Rebote
+      trend: Tendencia
     sin_tc_cuerpo: Me falta el tipo de cambio de alguna de las fechas, así que no
       puedo sumar tu patrimonio en una sola moneda. Cada posición se muestra en la
       suya.
