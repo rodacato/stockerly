@@ -80,6 +80,18 @@ RSpec.describe Administration::UseCases::Assets::SearchTicker do
       expect(first[:currency]).to eq("USD")
     end
 
+    # Yahoo answers `asts` with option contracts too, and an unmapped type fell
+    # through to "stock" — so tracking one would have stored an option as a share.
+    it "leaves out what the catalogue cannot hold" do
+      stub_yfinance_search("asts", results: [
+        yfinance_match(symbol: "ASTS", name: "AST SpaceMobile, Inc."),
+        yfinance_match(symbol: "ASTS260925C00065000", name: "ASTS Sep 2026 65.000 call", quote_type: "OPTION"),
+        yfinance_match(symbol: "ES=F", name: "E-Mini S&P 500", quote_type: "FUTURE")
+      ])
+
+      expect(described_class.call(query: "asts").value!.pluck(:symbol)).to eq([ "ASTS" ])
+    end
+
     it "returns Failure with validation error for a blank query" do
       result = described_class.call(query: "")
 
