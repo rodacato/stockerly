@@ -166,3 +166,40 @@ two of three types, which is what shipped before — rather than to nothing.
 
 The finding and the decision are recorded as **D109** in `design/DECISIONS.md`; the reader problem
 it unblocks is [#429](https://github.com/rodacato/stockerly/issues/429).
+
+## Amendment — 2026-09-16: the company overview moved here, and the fallback is gone
+
+Two statements in the previous amendment became false and are corrected here. *"Alpha Vantage still
+serves `OVERVIEW`, which Yahoo is not asked for"* — Yahoo is now asked for it. *"If Yahoo closes this
+door, statements degrade to Alpha Vantage"* — they degrade to nothing, because Alpha Vantage is
+retired, and FMP with it.
+
+> *"quiero deprecar alpha vantage, creo que no se necesita ni como fallback y el rate limit es muy pobre seria quitarlo antes de que se integre mas en el sistema"*
+
+**What moved.** `YfinanceGateway#fetch_overview` reads `Ticker.info` and writes the same `OVERVIEW`
+row Alpha Vantage wrote: every field that row carried, measured against yfinance 1.7.0 on AAPL, KO,
+SPY and GFNORTEO.MX. `dividendYield` is the one ratio `info` sends as a percent, and is stored as a
+fraction. `exchange` is left out: Yahoo's venue codes (`NMS`, `NYQ`) read worse than the catalogue's
+own, which the Ficha falls back to. The bridge is registered first for `:fundamentals` and is the
+only source there. `SyncStatementsJob` asks Yahoo alone.
+
+**What was retired with it.** Alpha Vantage's gateway, registration and integration row; FMP, whose
+only role left was to back Alpha Vantage up with a key that works for accounts created before
+2025-08-31; the `FundamentalsGateway` base and the `maintainer_only` flag, which each had one user.
+The Tracked budget reads whichever provider leads `:fundamentals` instead of naming Alpha Vantage
+(D123).
+
+**This is against the quarantine clause, and it is said here rather than left implied.** The clause
+reads *"nothing that a sanctioned provider serves is routed here"*. Alpha Vantage served the overview
+and two of the three statements under a published contract; that is now on the unsanctioned surface,
+with no sanctioned fallback behind it. What was weighed: a 25-calls-a-day ceiling that rationed ~40
+assets across days, a mandatory key for every self-hoster, and a fallback that refused
+`BALANCE_SHEET` outright — against concentrating one more capability behind a TLS-fingerprint bridge
+that is already load-bearing for prices, history, indices, corporate actions, earnings and search.
+
+**Ceiling.** The daily limit doubles to 4,000 (`DoubleYahooFinanceDailyCeiling`); the per-minute
+restraint stays at 30. The overview adds ~40 calls on Tuesdays and Fridays.
+
+**If Yahoo closes this door**, the fundamentals block and the financial statements stop refreshing
+and keep their last stored values. There is no second source, and restoring one is a new decision,
+not a revert.
