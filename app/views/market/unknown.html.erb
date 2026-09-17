@@ -1,0 +1,21 @@
+<% content_for :page_title, @symbol %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: @symbol, back_path: assets_path %>
+<% end %>
+
+<div class="mx-auto flex w-full max-w-2xl flex-col gap-4">
+  <%= render "components/empty_state", icon: "search_off",
+             title: t("assets.tracked.no_encontrado"),
+             description: (t(".yahoo_lo_tiene", symbol: @symbol) if @listing) %>
+
+  <% if @listing %>
+    <div class="<%= card_classes("overflow-hidden") %>">
+      <%= render "search/yahoo_row", result: @listing %>
+    </div>
+  <% elsif @yahoo_failed %>
+    <p class="flex items-start gap-2 rounded-lg bg-negative-bg px-3.5 py-3 text-sm text-negative-fg">
+      <span class="material-symbols-outlined text-base" aria-hidden="true">cloud_off</span>
+      <%= t("search.results.yahoo_caido") %>
+    </p>
+  <% end %>
+</div>

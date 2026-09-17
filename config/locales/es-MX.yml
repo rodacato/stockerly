@@ -705,8 +705,6 @@ es-MX:
         other: Vence el %{date} · faltan %{count} días.
       vencimiento: Vencimiento
       via_cetes_directo: vía Cetes Directo
-    flash:
-      no_encontrado: Activo no encontrado
     fundamentals_block:
       titulo: Fundamentales
       ver_todos: Ver todos los fundamentales
@@ -1071,6 +1069,8 @@ es-MX:
       ocultar: Ocultar
       subtitulo: Medias largas y MACD · se carga desde TradingView
       titulo: Gráfico de TradingView
+    unknown:
+      yahoo_lo_tiene: "%{symbol} no está en tu catálogo. Yahoo Finance sí lo tiene:"
     vs_plan:
       activa: activa
       costo: Tu costo · %{value}
