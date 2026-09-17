@@ -26,7 +26,7 @@
     </div>
   
     <% if asset.asset_type_stock? %>
-      <%= render "market/analyst_target" %>
+      <%= render "market/analyst_target", asset: asset, presenter: presenter %>
     <% end %>
   
     <% if rest.any? %>
