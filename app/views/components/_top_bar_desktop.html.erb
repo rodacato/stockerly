@@ -11,8 +11,28 @@
     <% end %>
   </div>
 
-  <%= link_to notifications_path, class: "relative flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:bg-bg-muted hover:text-primary" do %>
-    <span class="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>
-    <%= render "components/notification_badge", unread_count: navbar_unread_count %>
-  <% end %>
+  <div class="flex items-center gap-4">
+    <div class="relative w-80" data-controller="search">
+      <%= form_with url: search_path, method: :get,
+            data: { search_target: "form", turbo_frame: SearchController::DROPDOWN } do %>
+        <label class="relative block">
+          <span class="sr-only"><%= t("nav.buscar") %></span>
+          <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-fg-subtle" aria-hidden="true">search</span>
+          <input type="search" name="q" autocomplete="off"
+                 placeholder="<%= t("assets.tracked.buscar_placeholder") %>"
+                 data-search-target="input"
+                 data-action="input->search#queue keydown.esc->search#clear"
+                 class="<%= field_classes(:md, "w-full pl-10") %>" />
+        </label>
+      <% end %>
+      <div class="absolute right-0 top-full z-50 mt-2 w-[380px]">
+        <%= turbo_frame_tag SearchController::DROPDOWN, target: "_top", data: { search_target: "results" } %>
+      </div>
+    </div>
+
+    <%= link_to notifications_path, class: "relative flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:bg-bg-muted hover:text-primary" do %>
+      <span class="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>
+      <%= render "components/notification_badge", unread_count: navbar_unread_count %>
+    <% end %>
+  </div>
 </header>

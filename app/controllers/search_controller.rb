@@ -1,4 +1,6 @@
 class SearchController < AuthenticatedController
+  DROPDOWN = "search_dropdown".freeze
+
   # D125: the catalogue answers first and Yahoo only when it has nothing, or
   # when asked for another listing of a symbol the catalogue already holds.
   def show
@@ -9,6 +11,8 @@ class SearchController < AuthenticatedController
     @yahoo = []
     @yahoo_failed = false
     search_yahoo if @asked_yahoo
+
+    render partial: "search/dropdown", layout: false if turbo_frame_request_id == DROPDOWN
   end
 
   private

@@ -1,0 +1,9 @@
+<%# The desktop bar's results (D125): the same list, in the frame under the field. %>
+<%= turbo_frame_tag SearchController::DROPDOWN, target: "_top" do %>
+  <% if @query.present? %>
+    <div class="max-h-[70vh] overflow-y-auto rounded-2xl border border-border-default bg-bg-surface p-3 shadow-xl">
+      <%= render "search/results", query: @query, catalogue: @catalogue, asked_yahoo: @asked_yahoo,
+                                   yahoo: @yahoo, yahoo_failed: @yahoo_failed, frame: SearchController::DROPDOWN %>
+    </div>
+  <% end %>
+<% end %>

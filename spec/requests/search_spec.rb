@@ -90,6 +90,42 @@ RSpec.describe "Search", type: :request do
     end
   end
 
+  describe "the desktop bar's dropdown" do
+    it "puts the field in the desktop bar" do
+      get dashboard_path
+
+      expect(response.body).to include(%(data-turbo-frame="search_dropdown"))
+    end
+
+    it "answers its frame alone, without the page around it" do
+      create(:asset, :stock, symbol: "ALAB", name: "Astera Labs, Inc.")
+
+      get search_path, params: { q: "alab" }, headers: { "Turbo-Frame" => "search_dropdown" }
+
+      expect(response.body).to include(%(<turbo-frame id="search_dropdown"), "Astera Labs, Inc.")
+      expect(response.body).not_to include("<nav")
+    end
+
+    # The Yahoo link reloads the frame it sits in, not the search page's own.
+    it "keeps the Yahoo link inside the dropdown" do
+      create(:asset, :stock, symbol: "ALAB", name: "Astera Labs, Inc.")
+
+      get search_path, params: { q: "alab" }, headers: { "Turbo-Frame" => "search_dropdown" }
+
+      expect(response.body).to match(/data-turbo-frame="search_dropdown"[^>]*href="[^"]*scope=yahoo|href="[^"]*scope=yahoo[^"]*"[^>]*data-turbo-frame="search_dropdown"/)
+    end
+
+    # Negative: an emptied field closes the dropdown instead of listing everything.
+    it "answers an empty frame for an empty query" do
+      create(:asset, :stock, symbol: "ALAB", name: "Astera Labs, Inc.")
+
+      get search_path, params: { q: "" }, headers: { "Turbo-Frame" => "search_dropdown" }
+
+      expect(response.body).to include(%(<turbo-frame id="search_dropdown"))
+      expect(response.body).not_to include("ALAB")
+    end
+  end
+
   describe "tracking from the results" do
     it "lands on the new asset's page" do
       post track_asset_path, params: {
