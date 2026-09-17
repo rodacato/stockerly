@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 1.0.0 · updated: 2026-09-16\n\n1. PURPOSE\nThe Activos tab: the three tiers of interest in a symbol (D9, named per D48) — Holdings (open positions), Watchlist (watchlist_items) and Tracked (the catalogue the instance syncs) — plus the two ways data gets in: the trade sheet and the CSV importer. Historial holds the three lists with no other home (D43, D60).\n\n2. ENTRY POINTS\n- Holdings / Watchlist — BottomNav tab (/assets, assets#index; ?tab=watchlist)\n- Registrar movimiento — the primary button above the tabs opens /trades/new inside a <dialog> (D11, components/_sheet_dialog); the asset detail opens it pre-filled\n- Historial, Importar movimientos, Tracked — the three foot-of-list rows under either tab (/positions, /trades/import, /tracked). All three carry HeaderBar back to /assets\n- Rows link to the asset detail in cockpit.pen\n\n3. SCREENS (left → right)\n- Holdings · Default — summary, the sheet button, holdings by market value (D68)\n- Watchlist · Default — rows ordered by distance to their own alert threshold, then by day move (D68)\n- Holdings · Vacío — nothing open: no summary (D120), the empty state's door is the importer\n- Watchlist · Vacía\n- Holdings · Sin consolidar — no FX rate: the notice replaces the summary\n- Registrar movimiento · Sheet — a USD buy into a held position: projection and FX card showing\n- Registrar movimiento · Con teclado — D11's acceptance: the footer survives the keyboard (the note beside it)\n- Registrar movimiento · CETES — a fixed-income buy asks for Vencimiento; MXN hides the FX card\n- Historial · Default — Movimientos, Dividendos cobrados, Posiciones cerradas\n- Historial · Vacío\n- Tracked · Default — catalogue rows, the budget last on mobile\n- Tracked · Agregar activo — the typeahead and the six fields it fills (D64)\n- Tracked · Sin fuente — an asset the provider cannot name, with its fix in place (D46)\n- Tracked · Sin coincidencias — a filter that matches nothing\n- Importar CSV · Default, Revisión, Símbolos desconocidos (#401, D62, D63, D65)\n- Desktop band: Holdings, Registrar movimiento (the same dialog, centred) and Tracked (list beside the budget). The rest reflow (D4)\n\n4. BUSINESS RULES\n- The summary renders only while something is open (D120); without an FX rate it becomes the Sin consolidar notice and rows keep their own currency, alphabetical (trading/use_cases/load_assets.rb)\n- Money per D10: the summary declares the currency, rows in it drop the symbol, anything else keeps its ISO prefix. Historial's trade and dividend rows keep theirs because they mix\n- A holding row leads with its value and follows with the day's move, a dash when there is no previous close (D69, ADR-021). No state chip, no confluence dots (D85)\n- A watchlist row reads \"falta X%\" when an alert threshold exists, \"sigues ±X%\" from entry_price otherwise\n- The sheet asks for Vencimiento only on a fixed-income buy; the FX card hides when the currency is blank or MXN; the average-cost projection shows only on a buy into the held symbol in its own currency (trades/new.html.erb, trade_sheet_controller.js)\n- Tracked counts the whole catalogue; the filter narrows the list only. Seguir shows on the Tracked tier alone; a paused row dims, a sourceless one does not (D46)\n- The budget bar is in spend order — Holdings, Watchlist, the rest — over active stocks and ETFs only (D82)\n- An import is all-or-nothing unless the owner chooses to leave the unknown symbols out\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — assets.index, assets.tracked, trades.new, positions.index, trade_imports.*, comun.sin_tc_*. Row figures: AssetsHelper. FX note date: FxRatesController (date_label).\n\n6. STATES NOT DRAWN\n- \"Guardado. Registra el siguiente.\" above the sheet after Guardar y registrar otro\n- The importer's error line, and the other refusals (invalid_rows, missing_fx_history, repeated_external_ids, unsupported_asset_type): the same card with the detail listed below it\n- Tracked with an empty catalogue — the empty state reads \"Tu instancia aún no rastrea ningún activo.\"\n- The budget exhausted or unlimited — \"Agotado hasta mañana\" / \"Sin límite\"\n- Inline edit and delete of a movement in Historial — MovementItem has no action slot in the kit\n- The typeahead results are an overlay in code; the artboard draws them in flow\n- A Watchlist tab with nothing held — the summary is absent\n- Empty states and the drop zone have a dashed border — the .pen format has none\n\n7. OPEN FINDINGS\nNone.\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ACT-*).",
+          "content": "kit-version-source: 1.0.0 · updated: 2026-09-17\n\n1. PURPOSE\nThe Activos tab: the three tiers of interest in a symbol (D9, named per D48) — Holdings (open positions), Watchlist (watchlist_items) and Tracked (the catalogue the instance syncs) — plus the two ways data gets in: the trade sheet and the CSV importer. Historial holds the three lists with no other home (D43, D60).\n\n2. ENTRY POINTS\n- Holdings / Watchlist — BottomNav tab (/assets, assets#index; ?tab=watchlist)\n- Registrar movimiento — the primary button above the tabs opens /trades/new inside a <dialog> (D11, components/_sheet_dialog); the asset detail opens it pre-filled\n- Historial, Importar movimientos, Tracked — the three foot-of-list rows under either tab (/positions, /trades/import, /tracked). All three carry HeaderBar back to /assets\n- Rows link to the asset detail in cockpit.pen\n- Buscar — designed ahead of the code (D125): the search icon in TopBar · Buscar on mobile, the field in TopBarDesktop · Buscar on desktop, from every authenticated screen. Activo desconocido is /market/:symbol for a symbol the catalogue lacks\n\n3. SCREENS (left → right)\n- Holdings · Default — summary, the sheet button, holdings by market value (D68)\n- Watchlist · Default — rows ordered by distance to their own alert threshold, then by day move (D68)\n- Holdings · Vacío — nothing open: no summary (D120), the empty state's door is the importer\n- Watchlist · Vacía\n- Holdings · Sin consolidar — no FX rate: the notice replaces the summary\n- Registrar movimiento · Sheet — a USD buy into a held position: projection and FX card showing\n- Registrar movimiento · Con teclado — D11's acceptance: the footer survives the keyboard (the note beside it)\n- Registrar movimiento · CETES — a fixed-income buy asks for Vencimiento; MXN hides the FX card\n- Historial · Default — Movimientos, Dividendos cobrados, Posiciones cerradas\n- Historial · Vacío\n- Tracked · Default — catalogue rows, the budget last on mobile\n- Tracked · Agregar activo — the typeahead and the six fields it fills (D64)\n- Tracked · Sin fuente — an asset the provider cannot name, with its fix in place (D46)\n- Tracked · Sin coincidencias — a filter that matches nothing\n- Importar CSV · Default, Revisión, Símbolos desconocidos (#401, D62, D63, D65)\n- Search band (D125, not built): Buscar · En tu catálogo, Fuera de tu catálogo, Sin resultados, Yahoo no responde; Activo desconocido · Default; Buscar · Desktop · En tu catálogo (the results as a dropdown under the field)\n- Desktop band: Holdings, Registrar movimiento (the same dialog, centred) and Tracked (list beside the budget). The rest reflow (D4)\n\n4. BUSINESS RULES\n- The summary renders only while something is open (D120); without an FX rate it becomes the Sin consolidar notice and rows keep their own currency, alphabetical (trading/use_cases/load_assets.rb)\n- Money per D10: the summary declares the currency, rows in it drop the symbol, anything else keeps its ISO prefix. Historial's trade and dividend rows keep theirs because they mix\n- A holding row leads with its value and follows with the day's move, a dash when there is no previous close (D69, ADR-021). No state chip, no confluence dots (D85)\n- A watchlist row reads \"falta X%\" when an alert threshold exists, \"sigues ±X%\" from entry_price otherwise\n- The sheet asks for Vencimiento only on a fixed-income buy; the FX card hides when the currency is blank or MXN; the average-cost projection shows only on a buy into the held symbol in its own currency (trades/new.html.erb, trade_sheet_controller.js)\n- Tracked counts the whole catalogue; the filter narrows the list only. Seguir shows on the Tracked tier alone; a paused row dims, a sourceless one does not (D46)\n- The budget bar is in spend order — Holdings, Watchlist, the rest — over active stocks and ETFs only (D82)\n- An import is all-or-nothing unless the owner chooses to leave the unknown symbols out\n- Buscar (D125, proposed): the catalogue answers first, by symbol or name, with no provider call; a hit opens the asset. Yahoo is asked only when the catalogue has no match, and its failure never hides catalogue results. Rastrear tracks the symbol at once and lands on its page. Option contracts are not offered\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — assets.index, assets.tracked, trades.new, positions.index, trade_imports.*, comun.sin_tc_*. Row figures: AssetsHelper. Buscar reuses assets.tracked.buscar, buscar_vacio, sin_resultados, no_encontrado and comun.tipo_activo; not yet in the locale, proposed with D125: \"EN TU CATÁLOGO\", \"EN YAHOO FINANCE\", \"Buscar «%{query}» en Yahoo Finance\", \"Rastrear\", \"Ni tu catálogo ni Yahoo Finance tienen «%{query}».\", \"La búsqueda en Yahoo Finance no responde. Intenta de nuevo en un momento.\", \"%{symbol} no está en tu catálogo. Yahoo Finance sí lo tiene:\". FX note date: FxRatesController (date_label).\n\n6. STATES NOT DRAWN\n- \"Guardado. Registra el siguiente.\" above the sheet after Guardar y registrar otro\n- The importer's error line, and the other refusals (invalid_rows, missing_fx_history, repeated_external_ids, unsupported_asset_type): the same card with the detail listed below it\n- Tracked with an empty catalogue — the empty state reads \"Tu instancia aún no rastrea ningún activo.\"\n- The budget exhausted or unlimited — \"Agotado hasta mañana\" / \"Sin límite\"\n- Inline edit and delete of a movement in Historial — MovementItem has no action slot in the kit\n- The typeahead results are an overlay in code; the artboard draws them in flow\n- A Watchlist tab with nothing held — the summary is absent\n- Empty states and the drop zone have a dashed border — the .pen format has none\n- Buscar with an empty query: the field and nothing else. While Yahoo answers: \"Buscando…\"\n- Buscar when Yahoo is rate limited: the same notice as Yahoo no responde\n- After Rastrear: the asset page with \"%{symbol} se agregó a Tracked.\"\n- Activo desconocido when Yahoo does not know the symbol either: the empty state alone, no row\n\n7. OPEN FINDINGS\nD125 — search is drawn ahead of the code; the two TopBar variants are flow-local kit candidates until it ships.\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ACT-*).",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -11955,7 +11955,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-17 · D123: the Tracked budget panel on all five Tracked artboards names Yahoo Finance, reads 4000 calls, and gains the whole-quota line\n2026-09-16 · fidelity pass against the rendered app at 390 and 1280: holdings reordered by market value (D68), share counts in the code's significant digits, watchlist prices at two decimals; the paused Tracked-tier row now wraps its symbol line, as the code does since it stopped overflowing the phone\n2026-09-16 · kit 1.0.0 · BottomNav, SidebarNav and TopBarDesktop masters back to the kit, each screen lights its own tab; HeaderBar vendored and replaces seven hand-built headers\n2026-09-16 · D78 · every artboard mirrored to the code: summary and sheet button above the tabs, no counts on the tabs, the three foot rows, day move in the row, the sheet's title and sticky footer, Tracked rows with tier chip and Seguir / Pausar / borrar, the two-segment budget, Historial without icons, the importer's real copy\n2026-09-16 · removed Tracked · Buscar — the filter is an input on Tracked, not a screen; search is its own feature\n2026-09-16 · new artboards: Watchlist · Vacía, Tracked · Sin coincidencias, Holdings · Sin consolidar, Registrar movimiento · CETES, Historial · Vacío\n2026-09-16 · code fixed alongside: CETES could not be recorded, the projection showed on a sale, the dividends header named a currency its rows did not use, Tracked's count followed the filter\n2026-09-16 · canvas · grid gutter 70 → 120, bands reflowed\n2026-09-11 · Tracked · Agregar activo drawn, closing D64: the search field with the placeholder the locale carries, three typeahead results in the row shape Tracked·Buscar already uses, the six fields the gateway fills with the code's own placeholders, and the two actions. Copied from Tracked / Default so the shell stays one thing, and the band was reflowed so the screen reads where it belongs. Two drifts recorded in the brief rather than fixed here: the entry point is a button, not the header icon, and the budget renders last on mobile · D64\n\n2026-09-11 · Both drifts now FIXED in the code's favour — Adrian's call. The header + icon is gone from Tracked/Default, Tracked/Sin fuente and Tracked · Agregar activo; each opens instead with a justify-between row carrying the count and a primary Agregar activo button, which is tracked.html.erb:5-12. The budget moved to the end of the mobile scroll in all three, which is the aside's real DOM order; desktop keeps it beside the column because lg:flex-row does. Two smaller divergences were measured and left recorded, not swept: the intro belongs to the aside in code, and the list's count caption exists only here · D64\n2026-09-05 · D85 fallout · Watchlist's Resumen block deleted — a 'con señal hoy' count needs the chip that is not being built, and the code never had the block\n2026-09-05 · #586 · AssetRow drops Estado and Dots here too — three files carried them, the code backed none\n2026-09-05 · C-3 · Holdings/Vacío drops the demo door; the CSV one it also drew has shipped, so the state now draws what exists\n2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
+          "content": "2026-09-17 · D125 · Buscar drawn ahead of the code: five mobile artboards, one desktop, and flow-local TopBar · Buscar and TopBarDesktop · Buscar\n2026-09-17 · D123: the Tracked budget panel on all five Tracked artboards names Yahoo Finance, reads 4000 calls, and gains the whole-quota line\n2026-09-16 · fidelity pass against the rendered app at 390 and 1280: holdings reordered by market value (D68), share counts in the code's significant digits, watchlist prices at two decimals; the paused Tracked-tier row now wraps its symbol line, as the code does since it stopped overflowing the phone\n2026-09-16 · kit 1.0.0 · BottomNav, SidebarNav and TopBarDesktop masters back to the kit, each screen lights its own tab; HeaderBar vendored and replaces seven hand-built headers\n2026-09-16 · D78 · every artboard mirrored to the code: summary and sheet button above the tabs, no counts on the tabs, the three foot rows, day move in the row, the sheet's title and sticky footer, Tracked rows with tier chip and Seguir / Pausar / borrar, the two-segment budget, Historial without icons, the importer's real copy\n2026-09-16 · removed Tracked · Buscar — the filter is an input on Tracked, not a screen; search is its own feature\n2026-09-16 · new artboards: Watchlist · Vacía, Tracked · Sin coincidencias, Holdings · Sin consolidar, Registrar movimiento · CETES, Historial · Vacío\n2026-09-16 · code fixed alongside: CETES could not be recorded, the projection showed on a sale, the dividends header named a currency its rows did not use, Tracked's count followed the filter\n2026-09-16 · canvas · grid gutter 70 → 120, bands reflowed\n2026-09-11 · Tracked · Agregar activo drawn, closing D64: the search field with the placeholder the locale carries, three typeahead results in the row shape Tracked·Buscar already uses, the six fields the gateway fills with the code's own placeholders, and the two actions. Copied from Tracked / Default so the shell stays one thing, and the band was reflowed so the screen reads where it belongs. Two drifts recorded in the brief rather than fixed here: the entry point is a button, not the header icon, and the budget renders last on mobile · D64\n\n2026-09-11 · Both drifts now FIXED in the code's favour — Adrian's call. The header + icon is gone from Tracked/Default, Tracked/Sin fuente and Tracked · Agregar activo; each opens instead with a justify-between row carrying the count and a primary Agregar activo button, which is tracked.html.erb:5-12. The budget moved to the end of the mobile scroll in all three, which is the aside's real DOM order; desktop keeps it beside the column because lg:flex-row does. Two smaller divergences were measured and left recorded, not swept: the intro belongs to the aside in code, and the list's count caption exists only here · D64\n2026-09-05 · D85 fallout · Watchlist's Resumen block deleted — a 'con señal hoy' count needs the chip that is not being built, and the code never had the block\n2026-09-05 · #586 · AssetRow drops Estado and Dots here too — three files carried them, the code backed none\n2026-09-05 · C-3 · Holdings/Vacío drops the demo door; the CSV one it also drew has shipped, so the state now draws what exists\n2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
           "lineHeight": 1.6,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -16411,6 +16411,3324 @@
               "fontWeight": "600"
             }
           }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "yotna",
+      "x": 5318,
+      "y": -1277,
+      "name": "TopBar · Buscar",
+      "reusable": true,
+      "width": 390,
+      "fill": "$bg-surface",
+      "gap": 4,
+      "padding": [
+        16,
+        20
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "z7R23",
+          "name": "Brand",
+          "width": "fill_container",
+          "gap": 4,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "oqcjz",
+              "name": "Glyph",
+              "width": 24,
+              "height": 24,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "path",
+                  "id": "T5gIsH",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Mark",
+                  "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                  "fillRule": "evenodd",
+                  "viewBox": [
+                    0,
+                    0,
+                    64,
+                    64
+                  ],
+                  "fill": "$primary",
+                  "width": 24,
+                  "height": 24
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "j2MsQI",
+              "name": "WMWrap",
+              "layout": "vertical",
+              "padding": [
+                0,
+                0,
+                3.9,
+                0
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "MyNDz",
+                  "name": "WM",
+                  "fill": "$fg-default",
+                  "content": "stockerly",
+                  "fontFamily": "$font-display",
+                  "fontSize": 17,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.4
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "n1KCb",
+          "name": "SearchWrap",
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "RyIyA",
+              "name": "Search",
+              "width": 20,
+              "height": 20,
+              "icon": "search",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "ellipse",
+              "id": "VsNMP",
+              "layoutPosition": "absolute",
+              "x": 26,
+              "y": 10,
+              "name": "UnreadDot",
+              "enabled": false,
+              "fill": "$negative",
+              "width": 8,
+              "height": 8
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rHld8",
+          "name": "BellWrap",
+          "width": 44,
+          "height": 44,
+          "cornerRadius": "$radius-md",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "It6Y6",
+              "name": "Bell",
+              "width": 20,
+              "height": 20,
+              "icon": "bell",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            },
+            {
+              "type": "ellipse",
+              "id": "y3mJA",
+              "layoutPosition": "absolute",
+              "x": 26,
+              "y": 10,
+              "name": "UnreadDot",
+              "fill": "$negative",
+              "width": 8,
+              "height": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Icze3",
+      "x": 480,
+      "y": 3316,
+      "name": "[Activos] / Buscar / En tu catálogo",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "WQttL",
+          "type": "ref",
+          "ref": "dzFo0",
+          "name": "HeaderBar",
+          "width": "fill_container",
+          "descendants": {
+            "HzNoI": {
+              "content": "Buscar activo"
+            },
+            "wBgU0": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "ADxR6",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "KbRf6",
+              "name": "Search",
+              "width": "fill_container",
+              "fill": "$bg-canvas",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-2",
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "jf6xe",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "xkdnm",
+                  "name": "q",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "alab",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "ca1Yc",
+              "name": "Sección",
+              "fill": "$fg-subtle",
+              "content": "EN TU CATÁLOGO",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 1
+            },
+            {
+              "type": "frame",
+              "id": "Fynia",
+              "name": "Resultados",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "PNj4k",
+                  "name": "ALAB",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "R53B0I",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "udfzH",
+                          "name": "Top",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "FBOrP",
+                              "name": "Ticker",
+                              "fill": "$fg-default",
+                              "content": "ALAB",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "y7NdQR",
+                              "name": "Nivel",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "w4CBJ",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "Watchlist",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "S88pw",
+                          "name": "Nombre",
+                          "fill": "$fg-subtle",
+                          "content": "Astera Labs, Inc.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Sbqti",
+                      "name": "R",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wWSje",
+                          "name": "Px",
+                          "fill": "$fg-default",
+                          "content": "USD 142.30",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "G2fP6",
+                          "name": "Día",
+                          "fill": "$positive-fg",
+                          "content": "+2.4%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "XdMhU",
+                      "name": "Chevron",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "D0OE6",
+              "name": "Buscar en Yahoo",
+              "width": "fill_container",
+              "gap": "$space-2",
+              "padding": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "s6blLV",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "globe",
+                  "library": "lucide",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "B64NKf",
+                  "name": "t",
+                  "fill": "$primary",
+                  "content": "Buscar «alab» en Yahoo Finance",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cULbJ",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "rVxMx": {
+              "fill": "$fg-subtle"
+            },
+            "OhmuG": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ehfXk": {
+              "fill": "$primary"
+            },
+            "l4LYK": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "KGPfx",
+      "x": 990,
+      "y": 3316,
+      "name": "[Activos] / Buscar / Fuera de tu catálogo",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "dM5ug",
+          "type": "ref",
+          "ref": "dzFo0",
+          "name": "HeaderBar",
+          "width": "fill_container",
+          "descendants": {
+            "HzNoI": {
+              "content": "Buscar activo"
+            },
+            "wBgU0": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "plijY",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "P09ZCf",
+              "name": "Search",
+              "width": "fill_container",
+              "fill": "$bg-canvas",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-2",
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "JLoi5",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "e84OFf",
+                  "name": "q",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "asts",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "sev2A",
+              "name": "Sin coincidencias",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Ningún activo rastreado coincide con «asts».",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "wFQM2",
+              "name": "Sección",
+              "fill": "$fg-subtle",
+              "content": "EN YAHOO FINANCE",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 1
+            },
+            {
+              "type": "frame",
+              "id": "rafuY",
+              "name": "Resultados Yahoo",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "dKn7C",
+                  "name": "ASTS",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "E43r33",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "szawJ",
+                          "name": "Top",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nwe7q",
+                              "name": "Ticker",
+                              "fill": "$fg-default",
+                              "content": "ASTS",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "o0uNO",
+                              "name": "Tipo",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "NhmZS",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "ACCIÓN",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 10,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "qjzpp",
+                          "name": "Nombre",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "AST SpaceMobile, Inc. · NASDAQ",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UHJeV",
+                      "name": "Rastrear",
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "gap": 6,
+                      "padding": [
+                        8,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "MdkT7",
+                          "name": "i",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "plus",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        },
+                        {
+                          "type": "text",
+                          "id": "oUfhN",
+                          "name": "t",
+                          "fill": "$fg-inverse",
+                          "content": "Rastrear",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PTFdS",
+                  "name": "ASTX",
+                  "width": "fill_container",
+                  "stroke": "$border-default",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "gap": "$space-3",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "mV8tt",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "R4CjE",
+                          "name": "Top",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "SbRAr",
+                              "name": "Ticker",
+                              "fill": "$fg-default",
+                              "content": "ASTX",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "VkM7C",
+                              "name": "Tipo",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "hFWNA",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "ETF",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 10,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "q9jYj",
+                          "name": "Nombre",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tradr 2X Long ASTS Daily ETF · BATS Trading",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "nJuZg",
+                      "name": "Rastrear",
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "gap": 6,
+                      "padding": [
+                        8,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "vRreq",
+                          "name": "i",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "plus",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        },
+                        {
+                          "type": "text",
+                          "id": "n9xvqD",
+                          "name": "t",
+                          "fill": "$fg-inverse",
+                          "content": "Rastrear",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tTBF0",
+                  "name": "ASTN",
+                  "width": "fill_container",
+                  "stroke": "$border-default",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "gap": "$space-3",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "GxMfs",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "eaiPI",
+                          "name": "Top",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "d7wINy",
+                              "name": "Ticker",
+                              "fill": "$fg-default",
+                              "content": "ASTN",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "DOawr",
+                              "name": "Tipo",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "jbnAJ",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "ETF",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 10,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "uCiX1",
+                          "name": "Nombre",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Defiance Daily Target 2X Short ASTS ETF · BATS Trading",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "uOLQP",
+                      "name": "Rastrear",
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "gap": 6,
+                      "padding": [
+                        8,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "YNj8L",
+                          "name": "i",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "plus",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gPKas",
+                          "name": "t",
+                          "fill": "$fg-inverse",
+                          "content": "Rastrear",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "f7VYB",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "rVxMx": {
+              "fill": "$fg-subtle"
+            },
+            "OhmuG": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ehfXk": {
+              "fill": "$primary"
+            },
+            "l4LYK": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "XrDSC",
+      "x": 1500,
+      "y": 3316,
+      "name": "[Activos] / Buscar / Sin resultados",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "I2jQG",
+          "type": "ref",
+          "ref": "dzFo0",
+          "name": "HeaderBar",
+          "width": "fill_container",
+          "descendants": {
+            "HzNoI": {
+              "content": "Buscar activo"
+            },
+            "wBgU0": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "HwU9X",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "taNhB",
+              "name": "Search",
+              "width": "fill_container",
+              "fill": "$bg-canvas",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-2",
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "exzuT",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "GzIpE",
+                  "name": "q",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "zzqx",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Ni4Ix",
+              "name": "EmptyState",
+              "width": "fill_container",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "padding": [
+                64,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "eIi5T",
+                  "name": "Icon",
+                  "width": 60,
+                  "height": 60,
+                  "icon": "search-x",
+                  "library": "lucide",
+                  "fill": "$border-strong"
+                },
+                {
+                  "type": "frame",
+                  "id": "hhQ0i",
+                  "name": "Gap",
+                  "width": 1,
+                  "height": 16
+                },
+                {
+                  "type": "text",
+                  "id": "BBDKb",
+                  "name": "Title",
+                  "fill": "$fg-default",
+                  "content": "Sin resultados",
+                  "textAlign": "center",
+                  "fontFamily": "$font-display",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "b9c4Fj",
+                  "name": "Gap",
+                  "width": 1,
+                  "height": 8
+                },
+                {
+                  "type": "text",
+                  "id": "XKqO9",
+                  "name": "Body",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": 300,
+                  "content": "Ni tu catálogo ni Yahoo Finance tienen «zzqx».",
+                  "lineHeight": 1.4,
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "R9zBYO",
+                  "name": "Gap",
+                  "width": 1,
+                  "height": 24
+                },
+                {
+                  "type": "frame",
+                  "id": "Y2wd3B",
+                  "x": 84.5,
+                  "y": 235,
+                  "name": "CTA",
+                  "enabled": false,
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-sm",
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ghG5s",
+                      "name": "t",
+                      "fill": "$fg-inverse",
+                      "content": "Importar movimientos",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "xevfT",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "rVxMx": {
+              "fill": "$fg-subtle"
+            },
+            "OhmuG": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ehfXk": {
+              "fill": "$primary"
+            },
+            "l4LYK": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "FYSQZ",
+      "x": 2010,
+      "y": 3316,
+      "name": "[Activos] / Buscar / Yahoo no responde",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "sMihB",
+          "type": "ref",
+          "ref": "dzFo0",
+          "name": "HeaderBar",
+          "width": "fill_container",
+          "descendants": {
+            "HzNoI": {
+              "content": "Buscar activo"
+            },
+            "wBgU0": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "XqcIy",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "t4UUq2",
+              "name": "Search",
+              "width": "fill_container",
+              "fill": "$bg-canvas",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-2",
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ZWsBB",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "lFFLy",
+                  "name": "q",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "asts",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "Xmkp3",
+              "name": "Sin coincidencias",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Ningún activo rastreado coincide con «asts».",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "J7XmC",
+              "name": "Error",
+              "width": "fill_container",
+              "fill": "$negative-bg",
+              "cornerRadius": "$radius-md",
+              "gap": "$space-2",
+              "padding": [
+                12,
+                14
+              ],
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "x2fVh",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "cloud-off",
+                  "library": "lucide",
+                  "fill": "$negative-fg"
+                },
+                {
+                  "type": "text",
+                  "id": "Kx1kR",
+                  "name": "t",
+                  "fill": "$negative-fg",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "La búsqueda en Yahoo Finance no responde. Intenta de nuevo en un momento.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ldeXF",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "rVxMx": {
+              "fill": "$fg-subtle"
+            },
+            "OhmuG": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ehfXk": {
+              "fill": "$primary"
+            },
+            "l4LYK": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "DX9fD",
+      "x": 2520,
+      "y": 3316,
+      "name": "[Activos] / Activo desconocido / Default",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "NS8Mb",
+          "type": "ref",
+          "ref": "dzFo0",
+          "name": "HeaderBar",
+          "width": "fill_container",
+          "descendants": {
+            "HzNoI": {
+              "content": "ASTS"
+            },
+            "wBgU0": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "R06T5",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "HOiez",
+              "name": "EmptyState",
+              "width": "fill_container",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "padding": [
+                40,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "pAtY0",
+                  "name": "Icon",
+                  "width": 60,
+                  "height": 60,
+                  "icon": "search-x",
+                  "library": "lucide",
+                  "fill": "$border-strong"
+                },
+                {
+                  "type": "frame",
+                  "id": "Q5rnQe",
+                  "name": "Gap",
+                  "width": 1,
+                  "height": 16
+                },
+                {
+                  "type": "text",
+                  "id": "lZYNu",
+                  "name": "Title",
+                  "fill": "$fg-default",
+                  "content": "No encontré ese activo.",
+                  "textAlign": "center",
+                  "fontFamily": "$font-display",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "Vp6LF",
+                  "name": "Gap",
+                  "width": 1,
+                  "height": 8
+                },
+                {
+                  "type": "text",
+                  "id": "SC792",
+                  "name": "Body",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": 300,
+                  "content": "ASTS no está en tu catálogo. Yahoo Finance sí lo tiene:",
+                  "lineHeight": 1.4,
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "UbnhO",
+                  "name": "Gap",
+                  "width": 1,
+                  "height": 24
+                },
+                {
+                  "type": "frame",
+                  "id": "SVCpP",
+                  "x": 84.5,
+                  "y": 235,
+                  "name": "CTA",
+                  "enabled": false,
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-sm",
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DGMit",
+                      "name": "t",
+                      "fill": "$fg-inverse",
+                      "content": "Importar movimientos",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JbfRO",
+              "name": "Resultados Yahoo",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OJMM2",
+                  "name": "ASTS",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "TFabe",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "uZCmd",
+                          "name": "Top",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "FPtto",
+                              "name": "Ticker",
+                              "fill": "$fg-default",
+                              "content": "ASTS",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "RDt4j",
+                              "name": "Tipo",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Yn2pH",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "ACCIÓN",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 10,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "D6nPLD",
+                          "name": "Nombre",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "AST SpaceMobile, Inc. · NASDAQ",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "n5BJM",
+                      "name": "Rastrear",
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-sm",
+                      "gap": 6,
+                      "padding": [
+                        8,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "UwxQZ",
+                          "name": "i",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "plus",
+                          "library": "lucide",
+                          "fill": "$fg-inverse"
+                        },
+                        {
+                          "type": "text",
+                          "id": "b7TIF7",
+                          "name": "t",
+                          "fill": "$fg-inverse",
+                          "content": "Rastrear",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "xX96J",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "rVxMx": {
+              "fill": "$fg-subtle"
+            },
+            "OhmuG": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ehfXk": {
+              "fill": "$primary"
+            },
+            "l4LYK": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "riZyh",
+      "x": 5828,
+      "y": -1277,
+      "name": "TopBarDesktop · Buscar",
+      "reusable": true,
+      "width": 1040,
+      "fill": "$bg-surface",
+      "stroke": "$border-default",
+      "strokeWidth": {
+        "bottom": 1
+      },
+      "padding": [
+        18,
+        24
+      ],
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "pJnFK",
+          "name": "TitleWrap",
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "RFx8g",
+              "name": "Title",
+              "fill": "$fg-default",
+              "content": "Panorama",
+              "fontFamily": "$font-display",
+              "fontSize": 20,
+              "fontWeight": "700",
+              "letterSpacing": -0.3
+            },
+            {
+              "type": "text",
+              "id": "q3IN8",
+              "name": "Sub",
+              "fill": "$fg-subtle",
+              "content": "Lunes 24 ago · CDMX",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "IjOXl",
+          "name": "Actions",
+          "gap": "$space-4",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "lJZW7",
+              "name": "Search",
+              "width": 320,
+              "fill": "$bg-canvas",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-2",
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "T6kRZ",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "fPYAy",
+                  "name": "q",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Símbolo o nombre — AAPL, Apple, Bitcoin…",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "g67rh",
+              "name": "BellWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "M6EOlu",
+                  "name": "Bell",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "fSMDe",
+                  "layoutPosition": "absolute",
+                  "x": 26,
+                  "y": 10,
+                  "name": "UnreadDot",
+                  "fill": "$negative",
+                  "width": 8,
+                  "height": 8
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "IWNgw",
+      "x": 480,
+      "y": 4420,
+      "name": "[Activos] / Buscar · Desktop / En tu catálogo",
+      "clip": true,
+      "width": 1280,
+      "height": 800,
+      "fill": "$bg-canvas",
+      "children": [
+        {
+          "id": "g5UuB",
+          "type": "ref",
+          "ref": "KBG5l",
+          "name": "SidebarNav",
+          "height": "fill_container",
+          "descendants": {
+            "HR1sd": {
+              "fill": []
+            },
+            "oY0fM": {
+              "fill": "$fg-subtle"
+            },
+            "JQJGo": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "McmvA": {
+              "fill": "$primary-muted"
+            },
+            "rlrlc": {
+              "fill": "$primary-hover"
+            },
+            "kbcoj": {
+              "fill": "$primary-hover",
+              "fontWeight": "600"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "OeDW4",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "o7Y3D",
+              "type": "ref",
+              "ref": "riZyh",
+              "name": "TopBarDesktop · Buscar",
+              "width": "fill_container",
+              "descendants": {
+                "RFx8g": {
+                  "content": "Tracked"
+                },
+                "q3IN8": {
+                  "enabled": false
+                },
+                "fPYAy": {
+                  "content": "alab",
+                  "fill": "$fg-default"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "JnpDk",
+              "name": "Body",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-5",
+              "padding": "$space-6",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "F1pvGq",
+                  "name": "Columns",
+                  "width": "fill_container",
+                  "gap": "$space-5",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "opk7I",
+                      "name": "Catalogo",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$space-4",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "xFINf",
+                          "name": "Acciones",
+                          "width": "fill_container",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "qhaZd",
+                              "name": "Conteo",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "34 activos en Tracked",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "o2UNqz",
+                              "name": "Agregar",
+                              "fill": "$primary",
+                              "cornerRadius": "$radius-sm",
+                              "gap": 6,
+                              "padding": [
+                                8,
+                                12
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "tC6kc",
+                                  "name": "i",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "plus",
+                                  "library": "lucide",
+                                  "fill": "$fg-inverse"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "GdpLY",
+                                  "name": "t",
+                                  "fill": "$fg-inverse",
+                                  "content": "Agregar activo",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "x0wxW",
+                          "name": "Search",
+                          "width": "fill_container",
+                          "fill": "$bg-canvas",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "gap": "$space-2",
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "o5zhWw",
+                              "name": "i",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "search",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
+                            },
+                            {
+                              "type": "text",
+                              "id": "yIhEX",
+                              "name": "q",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Buscar entre tus 34 activos",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "dP7Gi",
+                          "name": "FilaA",
+                          "width": "fill_container",
+                          "gap": "$space-3",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "nJJbZ",
+                              "name": "AAPL",
+                              "width": "fill_container",
+                              "fill": "$bg-surface",
+                              "cornerRadius": "$radius-lg",
+                              "stroke": "$border-default",
+                              "strokeWidth": 1,
+                              "layout": "vertical",
+                              "gap": "$space-3",
+                              "padding": [
+                                12,
+                                16
+                              ],
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "olAfl",
+                                  "name": "Top",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "nXoSO",
+                                      "name": "L",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "RdAQ1",
+                                          "name": "TR",
+                                          "gap": "$space-2",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "AXXkv",
+                                              "name": "Tk",
+                                              "fill": "$fg-default",
+                                              "content": "AAPL",
+                                              "fontFamily": "$font-mono",
+                                              "fontSize": 14,
+                                              "fontWeight": "700"
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "ML2fC",
+                                              "name": "Tier",
+                                              "fill": "$bg-muted",
+                                              "cornerRadius": 99,
+                                              "padding": [
+                                                2,
+                                                8
+                                              ],
+                                              "children": [
+                                                {
+                                                  "type": "text",
+                                                  "id": "E49QE",
+                                                  "name": "t",
+                                                  "fill": "$fg-subtle",
+                                                  "content": "HOLDINGS",
+                                                  "fontFamily": "$font-sans",
+                                                  "fontSize": 10,
+                                                  "fontWeight": "600",
+                                                  "letterSpacing": 0.25
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "YstC3",
+                                          "name": "M",
+                                          "fill": "$fg-subtle",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Apple · Acción",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "KFOhc",
+                                      "name": "Pausar",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$border-default",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "Z3vgH",
+                                          "name": "t",
+                                          "fill": "$fg-subtle",
+                                          "content": "Pausar",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "N6tNJW",
+                                      "name": "Eliminar",
+                                      "width": 32,
+                                      "height": 32,
+                                      "cornerRadius": "$radius-sm",
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "KQc6N",
+                                          "name": "i",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "trash-2",
+                                          "library": "lucide",
+                                          "fill": "$fg-subtle"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "JrcxZ",
+                              "name": "NVDA",
+                              "width": "fill_container",
+                              "fill": "$bg-surface",
+                              "cornerRadius": "$radius-lg",
+                              "stroke": "$border-default",
+                              "strokeWidth": 1,
+                              "layout": "vertical",
+                              "gap": "$space-3",
+                              "padding": [
+                                12,
+                                16
+                              ],
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "VmCtA",
+                                  "name": "Top",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "U43q0K",
+                                      "name": "L",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "ckugG",
+                                          "name": "TR",
+                                          "gap": "$space-2",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "i4tIdH",
+                                              "name": "Tk",
+                                              "fill": "$fg-default",
+                                              "content": "NVDA",
+                                              "fontFamily": "$font-mono",
+                                              "fontSize": 14,
+                                              "fontWeight": "700"
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "qat73",
+                                              "name": "Tier",
+                                              "fill": "$bg-muted",
+                                              "cornerRadius": 99,
+                                              "padding": [
+                                                2,
+                                                8
+                                              ],
+                                              "children": [
+                                                {
+                                                  "type": "text",
+                                                  "id": "LTEhF",
+                                                  "name": "t",
+                                                  "fill": "$fg-subtle",
+                                                  "content": "HOLDINGS",
+                                                  "fontFamily": "$font-sans",
+                                                  "fontSize": 10,
+                                                  "fontWeight": "600",
+                                                  "letterSpacing": 0.25
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "nXsPv",
+                                          "name": "M",
+                                          "fill": "$fg-subtle",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "NVIDIA · Acción",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "jT09Q",
+                                      "name": "Pausar",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$border-default",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "Oq4ZV",
+                                          "name": "t",
+                                          "fill": "$fg-subtle",
+                                          "content": "Pausar",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "GOn51",
+                                      "name": "Eliminar",
+                                      "width": 32,
+                                      "height": 32,
+                                      "cornerRadius": "$radius-sm",
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "UY6Lq",
+                                          "name": "i",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "trash-2",
+                                          "library": "lucide",
+                                          "fill": "$fg-subtle"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ONX5I",
+                          "name": "FilaB",
+                          "width": "fill_container",
+                          "gap": "$space-3",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "O3DeE2",
+                              "name": "GOOGL",
+                              "width": "fill_container",
+                              "fill": "$bg-surface",
+                              "cornerRadius": "$radius-lg",
+                              "stroke": "$border-default",
+                              "strokeWidth": 1,
+                              "layout": "vertical",
+                              "gap": "$space-3",
+                              "padding": [
+                                12,
+                                16
+                              ],
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "FJz9A",
+                                  "name": "Top",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "l5tTM",
+                                      "name": "L",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "M2cWC",
+                                          "name": "TR",
+                                          "gap": "$space-2",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "SWM5q",
+                                              "name": "Tk",
+                                              "fill": "$fg-default",
+                                              "content": "GOOGL",
+                                              "fontFamily": "$font-mono",
+                                              "fontSize": 14,
+                                              "fontWeight": "700"
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "Znjdg",
+                                              "name": "Tier",
+                                              "fill": "$bg-muted",
+                                              "cornerRadius": 99,
+                                              "padding": [
+                                                2,
+                                                8
+                                              ],
+                                              "children": [
+                                                {
+                                                  "type": "text",
+                                                  "id": "q7R3c",
+                                                  "name": "t",
+                                                  "fill": "$fg-subtle",
+                                                  "content": "WATCHLIST",
+                                                  "fontFamily": "$font-sans",
+                                                  "fontSize": 10,
+                                                  "fontWeight": "600",
+                                                  "letterSpacing": 0.25
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "U5arOt",
+                                          "name": "M",
+                                          "fill": "$fg-subtle",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Alphabet · Acción",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "dKMtr",
+                                      "name": "Pausar",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$border-default",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "MgPlS",
+                                          "name": "t",
+                                          "fill": "$fg-subtle",
+                                          "content": "Pausar",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "z0cxL",
+                                      "name": "Eliminar",
+                                      "width": 32,
+                                      "height": 32,
+                                      "cornerRadius": "$radius-sm",
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "gcVgP",
+                                          "name": "i",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "trash-2",
+                                          "library": "lucide",
+                                          "fill": "$fg-subtle"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "N93aK",
+                              "name": "WALMEX",
+                              "width": "fill_container",
+                              "fill": "$bg-surface",
+                              "cornerRadius": "$radius-lg",
+                              "stroke": "$border-default",
+                              "strokeWidth": 1,
+                              "layout": "vertical",
+                              "gap": "$space-3",
+                              "padding": [
+                                12,
+                                16
+                              ],
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "E71KqH",
+                                  "name": "Top",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "uhH09",
+                                      "name": "L",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "AsvVC",
+                                          "name": "TR",
+                                          "gap": "$space-2",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "fbpWl",
+                                              "name": "Tk",
+                                              "fill": "$fg-default",
+                                              "content": "WALMEX",
+                                              "fontFamily": "$font-mono",
+                                              "fontSize": 14,
+                                              "fontWeight": "700"
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "dSW4L",
+                                              "name": "Tier",
+                                              "fill": "$bg-muted",
+                                              "cornerRadius": 99,
+                                              "padding": [
+                                                2,
+                                                8
+                                              ],
+                                              "children": [
+                                                {
+                                                  "type": "text",
+                                                  "id": "YlOAU",
+                                                  "name": "t",
+                                                  "fill": "$fg-subtle",
+                                                  "content": "WATCHLIST",
+                                                  "fontFamily": "$font-sans",
+                                                  "fontSize": 10,
+                                                  "fontWeight": "600",
+                                                  "letterSpacing": 0.25
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "A1X5P",
+                                          "name": "M",
+                                          "fill": "$fg-subtle",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Walmart de México · Acción",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "Uv3FB",
+                                      "name": "Pausar",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$border-default",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "HMF9R",
+                                          "name": "t",
+                                          "fill": "$fg-subtle",
+                                          "content": "Pausar",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "H3IfQP",
+                                      "name": "Eliminar",
+                                      "width": 32,
+                                      "height": 32,
+                                      "cornerRadius": "$radius-sm",
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "lASWo",
+                                          "name": "i",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "trash-2",
+                                          "library": "lucide",
+                                          "fill": "$fg-subtle"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "UyQmV",
+                          "name": "FilaC",
+                          "width": "fill_container",
+                          "gap": "$space-3",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "cHyKr",
+                              "name": "AMXL",
+                              "width": "fill_container",
+                              "fill": "$bg-surface",
+                              "cornerRadius": "$radius-lg",
+                              "stroke": "$border-default",
+                              "strokeWidth": 1,
+                              "layout": "vertical",
+                              "gap": "$space-3",
+                              "padding": [
+                                12,
+                                16
+                              ],
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "vrPhX",
+                                  "name": "Top",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "aOd1y",
+                                      "name": "L",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 4,
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "DW59r",
+                                          "name": "TR",
+                                          "gap": "$space-2",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "fcklY",
+                                              "name": "Tk",
+                                              "fill": "$fg-default",
+                                              "content": "AMXL",
+                                              "fontFamily": "$font-mono",
+                                              "fontSize": 14,
+                                              "fontWeight": "700"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "yueAa",
+                                          "name": "Tier",
+                                          "fill": "$bg-muted",
+                                          "cornerRadius": 99,
+                                          "padding": [
+                                            2,
+                                            8
+                                          ],
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "Vbyhn",
+                                              "name": "t",
+                                              "fill": "$fg-subtle",
+                                              "content": "TRACKED",
+                                              "fontFamily": "$font-sans",
+                                              "fontSize": 10,
+                                              "fontWeight": "600",
+                                              "letterSpacing": 0.25
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "sqCo3",
+                                          "name": "M",
+                                          "fill": "$fg-subtle",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "América Móvil · Acción",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "PdYX4",
+                                      "name": "Seguir",
+                                      "fill": "$primary-muted",
+                                      "cornerRadius": "$radius-sm",
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "f2QxZG",
+                                          "name": "t",
+                                          "fill": "$primary-hover",
+                                          "content": "Seguir",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "Btge6",
+                                      "name": "Pausar",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$border-default",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "Q2cXb0",
+                                          "name": "t",
+                                          "fill": "$fg-subtle",
+                                          "content": "Pausar",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "U4xKkG",
+                                      "name": "Eliminar",
+                                      "width": 32,
+                                      "height": 32,
+                                      "cornerRadius": "$radius-sm",
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "y5f5OA",
+                                          "name": "i",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "trash-2",
+                                          "library": "lucide",
+                                          "fill": "$fg-subtle"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "mwGRm",
+                              "name": "NVAX",
+                              "opacity": 0.6,
+                              "width": "fill_container",
+                              "fill": "$bg-surface",
+                              "cornerRadius": "$radius-lg",
+                              "stroke": "$border-default",
+                              "strokeWidth": 1,
+                              "layout": "vertical",
+                              "gap": "$space-3",
+                              "padding": [
+                                12,
+                                16
+                              ],
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "kc6df",
+                                  "name": "Top",
+                                  "width": "fill_container",
+                                  "gap": "$space-3",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "b5iCAh",
+                                      "name": "L",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 4,
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "u3jT1k",
+                                          "name": "TR",
+                                          "gap": "$space-2",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "a2lR1",
+                                              "name": "Tk",
+                                              "fill": "$fg-default",
+                                              "content": "NVAX",
+                                              "fontFamily": "$font-mono",
+                                              "fontSize": 14,
+                                              "fontWeight": "700"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "yNNjz",
+                                          "name": "Tier",
+                                          "fill": "$bg-muted",
+                                          "cornerRadius": 99,
+                                          "padding": [
+                                            2,
+                                            8
+                                          ],
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "NYpUf",
+                                              "name": "t",
+                                              "fill": "$fg-subtle",
+                                              "content": "TRACKED",
+                                              "fontFamily": "$font-sans",
+                                              "fontSize": 10,
+                                              "fontWeight": "600",
+                                              "letterSpacing": 0.25
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "jSLlt",
+                                          "name": "Pausa",
+                                          "fill": "$warning-fg",
+                                          "content": "EN PAUSA",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 10,
+                                          "fontWeight": "600",
+                                          "letterSpacing": 0.25
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "e5X01",
+                                          "name": "M",
+                                          "fill": "$fg-subtle",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Novavax · Acción",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "y1dCZi",
+                                      "name": "Seguir",
+                                      "fill": "$primary-muted",
+                                      "cornerRadius": "$radius-sm",
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "twoZ7",
+                                          "name": "t",
+                                          "fill": "$primary-hover",
+                                          "content": "Seguir",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "M8MXM",
+                                      "name": "Pausar",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$border-default",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "Sd3l1",
+                                          "name": "t",
+                                          "fill": "$fg-subtle",
+                                          "content": "Reanudar",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "do8z0",
+                                      "name": "Eliminar",
+                                      "width": 32,
+                                      "height": 32,
+                                      "cornerRadius": "$radius-sm",
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "WvnEk",
+                                          "name": "i",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "trash-2",
+                                          "library": "lucide",
+                                          "fill": "$fg-subtle"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O9tsL",
+                      "name": "Instancia",
+                      "width": 320,
+                      "layout": "vertical",
+                      "gap": "$space-4",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "SsGtx",
+                          "name": "Presupuesto",
+                          "width": "fill_container",
+                          "fill": "$bg-surface",
+                          "cornerRadius": "$radius-card",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": "$space-3",
+                          "padding": "$space-5",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "h917fF",
+                              "name": "Lab",
+                              "fill": "$fg-subtle",
+                              "content": "PRESUPUESTO DIARIO · YAHOO FINANCE",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal",
+                              "letterSpacing": 1
+                            },
+                            {
+                              "type": "frame",
+                              "id": "NBnHA",
+                              "name": "VR",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": "$space-1",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "eMagM",
+                                  "name": "Val",
+                                  "fill": "$fg-default",
+                                  "content": "4000 llamadas",
+                                  "fontFamily": "$font-display",
+                                  "fontSize": 30,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "gD6Mk",
+                                  "name": "Chip",
+                                  "fill": "$warning-bg",
+                                  "cornerRadius": 99,
+                                  "padding": [
+                                    2,
+                                    10
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "tAU82",
+                                      "name": "CT",
+                                      "fill": "$warning-fg",
+                                      "content": "34 activos en Tracked",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "sliIe",
+                              "name": "Track",
+                              "clip": true,
+                              "width": "fill_container",
+                              "height": 8,
+                              "fill": "$bg-muted",
+                              "cornerRadius": 99,
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "Bs3H4",
+                                  "name": "Seg",
+                                  "width": 40,
+                                  "height": 8,
+                                  "fill": "$primary"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "R2dX51",
+                                  "name": "Seg",
+                                  "width": 48,
+                                  "height": 8,
+                                  "fill": "$primary-hover"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "WwOCx",
+                              "name": "Leyenda",
+                              "gap": "$space-4",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "tO7dH",
+                                  "name": "5 en cartera",
+                                  "gap": 5,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "ellipse",
+                                      "id": "e5QiY",
+                                      "name": "d",
+                                      "fill": "$primary",
+                                      "width": 8,
+                                      "height": 8
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "Z2OT0",
+                                      "name": "t",
+                                      "fill": "$fg-subtle",
+                                      "content": "5 en Holdings",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "xrE8F",
+                                  "name": "6 que sigues",
+                                  "gap": 5,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "ellipse",
+                                      "id": "BeKzi",
+                                      "name": "d",
+                                      "fill": "$primary-hover",
+                                      "width": 8,
+                                      "height": 8
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "uznzC",
+                                      "name": "t",
+                                      "fill": "$fg-subtle",
+                                      "content": "6 en Watchlist",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "x65iX",
+                              "name": "Leyenda 2",
+                              "gap": "$space-4",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "asIJU",
+                                  "name": "23 en Tracked",
+                                  "gap": 5,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "ellipse",
+                                      "id": "k3AiSW",
+                                      "name": "d",
+                                      "fill": "$bg-muted",
+                                      "width": 8,
+                                      "height": 8
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "Q1N4DS",
+                                      "name": "t",
+                                      "fill": "$fg-subtle",
+                                      "content": "23 en Tracked",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "oO2vy",
+                              "name": "Cap",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Se gastan en ese orden. Si el presupuesto se acaba, los últimos esperan al día siguiente.",
+                              "lineHeight": 1.4,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "u9gZEi",
+                              "name": "Detalle",
+                              "fill": "$fg-subtle",
+                              "content": "0 de 4000 llamadas usadas",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "lQEWR",
+                              "name": "Compartido",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Es la cuota completa de Yahoo Finance, no una parte reservada para fundamentales.",
+                              "lineHeight": 1.4,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "uaqle",
+                              "name": "Intro",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Los activos que tu instancia sincroniza a diario. Seguir uno o comprarlo le da prioridad; pausarlo libera presupuesto.",
+                              "lineHeight": 1.4,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "NWkty",
+          "layoutPosition": "absolute",
+          "x": 816,
+          "y": 65,
+          "name": "Resultados · Desplegable",
+          "width": 380,
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-lg",
+          "stroke": "$border-default",
+          "strokeWidth": 1,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#0F172A33",
+            "offset": {
+              "x": 0,
+              "y": 12
+            },
+            "blur": 40
+          },
+          "layout": "vertical",
+          "gap": "$space-2",
+          "padding": [
+            12,
+            8
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "ViR3E",
+              "name": "SecciónWrap",
+              "width": "fill_container",
+              "padding": [
+                0,
+                8
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "IfIR3",
+                  "name": "Sección",
+                  "fill": "$fg-subtle",
+                  "content": "EN TU CATÁLOGO",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "IlqTL",
+              "name": "Resultados",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "tdbg7",
+                  "name": "ALAB",
+                  "width": "fill_container",
+                  "gap": "$space-3",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "HoTDv",
+                      "name": "L",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Rmdit",
+                          "name": "Top",
+                          "gap": "$space-2",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "CzaHA",
+                              "name": "Ticker",
+                              "fill": "$fg-default",
+                              "content": "ALAB",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "YXwrc",
+                              "name": "Nivel",
+                              "fill": "$bg-muted",
+                              "cornerRadius": "$radius-sm",
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "IfLK9",
+                                  "name": "t",
+                                  "fill": "$fg-subtle",
+                                  "content": "Watchlist",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Ct4oE",
+                          "name": "Nombre",
+                          "fill": "$fg-subtle",
+                          "content": "Astera Labs, Inc.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "qzPbr",
+                      "name": "R",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "VHtvx",
+                          "name": "Px",
+                          "fill": "$fg-default",
+                          "content": "USD 142.30",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "a0M0Kv",
+                          "name": "Día",
+                          "fill": "$positive-fg",
+                          "content": "+2.4%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "H8QR41",
+                      "name": "Chevron",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "v478yq",
+              "name": "PieWrap",
+              "width": "fill_container",
+              "padding": [
+                0,
+                4
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "GQiRR",
+                  "name": "Buscar en Yahoo",
+                  "width": "fill_container",
+                  "gap": "$space-2",
+                  "padding": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "pXBmm",
+                      "name": "i",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "globe",
+                      "library": "lucide",
+                      "fill": "$primary"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Wb2c6",
+                      "name": "t",
+                      "fill": "$primary",
+                      "content": "Buscar «alab» en Yahoo Finance",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     }

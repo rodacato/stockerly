@@ -64,6 +64,11 @@ tells a reviewer nothing.
 | `activos-importar.png` | `[Activos] / Importar CSV / Default` |
 | `activos-importar-revision.png` | `[Activos] / Importar CSV / Revisión` — the dry run: nothing written yet |
 | `activos-importar-desconocidos.png` | `[Activos] / Importar CSV / Símbolos desconocidos` — the all-or-nothing refusal |
+| `activos-buscar-catalogo.png` | `[Activos] / Buscar / En tu catálogo` — D125, drawn ahead of the code |
+| `activos-buscar-fuera-de-catalogo.png` | `[Activos] / Buscar / Fuera de tu catálogo` — D125: Yahoo's results with Rastrear |
+| `activos-buscar-sin-resultados.png` | `[Activos] / Buscar / Sin resultados` — D125 |
+| `activos-buscar-yahoo-no-responde.png` | `[Activos] / Buscar / Yahoo no responde` — D125 |
+| `activos-activo-desconocido.png` | `[Activos] / Activo desconocido / Default` — D125: /market/:symbol for a symbol the catalogue lacks |
 | `reglas-vacio.png` | `[Reglas] / Reglas / Vacío` |
 | `reglas-nueva-regla.png` | `[Reglas] / Nueva regla / Sheet` |
 | `reglas-nueva-regla-calendario.png` | `[Reglas] / Nueva regla / Calendario` |
@@ -101,6 +106,7 @@ reflow. The kit's shell variant is included because it is what every desktop art
 | `activos-holdings-desktop.png` | `[Activos] / Holdings · Desktop / Default` |
 | `activos-registrar-movimiento-desktop.png` | `[Activos] / Registrar movimiento · Desktop / Dialog` |
 | `activos-tracked-desktop.png` | `[Activos] / Tracked · Desktop / Default` |
+| `activos-buscar-desktop.png` | `[Activos] / Buscar · Desktop / En tu catálogo` — D125: the results as a dropdown under the bar's field |
 
 Not drawn on desktop, on purpose: `Watchlist`, `Holdings vacía`, the `Activos` empty and
 notice states, the `Reglas` states, `Descubrir · Sin datos` (it reflows into the same two-column shell with the
