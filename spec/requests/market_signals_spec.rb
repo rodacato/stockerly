@@ -3,6 +3,8 @@ require "rails_helper"
 # CKP-3 / #306: the Señales block on the asset detail. Catalogue behaviour is
 # specced in spec/contexts/market_data/domain/indicator_signals_spec.rb.
 RSpec.describe "Market Asset Detail — Señales", type: :request do
+  include ActiveSupport::Testing::TimeHelpers
+
   let!(:user) { create(:user, email: "signals@example.com", password: "password123") }
   let!(:asset) { create(:asset, symbol: "AAPL", name: "Apple Inc.") }
 
@@ -52,6 +54,17 @@ RSpec.describe "Market Asset Detail — Señales", type: :request do
 
     expect(response.body).to include(I18n.t("market.reading.titulo"))
     expect(response.body).not_to match(/Lectura del/)
+  end
+
+  # D126: readings refresh during the session, so a reading from today says when.
+  it "names the Mexico City time of a reading taken today" do
+    travel_to Time.utc(2026, 9, 17, 17, 45) do
+      create(:technical_reading, asset: asset, calculated_at: Time.utc(2026, 9, 17, 17, 30))
+
+      get market_asset_path(asset.symbol)
+
+      expect(response.body).to include("Lectura de las 11:30")
+    end
   end
 
   # D110: Adrian, on the shipped card -- "veo numero pero no se que significan".

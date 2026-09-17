@@ -16,9 +16,14 @@
       <h2 class="font-display text-base font-semibold tracking-tight text-fg-default">
         <%= t(".titulo") %>
       </h2>
-      <% if reading&.stale? %>
+      <%# D126: the reading refreshes during the session, so today's says when. %>
+      <% if reading %>
         <span class="rounded-full bg-bg-muted px-2 py-0.5 text-[11px] font-medium text-fg-subtle">
-          <%= t("market.signals.desactualizado", fecha: short_date_es(reading.calculated_at.to_date)) %>
+          <% if reading.stale? %>
+            <%= t("market.signals.desactualizado", fecha: short_date_es(reading.calculated_at.to_date)) %>
+          <% else %>
+            <%= t("market.signals.de_hoy", hora: reading.calculated_at.in_time_zone(DatetimeEsHelper::CDMX).strftime("%H:%M")) %>
+          <% end %>
         </span>
       <% end %>
     </header>
