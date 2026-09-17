@@ -10,7 +10,7 @@ RSpec.describe MarketData::Domain::FundamentalPresenter, "metric aliasing" do
     described_class.new(asset: asset, fundamental: build(:asset_fundamental, metrics: metrics))
   end
 
-  # Exactly the keys AlphaVantageGateway and FmpGateway persist.
+  # Exactly the keys YfinanceGateway#fetch_overview persists.
   {
     roe:              "return_on_equity",
     roa:              "return_on_assets",

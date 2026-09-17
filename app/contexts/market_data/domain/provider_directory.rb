@@ -17,8 +17,6 @@ module MarketData
                                      "Pierdes el cierre oficial de EE. UU. y los dividendos y splits de tus posiciones estadounidenses."),
         "Finnhub"        => Info.new("Cotización del momento de acciones de EE. UU., reportes trimestrales y búsqueda de tickers.", "https://finnhub.io/register", true,
                                      "El precio de tus acciones de EE. UU. queda en el cierre del día anterior, y la búsqueda de tickers deja de funcionar."),
-        "Alpha Vantage"  => Info.new("Fundamentales de empresas (EPS, razones financieras). 25 llamadas al día en el plan gratuito.", "https://www.alphavantage.co/support/#api-key", true,
-                                     "Las pestañas de fundamentales y estados financieros se quedan vacías."),
         "FMP"            => Info.new("Respaldo de fundamentales cuando Alpha Vantage se queda sin sus 25 llamadas del día. Solo sirve con API keys de cuentas creadas antes del 31 de agosto de 2025.", "https://site.financialmodelingprep.com/developer/docs", true,
                                      "Nada, salvo que los fundamentales se detengan al agotar la cuota de Alpha Vantage en vez de continuar."),
         "ExchangeRate"   => Info.new("Tipo de cambio del momento, para ver todo en tu moneda base. El histórico por fecha lo trae Banxico.", "https://www.exchangerate-api.com/", true,

@@ -10,26 +10,15 @@ module Administration
           "MUTUALFUND" => "etf"
         }.freeze
 
-        # Keyed on whatever the provider calls the venue. Yahoo sends an
-        # exchange display name; the region names below are Alpha Vantage's.
+        # Keyed on the exchange display name Yahoo's search sends.
         REGION_COUNTRY_MAP = {
           "NASDAQ" => "US", "NYSE" => "US", "NYSEArca" => "US",
           "NYSE American" => "US", "BATS Trading" => "US", "OTC Markets" => "US",
-          "XETRA" => "DE", "Munich" => "DE", "Dusseldorf Stock Exchange" => "DE",
-          "London" => "GB", "Mexico City" => "MX",
-          "United States" => "US",
-          "United Kingdom" => "GB",
-          "Germany" => "DE", "Frankfurt" => "DE",
-          "France" => "FR", "Paris" => "FR",
-          "Japan" => "JP", "Tokyo" => "JP",
-          "Canada" => "CA", "Toronto" => "CA",
-          "Brazil" => "BR", "Brazil/Sao Paolo" => "BR",
-          "Mexico" => "MX",
-          "China" => "CN", "Shanghai" => "CN", "Shenzhen" => "CN",
-          "Hong Kong" => "HK",
-          "South Korea" => "KR",
-          "Taiwan" => "TW",
-          "India" => "IN"
+          "XETRA" => "DE", "Munich" => "DE", "Dusseldorf Stock Exchange" => "DE", "Frankfurt" => "DE",
+          "London" => "GB", "Paris" => "FR", "Toronto" => "CA",
+          "Mexico" => "MX", "Mexico City" => "MX",
+          "Tokyo" => "JP", "Shanghai" => "CN", "Shenzhen" => "CN",
+          "Hong Kong" => "HK", "Taiwan" => "TW"
         }.freeze
 
         def call(query:)

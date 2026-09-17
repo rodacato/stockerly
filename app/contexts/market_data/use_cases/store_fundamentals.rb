@@ -1,7 +1,7 @@
 module MarketData
   module UseCases
-    # One home for the fundamentals row two syncs write: Alpha Vantage one
-    # equity per call, CoinGecko every crypto in a single one.
+    # One home for the fundamentals row two syncs write: Yahoo one equity per
+    # call, CoinGecko every crypto in a single one.
     class StoreFundamentals < SimpleUseCase
       # LoadAssetDetail reads a different row per asset type, so the wrong
       # label here stores data the screen never looks at.

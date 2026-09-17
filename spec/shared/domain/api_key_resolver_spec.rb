@@ -26,11 +26,11 @@ RSpec.describe ApiKeyResolver do
     end
 
     it "resolves the same key on repeated calls — there is nothing to rotate" do
-      create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "av_key_789")
+      create(:integration, provider_name: "Banxico", api_key_encrypted: "banxico_key_789")
 
-      keys = Array.new(3) { described_class.for("Alpha Vantage") }
+      keys = Array.new(3) { described_class.for("Banxico") }
 
-      expect(keys).to all(eq("av_key_789"))
+      expect(keys).to all(eq("banxico_key_789"))
     end
   end
 end

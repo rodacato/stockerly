@@ -1,6 +1,6 @@
 # CoinGecko returns every coin's market data in one call, so crypto fundamentals
 # are one job for the whole set rather than SyncFundamentalJob's one-asset-one-call
-# shape, whose daily budget belongs to Alpha Vantage and would starve on them.
+# shape, which would spend one call per coin.
 class SyncCryptoFundamentalsJob < ApplicationJob
   include PausableSync
   include SyncLogging

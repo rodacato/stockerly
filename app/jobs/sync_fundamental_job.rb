@@ -10,7 +10,7 @@ class SyncFundamentalJob < ApplicationJob
     asset = Asset.find_by(id: asset_id)
     return unless asset&.active?
     # Crypto is not excluded, it is served elsewhere: SyncCryptoFundamentalsJob
-    # fetches every coin in one CoinGecko call, off this job's Alpha Vantage budget.
+    # fetches every coin in one CoinGecko call, off this job's budget.
     return unless asset.asset_type_stock? || asset.asset_type_etf?
 
     result = fundamentals_chain.fetch_overview(asset.symbol)

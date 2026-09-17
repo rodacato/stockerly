@@ -5,14 +5,14 @@ RSpec.describe MarketData::Events::AssetFundamentalsUpdated do
     described_class.new(
       asset_id: 1,
       symbol: "AAPL",
-      source: "alpha_vantage_overview"
+      source: "yfinance_overview"
     )
   end
 
   it "has required attributes" do
     expect(event.asset_id).to eq(1)
     expect(event.symbol).to eq("AAPL")
-    expect(event.source).to eq("alpha_vantage_overview")
+    expect(event.source).to eq("yfinance_overview")
   end
 
   it "inherits occurred_at from BaseEvent" do

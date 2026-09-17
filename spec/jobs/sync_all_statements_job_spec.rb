@@ -43,13 +43,12 @@ RSpec.describe SyncAllStatementsJob, type: :job do
         .to have_enqueued_job(SyncStatementsJob).exactly(1).times
     end
 
-    # D109: the statements moved to yfinance, so this job stopped rationing
-    # against Alpha Vantage's 25-a-day. It was capping a run at eight assets
-    # against a budget it no longer spends, which is exactly the assets a
-    # backfill needs most.
-    describe "the Alpha Vantage budget it no longer spends" do
+    # D109: this job stopped rationing against the fundamentals budget. It was
+    # capping a run at eight assets, which is exactly the assets a backfill
+    # needs most; RateLimiter refuses a call past the ceiling on its own.
+    describe "the fundamentals budget it does not ration against" do
       let!(:integration) do
-        create(:integration, provider_name: "Alpha Vantage",
+        create(:integration, provider_name: "Yahoo Finance",
                              daily_call_limit: 25, daily_api_calls: 0,
                              calls_reset_at: Time.current)
       end

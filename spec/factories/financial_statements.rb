@@ -7,7 +7,7 @@ FactoryBot.define do
     fiscal_year { 2024 }
     currency { "USD" }
     data { { "totalRevenue" => "391035000000", "netIncome" => "93736000000" } }
-    source { "alpha_vantage" }
+    source { "yfinance" }
     fetched_at { Time.current }
 
     trait :balance_sheet do

@@ -98,20 +98,15 @@ RSpec.describe SyncStatementsJob, type: :job do
       end
     end
 
-    # Negative: TD9 retired Alpha Vantage as the fallback, so a statement Yahoo
-    # cannot give is absent — even where an old key is still configured.
+    # Negative: there is no fallback, so a statement Yahoo cannot give is absent.
     context "when Yahoo has no balance sheet" do
-      before do
-        stub_yfinance_statement_failure("balance_sheet", :not_found)
-        create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "old_key")
-        stub_request(:get, /alphavantage\.co/).to_return(status: 200, body: "{}")
-      end
+      before { stub_yfinance_statement_failure("balance_sheet", :not_found) }
 
-      it "writes no balance sheet and asks nobody else for one" do
+      it "writes no balance sheet and keeps the other two" do
         described_class.perform_now(asset.id)
 
         expect(asset.financial_statements.balance_sheets.count).to eq(0)
-        expect(a_request(:get, /alphavantage\.co/)).not_to have_been_made
+        expect(asset.financial_statements.cash_flows.count).to eq(4)
       end
 
       it "logs the failure once, against Yahoo" do

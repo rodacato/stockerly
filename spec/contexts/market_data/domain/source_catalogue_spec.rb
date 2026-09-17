@@ -19,10 +19,10 @@ RSpec.describe MarketData::Domain::SourceCatalogue do
     # Our own counter stopping us. It resumes tomorrow, and saying "blocked"
     # would send the reader to the provider for a problem that is ours.
     it "reports our own exhausted budget as no_quota" do
-      integration("Alpha Vantage", api_key_encrypted: "k", requires_api_key: true,
-                                   daily_call_limit: 25, daily_api_calls: 25, calls_reset_at: Time.current)
+      integration("Finnhub", api_key_encrypted: "k", requires_api_key: true,
+                             daily_call_limit: 25, daily_api_calls: 25, calls_reset_at: Time.current)
 
-      expect(entry_for("Alpha Vantage").state).to eq(:no_quota)
+      expect(entry_for("Finnhub").state).to eq(:no_quota)
     end
 
     it "reports a provider that refused us as blocked" do

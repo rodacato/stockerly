@@ -62,7 +62,6 @@ RSpec.describe "Market Crypto Asset Detail", type: :request do
       get market_asset_path(crypto_asset.symbol)
 
       expect(response.body).to include("CoinGecko")
-      expect(response.body).not_to include("Alpha Vantage")
     end
   end
 

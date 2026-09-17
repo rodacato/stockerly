@@ -102,19 +102,6 @@ Rails.application.config.after_initialize do
     capabilities: %i[prices historical indices dividends splits fundamentals]
   )
 
-  DataSourceRegistry.register(:alpha_vantage_fundamentals,
-    icon: "analytics",
-    color: "orange",
-    gateway_class: MarketData::Gateways::AlphaVantageGateway,
-    job_class: SyncAllFundamentalsJob,
-    job_args: [],
-    test_symbol: "AAPL",
-    test_method: :fetch_overview,
-    integration_name: "Alpha Vantage",
-    circuit_breaker_key: "alpha_vantage",
-    capabilities: %i[fundamentals]
-  )
-
   DataSourceRegistry.register(:fx_rates,
     icon: "currency_exchange",
     color: "amber",

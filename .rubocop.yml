@@ -89,7 +89,6 @@ Rails/OutputSafety:
 Lint/DuplicateBranch:
   Exclude:
     - 'app/shared/domain/circuit_breaker.rb'
-    - 'app/contexts/market_data/gateways/alpha_vantage_gateway.rb'
     - 'app/helpers/fundamentals_helper.rb'
     - 'app/helpers/statements_helper.rb'
 
