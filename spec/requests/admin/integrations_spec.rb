@@ -56,19 +56,13 @@ RSpec.describe "Admin Integrations", type: :request do
     # D123: an instance that has not migrated yet still holds the row.
     it "does not offer a retired provider whose row outlived it" do
       create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "k")
-
-      get admin_integrations_path
-
-      expect(response.body).not_to include("Alpha Vantage")
-    end
-
-    # The defect C9 named was that this was unlabelled, not that it existed.
-    it "labels the source that only works on the maintainer's key" do
       create(:integration, provider_name: "FMP", api_key_encrypted: "k")
 
       get admin_integrations_path
 
-      expect(response.body).to include("31 de agosto de 2025")
+      expect(response.body).not_to include("Alpha Vantage")
+      expect(response.body).not_to include("FMP")
+      expect(response.body).not_to include("31 de agosto de 2025")
     end
 
     it "says a source is missing its key, that the instance owns that, and what it costs" do

@@ -37,7 +37,7 @@ RSpec.describe GatewayFailure do
     end
 
     it "survives a body that is not a hash" do
-      expect(described_class.from(Response.new(500, "Server error"), "FMP").failure[1]).to include("HTTP 500")
+      expect(described_class.from(Response.new(500, "Server error"), "Finnhub").failure[1]).to include("HTTP 500")
     end
   end
 

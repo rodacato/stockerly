@@ -103,7 +103,7 @@ module MarketData
       end
 
       # Returns Success([{ ex_date:, pay_date:, amount_per_share:, currency: }, ...])
-      # Shape matches FmpGateway#fetch_dividends so the two are interchangeable.
+      # Shape matches YfinanceGateway#fetch_dividends so the two are interchangeable.
       def fetch_dividends(symbol, from_date: 5.years.ago.to_date, to_date: Date.current)
         result = corporate_actions(symbol, "cash_dividend", from_date, to_date)
         return result if result.failure?
@@ -125,7 +125,7 @@ module MarketData
       end
 
       # Returns Success([{ date:, numerator:, denominator: }, ...])
-      # Shape matches FmpGateway#fetch_splits, so the two are interchangeable.
+      # Shape matches YfinanceGateway#fetch_splits, so the two are interchangeable.
       def fetch_splits(symbol, from_date: 10.years.ago.to_date, to_date: Date.current)
         result = corporate_actions(symbol, "forward_split,reverse_split", from_date, to_date)
         return result if result.failure?

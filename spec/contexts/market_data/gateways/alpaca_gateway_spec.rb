@@ -151,7 +151,7 @@ RSpec.describe MarketData::Gateways::AlpacaGateway do
   end
 
   describe "#fetch_dividends" do
-    it "parses cash dividends into the shape FmpGateway returns" do
+    it "parses cash dividends into the shape YfinanceGateway returns" do
       stub_alpaca_dividends("AAPL", [
         { "ex_date" => "2020-08-07", "payable_date" => "2020-08-13", "rate" => 0.82, "symbol" => "AAPL" }
       ])
@@ -173,7 +173,7 @@ RSpec.describe MarketData::Gateways::AlpacaGateway do
 
   describe "#fetch_splits" do
     # Payload taken verbatim from a live probe: AAPL's 2020 4:1 and NVDA's 2024 10:1.
-    it "parses forward splits into the shape FmpGateway returns" do
+    it "parses forward splits into the shape YfinanceGateway returns" do
       stub_alpaca_splits("AAPL", forward: [
         { "ex_date" => "2020-08-31", "new_rate" => 4, "old_rate" => 1,
           "payable_date" => "2020-08-28", "record_date" => "2020-08-24", "symbol" => "AAPL" }
