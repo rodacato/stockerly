@@ -715,6 +715,16 @@ module WebmockHelpers
       .and_return(Dry::Monads::Success(info))
   end
 
+  # Two annual and two quarterly periods, shaped the way lib/python/yahoo.py
+  # emits a statement: snake_case keys aliased to the names the calculator reads.
+  def stub_yfinance_statement(symbol, kind)
+    period = ->(date) { { "fiscal_date_ending" => date, "reported_currency" => "USD", "total_revenue" => "391035000000" } }
+    payload = { "annual_reports" => [ period.("2025-09-30"), period.("2024-09-28") ],
+                "quarterly_reports" => [ period.("2025-06-28"), period.("2025-03-29") ] }
+    allow(PythonRunner).to receive(:call).with("yahoo.py", kind, symbol)
+      .and_return(Dry::Monads::Success(payload))
+  end
+
   def stub_yfinance_search(query, results: [])
     allow(PythonRunner).to receive(:call).with("yahoo.py", "search", query)
       .and_return(Dry::Monads::Success(results))

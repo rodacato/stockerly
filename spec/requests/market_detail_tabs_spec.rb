@@ -57,6 +57,25 @@ RSpec.describe "Market Asset Detail Tabs", type: :request do
       expect(response.body).to include("FY2024")
     end
 
+    # D123: the label named Alpha Vantage while Yahoo wrote every statement.
+    it "names the providers of the statements on file" do
+      create(:financial_statement, asset: asset, source: "yfinance")
+
+      get market_asset_statements_tab_path(asset.symbol)
+
+      expect(response.body).to include("Fuente: Yahoo Finance ·")
+      expect(response.body).not_to include("Alpha Vantage")
+    end
+
+    it "names both when older periods came from Alpha Vantage" do
+      create(:financial_statement, asset: asset, source: "yfinance")
+      create(:financial_statement, asset: asset, source: "alpha_vantage", fiscal_date_ending: Date.new(2019, 9, 28), fiscal_year: 2019)
+
+      get market_asset_statements_tab_path(asset.symbol)
+
+      expect(response.body).to include("Fuente: Yahoo Finance y Alpha Vantage ·")
+    end
+
     it "shows an es-MX empty state when no statements exist" do
       get market_asset_statements_tab_path(asset.symbol)
 

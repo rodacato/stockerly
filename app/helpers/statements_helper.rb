@@ -5,6 +5,16 @@ module StatementsHelper
   # Enum keys (:totalRevenue, :grossProfit, etc.) are NOT translated — those
   # map directly to Alpha Vantage JSON keys and changing them would break the
   # gateway-to-view contract.
+  SOURCE_NAMES = { "yfinance" => "Yahoo Finance", "alpha_vantage" => "Alpha Vantage" }.freeze
+
+  # Rows keep the source that wrote them, so an asset synced before TD9 can
+  # hold older periods from Alpha Vantage beside Yahoo's.
+  def statement_sources(asset)
+    asset.financial_statements.order(fiscal_date_ending: :desc).pluck(:source).uniq
+         .map { |source| SOURCE_NAMES.fetch(source, source) }
+         .to_sentence(two_words_connector: " y ", last_word_connector: " y ")
+  end
+
   INCOME_LINE_ITEMS = [
     { section: "Ingresos y rentabilidad" },
     { key: "totalRevenue", label: "Ingresos", bold: true },
