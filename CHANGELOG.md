@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Alpha Vantage and FMP retired (2026-09-16)
+
+#### Changed
+- Yahoo Finance is the only fundamentals source: the company overview joins the financial statements on the Python bridge ([ADR-017](docs/architecture/adr/0017-python-bridge-for-yahoo-finance.md), 2026-09-16 amendment). No API key is needed for fundamentals any more.
+- The Tracked budget reads the daily quota of the provider that leads fundamentals and names it. Yahoo Finance's daily ceiling doubles to 4,000 calls.
+- The financial statements tab names the providers of the stored rows instead of always saying Alpha Vantage.
+
+#### Removed
+- Alpha Vantage and FMP: gateways, registrations, integration rows and their stored keys (migrations `20260916130000` and `20260916140000`, irreversible). There is no fallback behind Yahoo for fundamentals.
+
 ### Observability moved inside the instance (2026-08-28)
 
 #### Added

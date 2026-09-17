@@ -50,8 +50,8 @@ from a multi-user beta to a single-user tracker.
   outside the instance's own catalogue, so it works before you hold anything.
 - **Two-factor** — TOTP with one-time recovery codes, self-contained, no external identity provider
   ([ADR-018](docs/architecture/adr/0018-totp-with-recovery-codes.md)).
-- **Multi-provider market data** — 10 gateways (Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo
-  Finance, Alpha Vantage, FMP, Banxico, ExchangeRate, Alternative.me) behind gateway chains with
+- **Multi-provider market data** — 8 gateways (Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo
+  Finance, Banxico, ExchangeRate, Alternative.me) behind gateway chains with
   circuit breakers and adaptive scheduling. All optional.
 - **Instance operations** — integration health with rate-limit bars, sync logs with CSV export, a
   background-job dashboard, an error tracker that runs *inside* the instance
@@ -106,9 +106,9 @@ four-database setup, background jobs via `bin/jobs`, first-run check, and troubl
 
 ### API Keys
 
-Stockerly ships **10 market-data gateways** —
-[`app/contexts/market_data/gateways/`](app/contexts/market_data/gateways/) holds the 10
-concrete providers plus their shared base classes, error class, retry policy and HTTP plumbing. API keys are configured
+Stockerly ships **8 market-data gateways** —
+[`app/contexts/market_data/gateways/`](app/contexts/market_data/gateways/) holds the 8
+concrete providers plus their shared base class, error class, retry policy and HTTP plumbing. API keys are configured
 during the Setup Wizard, later under Integrations, or via Rails credentials. The registrations in
 [`config/initializers/data_sources.rb`](config/initializers/data_sources.rb) are the source of truth:
 
@@ -118,9 +118,7 @@ during the Setup Wizard, later under Integrations, or via Rails credentials. The
 | [Finnhub](https://finnhub.io/) | US prices, symbol search, news, earnings |
 | [CoinGecko](https://www.coingecko.com/) | Crypto prices, history, market data |
 | [DataBursatil](https://databursatil.com/) | BMV (Mexican market) prices, history, intraday |
-| [Yahoo Finance](https://finance.yahoo.com/) | Prices, history, indices, dividends, splits (Python bridge, [ADR-017](docs/architecture/adr/0017-python-bridge-for-yahoo-finance.md)) |
-| [Alpha Vantage](https://www.alphavantage.co/) | Fundamentals |
-| [FMP](https://financialmodelingprep.com/) | Fundamentals — maintainer-only; its `/api/v3` is gated to accounts created before 2025-08-31 |
+| [Yahoo Finance](https://finance.yahoo.com/) | Prices, history, indices, dividends, splits, ticker search, fundamentals, financial statements (Python bridge, [ADR-017](docs/architecture/adr/0017-python-bridge-for-yahoo-finance.md)) |
 | [Banxico](https://www.banxico.org.mx/SieAPIRest/) | Historical FX fixes and CETES rates |
 | [ExchangeRate](https://www.exchangerate-api.com/) | Current FX rates |
 | [Alternative.me](https://alternative.me/crypto/fear-and-greed-index/) | Crypto Fear & Greed sentiment |
