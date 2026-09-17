@@ -218,7 +218,7 @@ Decision rule — four tests, all of them: if the use case needs `yield`, `valid
 
 - **Public:** `/` (302 → `/login`), `/login`. There are no legal pages ([ADR-026](docs/architecture/adr/0026-no-legal-pages-on-a-self-hosted-instance.md)): the MIT license carries the terms
 - **First boot:** `/setup` — `ApplicationController#redirect_to_setup` sends every request here while no user exists; `SetupController#require_no_users` redirects away once one does. Then `/onboarding/*` → `/welcome`.
-- **Authenticated:** `/dashboard`, `/discover`, `/portfolio`, `/alerts`, `/assets`, `/tracked`, `/positions` (Historial), `/trades/import`, `/market/:symbol`, `/signals`, `/notifications`, `/settings`, `/help`
+- **Authenticated:** `/dashboard`, `/discover`, `/portfolio`, `/alerts`, `/assets`, `/tracked`, `/positions` (Historial), `/trades/import`, `/market/:symbol`, `/search`, `/signals`, `/notifications`, `/settings`, `/help`
 - **Password Reset:** `/forgot-password`, `/reset-password/:token`
 - **Second factor (ADR-018):** `/two-factor` and `/recovery-code` are reachable only with a pending login; `/two-factor/setup` and `/two-factor/codes` are enrolment, behind a full session
 - **Admin:** `/admin/integrations`, `/admin/logs`, `/admin/errors` (ADR-020, gated by the `developer_mode` switch), `/admin/settings`, `/admin/jobs` (Mission Control)
