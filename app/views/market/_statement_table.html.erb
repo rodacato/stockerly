@@ -43,8 +43,8 @@
                   <% else %>
                     <span class="text-sm text-fg-subtle"><%= format_statement_value(raw_value, currency: asset.currency) %></span>
                   <% end %>
-                  <% if item[:margin_key] && stmt.data["totalRevenue"]&.to_f&.nonzero? %>
-                    <% margin = (raw_value.to_f / stmt.data["totalRevenue"].to_f * 100).round(1) %>
+                  <% if item[:margin_key] && stmt.data["total_revenue"]&.to_f&.nonzero? %>
+                    <% margin = (raw_value.to_f / stmt.data["total_revenue"].to_f * 100).round(1) %>
                     <div class="text-xs text-fg-subtle"><%= margin %>%</div>
                   <% end %>
                 </td>

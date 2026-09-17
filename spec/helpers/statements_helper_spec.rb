@@ -44,8 +44,8 @@ RSpec.describe StatementsHelper, type: :helper do
 
       # The gateway-to-view contract is keyed on the stored field names;
       # translating the keys would break it. Translation lives on :label.
-      expect(keys).to include("totalRevenue", "grossProfit", "operatingIncome",
-                              "netIncome", "dilutedEPS")
+      expect(keys).to include("total_revenue", "gross_profit", "operating_income",
+                              "net_income", "diluted_eps")
     end
   end
 

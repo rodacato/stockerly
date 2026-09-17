@@ -121,7 +121,7 @@ RSpec.describe MarketData::UseCases::LoadAssetDetail do
       it "is true when financial statements exist" do
         create(:financial_statement, asset: asset, statement_type: :income_statement,
                period_type: :annual, fiscal_date_ending: Date.new(2024, 9, 28),
-               fiscal_year: 2024, data: { "totalRevenue" => "1" })
+               fiscal_year: 2024, data: { "total_revenue" => "1" })
 
         expect(described_class.call(symbol: "AAPL").value![:has_statements]).to be(true)
       end

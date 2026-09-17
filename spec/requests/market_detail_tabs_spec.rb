@@ -46,7 +46,7 @@ RSpec.describe "Market Asset Detail Tabs", type: :request do
       create(:financial_statement, asset: asset,
         statement_type: :income_statement, period_type: :annual,
         fiscal_date_ending: Date.new(2024, 9, 28), fiscal_year: 2024,
-        data: { "totalRevenue" => "394328000000", "netIncome" => "97000000000" })
+        data: { "total_revenue" => "394328000000", "net_income" => "97000000000" })
 
       get market_asset_statements_tab_path(asset.symbol)
 
@@ -55,6 +55,17 @@ RSpec.describe "Market Asset Detail Tabs", type: :request do
       expect(response.body).to include("Balance general")
       expect(response.body).to include("Flujo de efectivo")
       expect(response.body).to include("FY2024")
+    end
+
+    # D124: the table read camelCase keys from rows stored in snake_case, so
+    # every cell but EBITDA and inventory was an em dash.
+    it "renders the values under the keys the sync stores" do
+      create(:financial_statement, asset: asset, data: { "total_revenue" => "391035000000", "gross_profit" => "180683000000" })
+      create(:financial_statement, :cash_flow, asset: asset, data: { "repurchase_of_capital_stock" => "-94949000000" })
+
+      get market_asset_statements_tab_path(asset.symbol)
+
+      expect(response.body).to include("USD 391.0B", "USD 180.7B", "46.2%", "USD -94.9B")
     end
 
     # D123: the label named Alpha Vantage while Yahoo wrote every statement.

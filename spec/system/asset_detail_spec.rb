@@ -43,7 +43,7 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
         metrics: { "pe_ratio" => "31.25", "forward_pe" => "28.4", "gross_margin" => "0.46" })
       create(:financial_statement, asset: apple, statement_type: :income_statement,
         period_type: :annual, fiscal_date_ending: Date.new(2024, 9, 28),
-        fiscal_year: 2024, data: { "totalRevenue" => "394328000000" })
+        fiscal_year: 2024, data: { "total_revenue" => "394328000000" })
 
       visit market_asset_path(apple.symbol)
 
