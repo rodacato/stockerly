@@ -3,8 +3,14 @@
     <%= render "shared/logo", height_class: "h-7" %>
   <% end %>
 
-  <%= link_to notifications_path, class: "relative -mr-2 flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary" do %>
-    <span class="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>
-    <%= render "components/notification_badge", unread_count: navbar_unread_count %>
-  <% end %>
+  <div class="-mr-2 flex items-center gap-1">
+    <%= link_to search_path, "aria-label": t("nav.buscar"),
+          class: "flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary" do %>
+      <span class="material-symbols-outlined text-xl" aria-hidden="true">search</span>
+    <% end %>
+    <%= link_to notifications_path, class: "relative flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary" do %>
+      <span class="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>
+      <%= render "components/notification_badge", unread_count: navbar_unread_count %>
+    <% end %>
+  </div>
 </header>

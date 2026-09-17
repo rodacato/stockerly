@@ -1,0 +1,63 @@
+<%# Locals: query, catalogue ([{asset:, tier:, change:}]), asked_yahoo, yahoo, yahoo_failed %>
+<% if query.present? %>
+  <div class="flex flex-col gap-4">
+    <% if catalogue.any? %>
+      <section class="flex flex-col gap-2">
+        <h2 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".en_tu_catalogo") %></h2>
+        <ul class="<%= card_classes("divide-y divide-border-default overflow-hidden") %>">
+          <% catalogue.each do |result| %>
+            <% asset = result[:asset] %>
+            <% move = day_change_slot(result[:change]) %>
+            <li>
+              <%= link_to market_asset_path(asset.symbol), class: "flex items-center gap-3 px-4 py-3 transition-colors hover:bg-bg-muted" do %>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></span>
+                    <span class="rounded bg-bg-muted px-1.5 py-0.5 text-[11px] font-semibold text-fg-subtle"><%= t("assets.tracked.tier_#{result[:tier]}") %></span>
+                  </div>
+                  <p class="truncate text-xs text-fg-subtle"><%= asset.name %></p>
+                </div>
+                <% if asset.current_price %>
+                  <div class="shrink-0 text-right font-mono">
+                    <p class="text-sm font-bold text-fg-default"><%= format_currency_mx(asset.current_price, currency: asset.currency) %></p>
+                    <p class="text-xs <%= move[:color] %>"><%= move[:text] %></p>
+                  </div>
+                <% end %>
+                <span class="material-symbols-outlined shrink-0 text-base text-fg-subtle" aria-hidden="true">chevron_right</span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+        <% unless asked_yahoo %>
+          <%= link_to search_path(q: query, scope: "yahoo"), data: { turbo_frame: "search_results" },
+                class: "flex items-center gap-2 self-start px-1 py-1 text-sm font-semibold text-primary hover:text-primary-hover" do %>
+            <span class="material-symbols-outlined text-base" aria-hidden="true">public</span>
+            <%= t(".buscar_en_yahoo", query: query) %>
+          <% end %>
+        <% end %>
+      </section>
+    <% elsif yahoo.any? || yahoo_failed %>
+      <p class="text-sm text-fg-subtle"><%= t("assets.tracked.sin_resultados", query: query) %></p>
+    <% end %>
+
+    <% if yahoo_failed %>
+      <p class="flex items-start gap-2 rounded-lg bg-negative-bg px-3.5 py-3 text-sm text-negative-fg">
+        <span class="material-symbols-outlined text-base" aria-hidden="true">cloud_off</span>
+        <%= t(".yahoo_caido") %>
+      </p>
+    <% elsif yahoo.any? %>
+      <section class="flex flex-col gap-2">
+        <h2 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".en_yahoo") %></h2>
+        <ul class="<%= card_classes("divide-y divide-border-default overflow-hidden") %>">
+          <% yahoo.each do |result| %>
+            <li><%= render "search/yahoo_row", result: result %></li>
+          <% end %>
+        </ul>
+      </section>
+    <% elsif asked_yahoo && catalogue.empty? %>
+      <%= render "components/empty_state", icon: "search_off",
+                 title: t("assets.tracked.buscar_vacio"),
+                 description: t(".nada", query: query) %>
+    <% end %>
+  </div>
+<% end %>
