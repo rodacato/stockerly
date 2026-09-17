@@ -19,8 +19,14 @@ def fail(message, code="gateway_error"):
     sys.exit(1)
 
 
+# A bar Yahoo has opened but not traded carries no close: NaN, which json.dumps
+# writes as a bare NaN no JSON parser accepts. Such a bar says nothing yet.
+def traded(frame):
+    return frame.dropna(subset=["Close"])
+
+
 def history(ticker, period):
-    frame = ticker.history(period=period, auto_adjust=False)
+    frame = traded(ticker.history(period=period, auto_adjust=False))
     return [
         {
             "date": index.date().isoformat(),
@@ -35,7 +41,7 @@ def history(ticker, period):
 
 
 def quote(ticker):
-    frame = ticker.history(period="5d", auto_adjust=False)
+    frame = traded(ticker.history(period="5d", auto_adjust=False))
     if frame.empty:
         return None
 
@@ -217,7 +223,7 @@ def main():
         ):
             fail(f"no data for {argument}", "not_found")
 
-        sys.stdout.write(json.dumps(payload))
+        sys.stdout.write(json.dumps(payload, allow_nan=False))
     except SystemExit:
         raise
     except Exception as error:  # noqa: BLE001 - the Ruby side maps this to a typed failure
