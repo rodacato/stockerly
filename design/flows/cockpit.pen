@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 1.0.0 · brief-schema: 2\n\n1. PURPOSE\n   The daily driver: what your money did, what moved, and what one asset looks like up close. Mobile first.\n\n2. ENTRY POINTS\n   - Login lands on Panorama — /dashboard\n   - Panorama's \"Ver todas\" opens Señales — /signals, with Panorama lit\n   - The patrimonio strip opens Consolidado — /portfolio, with Activos lit\n   - A radar, signal or Activos row opens the asset detail — /market/:symbol, with Activos lit\n\n3. SCREENS  (left → right)\n   - Panorama — Default · Tranquilo · Primera vez\n   - Señales — Default · Vacío\n   - Asset detail — Análisis · Aviso TradingView · Mi posición · CETES\n   - Consolidado — Default · Sin historial\n   - Desktop (1280) — Panorama · Consolidado\n\n4. BUSINESS RULES\n\n   PANORAMA\n   - Order on a phone: patrimonio, sentiment, Señales, Radar. Desktop puts Radar, Señales and sentiment in three columns\n   - Señales shows up to three readings with a verb from the last three days, and says so (dashboard_controller, NotableObservations)\n   - A reading older than today prints its age under the phrase (ADR-013)\n   - The radar holds up to six rows: what matures within 30 days first, then the largest day move (assemble_panorama.rb)\n   - A holding drops the currency on its value; a watched row keeps it (D10, D69)\n   - The empty radar asks for a first trade only when nothing is held or watched\n   - Sentiment cards appear only for an index the instance has fetched; stocks Fear & Greed has no source (D38)\n\n   SEÑALES\n   - A week of readings with a verb, grouped Hoy · Ayer · weekday and date\n   - Exits are not actions and are left out, and the footer says so (ADR-013)\n\n   ASSET DETAIL\n   - Header in the body: back to Activos, symbol, name, type chip, bookmark; the desktop bar titles the page with the symbol\n   - Mi posición exists only when you hold the asset; the toggle reads as a segmented control\n   - Block order: Rango 52 semanas → estado → gráfica → vs. tu plan → contexto → indicadores → noticias → fundamentales → P/U → ficha → dividendos → estados financieros → acciones → disclaimer\n   - The state is a catalogue phrase keyed by the latest RSI or Bollinger observation, with its reading beside it (ADR-014)\n   - Indicators, levels and observations are three sections of one card (D114); the moving averages lead\n   - Levels are priced off the asset's ATR; the exit row appears only when you hold it (D102, D106)\n   - Fundamentals read each value in words; the ⓘ on each row keeps \"cómo leerlo\" (D111, D115)\n   - Fundamentals are asked for, never enqueued by the read (market_controller.rb)\n   - Fixed income draws no chart (D98): the issue detail, maturity progress and a 100-title simulation replace everything between the state and the actions\n\n   THE CHART\n   - One real series; the price→y transform is the declared variable set below (D103)\n   - Range 1S/1M/3M/1A/Máx, default 3M, as a segmented control; the O/H/L/C strip follows the crosshair and falls back to the latest bar (D93, D112)\n   - Layers behind a legend, all on by default; tu costo absent and stated when outside the window (D96, D101, D107)\n   - TradingView is opt-in, mounts on click, and asks once (D66)\n\n   CONSOLIDADO\n   - Patrimonio, the curve with its period control (default 1A), the split by type, then two comparisons over time-weighted return (D12)\n   - No Invertido / Disponible split: buying power was deleted (D26)\n   - A comparison without enough data says so instead of drawing a gauge\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, signals.index.*, portfolios.show.*, market.*, posicion.*.\n   Still hardcoded es-MX: market/_analyst_target, _company_facts, _disclaimer, earnings_tab, statements_tab.\n\n6. STATES NOT DRAWN\n   - Panorama and Consolidado without an FX rate — the \"Sin consolidar\" warning card, drawn in assets.pen\n   - The ≈ MXN line — absent when the asset already quotes in your currency\n   - A watched asset's detail — no toggle, no exit row, the state's \"watching\" phrase\n   - Crypto detail — no P/U, no analyst target; \"Acerca del activo\" instead of the company card\n   - Fundamentales empty — \"Sin datos fundamentales\" with \"Traerlos ahora\", then \"Buscando fundamentales\"\n   - Consolidado with no portfolio — the donut says \"Registra tu primer movimiento…\"\n   - The asset detail on desktop — it reflows into one column (D4)\n   - The financial statements table — the lazy frame's line items\n   - Panorama / Black swan (D25, D51) · the confluence semáforo (D84) · a state chip on a radar row (D85)\n\n7. OPEN FINDINGS  (numbers only — the reasoning is in DECISIONS.md)\n   D106 · SALIDA and C2 can still collide vertically. Data-dependent\n   D103 · the chart is two copies here (Análisis, Aviso TradingView) with nothing keeping them in step\n\n8. HISTORY\n   → Log · Cockpit, left of this brief.\n\nTHE SCALE, so the chart can be checked rather than admired (D103). Measured on the shipping chart, 3M at 318px, all layers on, scaled with the pane at 240 (D114):\n   chart-scale-price-y0 = 64.54   y of the last close (230.72)\n   chart-scale-px-unit  = 3.581174  pixels per price unit, y increasing downward\n   chart-scale-pane-h   = 240    price pane; the RSI pane is 64 inside CHART_HEIGHT 333\n   y = chart-scale-price-y0 + (230.72 − price) × chart-scale-px-unit\nThe plot is pinned to 318 on canvas because a path cannot reflow, which is why the chart card keeps 16px of padding where the code's has 20; lightweight-charts is responsive (D2).",
+          "content": "kit-version-source: 1.0.0 · brief-schema: 2\n\n1. PURPOSE\n   The daily driver: what your money did, what moved, and what one asset looks like up close. Mobile first.\n\n2. ENTRY POINTS\n   - Login lands on Panorama — /dashboard\n   - Panorama's \"Ver todas\" opens Señales — /signals, with Panorama lit\n   - The patrimonio strip opens Consolidado — /portfolio, with Activos lit\n   - A radar, signal or Activos row opens the asset detail — /market/:symbol, with Activos lit\n\n3. SCREENS  (left → right)\n   - Panorama — Default · Tranquilo · Primera vez\n   - Señales — Default · Vacío\n   - Asset detail — Análisis · Aviso TradingView · Mi posición · CETES\n   - Consolidado — Default · Sin historial\n   - Desktop (1280) — Panorama · Consolidado\n\n4. BUSINESS RULES\n\n   PANORAMA\n   - Order on a phone: patrimonio, sentiment, Señales, Radar. Desktop puts Radar, Señales and sentiment in three columns\n   - Señales shows up to three readings with a verb from the last three days, and says so (dashboard_controller, NotableObservations)\n   - A reading older than today prints its age under the phrase (ADR-013)\n   - The radar holds up to six rows: what matures within 30 days first, then the largest day move (assemble_panorama.rb)\n   - A holding drops the currency on its value; a watched row keeps it (D10, D69)\n   - The empty radar asks for a first trade only when nothing is held or watched\n   - Sentiment cards appear only for an index the instance has fetched; stocks Fear & Greed has no source (D38)\n\n   SEÑALES\n   - A week of readings with a verb, grouped Hoy · Ayer · weekday and date\n   - Exits are not actions and are left out, and the footer says so (ADR-013)\n   - Readings with a verb are detected at each market's close: stocks, ETFs and indices at 15:30 CDMX on weekdays, crypto at 18:15 (D126)\n   - Every signal row, here and on Panorama: the arrow draws the move its phrase states, the colour follows the verb, and Tendencia or Rebote under the verb names the reading it follows (D127)\n\n   ASSET DETAIL\n   - Header in the body: back to Activos, symbol, name, type chip, bookmark; the desktop bar titles the page with the symbol\n   - Mi posición exists only when you hold the asset; the toggle reads as a segmented control\n   - Block order: Rango 52 semanas → estado → gráfica → vs. tu plan → contexto → indicadores → noticias → fundamentales → P/U → ficha → dividendos → estados financieros → acciones → disclaimer\n   - The state is a catalogue phrase keyed by the latest RSI or Bollinger observation, with its reading beside it (ADR-014)\n   - Indicators, levels and observations are three sections of one card (D114); the moving averages lead\n   - The card's chip dates its reading — \"Lectura de las 11:30\" when it is from today, in CDMX time; \"Lectura del 16 sep\" when it is older (D126)\n   - Levels are priced off the asset's ATR; the exit row appears only when you hold it (D102, D106)\n   - Fundamentals read each value in words; the ⓘ on each row keeps \"cómo leerlo\" (D111, D115)\n   - Fundamentals are asked for, never enqueued by the read (market_controller.rb)\n   - Fixed income draws no chart (D98): the issue detail, maturity progress and a 100-title simulation replace everything between the state and the actions\n\n   THE CHART\n   - One real series; the price→y transform is the declared variable set below (D103)\n   - Range 1S/1M/3M/1A/Máx, default 3M, as a segmented control; the O/H/L/C strip follows the crosshair and falls back to the latest bar (D93, D112)\n   - Layers behind a legend, all on by default; tu costo absent and stated when outside the window (D96, D101, D107)\n   - TradingView is opt-in, mounts on click, and asks once (D66)\n\n   CONSOLIDADO\n   - Patrimonio, the curve with its period control (default 1A), the split by type, then two comparisons over time-weighted return (D12)\n   - No Invertido / Disponible split: buying power was deleted (D26)\n   - A comparison without enough data says so instead of drawing a gauge\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — dashboard.show.*, signals.index.*, portfolios.show.*, market.*, posicion.*.\n   Still hardcoded es-MX: market/_analyst_target, _company_facts, _disclaimer, earnings_tab, statements_tab.\n\n6. STATES NOT DRAWN\n   - Panorama and Consolidado without an FX rate — the \"Sin consolidar\" warning card, drawn in assets.pen\n   - The ≈ MXN line — absent when the asset already quotes in your currency\n   - A watched asset's detail — no toggle, no exit row, the state's \"watching\" phrase\n   - Crypto detail — no P/U, no analyst target; \"Acerca del activo\" instead of the company card\n   - Fundamentales empty — \"Sin datos fundamentales\" with \"Traerlos ahora\", then \"Buscando fundamentales\"\n   - Consolidado with no portfolio — the donut says \"Registra tu primer movimiento…\"\n   - The asset detail on desktop — it reflows into one column (D4)\n   - The financial statements table — the lazy frame's line items\n   - Panorama / Black swan (D25, D51) · the confluence semáforo (D84) · a state chip on a radar row (D85)\n\n7. OPEN FINDINGS  (numbers only — the reasoning is in DECISIONS.md)\n   D106 · SALIDA and C2 can still collide vertically. Data-dependent\n   D103 · the chart is two copies here (Análisis, Aviso TradingView) with nothing keeping them in step\n\n8. HISTORY\n   → Log · Cockpit, left of this brief.\n\nTHE SCALE, so the chart can be checked rather than admired (D103). Measured on the shipping chart, 3M at 318px, all layers on, scaled with the pane at 240 (D114):\n   chart-scale-price-y0 = 64.54   y of the last close (230.72)\n   chart-scale-px-unit  = 3.581174  pixels per price unit, y increasing downward\n   chart-scale-pane-h   = 240    price pane; the RSI pane is 64 inside CHART_HEIGHT 333\n   y = chart-scale-price-y0 + (230.72 − price) × chart-scale-px-unit\nThe plot is pinned to 318 on canvas because a path cannot reflow, which is why the chart card keeps 16px of padding where the code's has 20; lightweight-charts is responsive (D2).",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -239,11 +239,48 @@
                       "content": "entró en zona de sobreventa (RSI(14) por debajo de 30) · RSI 29"
                     },
                     "mUFJF": {
-                      "fill": "$positive-bg"
-                    },
-                    "qBB4x": {
-                      "content": "compra",
-                      "fill": "$positive-fg"
+                      "type": "frame",
+                      "id": "MKWFG",
+                      "name": "Verbo",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "xWHfM",
+                          "name": "Tag",
+                          "fill": "$positive-bg",
+                          "cornerRadius": 99,
+                          "padding": [
+                            3,
+                            9
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "GDtZe",
+                              "name": "TagT",
+                              "fill": "$positive-fg",
+                              "content": "compra",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "aWRTJ",
+                          "name": "Lógica",
+                          "fill": "$fg-subtle",
+                          "content": "REBOTE",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        }
+                      ]
                     }
                   }
                 },
@@ -265,11 +302,48 @@
                       "content": "entró en zona de sobrecompra (RSI(14) por encima de 70) · RSI 72"
                     },
                     "mUFJF": {
-                      "fill": "$warning-bg"
-                    },
-                    "qBB4x": {
-                      "content": "vende",
-                      "fill": "$warning-fg"
+                      "type": "frame",
+                      "id": "kGSAM",
+                      "name": "Verbo",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ZaqXj",
+                          "name": "Tag",
+                          "fill": "$warning-bg",
+                          "cornerRadius": 99,
+                          "padding": [
+                            3,
+                            9
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "pxRBZ",
+                              "name": "TagT",
+                              "fill": "$warning-fg",
+                              "content": "vende",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "ej3bS",
+                          "name": "Lógica",
+                          "fill": "$fg-subtle",
+                          "content": "REBOTE",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        }
+                      ]
                     }
                   }
                 },
@@ -291,11 +365,48 @@
                       "content": "rompió la banda de Bollinger inferior · RSI 38"
                     },
                     "mUFJF": {
-                      "fill": "$positive-bg"
-                    },
-                    "qBB4x": {
-                      "content": "compra",
-                      "fill": "$positive-fg"
+                      "type": "frame",
+                      "id": "CZW5H",
+                      "name": "Verbo",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "b79orX",
+                          "name": "Tag",
+                          "fill": "$positive-bg",
+                          "cornerRadius": 99,
+                          "padding": [
+                            3,
+                            9
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "bayy0",
+                              "name": "TagT",
+                              "fill": "$positive-fg",
+                              "content": "compra",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "xWB7W",
+                          "name": "Lógica",
+                          "fill": "$fg-subtle",
+                          "content": "REBOTE",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        }
+                      ]
                     }
                   }
                 }
@@ -4522,11 +4633,48 @@
                                   "content": "entró en zona de sobreventa (RSI(14) por debajo de 30) · RSI 29"
                                 },
                                 "mUFJF": {
-                                  "fill": "$positive-bg"
-                                },
-                                "qBB4x": {
-                                  "content": "compra",
-                                  "fill": "$positive-fg"
+                                  "type": "frame",
+                                  "id": "ThrMq",
+                                  "name": "Verbo",
+                                  "layout": "vertical",
+                                  "gap": 4,
+                                  "alignItems": "end",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "J9j7H",
+                                      "name": "Tag",
+                                      "fill": "$positive-bg",
+                                      "cornerRadius": 99,
+                                      "padding": [
+                                        3,
+                                        9
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "PIgLy",
+                                          "name": "TagT",
+                                          "fill": "$positive-fg",
+                                          "content": "compra",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "OTlN4",
+                                      "name": "Lógica",
+                                      "fill": "$fg-subtle",
+                                      "content": "REBOTE",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 10,
+                                      "fontWeight": "normal",
+                                      "letterSpacing": 0.5
+                                    }
+                                  ]
                                 }
                               }
                             },
@@ -4548,11 +4696,48 @@
                                   "content": "entró en zona de sobrecompra (RSI(14) por encima de 70) · RSI 72"
                                 },
                                 "mUFJF": {
-                                  "fill": "$warning-bg"
-                                },
-                                "qBB4x": {
-                                  "content": "vende",
-                                  "fill": "$warning-fg"
+                                  "type": "frame",
+                                  "id": "D1Jh2h",
+                                  "name": "Verbo",
+                                  "layout": "vertical",
+                                  "gap": 4,
+                                  "alignItems": "end",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "E3gnr",
+                                      "name": "Tag",
+                                      "fill": "$warning-bg",
+                                      "cornerRadius": 99,
+                                      "padding": [
+                                        3,
+                                        9
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "NzOBH",
+                                          "name": "TagT",
+                                          "fill": "$warning-fg",
+                                          "content": "vende",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "r71JB3",
+                                      "name": "Lógica",
+                                      "fill": "$fg-subtle",
+                                      "content": "REBOTE",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 10,
+                                      "fontWeight": "normal",
+                                      "letterSpacing": 0.5
+                                    }
+                                  ]
                                 }
                               }
                             },
@@ -4574,11 +4759,48 @@
                                   "content": "rompió la banda de Bollinger inferior · RSI 38"
                                 },
                                 "mUFJF": {
-                                  "fill": "$positive-bg"
-                                },
-                                "qBB4x": {
-                                  "content": "compra",
-                                  "fill": "$positive-fg"
+                                  "type": "frame",
+                                  "id": "a1iDpJ",
+                                  "name": "Verbo",
+                                  "layout": "vertical",
+                                  "gap": 4,
+                                  "alignItems": "end",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "PXbLr",
+                                      "name": "Tag",
+                                      "fill": "$positive-bg",
+                                      "cornerRadius": 99,
+                                      "padding": [
+                                        3,
+                                        9
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "aA8Vw",
+                                          "name": "TagT",
+                                          "fill": "$positive-fg",
+                                          "content": "compra",
+                                          "fontFamily": "$font-sans",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "FPIZA",
+                                      "name": "Lógica",
+                                      "fill": "$fg-subtle",
+                                      "content": "REBOTE",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 10,
+                                      "fontWeight": "normal",
+                                      "letterSpacing": 0.5
+                                    }
+                                  ]
                                 }
                               }
                             }
@@ -5656,11 +5878,48 @@
                       "content": "entró en zona de sobreventa (RSI(14) por debajo de 30) · RSI 29"
                     },
                     "mUFJF": {
-                      "fill": "$positive-bg"
-                    },
-                    "qBB4x": {
-                      "content": "compra",
-                      "fill": "$positive-fg"
+                      "type": "frame",
+                      "id": "zdgSD",
+                      "name": "Verbo",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "vQdQA",
+                          "name": "Tag",
+                          "fill": "$positive-bg",
+                          "cornerRadius": 99,
+                          "padding": [
+                            3,
+                            9
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "EM48f",
+                              "name": "TagT",
+                              "fill": "$positive-fg",
+                              "content": "compra",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "PRphC",
+                          "name": "Lógica",
+                          "fill": "$fg-subtle",
+                          "content": "REBOTE",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        }
+                      ]
                     }
                   }
                 },
@@ -5682,11 +5941,48 @@
                       "content": "entró en zona de sobrecompra (RSI(14) por encima de 70) · RSI 72"
                     },
                     "mUFJF": {
-                      "fill": "$warning-bg"
-                    },
-                    "qBB4x": {
-                      "content": "vende",
-                      "fill": "$warning-fg"
+                      "type": "frame",
+                      "id": "HJ308",
+                      "name": "Verbo",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "jGuHq",
+                          "name": "Tag",
+                          "fill": "$warning-bg",
+                          "cornerRadius": 99,
+                          "padding": [
+                            3,
+                            9
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "CQq3i",
+                              "name": "TagT",
+                              "fill": "$warning-fg",
+                              "content": "vende",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "k3Kog",
+                          "name": "Lógica",
+                          "fill": "$fg-subtle",
+                          "content": "REBOTE",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        }
+                      ]
                     }
                   }
                 }
@@ -5729,11 +6025,48 @@
                       "content": "rompió la banda de Bollinger inferior · RSI 38\nayer"
                     },
                     "mUFJF": {
-                      "fill": "$positive-bg"
-                    },
-                    "qBB4x": {
-                      "content": "compra",
-                      "fill": "$positive-fg"
+                      "type": "frame",
+                      "id": "U7ycRh",
+                      "name": "Verbo",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "TY3Jj",
+                          "name": "Tag",
+                          "fill": "$positive-bg",
+                          "cornerRadius": 99,
+                          "padding": [
+                            3,
+                            9
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "flDC7",
+                              "name": "TagT",
+                              "fill": "$positive-fg",
+                              "content": "compra",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "auRTp",
+                          "name": "Lógica",
+                          "fill": "$fg-subtle",
+                          "content": "REBOTE",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        }
+                      ]
                     }
                   }
                 }
@@ -5776,11 +6109,48 @@
                       "content": "cruzó al alza su MA50 · RSI 58\nhace 4 días"
                     },
                     "mUFJF": {
-                      "fill": "$positive-bg"
-                    },
-                    "qBB4x": {
-                      "content": "compra",
-                      "fill": "$positive-fg"
+                      "type": "frame",
+                      "id": "V595A",
+                      "name": "Verbo",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "FFnBQ",
+                          "name": "Tag",
+                          "fill": "$positive-bg",
+                          "cornerRadius": 99,
+                          "padding": [
+                            3,
+                            9
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "F1JZRP",
+                              "name": "TagT",
+                              "fill": "$positive-fg",
+                              "content": "compra",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "PfAc1",
+                          "name": "Lógica",
+                          "fill": "$fg-subtle",
+                          "content": "TENDENCIA",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        }
+                      ]
                     }
                   }
                 },
@@ -5802,11 +6172,48 @@
                       "content": "rompió la banda de Bollinger superior · RSI 69\nhace 4 días"
                     },
                     "mUFJF": {
-                      "fill": "$warning-bg"
-                    },
-                    "qBB4x": {
-                      "content": "vende",
-                      "fill": "$warning-fg"
+                      "type": "frame",
+                      "id": "wyjd7",
+                      "name": "Verbo",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "LQRGt",
+                          "name": "Tag",
+                          "fill": "$warning-bg",
+                          "cornerRadius": 99,
+                          "padding": [
+                            3,
+                            9
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "o0Bxx5",
+                              "name": "TagT",
+                              "fill": "$warning-fg",
+                              "content": "vende",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "K5nKMq",
+                          "name": "Lógica",
+                          "fill": "$fg-subtle",
+                          "content": "REBOTE",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        }
+                      ]
                     }
                   }
                 }
@@ -6143,6 +6550,19 @@
           "fontFamily": "$font-display",
           "fontSize": 16,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "lGDPw",
+          "name": "2026-09-17 D126 D127",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-09-17 · D126 · Análisis' indicators card draws its chip for a reading from today, \"Lectura de las 11:30\". D127 · every signal row on Panorama, Panorama desktop and Señales carries Tendencia or Rebote under its verb; the arrows already drew the move for every sample. MovementItem's Tag is replaced per instance by a Verbo column — the kit gap is logged in ui-kit.CHANGELOG.md",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -9857,12 +10277,14 @@
                   "id": "rOVNQ",
                   "name": "CardHeader",
                   "width": "fill_container",
+                  "gap": 8,
                   "padding": [
                     16,
                     20,
                     12,
                     20
                   ],
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "text",
@@ -9873,6 +10295,29 @@
                       "fontFamily": "$font-display",
                       "fontSize": 16,
                       "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C1ivj",
+                      "name": "Lectura",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 99,
+                      "padding": [
+                        2,
+                        8
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Z3dupo",
+                          "name": "t",
+                          "fill": "$fg-subtle",
+                          "content": "Lectura de las 11:30",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
                     }
                   ]
                 },
