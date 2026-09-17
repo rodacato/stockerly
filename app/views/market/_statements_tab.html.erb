@@ -22,7 +22,7 @@
         <% end %>
       </div>
       <p class="font-mono text-[10.5px] uppercase tracking-widest text-fg-subtle">
-        <%= t(".fuente", gaap: gaap_label(@asset), currency: @asset.currency) %>
+        <%= t(".fuente", sources: statement_sources(@asset), gaap: gaap_label(@asset), currency: @asset.currency) %>
       </p>
     </div>
 

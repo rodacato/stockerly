@@ -1,13 +1,10 @@
 # Orchestrator: enqueues SyncStatementsJob for eligible assets, weekly.
 # 3 calls per asset (income + balance + cash flow).
 #
-# D109: it no longer rations against FundamentalsBudget. That budget is Alpha
-# Vantage's 25 a day, and since the statements moved to yfinance this job does
-# not spend it -- yet it was still dividing it by three and capping a run at
-# eight assets. Yahoo has its own ceiling, enforced per call by RateLimiter in
-# the gateway, and the stagger below keeps this job well inside it. The Alpha
-# Vantage fallback can still spend the budget, which is what its own limiter is
-# for; SyncAllFundamentalsJob remains the job that rations against it.
+# It does not ration against FundamentalsBudget, though since D123 it spends the
+# same Yahoo quota: a weekly run is ~3 calls an asset against 4,000 a day, and
+# RateLimiter still refuses each call past the ceiling. The stagger below keeps
+# it inside the per-minute one.
 class SyncAllStatementsJob < ApplicationJob
   include PausableSync
   include SyncLogging

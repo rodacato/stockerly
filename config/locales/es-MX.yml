@@ -1043,7 +1043,7 @@ es-MX:
     statements_tab:
       balance: Balance general
       flujo: Flujo de efectivo
-      fuente: 'Fuente: Alpha Vantage · %{gaap} · %{currency} · base anual'
+      fuente: 'Fuente: %{sources} · %{gaap} · %{currency} · base anual'
       resultados: Estado de resultados
       sin_balance: Sin datos del balance general.
       sin_flujo: Sin datos del flujo de efectivo.
