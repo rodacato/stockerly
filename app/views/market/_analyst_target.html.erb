@@ -2,11 +2,11 @@
     target, %-delta, and a 52w-range bar with current + target markers.
     Currency prefix matches the asset's native currency. %>
 <%
-  target  = @presenter&.metric("analyst_target_price")&.to_f
-  current = @asset.current_price&.to_f
-  high_52w = @presenter&.metric("fifty_two_week_high")&.to_f
-  low_52w  = @presenter&.metric("fifty_two_week_low")&.to_f
-  ccy = @asset.currency
+  target  = presenter&.metric("analyst_target_price")&.to_f
+  current = asset.current_price&.to_f
+  high_52w = presenter&.metric("fifty_two_week_high")&.to_f
+  low_52w  = presenter&.metric("fifty_two_week_low")&.to_f
+  ccy = asset.currency
 %>
 
 <% if target&.positive? && current&.positive? %>

@@ -57,6 +57,16 @@ RSpec.describe MarketData::Handlers::BroadcastFundamentalsUpdate do
     expect(locals[:presenter].metric("ath_price")).to eq("73750")
   end
 
+  # Every example above stubs the broadcast, so none rendered the partial. Outside
+  # a request there are no instance variables, and the analyst target read them.
+  it "renders a stock's block, analyst target included, outside a request" do
+    create(:asset_fundamental, asset: asset, period_label: "OVERVIEW",
+      metrics: { "analyst_target_price" => "150", "fifty_two_week_high" => "160", "fifty_two_week_low" => "90" })
+
+    expect { described_class.call(event_for(asset)) }
+      .to have_broadcasted_to("asset_#{asset.id}").with(a_string_including("asset_fundamentals_#{asset.id}"))
+  end
+
   it "does nothing for an asset that no longer exists" do
     ghost = event_for(asset)
     asset.destroy!
