@@ -20,9 +20,14 @@ production:
     args: [ "stock", "low" ]
     schedule: every 30 minutes
 
-  sync_all_etfs:
+  sync_high_priority_etfs:
     class: SyncPriorityAssetsJob
-    args: [ "etf", "all" ]
+    args: [ "etf", "high" ]
+    schedule: every 5 minutes
+
+  sync_low_priority_etfs:
+    class: SyncPriorityAssetsJob
+    args: [ "etf", "low" ]
     schedule: every 30 minutes
 
   sync_all_crypto:
