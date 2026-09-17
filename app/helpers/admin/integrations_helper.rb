@@ -5,7 +5,6 @@ module Admin
       "CoinGecko"      => "coingecko.com",
       "Yahoo Finance"  => "finance.yahoo.com",
       "Alternative.me" => "alternative.me",
-      "FMP"            => "financialmodelingprep.com",
       "ExchangeRate"   => "exchangerate-api.com",
       "Banxico"        => "banxico.org.mx",
       "Alpaca"         => "alpaca.markets",

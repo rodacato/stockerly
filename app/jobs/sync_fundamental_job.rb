@@ -30,9 +30,6 @@ class SyncFundamentalJob < ApplicationJob
     log_sync_success("Fundamentals: #{asset.symbol}")
   end
 
-  # FMP was the fallback here, and its /api/v3 is gated the same way its
-  # dividend routes are — a fallback that 403s for every new key is worse than
-  # none, because it spends a call to hide the real state (#312).
   def fundamentals_chain
     GatewayChain.for_capability(:fundamentals)
   end

@@ -23,7 +23,7 @@ module MarketData
 
       Entry = Data.define(
         :key, :provider, :name, :description, :capabilities,
-        :role, :state, :quota, :last_sync_at, :requires_key, :maintainer_only
+        :role, :state, :quota, :last_sync_at, :requires_key
       ) do
         def working? = state == :connected
         def only_source? = role == :only
@@ -76,8 +76,7 @@ module MarketData
           state: state_for(integration),
           quota: quota_for(integration, sources.first),
           last_sync_at: integration.last_sync_at,
-          requires_key: integration.requires_api_key?,
-          maintainer_only: sources.any?(&:maintainer_only)
+          requires_key: integration.requires_api_key?
         )
       end
 

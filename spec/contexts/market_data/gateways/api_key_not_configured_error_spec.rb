@@ -9,9 +9,9 @@ RSpec.describe MarketData::Gateways::ApiKeyNotConfiguredError do
   end
 
   it "includes reason when provided" do
-    error = described_class.new("FMP", reason: "decryption failed")
+    error = described_class.new("Finnhub", reason: "decryption failed")
 
-    expect(error.message).to include("FMP")
+    expect(error.message).to include("Finnhub")
     expect(error.message).to include("decryption failed")
   end
 

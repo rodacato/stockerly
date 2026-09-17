@@ -18,8 +18,7 @@ class DataSourceRegistry
     :capabilities,      # Array of capability symbols, e.g. [:prices, :news, :earnings]
     :markets,           # Markets served, e.g. [:mx]. nil serves any.
     :asset_types,       # Asset types served, e.g. [:stock]. nil serves any.
-    :health_check,      # True when this source is the one that answers for its integration
-    :maintainer_only    # True when the credential only works for pre-existing accounts
+    :health_check       # True when this source is the one that answers for its integration
   )
 
   # The label is not a member: it is copy a person reads, so it lives in the
@@ -35,9 +34,9 @@ class DataSourceRegistry
   @sources = {}
 
   class << self
-    def register(key, health_check: false, maintainer_only: false, markets: nil, asset_types: nil, **attrs)
+    def register(key, health_check: false, markets: nil, asset_types: nil, **attrs)
       @sources[key] = DataSource.new(
-        key: key, health_check: health_check, maintainer_only: maintainer_only,
+        key: key, health_check: health_check,
         markets: markets, asset_types: asset_types, **attrs
       )
     end

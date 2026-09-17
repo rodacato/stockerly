@@ -31,7 +31,7 @@ RSpec.describe Identity::UseCases::CreateFirstAdmin do
       it "bootstraps no integration for a retired provider" do
         described_class.call(params: valid_params)
 
-        expect(Integration.pluck(:provider_name)).not_to include("Alpha Vantage")
+        expect(Integration.pluck(:provider_name)).not_to include("Alpha Vantage", "FMP")
       end
 
       it "bootstraps market indices" do

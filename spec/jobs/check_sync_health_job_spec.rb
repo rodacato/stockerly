@@ -430,7 +430,7 @@ RSpec.describe CheckSyncHealthJob, type: :job do
 
     before do
       silence_log_derived_sources(except: "Earnings Sync")
-      make_log("Earnings Sync", severity: :error, at: 2.hours.ago, message: "FMP: rate_limited (HTTP 429)")
+      make_log("Earnings Sync", severity: :error, at: 2.hours.ago, message: "Finnhub: rate_limited (HTTP 429)")
     end
 
     # The owner is the person whose data went stale, and the notification is the

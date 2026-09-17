@@ -2,8 +2,8 @@ module MarketData
   module Gateways
     # The Faraday plumbing the HTTP gateways repeat: one memoised connection,
     # JSON responses, a timeout pair, and one rescue for transport errors.
-    # Included rather than inherited because the eight that need it share no
-    # base class — five extend MarketDataGateway, three nothing.
+    # Included rather than inherited because the seven that need it share no
+    # base class — four extend MarketDataGateway, three nothing.
     #
     # What varies per provider stays in the provider: base URL, auth style,
     # timeout value and retry budget are all arguments, and both failure hooks

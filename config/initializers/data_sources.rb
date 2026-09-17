@@ -129,25 +129,6 @@ Rails.application.config.after_initialize do
     capabilities: %i[fx_history]
   )
 
-  # Kept for fundamentals only, and labelled. Its /api/v3 is gated to accounts
-  # created before 2025-08-31, so it answers for the maintainer and 403s for
-  # everyone else — real coverage on a 25-call Alpha Vantage budget where the
-  # key predates the gate, and a declared nothing where it does not. Dividends
-  # and splits left for sources every self-hoster can reach (#312).
-  DataSourceRegistry.register(:fmp_fundamentals,
-    icon: "paid",
-    color: "slate",
-    gateway_class: MarketData::Gateways::FmpGateway,
-    job_class: SyncAllFundamentalsJob,
-    job_args: [],
-    test_symbol: "AAPL",
-    test_method: :fetch_overview,
-    integration_name: "FMP",
-    circuit_breaker_key: "fmp",
-    maintainer_only: true,
-    capabilities: %i[fundamentals]
-  )
-
   DataSourceRegistry.register(:banxico_cetes,
     icon: "account_balance",
     color: "lime",

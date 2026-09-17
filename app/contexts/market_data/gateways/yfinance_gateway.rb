@@ -87,7 +87,7 @@ module MarketData
       end
 
       # Returns Success([{ ex_date:, pay_date:, amount_per_share:, currency: }, ...])
-      # Shape matches FmpGateway and AlpacaGateway, so all three are interchangeable.
+      # Shape matches AlpacaGateway#fetch_dividends, so the two are interchangeable.
       def fetch_dividends(symbol, currency: "MXN")
         run("dividends", symbol).fmap do |entries|
           entries.map do |entry|

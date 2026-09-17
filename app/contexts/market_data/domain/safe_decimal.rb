@@ -1,8 +1,8 @@
 module MarketData
   module Domain
     # Coerces provider payload values to BigDecimal, mapping missing-value
-    # sentinels to nil. Included rather than inherited: the three call sites
-    # (two gateways, one calculator) share no base class.
+    # sentinels to nil. Included rather than inherited: the two call sites
+    # (a gateway and the calculator) share no base class.
     module SafeDecimal
       # "None" is Alpha Vantage's sentinel, still inside statements it stored;
       # "-" has been carried by stored payloads since 2026-02.

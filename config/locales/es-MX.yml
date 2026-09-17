@@ -80,8 +80,6 @@ es-MX:
         sin_cuota_razon: 'Es tu cuota: tu instancia agotó su límite. Se reanuda al
           abrir la siguiente ventana; lo que falte se queda como estaba.'
         sin_limite: Sin límite
-        solo_maintainer: Solo funciona con API keys de cuentas creadas antes del 31
-          de agosto de 2025. Si la tuya es nueva, esta fuente responde 403.
         titulo: Integraciones
         unidad:
           calls_per_day: hoy
@@ -455,7 +453,6 @@ es-MX:
     crypto_fear_greed: Fear & Greed cripto — Alternative.me
     databursatil_bmv: Acciones BMV — DataBursatil
     finnhub_stocks: Acciones EE. UU. — Finnhub
-    fmp_fundamentals: Fundamentales (respaldo) — FMP
     fx_rates: Tipo de cambio (respaldo) — ExchangeRate
     yfinance_bridge: Yahoo Finance — vía el puente yfinance
   date:
