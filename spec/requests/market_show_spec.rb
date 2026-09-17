@@ -104,7 +104,7 @@ RSpec.describe "Market Asset Detail", type: :request do
       create(:financial_statement, asset: asset,
         statement_type: :income_statement, period_type: :annual,
         fiscal_date_ending: Date.new(2024, 9, 28), fiscal_year: 2024,
-        data: { "totalRevenue" => "394328000000" })
+        data: { "total_revenue" => "394328000000" })
 
       get market_asset_path(asset.symbol)
 
@@ -128,7 +128,7 @@ RSpec.describe "Market Asset Detail", type: :request do
       create(:financial_statement, asset: asset,
         statement_type: :income_statement, period_type: :annual,
         fiscal_date_ending: Date.new(2024, 9, 28), fiscal_year: 2024,
-        data: { "totalRevenue" => "394328000000" })
+        data: { "total_revenue" => "394328000000" })
 
       get market_asset_statements_tab_path(asset.symbol)
 

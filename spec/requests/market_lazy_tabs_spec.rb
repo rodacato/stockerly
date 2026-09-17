@@ -15,7 +15,7 @@ RSpec.describe "Market lazy-loaded tabs", type: :request do
       create(:financial_statement, asset: asset,
         statement_type: :income_statement, period_type: :annual,
         fiscal_date_ending: Date.new(2024, 6, 30), fiscal_year: 2024,
-        data: { "totalRevenue" => "245000000000" })
+        data: { "total_revenue" => "245000000000" })
 
       get market_asset_path(asset.symbol)
 
@@ -74,26 +74,26 @@ RSpec.describe "Market lazy-loaded tabs", type: :request do
           statement_type: :income_statement, period_type: :annual,
           fiscal_date_ending: Date.new(2024, 6, 30), fiscal_year: 2024,
           data: {
-            "totalRevenue" => "245000000000",
-            "grossProfit" => "169000000000",
-            "operatingIncome" => "109000000000",
-            "netIncome" => "88000000000"
+            "total_revenue" => "245000000000",
+            "gross_profit" => "169000000000",
+            "operating_income" => "109000000000",
+            "net_income" => "88000000000"
           })
         create(:financial_statement, asset: asset,
           statement_type: :balance_sheet, period_type: :annual,
           fiscal_date_ending: Date.new(2024, 6, 30), fiscal_year: 2024,
           data: {
-            "totalAssets" => "411000000000",
-            "totalLiabilities" => "243000000000",
-            "totalShareholderEquity" => "168000000000"
+            "total_assets" => "411000000000",
+            "total_liabilities_net_minority_interest" => "243000000000",
+            "total_shareholder_equity" => "168000000000"
           })
         create(:financial_statement, asset: asset,
           statement_type: :cash_flow, period_type: :annual,
           fiscal_date_ending: Date.new(2024, 6, 30), fiscal_year: 2024,
           data: {
-            "operatingCashflow" => "118000000000",
-            "capitalExpenditures" => "44000000000",
-            "changeInCashAndCashEquivalents" => "5000000000"
+            "operating_cashflow" => "118000000000",
+            "capital_expenditures" => "44000000000",
+            "changes_in_cash" => "5000000000"
           })
       end
 
