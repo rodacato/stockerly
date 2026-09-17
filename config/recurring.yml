@@ -63,6 +63,11 @@ production:
     args: [ "equities" ]
     schedule: "30 15 * * 1-5 America/Mexico_City"
 
+  # The reading between closes, with today's close as the price of the moment.
+  calculate_technical_readings:
+    class: CalculateTechnicalReadingsJob
+    schedule: "30 9,11 * * 1-5 America/Mexico_City"
+
   # Crypto's day is the UTC day; this starts once it has ended.
   detect_crypto_observations:
     class: DetectTechnicalObservationsJob

@@ -48,6 +48,18 @@ RSpec.describe "config/recurring.yml" do
     expect(runs.pluck("args")).to contain_exactly([ "equities" ], [ "crypto" ])
   end
 
+  # D126: the reading between closes; the 15:30 equities run writes the third.
+  it "refreshes readings at 09:30 and 11:30 CDMX on weekdays" do
+    run = tasks.values.find { |t| t["class"] == "CalculateTechnicalReadingsJob" }
+    cron = Fugit.parse(run.fetch("schedule"))
+    thursday = Time.utc(2026, 9, 17, 12).in_time_zone("America/Mexico_City").beginning_of_day
+    times = [ cron.next_time(thursday).to_t, cron.next_time(cron.next_time(thursday).to_t + 60).to_t ]
+                .map { |t| t.in_time_zone("America/Mexico_City").strftime("%a %H:%M") }
+
+    expect(times).to eq([ "Thu 09:30", "Thu 11:30" ])
+    expect(cron.next_time(Time.utc(2026, 9, 19, 12)).to_t.in_time_zone("America/Mexico_City").wday).to eq(1)
+  end
+
   # A held ETF used to refresh every 30 minutes while a held stock refreshed every 5.
   it "syncs held, followed and alerted ETFs on the stocks' high-priority cadence" do
     etf_high = tasks.values.find { |t| t["class"] == "SyncPriorityAssetsJob" && t["args"] == %w[etf high] }
