@@ -124,6 +124,11 @@ mantenimiento) are in.
 `onboarding-integrations-desktop.png` and `onboarding-assets-desktop.png` are gone with their
 artboards: the wizard steps have no `lg:` layout (D4).
 
+**Re-shot 2026-09-17 for D123** — Alpha Vantage and FMP retired. Ajustes: `ajustes-integraciones`,
+`ajustes-integraciones-administrar`, `ajustes-integraciones-estados` (its sin cuota card is ExchangeRate now) and
+`ajustes-estado`. Onboarding: `onboarding-integrations`. Activos: the five Tracked PNGs, whose budget panel names
+Yahoo Finance. Cockpit: `cockpit-asset-analisis`, for the statements' source label.
+
 **Descubrir re-shot 2026-08-27** — all three artboards, for the same reason Cockpit was: the
 vendored `TopBar` grew 57 → 76 and `TopBarDesktop` 76 → 80.
 
