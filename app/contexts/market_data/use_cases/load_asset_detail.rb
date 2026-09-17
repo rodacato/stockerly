@@ -170,8 +170,7 @@ module MarketData
       end
 
       # Read-only "Ficha de empresa" payload — descriptive fields from the
-      # Alpha Vantage OVERVIEW row (description, sector, industry, country,
-      # exchange, employees, ipo year, website). Returns nil for crypto and
+      # OVERVIEW row (description, sector, industry, country). Returns nil for crypto and
       # fixed_income — those asset types don't have a company behind them and
       # the view renders an alternative copy / nothing.
       def resolve_company_overview(asset)

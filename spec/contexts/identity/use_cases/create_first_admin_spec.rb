@@ -26,6 +26,14 @@ RSpec.describe Identity::UseCases::CreateFirstAdmin do
         }.to change(Integration, :count).by(MarketData::Domain::ProviderDefaults::ALL.size)
       end
 
+      # D123: a retired provider gets no row, so neither the wizard nor
+      # Integraciones asks a new instance for its key.
+      it "bootstraps no integration for a retired provider" do
+        described_class.call(params: valid_params)
+
+        expect(Integration.pluck(:provider_name)).not_to include("Alpha Vantage")
+      end
+
       it "bootstraps market indices" do
         expect {
           described_class.call(params: valid_params)

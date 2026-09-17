@@ -1,8 +1,8 @@
 # Fetches all 3 financial statement types for 1 asset. Persists to
 # FinancialStatement.
 #
-# Yahoo is the only source (D109, TD9). Alpha Vantage's free tier refused
-# BALANCE_SHEET as premium, and its fallback was retired with the provider.
+# Yahoo is the only source (D109, D123). Alpha Vantage's free tier refused
+# BALANCE_SHEET as premium, and the provider is retired.
 class SyncStatementsJob < ApplicationJob
   include PausableSync
   include SyncLogging

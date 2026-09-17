@@ -88,8 +88,8 @@ module FundamentalsHelper
 
     case format_type
     when :ratio      then number_with_precision(value.to_f, precision: 2)
-    # Every producer stores a percentage as a decimal ratio — Alpha Vantage and
-    # FMP persist ProfitMargin as 0.2461, and FundamentalCalculator rounds
+    # Every producer stores a percentage as a decimal ratio — the overview
+    # persists ProfitMargin as 0.2461, and FundamentalCalculator rounds
     # net/revenue to 4 places. Printing it raw showed a 24.6% margin as "0.2%".
     when :percentage then "#{number_with_precision(value.to_f * 100, precision: 1)}%"
     when :currency   then format_large_currency(value, currency: currency)

@@ -58,32 +58,6 @@ RSpec.describe "Gateway RateLimiter integration" do
     end
   end
 
-  describe "MarketData::Gateways::AlphaVantageGateway" do
-    subject(:gateway) { MarketData::Gateways::AlphaVantageGateway.new(api_key: "test_key") }
-
-    let!(:integration) do
-      create(:integration,
-        provider_name: "Alpha Vantage",
-        max_requests_per_minute: 5,
-        daily_call_limit: 25,
-        daily_api_calls: 25,
-        calls_reset_at: Time.current)
-    end
-
-    it "blocks fetch_overview when daily limit is exhausted" do
-      result = gateway.fetch_overview("AAPL")
-      expect(result).to be_failure
-      expect(result.failure.first).to eq(:rate_limited)
-      expect(result.failure.last).to include("daily limit reached")
-    end
-
-    it "blocks fetch_income_statement when daily limit is exhausted" do
-      result = gateway.fetch_income_statement("AAPL")
-      expect(result).to be_failure
-      expect(result.failure.first).to eq(:rate_limited)
-    end
-  end
-
   describe "MarketData::Gateways::FxRatesGateway" do
     subject(:gateway) { MarketData::Gateways::FxRatesGateway.new(api_key: "test_key") }
 

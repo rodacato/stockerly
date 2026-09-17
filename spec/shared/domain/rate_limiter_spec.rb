@@ -82,7 +82,7 @@ RSpec.describe RateLimiter do
     context "when daily limit is exhausted" do
       let!(:integration) do
         create(:integration,
-          provider_name: "Alpha Vantage",
+          provider_name: "Finnhub",
           max_requests_per_minute: 5,
           minute_calls: 0,
           minute_reset_at: Time.current,
@@ -92,7 +92,7 @@ RSpec.describe RateLimiter do
       end
 
       it "returns Failure with rate_limited" do
-        result = described_class.check!("Alpha Vantage")
+        result = described_class.check!("Finnhub")
         expect(result).to be_failure
         expect(result.failure.first).to eq(:rate_limited)
         expect(result.failure.last).to include("daily limit reached")

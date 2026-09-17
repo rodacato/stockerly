@@ -5,7 +5,7 @@ RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
     let(:admin) { create(:user, :admin) }
 
     let(:valid_params) do
-      { provider_name: "AlphaVantage", provider_type: "Stocks & Forex", api_key_encrypted: "sk-test-key" }
+      { provider_name: "Finnhub", provider_type: "Stocks & Forex", api_key_encrypted: "sk-test-key" }
     end
 
     it "creates integration and returns Success" do
@@ -14,7 +14,7 @@ RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
       expect(result).to be_success
       integration = result.value!
       expect(integration).to be_persisted
-      expect(integration.provider_name).to eq("AlphaVantage")
+      expect(integration.provider_name).to eq("Finnhub")
       expect(integration.connection_status).to eq("disconnected")
     end
 
@@ -42,7 +42,7 @@ RSpec.describe Administration::UseCases::Integrations::ConnectProvider do
     end
 
     it "returns Failure for duplicate provider_name" do
-      create(:integration, provider_name: "AlphaVantage")
+      create(:integration, provider_name: "Finnhub")
 
       result = described_class.call(params: valid_params)
 

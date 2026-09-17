@@ -3,12 +3,12 @@ module StatementsHelper
   # Translated to es-MX per S11 #148 — matches BMV-emisora nomenclature so MX
   # investors who already read public-issuer reports recognize the terms.
   # Enum keys (:totalRevenue, :grossProfit, etc.) are NOT translated — those
-  # map directly to Alpha Vantage JSON keys and changing them would break the
+  # map directly to stored statement keys and changing them would break the
   # gateway-to-view contract.
   SOURCE_NAMES = { "yfinance" => "Yahoo Finance", "alpha_vantage" => "Alpha Vantage" }.freeze
 
-  # Rows keep the source that wrote them, so an asset synced before TD9 can
-  # hold older periods from Alpha Vantage beside Yahoo's.
+  # Rows keep the source that wrote them, so an asset can still hold older
+  # periods from the retired Alpha Vantage beside Yahoo's.
   def statement_sources(asset)
     asset.financial_statements.order(fiscal_date_ending: :desc).pluck(:source).uniq
          .map { |source| SOURCE_NAMES.fetch(source, source) }

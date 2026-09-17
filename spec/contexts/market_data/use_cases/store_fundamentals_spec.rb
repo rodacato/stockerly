@@ -2,20 +2,20 @@ require "rails_helper"
 
 RSpec.describe MarketData::UseCases::StoreFundamentals do
   let(:asset) { create(:asset, :stock, symbol: "AAPL") }
-  let(:metrics) { { pe_ratio: 28.4, data_source: "AlphaVantage" } }
+  let(:metrics) { { pe_ratio: 28.4, data_source: "YfinanceGateway" } }
 
   it "stores the metrics under the equity label, with data_source lifted out" do
     described_class.call(asset: asset, metrics: metrics)
 
     row = AssetFundamental.find_by(asset: asset, period_label: described_class::EQUITY)
     expect(row.metrics).to eq("pe_ratio" => 28.4)
-    expect(row.source).to eq("AlphaVantage")
+    expect(row.source).to eq("YfinanceGateway")
   end
 
   it "leaves the caller's hash untouched" do
     described_class.call(asset: asset, metrics: metrics)
 
-    expect(metrics).to include(data_source: "AlphaVantage")
+    expect(metrics).to include(data_source: "YfinanceGateway")
   end
 
   it "overwrites the existing row for the same label rather than adding one" do
@@ -45,7 +45,7 @@ RSpec.describe MarketData::UseCases::StoreFundamentals do
     described_class.call(asset: asset, metrics: metrics)
 
     expect(received.map(&:symbol)).to eq([ "AAPL" ])
-    expect(received.first.source).to eq("AlphaVantage")
+    expect(received.first.source).to eq("YfinanceGateway")
   end
 
   # ADR-006's invariant: it has no failure path, so it must not hand the caller

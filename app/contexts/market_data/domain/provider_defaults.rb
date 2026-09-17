@@ -23,9 +23,8 @@ module MarketData
         # ADR-017 set 6/min and 200/day for three capabilities. Yahoo now also
         # answers the ticker search and the company overview, so the ceiling rose
         # with the work.
-        "Yahoo Finance"  => { provider_type: "Indices, BMV Corporate Actions & Ticker Search", requires_api_key: false, max_requests_per_minute: 30, daily_call_limit: 4_000 },
+        "Yahoo Finance"  => { provider_type: "Indices, Fundamentals, BMV Corporate Actions & Ticker Search", requires_api_key: false, max_requests_per_minute: 30, daily_call_limit: 4_000 },
         "Alternative.me" => { provider_type: "Sentiment", requires_api_key: false, max_requests_per_minute: nil, daily_call_limit: 100 },
-        "Alpha Vantage"  => { provider_type: "Fundamentals", requires_api_key: true, max_requests_per_minute: 5, daily_call_limit: 25 },
         "FMP"            => { provider_type: "Dividends & Splits", requires_api_key: true, max_requests_per_minute: 10, daily_call_limit: 250 },
         "ExchangeRate"   => { provider_type: "FX Rates", requires_api_key: true, max_requests_per_minute: 10, daily_call_limit: 1_500 },
         "Banxico"        => { provider_type: "CETES & Fixed Income", requires_api_key: true, max_requests_per_minute: nil, daily_call_limit: 1_000 }

@@ -449,7 +449,6 @@ es-MX:
       vs_ayer: "%{delta} vs ayer"
   data_sources:
     alpaca_us: Acciones EE. UU. — Alpaca
-    alpha_vantage_fundamentals: Fundamentales — Alpha Vantage
     banxico_cetes: CETES — Banxico
     banxico_fx: Tipo de cambio — Banxico FIX
     coingecko_crypto: Cripto — CoinGecko

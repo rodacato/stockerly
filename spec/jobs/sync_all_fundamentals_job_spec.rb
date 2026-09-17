@@ -51,7 +51,7 @@ RSpec.describe SyncAllFundamentalsJob, type: :job do
     # The budget belongs to whichever provider leads the fundamentals chain; a
     # spent quota elsewhere must not stop the job.
     it "ignores the quota of a provider that does not lead fundamentals" do
-      create(:integration, provider_name: "Alpha Vantage", daily_api_calls: 25,
+      create(:integration, provider_name: "Finnhub", daily_api_calls: 25,
                            daily_call_limit: 25, calls_reset_at: Time.current)
 
       expect { described_class.perform_now }

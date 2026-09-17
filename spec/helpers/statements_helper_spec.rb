@@ -38,12 +38,12 @@ RSpec.describe StatementsHelper, type: :helper do
                                             "Actividades de financiamiento", "Resumen")
     end
 
-    it "preserves Alpha Vantage JSON keys (enum identifiers, not translated)" do
+    it "preserves the stored statement keys (enum identifiers, not translated)" do
       items = helper.line_items_for(:income_statement)
       keys = items.reject { |i| i[:section] }.pluck(:key)
 
-      # The gateway-to-view contract is keyed on the Alpha Vantage JSON field
-      # names; translating the keys would break it. Translation lives on :label.
+      # The gateway-to-view contract is keyed on the stored field names;
+      # translating the keys would break it. Translation lives on :label.
       expect(keys).to include("totalRevenue", "grossProfit", "operatingIncome",
                               "netIncome", "dilutedEPS")
     end

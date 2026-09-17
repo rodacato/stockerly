@@ -53,6 +53,15 @@ RSpec.describe "Admin Integrations", type: :request do
       expect(response.body).not_to include("Ghost provider")
     end
 
+    # D123: an instance that has not migrated yet still holds the row.
+    it "does not offer a retired provider whose row outlived it" do
+      create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "k")
+
+      get admin_integrations_path
+
+      expect(response.body).not_to include("Alpha Vantage")
+    end
+
     # The defect C9 named was that this was unlabelled, not that it existed.
     it "labels the source that only works on the maintainer's key" do
       create(:integration, provider_name: "FMP", api_key_encrypted: "k")
@@ -74,7 +83,7 @@ RSpec.describe "Admin Integrations", type: :request do
 
     # The distinction the screen exists for: our counter versus their refusal.
     it "separates our exhausted quota from the provider refusing us" do
-      create(:integration, provider_name: "Alpha Vantage", api_key_encrypted: "k", requires_api_key: true,
+      create(:integration, provider_name: "Finnhub", api_key_encrypted: "k", requires_api_key: true,
                            daily_call_limit: 25, daily_api_calls: 25, calls_reset_at: Time.current)
       create(:integration, provider_name: "Yahoo Finance", requires_api_key: false,
                            last_failure_tag: "rate_limited", last_failure_at: 1.hour.ago)

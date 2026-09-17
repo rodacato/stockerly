@@ -59,7 +59,7 @@ module MarketData
     end
 
     # The gateways and the statement calculator name the same quantity
-    # differently — Alpha Vantage and FMP persist `return_on_equity`, the
+    # differently — the overview persists `return_on_equity`, the
     # calculator writes `roe_calculated`, and the UI asks for `roe`. Without
     # this map six of the ten Resumen cards render "—" on data that did arrive.
     ALIASES = {

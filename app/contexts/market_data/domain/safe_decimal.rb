@@ -4,8 +4,8 @@ module MarketData
     # sentinels to nil. Included rather than inherited: the three call sites
     # (two gateways, one calculator) share no base class.
     module SafeDecimal
-      # "None" is Alpha Vantage's documented sentinel; "-" is undocumented by
-      # either provider and kept because payloads have carried it since 2026-02.
+      # "None" is Alpha Vantage's sentinel, still inside statements it stored;
+      # "-" has been carried by stored payloads since 2026-02.
       MISSING_VALUE_SENTINELS = [ "None", "-" ].freeze
 
       private

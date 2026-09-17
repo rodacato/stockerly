@@ -6,7 +6,7 @@ RSpec.describe MarketData::Handlers::LogFundamentalsUpdate do
       MarketData::Events::AssetFundamentalsUpdated.new(
         asset_id: 1,
         symbol: "AAPL",
-        source: "alpha_vantage_overview"
+        source: "yfinance_overview"
       )
     end
 
@@ -17,7 +17,7 @@ RSpec.describe MarketData::Handlers::LogFundamentalsUpdate do
       expect(log.task_name).to eq("Fundamentals Update: AAPL")
       expect(log.module_name).to eq("sync")
       expect(log.severity).to eq("success")
-      expect(log.error_message).to eq("Source: alpha_vantage_overview")
+      expect(log.error_message).to eq("Source: yfinance_overview")
     end
 
     it "works with Hash events (async deserialization)" do
