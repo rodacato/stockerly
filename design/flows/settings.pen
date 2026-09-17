@@ -1595,7 +1595,7 @@
       "name": "[Ajustes] / Integraciones / Default",
       "clip": true,
       "width": 390,
-      "height": 2470,
+      "height": 1977,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -1656,7 +1656,7 @@
               "fill": "$fg-subtle",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "10 FUENTES · 0 CERCA DEL LÍMITE · 0 BLOQUEADAS",
+              "content": "8 FUENTES · 0 CERCA DEL LÍMITE · 0 BLOQUEADAS",
               "fontFamily": "$font-mono",
               "fontSize": 12,
               "fontWeight": "normal",
@@ -1714,41 +1714,6 @@
                     "UhJYh": {
                       "content": "Es tu instancia: falta pegar la API key. Mientras, lo que sirve esta fuente lo cubre su respaldo — o nada, si es la única. Pierdes el cierre oficial de EE. UU. y los dividendos y splits de tus posiciones estadounidenses.",
                       "fill": "$fg-subtle"
-                    }
-                  }
-                },
-                {
-                  "id": "uWFg7",
-                  "type": "ref",
-                  "ref": "uDnQn",
-                  "name": "Alpha Vantage",
-                  "width": "fill_container",
-                  "descendants": {
-                    "bIsXZ": {
-                      "fill": "$positive"
-                    },
-                    "fzk7b": {
-                      "content": "Alpha Vantage"
-                    },
-                    "my1ze": {
-                      "content": "primaria"
-                    },
-                    "hJ8YL": {
-                      "content": "Fundamentales de empresas (EPS, razones financieras). 25 llamadas al día en el plan gratuito."
-                    },
-                    "DH5lr": {
-                      "content": "CONECTADA",
-                      "fill": "$positive"
-                    },
-                    "YbjW0": {
-                      "content": "1 / 5 por minuto"
-                    },
-                    "NB4Ig": {
-                      "content": "hace 12 min"
-                    },
-                    "lkrOm": {
-                      "width": 65,
-                      "fill": "$positive"
                     }
                   }
                 },
@@ -1924,44 +1889,6 @@
                     "lkrOm": {
                       "width": 33,
                       "fill": "$positive"
-                    }
-                  }
-                },
-                {
-                  "id": "X7esH9",
-                  "type": "ref",
-                  "ref": "uDnQn",
-                  "name": "FMP",
-                  "width": "fill_container",
-                  "descendants": {
-                    "bIsXZ": {
-                      "fill": "$positive"
-                    },
-                    "fzk7b": {
-                      "content": "FMP"
-                    },
-                    "my1ze": {
-                      "content": "respaldo"
-                    },
-                    "hJ8YL": {
-                      "content": "Respaldo de fundamentales cuando Alpha Vantage se queda sin sus 25 llamadas del día. Solo sirve con API keys de cuentas creadas antes del 31 de agosto de 2025."
-                    },
-                    "DH5lr": {
-                      "content": "CONECTADA",
-                      "fill": "$positive"
-                    },
-                    "YbjW0": {
-                      "content": "0 / 10 por minuto"
-                    },
-                    "NB4Ig": {
-                      "content": "hace 12 min"
-                    },
-                    "lkrOm": {
-                      "width": 0,
-                      "fill": "$positive"
-                    },
-                    "Bcuik": {
-                      "enabled": true
                     }
                   }
                 },
@@ -3220,7 +3147,7 @@
       "name": "[Ajustes] / Estado y mantenimiento / Default",
       "clip": true,
       "width": 390,
-      "height": 1758,
+      "height": 1676,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -4231,43 +4158,6 @@
                     },
                     {
                       "type": "frame",
-                      "id": "Aly0u",
-                      "name": "Fundamentales — Alpha Vantage",
-                      "fill": "$bg-surface",
-                      "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "gap": 6,
-                      "padding": [
-                        8,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "l3H5H",
-                          "name": "i",
-                          "width": 16,
-                          "height": 16,
-                          "icon": "chart-column",
-                          "library": "lucide",
-                          "fill": "$fg-default"
-                        },
-                        {
-                          "type": "text",
-                          "id": "d9wfgP",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "Fundamentales — Alpha Vantage",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "500"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
                       "id": "s8Q7W",
                       "name": "Tipo de cambio (respaldo) — ExchangeRate",
                       "fill": "$bg-surface",
@@ -4334,43 +4224,6 @@
                           "name": "t",
                           "fill": "$fg-default",
                           "content": "Tipo de cambio — Banxico FIX",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "500"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "e0gm6k",
-                      "name": "Fundamentales (respaldo) — FMP",
-                      "fill": "$bg-surface",
-                      "cornerRadius": "$radius-sm",
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "gap": 6,
-                      "padding": [
-                        8,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "B3xk8w",
-                          "name": "i",
-                          "width": 16,
-                          "height": 16,
-                          "icon": "circle-dollar-sign",
-                          "library": "lucide",
-                          "fill": "$fg-default"
-                        },
-                        {
-                          "type": "text",
-                          "id": "E1A8q6",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "Fundamentales (respaldo) — FMP",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "500"
@@ -4565,7 +4418,7 @@
       "name": "[Ajustes] / Integraciones · Estados / Default",
       "clip": true,
       "width": 390,
-      "height": 1477,
+      "height": 1494,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -4691,27 +4544,27 @@
                   "id": "W5jF5",
                   "type": "ref",
                   "ref": "uDnQn",
-                  "name": "Alpha Vantage",
+                  "name": "ExchangeRate",
                   "width": "fill_container",
                   "descendants": {
                     "bIsXZ": {
                       "fill": "$warning"
                     },
                     "fzk7b": {
-                      "content": "Alpha Vantage"
+                      "content": "ExchangeRate"
                     },
                     "my1ze": {
-                      "content": "primaria"
+                      "content": "única fuente"
                     },
                     "hJ8YL": {
-                      "content": "Fundamentales de empresas (EPS, razones financieras). 25 llamadas al día en el plan gratuito."
+                      "content": "Tipo de cambio del momento, para ver todo en tu moneda base. El histórico por fecha lo trae Banxico."
                     },
                     "DH5lr": {
                       "content": "SIN CUOTA",
                       "fill": "$warning"
                     },
                     "YbjW0": {
-                      "content": "5 / 5 por minuto"
+                      "content": "10 / 10 por minuto"
                     },
                     "NB4Ig": {
                       "content": "hace 12 min"
@@ -5005,7 +4858,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-16 · re-vendored to kit 1.0.0; BottomNav and SidebarNav masters had Ajustes lit, every screen now lights its own tab\n2026-09-16 · mirrored to the code (D78): hub sizes and copy, the phone switch, Integraciones rebuilt on a ProviderCard that carries state, quota bar, reason and the maintainer notice, Registros and Estado rebuilt, Errores rows and detail, En mantenimiento in its own chrome\n2026-09-16 · Integraciones · Administrar and Registros · Detalle drawn; the Hub, Integraciones and Estado desktops retired (D4) with the SidebarNav and TopBarDesktop they used\n2026-09-16 · code: the maintenance page lost its English navbar and footer; Estado stopped promising a banner and names each switch in its audit trail; the importer row describes Stockerly's own format; the empty Integraciones stopped sending an owner into the wizard; Registros keeps the task on its own line\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections — its reasoning lives in D5, D16, D58, D78, D90, ADR-015, ADR-020 and git history\n2026-09-05 · En mantenimiento drawn — this flow owns the switch, and nothing drew what the switch causes\n2026-09-05 · that screen was the app's only English one, and the last to call its owner an administrator; fixed in code the same day\n2026-09-05 · A2 · Errores and Errores · Detalle drawn — the last undrawn surface in this flow\n2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
+          "content": "2026-09-17 · D123: Alpha Vantage and FMP retired — their cards and manual-sync rows removed, source counts 10 → 8, the ProviderCard maintainer notice deleted; Estados draws sin cuota on ExchangeRate\n2026-09-16 · re-vendored to kit 1.0.0; BottomNav and SidebarNav masters had Ajustes lit, every screen now lights its own tab\n2026-09-16 · mirrored to the code (D78): hub sizes and copy, the phone switch, Integraciones rebuilt on a ProviderCard that carries state, quota bar, reason and the maintainer notice, Registros and Estado rebuilt, Errores rows and detail, En mantenimiento in its own chrome\n2026-09-16 · Integraciones · Administrar and Registros · Detalle drawn; the Hub, Integraciones and Estado desktops retired (D4) with the SidebarNav and TopBarDesktop they used\n2026-09-16 · code: the maintenance page lost its English navbar and footer; Estado stopped promising a banner and names each switch in its audit trail; the importer row describes Stockerly's own format; the empty Integraciones stopped sending an owner into the wizard; Registros keeps the task on its own line\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections — its reasoning lives in D5, D16, D58, D78, D90, ADR-015, ADR-020 and git history\n2026-09-05 · En mantenimiento drawn — this flow owns the switch, and nothing drew what the switch causes\n2026-09-05 · that screen was the app's only English one, and the last to call its owner an administrator; fixed in code the same day\n2026-09-05 · A2 · Errores and Errores · Detalle drawn — the last undrawn surface in this flow\n2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -7213,46 +7066,6 @@
         },
         {
           "type": "frame",
-          "id": "Bcuik",
-          "x": 0,
-          "y": 0,
-          "name": "Maintainer",
-          "enabled": false,
-          "width": "fill_container(0)",
-          "fill": "$warning-bg",
-          "cornerRadius": "$radius-sm",
-          "gap": "$space-2",
-          "padding": [
-            8,
-            12
-          ],
-          "children": [
-            {
-              "type": "icon",
-              "id": "C8F1Qx",
-              "name": "MaintI",
-              "width": 16,
-              "height": 16,
-              "icon": "lock-keyhole",
-              "library": "lucide",
-              "fill": "$warning-fg"
-            },
-            {
-              "type": "text",
-              "id": "tZY3L",
-              "name": "MaintT",
-              "fill": "$warning-fg",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Solo funciona con API keys de cuentas creadas antes del 31 de agosto de 2025. Si la tuya es nueva, esta fuente responde 403.",
-              "fontFamily": "$font-sans",
-              "fontSize": 14,
-              "fontWeight": "normal"
-            }
-          ]
-        },
-        {
-          "type": "frame",
           "id": "AiOOF",
           "x": 0,
           "y": 0,
@@ -7489,7 +7302,7 @@
       "name": "[Ajustes] / Integraciones · Administrar / Default",
       "clip": true,
       "width": 390,
-      "height": 2645,
+      "height": 2152,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -7550,7 +7363,7 @@
               "fill": "$fg-subtle",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "10 FUENTES · 0 CERCA DEL LÍMITE · 0 BLOQUEADAS",
+              "content": "8 FUENTES · 0 CERCA DEL LÍMITE · 0 BLOQUEADAS",
               "fontFamily": "$font-mono",
               "fontSize": 12,
               "fontWeight": "normal",
@@ -7617,41 +7430,6 @@
                     },
                     "drdE9": {
                       "content": "KEY_ID:SECRET"
-                    }
-                  }
-                },
-                {
-                  "id": "Eno0x",
-                  "type": "ref",
-                  "ref": "uDnQn",
-                  "name": "Alpha Vantage",
-                  "width": "fill_container",
-                  "descendants": {
-                    "bIsXZ": {
-                      "fill": "$positive"
-                    },
-                    "fzk7b": {
-                      "content": "Alpha Vantage"
-                    },
-                    "my1ze": {
-                      "content": "primaria"
-                    },
-                    "hJ8YL": {
-                      "content": "Fundamentales de empresas (EPS, razones financieras). 25 llamadas al día en el plan gratuito."
-                    },
-                    "DH5lr": {
-                      "content": "CONECTADA",
-                      "fill": "$positive"
-                    },
-                    "YbjW0": {
-                      "content": "1 / 5 por minuto"
-                    },
-                    "NB4Ig": {
-                      "content": "hace 12 min"
-                    },
-                    "lkrOm": {
-                      "width": 65,
-                      "fill": "$positive"
                     }
                   }
                 },
@@ -7827,44 +7605,6 @@
                     "lkrOm": {
                       "width": 33,
                       "fill": "$positive"
-                    }
-                  }
-                },
-                {
-                  "id": "AAmlM",
-                  "type": "ref",
-                  "ref": "uDnQn",
-                  "name": "FMP",
-                  "width": "fill_container",
-                  "descendants": {
-                    "bIsXZ": {
-                      "fill": "$positive"
-                    },
-                    "fzk7b": {
-                      "content": "FMP"
-                    },
-                    "my1ze": {
-                      "content": "respaldo"
-                    },
-                    "hJ8YL": {
-                      "content": "Respaldo de fundamentales cuando Alpha Vantage se queda sin sus 25 llamadas del día. Solo sirve con API keys de cuentas creadas antes del 31 de agosto de 2025."
-                    },
-                    "DH5lr": {
-                      "content": "CONECTADA",
-                      "fill": "$positive"
-                    },
-                    "YbjW0": {
-                      "content": "0 / 10 por minuto"
-                    },
-                    "NB4Ig": {
-                      "content": "hace 12 min"
-                    },
-                    "lkrOm": {
-                      "width": 0,
-                      "fill": "$positive"
-                    },
-                    "Bcuik": {
-                      "enabled": true
                     }
                   }
                 },
