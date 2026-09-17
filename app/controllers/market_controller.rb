@@ -40,7 +40,7 @@ class MarketController < AuthenticatedController
         asset: @asset, position_data: @position_data, rules: @asset_rules
       )
     in Dry::Monads::Failure[ :not_found, _ ]
-      redirect_to assets_path, alert: t("market.flash.no_encontrado")
+      render_unknown(params[:symbol].to_s.upcase)
     end
   end
 
@@ -78,5 +78,17 @@ class MarketController < AuthenticatedController
     SystemLog.create!(task_name: "TradingView Chart", module_name: "tradingview",
                      severity: :success, error_message: @asset.symbol)
     render layout: false
+  end
+
+  private
+
+  # D125: offer the listing Yahoo has under this exact symbol. A near match is
+  # a different asset, and a symbol too short to search is simply not offered.
+  def render_unknown(symbol)
+    @symbol = symbol
+    result = Administration::UseCases::Assets::SearchTicker.call(query: symbol)
+    @yahoo_failed = result.failure? && result.failure.first != :validation
+    @listing = result.value!.find { |listing| listing[:symbol].casecmp?(symbol) } if result.success?
+    render :unknown, status: :not_found
   end
 end
