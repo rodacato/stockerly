@@ -29,6 +29,35 @@ RSpec.describe "Cockpit › Señales", type: :request do
       expect(response.body.scan("HELD").size).to be >= 5
     end
 
+    # D127: XLG crossed below its MA50 and rendered an upward arrow beside the
+    # phrase saying it fell. The arrow draws the move; the row names its logic.
+    describe "a row's arrow and logic" do
+      def row_for(symbol, type)
+        asset = create(:asset, :stock, symbol: symbol, currency: "USD")
+        create(:position, portfolio: portfolio, asset: asset, shares: 1, avg_cost: 1, status: :open)
+        observation(asset, days_ago: 0, type: type)
+        get "/signals"
+        Capybara.string(response.body).find("a[href='/market/#{symbol}']")
+      end
+
+      it "draws a fall under a moving average downward, as trend-following" do
+        row = row_for("XLG", "ma50_crossed_below")
+
+        expect(row).to have_css(".material-symbols-outlined", text: "south_east")
+        expect(row).to have_no_css(".material-symbols-outlined", text: "north_east")
+        expect(row).to have_text("vende")
+        expect(row).to have_text("Tendencia")
+      end
+
+      it "draws a break of the lower band downward, as a bet on the rebound" do
+        row = row_for("COIN", "bb_lower_breached")
+
+        expect(row).to have_css(".material-symbols-outlined", text: "south_east")
+        expect(row).to have_text("compra")
+        expect(row).to have_text("Rebote")
+      end
+    end
+
     it "groups the readings by the day they were observed" do
       held = create(:asset, :stock, symbol: "HELD", currency: "USD")
       create(:position, portfolio: portfolio, asset: held, shares: 1, avg_cost: 1, status: :open)

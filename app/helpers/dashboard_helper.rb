@@ -22,6 +22,10 @@ module DashboardHelper
     MarketData::Domain::ObservationAction.for(observation.observation_type)
   end
 
+  def observation_reading(observation)
+    MarketData::Domain::ObservationAction.reading(observation.observation_type)
+  end
+
   # The classification arrives from an external gateway, so an unmapped value
   # renders as itself rather than raising on the whole screen.
   def sentiment_label(key)
