@@ -24,7 +24,9 @@ module Administration
         def call(query:)
           results = yield MarketData::UseCases::SearchTickers.call(query: query)
 
-          mapped = results.map { |r| map_result(r) }
+          # Options, futures and currency pairs come back too; none of them is a
+          # type the catalogue can hold.
+          mapped = results.select { |r| QUOTE_TYPE_MAP.key?(r[:quote_type]) }.map { |r| map_result(r) }
 
           Success(mapped)
         end
@@ -38,7 +40,7 @@ module Administration
           {
             symbol: result[:symbol],
             name: result[:name],
-            asset_type: QUOTE_TYPE_MAP[result[:quote_type]] || "stock",
+            asset_type: QUOTE_TYPE_MAP.fetch(result[:quote_type]),
             exchange: region,
             country: country,
             sector: result[:sector],
