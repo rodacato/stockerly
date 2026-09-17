@@ -19,6 +19,35 @@ RSpec.describe "config/recurring.yml" do
     end
   end
 
+  def detector_runs(calendar)
+    tasks.values.select { |t| t["class"] == "DetectTechnicalObservationsJob" && t["args"] == [ calendar ] }
+  end
+
+  # D126: stocks, ETFs and indices after the BMV and the NYSE have both closed,
+  # whatever US daylight time does — 15:00 CDMX is the later of the two closes.
+  it "detects equity signals at 15:30 CDMX on weekdays" do
+    run = detector_runs("equities").sole
+    after_close = Fugit.parse(run["schedule"]).next_time(Time.utc(2026, 9, 17, 12)).to_t.in_time_zone("America/Mexico_City")
+
+    expect([ after_close.hour, after_close.min ]).to eq([ 15, 30 ])
+    expect(Fugit.parse(run["schedule"]).next_time(Time.utc(2026, 9, 19, 12)).to_t.in_time_zone("America/Mexico_City").wday).to eq(1)
+  end
+
+  # Crypto's day is the UTC day; its run starts once that day has ended.
+  it "detects crypto signals just past the UTC day" do
+    run = detector_runs("crypto").sole
+    next_run = Fugit.parse(run["schedule"]).next_time(Time.utc(2026, 9, 17, 12)).to_t.utc
+
+    expect([ next_run.hour, next_run.min ]).to eq([ 0, 15 ])
+  end
+
+  # Negative: the one nightly run for everything is gone.
+  it "runs no detector without a calendar" do
+    runs = tasks.values.select { |t| t["class"] == "DetectTechnicalObservationsJob" }
+
+    expect(runs.pluck("args")).to contain_exactly([ "equities" ], [ "crypto" ])
+  end
+
   # A held ETF used to refresh every 30 minutes while a held stock refreshed every 5.
   it "syncs held, followed and alerted ETFs on the stocks' high-priority cadence" do
     etf_high = tasks.values.find { |t| t["class"] == "SyncPriorityAssetsJob" && t["args"] == %w[etf high] }

@@ -17,24 +17,24 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
       asset = create(:asset, symbol: "FLAT", current_price: 100)
       seed_history(asset, Array.new(60, 100.0))
 
-      expect { use_case.call }.to change(TechnicalReading, :count).by(1)
+      expect { use_case.call(calendar: :equities) }.to change(TechnicalReading, :count).by(1)
       expect(asset.reload.technical_reading.readings).to include("rsi", "sma_50", "close")
     end
 
     it "keeps one row per asset, overwritten rather than appended" do
       asset = create(:asset, symbol: "ONCE", current_price: 100)
       seed_history(asset, Array.new(60, 100.0))
-      use_case.call
+      use_case.call(calendar: :equities)
       first = asset.reload.technical_reading
 
-      expect { use_case.call }.not_to change(TechnicalReading, :count)
+      expect { use_case.call(calendar: :equities) }.not_to change(TechnicalReading, :count)
       expect(asset.reload.technical_reading.calculated_at).to be > first.calculated_at
     end
 
     it "writes an ATR, which needs the high and low the closes alone do not carry" do
       asset = create(:asset, symbol: "RANGE", current_price: 100)
       seed_history(asset, Array.new(60, 100.0))
-      use_case.call
+      use_case.call(calendar: :equities)
 
       expect(asset.reload.technical_reading.readings["atr"]).to be_present
     end
@@ -47,7 +47,7 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
         create(:asset_price_history, asset: asset, date: (60 - i).days.ago.to_date,
                                      close: 100.0, high: nil, low: nil)
       end
-      use_case.call
+      use_case.call(calendar: :equities)
 
       expect(asset.reload.technical_reading.readings).not_to have_key("atr")
     end
@@ -57,7 +57,7 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
     it "omits an indicator it could not compute rather than storing zero" do
       asset = create(:asset, symbol: "YOUNG", current_price: 100)
       seed_history(asset, Array.new(60, 100.0))
-      use_case.call
+      use_case.call(calendar: :equities)
 
       expect(asset.reload.technical_reading.readings).not_to have_key("sma_200")
     end
@@ -66,14 +66,58 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
   describe "#call" do
     it "detects nothing when no assets have sufficient history" do
       create(:asset, symbol: "TINY", current_price: 100)
-      result = use_case.call
+      result = use_case.call(calendar: :equities)
       expect(result).to eq(0)
     end
 
     it "skips assets with nil current_price (dead listings)" do
       asset = create(:asset, symbol: "DEAD", current_price: nil)
       seed_history(asset, (1..40).map { |i| 100.0 - i }) # would otherwise trigger
-      expect { use_case.call }.not_to change(TechnicalObservation, :count)
+      expect { use_case.call(calendar: :equities) }.not_to change(TechnicalObservation, :count)
+    end
+  end
+
+  # D126: each market's calendar runs at its own close, and scans only its own.
+  describe "calendars" do
+    def crash_history(asset)
+      seed_history(asset, Array.new(15, 100.0) + [ 10.0 ])
+    end
+
+    it "leaves crypto and fixed income out of the equities run" do
+      coin = create(:asset, :crypto, symbol: "BTC", current_price: 10.0)
+      bond = create(:asset, :fixed_income, symbol: "CETES28", current_price: 10.0)
+      crash_history(coin)
+      crash_history(bond)
+
+      use_case.call(calendar: :equities)
+
+      expect(TechnicalObservation.where(asset: [ coin, bond ])).to be_empty
+      expect(TechnicalReading.where(asset: [ coin, bond ])).to be_empty
+    end
+
+    it "scans only crypto in the crypto run" do
+      stock = create(:asset, symbol: "AAPL", current_price: 10.0)
+      coin = create(:asset, :crypto, symbol: "BTC", current_price: 10.0)
+      crash_history(stock)
+      crash_history(coin)
+
+      use_case.call(calendar: :crypto)
+
+      expect(TechnicalObservation.where(asset: stock)).to be_empty
+      expect(TechnicalObservation.where(asset: coin, observation_type: "rsi_oversold_entered")).to exist
+    end
+
+    # Negative: the crypto run starts just past the UTC day, when the sync has
+    # already opened today's bar. A crossing only that bar shows is not persisted.
+    it "does not read the crypto bar the new UTC day has just opened" do
+      coin = create(:asset, :crypto, symbol: "ETH", current_price: 10.0)
+      seed_history(coin, Array.new(16, 100.0))
+      create(:asset_price_history, asset: coin, date: Date.current, close: 10.0)
+
+      use_case.call(calendar: :crypto)
+
+      expect(TechnicalObservation.where(asset: coin)).to be_empty
+      expect(coin.reload.technical_reading.readings["close"]).to eq(100.0)
     end
   end
 
@@ -88,7 +132,7 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
       crash = 10.0
       seed_history(asset, flat + [ crash ])
 
-      use_case.call
+      use_case.call(calendar: :equities)
       expect(TechnicalObservation.where(observation_type: "rsi_oversold_entered", asset: asset)).to exist
     end
 
@@ -100,7 +144,7 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
       rebound = 80.0
       seed_history(asset, declining + [ rebound ])
 
-      use_case.call
+      use_case.call(calendar: :equities)
       expect(TechnicalObservation.where(observation_type: "rsi_oversold_exited", asset: asset)).to exist
     end
   end
@@ -114,7 +158,7 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
       tail = [ 95.0, 110.0 ] # prev close 95 (below avg), current close 110 (above)
       seed_history(asset, base + tail)
 
-      use_case.call
+      use_case.call(calendar: :equities)
       expect(TechnicalObservation.where(observation_type: "ma50_crossed_above", asset: asset)).to exist
     end
 
@@ -123,13 +167,13 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
       tail = [ 105.0, 90.0 ]
       seed_history(asset, base + tail)
 
-      use_case.call
+      use_case.call(calendar: :equities)
       expect(TechnicalObservation.where(observation_type: "ma50_crossed_below", asset: asset)).to exist
     end
 
     it "skips MA200 when fewer than 201 closes exist (graceful degradation)" do
       seed_history(asset, (1..100).map { 100.0 })
-      use_case.call
+      use_case.call(calendar: :equities)
       expect(TechnicalObservation.where(observation_type: [ "ma200_crossed_above", "ma200_crossed_below" ], asset: asset)).not_to exist
     end
   end
@@ -142,7 +186,7 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
       tail = [ 99.0, 130.0 ]      # prev within, current well above
       seed_history(asset, base + tail)
 
-      use_case.call
+      use_case.call(calendar: :equities)
       expect(TechnicalObservation.where(observation_type: "bb_upper_breached", asset: asset)).to exist
     end
   end
@@ -157,14 +201,14 @@ RSpec.describe MarketData::UseCases::DetectTechnicalObservations do
     end
 
     it "does not re-emit the same (asset, type) within DEDUP_WINDOW_DAYS" do
-      use_case.call
-      expect { use_case.call }.not_to change(TechnicalObservation, :count)
+      use_case.call(calendar: :equities)
+      expect { use_case.call(calendar: :equities) }.not_to change(TechnicalObservation, :count)
     end
 
     it "re-emits once the cooldown window has passed" do
-      use_case.call
+      use_case.call(calendar: :equities)
       TechnicalObservation.last.update_columns(observed_at: 8.days.ago)
-      expect { use_case.call }.to change(TechnicalObservation, :count).by(1)
+      expect { use_case.call(calendar: :equities) }.to change(TechnicalObservation, :count).by(1)
     end
   end
 end

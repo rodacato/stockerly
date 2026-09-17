@@ -10,8 +10,16 @@ module MarketData
     # presentation filters observations against watchlist + open positions.
     class DetectTechnicalObservations < SimpleUseCase
       DEDUP_WINDOW_DAYS = 7
+      # D126: each calendar runs at its own close. Crypto's run starts just past
+      # the UTC day, when the sync has already opened today's bar, so it reads
+      # closed bars only; fixed income has no technical series to scan.
+      CALENDARS = {
+        equities: { asset_types: %i[stock etf index], closed_only: false },
+        crypto: { asset_types: %i[crypto], closed_only: true }
+      }.freeze
 
-      def call
+      def call(calendar:)
+        @calendar = CALENDARS.fetch(calendar)
         detected = 0
         scannable_assets.find_each do |asset|
           detected += detect_for(asset)
@@ -30,13 +38,14 @@ module MarketData
       def scannable_assets
         # `current_price` filter is a cheap "is this asset alive" proxy —
         # assets that never synced have nil and zero point in scanning.
-        Asset.where.not(current_price: nil)
+        Asset.where.not(current_price: nil).where(asset_type: @calendar[:asset_types])
       end
 
       def detect_for(asset)
         # Bounded fetch: trailing window only, oldest→newest. Whole rows rather
         # than closes, because ATR needs the high and the low as well.
         rows = Queries::PriceSeries.for(asset).latest(WINDOW_SIZE)
+        rows = rows.reject { |row| row.date >= Date.current } if @calendar[:closed_only]
         closes = rows.map(&:close)
         return 0 if closes.size < 16 # RSI(14) needs 15 + we look back 1 day
 
@@ -46,22 +55,8 @@ module MarketData
         events += ma_crossings(closes, period: 200, type_above: "ma200_crossed_above", type_below: "ma200_crossed_below")
         events += bollinger_breaches(closes)
 
-        persist_reading(asset, closes, Queries::PriceSeries.closed_bars(rows), observed_at)
+        RecordTechnicalReading.call(asset: asset, rows: rows, calculated_at: observed_at)
         events.count { |e| persist_if_fresh(asset, e[:type], observed_at, e[:snapshot]) }
-      end
-
-      # The detector already computes today's RSI, moving averages and bands to
-      # test for a crossing, and used to discard them when none fired. One row
-      # per asset, overwritten — nothing reads indicator history, and an
-      # appended row would need its own prune job (X16).
-      def persist_reading(asset, closes, bars, calculated_at)
-        reading = Domain::TechnicalIndicators.current_reading(closes, bars: bars)
-        return if reading.blank?
-
-        record = asset.technical_reading || asset.build_technical_reading
-        record.update!(calculated_at: calculated_at, readings: reading)
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.warn("TechnicalReading failed for #{asset.symbol}: #{e.message}")
       end
 
       def collect_rsi_transitions(closes)
