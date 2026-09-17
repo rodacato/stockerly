@@ -6146,6 +6146,19 @@
         },
         {
           "type": "text",
+          "id": "QMwNv",
+          "name": "2026-09-17",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-09-17 · D123 · Estados financieros' source label reads Yahoo Finance, which has written every statement since D109. D124's line items are not drawn here — the card draws its tabs and label only",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "ayP03",
           "name": "Log 2026-09-16 D78",
           "fill": "$fg-subtle",
@@ -12187,7 +12200,7 @@
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "FUENTE: ALPHA VANTAGE · US GAAP · USD · BASE ANUAL",
+                  "content": "FUENTE: YAHOO FINANCE · US GAAP · USD · BASE ANUAL",
                   "fontFamily": "$font-mono",
                   "fontSize": 10.5,
                   "fontWeight": "normal",
