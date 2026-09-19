@@ -39,7 +39,7 @@ module Alerts
       end
 
       rule(:cooldown_minutes) do
-        key.failure("debe ser al menos 1 minuto") if value && value < 1
+        key.failure(:min_one_minute) if value && value < 1
       end
 
       rule(:window_days, :condition) do

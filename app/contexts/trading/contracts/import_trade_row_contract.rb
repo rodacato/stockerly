@@ -4,8 +4,6 @@ module Trading
     # exists: an unknown symbol is a resolvable finding the importer reports as
     # its own category, not a malformed row.
     class ImportTradeRowContract < ApplicationContract
-      POSITIVE_VALUE_ERROR = "must be greater than 0"
-
       params do
         required(:asset_symbol).filled(:string)
         required(:side).filled(:string, included_in?: %w[buy sell])
@@ -18,13 +16,13 @@ module Trading
         optional(:net_amount).maybe(:decimal)
       end
 
-      rule(:shares) { key.failure(POSITIVE_VALUE_ERROR) if value <= 0 }
-      rule(:price_per_share) { key.failure(POSITIVE_VALUE_ERROR) if value <= 0 }
+      rule(:shares) { key.failure(:greater_than_zero) if value <= 0 }
+      rule(:price_per_share) { key.failure(:greater_than_zero) if value <= 0 }
 
       rule(:executed_at) do
         case Trading::Domain::TradeDate.fault(value)
-        when :invalid then key.failure("is not a valid date")
-        when :future  then key.failure("is in the future")
+        when :invalid then key.failure(:invalid_date)
+        when :future  then key.failure(:future_trade_date)
         end
       end
 

@@ -35,6 +35,14 @@ ignore_unused:
   # returned, so the scanner cannot see them either. trade_imports_spec asserts
   # every tag the use case can emit resolves to a phrase.
   - trade_imports.preview.rechazo.*
+  # dry-validation builds these itself: the predicate names are the gem's and the
+  # rule ones are written as `key.failure(:asset_not_found)`, so no t() call
+  # names them. contract_messages_spec runs every contract and asserts each
+  # message it can produce comes from this tree, which is the stronger check.
+  - dry_validation.errors.*
+  # The setup error list builds this key from the field that failed, so the
+  # scanner cannot see them; the view falls back to the humanized field name.
+  - setup.new.campos.*
   - date.*
   - time.*
   # Rails resolves these itself from time_ago_in_words; the scanner only

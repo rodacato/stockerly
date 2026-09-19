@@ -55,6 +55,16 @@ RSpec.describe "Trades", type: :request do
       post trades_path, params: { trade: { asset_symbol: "AAPL", side: "sell", shares: "5", price_per_share: "150.0" } }
 
       expect(response).to redirect_to(assets_path)
+      expect(flash[:alert]).to eq(I18n.t("trades.errores.titulos_insuficientes"))
+    end
+
+    # ADR-011: the use case names the refusal, the controller says it in es-MX.
+    # Both halves used to reach the reader in English — `Not enough shares to
+    # sell`, and `must be greater than 0` from the contract underneath.
+    it "states a contract refusal in es-MX too" do
+      post trades_path, params: { trade: { asset_symbol: "AAPL", side: "buy", shares: "0", price_per_share: "150.0" } }
+
+      expect(flash[:alert]).to eq(I18n.t("dry_validation.errors.greater_than_zero"))
     end
 
     context "with turbo_stream format" do
@@ -139,7 +149,7 @@ RSpec.describe "Trades", type: :request do
 
       expect(response).to redirect_to(positions_path)
       follow_redirect!
-      expect(response.body).to include("Cannot edit trades older than 30 days")
+      expect(response.body).to include(I18n.t("trades.errores.muy_antiguo_editar", dias: 30))
     end
   end
 
@@ -175,7 +185,7 @@ RSpec.describe "Trades", type: :request do
 
       expect(response).to redirect_to(positions_path)
       follow_redirect!
-      expect(response.body).to include("Cannot delete trades older than 30 days")
+      expect(response.body).to include(I18n.t("trades.errores.muy_antiguo_eliminar", dias: 30))
     end
   end
 end

@@ -8,7 +8,7 @@ module Identity
       end
 
       rule(:password_confirmation) do
-        key.failure("must match password") if values[:password] != values[:password_confirmation]
+        key.failure(:must_match_password) if values[:password] != values[:password_confirmation]
       end
     end
   end

@@ -81,7 +81,7 @@ RSpec.describe Trading::UseCases::ImportTrades do
 
       reason, details = result.failure
       expect(reason).to eq(:invalid_rows)
-      expect(details.first[:errors][:executed_at].first).to match(/future/)
+      expect(details.first[:errors][:executed_at].first).to eq(I18n.t("dry_validation.errors.future_trade_date"))
     end
 
     it "refuses fixed income, whose lots need a maturity the CSV cannot carry" do

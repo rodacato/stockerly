@@ -16,19 +16,19 @@ module Administration
         # Deferred to the model rather than re-derived: this rule only turns the
         # same shape into a message the wizard can show.
         rule(:symbol) do
-          key.failure("must be 1-20 uppercase alphanumeric characters") unless Asset::SYMBOL_FORMAT.match?(value)
+          key.failure(:invalid_symbol_format) unless Asset::SYMBOL_FORMAT.match?(value)
         end
 
         rule(:symbol) do
-          key.failure("already exists") if Asset.exists?(symbol: value)
+          key.failure(:already_exists) if Asset.exists?(symbol: value)
         end
 
         rule(:country) do
-          key.failure("must be a 2-letter ISO code") if value.present? && !/\A[A-Z]{2}\z/.match?(value)
+          key.failure(:invalid_country_code) if value.present? && !/\A[A-Z]{2}\z/.match?(value)
         end
 
         rule(:logo_url) do
-          key.failure("must be a valid HTTPS URL") if value.present? && !value.start_with?("https://")
+          key.failure(:invalid_https_url) if value.present? && !value.start_with?("https://")
         end
       end
     end

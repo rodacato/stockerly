@@ -8,7 +8,7 @@ module Notifications
       end
 
       rule(:endpoint) do
-        key.failure("must be an https endpoint") unless value.start_with?("https://")
+        key.failure(:https_endpoint_required) unless value.start_with?("https://")
       end
     end
   end

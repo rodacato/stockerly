@@ -54,13 +54,13 @@ RSpec.describe Administration::Contracts::Assets::CreateContract do
   it "fails with lowercase symbol" do
     result = contract.call(valid_params.merge(symbol: "msft"))
     expect(result).to be_failure
-    expect(result.errors[:symbol]).to include("must be 1-20 uppercase alphanumeric characters")
+    expect(result.errors[:symbol]).to include("debe tener de 1 a 20 caracteres, en mayúsculas o dígitos")
   end
 
   it "fails with symbol longer than 20 characters" do
     result = contract.call(valid_params.merge(symbol: "A" * 21))
     expect(result).to be_failure
-    expect(result.errors[:symbol]).to include("must be 1-20 uppercase alphanumeric characters")
+    expect(result.errors[:symbol]).to include("debe tener de 1 a 20 caracteres, en mayúsculas o dígitos")
   end
 
   it "allows the dots and hyphens real tickers carry" do
@@ -78,13 +78,13 @@ RSpec.describe Administration::Contracts::Assets::CreateContract do
     create(:asset, symbol: "MSFT")
     result = contract.call(valid_params)
     expect(result).to be_failure
-    expect(result.errors[:symbol]).to include("already exists")
+    expect(result.errors[:symbol]).to include("ya existe")
   end
 
   it "fails with invalid country code" do
     result = contract.call(valid_params.merge(country: "USA"))
     expect(result).to be_failure
-    expect(result.errors[:country]).to include("must be a 2-letter ISO code")
+    expect(result.errors[:country]).to include("debe ser un código ISO de dos letras")
   end
 
   it "passes with valid 2-letter country code" do
@@ -95,7 +95,7 @@ RSpec.describe Administration::Contracts::Assets::CreateContract do
   it "fails with non-HTTPS logo URL" do
     result = contract.call(valid_params.merge(logo_url: "http://example.com/logo.png"))
     expect(result).to be_failure
-    expect(result.errors[:logo_url]).to include("must be a valid HTTPS URL")
+    expect(result.errors[:logo_url]).to include("debe ser una URL https")
   end
 
   it "passes with HTTPS logo URL" do

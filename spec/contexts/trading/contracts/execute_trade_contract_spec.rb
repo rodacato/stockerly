@@ -41,19 +41,19 @@ RSpec.describe Trading::Contracts::ExecuteTradeContract do
   describe "numeric validations" do
     it "fails when shares is zero or negative" do
       result = contract.call(valid_params.merge(shares: 0.0))
-      expect(result.errors[:shares]).to include("must be greater than 0")
+      expect(result.errors[:shares]).to include("debe ser mayor que 0")
     end
 
     it "fails when price_per_share is zero or negative" do
       result = contract.call(valid_params.merge(price_per_share: -5.0))
-      expect(result.errors[:price_per_share]).to include("must be greater than 0")
+      expect(result.errors[:price_per_share]).to include("debe ser mayor que 0")
     end
   end
 
   describe "asset existence" do
     it "fails when asset_symbol does not exist" do
       result = contract.call(valid_params.merge(asset_symbol: "ZZZZ"))
-      expect(result.errors[:asset_symbol]).to include("asset not found")
+      expect(result.errors[:asset_symbol]).to include("no está en tu catálogo")
     end
   end
 
@@ -71,7 +71,7 @@ RSpec.describe Trading::Contracts::ExecuteTradeContract do
 
     it "requires maturity_date for fixed_income assets" do
       result = contract.call(cetes_params)
-      expect(result.errors[:maturity_date]).to include("required for fixed-income assets")
+      expect(result.errors[:maturity_date]).to include("es obligatoria en renta fija")
     end
 
     it "does not ask a sell for a maturity, since only a buy opens a lot" do
@@ -85,17 +85,17 @@ RSpec.describe Trading::Contracts::ExecuteTradeContract do
 
     it "rejects a past maturity_date" do
       result = contract.call(cetes_params.merge(maturity_date: 1.day.ago.to_date.iso8601))
-      expect(result.errors[:maturity_date]).to include("must be in the future")
+      expect(result.errors[:maturity_date]).to include("debe ser una fecha futura")
     end
 
     it "rejects today as maturity_date (must be strictly future)" do
       result = contract.call(cetes_params.merge(maturity_date: Date.current.iso8601))
-      expect(result.errors[:maturity_date]).to include("must be in the future")
+      expect(result.errors[:maturity_date]).to include("debe ser una fecha futura")
     end
 
     it "rejects malformed maturity_date strings" do
       result = contract.call(cetes_params.merge(maturity_date: "not-a-date"))
-      expect(result.errors[:maturity_date]).to include("must be a valid date")
+      expect(result.errors[:maturity_date]).to include("Esa fecha no es válida.")
     end
 
     it "does NOT require maturity_date for non-fixed-income assets" do

@@ -136,7 +136,7 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
       result = described_class.call(user: user, params: cetes_buy_params.except(:maturity_date))
       expect(result).to be_failure
       expect(result.failure[0]).to eq(:validation)
-      expect(result.failure[1][:maturity_date]).to include("required for fixed-income assets")
+      expect(result.failure[1][:maturity_date]).to include("es obligatoria en renta fija")
     end
   end
 

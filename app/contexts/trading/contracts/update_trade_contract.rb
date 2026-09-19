@@ -12,15 +12,15 @@ module Trading
       end
 
       rule(:shares) do
-        key.failure("must be greater than 0") if key? && value <= 0
+        key.failure(:greater_than_zero) if key? && value <= 0
       end
 
       rule(:price_per_share) do
-        key.failure("must be greater than 0") if key? && value <= 0
+        key.failure(:greater_than_zero) if key? && value <= 0
       end
 
       rule(:trade_id) do
-        key.failure("trade not found") unless Trade.exists?(id: value)
+        key.failure(:trade_not_found) unless Trade.exists?(id: value)
       end
     end
   end

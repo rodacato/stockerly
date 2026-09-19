@@ -37,19 +37,19 @@ RSpec.describe Trading::Contracts::UpdateTradeContract do
 
     it "fails when trade does not exist" do
       result = contract.call(trade_id: 999999, shares: 10.0)
-      expect(result.errors[:trade_id]).to include("trade not found")
+      expect(result.errors[:trade_id]).to include("no existe")
     end
   end
 
   describe "numeric validations" do
     it "fails when shares is zero or negative" do
       result = contract.call(trade_id: trade.id, shares: 0.0)
-      expect(result.errors[:shares]).to include("must be greater than 0")
+      expect(result.errors[:shares]).to include("debe ser mayor que 0")
     end
 
     it "fails when price_per_share is zero or negative" do
       result = contract.call(trade_id: trade.id, price_per_share: -5.0)
-      expect(result.errors[:price_per_share]).to include("must be greater than 0")
+      expect(result.errors[:price_per_share]).to include("debe ser mayor que 0")
     end
   end
 end

@@ -11,8 +11,8 @@ module Trading
           next if value.blank?
 
           case Trading::Domain::TradeDate.fault(value)
-          when :invalid then key.failure(I18n.t("trades.errores.fecha_invalida"))
-          when :future  then key.failure(I18n.t("trades.errores.fecha_futura"))
+          when :invalid then key.failure(:invalid_date)
+          when :future  then key.failure(:future_trade_date)
           end
         end
       end
