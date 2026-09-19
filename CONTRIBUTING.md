@@ -221,7 +221,7 @@ Evaluate volume_spike condition by comparing current volume against
 - **Copy goes through I18n:** user-facing strings live in `config/locales/es-MX.yml` behind lazy
   lookups (`t(".key")`), managed with `i18n-tasks` — CI runs `i18n-tasks health` and fails on
   missing, unused or unnormalized keys. Single locale; a second one is not a goal
-  ([ADR-011](docs/architecture/adr/0011-adopt-i18n-for-the-2.0-rewrite.md), superseding ADR-007).
+  ([ADR-011](docs/architecture/adr/0011-adopt-i18n-for-the-2.0-redesign.md), superseding ADR-007).
   Hardcoded es-MX in a view the 2.0 redesign has not reached yet is expected, not a defect
 - **Descriptive, never prescriptive:** Stockerly reports what it observes; it does not tell the
   user what to do ([ADR-001](docs/architecture/adr/0001-descriptive-not-prescriptive-language.md))

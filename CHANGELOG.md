@@ -37,7 +37,7 @@ single-user asset tracker after the closed beta failed on UX grounds. See
 - Reframed the product as a self-hosted single-user tracker (MXN/USD correct, no aggregators). `Identity` collapsed to single-user login/setup; `Notifications` shrank to in-app only.
 
 - Multi-key API rotation retired in favour of one key per provider ([ADR-015](docs/architecture/adr/0015-one-api-key-per-provider.md)): four providers' terms prohibit using multiple credentials to exceed a free tier. `KeyRotation` → `ApiKeyResolver`.
-- Copy moved into Rails I18n (`config/locales/es-MX.yml`, single locale, managed with `i18n-tasks`), adopted surface by surface with the redesign ([ADR-0011](docs/architecture/adr/0011-adopt-i18n-for-the-2.0-rewrite.md), superseding ADR-0007).
+- Copy moved into Rails I18n (`config/locales/es-MX.yml`, single locale, managed with `i18n-tasks`), adopted surface by surface with the redesign ([ADR-0011](docs/architecture/adr/0011-adopt-i18n-for-the-2.0-redesign.md), superseding ADR-0007).
 
 #### Removed
 - Multi-user surface: public registration and email verification. **The first-boot Setup Wizard stays** — `Identity::UseCases::CreateFirstAdmin` is now the only way the single account is created, and `Identity::Events::FirstAdminCreated` replaced `UserRegistered` as the trigger for portfolio and alert-preference creation.
