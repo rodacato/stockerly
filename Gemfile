@@ -35,7 +35,7 @@ gem "dry-monads", "~> 1.11"
 gem "pagy", "~> 43.6"
 
 # HTTP client for external API gateways [https://github.com/lostisland/faraday]
-gem "faraday", "~> 2.9"
+gem "faraday", "~> 2.14"
 gem "faraday-retry"
 
 # Structured JSON logging for production [https://github.com/roidrage/lograge]
