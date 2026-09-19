@@ -14,12 +14,12 @@ RSpec.describe Trading::Contracts::ExecuteTradeContract, "executed_at bound" do
   it "rejects a date in the future, in es-MX" do
     result = validate(1.day.from_now.to_date.to_s)
 
-    expect(result.errors[:executed_at]).to include(I18n.t("trades.errores.fecha_futura"))
+    expect(result.errors[:executed_at]).to include(I18n.t("dry_validation.errors.future_trade_date"))
   end
 
   it "rejects a date that is not a date" do
     expect(validate("no-es-fecha").errors[:executed_at])
-      .to include(I18n.t("trades.errores.fecha_invalida"))
+      .to include(I18n.t("dry_validation.errors.invalid_date"))
   end
 
   it "accepts today" do
@@ -45,12 +45,12 @@ RSpec.describe Trading::Contracts::UpdateTradeContract, "executed_at bound" do
 
   it "rejects a date in the future, in es-MX" do
     expect(validate(1.day.from_now.to_date.to_s).errors[:executed_at])
-      .to include(I18n.t("trades.errores.fecha_futura"))
+      .to include(I18n.t("dry_validation.errors.future_trade_date"))
   end
 
   it "rejects a date that is not a date" do
     expect(validate("no-es-fecha").errors[:executed_at])
-      .to include(I18n.t("trades.errores.fecha_invalida"))
+      .to include(I18n.t("dry_validation.errors.invalid_date"))
   end
 
   it "accepts a past date" do

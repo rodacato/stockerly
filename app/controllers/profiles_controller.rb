@@ -48,8 +48,8 @@ class ProfilesController < AuthenticatedController
     case result
     in Dry::Monads::Success
       redirect_to edit_password_settings_path, notice: t("profiles.flash.contrasena_cambiada")
-    in Dry::Monads::Failure[ :unauthorized, message ]
-      redirect_to edit_password_settings_path, alert: message
+    in Dry::Monads::Failure[ :unauthorized, _ ]
+      redirect_to edit_password_settings_path, alert: t("profiles.flash.contrasena_incorrecta")
     in Dry::Monads::Failure[ :validation, errors ]
       redirect_to edit_password_settings_path, alert: errors.values.flatten.first
     end

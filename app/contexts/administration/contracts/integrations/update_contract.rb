@@ -10,11 +10,11 @@ module Administration
         end
 
         rule(:daily_call_limit) do
-          key.failure("must be positive") if value && value <= 0
+          key.failure(:must_be_positive) if value && value <= 0
         end
 
         rule(:max_requests_per_minute) do
-          key.failure("must be positive") if value && value <= 0
+          key.failure(:must_be_positive) if value && value <= 0
         end
       end
     end

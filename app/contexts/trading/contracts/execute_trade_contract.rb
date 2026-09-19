@@ -3,8 +3,6 @@ module Trading
     class ExecuteTradeContract < ApplicationContract
       include ValidatesTradeDate
 
-      POSITIVE_VALUE_ERROR = "must be greater than 0"
-
       params do
         required(:asset_symbol).filled(:string)
         required(:side).filled(:string, included_in?: %w[buy sell])
@@ -18,19 +16,19 @@ module Trading
       end
 
       rule(:shares) do
-        key.failure(POSITIVE_VALUE_ERROR) if value <= 0
+        key.failure(:greater_than_zero) if value <= 0
       end
 
       rule(:price_per_share) do
-        key.failure(POSITIVE_VALUE_ERROR) if value <= 0
+        key.failure(:greater_than_zero) if value <= 0
       end
 
       rule(:fx_rate_at_execution) do
-        key.failure(POSITIVE_VALUE_ERROR) if value && value <= 0
+        key.failure(:greater_than_zero) if value && value <= 0
       end
 
       rule(:asset_symbol) do
-        key.failure("asset not found") unless Asset.exists?(symbol: value.upcase)
+        key.failure(:asset_not_found) unless Asset.exists?(symbol: value.upcase)
       end
 
       # Fixed-income lots (CETES, future Bonos M, UDIs) carry a per-position
@@ -45,7 +43,7 @@ module Trading
         next unless asset&.asset_type_fixed_income?
 
         if values[:maturity_date].blank?
-          key.failure("required for fixed-income assets")
+          key.failure(:required_for_fixed_income)
         else
           parsed = begin
             Date.parse(values[:maturity_date])
@@ -54,9 +52,9 @@ module Trading
           end
 
           if parsed.nil?
-            key.failure("must be a valid date")
+            key.failure(:invalid_date)
           elsif parsed <= Date.current
-            key.failure("must be in the future")
+            key.failure(:maturity_must_be_future)
           end
         end
       end

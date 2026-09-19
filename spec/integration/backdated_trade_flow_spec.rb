@@ -39,6 +39,6 @@ RSpec.describe "Recording a trade I made days ago", type: :request do
     }
 
     expect(Trade.count).to eq(0)
-    expect(flash[:alert]).to eq(I18n.t("trades.errores.fecha_futura"))
+    expect(flash[:alert]).to eq(I18n.t("dry_validation.errors.future_trade_date"))
   end
 end

@@ -39,12 +39,12 @@ class TradesController < AuthenticatedController
       end
     in Dry::Monads::Failure[ :validation, errors ]
       respond_with_alert(errors.values.flatten.first, fallback: assets_path)
-    in Dry::Monads::Failure[ :insufficient_shares, message ]
-      respond_with_alert(message, fallback: assets_path)
+    in Dry::Monads::Failure[ :insufficient_shares, _ ]
+      respond_with_alert(t("trades.errores.titulos_insuficientes"), fallback: assets_path)
     in Dry::Monads::Failure[ :missing_fx_rate, currency ]
       respond_with_alert(t("trades.errores.tc_faltante", currency: currency), fallback: assets_path)
-    in Dry::Monads::Failure[ _, message ]
-      redirect_to assets_path, alert: message
+    in Dry::Monads::Failure[ _, _ ]
+      redirect_to assets_path, alert: t("trades.errores.portafolio_no_encontrado")
     end
   end
 
@@ -81,8 +81,12 @@ class TradesController < AuthenticatedController
       end
     in Dry::Monads::Failure[ :validation, errors ]
       respond_with_alert(errors.values.flatten.first, fallback: positions_path)
-    in Dry::Monads::Failure[ _, message ]
-      respond_with_alert(message, fallback: positions_path)
+    in Dry::Monads::Failure[ :too_old, _ ]
+      respond_with_alert(t("trades.errores.muy_antiguo_editar", dias: Trading::UseCases::UpdateTrade::MAX_EDIT_AGE_DAYS), fallback: positions_path)
+    in Dry::Monads::Failure[ :unauthorized, _ ]
+      respond_with_alert(t("trades.errores.no_autorizado"), fallback: positions_path)
+    in Dry::Monads::Failure[ _, _ ]
+      respond_with_alert(t("trades.errores.no_encontrado"), fallback: positions_path)
     end
   end
 
@@ -100,8 +104,14 @@ class TradesController < AuthenticatedController
         end
         format.html { redirect_to positions_path, notice: t("trades.flash.eliminado") }
       end
-    in Dry::Monads::Failure[ _, message ]
-      respond_with_alert(message, fallback: positions_path)
+    in Dry::Monads::Failure[ :too_old, _ ]
+      respond_with_alert(t("trades.errores.muy_antiguo_eliminar", dias: Trading::UseCases::DeleteTrade::MAX_DELETE_AGE_DAYS), fallback: positions_path)
+    in Dry::Monads::Failure[ :already_discarded, _ ]
+      respond_with_alert(t("trades.errores.ya_eliminado"), fallback: positions_path)
+    in Dry::Monads::Failure[ :unauthorized, _ ]
+      respond_with_alert(t("trades.errores.no_autorizado"), fallback: positions_path)
+    in Dry::Monads::Failure[ _, _ ]
+      respond_with_alert(t("trades.errores.no_encontrado"), fallback: positions_path)
     end
   end
 

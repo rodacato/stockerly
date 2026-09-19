@@ -56,6 +56,15 @@ RSpec.describe "Setup", type: :request, setup_bypass: false do
         expect(response).to have_http_status(:unprocessable_content)
       end
 
+      # ADR-011: the list is the first thing a self-hoster reads, and it used to
+      # answer in English on both halves — `Email must be a valid email`.
+      it "names the field and states the failure in es-MX" do
+        post setup_path, params: valid_params.merge(email: "bad", password_confirmation: "otra")
+
+        expect(response.body).to include("El correo debe ser un correo válido")
+        expect(response.body).to include("La confirmación no coincide con la contraseña")
+      end
+
       it "keeps the name and email the reader already typed, but never the password" do
         post setup_path, params: valid_params.merge(email: "bad")
 

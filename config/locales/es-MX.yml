@@ -580,6 +580,38 @@ es-MX:
       titulares_meta: de tus canastas
       titulares_titulo: Titulares
       titulo: Descubrir
+  dry_validation:
+    errors:
+      already_exists: ya existe
+      asset_not_found: no está en tu catálogo
+      date?: debe ser una fecha
+      decimal?: debe ser un número
+      filled?: no puede quedar vacío
+      float?: debe ser un número
+      format?: tiene un formato inválido
+      future_trade_date: La fecha del movimiento no puede ser futura.
+      greater_than_zero: debe ser mayor que 0
+      https_endpoint_required: debe ser un endpoint https
+      included_in?:
+        arg:
+          default: 'debe ser uno de: %{list}'
+          range: debe estar entre %{list_left} y %{list_right}
+      int?: debe ser un número entero
+      invalid_country_code: debe ser un código ISO de dos letras
+      invalid_date: Esa fecha no es válida.
+      invalid_email: debe ser un correo válido
+      invalid_https_url: debe ser una URL https
+      invalid_symbol_format: debe tener de 1 a 20 caracteres, en mayúsculas o dígitos
+      key?: falta
+      maturity_must_be_future: debe ser una fecha futura
+      min_one_minute: debe ser al menos 1 minuto
+      min_size?: debe tener al menos %{num} caracteres
+      must_be_positive: debe ser positivo
+      must_match_password: no coincide con la contraseña
+      number?: debe ser un número
+      required_for_fixed_income: es obligatoria en renta fija
+      str?: debe ser texto
+      trade_not_found: no existe
   help:
     show:
       subtitulo: Cómo empezar con Stockerly, qué hacer cuando algo falla, y cómo contactarnos.
@@ -1302,6 +1334,7 @@ es-MX:
     flash:
       actualizado: Perfil actualizado.
       contrasena_cambiada: Contraseña cambiada correctamente.
+      contrasena_incorrecta: La contraseña actual no es correcta.
   pwa:
     manifest:
       registrar: Registrar movimiento
@@ -1403,6 +1436,11 @@ es-MX:
   setup:
     creada: Cuenta creada. Ahora configura tu instancia.
     new:
+      campos:
+        email: El correo
+        full_name: El nombre
+        password: La contraseña
+        password_confirmation: La confirmación
       corrige: 'Corrige lo siguiente:'
       nombre: Nombre
       nombre_placeholder: Ej. Adrian
@@ -1564,10 +1602,17 @@ es-MX:
       ninguno: No seleccionaste ningún símbolo.
   trades:
     errores:
-      fecha_futura: La fecha del movimiento no puede ser futura.
-      fecha_invalida: Esa fecha no es válida.
+      muy_antiguo_editar: Sólo se pueden editar los movimientos de los últimos %{dias}
+        días.
+      muy_antiguo_eliminar: Sólo se pueden eliminar los movimientos de los últimos
+        %{dias} días.
+      no_autorizado: Ese movimiento no es tuyo.
+      no_encontrado: No encontré ese movimiento.
+      portafolio_no_encontrado: No encontré tu portafolio.
       tc_faltante: No hay tipo de cambio de %{currency} para esa fecha, así que el
         costo promedio no se puede calcular.
+      titulos_insuficientes: No tienes suficientes títulos para esa venta.
+      ya_eliminado: Ese movimiento ya estaba eliminado.
     flash:
       actualizado: Movimiento actualizado.
       eliminado: Movimiento eliminado.
