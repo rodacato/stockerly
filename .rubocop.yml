@@ -143,6 +143,10 @@ Rails/Output:
 # The cost is that a rubocop bump can fail CI — which is where it should fail.
 AllCops:
   NewCops: enable
+  # /redesign is gitignored scratch, so CI never sees it and linting it only
+  # reports offenses nobody can fix from a clean checkout.
+  Exclude:
+    - "redesign/**/*"
 
 # The gateway base classes define no initialize, so super would only reach
 # Object's. The adapters are not skipping parent state; there is none.
