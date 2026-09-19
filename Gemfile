@@ -27,7 +27,7 @@ gem "csv"
 gem "dry-types", "~> 1.7"
 gem "dry-struct", "~> 1.6"
 gem "dry-validation", "~> 1.10"
-gem "dry-monads", "~> 1.6"
+gem "dry-monads", "~> 1.11"
 
 # Pagination [https://github.com/ddnexus/pagy]
 gem "pagy", "~> 43.6"
