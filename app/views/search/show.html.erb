@@ -8,7 +8,7 @@
         data: { controller: "search", search_target: "form", turbo_frame: "search_results", turbo_action: "advance" } do %>
     <label class="relative block">
       <span class="sr-only"><%= t("assets.tracked.buscar") %></span>
-      <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-fg-subtle" aria-hidden="true">search</span>
+      <%= icon_svg "search", class: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-fg-subtle", "aria-hidden": "true" %>
       <input type="search" name="q" value="<%= @query %>" autocomplete="off" autofocus
              placeholder="<%= t("assets.tracked.buscar_placeholder") %>"
              data-action="input->search#queue keydown.esc->search#clear"

@@ -3,7 +3,7 @@
 <header class="sticky top-0 z-40 flex items-center gap-3 border-b border-border-default bg-bg-surface px-5 py-3 lg:hidden">
   <%= link_to back_path, class: "-ml-2 flex size-11 shrink-0 items-center justify-center rounded-lg text-fg-default transition-colors hover:bg-bg-muted",
         aria: { label: t("nav.regresar") } do %>
-    <span class="material-symbols-outlined text-xl" aria-hidden="true">arrow_back</span>
+    <%= icon_svg "arrow_back", class: "text-xl", "aria-hidden": "true" %>
   <% end %>
 
   <h1 class="min-w-0 flex-1 truncate font-display text-lg font-bold tracking-tight text-fg-default"><%= title %></h1>

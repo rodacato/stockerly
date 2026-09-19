@@ -11,9 +11,7 @@
    end %>
 
 <section class="flex items-start gap-3 rounded-2xl border p-4 <%= tone %>">
-  <span class="material-symbols-outlined mt-0.5 shrink-0 text-xl" aria-hidden="true">
-    <%= state == :neutral ? "remove" : "info" %>
-  </span>
+  <%= icon_svg((state == :neutral ? "remove" : "info"), class: "mt-0.5 shrink-0 text-xl", "aria-hidden": "true") %>
 
   <div class="min-w-0">
     <p class="font-display text-base font-semibold">

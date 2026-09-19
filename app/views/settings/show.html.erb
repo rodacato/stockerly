@@ -99,7 +99,7 @@
 
   <%= button_to logout_path, method: :delete,
                 class: button_classes(:secondary, :lg, "flex w-full items-center justify-center gap-2") do %>
-    <span class="material-symbols-outlined text-lg" aria-hidden="true">logout</span>
+    <%= icon_svg "logout", class: "text-lg", "aria-hidden": "true" %>
     <%= t(".cerrar_sesion") %>
   <% end %>
 </div>

@@ -42,7 +42,7 @@
                   form: { class: "inline-flex", data: { turbo_confirm: t("assets.tracked.confirmar_eliminar", symbol: asset.symbol) } },
                   class: "flex size-8 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-negative",
                   aria: { label: t("assets.tracked.eliminar") } do %>
-      <span class="material-symbols-outlined text-base" aria-hidden="true">delete</span>
+      <%= icon_svg "delete", class: "text-base", "aria-hidden": "true" %>
     <% end %>
   </div>
 

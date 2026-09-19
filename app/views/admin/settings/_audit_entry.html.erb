@@ -1,6 +1,6 @@
 <%# One flip of an instance switch, per `ajustes-estado`. Locals: change %>
 <li class="flex items-start gap-3">
-  <span class="material-symbols-outlined mt-0.5 text-lg text-fg-subtle" aria-hidden="true">history</span>
+  <%= icon_svg "history", class: "mt-0.5 text-lg text-fg-subtle", "aria-hidden": "true" %>
   <div class="min-w-0 flex-1">
     <p class="text-sm text-fg-subtle">
       <%= setting_audit_key(change.key) %> ·

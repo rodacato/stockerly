@@ -16,7 +16,7 @@
           <%= image_tag brand_logo(:dark), alt: "Stockerly", class: "h-8 w-auto" %>
         <% end %>
         <p class="flex items-center gap-2 text-sm text-fg-inverse">
-          <span class="material-symbols-outlined text-lg" aria-hidden="true">check</span>
+          <%= icon_svg "check", class: "text-lg", "aria-hidden": "true" %>
           <%= t("auth.open_source") %>
         </p>
       </aside>

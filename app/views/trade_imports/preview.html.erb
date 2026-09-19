@@ -10,7 +10,7 @@
         without saying so, which is worse than refusing the whole file. %>
     <div class="flex flex-col gap-2 rounded-2xl bg-warning-bg px-4 py-3.5">
       <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-base text-warning-fg">warning</span>
+        <%= icon_svg "warning", class: "text-base text-warning-fg" %>
         <span class="text-sm font-semibold text-warning-fg"><%= t(".rechazo.titulo") %></span>
       </div>
       <p class="text-xs leading-relaxed text-warning-fg"><%= t("trade_imports.preview.rechazo.#{@reason}", count: Array(@details).size) %></p>
@@ -86,7 +86,7 @@
     <%= link_to t(".rechazo.otro_archivo"), new_trade_import_path, class: "text-center text-sm font-semibold text-fg-subtle" %>
   <% else %>
     <p class="flex items-center gap-2 rounded-lg bg-info-bg px-3 py-2.5 text-xs text-info-fg" role="status">
-      <span class="material-symbols-outlined text-sm">visibility</span>
+      <%= icon_svg "visibility", class: "text-sm" %>
       <%= t(".nada_guardado") %>
     </p>
 
@@ -109,7 +109,7 @@
 
     <% if @report[:skipped].any? %>
       <p class="flex items-center gap-2 rounded-lg bg-bg-muted px-3 py-2.5 text-xs text-fg-subtle">
-        <span class="material-symbols-outlined text-sm">content_copy</span>
+        <%= icon_svg "content_copy", class: "text-sm" %>
         <%= t(".duplicados", count: @report[:skipped].size) %>
       </p>
     <% end %>

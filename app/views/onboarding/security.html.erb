@@ -15,7 +15,7 @@
              [ "key", t(".codigos"), t(".codigos_desc") ],
              [ "schedule", t(".tiempo"), t(".tiempo_desc") ] ].each do |icon, title, description| %>
           <div class="flex items-start gap-3">
-            <span class="material-symbols-outlined text-xl text-primary" aria-hidden="true"><%= icon %></span>
+            <%= icon_svg icon, class: "text-xl text-primary", "aria-hidden": "true" %>
             <div class="min-w-0">
               <p class="text-sm font-semibold text-fg-default"><%= title %></p>
               <p class="text-xs text-fg-subtle"><%= description %></p>

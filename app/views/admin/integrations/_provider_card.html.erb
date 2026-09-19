@@ -23,7 +23,7 @@
     <button type="button" data-action="reveal#toggle"
             aria-label="<%= t("admin.integrations.index.administrar") %>"
             class="flex size-8 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
-      <span class="material-symbols-outlined text-lg" aria-hidden="true">expand_more</span>
+      <%= icon_svg "expand_more", class: "text-lg", "aria-hidden": "true" %>
     </button>
   </div>
 
@@ -46,7 +46,7 @@
 
   <% if reason %>
     <p class="flex items-start gap-2 rounded-lg <%= reason[:bg] %> px-3 py-2 text-sm <%= reason[:fg] %>">
-      <span class="material-symbols-outlined text-base" aria-hidden="true"><%= reason[:icon] %></span>
+      <%= icon_svg reason[:icon], class: "text-base", "aria-hidden": "true" %>
       <span>
         <%= t("admin.integrations.index.#{reason[:key]}") %>
         <%# What the reader is losing right now, in this source's own terms. %>
@@ -86,7 +86,7 @@
             form: { class: "inline-flex", data: { turbo_confirm: t("admin.integrations.index.confirmar_fuente", provider: entry.provider) } },
             class: "flex size-10 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-negative",
             aria: { label: t("admin.integrations.index.eliminar_fuente") } do %>
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
+        <%= icon_svg "delete", class: "text-lg", "aria-hidden": "true" %>
       <% end %>
     </div>
   </div>

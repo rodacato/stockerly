@@ -9,8 +9,9 @@
 <% stale = observation.observed_at.to_date < Date.current %>
 <%= link_to market_asset_path(asset.symbol),
             class: "flex items-start gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
-  <span class="material-symbols-outlined mt-0.5 shrink-0 text-lg <%= action == :sell ? "text-warning-fg" : "text-positive-fg" %>"
-        aria-hidden="true"><%= signal&.move == :up ? "north_east" : "south_east" %></span>
+  <%= icon_svg((signal&.move == :up ? "north_east" : "south_east"),
+               class: "mt-0.5 shrink-0 text-lg #{action == :sell ? 'text-warning-fg' : 'text-positive-fg'}",
+               "aria-hidden": "true") %>
 
   <div class="min-w-0 flex-1">
     <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>

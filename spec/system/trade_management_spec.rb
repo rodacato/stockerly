@@ -44,15 +44,15 @@ RSpec.describe "Trade management", type: :system do
   it "shows edit and delete buttons for recent trades" do
     visit positions_path
 
-    expect(page).to have_css("span", text: "edit")
-    expect(page).to have_css("span", text: "delete")
+    expect(page).to have_css("[data-icon='edit']")
+    expect(page).to have_css("[data-icon='delete']")
   end
 
   it "hides action buttons for old trades" do
     trade.update_column(:executed_at, 31.days.ago)
     visit positions_path
 
-    expect(page).not_to have_css("span", text: "edit")
-    expect(page).not_to have_css("span", text: "delete")
+    expect(page).not_to have_css("[data-icon='edit']")
+    expect(page).not_to have_css("[data-icon='delete']")
   end
 end

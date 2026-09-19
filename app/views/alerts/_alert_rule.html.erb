@@ -22,14 +22,14 @@
       <%= button_to toggle_alert_path(rule), method: :patch, form_class: "inline-flex",
             class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default",
             aria: { label: is_active ? t("alerts.index.pausar") : t("alerts.index.activar") } do %>
-        <span class="material-symbols-outlined text-lg" aria-hidden="true"><%= is_active ? "pause" : "play_arrow" %></span>
+        <%= icon_svg((is_active ? "pause" : "play_arrow"), class: "text-lg", "aria-hidden": "true") %>
       <% end %>
 
       <%= button_to alert_path(rule), method: :delete,
             form: { data: { turbo_confirm: t("alerts.index.confirmar_borrado") } },
             class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-negative",
             aria: { label: t("alerts.index.eliminar") } do %>
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
+        <%= icon_svg "delete", class: "text-lg", "aria-hidden": "true" %>
       <% end %>
     </div>
   </div>

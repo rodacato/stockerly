@@ -10,7 +10,7 @@
       <p class="text-sm text-fg-subtle"><%= t("assets.tracked.conteo", count: @total) %></p>
       <button type="button" data-action="reveal#toggle"
               class="<%= button_classes(:primary, :sm, "inline-flex shrink-0 items-center gap-1.5") %>">
-        <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
+        <%= icon_svg "add", class: "text-base", "aria-hidden": "true" %>
         <%= t("assets.tracked.agregar") %>
       </button>
     </div>
@@ -22,7 +22,7 @@
     <%= form_with url: tracked_assets_path, method: :get, data: { turbo_action: "advance" },
           class: "relative" do %>
       <label for="tracked_query" class="sr-only"><%= t("assets.tracked.filtrar", count: @total) %></label>
-      <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base text-fg-subtle" aria-hidden="true">search</span>
+      <%= icon_svg "search", class: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base text-fg-subtle", "aria-hidden": "true" %>
       <input type="search" id="tracked_query" name="q" value="<%= @query %>" autocomplete="off"
              placeholder="<%= t("assets.tracked.filtrar", count: @total) %>"
              class="<%= field_classes(:md, "w-full bg-bg-canvas! pl-10") %>" />

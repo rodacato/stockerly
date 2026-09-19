@@ -6,7 +6,7 @@
     never what to do about it (ALR-2, ADR-001). %>
 <div class="flex flex-col gap-4">
   <div class="<%= card_classes("flex flex-col items-center gap-2 border-dashed px-6 py-10 text-center") %>">
-    <span class="material-symbols-outlined text-3xl text-fg-subtle" aria-hidden="true">notifications</span>
+    <%= icon_svg "notifications", class: "text-3xl text-fg-subtle", "aria-hidden": "true" %>
     <p class="font-semibold text-fg-default"><%= t("alerts.index.vacio_titulo") %></p>
     <p class="max-w-sm text-sm text-fg-subtle"><%= t("alerts.index.vacio_cuerpo") %></p>
   </div>
@@ -29,14 +29,14 @@
 
           <%= link_to suggested_rule_path(suggestion),
                       class: button_classes(:primary, :sm, "inline-flex shrink-0 items-center gap-1.5") do %>
-            <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
+            <%= icon_svg "add", class: "text-base", "aria-hidden": "true" %>
             <%= t("alerts.index.sugerencias.crear") %>
           <% end %>
         </div>
       <% end %>
 
       <%= link_to new_alert_path, class: "inline-flex items-center gap-1.5 self-start text-sm font-semibold text-primary-hover" do %>
-        <span class="material-symbols-outlined text-base" aria-hidden="true">edit</span>
+        <%= icon_svg "edit", class: "text-base", "aria-hidden": "true" %>
         <%= t("alerts.index.sugerencias.desde_cero") %>
       <% end %>
     </section>

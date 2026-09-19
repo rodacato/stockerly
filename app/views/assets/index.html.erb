@@ -21,7 +21,7 @@
     </section>
   <% elsif @fx_unavailable %>
     <section class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
-      <span class="material-symbols-outlined text-xl text-warning-fg" aria-hidden="true">currency_exchange</span>
+      <%= icon_svg "currency_exchange", class: "text-xl text-warning-fg", "aria-hidden": "true" %>
       <div>
         <p class="text-sm font-semibold text-warning-fg"><%= t("comun.sin_tc_titulo") %></p>
         <p class="mt-0.5 text-xs text-warning-fg"><%= t("comun.sin_tc_cuerpo") %></p>

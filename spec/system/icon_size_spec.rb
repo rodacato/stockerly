@@ -1,11 +1,11 @@
 require "rails_helper"
 
-# Google's icon sheet declares `.material-symbols-outlined { font-size: 24px }`
-# unlayered, and an unlayered rule beats every Tailwind utility whatever the
-# source order. Linking it made every icon 24px: the nav's `text-xl` and the
-# empty state's `text-6xl` alike. It is imported into `layer(base)` instead, and
-# this measures the cascade in a real browser, which is the only place it exists.
-RSpec.describe "Icon sizes", type: :system, js: true do
+# Icons used to be a remote ligature font, so a page could render with the word
+# `chevron_right` where the chevron belonged — three network hops had to land
+# before a glyph existed. They are vendored SVGs now (ADR-0028), and these
+# measure the two properties that buys, in the only place the cascade and the
+# HTML parser actually exist.
+RSpec.describe "Icons", type: :system, js: true do
   let!(:user) { create(:user, email: "icons@test.com", password: "password123", onboarded_at: Time.current) }
 
   before do
@@ -21,22 +21,32 @@ RSpec.describe "Icon sizes", type: :system, js: true do
     )
   end
 
-  it "lets a size class reach the icon instead of Google's 24px" do
+  it "ships the glyph with the page, so nothing has to arrive for it to draw" do
     visit assets_path
 
-    expect(computed(".material-symbols-outlined.text-xl", "fontSize")).to eq("20px")
+    expect(page).to have_css("svg.icon path", visible: :all)
+    expect(page.evaluate_script("document.querySelector('svg.icon path').getAttribute('d').length")).to be > 10
   end
 
-  it "keeps the icon font applied, so a ligature does not render as its word" do
+  # Written `viewBox`, an HTML document parses it as `viewbox` and the SVG
+  # branch of the parser case-corrects it. Unparsed, baseVal is 0 and every
+  # icon draws as a corner of a 960 canvas.
+  it "keeps a viewBox the browser actually parsed" do
     visit assets_path
 
-    expect(computed(".material-symbols-outlined", "fontFamily")).to include("Material Symbols Outlined")
+    expect(page.evaluate_script("document.querySelector('svg.icon').viewBox.baseVal.width")).to eq(960)
+  end
+
+  it "lets a size class decide how big the icon is" do
+    visit assets_path
+
+    expect(computed("svg.icon.text-xl", "width")).to eq("20px")
   end
 
   it "draws the empty state's icon at the size the artboard does" do
     visit signals_path
 
-    expect(page).to have_css(".material-symbols-outlined.text-6xl", wait: 5)
-    expect(computed(".material-symbols-outlined.text-6xl", "fontSize")).to eq("60px")
+    expect(page).to have_css("svg.icon.text-6xl", wait: 5)
+    expect(computed("svg.icon.text-6xl", "width")).to eq("60px")
   end
 end

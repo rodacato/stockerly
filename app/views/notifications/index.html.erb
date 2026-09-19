@@ -47,7 +47,7 @@
       <%= button_to destroy_read_notifications_path, method: :delete,
             form: { data: { turbo_confirm: t(".confirmar_borrado") }, class: "self-center" },
             class: "inline-flex items-center gap-2 text-sm font-medium text-fg-subtle transition-colors hover:text-negative" do %>
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
+        <%= icon_svg "delete", class: "text-lg", "aria-hidden": "true" %>
         <%= t(".borrar_leidas") %>
       <% end %>
     <% end %>

@@ -23,7 +23,7 @@
                     <p class="text-xs <%= move[:color] %>"><%= move[:text] %></p>
                   </div>
                 <% end %>
-                <span class="material-symbols-outlined shrink-0 text-base text-fg-subtle" aria-hidden="true">chevron_right</span>
+                <%= icon_svg "chevron_right", class: "shrink-0 text-base text-fg-subtle", "aria-hidden": "true" %>
               <% end %>
             </li>
           <% end %>
@@ -31,7 +31,7 @@
         <% unless asked_yahoo %>
           <%= link_to search_path(q: query, scope: "yahoo"), data: { turbo_frame: frame },
                 class: "flex items-center gap-2 self-start px-1 py-1 text-sm font-semibold text-primary hover:text-primary-hover" do %>
-            <span class="material-symbols-outlined text-base" aria-hidden="true">public</span>
+            <%= icon_svg "public", class: "text-base", "aria-hidden": "true" %>
             <%= t(".buscar_en_yahoo", query: query) %>
           <% end %>
         <% end %>
@@ -42,7 +42,7 @@
 
     <% if yahoo_failed %>
       <p class="flex items-start gap-2 rounded-lg bg-negative-bg px-3.5 py-3 text-sm text-negative-fg">
-        <span class="material-symbols-outlined text-base" aria-hidden="true">cloud_off</span>
+        <%= icon_svg "cloud_off", class: "text-base", "aria-hidden": "true" %>
         <%= t(".yahoo_caido") %>
       </p>
     <% elsif yahoo.any? %>
