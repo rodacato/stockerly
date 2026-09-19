@@ -1,4 +1,8 @@
 class TradesController < AuthenticatedController
+  # ADR-011: the use case names the refusal and the copy is the controller's.
+  # Only the age limit reads differently per verb, so each verb has its own.
+  TRADE_ALERTS = { already_discarded: "ya_eliminado", unauthorized: "no_autorizado" }.freeze
+
   FLASH_PARTIAL = "shared/flash_message"
 
   # D11: a real page first. The drawer is a presentation the JS layer adds; if
@@ -81,12 +85,8 @@ class TradesController < AuthenticatedController
       end
     in Dry::Monads::Failure[ :validation, errors ]
       respond_with_alert(errors.values.flatten.first, fallback: positions_path)
-    in Dry::Monads::Failure[ :too_old, _ ]
-      respond_with_alert(t("trades.errores.muy_antiguo_editar", dias: Trading::UseCases::UpdateTrade::MAX_EDIT_AGE_DAYS), fallback: positions_path)
-    in Dry::Monads::Failure[ :unauthorized, _ ]
-      respond_with_alert(t("trades.errores.no_autorizado"), fallback: positions_path)
-    in Dry::Monads::Failure[ _, _ ]
-      respond_with_alert(t("trades.errores.no_encontrado"), fallback: positions_path)
+    in Dry::Monads::Failure[ tag, _ ]
+      respond_with_alert(update_alert(tag), fallback: positions_path)
     end
   end
 
@@ -104,18 +104,25 @@ class TradesController < AuthenticatedController
         end
         format.html { redirect_to positions_path, notice: t("trades.flash.eliminado") }
       end
-    in Dry::Monads::Failure[ :too_old, _ ]
-      respond_with_alert(t("trades.errores.muy_antiguo_eliminar", dias: Trading::UseCases::DeleteTrade::MAX_DELETE_AGE_DAYS), fallback: positions_path)
-    in Dry::Monads::Failure[ :already_discarded, _ ]
-      respond_with_alert(t("trades.errores.ya_eliminado"), fallback: positions_path)
-    in Dry::Monads::Failure[ :unauthorized, _ ]
-      respond_with_alert(t("trades.errores.no_autorizado"), fallback: positions_path)
-    in Dry::Monads::Failure[ _, _ ]
-      respond_with_alert(t("trades.errores.no_encontrado"), fallback: positions_path)
+    in Dry::Monads::Failure[ tag, _ ]
+      respond_with_alert(destroy_alert(tag), fallback: positions_path)
     end
   end
 
   private
+
+  def update_alert(tag)
+    return t("trades.errores.muy_antiguo_editar", dias: Trading::UseCases::UpdateTrade::MAX_EDIT_AGE_DAYS) if tag == :too_old
+
+    t("trades.errores.#{TRADE_ALERTS.fetch(tag, "no_encontrado")}")
+  end
+
+  def destroy_alert(tag)
+    return t("trades.errores.muy_antiguo_eliminar", dias: Trading::UseCases::DeleteTrade::MAX_DELETE_AGE_DAYS) if tag == :too_old
+
+    t("trades.errores.#{TRADE_ALERTS.fetch(tag, "no_encontrado")}")
+  end
+
 
   # What the average-cost projection anchors on (#428). Only a buy into a
   # position that already exists has an average to move, and only the symbol the
