@@ -17,7 +17,7 @@
         <div class="<%= card_classes("p-5") %>">
           <div class="flex items-center gap-3 mb-3">
             <div class="size-10 rounded-lg bg-primary-muted flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-xl text-primary">database</span>
+              <%= icon_svg "database", class: "text-xl text-primary" %>
             </div>
             <div class="min-w-0">
               <p class="font-semibold text-fg-default"><%= integration.provider_name %></p>
@@ -32,7 +32,7 @@
           <%# The key is skippable, so the screen has to say what skipping costs. %>
           <% if info&.without %>
             <p class="flex items-start gap-2 rounded-lg bg-bg-muted px-3 py-2 mb-3 text-sm text-fg-subtle">
-              <span class="material-symbols-outlined text-base" aria-hidden="true">block</span>
+              <%= icon_svg "block", class: "text-base", "aria-hidden": "true" %>
               <span><%= t(".sin_esta_api_key") %> <%= info.without %></span>
             </p>
           <% end %>
@@ -45,7 +45,7 @@
             <a href="<%= info.url %>" target="_blank" rel="noopener noreferrer"
                class="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-primary hover:underline">
               <%= t(".donde_consigo") %>
-              <span class="material-symbols-outlined text-sm">open_in_new</span>
+              <%= icon_svg "open_in_new", class: "text-sm" %>
             </a>
           <% end %>
         </div>
@@ -58,7 +58,7 @@
             <% public_sources.each do |integration| %>
               <% info = MarketData::Domain::ProviderDirectory.for(integration.provider_name) %>
               <div class="flex items-start gap-3">
-                <span class="material-symbols-outlined text-lg text-positive mt-0.5">check_circle</span>
+                <%= icon_svg "check_circle", class: "text-lg text-positive mt-0.5" %>
                 <div class="min-w-0">
                   <p class="text-sm font-semibold text-fg-default"><%= integration.provider_name %></p>
                   <% if info&.description %>

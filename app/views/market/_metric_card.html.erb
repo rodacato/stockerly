@@ -16,7 +16,7 @@
       <button type="button" data-action="click->metric-tooltip#toggle"
               class="shrink-0 cursor-help text-fg-subtle transition-colors hover:text-primary"
               aria-label="<%= t("market.metricas_detalle", metric: metric_name(definition)) %>">
-        <span class="material-symbols-outlined text-sm" aria-hidden="true">info</span>
+        <%= icon_svg "info", class: "text-sm", "aria-hidden": "true" %>
       </button>
     </div>
 
@@ -36,13 +36,13 @@
        class="absolute left-0 top-full z-20 mt-1 hidden w-full overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-xl">
     <div class="flex items-center justify-between gap-2 border-b border-border-default px-4 py-3">
       <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
-        <span class="material-symbols-outlined text-lg text-primary" aria-hidden="true">school</span>
+        <%= icon_svg "school", class: "text-lg text-primary", "aria-hidden": "true" %>
         <%= metric_name(definition) %>
       </h3>
       <button type="button" data-action="click->metric-tooltip#close"
               class="text-fg-subtle transition-colors hover:text-fg-default"
               aria-label="<%= t("market.metricas_cerrar") %>">
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+        <%= icon_svg "close", class: "text-lg", "aria-hidden": "true" %>
       </button>
     </div>
 

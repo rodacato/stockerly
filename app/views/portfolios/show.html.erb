@@ -92,7 +92,7 @@
 
     <% if @vs_cetes || @vs_hold %>
       <div class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
-        <span class="material-symbols-outlined text-lg text-warning-fg" aria-hidden="true">info</span>
+        <%= icon_svg "info", class: "text-lg text-warning-fg", "aria-hidden": "true" %>
         <p class="text-xs text-warning-fg"><%= t(".twr_nota") %></p>
       </div>
     <% end %>

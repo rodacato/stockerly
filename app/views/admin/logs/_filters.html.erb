@@ -6,7 +6,7 @@
       class: "flex flex-col gap-3") do |f| %>
 
   <div class="<%= card_classes("flex items-center gap-2 px-4 py-3") %>">
-    <span class="material-symbols-outlined text-lg text-fg-subtle" aria-hidden="true">search</span>
+    <%= icon_svg "search", class: "text-lg text-fg-subtle", "aria-hidden": "true" %>
     <%= f.text_field :search, value: params[:search],
         placeholder: t("admin.logs.index.buscar"),
         autocomplete: "off",

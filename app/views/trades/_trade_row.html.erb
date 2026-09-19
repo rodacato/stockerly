@@ -23,12 +23,12 @@
       <%= link_to edit_trade_path(trade), data: { turbo_method: :get, turbo_stream: true },
             class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary",
             aria: { label: t("positions.index.editar") } do %>
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">edit</span>
+        <%= icon_svg "edit", class: "text-lg", "aria-hidden": "true" %>
       <% end %>
       <%= link_to confirm_destroy_trade_path(trade), data: { turbo_method: :get, turbo_stream: true },
             class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-negative",
             aria: { label: t("positions.index.eliminar") } do %>
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
+        <%= icon_svg "delete", class: "text-lg", "aria-hidden": "true" %>
       <% end %>
     </div>
   <% end %>

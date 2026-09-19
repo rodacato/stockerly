@@ -22,12 +22,12 @@
     </ul>
 
     <p class="flex items-start gap-2 rounded-xl bg-bg-muted px-4 py-3 text-sm text-fg-subtle">
-      <span class="material-symbols-outlined text-lg" aria-hidden="true">info</span>
+      <%= icon_svg "info", class: "text-lg", "aria-hidden": "true" %>
       <%= t(".api_key_nota") %>
     </p>
   <% else %>
     <div class="<%= card_classes("flex flex-col items-center gap-3 border-dashed px-6 py-10 text-center") %>">
-      <span class="material-symbols-outlined text-3xl text-fg-subtle" aria-hidden="true">hub</span>
+      <%= icon_svg "hub", class: "text-3xl text-fg-subtle", "aria-hidden": "true" %>
       <p class="font-semibold text-fg-default"><%= t(".vacio_titulo") %></p>
       <p class="max-w-sm text-sm text-fg-subtle"><%= t(".vacio_cuerpo_html") %></p>
     </div>

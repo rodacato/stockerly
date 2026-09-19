@@ -22,7 +22,7 @@ RSpec.describe "HeaderBar", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(%(aria-label="#{I18n.t("nav.regresar")}"))
-      expect(response.body).to match(/href="#{send(back)}"[^>]*>\s*<span[^>]*>arrow_back/m)
+      expect(response.body).to match(/href="#{send(back)}"[^>]*>\s*<svg[^>]*data-icon="arrow_back"/m)
     end
 
     it "heads #{path} with the visible title instead of the sr-only one" do

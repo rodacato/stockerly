@@ -4,12 +4,10 @@
      data-controller="flash"
      data-flash-dismiss-after-value="5000">
   <div class="flex items-center gap-3">
-    <span class="material-symbols-outlined text-lg">
-      <%= type.to_s == "notice" ? "check_circle" : "error" %>
-    </span>
+    <%= icon_svg((type.to_s == "notice" ? "check_circle" : "error"), class: "text-lg") %>
     <p class="text-sm font-medium flex-1"><%= message %></p>
     <button data-action="click->flash#dismiss" class="opacity-70 hover:opacity-100 transition-opacity">
-      <span class="material-symbols-outlined text-lg">close</span>
+      <%= icon_svg "close", class: "text-lg" %>
     </button>
   </div>
 </div>

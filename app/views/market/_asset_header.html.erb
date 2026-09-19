@@ -8,7 +8,7 @@
     <%# Back to Activos: the listing this used to return to was deleted with D31,
         and Activos is where the reader came from anyway. %>
     <%= link_to assets_path, class: "flex min-w-0 items-center gap-2 text-fg-default transition-colors hover:text-primary" do %>
-      <span class="material-symbols-outlined shrink-0 text-xl" aria-hidden="true">chevron_left</span>
+      <%= icon_svg "chevron_left", class: "shrink-0 text-xl", "aria-hidden": "true" %>
       <span class="min-w-0">
         <span class="font-display text-xl font-bold tracking-tight"><%= asset.symbol %></span>
         <span class="ml-2 text-base text-fg-subtle"><%= asset.name %></span>
@@ -29,13 +29,13 @@
                       method: :delete,
                       "aria-label": t("market.header.quitar_watchlist"),
                       class: "flex size-11 items-center justify-center rounded-lg text-primary transition-colors hover:bg-bg-muted" do %>
-          <span class="material-symbols-outlined text-xl" aria-hidden="true">bookmark_added</span>
+          <%= icon_svg "bookmark_added", class: "text-xl", "aria-hidden": "true" %>
         <% end %>
       <% else %>
         <%= button_to watchlist_items_path, params: { asset_id: asset.id },
                       "aria-label": t("market.header.agregar_watchlist"),
                       class: "flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:bg-bg-muted hover:text-primary" do %>
-          <span class="material-symbols-outlined text-xl" aria-hidden="true">bookmark_add</span>
+          <%= icon_svg "bookmark_add", class: "text-xl", "aria-hidden": "true" %>
         <% end %>
       <% end %>
     <% end %>

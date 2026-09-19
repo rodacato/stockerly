@@ -33,7 +33,7 @@
       <button type="button" data-action="reveal#toggle"
               class="inline-flex items-center gap-1 self-start text-sm font-semibold text-primary hover:underline">
         <%= t(".ver_todos") %>
-        <span class="material-symbols-outlined text-base" aria-hidden="true">expand_more</span>
+        <%= icon_svg "expand_more", class: "text-base", "aria-hidden": "true" %>
       </button>
   
       <div data-reveal-target="content" class="hidden flex-col gap-6 border-t border-border-default pt-4">

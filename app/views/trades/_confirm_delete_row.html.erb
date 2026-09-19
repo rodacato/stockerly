@@ -1,7 +1,7 @@
 <%# Confirms in place instead of through a JS dialog, which is hostile on a
     phone. Same dom_id as the card it replaces. %>
 <li id="<%= dom_id(trade) %>" class="flex flex-col gap-3 rounded-2xl border border-negative bg-negative-bg px-4 py-3 sm:flex-row sm:items-center">
-  <span class="material-symbols-outlined shrink-0 text-negative-fg" aria-hidden="true">delete</span>
+  <%= icon_svg "delete", class: "shrink-0 text-negative-fg", "aria-hidden": "true" %>
 
   <div class="min-w-0 flex-1">
     <p class="text-sm font-semibold text-negative-fg"><%= t("positions.index.confirmar_borrado") %></p>

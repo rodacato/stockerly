@@ -9,9 +9,9 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-/* Imported into a layer, not linked: Google's sheet sizes .material-symbols-outlined
-   at 24px unlayered, and an unlayered rule beats every utility class. */
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block") layer(base);
+/* An inline SVG carries no font size of its own, so 1em is what lets the
+   `text-*` class on the call site decide how big the icon is. */
+.icon { width: 1em; height: 1em; vertical-align: middle; }
 
 /* Price flash animations for real-time Turbo Stream updates */
 @keyframes flash-green {

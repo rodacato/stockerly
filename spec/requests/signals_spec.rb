@@ -43,8 +43,8 @@ RSpec.describe "Cockpit › Señales", type: :request do
       it "draws a fall under a moving average downward, as trend-following" do
         row = row_for("XLG", "ma50_crossed_below")
 
-        expect(row).to have_css(".material-symbols-outlined", text: "south_east")
-        expect(row).to have_no_css(".material-symbols-outlined", text: "north_east")
+        expect(row).to have_css("[data-icon='south_east']")
+        expect(row).to have_no_css("[data-icon='north_east']")
         expect(row).to have_text("vende")
         expect(row).to have_text("Tendencia")
       end
@@ -52,7 +52,7 @@ RSpec.describe "Cockpit › Señales", type: :request do
       it "draws a break of the lower band downward, as a bet on the rebound" do
         row = row_for("COIN", "bb_lower_breached")
 
-        expect(row).to have_css(".material-symbols-outlined", text: "south_east")
+        expect(row).to have_css("[data-icon='south_east']")
         expect(row).to have_text("compra")
         expect(row).to have_text("Rebote")
       end

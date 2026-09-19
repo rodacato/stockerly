@@ -28,7 +28,7 @@
     </div>
   <% else %>
     <div class="<%= card_classes("flex flex-col items-center gap-2 border-dashed px-6 py-10 text-center") %>">
-      <span class="material-symbols-outlined text-3xl text-fg-subtle" aria-hidden="true">bug_report</span>
+      <%= icon_svg "bug_report", class: "text-3xl text-fg-subtle", "aria-hidden": "true" %>
       <p class="font-semibold text-fg-default">
         <%= admin_errors_any_filter_active? ? t(".sin_coincidencias") : t(".vacio") %>
       </p>

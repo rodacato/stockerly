@@ -19,7 +19,7 @@
   <%= form_with url: preview_trade_import_path, class: "flex flex-col gap-4",
                 data: { turbo: false, controller: "submitting", submitting_label_value: t(".revisando") } do |f| %>
     <label class="<%= card_classes("flex cursor-pointer flex-col items-center gap-2 border-dashed px-5 py-7 text-center") %>">
-      <span class="material-symbols-outlined text-2xl text-primary">upload_file</span>
+      <%= icon_svg "upload_file", class: "text-2xl text-primary" %>
       <span class="text-sm font-semibold text-primary"><%= t(".elegir") %></span>
       <span class="text-xs text-fg-subtle"><%= t(".arrastra") %></span>
       <%= f.file_field :archivo, accept: ".csv,text/csv", class: "sr-only" %>
@@ -37,7 +37,7 @@
 
     <div class="flex flex-col gap-2 rounded-2xl bg-bg-muted px-4 py-3.5">
       <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-sm text-fg-subtle">info</span>
+        <%= icon_svg "info", class: "text-sm text-fg-subtle" %>
         <span class="text-xs font-semibold text-fg-default"><%= t(".columnas") %></span>
       </div>
       <p class="font-mono text-[10px] leading-relaxed text-fg-default">asset_symbol · side · shares · price_per_share · executed_at</p>

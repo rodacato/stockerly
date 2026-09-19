@@ -10,7 +10,7 @@
   <section class="<%= card_classes("shadow-sm overflow-hidden") %>">
     <div class="border-b border-border-default bg-bg-muted px-5 py-4">
       <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
-        <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">analytics</span>
+        <%= icon_svg "analytics", class: "text-base text-primary", "aria-hidden": "true" %>
         <%= t(".titulo", days: MarketData::UseCases::LoadAssetDetail::PE_CHART_DAYS) %>
       </h3>
     </div>

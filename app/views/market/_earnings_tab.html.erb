@@ -83,7 +83,7 @@
                   end
               %>
               <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold <%= tone %>">
-                <span class="material-symbols-outlined text-xs" aria-hidden="true"><%= icon %></span>
+                <%= icon_svg icon, class: "text-xs", "aria-hidden": "true" %>
                 <%= label %>
               </span>
             </td>

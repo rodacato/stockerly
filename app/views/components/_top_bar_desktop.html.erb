@@ -17,7 +17,7 @@
             data: { search_target: "form", turbo_frame: SearchController::DROPDOWN } do %>
         <label class="relative block">
           <span class="sr-only"><%= t("nav.buscar") %></span>
-          <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-fg-subtle" aria-hidden="true">search</span>
+          <%= icon_svg "search", class: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-fg-subtle", "aria-hidden": "true" %>
           <input type="search" name="q" autocomplete="off"
                  placeholder="<%= t("assets.tracked.buscar_placeholder") %>"
                  data-search-target="input"
@@ -31,7 +31,7 @@
     </div>
 
     <%= link_to notifications_path, class: "relative flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:bg-bg-muted hover:text-primary" do %>
-      <span class="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>
+      <%= icon_svg "notifications", class: "text-xl", "aria-hidden": "true" %>
       <%= render "components/notification_badge", unread_count: navbar_unread_count %>
     <% end %>
   </div>

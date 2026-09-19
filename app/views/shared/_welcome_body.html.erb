@@ -22,12 +22,12 @@
     <% door_classes = card_classes("group flex h-full w-full flex-col p-5 text-left text-fg-default no-underline transition-colors hover:border-primary hover:bg-bg-muted cursor-pointer") %>
     <% content = capture do %>
       <div class="size-8 rounded-lg bg-bg-muted text-fg-default inline-flex items-center justify-center mb-4">
-        <span class="material-symbols-outlined text-lg"><%= card[:icon] %></span>
+        <%= icon_svg card[:icon], class: "text-lg" %>
       </div>
       <h3 class="text-base font-semibold text-fg-default mb-1.5"><%= card[:title] %></h3>
       <p class="text-sm text-fg-subtle leading-relaxed flex-1"><%= card[:body] %></p>
       <span class="text-fg-subtle group-hover:text-primary transition-colors mt-3 inline-flex items-center text-sm">
-        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        <%= icon_svg "arrow_forward", class: "text-sm" %>
       </span>
     <% end %>
     <% if local_assigns[:complete] %>

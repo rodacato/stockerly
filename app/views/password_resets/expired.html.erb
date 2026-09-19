@@ -5,7 +5,7 @@
 
 <div class="flex flex-col items-center space-y-3 text-center">
   <div class="mb-2 flex size-14 items-center justify-center rounded-2xl bg-negative-bg text-negative">
-    <span class="material-symbols-outlined text-3xl" aria-hidden="true">link_off</span>
+    <%= icon_svg "link_off", class: "text-3xl", "aria-hidden": "true" %>
   </div>
   <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle"><%= t("auth.expirado.kicker") %></p>
   <h1 class="font-display text-3xl font-bold tracking-tight text-fg-default"><%= t("auth.expirado.titulo") %></h1>
@@ -19,7 +19,7 @@
 <%= link_to forgot_password_path,
       class: button_classes(:primary, :lg, "mt-6 flex w-full items-center justify-center gap-2") do %>
   <%= t("auth.expirado.solicitar") %>
-  <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+  <%= icon_svg "arrow_forward", class: "text-[18px]", "aria-hidden": "true" %>
 <% end %>
 
 <p class="mt-4 text-center text-sm text-fg-subtle">
