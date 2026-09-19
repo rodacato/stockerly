@@ -273,6 +273,40 @@
                   "fontWeight": "normal"
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "SQ9MD",
+              "name": "6 · El",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-1",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "IhgR3",
+                  "name": "Label",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "6 · The wordmark depended on a font an <img> cannot load — RESOLVED",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "LGK8I",
+                  "name": "Body",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "wordmark.svg and the app's logo_light/dark.svg set the word as <text font-family=\"Plus Jakarta Sans\">, and shared/_logo renders them through image_tag. An SVG loaded as an <img> cannot use the page's web fonts, so a device without the family fell back to a wider one and the 174-wide viewBox cut the last letter — observed as \"stockerl\". The three exports now carry the letters as outlined paths, taken from the family at weight 700 with its kerning and the -0.725 tracking; the right edge lands at 173.92. Keep them as paths: re-exporting this sheet's wordmark as <text> brings the bug back.",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
             }
           ]
         },
