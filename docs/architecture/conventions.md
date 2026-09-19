@@ -130,7 +130,7 @@ Code stays English, **routes included** — `/dashboard`, `/assets`, `/alerts`, 
 
 Adopted **surface by surface as the 2.0 redesign lands**. Hardcoded es-MX in a screen nobody has
 redesigned yet is expected, not a defect — do not open cleanup PRs for it. See
-[ADR-011](adr/0011-adopt-i18n-for-the-2.0-rewrite.md), which supersedes ADR-007.
+[ADR-011](adr/0011-adopt-i18n-for-the-2.0-redesign.md), which supersedes ADR-007.
 
 ---
 

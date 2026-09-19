@@ -1,4 +1,4 @@
-# ADR-011 — Adopt Rails I18n (single locale, es-MX) for the 2.0 rewrite
+# ADR-011 — Adopt Rails I18n (single locale, es-MX) for the 2.0 redesign
 
 - **Status:** Accepted
 - **Date:** 2026-08-24
@@ -60,7 +60,7 @@ being true when the screens are being rewritten regardless.
 
 ### Positive
 
-- The 2.0 rewrite lands localizable from day one, at the marginal cost of the rewrite itself.
+- The 2.0 redesign lands localizable from day one, at the marginal cost of the template rewrite itself.
 - Copy stops being scattered across ERB: one file to review when the voice changes (ADR-001 is a
   voice rule, and voice rules are easier to enforce over a catalogue than over 143 templates).
 - `i18n-tasks` gives a real check for dead and missing copy, which hardcoded strings never had.

@@ -251,7 +251,7 @@ proposals that serve the builder's ambition instead of the user.
 
 - **Brings:** consistent MXN and USD formats for a Mexican reader; es-MX dates; es-MX over neutral or
   peninsular Spanish (*celular*, not *móvil*); correct pluralization in the locale file
-  ([ADR-011](../architecture/adr/0011-adopt-i18n-for-the-2.0-rewrite.md)).
+  ([ADR-011](../architecture/adr/0011-adopt-i18n-for-the-2.0-redesign.md)).
 - **Consult when:** new copy that shows money, dates or numbers; the temptation to translate English
   literally; a copy audit. Domain vocabulary is C1's.
 - **Style:** side-by-side examples; blunt about unnecessary anglicisms.

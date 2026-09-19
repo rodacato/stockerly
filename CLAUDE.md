@@ -277,7 +277,7 @@ The count is deterministic across seeds — that is what #526 established. Cover
 | Repo artifacts (commits, issues, PRs, code, comments, docs in `docs/`) | English |
 | User-facing UI (views, flashes, mailers, page titles, controller error strings) | **es-MX** |
 
-**Rails I18n, single locale (`es-MX`), managed with `i18n-tasks`.** User-facing copy lives in `config/locales/es-MX.yml` behind lazy lookups (`t(".key")`); code artifacts stay English **including routes** (`/dashboard`, `/assets`, `/alerts`, `/settings`). Adopted **surface by surface as the 2.0 redesign is translated** — a screen gets its keys when its slice lands, so hardcoded es-MX in a not-yet-redesigned view is expected, not a defect. See [ADR-0011](docs/architecture/adr/0011-adopt-i18n-for-the-2.0-rewrite.md), which supersedes ADR-0007: deferring was right while the alternative was rewriting working screens, and stopped being right once every string was being rewritten anyway.
+**Rails I18n, single locale (`es-MX`), managed with `i18n-tasks`.** User-facing copy lives in `config/locales/es-MX.yml` behind lazy lookups (`t(".key")`); code artifacts stay English **including routes** (`/dashboard`, `/assets`, `/alerts`, `/settings`). Adopted **surface by surface as the 2.0 redesign is translated** — a screen gets its keys when its slice lands, so hardcoded es-MX in a not-yet-redesigned view is expected, not a defect. See [ADR-0011](docs/architecture/adr/0011-adopt-i18n-for-the-2.0-redesign.md), which supersedes ADR-0007: deferring was right while the alternative was rewriting working screens, and stopped being right once every string was being rewritten anyway.
 
 ### Other
 

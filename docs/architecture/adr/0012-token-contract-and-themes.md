@@ -4,7 +4,7 @@
 - **Date:** 2026-08-24
 - **Author:** Adrian Castillo
 - **Supersedes:** —
-- **Related:** [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md), [ADR-011](./0011-adopt-i18n-for-the-2.0-rewrite.md), `design/DECISIONS.md` D1, `design/ui-kit.CHANGELOG.md`
+- **Related:** [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md), [ADR-011](./0011-adopt-i18n-for-the-2.0-redesign.md), `design/DECISIONS.md` D1, `design/ui-kit.CHANGELOG.md`
 
 ---
 

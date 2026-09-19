@@ -160,7 +160,7 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [008](./adr/0008-privacy-notice-domicile-disclosure.md) | Privacy notice omits the full domicile inline | **Superseded by 026** (2026-09-13) |
 | [009](./adr/0009-fx-history-strategy.md) | Historical FX rates for cross-currency revaluation | Accepted 2026-06-27 · implemented and amended 2026-08-26 |
 | [010](./adr/0010-pivot-to-self-hosted-single-user-tracker.md) | Pivot to a self-hosted, single-user asset tracker | Accepted 2026-08-20 · addendum 2026-08-22 |
-| [011](./adr/0011-adopt-i18n-for-the-2.0-rewrite.md) | Adopt Rails I18n (single locale, es-MX) | Accepted 2026-08-24 · supersedes 007 |
+| [011](./adr/0011-adopt-i18n-for-the-2.0-redesign.md) | Adopt Rails I18n (single locale, es-MX) | Accepted 2026-08-24 · supersedes 007 |
 | [012](./adr/0012-token-contract-and-themes.md) | Separate the token contract from theme values | Accepted 2026-08-24 |
 | [013](./adr/0013-action-labels-on-persisted-observations.md) | Action verbs allowed when an observation backs them | Accepted 2026-08-24 · amends 001 · amended by 014 |
 | [014](./adr/0014-state-phrases-from-a-closed-catalogue.md) | Reading a state out loud, from a closed catalogue | Accepted 2026-08-25 · amends 013 |
