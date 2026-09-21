@@ -150,6 +150,40 @@ es-MX:
         desconocida: Fuente de datos desconocida.
         encolada: Sincronización de %{source} encolada.
   alerts:
+    condiciones:
+      bmv_holiday:
+        etiqueta: BMV festivo
+        resumen:
+          one: 1 día antes de un festivo BMV
+          other: "%{count} días antes de un festivo BMV"
+      cete_auction:
+        etiqueta: Subasta CETES
+        resumen:
+          one: 1 día antes de una subasta Banxico
+          other: "%{count} días antes de una subasta Banxico"
+      day_change_percent:
+        etiqueta: "% cambio en el día"
+        resumen: se mueve %{threshold}% o más en el día
+      dividend_ex_date:
+        etiqueta: Dividendo próximo
+        resumen:
+          one: 1 día antes del ex-date
+          other: "%{count} días antes del ex-date"
+      price_crosses_above:
+        etiqueta: Precio cruza umbral
+        resumen: cruza %{currency} %{threshold} al alza
+      price_crosses_below:
+        etiqueta: Precio cruza umbral
+        resumen: cruza %{currency} %{threshold} a la baja
+      rsi_overbought:
+        etiqueta: RSI sobrecomprado
+        resumen: RSI(14) en %{threshold} o más
+      rsi_oversold:
+        etiqueta: RSI sobrevendido
+        resumen: RSI(14) en %{threshold} o menos
+      volume_spike:
+        etiqueta: Volumen anómalo
+        resumen: volumen %{threshold}× o más sobre su promedio de %{days} días
     flash:
       activada: Regla activada.
       actualizada: Regla actualizada.
@@ -170,6 +204,7 @@ es-MX:
       disparo_hace: Se disparó hace %{when}
       eliminar: Eliminar regla
       en_pausa: "%{count} en pausa"
+      espera: espera %{minutes} min entre avisos
       nueva: Nueva
       nunca_disparo: Nunca se ha disparado
       pausada: pausada

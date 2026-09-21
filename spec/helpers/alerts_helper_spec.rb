@@ -15,6 +15,24 @@ RSpec.describe AlertsHelper, type: :helper do
       expect(helper.alert_condition_summary(build(:alert_rule, condition: :rsi_overbought, threshold_value: 70)))
         .to eq("RSI(14) en 70 o más")
     end
+
+    it "inflects the calendar window instead of hedging it with a parenthesis" do
+      expect(helper.alert_condition_summary(build(:alert_rule, :marketwide, condition: :cete_auction, window_days: 1)))
+        .to eq("1 día antes de una subasta Banxico")
+      expect(helper.alert_condition_summary(build(:alert_rule, :marketwide, condition: :cete_auction, window_days: 3)))
+        .to eq("3 días antes de una subasta Banxico")
+      expect(helper.alert_condition_summary(build(:alert_rule, :dividend, window_days: 1)))
+        .to eq("1 día antes del ex-date")
+      expect(helper.alert_condition_summary(build(:alert_rule, :marketwide, condition: :bmv_holiday, window_days: 2)))
+        .to eq("2 días antes de un festivo BMV")
+    end
+  end
+
+  describe "#alert_cooldown_label" do
+    it "falls back to the model's default when the rule carries no cooldown" do
+      expect(helper.alert_cooldown_label(build(:alert_rule, cooldown_minutes: nil)))
+        .to eq("espera #{AlertRule::DEFAULT_COOLDOWN_MINUTES} min entre avisos")
+    end
   end
 
   describe "#alert_rule_kind_label" do
