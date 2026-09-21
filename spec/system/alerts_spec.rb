@@ -36,6 +36,14 @@ RSpec.describe "Alert management", type: :system do
     expect(page).to have_content("A la baja")
   end
 
+  it "keeps the direction control inside the Condición group that decides it" do
+    visit new_alert_path
+
+    within(:xpath, "//div[span[normalize-space(text())='Condición']]") do
+      expect(page).to have_selector("[data-alert-form-target~='direction']", visible: :all)
+    end
+  end
+
   it "creates an alert rule from the sheet" do
     create(:asset, symbol: "NVDA", name: "NVIDIA Corp.", current_price: 900.0)
 
