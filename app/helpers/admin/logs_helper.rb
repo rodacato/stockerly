@@ -1,29 +1,29 @@
 module Admin
   module LogsHelper
-    SEVERITY_OPTIONS = [
-      [ "todos",   "Todos",  nil ],
-      [ "success", "Éxito",  "success" ],
-      [ "warning", "Aviso",  "warning" ],
-      [ "error",   "Error",  "error" ]
-    ].freeze
-
-    MODULE_OPTIONS = [
-      [ "todos",  "Todos",  nil ],
-      [ "sync",   "sync",   "sync" ],
-      [ "alerts", "alerts", "alerts" ],
-      [ "auth",   "auth",   "auth" ],
-      [ "admin",  "admin",  "admin" ]
-    ].freeze
-
-    RANGE_OPTIONS = [
-      [ "hoy", "Hoy",          "hoy" ],
-      [ "24h", "Últimas 24 h", "24h" ],
-      [ "7d",  "7 días",       "7d" ],
-      [ "30d", "30 días",      "30d" ],
-      [ "90d", "90 días",      "90d" ]
-    ].freeze
+    SEVERITIES = %w[success warning error].freeze
+    MODULE_NAMES = %w[sync alerts auth admin].freeze
+    RANGES = %w[hoy 24h 7d 30d 90d].freeze
 
     DEFAULT_RANGE = "24h".freeze
+
+    # Each filter control reads [ slug, label, value ]: the slug marks the
+    # active chip, the value is what the query string carries, and "todos"
+    # carries no value because it is the absence of the filter.
+    def admin_log_severity_options
+      [ [ "todos", t("admin.logs.index.todos"), nil ] ] +
+        SEVERITIES.map { |severity| [ severity, t("admin.logs.index.severidades.#{severity}"), severity ] }
+    end
+
+    # A module is named by the code that writes the log, so its own name is
+    # the label.
+    def admin_log_module_options
+      [ [ "todos", t("admin.logs.index.todos"), nil ] ] +
+        MODULE_NAMES.map { |name| [ name, name, name ] }
+    end
+
+    def admin_log_range_options
+      RANGES.map { |range| [ range, t("admin.logs.index.rangos.#{range}"), range ] }
+    end
 
     def admin_log_severity_dot_classes(severity)
       case severity.to_s

@@ -36,13 +36,13 @@
   <% if has_details %>
     <div data-reveal-target="content" class="mt-4 hidden flex-col gap-3 border-t border-border-default pt-4">
       <div class="flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs">
-        <span><span class="text-fg-subtle">ID · </span><span class="text-fg-default"><%= log_id %></span></span>
+        <span><span class="text-fg-subtle"><%= t("admin.logs.index.id") %> · </span><span class="text-fg-default"><%= log_id %></span></span>
         <span>
-          <span class="text-fg-subtle">Severidad · </span>
+          <span class="text-fg-subtle"><%= t("admin.logs.index.severidad") %> · </span>
           <span class="font-semibold uppercase <%= admin_log_severity_text_classes(log.severity) %>"><%= log.severity %></span>
         </span>
         <% if log.duration_seconds.present? %>
-          <span><span class="text-fg-subtle">Duración · </span><span class="text-fg-default"><%= log.duration_seconds %> s</span></span>
+          <span><span class="text-fg-subtle"><%= t("admin.logs.index.duracion") %> · </span><span class="text-fg-default"><%= log.duration_seconds %> s</span></span>
         <% end %>
       </div>
 

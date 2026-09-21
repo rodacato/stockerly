@@ -18,8 +18,13 @@ es-MX:
           días, agrupados por error.
         limpiar: Limpiar filtros
         mostrando: Mostrando %{shown} de %{total} errores
+        origenes:
+          job: Trabajos
+          other: Otros
+          request: Peticiones
         sin_coincidencias: Nada con esos filtros.
         titulo: Errores
+        todos: Todos
         vacio: Tu instancia no ha registrado ningún error.
         veces:
           one: 1 vez
@@ -98,13 +103,27 @@ es-MX:
           de los últimos 90 días.'
         detalle: Detalle
         detalle_error: Detalle del error
+        duracion: Duración
         exportar: Exportar CSV
+        id: ID
         limpiar: Limpiar filtros
         modulo: Módulo
         mostrando: Mostrando %{shown} de %{total} registros
         rango: Rango
+        rangos:
+          24h: Últimas 24 h
+          30d: 30 días
+          7d: 7 días
+          90d: 90 días
+          hoy: Hoy
+        severidad: Severidad
+        severidades:
+          error: Error
+          success: Éxito
+          warning: Aviso
         sin_coincidencias: Nada con esos filtros.
         titulo: Registros
+        todos: Todos
         vacio: Tu instancia no ha registrado nada todavía.
         ver_detalle: Ver detalle
     no_autorizado: No tienes acceso a esa sección.

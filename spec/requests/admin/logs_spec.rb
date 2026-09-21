@@ -50,6 +50,15 @@ RSpec.describe "Admin logs error details", type: :request do
       expect(response.body).not_to include("bg-negative-bg")
     end
 
+    it "offers one severity chip per enum value, all of them localized" do
+      get admin_logs_path
+
+      expect(response.body).to include(I18n.t("admin.logs.index.todos"))
+      SystemLog.severities.each_key do |severity|
+        expect(response.body).to include(I18n.t("admin.logs.index.severidades.#{severity}"))
+      end
+    end
+
     # severity has three values and the tone had two, so a warning was painted
     # with the error's red and read as a failed run.
     it "paints a warning with the warning tone rather than the error's" do
