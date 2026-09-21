@@ -128,6 +128,18 @@ RSpec.describe "Panorama", type: :request do
   end
 
   describe "the sentiment carousel" do
+    # The third column carried its name in an aria-label only, so on a desktop
+    # the grid read as two columns and a stack floating beside them.
+    it "carries a visible heading, in the treatment the other two columns use" do
+      create(:fear_greed_reading, index_type: "crypto", value: 68, fetched_at: Time.current)
+
+      get dashboard_path
+
+      expect(response.body).to match(
+        %r{<h2 class="font-display text-lg font-bold tracking-tight text-fg-default">\s*#{I18n.t("dashboard.show.carrusel")}\s*</h2>}
+      )
+    end
+
     it "renders a card per index the instance has actually fetched" do
       create(:fear_greed_reading, index_type: "crypto", value: 68, fetched_at: 2.days.ago.midday)
       create(:fear_greed_reading, index_type: "crypto", value: 72, fetched_at: Time.current)

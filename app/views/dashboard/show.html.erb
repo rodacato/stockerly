@@ -13,8 +13,9 @@
       desktop. No dots: they would need JS to follow the scroll, and a static
       row of dots that never moves is worse than the peeking next card. %>
   <% if @sentiment_cards.any? %>
-    <section class="lg:order-4 lg:col-span-4" aria-label="<%= t(".carrusel") %>">
-      <div class="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
+    <section class="lg:order-4 lg:col-span-4">
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".carrusel") %></h2>
+      <div class="-mx-4 mt-3 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
         <% @sentiment_cards.each do |card| %>
           <%= render "dashboard/sentiment_card", card: card %>
         <% end %>
