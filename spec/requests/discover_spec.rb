@@ -127,8 +127,19 @@ RSpec.describe "Descubrir", type: :request do
 
     before do
       allow(Rails).to receive(:cache).and_return(memory)
+      cache_waves(wave)
+    end
+
+    def wave_for(symbol, group: "sectores", name: symbol)
+      MarketData::Discover::WaveRanking::Wave.new(
+        symbol: symbol, name: name, group: group, change_percent: 1.0,
+        vs_baseline: nil, closes: [ 100.0, 101.0 ], referents: []
+      )
+    end
+
+    def cache_waves(*waves)
       memory.write(WarmDiscoverJob::CACHE_KEY,
-                   { waves: [ wave ], since: 8.days.ago.to_date, generated_at: Time.current })
+                   { waves: waves.flatten, since: 8.days.ago.to_date, generated_at: Time.current })
     end
 
     it "ranks the basket with its move and its distance from the baseline" do
@@ -146,19 +157,34 @@ RSpec.describe "Descubrir", type: :request do
     end
 
     it "opens the rest in place rather than on a fourth screen" do
-      other = MarketData::Discover::WaveRanking::Wave.new(
-        symbol: "EWW", name: "México", group: "geografia", change_percent: -1.2,
-        vs_baseline: nil, closes: [ 100.0, 99.0 ], referents: []
-      )
-      memory.write(WarmDiscoverJob::CACHE_KEY,
-                   { waves: [ wave, other ], since: 8.days.ago.to_date, generated_at: Time.current })
+      cache_waves(wave, %w[AAA BBB CCC DDD].map { |s| wave_for(s) },
+                  wave_for("EWW", group: "geografia", name: "México"))
 
       get discover_path
 
-      expect(response.body).to include("Ver las 2 canastas con datos en la ventana")
+      expect(response.body).to include("Ver las 6 canastas con datos en la ventana")
       expect(response.body).to include("México")
       expect(response.body).to include("geografía")
       expect(response.body).not_to match(/href="[^"]*canastas/)
+    end
+
+    # The disclosure re-grouped every wave, so the five cards above appeared a
+    # second time 300px lower, in a treatment that ordered them differently.
+    it "opens only the baskets the cards above have not already shown" do
+      cache_waves(wave, %w[AAA BBB CCC DDD EEE].map { |s| wave_for(s) })
+
+      get discover_path
+
+      expect(response.body.scan("SMH").size).to eq(1)
+      expect(response.body).to include("EEE")
+    end
+
+    # Negative: with five or fewer there is no rest, and a disclosure that opens
+    # on nothing is a dead affordance.
+    it "offers no disclosure when the cards already carry every basket" do
+      get discover_path
+
+      expect(response.body).not_to include("<details")
     end
 
     it "says there is no exposure when none of the referents is held" do
