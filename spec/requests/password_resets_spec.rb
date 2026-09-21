@@ -82,6 +82,7 @@ RSpec.describe "PasswordResets", type: :request do
         password_confirmation: "different"
       }
       expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("La confirmación no coincide con la contraseña")
     end
 
     it "rejects short password" do
@@ -90,6 +91,19 @@ RSpec.describe "PasswordResets", type: :request do
         password_confirmation: "short"
       }
       expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("La contraseña debe tener al menos 8 caracteres")
+    end
+
+    # The contract gates length, presence and the confirmation, so bcrypt's
+    # 72-byte ceiling is the one validation that reaches ActiveRecord.
+    it "rejects a password past the model's ceiling" do
+      long = "a" * 80
+      patch reset_password_path(token), params: {
+        password: long,
+        password_confirmation: long
+      }
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("La contraseña no puede tener más de 72 caracteres")
     end
 
     it "renders the expired view when the token cannot be resolved on PATCH" do
