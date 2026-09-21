@@ -1,19 +1,4 @@
 module AlertsHelper
-  # User-facing es-MX label for AlertRule#condition. Matches the mockup
-  # chip names exactly so the form, the rules table, and the live feed
-  # speak the same vocabulary.
-  CONDITION_LABELS = {
-    "price_crosses_above" => "Precio cruza umbral",
-    "price_crosses_below" => "Precio cruza umbral",
-    "day_change_percent"  => "% cambio en el día",
-    "rsi_overbought"      => "RSI sobrecomprado",
-    "rsi_oversold"        => "RSI sobrevendido",
-    "volume_spike"        => "Volumen anómalo",
-    "dividend_ex_date"    => "Dividendo próximo",
-    "bmv_holiday"         => "BMV festivo",
-    "cete_auction"        => "Subasta CETES"
-  }.freeze
-
   # Live-feed accent dot color per AlertRule#condition. Drives off the
   # rule's condition (not the localized message text) so the mapping
   # survives copy edits and locale changes.
@@ -43,7 +28,7 @@ module AlertsHelper
   end
 
   def alert_condition_label(rule)
-    CONDITION_LABELS.fetch(rule.condition, rule.condition.to_s.humanize)
+    condition_label(rule.condition)
   end
 
   # Descriptive es-MX summary that mirrors the "preview" line in the create
@@ -52,23 +37,24 @@ module AlertsHelper
   def alert_condition_summary(rule)
     case rule.condition
     when "price_crosses_above"
-      "cruza #{rule.currency} #{format_threshold(rule.threshold_value)} al alza"
+      t("alerts.condiciones.price_crosses_above.resumen", currency: rule.currency, threshold: format_threshold(rule.threshold_value))
     when "price_crosses_below"
-      "cruza #{rule.currency} #{format_threshold(rule.threshold_value)} a la baja"
+      t("alerts.condiciones.price_crosses_below.resumen", currency: rule.currency, threshold: format_threshold(rule.threshold_value))
     when "day_change_percent"
-      "se mueve #{format_threshold(rule.threshold_value)}% o más en el día"
+      t("alerts.condiciones.day_change_percent.resumen", threshold: format_threshold(rule.threshold_value))
     when "rsi_overbought"
-      "RSI(14) en #{rule.threshold_value.to_i} o más"
+      t("alerts.condiciones.rsi_overbought.resumen", threshold: rule.threshold_value.to_i)
     when "rsi_oversold"
-      "RSI(14) en #{rule.threshold_value.to_i} o menos"
+      t("alerts.condiciones.rsi_oversold.resumen", threshold: rule.threshold_value.to_i)
     when "volume_spike"
-      "volumen #{format_threshold(rule.threshold_value)}× o más sobre su promedio de #{Alerts::Domain::AlertEvaluator::VOLUME_AVERAGE_DAYS} días"
+      t("alerts.condiciones.volume_spike.resumen", threshold: format_threshold(rule.threshold_value),
+                                                   days: Alerts::Domain::AlertEvaluator::VOLUME_AVERAGE_DAYS)
     when "dividend_ex_date"
-      "#{rule.window_days.to_i} día(s) antes del ex-date"
+      t("alerts.condiciones.dividend_ex_date.resumen", count: rule.window_days.to_i)
     when "bmv_holiday"
-      "#{rule.window_days.to_i} día(s) antes de un festivo BMV"
+      t("alerts.condiciones.bmv_holiday.resumen", count: rule.window_days.to_i)
     when "cete_auction"
-      "#{rule.window_days.to_i} día(s) antes de una subasta Banxico"
+      t("alerts.condiciones.cete_auction.resumen", count: rule.window_days.to_i)
     else
       rule.condition.to_s.humanize
     end
@@ -102,8 +88,8 @@ module AlertsHelper
   end
 
   # Conditions offered in the create form, in display order. Derives labels
-  # from CONDITION_LABELS so the copy lives in one place (the form, the rules
-  # table, and the live feed stay in sync).
+  # from the same locale tree as the rules table and the live feed, so the
+  # three speak one vocabulary.
   # Grouped the way `reglas-nueva-regla` draws them. `price_crosses_below` and
   # `day_change_percent` were absent from the old flat list while the
   # evaluator, the contract and TriggerNotice all handled them — two of the
@@ -120,22 +106,25 @@ module AlertsHelper
 
   def alert_condition_families
     CONDITION_FAMILIES.transform_values do |conditions|
-      conditions.map { |condition| [ condition, CONDITION_LABELS.fetch(condition) ] }
+      conditions.map { |condition| [ condition, condition_label(condition) ] }
     end
   end
 
   def alert_condition_options
-    CONDITION_FAMILIES.values.flatten.map { |condition| [ condition, CONDITION_LABELS.fetch(condition) ] }
+    CONDITION_FAMILIES.values.flatten.map { |condition| [ condition, condition_label(condition) ] }
   end
 
   # "espera 60 min entre avisos" — the artboard surfaces the cooldown the
   # model has carried since it was created and no screen ever showed.
   def alert_cooldown_label(rule)
-    minutes = rule.cooldown_minutes || AlertRule::DEFAULT_COOLDOWN_MINUTES
-    "espera #{minutes} min entre avisos"
+    t("alerts.index.espera", minutes: rule.cooldown_minutes || AlertRule::DEFAULT_COOLDOWN_MINUTES)
   end
 
   private
+
+  def condition_label(condition)
+    t("alerts.condiciones.#{condition}.etiqueta", default: condition.to_s.humanize)
+  end
 
   # Memoized per request: the rules table calls this once per row, and a
   # handful of rules share very few distinct symbols.
