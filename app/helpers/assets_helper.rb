@@ -23,12 +23,16 @@ module AssetsHelper
     [ native, from ]
   end
 
-  # One percent format, two readings. A change carries its sign, and the sign is
-  # the typographic minus — a hyphen is a separator, not a sign. A distance
-  # ("falta 3.2%", "necesita subir 1.4%") is a magnitude the copy gives a
-  # direction to, so it carries none.
+  # One percent format, two readings. A change that moved carries its sign, and
+  # the sign is the typographic minus — a hyphen is a separator, not a sign. A
+  # flat change has no direction to sign, and a distance ("falta 3.2%",
+  # "necesita subir 1.4%") is a magnitude the copy gives a direction to, so
+  # neither carries one.
   def signed_percent(percent)
-    "#{percent.to_f.negative? ? "−" : "+"}#{unsigned_percent(percent)}"
+    value = percent.to_f
+    return unsigned_percent(value) if value.zero?
+
+    "#{value.negative? ? "−" : "+"}#{unsigned_percent(value)}"
   end
 
   def unsigned_percent(percent)

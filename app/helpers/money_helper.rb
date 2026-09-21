@@ -15,9 +15,13 @@ module MoneyHelper
   # A gain or loss carries its sign, and the sign is the typographic minus for
   # the same reason signed_percent's is: a hyphen is a separator, not a sign.
   # The sign leads because the reader is scanning for direction before amount.
+  # An amount that gained nothing has no direction, so it reads bare.
   def signed_currency_mx(amount, currency:, precision: 2)
     value = amount.to_d
-    "#{value.negative? ? "−" : "+"}#{format_currency_mx(value.abs, currency: currency, precision: precision)}"
+    magnitude = format_currency_mx(value.abs, currency: currency, precision: precision)
+    return magnitude if value.zero?
+
+    "#{value.negative? ? "−" : "+"}#{magnitude}"
   end
 
   SIGNIFICANT_DIGITS = 4

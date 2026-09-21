@@ -23,6 +23,18 @@ RSpec.describe MoneyHelper do
     end
   end
 
+  describe "#signed_currency_mx" do
+    it "marks a gain with a plus and a loss with the typographic minus" do
+      expect(helper.signed_currency_mx(1_000, currency: "MXN", precision: 0)).to eq("+MXN 1,000")
+      expect(helper.signed_currency_mx(-1_000, currency: "MXN", precision: 0)).to eq("−MXN 1,000")
+    end
+
+    it "leaves an amount that did not move unsigned, because it gained nothing" do
+      expect(helper.signed_currency_mx(0, currency: "MXN", precision: 0)).to eq("MXN 0")
+      expect(helper.signed_currency_mx(BigDecimal("0"), currency: "USD")).to eq("USD 0.00")
+    end
+  end
+
   describe "#format_shares" do
     it "drops the decimals a whole holding does not need" do
       expect(helper.format_shares(1_200)).to eq("1,200")

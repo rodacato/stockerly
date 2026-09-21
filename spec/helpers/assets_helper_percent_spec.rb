@@ -13,8 +13,8 @@ RSpec.describe AssetsHelper, "percent formatting" do
       expect(helper.signed_percent(-2.35)).not_to include("-")
     end
 
-    it "reads zero as flat rather than negative" do
-      expect(helper.signed_percent(0)).to eq("+0.0%")
+    it "leaves a flat change unsigned, because it rose by nothing" do
+      expect(helper.signed_percent(0)).to eq("0.0%")
     end
   end
 
