@@ -1178,6 +1178,23 @@
     "kit-version-source": {
       "type": "string",
       "value": "0.8.1"
+    },
+    "primary-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
     }
   },
   "fileToken": "bfb6de32-3f18-4f93-8dfc-5847758f07f7"

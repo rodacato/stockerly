@@ -937,7 +937,7 @@
                           "type": "text",
                           "id": "bp3dU",
                           "name": "Tx",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "¿Dónde consigo la API key?",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -1112,7 +1112,7 @@
                           "type": "text",
                           "id": "I6zbIY",
                           "name": "Tx",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "¿Dónde consigo la API key?",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -1287,7 +1287,7 @@
                           "type": "text",
                           "id": "zMcSu",
                           "name": "Tx",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "¿Dónde consigo la API key?",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -1462,7 +1462,7 @@
                           "type": "text",
                           "id": "cg04G",
                           "name": "Tx",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "¿Dónde consigo la API key?",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -1637,7 +1637,7 @@
                           "type": "text",
                           "id": "LS3hJ",
                           "name": "Tx",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "¿Dónde consigo la API key?",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -1812,7 +1812,7 @@
                           "type": "text",
                           "id": "b0Df7",
                           "name": "Tx",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "¿Dónde consigo la API key?",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -5299,7 +5299,7 @@
                   "type": "text",
                   "id": "F9JK7",
                   "name": "S2",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Ábrelo en GitHub.",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -5851,7 +5851,7 @@
                       "type": "text",
                       "id": "dsdro",
                       "name": "S2",
-                      "fill": "$primary",
+                      "fill": "$primary-fg",
                       "content": "Ábrelo en GitHub.",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
@@ -7343,7 +7343,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.0.0"
+      "value": "1.1.0"
     },
     "font-display": {
       "type": "string",
@@ -8062,6 +8062,23 @@
     "grid-row-gap": {
       "type": "number",
       "value": 260
+    },
+    "primary-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"

@@ -194,7 +194,7 @@
               "type": "text",
               "id": "OhmuG",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "content": "Panorama",
               "fontFamily": "$font-sans",
               "fontSize": 11,
@@ -3190,7 +3190,7 @@
                               "type": "text",
                               "id": "Hc4Fu",
                               "name": "t",
-                              "fill": "$primary-hover",
+                              "fill": "$primary-fg",
                               "content": "Seguir",
                               "fontFamily": "$font-sans",
                               "fontSize": 12,
@@ -3364,7 +3364,7 @@
                               "type": "text",
                               "id": "Q9lHV",
                               "name": "t",
-                              "fill": "$primary-hover",
+                              "fill": "$primary-fg",
                               "content": "Seguir",
                               "fontFamily": "$font-sans",
                               "fontSize": 12,
@@ -4789,7 +4789,7 @@
                   "type": "text",
                   "id": "JQJGo",
                   "name": "t",
-                  "fill": "$primary-hover",
+                  "fill": "$primary-fg",
                   "content": "Panorama",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -7193,7 +7193,7 @@
                                           "type": "text",
                                           "id": "o6JWJ",
                                           "name": "t",
-                                          "fill": "$primary-hover",
+                                          "fill": "$primary-fg",
                                           "content": "Seguir",
                                           "fontFamily": "$font-sans",
                                           "fontSize": 12,
@@ -7367,7 +7367,7 @@
                                           "type": "text",
                                           "id": "D3ddz",
                                           "name": "t",
-                                          "fill": "$primary-hover",
+                                          "fill": "$primary-fg",
                                           "content": "Seguir",
                                           "fontFamily": "$font-sans",
                                           "fontSize": 12,
@@ -9036,7 +9036,7 @@
                               "type": "text",
                               "id": "pMiHJ",
                               "name": "t",
-                              "fill": "$primary-hover",
+                              "fill": "$primary-fg",
                               "content": "Seguir",
                               "fontFamily": "$font-sans",
                               "fontSize": 12,
@@ -9210,7 +9210,7 @@
                               "type": "text",
                               "id": "a8iUQe",
                               "name": "t",
-                              "fill": "$primary-hover",
+                              "fill": "$primary-fg",
                               "content": "Seguir",
                               "fontFamily": "$font-sans",
                               "fontSize": 12,
@@ -9722,7 +9722,7 @@
                   "type": "text",
                   "id": "L6kr3P",
                   "name": "l",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Elegir archivo CSV",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -11085,7 +11085,7 @@
                   "type": "text",
                   "id": "l10lPe",
                   "name": "Alternar",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Todos / ninguno",
                   "fontFamily": "$font-sans",
                   "fontSize": 12,
@@ -11866,7 +11866,7 @@
                   "type": "text",
                   "id": "UPKe0",
                   "name": "a",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Importar solo los 41 movimientos que sí puedo",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -13470,7 +13470,7 @@
                               "type": "text",
                               "id": "p55jfd",
                               "name": "t",
-                              "fill": "$primary-hover",
+                              "fill": "$primary-fg",
                               "content": "Seguir",
                               "fontFamily": "$font-sans",
                               "fontSize": 12,
@@ -13644,7 +13644,7 @@
                               "type": "text",
                               "id": "kzt5l",
                               "name": "t",
-                              "fill": "$primary-hover",
+                              "fill": "$primary-fg",
                               "content": "Seguir",
                               "fontFamily": "$font-sans",
                               "fontSize": 12,
@@ -16807,7 +16807,7 @@
                   "type": "text",
                   "id": "B64NKf",
                   "name": "t",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Buscar «alab» en Yahoo Finance",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -19007,7 +19007,7 @@
                                           "type": "text",
                                           "id": "f2QxZG",
                                           "name": "t",
-                                          "fill": "$primary-hover",
+                                          "fill": "$primary-fg",
                                           "content": "Seguir",
                                           "fontFamily": "$font-sans",
                                           "fontSize": 12,
@@ -19181,7 +19181,7 @@
                                           "type": "text",
                                           "id": "twoZ7",
                                           "name": "t",
-                                          "fill": "$primary-hover",
+                                          "fill": "$primary-fg",
                                           "content": "Seguir",
                                           "fontFamily": "$font-sans",
                                           "fontSize": 12,
@@ -19718,7 +19718,7 @@
                       "type": "text",
                       "id": "Wb2c6",
                       "name": "t",
-                      "fill": "$primary",
+                      "fill": "$primary-fg",
                       "content": "Buscar «alab» en Yahoo Finance",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
@@ -19742,7 +19742,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.0.0"
+      "value": "1.1.0"
     },
     "font-display": {
       "type": "string",
@@ -20461,6 +20461,23 @@
     "grid-row-gap": {
       "type": "number",
       "value": 260
+    },
+    "primary-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"

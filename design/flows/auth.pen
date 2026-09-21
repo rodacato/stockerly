@@ -310,7 +310,7 @@
               "type": "text",
               "id": "yqfuQ",
               "name": "Forgot",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "¿Olvidaste tu contraseña? Recupérala.",
@@ -498,7 +498,7 @@
               "type": "text",
               "id": "vs4Gq",
               "name": "Link",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "Usar un código de recuperación",
@@ -698,7 +698,7 @@
               "type": "text",
               "id": "dLrGF",
               "name": "Link",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "Volver a iniciar sesión",
@@ -857,7 +857,7 @@
               "type": "text",
               "id": "UVps7",
               "name": "Link",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "Reenviar enlace",
@@ -870,7 +870,7 @@
               "type": "text",
               "id": "WRf2m",
               "name": "Link",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "Volver a iniciar sesión",
@@ -1078,7 +1078,7 @@
               "type": "text",
               "id": "eZws1",
               "name": "Link",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "Volver a iniciar sesión",
@@ -1334,7 +1334,7 @@
                   "type": "text",
                   "id": "M7OXP",
                   "name": "Forgot",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
                   "content": "¿Olvidaste tu contraseña? Recupérala.",
@@ -2207,7 +2207,7 @@
               "type": "text",
               "id": "fPxbE",
               "name": "Link",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "Volver a la verificación en dos pasos",
@@ -2401,7 +2401,7 @@
                   "type": "text",
                   "id": "li9pf",
                   "name": "a",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Inicia sesión.",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -2734,7 +2734,7 @@
               "type": "text",
               "id": "q3rRvG",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "content": "Panorama",
               "fontFamily": "$font-sans",
               "fontSize": 11,
@@ -3097,7 +3097,7 @@
               "type": "text",
               "id": "rnjC2",
               "name": "Forgot",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "¿Olvidaste tu contraseña? Recupérala.",
@@ -3120,7 +3120,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.0.0"
+      "value": "1.1.0"
     },
     "font-display": {
       "type": "string",
@@ -3839,6 +3839,23 @@
     "grid-row-gap": {
       "type": "number",
       "value": 260
+    },
+    "primary-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"

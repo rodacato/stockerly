@@ -194,7 +194,7 @@
               "type": "text",
               "id": "OhmuG",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "content": "Panorama",
               "fontFamily": "$font-sans",
               "fontSize": 11,
@@ -575,7 +575,7 @@
                   "type": "text",
                   "id": "LuOBr",
                   "name": "VerTodas",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "▸ Ver las 16 canastas con datos en la ventana",
                   "fontFamily": "$font-sans",
                   "fontSize": 12,
@@ -1171,7 +1171,7 @@
                   "type": "text",
                   "id": "ZNq3c",
                   "name": "T",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Conecta Alpaca",
                   "fontFamily": "$font-display",
                   "fontSize": 18,
@@ -1195,7 +1195,7 @@
                   "type": "text",
                   "id": "eGo48",
                   "name": "L",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Ir a Integraciones →",
                   "fontFamily": "$font-sans",
                   "fontSize": 16,
@@ -1837,7 +1837,7 @@
                   "type": "text",
                   "id": "jkUQJ",
                   "name": "VerTodas",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "▾ Ver las 16 canastas con datos en la ventana",
                   "fontFamily": "$font-sans",
                   "fontSize": 12,
@@ -3301,7 +3301,7 @@
                   "type": "text",
                   "id": "hCIhy",
                   "name": "T",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Conecta Alpaca",
                   "fontFamily": "$font-display",
                   "fontSize": 18,
@@ -3325,7 +3325,7 @@
                   "type": "text",
                   "id": "MnKQp",
                   "name": "L",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Ir a Integraciones →",
                   "fontFamily": "$font-sans",
                   "fontSize": 16,
@@ -3407,7 +3407,7 @@
                           "type": "text",
                           "id": "pqqSp",
                           "name": "banxico",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "Banxico",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -3417,7 +3417,7 @@
                           "type": "text",
                           "id": "PZTYD",
                           "name": "fed",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "Fed",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -3556,7 +3556,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.0.0"
+      "value": "1.1.0"
     },
     "font-display": {
       "type": "string",
@@ -4275,6 +4275,23 @@
     "grid-row-gap": {
       "type": "number",
       "value": 260
+    },
+    "primary-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"

@@ -194,7 +194,7 @@
               "type": "text",
               "id": "rL1Sg",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "content": "Panorama",
               "fontFamily": "$font-sans",
               "fontSize": 11,
@@ -1091,7 +1091,7 @@
                   "type": "text",
                   "id": "NGU5L",
                   "name": "v",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Ver bandeja",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -1516,7 +1516,7 @@
                   "type": "text",
                   "id": "nOmmv",
                   "name": "MarcarLeidas",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Marcar leídas",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -1558,7 +1558,7 @@
                           "type": "text",
                           "id": "lHKLu",
                           "name": "t",
-                          "fill": "$primary-hover",
+                          "fill": "$primary-fg",
                           "content": "Todas",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -1568,7 +1568,7 @@
                           "type": "text",
                           "id": "j34cRK",
                           "name": "n",
-                          "fill": "$primary-hover",
+                          "fill": "$primary-fg",
                           "content": "13",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
@@ -2359,7 +2359,7 @@
                               "type": "text",
                               "id": "js6rW",
                               "name": "t",
-                              "fill": "$primary-hover",
+                              "fill": "$primary-fg",
                               "content": "Precio cruza umbral",
                               "fontFamily": "$font-sans",
                               "fontSize": 14,
@@ -2710,7 +2710,7 @@
                       "type": "text",
                       "id": "qiLnm",
                       "name": "L",
-                      "fill": "$primary-hover",
+                      "fill": "$primary-fg",
                       "content": "ASÍ SE VA A LEER",
                       "fontFamily": "$font-mono",
                       "fontSize": 12,
@@ -3378,7 +3378,7 @@
                   "type": "text",
                   "id": "xHeX1",
                   "name": "t",
-                  "fill": "$primary-hover",
+                  "fill": "$primary-fg",
                   "content": "Crear una desde cero",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -3408,7 +3408,7 @@
                   "type": "text",
                   "id": "CXiRa",
                   "name": "v",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "content": "Ver bandeja",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -3915,7 +3915,7 @@
                           "type": "text",
                           "id": "u7VEs",
                           "name": "t",
-                          "fill": "$primary-hover",
+                          "fill": "$primary-fg",
                           "content": "Todas",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -3925,7 +3925,7 @@
                           "type": "text",
                           "id": "oaezh",
                           "name": "n",
-                          "fill": "$primary-hover",
+                          "fill": "$primary-fg",
                           "content": "0",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
@@ -4552,7 +4552,7 @@
                               "type": "text",
                               "id": "jklSF",
                               "name": "t",
-                              "fill": "$primary-hover",
+                              "fill": "$primary-fg",
                               "content": "Subasta CETES",
                               "fontFamily": "$font-sans",
                               "fontSize": 14,
@@ -4674,7 +4674,7 @@
                       "type": "text",
                       "id": "B2yvs",
                       "name": "L",
-                      "fill": "$primary-hover",
+                      "fill": "$primary-fg",
                       "content": "ASÍ SE VA A LEER",
                       "fontFamily": "$font-mono",
                       "fontSize": 12,
@@ -4760,7 +4760,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.0.0"
+      "value": "1.1.0"
     },
     "font-display": {
       "type": "string",
@@ -5479,6 +5479,23 @@
     "grid-row-gap": {
       "type": "number",
       "value": 260
+    },
+    "primary-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"

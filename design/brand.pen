@@ -6552,7 +6552,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "0.9.0"
+      "value": "1.1.0"
     },
     "font-display": {
       "type": "string",
@@ -7246,6 +7246,23 @@
         },
         {
           "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "primary-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }
