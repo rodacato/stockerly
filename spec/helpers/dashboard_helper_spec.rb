@@ -11,5 +11,10 @@ RSpec.describe DashboardHelper, type: :helper do
       user = build(:user, full_name: "", email: "andres@test.com")
       expect(helper.first_name_of(user)).to eq("andres")
     end
+
+    it "falls back to email local-part when full_name is nil" do
+      user = build(:user, full_name: nil, email: "andres@test.com")
+      expect(helper.first_name_of(user)).to eq("andres")
+    end
   end
 end

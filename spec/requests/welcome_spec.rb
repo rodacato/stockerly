@@ -21,6 +21,19 @@ RSpec.describe "Welcome", type: :request do
       expect(response.body).to include("Configura una regla")
     end
 
+    # full_name is NOT NULL and validated, so only update_column reaches a
+    # nameless user — the greeting still has to survive one.
+    it "greets through the email local-part when full_name is blank" do
+      nameless = create(:user, :admin, onboarded_at: nil, email: "andres@test.com")
+      nameless.update_column(:full_name, "")
+      login_as_without_onboarding(nameless)
+
+      get welcome_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Hola, andres")
+    end
+
     # The reader is not onboarded until they leave this screen, so every link
     # to the app would bounce them back to the first wizard step (D121).
     it "offers no way out that lands back in the wizard" do
