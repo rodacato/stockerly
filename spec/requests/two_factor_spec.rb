@@ -105,6 +105,22 @@ RSpec.describe "Two-factor login", type: :request do
       expect(session[:user_id]).to eq(user.id)
     end
 
+    it "inflects how many codes are left instead of always counting in plural" do
+      post recovery_code_path, params: { code: "7f2a-91c4" }
+
+      expect(flash[:notice]).to eq("Entraste con un código de recuperación. Te queda 1.")
+    end
+
+    context "with a third code in reserve" do
+      let(:user) { create(:user, :with_totp, password: password, onboarded_at: Time.current, recovery_codes: %w[7f2a-91c4 b8d3-4e07 c019-2f55]) }
+
+      it "counts in plural once more than one is left" do
+        post recovery_code_path, params: { code: "7f2a-91c4" }
+
+        expect(flash[:notice]).to eq("Entraste con un código de recuperación. Te quedan 2.")
+      end
+    end
+
     it "refuses a code that was already spent" do
       post recovery_code_path, params: { code: "7f2a-91c4" }
       delete logout_path
