@@ -431,7 +431,6 @@ es-MX:
     show:
       carrusel: Sentimiento del mercado
       fear_greed_crypto: FEAR & GREED · CRIPTO
-      fear_greed_stocks: FEAR & GREED · ACCIONES
       patrimonio: PATRIMONIO · %{currency}
       radar_subtitulo: De tu cartera y watchlist · con actividad hoy · valores en
         %{currency}
