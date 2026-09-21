@@ -22,7 +22,7 @@
          else "bg-positive-bg text-positive-fg"
          end %>
       <span class="shrink-0 rounded-full px-3 py-1.5 font-mono text-xs font-semibold <%= tone %>">
-        <%= t("assets.index.no_realizada", amount: format_currency_mx(gain.absolute, currency: @currency, precision: 0)) %>
+        <%= t("assets.index.no_realizada", amount: signed_currency_mx(gain.absolute, currency: @currency, precision: 0)) %>
       </span>
     </section>
   <% elsif @fx_unavailable %>

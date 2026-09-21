@@ -169,7 +169,7 @@ RSpec.describe "Activos", type: :request do
 
       get assets_path
 
-      expect(response.body).to match(unrealized_chip("bg-positive-bg text-positive-fg", "MXN 1,000"))
+      expect(response.body).to match(unrealized_chip("bg-positive-bg text-positive-fg", "+MXN 1,000"))
     end
 
     it "tones the unrealised gain chip down when the holdings are under water" do
@@ -178,7 +178,7 @@ RSpec.describe "Activos", type: :request do
 
       get assets_path
 
-      expect(response.body).to match(unrealized_chip("bg-negative-bg text-negative-fg", "MXN -1,000"))
+      expect(response.body).to match(unrealized_chip("bg-negative-bg text-negative-fg", "−MXN 1,000"))
     end
 
     it "prints the market value eyebrow once, not once per shell" do
