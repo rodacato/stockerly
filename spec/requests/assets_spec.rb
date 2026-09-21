@@ -10,6 +10,10 @@ RSpec.describe "Activos", type: :request do
     create(:asset, :stock, currency: "MXN", **attrs)
   end
 
+  def unrealized_chip(tone, amount)
+    %r{#{tone}[^>]*>\s*#{Regexp.escape(I18n.t("assets.index.no_realizada", amount: amount))}\s*</span>}
+  end
+
   describe "GET /assets" do
     it "does not collide with Propshaft, which owns the same prefix" do
       get "/assets"
@@ -157,6 +161,24 @@ RSpec.describe "Activos", type: :request do
 
       expect(response.body).to include("VALOR DE MERCADO · MXN")
       expect(response.body).to match(%r{text-sm font-bold text-fg-default">\s*15,000\s*</p>})
+    end
+
+    it "chips the unrealised gain beside the market value, toned up when it is a gain" do
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "WALMEX", current_price: 70),
+                        shares: 100, avg_cost: 60, status: :open)
+
+      get assets_path
+
+      expect(response.body).to match(unrealized_chip("bg-positive-bg text-positive-fg", "MXN 1,000"))
+    end
+
+    it "tones the unrealised gain chip down when the holdings are under water" do
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "WALMEX", current_price: 50),
+                        shares: 100, avg_cost: 60, status: :open)
+
+      get assets_path
+
+      expect(response.body).to match(unrealized_chip("bg-negative-bg text-negative-fg", "MXN -1,000"))
     end
   end
 
