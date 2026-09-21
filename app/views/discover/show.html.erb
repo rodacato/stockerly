@@ -54,8 +54,7 @@
               </span>
             </div>
 
-            <%= render "components/sparkline", direction: nil,
-                  heights: sparkline_heights(wave.closes) %>
+            <%= render "components/sparkline", heights: sparkline_heights(wave.closes) %>
 
             <div class="shrink-0 text-right">
               <p class="font-mono text-sm font-bold <%= gain_color(wave.change_percent) %>">

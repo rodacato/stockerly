@@ -1,7 +1,6 @@
 module SparklineHelper
   # Normalized 0-100 heights from a series of closes, oldest first. Fewer than
-  # two points has no shape to draw, so the sparkline falls back to its
-  # direction-only bars.
+  # two points has no shape to draw, so the component draws a dash instead.
   #
   # Coerced to float because integer closes would divide to a flat line: this
   # worked only as long as every caller happened to pass BigDecimal.

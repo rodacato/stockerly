@@ -1,27 +1,18 @@
-<%# Usage: render "components/sparkline", direction: :up
-    With real data: render "components/sparkline", heights: sparkline_heights(closes), direction: :up
-    `heights` are 0-100 normalized closes (SparklineHelper). Without them the
-    shape is generic and says nothing — pass real ones wherever they exist. %>
-<% direction ||= :up %>
+<%# Usage: render "components/sparkline", heights: sparkline_heights(closes)
+    `heights` are 0-100 normalized closes (SparklineHelper). %>
 <% heights ||= nil %>
-<%# Colour follows the same closes that draw the shape. Taking it from the
-    caller's 24h change instead paints a falling line green whenever the week
-    and the day disagree. %>
-<% direction = heights.last < heights.first ? :down : :up if heights.present? %>
-<% stroke = case direction.to_sym
-   when :up   then "stroke-positive"
-   when :down then "stroke-negative"
-   else "stroke-border-strong"
-   end %>
-<% values = heights || case direction.to_sym
-   when :up   then [ 30, 45, 35, 55, 70, 85 ]
-   when :down then [ 80, 65, 70, 50, 35, 25 ]
-   else [ 40, 50, 45, 50, 45, 48 ]
-   end %>
-<% step = values.size > 1 ? 100.0 / (values.size - 1) : 0 %>
-<% points = values.each_with_index.map { |h, i| "#{(i * step).round(2)},#{(30 - (h.to_f / 100 * 26)).round(2)}" }.join(" ") %>
-
-<svg viewBox="0 0 100 32" preserveAspectRatio="none" class="h-8 w-16" aria-hidden="true" focusable="false">
-  <polyline points="<%= points %>" fill="none" stroke-width="2" stroke-linejoin="round"
-            stroke-linecap="round" vector-effect="non-scaling-stroke" class="<%= stroke %>"></polyline>
-</svg>
+<%# Below two closes there is no series: a dash, never a shape the asset does
+    not have. The box stays, so no consumer's row reflows around it. %>
+<% if heights.blank? %>
+  <span class="flex h-8 w-16 items-center justify-center font-mono text-sm text-fg-subtle" aria-hidden="true">—</span>
+<% else %>
+  <%# Colour follows the same closes that draw the shape: the caller's 24h
+      change would paint a falling line green when week and day disagree. %>
+  <% stroke = heights.last < heights.first ? "stroke-negative" : "stroke-positive" %>
+  <% step = heights.size > 1 ? 100.0 / (heights.size - 1) : 0 %>
+  <% points = heights.each_with_index.map { |h, i| "#{(i * step).round(2)},#{(30 - (h.to_f / 100 * 26)).round(2)}" }.join(" ") %>
+  <svg viewBox="0 0 100 32" preserveAspectRatio="none" class="h-8 w-16" aria-hidden="true" focusable="false">
+    <polyline points="<%= points %>" fill="none" stroke-width="2" stroke-linejoin="round"
+              stroke-linecap="round" vector-effect="non-scaling-stroke" class="<%= stroke %>"></polyline>
+  </svg>
+<% end %>
