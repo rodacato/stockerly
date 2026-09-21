@@ -9,22 +9,17 @@
       what you can change about it. %>
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".diagnostico") %></h2>
-    <dl class="<%= card_classes("divide-y divide-border-default px-4") %>">
-      <% [ [ t(".version"),     @diagnostics[:version] ],
-           [ "Ruby",            @diagnostics[:ruby] ],
-           [ "Rails",           @diagnostics[:rails] ],
-           [ t(".entorno"),     @diagnostics[:environment] ],
-           [ t(".trabajos"),    @diagnostics[:solid_queue] ],
-           [ t(".cache"),       @diagnostics[:cache_entries] ? t(".entradas", count: number_with_delimiter(@diagnostics[:cache_entries])) : "—" ],
-           [ t(".errores"),     @diagnostics[:errors_last_24h] ],
-           [ t(".descubrir"),   t(".descubrir_semanas", count: @diagnostics[:discover_weeks],
-                                  window: @diagnostics[:discover_window]) ] ].each do |label, value| %>
-        <div class="flex items-baseline justify-between gap-4 py-3">
-          <dt class="text-fg-subtle"><%= label %></dt>
-          <dd class="text-right font-mono text-sm text-fg-default"><%= value %></dd>
-        </div>
-      <% end %>
-    </dl>
+    <%= render "components/definition_list", rows: [
+          [ t(".version"),   @diagnostics[:version] ],
+          [ "Ruby",          @diagnostics[:ruby] ],
+          [ "Rails",         @diagnostics[:rails] ],
+          [ t(".entorno"),   @diagnostics[:environment] ],
+          [ t(".trabajos"),  @diagnostics[:solid_queue] ],
+          [ t(".cache"),     @diagnostics[:cache_entries] ? t(".entradas", count: number_with_delimiter(@diagnostics[:cache_entries])) : "—" ],
+          [ t(".errores"),   @diagnostics[:errors_last_24h] ],
+          [ t(".descubrir"), t(".descubrir_semanas", count: @diagnostics[:discover_weeks],
+                                window: @diagnostics[:discover_window]) ]
+        ] %>
   </section>
 
   <section class="flex flex-col gap-3">

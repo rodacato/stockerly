@@ -1,0 +1,10 @@
+<%# Label on the left, value on the right, one card of divided rows.
+    Locals: rows (Array of [label, value]). %>
+<dl class="<%= card_classes("divide-y divide-border-default px-4") %>">
+  <% rows.each do |label, value| %>
+    <div class="flex items-baseline justify-between gap-4 py-3">
+      <dt class="text-fg-subtle"><%= label %></dt>
+      <dd class="break-all text-right font-mono text-sm text-fg-default"><%= value %></dd>
+    </div>
+  <% end %>
+</dl>

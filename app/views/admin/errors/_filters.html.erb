@@ -1,15 +1,10 @@
 <%# Search plus origin. No range control: retention already bounds the table to
     ErrorEvent::RETENTION, and the list is ordered by last seen. %>
 <%= form_with(url: admin_errors_path, method: :get, data: { turbo_action: "replace" },
-      class: "flex flex-col gap-3") do |f| %>
+      class: "flex flex-col gap-3") do %>
 
-  <div class="<%= card_classes("flex items-center gap-2 px-4 py-3") %>">
-    <%= icon_svg "search", class: "text-lg text-fg-subtle", "aria-hidden": "true" %>
-    <%= f.text_field :search, value: params[:search],
-        placeholder: t("admin.errors.index.buscar"),
-        autocomplete: "off",
-        class: "w-full bg-transparent text-sm text-fg-default placeholder:text-fg-subtle outline-none" %>
-  </div>
+  <%= render "components/search_field", value: params[:search],
+             placeholder: t("admin.errors.index.buscar") %>
 
   <div class="flex flex-wrap items-center gap-2">
     <%= render "components/segmented", variant: :chips,
