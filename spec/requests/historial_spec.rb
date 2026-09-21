@@ -91,6 +91,26 @@ RSpec.describe "Historial", type: :request do
     end
   end
 
+  describe "a position closed at cost" do
+    let!(:closed) { create(:position, portfolio: portfolio, asset: asset, status: :closed, closed_at: 1.day.ago) }
+
+    before do
+      create(:trade, portfolio: portfolio, position: closed, asset: asset,
+                     side: :buy, shares: 10, price_per_share: 100, currency: "USD", fx_rate_at_execution: 17)
+      create(:trade, portfolio: portfolio, position: closed, asset: asset,
+                     side: :sell, shares: 10, price_per_share: 100, currency: "USD", fx_rate_at_execution: 17)
+    end
+
+    it "leaves what it made unsigned, because it made nothing" do
+      get positions_path
+
+      block = response.body[/Posiciones cerradas.*?<\/ul>/m].to_s
+
+      expect(block).to match(/>\s*0\s*</)
+      expect(block).not_to include("+0")
+    end
+  end
+
   # The capability that had to survive the merge: editing and deleting a trade
   # lived on /trades, which is gone.
   describe "editing and deleting a movement, inline" do
