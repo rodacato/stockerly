@@ -29,7 +29,7 @@
   </div>
 
   <div class="w-20 shrink-0">
-    <%= render "components/sparkline", direction: day_change_direction(change), heights: sparkline_heights(local_assigns[:closes]) %>
+    <%= render "components/sparkline", heights: sparkline_heights(local_assigns[:closes]) %>
   </div>
 
   <div class="shrink-0 text-right">
