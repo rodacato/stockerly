@@ -1,7 +1,7 @@
 module ApplicationHelper
-  # The two logo files, named for the theme each is drawn for. Callers needing a
-  # fixed variant (an always-indigo panel, an email that cannot swap) ask here
-  # instead of hardcoding a filename.
+  # The two logo files, named for the theme each is drawn for. A caller that
+  # cannot swap with the theme — an email — asks here instead of hardcoding a
+  # filename; a caller on a themed surface picks its variant from that surface.
   LOGO_ASSETS = { light: "logo_light.svg", dark: "logo_dark.svg" }.freeze
 
   def brand_logo(variant)
