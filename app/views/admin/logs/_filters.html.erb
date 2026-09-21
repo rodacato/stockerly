@@ -16,15 +16,14 @@
   <%# Severity is a link-based control, so it rides along when search submits. %>
   <%= hidden_field_tag :severity, params[:severity] if params[:severity].present? %>
 
-  <div class="flex flex-wrap gap-2">
-    <% admin_log_severity_options.each do |slug, label, value| %>
-      <% active = (params[:severity].presence || "todos") == slug %>
-      <%= link_to admin_logs_path(search: params[:search], module_name: params[:module_name], range: params[:range], severity: value),
-            class: "rounded-full border px-4 py-2 text-sm transition-colors #{active ? 'border-primary bg-primary-muted font-semibold text-primary' : 'border-border-default text-fg-default'}" do %>
-        <%= label %>
-      <% end %>
-    <% end %>
-  </div>
+  <%= render "components/segmented", variant: :chips,
+        label: t("admin.logs.index.severidad"),
+        options: admin_log_severity_options.map { |slug, label, value|
+          [ label,
+            admin_logs_path(search: params[:search], module_name: params[:module_name],
+                            range: params[:range], severity: value),
+            (params[:severity].presence || "todos") == slug ]
+        } %>
 
   <div class="flex flex-wrap items-center gap-2">
     <% [ [ :module_name, admin_log_module_options.map { |_s, label, value| [ "#{t('admin.logs.index.modulo')}: #{label}", value.to_s ] }, params[:module_name].to_s ],

@@ -26,6 +26,7 @@ es-MX:
           días, agrupados por error.
         limpiar: Limpiar filtros
         mostrando: Mostrando %{shown} de %{total} errores
+        origen: Origen
         origenes:
           job: Trabajos
           other: Otros
@@ -1484,6 +1485,7 @@ es-MX:
       registros_desc: Sincronizaciones y avisos de los últimos 90 días
       tema: Apariencia y región
       tema_claro: Claro
+      tema_control: Tema
       tema_oscuro: Oscuro
       tema_sistema: Sistema
       titulo: Ajustes

@@ -1,39 +1,39 @@
 <%# Locals: user. Two segmented pills that now commit alike (D58): theme
     applies from localStorage, currency PATCHes on select. Neither waits for a
     button — the currency form used to, and a choice you can make and forget to
-    submit leaves you reading MXN while believing you switched. %>
+    submit leaves you reading MXN while believing you switched.
+    The theme lives in localStorage, so the server cannot know which of the
+    three is on; its controller selects one as soon as it connects. %>
 <section class="flex flex-col gap-3">
   <h2 class="font-display text-lg font-bold tracking-tight text-fg-default">
     <%= t("settings.show.tema") %>
   </h2>
 
   <div class="<%= card_classes("flex flex-col gap-4 p-4") %>">
-    <div data-controller="theme" data-theme-storage-key-value="stockerly.theme"
-         class="flex gap-1 rounded-xl bg-bg-muted p-1">
-      <% { "light" => t("settings.show.tema_claro"), "dark" => t("settings.show.tema_oscuro"), "system" => t("settings.show.tema_sistema") }.each do |mode, label| %>
-        <button type="button" data-theme-target="option" data-theme-mode="<%= mode %>"
-                data-action="click->theme#select"
-                class="flex-1 rounded-lg px-3 py-2 text-sm font-medium text-fg-subtle data-[theme-active=true]:bg-bg-surface data-[theme-active=true]:text-fg-default data-[theme-active=true]:shadow-sm">
-          <%= label %>
-        </button>
-      <% end %>
+    <div data-controller="theme" data-theme-storage-key-value="stockerly.theme">
+      <%= render "components/segmented",
+                 label: t("settings.show.tema_control"),
+                 options: { "light" => t("settings.show.tema_claro"),
+                            "dark" => t("settings.show.tema_oscuro"),
+                            "system" => t("settings.show.tema_sistema") }.map { |mode, label|
+                   [ label, { data: { theme_target: "option", theme_mode: mode,
+                                      action: "click->theme#select" } }, false ]
+                 } %>
     </div>
 
     <div class="flex flex-col gap-2">
       <p class="text-xs text-fg-subtle"><%= t("settings.show.moneda") %></p>
+      <%# MXN first: the product is MXN-first and the local currency reads
+          first. SUPPORTED_CURRENCIES is ordered for validation, not display. %>
       <div data-controller="choice" data-choice-url-value="<%= update_currency_path %>"
-           data-choice-param-value="profile[preferred_currency]"
-           class="flex gap-1 rounded-xl bg-bg-muted p-1">
-        <%# MXN first: the product is MXN-first and the local currency reads
-            first. SUPPORTED_CURRENCIES is ordered for validation, not display. %>
-        <% [ "MXN", "USD" ].each do |code| %>
-          <button type="button" data-choice-target="option" data-choice-value="<%= code %>"
-                  data-choice-active="<%= user.preferred_currency == code %>"
-                  data-action="click->choice#select"
-                  class="flex-1 rounded-lg px-3 py-2 text-center font-mono text-sm font-semibold text-fg-subtle data-[choice-active=true]:bg-bg-surface data-[choice-active=true]:text-fg-default data-[choice-active=true]:shadow-sm">
-            <%= code %>
-          </button>
-        <% end %>
+           data-choice-param-value="profile[preferred_currency]">
+        <%= render "components/segmented",
+                   label: t("settings.show.moneda"),
+                   options: [ "MXN", "USD" ].map { |code|
+                     [ code, { data: { choice_target: "option", choice_value: code,
+                                       action: "click->choice#select" } },
+                       user.preferred_currency == code ]
+                   } %>
       </div>
     </div>
 

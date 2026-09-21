@@ -38,8 +38,7 @@ export default class ThemeController extends Controller {
   render(mode) {
     this.applyMode(mode)
     this.optionTargets.forEach((opt) => {
-      const isActive = opt.dataset.themeMode === mode
-      opt.dataset.themeActive = isActive ? "true" : "false"
+      opt.setAttribute("aria-selected", opt.dataset.themeMode === mode ? "true" : "false")
     })
   }
 
