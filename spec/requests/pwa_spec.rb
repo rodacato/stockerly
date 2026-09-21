@@ -111,6 +111,14 @@ RSpec.describe "PWA", type: :request do
       end
     end
 
+    # og-image.png is read off-site by crawlers, which never run a worker; at
+    # 27 KB it was the largest thing every install downloaded for nothing.
+    it "leaves the social card out of the install payload" do
+      get "/service-worker.js"
+
+      expect(response.body[/PRECACHE_URLS = \[(.*?)\]/m, 1]).not_to include("og-image")
+    end
+
     # Auto-activating swapped assets under a live tab; now the page asks first.
     it "waits for the page to authorise the swap instead of skipping the queue" do
       get "/service-worker.js"
