@@ -42,12 +42,12 @@ export default class ChoiceController extends Controller {
 
   render(value) {
     this.optionTargets.forEach((option) => {
-      option.dataset.choiceActive = option.dataset.choiceValue === value ? "true" : "false"
+      option.setAttribute("aria-selected", option.dataset.choiceValue === value ? "true" : "false")
     })
   }
 
   get current() {
-    return this.optionTargets.find((option) => option.dataset.choiceActive === "true")
+    return this.optionTargets.find((option) => option.getAttribute("aria-selected") === "true")
       ?.dataset.choiceValue
   }
 }
