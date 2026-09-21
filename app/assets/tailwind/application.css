@@ -8,10 +8,12 @@
    never an edit to a view. Source of truth for the values: design/. */
 
 @theme {
-  /* --- Brand accent ---------------------------------------------------- */
+  /* --- Brand accent — `-fg` is the text value; `primary` is for fills and
+     icons, which owe the 3:1 non-text floor and not AA's 4.5:1 (D56). --- */
   --color-primary:           #5B6CFF;
   --color-primary-hover:     #4757E3;
   --color-primary-muted:     #EEF0FF;
+  --color-primary-fg:        #4757E3;
 
   /* --- Surfaces -------------------------------------------------------- */
   --color-bg-canvas:         #FAFAF7;
@@ -92,6 +94,7 @@
     --color-primary:           #7B89FF;
     --color-primary-hover:     #9098FF;
     --color-primary-muted:     #2A2E55;
+    --color-primary-fg:        #9098FF;
 
     --color-bg-canvas:         #1A1B23;
     --color-bg-surface:        #23242E;
