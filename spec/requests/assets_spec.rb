@@ -24,6 +24,29 @@ RSpec.describe "Activos", type: :request do
       expect(response.media_type).to eq("text/javascript")
     end
 
+    # D69 gives the row two emphasis slots and a maturing CETES fills the first
+    # one. Only the radar passed it, so the same holding read "—" here.
+    it "reports the days a maturing fixed-income lot has left, as the radar does" do
+      cetes = create(:asset, :fixed_income, symbol: "CETES28", currency: "MXN", current_price: 10)
+      create(:position, portfolio: portfolio, asset: cetes, shares: 1, avg_cost: 10,
+                        status: :open, maturity_date: 3.days.from_now.to_date)
+
+      get assets_path
+
+      expect(response.body).to include(I18n.t("comun.vencimiento", count: 3))
+    end
+
+    it "leaves a maturity too far out to be news out of the row" do
+      cetes = create(:asset, :fixed_income, symbol: "CETES91", currency: "MXN", current_price: 10)
+      create(:position, portfolio: portfolio, asset: cetes, shares: 1, avg_cost: 10, status: :open,
+                        maturity_date: (Trading::Domain::MaturityWindow::DAYS + 1).days.from_now.to_date)
+
+      get assets_path
+
+      expect(response.body).to include("CETES91")
+      expect(response.body).not_to include(I18n.t("comun.vencimiento", count: Trading::Domain::MaturityWindow::DAYS + 1))
+    end
+
     it "shows open positions under Holdings" do
       asset = mxn_asset(symbol: "WALMEX", name: "Walmart de México", current_price: 70)
       create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
