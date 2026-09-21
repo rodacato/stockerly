@@ -8,7 +8,11 @@
 <% else %>
   <%# Colour follows the same closes that draw the shape: the caller's 24h
       change would paint a falling line green when week and day disagree. %>
-  <% stroke = heights.last < heights.first ? "stroke-negative" : "stroke-positive" %>
+  <% stroke = case heights.last <=> heights.first
+     when 1  then "stroke-positive"
+     when -1 then "stroke-negative"
+     else "stroke-border-strong"
+     end %>
   <% step = heights.size > 1 ? 100.0 / (heights.size - 1) : 0 %>
   <% points = heights.each_with_index.map { |h, i| "#{(i * step).round(2)},#{(30 - (h.to_f / 100 * 26)).round(2)}" }.join(" ") %>
   <svg viewBox="0 0 100 32" preserveAspectRatio="none" class="h-8 w-16" aria-hidden="true" focusable="false">
