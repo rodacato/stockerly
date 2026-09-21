@@ -35,6 +35,17 @@ RSpec.describe AlertsHelper, type: :helper do
     end
   end
 
+  describe "#alert_rule_scope_label" do
+    it "names the market a marketwide rule watches, since it has no symbol" do
+      expect(helper.alert_rule_scope_label(build(:alert_rule, :marketwide, condition: :bmv_holiday))).to eq("BMV")
+      expect(helper.alert_rule_scope_label(build(:alert_rule, :marketwide, condition: :cete_auction))).to eq("CETES")
+    end
+
+    it "names the symbol when the rule watches one asset" do
+      expect(helper.alert_rule_scope_label(build(:alert_rule, asset_symbol: "NVDA"))).to eq("NVDA")
+    end
+  end
+
   describe "#alert_rule_kind_label" do
     it "labels a crypto rule as Cripto, not as a stock" do
       create(:asset, :crypto, symbol: "BTC")

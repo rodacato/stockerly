@@ -5,12 +5,10 @@
 <%= tag.li id: dom_id(rule), class: card_classes("flex flex-col gap-1 p-4") do %>
   <div class="flex items-start justify-between gap-3">
     <div class="flex items-center gap-2 min-w-0">
-      <% if rule.asset_symbol.present? %>
-        <span class="font-mono font-bold text-fg-default"><%= rule.asset_symbol %></span>
-      <% else %>
-        <span class="text-fg-subtle" aria-hidden="true">—</span>
+      <span class="font-mono font-bold text-fg-default"><%= alert_rule_scope_label(rule) %></span>
+      <% unless rule.marketwide? %>
+        <span class="rounded-full bg-bg-muted px-2 py-0.5 text-xs text-fg-subtle"><%= alert_rule_kind_label(rule) %></span>
       <% end %>
-      <span class="rounded-full bg-bg-muted px-2 py-0.5 text-xs text-fg-subtle"><%= alert_rule_kind_label(rule) %></span>
     </div>
 
     <div class="flex shrink-0 items-center gap-1">
