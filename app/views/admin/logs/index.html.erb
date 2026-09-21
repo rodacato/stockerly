@@ -19,6 +19,10 @@
   <% if @logs.any? %>
     <%= render "admin/logs/logs_table", logs: @logs, pagy: @pagy %>
   <% else %>
-    <%= render "admin/logs/empty_state" %>
+    <% filtered = admin_logs_any_filter_active? %>
+    <%= render "components/empty_state", icon: "description",
+               title: filtered ? t(".sin_coincidencias") : t(".vacio"),
+               cta_text: (t(".limpiar") if filtered),
+               cta_path: (admin_logs_path if filtered) %>
   <% end %>
 </div>
