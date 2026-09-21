@@ -1,11 +1,27 @@
-<%# Locals: title; subtitle optional. The wordmark rides here on a phone, where
-    the layout's brand panel is hidden. %>
-<div class="flex flex-col gap-4">
+<%# Locals: title; subtitle, icon, tone and kicker optional. An outcome screen
+    passes an icon and reads centred; the wordmark rides here on a phone either
+    way, where the layout's brand panel is hidden.
+    Tones: :primary reports a step taken, :negative a dead end, :positive a
+    finished flow. %>
+<% icon = local_assigns[:icon] %>
+<% tones = { primary: "bg-primary-muted text-primary",
+             negative: "bg-negative-bg text-negative",
+             positive: "bg-positive-bg text-positive" } %>
+<div class="flex flex-col gap-4 <%= "items-center text-center" if icon %>">
   <%= link_to root_path, class: "flex items-center lg:hidden" do %>
     <%= render "shared/logo", height_class: "h-8" %>
   <% end %>
 
+  <% if icon %>
+    <span class="flex size-14 items-center justify-center rounded-2xl <%= tones.fetch(local_assigns.fetch(:tone, :primary)) %>">
+      <%= icon_svg icon, class: "text-3xl", "aria-hidden": "true" %>
+    </span>
+  <% end %>
+
   <div>
+    <% if local_assigns[:kicker] %>
+      <p class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle"><%= kicker %></p>
+    <% end %>
     <h1 class="font-display text-3xl font-bold tracking-tight text-fg-default"><%= title %></h1>
     <% if local_assigns[:subtitle] %>
       <p class="mt-1 text-base text-fg-subtle"><%= subtitle %></p>

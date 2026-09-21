@@ -3,21 +3,13 @@
 <div class="flex flex-col gap-6">
   <%= render "shared/auth_header", title: t("setup.new.titulo"), subtitle: t("setup.new.subtitulo") %>
 
-  <% if @errors.present? %>
-    <div class="rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
-      <p class="flex items-center gap-2 font-medium">
-        <%= icon_svg "error", class: "text-lg", "aria-hidden": "true" %>
-        <%= t("setup.new.corrige") %>
-      </p>
-      <ul class="mt-1 list-disc space-y-0.5 pl-9">
-        <% @errors.each do |field, messages| %>
-          <% Array(messages).each do |message| %>
-            <li><%= t("setup.new.campos.#{field}", default: field.to_s.humanize) %> <%= message %></li>
-          <% end %>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render "shared/flash_alert",
+             message: (t("setup.new.corrige") if @errors.present?),
+             messages: @errors.to_h.flat_map { |field, messages|
+               Array(messages).map { |message|
+                 "#{t("setup.new.campos.#{field}", default: field.to_s.humanize)} #{message}"
+               }
+             } %>
 
   <%= form_with url: setup_path, method: :post, class: "flex flex-col gap-4" do %>
     <%= render "shared/auth_field", name: "full_name", type: "text", label: t("setup.new.nombre"),
