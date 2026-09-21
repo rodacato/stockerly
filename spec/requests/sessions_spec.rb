@@ -16,6 +16,30 @@ RSpec.describe "Sessions", type: :request do
       get login_path
       expect(response).to redirect_to(dashboard_path)
     end
+
+    it "leaves the guard's nudge as a toast rather than an error in the card" do
+      get dashboard_path
+      follow_redirect!
+
+      expect(response.body).to include(I18n.t("auth.flash.requiere_sesion"))
+      expect(Capybara.string(response.body)).to have_no_css("main [role='alert']")
+    end
+
+    context "when the nudge is reworded" do
+      around do |example|
+        I18n.backend.store_translations(:"es-MX", auth: { flash: { requiere_sesion: "Necesitas una sesión." } })
+        example.run
+        I18n.backend.reload!
+      end
+
+      it "still keeps it out of the card, because the filter reads the locale" do
+        get dashboard_path
+        follow_redirect!
+
+        expect(response.body).to include("Necesitas una sesión.")
+        expect(Capybara.string(response.body)).to have_no_css("main [role='alert']")
+      end
+    end
   end
 
   describe "POST /login" do
