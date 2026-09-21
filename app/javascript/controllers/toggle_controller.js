@@ -3,11 +3,11 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="toggle"
 // Optional persistence: add data-toggle-url-value and data-toggle-field-value
 export default class ToggleController extends Controller {
-  static targets = ["knob", "track"]
+  static targets = ["knob", "track", "switch"]
   static values = { url: String, field: String }
 
   toggle() {
-    const isActive = this.trackTarget.classList.contains("bg-primary")
+    const isActive = this.switchTarget.getAttribute("aria-checked") === "true"
     this.render(!isActive)
 
     if (this.hasUrlValue && this.hasFieldValue) {
@@ -22,6 +22,7 @@ export default class ToggleController extends Controller {
   // different off-class (bg-slate-200) left both on the element, so a switch
   // turned off by hand did not match one rendered off.
   render(on) {
+    this.switchTarget.setAttribute("aria-checked", String(on))
     this.trackTarget.classList.toggle("bg-primary", on)
     this.trackTarget.classList.toggle("bg-bg-muted", !on)
     this.knobTarget.classList.toggle("translate-x-5", on)

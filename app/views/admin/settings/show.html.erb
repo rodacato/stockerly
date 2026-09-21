@@ -45,7 +45,8 @@
           </div>
           <%= button_to admin_settings_path, method: :patch, params: { key => on ? "0" : "1" },
                 form_class: "shrink-0",
-                aria: { label: label },
+                role: "switch",
+                aria: { label: label, checked: on },
                 class: "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors #{on ? 'bg-primary' : 'bg-bg-muted'}" do %>
             <span class="inline-block size-5 rounded-full bg-white shadow transition-transform <%= on ? 'translate-x-5' : 'translate-x-0.5' %>" aria-hidden="true"></span>
           <% end %>
