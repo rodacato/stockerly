@@ -12,12 +12,14 @@ class OnboardingController < AuthenticatedController
   before_action :require_not_onboarded
 
   def integrations
-    @integrations = Integration.order(:provider_name)
+    load_integrations
   end
 
   def save_integrations
     keys = params[:api_keys]&.to_unsafe_h || {}
     result = Administration::UseCases::Onboarding::SaveApiKeys.call(keys: keys)
+
+    return render_fx_failure if result[:fx] == :failed
 
     redirect_to onboarding_assets_path, notice: fx_notice(result[:fx])
   end
@@ -49,14 +51,22 @@ class OnboardingController < AuthenticatedController
 
   private
 
+  def load_integrations
+    @integrations = Integration.order(:provider_name)
+  end
+
   # The Banxico pull is the only key the wizard can exercise on the spot, so its
-  # outcome is worth saying out loud rather than leaving to a later sync.
+  # outcome belongs on the step that asked for the key rather than over the next.
+  def render_fx_failure
+    flash.now[:alert] = t("onboarding.integraciones.tc_error")
+    load_integrations
+    render :integrations, status: :unprocessable_content
+  end
+
   def fx_notice(outcome)
-    case outcome
-    in Integer => stored then t("onboarding.integraciones.tc_listo", count: stored)
-    in :failed then t("onboarding.integraciones.tc_error")
-    else nil
-    end
+    return unless outcome.is_a?(Integer)
+
+    t("onboarding.integraciones.tc_listo", count: outcome)
   end
 
   def require_not_onboarded
