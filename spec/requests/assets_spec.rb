@@ -137,7 +137,7 @@ RSpec.describe "Activos", type: :request do
 
       expect(response.body).to match(%r{text-xs text-fg-subtle">\s*—\s*</p>})
       expect(response.body).not_to include("+4.0%")
-      expect(response.body).not_to include("+0.0%")
+      expect(response.body).not_to include("0.0%")
     end
 
     it "orders the holdings by market value descending (D68)" do

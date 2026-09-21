@@ -97,8 +97,8 @@ RSpec.describe "Consolidado", type: :request do
     it "draws a day that did not move as neutral, not as a gain" do
       render_with_yesterday(1_200)
 
-      expect(response.body).to match(%r{bg-bg-muted text-fg-subtle">\s*\+0\.0% hoy})
-      expect(response.body).not_to match(%r{bg-positive-bg text-positive-fg">\s*\+0\.0% hoy})
+      expect(response.body).to match(%r{bg-bg-muted text-fg-subtle">\s*0\.0% hoy})
+      expect(response.body).not_to include("+0.0%")
     end
 
     it "draws a day that fell as negative" do
