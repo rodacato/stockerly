@@ -199,7 +199,7 @@
                           "type": "text",
                           "id": "XgXF0",
                           "name": "VMt",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "Ver todas",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -449,7 +449,7 @@
                           "type": "text",
                           "id": "SVOzI",
                           "name": "t",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "Ver todos →",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -1164,7 +1164,7 @@
                           "type": "text",
                           "id": "r4r6xv",
                           "name": "VMt",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "Ver todas",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -1254,7 +1254,7 @@
                           "type": "text",
                           "id": "tXXee",
                           "name": "t",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "Ver todos →",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -2194,7 +2194,7 @@
                       "type": "text",
                       "id": "ROuxX",
                       "name": "L",
-                      "fill": "$primary",
+                      "fill": "$primary-fg",
                       "content": "Ver todas →",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
@@ -3992,7 +3992,7 @@
                   "type": "text",
                   "id": "L3i8J2",
                   "name": "t",
-                  "fill": "$primary-hover",
+                  "fill": "$primary-fg",
                   "content": "Panorama",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -4358,7 +4358,7 @@
                                       "type": "text",
                                       "id": "U8ycbV",
                                       "name": "t",
-                                      "fill": "$primary",
+                                      "fill": "$primary-fg",
                                       "content": "Ver todos →",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 14,
@@ -4593,7 +4593,7 @@
                                       "type": "text",
                                       "id": "tpSwC",
                                       "name": "VMt",
-                                      "fill": "$primary",
+                                      "fill": "$primary-fg",
                                       "content": "Ver todas",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 14,
@@ -6398,7 +6398,7 @@
               "type": "text",
               "id": "B0rUP1",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "content": "Panorama",
               "fontFamily": "$font-sans",
               "fontSize": 11,
@@ -8626,7 +8626,7 @@
                       "x": 85.9,
                       "y": 12,
                       "name": "CostLbl",
-                      "fill": "$primary",
+                      "fill": "$primary-fg",
                       "content": "tu costo USD 190.68",
                       "fontFamily": "$font-mono",
                       "fontSize": 10,
@@ -10117,7 +10117,7 @@
                   "type": "text",
                   "id": "pbKZr",
                   "name": "H",
-                  "fill": "$primary-hover",
+                  "fill": "$primary-fg",
                   "content": "VS. TU PLAN",
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
@@ -11580,7 +11580,7 @@
                               "type": "text",
                               "id": "X2MkP7",
                               "name": "v",
-                              "fill": "$primary",
+                              "fill": "$primary-fg",
                               "content": "USD 262.00",
                               "fontFamily": "$font-mono",
                               "fontSize": 20,
@@ -11719,7 +11719,7 @@
                                   "type": "text",
                                   "id": "qswB4",
                                   "name": "a",
-                                  "fill": "$primary",
+                                  "fill": "$primary-fg",
                                   "content": "Actual",
                                   "fontFamily": "$font-sans",
                                   "fontSize": 10.5,
@@ -11752,7 +11752,7 @@
                           "type": "text",
                           "id": "ZHy4R",
                           "name": "t",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "Ver todos los fundamentales",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -13031,7 +13031,7 @@
                           "type": "text",
                           "id": "y2LvNh",
                           "name": "VMt",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "Ver todas",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -13121,7 +13121,7 @@
                           "type": "text",
                           "id": "A0BXRk",
                           "name": "t",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "Ver todos →",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
@@ -14829,7 +14829,7 @@
                           "type": "text",
                           "id": "RvcTH",
                           "name": "b",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "content": "18 días restantes",
                           "fontFamily": "$font-sans",
                           "fontSize": 11,
@@ -15219,7 +15219,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.0.0"
+      "value": "1.1.0"
     },
     "font-display": {
       "type": "string",
@@ -15962,6 +15962,23 @@
     "chart-scale-anchor-price": {
       "type": "number",
       "value": 230.72
+    },
+    "primary-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
     }
   },
   "fileToken": "6834f5af-d12d-417e-b728-f6a369cfe0d4"
