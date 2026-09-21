@@ -137,6 +137,16 @@ RSpec.describe "Alert management", type: :system do
     expect(page).to have_no_selector("table")
   end
 
+  it "names the market a marketwide rule watches instead of drawing a dash" do
+    rule = create(:alert_rule, :marketwide, user: user, condition: :bmv_holiday)
+
+    visit alerts_path
+    card = find("#alert_rule_#{rule.id}")
+
+    expect(card).to have_selector("span.font-mono.font-bold", text: "BMV")
+    expect(card).to have_no_text("—")
+  end
+
   it "creates a dividend_ex_date rule with window_days" do
     create(:asset, symbol: "AAPL", name: "Apple", current_price: 200.0)
 

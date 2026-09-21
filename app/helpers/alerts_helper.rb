@@ -14,6 +14,12 @@ module AlertsHelper
     "cete_auction"        => "bg-primary"
   }.freeze
 
+  # What the rule watches. A marketwide rule stores no symbol, so it names the
+  # market itself rather than drawing the dash the app uses for "we don't know".
+  def alert_rule_scope_label(rule)
+    rule.marketwide? ? alert_rule_kind_label(rule) : rule.asset_symbol
+  end
+
   # Kind chip shown next to the ticker. The asset decides when we still have
   # one; the symbol heuristic is the fallback for rules that outlived their
   # asset, where guessing from `.MX` is all that is left.
