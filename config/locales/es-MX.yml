@@ -1,8 +1,16 @@
 ---
 es-MX:
   activerecord:
+    attributes:
+      user:
+        password: La contraseña
+        password_confirmation: La confirmación
     errors:
       models:
+        user:
+          attributes:
+            password:
+              password_too_long: no puede tener más de 72 caracteres
         watchlist_item:
           attributes:
             asset_id:
