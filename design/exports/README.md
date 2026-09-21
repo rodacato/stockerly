@@ -121,6 +121,22 @@ existed; both were caught up on 2026-08-24. Every artboard in every flow now has
 locale that has had five separate categories all along. `Seguridad` gets no desktop artboard, the
 same reason `Complete` gets none: both inherit the wizard frame exactly.
 
+**Re-exported 2026-09-21 for kit 1.1.0 — 41 artboards, colour only.** The `primary-fg` token
+landed in the code (accent text failed AA at 4.17:1 on 83 sites) and the ten `.pen` files vendored
+it. Every artboard carrying accent text was re-exported: cockpit 7, activos 8, auth 9, reglas 6,
+ajustes 4, descubrir 4, onboarding 3.
+
+**34 of the 41 changed bytes; 7 did not, and that is correct.** `primary-hover` and `primary-fg`
+resolve to the same value, so an artboard whose only accent text was already on `primary-hover`
+renders identically — the token name is now right and the pixels never moved. The 34 are the ones
+that were on `primary`, which moves `#5B6CFF` → `#4757E3`.
+
+**These exports are colour-current and content-stale in the places the audit already lists.** The
+re-export fixes the token, not the artboards: `ajustes-hub`'s integration badge still reads 10
+against the code's 8, `reglas-lista`'s two stat tiles are still internally impossible, and the
+three onboarding artboards ON-04 names are unchanged. Those need re-shooting against the code,
+which is separate work.
+
 **Ajustes re-shot 2026-09-16** — every artboard, mirrored to the code (D78), plus `Integraciones · Administrar`
 and `Registros · Detalle`. The three desktop PNGs are gone with their artboards: every Ajustes screen is one
 column (D4). The five rows this index lacked (nombre y correo, contraseña, errores, errores · detalle, en
