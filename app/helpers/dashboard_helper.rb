@@ -31,9 +31,17 @@ module DashboardHelper
   end
 
   # Maps a points difference onto the same 0-100 track the sentiment cards use.
-  # Clamped at ±10 points, past which more distance stops being informative.
+  # Past this distance more of it stops being informative.
+  COMPARISON_TRACK_POINTS = 10
+
   def comparison_offset(points)
-    (50 + (points.to_f.clamp(-10, 10) * 5)).round
+    (50 + (points.to_f.clamp(-COMPARISON_TRACK_POINTS, COMPARISON_TRACK_POINTS) * 5)).round
+  end
+
+  # A dot pinned to an edge reports a distance it does not have, so the ends
+  # name where the track stops measuring.
+  def comparison_track_ends
+    [ signed_points(-COMPARISON_TRACK_POINTS), signed_points(COMPARISON_TRACK_POINTS) ]
   end
 
   # The dot's position on the 0-100 fear/greed track.

@@ -14,14 +14,12 @@
       </span>
     </div>
 
-    <div class="relative mt-4">
-      <div class="flex gap-1">
-        <span class="h-1.5 flex-1 rounded-full bg-negative"></span>
-        <span class="h-1.5 flex-1 rounded-full bg-warning"></span>
-        <span class="h-1.5 flex-1 rounded-full bg-positive"></span>
-      </div>
-      <span class="absolute -top-1 size-3 -translate-x-1/2 rounded-full bg-fg-default"
-            style="left: <%= comparison_offset(card[:points]) %>%"></span>
+    <% low_end, high_end = comparison_track_ends %>
+    <div class="mt-4">
+      <%= render "components/track",
+                 position: comparison_offset(card[:points]),
+                 low_label: low_end,
+                 high_label: high_end %>
     </div>
 
     <p class="mt-4 text-sm text-fg-subtle"><%= body %></p>
