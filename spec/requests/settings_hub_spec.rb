@@ -78,6 +78,18 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).to include(I18n.t("settings.show.zona_horaria_valor"))
   end
 
+  # AJ-04: the zone wore the chrome of an unselected option in the two pill
+  # groups above it, so the one value in the card you cannot change read as the
+  # most pressable thing in it. The chrome's absence is the assertion.
+  it "renders the timezone as a value, not as an option to press" do
+    get settings_path
+
+    zone = Capybara.string(response.body).find("span", text: I18n.t("settings.show.zona_horaria_valor"))
+
+    expect(zone[:class]).not_to include("bg-bg-muted")
+    expect(zone[:class]).not_to include("font-semibold")
+  end
+
   # D58: the two pills on this screen looked identical and committed
   # differently — theme applied on click, currency waited for a button nothing
   # drew. A choice you can make and forget to submit is the failure this
