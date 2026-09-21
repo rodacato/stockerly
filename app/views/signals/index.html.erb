@@ -12,7 +12,7 @@
       <section class="flex flex-col gap-3">
         <h2 class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= heading %></h2>
         <% rows.each do |observation| %>
-          <%= render "dashboard/signal_row", observation: observation %>
+          <%= render "dashboard/signal_row", observation: observation, context: :senales %>
         <% end %>
       </section>
     <% end %>

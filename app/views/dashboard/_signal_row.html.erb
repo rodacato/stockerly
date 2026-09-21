@@ -1,12 +1,14 @@
-<%# Locals: observation (TechnicalObservation)
+<%# Locals: observation (TechnicalObservation); optional context
     ADR-013: the verb is a lookup over this persisted row, the phrase that
-    produced it stays visible, and a reading older than today says so.
+    produced it stays visible, and a reading older than today says so — unless
+    the screen already groups the rows by date and would say it twice.
     D127: the arrow draws the phrase's move, the colour its verb. %>
+<% context = local_assigns.fetch(:context, :panorama) %>
 <% asset = observation.asset %>
 <% signal = observation_reading(observation) %>
 <% action = signal&.action %>
 <% rsi = observation.indicator_snapshot["rsi"] %>
-<% stale = observation.observed_at.to_date < Date.current %>
+<% stale = context != :senales && observation.observed_at.to_date < Date.current %>
 <%= link_to market_asset_path(asset.symbol),
             class: "flex items-start gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
   <%= icon_svg((signal&.move == :up ? "north_east" : "south_east"),
