@@ -29,7 +29,7 @@
     <div class="flex items-baseline justify-between gap-3">
       <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".senales_titulo") %></h2>
       <%= link_to t(".senales_ver_mas"), signals_path,
-                  class: "shrink-0 text-sm font-semibold text-primary hover:underline" %>
+                  class: "shrink-0 text-sm font-semibold text-primary-fg hover:underline" %>
     </div>
 
     <% if @signals.any? %>
@@ -50,7 +50,7 @@
   <section class="lg:order-2 lg:col-span-4">
     <div class="flex items-baseline justify-between gap-4">
       <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".radar_titulo") %></h2>
-      <%= link_to assets_path, class: "shrink-0 text-sm font-semibold text-primary hover:underline" do %>
+      <%= link_to assets_path, class: "shrink-0 text-sm font-semibold text-primary-fg hover:underline" do %>
         <%= t(".ver_todos") %> <span aria-hidden="true">→</span>
       <% end %>
     </div>

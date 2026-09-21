@@ -3,7 +3,7 @@
   <% main_nav_items.each do |item| %>
     <%= link_to item[:href],
                 "aria-current": (item[:active] ? "page" : nil),
-                class: "flex min-w-16 flex-col items-center gap-0.5 rounded-lg py-1 #{item[:active] ? 'text-primary' : 'text-fg-subtle'}" do %>
+                class: "flex min-w-16 flex-col items-center gap-0.5 rounded-lg py-1 #{item[:active] ? 'text-primary-fg' : 'text-fg-subtle'}" do %>
       <%= icon_svg item[:icon], class: "text-[22px]", "aria-hidden": "true" %>
       <span class="text-[11px] <%= item[:active] ? "font-semibold" : "font-normal" %>"><%= t("nav.#{item[:key]}") %></span>
     <% end %>

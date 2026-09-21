@@ -37,7 +37,7 @@
                 <% raw_value = stmt.data[item[:key]] %>
                 <td class="py-3.5 px-6 text-right tabular-nums">
                   <% if item[:bold] && item[:accent] %>
-                    <div class="text-sm font-bold text-primary"><%= format_statement_value(raw_value, currency: asset.currency) %></div>
+                    <div class="text-sm font-bold text-primary-fg"><%= format_statement_value(raw_value, currency: asset.currency) %></div>
                   <% elsif item[:bold] %>
                     <div class="text-sm font-bold"><%= format_statement_value(raw_value, currency: asset.currency) %></div>
                   <% else %>

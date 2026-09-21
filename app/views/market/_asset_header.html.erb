@@ -7,7 +7,7 @@
   <div class="flex items-start justify-between gap-4">
     <%# Back to Activos: the listing this used to return to was deleted with D31,
         and Activos is where the reader came from anyway. %>
-    <%= link_to assets_path, class: "flex min-w-0 items-center gap-2 text-fg-default transition-colors hover:text-primary" do %>
+    <%= link_to assets_path, class: "flex min-w-0 items-center gap-2 text-fg-default transition-colors hover:text-primary-fg" do %>
       <%= icon_svg "chevron_left", class: "shrink-0 text-xl", "aria-hidden": "true" %>
       <span class="min-w-0">
         <span class="font-display text-xl font-bold tracking-tight"><%= asset.symbol %></span>

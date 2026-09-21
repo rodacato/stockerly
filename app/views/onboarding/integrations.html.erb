@@ -43,7 +43,7 @@
                  class="<%= field_classes(:md, "w-full") %>">
           <% if info&.url %>
             <a href="<%= info.url %>" target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-primary hover:underline">
+               class="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-primary-fg hover:underline">
               <%= t(".donde_consigo") %>
               <%= icon_svg "open_in_new", class: "text-sm" %>
             </a>
@@ -72,7 +72,7 @@
       <% end %>
 
       <div class="flex items-center justify-between pt-6">
-        <%= link_to t(".omitir"), onboarding_assets_path, class: "text-sm font-medium text-fg-subtle hover:text-primary transition-colors" %>
+        <%= link_to t(".omitir"), onboarding_assets_path, class: "text-sm font-medium text-fg-subtle hover:text-primary-fg transition-colors" %>
         <button type="submit" class="<%= button_classes(:primary, :lg, "shadow-lg") %>">
           <%= t(".continuar") %>
         </button>

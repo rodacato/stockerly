@@ -26,7 +26,7 @@
       </div>
       <h3 class="text-base font-semibold text-fg-default mb-1.5"><%= card[:title] %></h3>
       <p class="text-sm text-fg-subtle leading-relaxed flex-1"><%= card[:body] %></p>
-      <span class="text-fg-subtle group-hover:text-primary transition-colors mt-3 inline-flex items-center text-sm">
+      <span class="text-fg-subtle group-hover:text-primary-fg transition-colors mt-3 inline-flex items-center text-sm">
         <%= icon_svg "arrow_forward", class: "text-sm" %>
       </span>
     <% end %>
@@ -42,5 +42,5 @@
 
 <%# Support footer %>
 <div class="text-sm text-fg-subtle space-y-1.5">
-  <p><%= t(".bug_pregunta") %> <%= link_to t(".bug_enlace"), Stockerly::ISSUES_URL, target: "_blank", rel: "noopener noreferrer", class: "text-primary border-b border-primary transition-colors" %></p>
+  <p><%= t(".bug_pregunta") %> <%= link_to t(".bug_enlace"), Stockerly::ISSUES_URL, target: "_blank", rel: "noopener noreferrer", class: "text-primary-fg border-b border-primary transition-colors" %></p>
 </div>

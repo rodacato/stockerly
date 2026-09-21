@@ -3,13 +3,13 @@
 <nav class="flex mb-4 text-sm text-fg-subtle no-print" aria-label="Breadcrumb">
   <ol class="flex items-center gap-1">
     <li>
-      <%= link_to "Home", root_path, class: "hover:text-primary transition-colors" %>
+      <%= link_to "Home", root_path, class: "hover:text-primary-fg transition-colors" %>
     </li>
     <% Array(crumbs).each do |crumb| %>
       <li class="flex items-center gap-1">
         <span class="mx-1">/</span>
         <% if crumb.is_a?(Array) && crumb.length == 2 %>
-          <%= link_to crumb[0], crumb[1], class: "hover:text-primary transition-colors" %>
+          <%= link_to crumb[0], crumb[1], class: "hover:text-primary-fg transition-colors" %>
         <% else %>
           <span class="text-fg-default font-medium"><%= crumb.is_a?(Array) ? crumb[0] : crumb %></span>
         <% end %>

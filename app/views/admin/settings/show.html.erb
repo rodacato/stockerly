@@ -67,7 +67,7 @@
       <% @data_sources.each do |source| %>
         <%= button_to admin_trigger_data_source_path(key: source.key), method: :post,
               form_class: "inline-flex",
-              class: "inline-flex items-center gap-1.5 rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-sm font-medium text-fg-default transition-colors hover:border-primary hover:text-primary" do %>
+              class: "inline-flex items-center gap-1.5 rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-sm font-medium text-fg-default transition-colors hover:border-primary hover:text-primary-fg" do %>
           <%= icon_svg source.icon, class: "text-base", "aria-hidden": "true" %>
           <%# The full registry name, not its first half: two sources are both
               "US Stocks" and only the provider after the dash tells them apart. %>

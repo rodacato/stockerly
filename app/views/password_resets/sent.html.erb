@@ -20,7 +20,7 @@
     <%# "Reenviar" returns to the form rather than resending behind the scenes:
         a real resend needs the address, and holding it would leak the same fact
         the copy above is careful not to state. %>
-    <%= link_to t("auth.sent.reenviar"), forgot_password_path, class: "text-sm font-medium text-primary hover:underline" %>
-    <%= link_to t("auth.volver"), login_path, class: "text-sm font-medium text-primary hover:underline" %>
+    <%= link_to t("auth.sent.reenviar"), forgot_password_path, class: "text-sm font-medium text-primary-fg hover:underline" %>
+    <%= link_to t("auth.volver"), login_path, class: "text-sm font-medium text-primary-fg hover:underline" %>
   </div>
 </div>
