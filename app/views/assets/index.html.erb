@@ -1,6 +1,4 @@
 <% content_for :page_title, t("assets.index.titulo") %>
-<%# Only declare the currency when the figures really are in it. %>
-<% content_for :page_subtitle, t("assets.index.valor_de_mercado", currency: @currency) if @summary %>
 
 <div class="flex flex-col gap-5">
   <% if @summary %>
