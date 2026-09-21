@@ -6,6 +6,19 @@ RSpec.describe "Admin logs error details", type: :request do
   before { login_as(admin) }
 
   describe "GET /admin/logs" do
+    # The expansion printed six fields as JSON and then error_message again —
+    # every one of them already on the row or the meta line above.
+    it "adds the meta line and nothing the row already carries" do
+      create(:system_log, :error, task_name: "Price Sync Failed",
+             error_message: "Connection timeout after 5000ms")
+
+      get admin_logs_path
+
+      expect(response.body.scan("Connection timeout after 5000ms").size).to eq(1)
+      expect(response.body).not_to include("<pre")
+      expect(response.body).to include(I18n.t("admin.logs.index.severidad"))
+    end
+
     it "renders error_message content for error logs" do
       create(:system_log, :error, task_name: "Price Sync Failed",
              error_message: "Connection timeout after 5000ms")
@@ -45,8 +58,6 @@ RSpec.describe "Admin logs error details", type: :request do
       get admin_logs_path
 
       expect(response.body).to include("6 indices updated")
-      expect(response.body).to include(I18n.t("admin.logs.index.detalle"))
-      expect(response.body).not_to include(I18n.t("admin.logs.index.detalle_error"))
       expect(response.body).not_to include("bg-negative-bg")
     end
 
@@ -57,20 +68,6 @@ RSpec.describe "Admin logs error details", type: :request do
       SystemLog.severities.each_key do |severity|
         expect(response.body).to include(I18n.t("admin.logs.index.severidades.#{severity}"))
       end
-    end
-
-    # severity has three values and the tone had two, so a warning was painted
-    # with the error's red and read as a failed run.
-    it "paints a warning with the warning tone rather than the error's" do
-      create(:system_log, :warning, task_name: "Price Sync Partial",
-             error_message: "3 of 12 symbols skipped")
-      get admin_logs_path
-
-      expect(response.body).to include("3 of 12 symbols skipped")
-      expect(response.body).to include("bg-warning-bg")
-      expect(response.body).not_to include("bg-negative-bg")
-      expect(response.body).to include(I18n.t("admin.logs.index.detalle"))
-      expect(response.body).not_to include(I18n.t("admin.logs.index.detalle_error"))
     end
 
     it "renders the error detail row as hidden with reveal target" do

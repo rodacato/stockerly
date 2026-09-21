@@ -50,17 +50,6 @@ module Admin
       log.error_message.presence || log.task_name
     end
 
-    def admin_log_payload(log)
-      {
-        id:            log.log_uid.presence || "log_#{log.id}",
-        task:          log.task_name,
-        module:        log.module_name,
-        severity:      log.severity,
-        duration_s:   log.duration_seconds,
-        created_at:    log.created_at.iso8601
-      }.compact
-    end
-
     def admin_logs_any_filter_active?
       params[:search].present? || params[:severity].present? ||
         params[:module_name].present? || params[:range].present?
