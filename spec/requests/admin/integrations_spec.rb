@@ -114,6 +114,13 @@ RSpec.describe "Admin Integrations", type: :request do
       expect(verificar[:class]).to eq(ApplicationController.helpers.button_classes(:secondary, :sm))
     end
 
+    # The field's only name was its placeholder, which also carries the format
+    # hint Alpaca needs — and both vanish on the first keystroke.
+    it "names the API key field, as both limit fields are named" do
+      expect(Capybara.string(response.body))
+        .to have_field(I18n.t("admin.integrations.index.api_key"), type: "password")
+    end
+
     # Delete sat 8px from Guardar in the same gap-2 row as the two reversible
     # controls.
     it "separates the destructive control from the reversible ones" do

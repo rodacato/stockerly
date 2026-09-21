@@ -64,10 +64,13 @@
               form_class: "inline-flex",
               class: button_classes(:secondary, :sm) %>
         <%= form_with url: admin_integration_path(integration), method: :patch, class: "flex flex-wrap items-end gap-2" do |f| %>
-          <%= f.password_field :api_key_encrypted, name: "integration[api_key_encrypted]", value: nil,
-                placeholder: integration_key_placeholder(integration),
-                autocomplete: "off",
-                class: field_classes(:md, "min-w-[160px] flex-1 bg-bg-canvas! font-mono placeholder:font-sans") %>
+          <label class="flex min-w-[160px] flex-1 flex-col gap-1">
+            <span class="text-[11px] uppercase tracking-wide text-fg-subtle"><%= t("admin.integrations.index.api_key") %></span>
+            <%= f.password_field :api_key_encrypted, name: "integration[api_key_encrypted]", value: nil,
+                  placeholder: integration_key_placeholder(integration),
+                  autocomplete: "off",
+                  class: field_classes(:md, "w-full bg-bg-canvas! font-mono placeholder:font-sans") %>
+          </label>
           <label class="flex flex-col gap-1">
             <span class="text-[11px] uppercase tracking-wide text-fg-subtle"><%= t("admin.integrations.index.limite_diario") %></span>
             <%= f.number_field :daily_call_limit, name: "integration[daily_call_limit]", value: integration.daily_call_limit,
