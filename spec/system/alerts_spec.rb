@@ -113,6 +113,18 @@ RSpec.describe "Alert management", type: :system do
     expect(page).to have_css("[data-toggle-field-value]", count: 2, visible: :all)
   end
 
+  it "ranks whether the rule has fired above whether it is enabled" do
+    create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above,
+                        threshold_value: 200.0, status: :active, cooldown_minutes: 60,
+                        last_triggered_at: 3.days.ago)
+
+    visit alerts_path
+
+    expect(page).to have_selector("p.font-semibold", text: "Se disparó hace 3 días")
+    expect(page).to have_selector("p.text-fg-subtle", text: "activa · espera 60 min entre avisos")
+    expect(page).to have_no_selector(".bg-positive-bg", text: "activa")
+  end
+
   it "shows each rule as a card carrying its cooldown" do
     create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above,
                         threshold_value: 200.0, status: :active, cooldown_minutes: 120)

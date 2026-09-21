@@ -14,11 +14,6 @@
     </div>
 
     <div class="flex shrink-0 items-center gap-1">
-      <span class="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-semibold <%= is_active ? 'bg-positive-bg text-positive-fg' : 'bg-bg-muted text-fg-subtle' %>">
-        <span class="size-1.5 rounded-full <%= is_active ? 'bg-positive' : 'bg-fg-subtle' %>" aria-hidden="true"></span>
-        <%= is_active ? t("alerts.index.activa") : t("alerts.index.pausada") %>
-      </span>
-
       <%= button_to toggle_alert_path(rule), method: :patch, form_class: "inline-flex",
             class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default",
             aria: { label: is_active ? t("alerts.index.pausar") : t("alerts.index.activar") } do %>
@@ -37,14 +32,18 @@
   <p class="font-semibold text-fg-default"><%= alert_condition_label(rule) %></p>
   <p class="text-sm text-fg-subtle"><%= alert_condition_summary(rule) %></p>
 
-  <%# The provenance line the artboard carries. cooldown_minutes has been on
-      the model since it was created and no screen ever showed it. %>
-  <p class="font-mono text-xs text-fg-subtle">
+  <p class="font-mono text-sm font-semibold text-fg-default">
     <% if rule.last_triggered_at %>
       <%= t("alerts.index.disparo_hace", when: time_ago_in_words(rule.last_triggered_at)) %>
     <% else %>
       <%= t("alerts.index.nunca_disparo") %>
     <% end %>
+  </p>
+
+  <%# cooldown_minutes has been on the model since it was created and no screen
+      ever showed it. %>
+  <p class="font-mono text-xs text-fg-subtle">
+    <%= is_active ? t("alerts.index.activa") : t("alerts.index.pausada") %>
     ·
     <%= alert_cooldown_label(rule) %>
   </p>
