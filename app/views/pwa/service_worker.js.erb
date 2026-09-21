@@ -8,9 +8,9 @@ const FONT_CACHE = `stockerly-fonts-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 
 // Assets to pre-cache on install. Query strings match the layout/manifest so
-// SW + browser share cache entries instead of double-fetching. Covers every
-// brand asset declared in the layout head and PWA manifest so the offline
-// shell never falls back to a missing logo.
+// SW + browser share cache entries instead of double-fetching. The icon set
+// only: og-image.png is read off-site by crawlers, and offline.html draws its
+// logo inline rather than fetching one.
 const PRECACHE_URLS = [
   OFFLINE_URL,
   "/favicon.svg?v=<%= v %>",
@@ -20,8 +20,7 @@ const PRECACHE_URLS = [
   "/icon-maskable-192.png?v=<%= v %>",
   "/icon-maskable-512.png?v=<%= v %>",
   "/icon-monochrome-512.png?v=<%= v %>",
-  "/apple-touch-icon.png?v=<%= v %>",
-  "/og-image.png?v=<%= v %>"
+  "/apple-touch-icon.png?v=<%= v %>"
 ];
 
 // Install: pre-cache offline page and icons
