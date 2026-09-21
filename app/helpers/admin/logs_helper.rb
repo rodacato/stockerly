@@ -46,11 +46,6 @@ module Admin
       end
     end
 
-    def admin_log_module_chip(module_name)
-      return "—" if module_name.blank?
-      module_name
-    end
-
     def admin_log_message(log)
       log.error_message.presence || log.task_name
     end
@@ -64,25 +59,6 @@ module Admin
         duration_s:   log.duration_seconds,
         created_at:    log.created_at.iso8601
       }.compact
-    end
-
-    def admin_logs_filter_active?(key, slug, default: nil)
-      current = params[key].presence
-      if default && current.nil?
-        return slug == default
-      end
-      current == slug
-    end
-
-    def admin_logs_current_range_label
-      current = params[:range].presence || DEFAULT_RANGE
-      RANGE_OPTIONS.find { |slug, _, _| slug == current }&.dig(1) || "Últimas 24 h"
-    end
-
-    def admin_logs_current_module_label
-      current = params[:module_name].presence
-      return "Todos" if current.blank?
-      current
     end
 
     def admin_logs_any_filter_active?
