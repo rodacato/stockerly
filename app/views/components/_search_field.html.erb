@@ -1,0 +1,9 @@
+<%# A search box drawn as a card rather than a bordered field, so the magnifier
+    sits inside it. Locals: placeholder, value. %>
+<div class="<%= card_classes("flex items-center gap-2 px-4 py-3") %>">
+  <%= icon_svg "search", class: "text-lg text-fg-subtle", "aria-hidden": "true" %>
+  <%= text_field_tag :search, value,
+        placeholder: placeholder,
+        autocomplete: "off",
+        class: "w-full bg-transparent text-sm text-fg-default placeholder:text-fg-subtle outline-none" %>
+</div>

@@ -5,13 +5,8 @@
 <%= form_with(url: admin_logs_path, method: :get, data: { turbo_action: "replace" },
       class: "flex flex-col gap-3") do |f| %>
 
-  <div class="<%= card_classes("flex items-center gap-2 px-4 py-3") %>">
-    <%= icon_svg "search", class: "text-lg text-fg-subtle", "aria-hidden": "true" %>
-    <%= f.text_field :search, value: params[:search],
-        placeholder: t("admin.logs.index.buscar"),
-        autocomplete: "off",
-        class: "w-full bg-transparent text-sm text-fg-default placeholder:text-fg-subtle outline-none" %>
-  </div>
+  <%= render "components/search_field", value: params[:search],
+             placeholder: t("admin.logs.index.buscar") %>
 
   <%# Severity is a link-based control, so it rides along when search submits. %>
   <%= hidden_field_tag :severity, params[:severity] if params[:severity].present? %>
