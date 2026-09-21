@@ -26,6 +26,14 @@ RSpec.describe "Help", type: :request do
       expect(response.body).not_to include("/report-bug")
     end
 
+    it "opens the first-movement card where a movement can be registered" do
+      login_as(user)
+      get help_path
+
+      expect(response.body).to include(%(href="#{new_trade_path}"))
+      expect(response.body).not_to include(%(href="#{portfolio_path}"))
+    end
+
     it "sends a user who has not finished onboarding back into the wizard" do
       onboarding_pending = create(:user, onboarded_at: nil)
       login_as_without_onboarding(onboarding_pending)
