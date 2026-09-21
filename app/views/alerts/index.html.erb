@@ -18,12 +18,10 @@
   <p class="text-fg-subtle"><%= t(".descripcion") %></p>
 
   <section class="flex flex-col gap-3">
-    <div class="flex items-center justify-between gap-3">
+    <div class="flex flex-wrap items-center justify-between gap-3">
       <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".tus_reglas") %></h2>
-      <div class="w-auto">
-        <%= render "components/sheet_dialog", frame_id: "rule_sheet",
-                   url: new_alert_path, label: t(".nueva") %>
-      </div>
+      <%= render "components/sheet_dialog", frame_id: "rule_sheet",
+                 url: new_alert_path, label: t(".nueva") %>
     </div>
 
     <% if @rules.any? %>

@@ -1,14 +1,16 @@
 <%# The drawer D11 specifies: a route rendered into a frame, presented as a
     native <dialog>. Bottom-anchored on a phone, centred on desktop (D4).
     Locals: frame_id, url, label; icon optional.
-    Two consumers — the trade sheet (D11) and the rule sheet (D14) — so the
-    markup lives here rather than being copied with one word changed. %>
+    Three consumers — the trade sheet on Activos and on an asset's analysis
+    (D11), and the rule sheet (D14) — so the markup lives here rather than
+    being copied with one word changed.
+    D49's width rule: full-bleed on a phone, content width above it. %>
 <div data-controller="sheet">
   <%# Turbo does the navigation, so the history entry is real; the controller
       only presents the result. Setting frame.src by hand skips the push. %>
   <%= link_to url,
               data: { turbo_frame: frame_id, turbo_action: "advance" },
-              class: button_classes(:primary, :md, "flex w-full items-center justify-center gap-2") do %>
+              class: button_classes(:primary, :md, "flex w-full items-center justify-center gap-2 sm:w-fit") do %>
     <%= icon_svg local_assigns.fetch(:icon, "add"), class: "text-xl", "aria-hidden": "true" %>
     <%= label %>
   <% end %>
