@@ -50,6 +50,20 @@ RSpec.describe "Admin logs error details", type: :request do
       expect(response.body).not_to include("bg-negative-bg")
     end
 
+    # severity has three values and the tone had two, so a warning was painted
+    # with the error's red and read as a failed run.
+    it "paints a warning with the warning tone rather than the error's" do
+      create(:system_log, :warning, task_name: "Price Sync Partial",
+             error_message: "3 of 12 symbols skipped")
+      get admin_logs_path
+
+      expect(response.body).to include("3 of 12 symbols skipped")
+      expect(response.body).to include("bg-warning-bg")
+      expect(response.body).not_to include("bg-negative-bg")
+      expect(response.body).to include(I18n.t("admin.logs.index.detalle"))
+      expect(response.body).not_to include(I18n.t("admin.logs.index.detalle_error"))
+    end
+
     it "renders the error detail row as hidden with reveal target" do
       create(:system_log, :error, error_message: "Rate limit exceeded")
       get admin_logs_path

@@ -54,8 +54,10 @@
       <%# The column is named error_message and every job writes its outcome
           there, success included. Painting it red by name reported a healthy
           sync as a failure. %>
-      <% tone = log.success? ? { bg: "bg-bg-muted", fg: "text-fg-subtle", body: "text-fg-default", label: "detalle" }
-                             : { bg: "bg-negative-bg", fg: "text-negative-fg", body: "text-negative-fg", label: "detalle_error" } %>
+      <% tone = if log.success?    then { bg: "bg-bg-muted",    fg: "text-fg-subtle",    body: "text-fg-default",   label: "detalle" }
+                elsif log.warning? then { bg: "bg-warning-bg",  fg: "text-warning-fg",   body: "text-warning-fg",   label: "detalle" }
+                else                    { bg: "bg-negative-bg", fg: "text-negative-fg",  body: "text-negative-fg",  label: "detalle_error" }
+                end %>
       <div class="overflow-hidden rounded-lg <%= tone[:bg] %>">
         <p class="px-3 py-1.5 font-mono text-xs uppercase tracking-widest <%= tone[:fg] %>"><%= t("admin.logs.index.#{tone[:label]}") %></p>
         <pre class="overflow-x-auto whitespace-pre-wrap break-all px-3 py-2 font-mono text-xs <%= tone[:body] %>"><%= log.error_message %></pre>
