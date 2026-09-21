@@ -27,6 +27,23 @@ RSpec.describe "Onboarding", type: :request do
       expect(response).to redirect_to(onboarding_assets_path)
       expect(integration.reload.api_key_encrypted).to eq("my_api_key")
     end
+
+    # Banxico is the one key this step can exercise on the spot, and its failure
+    # used to be flashed over step 2, where the only control is Atrás.
+    it "reports a Banxico that did not answer on the step that asked for the key" do
+      banxico = create(:integration, :keyless, provider_name: "Banxico")
+      stub_request(:get, %r{banxico\.org\.mx/SieAPIRest/service/v1/series/SF60653/datos/})
+        .to_return(status: 500, body: "boom")
+
+      patch onboarding_save_integrations_path, params: {
+        api_keys: { banxico.id.to_s => "banxico_token" }
+      }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(I18n.t("onboarding.integraciones.tc_error"))
+      expect(response.body).to include(I18n.t("onboarding.integrations.titulo"))
+      expect(banxico.reload.api_key_encrypted).to eq("banxico_token")
+    end
   end
 
   describe "GET /onboarding/assets" do
