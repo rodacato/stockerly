@@ -14,10 +14,18 @@
         </p>
         <p class="text-xs text-fg-subtle">
           <%= t("assets.index.invertido", amount: format_currency_mx(@summary.total_invested, currency: @currency, precision: 0)) %>
-          ·
-          <%= t("assets.index.no_realizada", amount: format_currency_mx(@summary.unrealized_gain.absolute, currency: @currency, precision: 0)) %>
         </p>
       </div>
+
+      <% gain = @summary.unrealized_gain %>
+      <% tone = case day_change_direction(gain.absolute)
+         when :down then "bg-negative-bg text-negative-fg"
+         when :flat then "bg-bg-muted text-fg-subtle"
+         else "bg-positive-bg text-positive-fg"
+         end %>
+      <span class="shrink-0 rounded-full px-3 py-1.5 font-mono text-xs font-semibold <%= tone %>">
+        <%= t("assets.index.no_realizada", amount: format_currency_mx(gain.absolute, currency: @currency, precision: 0)) %>
+      </span>
     </section>
   <% elsif @fx_unavailable %>
     <section class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
