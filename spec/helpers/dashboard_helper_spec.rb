@@ -17,4 +17,15 @@ RSpec.describe DashboardHelper, type: :helper do
       expect(helper.first_name_of(user)).to eq("andres")
     end
   end
+
+  describe "#signed_points" do
+    it "marks a lead with a plus and a lag with the typographic minus" do
+      expect(helper.signed_points(2.4)).to eq("+2.4 pts")
+      expect(helper.signed_points(-2.4)).to eq("−2.4 pts")
+    end
+
+    it "leaves a tie unsigned, because neither side is ahead" do
+      expect(helper.signed_points(0)).to eq("0.0 pts")
+    end
+  end
 end
