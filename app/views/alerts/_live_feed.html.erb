@@ -10,12 +10,9 @@
   <% if events.any? %>
     <ul class="<%= card_classes("flex flex-col gap-3 p-4") %>">
       <% events.each do |event| %>
-        <li class="grid grid-cols-[8px_1fr] gap-3">
-          <span class="mt-2 size-2 rounded-full <%= alert_event_accent(event) %>" aria-hidden="true"></span>
-          <div class="min-w-0">
-            <p class="text-sm text-fg-default"><%= event.message %></p>
-            <p class="font-mono text-xs text-fg-subtle"><%= alert_event_when(event) %></p>
-          </div>
+        <li class="min-w-0">
+          <p class="text-sm text-fg-default"><%= event.message %></p>
+          <p class="font-mono text-xs text-fg-subtle"><%= alert_event_when(event) %></p>
         </li>
       <% end %>
     </ul>

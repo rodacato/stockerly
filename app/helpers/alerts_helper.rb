@@ -1,19 +1,4 @@
 module AlertsHelper
-  # Live-feed accent dot color per AlertRule#condition. Drives off the
-  # rule's condition (not the localized message text) so the mapping
-  # survives copy edits and locale changes.
-  CONDITION_ACCENTS = {
-    "price_crosses_above" => "bg-positive",
-    "price_crosses_below" => "bg-negative",
-    "day_change_percent"  => "bg-warning",
-    "rsi_overbought"      => "bg-warning",
-    "rsi_oversold"        => "bg-warning",
-    "volume_spike"        => "bg-warning",
-    "dividend_ex_date"    => "bg-primary",
-    "bmv_holiday"         => "bg-primary",
-    "cete_auction"        => "bg-primary"
-  }.freeze
-
   # What the rule watches. A marketwide rule stores no symbol, so it names the
   # market itself rather than drawing the dash the app uses for "we don't know".
   def alert_rule_scope_label(rule)
@@ -84,13 +69,6 @@ module AlertsHelper
     else
       "#{l(date, format: :day_month_upper)} · #{cdmx_time} CDMX"
     end
-  end
-
-  def alert_event_accent(event)
-    rule = event.alert_rule
-    return "bg-primary" unless rule
-
-    CONDITION_ACCENTS.fetch(rule.condition, "bg-primary")
   end
 
   # Conditions offered in the create form, in display order. Derives labels
