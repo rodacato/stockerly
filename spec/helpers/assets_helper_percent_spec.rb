@@ -18,6 +18,22 @@ RSpec.describe AssetsHelper, "percent formatting" do
     end
   end
 
+  describe "#day_change_direction" do
+    it "reads a rise as up and a fall as down" do
+      expect(helper.day_change_direction(1.5)).to eq(:up)
+      expect(helper.day_change_direction(-1.5)).to eq(:down)
+    end
+
+    it "reads a day that did not move as flat, not as a rise" do
+      expect(helper.day_change_direction(0)).to eq(:flat)
+      expect(helper.day_change_direction(BigDecimal("0"))).to eq(:flat)
+    end
+
+    it "reads an unknown day change as flat" do
+      expect(helper.day_change_direction(nil)).to eq(:flat)
+    end
+  end
+
   describe "#unsigned_percent" do
     it "states a distance without a sign" do
       expect(helper.unsigned_percent(3.21)).to eq("3.2%")

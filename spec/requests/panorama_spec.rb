@@ -292,6 +292,35 @@ RSpec.describe "Panorama", type: :request do
     end
   end
 
+  describe "the patrimonio strip's day chip" do
+    def render_with_yesterday(total)
+      held = mxn_asset(symbol: "HELD", current_price: 10)
+      create(:position, portfolio: portfolio, asset: held, shares: 100, avg_cost: 10, status: :open)
+      portfolio.snapshots.create!(date: Date.yesterday, currency: "MXN", total_value: total)
+
+      get dashboard_path
+    end
+
+    it "draws a day that did not move as neutral, not as a gain" do
+      render_with_yesterday(1_000)
+
+      expect(response.body).to match(%r{bg-bg-muted text-fg-subtle">\s*\+0\.0% hoy})
+      expect(response.body).not_to match(%r{bg-positive-bg text-positive-fg">\s*\+0\.0% hoy})
+    end
+
+    it "draws a day that fell as negative" do
+      render_with_yesterday(2_000)
+
+      expect(response.body).to match(%r{bg-negative-bg text-negative-fg">\s*−50\.0% hoy})
+    end
+
+    it "draws a day that rose as positive" do
+      render_with_yesterday(800)
+
+      expect(response.body).to match(%r{bg-positive-bg text-positive-fg">\s*\+25\.0% hoy})
+    end
+  end
+
   describe "the patrimonio strip and late capture" do
     # This screen rendered "+20.0% hoy" for a purchase recorded late.
     it "does not report a backdated purchase as today's move" do
