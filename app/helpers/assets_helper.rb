@@ -44,7 +44,7 @@ module AssetsHelper
   end
 
   def day_change_direction(percent)
-    return :flat if percent.nil?
+    return :flat if percent.nil? || percent.zero?
 
     percent.negative? ? :down : :up
   end

@@ -11,8 +11,12 @@
         <%= format_currency_mx(summary.total_value, currency: currency, precision: 0) %>
       </p>
       <% day = summary.day_gain %>
-      <span class="shrink-0 rounded-full px-3 py-1.5 font-mono text-xs font-semibold
-                   <%= day.percent.negative? ? "bg-negative-bg text-negative-fg" : "bg-positive-bg text-positive-fg" %>">
+      <% tone = case day_change_direction(day.percent)
+         when :down then "bg-negative-bg text-negative-fg"
+         when :flat then "bg-bg-muted text-fg-subtle"
+         else "bg-positive-bg text-positive-fg"
+         end %>
+      <span class="shrink-0 rounded-full px-3 py-1.5 font-mono text-xs font-semibold <%= tone %>">
         <%= signed_percent(day.percent) %> hoy
       </span>
     </div>

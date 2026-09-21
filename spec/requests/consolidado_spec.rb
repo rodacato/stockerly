@@ -86,6 +86,34 @@ RSpec.describe "Consolidado", type: :request do
     end
   end
 
+  describe "the day chip on the patrimonio total" do
+    def render_with_yesterday(total)
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 10, status: :open)
+      snapshot(1, total)
+
+      get portfolio_path
+    end
+
+    it "draws a day that did not move as neutral, not as a gain" do
+      render_with_yesterday(1_200)
+
+      expect(response.body).to match(%r{bg-bg-muted text-fg-subtle">\s*\+0\.0% hoy})
+      expect(response.body).not_to match(%r{bg-positive-bg text-positive-fg">\s*\+0\.0% hoy})
+    end
+
+    it "draws a day that fell as negative" do
+      render_with_yesterday(2_400)
+
+      expect(response.body).to match(%r{bg-negative-bg text-negative-fg">\s*−50\.0% hoy})
+    end
+
+    it "draws a day that rose as positive" do
+      render_with_yesterday(1_000)
+
+      expect(response.body).to match(%r{bg-positive-bg text-positive-fg">\s*\+20\.0% hoy})
+    end
+  end
+
   describe "the comparison cards" do
     it "says it cannot compare when no CETES rate precedes the period" do
       with_history
