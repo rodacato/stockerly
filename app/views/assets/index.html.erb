@@ -81,10 +81,10 @@
 
   <%# Historial (D60) and the importer (ACT-1) sit beside Tracked (D9), so both
       stay reachable once holdings exist. %>
-  <%= render "settings/nav_row", icon: "receipt_long", path: positions_path,
+  <%= render "components/nav_row", icon: "receipt_long", path: positions_path,
              title: t("positions.index.titulo"), description: t("assets.index.ver_historial_desc") %>
-  <%= render "settings/nav_row", icon: "upload_file", path: new_trade_import_path,
+  <%= render "components/nav_row", icon: "upload_file", path: new_trade_import_path,
              title: t("assets.index.importar"), description: t("assets.index.importar_desc") %>
-  <%= render "settings/nav_row", icon: "radar", path: tracked_assets_path,
+  <%= render "components/nav_row", icon: "radar", path: tracked_assets_path,
              title: t("assets.index.ver_tracked"), description: t("assets.index.ver_tracked_desc") %>
 </div>

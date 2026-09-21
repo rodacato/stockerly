@@ -14,13 +14,13 @@
 
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".cuenta") %></h2>
-    <%= render "settings/nav_row", icon: "person", path: edit_account_settings_path,
+    <%= render "components/nav_row", icon: "person", path: edit_account_settings_path,
                title: t(".nombre_correo"), description: t(".nombre_correo_desc") %>
-    <%= render "settings/nav_row", icon: "lock", path: edit_password_settings_path,
+    <%= render "components/nav_row", icon: "lock", path: edit_password_settings_path,
                title: t(".contrasena"), description: t(".contrasena_desc") %>
     <%# D52's Seguridad row. The description reads the account's real state, so
         the row says whether the factor is on rather than only offering it. %>
-    <%= render "settings/nav_row", icon: "verified_user",
+    <%= render "components/nav_row", icon: "verified_user",
                path: @user.otp_enrolled? ? recovery_codes_path : totp_enrollment_path,
                title: t(".dos_pasos"),
                description: @user.otp_enrolled? ? t(".dos_pasos_activa", count: @user.unused_recovery_codes_count) : t(".dos_pasos_desc") %>
@@ -41,21 +41,21 @@
       <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".instancia_titulo") %></h2>
       <p class="mt-1 text-sm text-fg-subtle"><%= t(".instancia_cuerpo") %></p>
     </div>
-    <%= render "settings/nav_row", icon: "power", path: admin_integrations_path,
+    <%= render "components/nav_row", icon: "power", path: admin_integrations_path,
                title: t(".integraciones"), description: t(".integraciones_desc"), badge: @integrations_count %>
-    <%= render "settings/nav_row", icon: "receipt_long", path: admin_logs_path,
+    <%= render "components/nav_row", icon: "description", path: admin_logs_path,
                title: t(".registros"), description: t(".registros_desc") %>
-    <%= render "settings/nav_row", icon: "monitor_heart", path: admin_settings_path,
+    <%= render "components/nav_row", icon: "monitor_heart", path: admin_settings_path,
                title: t(".estado"), description: t(".estado_desc") %>
     <%# No failed-jobs badge: it lives in another database, and counting it on
         every hub load put a cross-database query in the request path for a
         number Mission Control shows accurately the moment you open it. %>
-    <%= render "settings/nav_row", icon: "checklist", path: "/admin/jobs",
+    <%= render "components/nav_row", icon: "checklist", path: "/admin/jobs",
                title: t(".trabajos"), description: t(".trabajos_desc") %>
     <%# ADR-020: only when the switch is on — the row is the developer surface,
         not a permanent part of the hub. %>
     <% if @developer_mode %>
-      <%= render "settings/nav_row", icon: "bug_report", path: admin_errors_path,
+      <%= render "components/nav_row", icon: "bug_report", path: admin_errors_path,
                  title: t(".errores"), description: t(".errores_desc") %>
     <% end %>
   </section>
@@ -64,7 +64,7 @@
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".datos_titulo") %></h2>
     <%# The hub's door to the importer. Assets already has one, but the data a
         person wants to load is what this section is about. %>
-    <%= render "settings/nav_row", icon: "upload_file", path: new_trade_import_path,
+    <%= render "components/nav_row", icon: "upload_file", path: new_trade_import_path,
                title: t(".importar"), description: t(".importar_desc") %>
     <div class="<%= card_classes("p-5") %>">
       <p class="text-sm text-fg-subtle"><%= t(".datos_cuerpo") %></p>
