@@ -24,7 +24,10 @@ module DashboardHelper
   # returns is stated in points so it is never read as a return of its own.
   def signed_points(points)
     value = points.to_f
-    "#{value.negative? ? "−" : "+"}#{number_with_precision(value.abs, precision: 1)} pts"
+    magnitude = "#{number_with_precision(value.abs, precision: 1)} pts"
+    return magnitude if value.zero?
+
+    "#{value.negative? ? "−" : "+"}#{magnitude}"
   end
 
   # Maps a points difference onto the same 0-100 track the sentiment cards use.
