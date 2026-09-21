@@ -94,6 +94,25 @@ RSpec.describe "Alert management", type: :system do
     expect(page).to have_content("cruzó USD 420.00 al alza")
   end
 
+  it "lists what fired without an accent colour that carries no legend" do
+    rule = create(:alert_rule, user: user, asset_symbol: "MSFT", condition: :price_crosses_above,
+                               threshold_value: 420.0, status: :active)
+    create(:alert_event,
+      user: user,
+      alert_rule: rule,
+      asset_symbol: "MSFT",
+      message: "MSFT cruzó USD 420.00 al alza (precio: 421.5).",
+      event_status: :triggered,
+      triggered_at: 5.minutes.ago)
+
+    visit alerts_path
+
+    within find("section", text: "Últimos disparos") do
+      expect(page).to have_content("cruzó USD 420.00 al alza")
+      expect(page).to have_no_selector("[aria-hidden='true']")
+    end
+  end
+
   it "carries the real switches, not a read-only mirror of them" do
     visit alerts_path
     expect(page).to have_content("Cómo te aviso")
