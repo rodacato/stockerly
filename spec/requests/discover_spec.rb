@@ -187,6 +187,18 @@ RSpec.describe "Descubrir", type: :request do
       expect(response.body).not_to include("<details")
     end
 
+    # The one native <details> on a screen with a full design system shipped the
+    # operating system's triangle.
+    it "draws its own affordance instead of the browser's triangle" do
+      cache_waves(wave, %w[AAA BBB CCC DDD EEE].map { |s| wave_for(s) })
+
+      get discover_path
+      summary = response.body[/<summary[^>]*>/]
+
+      expect(summary).to include("list-none")
+      expect(summary).to include("[&::-webkit-details-marker]:hidden")
+    end
+
     it "says there is no exposure when none of the referents is held" do
       get discover_path
 
