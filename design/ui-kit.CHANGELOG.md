@@ -455,6 +455,55 @@ Height 68 at rest, 44 of it the touch target.
 
 ---
 
+## 1.1.0 — `primary-fg`, the accent's missing text value
+
+Minor by the rule at the top of this file: *a new token*. Additive, so it forces no re-sync — but
+install it in every flow at the next vendoring anyway, per the kit contract. A flow missing a token
+has nothing to diff.
+
+### What arrived
+
+```
+primary-fg   #4757E3 (light)   #9098FF (dark)
+```
+
+### Why the kit was the last to know
+
+Every other semantic colour already carried its text value — `positive-fg`, `negative-fg`,
+`warning-fg`, `info-fg`. `primary` did not, and the omission had a measured cost: `text-primary`
+rendered at **4.17:1** on `bg-surface`, **3.99:1** on `bg-canvas` and **3.68:1** on
+`bg-primary-muted`, all under AA's 4.5:1, across 71 sites in 46 files. D86 measured it on
+2026-09-05 and deferred it; the code closed it 16 days later and this mirrors that.
+
+The dark value is **not** dark `primary` (`#7B89FF`), which measures 4.24:1 on `bg-primary-muted`
+and would have shipped a known AA failure under the name of the token whose job is being readable.
+It is dark `primary-hover`, which measures 5.96 / 6.63 / 5.01. **D56 found the identical 4.24:1 on
+`info-fg` dark and made the identical move** — so `primary-fg` lands on the same pair `info-fg`
+already holds.
+
+### Two components moved with it
+
+`SidebarNav` and `BottomNav` painted their active label with `$primary-hover` and `$primary`
+respectively — the two spellings the code had before it settled on one. Both are now `$primary-fg`,
+mirroring `components/_sidebar_nav:10` and `components/_bottom_nav:6`.
+
+`HeaderBar` was **left on `$primary` deliberately.** Its `Acción` slot has no counterpart in
+`components/_header_bar.html.erb`, which renders a back arrow and an `h1` and nothing else — so
+there is no code value to mirror. Migrating it would have been inventing agreement with a
+component that does not exist. Logged as a finding instead.
+
+### The duplication this exposes, logged rather than resolved
+
+`info` is `primary`'s twin — the code's stylesheet says so in a comment (`/* alias of primary */`)
+— and `info-fg` was already the value `primary-fg` needed. Four token names, two value pairs, and
+the family almost nobody uses is the one that had the `-fg` first: the whole `info` tree has **2
+consumers** in the app against `primary`'s ~100.
+
+Whether `info` is retired is a decision, not a tidy-up, and rule 2 of `design/README.md` keeps it
+out of this bump.
+
+---
+
 ## 1.0.0 — `AssetRow` loses its state chip and its confluence dots
 
 The first major, and it is a removal rather than an arrival. The bump rule at the top of this file

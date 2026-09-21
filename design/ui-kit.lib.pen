@@ -1225,7 +1225,7 @@
               "type": "text",
               "id": "z1ep2i",
               "name": "t",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "content": "Panorama",
               "fontFamily": "$font-sans",
               "fontSize": 11,
@@ -2071,7 +2071,7 @@
                   "type": "text",
                   "id": "C1Qoza",
                   "name": "t",
-                  "fill": "$primary-hover",
+                  "fill": "$primary-fg",
                   "content": "Panorama",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -2685,7 +2685,7 @@
   "variables": {
     "kit-version": {
       "type": "string",
-      "value": "1.0.0"
+      "value": "1.1.0"
     },
     "font-display": {
       "type": "string",
@@ -3379,6 +3379,23 @@
         },
         {
           "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "primary-fg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4757E3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9098FF",
           "theme": {
             "mode": "dark"
           }
