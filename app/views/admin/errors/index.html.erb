@@ -27,14 +27,10 @@
       </div>
     </div>
   <% else %>
-    <div class="<%= card_classes("flex flex-col items-center gap-2 border-dashed px-6 py-10 text-center") %>">
-      <%= icon_svg "bug_report", class: "text-3xl text-fg-subtle", "aria-hidden": "true" %>
-      <p class="font-semibold text-fg-default">
-        <%= admin_errors_any_filter_active? ? t(".sin_coincidencias") : t(".vacio") %>
-      </p>
-      <% if admin_errors_any_filter_active? %>
-        <%= link_to t(".limpiar"), admin_errors_path, class: "text-sm font-semibold text-primary hover:underline" %>
-      <% end %>
-    </div>
+    <% filtered = admin_errors_any_filter_active? %>
+    <%= render "components/empty_state", icon: "bug_report",
+               title: filtered ? t(".sin_coincidencias") : t(".vacio"),
+               cta_text: (t(".limpiar") if filtered),
+               cta_path: (admin_errors_path if filtered) %>
   <% end %>
 </div>
