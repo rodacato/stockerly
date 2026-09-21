@@ -30,7 +30,7 @@
         </ul>
         <% unless asked_yahoo %>
           <%= link_to search_path(q: query, scope: "yahoo"), data: { turbo_frame: frame },
-                class: "flex items-center gap-2 self-start px-1 py-1 text-sm font-semibold text-primary hover:text-primary-hover" do %>
+                class: "flex items-center gap-2 self-start px-1 py-1 text-sm font-semibold text-primary-fg hover:underline" do %>
             <%= icon_svg "public", class: "text-base", "aria-hidden": "true" %>
             <%= t(".buscar_en_yahoo", query: query) %>
           <% end %>

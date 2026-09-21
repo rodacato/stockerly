@@ -56,7 +56,7 @@ export default class AlertFormController extends Controller {
       chip.dataset.active = active ? "true" : "false"
       chip.classList.toggle("border-primary", active)
       chip.classList.toggle("bg-primary-muted", active)
-      chip.classList.toggle("text-primary-hover", active)
+      chip.classList.toggle("text-primary-fg", active)
       chip.classList.toggle("font-semibold", active)
       chip.classList.toggle("border-border-default", !active)
       chip.classList.toggle("text-fg-default", !active)
