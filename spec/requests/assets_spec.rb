@@ -180,6 +180,15 @@ RSpec.describe "Activos", type: :request do
 
       expect(response.body).to match(unrealized_chip("bg-negative-bg text-negative-fg", "MXN -1,000"))
     end
+
+    it "prints the market value eyebrow once, not once per shell" do
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "AMXL", current_price: 15),
+                        shares: 1_000, avg_cost: 12, status: :open)
+
+      get assets_path
+
+      expect(response.body.scan(I18n.t("assets.index.valor_de_mercado", currency: "MXN")).size).to eq(1)
+    end
   end
 
   describe "when the FX rate for a held currency is missing" do
