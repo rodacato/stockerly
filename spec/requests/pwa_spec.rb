@@ -128,6 +128,35 @@ RSpec.describe "PWA", type: :request do
     end
   end
 
+  # A PNG with no alpha channel bakes the rounded plate over white, and the home
+  # screen then shows white corners on whatever wallpaper sits behind the icon.
+  describe "the icon rasters" do
+    # Pixel (0,0) is the first sample of the first scanline, where every filter
+    # type degenerates to the raw bytes: no left neighbour, no row above.
+    def opening_pixel(name)
+      png = Rails.public_path.join(name).binread
+      idat = +""
+      offset = 8
+
+      while offset < png.bytesize
+        length = png.byteslice(offset, 4).unpack1("N")
+        idat << png.byteslice(offset + 8, length) if png.byteslice(offset + 4, 4) == "IDAT"
+        offset += length + 12
+      end
+
+      [ png.getbyte(25), Zlib::Inflate.inflate(idat).byteslice(1, 4).unpack("C4") ]
+    end
+
+    it "rounds the plate with transparency instead of painting the corners white" do
+      %w[icon-192.png icon-512.png].each do |name|
+        colour_type, pixel = opening_pixel(name)
+
+        expect(colour_type).to eq(6), "#{name} is PNG colour type #{colour_type}, which carries no alpha"
+        expect(pixel.last).to eq(0), "#{name} opens on #{pixel.inspect} — the corner is painted, not clear"
+      end
+    end
+  end
+
   # PwaController drops the same-origin guard on the worker, and it can afford
   # to because nothing here mutates: the CSRF token check passes GET through
   # untouched anyway. Adding a writing action would change that, so the routes
