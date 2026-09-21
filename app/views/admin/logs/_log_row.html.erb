@@ -23,10 +23,11 @@
     </div>
 
     <% if has_details %>
-      <button type="button" data-action="reveal#toggle"
+      <button type="button" data-action="reveal#toggle" data-reveal-target="trigger"
+              aria-expanded="false"
               aria-label="<%= t("admin.logs.index.ver_detalle") %>"
-              class="flex size-8 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
-        <%= icon_svg "expand_more", class: "text-lg", "aria-hidden": "true" %>
+              class="group flex size-8 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
+        <%= icon_svg "expand_more", class: "text-lg transition-transform group-aria-expanded:rotate-180", "aria-hidden": "true" %>
       </button>
     <% end %>
   </div>

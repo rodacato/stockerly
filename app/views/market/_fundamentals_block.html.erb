@@ -30,10 +30,11 @@
     <% end %>
   
     <% if rest.any? %>
-      <button type="button" data-action="reveal#toggle"
-              class="inline-flex items-center gap-1 self-start text-sm font-semibold text-primary hover:underline">
+      <button type="button" data-action="reveal#toggle" data-reveal-target="trigger"
+              aria-expanded="false"
+              class="group inline-flex items-center gap-1 self-start text-sm font-semibold text-primary hover:underline">
         <%= t(".ver_todos") %>
-        <%= icon_svg "expand_more", class: "text-base", "aria-hidden": "true" %>
+        <%= icon_svg "expand_more", class: "text-base transition-transform group-aria-expanded:rotate-180", "aria-hidden": "true" %>
       </button>
   
       <div data-reveal-target="content" class="hidden flex-col gap-6 border-t border-border-default pt-4">

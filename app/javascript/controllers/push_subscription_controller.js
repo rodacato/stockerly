@@ -7,7 +7,7 @@ import { Controller } from "@hotwired/stimulus"
 // The switch owns all three, so the row can never read "on" while the browser
 // has revoked the permission behind it.
 export default class PushSubscriptionController extends Controller {
-  static targets = ["knob", "track", "status"]
+  static targets = ["knob", "track", "status", "switch"]
   static values = { vapidKey: String, url: String, preferencesUrl: String }
 
   connect() {
@@ -25,7 +25,7 @@ export default class PushSubscriptionController extends Controller {
   async toggle() {
     if (this.blocked) return
 
-    const turningOn = !this.trackTarget.classList.contains("bg-primary")
+    const turningOn = this.switchTarget.getAttribute("aria-checked") !== "true"
     this.render(turningOn)
 
     try {
@@ -92,6 +92,7 @@ export default class PushSubscriptionController extends Controller {
   }
 
   render(on) {
+    this.switchTarget.setAttribute("aria-checked", String(on))
     this.trackTarget.classList.toggle("bg-primary", on)
     this.trackTarget.classList.toggle("bg-bg-muted", !on)
     this.knobTarget.classList.toggle("translate-x-5", on)
