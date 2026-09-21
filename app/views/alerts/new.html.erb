@@ -47,6 +47,20 @@
               </div>
             </div>
           <% end %>
+
+          <%# Only a price cross has a direction. The controller shows this when
+              the chip is one, and writes above/below into the hidden field. %>
+          <div role="tablist" class="hidden flex gap-1 rounded-xl bg-bg-muted p-1"
+               data-alert-form-target="panel direction"
+               data-alert-form-conditions="price_crosses_above price_crosses_below">
+            <% [ [ "price_crosses_above", t(".al_alza") ], [ "price_crosses_below", t(".a_la_baja") ] ].each_with_index do |(value, label), i| %>
+              <label class="flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors has-[:checked]:bg-bg-surface has-[:checked]:text-fg-default text-fg-subtle">
+                <input type="radio" name="direction" value="<%= value %>" <%= "checked" if i.zero? %>
+                       data-action="change->alert-form#selectDirection" class="sr-only">
+                <%= label %>
+              </label>
+            <% end %>
+          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -76,20 +90,6 @@
           <%= f.number_field :window_days, step: 1, min: 1, value: @rule.window_days || 7, inputmode: "numeric",
                 data: { alert_form_target: "windowDays", action: "input->alert-form#refreshPreview" },
                 class: field_classes(:lg, "font-mono focus:border-primary") %>
-        </div>
-
-        <%# Only a price cross has a direction. The controller shows this when
-            the chip is one, and writes above/below into the hidden field. %>
-        <div role="tablist" class="hidden flex gap-1 rounded-xl bg-bg-muted p-1"
-             data-alert-form-target="panel direction"
-             data-alert-form-conditions="price_crosses_above price_crosses_below">
-          <% [ [ "price_crosses_above", t(".al_alza") ], [ "price_crosses_below", t(".a_la_baja") ] ].each_with_index do |(value, label), i| %>
-            <label class="flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors has-[:checked]:bg-bg-surface has-[:checked]:text-fg-default text-fg-subtle">
-              <input type="radio" name="direction" value="<%= value %>" <%= "checked" if i.zero? %>
-                     data-action="change->alert-form#selectDirection" class="sr-only">
-              <%= label %>
-            </label>
-          <% end %>
         </div>
 
         <div class="rounded-xl bg-primary-muted p-4">
