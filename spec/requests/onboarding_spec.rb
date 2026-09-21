@@ -79,6 +79,15 @@ RSpec.describe "Onboarding", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    # Cards one and two put a measured figure in the number slot. The third put
+    # the word "Listo" there, for a sync that only starts on the next click.
+    it "summarises only the figures it has measured" do
+      get onboarding_complete_path
+
+      expect(response.body.scan("font-mono text-xl font-bold").size).to eq(2)
+      expect(response.body).not_to include("bg-warning-bg")
+    end
+
     it "is the last of the four steps" do
       get onboarding_complete_path
 

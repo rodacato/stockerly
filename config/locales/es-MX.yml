@@ -1271,10 +1271,8 @@ es-MX:
       atras: Atrás
       integraciones: Integraciones con API key
       lanzar: Lanzar e ir al Panorama
-      listo: Listo
       sin_sincronizar: Ir al Panorama sin sincronizar
       subtitulo: Este es el resumen de tu configuración.
-      sync: El sync arranca en segundo plano
       titulo: Todo listo
     integraciones:
       tc_error: Guardamos tus llaves, pero Banxico no respondió el tipo de cambio.
