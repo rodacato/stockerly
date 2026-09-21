@@ -11,9 +11,10 @@
       <%# Brand panel: desktop only. On a phone the logo lives inside the card,
           which is what the mobile artboard draws. %>
       <aside class="hidden flex-col justify-between bg-primary p-8 lg:flex">
-        <%# Always-indigo panel, so the variant is fixed rather than themed. %>
+        <%# Dark mode lands bg-primary on the mark's own indigo, so the lockup
+            is rendered white — the brand's blanco/primary pair. %>
         <%= link_to root_path, class: "flex items-center" do %>
-          <%= image_tag brand_logo(:dark), alt: "Stockerly", class: "h-8 w-auto" %>
+          <%= image_tag brand_logo(:dark), alt: "Stockerly", class: "h-8 w-auto brightness-0 invert" %>
         <% end %>
         <p class="flex items-center gap-2 text-sm text-fg-inverse">
           <%= icon_svg "check", class: "text-lg", "aria-hidden": "true" %>

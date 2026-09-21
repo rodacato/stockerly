@@ -21,6 +21,11 @@ RSpec.describe "Stockerly wordmark across surfaces", type: :system do
       visit login_path
       expect(page).to have_css("img[alt='Stockerly']")
     end
+
+    it "renders the login brand panel's mark white, not in the indigo it sits on" do
+      visit login_path
+      expect(page).to have_css("aside.bg-primary img[alt='Stockerly'].brightness-0.invert")
+    end
   end
 
   describe "authenticated surfaces" do
