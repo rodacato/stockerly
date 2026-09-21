@@ -255,6 +255,15 @@ RSpec.describe "Panorama", type: :request do
       expect(response.body).to include(I18n.t("assets.index.vacio_cartera_cuerpo"))
     end
 
+    # The invitation was prose with nothing to press, on a screen whose only
+    # other two links lead to screens that are also empty.
+    it "gives the first-trade invitation something to press" do
+      get dashboard_path
+
+      expect(response.body).to include(I18n.t("trades.new.titulo"))
+      expect(response.body).to include(%(href="#{new_trade_path}"))
+    end
+
     # Negative: a holding that did not move today is quiet, not missing.
     it "does not ask a holder for a first trade on a quiet day" do
       still = mxn_asset(symbol: "STILL", current_price: 10)
@@ -264,6 +273,7 @@ RSpec.describe "Panorama", type: :request do
 
       expect(response.body).to include(I18n.t("dashboard.show.radar_vacio"))
       expect(response.body).not_to include(I18n.t("assets.index.vacio_cartera_cuerpo"))
+      expect(response.body).not_to include(%(href="#{new_trade_path}"))
     end
 
     # X15: the sparkline used to read PriceSeries once per row.
