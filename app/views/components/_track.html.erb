@@ -1,0 +1,36 @@
+<%# Where a value sits on its own scale (D96): one neutral track, both ends
+    named, and every marker on a rail inset by the dot's half-width so an
+    extreme stays on the bar instead of hanging off it.
+    Locals: position (0-100), low_label, high_label; optional marker (0-100)
+    and marker_label. %>
+<% marker = local_assigns[:marker] %>
+<div class="flex flex-col gap-2">
+  <div class="relative h-2.5">
+    <div class="absolute inset-x-0 top-1 h-1.5 rounded-full bg-bg-muted"></div>
+    <div class="absolute inset-x-[5px] top-0 h-2.5">
+      <% if marker %>
+        <span class="absolute top-0 h-2.5 w-0.5 -translate-x-1/2 rounded-full bg-primary"
+              style="left: <%= track_offset(marker) %>%"
+              aria-hidden="true"></span>
+      <% end %>
+      <span class="absolute top-0 size-2.5 -translate-x-1/2 rounded-full bg-fg-default"
+            style="left: <%= track_offset(position) %>%"
+            aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <%# The label is centred on its tick, so it needs room at both ends. %>
+  <% if local_assigns[:marker_label] %>
+    <div class="relative h-3">
+      <span class="absolute -translate-x-1/2 whitespace-nowrap font-mono text-[10px] font-semibold text-primary"
+            style="left: <%= track_label_offset(marker) %>%">
+        <%= marker_label %>
+      </span>
+    </div>
+  <% end %>
+
+  <div class="flex justify-between font-mono text-[11px] text-fg-subtle">
+    <span><%= low_label %></span>
+    <span><%= high_label %></span>
+  </div>
+</div>

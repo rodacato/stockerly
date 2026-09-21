@@ -66,6 +66,17 @@ module ApplicationHelper
                 FIELD_SIZES.fetch(size), extra)
   end
 
+  # The kit's Track (D96) reads one 0-100 scale, whatever the caller measures,
+  # so a value past either bound lands on the bar rather than beside it.
+  def track_offset(value)
+    value.to_f.clamp(0.0, 100.0).round(2)
+  end
+
+  # Its label is centred on the tick and would otherwise run off the card.
+  def track_label_offset(value)
+    value.to_f.clamp(6.0, 94.0).round(2)
+  end
+
   # A screen that shows a flash inline takes it, so the layout does not repeat
   # it as a toast. FlashHash#delete returns the hash, not the message.
   def take_flash(key)

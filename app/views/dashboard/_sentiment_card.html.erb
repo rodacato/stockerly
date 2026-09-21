@@ -1,11 +1,15 @@
 <%# Locals: card (AssemblePanorama::SentimentCard) %>
-<% titles = {
-     crypto: t("dashboard.show.fear_greed_crypto"),
-     watchlist: t("dashboard.show.sentimiento_watchlist")
-   } %>
+<% copy = {
+     crypto: { title: t("dashboard.show.fear_greed_crypto"),
+               low: t("comun.clasificacion.extreme_fear"),
+               high: t("comun.clasificacion.extreme_greed") },
+     watchlist: { title: t("dashboard.show.sentimiento_watchlist"),
+                  low: t("comun.clasificacion.very_bearish"),
+                  high: t("comun.clasificacion.very_bullish") }
+   }[card.key] %>
 <% delta = sentiment_delta(card.delta) %>
 <article class="<%= card_classes("w-[85%] shrink-0 snap-center p-5 lg:w-full") %>">
-  <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= titles[card.key] %></p>
+  <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= copy[:title] %></p>
 
   <div class="mt-2 flex items-center justify-between gap-3">
     <p class="font-display text-4xl font-bold tracking-tight text-fg-default"><%= card.value %></p>
@@ -14,14 +18,11 @@
     </span>
   </div>
 
-  <div class="relative mt-4">
-    <div class="flex gap-1">
-      <span class="h-1.5 flex-1 rounded-full bg-negative"></span>
-      <span class="h-1.5 flex-1 rounded-full bg-warning"></span>
-      <span class="h-1.5 flex-1 rounded-full bg-positive"></span>
-    </div>
-    <span class="absolute -top-1 size-3 -translate-x-1/2 rounded-full bg-fg-default"
-          style="left: <%= sentiment_offset(card.value) %>%"></span>
+  <div class="mt-4">
+    <%= render "components/track",
+               position: sentiment_offset(card.value),
+               low_label: copy[:low],
+               high_label: copy[:high] %>
   </div>
 
   <% if delta %>
