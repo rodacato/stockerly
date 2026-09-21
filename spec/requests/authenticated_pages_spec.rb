@@ -45,6 +45,7 @@ RSpec.describe "Authenticated pages", type: :request do
 
   describe "POST /alerts" do
     it "creates an alert and redirects back" do
+      create(:asset, symbol: "AAPL")
       post alerts_path, params: { alert: { asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200.0 } }
       expect(response).to redirect_to(alerts_path)
       follow_redirect!
@@ -55,6 +56,7 @@ RSpec.describe "Authenticated pages", type: :request do
   describe "PATCH /alerts/:id" do
     it "updates an alert and redirects back" do
       rule = create(:alert_rule, user: user)
+      create(:asset, symbol: "TSLA")
       patch alert_path(rule), params: { alert: { asset_symbol: "TSLA", condition: "price_crosses_below", threshold_value: 150.0 } }
       expect(response).to redirect_to(alerts_path)
       follow_redirect!

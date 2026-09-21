@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe Alerts::UseCases::CreateRule do
   let(:user) { create(:user) }
 
+  before { create(:asset, symbol: "AAPL") }
+
   describe ".call" do
     let(:valid_params) { { asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200.0 } }
 

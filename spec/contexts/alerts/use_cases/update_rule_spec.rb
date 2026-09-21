@@ -5,6 +5,8 @@ RSpec.describe Alerts::UseCases::UpdateRule do
   let!(:rule) { create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 150.0) }
   let(:valid_params) { { asset_symbol: "MSFT", condition: "price_crosses_below", threshold_value: 400.0 } }
 
+  before { create(:asset, symbol: "MSFT") }
+
   describe ".call" do
     it "updates the alert rule and returns Success" do
       result = described_class.call(user: user, rule_id: rule.id, params: valid_params)

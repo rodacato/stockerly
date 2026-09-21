@@ -5,6 +5,8 @@ RSpec.describe Alerts::Contracts::CreateContract do
 
   let(:valid_params) { { asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200.0 } }
 
+  before { create(:asset, symbol: "AAPL") }
+
   describe "validation" do
     it "passes with valid params" do
       result = subject.call(valid_params)
@@ -47,6 +49,29 @@ RSpec.describe Alerts::Contracts::CreateContract do
     it "accepts window_days as nil for price-based conditions" do
       result = subject.call(valid_params.merge(window_days: nil))
       expect(result).to be_success
+    end
+
+    it "fails when asset_symbol is not in the catalogue" do
+      result = subject.call(valid_params.merge(asset_symbol: "APPL"))
+      expect(result).to be_failure
+      expect(result.errors[:asset_symbol]).to include("no está en tu catálogo")
+    end
+
+    it "accepts a catalogued symbol written in lowercase" do
+      result = subject.call(valid_params.merge(asset_symbol: "aapl"))
+      expect(result).to be_success
+    end
+
+    %w[bmv_holiday cete_auction].each do |condition|
+      it "accepts '#{condition}' with a blank asset_symbol" do
+        result = subject.call(asset_symbol: nil, condition: condition, window_days: 7)
+        expect(result).to be_success
+      end
+    end
+
+    it "does not report asset_not_found when asset_symbol is blank" do
+      result = subject.call(valid_params.merge(asset_symbol: ""))
+      expect(result.errors[:asset_symbol]).not_to include("no está en tu catálogo")
     end
   end
 end
