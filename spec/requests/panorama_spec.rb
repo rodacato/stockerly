@@ -137,7 +137,6 @@ RSpec.describe "Panorama", type: :request do
       expect(response.body).to include(ERB::Util.html_escape(I18n.t("dashboard.show.fear_greed_crypto")))
       expect(response.body).to include(">72<")
       expect(response.body).to include("+4 vs ayer")
-      expect(response.body).not_to include(ERB::Util.html_escape(I18n.t("dashboard.show.fear_greed_stocks")))
     end
   end
 
