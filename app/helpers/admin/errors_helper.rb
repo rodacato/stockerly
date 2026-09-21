@@ -1,11 +1,11 @@
 module Admin
   module ErrorsHelper
-    SOURCE_OPTIONS = [
-      [ "todos",   "Todos",      nil ],
-      [ "request", "Peticiones", "request" ],
-      [ "job",     "Trabajos",   "job" ],
-      [ "other",   "Otros",      "other" ]
-    ].freeze
+    SOURCES = %w[request job other].freeze
+
+    def admin_error_source_options
+      [ [ "todos", t("admin.errors.index.todos"), nil ] ] +
+        SOURCES.map { |source| [ source, t("admin.errors.index.origenes.#{source}"), source ] }
+    end
 
     # What was running when it blew up, in the shape that identifies it: a verb
     # and a path for a request, the class for a job.
