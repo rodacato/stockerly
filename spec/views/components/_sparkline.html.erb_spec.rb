@@ -19,6 +19,12 @@ RSpec.describe "components/_sparkline" do
     expect(rendered).to include("h-8 w-16")
   end
 
+  it "draws a week that did not move neutral, since it did not rise" do
+    render_sparkline([ 50, 50, 50 ])
+
+    expect(rendered).to include("stroke-border-strong")
+  end
+
   it "draws a rising week positive" do
     render_sparkline([ 0, 40, 100 ])
 
