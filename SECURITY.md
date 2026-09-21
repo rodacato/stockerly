@@ -1,5 +1,10 @@
 # Security Policy
 
+## Supported Versions
+
+Only the latest released version receives security patches. Stockerly is self-hosted, so the
+version that matters is the one on your instance, not the one on `master`.
+
 ## Reporting a Vulnerability
 
 If you discover a security vulnerability, please report it responsibly. **Do not open a public issue.**
@@ -15,7 +20,28 @@ Use **GitHub Private Vulnerability Reporting**:
 
 If private reporting is unavailable, open a private discussion with maintainers before disclosure.
 
-You will receive a response within 48 hours.
+### Disclosure timeline
+
+- **0 days** — reported
+- **48 hours** — acknowledgment
+- **7 days** — assessment and fix development
+- **30 days** — fix released and **advisory published**
+
+The advisory is not optional and it is not a leak. Stockerly is self-hosted: whoever stood up an
+instance learns they must upgrade from the published advisory and from nothing else, because that
+is what `bundler-audit` and Dependabot read. It is drafted privately and published only once the
+fix has shipped — the opposite of describing an unpatched weakness in public, which is what an
+issue would do and why issues are not the channel.
+
+### Scope
+
+In scope: authentication and authorization bypass, injection (SQL, command, template), XSS and
+CSRF, SSRF through a market-data gateway, exposure of one instance's holdings or credentials, and
+anything that lets an unauthenticated caller reach trading or portfolio data.
+
+Out of scope: vulnerabilities in third-party dependencies (report those upstream), denial of
+service, social engineering, and anything requiring access to the host the operator already
+controls.
 
 ## Sensitive Files
 
