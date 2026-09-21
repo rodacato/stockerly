@@ -53,6 +53,12 @@ module AssetsHelper
     percent.negative? ? :down : :up
   end
 
+  # D69's first emphasis slot: a fixed-income lot near its maturity reports the
+  # days left instead of a day change it does not have.
+  def maturity_days(position)
+    Trading::Domain::MaturityWindow.days_until(position)
+  end
+
   # D9's ladder, cheapest first: owning implies following implies tracked.
   def tracked_tier(asset, held_ids:, followed_ids:)
     return :held if held_ids.include?(asset.id)

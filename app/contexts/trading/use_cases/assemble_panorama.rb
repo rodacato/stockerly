@@ -6,7 +6,6 @@ module Trading
     class AssemblePanorama < SimpleUseCase
       RADAR_LIMIT = 6
       SIGNALS_LIMIT = 3
-      MATURITY_WINDOW_DAYS = 30
 
       SentimentCard = Data.define(:key, :value, :label_key, :delta)
       RadarEntry = Data.define(:kind, :record, :asset, :change, :maturity_days)
@@ -108,7 +107,7 @@ module Trading
       # ADR-021: an asset with no computable day change has not been quiet, it
       # is unknown — so it is not reported as activity either way.
       def radar(positions, watched, day_changes)
-        entries = positions.map { |p| entry_for(:position, p, maturity_days_of(p), day_changes) } +
+        entries = positions.map { |p| entry_for(:position, p, Domain::MaturityWindow.days_until(p), day_changes) } +
                   watched.map { |w| entry_for(:watchlist, w, nil, day_changes) }
 
         entries
@@ -126,14 +125,6 @@ module Trading
           change: day_changes[asset.id],
           maturity_days: maturity_days
         )
-      end
-
-      def maturity_days_of(position)
-        date = position.maturity_date
-        return nil if date.blank?
-
-        days = (date - Date.current).to_i
-        days if days.between?(0, MATURITY_WINDOW_DAYS)
       end
     end
   end

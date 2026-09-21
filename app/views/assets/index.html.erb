@@ -49,6 +49,7 @@
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <% @positions.each do |position| %>
           <%= render "components/asset_row", position: position, declared_currency: @currency,
+                     maturity_days: maturity_days(position),
                      closes: @sparkline_closes[position.asset_id],
                      change: @day_changes[position.asset_id] %>
         <% end %>
