@@ -15,6 +15,30 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).to include(I18n.t("settings.show.datos_titulo"))
   end
 
+  # The tile earns its place by carrying a distinct glyph per destination, and
+  # receipt_long carried two: Historial on Activos and Registros here.
+  describe "the nav row's icon tile" do
+    def nav_rows(path)
+      get path
+      response.parsed_body.css("a").filter_map do |link|
+        icon = link.at_css("span.size-10 svg[data-icon]")
+        [ icon["data-icon"], link["href"] ] if icon
+      end
+    end
+
+    it "never sends one glyph to two destinations" do
+      rows = (nav_rows(settings_path) + nav_rows(assets_path)).uniq
+      repeated = rows.map(&:first).tally.select { |_, count| count > 1 }
+
+      expect(repeated).to be_empty
+    end
+
+    it "leaves the receipt to Historial, which is the one made of receipts" do
+      expect(nav_rows(assets_path)).to include([ "receipt_long", positions_path ])
+      expect(nav_rows(settings_path).map(&:first)).not_to include("receipt_long")
+    end
+  end
+
   # D5: on a single-user instance the admin split was a costume. The surfaces
   # stay where they are; what changes is that they are reachable from here.
   it "links to the instance surfaces instead of reimplementing them" do
