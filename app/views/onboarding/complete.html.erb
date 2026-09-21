@@ -41,8 +41,8 @@
         <%= icon_svg "rocket_launch", class: "text-lg", "aria-hidden": "true" %>
       <% end %>
       <%= button_to t(".sin_sincronizar"), onboarding_launch_path(launch_sync: "false"), method: :post,
-            class: "text-sm font-medium text-fg-subtle hover:text-primary transition-colors py-2" %>
-      <%= link_to onboarding_security_path, class: "inline-flex items-center gap-1 text-sm font-medium text-fg-subtle hover:text-primary transition-colors" do %>
+            class: "text-sm font-medium text-fg-subtle hover:text-primary-fg transition-colors py-2" %>
+      <%= link_to onboarding_security_path, class: "inline-flex items-center gap-1 text-sm font-medium text-fg-subtle hover:text-primary-fg transition-colors" do %>
         <%= icon_svg "arrow_back", class: "text-base" %>
         <%= t(".atras") %>
       <% end %>

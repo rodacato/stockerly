@@ -34,12 +34,12 @@
       <% end %>
 
       <div class="flex items-center justify-between pt-6">
-        <%= link_to onboarding_integrations_path, class: "inline-flex items-center gap-1 text-sm font-medium text-fg-subtle hover:text-primary transition-colors" do %>
+        <%= link_to onboarding_integrations_path, class: "inline-flex items-center gap-1 text-sm font-medium text-fg-subtle hover:text-primary-fg transition-colors" do %>
           <%= icon_svg "arrow_back", class: "text-base" %>
           <%= t(".atras") %>
         <% end %>
         <div class="flex items-center gap-4">
-          <%= link_to t(".omitir"), onboarding_security_path, class: "text-sm font-medium text-fg-subtle hover:text-primary transition-colors" %>
+          <%= link_to t(".omitir"), onboarding_security_path, class: "text-sm font-medium text-fg-subtle hover:text-primary-fg transition-colors" %>
           <button type="submit" class="<%= button_classes(:primary, :lg, "shadow-lg") %>">
             <%= t(".continuar") %>
           </button>

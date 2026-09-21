@@ -20,10 +20,10 @@
         body text. The accent stays on the heading and the link, where large
         text and UI components only owe 3:1 (D41). %>
     <section class="flex flex-col items-start gap-2 rounded-2xl bg-primary-muted p-5">
-      <h2 class="font-display text-lg font-bold tracking-tight text-primary"><%= t(".conecta_titulo") %></h2>
+      <h2 class="font-display text-lg font-bold tracking-tight text-primary-fg"><%= t(".conecta_titulo") %></h2>
       <p class="text-fg-default"><%= t(".conecta_cuerpo") %></p>
       <p class="text-fg-default"><%= t(".conecta_pendiente") %></p>
-      <%= link_to admin_integrations_path, class: "font-semibold text-primary hover:underline" do %>
+      <%= link_to admin_integrations_path, class: "font-semibold text-primary-fg hover:underline" do %>
         <%= t(".conecta_cta") %> <span aria-hidden="true">→</span>
       <% end %>
     </section>
@@ -76,7 +76,7 @@
           fourth screen — D31's disposability contract counts routes. %>
       <% if (rest = @waves.drop(5)).any? %>
         <details class="group mt-1">
-          <summary class="flex cursor-pointer list-none items-center gap-1 text-xs font-semibold text-primary [&::-webkit-details-marker]:hidden">
+          <summary class="flex cursor-pointer list-none items-center gap-1 text-xs font-semibold text-primary-fg [&::-webkit-details-marker]:hidden">
             <%= t(".olas_ver_todas", count: @waves.size) %>
             <%= icon_svg "expand_more", class: "text-sm transition-transform group-open:rotate-180", "aria-hidden": "true" %>
           </summary>
@@ -121,7 +121,7 @@
           <li class="flex flex-col gap-1 py-3">
             <% if headline[:url].present? %>
               <%= link_to headline[:title], headline[:url], target: "_blank", rel: "noopener noreferrer",
-                    class: "font-semibold text-fg-default hover:text-primary" %>
+                    class: "font-semibold text-fg-default hover:text-primary-fg" %>
             <% else %>
               <p class="font-semibold text-fg-default"><%= headline[:title] %></p>
             <% end %>
@@ -148,7 +148,7 @@
         <p class="text-sm text-fg-subtle"><%= t(".calendario_agotado", horizon: @calendar_horizon) %></p>
         <div class="flex gap-4">
           <% @calendar_sources.each do |name, url| %>
-            <%= link_to name.to_s.titleize, url, class: "text-sm font-semibold text-primary hover:underline",
+            <%= link_to name.to_s.titleize, url, class: "text-sm font-semibold text-primary-fg hover:underline",
                   target: "_blank", rel: "noopener noreferrer" %>
           <% end %>
         </div>

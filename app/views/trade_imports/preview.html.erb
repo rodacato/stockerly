@@ -24,7 +24,7 @@
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-semibold uppercase tracking-widest text-fg-subtle"><%= t(".rechazo.faltan") %></span>
           <button type="button" data-action="check-all#toggle"
-                  class="cursor-pointer text-xs font-semibold text-primary"><%= t(".rechazo.alternar") %></button>
+                  class="cursor-pointer text-xs font-semibold text-primary-fg"><%= t(".rechazo.alternar") %></button>
         </div>
 
         <ul class="flex flex-col gap-1.5">
@@ -73,7 +73,7 @@
           <%= t(".rechazo.parcial_cuerpo", count: @blocked_rows, symbols: Array(@details).size) %>
         </p>
         <%= f.submit t(".rechazo.parcial", count: @importable_rows),
-              class: "cursor-pointer self-start text-sm font-semibold text-primary" %>
+              class: "cursor-pointer self-start text-sm font-semibold text-primary-fg" %>
       <% end %>
     <% else %>
       <ul class="flex flex-col gap-1.5">

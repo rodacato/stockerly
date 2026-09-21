@@ -96,7 +96,7 @@
     symbol filled in. %>
 <div class="flex flex-wrap gap-3">
   <%= link_to new_alert_path(asset_symbol: @asset.symbol),
-        class: "flex-1 rounded-lg border border-border-default px-4 py-2.5 text-center text-sm font-semibold text-fg-default transition-colors hover:border-primary hover:text-primary" do %>
+        class: "flex-1 rounded-lg border border-border-default px-4 py-2.5 text-center text-sm font-semibold text-fg-default transition-colors hover:border-primary hover:text-primary-fg" do %>
     <%= t("market.actions.crear_regla") %>
   <% end %>
   <%= render "components/sheet_dialog", frame_id: "trade_sheet", url: new_trade_path(symbol: @asset.symbol),

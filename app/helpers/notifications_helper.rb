@@ -20,7 +20,7 @@ module NotificationsHelper
   # two families, which put a CETES maturity and a rule firing in the same
   # colour — the collapse the inbox filter made everywhere else.
   ICON_STYLES = {
-    "alert_triggered"   => "bg-primary-muted text-primary",
+    "alert_triggered"   => "bg-primary-muted text-primary-fg",
     "earnings_reminder" => "bg-bg-muted text-fg-subtle",
     "maturity_reminder" => "bg-warning-bg text-warning-fg",
     "system"            => "bg-bg-muted text-fg-subtle"

@@ -22,7 +22,7 @@
         <li class="px-5 py-3.5">
           <% if article.url.present? %>
             <%= link_to article.url, target: "_blank", rel: "noopener noreferrer",
-                        class: "text-sm font-medium text-fg-default leading-snug hover:text-primary" do %>
+                        class: "text-sm font-medium text-fg-default leading-snug hover:text-primary-fg" do %>
               <%= article.title %>
             <% end %>
           <% else %>

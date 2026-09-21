@@ -30,7 +30,7 @@
       </div>
       <div>
         <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Objetivo de analistas</p>
-        <p class="font-mono text-xl font-medium text-primary"><%= format_currency_mx(target, currency: ccy) %></p>
+        <p class="font-mono text-xl font-medium text-primary-fg"><%= format_currency_mx(target, currency: ccy) %></p>
       </div>
       <div>
         <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Diferencia</p>
@@ -54,7 +54,7 @@
                style="left: <%= target_pct %>%" title="Objetivo: <%= format_currency_mx(target, currency: ccy) %>"></div>
         </div>
         <div class="flex justify-between mt-2">
-          <span class="text-[10.5px] font-semibold text-primary">Actual</span>
+          <span class="text-[10.5px] font-semibold text-primary-fg">Actual</span>
           <span class="text-[10.5px] font-semibold <%= positive_diff ? 'text-positive-fg' : 'text-negative-fg' %>">Objetivo</span>
         </div>
       </div>
