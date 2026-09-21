@@ -86,6 +86,23 @@ RSpec.describe "Welcome", type: :request do
       expect(user.reload).to be_onboarded
     end
 
+    # The Consolidado was this card's door, and it is an empty chart with no way
+    # to register anything — the one thing the card asks the reader to do.
+    it "sends the first-movement door where a movement can be registered" do
+      login_as_without_onboarding(user)
+      post complete_welcome_path, params: { destino: "new_trade" }
+
+      expect(response).to redirect_to(new_trade_path)
+      expect(user.reload).to be_onboarded
+    end
+
+    it "no longer treats the Consolidado as a door" do
+      login_as_without_onboarding(user)
+      post complete_welcome_path, params: { destino: "portfolio" }
+
+      expect(response).to redirect_to(dashboard_path)
+    end
+
     it "ignores a destination that is not one of the doors" do
       login_as_without_onboarding(user)
       post complete_welcome_path, params: { destino: "https://example.com" }

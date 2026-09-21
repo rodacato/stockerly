@@ -3,7 +3,7 @@ class WelcomeController < AuthenticatedController
   # leave this screen, so every app link would bounce them back to step one.
   layout "onboarding"
 
-  DOORS = { "portfolio" => :portfolio_path, "assets" => :assets_path, "alerts" => :alerts_path }.freeze
+  DOORS = { "new_trade" => :new_trade_path, "assets" => :assets_path, "alerts" => :alerts_path }.freeze
 
   def show
     redirect_to dashboard_path if current_user.onboarded?
