@@ -37,6 +37,16 @@ RSpec.describe "Descubrir", type: :request do
 
       expect(response.body).to include("Conecta Alpaca")
     end
+
+    # The state covers two causes and the copy named one, so a working install
+    # waiting on its first sweep was told it was misconfigured.
+    it "names the second cause as well as the missing credential" do
+      create(:integration, provider_name: "Alpaca", connection_status: :connected)
+
+      get discover_path
+
+      expect(response.body).to include(I18n.t("discover.show.conecta_pendiente"))
+    end
   end
 
   # A headline's age reads the way the asset detail's news does, and the link
