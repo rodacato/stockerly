@@ -1,17 +1,37 @@
-<%# Parameters: icon, title, description, cta_text (optional), cta_path (optional),
-    cta_method (optional — :post renders a button, anything else a link) %>
-<div class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-default px-4 py-16 text-center">
-  <%= icon_svg icon, class: "mb-4 text-6xl text-border-strong", "aria-hidden": "true" %>
-  <h3 class="mb-2 font-display text-lg font-semibold text-fg-default"><%= title %></h3>
-  <% if description.present? %>
-    <p class="mb-6 max-w-[320px] text-sm text-fg-subtle"><%= description %></p>
-  <% end %>
-  <% if local_assigns[:cta_text] && local_assigns[:cta_path] %>
-    <% cta_class = button_classes(:primary, :sm, "inline-flex items-center gap-2") %>
-    <% if local_assigns[:cta_method] == :post %>
-      <%= button_to cta_text, cta_path, class: cta_class %>
-    <% else %>
-      <%= link_to cta_text, cta_path, class: cta_class %>
+<%# Parameters: icon, title; description (optional), cta_text (optional),
+    cta_path (optional), cta_method (optional — :post renders a button, anything
+    else a link), size (optional — :block fills a screen, :inline fits a section
+    inside a column) %>
+<%
+  description = local_assigns[:description]
+  cta =
+    if local_assigns[:cta_text] && local_assigns[:cta_path]
+      cta_class = button_classes(:primary, :sm, "inline-flex items-center gap-2")
+      if local_assigns[:cta_method] == :post
+        button_to(cta_text, cta_path, class: cta_class)
+      else
+        link_to(cta_text, cta_path, class: cta_class)
+      end
+    end
+%>
+<% if local_assigns.fetch(:size, :block) == :inline %>
+  <div class="flex items-center gap-3 rounded-2xl border border-dashed border-border-default px-4 py-5">
+    <%= icon_svg icon, class: "shrink-0 text-2xl text-fg-subtle", "aria-hidden": "true" %>
+    <div class="min-w-0 flex-1">
+      <h3 class="text-sm text-fg-default"><%= title %></h3>
+      <% if description.present? %>
+        <p class="mt-0.5 text-xs text-fg-subtle"><%= description %></p>
+      <% end %>
+      <%= cta %>
+    </div>
+  </div>
+<% else %>
+  <div class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-default px-4 py-16 text-center">
+    <%= icon_svg icon, class: "mb-4 text-6xl text-border-strong", "aria-hidden": "true" %>
+    <h3 class="mb-2 font-display text-lg font-semibold text-fg-default"><%= title %></h3>
+    <% if description.present? %>
+      <p class="mb-6 max-w-[320px] text-sm text-fg-subtle"><%= description %></p>
     <% end %>
-  <% end %>
-</div>
+    <%= cta %>
+  </div>
+<% end %>

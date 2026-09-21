@@ -125,6 +125,15 @@ RSpec.describe "Panorama", type: :request do
 
       expect(response.body).to include(I18n.t("dashboard.show.senales_vacio"))
     end
+
+    # The quiet day used to be a card of its own, because the kit's empty state
+    # only came in the size a whole screen wants.
+    it "says it in the kit's empty state rather than a card of its own" do
+      get dashboard_path
+
+      quiet = response.body[/<div[^>]*>\s*<svg[^>]*>.*?#{Regexp.escape(I18n.t("dashboard.show.senales_vacio"))}/m]
+      expect(quiet).to include("border-dashed")
+    end
   end
 
   describe "the sentiment carousel" do
