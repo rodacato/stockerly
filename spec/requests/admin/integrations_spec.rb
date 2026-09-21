@@ -100,6 +100,28 @@ RSpec.describe "Admin Integrations", type: :request do
     end
   end
 
+  describe "the source panel's controls" do
+    let!(:integration) { create(:integration, provider_name: "Alpaca") }
+
+    before { get admin_integrations_path }
+
+    # Verificar was hand-rolled on bg-primary-muted, which made the one
+    # read-only control the loudest thing in the panel.
+    it "gives Verificar the same treatment as Guardar" do
+      verificar = Capybara.string(response.body)
+                          .find("button", text: I18n.t("admin.integrations.index.verificar"))
+
+      expect(verificar[:class]).to eq(ApplicationController.helpers.button_classes(:secondary, :sm))
+    end
+
+    # Delete sat 8px from Guardar in the same gap-2 row as the two reversible
+    # controls.
+    it "separates the destructive control from the reversible ones" do
+      expect(response.body).to include(%(<div class="flex flex-wrap items-center gap-6">))
+      expect(response.body).to include(%(<form class="inline-flex ml-auto"))
+    end
+  end
+
   describe "DELETE /admin/integrations/:id" do
     let!(:integration) { create(:integration, provider_name: "Old Provider") }
 
