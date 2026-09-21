@@ -6,15 +6,10 @@
     RequestPasswordReset does the silent no-op; this screen must not undo it. %>
 
 <div class="flex flex-col items-center gap-5 text-center">
-  <span class="flex size-14 items-center justify-center rounded-full bg-primary-muted text-primary">
-    <%= icon_svg "mark_email_read", class: "text-3xl", "aria-hidden": "true" %>
-  </span>
+  <%= render "shared/auth_header", icon: "mark_email_read", tone: :primary,
+             title: t("auth.sent.titulo"), subtitle: t("auth.sent.cuerpo") %>
 
-  <div>
-    <h1 class="font-display text-2xl font-bold tracking-tight text-fg-default"><%= t("auth.sent.titulo") %></h1>
-    <p class="mt-2 text-base text-fg-subtle"><%= t("auth.sent.cuerpo") %></p>
-    <p class="mt-2 text-sm text-fg-subtle"><%= t("auth.sent.spam") %></p>
-  </div>
+  <p class="text-sm text-fg-subtle"><%= t("auth.sent.spam") %></p>
 
   <p class="flex items-center gap-2 rounded-xl border border-border-default bg-bg-muted px-4 py-2.5 text-xs text-fg-subtle">
     <%= icon_svg "schedule", class: "text-base", "aria-hidden": "true" %>

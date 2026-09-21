@@ -1,10 +1,25 @@
-<%# Locals: message. The inline alert the auth-shaped screens show above their
-    form — four of them had their own copy of this markup. `flash.now` writes
-    into the same hash for the current request, so callers pass `flash[:alert]`
-    either way. %>
-<% if message.present? %>
-  <p class="flex items-center gap-2 rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
-    <%= icon_svg "error", class: "text-lg", "aria-hidden": "true" %>
-    <%= message %>
-  </p>
+<%# The inline alert the auth-shaped screens show above their form. One message
+    reads as a sentence, several as a list, and a lead above the list is the
+    shape the setup wizard needs — each of those used to be its own box.
+    `flash.now` writes into the same hash for the current request, so callers
+    pass `flash[:alert]` either way.
+    Locals: message and/or messages. %>
+<% message = local_assigns[:message] %>
+<% messages = Array(local_assigns[:messages]) %>
+<% if message.present? || messages.any? %>
+  <div class="rounded-xl border border-negative bg-negative-bg px-3 py-2.5 text-sm text-negative-fg" role="alert">
+    <% if message.present? %>
+      <p class="flex items-center gap-2 <%= "font-medium" if messages.any? %>">
+        <%= icon_svg "error", class: "text-lg", "aria-hidden": "true" %>
+        <%= message %>
+      </p>
+    <% end %>
+    <% if messages.any? %>
+      <ul class="list-disc space-y-0.5 <%= message.present? ? "mt-1 pl-9" : "pl-4" %>">
+        <% messages.each do |item| %>
+          <li><%= item %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
 <% end %>

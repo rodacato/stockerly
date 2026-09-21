@@ -56,6 +56,34 @@ RSpec.describe "Password recovery revamp (S11 #147)", type: :request do
     end
   end
 
+  # The three outcome screens hand-rolled their own header, and the wordmark
+  # went with it — on a phone the layout's brand panel is hidden, so those
+  # screens showed no brand at all.
+  describe "the outcome screens" do
+    def wordmarks
+      response.parsed_body.css("a.lg\\:hidden img").size
+    end
+
+    it "keeps the phone wordmark on the confirmation" do
+      post forgot_password_path, params: { email: user.email }
+
+      expect(wordmarks).to eq(2)
+    end
+
+    it "keeps it on the dead end" do
+      get reset_password_path(token: "rotten")
+
+      expect(wordmarks).to eq(2)
+    end
+
+    it "keeps it on the finished flow" do
+      patch reset_password_path(token: user.generate_token_for(:password_reset)),
+            params: { password: "newpassword123", password_confirmation: "newpassword123" }
+
+      expect(wordmarks).to eq(2)
+    end
+  end
+
   describe "GET /reset-password/:token (state 3 — reset form)" do
     before do
       token = user.password_reset_token

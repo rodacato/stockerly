@@ -3,12 +3,10 @@
     invalid or aged out, or by `update` if the token died between GET and PATCH.
     The window is stated from the constant, not repeated in prose. %>
 
-<div class="flex flex-col items-center space-y-3 text-center">
-  <div class="mb-2 flex size-14 items-center justify-center rounded-2xl bg-negative-bg text-negative">
-    <%= icon_svg "link_off", class: "text-3xl", "aria-hidden": "true" %>
-  </div>
-  <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-fg-subtle"><%= t("auth.expirado.kicker") %></p>
-  <h1 class="font-display text-3xl font-bold tracking-tight text-fg-default"><%= t("auth.expirado.titulo") %></h1>
+<div class="flex flex-col items-center gap-4 text-center">
+  <%= render "shared/auth_header", icon: "link_off", tone: :negative,
+             kicker: t("auth.expirado.kicker"), title: t("auth.expirado.titulo") %>
+
   <p class="max-w-sm text-sm text-fg-subtle">
     <%= t("auth.expirado.cuerpo_html",
           duration: tag.span(duration_in_words_es(User::PASSWORD_RESET_EXPIRES_IN),
