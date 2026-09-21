@@ -149,6 +149,14 @@ RSpec.describe "TOTP enrollment", type: :request do
         expect(response.body).to include(recovery_codes_path)
         expect(response.body).to include("te quedan 2 códigos")
       end
+
+      it "inflects the row down to the last code" do
+        user.otp_recovery_codes.unconsumed.first.update!(consumed_at: Time.current)
+
+        get settings_path
+
+        expect(response.body).to include("te queda 1 código de recuperación")
+      end
     end
   end
 end

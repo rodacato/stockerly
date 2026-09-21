@@ -412,8 +412,9 @@ es-MX:
       volver: Inicia sesión.
     flash:
       bienvenida: "¡Qué gusto verte de vuelta, %{nombre}!"
-      codigo_recuperacion_usado: Entraste con un código de recuperación. Te quedan
-        %{count}.
+      codigo_recuperacion_usado:
+        one: Entraste con un código de recuperación. Te queda 1.
+        other: Entraste con un código de recuperación. Te quedan %{count}.
       credenciales_invalidas: Correo o contraseña inválidos.
       requiere_sesion: Inicia sesión para continuar.
       sesion_cerrada: Sesión cerrada correctamente.
@@ -1456,7 +1457,9 @@ es-MX:
       digest: Resumen diario por correo
       digest_desc: Un solo correo a las 18:30 CDMX con lo que pasó.
       dos_pasos: Verificación en dos pasos
-      dos_pasos_activa: Activa · te quedan %{count} códigos de recuperación
+      dos_pasos_activa:
+        one: Activa · te queda 1 código de recuperación
+        other: Activa · te quedan %{count} códigos de recuperación
       dos_pasos_desc: TOTP y códigos de recuperación
       errores: Errores
       errores_desc: Qué falló, dónde y cuántas veces
