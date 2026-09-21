@@ -69,6 +69,18 @@ RSpec.describe "Cockpit › Señales", type: :request do
       expect(response.body).to include("Hoy", "Ayer")
     end
 
+    # A row under AYER that also reads "ayer" says the same thing twice.
+    it "leaves the date to the heading it sits under" do
+      held = create(:asset, :stock, symbol: "HELD", currency: "USD")
+      create(:position, portfolio: portfolio, asset: held, shares: 1, avg_cost: 1, status: :open)
+      observation(held, days_ago: 1)
+
+      get "/signals"
+
+      expect(response.body).to include("Ayer")
+      expect(response.body).not_to include(">ayer<")
+    end
+
     it "reads what you follow, not only what you hold" do
       watched = create(:asset, :stock, symbol: "WATCHED", currency: "USD")
       create(:watchlist_item, user: user, asset: watched)
