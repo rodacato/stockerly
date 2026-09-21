@@ -11,7 +11,12 @@
         <span class="text-sm font-semibold text-fg-default"><%= context[:index].name %></span>
         <span class="text-xs text-fg-subtle"><%= context[:market_open] ? t(".abierto") : t(".cerrado") %></span>
         <% if context[:index_change] %>
-          <span class="font-mono text-sm font-semibold <%= context[:index_change].to_f.negative? ? "text-negative-fg" : "text-positive-fg" %>">
+          <% tone = case day_change_direction(context[:index_change])
+             when :down then "text-negative-fg"
+             when :flat then "text-fg-subtle"
+             else "text-positive-fg"
+             end %>
+          <span class="font-mono text-sm font-semibold <%= tone %>">
             <%= signed_percent(context[:index_change]) %> <%= t(".hoy") %>
           </span>
         <% end %>
