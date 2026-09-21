@@ -4,6 +4,7 @@ RSpec.describe "Alert lifecycle", type: :request do
   let!(:user) { create(:user, email: "alerts@example.com", password: "password123") }
 
   before do
+    create(:asset, symbol: "AAPL")
     login_as(user)
   end
 

@@ -33,6 +33,13 @@ module Alerts
         key(:asset_symbol).failure("requerido") if values[:asset_symbol].blank?
       end
 
+      rule(:asset_symbol, :condition) do
+        next if MARKETWIDE_CONDITIONS.include?(values[:condition])
+        next if values[:asset_symbol].blank?
+
+        key(:asset_symbol).failure(:asset_not_found) unless Asset.exists?(symbol: values[:asset_symbol].upcase)
+      end
+
       rule(:threshold_value, :condition) do
         next if DATE_BASED_CONDITIONS.include?(values[:condition])
         key(:threshold_value).failure("requerido") if values[:threshold_value].nil?

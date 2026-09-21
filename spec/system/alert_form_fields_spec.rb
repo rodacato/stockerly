@@ -63,6 +63,7 @@ RSpec.describe "Rule form fields", type: :system, js: true do
 
   it "saves the cooldown typed into the form" do
     create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above, threshold_value: 150)
+    create(:asset, symbol: "NVDA")
     visit alerts_path
     click_link "Nueva"
 
