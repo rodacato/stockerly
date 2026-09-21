@@ -81,8 +81,14 @@
             <%# A nil gain is a position whose trades lost their captured FX —
                 saying so beats printing a number derived from a guess. %>
             <% if entry[:gain] %>
-              <p class="shrink-0 font-mono text-sm font-bold <%= gain_color(entry[:gain]) %>">
-                <%= entry[:gain].negative? ? "−" : "+" %><%= money_cell(entry[:gain].abs, currency: @currency, declared: @currency, precision: 0) %>
+              <% gain = entry[:gain] %>
+              <% sign = case gain <=> 0
+                 when -1 then "−"
+                 when 1 then "+"
+                 else ""
+                 end %>
+              <p class="shrink-0 font-mono text-sm font-bold <%= gain_color(gain) %>">
+                <%= sign %><%= money_cell(gain.abs, currency: @currency, declared: @currency, precision: 0) %>
               </p>
             <% else %>
               <p class="shrink-0 font-mono text-xs text-warning-fg"><%= t(".sin_tc") %></p>
