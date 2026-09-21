@@ -1,9 +1,7 @@
 <%# One entry as a card, per `ajustes-registros`: severity dot, task, message,
-    module and timestamp. The task gets the full width, as on `_error_row`. The
-    payload panel the artboard does not draw stays behind the card — an error
-    you cannot open is a log entry that tells you nothing. Locals: log %>
+    module and timestamp. The task gets the full width, as on `_error_row`. Its
+    id, severity and duration open behind the card. Locals: log %>
 <%
-  payload = admin_log_payload(log)
   has_details = log.error_message.present?
   message = admin_log_message(log)
   log_id = log.log_uid.presence || "log_#{log.id}"
@@ -44,23 +42,6 @@
         <% if log.duration_seconds.present? %>
           <span><span class="text-fg-subtle"><%= t("admin.logs.index.duracion") %> · </span><span class="text-fg-default"><%= log.duration_seconds %> s</span></span>
         <% end %>
-      </div>
-
-      <div class="overflow-hidden rounded-lg bg-bg-muted">
-        <p class="px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t("admin.logs.index.carga_util") %></p>
-        <pre class="overflow-x-auto px-3 py-2 font-mono text-xs text-fg-default"><%= JSON.pretty_generate(payload) %></pre>
-      </div>
-
-      <%# The column is named error_message and every job writes its outcome
-          there, success included. Painting it red by name reported a healthy
-          sync as a failure. %>
-      <% tone = if log.success?    then { bg: "bg-bg-muted",    fg: "text-fg-subtle",    body: "text-fg-default",   label: "detalle" }
-                elsif log.warning? then { bg: "bg-warning-bg",  fg: "text-warning-fg",   body: "text-warning-fg",   label: "detalle" }
-                else                    { bg: "bg-negative-bg", fg: "text-negative-fg",  body: "text-negative-fg",  label: "detalle_error" }
-                end %>
-      <div class="overflow-hidden rounded-lg <%= tone[:bg] %>">
-        <p class="px-3 py-1.5 font-mono text-xs uppercase tracking-widest <%= tone[:fg] %>"><%= t("admin.logs.index.#{tone[:label]}") %></p>
-        <pre class="overflow-x-auto whitespace-pre-wrap break-all px-3 py-2 font-mono text-xs <%= tone[:body] %>"><%= log.error_message %></pre>
       </div>
     </div>
   <% end %>
