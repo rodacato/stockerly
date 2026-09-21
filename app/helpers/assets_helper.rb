@@ -58,7 +58,10 @@ module AssetsHelper
   end
 
   def gain_color(value)
-    value.to_f.negative? ? "text-negative" : "text-positive"
+    amount = value.to_f
+    return "text-fg-subtle" if amount.zero?
+
+    amount.negative? ? "text-negative" : "text-positive"
   end
 
   # watchlist_items.entry_price is captured on add and nothing has ever

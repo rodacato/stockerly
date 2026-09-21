@@ -34,6 +34,18 @@ RSpec.describe AssetsHelper, "percent formatting" do
     end
   end
 
+  describe "#gain_color" do
+    it "colours a gain positive and a loss negative" do
+      expect(helper.gain_color(2.35)).to eq("text-positive")
+      expect(helper.gain_color(-2.35)).to eq("text-negative")
+    end
+
+    it "leaves a value that did not move uncoloured, not green" do
+      expect(helper.gain_color(0)).to eq("text-fg-subtle")
+      expect(helper.gain_color(BigDecimal("0"))).to eq("text-fg-subtle")
+    end
+  end
+
   describe "#unsigned_percent" do
     it "states a distance without a sign" do
       expect(helper.unsigned_percent(3.21)).to eq("3.2%")
