@@ -1,6 +1,9 @@
 <%# Usage: render "onboarding/step_header", step: 1 %>
 <% total = OnboardingController::STEPS %>
-<% percent = (step * 100 / total) %>
+<%# Steps behind the reader, not the ordinal of the one on screen: step 1 opens
+    empty and the bar only fills at the hand-off. Step 3 is drawn by three
+    screens on purpose (D122), so it deliberately sits still across them. %>
+<% percent = ((step - 1) * 100 / total) %>
 <div class="mb-10">
   <div class="flex justify-between items-baseline mb-3">
     <span class="font-mono text-xs uppercase tracking-widest text-fg-subtle">

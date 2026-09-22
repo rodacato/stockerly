@@ -181,6 +181,24 @@ RSpec.describe "Onboarding", type: :request do
     end
   end
 
+  # D149: the bar reports work finished, not the ordinal of the screen being
+  # looked at, so it starts empty and only the hand-off fills it.
+  describe "the progress bar" do
+    it "opens the first step at zero" do
+      get onboarding_integrations_path
+
+      expect(response.body).to include("width: 0%")
+      expect(response.body).to include(">0%<")
+    end
+
+    it "leaves a quarter on the last step, which still has an action on it" do
+      get onboarding_complete_path
+
+      expect(response.body).to include("width: 75%")
+      expect(response.body).not_to include("width: 100%")
+    end
+  end
+
   describe "guard: already onboarded" do
     before { user.update!(onboarded_at: Time.current) }
 
