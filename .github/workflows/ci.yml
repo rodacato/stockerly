@@ -42,6 +42,9 @@ jobs:
       DATABASE_PASSWORD: test_password
       # Pin the database names so they do not follow the checkout directory here.
       DATABASE_PREFIX: stockerly
+      # Nothing in a pull request reads the coverage report — Sonar runs its own
+      # rspec on demand in quality.yml. Skipping it here is about a tenth of the run.
+      COVERAGE: "0"
 
     steps:
       - name: Checkout code
