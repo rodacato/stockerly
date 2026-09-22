@@ -18,12 +18,24 @@
                title: t(".nombre_correo"), description: t(".nombre_correo_desc") %>
     <%= render "components/nav_row", icon: "lock", path: edit_password_settings_path,
                title: t(".contrasena"), description: t(".contrasena_desc") %>
-    <%# D52's Seguridad row. The description reads the account's real state, so
-        the row says whether the factor is on rather than only offering it. %>
-    <%= render "components/nav_row", icon: "verified_user",
-               path: @user.otp_enrolled? ? recovery_codes_path : totp_enrollment_path,
-               title: t(".dos_pasos"),
-               description: @user.otp_enrolled? ? t(".dos_pasos_activa", count: @user.unused_recovery_codes_count) : t(".dos_pasos_desc") %>
+    <%# D52's Seguridad surface is a row only while there is somewhere to go:
+        once enrolled the codes screen is display-once, so a link to it bounces
+        straight back here and ADR-018's regeneration is the real destination. %>
+    <% if @user.otp_enrolled? %>
+      <div class="<%= card_classes("p-5") %>">
+        <p class="text-sm font-semibold text-fg-default"><%= t(".dos_pasos") %></p>
+        <p class="mt-1 text-xs text-fg-subtle">
+          <%= t(".dos_pasos_activa", count: @user.unused_recovery_codes_count) %>
+        </p>
+        <p class="mt-4 text-xs text-fg-subtle"><%= t(".codigos_nuevos_desc") %></p>
+        <%= button_to t(".codigos_nuevos_cta"), regenerate_recovery_codes_path,
+                      form: { data: { turbo_confirm: t(".codigos_nuevos_confirmar") } },
+                      class: button_classes(:secondary, :sm, "mt-3") %>
+      </div>
+    <% else %>
+      <%= render "components/nav_row", icon: "verified_user", path: totp_enrollment_path,
+                 title: t(".dos_pasos"), description: t(".dos_pasos_desc") %>
+    <% end %>
   </section>
 
   <%= render "settings/appearance", user: @user %>
