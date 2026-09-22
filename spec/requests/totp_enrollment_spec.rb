@@ -146,8 +146,25 @@ RSpec.describe "TOTP enrollment", type: :request do
       it "reports the state and how many codes are left" do
         get settings_path
 
-        expect(response.body).to include(recovery_codes_path)
         expect(response.body).to include("te quedan 2 códigos")
+      end
+
+      # `recovery_codes_path` and `regenerate_recovery_codes_path` are the same
+      # string — /two-factor/codes under two verbs — so only the method tells
+      # the minting POST apart from the GET that shows a spent session.
+      it "offers the POST that mints a fresh set" do
+        get settings_path
+
+        form = response.parsed_body.at_css("form[action='#{regenerate_recovery_codes_path}'][method='post']")
+
+        expect(form).to be_present
+        expect(form.at_css("input[name='_method']")).to be_nil
+      end
+
+      it "stops sending the reader to a screen with nothing left to show" do
+        get settings_path
+
+        expect(response.parsed_body.at_css("a[href='#{recovery_codes_path}']")).to be_nil
       end
 
       it "inflects the row down to the last code" do

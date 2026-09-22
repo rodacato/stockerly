@@ -1449,6 +1449,11 @@ es-MX:
         tu portafolio. Conserva tu cuenta, los símbolos que sigues y los tipos de
         cambio, para que puedas volver a importar sin reconfigurar nada.
       cerrar_sesion: Cerrar sesión
+      codigos_nuevos_confirmar: Los códigos que tengas guardados dejarán de funcionar.
+        ¿Genero unos nuevos?
+      codigos_nuevos_cta: Generar códigos nuevos
+      codigos_nuevos_desc: Si los perdiste o ya los gastaste, genera un juego nuevo.
+        Se muestran una sola vez.
       contrasena: Contraseña
       contrasena_desc: Cámbiala cuando quieras
       cuenta: Cuenta
