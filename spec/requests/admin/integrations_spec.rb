@@ -90,6 +90,53 @@ RSpec.describe "Admin Integrations", type: :request do
 
 
 
+    # D146: near-limit is a property of a working source, not a fifth state.
+    # The header counts it in words, so the card says it in words too — the
+    # amber bar stays, but it stops being the only thing that carries it.
+    describe "a connected source close to its own limit" do
+      before do
+        create(:integration, provider_name: "Finnhub", api_key_encrypted: "k", requires_api_key: true,
+                             daily_call_limit: 100, daily_api_calls: 80, calls_reset_at: Time.current)
+      end
+
+      it "says so in words beside the figure the warning is about" do
+        get admin_integrations_path
+
+        expect(response.body).to include("80 / 100 hoy · cerca del límite")
+      end
+
+      it "leaves the state column at its four honest values" do
+        get admin_integrations_path
+
+        expect(response.body).to include(I18n.t("admin.integrations.index.estado.connected"))
+        expect(response.body).not_to include(I18n.t("admin.integrations.index.estado.no_quota"))
+        expect(MarketData::Domain::SourceCatalogue::STATES.size).to eq(4)
+      end
+    end
+
+    # Negative: an exhausted source already says "Sin cuota" and carries its
+    # own reason strip. Adding "cerca del límite" there would report the state
+    # that stopped it as the state that is about to.
+    it "does not qualify a source whose quota already ran out" do
+      create(:integration, provider_name: "Finnhub", api_key_encrypted: "k", requires_api_key: true,
+                           daily_call_limit: 25, daily_api_calls: 25, calls_reset_at: Time.current)
+
+      get admin_integrations_path
+
+      expect(response.body).to include(I18n.t("admin.integrations.index.estado.no_quota"))
+      expect(response.body).not_to include("· cerca del límite")
+    end
+
+    it "leaves a comfortable source's quota line unqualified" do
+      create(:integration, provider_name: "Finnhub", api_key_encrypted: "k", requires_api_key: true,
+                           daily_call_limit: 100, daily_api_calls: 10, calls_reset_at: Time.current)
+
+      get admin_integrations_path
+
+      expect(response.body).to include("10 / 100 hoy")
+      expect(response.body).not_to include("· cerca del límite")
+    end
+
     it "shows the masked key instead of the format once Alpaca has one" do
       create(:integration, provider_name: "Alpaca", api_key_encrypted: "PKTEST123:secret9999")
 
