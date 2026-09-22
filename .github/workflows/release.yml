@@ -1,0 +1,158 @@
+name: Release
+
+# Cutting a release is a decision, not seven steps. `prepare` pushes the branch carrying the
+# version bump and the generated CHANGELOG entry; `publish` tags and publishes once that branch
+# lands on master. Nothing here pushes to master directly.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump
+        required: true
+        type: choice
+        options: [patch, minor, major]
+  push:
+    branches: [master]
+    paths: [lib/stockerly/version.rb]   # the only push that can carry a new version
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # the entry is generated from the commits since the last v* tag
+
+      # script/release_changelog.rb is stdlib only, so there is nothing to bundle.
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+
+      - name: Bump the version and generate the changelog entry
+        id: bump
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          # stderr only, so the gap report reaches the run summary without the success line.
+          if ! script/release_changelog.rb "$BUMP" 2> "$RUNNER_TEMP/gaps.txt"; then
+            cat "$RUNNER_TEMP/gaps.txt" >&2
+            exit 1
+          fi
+
+          cat "$RUNNER_TEMP/gaps.txt"
+          echo "version=$(ruby -e 'require "./lib/stockerly/version"; print Stockerly::VERSION')" >> "$GITHUB_OUTPUT"
+
+      # The branch is pushed and the pull request is opened by a person. Letting Actions open it
+      # needs a repository setting that also lets Actions *approve* pull requests, which is more
+      # than this needs — and a token-authored pull request runs no CI, so opening it by hand is
+      # what gives the release branch its five required checks.
+      - name: Push the release branch
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "release/v$VERSION"
+          git add lib/stockerly/version.rb CHANGELOG.md
+          git commit -m "chore(release): v$VERSION"
+          git push origin "release/v$VERSION:release/v$VERSION"
+
+      - name: Say what to do next
+        shell: bash
+        env:
+          BUMP: ${{ inputs.bump }}
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          {
+            echo "## Release v$VERSION is ready for review"
+            echo
+            echo "[Open the pull request](${{ github.server_url }}/${{ github.repository }}/compare/master...release/v$VERSION?expand=1)"
+            echo
+            echo "Read the changelog entry before merging: anything that breaks an existing"
+            echo "install belongs under **Breaking Changes**, and it only lands there when the"
+            echo "commit was written as \`type!:\`. Merging publishes the tag and the release."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -s "$RUNNER_TEMP/gaps.txt" ]; then
+            total=$(wc -l < "$RUNNER_TEMP/gaps.txt")
+            {
+              echo
+              echo "### Commits the entry does not carry"
+              echo
+              echo "Paste what belongs in the entry onto the branch. For the full list:"
+              echo "\`script/release_changelog.rb $BUMP --dry-run\`."
+              echo
+              echo '```'
+              head -60 "$RUNNER_TEMP/gaps.txt"
+              if [ "$total" -gt 60 ]; then echo "… and $((total - 60)) more"; fi
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  publish:
+    # Runs on a push to master that touched the manifest and decides for itself whether there is
+    # a release to cut: a version with no tag yet.
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+
+      - name: Decide whether this version is already released
+        id: check
+        run: |
+          version=$(ruby -e 'require "./lib/stockerly/version"; print Stockerly::VERSION')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+          if git rev-parse "v$version" >/dev/null 2>&1; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The suite is not re-run here. master only takes pull requests whose required checks
+      # passed on a branch that was up to date with it, which is why deploy.yml stopped
+      # re-running CI too (04ab52f3).
+      - name: Tag and publish
+        if: steps.check.outputs.publish == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.check.outputs.version }}
+        run: |
+          notes="$RUNNER_TEMP/notes.md"
+          awk -v heading="## [$VERSION]" \
+            'index($0, heading) == 1 { found = 1; next } found && /^## \[/ { exit } found' \
+            CHANGELOG.md > "$notes"
+
+          if [ ! -s "$notes" ]; then
+            echo "CHANGELOG.md carries no '## [$VERSION]' section to publish as notes" >&2
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$VERSION" -m "Stockerly v$VERSION"
+          git push origin "refs/tags/v$VERSION"
+
+          flags=(--verify-tag)
+          case "$VERSION" in *-*) flags+=(--prerelease) ;; esac
+
+          gh release create "v$VERSION" --title "v$VERSION" --notes-file "$notes" "${flags[@]}"
