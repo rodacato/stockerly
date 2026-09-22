@@ -75,6 +75,9 @@ group :development, :test do
   # Keeps config/locales honest — missing, unused and unnormalized keys (ADR-011)
   gem "i18n-tasks", require: false
 
+  # Balances the suite into shards for the CI matrix (--only-group)
+  gem "parallel_tests", require: false
+
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
 

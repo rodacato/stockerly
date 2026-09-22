@@ -20,6 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
+    # Four shards, four runners. The suite has no hot spot to optimise — it is a
+    # long tail of thousands of fast examples — so the only lever left is running
+    # fewer of them per machine. fail-fast stays off: one shard's failure should
+    # not hide the other three.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [ 1, 2, 3, 4 ]
+
     services:
       postgres:
         image: postgres:16
@@ -70,7 +79,9 @@ jobs:
       - name: Run tests
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
-        run: bundle exec rspec
+        # --only-group resets TEST_ENV_NUMBER, so each runner uses the ordinary
+        # test databases and none of this needs a per-worker database set.
+        run: bundle exec parallel_rspec -n 4 --only-group ${{ matrix.shard }} spec
 
   scan_ruby:
     runs-on: ubuntu-latest
