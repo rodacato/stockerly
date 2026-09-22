@@ -1,15 +1,24 @@
-<%# Locals: title, description, path, icon; badge optional.
-    The tile is a signifier, so no two destinations may share a glyph. %>
-<%= link_to path, class: "flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
+<%# Locals: title, description, path, icon; badge, external optional.
+    The tile is a signifier, so no two destinations may share a glyph.
+    D147: one rank plus one boolean. `external` marks the row that leaves the
+    product — a destination with none of Stockerly's chrome and no route back
+    — so it opens in a new tab and the trailing glyph says which kind of move
+    the tap is. Nothing else on a hub earns a rank. %>
+<% external = local_assigns.fetch(:external, false) %>
+<%= link_to path, target: ("_blank" if external), rel: ("noopener" if external),
+            class: "flex items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
   <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-bg-muted">
     <%= icon_svg icon, class: "text-xl text-fg-subtle", "aria-hidden": "true" %>
   </span>
   <span class="min-w-0 flex-1">
-    <span class="block text-sm font-semibold text-fg-default"><%= title %></span>
+    <span class="block text-sm font-semibold text-fg-default">
+      <%= title %><% if external %><span class="sr-only"> <%= t("comun.abre_pestana") %></span><% end %>
+    </span>
     <span class="block text-xs text-fg-subtle"><%= description %></span>
   </span>
   <% if local_assigns[:badge] %>
     <span class="shrink-0 font-mono text-xs text-fg-subtle"><%= badge %></span>
   <% end %>
-  <%= icon_svg "chevron_right", class: "shrink-0 text-xl text-fg-subtle", "aria-hidden": "true" %>
+  <%= icon_svg(external ? "open_in_new" : "chevron_right",
+               class: "shrink-0 text-xl text-fg-subtle", "aria-hidden": "true") %>
 <% end %>

@@ -70,7 +70,7 @@
     <%# No failed-jobs badge: it lives in another database, and counting it on
         every hub load put a cross-database query in the request path for a
         number Mission Control shows accurately the moment you open it. %>
-    <%= render "components/nav_row", icon: "checklist", path: "/admin/jobs",
+    <%= render "components/nav_row", icon: "checklist", path: "/admin/jobs", external: true,
                title: t(".trabajos"), description: t(".trabajos_desc") %>
     <%# ADR-020: only when the switch is on — the row is the developer surface,
         not a permanent part of the hub. %>

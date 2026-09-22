@@ -50,6 +50,46 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).to include(%(href="/admin/jobs"))
   end
 
+  # D147: /admin/jobs mounts Mission Control under its own layout, with none
+  # of Stockerly's chrome and no route back into its navigation. It is the one
+  # row in the product that strands you, and it used to signal least.
+  describe "the row that leaves Stockerly" do
+    def jobs_row
+      get settings_path
+      response.parsed_body.at_css(%(a[href="/admin/jobs"]))
+    end
+
+    it "marks it with the glyph the product already uses for leaving" do
+      glyphs = jobs_row.css("svg[data-icon]").pluck("data-icon")
+
+      expect(glyphs).to include("open_in_new")
+      expect(glyphs).not_to include("chevron_right")
+    end
+
+    it "actually opens a new tab, so the mark is literally true" do
+      row = jobs_row
+
+      expect(row["target"]).to eq("_blank")
+      expect(row["rel"]).to include("noopener")
+    end
+
+    it "says it in the accessible name too" do
+      expect(jobs_row.text).to include(I18n.t("comun.abre_pestana"))
+    end
+
+    # Negative: one rank plus one boolean. Every other row keeps the chevron
+    # and stays inside the product.
+    it "leaves every other row unmarked" do
+      get settings_path
+      others = response.parsed_body.css("a").select { |a| a.at_css("span.size-10 svg[data-icon]") }
+                       .reject { |a| a["href"] == "/admin/jobs" }
+
+      expect(others).not_to be_empty
+      expect(others.filter_map { |a| a["target"] }).to be_empty
+      expect(others.flat_map { |a| a.css("svg[data-icon]").pluck("data-icon") }).not_to include("open_in_new")
+    end
+  end
+
   # ADR-020: the errors row is the developer surface, not a permanent part of
   # the hub.
   it "hides the errors row while developer mode is off" do
