@@ -1466,6 +1466,7 @@ es-MX:
       dos_pasos_activa:
         one: Activa · te queda 1 código de recuperación
         other: Activa · te quedan %{count} códigos de recuperación
+        zero: Activa · ya no te queda ningún código de recuperación
       dos_pasos_desc: TOTP y códigos de recuperación
       errores: Errores
       errores_desc: Qué falló, dónde y cuántas veces

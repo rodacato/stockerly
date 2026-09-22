@@ -22,11 +22,19 @@
         once enrolled the codes screen is display-once, so a link to it bounces
         straight back here and ADR-018's regeneration is the real destination. %>
     <% if @user.otp_enrolled? %>
+      <% codes_left = @user.unused_recovery_codes_count %>
       <div class="<%= card_classes("p-5") %>">
         <p class="text-sm font-semibold text-fg-default"><%= t(".dos_pasos") %></p>
-        <p class="mt-1 text-xs text-fg-subtle">
-          <%= t(".dos_pasos_activa", count: @user.unused_recovery_codes_count) %>
-        </p>
+        <%# Out of codes, the authenticator is the only door left, and on a
+            self-hosted box losing it locks the owner out for good. %>
+        <% if codes_left.zero? %>
+          <div class="mt-3 flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
+            <%= icon_svg "warning", class: "text-lg text-warning-fg", "aria-hidden": "true" %>
+            <p class="text-xs text-warning-fg"><%= t(".dos_pasos_activa", count: codes_left) %></p>
+          </div>
+        <% else %>
+          <p class="mt-1 text-xs text-fg-subtle"><%= t(".dos_pasos_activa", count: codes_left) %></p>
+        <% end %>
         <p class="mt-4 text-xs text-fg-subtle"><%= t(".codigos_nuevos_desc") %></p>
         <%= button_to t(".codigos_nuevos_cta"), regenerate_recovery_codes_path,
                       form: { data: { turbo_confirm: t(".codigos_nuevos_confirmar") } },

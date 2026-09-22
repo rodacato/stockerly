@@ -167,6 +167,25 @@ RSpec.describe "TOTP enrollment", type: :request do
         expect(response.parsed_body.at_css("a[href='#{recovery_codes_path}']")).to be_nil
       end
 
+      # At zero the authenticator is the only door left into a box whose owner
+      # has nobody to appeal to, so the hub may not report it as furniture.
+      context "when the last recovery code is gone" do
+        before { user.otp_recovery_codes.update_all(consumed_at: Time.current) }
+
+        it "names the empty state instead of counting down to zero" do
+          get settings_path
+
+          expect(response.body).to include("ningún código de recuperación")
+          expect(response.body).not_to include("te quedan 0 códigos")
+        end
+
+        it "does not render it in the same grey as every other line on the hub" do
+          get settings_path
+
+          expect(response.parsed_body.css(".text-warning-fg").text).to include("ningún código de recuperación")
+        end
+      end
+
       it "inflects the row down to the last code" do
         user.otp_recovery_codes.unconsumed.first.update!(consumed_at: Time.current)
 
