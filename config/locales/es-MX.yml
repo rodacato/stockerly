@@ -100,6 +100,7 @@ es-MX:
           calls_per_minute: por minuto
           kib_per_month: KiB este mes
         uso: "%{used} / %{limit} %{unit}"
+        uso_cerca: "%{uso} · cerca del límite"
         vacio_cuerpo_html: Vuelven al correr <code class="font-mono">bin/rails stockerly:sync</code>
           en tu servidor.
         vacio_titulo: No hay fuentes configuradas

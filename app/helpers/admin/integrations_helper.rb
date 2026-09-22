@@ -89,13 +89,20 @@ module Admin
       source_state_style(entry.state)[:bar]
     end
 
-    def source_quota_label(quota)
+    # D146: near-limit is a property of a working source, not a fifth state,
+    # so it qualifies the figure it is about rather than the state column. The
+    # bar keeps the amber; what it never licensed was colour as sole carrier.
+    def source_quota_label(entry)
+      quota = entry.quota
       return t("admin.integrations.index.cuota_desconocida") unless quota.known?
 
-      t("admin.integrations.index.uso",
-        used: number_with_delimiter(quota.used),
-        limit: number_with_delimiter(quota.limit),
-        unit: t("admin.integrations.index.unidad.#{quota.unit}"))
+      usage = t("admin.integrations.index.uso",
+                used: number_with_delimiter(quota.used),
+                limit: number_with_delimiter(quota.limit),
+                unit: t("admin.integrations.index.unidad.#{quota.unit}"))
+      return usage unless entry.state == :connected && quota.near_limit?
+
+      t("admin.integrations.index.uso_cerca", uso: usage)
     end
   end
 end

@@ -31,7 +31,7 @@
   <div class="flex flex-col gap-1.5">
     <div class="flex items-baseline justify-between gap-3">
       <span class="font-mono text-sm <%= entry.quota.known? ? "text-fg-default" : "text-fg-subtle" %>">
-        <%= source_quota_label(entry.quota) %>
+        <%= source_quota_label(entry) %>
       </span>
       <span class="font-mono text-xs text-fg-subtle"><%= relative_age(integration.last_sync_at, blank: "nunca") %></span>
     </div>
