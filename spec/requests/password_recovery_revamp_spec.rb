@@ -68,14 +68,13 @@ RSpec.describe "Password recovery revamp (S11 #147)", type: :request do
   end
 
   # The three outcome screens hand-rolled their own header, and the wordmark
-  # went with it — on a phone the layout's brand panel is hidden, so those
-  # screens showed no brand at all.
+  # went with it, so those screens showed no brand at all.
   describe "the outcome screens" do
     def wordmarks
-      response.parsed_body.css("a.lg\\:hidden img").size
+      response.parsed_body.css("a[href='/'] img[alt='Stockerly']").size
     end
 
-    it "keeps the phone wordmark on the confirmation" do
+    it "keeps the wordmark on the confirmation" do
       post forgot_password_path, params: { email: user.email }
 
       expect(wordmarks).to eq(2)

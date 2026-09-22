@@ -1,31 +1,14 @@
-<%# The auth zone: no navbar, no footer, nothing to click but the card. On a
-    desktop the artboard splits it — brand panel left, form right — so the card
-    is what the layout centres and the panel is what it sits beside. %>
+<%# The auth zone: no navbar, no footer, nothing to click but the card, which
+    is one column at every width (AU-06). %>
 <% content_for(:body) do %>
   <div class="flex min-h-screen items-center justify-center bg-bg-canvas p-4">
     <div id="flash_messages" class="fixed right-4 top-4 z-50 flex max-w-sm flex-col gap-3" style="pointer-events: none;">
       <%= render "shared/flash" %>
     </div>
 
-    <div class="<%= card_classes("grid w-full max-w-4xl overflow-hidden shadow-sm lg:grid-cols-2") %>">
-      <%# Brand panel: desktop only. On a phone the logo lives inside the card,
-          which is what the mobile artboard draws. %>
-      <aside class="hidden flex-col justify-between bg-primary p-8 lg:flex">
-        <%# Dark mode lands bg-primary on the mark's own indigo, so the lockup
-            is rendered white — the brand's blanco/primary pair. %>
-        <%= link_to root_path, class: "flex items-center" do %>
-          <%= image_tag brand_logo(:dark), alt: "Stockerly", class: "h-8 w-auto brightness-0 invert" %>
-        <% end %>
-        <p class="flex items-center gap-2 text-sm text-fg-inverse">
-          <%= icon_svg "check", class: "text-lg", "aria-hidden": "true" %>
-          <%= t("auth.open_source") %>
-        </p>
-      </aside>
-
-      <main class="flex flex-col justify-center p-8 lg:p-10">
-        <%= yield %>
-      </main>
-    </div>
+    <main class="<%= card_classes("flex w-full max-w-md flex-col justify-center p-8 shadow-sm lg:p-10") %>">
+      <%= yield %>
+    </main>
   </div>
 <% end %>
 <%= render template: "layouts/application" %>

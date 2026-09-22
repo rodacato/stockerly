@@ -1,6 +1,6 @@
 <%# Locals: title; subtitle, icon, tone and kicker optional. An outcome screen
-    passes an icon and reads centred; the wordmark rides here on a phone either
-    way, where the layout's brand panel is hidden.
+    passes an icon and reads centred; the wordmark rides here at every width,
+    since AU-06 left the card as the auth zone's only surface.
     Tones: :primary reports a step taken, :negative a dead end, :positive a
     finished flow. %>
 <% icon = local_assigns[:icon] %>
@@ -8,7 +8,7 @@
              negative: "bg-negative-bg text-negative",
              positive: "bg-positive-bg text-positive" } %>
 <div class="flex flex-col gap-4 <%= "items-center text-center" if icon %>">
-  <%= link_to root_path, class: "flex items-center lg:hidden" do %>
+  <%= link_to root_path, class: "flex items-center" do %>
     <%= render "shared/logo", height_class: "h-8" %>
   <% end %>
 
