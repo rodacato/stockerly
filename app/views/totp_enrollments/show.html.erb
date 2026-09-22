@@ -19,4 +19,4 @@
   <%= link_to t(".ya_los_guarde"), @return_path,
         class: button_classes(:primary, :lg, "w-full text-center") %>
 <% end %>
-<%= render "totp_enrollments/frame", title: t(".titulo"), subtitle: t(".subtitulo", count: @codes.size), subtitle_tone: "text-fg-default", body: body %>
+<%= render "totp_enrollments/frame", title: t(".titulo"), subtitle: t(".subtitulo", count: @codes.size), subtitle_tone: "text-fg-default", chromeless: true, body: body %>

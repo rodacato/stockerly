@@ -46,13 +46,15 @@ RSpec.describe "TOTP enrollment", type: :request do
         expect(response.body).not_to include(%(href="#{settings_path}"))
       end
 
-      it "shows the recovery codes inside the wizard too" do
+      # The codes screen drops the step header the rest of the wizard wears
+      # (D148) — it is display-once, so it carries nothing but its own way on.
+      it "shows the recovery codes inside the wizard too, chromeless" do
         get totp_enrollment_path
         post totp_enrollment_path, params: { code: ROTP::TOTP.new(user.reload.otp_secret).now }
         get recovery_codes_path
 
         expect(response.body).not_to include(%(aria-label="#{I18n.t('nav.principal')}"))
-        expect(response.body).to include("Paso 3 de 4")
+        expect(response.body).not_to include("Paso 3 de 4")
         expect(response.body).to include(%(href="#{onboarding_complete_path}"))
       end
     end
@@ -98,6 +100,31 @@ RSpec.describe "TOTP enrollment", type: :request do
   end
 
   describe "GET /two-factor/codes" do
+    # D148 amends D122: the codes are destroyed as the page paints, so the
+    # frame follows that rather than the door the reader came through. Every
+    # other exit leads away from the only copy they will ever get.
+    context "the frame it wears" do
+      let(:user) { create(:user, :with_totp, onboarded_at: Time.current) }
+
+      before do
+        post regenerate_recovery_codes_path
+        get recovery_codes_path
+      end
+
+      it "offers no exit but the button, even opened from Ajustes" do
+        expect(response.body).not_to include(%(aria-label="#{I18n.t('nav.principal')}"))
+        expect(Capybara.string(response.body)).to have_no_css("header a[aria-label='Regresar']")
+      end
+
+      it "claims no place in a wizard the reader is not in" do
+        expect(response.body).not_to include("Paso 3 de 4")
+      end
+
+      it "keeps its one deliberate way out" do
+        expect(response.body).to include(%(href="#{settings_path}"))
+      end
+    end
+
     it "refuses to show the codes a second time" do
       get totp_enrollment_path
       post totp_enrollment_path, params: { code: ROTP::TOTP.new(user.reload.otp_secret).now }
