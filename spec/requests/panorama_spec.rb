@@ -188,7 +188,47 @@ RSpec.describe "Panorama", type: :request do
       get dashboard_path
 
       expect(response.body).to match(%r{text-sm font-bold text-positive">\s*\+1\.5%\s*</p>})
-      expect(response.body).to match(%r{text-xs text-fg-subtle">\s*7,000\s*</p>})
+      expect(response.body).to match(%r{text-xs text-fg-subtle">\s*MXN 7,000\s*</p>})
+    end
+
+    # D141: the radar mixes a converted market value with an unconverted unit
+    # price in one column, so D10's declared-currency device does not apply —
+    # the subtitle stops declaring a currency and every value names its own.
+    it "does not declare a currency over rows that do not share one" do
+      asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
+
+      get dashboard_path
+      radar = response.body.split(I18n.t("dashboard.show.radar_titulo")).last
+
+      expect(radar).to include(I18n.t("dashboard.show.radar_subtitulo"))
+      expect(I18n.t("dashboard.show.radar_subtitulo")).not_to include("MXN")
+    end
+
+    it "prefixes a holding's value in the radar the way its watchlist neighbour is prefixed" do
+      held = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
+      create(:position, portfolio: portfolio, asset: held, shares: 100, avg_cost: 60, status: :open)
+      watched = with_day_change(create(:asset, :stock, symbol: "AAPL", currency: "USD",
+                                                      current_price: 182.50), -2.0)
+      create(:watchlist_item, user: user, asset: watched)
+
+      get dashboard_path
+      radar = response.body.split(I18n.t("dashboard.show.radar_titulo")).last
+
+      expect(radar).to match(%r{text-xs text-fg-subtle">\s*MXN 7,000\s*</p>})
+      expect(radar).to match(%r{text-xs text-fg-subtle">\s*USD 182\.50\s*</p>})
+    end
+
+    # Negative: Activos declares MXN over a list of holdings that all report in
+    # it, so the prefix stays dropped there — D10 is narrowed, not retired.
+    it "keeps the bare figure on Activos, where one currency is declared for the list" do
+      asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
+
+      get assets_path
+
+      expect(response.body).to match(%r{text-sm font-bold text-fg-default">\s*7,000\s*</p>})
+      expect(response.body).not_to match(%r{text-sm font-bold text-fg-default">\s*MXN 7,000\s*</p>})
     end
 
     it "leads a watched row with the day's move and demotes the quote" do

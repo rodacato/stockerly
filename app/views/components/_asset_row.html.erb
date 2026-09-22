@@ -8,13 +8,17 @@
     D69: the row owns two emphasis slots and the context says which number
     fills the first one. A fixed-income row about to mature reports that
     instead of a day move it does not have.
-    ADR-021: `change` is the computed day change and may be nil. %>
+    ADR-021: `change` is the computed day change and may be nil.
+    D141: the radar sets a converted market value beside a watchlist row's
+    unconverted quote, so its list declares no currency and every value here
+    names its own. `declared_currency` still governs every other context. %>
 <% maturity_days = local_assigns[:maturity_days] %>
 <% context = local_assigns.fetch(:context, :cartera) %>
 <% asset = position.asset %>
 <% change = local_assigns[:change] %>
 <% amount, amount_currency = position_amount(position, declared_currency) %>
-<% value_slot = { text: money_cell(amount, currency: amount_currency, declared: declared_currency, precision: 0), color: "text-fg-default" } %>
+<% value_text = context == :radar ? format_currency_mx(amount, currency: amount_currency, precision: 0) : money_cell(amount, currency: amount_currency, declared: declared_currency, precision: 0) %>
+<% value_slot = { text: value_text, color: "text-fg-default" } %>
 <% move_slot = maturity_days ? { text: t("comun.vencimiento", count: maturity_days), color: "text-warning-fg" } : day_change_slot(change) %>
 <% primary, secondary = context == :radar ? [ move_slot, value_slot.merge(color: "text-fg-subtle") ] : [ value_slot, move_slot ] %>
 <%= link_to market_asset_path(asset.symbol),
