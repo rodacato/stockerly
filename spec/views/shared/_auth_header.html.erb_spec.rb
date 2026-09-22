@@ -1,22 +1,22 @@
 require "rails_helper"
 
-# The outcome screens hand-rolled their own header and lost the phone wordmark
-# with it — the one place the brand shows when the layout's panel is hidden.
+# The outcome screens hand-rolled their own header and lost the wordmark with
+# it — since AU-06 this partial is the only place the auth zone shows the brand.
 RSpec.describe "shared/_auth_header" do
   def render_header(**locals)
     render partial: "shared/auth_header", locals: { title: "Revisa tu correo" }.merge(locals)
   end
 
-  it "carries the wordmark a phone would otherwise not see" do
+  it "carries the wordmark the layout no longer holds" do
     render_header
 
-    expect(rendered).to include("lg:hidden")
+    expect(Capybara.string(rendered)).to have_css("a[href='/'] img[alt='Stockerly']")
   end
 
   it "keeps carrying it on an outcome screen" do
     render_header(icon: "mark_email_read", tone: :primary)
 
-    expect(rendered).to include("lg:hidden")
+    expect(Capybara.string(rendered)).to have_css("a[href='/'] img[alt='Stockerly']")
     expect(rendered).to include('data-icon="mark_email_read"')
   end
 
