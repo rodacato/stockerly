@@ -1,10 +1,11 @@
 <%# Label on the left, value on the right, one card of divided rows.
-    Locals: rows (Array of [label, value]). %>
+    Locals: rows (Array of [label, value] or [label, value, :warning] for a
+    value whose reading means something is wrong). %>
 <dl class="<%= card_classes("divide-y divide-border-default px-4") %>">
-  <% rows.each do |label, value| %>
+  <% rows.each do |label, value, tone| %>
     <div class="flex items-baseline justify-between gap-4 py-3">
       <dt class="text-fg-subtle"><%= label %></dt>
-      <dd class="break-all text-right font-mono text-sm text-fg-default"><%= value %></dd>
+      <dd class="break-all text-right font-mono text-sm <%= tone == :warning ? "font-semibold text-warning-fg" : "text-fg-default" %>"><%= value %></dd>
     </div>
   <% end %>
 </dl>

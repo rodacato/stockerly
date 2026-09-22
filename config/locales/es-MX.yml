@@ -170,6 +170,12 @@ es-MX:
         sync_desc: Deja correr los jobs de precios, CETES, cripto y TC.
         titulo: Estado y mantenimiento
         trabajos: Trabajos
+        trabajos_detalle: "%{active} en proceso · %{failed} fallidos · %{scheduled}
+          programados"
+        trabajos_workers:
+          one: 1 worker
+          other: "%{count} workers"
+          zero: Sin worker
         version: Versión
       trigger_data_source:
         desconocida: Fuente de datos desconocida.
