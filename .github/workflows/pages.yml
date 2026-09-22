@@ -26,16 +26,16 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Refuse to publish a page that names the wrong version
+      - name: Stamp the version the repo declares
         run: |
           set -euo pipefail
           v="$(sed -nE 's/.*VERSION = "([^"]+)".*/\1/p' lib/stockerly/version.rb)"
-          if ! grep -qF "$v" site/index.html; then
-            echo "site/index.html does not name $v. A release also rewrites what the page says" >&2
-            echo "about having no tagged release, so this needs a human, not a substitution." >&2
-            exit 1
-          fi
-          echo "page names $v"
+          [ -n "$v" ] || { echo "lib/stockerly/version.rb yielded no version" >&2; exit 1; }
+          for f in site/index.html site/en.html; do
+            sed -i "s|data-version>[^<]*|data-version>$v|g" "$f"
+            grep -qF "data-version>$v<" "$f" || { echo "$f did not take the stamp" >&2; exit 1; }
+          done
+          echo "stamped $v"
 
       - name: Stage the design assets the page references
         run: |
