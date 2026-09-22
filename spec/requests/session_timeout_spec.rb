@@ -14,6 +14,7 @@ RSpec.describe "Session timeout", type: :request do
         expect(response).to redirect_to(login_path)
         follow_redirect!
         expect(response.body).to include("inactividad")
+        expect(Capybara.string(response.body)).to have_no_css("main [role='alert']")
       end
     end
 
@@ -38,6 +39,7 @@ RSpec.describe "Session timeout", type: :request do
         expect(response).to redirect_to(login_path)
         follow_redirect!
         expect(response.body).to include("expiró")
+        expect(Capybara.string(response.body)).to have_no_css("main [role='alert']")
       end
     end
   end

@@ -5,6 +5,10 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
+  # A redirect artifact is not an error the reader made, so it carries its own
+  # type and screens tell the two apart without reading the copy.
+  add_flash_types :info
+
   helper_method :current_user, :logged_in?
 
   before_action :redirect_to_setup
@@ -71,6 +75,6 @@ class ApplicationController < ActionController::Base
 
   def expire_session(message)
     reset_session
-    redirect_to login_path, alert: message
+    redirect_to login_path, info: message
   end
 end

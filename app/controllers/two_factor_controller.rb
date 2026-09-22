@@ -65,7 +65,7 @@ class TwoFactorController < ApplicationController
 
     if id.blank? || started.blank? || Time.at(started.to_i) < PENDING_TIMEOUT.ago
       reset_session
-      return redirect_to login_path, alert: t("auth.flash.verificacion_expirada")
+      return redirect_to login_path, info: t("auth.flash.verificacion_expirada")
     end
 
     @pending_user = User.find_by(id: id)
