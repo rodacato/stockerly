@@ -3,10 +3,9 @@
 <div class="flex flex-col gap-6">
   <%= render "shared/auth_header", title: t("auth.login.titulo"), subtitle: t("auth.login.subtitulo") %>
 
-  <%# The "sign in to continue" nudge is a redirect artifact, not an error — it
-      already shows as a flash, and repeating it here reads as a failed attempt. %>
-  <% nudge = flash[:alert] == t("auth.flash.requiere_sesion") %>
-  <%= render "shared/flash_alert", message: (take_flash(:alert) unless nudge) %>
+  <%# Redirect artifacts arrive as :info and stay in the toast; only a real
+      failed attempt earns the card's red box. %>
+  <%= render "shared/flash_alert", message: take_flash(:alert) %>
 
   <%= form_with url: login_path, method: :post, class: "flex flex-col gap-4" do %>
     <%= render "shared/auth_field", name: "email", type: "email", label: t("auth.correo"),

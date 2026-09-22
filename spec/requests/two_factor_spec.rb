@@ -85,6 +85,10 @@ RSpec.describe "Two-factor login", type: :request do
 
         expect(response).to redirect_to(login_path)
         expect(session[:pending_user_id]).to be_nil
+
+        follow_redirect!
+        expect(response.body).to include(I18n.t("auth.flash.verificacion_expirada"))
+        expect(Capybara.string(response.body)).to have_no_css("main [role='alert']")
       end
     end
   end

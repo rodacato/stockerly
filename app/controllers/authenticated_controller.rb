@@ -9,7 +9,7 @@ class AuthenticatedController < ApplicationController
 
   def require_authentication
     unless current_user
-      redirect_to login_path, alert: t("auth.flash.requiere_sesion")
+      redirect_to login_path, info: t("auth.flash.requiere_sesion")
     end
   end
 

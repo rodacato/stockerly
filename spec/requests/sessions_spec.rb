@@ -32,7 +32,7 @@ RSpec.describe "Sessions", type: :request do
         I18n.backend.reload!
       end
 
-      it "still keeps it out of the card, because the filter reads the locale" do
+      it "still keeps it out of the card, because nothing here reads the copy" do
         get dashboard_path
         follow_redirect!
 

@@ -4,7 +4,8 @@ RSpec.describe "Authentication guard", type: :request do
   it "says why it sent you to login, rather than dropping you there silently" do
     get dashboard_path
 
-    expect(flash[:alert]).to eq("Inicia sesión para continuar.")
+    expect(flash[:info]).to eq(I18n.t("auth.flash.requiere_sesion"))
+    expect(flash[:alert]).to be_nil
   end
 
   it "redirects /dashboard to login when not authenticated" do
