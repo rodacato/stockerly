@@ -8,20 +8,21 @@ on:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  # A merge group's run is the one the merge waits on. Cancelling it strands the
-  # queue entry, so only pull-request runs are superseded by a newer push.
-  cancel-in-progress: ${{ github.event_name != 'merge_group' }}
+  # Only a pull request's run is disposable. A merge group's is what the merge
+  # waits on, and master's is the record of whether what landed actually works.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
 jobs:
   test:
-    # Runs on pull requests, and on the merge group that the queue builds — which
-    # is the merged tree itself, tested once for the whole batch instead of once
-    # per branch per rebase. Skipped on push: master only takes what the queue or
-    # an up-to-date PR already proved.
-    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
+    # Every trigger this workflow answers, master included. Branches no longer
+    # have to be up to date before merging, so the tree that lands is not
+    # necessarily the tree that was tested — two pull requests can each be green
+    # and disagree once combined. This is what notices, and it only reads as a
+    # cost worth paying because the suite is sharded: a push costs one runner's
+    # wall clock, not a rebase of everything still open.
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
