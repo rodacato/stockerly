@@ -2,37 +2,26 @@ name: CI
 
 on:
   pull_request:
-  merge_group:
   push:
     branches: [master]
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  # A merge group's run is the one the merge waits on. Cancelling it strands the
-  # queue entry, so only pull-request runs are superseded by a newer push.
-  cancel-in-progress: ${{ github.event_name != 'merge_group' }}
+  # Only a pull request's run is disposable. Master's is the record of whether
+  # what landed actually works, and superseding it loses that.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
 jobs:
   test:
-    # Runs on pull requests, and on the merge group that the queue builds — which
-    # is the merged tree itself, tested once for the whole batch instead of once
-    # per branch per rebase. Skipped on push: master only takes what the queue or
-    # an up-to-date PR already proved.
-    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
+    # Pull requests and master both. Branches no longer have to be up to date
+    # before merging, so the tree that lands is not necessarily the tree that was
+    # tested — two pull requests can each be green and disagree once combined.
+    # The master run is what notices.
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
-    # Four shards, four runners. The suite has no hot spot to optimise — it is a
-    # long tail of thousands of fast examples — so the only lever left is running
-    # fewer of them per machine. fail-fast stays off: one shard's failure should
-    # not hide the other three.
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [ 1, 2, 3, 4 ]
 
     services:
       postgres:
@@ -84,9 +73,7 @@ jobs:
       - name: Run tests
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
-          SHARDS: "4"
-          SHARD: ${{ matrix.shard }}
-        run: bundle exec rspec $(ruby script/spec_shard.rb)
+        run: bundle exec rspec
 
   scan_ruby:
     runs-on: ubuntu-latest
