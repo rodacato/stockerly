@@ -1,192 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-MX">
 <head>
 <meta charset="utf-8">
-<title>Stockerly — self-hosted asset tracker</title>
+<title>Stockerly — tracker self-hosted de patrimonio</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Self-hosted, single-user tracker for stocks, crypto and Mexican fixed income, with MXN/USD math that captures the FX rate at each trade's own date. Rails 8, MIT.">
+<meta name="description" content="Tracker self-hosted, de una sola persona, para acciones, cripto y renta fija mexicana, con multi-divisa MXN/USD que captura el tipo de cambio del día de cada movimiento. Rails 8, MIT.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="brand/glyph.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Stockerly — self-hosted asset tracker">
-<meta property="og:description" content="Self-hosted, single-user tracker for stocks, crypto and Mexican fixed income. MIT.">
+<meta property="og:title" content="Stockerly — tracker self-hosted de patrimonio">
+<meta property="og:description" content="Tracker self-hosted, de una sola persona, para acciones, cripto y renta fija mexicana. MIT.">
 <meta property="og:image" content="og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500..800&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --primary:#5B6CFF; --primary-hover:#4757E3; --primary-muted:#EEF0FF;
-  --bg-canvas:#FAFAF7; --bg-surface:#FFFFFF; --bg-muted:#F4F2EC;
-  --fg-default:#0F172A; --fg-subtle:#64748B; --fg-inverse:#FFFFFF;
-  --border-default:#E7E3D9; --border-strong:#D6D1C4;
-  --warning-bg:#FFFBEB; --warning-fg:#B45309; --warning:#F59E0B;
-  --radius-card:20px;
-  --display:"Plus Jakarta Sans",sans-serif;
-  --sans:"Inter",sans-serif;
-  --mono:"JetBrains Mono",monospace;
-}
-@media (prefers-color-scheme:dark){
-  :root{
-    --primary:#7B89FF; --primary-hover:#9098FF; --primary-muted:#2A2E55;
-    --bg-canvas:#1A1B23; --bg-surface:#23242E; --bg-muted:#2B2D38;
-    --fg-default:#F8FAFC; --fg-subtle:#94A3B8; --fg-inverse:#0F172A;
-    --border-default:#33353F; --border-strong:#3E414C;
-    --warning-bg:#3A2A0C; --warning-fg:#FBBF24; --warning:#FBBF24;
-  }
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
-body{
-  background:var(--bg-canvas); color:var(--fg-default);
-  font-family:var(--sans); font-size:16px; line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-}
-h1,h2,h3,h4{font-family:var(--display);line-height:1.15;letter-spacing:-0.02em}
-a{color:var(--primary);text-decoration:none;transition:color 150ms cubic-bezier(.4,0,.2,1)}
-a:hover{color:var(--primary-hover)}
-code,kbd,pre{font-family:var(--mono)}
-img{max-width:100%;height:auto;display:block}
-
-.wrap{max-width:72rem;margin:0 auto;padding:0 16px}
-@media(min-width:640px){.wrap{padding:0 24px}}
-@media(min-width:1024px){.wrap{padding:0 32px}}
-
-.eyebrow{
-  font-family:var(--mono); font-size:11px; font-weight:500;
-  letter-spacing:0.12em; text-transform:uppercase; color:var(--fg-subtle);
-}
-.card{
-  border-radius:var(--radius-card);
-  border:1px solid var(--border-default);
-  background:var(--bg-surface);
-}
-
-header.bar{border-bottom:1px solid var(--border-default);background:var(--bg-surface)}
-.bar .row{display:flex;align-items:center;gap:16px;height:64px}
-.brandmark{display:flex;align-items:center;color:var(--fg-default)}
-.brandmark svg{height:26px;width:auto;display:block;fill:currentColor}
-.bar nav{margin-left:auto;display:flex;align-items:center;gap:24px;font-size:14px}
-.bar nav a{color:var(--fg-subtle)}
-.bar nav a:hover{color:var(--fg-default)}
-.chip{
-  font-family:var(--mono);font-size:11px;letter-spacing:0.06em;
-  padding:3px 8px;border-radius:999px;background:var(--bg-muted);
-  color:var(--fg-subtle);border:1px solid var(--border-default);
-}
-@media(max-width:720px){.bar nav .hide-sm{display:none}}
-
-.hero{padding:64px 0 0}
-.hero-grid{display:grid;gap:0;grid-template-columns:minmax(0,1fr);border-radius:var(--radius-card);overflow:hidden;border:1px solid var(--border-default)}
-@media(min-width:900px){.hero-grid{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}}
-.hero-copy{min-width:0;background:var(--bg-surface);padding:40px 32px}
-@media(min-width:900px){.hero-copy{padding:56px 48px}}
-.hero-copy h1{font-size:clamp(32px,5vw,50px);font-weight:800;margin:14px 0 0}
-.hero-copy .lede{margin-top:18px;font-size:18px;color:var(--fg-subtle);max-width:34em}
-.hero-panel{
-  background:var(--primary);color:var(--fg-inverse);
-  padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
-}
-.hero-panel svg{height:26px;width:auto;fill:currentColor}
-@media(min-width:900px){
-  .hero-panel{padding:40px 32px;flex-direction:column;align-items:flex-start;gap:56px;min-height:300px}
-  .hero-panel svg{height:30px}
-}
-.hero-panel .foot{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;opacity:.85}
-
-.cmd{min-width:0;margin-top:28px;border-radius:12px;border:1px solid var(--border-default);background:var(--bg-muted);overflow:hidden}
-.cmd .hd{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--border-default)}
-.cmd pre{padding:14px;font-size:13.5px;line-height:1.75;overflow-x:auto;color:var(--fg-default)}
-.cmd .prompt{color:var(--fg-subtle);user-select:none}
-
-.shot{margin-top:56px}
-.shot figure{border-radius:var(--radius-card);border:1px solid var(--border-default);overflow:hidden;background:var(--bg-surface)}
-@media(min-width:900px){.shot img{max-height:620px;object-fit:cover;object-position:top left}}
-.shot figcaption{margin-top:14px;font-size:14.5px;color:var(--fg-default);max-width:52em}
-.shot figcaption .disc{display:block;margin-top:8px;font-size:13px;color:var(--fg-subtle)}
-
-section{padding:72px 0}
-section > .wrap > .eyebrow{display:block;margin-bottom:10px}
-h2{font-size:clamp(24px,3.2vw,32px);font-weight:700}
-.sub{margin-top:10px;color:var(--fg-subtle);max-width:46em}
-
-.grid{display:grid;gap:16px;margin-top:32px;grid-template-columns:minmax(0,1fr)}
-@media(min-width:720px){.grid.two{grid-template-columns:1fr 1fr}}
-@media(min-width:960px){.grid.three{grid-template-columns:repeat(3,1fr)}}
-.grid .card{padding:24px}
-@media(min-width:960px){.grid.three .lead{grid-column:span 2}}
-.grid .lead h3{font-size:22px}
-.grid .lead p{font-size:16px}
-.grid h3{font-size:17px;font-weight:700}
-.grid p{margin-top:8px;font-size:14.5px;color:var(--fg-subtle)}
-
-.notfor{margin-top:32px;border-radius:var(--radius-card);border:1px solid var(--border-default);background:var(--bg-surface);overflow:hidden}
-.notfor div{display:grid;gap:4px;padding:20px 24px;border-top:1px solid var(--border-default)}
-.notfor div:first-child{border-top:0}
-@media(min-width:820px){.notfor div{grid-template-columns:minmax(0,15rem) minmax(0,1fr);gap:24px;align-items:baseline}}
-.notfor dt{font-weight:600;font-size:15px}
-.notfor dd{font-size:14.5px;color:var(--fg-subtle)}
-
-.note{
-  margin-top:24px;border-radius:12px;border:1px solid var(--warning);
-  background:var(--warning-bg);color:var(--warning-fg);padding:16px 18px;font-size:14.5px;
-}
-.note b{font-weight:700}
-
-.gallery{display:grid;gap:16px;margin-top:32px;grid-template-columns:minmax(0,1fr)}
-@media(min-width:820px){.gallery{grid-template-columns:1fr 1fr}}
-.gallery figure a{display:block;color:inherit}
-.gallery figure{border-radius:var(--radius-card);border:1px solid var(--border-default);background:var(--bg-surface);overflow:hidden}
-.gallery figcaption{padding:12px 16px;border-top:1px solid var(--border-default);font-size:13px;color:var(--fg-subtle)}
-.gallery figcaption b{color:var(--fg-default);font-weight:600}
-.gallery .tall img{max-height:520px;object-fit:cover;object-position:top}
-
-.facts{margin-top:32px;border-radius:var(--radius-card);border:1px solid var(--border-default);background:var(--bg-surface);overflow:hidden}
-.facts .r{display:grid;gap:6px;padding:18px 24px;border-top:1px solid var(--border-default)}
-.facts .r:first-child{border-top:0}
-@media(min-width:820px){.facts .r{grid-template-columns:minmax(0,13rem) minmax(0,1fr);gap:24px;align-items:baseline}}
-.facts .k{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--fg-subtle)}
-.facts .v{font-size:15px}
-.facts .v small{display:block;margin-top:4px;color:var(--fg-subtle);font-size:13.5px}
-
-.stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:32px}
-.stack span{font-family:var(--mono);font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--border-default);background:var(--bg-surface);color:var(--fg-subtle)}
-
-.btn{display:inline-block;font-weight:600;font-size:15px;padding:12px 18px;border-radius:12px;transition:color 150ms cubic-bezier(.4,0,.2,1),background-color 150ms cubic-bezier(.4,0,.2,1),border-color 150ms cubic-bezier(.4,0,.2,1)}
-.btn-primary{background:var(--primary);color:var(--fg-inverse)}
-.btn-primary:hover{background:var(--primary-hover);color:var(--fg-inverse)}
-.btn-secondary{border:1px solid var(--border-default);background:var(--bg-surface);color:var(--fg-default)}
-.btn-secondary:hover{border-color:var(--border-strong);color:var(--fg-default)}
-.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-
-.band{background:var(--bg-muted);border-top:1px solid var(--border-default);border-bottom:1px solid var(--border-default);padding:56px 0}
-.band dl{display:grid;gap:36px 24px;grid-template-columns:minmax(0,1fr)}
-@media(min-width:620px){.band dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(min-width:1000px){.band dl{grid-template-columns:repeat(5,minmax(0,1fr))}}
-.band dt{font-family:var(--mono);font-size:clamp(38px,4.4vw,52px);font-weight:700;line-height:1;letter-spacing:-0.03em}
-.band dd{margin-top:12px;font-size:14px;color:var(--fg-subtle);max-width:20em}
-.band .lede{max-width:46em;color:var(--fg-subtle);margin-bottom:40px}
-footer{border-top:1px solid var(--border-default);background:var(--bg-surface);padding:40px 0;margin-top:32px}
-footer .row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;font-size:14px;color:var(--fg-subtle)}
-footer nav{display:flex;flex-wrap:wrap;gap:20px}
-:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important;animation-iteration-count:1 !important}
-}
-</style>
+<link rel="alternate" hreflang="es-MX" href="./">
+<link rel="alternate" hreflang="en" href="en.html">
+<link rel="alternate" hreflang="x-default" href="./">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="bar">
   <div class="wrap row">
-    <a class="brandmark" href="#top"><svg viewBox="0 0 174 40" role="img" aria-label="Stockerly"><g transform="scale(.625)"><path fill="currentColor" fill-rule="evenodd" d="M4 32 A28 28 0 1 0 60 32 A28 28 0 1 0 4 32 ZM17 24h11v16h-11ZM20.75 19h3.5v5h-3.5ZM20.75 40h3.5v5h-3.5ZM36 18h11v12h-11ZM39.75 14h3.5v4h-3.5ZM39.75 30h3.5v15h-3.5Z"/></g><path fill="currentColor" d="M54.43 27.25Q51.91 27.25 50.04 26.04Q48.18 24.83 47.47 22.78L50.32 21.43Q50.94 22.75 52.02 23.5Q53.11 24.25 54.43 24.25Q55.47 24.25 56.08 23.8Q56.69 23.35 56.69 22.57Q56.69 22.11 56.44 21.8Q56.2 21.5 55.78 21.28Q55.37 21.06 54.86 20.93L52.28 20.2Q50.29 19.64 49.27 18.44Q48.24 17.24 48.24 15.61Q48.24 14.16 48.98 13.08Q49.72 12 51.04 11.4Q52.36 10.79 54.05 10.79Q56.28 10.79 58 11.86Q59.72 12.94 60.43 14.87L57.55 16.22Q57.15 15.15 56.19 14.52Q55.23 13.89 54.03 13.89Q53.07 13.89 52.52 14.32Q51.96 14.75 51.96 15.46Q51.96 15.89 52.19 16.21Q52.43 16.52 52.85 16.73Q53.28 16.94 53.82 17.1L56.36 17.85Q58.31 18.42 59.35 19.6Q60.4 20.77 60.4 22.44Q60.4 23.87 59.65 24.95Q58.89 26.03 57.56 26.64Q56.23 27.25 54.43 27.25Z M69.81 27.07Q67.14 27.07 65.67 25.61Q64.2 24.14 64.2 21.48V14.51H61.48V11.14H61.77Q62.93 11.14 63.57 10.52Q64.2 9.9 64.2 8.74V7.54H68.01V11.14H71.65V14.51H68.01V21.27Q68.01 22.07 68.28 22.62Q68.56 23.17 69.16 23.46Q69.75 23.74 70.67 23.74Q70.88 23.74 71.15 23.71Q71.43 23.68 71.7 23.65V26.9Q71.29 26.97 70.77 27.02Q70.25 27.07 69.81 27.07Z M81.57 27.25Q79.26 27.25 77.36 26.18Q75.47 25.11 74.34 23.25Q73.22 21.38 73.22 19.01Q73.22 16.63 74.34 14.78Q75.46 12.93 77.35 11.86Q79.24 10.79 81.57 10.79Q83.9 10.79 85.78 11.86Q87.66 12.92 88.78 14.77Q89.89 16.62 89.89 19.01Q89.89 21.39 88.77 23.25Q87.64 25.12 85.76 26.18Q83.88 27.25 81.57 27.25ZM81.57 23.77Q82.85 23.77 83.83 23.16Q84.81 22.55 85.38 21.47Q85.94 20.39 85.94 19.01Q85.94 17.63 85.38 16.57Q84.81 15.51 83.83 14.89Q82.85 14.27 81.57 14.27Q80.29 14.27 79.3 14.89Q78.31 15.51 77.74 16.57Q77.17 17.63 77.17 19.01Q77.17 20.39 77.74 21.47Q78.31 22.55 79.3 23.16Q80.29 23.77 81.57 23.77Z M99.65 27.25Q97.29 27.25 95.43 26.16Q93.57 25.08 92.49 23.21Q91.4 21.33 91.4 18.99Q91.4 16.65 92.48 14.79Q93.55 12.93 95.42 11.86Q97.29 10.79 99.65 10.79Q101.34 10.79 102.78 11.38Q104.23 11.96 105.29 13Q106.34 14.04 106.81 15.44L103.49 16.91Q103.04 15.71 102.01 14.99Q100.99 14.27 99.65 14.27Q98.41 14.27 97.44 14.88Q96.47 15.48 95.91 16.56Q95.35 17.63 95.35 19.02Q95.35 20.4 95.91 21.47Q96.47 22.55 97.44 23.16Q98.41 23.77 99.65 23.77Q101.01 23.77 102.02 23.05Q103.03 22.33 103.49 21.11L106.81 22.62Q106.36 23.95 105.31 25Q104.26 26.05 102.81 26.65Q101.36 27.25 99.65 27.25Z M108.95 26.9V4.95H112.75V19.34L111.3 18.91L118.73 11.14H123.45L117.63 17.48L123.57 26.9H119.22L114.07 18.72L116.31 18.27L111.57 23.38L112.75 21.03V26.9Z M132.44 27.25Q130.01 27.25 128.18 26.15Q126.35 25.04 125.33 23.17Q124.32 21.29 124.32 18.98Q124.32 16.61 125.36 14.77Q126.4 12.92 128.17 11.86Q129.94 10.79 132.17 10.79Q134 10.79 135.42 11.39Q136.84 11.99 137.82 13.06Q138.8 14.13 139.32 15.52Q139.83 16.9 139.83 18.49Q139.83 18.91 139.79 19.34Q139.75 19.77 139.65 20.1H127.47V17.2H137.49L135.69 18.55Q135.97 17.21 135.57 16.17Q135.18 15.13 134.29 14.52Q133.4 13.91 132.17 13.91Q130.96 13.91 130.04 14.51Q129.12 15.11 128.65 16.25Q128.17 17.4 128.27 19.01Q128.15 20.48 128.66 21.58Q129.17 22.69 130.16 23.3Q131.16 23.91 132.49 23.91Q133.79 23.91 134.7 23.36Q135.61 22.81 136.13 21.9L139.21 23.38Q138.75 24.51 137.76 25.39Q136.77 26.26 135.41 26.75Q134.06 27.25 132.44 27.25Z M141.98 26.9V11.14H145.57V14.63L145.28 14.12Q145.81 12.34 146.99 11.65Q148.17 10.96 149.81 10.96H150.75V14.33H149.39Q147.77 14.33 146.78 15.32Q145.78 16.31 145.78 18.11V26.9Z M152.1 26.9V4.95H155.91V26.9Z M160.61 33.28Q159.97 33.28 159.36 33.17Q158.75 33.07 158.27 32.83V29.65Q158.65 29.74 159.17 29.83Q159.7 29.91 160.16 29.91Q161.47 29.91 162.08 29.31Q162.68 28.72 163.12 27.73L164.17 25.3L164.11 28.5L157.25 11.14H161.34L166.14 23.96H164.69L169.48 11.14H173.59L166.72 28.5Q166.13 30 165.25 31.08Q164.38 32.16 163.23 32.72Q162.08 33.28 160.61 33.28Z"/></svg></a>
+    <a class="brandmark" href="#top"><span class="wordmark" role="img" aria-label="Stockerly"></span></a>
     <span class="chip">v0.1.0-rc1</span>
     <nav>
-      <a class="hide-sm" href="#what">What it is</a>
-      <a class="hide-sm" href="#notfor">Who it isn't for</a>
-      <a href="#run">Run it</a>
+      <a class="hide-sm" href="#what">Qué es</a>
+      <a class="hide-sm" href="#notfor">Para quién no es</a>
+      <a href="#run">Córrelo</a>
       <a href="https://github.com/rodacato/stockerly">GitHub</a>
+      <span class="lang"><span class="on">ES</span><span class="sep">·</span><a href="en.html">EN</a></span>
     </nav>
   </div>
 </header>
@@ -197,39 +42,40 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
   <div class="wrap">
     <div class="hero-grid">
       <div class="hero-copy">
-        <span class="eyebrow">Self-hosted · single user · MIT</span>
-        <h1>Your invested net worth, on one screen.</h1>
+        <span class="eyebrow">Self-hosted · un solo usuario · MIT</span>
+        <h1>Tu patrimonio invertido, en una pantalla.</h1>
         <p class="lede">
-          Stockerly tracks what you own — US stocks, crypto and Mexican CETES — and
-          reports all of it in pesos using the exchange rate from the day of each
-          trade, not today's. You run it on your own server. There is one account: yours.
+          Stockerly registra lo que tienes — acciones en EE. UU., cripto y CETES — y lo
+          reporta todo en pesos usando el tipo de cambio del día de cada movimiento, no el
+          de hoy. Corre en tu propio servidor. Hay una sola cuenta: la tuya.
         </p>
         <div class="cmd">
-          <div class="hd"><span class="eyebrow">Run it locally</span><span class="eyebrow">Ruby + Postgres</span></div>
+          <div class="hd"><span class="eyebrow">Córrelo local</span><span class="eyebrow">Ruby + Postgres</span></div>
 <pre><span class="prompt">$</span> git clone https://github.com/rodacato/stockerly.git
 <span class="prompt">$</span> cd stockerly
 <span class="prompt">$</span> bin/setup</pre>
         </div>
         <div class="actions">
-          <a class="btn btn-primary" href="#run">How to run it</a>
-          <a class="btn btn-secondary" href="https://github.com/rodacato/stockerly">Read the source</a>
+          <a class="btn btn-primary" href="#run">Cómo correrlo</a>
+          <a class="btn btn-secondary" href="https://github.com/rodacato/stockerly">Lee el código</a>
         </div>
       </div>
             <div class="hero-panel">
-        <svg viewBox="0 0 174 40" role="img" aria-label="Stockerly"><g transform="scale(.625)"><path fill="currentColor" fill-rule="evenodd" d="M4 32 A28 28 0 1 0 60 32 A28 28 0 1 0 4 32 ZM17 24h11v16h-11ZM20.75 19h3.5v5h-3.5ZM20.75 40h3.5v5h-3.5ZM36 18h11v12h-11ZM39.75 14h3.5v4h-3.5ZM39.75 30h3.5v15h-3.5Z"/></g><path fill="currentColor" d="M54.43 27.25Q51.91 27.25 50.04 26.04Q48.18 24.83 47.47 22.78L50.32 21.43Q50.94 22.75 52.02 23.5Q53.11 24.25 54.43 24.25Q55.47 24.25 56.08 23.8Q56.69 23.35 56.69 22.57Q56.69 22.11 56.44 21.8Q56.2 21.5 55.78 21.28Q55.37 21.06 54.86 20.93L52.28 20.2Q50.29 19.64 49.27 18.44Q48.24 17.24 48.24 15.61Q48.24 14.16 48.98 13.08Q49.72 12 51.04 11.4Q52.36 10.79 54.05 10.79Q56.28 10.79 58 11.86Q59.72 12.94 60.43 14.87L57.55 16.22Q57.15 15.15 56.19 14.52Q55.23 13.89 54.03 13.89Q53.07 13.89 52.52 14.32Q51.96 14.75 51.96 15.46Q51.96 15.89 52.19 16.21Q52.43 16.52 52.85 16.73Q53.28 16.94 53.82 17.1L56.36 17.85Q58.31 18.42 59.35 19.6Q60.4 20.77 60.4 22.44Q60.4 23.87 59.65 24.95Q58.89 26.03 57.56 26.64Q56.23 27.25 54.43 27.25Z M69.81 27.07Q67.14 27.07 65.67 25.61Q64.2 24.14 64.2 21.48V14.51H61.48V11.14H61.77Q62.93 11.14 63.57 10.52Q64.2 9.9 64.2 8.74V7.54H68.01V11.14H71.65V14.51H68.01V21.27Q68.01 22.07 68.28 22.62Q68.56 23.17 69.16 23.46Q69.75 23.74 70.67 23.74Q70.88 23.74 71.15 23.71Q71.43 23.68 71.7 23.65V26.9Q71.29 26.97 70.77 27.02Q70.25 27.07 69.81 27.07Z M81.57 27.25Q79.26 27.25 77.36 26.18Q75.47 25.11 74.34 23.25Q73.22 21.38 73.22 19.01Q73.22 16.63 74.34 14.78Q75.46 12.93 77.35 11.86Q79.24 10.79 81.57 10.79Q83.9 10.79 85.78 11.86Q87.66 12.92 88.78 14.77Q89.89 16.62 89.89 19.01Q89.89 21.39 88.77 23.25Q87.64 25.12 85.76 26.18Q83.88 27.25 81.57 27.25ZM81.57 23.77Q82.85 23.77 83.83 23.16Q84.81 22.55 85.38 21.47Q85.94 20.39 85.94 19.01Q85.94 17.63 85.38 16.57Q84.81 15.51 83.83 14.89Q82.85 14.27 81.57 14.27Q80.29 14.27 79.3 14.89Q78.31 15.51 77.74 16.57Q77.17 17.63 77.17 19.01Q77.17 20.39 77.74 21.47Q78.31 22.55 79.3 23.16Q80.29 23.77 81.57 23.77Z M99.65 27.25Q97.29 27.25 95.43 26.16Q93.57 25.08 92.49 23.21Q91.4 21.33 91.4 18.99Q91.4 16.65 92.48 14.79Q93.55 12.93 95.42 11.86Q97.29 10.79 99.65 10.79Q101.34 10.79 102.78 11.38Q104.23 11.96 105.29 13Q106.34 14.04 106.81 15.44L103.49 16.91Q103.04 15.71 102.01 14.99Q100.99 14.27 99.65 14.27Q98.41 14.27 97.44 14.88Q96.47 15.48 95.91 16.56Q95.35 17.63 95.35 19.02Q95.35 20.4 95.91 21.47Q96.47 22.55 97.44 23.16Q98.41 23.77 99.65 23.77Q101.01 23.77 102.02 23.05Q103.03 22.33 103.49 21.11L106.81 22.62Q106.36 23.95 105.31 25Q104.26 26.05 102.81 26.65Q101.36 27.25 99.65 27.25Z M108.95 26.9V4.95H112.75V19.34L111.3 18.91L118.73 11.14H123.45L117.63 17.48L123.57 26.9H119.22L114.07 18.72L116.31 18.27L111.57 23.38L112.75 21.03V26.9Z M132.44 27.25Q130.01 27.25 128.18 26.15Q126.35 25.04 125.33 23.17Q124.32 21.29 124.32 18.98Q124.32 16.61 125.36 14.77Q126.4 12.92 128.17 11.86Q129.94 10.79 132.17 10.79Q134 10.79 135.42 11.39Q136.84 11.99 137.82 13.06Q138.8 14.13 139.32 15.52Q139.83 16.9 139.83 18.49Q139.83 18.91 139.79 19.34Q139.75 19.77 139.65 20.1H127.47V17.2H137.49L135.69 18.55Q135.97 17.21 135.57 16.17Q135.18 15.13 134.29 14.52Q133.4 13.91 132.17 13.91Q130.96 13.91 130.04 14.51Q129.12 15.11 128.65 16.25Q128.17 17.4 128.27 19.01Q128.15 20.48 128.66 21.58Q129.17 22.69 130.16 23.3Q131.16 23.91 132.49 23.91Q133.79 23.91 134.7 23.36Q135.61 22.81 136.13 21.9L139.21 23.38Q138.75 24.51 137.76 25.39Q136.77 26.26 135.41 26.75Q134.06 27.25 132.44 27.25Z M141.98 26.9V11.14H145.57V14.63L145.28 14.12Q145.81 12.34 146.99 11.65Q148.17 10.96 149.81 10.96H150.75V14.33H149.39Q147.77 14.33 146.78 15.32Q145.78 16.31 145.78 18.11V26.9Z M152.1 26.9V4.95H155.91V26.9Z M160.61 33.28Q159.97 33.28 159.36 33.17Q158.75 33.07 158.27 32.83V29.65Q158.65 29.74 159.17 29.83Q159.7 29.91 160.16 29.91Q161.47 29.91 162.08 29.31Q162.68 28.72 163.12 27.73L164.17 25.3L164.11 28.5L157.25 11.14H161.34L166.14 23.96H164.69L169.48 11.14H173.59L166.72 28.5Q166.13 30 165.25 31.08Q164.38 32.16 163.23 32.72Q162.08 33.28 160.61 33.28Z"/></svg>
-        <span class="foot">100% free and open source</span>
+        <span class="wordmark" role="img" aria-label="Stockerly"></span>
+        <span class="foot">100% libre y open source</span>
       </div>
     </div>
 
     <div class="shot">
-      <figure><picture><source media="(max-width:700px)" srcset="img/cockpit-panorama-default.png"><img src="img/cockpit-panorama-desktop.png" alt="Panorama: net worth in MXN, a radar of positions with sparklines, technical signals, and market sentiment."></picture></figure>
+      <figure><picture><source media="(max-width:700px)" srcset="img/cockpit-panorama-default.png"><img src="img/cockpit-panorama-desktop.png" alt="Panorama: patrimonio en MXN, un radar de posiciones con sparklines, señales técnicas y sentimiento de mercado."></picture></figure>
       <figcaption>
-        One screen, read top-left to right: total net worth in pesos, then the positions with
-        something happening today, then what the indicators said about them, then how the wider
-        market feels. The whole product is an argument that those four things belong together.
-        <span class="disc">Every image here is an <b>artboard</b> from the design system in
-        <code>design/</code>, not a capture of a running instance. The interface is in Mexican
-        Spanish; the code, routes and documentation are in English.</span>
+        Una sola pantalla, se lee de arriba-izquierda hacia la derecha: el patrimonio total en
+        pesos, luego las posiciones con algo pasando hoy, luego qué dijeron los indicadores sobre
+        ellas, y luego cómo se siente el mercado. Todo el producto es un argumento de que esas
+        cuatro cosas van juntas.
+        <span class="disc">Cada imagen aquí es un <b>artboard</b> del design system que vive en
+        <code>design/</code>, no una captura de una instancia corriendo. La interfaz está en
+        español de México; el código, las rutas y la documentación, en inglés.</span>
       </figcaption>
     </div>
   </div>
@@ -237,70 +83,71 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
 
 <section id="notfor">
   <div class="wrap">
-    <h2>Who this isn't for</h2>
+    <h2>Para quién no es</h2>
     <p class="sub">
-      Self-hosted means you are about to spend an evening on this. These are not
-      limitations waiting to be fixed — they are decisions, each one recorded in the repo.
+      Self-hosted quiere decir que estás a punto de gastarte una tarde en esto. No son
+      limitaciones esperando arreglo — son decisiones, y cada una está registrada en el repo.
     </p>
 
     <dl class="notfor">
-      <div><dt>More than one person</dt><dd>Single-user by design. One instance, one account, no roles, no sharing, no multi-tenancy. A household needs two instances.</dd></div>
-      <div><dt>Investors outside Mexico</dt><dd>The math assumes MXN and USD through a Mexican broker: CETES, Banxico's FX fix, the BMV. It is not a generic international tracker.</dd></div>
-      <div><dt>Anyone wanting broker sync</dt><dd>No Plaid, no Yodlee, no SnapTrade, ever at this scale. You type trades or import a CSV. Aggregator fees helped kill a same-stack competitor.</dd></div>
-      <div><dt>Day traders</dt><dd>Daily close, not ticks. No sub-daily resolution, no streaming quotes.</dd></div>
-      <div><dt>Tax preparation</dt><dd>No ISR reports, no SAT integration, no lot tracking, no withholding math. It tracks patrimony; it does not replace your accountant.</dd></div>
-      <div><dt>Anyone who needs support</dt><dd>No SLA, no support guarantee, no advance notice of breaking changes. It is one person's daily driver that happens to be readable and runnable.</dd></div>
+      <div><dt>Más de una persona</dt><dd>Single-user por diseño. Una instancia, una cuenta, sin roles, sin compartir, sin multi-tenancy. Una casa con dos personas necesita dos instancias.</dd></div>
+      <div><dt>Quien invierta fuera de México</dt><dd>La matemática asume MXN y USD a través de un broker mexicano: CETES, el FIX de Banxico, la BMV. No es un tracker internacional genérico.</dd></div>
+      <div><dt>Quien quiera sync con su broker</dt><dd>Nada de Plaid, Yodlee ni SnapTrade, nunca a esta escala. Capturas los movimientos o importas un CSV. Las comisiones de los agregadores ayudaron a matar a un competidor del mismo stack.</dd></div>
+      <div><dt>Day traders</dt><dd>Cierre diario, no ticks. Sin resolución intradía, sin cotizaciones en streaming.</dd></div>
+      <div><dt>Quien quiera declarar impuestos</dt><dd>Sin reportes de ISR, sin SAT, sin lot tracking, sin retenciones. Registra patrimonio; no reemplaza a tu contador.</dd></div>
+      <div><dt>Quien necesite soporte</dt><dd>Sin SLA, sin garantía de soporte, sin aviso previo de cambios que rompen. Es el daily driver de una persona, que además se puede leer y correr.</dd></div>
     </dl>
   </div>
 </section>
 
 <section id="what">
   <div class="wrap">
-    <h2>A tracker built around one question</h2>
+    <h2>Un tracker armado alrededor de una pregunta</h2>
     <p class="sub">
-      Am I up or down, in the currency I actually spend? Everything else on the screen
-      exists to explain that number or to keep it honest.
+      ¿Voy ganando o perdiendo, en la moneda que de verdad gasto? Todo lo demás en la
+      pantalla existe para explicar ese número o para mantenerlo honesto.
     </p>
 
     <div class="grid three">
       <div class="card lead">
-        <h3>Multi-currency that tells the truth</h3>
+        <h3>Multi-divisa que dice la verdad</h3>
         <p>
-          Cost basis is FX-weighted. The unrealised gain is split into what the asset did
-          and what the peso did — for a Mexican investor holding US stocks those are two
-          different stories, and most trackers report only the first.
+          El costo promedio va ponderado por tipo de cambio. La ganancia no realizada se parte
+          en lo que hizo el activo y lo que hizo el peso — para un inversionista mexicano con
+          acciones gringas esas son dos historias distintas, y casi todos los trackers sólo
+          reportan la primera.
         </p>
       </div>
       <div class="card">
-        <h3>Three tiers, not one list</h3>
+        <h3>Tres niveles, no una lista</h3>
         <p>
-          <em>Holdings</em> is what you own, <em>Watchlist</em> is what you follow, and
-          <em>Tracked</em> is the catalogue the sync jobs read. A symbol can be in the
-          catalogue without pretending you bought it.
+          <em>Holdings</em> es lo que tienes, <em>Watchlist</em> lo que sigues, y
+          <em>Tracked</em> el catálogo que leen los jobs de sync. Un símbolo puede estar en el
+          catálogo sin fingir que lo compraste.
         </p>
       </div>
       <div class="card">
-        <h3>CETES as a first-class asset</h3>
+        <h3>CETES como activo de primera</h3>
         <p>
-          Mexican fixed income sits beside the equities, with maturity lead time, and the
-          portfolio's return is measured against reinvested CETES — the benchmark a Mexican
-          investor actually gives something up for.
+          La renta fija mexicana va junto a las acciones, con aviso antes del vencimiento, y el
+          rendimiento de la cartera se mide contra CETES reinvertidos — el benchmark al que un
+          inversionista mexicano de verdad renuncia.
         </p>
       </div>
       <div class="card">
-        <h3>Descriptive, never prescriptive</h3>
+        <h3>Descriptivo, nunca prescriptivo</h3>
         <p>
-          It says <em>"AAPL entered oversold per RSI(14)"</em>. It does not say buy, sell,
-          or now is a good time. Indicators and composite scores are in; predictions and
-          recommendations are out, on purpose.
+          Dice <em>«AAPL entró en zona de sobreventa según RSI(14)»</em>. No dice compra, ni
+          vende, ni es buen momento. Los indicadores y los scores compuestos entran; las
+          predicciones y las recomendaciones no, a propósito.
         </p>
       </div>
       <div class="card">
-        <h3>Capture built for the chore it is</h3>
+        <h3>Se instala, y sirve sin red</h3>
         <p>
-          A trade sheet with ticker autocomplete and the Banxico rate pre-filled for the
-          date you typed, plus CSV import with a dry-run review and an all-or-nothing
-          refusal when a symbol is unknown.
+          Es una PWA: la instalas en la pantalla de inicio del teléfono, te llegan notificaciones
+          push cuando se dispara una regla, y sigues leyendo las últimas cifras que cargó cuando
+          te quedas sin red.
         </p>
       </div>
     </div>
@@ -308,97 +155,97 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
     <div class="stack">
       <span>Ruby 4.0.6</span><span>Rails 8.1</span><span>PostgreSQL 16</span>
       <span>Hotwire</span><span>Tailwind CSS 4</span><span>Solid Queue</span>
-      <span>Kamal 2</span><span>no Node.js</span>
+      <span>Kamal 2</span><span>sin Node.js</span>
     </div>
   </div>
 </section>
 
 <div class="band">
   <div class="wrap">
-    <h2>What it costs you to run</h2>
-    <p class="lede">Not money — it is MIT. Attention, and a short list of things that have to be
-    true on your server.</p>
+    <h2>Lo que te cuesta correrlo</h2>
+    <p class="lede">Dinero no — es MIT. Atención, y una lista corta de cosas que tienen que ser
+    ciertas en tu servidor.</p>
     <dl>
-      <div><dt>8</dt><dd>market-data providers, every one of them optional. It runs with none configured; you just get no live prices.</dd></div>
-      <div><dt>6</dt><dd>bounded contexts. Writes cross them as domain events, reads through a published API, and an ADR names every seam.</dd></div>
-      <div><dt>4</dt><dd>PostgreSQL databases — primary, cache, queue, cable. No Redis to run, no Node to build.</dd></div>
-      <div><dt>1</dt><dd>account on the instance, created by the Setup Wizard on first boot. There is no second one to make.</dd></div>
-      <div><dt>0</dt><dd>accounts with anyone else, including me. No aggregator, no telemetry, no external error service.</dd></div>
+      <div><dt>8</dt><dd>proveedores de datos de mercado, todos opcionales. Corre sin ninguno configurado; nomás no vas a tener precios en vivo.</dd></div>
+      <div><dt>6</dt><dd>bounded contexts. Las escrituras los cruzan como eventos de dominio, las lecturas por una API publicada, y un ADR nombra cada costura.</dd></div>
+      <div><dt>4</dt><dd>bases PostgreSQL — primary, cache, queue, cable. Ni Redis que correr, ni Node que compilar.</dd></div>
+      <div><dt>1</dt><dd>cuenta en la instancia, creada por el Setup Wizard en el primer arranque. No hay una segunda que hacer.</dd></div>
+      <div><dt>0</dt><dd>cuentas con nadie más, incluido yo. Sin agregador, sin telemetría, sin servicio externo de errores.</dd></div>
     </dl>
   </div>
 </div>
 
 <section id="run">
   <div class="wrap">
-    <h2>One command, on your machine</h2>
+    <h2>Un comando, en tu máquina</h2>
     <p class="sub">
-      <code>bin/setup</code> is idempotent: it installs gems, creates and migrates the four
-      PostgreSQL databases, seeds them on first creation, and starts the server. No market-data
-      API key is needed to run.
+      <code>bin/setup</code> es idempotente: instala las gemas, crea y migra las cuatro bases
+      de PostgreSQL, las siembra en la primera creación, y levanta el servidor. No necesitas
+      ninguna API key de mercado para correrlo.
     </p>
 
     <div class="grid two">
       <div class="card">
         <h3>Dev container</h3>
-        <p>Open the folder in VS Code or Codespaces and choose <em>Reopen in Container</em>. Setup runs itself; then <code>bin/dev</code>.</p>
+        <p>Abre la carpeta en VS Code o Codespaces y elige <em>Reopen in Container</em>. El setup corre solo; luego <code>bin/dev</code>.</p>
       </div>
       <div class="card">
         <h3>Bare metal</h3>
-        <p>Ruby 4.0.6 and a PostgreSQL 16 on <code>localhost</code>. Node.js is not required — JavaScript ships through import maps and CSS through the Tailwind standalone compiler.</p>
+        <p>Ruby 4.0.6 y un PostgreSQL 16 en <code>localhost</code>. Node.js no hace falta — el JavaScript viaja por import maps y el CSS por el compilador standalone de Tailwind.</p>
       </div>
     </div>
 
     <div class="cmd">
-      <div class="hd"><span class="eyebrow">Both paths end here</span><span class="eyebrow">port 4100</span></div>
-<pre><span class="prompt">$</span> bin/setup                  <span class="prompt"># gems, databases, seeds, server</span>
-<span class="prompt">$</span> bin/jobs                   <span class="prompt"># second terminal: alerts, syncs, notifications</span>
+      <div class="hd"><span class="eyebrow">Los dos caminos acaban aquí</span><span class="eyebrow">port 4100</span></div>
+<pre><span class="prompt">$</span> bin/setup                  <span class="prompt"># gemas, bases, seeds, servidor</span>
+<span class="prompt">$</span> bin/jobs                   <span class="prompt"># segunda terminal: alertas, syncs, avisos</span>
 
   open http://localhost:4100</pre>
     </div>
 
     <div class="note">
-      <b>What the first screen actually is.</b> The development seeds create four demo users,
-      so <code>bin/setup</code> lands you on the login — sign in with
-      <code>demo@stockerly.com</code> / <code>password123</code>. The Setup Wizard that creates
-      the single real account only appears on an <em>empty</em> database, which is what a
-      genuine first boot looks like. <code>GETTING_STARTED.md</code> has the one-liner to get there.
+      <b>Qué es en realidad la primera pantalla.</b> Los seeds de desarrollo crean cuatro
+      usuarios demo, así que <code>bin/setup</code> te deja en el login — entra con
+      <code>demo@stockerly.com</code> / <code>password123</code>. El Setup Wizard que crea la
+      única cuenta real sólo aparece con la base <em>vacía</em>, que es como se ve un primer
+      arranque de verdad. <code>GETTING_STARTED.md</code> trae el one-liner para llegar ahí.
     </div>
 
     <p class="sub" style="margin-top:28px">
-      For production, Stockerly deploys to any Linux server with Kamal 2 and Docker. The
-      reference deployment uses a VPS behind a Cloudflare Tunnel, so no inbound ports are
-      opened — but nothing in the app depends on the maintainer's infrastructure.
-      See <code>docs/ops/deploy.md</code>.
+      Para producción, Stockerly se deploya a cualquier servidor Linux con Kamal 2 y Docker. El
+      deploy de referencia usa un VPS detrás de un Cloudflare Tunnel, así que no se abre ningún
+      puerto de entrada — pero nada en la app depende de la infraestructura del maintainer.
+      Ve <code>docs/ops/deploy.md</code>.
     </p>
   </div>
 </section>
 
 <section id="screens">
   <div class="wrap">
-    <h2>What the screens look like</h2>
-    <p class="sub">Drawn in the project's own design system, which mirrors the shipped code.</p>
+    <h2>Cómo se ven las pantallas</h2>
+    <p class="sub">Dibujadas en el design system del proyecto, que espeja el código que shippea.</p>
 
     <div class="gallery">
-      <figure><a href="img/activos-holdings-desktop.png"><img src="img/activos-holdings-desktop.png" alt="Holdings: positions grouped by tier, with cost basis and gain in MXN." loading="lazy"><figcaption><b>Holdings</b> — the three-tier ladder, values in MXN</figcaption></a></figure>
-      <figure><a href="img/cockpit-consolidado-desktop.png"><img src="img/cockpit-consolidado-desktop.png" alt="Consolidado: portfolio value over time against a reinvested CETES benchmark." loading="lazy"><figcaption><b>Consolidado</b> — value over time vs. reinvested CETES</figcaption></a></figure>
-      <figure><a href="img/activos-registrar-movimiento-desktop.png"><img src="img/activos-registrar-movimiento-desktop.png" alt="Trade capture sheet with ticker autocomplete and a pre-filled Banxico rate." loading="lazy"><figcaption><b>Registrar movimiento</b> — capture with the FX rate pre-filled</figcaption></a></figure>
-      <figure><a href="img/reglas-lista.png"><img src="img/reglas-lista.png" alt="Alert rules list with per-rule cooldowns." loading="lazy"><figcaption><b>Reglas</b> — price, RSI, volume, ex-dates, CETES auctions</figcaption></a></figure>
+      <figure><a href="img/activos-holdings-desktop.png"><img src="img/activos-holdings-desktop.png" alt="Holdings: posiciones agrupadas por nivel, con costo promedio y ganancia en MXN." loading="lazy"><figcaption><b>Holdings</b> — la escalera de tres niveles, valores en MXN</figcaption></a></figure>
+      <figure><a href="img/cockpit-consolidado-desktop.png"><img src="img/cockpit-consolidado-desktop.png" alt="Consolidado: el valor de la cartera en el tiempo contra un benchmark de CETES reinvertidos." loading="lazy"><figcaption><b>Consolidado</b> — valor en el tiempo contra CETES reinvertidos</figcaption></a></figure>
+      <figure><a href="img/activos-registrar-movimiento-desktop.png"><img src="img/activos-registrar-movimiento-desktop.png" alt="Hoja de captura de movimientos con autocompletado de ticker y el tipo de cambio de Banxico ya puesto." loading="lazy"><figcaption><b>Registrar movimiento</b> — captura con el tipo de cambio ya puesto</figcaption></a></figure>
+      <figure class="phone"><a href="img/reglas-lista.png"><img src="img/reglas-lista.png" alt="Lista de reglas de aviso con tiempo de espera por regla." loading="lazy"><figcaption><b>Reglas</b>, en el teléfono — precio, RSI, volumen, fechas ex, subastas de CETES</figcaption></a></figure>
     </div>
   </div>
 </section>
 
 <section id="facts">
   <div class="wrap">
-    <h2>What you are getting</h2>
+    <h2>Lo que te estás llevando</h2>
 
     <div class="facts">
-      <div class="r"><span class="k">License</span><span class="v">MIT — 100% free and open source, no tiers, no premium features.<small>Provided "as is", without warranty of any kind.</small></span></div>
-      <div class="r"><span class="k">Version</span><span class="v"><code>0.1.0-rc1</code><small>That tag predates the 2.0 rewrite, so it does not describe what you see here. There is no tagged release of the current product yet — run <code>master</code>, and read <code>CHANGELOG.md</code> for what has landed since.</small></span></div>
-      <div class="r"><span class="k">Security</span><span class="v">Report privately through the repository's <b>Security</b> tab → <em>Report a vulnerability</em>.<small>Never open a public issue for a vulnerability. Response within 48 hours; see <code>SECURITY.md</code>.</small></span></div>
-      <div class="r"><span class="k">Interface</span><span class="v">Mexican Spanish (es-MX), single locale.<small>Code, routes, commits and documentation are English. A second locale is not a goal.</small></span></div>
-      <div class="r"><span class="k">Legal pages</span><span class="v">None, deliberately.<small>It is software you host, not a service anyone provides to you, so it ships no privacy notice and no terms — the MIT license carries the terms.</small></span></div>
-      <div class="r"><span class="k">Not advice</span><span class="v">Stockerly shows market information, not investment advice.<small>Prices, fundamentals and FX rates come from third parties and can be late or wrong. Check anything you act on against your broker.</small></span></div>
-      <div class="r"><span class="k">Contributing</span><span class="v">Bug reports, questions and pull requests are all welcome — open an issue to start.<small>Read <code>CONTRIBUTING.md</code> first. It is one person's daily driver reviewed on evenings and weekends, so expect that pace rather than a team's.</small></span></div>
+      <div class="r"><span class="k">Licencia</span><span class="v">MIT — 100% libre y open source, sin planes, sin funciones premium.<small>Se entrega «tal cual», sin garantía de ningún tipo.</small></span></div>
+      <div class="r"><span class="k">Versión</span><span class="v"><code>0.1.0-rc1</code><small>Ese tag es anterior al rediseño 2.0, así que no describe lo que ves aquí. Todavía no hay release etiquetado del producto actual — corre <code>master</code>, y lee <code>CHANGELOG.md</code> para lo que ha caído desde entonces.</small></span></div>
+      <div class="r"><span class="k">Seguridad</span><span class="v">Repórtala en privado desde la pestaña <b>Security</b> del repo → <em>Report a vulnerability</em>.<small>Nunca abras un issue público por una vulnerabilidad. Respuesta en 48 horas; ve <code>SECURITY.md</code>.</small></span></div>
+      <div class="r"><span class="k">Interfaz</span><span class="v">Español de México (es-MX), un solo locale.<small>El código, las rutas, los commits y la documentación están en inglés. Un segundo locale <em>en la app</em> no es una meta — esta página es la que existe en los dos idiomas.</small></span></div>
+      <div class="r"><span class="k">Páginas legales</span><span class="v">Ninguna, a propósito.<small>Es software que tú hospedas, no un servicio que alguien te presta, así que no trae aviso de privacidad ni términos — la licencia MIT carga los términos.</small></span></div>
+      <div class="r"><span class="k">No es asesoría</span><span class="v">Stockerly muestra información de mercado, no asesoría de inversión.<small>Los precios, los fundamentales y los tipos de cambio vienen de terceros y pueden llegar tarde o mal. Verifica con tu broker cualquier cosa sobre la que actúes.</small></span></div>
+      <div class="r"><span class="k">Contribuir</span><span class="v">Reportes de bugs, preguntas y pull requests son bienvenidos — abre un issue para empezar.<small>Lee <code>CONTRIBUTING.md</code> primero. Es el daily driver de una persona, revisado en tardes y fines de semana, así que espera ese ritmo y no el de un equipo.</small></span></div>
     </div>
   </div>
 </section>
@@ -407,12 +254,12 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
 
 <footer>
   <div class="wrap row">
-    <span>MIT · built by <a href="https://github.com/rodacato">rodacato</a> in Colima, México</span>
+    <span>MIT · hecho por <a href="https://github.com/rodacato">rodacato</a> en Colima, México</span>
     <nav>
-      <a href="https://github.com/rodacato/stockerly">Source</a>
-      <a href="https://github.com/rodacato/stockerly/blob/master/GETTING_STARTED.md">Getting started</a>
-      <a href="https://github.com/rodacato/stockerly/tree/master/docs/architecture">Architecture</a>
-      <a href="https://github.com/rodacato/stockerly/security/policy">Security</a>
+      <a href="https://github.com/rodacato/stockerly">Código</a>
+      <a href="https://github.com/rodacato/stockerly/blob/master/GETTING_STARTED.md">Cómo empezar</a>
+      <a href="https://github.com/rodacato/stockerly/tree/master/docs/architecture">Arquitectura</a>
+      <a href="https://github.com/rodacato/stockerly/security/policy">Seguridad</a>
     </nav>
   </div>
 </footer>

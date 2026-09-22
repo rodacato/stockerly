@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Stockerly — self-hosted asset tracker</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Self-hosted, single-user tracker for stocks, crypto and Mexican fixed income, with MXN/USD math that captures the FX rate at each trade's own date. Rails 8, MIT.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="brand/glyph.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Stockerly — self-hosted asset tracker">
+<meta property="og:description" content="Self-hosted, single-user tracker for stocks, crypto and Mexican fixed income. MIT.">
+<meta property="og:image" content="og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500..800&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+<link rel="alternate" hreflang="es-MX" href="./">
+<link rel="alternate" hreflang="en" href="en.html">
+<link rel="alternate" hreflang="x-default" href="./">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap row">
+    <a class="brandmark" href="./"><span class="wordmark" role="img" aria-label="Stockerly"></span></a>
+    <span class="chip">v0.1.0-rc1</span>
+    <nav>
+      <a class="hide-sm" href="#what">What it is</a>
+      <a class="hide-sm" href="#notfor">Who it isn't for</a>
+      <a href="#run">Run it</a>
+      <a href="https://github.com/rodacato/stockerly">GitHub</a>
+      <span class="lang"><a href="./">ES</a><span class="sep">·</span><span class="on">EN</span></span>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Self-hosted · single user · MIT</span>
+        <h1>Your invested net worth, on one screen.</h1>
+        <p class="lede">
+          Stockerly tracks what you own — US stocks, crypto and Mexican CETES — and
+          reports all of it in pesos using the exchange rate from the day of each
+          trade, not today's. You run it on your own server. There is one account: yours.
+        </p>
+        <div class="cmd">
+          <div class="hd"><span class="eyebrow">Run it locally</span><span class="eyebrow">Ruby + Postgres</span></div>
+<pre><span class="prompt">$</span> git clone https://github.com/rodacato/stockerly.git
+<span class="prompt">$</span> cd stockerly
+<span class="prompt">$</span> bin/setup</pre>
+        </div>
+        <div class="actions">
+          <a class="btn btn-primary" href="#run">How to run it</a>
+          <a class="btn btn-secondary" href="https://github.com/rodacato/stockerly">Read the source</a>
+        </div>
+      </div>
+            <div class="hero-panel">
+        <span class="wordmark" role="img" aria-label="Stockerly"></span>
+        <span class="foot">100% free and open source</span>
+      </div>
+    </div>
+
+    <div class="shot">
+      <figure><picture><source media="(max-width:700px)" srcset="img/cockpit-panorama-default.png"><img src="img/cockpit-panorama-desktop.png" alt="Panorama: net worth in MXN, a radar of positions with sparklines, technical signals, and market sentiment."></picture></figure>
+      <figcaption>
+        One screen, read top-left to right: total net worth in pesos, then the positions with
+        something happening today, then what the indicators said about them, then how the wider
+        market feels. The whole product is an argument that those four things belong together.
+        <span class="disc">Every image here is an <b>artboard</b> from the design system in
+        <code>design/</code>, not a capture of a running instance. The interface is in Mexican
+        Spanish; the code, routes and documentation are in English.</span>
+      </figcaption>
+    </div>
+  </div>
+</div>
+
+<section id="notfor">
+  <div class="wrap">
+    <h2>Who this isn't for</h2>
+    <p class="sub">
+      Self-hosted means you are about to spend an evening on this. These are not
+      limitations waiting to be fixed — they are decisions, each one recorded in the repo.
+    </p>
+
+    <dl class="notfor">
+      <div><dt>More than one person</dt><dd>Single-user by design. One instance, one account, no roles, no sharing, no multi-tenancy. A household needs two instances.</dd></div>
+      <div><dt>Investors outside Mexico</dt><dd>The math assumes MXN and USD through a Mexican broker: CETES, Banxico's FX fix, the BMV. It is not a generic international tracker.</dd></div>
+      <div><dt>Anyone wanting broker sync</dt><dd>No Plaid, no Yodlee, no SnapTrade, ever at this scale. You type trades or import a CSV. Aggregator fees helped kill a same-stack competitor.</dd></div>
+      <div><dt>Day traders</dt><dd>Daily close, not ticks. No sub-daily resolution, no streaming quotes.</dd></div>
+      <div><dt>Tax preparation</dt><dd>No ISR reports, no SAT integration, no lot tracking, no withholding math. It tracks patrimony; it does not replace your accountant.</dd></div>
+      <div><dt>Anyone who needs support</dt><dd>No SLA, no support guarantee, no advance notice of breaking changes. It is one person's daily driver that happens to be readable and runnable.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="what">
+  <div class="wrap">
+    <h2>A tracker built around one question</h2>
+    <p class="sub">
+      Am I up or down, in the currency I actually spend? Everything else on the screen
+      exists to explain that number or to keep it honest.
+    </p>
+
+    <div class="grid three">
+      <div class="card lead">
+        <h3>Multi-currency that tells the truth</h3>
+        <p>
+          Cost basis is FX-weighted. The unrealised gain is split into what the asset did
+          and what the peso did — for a Mexican investor holding US stocks those are two
+          different stories, and most trackers report only the first.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Three tiers, not one list</h3>
+        <p>
+          <em>Holdings</em> is what you own, <em>Watchlist</em> is what you follow, and
+          <em>Tracked</em> is the catalogue the sync jobs read. A symbol can be in the
+          catalogue without pretending you bought it.
+        </p>
+      </div>
+      <div class="card">
+        <h3>CETES as a first-class asset</h3>
+        <p>
+          Mexican fixed income sits beside the equities, with maturity lead time, and the
+          portfolio's return is measured against reinvested CETES — the benchmark a Mexican
+          investor actually gives something up for.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Descriptive, never prescriptive</h3>
+        <p>
+          It says <em>"AAPL entered oversold per RSI(14)"</em>. It does not say buy, sell,
+          or now is a good time. Indicators and composite scores are in; predictions and
+          recommendations are out, on purpose.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Installable, and it works offline</h3>
+        <p>
+          It ships as a PWA: install it to a phone home screen, get push notifications when a rule
+          fires, and keep reading the last figures it loaded when the network is gone.
+        </p>
+      </div>
+    </div>
+
+    <div class="stack">
+      <span>Ruby 4.0.6</span><span>Rails 8.1</span><span>PostgreSQL 16</span>
+      <span>Hotwire</span><span>Tailwind CSS 4</span><span>Solid Queue</span>
+      <span>Kamal 2</span><span>no Node.js</span>
+    </div>
+  </div>
+</section>
+
+<div class="band">
+  <div class="wrap">
+    <h2>What it costs you to run</h2>
+    <p class="lede">Not money — it is MIT. Attention, and a short list of things that have to be
+    true on your server.</p>
+    <dl>
+      <div><dt>8</dt><dd>market-data providers, every one of them optional. It runs with none configured; you just get no live prices.</dd></div>
+      <div><dt>6</dt><dd>bounded contexts. Writes cross them as domain events, reads through a published API, and an ADR names every seam.</dd></div>
+      <div><dt>4</dt><dd>PostgreSQL databases — primary, cache, queue, cable. No Redis to run, no Node to build.</dd></div>
+      <div><dt>1</dt><dd>account on the instance, created by the Setup Wizard on first boot. There is no second one to make.</dd></div>
+      <div><dt>0</dt><dd>accounts with anyone else, including me. No aggregator, no telemetry, no external error service.</dd></div>
+    </dl>
+  </div>
+</div>
+
+<section id="run">
+  <div class="wrap">
+    <h2>One command, on your machine</h2>
+    <p class="sub">
+      <code>bin/setup</code> is idempotent: it installs gems, creates and migrates the four
+      PostgreSQL databases, seeds them on first creation, and starts the server. No market-data
+      API key is needed to run.
+    </p>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>Dev container</h3>
+        <p>Open the folder in VS Code or Codespaces and choose <em>Reopen in Container</em>. Setup runs itself; then <code>bin/dev</code>.</p>
+      </div>
+      <div class="card">
+        <h3>Bare metal</h3>
+        <p>Ruby 4.0.6 and a PostgreSQL 16 on <code>localhost</code>. Node.js is not required — JavaScript ships through import maps and CSS through the Tailwind standalone compiler.</p>
+      </div>
+    </div>
+
+    <div class="cmd">
+      <div class="hd"><span class="eyebrow">Both paths end here</span><span class="eyebrow">port 4100</span></div>
+<pre><span class="prompt">$</span> bin/setup                  <span class="prompt"># gems, databases, seeds, server</span>
+<span class="prompt">$</span> bin/jobs                   <span class="prompt"># second terminal: alerts, syncs, notifications</span>
+
+  open http://localhost:4100</pre>
+    </div>
+
+    <div class="note">
+      <b>What the first screen actually is.</b> The development seeds create four demo users,
+      so <code>bin/setup</code> lands you on the login — sign in with
+      <code>demo@stockerly.com</code> / <code>password123</code>. The Setup Wizard that creates
+      the single real account only appears on an <em>empty</em> database, which is what a
+      genuine first boot looks like. <code>GETTING_STARTED.md</code> has the one-liner to get there.
+    </div>
+
+    <p class="sub" style="margin-top:28px">
+      For production, Stockerly deploys to any Linux server with Kamal 2 and Docker. The
+      reference deployment uses a VPS behind a Cloudflare Tunnel, so no inbound ports are
+      opened — but nothing in the app depends on the maintainer's infrastructure.
+      See <code>docs/ops/deploy.md</code>.
+    </p>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="wrap">
+    <h2>What the screens look like</h2>
+    <p class="sub">Drawn in the project's own design system, which mirrors the shipped code.</p>
+
+    <div class="gallery">
+      <figure><a href="img/activos-holdings-desktop.png"><img src="img/activos-holdings-desktop.png" alt="Holdings: positions grouped by tier, with cost basis and gain in MXN." loading="lazy"><figcaption><b>Holdings</b> — the three-tier ladder, values in MXN</figcaption></a></figure>
+      <figure><a href="img/cockpit-consolidado-desktop.png"><img src="img/cockpit-consolidado-desktop.png" alt="Consolidado: portfolio value over time against a reinvested CETES benchmark." loading="lazy"><figcaption><b>Consolidado</b> — value over time vs. reinvested CETES</figcaption></a></figure>
+      <figure><a href="img/activos-registrar-movimiento-desktop.png"><img src="img/activos-registrar-movimiento-desktop.png" alt="Trade capture sheet with ticker autocomplete and a pre-filled Banxico rate." loading="lazy"><figcaption><b>Registrar movimiento</b> — capture with the FX rate pre-filled</figcaption></a></figure>
+      <figure class="phone"><a href="img/reglas-lista.png"><img src="img/reglas-lista.png" alt="Alert rules list with per-rule cooldowns." loading="lazy"><figcaption><b>Reglas</b>, on a phone — price, RSI, volume, ex-dates, CETES auctions</figcaption></a></figure>
+    </div>
+  </div>
+</section>
+
+<section id="facts">
+  <div class="wrap">
+    <h2>What you are getting</h2>
+
+    <div class="facts">
+      <div class="r"><span class="k">License</span><span class="v">MIT — 100% free and open source, no tiers, no premium features.<small>Provided "as is", without warranty of any kind.</small></span></div>
+      <div class="r"><span class="k">Version</span><span class="v"><code>0.1.0-rc1</code><small>That tag predates the 2.0 rewrite, so it does not describe what you see here. There is no tagged release of the current product yet — run <code>master</code>, and read <code>CHANGELOG.md</code> for what has landed since.</small></span></div>
+      <div class="r"><span class="k">Security</span><span class="v">Report privately through the repository's <b>Security</b> tab → <em>Report a vulnerability</em>.<small>Never open a public issue for a vulnerability. Response within 48 hours; see <code>SECURITY.md</code>.</small></span></div>
+      <div class="r"><span class="k">Interface</span><span class="v">Mexican Spanish (es-MX), single locale.<small>Code, routes, commits and documentation are English. A second locale is not a goal.</small></span></div>
+      <div class="r"><span class="k">Legal pages</span><span class="v">None, deliberately.<small>It is software you host, not a service anyone provides to you, so it ships no privacy notice and no terms — the MIT license carries the terms.</small></span></div>
+      <div class="r"><span class="k">Not advice</span><span class="v">Stockerly shows market information, not investment advice.<small>Prices, fundamentals and FX rates come from third parties and can be late or wrong. Check anything you act on against your broker.</small></span></div>
+      <div class="r"><span class="k">Contributing</span><span class="v">Bug reports, questions and pull requests are all welcome — open an issue to start.<small>Read <code>CONTRIBUTING.md</code> first. It is one person's daily driver reviewed on evenings and weekends, so expect that pace rather than a team's.</small></span></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap row">
+    <span>MIT · built by <a href="https://github.com/rodacato">rodacato</a> in Colima, México</span>
+    <nav>
+      <a href="https://github.com/rodacato/stockerly">Source</a>
+      <a href="https://github.com/rodacato/stockerly/blob/master/GETTING_STARTED.md">Getting started</a>
+      <a href="https://github.com/rodacato/stockerly/tree/master/docs/architecture">Architecture</a>
+      <a href="https://github.com/rodacato/stockerly/security/policy">Security</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
