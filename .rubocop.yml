@@ -139,6 +139,17 @@ Rails/Output:
     - 'db/seeds.rb'
     - 'db/seeds/**/*'
 
+# Everything under script/ runs as a plain Ruby script — bin/checks boots no Rails,
+# and script/release_changelog.rb is stdlib only so the Release workflow needs no
+# bundle. ActiveSupport is not loaded there, so what these cops ask for raises.
+Rails/Blank:
+  Exclude:
+    - 'script/**/*'
+
+Rails/Date:
+  Exclude:
+    - 'script/**/*'
+
 # A new defect-catching cop should arrive enabled rather than wait to be noticed.
 # The cost is that a rubocop bump can fail CI — which is where it should fail.
 AllCops:
