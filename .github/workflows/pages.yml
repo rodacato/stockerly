@@ -1,0 +1,52 @@
+name: Pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "site/**"
+      - "design/exports/**"
+      - "design/brand/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Stage the design assets the page references
+        run: |
+          set -euo pipefail
+          mkdir -p site/img site/brand
+          while read -r f; do
+            cp "design/exports/$f" "site/img/$f"
+          done <<< "$(grep -oE '(src|srcset)="img/[^"]+"' site/index.html \
+                      | sed -E 's/.*"img\///; s/"$//' | sort -u)"
+          cp design/brand/glyph.svg design/brand/wordmark.svg site/brand/
+          cp public/og-image.png site/og-image.png
+          du -sh site
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

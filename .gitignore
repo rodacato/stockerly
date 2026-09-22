@@ -87,3 +87,8 @@ lib/python/__pycache__/
 
 # RSpec --only-failures state, regenerated on every run
 spec/examples.txt
+
+# Assembled by .github/workflows/pages.yml; the sources live in design/ and public/
+/site/img/
+/site/brand/
+/site/og-image.png
