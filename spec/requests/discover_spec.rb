@@ -226,6 +226,47 @@ RSpec.describe "Descubrir", type: :request do
       expect(response.body).not_to include("h-8 w-16")
     end
 
+    # D144: the only datum on the screen that knows who the reader is was the
+    # smallest type on it, third in the stack under the basket's own name.
+    describe "the exposure chip" do
+      def chip_class(body, text)
+        Capybara.string(body).find("span", text: text, match: :first)[:class]
+      end
+
+      def hold_a_referent
+        portfolio = user.portfolio || create(:portfolio, user: user)
+        create(:position, portfolio: portfolio, asset: create(:asset, symbol: "NVDA"), status: :open)
+      end
+
+      it "reads at the row's second rank rather than its smallest type" do
+        get discover_path
+
+        expect(chip_class(response.body, "sin exposición")).to include("text-xs")
+        expect(chip_class(response.body, "sin exposición")).not_to include("text-[10px]")
+      end
+
+      it "sits on the symbol's line, above the name and the group" do
+        get discover_path
+
+        expect(response.body.index("sin exposición")).to be < response.body.index("Semiconductores ·")
+      end
+
+      # Colour encodes a verdict, so the chip may take none in either state:
+      # a coloured "sin exposición" would read as act here (ADR-0001, D31).
+      it "takes no semantic colour whether or not a referent is held" do
+        get discover_path
+        empty = chip_class(response.body, "sin exposición")
+
+        hold_a_referent
+        get discover_path
+        held = chip_class(response.body, "ya vía NVDA")
+
+        expect(empty).to eq(held)
+        expect(empty).to include("text-fg-subtle", "bg-bg-muted")
+        expect(empty).not_to match(/positive|negative/)
+      end
+    end
+
     it "retires the Alpaca notice once there are waves to show" do
       get discover_path
 
