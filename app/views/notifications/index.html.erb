@@ -14,20 +14,24 @@
   </div>
 
   <%# Four buckets, one per thing the app has to say. The enum already drew
-      this line; the old filter collapsed three of its values into one. %>
-  <div class="flex flex-wrap gap-2">
-    <% [ [ "todos", t(".todas"), @counts[:all] ],
-         [ "alertas", t(".alertas"), @counts[:alertas] ],
-         [ "reportes", t(".reportes"), @counts[:reportes] ],
-         [ "cetes", t(".cetes"), @counts[:cetes] ] ].each do |slug, label, count| %>
-      <% on = (@tipo == slug) %>
-      <%= link_to notifications_path(tipo: slug, estado: @estado),
-            class: "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors #{on ? 'border-primary bg-primary-muted font-semibold text-primary-fg' : 'border-border-default text-fg-default'}" do %>
-        <%= label %>
-        <span class="font-mono text-xs"><%= count.to_i %></span>
+      this line; the old filter collapsed three of its values into one.
+      D142: an empty bucket is not an empty inbox, so the chips answer to the
+      inbox's own count and not to the one the filter left. %>
+  <% if @counts[:all].to_i.positive? %>
+    <div class="flex flex-wrap gap-2">
+      <% [ [ "todos", t(".todas"), @counts[:all] ],
+           [ "alertas", t(".alertas"), @counts[:alertas] ],
+           [ "reportes", t(".reportes"), @counts[:reportes] ],
+           [ "cetes", t(".cetes"), @counts[:cetes] ] ].each do |slug, label, count| %>
+        <% on = (@tipo == slug) %>
+        <%= link_to notifications_path(tipo: slug, estado: @estado),
+              class: "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors #{on ? 'border-primary bg-primary-muted font-semibold text-primary-fg' : 'border-border-default text-fg-default'}" do %>
+          <%= label %>
+          <span class="font-mono text-xs"><%= count.to_i %></span>
+        <% end %>
       <% end %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 
   <% if @notifications.any? %>
     <div id="notifications" class="flex flex-col gap-6">

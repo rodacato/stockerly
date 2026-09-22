@@ -4,10 +4,9 @@ RSpec.describe Alerts::UseCases::LoadDashboard do
   let(:user) { create(:user) }
 
   describe ".call" do
-    it "returns Success with rules, events, preference, counts and triggered_today" do
+    it "returns Success with rules, events, counts and triggered_today" do
       create(:alert_rule, user: user, asset_symbol: "AAPL", status: :active)
       create(:alert_rule, user: user, asset_symbol: "NVDA", status: :paused)
-      create(:alert_preference, user: user)
 
       result = described_class.call(user: user)
 
@@ -18,7 +17,6 @@ RSpec.describe Alerts::UseCases::LoadDashboard do
       expect(data[:counts]).to eq(active: 1, paused: 1, all: 2)
       expect(data[:filter]).to eq("all")
       expect(data).to have_key(:events)
-      expect(data).to have_key(:preference)
       expect(data).to have_key(:triggered_today)
     end
 

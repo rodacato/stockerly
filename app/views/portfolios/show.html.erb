@@ -30,18 +30,19 @@
               <span class="size-2 rounded-full bg-border-strong"></span><%= t(".aportado") %>
             </span>
           </div>
+          <%# D142: five ranges of a curve that is not there all land on the
+              same card, so the control waits for something to cut. %>
+          <%= render "components/segmented",
+                     label: t(".como_ha_ido"),
+                     options: Trading::UseCases::AssembleConsolidado::PERIODS.keys.map { |key|
+                       [ t(".periodo.#{period_key(key)}"), portfolio_path(period: key), @period == key ]
+                     } %>
         <% else %>
           <div class="mt-4">
             <%= render "components/empty_state", icon: "show_chart",
                        title: t(".sin_historial_titulo"), description: t(".sin_historial_cuerpo") %>
           </div>
         <% end %>
-
-        <%= render "components/segmented",
-                   label: t(".como_ha_ido"),
-                   options: Trading::UseCases::AssembleConsolidado::PERIODS.keys.map { |key|
-                     [ t(".periodo.#{period_key(key)}"), portfolio_path(period: key), @period == key ]
-                   } %>
       </div>
     </section>
 

@@ -1,18 +1,22 @@
 <% content_for :page_title, t(".titulo") %>
 
 <div class="mx-auto flex max-w-3xl flex-col gap-8">
-  <div class="grid grid-cols-2 gap-3">
-    <div class="<%= card_classes("px-4 py-3") %>">
-      <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t(".disparadas_hoy") %></p>
-      <p class="mt-1 font-mono text-3xl font-bold text-fg-default"><%= @triggered_today %></p>
-      <p class="text-sm text-fg-subtle"><%= t(".de_reglas", count: @counts[:all]) %></p>
+  <%# D142: both tiles count rules, so before the first one exists they report
+      zero about something that is not there yet, above the card inviting it. %>
+  <% if @counts[:all].to_i.positive? %>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="<%= card_classes("px-4 py-3") %>">
+        <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t(".disparadas_hoy") %></p>
+        <p class="mt-1 font-mono text-3xl font-bold text-fg-default"><%= @triggered_today %></p>
+        <p class="text-sm text-fg-subtle"><%= t(".de_reglas", count: @counts[:all]) %></p>
+      </div>
+      <div class="<%= card_classes("px-4 py-3") %>">
+        <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t(".reglas_activas") %></p>
+        <p class="mt-1 font-mono text-3xl font-bold text-fg-default"><%= @counts[:active] %></p>
+        <p class="text-sm text-fg-subtle"><%= t(".en_pausa", count: @counts[:paused]) %></p>
+      </div>
     </div>
-    <div class="<%= card_classes("px-4 py-3") %>">
-      <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle"><%= t(".reglas_activas") %></p>
-      <p class="mt-1 font-mono text-3xl font-bold text-fg-default"><%= @counts[:active] %></p>
-      <p class="text-sm text-fg-subtle"><%= t(".en_pausa", count: @counts[:paused]) %></p>
-    </div>
-  </div>
+  <% end %>
 
   <%# ADR-0001 in one line, where the person decides what to create. %>
   <p class="text-fg-subtle"><%= t(".descripcion") %></p>
@@ -37,10 +41,11 @@
 
   <%= render "alerts/live_feed", events: @events %>
 
-  <section class="flex flex-col gap-3">
-    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t(".como_te_aviso") %></h2>
-    <p class="text-sm text-fg-subtle"><%= t(".campana_siempre") %></p>
-    <%= render "settings/notification_switches", preferences: @preference %>
-    <p class="text-sm text-fg-subtle"><%= t(".smtp_nota") %></p>
-  </section>
+  <%# D143: the switches are configuration set once, so they live on the hub
+      that owns configuration. This screen is read weekly for an outcome. %>
+  <p class="text-sm text-fg-subtle">
+    <%= t(".avisos_nota") %>
+    <%= link_to t(".avisos_enlace"), settings_path,
+                class: "font-semibold text-primary-fg hover:underline" %>
+  </p>
 </div>
