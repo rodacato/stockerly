@@ -68,7 +68,7 @@ The 2.0 is packaged so **any technically capable person can stand it up with one
 - We do **NOT** build features for a hypothetical self-hosting community. That is the next audience-fantasma, and it is the same mistake the failed ≤20-friend beta made ([`ADR-0010`](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)) — building for a persona nobody is, the second entry on the maintainer's own anti-pattern list.
 - If real self-hosters ever show up with repeated, documented needs, revisit via ADR — don't pre-build for them.
 
-**What a self-hoster gets:** open-source code (AGPL/MIT as decided), a documented one-command deploy, their own data on their own server. **What they do NOT get:** an SLA, support, or advance notice of breaking changes. It's a personal tool you're welcome to run.
+**What a self-hoster gets:** MIT-licensed code, a documented one-command deploy, their own data on their own server. **What they do NOT get:** an SLA, support, or advance notice of breaking changes. It's a personal tool you're welcome to run.
 
 ## Why the closed beta was dropped
 

@@ -17,7 +17,6 @@
 | **General public arriving via Google** | No commercial landing, no SEO, no conversion funnel. The repo is a public portfolio, not a pull product. |
 | **Investors outside Mexico** | Logic is modeled around MXN+USD via a Mexican broker. CETES, IPC, Banxico FX. |
 | **Tax-professional accountants** | We don't replace accountants. See "Functionality out of scope" below. |
-| **OSS contributors forking the project** | Public repo as portfolio, but PRs **not** accepted until v1.0. |
 | **Minors / users without investment capacity** | Product assumes an adult user with a real broker account. |
 
 ---
