@@ -5,7 +5,7 @@
 Stockerly follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 
 ```
-MAJOR.MINOR.PATCH[-pre-release]
+MAJOR.MINOR.PATCH
 ```
 
 | Component | When to bump |
@@ -14,15 +14,14 @@ MAJOR.MINOR.PATCH[-pre-release]
 | **MINOR** | New features, bounded contexts, or integrations |
 | **PATCH** | Bug fixes, performance improvements, dependency updates |
 
-### Pre-release Tags
+### Pre-release suffixes are retired
 
-| Tag | Meaning |
-|-----|---------|
-| `alpha` | Feature-complete for the phase, but not production-hardened |
-| `beta` | Production-tested, collecting feedback |
-| `rc.N` | Release candidate, no known issues |
+`v0.1.0-alpha` and `v0.1.0-rc1` were cut by hand. The Release workflow offers `patch`, `minor`
+and `major` and nothing else, so a version it produces never carries a suffix — `0.1.0-rc1`
+released as `0.2.0`, not as `0.2.0-beta`.
 
-Examples: `v0.1.0-alpha`, `v0.2.0-beta`, `v1.0.0-rc.1`, `v1.0.0`
+The publish step still honours one: a version written into the manifest with a `-suffix` is
+published as a GitHub pre-release. Nothing in the flow puts one there.
 
 ### What counts as 1.0.0?
 
@@ -37,68 +36,72 @@ so "real users" is not the bar. It reaches `v1.0.0` when:
 
 ## Release Process
 
-A release is an annotated tag on a commit that is already on `master`. Releasing and deploying are
-independent: tagging does not deploy, and deploying does not tag ([docs/ops/deploy.md](docs/ops/deploy.md)).
+Releases are cut by [`.github/workflows/release.yml`](.github/workflows/release.yml) from a
+dispatch. No step below tags by hand or pushes to `master`, and releasing is still independent of
+deploying: tagging does not deploy, and deploying does not tag ([docs/ops/deploy.md](docs/ops/deploy.md)).
 
-### 1. Open the release PR
+### 1. Run the Release workflow
 
-On a branch from `master`, bump `lib/stockerly/version.rb`:
+From the Actions tab, pick the bump (`patch`, `minor` or `major`). It bumps
+`lib/stockerly/version.rb`, generates the `CHANGELOG.md` entry from the commits since the last
+`v*` tag, and pushes a `release/vX.Y.Z` branch.
 
-```ruby
-module Stockerly
-  VERSION = "0.2.0-alpha"
-end
+### 2. Open the pull request yourself
+
+From the link in the run summary. The workflow stops short of opening it: letting Actions open
+pull requests needs a repository setting that also lets it *approve* them, and a token-authored
+pull request runs no CI — opening it by hand is what gives the release branch its five required
+checks.
+
+### 3. Read the entry on the branch before merging
+
+The generator reads [Conventional Commits](https://www.conventionalcommits.org/) and nothing else.
+Two things to check, both fixed on the branch rather than after publication:
+
+- **Breaking Changes** only holds commits written as `type!:`. A missed marker belongs there by
+  hand.
+- The run summary lists every commit the entry does not carry — a subject with no prefix, or a
+  `design:` commit, whose history is its flow's `Log` frame and [design/DECISIONS.md](design/DECISIONS.md).
+  Paste what belongs in the entry.
+
+`script/release_changelog.rb <bump> --dry-run` prints the same entry locally and writes nothing.
+
+### 4. Merge it
+
+That push to `master` carries a version with no tag yet, which is what makes the workflow create
+`vX.Y.Z` and publish the GitHub Release with that changelog section as its notes. The suite is not
+re-run: `master` only takes pull requests whose required checks passed on a branch that was up to
+date with it.
+
+### If the publish step fails
+
+The tag is pushed before the release is created, so a failure can leave a tag with no release.
+Nothing is lost — the notes come from a section that is already on `master`:
+
+```bash
+v=0.2.0
+awk -v h="## [$v]" 'index($0, h) == 1 { f = 1; next } f && /^## \[/ { exit } f' CHANGELOG.md > /tmp/notes.md
+gh release create "v$v" --verify-tag --title "v$v" --notes-file /tmp/notes.md
 ```
 
-Error tracking runs inside the instance ([ADR-020](docs/architecture/adr/0020-internal-error-tracker.md)):
-unhandled exceptions land in `error_events` and are read at `/admin/errors`. There is no external
-error service and no release marker to publish. `lib/stockerly/version.rb` is the human-facing
-version used for tags and the changelog.
-
-In `CHANGELOG.md`, rename `## [Unreleased]` to `## [0.2.0-alpha] - YYYY-MM-DD`, add a new empty
-`## [Unreleased]` above it, and update the comparison links at the bottom:
-
-```markdown
-[Unreleased]: https://github.com/rodacato/stockerly/compare/v0.2.0-alpha...HEAD
-[0.2.0-alpha]: https://github.com/rodacato/stockerly/compare/v0.1.0-rc1...v0.2.0-alpha
-```
-
-The PR runs the same required checks as any other change. Merge it.
-
-### 2. Tag the merged commit
+If the tag itself is missing, re-running the workflow is not the path — it dispatches `prepare`,
+not `publish`. Tag the commit that is already on `master` and push only the tag:
 
 ```bash
 git fetch origin
-sha=$(git rev-parse origin/master)   # or the merge commit of the release PR
-git merge-base --is-ancestor "$sha" origin/master && git tag -a v0.2.0-alpha "$sha" -m "Release v0.2.0-alpha"
-```
-
-### 3. Publish the tag, and only the tag
-
-```bash
-git push origin v0.2.0-alpha
+git tag -a "v$v" origin/master -m "Stockerly v$v"
+git push origin "refs/tags/v$v"
 ```
 
 Never `git push origin master --tags`: it pushes to the protected branch and publishes every local
 tag at once.
 
-### 4. Create the GitHub Release
-
-Every `v*` tag has one. The notes are the version's section of the changelog:
-
-```bash
-v=0.2.0-alpha
-awk -v h="## [$v]" 'index($0, h) == 1 { f = 1; next } f && /^## \[/ { exit } f' CHANGELOG.md > /tmp/notes.md
-gh release create "v$v" --verify-tag --title "v$v" --notes-file /tmp/notes.md --prerelease
-```
-
-Drop `--prerelease` for a version without a pre-release suffix.
 
 ## Release Cadence
 
 There is no fixed schedule. Releases happen when a meaningful set of changes is ready:
 
-- **Alpha releases** (`0.x.0-alpha`): after completing a roadmap phase or a set of related features
+- **Minor releases** (`0.X.0`): after a set of related features, or a slice of the redesign
 - **Patch releases** (`0.x.Y`): for urgent bug fixes or security patches
 - **Major milestones**: when the scope of a major version is done. The 2.0 pivot is recorded in [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md).
 
@@ -107,8 +110,11 @@ There is no fixed schedule. Releases happen when a meaningful set of changes is 
 | Version | Roadmap Phases | Theme |
 |---------|---------------|-------|
 | `v0.1.0-alpha` | 0-22 | All core features: DDD architecture, trading, alerts, market data |
-| `v0.1.0-rc1` | — | Hardening for public deployment (current `lib/stockerly/version.rb`) |
+| `v0.1.0-rc1` | — | Hardening for public deployment |
 | `v0.2.0` | — | The 2.0 pivot: self-hosted single-user tracker (see the `[Unreleased]` section of the changelog) |
+
+`lib/stockerly/version.rb` is the manifest: it is what the workflow bumps, what `publish` reads to
+decide whether there is a tag to cut, and what `/admin/settings` reports.
 
 ## Hotfix Process
 
@@ -119,7 +125,12 @@ the fix in production, promote `master` as [docs/ops/deploy.md](docs/ops/deploy.
 ## Tags that are not releases
 
 Only `v*` tags are releases. A tag that marks a point in history, such as `pre-2.0-evolve`, has no
-GitHub Release and no changelog section.
+GitHub Release and no changelog section — and the generator asks for `--match 'v*'` so a marker tag
+can never become the boundary the changelog range is read from.
+
+`v0.1.0-alpha` is an exception to fix rather than a rule to follow: it has a tag but no GitHub
+Release, and it does not hang off `master` at all, having survived a history rewrite of the
+pre-2.0 era.
 
 ## Docker Images
 

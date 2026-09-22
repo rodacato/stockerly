@@ -291,10 +291,17 @@ The count is deterministic across seeds — that is what #526 established. Cover
 ### Commit Style
 
 Follow `CONTRIBUTING.md` conventions:
+- [Conventional Commits](https://www.conventionalcommits.org/) — `type(scope): description`, and
+  `type!:` for a breaking change. `script/release_changelog.rb` reads the prefix to write the
+  release's changelog entry, so a subject without one has to be pasted in by hand
 - Imperative mood ("Add feature" not "Added feature")
-- First line under 70 characters
+- First line under 70 characters, prefix included
 - One commit per logical step
 - Never commit API keys, `*.key` files, or `.env` with real values
+
+Releases are cut by `.github/workflows/release.yml` from a dispatch — bump, generated changelog
+entry, a `release/vX.Y.Z` branch you open the PR for, then tag and GitHub Release on merge. See
+`RELEASING.md`.
 
 ## Documentation
 
