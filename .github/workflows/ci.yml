@@ -2,21 +2,26 @@ name: CI
 
 on:
   pull_request:
+  merge_group:
   push:
     branches: [master]
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  # A merge group's run is the one the merge waits on. Cancelling it strands the
+  # queue entry, so only pull-request runs are superseded by a newer push.
+  cancel-in-progress: ${{ github.event_name != 'merge_group' }}
 
 permissions:
   contents: read
 
 jobs:
   test:
-    # Required on PRs, which must be up to date with master before merging, so the
-    # merged tree is the tested one.
-    if: github.event_name == 'pull_request'
+    # Runs on pull requests, and on the merge group that the queue builds — which
+    # is the merged tree itself, tested once for the whole batch instead of once
+    # per branch per rebase. Skipped on push: master only takes what the queue or
+    # an up-to-date PR already proved.
+    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
