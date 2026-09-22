@@ -54,6 +54,17 @@ RSpec.describe "Password recovery revamp (S11 #147)", type: :request do
       post forgot_password_path, params: { email: user.email }
       expect(response.body).to include("El enlace expira en")
     end
+
+    # The two sibling outcome screens each lead with one full-width primary.
+    # Here both actions were text links, so leaving and recovering looked alike.
+    it "ranks its two actions, as the other outcome screens do" do
+      post forgot_password_path, params: { email: user.email }
+      page = Capybara.string(response.body)
+
+      expect(page).to have_css("a.bg-primary", count: 1)
+      expect(page.find("a.bg-primary")[:href]).to eq(login_path)
+      expect(page).to have_css("a", text: I18n.t("auth.sent.reenviar"))
+    end
   end
 
   # The three outcome screens hand-rolled their own header, and the wordmark

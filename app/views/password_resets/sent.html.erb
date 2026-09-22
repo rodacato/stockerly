@@ -16,11 +16,14 @@
     <%= t("auth.sent.expira", duration: duration_in_words_es(User::PASSWORD_RESET_EXPIRES_IN)) %>
   </p>
 
-  <div class="flex flex-col gap-3">
-    <%# "Reenviar" returns to the form rather than resending behind the scenes:
-        a real resend needs the address, and holding it would leak the same fact
-        the copy above is careful not to state. %>
-    <%= link_to t("auth.sent.reenviar"), forgot_password_path, class: "text-sm font-medium text-primary-fg hover:underline" %>
-    <%= link_to t("auth.volver"), login_path, class: "text-sm font-medium text-primary-fg hover:underline" %>
-  </div>
+  <%# "Reenviar" returns to the form rather than resending behind the scenes:
+      a real resend needs the address, and holding it would leak the same fact
+      the copy above is careful not to state. %>
+  <%= link_to t("auth.sent.reenviar"), forgot_password_path, class: "text-sm font-medium text-primary-fg hover:underline" %>
 </div>
+
+<%= link_to login_path,
+      class: button_classes(:primary, :lg, "mt-6 flex w-full items-center justify-center gap-2") do %>
+  <%= t("auth.volver") %>
+  <%= icon_svg "arrow_forward", class: "text-[18px]", "aria-hidden": "true" %>
+<% end %>
