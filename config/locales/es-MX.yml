@@ -499,8 +499,7 @@ es-MX:
       carrusel: Sentimiento del mercado
       fear_greed_crypto: FEAR & GREED · CRIPTO
       patrimonio: PATRIMONIO · %{currency}
-      radar_subtitulo: De tu cartera y watchlist · con actividad hoy · valores en
-        %{currency}
+      radar_subtitulo: De tu cartera y watchlist · con actividad hoy
       radar_titulo: Radar
       radar_vacio: Ninguno de tus activos tuvo actividad hoy.
       senales_subtitulo:
