@@ -216,6 +216,16 @@ RSpec.describe "Descubrir", type: :request do
       expect(response.body).not_to include("sin exposición")
     end
 
+    # D145: WaveRanking derives change_percent from the same closes the
+    # sparkline draws, and the stroke sign is that same subtraction.
+    it "states the move once instead of redrawing it as a shape" do
+      get discover_path
+
+      expect(response.body).to include("8.4%")
+      expect(response.body).not_to include("<polyline")
+      expect(response.body).not_to include("h-8 w-16")
+    end
+
     it "retires the Alpaca notice once there are waves to show" do
       get discover_path
 
