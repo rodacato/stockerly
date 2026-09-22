@@ -82,10 +82,38 @@ RSpec.describe "Onboarding", type: :request do
     # Cards one and two put a measured figure in the number slot. The third put
     # the word "Listo" there, for a sync that only starts on the next click.
     it "summarises only the figures it has measured" do
+      register_queue_worker
+
       get onboarding_complete_path
 
       expect(response.body.scan("font-mono text-xl font-bold").size).to eq(2)
       expect(response.body).not_to include("bg-warning-bg")
+    end
+
+    # ON-08: on a self-hosted install the worker is a separate process, so the
+    # last click of the wizard can promise a sync that nothing will pick up.
+    it "warns when no worker is attending the queue" do
+      get onboarding_complete_path
+
+      expect(response.body).to include(I18n.t("onboarding.complete.sin_worker_titulo"))
+      expect(response.body).to include("bin/jobs")
+    end
+
+    it "says nothing about the queue when a worker is attending it" do
+      register_queue_worker
+
+      get onboarding_complete_path
+
+      expect(response.body).not_to include(I18n.t("onboarding.complete.sin_worker_titulo"))
+    end
+
+    # The warning informs, it does not gate: a reader about to start bin/jobs
+    # in the next terminal must still be able to finish the wizard.
+    it "still offers both ways out when no worker is attending" do
+      get onboarding_complete_path
+
+      expect(response.body).to include(I18n.t("onboarding.complete.lanzar"))
+      expect(response.body).to include(I18n.t("onboarding.complete.sin_sincronizar"))
     end
 
     it "is the last of the four steps" do
