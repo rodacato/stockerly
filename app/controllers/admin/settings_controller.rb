@@ -59,6 +59,7 @@ module Admin
         rails:       Rails.version,
         environment: Rails.env,
         solid_queue: solid_queue_summary,
+        queue_attended: HealthMetrics.queue_attended?,
         cache_entries: HealthMetrics.cache_entries,
         errors_last_24h: ErrorEvent.since(24.hours.ago).sum(:occurrences),
         # D31 gave Descubrir a kill criterion with a date. Reading it needs the
@@ -69,12 +70,18 @@ module Admin
       }
     end
 
+    # Without the worker count a dead queue and a healthy idle one read the
+    # same: three zeroes either way.
     def solid_queue_summary
+      workers   = HealthMetrics.queue_workers
       active    = HealthMetrics.in_progress_jobs
       failed    = HealthMetrics.failed_jobs
       scheduled = HealthMetrics.scheduled_jobs
-      return "—" if [ active, failed, scheduled ].all?(&:nil?)
-      "#{active || 0} en proceso · #{failed || 0} fallidos · #{scheduled || 0} programados"
+      return "—" if [ workers, active, failed, scheduled ].all?(&:nil?)
+
+      detail = t("admin.settings.show.trabajos_detalle",
+                 active: active || 0, failed: failed || 0, scheduled: scheduled || 0)
+      "#{t('admin.settings.show.trabajos_workers', count: workers.to_i)} · #{detail}"
     rescue StandardError
       "—"
     end
