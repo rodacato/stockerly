@@ -84,3 +84,43 @@ debuggability.
   the name, which is what the assertions now use.
 - **Per-page weight grows by roughly 160 bytes per icon**, re-sent on each Turbo navigation and heavily
   compressed. Measured against a 48 KB stylesheet, it is noise.
+
+---
+
+## Amendment, 2026-09-22 — the brand is not exempt from its own invariant
+
+The wordmark was two files and shipped the same failure this ADR closed for icons. `shared/_logo`
+rendered **both** `logo_light.svg` and `logo_dark.svg` and hid one with `dark:hidden`, and
+`display:none` does not suppress an `<img>` fetch — so every chrome page requested 8,122 bytes
+over two requests to draw 4,061 of artwork. Neither file was in `PRECACHE_URLS`; both fell to
+`isStaticAsset` and its stale-while-revalidate, which is cached only *after* a successful fetch.
+That is verbatim the mechanism described above as why the PWA broke and the desktop did not.
+
+**The invariant covers one more resource class: the brand lockup ships inside the HTML.**
+
+`public/offline.html` was already the precedent — it inlines the symbol with `fill="currentColor"`
+because that page must render with no network at all — and `shared/_logo_mark` proved the same
+pattern in-app with the same path.
+
+Implementation: one inline `<svg>` in `shared/_logo`, the disc on `var(--color-primary)` and the
+word on `currentColor`. The two files byte-diffed to two `fill` values, so one source now draws
+every contrast the pair did, and the light/dark swap disappears with the pair. `LOGO_ASSETS` and
+`brand_logo` are gone; `shared/_logo`'s `height_class` and `alt_text` locals survive, the second
+as the `aria-label` an inline `<svg>` takes in place of `alt`.
+
+**One caller keeps a file, by the same rule that already excludes it from the token check.**
+`layouts/mailer` reads `logo_light.svg` through `image_url`: a mail client resolves neither an
+inline `<svg>` nor a custom property, which is why `script/checks/design_tokens.rb` exempts the
+mailer surfaces outright. `logo_dark.svg` is deleted — nothing renders a dark-background lockup
+now that the brand panel is gone.
+
+**Rejected: adding the two files to `PRECACHE_URLS`.** One line, and it makes the bug rarer rather
+than absent — the same shape this ADR rejected twice already, for the self-hosted woff2 and the
+external sprite.
+
+**The honest cost.** Inlined, ~4 KB rides every chrome render and every Turbo body replacement; as
+files it was ~4 KB fetched once and then cached, so on a warm cache the `<img>` version was
+cheaper and inlining wins only on first load, offline and in the PWA. The two failures are not
+equally bad either: a missing icon printed the English word `chevron_right` where a glyph belonged,
+while a missing wordmark degraded to readable `alt` text. The decision is that the invariant is
+worth more than the exemption those two facts would buy.
