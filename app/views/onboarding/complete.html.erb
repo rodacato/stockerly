@@ -34,6 +34,22 @@
       </div>
     </div>
 
+    <%# The worker is a separate process on a self-hosted install, so the button
+        below can promise a sync that nothing is there to pick up. %>
+    <% unless @queue_attended %>
+      <div class="mb-6 flex items-start gap-3 rounded-2xl bg-warning-bg px-4 py-3.5" role="status">
+        <%= icon_svg "warning", class: "shrink-0 text-xl text-warning-fg", "aria-hidden": "true" %>
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-warning-fg"><%= t(".sin_worker_titulo") %></p>
+          <p class="mt-0.5 text-xs leading-relaxed text-warning-fg"><%= t(".sin_worker_cuerpo") %></p>
+          <p class="mt-2 text-xs text-warning-fg">
+            <%= t(".sin_worker_comando") %>
+            <code class="rounded bg-bg-surface px-1.5 py-0.5 font-mono">bin/jobs</code>
+          </p>
+        </div>
+      </div>
+    <% end %>
+
     <div class="flex flex-col items-center gap-3">
       <%= button_to onboarding_launch_path, method: :post, form_class: "w-full",
             class: button_classes(:primary, :lg, "flex w-full items-center justify-center gap-2 shadow-lg") do %>

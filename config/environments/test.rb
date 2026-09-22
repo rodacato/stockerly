@@ -61,4 +61,10 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Development and production point SolidQueue::Record at the queue database.
+  # Without the same line here it lands on primary, where the queue tables do
+  # not exist, and every HealthMetrics queue reading is nil no matter what the
+  # queue holds. Jobs still run through the ActiveJob test adapter.
+  config.solid_queue.connects_to = { database: { writing: :queue } }
 end

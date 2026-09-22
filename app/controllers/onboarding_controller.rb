@@ -41,6 +41,7 @@ class OnboardingController < AuthenticatedController
     @integrations_configured = keyed.count { |i| i.api_key_encrypted.present? }
     @integrations_total = keyed.size
     @assets_count = Asset.count
+    @queue_attended = HealthMetrics.queue_attended?
   end
 
   def launch
