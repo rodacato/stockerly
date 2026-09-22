@@ -121,23 +121,14 @@ RSpec.describe "Alert management", type: :system do
     end
   end
 
-  it "carries the real switches, not a read-only mirror of them" do
-    visit alerts_path
-    expect(page).to have_content("Cómo te aviso")
-    expect(page).to have_content("Resumen diario por correo")
-    expect(page).to have_content("Avisos urgentes por correo")
-
-    # Same partial and endpoint Ajustes uses, so the two screens cannot drift
-    # into disagreeing about what is on.
-    expect(page).to have_selector("[data-toggle-url-value='#{update_preferences_path}']", count: 2, visible: :all)
-  end
-
-  it "offers a switch for each channel that delivers, and no others" do
+  # D143 moved the switches to Ajustes, which owns configuration. What used to
+  # be asserted here — the real switches, and one per channel that delivers —
+  # is asserted on the hub by `settings_hub_spec`.
+  it "sends the reader to Ajustes for how they are told" do
     visit alerts_path
 
-    # D16: the bell is not a channel you can turn off, and no push channel was
-    # ever built. Two deliver, so two switches. This fails if a third appears.
-    expect(page).to have_css("[data-toggle-field-value]", count: 2, visible: :all)
+    expect(page).to have_no_selector("[data-toggle-field-value]", visible: :all)
+    expect(page).to have_link(I18n.t("alerts.index.avisos_enlace"), href: settings_path)
   end
 
   it "ranks whether the rule has fired above whether it is enabled" do

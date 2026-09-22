@@ -19,7 +19,6 @@ module Alerts
         end
 
         events = user.alert_events.recent.includes(:alert_rule)
-        preference = user.alert_preference
         triggered_today = user.alert_events
                               .where(triggered_at: Date.current.beginning_of_day..)
                               .count
@@ -37,7 +36,6 @@ module Alerts
         {
           rules: rules,
           events: events,
-          preference: preference,
           triggered_today: triggered_today,
           counts: counts,
           filter: filter,

@@ -225,8 +225,8 @@ es-MX:
     index:
       activa: activa
       activar: Activar regla
-      campana_siempre: Todo aviso llega a tu campana; eso no se apaga. El correo sí.
-      como_te_aviso: Cómo te aviso
+      avisos_enlace: Ajustes
+      avisos_nota: 'Cómo te avisamos —campana, correo— se configura una vez en:'
       confirmar_borrado: "¿Eliminar esta regla?"
       de_reglas: de %{count} reglas
       descripcion: Tus reglas te avisan cuando algo pasa. Describen el disparo — nunca
@@ -242,8 +242,6 @@ es-MX:
       pausar: Pausar regla
       reglas_activas: Reglas activas
       sin_disparos: Todavía no se ha disparado ninguna regla.
-      smtp_nota: Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP
-        no hay correos; la bandeja y el teléfono siguen avisándote.
       sugerencias:
         cete_auction:
           porque: Banxico subasta CETES cada semana; el aviso llega %{days} días antes,

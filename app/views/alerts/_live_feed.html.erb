@@ -2,7 +2,8 @@
     inbox that holds the rest. locals: (events:) %>
 <section class="flex flex-col gap-3">
   <div class="flex items-baseline justify-between gap-3">
-    <h2 class="font-display text-2xl font-bold text-fg-default"><%= t("alerts.index.ultimos_disparos") %></h2>
+    <%# D143: Tus reglas owns the primary rank on Reglas, so this sits under it. %>
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t("alerts.index.ultimos_disparos") %></h2>
     <%= link_to t("alerts.index.ver_bandeja"), notifications_path,
                 class: "text-sm font-semibold text-primary-fg hover:underline" %>
   </div>

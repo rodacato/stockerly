@@ -176,6 +176,30 @@ conflate them. See [ADR-015](adr/0015-one-api-key-per-provider.md).
 
 ---
 
+## A control over nothing is not rendered (D142)
+
+Two clauses, and both are narrow on purpose:
+
+1. **A control whose every option leads to the same view is not rendered.** The period selector on
+   Consolidado offers five ranges of a curve that does not exist yet; whichever one is pressed, the
+   same empty-state card comes back.
+2. **A readout whose value is zero because the thing it counts does not exist yet is not
+   rendered.** Reglas drew *Disparadas hoy 0* and *de 0 reglas* directly above the card inviting
+   the first rule.
+
+**What the rule does not cover, and this is the half that keeps it usable:**
+
+- **A control that configures something for the future stays.** Notification preferences are worth
+  setting before the first rule exists, so a rule that hides them is worse than no rule.
+- **A zero that is a reading stays.** An empty *bucket* is not an empty inbox: the inbox chips
+  render whenever the inbox has anything in it, because saying *nothing here yet* while two notices
+  sit one chip away is a lie the filter would tell daily.
+
+The cheapest way back, if hiding turns out to be wrong for a given control, is to render it
+disabled rather than absent.
+
+---
+
 ## An indicator's expected value comes from outside this codebase
 
 Every spec that pins a number an indicator returns takes that number from an **independent

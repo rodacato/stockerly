@@ -6,7 +6,6 @@ class AlertsController < AuthenticatedController
 
     @rules           = data[:rules]
     @events          = data[:events]
-    @preference      = data[:preference]
     @triggered_today = data[:triggered_today]
     @counts          = data[:counts]
     @filter          = data[:filter]
