@@ -461,6 +461,7 @@ es-MX:
       renta fija MX, con multi-divisa MXN/USD correcta.'
     title: Stockerly — Tu patrimonio invertido, en una pantalla
   comun:
+    abre_pestana: abre una pestaña nueva
     accion:
       buy: compra
       sell: vende
