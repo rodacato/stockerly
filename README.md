@@ -208,12 +208,14 @@ If you find a bug or have a question, open an [issue](https://github.com/rodacat
 <details>
 <summary>More artboards</summary>
 
-Desktop artboards unless noted. The full index, artboard by artboard, is in
+Desktop where the flow has a desktop artboard, mobile where it does not — D4 draws one only
+where the layout genuinely diverges, so `alerts`, `discover` and `settings` have none. The full
+index, artboard by artboard, is in
 [`design/exports/README.md`](design/exports/README.md).
 
 **Cockpit — asset detail and the consolidated view**
 
-![Asset · Análisis](design/exports/cockpit-asset-analisis-desktop.png)
+![Asset · Análisis](design/exports/cockpit-asset-analisis.png)
 ![Consolidado](design/exports/cockpit-consolidado-desktop.png)
 
 **Activos — holdings, trade capture, CSV import**
@@ -225,7 +227,7 @@ Desktop artboards unless noted. The full index, artboard by artboard, is in
 **Reglas y Descubrir**
 
 ![Reglas](design/exports/reglas-lista.png)
-![Descubrir · Olas](design/exports/descubrir-olas-desktop.png)
+![Descubrir · Olas](design/exports/descubrir-olas.png)
 
 **Onboarding y seguridad**
 
@@ -234,8 +236,8 @@ Desktop artboards unless noted. The full index, artboard by artboard, is in
 
 **Ajustes**
 
-![Integraciones](design/exports/ajustes-integraciones-desktop.png)
-![Estado y mantenimiento](design/exports/ajustes-estado-desktop.png)
+![Integraciones](design/exports/ajustes-integraciones.png)
+![Estado y mantenimiento](design/exports/ajustes-estado.png)
 ![Errores](design/exports/ajustes-errores.png)
 
 </details>
