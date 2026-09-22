@@ -16,6 +16,36 @@ RSpec.describe "Onboarding", type: :request do
     end
   end
 
+  # ON-06: the wall used to come out alphabetical, which put Banxico second and
+  # level with five keys the wizard never checks.
+  describe "the order the keys are asked for" do
+    before do
+      %w[Alpaca Banxico CoinGecko DataBursatil ExchangeRate Finnhub].each do |provider|
+        create(:integration, :keyless, provider_name: provider)
+      end
+
+      get onboarding_integrations_path
+    end
+
+    it "asks for Banxico first, then by what skipping each key costs" do
+      asked = response.body.scan(/id="api_key_(\d+)"/).flatten
+                      .map { |id| Integration.find(id).provider_name }
+
+      expect(asked).to eq(%w[Banxico CoinGecko DataBursatil Alpaca Finnhub ExchangeRate])
+    end
+
+    # An explicit order is a list a new provider can fall off, and the step is
+    # the only place its key can be typed. Falling off ranks it last; it must
+    # not drop the record out of the wall.
+    it "still shows a provider nobody put in the order" do
+      create(:integration, :keyless, provider_name: "Nueva Fuente")
+
+      get onboarding_integrations_path
+
+      expect(response.body).to include("Nueva Fuente")
+    end
+  end
+
   describe "PATCH /onboarding/integrations" do
     let!(:integration) { create(:integration, :keyless, provider_name: "Alpaca") }
 

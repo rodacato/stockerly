@@ -7,6 +7,17 @@ class OnboardingController < AuthenticatedController
   # in rather than on the screen a reader is most likely to rush.
   STEPS = 4
 
+  # Banxico first: it is the only key this step can exercise on the spot, and
+  # the historical exchange rate the whole multi-currency thesis rests on.
+  # After it the keyed providers fall by what skipping one costs — a source
+  # with no fallback, then the MX equities the product is built around, then
+  # US corporate actions, then quotes that merely go stale. The two public
+  # sources close the list; a provider missing from here sorts after them.
+  PROVIDER_ORDER = [
+    "Banxico", "CoinGecko", "DataBursatil", "Alpaca", "Finnhub", "ExchangeRate",
+    "Yahoo Finance", "Alternative.me"
+  ].freeze
+
   skip_before_action :redirect_to_onboarding
 
   before_action :require_not_onboarded
@@ -53,7 +64,8 @@ class OnboardingController < AuthenticatedController
   private
 
   def load_integrations
-    @integrations = Integration.order(:provider_name)
+    @integrations = Integration.in_order_of(:provider_name, PROVIDER_ORDER, filter: false)
+                               .order(:provider_name)
   end
 
   # The Banxico pull is the only key the wizard can exercise on the spot, so its
