@@ -10,13 +10,13 @@ RSpec.describe "shared/_auth_header" do
   it "carries the wordmark the layout no longer holds" do
     render_header
 
-    expect(Capybara.string(rendered)).to have_css("a[href='/'] img[alt='Stockerly']")
+    expect(Capybara.string(rendered)).to have_css("a[href='/'] svg[aria-label='Stockerly']")
   end
 
   it "keeps carrying it on an outcome screen" do
     render_header(icon: "mark_email_read", tone: :primary)
 
-    expect(Capybara.string(rendered)).to have_css("a[href='/'] img[alt='Stockerly']")
+    expect(Capybara.string(rendered)).to have_css("a[href='/'] svg[aria-label='Stockerly']")
     expect(rendered).to include('data-icon="mark_email_read"')
   end
 

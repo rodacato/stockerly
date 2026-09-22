@@ -1,13 +1,4 @@
 module ApplicationHelper
-  # The two logo files, named for the theme each is drawn for. A caller that
-  # cannot swap with the theme — an email — asks here instead of hardcoding a
-  # filename; a caller on a themed surface picks its variant from that surface.
-  LOGO_ASSETS = { light: "logo_light.svg", dark: "logo_dark.svg" }.freeze
-
-  def brand_logo(variant)
-    LOGO_ASSETS.fetch(variant)
-  end
-
   # The one asset-type glossary (D48) — four surfaces name a kind, and the
   # copies of it used to disagree on two of its five values.
   def asset_type_label_es(asset_type)

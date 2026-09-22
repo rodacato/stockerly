@@ -71,26 +71,26 @@ RSpec.describe "Password recovery revamp (S11 #147)", type: :request do
   # went with it, so those screens showed no brand at all.
   describe "the outcome screens" do
     def wordmarks
-      response.parsed_body.css("a[href='/'] img[alt='Stockerly']").size
+      response.parsed_body.css("a[href='/'] svg[aria-label='Stockerly']").size
     end
 
     it "keeps the wordmark on the confirmation" do
       post forgot_password_path, params: { email: user.email }
 
-      expect(wordmarks).to eq(2)
+      expect(wordmarks).to eq(1)
     end
 
     it "keeps it on the dead end" do
       get reset_password_path(token: "rotten")
 
-      expect(wordmarks).to eq(2)
+      expect(wordmarks).to eq(1)
     end
 
     it "keeps it on the finished flow" do
       patch reset_password_path(token: user.generate_token_for(:password_reset)),
             params: { password: "newpassword123", password_confirmation: "newpassword123" }
 
-      expect(wordmarks).to eq(2)
+      expect(wordmarks).to eq(1)
     end
   end
 
