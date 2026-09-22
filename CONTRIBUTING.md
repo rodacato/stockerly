@@ -184,35 +184,60 @@ issue templates in [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) enforce 
 
 ## Commit Messages
 
-- Use the imperative mood ("Add feature" not "Added feature")
-- Keep the first line under 70 characters
-- Add a blank line and a body for context if needed
-- One commit per logical change
-- No `Co-Authored-By` line, and no AI attribution anywhere in the message
+Stockerly uses [Conventional Commits](https://www.conventionalcommits.org/). The prefix is not
+decoration: `script/release_changelog.rb` reads it to write the `CHANGELOG.md` entry for a release,
+so a subject without one lands in the run summary's list of commits the entry does not carry, for
+somebody to paste in by hand.
 
-**Prefixes.** Carried here from `docs/sprints/README.md` when that folder was retired — the
-taxonomy outlived the sprint protocol that defined it.
+```
+<type>(<scope>): <description>
 
-| Prefix | For |
-|---|---|
-| `feat(<ctx>):` | new functionality |
-| `refactor(<ctx>):` | internal change |
-| `fix:` | bug fix |
-| `chore:` | maintenance, cleanup |
-| `docs:` | documentation only |
-| `test:` | tests only |
+[optional body]
+```
 
-`<ctx>` is the bounded context the change lands in — `trading`, `market-data`, `alerts`,
-`identity`, `notifications`, `admin`. **Each commit references its issue**, e.g.
-`feat(trading): capture FX at execution [#27]`.
+| Type | For | Changelog section |
+|---|---|---|
+| `feat` | new functionality | Added |
+| `fix` | bug fix | Fixed |
+| `perf` | measured improvement | Changed |
+| `refactor` | internal change, same behaviour | Changed |
+| `docs` | documentation only | Documentation |
+| `chore` | maintenance, dependencies, tooling | Maintenance |
+| `test` | tests only | Testing |
+| `ci` | workflows and CI config | CI |
+| `design` | a `.pen` file or an export | — its history is the flow's `Log` frame |
+
+`<scope>` is optional and is normally the bounded context the change lands in — `trading`,
+`market-data`, `alerts`, `identity`, `notifications`, `admin` — or the surface it touches
+(`deps`, `design`, `kit`).
+
+**Breaking changes.** Append `!` to the type. That marker, and only that marker, is what puts a
+line under **Breaking Changes** in the release notes:
+
+```
+feat(trading)!: store cost basis in the trade's own currency
+```
+
+**The rest.** Imperative mood ("Add feature", not "Added feature"), first line under 70
+characters including the prefix, one commit per logical change, and no `Co-Authored-By` line or AI
+attribution anywhere in the message. Reference the issue when the item has a number —
+`feat(trading): capture FX at execution [#27]` — which a board draft does not
+([docs/ops/github-workflow.md](docs/ops/github-workflow.md)).
 
 Examples:
-```
-Add volume spike detection to AlertEvaluator
 
-Evaluate volume_spike condition by comparing current volume against
-5-day average multiplied by the configured threshold.
 ```
+feat(alerts): detect a volume spike against the 5-day average
+
+Evaluate the volume_spike condition by comparing current volume against
+the 5-day average multiplied by the configured threshold.
+
+fix(trading): stop signing a position closed at cost
+
+chore(deps): bump simplecov from 1.2.0 to 1.3.0
+```
+
+How a release is cut from these is [RELEASING.md](RELEASING.md).
 
 ## Code Conventions
 
