@@ -40,9 +40,6 @@
   --color-warning:           #F59E0B;
   --color-warning-bg:        #FFFBEB;
   --color-warning-fg:        #B45309;
-  --color-info:              #5B6CFF;   /* alias of primary */
-  --color-info-bg:           #EEF0FF;
-  --color-info-fg:           #4757E3;
 
   /* --- Overlay + shape — from the kit (0.3.0 scrim, D1 radii). An alpha is
      the correct implementation for both: they composite over whatever
@@ -116,9 +113,6 @@
     --color-warning:           #FBBF24;
     --color-warning-bg:        #3A2A0C;
     --color-warning-fg:        #FBBF24;
-    --color-info:              #7B89FF;
-    --color-info-bg:           #2A2E55;
-    --color-info-fg:           #9098FF;
 
     --color-chart-1:           #7B89FF;
     --color-chart-2:           #5CC8F5;
