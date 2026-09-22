@@ -1,20 +1,25 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-require 'simplecov'
-require 'simplecov_json_formatter'
+# Branch coverage plus two formatters costs about a tenth of the suite, and the
+# only consumer is the Sonar job, which runs its own rspec on demand. COVERAGE=0
+# lets the PR gate skip what it never reads; everything else keeps it.
+if ENV["COVERAGE"] != "0"
+  require 'simplecov'
+  require 'simplecov_json_formatter'
 
-# SonarQube reads the JSON formatter output, not the legacy .resultset.json.
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::JSONFormatter
-])
+  # SonarQube reads the JSON formatter output, not the legacy .resultset.json.
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::JSONFormatter
+  ])
 
-SimpleCov.start 'rails' do
-  enable_coverage :branch
-  skip '/spec/'
-  skip '/config/'
-  skip '/vendor/'
-  skip 'app/jobs/application_job.rb'
-  skip 'app/mailers/application_mailer.rb'
+  SimpleCov.start 'rails' do
+    enable_coverage :branch
+    skip '/spec/'
+    skip '/config/'
+    skip '/vendor/'
+    skip 'app/jobs/application_job.rb'
+    skip 'app/mailers/application_mailer.rb'
+  end
 end
 
 require 'spec_helper'
