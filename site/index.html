@@ -37,7 +37,7 @@
   }
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%}
 body{
   background:var(--bg-canvas); color:var(--fg-default);
   font-family:var(--sans); font-size:16px; line-height:1.6;
@@ -86,12 +86,14 @@ header.bar{border-bottom:1px solid var(--border-default);background:var(--bg-sur
 .hero-copy .lede{margin-top:18px;font-size:18px;color:var(--fg-subtle);max-width:34em}
 .hero-panel{
   background:var(--primary);color:var(--fg-inverse);
-  padding:40px 32px;display:flex;flex-direction:column;gap:40px;
+  padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
 }
-.hero-panel .claims{margin:auto 0;list-style:none;display:flex;flex-direction:column;gap:14px;font-size:15px}
-.hero-panel .claims li{display:flex;gap:10px;align-items:flex-start}
-.hero-panel .claims svg{width:18px;height:18px;flex:none;margin-top:3px}
-.hero-panel .foot{margin-top:auto;font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;opacity:.85}
+.hero-panel svg{height:26px;width:auto;fill:currentColor}
+@media(min-width:900px){
+  .hero-panel{padding:40px 32px;flex-direction:column;align-items:flex-start;gap:56px;min-height:300px}
+  .hero-panel svg{height:30px}
+}
+.hero-panel .foot{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;opacity:.85}
 
 .cmd{min-width:0;margin-top:28px;border-radius:12px;border:1px solid var(--border-default);background:var(--bg-muted);overflow:hidden}
 .cmd .hd{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--border-default)}
@@ -100,7 +102,9 @@ header.bar{border-bottom:1px solid var(--border-default);background:var(--bg-sur
 
 .shot{margin-top:56px}
 .shot figure{border-radius:var(--radius-card);border:1px solid var(--border-default);overflow:hidden;background:var(--bg-surface)}
-.shot figcaption{margin-top:12px;font-size:13px;color:var(--fg-subtle);max-width:60em}
+@media(min-width:900px){.shot img{max-height:620px;object-fit:cover;object-position:top left}}
+.shot figcaption{margin-top:14px;font-size:14.5px;color:var(--fg-default);max-width:52em}
+.shot figcaption .disc{display:block;margin-top:8px;font-size:13px;color:var(--fg-subtle)}
 
 section{padding:72px 0}
 section > .wrap > .eyebrow{display:block;margin-bottom:10px}
@@ -111,6 +115,9 @@ h2{font-size:clamp(24px,3.2vw,32px);font-weight:700}
 @media(min-width:720px){.grid.two{grid-template-columns:1fr 1fr}}
 @media(min-width:960px){.grid.three{grid-template-columns:repeat(3,1fr)}}
 .grid .card{padding:24px}
+@media(min-width:960px){.grid.three .lead{grid-column:span 2}}
+.grid .lead h3{font-size:22px}
+.grid .lead p{font-size:16px}
 .grid h3{font-size:17px;font-weight:700}
 .grid p{margin-top:8px;font-size:14.5px;color:var(--fg-subtle)}
 
@@ -153,12 +160,18 @@ h2{font-size:clamp(24px,3.2vw,32px);font-weight:700}
 .btn-secondary:hover{border-color:var(--border-strong);color:var(--fg-default)}
 .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 
+.band{background:var(--bg-muted);border-top:1px solid var(--border-default);border-bottom:1px solid var(--border-default);padding:56px 0}
+.band dl{display:grid;gap:36px 24px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:620px){.band dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1000px){.band dl{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.band dt{font-family:var(--mono);font-size:clamp(38px,4.4vw,52px);font-weight:700;line-height:1;letter-spacing:-0.03em}
+.band dd{margin-top:12px;font-size:14px;color:var(--fg-subtle);max-width:20em}
+.band .lede{max-width:46em;color:var(--fg-subtle);margin-bottom:40px}
 footer{border-top:1px solid var(--border-default);background:var(--bg-surface);padding:40px 0;margin-top:32px}
 footer .row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;font-size:14px;color:var(--fg-subtle)}
 footer nav{display:flex;flex-wrap:wrap;gap:20px}
 :focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
   *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important;animation-iteration-count:1 !important}
 }
 </style>
@@ -202,13 +215,8 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
           <a class="btn btn-secondary" href="https://github.com/rodacato/stockerly">Read the source</a>
         </div>
       </div>
-      <div class="hero-panel">
-        <ul class="claims">
-          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg><span>FX captured at the trade's own date, from Banxico's published fix</span></li>
-          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg><span>Your data on your server — no account with anyone, including me</span></li>
-          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg><span>Eight market-data providers, all optional</span></li>
-          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg><span>No broker sync, no aggregators, no third party holding your positions</span></li>
-        </ul>
+            <div class="hero-panel">
+        <svg viewBox="0 0 174 40" role="img" aria-label="Stockerly"><g transform="scale(.625)"><path fill="currentColor" fill-rule="evenodd" d="M4 32 A28 28 0 1 0 60 32 A28 28 0 1 0 4 32 ZM17 24h11v16h-11ZM20.75 19h3.5v5h-3.5ZM20.75 40h3.5v5h-3.5ZM36 18h11v12h-11ZM39.75 14h3.5v4h-3.5ZM39.75 30h3.5v15h-3.5Z"/></g><path fill="currentColor" d="M54.43 27.25Q51.91 27.25 50.04 26.04Q48.18 24.83 47.47 22.78L50.32 21.43Q50.94 22.75 52.02 23.5Q53.11 24.25 54.43 24.25Q55.47 24.25 56.08 23.8Q56.69 23.35 56.69 22.57Q56.69 22.11 56.44 21.8Q56.2 21.5 55.78 21.28Q55.37 21.06 54.86 20.93L52.28 20.2Q50.29 19.64 49.27 18.44Q48.24 17.24 48.24 15.61Q48.24 14.16 48.98 13.08Q49.72 12 51.04 11.4Q52.36 10.79 54.05 10.79Q56.28 10.79 58 11.86Q59.72 12.94 60.43 14.87L57.55 16.22Q57.15 15.15 56.19 14.52Q55.23 13.89 54.03 13.89Q53.07 13.89 52.52 14.32Q51.96 14.75 51.96 15.46Q51.96 15.89 52.19 16.21Q52.43 16.52 52.85 16.73Q53.28 16.94 53.82 17.1L56.36 17.85Q58.31 18.42 59.35 19.6Q60.4 20.77 60.4 22.44Q60.4 23.87 59.65 24.95Q58.89 26.03 57.56 26.64Q56.23 27.25 54.43 27.25Z M69.81 27.07Q67.14 27.07 65.67 25.61Q64.2 24.14 64.2 21.48V14.51H61.48V11.14H61.77Q62.93 11.14 63.57 10.52Q64.2 9.9 64.2 8.74V7.54H68.01V11.14H71.65V14.51H68.01V21.27Q68.01 22.07 68.28 22.62Q68.56 23.17 69.16 23.46Q69.75 23.74 70.67 23.74Q70.88 23.74 71.15 23.71Q71.43 23.68 71.7 23.65V26.9Q71.29 26.97 70.77 27.02Q70.25 27.07 69.81 27.07Z M81.57 27.25Q79.26 27.25 77.36 26.18Q75.47 25.11 74.34 23.25Q73.22 21.38 73.22 19.01Q73.22 16.63 74.34 14.78Q75.46 12.93 77.35 11.86Q79.24 10.79 81.57 10.79Q83.9 10.79 85.78 11.86Q87.66 12.92 88.78 14.77Q89.89 16.62 89.89 19.01Q89.89 21.39 88.77 23.25Q87.64 25.12 85.76 26.18Q83.88 27.25 81.57 27.25ZM81.57 23.77Q82.85 23.77 83.83 23.16Q84.81 22.55 85.38 21.47Q85.94 20.39 85.94 19.01Q85.94 17.63 85.38 16.57Q84.81 15.51 83.83 14.89Q82.85 14.27 81.57 14.27Q80.29 14.27 79.3 14.89Q78.31 15.51 77.74 16.57Q77.17 17.63 77.17 19.01Q77.17 20.39 77.74 21.47Q78.31 22.55 79.3 23.16Q80.29 23.77 81.57 23.77Z M99.65 27.25Q97.29 27.25 95.43 26.16Q93.57 25.08 92.49 23.21Q91.4 21.33 91.4 18.99Q91.4 16.65 92.48 14.79Q93.55 12.93 95.42 11.86Q97.29 10.79 99.65 10.79Q101.34 10.79 102.78 11.38Q104.23 11.96 105.29 13Q106.34 14.04 106.81 15.44L103.49 16.91Q103.04 15.71 102.01 14.99Q100.99 14.27 99.65 14.27Q98.41 14.27 97.44 14.88Q96.47 15.48 95.91 16.56Q95.35 17.63 95.35 19.02Q95.35 20.4 95.91 21.47Q96.47 22.55 97.44 23.16Q98.41 23.77 99.65 23.77Q101.01 23.77 102.02 23.05Q103.03 22.33 103.49 21.11L106.81 22.62Q106.36 23.95 105.31 25Q104.26 26.05 102.81 26.65Q101.36 27.25 99.65 27.25Z M108.95 26.9V4.95H112.75V19.34L111.3 18.91L118.73 11.14H123.45L117.63 17.48L123.57 26.9H119.22L114.07 18.72L116.31 18.27L111.57 23.38L112.75 21.03V26.9Z M132.44 27.25Q130.01 27.25 128.18 26.15Q126.35 25.04 125.33 23.17Q124.32 21.29 124.32 18.98Q124.32 16.61 125.36 14.77Q126.4 12.92 128.17 11.86Q129.94 10.79 132.17 10.79Q134 10.79 135.42 11.39Q136.84 11.99 137.82 13.06Q138.8 14.13 139.32 15.52Q139.83 16.9 139.83 18.49Q139.83 18.91 139.79 19.34Q139.75 19.77 139.65 20.1H127.47V17.2H137.49L135.69 18.55Q135.97 17.21 135.57 16.17Q135.18 15.13 134.29 14.52Q133.4 13.91 132.17 13.91Q130.96 13.91 130.04 14.51Q129.12 15.11 128.65 16.25Q128.17 17.4 128.27 19.01Q128.15 20.48 128.66 21.58Q129.17 22.69 130.16 23.3Q131.16 23.91 132.49 23.91Q133.79 23.91 134.7 23.36Q135.61 22.81 136.13 21.9L139.21 23.38Q138.75 24.51 137.76 25.39Q136.77 26.26 135.41 26.75Q134.06 27.25 132.44 27.25Z M141.98 26.9V11.14H145.57V14.63L145.28 14.12Q145.81 12.34 146.99 11.65Q148.17 10.96 149.81 10.96H150.75V14.33H149.39Q147.77 14.33 146.78 15.32Q145.78 16.31 145.78 18.11V26.9Z M152.1 26.9V4.95H155.91V26.9Z M160.61 33.28Q159.97 33.28 159.36 33.17Q158.75 33.07 158.27 32.83V29.65Q158.65 29.74 159.17 29.83Q159.7 29.91 160.16 29.91Q161.47 29.91 162.08 29.31Q162.68 28.72 163.12 27.73L164.17 25.3L164.11 28.5L157.25 11.14H161.34L166.14 23.96H164.69L169.48 11.14H173.59L166.72 28.5Q166.13 30 165.25 31.08Q164.38 32.16 163.23 32.72Q162.08 33.28 160.61 33.28Z"/></svg>
         <span class="foot">100% free and open source</span>
       </div>
     </div>
@@ -216,17 +224,38 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
     <div class="shot">
       <figure><picture><source media="(max-width:700px)" srcset="img/cockpit-panorama-default.png"><img src="img/cockpit-panorama-desktop.png" alt="Panorama: net worth in MXN, a radar of positions with sparklines, technical signals, and market sentiment."></picture></figure>
       <figcaption>
-        Every image on this page is an <b>artboard</b> from the design system in
-        <code>design/</code>, not a capture of a running instance. The interface is in
-        Mexican Spanish; the code, routes and documentation are in English.
+        One screen, read top-left to right: total net worth in pesos, then the positions with
+        something happening today, then what the indicators said about them, then how the wider
+        market feels. The whole product is an argument that those four things belong together.
+        <span class="disc">Every image here is an <b>artboard</b> from the design system in
+        <code>design/</code>, not a capture of a running instance. The interface is in Mexican
+        Spanish; the code, routes and documentation are in English.</span>
       </figcaption>
     </div>
   </div>
 </div>
 
+<section id="notfor">
+  <div class="wrap">
+    <h2>Who this isn't for</h2>
+    <p class="sub">
+      Self-hosted means you are about to spend an evening on this. These are not
+      limitations waiting to be fixed — they are decisions, each one recorded in the repo.
+    </p>
+
+    <dl class="notfor">
+      <div><dt>More than one person</dt><dd>Single-user by design. One instance, one account, no roles, no sharing, no multi-tenancy. A household needs two instances.</dd></div>
+      <div><dt>Investors outside Mexico</dt><dd>The math assumes MXN and USD through a Mexican broker: CETES, Banxico's FX fix, the BMV. It is not a generic international tracker.</dd></div>
+      <div><dt>Anyone wanting broker sync</dt><dd>No Plaid, no Yodlee, no SnapTrade, ever at this scale. You type trades or import a CSV. Aggregator fees helped kill a same-stack competitor.</dd></div>
+      <div><dt>Day traders</dt><dd>Daily close, not ticks. No sub-daily resolution, no streaming quotes.</dd></div>
+      <div><dt>Tax preparation</dt><dd>No ISR reports, no SAT integration, no lot tracking, no withholding math. It tracks patrimony; it does not replace your accountant.</dd></div>
+      <div><dt>Anyone who needs support</dt><dd>No SLA, no support guarantee, no advance notice of breaking changes. It is one person's daily driver that happens to be readable and runnable.</dd></div>
+    </dl>
+  </div>
+</section>
+
 <section id="what">
   <div class="wrap">
-    <span class="eyebrow">What it is</span>
     <h2>A tracker built around one question</h2>
     <p class="sub">
       Am I up or down, in the currency I actually spend? Everything else on the screen
@@ -234,7 +263,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
     </p>
 
     <div class="grid three">
-      <div class="card">
+      <div class="card lead">
         <h3>Multi-currency that tells the truth</h3>
         <p>
           Cost basis is FX-weighted. The unrealised gain is split into what the asset did
@@ -274,14 +303,6 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
           refusal when a symbol is unknown.
         </p>
       </div>
-      <div class="card">
-        <h3>Operations you can see</h3>
-        <p>
-          Integration health with rate-limit bars, sync logs, a background-job dashboard and
-          an error tracker that runs inside the instance. No external observability account
-          to sign up for.
-        </p>
-      </div>
     </div>
 
     <div class="stack">
@@ -292,29 +313,23 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
   </div>
 </section>
 
-<section id="notfor">
+<div class="band">
   <div class="wrap">
-    <span class="eyebrow">Before you clone it</span>
-    <h2>Who this isn't for</h2>
-    <p class="sub">
-      Self-hosted means you are about to spend an evening on this. These are not
-      limitations waiting to be fixed — they are decisions, each one recorded in the repo.
-    </p>
-
-    <dl class="notfor">
-      <div><dt>More than one person</dt><dd>Single-user by design. One instance, one account, no roles, no sharing, no multi-tenancy. A household needs two instances.</dd></div>
-      <div><dt>Investors outside Mexico</dt><dd>The math assumes MXN and USD through a Mexican broker: CETES, Banxico's FX fix, the BMV. It is not a generic international tracker.</dd></div>
-      <div><dt>Anyone wanting broker sync</dt><dd>No Plaid, no Yodlee, no SnapTrade, ever at this scale. You type trades or import a CSV. Aggregator fees helped kill a same-stack competitor.</dd></div>
-      <div><dt>Day traders</dt><dd>Daily close, not ticks. No sub-daily resolution, no streaming quotes.</dd></div>
-      <div><dt>Tax preparation</dt><dd>No ISR reports, no SAT integration, no lot tracking, no withholding math. It tracks patrimony; it does not replace your accountant.</dd></div>
-      <div><dt>Anyone who needs support</dt><dd>No SLA, no support guarantee, no advance notice of breaking changes. It is one person's daily driver that happens to be readable and runnable.</dd></div>
+    <h2>What it costs you to run</h2>
+    <p class="lede">Not money — it is MIT. Attention, and a short list of things that have to be
+    true on your server.</p>
+    <dl>
+      <div><dt>8</dt><dd>market-data providers, every one of them optional. It runs with none configured; you just get no live prices.</dd></div>
+      <div><dt>6</dt><dd>bounded contexts. Writes cross them as domain events, reads through a published API, and an ADR names every seam.</dd></div>
+      <div><dt>4</dt><dd>PostgreSQL databases — primary, cache, queue, cable. No Redis to run, no Node to build.</dd></div>
+      <div><dt>1</dt><dd>account on the instance, created by the Setup Wizard on first boot. There is no second one to make.</dd></div>
+      <div><dt>0</dt><dd>accounts with anyone else, including me. No aggregator, no telemetry, no external error service.</dd></div>
     </dl>
   </div>
-</section>
+</div>
 
 <section id="run">
   <div class="wrap">
-    <span class="eyebrow">Run it</span>
     <h2>One command, on your machine</h2>
     <p class="sub">
       <code>bin/setup</code> is idempotent: it installs gems, creates and migrates the four
@@ -360,7 +375,6 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
 
 <section id="screens">
   <div class="wrap">
-    <span class="eyebrow">Artboards</span>
     <h2>What the screens look like</h2>
     <p class="sub">Drawn in the project's own design system, which mirrors the shipped code.</p>
 
@@ -375,7 +389,6 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
 
 <section id="facts">
   <div class="wrap">
-    <span class="eyebrow">The fine print</span>
     <h2>What you are getting</h2>
 
     <div class="facts">
