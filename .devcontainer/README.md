@@ -23,7 +23,7 @@ from inside it. For getting the app running, see [GETTING_STARTED.md](../GETTING
 | `GITHUB_REPOSITORY`, `GITHUB_REPOSITORY_OWNER`, `GITHUB_ACTOR` | `initialize.sh` derives them from the `origin` remote | Yes |
 | Git author name and email | VS Code copies the host's `~/.gitconfig` | Yes |
 | `HOST_IP`, `APP_HOST` | `local.env`, which you write | Yes |
-| Claude Code or any other tool's login | Not inherited — it lives in the container layer | **No** |
+| AI coding agents (Claude Code, Codex…) | Not part of this devcontainer: install and log in the one you use, from the host or inside | Only if its home is kept outside the container layer |
 | Production secrets | Not inherited, by design — they live in the GitHub Environment | **No** |
 
 `initializeCommand` runs `initialize.sh` **on the host** before every start. It writes
