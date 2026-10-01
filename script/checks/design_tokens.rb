@@ -11,7 +11,8 @@ module Checks
   # Two surfaces are excluded by rule rather than by baseline, because in both
   # the literal is the correct answer: mail clients do not resolve CSS custom
   # properties, and the OS reads the PWA manifest and the theme-color meta as
-  # literals.
+  # literals. The static pages under public/ are outside SURFACES, so the check
+  # never sees them: they ship without Rails or a stylesheet and inline the brand colour.
   class DesignTokens < Check
     ID = "design-tokens"
     TITLE = "Colour comes from the Lumen tokens, not from a literal"
