@@ -353,12 +353,29 @@ RSpec.describe "Panorama", type: :request do
       expect(response.body).to include("href=\"#{portfolio_path}\"")
     end
 
+    it "names what the strip leads to inside the link itself" do
+      link = response.body[%r{<a [^>]*href="#{portfolio_path}".*?</a>}m]
+
+      expect(link).to include(I18n.t("dashboard.show.destino"))
+    end
+
     it "sends the Radar to Activos" do
       expect(response.body).to include("href=\"#{assets_path}\"")
     end
 
     it "offers no link out of Movimientos, which has no screen to reach" do
       expect(response.body).not_to include("Ver más")
+    end
+  end
+
+  describe "the patrimonio strip without a consolidated total" do
+    it "does not state a destination it cannot lead to" do
+      asset = create(:asset, :stock, symbol: "AAPL", currency: "USD", current_price: 100)
+      create(:position, portfolio: portfolio, asset: asset, shares: 5, avg_cost: 80, status: :open)
+
+      get dashboard_path
+
+      expect(response.body).not_to include(I18n.t("dashboard.show.destino"))
     end
   end
 
