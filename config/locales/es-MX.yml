@@ -166,6 +166,7 @@ es-MX:
         manual: Sincronización manual
         manual_desc: Encola ahora la fuente que elijas, sin esperar a su siguiente
           corrida. Respeta el límite de llamadas configurado.
+        nunca_sync: Nunca ha corrido
         sin_cambios: Todavía no hay cambios registrados.
         sync: Sincronización automática
         sync_desc: Deja correr los jobs de precios, CETES, cripto y TC.
@@ -177,6 +178,7 @@ es-MX:
           one: 1 worker
           other: "%{count} workers"
           zero: Sin worker
+        ultima_sync: 'Última: %{cuando}'
         version: Versión
       trigger_data_source:
         desconocida: Fuente de datos desconocida.
