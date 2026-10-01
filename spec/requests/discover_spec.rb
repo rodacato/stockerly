@@ -175,7 +175,7 @@ RSpec.describe "Descubrir", type: :request do
 
       get discover_path
 
-      expect(response.body.scan("SMH").size).to eq(1)
+      expect(Capybara.string(response.body).all("li", text: "SMH").size).to eq(1)
       expect(response.body).to include("EEE")
     end
 
@@ -197,6 +197,49 @@ RSpec.describe "Descubrir", type: :request do
 
       expect(summary).to include("list-none")
       expect(summary).to include("[&::-webkit-details-marker]:hidden")
+    end
+
+    describe "navigation" do
+      it "links a catalogue symbol in a card to its asset page" do
+        create(:asset, symbol: "NVDA")
+        cache_waves(wave_for("NVDA"))
+
+        get discover_path
+        expect(Capybara.string(response.body)).to have_link(href: market_asset_path("NVDA"))
+
+        get market_asset_path("NVDA")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "links a basket-only symbol, and the target answers with the unknown-asset page" do
+        create(:integration, provider_name: "Yahoo Finance")
+        stub_yfinance_search("URA", results: [])
+        cache_waves(wave)
+
+        get discover_path
+        expect(Capybara.string(response.body)).to have_link(href: market_asset_path("SMH"))
+
+        get market_asset_path("URA")
+        expect(response).to have_http_status(:not_found)
+        expect(response.body).to include("No encontré ese activo.")
+      end
+
+      it "links the rows inside the disclosure too" do
+        cache_waves(wave, %w[AAA BBB CCC DDD].map { |s| wave_for(s) }, wave_for("EWW", group: "geografia"))
+
+        get discover_path
+        details = Capybara.string(response.body).find("details")
+
+        expect(details).to have_link(href: market_asset_path("EWW"), visible: :all)
+      end
+
+      it "links nothing when there are no waves" do
+        memory.delete(WarmDiscoverJob::CACHE_KEY)
+
+        get discover_path
+
+        expect(response.body).not_to include("/market/")
+      end
     end
 
     it "says there is no exposure when none of the referents is held" do

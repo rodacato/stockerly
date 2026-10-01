@@ -42,7 +42,9 @@
 
       <ul class="flex flex-col gap-3">
         <% @waves.first(5).each do |wave| %>
-          <li class="<%= card_classes("flex items-center gap-3 px-4 py-3") %>">
+          <li>
+            <%= link_to market_asset_path(wave.symbol),
+                  class: card_classes("flex items-center gap-3 px-4 py-3 transition-colors hover:border-border-strong") do %>
             <div class="min-w-0 flex-1">
               <%# The chip's ceiling (D144): never the row's loudest element, never a semantic
                   colour in either state — that reads as advice (ADR-0001, D31) — never a sort key. %>
@@ -67,6 +69,7 @@
                 </p>
               <% end %>
             </div>
+            <% end %>
           </li>
         <% end %>
       </ul>
@@ -89,13 +92,16 @@
                 </h3>
                 <ul class="mt-1 flex flex-col gap-1">
                   <% waves.each do |wave| %>
-                    <li class="flex items-baseline justify-between gap-3 text-xs">
-                      <span class="min-w-0 truncate text-fg-default">
-                        <span class="font-semibold"><%= wave.symbol %></span> · <%= wave.name %>
-                      </span>
-                      <span class="shrink-0 font-mono <%= gain_color(wave.change_percent) %>">
-                        <%= signed_percent(wave.change_percent) %>
-                      </span>
+                    <li>
+                      <%= link_to market_asset_path(wave.symbol),
+                            class: "flex items-baseline justify-between gap-3 rounded text-xs transition-colors hover:text-primary-fg" do %>
+                        <span class="min-w-0 truncate text-fg-default">
+                          <span class="font-semibold"><%= wave.symbol %></span> · <%= wave.name %>
+                        </span>
+                        <span class="shrink-0 font-mono <%= gain_color(wave.change_percent) %>">
+                          <%= signed_percent(wave.change_percent) %>
+                        </span>
+                      <% end %>
                     </li>
                   <% end %>
                 </ul>
