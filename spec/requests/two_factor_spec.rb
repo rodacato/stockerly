@@ -144,6 +144,24 @@ RSpec.describe "Two-factor login", type: :request do
     end
   end
 
+  describe "the stated window" do
+    it "prints the pending timeout the controller enforces" do
+      submit_password
+      get two_factor_path
+
+      expect(response.body).to include("Tienes 10 minutos para verificar")
+    end
+
+    it "follows the constant instead of a typed number" do
+      stub_const("TwoFactorController::PENDING_TIMEOUT", 5.minutes)
+      submit_password
+      get two_factor_path
+
+      expect(response.body).to include("Tienes 5 minutos para verificar")
+      expect(response.body).not_to include("10 minutos")
+    end
+  end
+
   describe "reaching the screens without a pending login" do
     it "bounces to the password" do
       [ two_factor_path, recovery_code_path ].each do |path|
