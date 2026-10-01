@@ -14,6 +14,21 @@ RSpec.describe "Onboarding", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Alpaca")
     end
+
+    it "stamps a stored key as saved without rendering its value" do
+      integration.update!(api_key_encrypted: "stored_secret_value_42")
+
+      get onboarding_integrations_path
+
+      expect(response.body).to include(I18n.t("onboarding.integrations.api_key_guardada"))
+      expect(response.body).not_to include("stored_secret_value_42")
+    end
+
+    it "does not claim a key is saved when none is stored" do
+      get onboarding_integrations_path
+
+      expect(response.body).not_to include(I18n.t("onboarding.integrations.api_key_guardada"))
+    end
   end
 
   # ON-06: the wall used to come out alphabetical, which put Banxico second and
@@ -56,6 +71,22 @@ RSpec.describe "Onboarding", type: :request do
 
       expect(response).to redirect_to(onboarding_assets_path)
       expect(integration.reload.api_key_encrypted).to eq("my_api_key")
+    end
+
+    it "keeps the stored key when the field is submitted blank" do
+      integration.update!(api_key_encrypted: "stored_key")
+
+      patch onboarding_save_integrations_path, params: { api_keys: { integration.id.to_s => "" } }
+
+      expect(integration.reload.api_key_encrypted).to eq("stored_key")
+    end
+
+    it "replaces the stored key when a new value is submitted" do
+      integration.update!(api_key_encrypted: "stored_key")
+
+      patch onboarding_save_integrations_path, params: { api_keys: { integration.id.to_s => "new_key" } }
+
+      expect(integration.reload.api_key_encrypted).to eq("new_key")
     end
 
     # Banxico is the one key this step can exercise on the spot, and its failure
