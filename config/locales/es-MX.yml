@@ -245,6 +245,8 @@ es-MX:
       pausada: pausada
       pausar: Pausar regla
       reglas_activas: Reglas activas
+      revision_diaria: Se revisa una vez al día, a las %{time} h
+      revision_precio: Se revisa con cada precio nuevo, hasta cada %{minutes} min
       sin_disparos: Todavía no se ha disparado ninguna regla.
       sugerencias:
         cete_auction:

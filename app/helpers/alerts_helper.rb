@@ -104,6 +104,18 @@ module AlertsHelper
     t("alerts.index.espera", minutes: rule.cooldown_minutes || AlertRule::DEFAULT_COOLDOWN_MINUTES)
   end
 
+  # "Se revisa con cada precio nuevo, hasta cada 5 min" — nil when the schedule
+  # holds nothing to say it from.
+  def alert_check_cadence_label(rule)
+    cadence = Alerts::Domain::CheckCadence.for(rule)
+
+    case cadence
+    in { kind: :daily, time: String => time } then t("alerts.index.revision_diaria", time: time)
+    in { kind: :price_update, minutes: Integer => minutes } then t("alerts.index.revision_precio", minutes: minutes)
+    else nil
+    end
+  end
+
   private
 
   def condition_label(condition)

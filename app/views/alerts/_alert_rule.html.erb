@@ -45,6 +45,11 @@
     <% end %>
   </p>
 
+  <% cadence = alert_check_cadence_label(rule) if is_active %>
+  <% if cadence %>
+    <p class="text-sm text-fg-subtle"><%= cadence %></p>
+  <% end %>
+
   <%# cooldown_minutes has been on the model since it was created and no screen
       ever showed it. %>
   <p class="font-mono text-xs text-fg-subtle">

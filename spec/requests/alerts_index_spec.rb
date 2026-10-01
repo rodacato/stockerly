@@ -108,4 +108,33 @@ RSpec.describe "Reglas", type: :request do
       end
     end
   end
+
+  describe "when a rule is next checked" do
+    before { create(:asset, symbol: "AAPL") }
+
+    it "says how often an active price rule is evaluated" do
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200)
+
+      get alerts_path
+
+      expect(response.body).to include(I18n.t("alerts.index.revision_precio", minutes: 5))
+    end
+
+    it "says the daily time for an active date rule" do
+      create(:alert_rule, :dividend, user: user, asset_symbol: "AAPL", window_days: 3)
+
+      get alerts_path
+
+      expect(response.body).to include(I18n.t("alerts.index.revision_diaria", time: "7:30"))
+    end
+
+    # Negative: a paused rule is not being checked, so it must not claim to be.
+    it "shows no line on a paused rule" do
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200, status: :paused)
+
+      get alerts_path
+
+      expect(response.body).not_to include(I18n.t("alerts.index.revision_precio", minutes: 5))
+    end
+  end
 end
