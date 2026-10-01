@@ -436,6 +436,7 @@ es-MX:
       submit: Iniciar sesión
       subtitulo: Accede a tu cuenta.
       titulo: Inicia sesión
+    mostrar_contrasena: Mostrar contraseña
     open_source: 100% libre y open source
     reset:
       confirmar: Confirmar contraseña
