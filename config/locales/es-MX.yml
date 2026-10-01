@@ -1298,6 +1298,7 @@ es-MX:
       tc_listo: Llaves guardadas. Banxico respondió con %{count} tipo(s) de cambio.
     integrations:
       api_key: API key
+      api_key_guardada: Guardada · pega otra para reemplazarla
       api_key_placeholder: Pega tu API key de %{provider}
       continuar: Continuar
       donde_consigo: "¿Dónde consigo la API key?"

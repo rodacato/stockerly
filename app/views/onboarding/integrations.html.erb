@@ -38,6 +38,12 @@
           <% end %>
 
           <label class="block text-sm text-fg-subtle mb-1" for="api_key_<%= integration.id %>"><%= t(".api_key") %></label>
+          <% if integration.api_key_configured? %>
+            <p class="flex items-center gap-1 mb-2 text-sm font-semibold text-positive">
+              <%= icon_svg "check_circle", class: "text-base", "aria-hidden": "true" %>
+              <%= t(".api_key_guardada") %>
+            </p>
+          <% end %>
           <input type="text" id="api_key_<%= integration.id %>" name="api_keys[<%= integration.id %>]" autocomplete="off"
                  placeholder="<%= t('.api_key_placeholder', provider: integration.provider_name) %>"
                  class="<%= field_classes(:md, "w-full") %>">
