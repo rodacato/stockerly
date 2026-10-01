@@ -8,6 +8,7 @@ class DiscoverController < AuthenticatedController
     @waves = cached&.dig(:waves) || []
     @waves_since = cached&.dig(:since)
     @waves_generated_at = cached&.dig(:generated_at)
+    @waves_window_days = (@waves_generated_at.to_date - @waves_since.to_date).to_i if @waves_since && @waves_generated_at
 
     cached_headlines = Rails.cache.read(WarmDiscoverJob::HEADLINES_KEY)
     @headlines = cached_headlines&.dig(:headlines) || []
