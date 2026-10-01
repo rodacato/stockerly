@@ -37,7 +37,7 @@
     <section class="flex flex-col gap-3">
       <div class="flex items-baseline justify-between gap-4">
         <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".olas_titulo") %></h2>
-        <p class="font-mono text-xs text-fg-subtle"><%= t(".olas_desde", since: l(@waves_since, format: :short)) %></p>
+        <p class="font-mono text-xs text-fg-subtle"><%= t(".olas_desde", since: l(@waves_since, format: :short)) %><% if @waves_window_days %> · <%= t(".olas_ventana", count: @waves_window_days) %><% end %></p>
       </div>
 
       <ul class="flex flex-col gap-3">

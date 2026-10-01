@@ -199,6 +199,47 @@ RSpec.describe "Descubrir", type: :request do
       expect(summary).to include("[&::-webkit-details-marker]:hidden")
     end
 
+    describe "the window" do
+      def cache_window(days)
+        memory.write(WarmDiscoverJob::CACHE_KEY,
+                     { waves: [ wave ], since: Date.current - days, generated_at: Time.current })
+      end
+
+      it "states the 7-day floor beside the date" do
+        cache_window(7)
+
+        get discover_path
+
+        expect(response.body).to include("· 7 días")
+      end
+
+      it "states the 90-day ceiling of a first visit" do
+        cache_window(90)
+
+        get discover_path
+
+        expect(response.body).to include("· 90 días")
+      end
+
+      it "counts from when the ranking was computed, so a cached read does not stretch it" do
+        memory.write(WarmDiscoverJob::CACHE_KEY,
+                     { waves: [ wave ], since: Date.current - 9, generated_at: 2.days.ago })
+
+        get discover_path
+
+        expect(response.body).to include("· 7 días")
+      end
+
+      it "prints only the date when the cache carries no timestamp to measure from" do
+        memory.write(WarmDiscoverJob::CACHE_KEY, { waves: [ wave ], since: 8.days.ago.to_date })
+
+        get discover_path
+
+        expect(response.body).to include("desde tu última visita")
+        expect(response.body).not_to match(/· \d+ días?/)
+      end
+    end
+
     describe "navigation" do
       it "links a catalogue symbol in a card to its asset page" do
         create(:asset, symbol: "NVDA")

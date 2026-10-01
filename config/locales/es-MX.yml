@@ -645,6 +645,9 @@ es-MX:
         termometros: termómetro
       olas_sin_exposicion: sin exposición
       olas_titulo: Olas
+      olas_ventana:
+        one: 1 día
+        other: "%{count} días"
       olas_ver_todas:
         one: Ver la canasta con datos en la ventana
         other: Ver las %{count} canastas con datos en la ventana
