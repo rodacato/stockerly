@@ -236,6 +236,7 @@ es-MX:
         te dicen qué hacer con él.
       disparadas_hoy: Disparadas hoy
       disparo_hace: Se disparó hace %{when}
+      editar: Editar regla
       eliminar: Eliminar regla
       en_pausa: "%{count} en pausa"
       espera: espera %{minutes} min entre avisos
@@ -310,7 +311,9 @@ es-MX:
         volume_spike: Te avisaremos cuando %{ticker} registre volumen de %{threshold}×
           o más sobre su promedio.
       submit: Crear regla
+      submit_editar: Guardar cambios
       titulo: Nueva regla
+      titulo_editar: Editar regla
       ventana: Días antes
   assets:
     index:

@@ -96,7 +96,7 @@ Rails.application.routes.draw do
   patch  "tracked/:id/toggle_sync", to: "assets#toggle_sync",   as: :toggle_sync_asset
   patch  "tracked/:id/source_symbol", to: "assets#map_source_symbol", as: :map_source_symbol_asset
   resource  :portfolio, only: [ :show ]
-  resources :alerts, only: [ :index, :new, :create, :update, :destroy ] do
+  resources :alerts, only: [ :index, :new, :edit, :create, :update, :destroy ] do
     member { patch :toggle }
   end
   # Historial. `update` went with the four-tab table: `notes` and `labels` were

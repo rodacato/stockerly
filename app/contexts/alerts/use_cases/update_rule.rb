@@ -18,10 +18,11 @@ module Alerts
 
       def persist(rule, attrs)
         rule.update!(
-          asset_symbol: attrs[:asset_symbol].upcase,
+          asset_symbol: attrs[:asset_symbol].to_s.upcase.presence,
           condition: attrs[:condition],
           threshold_value: attrs[:threshold_value],
-          window_days: attrs[:window_days]
+          window_days: attrs[:window_days],
+          cooldown_minutes: attrs[:cooldown_minutes] || rule.cooldown_minutes
         )
         Success(rule)
       rescue ActiveRecord::RecordInvalid => e
