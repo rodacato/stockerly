@@ -63,8 +63,9 @@
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".manual") %></h2>
     <p class="text-sm text-fg-subtle"><%= t(".manual_desc") %></p>
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-3">
       <% @data_sources.each do |source| %>
+        <div class="flex flex-col gap-1">
         <%= button_to admin_trigger_data_source_path(key: source.key), method: :post,
               form_class: "inline-flex",
               class: "inline-flex items-center gap-1.5 rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-sm font-medium text-fg-default transition-colors hover:border-primary hover:text-primary-fg" do %>
@@ -73,6 +74,11 @@
               "US Stocks" and only the provider after the dash tells them apart. %>
           <%= source.name %>
         <% end %>
+        <%# Per integration: sources fronting the same provider share one timestamp. %>
+        <p class="px-1 font-mono text-xs text-fg-subtle">
+          <%= t(".ultima_sync", cuando: relative_age(@integrations[source.integration_name]&.last_sync_at, blank: t(".nunca_sync"))) %>
+        </p>
+        </div>
       <% end %>
     </div>
   </section>

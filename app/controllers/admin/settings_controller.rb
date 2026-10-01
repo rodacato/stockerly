@@ -15,6 +15,7 @@ module Admin
       @recent_changes = SiteConfigChange.recent.includes(:admin).limit(8)
       @diagnostics    = build_diagnostics
       @data_sources   = DataSourceRegistry.all
+      @integrations   = Integration.all.index_by(&:provider_name)
     end
 
     def trigger_data_source

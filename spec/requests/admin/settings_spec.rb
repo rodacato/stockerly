@@ -8,6 +8,26 @@ RSpec.describe "Admin settings", type: :request do
   # AJ-11: Diagnóstico is the screen that says whether the instance is well,
   # and two of its eight rows carry a verdict rather than a fact.
   describe "GET /admin/settings" do
+    let(:source) { DataSourceRegistry.all.first }
+
+    it "shows when a source last ran under its button" do
+      create(:integration, provider_name: source.integration_name, last_sync_at: 3.hours.ago)
+
+      get admin_settings_path
+
+      expect(response.body).to include(I18n.t("admin.settings.show.ultima_sync", cuando: "hace 3 h"))
+    end
+
+    it "says so when a source has never run" do
+      Integration.where(provider_name: source.integration_name).delete_all
+      create(:integration, provider_name: source.integration_name, last_sync_at: nil)
+
+      get admin_settings_path
+
+      expect(response.body).to include(I18n.t("admin.settings.show.ultima_sync", cuando: I18n.t("admin.settings.show.nunca_sync")))
+      expect(response.body).not_to include("hace 3 h")
+    end
+
     it "distinguishes a queue with no worker from an idle one" do
       get admin_settings_path
 
