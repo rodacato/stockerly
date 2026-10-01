@@ -29,12 +29,13 @@ namespace :stockerly do
   end
 
   # Sync only ever creates, so a provider retired from the registry keeps its
-  # row -- and its card in the admin -- long after the code that used it is gone.
+  # row long after the code that used it is gone. The admin lists the registry,
+  # not the table, so no card is drawn for it and the UI cannot delete it.
   def report_orphans(provider_names)
     orphans = Integration.where.not(provider_name: provider_names).order(:provider_name)
     return if orphans.empty?
 
-    puts "\nNo longer in the registry (delete from Admin > Integrations if retired):"
+    puts "\nNo longer in the registry (the admin shows no card for these; if retired, remove the row with a migration, as db/migrate/20260916140000_remove_fmp_integration.rb does):"
     orphans.each { |i| puts "  #{i.provider_name} -- #{i.provider_type}" }
   end
 

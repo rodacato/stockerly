@@ -30,6 +30,14 @@ RSpec.describe "stockerly:sync rake task" do
       }.to output(/No longer in the registry.*AI Intelligence/m).to_stdout
     end
 
+    it "points at a migration, not at an admin screen that draws no card for it" do
+      create(:integration, provider_name: "AI Intelligence", provider_type: "LLM")
+
+      expect {
+        Rake::Task["stockerly:sync"].invoke
+      }.to output(/migration/).to_stdout
+    end
+
     it "keeps quiet when every integration is still registered" do
       Rake::Task["stockerly:sync"].invoke
 
