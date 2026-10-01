@@ -505,6 +505,7 @@ es-MX:
   dashboard:
     show:
       carrusel: Sentimiento del mercado
+      destino: Cómo está repartido por tipo
       fear_greed_crypto: FEAR & GREED · CRIPTO
       patrimonio: PATRIMONIO · %{currency}
       radar_subtitulo: De tu cartera y watchlist · con actividad hoy

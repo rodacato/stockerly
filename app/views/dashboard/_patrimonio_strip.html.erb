@@ -12,6 +12,7 @@
       <p class="mt-1 font-display text-3xl font-bold tracking-tight text-fg-default">
         <%= number_with_precision(summary.total_value, precision: 0, delimiter: ",") %>
       </p>
+      <p class="mt-1 text-xs text-fg-subtle"><%= t("dashboard.show.destino") %></p>
     </div>
 
     <% day = summary.day_gain %>
