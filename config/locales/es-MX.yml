@@ -1729,6 +1729,7 @@ es-MX:
       subtitulo: Ingresa el código de 6 dígitos de tu app de autenticación.
       titulo: Verifica tu identidad
       usar_recuperacion: Usar un código de recuperación
+      ventana: Tienes %{duration} para verificar antes de volver a iniciar sesión.
       verificar: Verificar
     new_recovery:
       codigo: Código de recuperación
