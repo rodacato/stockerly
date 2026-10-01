@@ -18,6 +18,16 @@ RSpec.describe Alerts::UseCases::UpdateRule do
       expect(updated.threshold_value).to eq(400.0)
     end
 
+    it "changes the cooldown when given and keeps it when not" do
+      rule.update!(cooldown_minutes: 90)
+
+      described_class.call(user: user, rule_id: rule.id, params: valid_params)
+      expect(rule.reload.cooldown_minutes).to eq(90)
+
+      described_class.call(user: user, rule_id: rule.id, params: valid_params.merge(cooldown_minutes: 5))
+      expect(rule.reload.cooldown_minutes).to eq(5)
+    end
+
     it "uppercases the asset symbol" do
       result = described_class.call(user: user, rule_id: rule.id, params: valid_params.merge(asset_symbol: "msft"))
       expect(result.value!.asset_symbol).to eq("MSFT")

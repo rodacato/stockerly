@@ -41,4 +41,71 @@ RSpec.describe "Reglas", type: :request do
       expect(response.body.scan(/font-display text-2xl font-bold/).size).to eq(1)
     end
   end
+
+  describe "editing a rule in place" do
+    let!(:rule) { create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_below", threshold_value: 150.0, cooldown_minutes: 60) }
+
+    before { create(:asset, symbol: "AAPL") }
+
+    it "links each rule card to its edit sheet" do
+      get alerts_path
+
+      expect(response.body).to include(%(href="#{edit_alert_path(rule)}"))
+    end
+
+    it "renders the form prefilled and pointed at update" do
+      get edit_alert_path(rule)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(%(action="#{alert_path(rule)}"))
+      expect(response.body).to include('name="_method" value="patch"')
+      expect(response.body).to include('value="AAPL"')
+      expect(response.body).to include(I18n.t("alerts.new.titulo_editar"))
+      expect(response.body).to match(/value="price_crosses_below"\s+checked/)
+    end
+
+    it "keeps the create form pointed at create" do
+      get new_alert_path
+
+      expect(response.body).to include(%(action="#{alerts_path}"))
+      expect(response.body).not_to include('name="_method" value="patch"')
+    end
+
+    it "changes the threshold and keeps the rule with its history" do
+      rule.update!(last_triggered_at: 2.days.ago)
+
+      patch alert_path(rule), params: { alert: { asset_symbol: "AAPL", condition: "price_crosses_below", threshold_value: 210, cooldown_minutes: 15 } }
+
+      expect(response).to redirect_to(alerts_path)
+      expect(rule.reload.threshold_value).to eq(210)
+      expect(rule.cooldown_minutes).to eq(15)
+      expect(rule.last_triggered_at).to be_present
+    end
+
+    it "leaves the rule untouched and flashes the error when validation fails" do
+      patch alert_path(rule), params: { alert: { asset_symbol: "AAPL", condition: "price_crosses_below", threshold_value: "" } }
+
+      expect(response).to redirect_to(alerts_path)
+      expect(flash[:alert]).to be_present
+      expect(rule.reload.threshold_value).to eq(150.0)
+    end
+
+    context "when the rule belongs to someone else" do
+      let(:other) { create(:user, email: "other@example.com") }
+      let!(:foreign) { create(:alert_rule, user: other, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 99.0) }
+
+      it "answers 404 for the edit sheet" do
+        get edit_alert_path(foreign)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "does not update it" do
+        patch alert_path(foreign), params: { alert: { asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 1 } }
+
+        expect(flash[:alert]).to eq(I18n.t("alerts.flash.no_encontrada"))
+        expect(foreign.reload.threshold_value).to eq(99.0)
+      end
+    end
+  end
 end

@@ -24,6 +24,11 @@ class AlertsController < AuthenticatedController
                           window_days: params[:window_days].presence)
   end
 
+  def edit
+    @rule = current_user.alert_rules.find(params.expect(:id))
+    render :new
+  end
+
   def create
     result = Alerts::UseCases::CreateRule.call(user: current_user, params: alert_params.to_h)
 

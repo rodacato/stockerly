@@ -12,6 +12,13 @@
     </div>
 
     <div class="flex shrink-0 items-center gap-1">
+      <%= link_to edit_alert_path(rule),
+            data: { turbo_frame: "rule_sheet", turbo_action: "advance" },
+            class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default",
+            aria: { label: t("alerts.index.editar") } do %>
+        <%= icon_svg "edit", class: "text-lg", "aria-hidden": "true" %>
+      <% end %>
+
       <%= button_to toggle_alert_path(rule), method: :patch, form_class: "inline-flex",
             class: "flex size-8 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default",
             aria: { label: is_active ? t("alerts.index.pausar") : t("alerts.index.activar") } do %>
