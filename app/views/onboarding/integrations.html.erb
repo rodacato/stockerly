@@ -21,7 +21,7 @@
             </div>
             <div class="min-w-0">
               <p class="font-semibold text-fg-default"><%= integration.provider_name %></p>
-              <p class="font-mono text-xs text-fg-subtle uppercase tracking-wider"><%= integration.provider_type %></p>
+              <p class="font-mono text-xs text-fg-subtle uppercase tracking-wider"><%= t(".tipos.#{integration.provider_name.parameterize(separator: "_")}", default: integration.provider_type) %></p>
             </div>
           </div>
 
