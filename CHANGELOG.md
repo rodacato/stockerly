@@ -5,7 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+Entries are generated, not written by hand: `script/release_changelog.rb` builds each version's
+entry from the [Conventional Commits](https://www.conventionalcommits.org/) since the previous tag
+(how a release is cut: [RELEASING.md](RELEASING.md), which commit prefix lands where:
+[CONTRIBUTING.md](CONTRIBUTING.md)). The one thing written by hand is operator-facing prose under
+the Unreleased heading below: upgrade notes for a migration that changes data, a new variable or secret, or a
+behaviour that changed. The next release moves it to the top of its entry, so between releases this
+section is empty or holds only that prose.
+
 ## [Unreleased]
+
+### Upgrade notes
+
+- Migration `20260917120000` changes data and is irreversible: it marks the CoinGecko integration as
+  needing an API key, so an instance that seeded it as keyless stops attempting keyless syncs.
+- Saving an API key no longer marks the provider connected. It reads "Verificando" until the sync
+  job probes the provider, so a Solid Queue worker (`bin/jobs`) has to be running for the status to
+  settle.
+- Changing the account email now asks for the current password, and updating the account or
+  changing the password is limited to 5 attempts per minute.
+- `config/locales/en.yml` is removed and production now inherits the fallback chain that
+  `application.rb` declares (`es-MX`, `es`, `en`).
 
 ## [0.2.0] - 2026-09-22
 
