@@ -116,7 +116,22 @@ module AlertsHelper
     end
   end
 
+  # What the rule's indicator means, from the copy the empty-state suggestions
+  # already carry. Only some conditions have it; the rest return nil.
+  def alert_rule_explainer(rule)
+    return unless I18n.exists?("alerts.index.sugerencias.#{rule.condition}.porque")
+
+    condition_explainer(rule.condition, rule)
+  end
+
   private
+
+  def condition_explainer(condition, shape)
+    t("alerts.index.sugerencias.#{condition}.porque",
+      percent: (format_threshold(shape.threshold_value) if shape.threshold_value.present?),
+      threshold: shape.threshold_value.to_i,
+      days: shape.window_days.to_i)
+  end
 
   def condition_label(condition)
     t("alerts.condiciones.#{condition}.etiqueta", default: condition.to_s.humanize)
@@ -147,10 +162,7 @@ module AlertsHelper
   end
 
   def suggested_rule_reason(suggestion)
-    t("alerts.index.sugerencias.#{suggestion.condition}.porque",
-      percent: suggested_percent(suggestion),
-      threshold: suggestion.threshold_value.to_i,
-      days: suggestion.window_days.to_i)
+    condition_explainer(suggestion.condition, suggestion)
   end
 
   # count picks the plural form, amount is what gets read: a fractional crypto
