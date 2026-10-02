@@ -97,6 +97,17 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
     end
   end
 
+  describe "PATCH /profile with an invalid email" do
+    it "re-renders the account page with the alert instead of raising" do
+      patch profile_path, params: { profile: { full_name: user.full_name, email: "not-an-email" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(I18n.t("settings.account.titulo"))
+      expect(response.body).to include("inválido")
+      expect(user.reload.email).to eq("p97@example.com")
+    end
+  end
+
   describe "PATCH /profile changing the email" do
     it "changes it when the current password is given" do
       patch profile_path, params: { profile: { full_name: user.full_name, email: "fresh@example.com", current_password: "password123" } }
