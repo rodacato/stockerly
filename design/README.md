@@ -37,9 +37,9 @@ _Listing verified against the directory 2026-08-27._
 | `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Read the version from its `kit-version` variable, never from this row |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed, plus the live **Open kit gaps** list |
 | `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
-| `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 0.9.0 since 2026-08-27** |
+| `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 1.1.0** |
 | `brand/` | The exported identity assets the repo consumes: `glyph.svg`, `wordmark.svg`, `wordmark.png`. The wordmark's letters are **outlined paths**, not `<text>`: the app renders it through `<img>`, and an SVG loaded that way cannot use the page's web font — set as text, a device without Plus Jakarta Sans falls back to a wider one and the viewBox cuts the last letter |
-| `_playground.pen` | Experiments — inside the system (kit installed at 0.8.0 on 2026-08-27; holds `Panel · V1…V4`, the login brand-panel exploration) |
+| `_playground.pen` | Experiments — inside the system (kit installed at 0.8.1; holds `Panel · V1…V4`, the login brand-panel exploration) |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |
 | `CHECKLIST.md` | What to run, in order, every time a `.pen` is opened for real work |
 | `exports/` | Canvas PNGs for review — **committed** (they must travel) |
@@ -56,38 +56,34 @@ One `.pen` per domain, derived from the app's routes (`config/routes.rb`), not i
 **mirrors the screens that exist in code** (D78). A flow earns its own file at ~3+ screens; smaller
 ones may merge into a neighbor.
 
-> **The kit 0.8.0 → 0.9.0 migration closed 2026-08-27.** All ten `.pen` files are on the kit —
-> `ui-kit`, `alerts`, `settings`, `onboarding` and `brand` at **0.9.0**, the rest at **0.8.1**. The
-> split is not drift: 0.8.1 was a token-and-treatment patch every consumer took, 0.9.0 added
-> `HeaderBar` and moved only the flows that vendor it. Divergence is zero, verified by comparing
-> **values**, not names. `MIGRATION.md` tracked that work and was deleted on close, per its own
-> first line — the durable parts are here, in `ui-kit.CHANGELOG.md`'s gap list, and in D53/D57/D58/D59.
+> **Kit versions.** The seven flows and `brand.pen` vendor the kit at **1.1.0**, the version of
+> `ui-kit.lib.pen`; `_playground.pen` stays at 0.8.1. Read each file's `kit-version-source`, never
+> this paragraph. The 0.8 → 0.9 migration notes (`MIGRATION.md`) were deleted on close; the durable
+> parts are in `ui-kit.CHANGELOG.md`'s gap list and in D53/D57/D58/D59.
 
-> **Status below is the `.pen` file's, not the ERB's.** How closely the code matches a flow is
-> measured, never recorded — see *Measuring design against code*. No running count lives here: every
-> hand-kept count this folder ever carried went stale.
+> **No status or progress lives in this table.** How closely the code matches a flow is measured,
+> never recorded — see *Measuring design against code*; the work items live on the board. The
+> redesign flows trail the 2026-10 view changes, and the board holds that work.
 
 > **Vocabulary renamed 2026-08-27 (D48).** The tier ladder is now **Holdings** (was Poseo),
 > **Watchlist** (was Sigo) and **Tracked** (was Rastreados), and the observation sense of
 > *movimiento* is **Señales** — *movimiento* alone means a trade. The es-MX copy shipped in #364.
-> **Migration is per-`.pen`, and the table below says where each file stands** — a row still
-> reading `sigo` / `rastreados` has not been migrated yet. `assets.pen` is done; the other six are
-> not.
+> **The exports and flows use the new names.**
 >
 > Adrian extended the rename to the segmented control itself, so the first tab reads **Holdings**.
 > The code caught up the same day — the design leads the
 > code on nothing here now. **Lowercase `cartera` in prose is not the tier**; it means the portfolio
 > and stays.
 
-| File | Domain | Screens (from code) | Status |
-|---|---|---|---|
-| `flows/auth.pen` | Auth | login (default · error), 2FA, código de recuperación, forgot, email sent, reset, enlace expirado, contraseña actualizada (+ Login desktop); TOTP · alta and códigos de recuperación, which render in the app shell — no signup (account created in onboarding) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
-| `flows/onboarding.pen` | Onboarding | setup (default · error), integrations, assets, seguridad (+ alta · códigos from the wizard, D122), complete, welcome (+ Setup/Welcome desktop) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
-| `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default · tranquilo · primera vez), señales (default · vacío), asset detail (análisis · aviso TradingView · mi posición · CETES), consolidado (default · sin historial) (+ Panorama/Consolidado desktop) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
-| `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings (default · vacía · sin consolidar), watchlist (default · vacía), registrar movimiento (sheet · con teclado · CETES), historial (default · vacío), tracked (default · agregar activo · sin fuente · sin coincidencias), importar CSV (default · revisión · símbolos desconocidos) + Holdings/Registrar/Tracked desktop; **drawn ahead of the code (D125):** buscar (en tu catálogo · fuera de tu catálogo · sin resultados · yahoo no responde · desktop), activo desconocido | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
-| `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (vacío · default), nueva regla (sheet · calendario), bandeja (default · vacía) | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
-| `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, nombre y correo, contraseña, integraciones (+ administrar · estados), registros (+ detalle), estado y mantenimiento, errores (+ detalle), en mantenimiento — no desktop artboard, every screen is one column | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
-| `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default · todas las canastas · sin datos · calendario agotado) — no desktop artboard, the page reflows | **kit 1.0.0 · mirrors the code** — through `CHECKLIST.md` on 2026-09-16 |
+| File | Domain | Screens (from code) |
+|---|---|---|
+| `flows/auth.pen` | Auth | login (default · error), 2FA, código de recuperación, forgot, email sent, reset, enlace expirado, contraseña actualizada (+ Login desktop); TOTP · alta and códigos de recuperación, which render in the app shell — no signup (account created in onboarding) |
+| `flows/onboarding.pen` | Onboarding | setup (default · error), integrations, assets, seguridad (+ alta · códigos from the wizard, D122), complete, welcome (+ Setup/Welcome desktop) |
+| `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default · tranquilo · primera vez), señales (default · vacío), asset detail (análisis · aviso TradingView · mi posición · CETES), consolidado (default · sin historial) (+ Panorama/Consolidado desktop) |
+| `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings (default · vacía · sin consolidar), watchlist (default · vacía), registrar movimiento (sheet · con teclado · CETES), historial (default · vacío), tracked (default · agregar activo · sin fuente · sin coincidencias), importar CSV (default · revisión · símbolos desconocidos) + Holdings/Registrar/Tracked desktop; **drawn ahead of the code (D125):** buscar (en tu catálogo · fuera de tu catálogo · sin resultados · yahoo no responde · desktop), activo desconocido |
+| `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (vacío · default), nueva regla (sheet · calendario), bandeja (default · vacía) |
+| `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, nombre y correo, contraseña, integraciones (+ administrar · estados), registros (+ detalle), estado y mantenimiento, errores (+ detalle), en mantenimiento — no desktop artboard, every screen is one column |
+| `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default · todas las canastas · sin datos · calendario agotado) — no desktop artboard, the page reflows |
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for
 structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit · **(3)** review/feel ·
@@ -97,9 +93,9 @@ structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit �
 ### Desktop pass (2026-08-24, kit 0.5.0 — counts re-checked 2026-08-27)
 
 Every flow has been through it. D4 still governs **which** screens get an artboard: one is drawn
-only where the layout genuinely diverges, and the rest reflow — so **8 desktop artboards cover
+only where the layout genuinely diverges, and the rest reflow — so **9 desktop artboards cover
 four of the seven flows**, not 30. `alerts`, `discover` and `settings` draw none, which is why the table has
-seven rows and four of them are non-empty. Counted against `design/exports/*-desktop.png`, which holds those 8
+seven rows and four of them are non-empty. Counted against `design/exports/*-desktop.png`, which holds those 9
 plus the kit's own `ui-kit-shell-desktop`.
 
 | Flow | Desktop artboards | Not drawn, because |
@@ -107,7 +103,7 @@ plus the kit's own `ui-kit-shell-desktop`.
 | `auth` | Login | Same split-panel as Setup — the two doors match. The other four keep the centered card |
 | `onboarding` | Setup · Welcome | The wizard steps are one centred column at every width |
 | `cockpit` | Panorama · Consolidado | The asset detail reflows into one column |
-| `assets` | Holdings · Registrar movimiento · Tracked | Watchlist, Holdings vacía and the search states reuse patterns above |
+| `assets` | Holdings · Registrar movimiento · Tracked · Buscar (D125) | Watchlist, Holdings vacía and the search states reuse patterns above |
 | `alerts` | — | Its list and sheet are the patterns Cartera and Registrar movimiento settle |
 | `settings` | — | Every screen is one column inside the shell |
 | `discover` | — | The page is one column at every width |
@@ -118,13 +114,11 @@ vendored per flow like everything else. Two rules came out of the pass and hold 
 width, never wider rows), and **a control is not a container** (segmented controls and forms keep
 their own width whatever they are given).
 
-## Design inputs (the redesign discovery)
+## Design inputs
 
-The hub `../redesign/` (gitignored, local) holds the thinking this design serves:
-- `design/product-concept.md` — the decision-cockpit soul (one screen, ~20 min, mobile).
-- `design/prompts/01–03` — the validated Claude Design prompts (panorama+detalle, confluence
-  semáforo, visual identity). The components they produced seed this kit.
-- The confluence "3-light" rule (`reglas duras sin corazón`) — see DECISIONS + `cockpit.pen` brief.
+The decision-cockpit concept (one screen, ~20 min, mobile) and the confluence "3-light" rule that
+seeded this kit were worked out outside the repo; what survives is in `DECISIONS.md` and the
+`cockpit.pen` brief.
 
 ## Canvas conventions
 
@@ -245,7 +239,7 @@ home for.
 4. Nothing leaves `_playground.pen` for `flows/` without cleanup + approval.
 5. Export PNGs of changed flows into `exports/` (committed).
 
-## Fidelity loop (design ↔ code), once the redesign lands
+## Fidelity loop (design ↔ code)
 
 Open the flow → read its brief → design with vendored components → implement (the `.pen`
 components map 1:1 to `app/views/components/`) → screenshot the rendered app, overlay at 50% on
