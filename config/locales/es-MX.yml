@@ -242,6 +242,10 @@ es-MX:
       espera: espera %{minutes} min entre avisos
       explicacion_cerrar: Cerrar
       explicacion_detalle: Significado de %{condition}
+      huerfana:
+        ausente: "%{symbol} ya no está en el catálogo; esta regla no puede dispararse."
+        renombrada: "%{old} ahora es %{symbol}; esta regla sigue buscando %{old} y
+          no puede dispararse."
       nueva: Nueva
       nunca_disparo: Nunca se ha disparado
       pausada: pausada

@@ -56,6 +56,7 @@ RSpec.describe "Alert management", type: :system do
   end
 
   it "shows the freshly created rule in the active rules table" do
+    create(:asset, symbol: "AAPL", currency: "USD")
     create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above, threshold_value: 200.0, status: :active)
 
     visit alerts_path
@@ -132,6 +133,7 @@ RSpec.describe "Alert management", type: :system do
   end
 
   it "ranks whether the rule has fired above whether it is enabled" do
+    create(:asset, symbol: "AAPL")
     create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above,
                         threshold_value: 200.0, status: :active, cooldown_minutes: 60,
                         last_triggered_at: 3.days.ago)

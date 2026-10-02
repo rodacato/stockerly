@@ -48,17 +48,12 @@ class AlertRule < ApplicationRecord
 
   DEFAULT_COOLDOWN_MINUTES = 60
 
-  # Read from the asset, not guessed from the symbol: CETES are MXN and carry no
-  # `.MX`, so the old suffix rule priced every fixed-income threshold in dollars.
+  # Read from the asset, never guessed from the symbol: CETES are MXN and carry
+  # no `.MX`. nil for a symbol the catalogue does not list.
   def currency
     return @currency if defined?(@currency)
 
-    @currency = Asset.find_by(symbol: asset_symbol)&.currency || fallback_currency
-  end
-
-  # Only reachable for a symbol the catalogue no longer knows.
-  def fallback_currency
-    asset_symbol.to_s.match?(/\.MX\z/i) ? "MXN" : "USD"
+    @currency = Asset.find_by(symbol: asset_symbol)&.currency
   end
 
   def date_based?

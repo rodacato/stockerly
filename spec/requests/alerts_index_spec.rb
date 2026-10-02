@@ -175,4 +175,45 @@ RSpec.describe "Reglas", type: :request do
       expect(response.body).to include(I18n.t("alerts.index.sugerencias.day_change_percent.porque", percent: "5"))
     end
   end
+
+  describe "a rule whose symbol the catalogue no longer answers to" do
+    it "says the rule was orphaned by a rename instead of reporting it active" do
+      create(:asset, symbol: "META", former_symbols: [ "FB" ])
+      create(:alert_rule, user: user, asset_symbol: "FB", condition: "price_crosses_above", threshold_value: 200)
+
+      get alerts_path
+
+      expect(response.body).to include(CGI.escapeHTML(I18n.t("alerts.index.huerfana.renombrada", old: "FB", symbol: "META")))
+      expect(response.body).not_to include(I18n.t("alerts.index.revision_precio", minutes: 5))
+      expect(response.body).not_to match(/#{I18n.t('alerts.index.activa')}\s+·/)
+    end
+
+    it "says the symbol is missing from the catalogue" do
+      create(:alert_rule, user: user, asset_symbol: "GONE", condition: "price_crosses_above", threshold_value: 200)
+
+      get alerts_path
+
+      expect(response.body).to include(I18n.t("alerts.index.huerfana.ausente", symbol: "GONE"))
+      expect(response.body).not_to include(I18n.t("alerts.index.revision_precio", minutes: 5))
+    end
+
+    # Negative: a listed symbol keeps the normal line and gets no warning.
+    it "keeps a healthy rule reading as active" do
+      create(:asset, symbol: "AAPL")
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200)
+
+      get alerts_path
+
+      expect(response.body).to include(I18n.t("alerts.index.revision_precio", minutes: 5))
+      expect(response.body).not_to include("ya no está en el catálogo")
+    end
+
+    it "does not flag a marketwide rule, which has no symbol" do
+      create(:alert_rule, :marketwide, user: user, condition: "cete_auction", window_days: 2)
+
+      get alerts_path
+
+      expect(response.body).not_to include("ya no está en el catálogo")
+    end
+  end
 end

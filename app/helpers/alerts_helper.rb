@@ -5,17 +5,32 @@ module AlertsHelper
     rule.marketwide? ? alert_rule_kind_label(rule) : rule.asset_symbol
   end
 
-  # Kind chip shown next to the ticker. The asset decides when we still have
-  # one; the symbol heuristic is the fallback for rules that outlived their
-  # asset, where guessing from `.MX` is all that is left.
+  # Kind chip shown next to the ticker. Only the asset decides it; a symbol the
+  # catalogue does not list gets no chip rather than a guess.
   def alert_rule_kind_label(rule)
     return "BMV"   if rule.condition == "bmv_holiday"
     return "CETES" if rule.condition == "cete_auction"
 
     asset = alert_rule_asset(rule.asset_symbol)
-    return kind_label_for(asset) if asset
+    kind_label_for(asset) if asset
+  end
 
-    kind_label_from_symbol(rule.asset_symbol)
+  # nil unless the rule watches a symbol the catalogue no longer lists under
+  # that name. Marketwide rules watch no symbol.
+  def alert_rule_orphan(rule)
+    return if rule.marketwide? || rule.asset_symbol.blank?
+
+    @alert_rule_listings ||= {}
+    listing = (@alert_rule_listings[rule.asset_symbol] ||= Alerts::Queries::SymbolListing.call(symbol: rule.asset_symbol))
+    listing unless listing[:state] == :listed
+  end
+
+  def alert_orphan_label(rule, orphan)
+    if orphan[:state] == :renamed
+      t("alerts.index.huerfana.renombrada", old: rule.asset_symbol, symbol: orphan[:current_symbol])
+    else
+      t("alerts.index.huerfana.ausente", symbol: rule.asset_symbol)
+    end
   end
 
   def alert_condition_label(rule)
@@ -27,10 +42,8 @@ module AlertsHelper
   # the trigger, never tells the user what to do.
   def alert_condition_summary(rule)
     case rule.condition
-    when "price_crosses_above"
-      t("alerts.condiciones.price_crosses_above.resumen", currency: rule.currency, threshold: format_threshold(rule.threshold_value))
-    when "price_crosses_below"
-      t("alerts.condiciones.price_crosses_below.resumen", currency: rule.currency, threshold: format_threshold(rule.threshold_value))
+    when "price_crosses_above", "price_crosses_below"
+      t("alerts.condiciones.#{rule.condition}.resumen", currency: rule.currency, threshold: format_threshold(rule.threshold_value)).squish
     when "day_change_percent"
       t("alerts.condiciones.day_change_percent.resumen", threshold: format_threshold(rule.threshold_value))
     when "rsi_overbought"
@@ -184,14 +197,5 @@ module AlertsHelper
                    condition: suggestion.condition,
                    threshold_value: suggestion.threshold_value,
                    window_days: suggestion.window_days)
-  end
-
-  def kind_label_from_symbol(symbol)
-    case symbol
-    when /\ACETES?_/i, /\ACETE\b/i then asset_type_label_es(:fixed_income)
-    when /\.MX\z/i                 then "#{asset_type_label_es(:stock)} MX"
-    when "BMV", "IPC", /\AIPC\b/i  then asset_type_label_es(:index)
-    else                                asset_type_label_es(:stock)
-    end
   end
 end

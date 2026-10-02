@@ -79,7 +79,7 @@ module Alerts
         amount = ActiveSupport::NumberHelper.number_to_rounded(
           value.to_d, precision: 2, delimiter: ","
         )
-        "#{@rule.currency} #{amount}"
+        [ @rule.currency, amount ].compact.join(" ")
       end
     end
   end
