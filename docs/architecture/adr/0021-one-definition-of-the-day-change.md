@@ -3,7 +3,7 @@
 - **Status:** Accepted
 - **Date:** 2026-08-29
 - **Author:** Adrian Castillo
-- **Related:** [ADR-016](./0016-canonical-market-data-observations.md), [ADR-002](./0002-trading-marketdata-boundary.md), `design/V2_REMAINING.md` X13, X15
+- **Related:** [ADR-016](./0016-canonical-market-data-observations.md), [ADR-002](./0002-trading-marketdata-boundary.md), `design/V2_REMAINING.md` X13, X15 (retired; `git show 120600bb:design/V2_REMAINING.md`)
 
 ---
 

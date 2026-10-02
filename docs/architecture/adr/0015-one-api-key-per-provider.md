@@ -87,3 +87,5 @@ they describe has since landed, so read them as done:
 Still open from the Consequences: the **provider-defined quota unit** for Integraciones (limits are
 not comparable across providers — calls per minute, calls per day, KiB per month), and the Alpha
 Vantage open-source grant that would restore the headroom pooling used to buy.
+
+> Amended 2026-10: the Alpha Vantage item is moot; the provider was retired on 2026-09-16.

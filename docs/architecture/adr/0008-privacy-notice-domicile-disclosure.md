@@ -4,7 +4,7 @@
 - **Date:** 2026-05-18
 - **Author:** Adrian Castillo
 - **Supersedes:** —
-- **Related:** [`app/views/legal/privacy.html.erb`](../../../app/views/legal/privacy.html.erb), [`docs/ops/arco-procedure.md`](../../ops/arco-procedure.md), [ADR-007](./0007-defer-i18n-adoption.md)
+- **Related:** `app/views/legal/privacy.html.erb` and `docs/ops/arco-procedure.md` (both removed by ADR-026), [ADR-007](./0007-defer-i18n-adoption.md)
 
 ---
 

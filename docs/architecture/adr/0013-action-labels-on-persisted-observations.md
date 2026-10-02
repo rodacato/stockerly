@@ -5,7 +5,7 @@
 - **Author:** Adrian Castillo (with review from the expert panel)
 - **Amended by:** [ADR-014](./0014-state-phrases-from-a-closed-catalogue.md) — a state may also be read as a sentence, from a closed catalogue
 - **Amends:** [ADR-001](./0001-descriptive-not-prescriptive-language.md) — most of it survives; see "What does not change"
-- **Related:** [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md), `design/DECISIONS.md` D3, `design/CODE_CHANGES.md` §3
+- **Related:** [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md), `design/DECISIONS.md` D3, `design/CODE_CHANGES.md` §3 (retired; `git show 120600bb:design/CODE_CHANGES.md`)
 
 ---
 

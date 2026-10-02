@@ -19,6 +19,8 @@ for it was gathered in August, but it lived only in the author's private working
 decision that gates every other one was invisible to the repository that twenty-eight lesser
 decisions are recorded in. Recording it is the point: a gate nobody else can read is not a gate.
 
+> Amended 2026-10: the snapshot counts in this ADR (twenty-eight decisions, 14 gateways, ~2,760 specs, ~37 models) are as of 2026-05; the repository holds 25 other ADRs, 8 concrete gateways and 38 models.
+
 ## Decision
 
 **Correct Stockerly in place. No rewrite, no abandonment.**

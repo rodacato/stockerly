@@ -129,7 +129,7 @@ the one that keeps drafts from quietly becoming a second board.
 
 **The failure mode to watch, and it has a precedent.** This ADR replaces nine documents with a board
 and one rewritten manual. The first attempt died by growing a protocol nobody could sustain; the
-second dies the same way if the manual grows back. It is 171 lines against the 231 it replaces, and
+second dies the same way if the manual grows back. It is 171 lines against the 231 it replaces (242 as of 2026-10), and
 that direction is the invariant — if a third document is needed to explain the board, or the manual
 starts growing, the board is wrong and this decision gets revisited rather than papered over.
 
