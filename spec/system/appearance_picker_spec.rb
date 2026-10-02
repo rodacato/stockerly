@@ -41,6 +41,7 @@ RSpec.describe "Ajustes — Apariencia", type: :system, js: true do
     currency_group.find("[role='tab']", text: "USD").click
 
     expect(currency_group).to have_css("[role='tab'][aria-selected='true']", text: "USD")
+    page.driver.wait_for_network_idle
     expect(user.reload.preferred_currency).to eq("USD")
   end
 end
