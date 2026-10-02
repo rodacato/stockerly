@@ -657,6 +657,9 @@ es-MX:
         ha corrido.
       conecta_titulo: Conecta Alpaca
       descripcion: Lo que se mueve afuera, no en tu cartera
+      olas_antiguedad:
+        one: datos de hace 1 hora
+        other: datos de hace %{count} horas
       olas_baseline_nota: La referencia es %{baseline}; no se usa una serie de referencia
         mexicana.
       olas_desde: desde tu última visita · %{since}
