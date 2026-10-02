@@ -2,36 +2,65 @@
     ADR-013: the verb is a lookup over this persisted row, the phrase that
     produced it stays visible, and a reading older than today says so — unless
     the screen already groups the rows by date and would say it twice.
-    D127: the arrow draws the phrase's move, the colour its verb. %>
+    D127: the arrow draws the phrase's move, the colour its verb. The ⓘ decodes
+    that; it sits beside the link, not inside it, because a button in an anchor
+    is invalid HTML. %>
 <% context = local_assigns.fetch(:context, :panorama) %>
 <% asset = observation.asset %>
 <% signal = observation_reading(observation) %>
 <% action = signal&.action %>
 <% rsi = observation.indicator_snapshot["rsi"] %>
 <% stale = context != :senales && observation.observed_at.to_date < Date.current %>
-<%= link_to market_asset_path(asset.symbol),
-            class: "flex items-start gap-3 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
-  <%= icon_svg((signal&.move == :up ? "north_east" : "south_east"),
-               class: "mt-0.5 shrink-0 text-lg #{action == :sell ? 'text-warning-fg' : 'text-positive-fg'}",
-               "aria-hidden": "true") %>
+<div class="relative" data-controller="metric-tooltip">
+  <%= link_to market_asset_path(asset.symbol),
+              class: "flex items-start gap-3 rounded-2xl border border-border-default bg-bg-surface py-3.5 pl-4 transition-colors hover:border-border-strong #{action ? 'pr-11' : 'pr-4'}" do %>
+    <%= icon_svg((signal&.move == :up ? "north_east" : "south_east"),
+                 class: "mt-0.5 shrink-0 text-lg #{action == :sell ? 'text-warning-fg' : 'text-positive-fg'}",
+                 role: "img",
+                 "aria-label": (signal&.move == :up ? t(".flecha_sube") : t(".flecha_baja"))) %>
 
-  <div class="min-w-0 flex-1">
-    <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
-    <p class="text-xs text-fg-subtle">
-      <%= observation_phrase(observation) %><%= " · RSI #{rsi.to_f.round}" if rsi %>
-    </p>
-    <% if stale %>
-      <p class="mt-0.5 font-mono text-[11px] text-fg-subtle"><%= relative_age(observation.observed_at) %></p>
+    <div class="min-w-0 flex-1">
+      <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
+      <p class="text-xs text-fg-subtle">
+        <%= observation_phrase(observation) %><%= " · RSI #{rsi.to_f.round}" if rsi %>
+      </p>
+      <% if stale %>
+        <p class="mt-0.5 font-mono text-[11px] text-fg-subtle"><%= relative_age(observation.observed_at) %></p>
+      <% end %>
+    </div>
+
+    <% if action %>
+      <div class="flex shrink-0 flex-col items-end gap-1">
+        <span class="rounded-full px-2.5 py-1 text-xs font-semibold
+                     <%= action == :sell ? "bg-warning-bg text-warning-fg" : "bg-positive-bg text-positive-fg" %>">
+          <%= t("comun.accion.#{action}") %>
+        </span>
+        <span class="font-mono text-[10px] uppercase tracking-wider text-fg-subtle"><%= t("comun.logica_senal.#{signal.logic}") %></span>
+      </div>
     <% end %>
-  </div>
+  <% end %>
 
   <% if action %>
-    <div class="flex shrink-0 flex-col items-end gap-1">
-      <span class="rounded-full px-2.5 py-1 text-xs font-semibold
-                   <%= action == :sell ? "bg-warning-bg text-warning-fg" : "bg-positive-bg text-positive-fg" %>">
-        <%= t("comun.accion.#{action}") %>
-      </span>
-      <span class="font-mono text-[10px] uppercase tracking-wider text-fg-subtle"><%= t("comun.logica_senal.#{signal.logic}") %></span>
+    <button type="button" data-action="click->metric-tooltip#toggle"
+            class="absolute right-3 top-3.5 cursor-help text-fg-subtle transition-colors hover:text-primary"
+            aria-label="<%= t(".explicar", symbol: asset.symbol) %>">
+      <%= icon_svg "info", class: "text-sm", "aria-hidden": "true" %>
+    </button>
+
+    <div data-metric-tooltip-target="popover"
+         class="absolute left-0 top-full z-20 mt-1 hidden w-full overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-xl">
+      <div class="flex items-center justify-between gap-2 border-b border-border-default px-4 py-3">
+        <h3 class="text-sm font-semibold text-fg-default"><%= t(".titulo") %></h3>
+        <button type="button" data-action="click->metric-tooltip#close"
+                class="text-fg-subtle transition-colors hover:text-fg-default"
+                aria-label="<%= t(".cerrar") %>">
+          <%= icon_svg "close", class: "text-lg", "aria-hidden": "true" %>
+        </button>
+      </div>
+      <div class="flex flex-col gap-2 p-4 text-sm leading-relaxed text-fg-default">
+        <p><%= t(".flecha_texto") %></p>
+        <p><%= t(".color_texto") %></p>
+      </div>
     </div>
   <% end %>
-<% end %>
+</div>
