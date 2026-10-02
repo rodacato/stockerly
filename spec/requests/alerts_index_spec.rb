@@ -137,4 +137,42 @@ RSpec.describe "Reglas", type: :request do
       expect(response.body).not_to include(I18n.t("alerts.index.revision_precio", minutes: 5))
     end
   end
+
+  describe "what a rule's indicator means" do
+    before { create(:asset, symbol: "AAPL") }
+
+    it "explains an RSI rule with the threshold it holds" do
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "rsi_overbought", threshold_value: 72)
+
+      get alerts_path
+
+      expect(response.body).to include(I18n.t("alerts.index.sugerencias.rsi_overbought.porque", threshold: 72))
+      expect(response.body).to include('data-controller="metric-tooltip"')
+    end
+
+    it "explains a day-change rule with its percentage" do
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "day_change_percent", threshold_value: 5)
+
+      get alerts_path
+
+      expect(response.body).to include(I18n.t("alerts.index.sugerencias.day_change_percent.porque", percent: "5"))
+    end
+
+    # Negative: no copy for the condition, so no icon and no popover.
+    it "renders no explainer for a condition without an entry" do
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200)
+
+      get alerts_path
+
+      expect(response.body).not_to include("metric-tooltip")
+    end
+
+    it "keeps the empty-state suggestions explaining themselves" do
+      create(:position, portfolio: create(:portfolio, user: user), asset: Asset.find_by!(symbol: "AAPL"), shares: 10, avg_cost: 100)
+
+      get alerts_path
+
+      expect(response.body).to include(I18n.t("alerts.index.sugerencias.day_change_percent.porque", percent: "5"))
+    end
+  end
 end

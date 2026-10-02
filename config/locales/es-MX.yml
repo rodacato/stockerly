@@ -240,6 +240,8 @@ es-MX:
       eliminar: Eliminar regla
       en_pausa: "%{count} en pausa"
       espera: espera %{minutes} min entre avisos
+      explicacion_cerrar: Cerrar
+      explicacion_detalle: Significado de %{condition}
       nueva: Nueva
       nunca_disparo: Nunca se ha disparado
       pausada: pausada
