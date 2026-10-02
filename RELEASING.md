@@ -105,14 +105,6 @@ There is no fixed schedule. Releases happen when a meaningful set of changes is 
 - **Patch releases** (`0.x.Y`): for urgent bug fixes or security patches
 - **Major milestones**: when the scope of a major version is done. The 2.0 pivot is recorded in [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md).
 
-## Mapping Roadmap Phases to Versions
-
-| Version | Roadmap Phases | Theme |
-|---------|---------------|-------|
-| `v0.1.0-alpha` | 0-22 | All core features: DDD architecture, trading, alerts, market data |
-| `v0.1.0-rc1` | — | Hardening for public deployment |
-| `v0.2.0` | — | The 2.0 pivot: self-hosted single-user tracker (see the `[Unreleased]` section of the changelog) |
-
 `lib/stockerly/version.rb` is the manifest: it is what the workflow bumps, what `publish` reads to
 decide whether there is a tag to cut, and what `/admin/settings` reports.
 
