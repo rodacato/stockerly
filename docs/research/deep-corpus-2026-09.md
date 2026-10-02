@@ -1,5 +1,9 @@
 # The same questions on ten years — 2026-09-05
 
+> **Snapshot as of 2026-09-05.** The corpus figures below (86,215 bars, 47 assets) are that day's
+> and have moved; the history depth now comes from `BackfillPriceHistoryJob::DAYS`. The conclusions
+> about what survives and what is withdrawn are the durable part.
+
 Yesterday's measurements ran on one year, and their own limits section said no
 conclusion in them survived being called regime-independent. `data:deepen_all`
 took the corpus to **86,215 bars over 47 assets, back to 2014**, so they were
@@ -50,6 +54,14 @@ pairing those two is a fact consulting itself.
 
 **ATR's spread is a property of the assets and needs no window to establish it.**
 ALAB moves 7.20% of its price on an ordinary day, SPY 0.76%.
+
+**What the withdrawn one-year note added that is not above** (the note is deleted; repository
+history has it). Mean ATR as a share of price by type: stocks 3.79%, crypto 2.67%, ETFs 1.40%, so
+crypto was *calmer* than the average stock in this portfolio, because the holdings skew to
+high-beta names. ATR is Wilder's recursion; a simple mean over the same window reads 1.4% low,
+which is small until a layer index multiplies it. On the one-year corpus rotation (thesis 4) and
+pairs (thesis 5) were untestable and the Mayer Multiple had 2.6 months of values, which is what the
+ten-year backfill fixed.
 
 ## The problem with every return figure on this page
 
