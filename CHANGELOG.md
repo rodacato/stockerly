@@ -15,6 +15,8 @@ section is empty or holds only that prose.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-02
+
 ### Upgrade notes
 
 - Migration `20260917120000` changes data and is irreversible: it marks the CoinGecko integration as
@@ -26,6 +28,89 @@ section is empty or holds only that prose.
   changing the password is limited to 5 attempts per minute.
 - `config/locales/en.yml` is removed and production now inherits the fallback chain that
   `application.rb` declares (`es-MX`, `es`, `en`).
+
+### Added
+
+- **discover:** show the waves' age once past 6 hours
+- **discover:** note SPY is the baseline on EWW · México
+- **setup:** state that recovery needs outbound mail
+- **settings:** require the current password to change the email
+- **alerts:** explain each rule's indicator in a popover
+- **assets:** show each holding's unrealised gain
+- **assets:** show each holding's share of the portfolio
+- **signals:** decode the arrow and colour with an info popover
+- **dashboard:** name the patrimonio strip's destination
+- **discover:** show the ranking window length
+- **discover:** link wave rows to the asset page
+- **alerts:** show when an active rule is next checked
+- **alerts:** edit a rule in place from its card
+- **auth:** state the second-factor window on the code screen
+- **auth:** add a reveal toggle to password fields
+- **admin:** show last run under each manual sync button
+
+### Fixed
+
+- **portfolio:** make the tie chip legible and judge CETES as printed
+- **portfolio:** read a comparison tie as level, not ahead
+- **settings:** limit attempts on account updates
+- **market-data:** mark the seeded CoinGecko row as keyed
+- **i18n:** show provider types in Spanish on the setup wizard
+- **i18n:** let production inherit the declared fallback chain
+- **market-data:** record CoinGecko as needing an API key
+- **admin:** verify an API key before reporting it connected
+- **alerts:** flag rules whose symbol left the catalogue
+- **alerts:** close the rule sheet after a successful save
+- **sync:** stop pointing orphaned integrations at a missing UI
+- **onboarding:** mark stored API keys as saved on step 1
+
+### Changed
+
+- **trading:** rebuild snapshots in one upsert
+
+### Documentation
+
+- **changelog:** explain how entries are made and carry the 0.3.0 upgrade notes
+- **contributing:** say what feeds a release and what a PR must not touch
+- **releasing:** say what to do before and after cutting a release
+- move the assistant plan out of the repo root
+- fix dead design references in code comments
+- **design:** close D124 and D150, restore D111, drop dead anchors
+- **design:** drop stale prose from the exports index
+- **design:** order kit changelog ascending, note retired files
+- **design:** refresh README kit versions and drop progress log
+- **research:** add banners, fold and delete shipped notes
+- **ops:** drop restated values and the card incident story
+- **vision:** drop a contradiction non-goals never stated
+- **vision:** correct claims the code has overtaken
+- **architecture:** date ADR footnotes, drop dead links and private refs
+- **architecture:** show amendments in ADR status lines
+- **architecture:** fix stale claims in conventions and symbols
+- **architecture:** correct the README against the code
+- **site:** sync the interface row and soften the no-keys claim
+- **github:** drop beta wording, private link and retired labels from templates
+- **agents:** point to the panel doc, fix retired seat and stale terms
+- **identity:** remove closed-beta and sprint-era text, fit 200 lines
+- **releasing:** drop the roadmap-phase mapping table
+- **setup:** document the Python prerequisite, point bin/ci at config
+- **readme:** fix credentials claim, drop copied counts
+- **security:** replace Rails credentials claims with real key handling
+- **claude:** fix stale layouts, checks, tree; drop copied counts
+- **checks:** name the public/ pages as the third token exclusion
+- **site:** stop telling self-hosters to run master
+
+### Maintenance
+
+- **deps:** bump brakeman to 8.1.0
+
+### Testing
+
+- **system:** let the optimistic write land before reading it
+- **system:** wait for the save before counting trades
+- **settings:** cover the account form re-render on invalid input
+
+### CI
+
+- **deps:** give Dependabot commits a conventional prefix
 
 ## [0.2.0] - 2026-09-22
 
@@ -508,7 +593,8 @@ and ~94% test coverage.
 - Pre-commit hooks for secret leak prevention
 - ~2080 RSpec specs with ~94% line coverage (branch coverage enabled)
 
-[Unreleased]: https://github.com/rodacato/stockerly/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/rodacato/stockerly/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/rodacato/stockerly/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/rodacato/stockerly/compare/v0.1.0-rc1...v0.2.0
 [0.1.0-rc1]: https://github.com/rodacato/stockerly/compare/v0.1.0-alpha...v0.1.0-rc1
 [0.1.0-alpha]: https://github.com/rodacato/stockerly/releases/tag/v0.1.0-alpha
