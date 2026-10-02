@@ -1,7 +1,7 @@
 name: Research / Discovery
 description: Open question to investigate before committing to scope.
 title: "[research] "
-labels: ["triage", "research", "discovery-needed"]
+labels: ["research"]
 body:
   - type: markdown
     attributes:
@@ -12,7 +12,7 @@ body:
   - type: textarea
     id: question
     attributes:
-      label: Pregunta abierta
+      label: Open question
       description: What needs to be answered before we can proceed?
     validations:
       required: true
@@ -20,7 +20,7 @@ body:
   - type: textarea
     id: why
     attributes:
-      label: ¿Por qué importa ahora?
+      label: Why does it matter now?
       description: What forces this question? What's blocked or at risk if we don't answer?
     validations:
       required: true
@@ -28,7 +28,7 @@ body:
   - type: textarea
     id: hypothesis
     attributes:
-      label: Hipótesis inicial (si tienes)
+      label: Initial hypothesis (if any)
 
   - type: textarea
     id: closure_criteria
@@ -45,7 +45,7 @@ body:
   - type: textarea
     id: experts
     attributes:
-      label: Expertos a consultar
+      label: Experts to consult
       description: |
         From the panel in `docs/vision/experts.md`. By name or role.
       placeholder: "C1 Lucía (financial), C6 Esther (scope), ..."

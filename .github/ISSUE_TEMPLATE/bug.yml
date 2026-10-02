@@ -1,7 +1,7 @@
 name: Bug
 description: Report a defect that breaks or degrades an existing JTBD.
 title: "[bug] "
-labels: ["triage", "bug"]
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
@@ -14,7 +14,7 @@ body:
   - type: textarea
     id: what_happened
     attributes:
-      label: Qué pasó
+      label: What happened
       description: Specific behavior observed.
     validations:
       required: true
@@ -22,14 +22,14 @@ body:
   - type: textarea
     id: expected
     attributes:
-      label: Qué esperabas
+      label: What you expected
     validations:
       required: true
 
   - type: textarea
     id: repro
     attributes:
-      label: Pasos para reproducir
+      label: Steps to reproduce
       description: Minimal steps.
       placeholder: |
         1. Open /portfolio
@@ -41,15 +41,15 @@ body:
   - type: input
     id: jtbd_affected
     attributes:
-      label: ¿Qué JTBD afecta? (1-6 o "infra")
-      placeholder: "JTBD #1 (patrimonio consolidado MXN)"
+      label: Which JTBD does it affect? (number, or "infra")
+      placeholder: "JTBD #1 (consolidated MXN net worth)"
 
   - type: dropdown
     id: severity
     attributes:
       label: Severity
       options:
-        - "P0 — blocks beta or breaks core JTBD"
+        - "P0 — breaks a core JTBD"
         - "P1 — degrades JTBD significantly"
         - "P2 — minor / cosmetic"
     validations:
