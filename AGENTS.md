@@ -44,22 +44,7 @@ when a decision has lasting consequences — consult the panel. Full profiles an
 activation rules in [`docs/vision/experts.md`](docs/vision/experts.md); the user's
 own seat, `el-usuario`, is defined in [`docs/vision/audience.md`](docs/vision/audience.md).
 
-| ID | Handle | Lens | Activate when |
-|---|---|---|---|
-| C1 | `lucia` | MX financial domain (CETES, historical FX, MXN/USD) | Money, currency, FX, MarketData |
-| C3 | `sven` | Rails 8 backend (AR, dry-rb, contracts, use cases) | Server-side impl, migrations, controllers |
-| C4 | `marisol` | Hotwire (Turbo + Stimulus) + Tailwind 4 | Views, partials, interactivity |
-| C5 | `renata` | Fintech UX/UI, descriptive copy | New/rewritten screen, copy, hierarchy |
-| C6 | `esther` | Product scope, the 4-filter | Promoting a draft, "it would be cool to add…" |
-| C7 | `fadia` | Security (auth, keys, sensitive data) | Auth, encryption, new routes |
-| C9 | `dhh` | Pragmatic monolith, anti-ceremony | A new layer, abstraction or service |
-| C10 | `joaquin` | Retail technical-analysis investor | Indicators, hard rules, signals |
-| C11 | `el-usuario` | The actual user, phone in hand | Every screen, every data-entry flow |
-| C12 | `vernon` | DDD: aggregates, language, boundaries | New concept, boundary change |
-
-Situational seats (data engineering, performance, l10n, third-party terms,
-migrations, DX, QA, refactoring, events, self-hosted DevEx) — see the panel doc.
-C2, C8 and S1 are retired; the panel doc says where their lenses went.
+The roster (core and situational seats, handles, lenses, and when each activates) is the panel doc's; it is not copied here.
 
 Panel output must end with: **recommended option, key risks, fallback/rollback.**
 A consultation that significantly changes direction → write an ADR, or it
@@ -76,10 +61,10 @@ evaporates.
 | [`docs/vision/README.md`](docs/vision/README.md) | North star + the 3 hard rules |
 | [`docs/vision/audience.md`](docs/vision/audience.md) | Primary user / packaging target / non-users |
 | [`docs/vision/non-goals.md`](docs/vision/non-goals.md) | What we explicitly are NOT |
-| [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | The 6 canonical JTBDs |
+| [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | The canonical JTBDs |
 | [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions — the index and each one's status are in [`docs/architecture/README.md`](docs/architecture/README.md). Read before deciding |
 | [`docs/vision/experts.md`](docs/vision/experts.md) | The advisory panel |
-| [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | Issues + Projects v2 + Milestones |
+| [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | Issues + the private Projects v2 board |
 | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare |
 | [`design/`](design/) | The design system — Pencil `.pen` files, ui-kit, brand, `DECISIONS.md`. **This is the source of truth** |
 | [`design/exports/`](design/exports/) | The artboards as PNGs — the only reviewable form of an encrypted `.pen`, and the README's imagery |
@@ -91,7 +76,7 @@ Trivy, Gitleaks) and the opt-in Sonar scan live in `.github/workflows/quality.ym
 
 **Architectural direction:** DDD + Hexagonal + Event-Driven in a Rails monolith.
 Pragmatic, not ceremonial — don't wrap a boolean flip in Contract + monad
-(anti-pattern #3). Consult Hiroto Watanabe (C2) before any domain/application
+(anti-pattern #3). Consult `vernon` (C12, DDD) before any domain/application
 boundary change.
 
 ---
@@ -158,7 +143,7 @@ protocol lives in [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md).
 | Phrase (Spanish) | Behavior |
 |---|---|
 | "tengo una idea" | Don't build. Open a discovery card (GitHub Issue) with the 4 filters. If the trigger isn't documented, say so. |
-| "¿dónde estamos?" / "estado del proyecto" | Read the open Milestone + the open Issues + `docs/vision/`. Summarize: goal, done vs pending, what's next. |
+| "¿dónde estamos?" / "estado del proyecto" | Read the board's in-flight items + the open Issues + `docs/vision/`. Summarize: goal, done vs pending, what's next. |
 | "consulta a los expertos" / "que el panel evalúe" | Activate the relevant experts from `docs/vision/experts.md`; end with recommendation + risks + rollback. |
 
 ---
