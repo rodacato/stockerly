@@ -34,10 +34,11 @@ RSpec.describe "Saving from the trade sheet", type: :system, js: true do
     it "records the movement and closes the sheet" do
       fill_movement(symbol: "WALMEX", shares: "10", price: "70")
 
-      expect { click_button I18n.t("trades.new.guardar") }.to change(Trade, :count).by(1)
+      click_button I18n.t("trades.new.guardar")
 
       expect(page).to have_current_path(assets_path)
-      expect(page).not_to have_css("dialog[open]")
+      expect(page).to have_no_css("dialog[open]")
+      expect(Trade.count).to eq(1)
     end
   end
 
@@ -45,10 +46,11 @@ RSpec.describe "Saving from the trade sheet", type: :system, js: true do
     it "records it and comes back to an empty sheet" do
       fill_movement(symbol: "WALMEX", shares: "10", price: "70")
 
-      expect { click_button I18n.t("trades.new.guardar_y_otro") }.to change(Trade, :count).by(1)
+      click_button I18n.t("trades.new.guardar_y_otro")
 
       expect(page).to have_css("dialog[open]")
       expect(page).to have_field("trade[asset_symbol]", with: "")
+      expect(Trade.count).to eq(1)
     end
 
     # The flash lives behind the dialog, so a sheet that stays open has to
@@ -67,7 +69,9 @@ RSpec.describe "Saving from the trade sheet", type: :system, js: true do
 
       fill_movement(symbol: "AMXL", shares: "100", price: "15")
 
-      expect { click_button I18n.t("trades.new.guardar") }.to change(Trade, :count).by(1)
+      click_button I18n.t("trades.new.guardar")
+      expect(page).to have_current_path(assets_path)
+
       expect(Trade.includes(:asset).order(:created_at).map { |t| t.asset.symbol }).to eq(%w[WALMEX AMXL])
     end
 
