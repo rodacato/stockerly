@@ -9,6 +9,8 @@
     <%= form_with url: (editing ? alert_path(@rule) : alerts_path), scope: :alert,
                   method: (editing ? :patch : :post),
                   data: { controller: "alert-form",
+                          action: "turbo:submit-end->sheet#closeOnSaved",
+                          sheet_return_url_param: alerts_path,
                           alert_form_labels_value: %w[precio porcentaje rsi volumen].index_with { |k| t(".etiqueta.#{k}") },
                           alert_form_previews_value: (AlertRule.conditions.keys + %w[default activo]).index_with { |k| t(".previews.#{k}") } },
                   class: "flex min-h-0 flex-col" do |f| %>

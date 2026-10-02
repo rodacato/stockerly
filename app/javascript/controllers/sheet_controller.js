@@ -42,6 +42,22 @@ export default class SheetController extends Controller {
     }
   }
 
+  // A failed submit redirects back to the list, which Turbo also reports as
+  // success; only a Turbo Stream answer means the form was saved. Closing with
+  // history.back() would restore the cached list and drop the card the stream
+  // just inserted, so a saved sheet leaves by replacing its own history entry.
+  closeOnSaved(event) {
+    const { success, fetchResponse } = event.detail
+    const contentType = fetchResponse?.response?.headers?.get("Content-Type") || ""
+    if (!success || !contentType.includes("turbo-stream")) return
+
+    const returnUrl = event.params.returnUrl
+    if (!returnUrl) return this.close()
+
+    this.opened = false
+    window.Turbo.visit(returnUrl, { action: "replace" })
+  }
+
   // Closing must also unload the frame, or reopening shows the previous
   // movement's half-filled form.
   onClose() {
