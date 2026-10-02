@@ -185,6 +185,28 @@ RSpec.describe Trading::UseCases::LoadAssets do
       expect(holdings.values.sum { |h| h[:share] }).to be_within(0.001).of(100.0)
     end
 
+    it "carries the unrealised percent the asset detail states, positive and negative" do
+      hold(mxn_asset(symbol: "UP", current_price: 15), shares: 10)
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "DOWN", current_price: 5),
+                        shares: 10, avg_cost: 10, status: :open)
+
+      data = described_class.call(user: user, tab: "cartera")
+      by_symbol = data[:positions].to_h { |p| [ p.asset.symbol, data[:holdings][p.id][:gain] ] }
+
+      expect(by_symbol["UP"]).to be_within(0.001).of(1400.0)
+      expect(by_symbol["DOWN"]).to be_within(0.001).of(-50.0)
+    end
+
+    it "has no gain for a position without a price, instead of a total loss" do
+      hold(mxn_asset(symbol: "PRICED", current_price: 10), shares: 1)
+      hold(mxn_asset(symbol: "BLANK", current_price: nil), shares: 1)
+
+      data = described_class.call(user: user, tab: "cartera")
+      blank = data[:positions].find { |p| p.asset.symbol == "BLANK" }
+
+      expect(data[:holdings][blank.id][:gain]).to be_nil
+    end
+
     it "is absent for every row when a rate is missing, rather than wrong" do
       hold(create(:asset, :stock, symbol: "AAPL", currency: "USD", current_price: 100), shares: 5)
       hold(mxn_asset(symbol: "WALMEX", current_price: 70), shares: 100)

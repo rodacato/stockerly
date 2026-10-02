@@ -57,6 +57,16 @@ RSpec.describe "Activos", type: :request do
       expect(response.body).to include(I18n.t("assets.index.del_patrimonio", percent: "75.0%"))
     end
 
+    it "adds the position's gain to the line, signed and toned by direction" do
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "UPPER", current_price: 15), shares: 1, avg_cost: 10, status: :open)
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "LOWER", current_price: 5), shares: 1, avg_cost: 10, status: :open)
+
+      get assets_path
+
+      expect(response.body).to match(%r{text-positive">\+50\.0%</span>})
+      expect(response.body).to match(%r{text-negative">−50\.0%</span>})
+    end
+
     it "gives a watchlist row no share line" do
       create(:watchlist_item, user: user, asset: mxn_asset(symbol: "WATCHED", current_price: 10))
 
@@ -189,7 +199,7 @@ RSpec.describe "Activos", type: :request do
 
       expect(response.body).to match(%r{text-xs text-fg-subtle">\s*—\s*</p>})
       expect(response.body).not_to include("+4.0%")
-      expect(response.body).not_to match(/(?<![\d.])0\.0%/)
+      expect(response.body).not_to match(%r{font-mono text-xs [^"]*">\s*0\.0%\s*</p>})
     end
 
     it "orders the holdings by market value descending (D68)" do
