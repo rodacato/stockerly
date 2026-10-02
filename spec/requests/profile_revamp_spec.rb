@@ -61,6 +61,41 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
     end
   end
 
+  describe "PATCH /profile changing the email" do
+    it "changes it when the current password is given" do
+      patch profile_path, params: { profile: { full_name: user.full_name, email: "fresh@example.com", current_password: "password123" } }
+
+      expect(response).to redirect_to(edit_account_settings_path)
+      expect(user.reload.email).to eq("fresh@example.com")
+    end
+
+    it "keeps it and says why when the current password is wrong" do
+      original = user.email
+
+      patch profile_path, params: { profile: { full_name: user.full_name, email: "fresh@example.com", current_password: "nope" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(I18n.t("profiles.flash.contrasena_incorrecta"))
+      expect(user.reload.email).to eq(original)
+    end
+
+    it "keeps it when the current password is blank" do
+      original = user.email
+
+      patch profile_path, params: { profile: { full_name: user.full_name, email: "fresh@example.com", current_password: "" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(user.reload.email).to eq(original)
+    end
+
+    it "still renames without a password when the email is untouched" do
+      patch profile_path, params: { profile: { full_name: "Only Name", email: user.email } }
+
+      expect(response).to redirect_to(edit_account_settings_path)
+      expect(user.reload.full_name).to eq("Only Name")
+    end
+  end
+
   describe "PATCH /profile updates preferred_currency" do
     it "persists the new currency and redirects with es-MX notice" do
       patch profile_path, params: { profile: { full_name: user.full_name, email: user.email, preferred_currency: "USD" } }

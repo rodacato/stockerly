@@ -1463,6 +1463,8 @@ es-MX:
         momento.
   settings:
     account:
+      contrasena_actual: Contraseña actual
+      contrasena_actual_ayuda: Se pide solo cuando cambias el correo.
       correo: Correo
       correo_ayuda: A esta dirección llegan el resumen diario y los avisos urgentes.
       descripcion: Cómo te llamas y a dónde llegan los correos de esta instancia.
