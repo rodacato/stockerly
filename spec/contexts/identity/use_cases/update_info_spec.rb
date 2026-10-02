@@ -5,7 +5,8 @@ RSpec.describe Identity::UseCases::UpdateInfo do
 
   describe ".call" do
     it "updates user info and returns Success" do
-      result = described_class.call(user: user, params: { full_name: "Alex Updated", email: "newemail@example.com" })
+      result = described_class.call(user: user, params: { full_name: "Alex Updated", email: "newemail@example.com" },
+                                    current_password: "password123")
 
       expect(result).to be_success
       user.reload
@@ -17,7 +18,8 @@ RSpec.describe Identity::UseCases::UpdateInfo do
       received = []
       EventBus.subscribe(Identity::Events::ProfileUpdated, ->(e) { received << e })
 
-      described_class.call(user: user, params: { full_name: "Alex Updated", email: "newemail@example.com" })
+      described_class.call(user: user, params: { full_name: "Alex Updated", email: "newemail@example.com" },
+                           current_password: "password123")
 
       expect(received.size).to eq(1)
       expect(received.first.user_id).to eq(user.id)
@@ -37,9 +39,36 @@ RSpec.describe Identity::UseCases::UpdateInfo do
       expect(result.failure[0]).to eq(:validation)
     end
 
+    it "keeps the email and returns :unauthorized when the current password is wrong" do
+      result = described_class.call(user: user, params: { full_name: "Alex", email: "new@example.com" },
+                                    current_password: "wrong-password")
+
+      expect(result.failure[0]).to eq(:unauthorized)
+      expect(user.reload.email).to eq("alex@example.com")
+    end
+
+    it "keeps the email and returns :unauthorized when no password is given" do
+      [ nil, "" ].each do |blank|
+        result = described_class.call(user: user, params: { full_name: "Alex", email: "new@example.com" },
+                                      current_password: blank)
+
+        expect(result.failure[0]).to eq(:unauthorized)
+      end
+      expect(user.reload.email).to eq("alex@example.com")
+    end
+
+    it "changes only the name without a password when the email is the same" do
+      result = described_class.call(user: user, params: { full_name: "Alex Renamed", email: "Alex@Example.com" })
+
+      expect(result).to be_success
+      expect(user.reload.full_name).to eq("Alex Renamed")
+      expect(user.email).to eq("alex@example.com")
+    end
+
     it "returns Failure when email is already taken by another user" do
       create(:user, email: "taken@example.com")
-      result = described_class.call(user: user, params: { full_name: "Alex", email: "taken@example.com" })
+      result = described_class.call(user: user, params: { full_name: "Alex", email: "taken@example.com" },
+                                    current_password: "password123")
 
       expect(result).to be_failure
       expect(result.failure[1][:email]).to be_present

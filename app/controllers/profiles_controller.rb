@@ -1,12 +1,21 @@
 class ProfilesController < AuthenticatedController
   def update
-    result = Identity::UseCases::UpdateInfo.call(user: current_user, params: profile_params.to_h)
+    result = Identity::UseCases::UpdateInfo.call(
+      user: current_user,
+      params: profile_params.to_h,
+      current_password: params.dig(:profile, :current_password).to_s
+    )
 
     case result
     in Dry::Monads::Success
       redirect_to edit_account_settings_path, notice: t("profiles.flash.actualizado")
+    in Dry::Monads::Failure[ :unauthorized, _ ]
+      flash.now[:alert] = t("profiles.flash.contrasena_incorrecta")
+      @user = current_user
+      render "settings/account", status: :unprocessable_content
     in Dry::Monads::Failure[ :validation, errors ]
       flash.now[:alert] = errors.values.flatten.first
+      @user = current_user
       render "settings/account", status: :unprocessable_content
     end
   end
