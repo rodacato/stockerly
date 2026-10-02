@@ -1,6 +1,6 @@
 # ADR-028 — Icons ship inside the HTML, not as a remote ligature font
 
-- **Status:** Accepted
+- **Status:** Accepted · amended 2026-09-22
 - **Date:** 2026-09-19
 - **Author:** Adrian Castillo
 - **Related:** [ADR-019](./0019-self-contained-by-default.md), [ADR-027](./0027-production-is-the-only-instance-that-spends-quota.md)

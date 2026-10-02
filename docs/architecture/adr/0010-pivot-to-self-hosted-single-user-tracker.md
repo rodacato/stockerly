@@ -1,6 +1,6 @@
 # ADR-0010 — Pivot to a self-hosted, single-user asset tracker
 
-- **Status:** Accepted
+- **Status:** Accepted · addenda 2026-08-22 and 2026-08-27
 - **Date:** 2026-08-20
 - **Author:** Adrian Castillo
 - **Supersedes:** the audience/scope half of the 2026-05-14 vision reset (`docs/vision/` as of that date)
