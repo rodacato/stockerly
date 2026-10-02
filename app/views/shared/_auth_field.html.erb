@@ -14,7 +14,7 @@
                   autofocus: local_assigns[:autofocus],
                   required: true,
                   data: { password_visibility_target: ("input" if password) },
-                  class: field_classes(:lg, class_names("focus:border-primary", "pr-12": password)) %>
+                  class: field_classes(:lg, class_names("w-full focus:border-primary", "pr-12": password)) %>
     <% if password %>
       <button type="button"
               aria-pressed="false"
