@@ -48,6 +48,13 @@ RSpec.describe MarketData::Domain::SourceCatalogue do
       expect(entry_for("CoinGecko").state).to eq(:no_quota)
     end
 
+    it "reports a key still being probed as verifying, not as working or blocked" do
+      integration("Alpaca", api_key_encrypted: "k", connection_status: :syncing)
+
+      expect(entry_for("Alpaca").state).to eq(:verifying)
+      expect(entry_for("Alpaca")).not_to be_working
+    end
+
     it "reports a working source as connected" do
       integration("Banxico", requires_api_key: false, daily_call_limit: 1_000, daily_api_calls: 2)
 

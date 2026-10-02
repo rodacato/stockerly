@@ -86,6 +86,37 @@ RSpec.describe SyncIntegrationJob, type: :job do
       end
     end
 
+    context "when the gateway raises instead of answering" do
+      let!(:integration) do
+        create(:integration, provider_name: "Alpaca", connection_status: :syncing, api_key_encrypted: "PKID:secret")
+      end
+
+      before { stub_request(:get, %r{data\.alpaca\.markets/}).to_raise(Errno::ECONNREFUSED) }
+
+      it "settles on disconnected instead of staying in syncing" do
+        described_class.perform_now(integration.id)
+
+        integration.reload
+        expect(integration.connection_status).to eq("disconnected")
+        expect(integration.last_failure_tag).to eq("gateway_error")
+        expect(SystemLog.last.severity).to eq("error")
+      end
+    end
+
+    context "when the provider rejects the key" do
+      let!(:integration) do
+        create(:integration, provider_name: "Alpaca", connection_status: :syncing, api_key_encrypted: "hola")
+      end
+
+      it "records the refusal's tag so the card can say whose problem it is" do
+        stub_alpaca_recent_denied
+
+        described_class.perform_now(integration.id)
+
+        expect(integration.reload).to have_attributes(connection_status: "disconnected", last_failure_tag: be_present)
+      end
+    end
+
     context "when integration requires API key but has none" do
       let!(:unconfigured) { create(:integration, provider_name: "Finnhub", requires_api_key: true, api_key_encrypted: nil) }
 

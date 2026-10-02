@@ -28,13 +28,7 @@ module Administration
           # "no limit" impossible to express.
           update_attrs = attrs.except(:id, :api_key_encrypted)
 
-          if api_key_value.present?
-            integration.update!(api_key_encrypted: api_key_value)
-            if integration.connection_status != "connected"
-              update_attrs[:connection_status] = :connected
-              update_attrs[:last_sync_at] = Time.current
-            end
-          end
+          integration.update!(api_key_encrypted: api_key_value) if api_key_value.present?
 
           return Success({}) if update_attrs.empty? && api_key_value.blank?
 
@@ -45,6 +39,7 @@ module Administration
           changes["api_key_encrypted"] = { from: "[FILTERED]", to: "[FILTERED]" } if api_key_value.present?
 
           integration.update!(update_attrs) if update_attrs.present?
+          integration.await_verification! if api_key_value.present?
           Success(changes)
         end
       end

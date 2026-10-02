@@ -6,6 +6,12 @@ class Integration < ApplicationRecord
   validates :provider_name, presence: true, uniqueness: true
   validates :provider_type, presence: true
 
+  # A stored key is a claim, not a result: SyncIntegrationJob is what settles it.
+  def await_verification!
+    update!(connection_status: :syncing, last_failure_tag: nil, last_failure_at: nil)
+    SyncIntegrationJob.perform_later(id)
+  end
+
   def increment_api_calls!
     reset_daily_counter! if calls_reset_at.nil? || calls_reset_at < Time.current.beginning_of_day
     return false if daily_call_limit.present? && daily_api_calls >= daily_call_limit

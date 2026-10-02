@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
+  include ActiveJob::TestHelper
+
   describe ".call" do
     let!(:polygon) { create(:integration, :keyless, provider_name: "Alpaca") }
     let!(:coingecko) { create(:integration, :keyless, provider_name: "CoinGecko") }
@@ -14,7 +16,41 @@ RSpec.describe Administration::UseCases::Onboarding::SaveApiKeys do
       expect(result[:updated]).to eq(2)
       default_key = polygon.reload
       expect(default_key.api_key_encrypted).to eq("poly_key_123")
-      expect(polygon.connection_status).to eq("connected")
+      expect(polygon.connection_status).to eq("syncing")
+    end
+
+    it "enqueues one probe per saved key and none for a blank one" do
+      expect {
+        described_class.call(keys: { polygon.id.to_s => "poly_key_123", coingecko.id.to_s => "" })
+      }.to have_enqueued_job(SyncIntegrationJob).with(polygon.id).once
+
+      expect(coingecko.reload.connection_status).to eq("connected")
+    end
+
+    it "leaves the stored key and status alone for a blank value" do
+      polygon.update!(api_key_encrypted: "old", connection_status: :connected)
+
+      expect {
+        described_class.call(keys: { polygon.id.to_s => "" })
+      }.not_to have_enqueued_job(SyncIntegrationJob)
+
+      expect(polygon.reload).to have_attributes(api_key_encrypted: "old", connection_status: "connected")
+    end
+
+    it "ends connected when the probe accepts the key" do
+      stub_alpaca_bars({ "AAPL" => [ alpaca_bar(date: 3.days.ago.to_date.to_s) ] })
+
+      perform_enqueued_jobs { described_class.call(keys: { polygon.id.to_s => "PKID:secret" }) }
+
+      expect(polygon.reload.connection_status).to eq("connected")
+    end
+
+    it "ends disconnected when the probe rejects the key" do
+      stub_alpaca_recent_denied
+
+      perform_enqueued_jobs { described_class.call(keys: { polygon.id.to_s => "hola" }) }
+
+      expect(polygon.reload.connection_status).to eq("disconnected")
     end
 
     it "skips blank values" do

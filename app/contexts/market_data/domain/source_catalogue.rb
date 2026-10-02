@@ -5,7 +5,7 @@ module MarketData
     class SourceCatalogue
       # `sin cuota` is our own counter stopping us and it resumes tomorrow;
       # `bloqueada` is the provider refusing and no waiting fixes it.
-      STATES = %i[connected no_key no_quota blocked].freeze
+      STATES = %i[connected verifying no_key no_quota blocked].freeze
 
       # A provider's meter is its own: calls a minute, calls a day, or KiB a
       # month. One integer cannot render all three, so the unit travels along.
@@ -103,6 +103,7 @@ module MarketData
       def state_for(integration)
         return :no_key   if integration.requires_api_key? && !integration.api_key_configured?
         return :no_quota if integration.budget_exhausted? || integration.minute_budget_exhausted?
+        return :verifying if integration.syncing?
         return :blocked  if integration.disconnected? || refused?(integration)
 
         :connected
