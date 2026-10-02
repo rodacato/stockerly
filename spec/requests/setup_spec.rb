@@ -10,10 +10,22 @@ RSpec.describe "Setup", type: :request, setup_bypass: false do
         # D5: one account, so no "admin" anywhere the person can read it.
         expect(response.body).not_to match(/admin/i)
       end
+
+      it "says before the form that recovery needs outbound mail" do
+        get setup_path
+        notice = response.body.index("no se puede recuperar")
+        expect(notice).to be < response.body.index("<form")
+        expect(response.body).to include("códigos de recuperación solo sustituyen al segundo factor")
+      end
     end
 
     context "when users already exist" do
       before { create(:user) }
+
+      it "does not render the recovery notice" do
+        get setup_path
+        expect(response.body).not_to include("no se puede recuperar")
+      end
 
       it "redirects to root" do
         get setup_path

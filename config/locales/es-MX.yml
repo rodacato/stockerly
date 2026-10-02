@@ -1570,6 +1570,9 @@ es-MX:
       corrige: 'Corrige lo siguiente:'
       nombre: Nombre
       nombre_placeholder: Ej. Adrian
+      sin_correo: Sin correo saliente funcionando, la contraseña de esta cuenta no
+        se puede recuperar, y los códigos de recuperación solo sustituyen al segundo
+        factor.
       submit: Crear cuenta y continuar
       subtitulo: Es la única cuenta de tu instancia. Con ella entras a tu tracker.
       titulo: Crea tu cuenta
