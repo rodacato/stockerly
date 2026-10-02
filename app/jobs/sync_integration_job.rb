@@ -48,5 +48,8 @@ class SyncIntegrationJob < ApplicationJob
     # report connected without ever being reached. Probe methods default their args.
     args = [ source.test_symbol ].compact
     gateway.public_send(source.test_method, *args)
+  rescue StandardError => e
+    # An unsettled probe would leave the integration reading "verificando" forever.
+    Dry::Monads::Failure([ :gateway_error, "#{e.class}: #{e.message}" ])
   end
 end

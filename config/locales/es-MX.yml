@@ -79,6 +79,7 @@ es-MX:
           connected: Conectada
           no_key: Sin API key
           no_quota: Sin cuota
+          verifying: Verificando
         guardar: Guardar
         limite_diario: Límite diario
         limite_minuto: Por minuto
@@ -104,6 +105,8 @@ es-MX:
         vacio_cuerpo_html: Vuelven al correr <code class="font-mono">bin/rails stockerly:sync</code>
           en tu servidor.
         vacio_titulo: No hay fuentes configuradas
+        verificando_razon: La API key está guardada y se está comprobando con el proveedor.
+          Si no hay un worker corriendo (bin/jobs), la comprobación no avanza.
         verificar: Verificar conexión
     logs:
       index:

@@ -29,6 +29,31 @@ RSpec.describe "Admin Integrations", type: :request do
       expect(integration.reload.max_requests_per_minute).to be_nil
       expect(integration.reload.daily_call_limit).to eq(500)
     end
+
+    describe "saving a key from the card" do
+      before { integration.update!(connection_status: :disconnected, api_key_encrypted: nil) }
+
+      it "reads verifying, never connected, until the probe answers" do
+        patch admin_integration_path(integration), params: { integration: { api_key_encrypted: "zz-secret-9999" } }
+        get admin_integrations_path
+
+        expect(response.body).to include(I18n.t("admin.integrations.index.estado.verifying"))
+        expect(response.body).not_to include(I18n.t("admin.integrations.index.estado.connected"))
+        expect(response.body).not_to include("zz-secret-9999")
+      end
+
+      it "reads blocked once the probe is refused" do
+        stub_alpaca_recent_denied
+
+        perform_enqueued_jobs do
+          patch admin_integration_path(integration), params: { integration: { api_key_encrypted: "zz-secret-9999" } }
+        end
+        get admin_integrations_path
+
+        expect(response.body).to include(I18n.t("admin.integrations.index.estado.blocked"))
+        expect(response.body).not_to include(I18n.t("admin.integrations.index.estado.verifying"))
+      end
+    end
   end
 
   describe "GET /admin/integrations" do
@@ -105,12 +130,12 @@ RSpec.describe "Admin Integrations", type: :request do
         expect(response.body).to include("80 / 100 hoy · cerca del límite")
       end
 
-      it "leaves the state column at its four honest values" do
+      it "does not add near-limit to the state column" do
         get admin_integrations_path
 
         expect(response.body).to include(I18n.t("admin.integrations.index.estado.connected"))
         expect(response.body).not_to include(I18n.t("admin.integrations.index.estado.no_quota"))
-        expect(MarketData::Domain::SourceCatalogue::STATES.size).to eq(4)
+        expect(MarketData::Domain::SourceCatalogue::STATES).not_to include(:near_limit)
       end
     end
 

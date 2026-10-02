@@ -16,7 +16,7 @@ module Administration
             next unless integration
 
             integration.update!(api_key_encrypted: api_key_value)
-            integration.update!(connection_status: :connected) unless integration.connected?
+            integration.await_verification!
             banxico ||= integration.provider_name == BANXICO
             updated += 1
           end

@@ -54,6 +54,7 @@ module Admin
     # because they are different problems.
     STATE_STYLES = {
       connected: { dot: "bg-positive", fg: "text-positive", bar: "bg-positive" },
+      verifying: { dot: "bg-fg-subtle", fg: "text-fg-subtle", bar: "bg-fg-subtle" },
       no_key:    { dot: "bg-fg-subtle", fg: "text-fg-subtle", bar: "bg-fg-subtle" },
       no_quota:  { dot: "bg-warning",  fg: "text-warning",  bar: "bg-warning" },
       blocked:   { dot: "bg-negative", fg: "text-negative", bar: "bg-negative" }
@@ -61,6 +62,7 @@ module Admin
 
     STATE_REASONS = {
       no_key:   { key: "sin_api_key_razon", icon: "key",   bg: "bg-bg-muted",     fg: "text-fg-subtle" },
+      verifying: { key: "verificando_razon", icon: "hourglass_top", bg: "bg-bg-muted", fg: "text-fg-subtle" },
       no_quota: { key: "sin_cuota_razon", icon: "hourglass_top", bg: "bg-warning-bg", fg: "text-warning-fg" },
       blocked:  { key: "bloqueada_razon", icon: "gpp_maybe", bg: "bg-negative-bg", fg: "text-negative-fg" }
     }.freeze
