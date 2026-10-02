@@ -106,9 +106,12 @@ module Trading
       # income position matures soon enough that its silence is the news.
       # ADR-021: an asset with no computable day change has not been quiet, it
       # is unknown — so it is not reported as activity either way.
+      # A held asset that is also watched appears once, as the position.
       def radar(positions, watched, day_changes)
+        held_ids = positions.map(&:asset_id)
         entries = positions.map { |p| entry_for(:position, p, Domain::MaturityWindow.days_until(p), day_changes) } +
-                  watched.map { |w| entry_for(:watchlist, w, nil, day_changes) }
+                  watched.reject { |w| held_ids.include?(w.asset_id) }
+                         .map { |w| entry_for(:watchlist, w, nil, day_changes) }
 
         entries
           .select { |e| e.change&.nonzero? || e.maturity_days }
