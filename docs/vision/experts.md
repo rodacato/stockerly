@@ -347,8 +347,7 @@ proposals that serve the builder's ambition instead of the user.
   lenses of the retired C8 and S1.
 - **Consult when:** the packaging promise in the [vision](./README.md) — *stand it up with one
   command* — is touched; README, CONTRIBUTING or release notes; the deploy guide; an external issue
-  or PR. **Open contradiction he inherits:** [`non-goals.md`](./non-goals.md) says PRs are not
-  accepted before v1.0, while `CONTRIBUTING.md` welcomes contributions. Adrian decides which holds.
+  or PR.
 - **Style:** stories with mechanisms — *"this project works because X, that one failed because Y."*
 
 ---
