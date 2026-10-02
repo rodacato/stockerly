@@ -166,4 +166,44 @@ RSpec.describe Trading::UseCases::LoadAssets do
       expect(symbols_of("watchlist")).to eq(%w[PRICED NOPRICE])
     end
   end
+  describe "each holding's share of the total" do
+    def holdings(tab: "cartera") = described_class.call(user: user, tab: tab)[:holdings]
+
+    def share_of(symbol)
+      data = described_class.call(user: user, tab: "cartera")
+      position = data[:positions].find { |p| p.asset.symbol == symbol }
+      data[:holdings][position.id][:share]
+    end
+
+    it "states USD and MXN holdings on the same consolidated total" do
+      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 20)
+      hold(create(:asset, :stock, symbol: "AAPL", currency: "USD", current_price: 100), shares: 10)
+      hold(mxn_asset(symbol: "WALMEX", current_price: 100), shares: 300)
+
+      expect(share_of("AAPL")).to be_within(0.001).of(40.0)
+      expect(share_of("WALMEX")).to be_within(0.001).of(60.0)
+      expect(holdings.values.sum { |h| h[:share] }).to be_within(0.001).of(100.0)
+    end
+
+    it "is absent for every row when a rate is missing, rather than wrong" do
+      hold(create(:asset, :stock, symbol: "AAPL", currency: "USD", current_price: 100), shares: 5)
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70), shares: 100)
+
+      expect(holdings).to eq({})
+    end
+
+    it "is absent on the watchlist tab, which has no positions" do
+      hold(mxn_asset(symbol: "AMXL", current_price: 15), shares: 1)
+
+      expect(holdings(tab: "watchlist")).to eq({})
+    end
+
+    it "gives a closed position no entry" do
+      hold(mxn_asset(symbol: "OPEN", current_price: 10), shares: 1)
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "SHUT", current_price: 10),
+                        shares: 0, avg_cost: 1, status: :closed)
+
+      expect(described_class.call(user: user, tab: "cartera")[:holdings].size).to eq(1)
+    end
+  end
 end

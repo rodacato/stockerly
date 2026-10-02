@@ -320,6 +320,7 @@ es-MX:
   assets:
     index:
       cartera: Holdings
+      del_patrimonio: "%{percent} del patrimonio"
       falta: falta %{percent}
       importar: Importar movimientos
       importar_desc: Carga movimientos en el formato de Stockerly, de archivo o pegados.

@@ -47,6 +47,35 @@ RSpec.describe "Activos", type: :request do
       expect(response.body).not_to include(I18n.t("comun.vencimiento", count: Trading::Domain::MaturityWindow::DAYS + 1))
     end
 
+    it "states each held row's share of the portfolio" do
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "ONE", current_price: 10), shares: 1, avg_cost: 10, status: :open)
+      create(:position, portfolio: portfolio, asset: mxn_asset(symbol: "THREE", current_price: 10), shares: 3, avg_cost: 10, status: :open)
+
+      get assets_path
+
+      expect(response.body).to include(I18n.t("assets.index.del_patrimonio", percent: "25.0%"))
+      expect(response.body).to include(I18n.t("assets.index.del_patrimonio", percent: "75.0%"))
+    end
+
+    it "gives a watchlist row no share line" do
+      create(:watchlist_item, user: user, asset: mxn_asset(symbol: "WATCHED", current_price: 10))
+
+      get assets_path(tab: "watchlist")
+
+      expect(response.body).to include("WATCHED")
+      expect(response.body).not_to include(I18n.t("assets.index.del_patrimonio", percent: "").strip)
+    end
+
+    it "shows the holding's row without a share while a rate is missing" do
+      asset = create(:asset, :stock, symbol: "USDX", currency: "USD", current_price: 100)
+      create(:position, portfolio: portfolio, asset: asset, shares: 5, avg_cost: 80, status: :open)
+
+      get assets_path
+
+      expect(response.body).to include("USDX")
+      expect(response.body).not_to include("del patrimonio")
+    end
+
     it "shows open positions under Holdings" do
       asset = mxn_asset(symbol: "WALMEX", name: "Walmart de México", current_price: 70)
       create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
@@ -160,7 +189,7 @@ RSpec.describe "Activos", type: :request do
 
       expect(response.body).to match(%r{text-xs text-fg-subtle">\s*—\s*</p>})
       expect(response.body).not_to include("+4.0%")
-      expect(response.body).not_to include("0.0%")
+      expect(response.body).not_to match(/(?<![\d.])0\.0%/)
     end
 
     it "orders the holdings by market value descending (D68)" do

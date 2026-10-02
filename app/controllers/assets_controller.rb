@@ -10,6 +10,7 @@ class AssetsController < AuthenticatedController
     @portfolio       = data[:portfolio]
     @summary         = data[:summary]
     @positions       = data[:positions]
+    @holdings        = data[:holdings]
     @watchlist_items = data[:watchlist_items]
     @watchlist_gaps  = data[:watchlist_gaps]
     @sparkline_closes = data[:sparkline_closes]

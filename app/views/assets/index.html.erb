@@ -51,7 +51,8 @@
           <%= render "components/asset_row", position: position, declared_currency: @currency,
                      maturity_days: maturity_days(position),
                      closes: @sparkline_closes[position.asset_id],
-                     change: @day_changes[position.asset_id] %>
+                     change: @day_changes[position.asset_id],
+                     holding: @holdings[position.id] %>
         <% end %>
       </div>
     <% else %>

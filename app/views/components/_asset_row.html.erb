@@ -8,6 +8,8 @@
     D69: the row owns two emphasis slots and the context says which number
     fills the first one. A fixed-income row about to mature reports that
     instead of a day move it does not have.
+    Optional `holding` ({share:}) adds a muted line with the row's share of the
+    consolidated total; rows without a position of their own pass none.
     ADR-021: `change` is the computed day change and may be nil.
     D141: the radar sets a converted market value beside a watchlist row's
     unconverted quote, so its list declares no currency and every value here
@@ -16,6 +18,7 @@
 <% context = local_assigns.fetch(:context, :cartera) %>
 <% asset = position.asset %>
 <% change = local_assigns[:change] %>
+<% holding = local_assigns[:holding] %>
 <% amount, amount_currency = position_amount(position, declared_currency) %>
 <% value_text = context == :radar ? format_currency_mx(amount, currency: amount_currency, precision: 0) : money_cell(amount, currency: amount_currency, declared: declared_currency, precision: 0) %>
 <% value_slot = { text: value_text, color: "text-fg-default" } %>
@@ -30,6 +33,11 @@
     <p class="text-xs text-fg-subtle">
       <%= asset.name %> · <%= t("assets.index.titulos", count: format_shares(position.shares)) %>
     </p>
+    <% if holding %>
+      <p class="font-mono text-xs text-fg-subtle">
+        <%= t("assets.index.del_patrimonio", percent: unsigned_percent(holding[:share])) %>
+      </p>
+    <% end %>
   </div>
 
   <div class="w-20 shrink-0">
