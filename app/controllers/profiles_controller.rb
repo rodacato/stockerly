@@ -1,4 +1,6 @@
 class ProfilesController < AuthenticatedController
+  rate_limit to: 5, within: 1.minute, only: [ :update, :change_password ]
+
   def update
     result = Identity::UseCases::UpdateInfo.call(
       user: current_user,
