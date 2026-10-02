@@ -90,7 +90,24 @@ RSpec.describe Trading::UseCases::AssembleConsolidado do
 
       expect(card[:mine]).to be_within(0.01).of(10.0)
       expect(card[:benchmark]).to be > 0
-      expect(card[:points]).to be_within(0.01).of(card[:mine] - card[:benchmark])
+      expect(card[:points]).to be_within(0.05).of(card[:mine] - card[:benchmark])
+    end
+
+    it "judges the gap on the one-decimal returns the card prints" do
+      allow(MarketData::Queries::CetesReinvestedReturn).to receive(:call).and_return(4.27)
+      portfolio.snapshots.last.update!(total_value: 1_043.1)
+
+      card = data[:vs_cetes]
+
+      expect(card[:mine]).to be_within(0.01).of(4.31)
+      expect(card[:points]).to eq(0.0)
+    end
+
+    it "keeps a gap that survives the rounding" do
+      allow(MarketData::Queries::CetesReinvestedReturn).to receive(:call).and_return(4.27)
+      portfolio.snapshots.last.update!(total_value: 1_048)
+
+      expect(data[:vs_cetes][:points]).to eq(0.5)
     end
 
     # The card must be able to say it cannot compare.

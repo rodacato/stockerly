@@ -91,7 +91,8 @@ module Trading
         theirs = MarketData::Queries::CetesReinvestedReturn.call(term: CETES_TERM, from: from, to: Date.current)
         return nil if theirs.nil?
 
-        { points: mine - theirs, mine: mine, benchmark: theirs, term: CETES_TERM }
+        # The card prints both returns at one decimal, so the gap is judged on those.
+        { points: (mine.round(1) - theirs.round(1)).round(1), mine: mine, benchmark: theirs, term: CETES_TERM }
       end
 
       # The counterfactual: the positions held at the start of the period,

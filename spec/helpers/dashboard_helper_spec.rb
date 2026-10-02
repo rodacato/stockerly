@@ -42,4 +42,20 @@ RSpec.describe DashboardHelper, type: :helper do
       expect(helper.comparison_standing(BigDecimal("0.049"))).to eq(:level)
     end
   end
+
+  describe "#comparison_chip" do
+    it "paints a lead green and a lag red" do
+      expect(helper.comparison_chip(:ahead, "Igual")).to eq([ "bg-positive-bg text-positive-fg", "vas arriba" ])
+      expect(helper.comparison_chip(:behind, "Igual")).to eq([ "bg-negative-bg text-negative-fg", "vas abajo" ])
+    end
+
+    it "gives a tie its own label and a neutral pair that never carries the positive classes" do
+      classes, text = helper.comparison_chip(:level, "Igual")
+
+      expect(text).to eq("Igual")
+      expect(classes).to eq("bg-bg-muted text-fg-default")
+      expect(classes).not_to include("positive")
+      expect(classes).not_to include("negative")
+    end
+  end
 end
