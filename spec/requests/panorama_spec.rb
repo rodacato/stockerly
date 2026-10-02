@@ -181,14 +181,25 @@ RSpec.describe "Panorama", type: :request do
 
     # D69: the Radar asks what needs attention today, and both row kinds answer
     # it with the movement — so the movement takes the primary slot on both.
-    it "leads a holding with the day's move and demotes what it is worth" do
+    it "leads a holding with the day's move and demotes the unit quote" do
       asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
       create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
 
       get dashboard_path
 
       expect(response.body).to match(%r{text-sm font-bold text-positive">\s*\+1\.5%\s*</p>})
-      expect(response.body).to match(%r{text-xs text-fg-subtle">\s*MXN 7,000\s*</p>})
+      expect(response.body).to match(%r{text-xs text-fg-subtle">\s*MXN 70\.00\s*</p>})
+    end
+
+    it "states what a holding is worth in its subtitle, not in the quote slot" do
+      asset = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 60, status: :open)
+
+      get dashboard_path
+      radar = response.body.split(I18n.t("dashboard.show.radar_titulo")).last
+
+      expect(radar).to match(/100 títulos · MXN 7,000/)
+      expect(radar).not_to match(%r{text-xs text-fg-subtle">\s*MXN 7,000\s*</p>})
     end
 
     # D141: the radar mixes a converted market value with an unconverted unit
@@ -205,7 +216,7 @@ RSpec.describe "Panorama", type: :request do
       expect(I18n.t("dashboard.show.radar_subtitulo")).not_to include("MXN")
     end
 
-    it "prefixes a holding's value in the radar the way its watchlist neighbour is prefixed" do
+    it "quotes a holding in the radar the way its watchlist neighbour is quoted" do
       held = with_day_change(mxn_asset(symbol: "WALMEX", current_price: 70), 1.5)
       create(:position, portfolio: portfolio, asset: held, shares: 100, avg_cost: 60, status: :open)
       watched = with_day_change(create(:asset, :stock, symbol: "AAPL", currency: "USD",
@@ -215,7 +226,7 @@ RSpec.describe "Panorama", type: :request do
       get dashboard_path
       radar = response.body.split(I18n.t("dashboard.show.radar_titulo")).last
 
-      expect(radar).to match(%r{text-xs text-fg-subtle">\s*MXN 7,000\s*</p>})
+      expect(radar).to match(%r{text-xs text-fg-subtle">\s*MXN 70\.00\s*</p>})
       expect(radar).to match(%r{text-xs text-fg-subtle">\s*USD 182\.50\s*</p>})
     end
 
