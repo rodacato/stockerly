@@ -25,9 +25,17 @@ module DashboardHelper
   def signed_points(points)
     value = points.to_f
     magnitude = "#{number_with_precision(value.abs, precision: 1)} pts"
-    return magnitude if value.zero?
+    return magnitude if comparison_standing(value) == :level
 
     "#{value.negative? ? "−" : "+"}#{magnitude}"
+  end
+
+  # A difference that prints as 0.0 is a tie, whatever sign it carries underneath.
+  def comparison_standing(points)
+    value = points.to_f.round(1)
+    return :level if value.zero?
+
+    value.negative? ? :behind : :ahead
   end
 
   # Maps a points difference onto the same 0-100 track the sentiment cards use.

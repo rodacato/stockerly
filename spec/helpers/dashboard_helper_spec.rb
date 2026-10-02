@@ -27,5 +27,19 @@ RSpec.describe DashboardHelper, type: :helper do
     it "leaves a tie unsigned, because neither side is ahead" do
       expect(helper.signed_points(0)).to eq("0.0 pts")
     end
+
+    it "leaves a difference that prints as zero unsigned too" do
+      expect(helper.signed_points(0.04)).to eq("0.0 pts")
+      expect(helper.signed_points(-0.04)).to eq("0.0 pts")
+    end
+  end
+
+  describe "#comparison_standing" do
+    it "splits ahead, behind and level on what the card prints" do
+      expect(helper.comparison_standing(0.1)).to eq(:ahead)
+      expect(helper.comparison_standing(-0.1)).to eq(:behind)
+      expect(helper.comparison_standing(0)).to eq(:level)
+      expect(helper.comparison_standing(BigDecimal("0.049"))).to eq(:level)
+    end
   end
 end

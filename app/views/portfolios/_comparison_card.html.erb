@@ -1,16 +1,19 @@
-<%# Locals: label, card, body. `card` is nil when the comparison cannot be made. %>
+<%# Locals: label, card, body, level_label. `card` is nil when the comparison cannot be made. %>
 <article class="<%= card_classes("p-5") %>">
   <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= label %></p>
 
   <% if card %>
-    <% ahead = !card[:points].negative? %>
+    <% standing = comparison_standing(card[:points]) %>
+    <% chip = { ahead: ["bg-positive-bg text-positive-fg", t("portfolios.show.vas_arriba")],
+                behind: ["bg-negative-bg text-negative-fg", t("portfolios.show.vas_abajo")],
+                level: ["bg-bg-muted text-fg-subtle", level_label] }.fetch(standing) %>
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
       <p class="font-display text-4xl font-bold tracking-tight text-fg-default">
         <%= signed_points(card[:points]) %>
       </p>
       <span class="shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold
-                   <%= ahead ? "bg-positive-bg text-positive-fg" : "bg-negative-bg text-negative-fg" %>">
-        <%= ahead ? t("portfolios.show.vas_arriba") : t("portfolios.show.vas_abajo") %>
+                   <%= chip.first %>">
+        <%= chip.last %>
       </span>
     </div>
 
