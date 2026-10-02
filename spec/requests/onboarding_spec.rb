@@ -31,6 +31,23 @@ RSpec.describe "Onboarding", type: :request do
     end
   end
 
+  describe "the provider type under each provider" do
+    MarketData::Domain::ProviderDefaults::ALL.each do |name, defaults|
+      it "reads in Spanish for #{name}" do
+        slug = name.parameterize(separator: "_")
+        expect(I18n.t("onboarding.integrations.tipos.#{slug}")).not_to eq(defaults[:provider_type])
+
+        create(:integration, :keyless, provider_name: name, provider_type: defaults[:provider_type])
+        get onboarding_integrations_path
+
+        next unless MarketData::Domain::ProviderDirectory.for(name)&.requires_key
+
+        expect(response.body).to include(CGI.escapeHTML(I18n.t("onboarding.integrations.tipos.#{slug}")))
+        expect(response.body).not_to include(CGI.escapeHTML(defaults[:provider_type]))
+      end
+    end
+  end
+
   # ON-06: the wall used to come out alphabetical, which put Banxico second and
   # level with five keys the wizard never checks.
   describe "the order the keys are asked for" do

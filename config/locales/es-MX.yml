@@ -1338,6 +1338,16 @@ es-MX:
       sin_esta_api_key: 'Sin esta API key:'
       subtitulo: Agrega las API keys de los proveedores que quieras. Puedes omitir
         y configurarlas luego.
+      tipos:
+        alpaca: Acciones de EE. UU. y eventos corporativos
+        alternative_me: Sentimiento
+        banxico: CETES y renta fija
+        coingecko: Criptomonedas
+        databursatil: Acciones mexicanas (BMV/BIVA)
+        exchangerate: Tipos de cambio
+        finnhub: Acciones y datos de mercado
+        yahoo_finance: Índices, fundamentales, eventos corporativos BMV y búsqueda
+          de tickers
       titulo: Conecta tus fuentes de datos
     security:
       activar: Activar ahora
