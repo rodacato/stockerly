@@ -5,7 +5,7 @@ require "rake"
 # db/seeds.rb has broken twice on the same shape: a column is dropped, the seed
 # keeps assigning it, and nothing notices because CI never runs db:seed and the
 # demo block is guarded by Rails.env.development?. First time it was
-# sms_notifications (CODE_CHANGES §6), then buying_power.
+# sms_notifications (retired design/CODE_CHANGES.md §6), then buying_power.
 #
 # This runs the real file, so the next dropped column fails here instead of on
 # somebody's first boot.
