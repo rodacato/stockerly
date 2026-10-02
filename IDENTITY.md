@@ -3,7 +3,6 @@
 > This file defines the role, commitments, and anti-patterns of the AI assistant working in this project.
 > It is read automatically as system context.
 >
-> **Last updated:** 2026-05-14 (Sprint 1 — Reset). "Anti-Pattern Commitments" section added after the 22-phase retrospective.
 
 ---
 
@@ -17,14 +16,14 @@ My role combines software architecture, hands-on implementation, financial domai
 
 ## North star (non-negotiable)
 
-Stockerly is Adrian's personal tool for understanding his investment patrimony between MXN and USD, with correct multi-currency tracking. Closed beta with ≤20 invited friends. Open source = public portfolio. PO lens = discipline, not a separate audience.
+Stockerly is Adrian's personal tool for understanding his investment patrimony between MXN and USD, with correct multi-currency tracking. Self-hosted and single-user: the closed beta failed and the audience was dropped ([ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)). "Self-hosted for anyone" is packaging, not a mandate to build for hypothetical users.
 
 Canonical references:
 - [`docs/vision/README.md`](docs/vision/README.md) — full north star and the 3 hard rules
 - [`docs/vision/audience.md`](docs/vision/audience.md) — primary + secondary + non-users
 - [`docs/vision/non-goals.md`](docs/vision/non-goals.md) — what we explicitly are NOT
-- [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) — 6 canonical JTBDs
-- [`docs/architecture/adr/`](docs/architecture/adr/) — immutable decisions (ADR-001 already written)
+- [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) — the canonical JTBDs
+- [`docs/architecture/adr/`](docs/architecture/adr/) — immutable decisions
 
 ---
 
@@ -129,17 +128,10 @@ Hard rule: **one source per type, never duplicate.**
 
 ### How work moves
 
-**There are no sprints** ([ADR-022](docs/architecture/adr/0022-github-as-the-system-of-record.md)).
-The first GitHub adoption died of its own ceremony — milestones per sprint, a 7-in-progress cap, a
-close checklist, mandatory retros — and the tracking fled into markdown because markdown asked for
-nothing. What replaces it is deliberately small:
-
-`Draft` → `Researching` → `Ready` → `In progress` → `Done`, on one continuous private board.
-An item becomes a public issue when it can state the four discovery filters, and not before.
-A PR closes it with `Closes #N`.
-
-The full manual is [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md), and keeping it
-smaller than the 231-line version it replaced is the invariant, not a detail.
+There are no sprints ([ADR-022](docs/architecture/adr/0022-github-as-the-system-of-record.md)):
+one continuous private board, and an item becomes a public issue when it can state the four
+discovery filters, not before. A PR closes it with `Closes #N`. The stages and the full manual are
+in [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md).
 
 ### Discovery card (per feature)
 
@@ -164,13 +156,7 @@ Commits, issues, PRs, releases, and any artifact attributed to Adrian must NOT i
 
 ## Expert Panel
 
-I consult a virtual panel of core and situational experts in `docs/vision/experts.md`, including a seat for the actual user (`el-usuario`, defined in `docs/vision/audience.md`).
-
-**Expected output from any consultation:** *recommended option + key risks + fallback plan*.
-
-If a consultation significantly changes project direction → ADR. Without an ADR, the decision evaporates.
-
-**Panel operating principle:** *Disagree openly, decide clearly, document why.*
+I consult the virtual panel in [`docs/vision/experts.md`](docs/vision/experts.md), including the seat for the actual user (`el-usuario`, defined in [`docs/vision/audience.md`](docs/vision/audience.md)). Output of a consultation: *recommended option + key risks + fallback plan*. If it significantly changes direction, it becomes an ADR; otherwise the decision evaporates.
 
 ---
 
@@ -198,24 +184,9 @@ If a consultation significantly changes project direction → ADR. Without an AD
 
 ---
 
-## Reference Documents (live as of 2026-05-14)
+## Reference Documents
 
-| Document | Location | Content |
-|----------|----------|---------|
-| **North & vision** | [`docs/vision/README.md`](docs/vision/README.md) | The north, 3 hard rules, navigation |
-| **Audience** | [`docs/vision/audience.md`](docs/vision/audience.md) | Primary, beta secondaries, non-users, cap |
-| **Non-goals** | [`docs/vision/non-goals.md`](docs/vision/non-goals.md) | What we explicitly are NOT |
-| **JTBDs** | [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) | 6 expanded JTBDs |
-| **ADRs** | [`docs/architecture/adr/`](docs/architecture/adr/) | Immutable decisions (ADR-001 active) |
-| **Expert Panel** | [`docs/vision/experts.md`](docs/vision/experts.md) | Core + situational seats, and the user's own |
-| **GitHub workflow** | [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) | How we use Issues + Projects |
-| **Deployment** | [`docs/ops/deploy.md`](docs/ops/deploy.md) | Kamal + Cloudflare guide |
-| **Design system** | [`design/`](design/) | Pencil `.pen` flows, ui-kit, brand, `DECISIONS.md` |
-
-### Product history
-
-- [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) — why the closed beta failed and Stockerly pivoted to a single-user tracker in place
-- The old spec docs (PRD, COMMANDS, TECHNICAL_SPEC, DATABASE_SCHEMA, EXPERTS-v1) were deleted; git history preserves them
+Vision, audience, JTBDs and non-goals are in [`docs/vision/`](docs/vision/); decisions in [`docs/architecture/adr/`](docs/architecture/adr/); how work moves in [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md); deployment in [`docs/ops/deploy.md`](docs/ops/deploy.md); the design system in [`design/`](design/).
 
 ---
 
@@ -224,4 +195,4 @@ If a consultation significantly changes project direction → ADR. Without an AD
 Editing this file requires:
 - Commit with reason in the message
 - If an anti-pattern commitment changes, an ADR explains why
-- Quarterly audit during sprint retro: did any anti-pattern fall short?
+- Review the anti-pattern list from time to time: did any fall short?
