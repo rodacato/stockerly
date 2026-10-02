@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Stockerly is a **self-hosted, single-user** asset tracker — stocks (USD), crypto, and Mexican fixed income (CETES) — with correct MXN/USD multi-currency tracking. Built with Rails 8.1.2, PostgreSQL 16, Hotwire, and Tailwind CSS 4. It uses a pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts: Identity, Trading (includes Watchlist), Alerts, Market Data, Administration, Notifications.
+Stockerly is a **self-hosted, single-user** asset tracker — stocks (USD), crypto, and Mexican fixed income (CETES) — with correct MXN/USD multi-currency tracking. Built with Rails 8.1 (exact version in `Gemfile.lock`), PostgreSQL 16, Hotwire, and Tailwind CSS 4. It uses a pragmatic DDD + Hexagonal Architecture with 6 Bounded Contexts: Identity, Trading (includes Watchlist), Alerts, Market Data, Administration, Notifications.
 
 The multi-user closed beta was run and failed on UX grounds; the audience was dropped and the multi-user surface deleted in place — see [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md). There is one account, created by the first-boot Setup Wizard. "Self-hosted for anyone" is packaging discipline, not a mandate to build for hypothetical users.
 
@@ -40,7 +40,7 @@ bin/quality             # RubyCritic on Ruby files changed vs origin/master
 bin/quality app lib     # whole-repo baseline (noise tuned in .reek.yml)
 
 # ADR conventions a grep can see — runs in CI, no Rails boot
-bin/checks              # boundaries, use-cases, design-tokens, number-format
+bin/checks              # boundaries, use-cases, design-tokens, number-format, icons
 bin/checks boundaries   # one, by id
 # A false positive is answered with `stockerly:allow(<check>) <reason>` on the
 # offending line, or a row in script/checks/baseline.yml — never by removing
@@ -91,7 +91,7 @@ Turbo Stream / HTML response                                           Handlers 
 
 | Context | Namespace | Intent |
 |---------|-----------|--------|
-| **Identity** | `Identity::` | Single-user lifecycle: auth, profile, onboarding, search |
+| **Identity** | `Identity::` | Single-user lifecycle: auth, profile, onboarding |
 | **Trading** | `Trading::` | Trade execution, portfolio management, watchlists, dashboard, trends |
 | **Alerts** | `Alerts::` | Alert rule management, evaluation, triggering |
 | **Market Data** | `MarketData::` | External data: prices, fundamentals, news, earnings, indices, gateways |
@@ -106,8 +106,11 @@ app/contexts/{context_name}/
 ├── events/        # Dry::Struct immutable domain events
 ├── gateways/      # Faraday HTTP adapters (Market Data only)
 ├── handlers/      # Event reaction logic (static .call, optional async?)
+├── queries/       # Public read API for other contexts (not every context has one)
 └── use_cases/     # Dry::Monads orchestration (Success/Failure)
 ```
+
+A context may add its own folders (`market_data/discover/` holds the Discover screen's domain objects).
 
 ### Shared Infrastructure (`app/shared/`)
 
@@ -116,7 +119,7 @@ Cross-cutting code with **no namespace change** — available everywhere:
 | Path | Contents |
 |------|----------|
 | `app/shared/base/` | `ApplicationUseCase`, `ApplicationContract` |
-| `app/shared/domain/` | `ApiKeyResolver`, `CircuitBreaker`, `DataFreshness`, `DataSourceRegistry`, `GainLoss`, `GatewayChain`, `GatewayFailure`, `HealthMetrics`, `MarketHours`, `PythonRunner`, `RateLimiter`, `SourceChange` |
+| `app/shared/domain/` | Cross-context domain services (`ApiKeyResolver`, `CircuitBreaker`, `GatewayChain`, `GainLoss`, `PythonRunner`, …) — list the directory for the rest |
 | `app/shared/events/` | `BaseEvent`, `EventBus` |
 | `app/shared/types/` | `Types` (Dry::Types definitions) |
 
@@ -124,7 +127,7 @@ Cross-cutting code with **no namespace change** — available everywhere:
 
 ### Market Data Gateways
 
-`app/contexts/market_data/gateways/` holds **8 concrete provider gateways** — Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Banxico, ExchangeRate (`FxRatesGateway`), and Alternative.me (`CryptoFearGreedGateway`). That is 13 files: the 8 concrete gateways, 1 base class (`MarketDataGateway`), 1 error class (`ApiKeyNotConfiguredError`), `RetryPolicy`, the `ResolvesApiKey` module the six keyed gateways share, and `PerformsRequests` — the Faraday plumbing (connection assembly, `get_json`, and the `failure_from` / `transport_failure` hooks) that the seven HTTP gateways include. Yahoo Finance is the only fundamentals source: company overview and financial statements (ADR-017's 2026-09-16 amendment). Registration and fallback priority live in `config/initializers/data_sources.rb`. **Polygon.io, CNN, Alpha Vantage and FMP are retired** (`db/migrate/20260826210000_remove_retired_integrations.rb`, `20260916130000_remove_alpha_vantage_integration.rb`, `20260916140000_remove_fmp_integration.rb`) — do not cite them as sources.
+`app/contexts/market_data/gateways/` holds the concrete provider gateways — Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo Finance, Banxico, ExchangeRate (`FxRatesGateway`), and Alternative.me (`CryptoFearGreedGateway`). Beside them sit the base class (`MarketDataGateway`), `ApiKeyNotConfiguredError`, `RetryPolicy`, the `ResolvesApiKey` module the keyed gateways share, and `PerformsRequests` — the Faraday plumbing (connection assembly, `get_json`, and the `failure_from` / `transport_failure` hooks) that the HTTP gateways include. Yahoo Finance is the only fundamentals source: company overview and financial statements (ADR-017's 2026-09-16 amendment). Registration and fallback priority live in `config/initializers/data_sources.rb`. **Polygon.io, CNN, Alpha Vantage and FMP are retired** (`db/migrate/20260826210000_remove_retired_integrations.rb`, `20260916130000_remove_alpha_vantage_integration.rb`, `20260916140000_remove_fmp_integration.rb`) — do not cite them as sources.
 
 ### Autoloading (Zeitwerk)
 
@@ -201,7 +204,7 @@ Decision rule — four tests, all of them: if the use case needs `yield`, `valid
 
 ### Models
 
-39 files in `app/models/` — 38 models plus `ApplicationRecord`. No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
+No `repositories/` layer — ActiveRecord is used directly as the driven adapter.
 
 ### Frontend Stack
 
@@ -212,7 +215,7 @@ Decision rule — four tests, all of them: if the use case needs `yield`, `valid
 
 ### Layouts
 
-7 layout files in `app/views/layouts/`: `application` (base), `app`, `auth`, `onboarding`, `public`, plus `mailer.html.erb` / `mailer.text.erb`. There is **no** `admin` layout — the admin screens render under `app`.
+Layouts live in `app/views/layouts/` (`application` is the base; the mailer layouts are there too). There is **no** `admin` layout — the admin screens render under `app`.
 
 ### Access Zones
 
@@ -229,17 +232,11 @@ The standalone `/market` listing, `/news` and `/earnings` were deleted in the 2.
 
 ```
 spec/
-├── contexts/         # Mirrors app/contexts/ — organized by bounded context
-│   ├── identity/     # contracts/, events/, handlers/, use_cases/
-│   ├── trading/      # contracts/, domain/, events/, handlers/, use_cases/
-│   ├── alerts/       # contracts/, domain/, events/, handlers/, use_cases/
-│   ├── market_data/  # domain/, events/, gateways/, handlers/, use_cases/
-│   ├── administration/ # contracts/, events/, handlers/, use_cases/
-│   └── notifications/  # handlers/, use_cases/
+├── contexts/         # Mirrors app/contexts/ — one folder per bounded context, same subfolders as the code
 ├── shared/           # Mirrors app/shared/ — base classes, domain, events
 ├── models/           # Validations, enums, associations, scopes
 ├── requests/         # HTTP smoke tests, guards, CRUD flows
-├── jobs/             # Background job behavior
+├── controllers/ views/ helpers/ mailers/ jobs/ tasks/   # One folder per Rails layer
 ├── system/           # Capybara end-to-end browser tests
 ├── integration/      # Multi-layer flow tests
 ├── lib/              # lib/ code — Stockerly::Checkout, WorktreeDatabases
@@ -248,15 +245,7 @@ spec/
 
 **Measure the suite; do not quote it.** The example count and the coverage figures move with every merge, so a number copied out of this file into a PR, an issue or a report is stale the moment it is written. `bundle exec rspec` prints the count and regenerates `coverage/` (SimpleCov, branch coverage enabled), writing the percentages to `coverage/.last_run.json` and the report Sonar reads to `coverage/coverage.json`; `--dry-run` gives the count alone. Every run also prints the commit, branch and dirty flag it ran against, on the line under the seed — cite that, not this paragraph.
 
-The figures below are an example of the shape, and a rough sense of scale. They are **not** a source: measured on 2026-09-04, seed 1, after the wave that landed that day.
-
-```
-3237 examples, 0 failures
-Line coverage:   7672 / 8000 (95.90%)
-Branch coverage: 2217 / 2745 (80.76%)
-```
-
-The count is deterministic across seeds — that is what #526 established. Coverage is not: seed 20260904 gave 96.21% line and 80.91% branch on the same tree, because which examples exercise a branch depends on the order they run in. One more reason to read `coverage/.last_run.json` from your own run rather than a figure someone wrote down.
+The example count is deterministic across seeds; coverage is not, because which examples exercise a branch depends on the order they run in. Read `coverage/.last_run.json` from your own run rather than a figure someone wrote down.
 
 ## Environment Gotchas
 
@@ -264,7 +253,7 @@ The count is deterministic across seeds — that is what #526 established. Cover
 - **Rails 8.1 host authorization** blocks unknown hosts (403) — disabled in `test.rb` with `config.hosts.clear`
 - **`allow_browser versions: :modern`** returns 406 (not 403), only fires when User-Agent contains a recognized version string
 - **`:unprocessable_content`** replaces deprecated `:unprocessable_entity` in Rails 8.1
-- **Ruby pattern matching:** `case/in Dry::Monads::Success(value)` / `Failure[:tag, payload]` works (dry-monads implements `deconstruct`/`deconstruct_keys`) and is the canonical controller style — used across ~13 controllers (see the Controllers example above). Use `if result.success?` only for a plain boolean check where you don't need to destructure the value.
+- **Ruby pattern matching:** `case/in Dry::Monads::Success(value)` / `Failure[:tag, payload]` works (dry-monads implements `deconstruct`/`deconstruct_keys`) and is the canonical controller style — used across the controllers (see the Controllers example above). Use `if result.success?` only for a plain boolean check where you don't need to destructure the value.
 - **Solid Cable** is used in development (not async adapter) for cross-process Turbo Stream broadcasts
 
 ## Conventions
