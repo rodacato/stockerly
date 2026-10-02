@@ -3,10 +3,7 @@
   <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= label %></p>
 
   <% if card %>
-    <% standing = comparison_standing(card[:points]) %>
-    <% chip = { ahead: ["bg-positive-bg text-positive-fg", t("portfolios.show.vas_arriba")],
-                behind: ["bg-negative-bg text-negative-fg", t("portfolios.show.vas_abajo")],
-                level: ["bg-bg-muted text-fg-subtle", level_label] }.fetch(standing) %>
+    <% chip = comparison_chip(comparison_standing(card[:points]), level_label) %>
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
       <p class="font-display text-4xl font-bold tracking-tight text-fg-default">
         <%= signed_points(card[:points]) %>

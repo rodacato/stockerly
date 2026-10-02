@@ -38,6 +38,14 @@ module DashboardHelper
     value.negative? ? :behind : :ahead
   end
 
+  def comparison_chip(standing, level_label)
+    case standing
+    when :ahead then [ "bg-positive-bg text-positive-fg", t("portfolios.show.vas_arriba") ]
+    when :behind then [ "bg-negative-bg text-negative-fg", t("portfolios.show.vas_abajo") ]
+    else [ "bg-bg-muted text-fg-default", level_label ]
+    end
+  end
+
   # Maps a points difference onto the same 0-100 track the sentiment cards use.
   # Past this distance more of it stops being informative.
   COMPARISON_TRACK_POINTS = 10
