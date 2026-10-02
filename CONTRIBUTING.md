@@ -201,6 +201,7 @@ somebody to paste in by hand.
 | `fix` | bug fix | Fixed |
 | `perf` | measured improvement | Changed |
 | `refactor` | internal change, same behaviour | Changed |
+| `style` | formatting only, no behaviour change | Changed |
 | `docs` | documentation only | Documentation |
 | `chore` | maintenance, dependencies, tooling | Maintenance |
 | `test` | tests only | Testing |
@@ -237,7 +238,18 @@ fix(trading): stop signing a position closed at cost
 chore(deps): bump simplecov from 1.2.0 to 1.3.0
 ```
 
-How a release is cut from these is [RELEASING.md](RELEASING.md).
+### What feeds the release
+
+You never edit `lib/stockerly/version.rb` or the entries in `CHANGELOG.md`: the Release workflow
+bumps the version and writes each entry from the commit prefixes above, so a good subject is your
+changelog line. A commit without a conventional prefix is left out of the entry.
+
+One exception, and it is the only time a pull request touches that file: if your change needs an
+operator to do something on upgrade — a migration that rewrites data, a new variable or secret, a
+behaviour that changes — add a line under `## [Unreleased]` in `CHANGELOG.md` in the same PR. The
+release moves it to the top of its entry.
+
+How a release is cut is [RELEASING.md](RELEASING.md).
 
 ## Code Conventions
 
