@@ -24,7 +24,7 @@ fail?":
 - Mission Control at `/admin/jobs` — Solid Queue's own view of failed jobs, and nothing about
   requests.
 
-**Sentry** is configured in [`config/initializers/sentry.rb`](../../../config/initializers/sentry.rb):
+**Sentry** is configured in `config/initializers/sentry.rb` (removed by this ADR):
 no DSN means no reporting, and `enabled_environments` is production and staging. That is a
 well-behaved optional vendor and it satisfies the letter of ADR-019 clause 2.
 

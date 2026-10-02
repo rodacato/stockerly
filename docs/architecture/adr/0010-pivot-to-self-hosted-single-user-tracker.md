@@ -17,16 +17,16 @@ The 2026-05-14 reset set the audience as **Adrian (dogfood) + a closed beta of �
 
 These are **product and UX failures — empty first-run, indicator illiteracy, data-entry friction — not architecture or code-quality failures.** The codebase is healthy: ~2,760 passing specs, 14 working market-data gateways,[^count] correct hexagonal boundaries, a working Kamal self-host path.
 
-[^count]: **The canonical count is 10 concrete gateways** (verified 2026-08-27): `app/contexts/market_data/gateways/` holds 13 files defining 12 classes, of which `MarketDataGateway` and `FundamentalsGateway` are base classes and `ApiKeyNotConfiguredError` is an error class. The remaining ten — Alpaca, AlphaVantage, Banxico, Coingecko, CryptoFearGreed, DataBursatil, Finnhub, Fmp, FxRates, Yfinance — are the drivers that talk to a provider. "14" here and "thirteen" in [ADR-016](./0016-canonical-market-data-observations.md) both count files at their respective dates; neither is the number of providers reachable. The `[[feedback-anti-patterns]]` #7 audit ("did anyone actually use it?") finally ran, and its answer is what drives this ADR.
+[^count]: As of 2026-10 `app/contexts/market_data/gateways/` holds 13 files and 8 concrete gateways; AlphaVantage, Fmp and `FundamentalsGateway` are retired. The "14" here counted files at the 2026-08 date, not providers. The "did anyone actually use it?" audit finally ran, and its answer is what drives this ADR.
 
 Two options were on the table when re-scoping:
 
 1. Deprecate the repo and start a fresh "Stockerly 2.0".
 2. Pivot in place on the same repo.
 
-The 2026-05-14 decision (`[[project-decision]]`) had already diagnosed "start from scratch" as an *emotional escape, not strategy*, and that reasoning still holds for the **code** — a rewrite would discard real assets to rebuild the same UX failure in a new stack. What genuinely changed is the **audience**, and an audience change does not require a code rewrite.
+The 2026-05-14 decision ([ADR-029](./0029-evolve-in-place-rather-than-rewrite.md)) had already diagnosed "start from scratch" as an *emotional escape, not strategy*, and that reasoning still holds for the **code** — a rewrite would discard real assets to rebuild the same UX failure in a new stack. What genuinely changed is the **audience**, and an audience change does not require a code rewrite.
 
-A competitive survey of nine self-hosted / open-source trackers was run to learn how the field solves these three failures ([`docs/research/competitive-trackers-2026-08.md`](../../research/competitive-trackers-2026-08.md)). The load-bearing finding: **no self-hosted tracker has solved the data-entry chore** — Ghostfolio, Portfolio Performance, and Wealthfolio all fall back to CSV + manual entry; automated sync always sits behind a paid aggregator. **Maybe Finance — the same Rails/Hotwire/Postgres stack as Stockerly — died partly because a VC-funded consumer-finance app could not sustain the Plaid aggregator cost model.** That is `[[feedback-cost-justified-tech]]` written in someone else's blood.
+A competitive survey of nine self-hosted / open-source trackers was run to learn how the field solves these three failures ([`docs/research/competitive-trackers-2026-08.md`](../../research/competitive-trackers-2026-08.md)). The load-bearing finding: **no self-hosted tracker has solved the data-entry chore** — Ghostfolio, Portfolio Performance, and Wealthfolio all fall back to CSV + manual entry; automated sync always sits behind a paid aggregator. **Maybe Finance — the same Rails/Hotwire/Postgres stack as Stockerly — died partly because a VC-funded consumer-finance app could not sustain the Plaid aggregator cost model.** That is the cost-justified-technology rule written in someone else's blood.
 
 ## Decision
 
@@ -34,7 +34,7 @@ A competitive survey of nine self-hosted / open-source trackers was run to learn
 
 Concretely:
 
-1. **Audience** drops the closed-beta secondary. The primary user is Adrian; "self-hosted for a technical third party" is a *packaging discipline*, not a managed audience. Building for a hypothetical self-hosting community is the next audience-fantasma and is explicitly rejected (`[[feedback-anti-patterns]]` #2).
+1. **Audience** drops the closed-beta secondary. The primary user is Adrian; "self-hosted for a technical third party" is a *packaging discipline*, not a managed audience. Building for a hypothetical self-hosting community is the next audience-fantasma and is explicitly rejected (building for personas that do not exist).
 
 2. **Aggressive subtraction.** The 2.0 begins by deleting what the multi-user/beta framing required and the single-user product does not: most of the `Administration` context (invites, user management, `pool_keys`), the multi-user surface of `Identity` (registration, email verification, first-admin bootstrap), and the models `invite_code`, `api_key_pool`,[^pool] `remember_token`, `email_event`, `user_activity`.
 
@@ -42,7 +42,7 @@ Concretely:
 
 3. **No aggregators, ever, at this scale.** Plaid/Yodlee/SnapTrade and equivalents are a permanent non-goal. They are a cost trap that helped kill a same-stack competitor and have thin, expensive Mexican coverage. (Pluggy.ai / Belvo are the only LatAm-native aggregators with real MX coverage, and even they are gated behind a documented trigger, not adopted now.)
 
-4. **Data-entry strategy = make manual/CSV not feel like a chore**, not chase magic sync. Priority order (full ranking in the research doc): (1) holdings-snapshot entry with a *skip-history* default, (2) smart CSV import (heuristic column mapping, MX date/number formats, idempotency), (3) manual entry made pleasant — ticker autocomplete, **Banxico FX auto-filled at trade date** (which simultaneously resolves the P0 `currency: "USD"` hardcode), learned rules. Read-only crypto exchange keys / wallet addresses (Rotki's model) and AI PDF-statement import (Kubera's) are attractive but require a documented trigger + JTBD before any work (`[[feedback-anti-patterns]]` #1).
+4. **Data-entry strategy = make manual/CSV not feel like a chore**, not chase magic sync. Priority order (full ranking in the research doc): (1) holdings-snapshot entry with a *skip-history* default, (2) smart CSV import (heuristic column mapping, MX date/number formats, idempotency), (3) manual entry made pleasant — ticker autocomplete, **Banxico FX auto-filled at trade date** (which simultaneously resolves the P0 `currency: "USD"` hardcode), learned rules. Read-only crypto exchange keys / wallet addresses (Rotki's model) and AI PDF-statement import (Kubera's) are attractive but require a documented trigger + JTBD before any work (no feature without a documented trigger).
 
 5. **The three failures are the actual product work**, addressed with cheap, high-leverage patterns from the survey: a seeded MXN/USD+CETES demo so first-run is never blank (failure #1), inline `?`-tooltips explaining each indicator in one sentence plus one distilled signal metric (failure #2), snapshot + skip-history + learned rules so manual entry decays (failure #3).
 

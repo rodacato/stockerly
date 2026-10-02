@@ -4,7 +4,7 @@
 - **Date:** 2026-08-24
 - **Author:** Adrian Castillo
 - **Supersedes:** [ADR-007](./0007-defer-i18n-adoption.md)
-- **Related:** [ADR-001](./0001-descriptive-not-prescriptive-language.md), [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md), `design/CODE_CHANGES.md`
+- **Related:** [ADR-001](./0001-descriptive-not-prescriptive-language.md), [ADR-010](./0010-pivot-to-self-hosted-single-user-tracker.md), `design/CODE_CHANGES.md` (retired; `git show 120600bb:design/CODE_CHANGES.md`)
 
 ---
 

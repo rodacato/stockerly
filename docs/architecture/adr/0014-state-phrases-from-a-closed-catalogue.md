@@ -4,7 +4,7 @@
 - **Date:** 2026-08-25
 - **Author:** Adrian Castillo (with review from the expert panel)
 - **Amends:** [ADR-013](./0013-action-labels-on-persisted-observations.md), which amends [ADR-001](./0001-descriptive-not-prescriptive-language.md)
-- **Related:** `design/DECISIONS.md` D3, D24, `design/CODE_CHANGES.md` §3
+- **Related:** `design/DECISIONS.md` D3, D24, `design/CODE_CHANGES.md` §3 (retired; `git show 120600bb:design/CODE_CHANGES.md`)
 
 ---
 

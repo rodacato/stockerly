@@ -51,7 +51,7 @@ contract; only their values are theme-scoped.**
    light values and one of dark values, so adding a theme is adding a block — not editing views.
 5. **Ship one theme.** No picker, no second palette, no abstraction beyond the two axes. The point
    is that the *second* theme costs a file; building it now would be inventing a need
-   ([[feedback-cost-justified-tech]]).
+   (boring tech over novelty, justified by a real pain).
 
 ## How to apply
 
