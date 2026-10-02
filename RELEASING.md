@@ -40,9 +40,24 @@ Releases are cut by [`.github/workflows/release.yml`](.github/workflows/release.
 dispatch. No step below tags by hand or pushes to `master`, and releasing is still independent of
 deploying: tagging does not deploy, and deploying does not tag ([docs/ops/deploy.md](docs/ops/deploy.md)).
 
+### Before you cut
+
+1. **`master` is green** and no other `release/v*` branch is open.
+2. **Pick the bump** from the table above. A migration that rewrites data, or a behaviour an
+   operator would notice after upgrading, is at least a `minor`.
+3. **Read what would go in:** `script/release_changelog.rb minor --dry-run` prints the entry and,
+   on stderr, every commit it leaves out.
+4. **Write the upgrade notes.** Anything an operator must know or do goes as plain prose under
+   `## [Unreleased]` in `CHANGELOG.md`, normally a `### Upgrade notes` heading and a few bullets:
+   a migration that changes data (`git diff --name-only <last tag>..HEAD -- db/migrate` lists them),
+   a new variable or secret, a behaviour that changed. The workflow moves that prose to the top of
+   the new entry, so the GitHub Release carries it. Land it on `master` through a pull request,
+   like any other change, *before* you dispatch.
+
 ### 1. Run the Release workflow
 
-From the Actions tab, pick the bump (`patch`, `minor` or `major`). It bumps
+From the Actions tab, pick the bump (`patch`, `minor` or `major`) — or from a terminal,
+`gh workflow run release.yml -f bump=minor` and then `gh run watch`. It bumps
 `lib/stockerly/version.rb`, generates the `CHANGELOG.md` entry from the commits since the last
 `v*` tag, and pushes a `release/vX.Y.Z` branch.
 
@@ -72,6 +87,15 @@ That push to `master` carries a version with no tag yet, which is what makes the
 `vX.Y.Z` and publish the GitHub Release with that changelog section as its notes. The suite is not
 re-run: `master` only takes pull requests whose required checks passed on a branch that was up to
 date with it.
+
+### After the merge
+
+- **Check it published:** `git fetch --tags`, then `gh release view vX.Y.Z`. If the release is
+  missing, see below.
+- **A release does not deploy.** Production moves when `master` is promoted
+  ([docs/ops/deploy.md](docs/ops/deploy.md)); the upgrade notes in the release say what that deploy
+  will run, migrations included.
+- There is nothing else to push or build: no image carries the version (see *Docker Images*).
 
 ### If the publish step fails
 
