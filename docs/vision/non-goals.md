@@ -2,8 +2,7 @@
 
 > What Stockerly explicitly **is NOT**. As important as what we ARE.
 > Each non-goal here is a conscious decision with a reason. Changing one requires an ADR.
-> Last updated: **2026-08-27** (provider rationales re-verified against the code; pivot to
-> self-hosted single-user is [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md), 2026-08-20).
+> Pivot to self-hosted single-user is [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md), 2026-08-20).
 
 ---
 
@@ -63,7 +62,7 @@
 | ~~Internationalization (i18n)~~ | **No longer a non-goal.** [ADR-0011](../architecture/adr/0011-adopt-i18n-for-the-2.0-redesign.md) adopted `i18n-tasks` with a single locale during the 2.0 redesign: deferring was right while the alternative was rewriting working screens, and stopped being right once every string was being rewritten anyway. es-MX is still the only language — what changed is where the strings live. |
 | Social features: public sharing, comments, forums, leaderboards | Not a social product. Not a community product. |
 | Profile sharing / public profile privacy mode | Subset of the above. |
-| Real push notifications (browser/SMS) | Optional bonus, not core. Email + in-app is enough. |
+| SMS notifications | Optional bonus, not core. Email, in-app and browser Web Push (shipped, opt-in per device) are enough. |
 
 ### Market and asset classes
 
@@ -83,7 +82,7 @@
 | Not built | Why |
 |---|---|
 | Tick-level WebSocket for live prices | No configured provider streams on a free tier — Alpaca's free plan refuses anything inside 15 minutes at all — and daily polling is enough for a weekly cadence. |
-| Deep historical data (>5 years) | Alpaca reaches 2016 and CoinGecko's free tier walls off at 365 days; the exception is Banxico, whose full FIX series was backfilled to 1991 because it is one free request (ADR-009). Enough for current JTBDs; if Adrian needs more depth, evaluate. |
+| History deeper than a free source serves | The backfill asks for up to ten years (`BackfillPriceHistoryJob::DAYS`) and each gateway clamps to what it serves: CoinGecko's free tier walls off at 365 days, while Banxico's FIX series reaches 1991 because it is one free request (ADR-009). Enough for current JTBDs; if Adrian needs more depth, evaluate. |
 | Strategy backtesting | A TA backtesting product is a different thing. Stockerly observes the present, it doesn't simulate the past. |
 
 ### Performance
@@ -98,7 +97,7 @@
 ## How a new non-goal gets added
 
 1. A feature or expansion proposal comes up.
-2. If it falls into one of the categories above → automatically out, not discussed in sprint planning.
+2. If it falls into one of the categories above → automatically out, not discussed again.
 3. If it's ambiguous → discussion + conscious decision → if decided "out", add it here with a reason.
 4. Changing a non-goal (removing it from the list) requires an ADR.
 
