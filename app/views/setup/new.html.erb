@@ -3,6 +3,8 @@
 <div class="flex flex-col gap-6">
   <%= render "shared/auth_header", title: t("setup.new.titulo"), subtitle: t("setup.new.subtitulo") %>
 
+  <p class="rounded-lg bg-bg-muted px-4 py-3 text-sm text-fg-subtle"><%= t("setup.new.sin_correo") %></p>
+
   <%= render "shared/flash_alert",
              message: (t("setup.new.corrige") if @errors.present?),
              messages: @errors.to_h.flat_map { |field, messages|
