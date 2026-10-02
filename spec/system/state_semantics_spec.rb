@@ -51,6 +51,7 @@ RSpec.describe "State semantics in the browser", type: :system, js: true do
     digest.click
 
     expect(digest["aria-checked"]).to eq("false")
+    page.driver.wait_for_network_idle
     expect(admin.alert_preference.reload.email_digest).to be(false)
   end
 end
