@@ -68,10 +68,9 @@ RSpec.describe AlertsHelper, type: :helper do
       expect(helper.alert_rule_kind_label(rule)).to eq("Acción MX")
     end
 
-    it "falls back to the symbol heuristic when the rule outlived its asset" do
-      rule = build(:alert_rule, asset_symbol: "GOOGL")
-
-      expect(helper.alert_rule_kind_label(rule)).to eq("Acción")
+    it "gives no kind when the rule outlived its asset, instead of guessing from the symbol" do
+      expect(helper.alert_rule_kind_label(build(:alert_rule, asset_symbol: "GOOGL"))).to be_nil
+      expect(helper.alert_rule_kind_label(build(:alert_rule, asset_symbol: "GONE.MX"))).to be_nil
     end
 
     it "still reads marketwide conditions off the condition" do
@@ -91,6 +90,37 @@ RSpec.describe AlertsHelper, type: :helper do
       end
 
       expect(queries).to eq(1)
+    end
+  end
+
+  describe "#alert_rule_orphan" do
+    it "is nil for a symbol the catalogue lists" do
+      create(:asset, symbol: "AAPL")
+
+      expect(helper.alert_rule_orphan(build(:alert_rule, asset_symbol: "AAPL"))).to be_nil
+    end
+
+    it "names the current symbol of a renamed asset" do
+      create(:asset, symbol: "META", former_symbols: [ "FB" ])
+
+      expect(helper.alert_rule_orphan(build(:alert_rule, asset_symbol: "FB")))
+        .to eq(state: :renamed, current_symbol: "META")
+    end
+
+    it "flags a symbol the catalogue does not know" do
+      expect(helper.alert_rule_orphan(build(:alert_rule, asset_symbol: "GONE"))).to eq(state: :missing)
+    end
+
+    it "exempts marketwide rules, which watch no symbol" do
+      expect(helper.alert_rule_orphan(build(:alert_rule, :marketwide, condition: :cete_auction))).to be_nil
+    end
+  end
+
+  describe "#alert_condition_summary without a known currency" do
+    it "omits the currency instead of guessing one" do
+      rule = build(:alert_rule, asset_symbol: "GONE", condition: :price_crosses_above, threshold_value: 200)
+
+      expect(helper.alert_condition_summary(rule)).to eq("cruza 200 al alza")
     end
   end
 end

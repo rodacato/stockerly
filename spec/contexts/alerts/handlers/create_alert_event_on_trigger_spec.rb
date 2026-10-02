@@ -5,6 +5,12 @@ RSpec.describe Alerts::Handlers::CreateAlertEventOnTrigger do
 
   describe ".call" do
     let(:user) { create(:user) }
+
+    before do
+      create(:asset, symbol: "AAPL", currency: "USD")
+      create(:asset, symbol: "WALMEX.MX", currency: "MXN")
+    end
+
     let(:rule) { create(:alert_rule, user: user, asset_symbol: "AAPL", condition: :price_crosses_above, threshold_value: 200.0) }
 
     it "creates an AlertEvent" do

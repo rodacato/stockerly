@@ -82,10 +82,11 @@ RSpec.describe AlertRule, type: :model do
       expect(build(:alert_rule, asset_symbol: "AAPL").currency).to eq("USD")
     end
 
-    # A rule can outlive the asset it was written against.
-    it "falls back to the suffix rule for a symbol the catalogue no longer has" do
-      expect(build(:alert_rule, asset_symbol: "GONE.MX").currency).to eq("MXN")
-      expect(build(:alert_rule, asset_symbol: "GONE").currency).to eq("USD")
+    # A rule can outlive the asset it was written against; a guess from the
+    # suffix would print a currency as if it were known.
+    it "is nil for a symbol the catalogue no longer has" do
+      expect(build(:alert_rule, asset_symbol: "GONE.MX").currency).to be_nil
+      expect(build(:alert_rule, asset_symbol: "GONE").currency).to be_nil
     end
   end
 end

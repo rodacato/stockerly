@@ -5,6 +5,11 @@ RSpec.describe Alerts::Domain::TriggerNotice do
     described_class.new(rule: rule, asset_symbol: symbol, price: price)
   end
 
+  before do
+    create(:asset, symbol: "AAPL", currency: "USD")
+    create(:asset, symbol: "WALMEX.MX", currency: "MXN")
+  end
+
   describe "#title" do
     it "states what happened, with the threshold in its currency" do
       rule = build(:alert_rule, asset_symbol: "AAPL", condition: :price_crosses_above, threshold_value: 200)
@@ -70,6 +75,12 @@ RSpec.describe Alerts::Domain::TriggerNotice do
       rule = build(:alert_rule, condition: :price_crosses_above, threshold_value: 200)
 
       expect(notice_for(rule, price: "200.14").body).to match(/\A[^\d]*(USD|MXN) /)
+    end
+
+    it "drops the currency rather than guess one for a symbol the catalogue lost" do
+      rule = build(:alert_rule, asset_symbol: "GONE", condition: :price_crosses_above, threshold_value: 200)
+
+      expect(notice_for(rule, price: "200.14").body).to eq("Al disparo: 200.14 · no vuelve a avisarte en 60 min")
     end
   end
 

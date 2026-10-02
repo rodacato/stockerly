@@ -7,6 +7,9 @@ RSpec.describe Alerts::Handlers::CreateNotificationOnAlert do
 
   describe ".call" do
     let(:user) { create(:user) }
+
+    before { create(:asset, symbol: "AAPL", currency: "USD") }
+
     let(:rule) { create(:alert_rule, user: user, asset_symbol: "AAPL") }
 
     it "creates a notification via use case" do
