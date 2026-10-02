@@ -521,6 +521,15 @@ es-MX:
       titulo: Panorama
       ver_todos: Ver todos
       vs_ayer: "%{delta} vs ayer"
+    signal_row:
+      cerrar: Cerrar
+      color_texto: 'El color es la lectura: verde, compra; naranja, vende.'
+      explicar: Cómo leer la flecha y el color de %{symbol}
+      flecha_baja: Movimiento a la baja
+      flecha_sube: Movimiento al alza
+      flecha_texto: 'La flecha es el movimiento que describe la frase: hacia arriba,
+        al alza; hacia abajo, a la baja.'
+      titulo: Cómo leer la señal
   data_sources:
     alpaca_us: Acciones EE. UU. — Alpaca
     banxico_cetes: CETES — Banxico
