@@ -657,6 +657,8 @@ es-MX:
         ha corrido.
       conecta_titulo: Conecta Alpaca
       descripcion: Lo que se mueve afuera, no en tu cartera
+      olas_baseline_nota: La referencia es %{baseline}; no se usa una serie de referencia
+        mexicana.
       olas_desde: desde tu última visita · %{since}
       olas_grupo:
         geografia: geografía

@@ -12,4 +12,10 @@ module DiscoverHelper
     t("discover.show.olas_vs", baseline: MarketData::Discover::BasketCatalogue.baseline,
                                value: signed_points(wave.vs_baseline))
   end
+
+  def wave_baseline_note(wave)
+    return unless MarketData::Discover::BasketCatalogue.baseline_noted?(wave.symbol)
+
+    t("discover.show.olas_baseline_nota", baseline: MarketData::Discover::BasketCatalogue.baseline)
+  end
 end

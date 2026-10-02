@@ -19,6 +19,10 @@ module MarketData
           data["baseline"]
         end
 
+        def baseline_noted?(symbol)
+          rows.any? { |row| row["symbol"] == symbol && row["baseline_note"] == true }
+        end
+
         # Every symbol the warm job has to fetch: the baskets plus the ruler
         # they are measured against, in one batch.
         def symbols
@@ -31,8 +35,12 @@ module MarketData
 
         private
 
+        def rows
+          data["baskets"] || []
+        end
+
         def baskets
-          (data["baskets"] || []).map do |row|
+          rows.map do |row|
             Basket.new(symbol: row["symbol"], name: row["name"],
                        group: row["group"], referents: Array(row["referents"]))
           end
