@@ -114,10 +114,10 @@ the workflow logs; variables are printed in plain text, and this repository's lo
 | `APP_HOST` | variable | yes | Public hostname (`stockerly.example.com`). Kamal's proxy host, the Rails Host allowlist, mail links and the mail sender (`noreply@APP_HOST`) all derive from it. The deploy stops before Kamal runs without it, and the app refuses to boot |
 | `RESEND_API_KEY` | secret | no | From the Resend dashboard |
 | `METRICS_TOKEN` | secret | no | Generate with `openssl rand -hex 32` — enables the Prometheus endpoint |
-| `METRICS_ENABLED` | variable | no — `false` | Master switch for the Prometheus endpoint |
+| `METRICS_ENABLED` | variable | no | Master switch for the Prometheus endpoint (see [Prometheus Metrics](#prometheus-metrics-optional)) |
 | `VAPID_PUBLIC_KEY` | secret | no | `bin/rails stockerly:vapid_keys` prints a pair — enables push notifications |
 | `VAPID_PRIVATE_KEY` | secret | no | idem, from the same run as the public half |
-| `VAPID_SUBJECT` | variable | no — `mailto:stockerly@localhost` | Contact the push service reaches you at |
+| `VAPID_SUBJECT` | variable | no | Contact the push service reaches you at; the default is in `app/contexts/notifications/domain/web_push_delivery.rb` |
 
 Nothing else is read. `DATABASE_URL` is built by `.kamal/secrets` from `POSTGRES_PASSWORD`, and
 provider API keys are entered in **Admin > Integrations**, not here.
@@ -158,7 +158,7 @@ After this, verify at `https://$APP_HOST`
 
 ### Emergency: setup from the host
 
-Only when Actions cannot run it. Every secret has to be exported in your shell, with the same values
+Only when Actions cannot run it. Every secret and variable the deploy reads has to be exported in your shell, with the same values
 as the Environment — `.kamal/secrets` turns a missing one into an empty string without a word:
 
 ```bash
@@ -178,6 +178,10 @@ export ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=...
 # Optional — each is silently absent if unset
 export RESEND_API_KEY=...
 export METRICS_TOKEN=...
+export METRICS_ENABLED=true   # only with METRICS_TOKEN
+export VAPID_PUBLIC_KEY=...
+export VAPID_PRIVATE_KEY=...
+export VAPID_SUBJECT=mailto:you@example.com
 
 bin/kamal setup
 ```
@@ -187,7 +191,7 @@ bin/kamal setup
 After the first deploy, visit `https://$APP_HOST/setup` to run the **Setup Wizard**. It is only accessible when no users exist in the database and will:
 
 1. Create your admin account (name, email, password)
-2. Bootstrap platform defaults (site config, integrations, market indices, FX rates)
+2. Bootstrap platform defaults (site config, integrations, market indices)
 3. Guide you through API key configuration and asset selection
 
 > **Note:** Seeds (`db/seeds.rb`) are **not** run in production — the Setup Wizard handles all bootstrapping.
@@ -332,18 +336,11 @@ Prometheus to scrape. The feature is **opt-in and decoupled from infrastructure*
 treat it like any third-party metrics endpoint: a standard HTTPS URL guarded by a
 bearer token. No tunnel changes, no private port, no VPN required.
 
-- **Enable it:** set the `METRICS_ENABLED` Environment **variable** to `true`
-  **and** add the `METRICS_TOKEN` **secret**. Both are required. Leave
-  `METRICS_ENABLED` unset (the default) and the whole feature stays off — no
-  endpoint, no middleware, no overhead. The flag is separate from the token so
-  you can toggle metrics off (flip the variable) without deleting the secret;
-  enabling without a token fails closed (stays off, logs a warning).
-- **Endpoint:** `GET https://<APP_HOST>/metrics`
-- **Port inside the container:** `3000` (same Puma the app runs on; routed by
-  kamal-proxy). No extra port is published.
-- **Auth:** `Authorization: Bearer <METRICS_TOKEN>`. Without a valid token the
-  endpoint returns `401`; when `METRICS_TOKEN` is unset it returns `404`
-  (fail-closed — never exposed by accident).
+- **Enable it:** set the `METRICS_ENABLED` variable to `true` **and** add the `METRICS_TOKEN`
+  secret. Either one missing leaves it off. The gate, the status codes and what is exposed are in
+  `lib/middleware/metrics_endpoint.rb` and `config/initializers/yabeda.rb`.
+- **Endpoint:** `GET https://<APP_HOST>/metrics` with `Authorization: Bearer <METRICS_TOKEN>`.
+  No extra port, no tunnel change.
 
 Example Prometheus scrape config:
 
@@ -358,12 +355,6 @@ scrape_configs:
     static_configs:
       - targets: ["stockerly.example.com"]  # your APP_HOST
 ```
-
-Exposed metrics include `stockerly_data_age_seconds` (age of the freshest
-market-data sync), Rails request metrics (yabeda-rails), and per-worker Puma
-metrics (yabeda-puma-plugin, clustered only). Under clustered Puma
-(`WEB_CONCURRENCY > 0`) a shared file store aggregates workers so a single scrape
-reflects the whole instance.
 
 ## Troubleshooting
 
@@ -392,8 +383,7 @@ journalctl -u cloudflared -f
 Turn on **Modo desarrollador** in Ajustes → Estado y mantenimiento, then open Ajustes → Errores
 (`/admin/errors`). Every unhandled exception from a request or a job is recorded there with its
 class, the failing application line, the full backtrace and the request that caused it, grouped so
-a bug that fired forty times is one entry. Entries are kept for 30 days and purged nightly
-(ADR-020).
+a bug that fired forty times is one entry. How long they are kept is `ErrorEvent`'s concern (ADR-020).
 
 The switch controls the screen, not the recording: errors are captured whether it is on or off, so
 turning it on after the fact still shows what already happened.
