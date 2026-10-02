@@ -157,5 +157,16 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
       expect(radar.map { |e| e.asset.symbol }).to eq([ "WATCHED", "HELD" ])
       expect(radar.map(&:kind)).to eq([ :watchlist, :position ])
     end
+
+    it "shows an asset once when it is both held and watched, as the position" do
+      both = with_day_change(mxn_asset(symbol: "BOTH"), 4.9)
+      create(:position, portfolio: portfolio, asset: both, shares: 2, avg_cost: 1, status: :open)
+      create(:watchlist_item, user: user, asset: both)
+
+      radar = described_class.call(user: user)[:radar]
+
+      expect(radar.map { |e| e.asset.symbol }).to eq([ "BOTH" ])
+      expect(radar.map(&:kind)).to eq([ :position ])
+    end
   end
 end
