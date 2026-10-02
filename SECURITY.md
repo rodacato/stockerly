@@ -49,8 +49,7 @@ The following files contain or reference secrets and **must never be committed**
 
 | File | Purpose |
 |------|---------|
-| `config/master.key` | Decrypts Rails credentials |
-| `config/credentials/*.key` | Environment-specific credential keys |
+| `config/master.key`, `config/credentials/*.key` | Rails credentials keys. The app does not use Rails credentials, but the patterns stay ignored |
 | `.env*` (except `.env.example`) | Local environment variables |
 | `.kamal/secrets` | References to deployment secrets (values come from environment) |
 
@@ -61,7 +60,7 @@ The following files contain or reference secrets and **must never be committed**
   All of these patterns are **anchored to the repository root** — `/config/*.key` alone does not
   match a key nested under `config/credentials/`, which is why both key patterns are listed.
   Verify any pattern you rely on with `git check-ignore -v <path>` rather than assuming.
-- **Rails credentials** are encrypted at rest (`config/credentials.yml.enc`)
+- **Provider API keys** live in `Integration` rows, encrypted at rest with Active Record Encryption; its keys come from `ACTIVE_RECORD_ENCRYPTION_*` environment variables (see `config/initializers/active_record_encryption.rb`). Set your own for any real instance: the initializer's fallbacks are development placeholders
 - **Deployment secrets** are stored in GitHub Actions Secrets and injected at deploy time — never hardcoded
 - **Container images** are stored in GitHub Container Registry (ghcr.io) as private packages
 - **Database passwords** are managed through environment variables, never in config files
@@ -69,8 +68,8 @@ The following files contain or reference secrets and **must never be committed**
 ## Guidelines for Contributors
 
 1. **Never commit secrets** — no API keys, passwords, tokens, or private keys
-2. **Use Rails credentials** (`bin/rails credentials:edit`) for application secrets
-3. **Use environment variables** for infrastructure secrets (database, registry, etc.)
+2. **Use environment variables** for application and infrastructure secrets (`SECRET_KEY_BASE`, encryption keys, database, registry, etc.)
+3. **Enter provider API keys through the app** (Setup Wizard or Integrations), never in files
 4. **Do not log sensitive data** — avoid logging params that may contain passwords or tokens
 5. **Keep dependencies updated** — run `bundle audit` periodically to check for known vulnerabilities
 6. **Review `.gitignore`** before committing — ensure no sensitive files are staged
