@@ -1,20 +1,20 @@
 name: Feature / Refactor / Chore
 description: Propose work with full discovery card. Required for anything that's not a bug.
 title: "[feat] "
-labels: ["triage", "discovery-needed"]
+labels: []
 body:
   - type: markdown
     attributes:
       value: |
         ## Discovery card
-        For work to enter the backlog as `ready`, it must pass 4 filters. Without all 4, this issue stays in `triage` with the `discovery-needed` label.
+        For work to be ready to build, it must pass 4 filters. Without all 4, it stays a draft on the board.
 
-        See [`docs/vision/jobs-to-be-done.md`](../docs/vision/jobs-to-be-done.md) and the [working method memory](../.claude/memory/project_working_method.md).
+        See [`docs/vision/jobs-to-be-done.md`](../docs/vision/jobs-to-be-done.md) and [`docs/ops/github-workflow.md`](../docs/ops/github-workflow.md).
 
   - type: textarea
     id: trigger
     attributes:
-      label: 1. Trigger personal documentado
+      label: 1. Documented personal trigger
       description: When/where did this need appear? Specific event, date, or pain point. Without a real trigger, this is engineering theater.
       placeholder: |
         On 2026-05-14, while reviewing my portfolio in the weekly cadence, I noticed that...
@@ -26,7 +26,7 @@ body:
     attributes:
       label: 2. Job to be Done
       description: |
-        Format: *"When X, I want Y, so that Z"*. Must map to one of the 6 canonical JTBDs OR justify why this is a new JTBD (which then requires editing `docs/vision/jobs-to-be-done.md`).
+        Format: *"When X, I want Y, so that Z"*. Must map to one of the canonical JTBDs OR justify why this is a new JTBD (which then requires editing `docs/vision/jobs-to-be-done.md`).
       placeholder: |
         When X, I want Y, so that Z.
         Maps to JTBD #N (or: new JTBD proposed because...).
@@ -36,7 +36,7 @@ body:
   - type: input
     id: metric
     attributes:
-      label: 3. Métrica de uso
+      label: 3. Usage metric
       description: How will we know this works AND gets used? Proxy if needed.
       placeholder: "Adrian opens this section ≥ N times/week; tracked via X."
     validations:
@@ -61,7 +61,7 @@ body:
     attributes:
       label: Priority
       options:
-        - "P0 — beta-blocker"
+        - "P0 — breaks a core JTBD"
         - "P1 — cleanup or refactor before next features"
         - "P2 — quality / polish"
     validations:
