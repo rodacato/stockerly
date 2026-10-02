@@ -76,6 +76,7 @@
       <%= render "portfolios/comparison_card",
                  label: t(".vs_cetes", term: Trading::UseCases::AssembleConsolidado::CETES_TERM),
                  card: @vs_cetes,
+                 level_label: t(".igual_cetes"),
                  body: (@vs_cetes && t(".vs_cetes_cuerpo",
                         mine: signed_percent(@vs_cetes[:mine]),
                         benchmark: signed_percent(@vs_cetes[:benchmark]),
@@ -86,9 +87,13 @@
         <% hold_args = { from: l(@from, format: :long),
                          value: format_currency_mx(@vs_hold[:hold_value], currency: @currency, precision: 0),
                          points: number_with_precision(@vs_hold[:points].abs, precision: 1) } %>
-        <% hold_body = @vs_hold[:points].negative? ? t(".vs_hold_cuerpo", **hold_args) : t(".vs_hold_cuerpo_positivo", **hold_args) %>
+        <% hold_body = case comparison_standing(@vs_hold[:points])
+                       when :behind then t(".vs_hold_cuerpo", **hold_args)
+                       when :ahead then t(".vs_hold_cuerpo_positivo", **hold_args)
+                       else t(".vs_hold_cuerpo_igual", **hold_args)
+                       end %>
       <% end %>
-      <%= render "portfolios/comparison_card", label: t(".vs_hold"), card: @vs_hold, body: hold_body %>
+      <%= render "portfolios/comparison_card", label: t(".vs_hold"), card: @vs_hold, body: hold_body, level_label: t(".igual_hold") %>
     </div>
 
     <% if @vs_cetes || @vs_hold %>

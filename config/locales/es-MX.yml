@@ -1369,6 +1369,8 @@ es-MX:
       como_ha_ido: Cómo ha ido
       como_repartido: Cómo está repartido
       en_el_periodo: "%{percent} en el periodo"
+      igual_cetes: Igual que CETES
+      igual_hold: Igual que comprar y mantener
       patrimonio_total: PATRIMONIO TOTAL · %{currency}
       periodo:
         m1: 1M
@@ -1394,6 +1396,8 @@ es-MX:
       vs_hold: VS SÓLO MANTENER
       vs_hold_cuerpo: Si no hubieras movido nada desde el %{from}, hoy tendrías %{value}.
         Tus compras y ventas restaron %{points} puntos.
+      vs_hold_cuerpo_igual: Si no hubieras movido nada desde el %{from}, hoy tendrías
+        %{value}. Tus compras y ventas no cambiaron el resultado.
       vs_hold_cuerpo_positivo: Si no hubieras movido nada desde el %{from}, hoy tendrías
         %{value}. Tus compras y ventas sumaron %{points} puntos.
   posicion:

@@ -34,6 +34,19 @@ RSpec.describe "Consolidado", type: :request do
       expect(response.body).to include(I18n.t("portfolios.show.como_repartido"))
     end
 
+    it "reads a portfolio that matches buy-and-hold as level, not ahead" do
+      with_history
+      create(:trade, portfolio: portfolio, asset: asset, side: :buy, shares: 100,
+                     price_per_share: 10, currency: "MXN", executed_at: 400.days.ago)
+      create(:asset_price_history, asset: asset, date: 400.days.ago.to_date, close: 10)
+      snapshot(400, 1_000)
+      get portfolio_path
+
+      expect(response.body).to include(I18n.t("portfolios.show.igual_hold"))
+      expect(response.body).to include("no cambiaron el resultado")
+      expect(response.body).not_to include(I18n.t("portfolios.show.vas_arriba"))
+    end
+
     # D2 finally earns its debut: this is the chart PriceChartController was
     # written for, with two series rather than a 60px sparkline.
     it "mounts the chart with both series" do
