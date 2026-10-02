@@ -199,6 +199,22 @@ RSpec.describe "Descubrir", type: :request do
       expect(summary).to include("[&::-webkit-details-marker]:hidden")
     end
 
+    describe "the baseline note" do
+      it "says the ruler is SPY on a basket flagged in the catalogue" do
+        cache_waves(wave_for("EWW", group: "geografia", name: "México"))
+
+        get discover_path
+
+        expect(response.body).to include("La referencia es SPY; no se usa una serie de referencia mexicana.")
+      end
+
+      it "stays off a basket the catalogue does not flag" do
+        get discover_path
+
+        expect(response.body).not_to include("serie de referencia mexicana")
+      end
+    end
+
     describe "the window" do
       def cache_window(days)
         memory.write(WarmDiscoverJob::CACHE_KEY,

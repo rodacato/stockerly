@@ -7,6 +7,9 @@
 # `baseline` is the ruler every other basket is measured against, and is not
 # itself a wave.
 #
+# `baseline_note: true` marks a basket whose natural reference is not the
+# baseline, so the screen says which ruler it is read against.
+#
 # `referents` are the well-known holdings the exposure chip reads: hold one and
 # the screen says "ya vía NVDA" instead of "sin exposición". They are a
 # convenience, not an index definition — edit them freely. GLD and TLT have
@@ -18,6 +21,7 @@ baskets:
   - symbol: EWW
     name: México
     group: geografia
+    baseline_note: true
     referents: [WALMEX.MX, GFNORTEO.MX, AMXB.MX]
   - symbol: VGK
     name: Europa

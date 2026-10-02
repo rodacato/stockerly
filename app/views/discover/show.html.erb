@@ -57,6 +57,9 @@
               <p class="text-xs text-fg-subtle">
                 <%= wave.name %> · <%= t(".olas_grupo.#{wave.group}") %>
               </p>
+              <% if (note = wave_baseline_note(wave)) %>
+                <p class="text-xs text-fg-subtle"><%= note %></p>
+              <% end %>
             </div>
 
             <div class="shrink-0 text-right">
@@ -101,6 +104,9 @@
                         <span class="shrink-0 font-mono <%= gain_color(wave.change_percent) %>">
                           <%= signed_percent(wave.change_percent) %>
                         </span>
+                      <% end %>
+                      <% if (note = wave_baseline_note(wave)) %>
+                        <p class="text-xs text-fg-subtle"><%= note %></p>
                       <% end %>
                     </li>
                   <% end %>
