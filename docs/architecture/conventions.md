@@ -61,16 +61,7 @@ class ToggleRule < SimpleUseCase
 end
 ```
 
-Caller:
-
-```ruby
-def toggle
-  rule = Alerts::UseCases::ToggleRule.call(user: current_user, rule_id: params[:id])
-  redirect_to alerts_path, notice: "Alert #{rule.active? ? 'activated' : 'paused'}."
-rescue ActiveRecord::RecordNotFound
-  redirect_to alerts_path, alert: "Alert rule not found."
-end
-```
+The caller rescues `ActiveRecord::RecordNotFound` for the 404 path; see `AlertsController#toggle`.
 
 ### Decision rule
 
@@ -85,7 +76,7 @@ return a `Result` at all. See [ADR-006](adr/0006-simple-use-case-criterion.md#th
 
 ## Cross-context communication (ADR-002)
 
-Writes that cross contexts flow exclusively through domain events. Reads follow the customer/supplier pattern — the downstream context (Trading today) calls the supplier's (MarketData's) public read API (`Queries::*`, marked `Domain::*` services, or use cases), never the supplier's ActiveRecord models or gateways. See [ADR-002](adr/0002-trading-marketdata-boundary.md) for details, and [ADR-024](adr/0024-asset-ownership-by-column.md) for the one table two contexts write: `Asset` is owned by column, and a write on the other side of that seam calls the owner's use case.
+Writes that cross contexts flow exclusively through domain events. Reads follow the customer/supplier pattern — the downstream context (Trading and Alerts today) calls the supplier's (MarketData's) public read API (`Queries::*`, marked `Domain::*` services, or use cases), never the supplier's ActiveRecord models or gateways. See [ADR-002](adr/0002-trading-marketdata-boundary.md) for details, and [ADR-024](adr/0024-asset-ownership-by-column.md) for the one table two contexts write: `Asset` is owned by column, and a write on the other side of that seam calls the owner's use case.
 
 ---
 
@@ -97,14 +88,14 @@ before the screen does.
 
 | | Allowed | Where the allowance lives |
 |---|---|---|
-| An action verb on an asset — *compra*, *vende* | ✅ over a persisted observation | `MarketData::Domain::ObservationAction::ACTIONS` — eight observation types, nothing else |
+| An action verb on an asset — *compra*, *vende* | ✅ over a persisted observation | `MarketData::Domain::ObservationAction::READINGS` — eight observation types, nothing else |
 | A sentence naming a state — *"Estirado — no es momento de comprar"* | ✅ from the closed catalogue | `MarketData::Domain::AssetState` + the phrase keys in `es-MX.yml` |
 | A verb derived in a view, a helper, or a query at render time | ❌ | — |
 | A portfolio-level verb — *rebalancea*, *sal de esta posición* | ❌ | observations are per-asset; nothing backs it |
 | Probabilistic predictions, confidence-weighted forecasts, LLM-generated copy | ❌ | untouched by all three ADRs |
 
 Widening the allowance means **writing a detector**, not editing a template: add the observation
-type and its persistence path, then add the row to `ACTIONS` or `BY_OBSERVATION`. The reading that
+type and its persistence path, then add the row to `READINGS`. The reading that
 produced the verb stays on screen next to it, dated by its `observed_at`.
 
 See [ADR-001](adr/0001-descriptive-not-prescriptive-language.md),
@@ -178,25 +169,10 @@ conflate them. See [ADR-015](adr/0015-one-api-key-per-provider.md).
 
 ## A control over nothing is not rendered (D142)
 
-Two clauses, and both are narrow on purpose:
-
-1. **A control whose every option leads to the same view is not rendered.** The period selector on
-   Consolidado offers five ranges of a curve that does not exist yet; whichever one is pressed, the
-   same empty-state card comes back.
-2. **A readout whose value is zero because the thing it counts does not exist yet is not
-   rendered.** Reglas drew *Disparadas hoy 0* and *de 0 reglas* directly above the card inviting
-   the first rule.
-
-**What the rule does not cover, and this is the half that keeps it usable:**
-
-- **A control that configures something for the future stays.** Notification preferences are worth
-  setting before the first rule exists, so a rule that hides them is worse than no rule.
-- **A zero that is a reading stays.** An empty *bucket* is not an empty inbox: the inbox chips
-  render whenever the inbox has anything in it, because saying *nothing here yet* while two notices
-  sit one chip away is a lie the filter would tell daily.
-
-The cheapest way back, if hiding turns out to be wrong for a given control, is to render it
-disabled rather than absent.
+A control whose every option leads to the same view is not rendered, and neither is a readout
+whose value is zero because the thing it counts does not exist yet. A control that configures
+something for the future stays, and so does a zero that is a reading. The decision, its three
+instances and its cost are `design/DECISIONS.md` D142.
 
 ---
 
