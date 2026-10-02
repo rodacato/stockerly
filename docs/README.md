@@ -30,7 +30,7 @@
    **all outstanding work in the private `Stockerly` GitHub Project** — never in a markdown file.
    See [ADR-022](./architecture/adr/0022-github-as-the-system-of-record.md) and
    [`ops/github-workflow.md`](./ops/github-workflow.md). Never duplicate.
-2. **Doc > 200 lines: audit it.** Is it a reference or fiction? Useful documentation fits on a single screen.
+2. **Doc > 200 lines: audit it.** Is it a reference or fiction? Enumerated reference (a runbook, a panel roster, a provider survey) is legitimately long; prose that repeats itself or restates what the code holds is not.
 3. **Edits to `vision/` or `architecture/adr/`** require a commit message explaining the reason.
 
 ---

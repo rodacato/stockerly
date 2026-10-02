@@ -1,6 +1,6 @@
 # Market data providers audit (2026-08)
 
-> **Snapshot as of 2026-08-26; annotated 2026-08-27.** The provider probes below have not been
+> **Snapshot as of 2026-08-26; annotated 2026-08-27; retirements noted 2026-10-02.** The provider probes below have not been
 > re-run, and every provider fact is as of that date. **The wiring they describe has since
 > changed**, and the sections that were rewritten by that change say so inline:
 >
@@ -8,10 +8,11 @@
 > |---|---|
 > | [ADR-015](../architecture/adr/0015-one-api-key-per-provider.md) | Multi-key rotation retired — §3's finding is now policy, not a proposal |
 > | [ADR-017](../architecture/adr/0017-python-bridge-for-yahoo-finance.md) | Yahoo is reached through a Python bridge, not directly; §1's datacenter-IP theory is **disproved** |
-> | [#312](https://github.com/rodacato/stockerly/issues/312) | Dividends and splits route by market (Alpaca / bridge); FMP is fundamentals-only and `maintainer_only` |
+> | [#312](https://github.com/rodacato/stockerly/issues/312) | Dividends and splits route by market (Alpaca / bridge); FMP was fundamentals-only and `maintainer_only` (retired since) |
 > | [#318](https://github.com/rodacato/stockerly/issues/318) | Banxico reads `SF60653`, the settlement series |
 > | [#319](https://github.com/rodacato/stockerly/issues/319) | The registry routes on market and asset type; §4's finding 15 is closed |
 > | [#320](https://github.com/rodacato/stockerly/issues/320) | CoinGecko stays on USD **deliberately**; the CETES curve is one request |
+> | `db/migrate/20260826210000_remove_retired_integrations.rb`, `20260916130000_remove_alpha_vantage_integration.rb`, `20260916140000_remove_fmp_integration.rb` | **Polygon, Alpha Vantage and FMP are retired.** Wherever this note names them as a live source, a fallback or a fundamentals route, read it as history: Yahoo is the only fundamentals source (ADR-017's 2026-09-16 amendment), and the provider list is `config/initializers/data_sources.rb` |
 >
 > **All eighteen findings in §4 are resolved.** They are kept with their closures because two of
 > them turned out to be wrong, and being wrong in an audit is the part worth keeping. The queue
@@ -261,7 +262,7 @@ this table is the reasoning behind it, not its source of truth.
 | **US quote — current** | **Finnhub** | — | ⚠️ **changed** — Alpaca 403s on every recent surface |
 | **US indices (SPX/DJI)** | **the yfinance bridge** | — | ⚠️ **changed** — no free source anywhere else |
 | US intraday / provisional | — | — | ⛔ **nothing is registered for `:intraday` outside DataBursatil/BMV**; the bridge does not declare it |
-| US fundamentals + statements | Alpha Vantage | FMP *(`maintainer_only`; `/api/v3` is gated to pre-2025-08-31 accounts)* | pending the OSS grant |
+| US fundamentals + statements | ~~Alpha Vantage~~ *(retired 2026-09-16)* → **Yahoo bridge** | ~~FMP~~ *(retired)* | superseded — ADR-017 amendment |
 | **Dividends + splits (US)** | **Alpaca** `/v1/corporate-actions` | — | ⛔ **FMP is no longer the fallback** — it is scoped to `:fundamentals` and labelled `maintainer_only`, because an unlabelled fallback only the maintainer can reach is the defect ([#312](https://github.com/rodacato/stockerly/issues/312)) |
 | Earnings | **Finnhub** (US) · the bridge (BMV, by an explicit route in `SyncEarnings`, not a chain) | — | ⚠️ Alpaca has none; this is D-5's over-commitment |
 | News | Alpaca `/v1beta1/news` | Finnhub | ✅ verified free on Basic |
@@ -306,11 +307,10 @@ answering the question they asked — the question stopped mattering:
   redistribution clause has nothing in this product to attach to. What is still unread is
   narrower — whatever the terms say about storing or displaying the data a self-hoster fetched
   with their own key — and at one instance per person that does not earn a ticket.
-- **Whether Alpha Vantage's open-source grant applies.** Deferred on purpose: *"no creo que sea
-  tan viable, pero es long term, el proyecto está aún muy joven."* **25 calls a day stays the
-  working assumption**, so `FundamentalsBudget`, the tier ladder and the quota the Integraciones
-  screen renders all stand as built. Revisit if the project ever outgrows that ceiling — not
-  before.
+- **Whether Alpha Vantage's open-source grant applies.** *(Moot: Alpha Vantage was retired 2026-09-16.)* Deferred at the time: *"no creo que sea
+  tan viable, pero es long term, el proyecto está aún muy joven."* **25 calls a day was the
+  working assumption** behind `FundamentalsBudget` and the Integraciones quota; whether those
+  survive the retirement is the code's to say, not this note's.
 
 **Answered 2026-09-05, both by reading the docs the audit could not open** (they 403 a bare client
 and return 200 to a browser `User-Agent` — worth knowing before the next question is deferred as

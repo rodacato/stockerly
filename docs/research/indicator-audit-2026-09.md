@@ -1,5 +1,14 @@
 # The indicator layer, audited against ten years of one asset — 2026-09-04
 
+> **Snapshot as of 2026-09-04; status checked 2026-10-02 against `b3650c15`.** Finding 1 (the RSI
+> definition) is applied: `TechnicalIndicators.rsi` is Wilder's, in commit `14723969`. Finding 2
+> (the alert) is applied: `AlertEvaluator` reads the persisted RSI, commits `46cf55d8` and
+> `057736fd`. Findings 3 and 4 are **open in the code**: `TrendScoreCalculator` still blends the raw
+> RSI at weight 0.3, still normalises with the fixed constants (momentum ±20, EMA spread ±5,
+> volume ratio 0.5–2.0) and still inverts the volume ratio when momentum is negative. The ATR
+> primitive finding 4 asks for exists (`TechnicalIndicators#atr`) but the three constants do not
+> use it. Whether a board item tracks them was not verified.
+
 Every claim here is a comparison run over NVDA's real series, 2,513 bars from
 2016-09-06, mirrored from production. Nothing is a reading of the code alone.
 
@@ -45,7 +54,7 @@ they bought.
 
 **It also invalidates a number this repo published five hours ago.** The
 confluence measurement in
-[`volatility-indicators-2026-09.md`](volatility-indicators-2026-09.md) counted
+the one-year volatility note (deleted; its durable parts are in [`deep-corpus-2026-09.md`](deep-corpus-2026-09.md)) counted
 oversold episodes with the shipped RSI. On this evidence that count is inflated
 several-fold, and the measurement has to be re-run once the definition is fixed.
 
