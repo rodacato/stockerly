@@ -25,6 +25,7 @@ module Trading
           summary: summary,
           fx_unavailable: portfolio.present? && fx.degraded?,
           positions: (tab == "cartera" ? rows : []),
+          holdings: (tab == "cartera" ? holdings_for(fx, rows, summary, currency) : {}),
           watchlist_items: (tab == "watchlist" ? rows : []),
           watchlist_gaps: gaps,
           sparkline_closes: closes,
@@ -40,6 +41,22 @@ module Trading
         return nil unless portfolio&.open_positions&.exists?
 
         fx.figure { Trading::Domain::PortfolioSummary.prewarmed(portfolio, currency: currency, day_gain: false) }
+      end
+
+      # Each row's share of the total the hero states, keyed by position id.
+      # Numerator and denominator are both converted to the declared currency, so
+      # a USD holding and a MXN one are compared in the same unit. A missing rate
+      # leaves the hash empty: no share rather than a wrong one.
+      def holdings_for(fx, positions, summary, currency)
+        total = summary&.total_value
+        return {} unless total&.positive?
+
+        fx.figure({}) do
+          positions.to_h do |position|
+            breakdown = Domain::PositionBreakdown.new(position, currency: currency)
+            [ position.id, { share: (breakdown.market_value / total * 100).to_f } ]
+          end
+        end
       end
 
       # Portfolio#convert fails loud on a missing rate — correct for a
