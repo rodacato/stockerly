@@ -12,6 +12,16 @@ RSpec.describe MarketData::Domain::ProviderDefaults do
     expect(described_class.for("DataBursatil")[:max_requests_per_minute]).to be_nil
   end
 
+  it "records CoinGecko as needing a Demo key, matching its gateway" do
+    expect(described_class.for("CoinGecko")).to include(requires_api_key: true)
+  end
+
+  it "keeps the providers that run without a key keyless" do
+    keyless = [ "Yahoo Finance", "Alternative.me" ].map { |name| described_class.for(name)[:requires_api_key] }
+
+    expect(keyless).to all(be(false))
+  end
+
   it "falls back rather than raising for a provider it does not know" do
     expect(described_class.for("Nobody")).to eq(described_class::FALLBACK)
   end

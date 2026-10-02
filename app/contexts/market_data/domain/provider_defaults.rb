@@ -19,7 +19,7 @@ module MarketData
         "DataBursatil"   => { provider_type: "Mexican Stocks (BMV/BIVA)", requires_api_key: true, max_requests_per_minute: nil, daily_call_limit: 5_000 },
         "Alpaca"         => { provider_type: "US Stocks & Corporate Actions", requires_api_key: true, max_requests_per_minute: 200, daily_call_limit: 50_000 },
         "Finnhub"        => { provider_type: "Stocks & Market Data", requires_api_key: true, max_requests_per_minute: 60, daily_call_limit: 500 },
-        "CoinGecko"      => { provider_type: "Cryptocurrency", requires_api_key: false, max_requests_per_minute: 30, daily_call_limit: 10_000, settings: { "pro_tier" => false } },
+        "CoinGecko"      => { provider_type: "Cryptocurrency", requires_api_key: true, max_requests_per_minute: 30, daily_call_limit: 10_000, settings: { "pro_tier" => false } },
         # ADR-017 set 6/min and 200/day for three capabilities. Yahoo now also
         # answers the ticker search and the company overview, so the ceiling rose
         # with the work.

@@ -43,6 +43,21 @@ RSpec.describe SyncIntegrationJob, type: :job do
       end
     end
 
+    context "with CoinGecko as the defaults record it and no key saved" do
+      let!(:integration) do
+        defaults = MarketData::Domain::ProviderDefaults.for("CoinGecko")
+        create(:integration, provider_name: "CoinGecko", requires_api_key: defaults[:requires_api_key], api_key_encrypted: nil)
+      end
+
+      it "skips the probe and reports disconnected instead of attempting a keyless call" do
+        expect(MarketData::Gateways::CoingeckoGateway).not_to receive(:new)
+
+        described_class.perform_now(integration.id)
+
+        expect(integration.reload.connection_status).to eq("disconnected")
+      end
+    end
+
     context "with a keyed integration" do
       let!(:integration) do
         create(:integration, provider_name: "Alpaca", connection_status: :connected, api_key_encrypted: "PKID:secret")
