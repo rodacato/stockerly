@@ -3,11 +3,6 @@
 > Operational manual for how work is tracked. **GitHub is the system of record**
 > ([ADR-022](../architecture/adr/0022-github-as-the-system-of-record.md)) — no markdown file
 > states what is open. Required reading before opening an issue or PR.
->
-> **Rewritten 2026-08-29.** The version this replaces described a sprint protocol — milestones,
-> a 7-in-progress cap, a close checklist, retros — that was abandoned in practice, and a board
-> that was closed. The tracking moved into `design/*.md` instead. This is the second attempt, and
-> it is deliberately smaller: **the ceremony is what collapsed, not the board.**
 
 ---
 
@@ -86,9 +81,11 @@ Labels are for **search and filtering**, never for state. The Status column owns
 - **Priority:** `P0` breaks a core JTBD · `P1` before new features · `P2` polish
 - **Special:** `design` — design / visual / UX work
 
-**Retired:** `triage`, `discovery-needed` and `ready` are replaced by the `Draft`, `Researching`
-and `Ready` columns — a label that duplicates a column is the duplication this process removes.
-`parallel` went with the sprint protocol. `beta-blocker` has meant nothing since ADR-010; use `P0`.
+**Present, do not apply:** `triage`, `ready`, `blocked`, `discovery-needed` and `parallel` still
+exist in `gh label list` (they mark closed issues), but each duplicates a Status column or a retired
+sprint practice — a label that duplicates a column is the duplication this process removes.
+`P0`'s description still says "beta-blocker", which has meant nothing since ADR-010; read it as
+*breaks a core JTBD*. Bot labels (`dependencies`, `ruby`, `github_actions`) belong to Dependabot.
 
 ---
 
@@ -99,7 +96,7 @@ whatever evidence you have, `Severidad` and `Flow`. That is the whole ritual.
 
 **Feature / Refactor / Chore / Docs** → the *Feature* template, which enforces the four filters:
 documented personal trigger (date + situation) · JTBD (*"When X, I want Y, so that Z"*, mapping to
-one of the six canonical or justifying a new one) · usage metric · Definition of Done. Add type,
+one of the seven canonical or justifying a new one) · usage metric · Definition of Done. Add type,
 context and priority labels.
 
 **Bug** → the *Bug* template: what happened, what you expected, repro steps. **Never real financial
@@ -178,58 +175,16 @@ Required scopes: `repo`, `workflow`, `read:org`, `gist`, `project`, `read:projec
    issue and leaves the board item in a live status; with `Auto-add to project` off, a new issue
    never reaches the board at all.
 8. **Reading a card as current.** A card states the world on the day it was written, and nothing
-   re-measures it. On 2026-09-05, five in a row had moved before anyone opened them:
+   re-measures it. So every measurable claim in a card carries what it was measured against, a
+   date and a short SHA:
 
-   | Card | What it said | What was true |
-   |---|---|---|
-   | `CKP-2` | gated on a bar count | the gate had been lifted a week earlier |
-   | `JTBD #6` | *"no asset has ever held 200 closes"* | 42 assets hold 200+, min 315 |
-   | `SWEEP` / `X4` | four briefs disagree with their kit version | `cockpit.pen`'s agrees |
-   | `DSC-1` | presents an open choice | `D73` had closed it, in the code's own comment |
-   | `audience.md` | *"reviews portfolio weekly"* | 2–3 times a day |
+   ```
+   > Measured 2026-09-12 against 28bb15e6 — `alert_rules` carries no urgency column.
+   ```
 
-   None was wrong when written. All five were read as current, and one — `JTBD #6`'s — was quoted
-   in good faith as the documented trigger for a feature that then shipped on it.
-
-   **Re-measure before working a card, not after.** Where a card names the measurement that would
-   settle it, run that first; `CKP-2` said *"re-measure before treating this as blocked or as
-   buildable"* and was right. Where it does not, the cheap check is whether the code still says what
-   the card says it says.
-
-   > ### This rule failed again on 2026-09-12, and the failure is the useful part
-   >
-   > Seven days after the table above was written, **eleven more cards were read as current in one
-   > session**. The rule was loaded, correct, and unread. Its form is why: *"re-measure before
-   > working a card"* is a thing to remember, and nothing in a card makes you remember it.
-   >
-   > **So the requirement is now on the card, not on the reader. Every measurable claim in a card
-   > carries what it was measured against:**
-   >
-   > ```
-   > > Measured 2026-09-12 against 28bb15e6 — `alert_rules` carries no urgency column.
-   > ```
-   >
-   > A date and a short SHA. That is the whole convention. It does not make anyone re-measure, and
-   > it is not meant to: it makes the card state its own age, so doubting it stops depending on
-   > memory. A claim with no stamp is a claim nobody has checked since it was typed.
-   >
-   > **The seven shapes the 2026-09-12 sweep found**, which is more useful than the count — when
-   > re-measuring, these are what to look for:
-   >
-   > | Shape | Example |
-   > |---|---|
-   > | The work is already done | `AUTH-2` — both artboards exist; `CKP-6` — the brief line is gone; `ACT-8` — the 11 chips are gone |
-   > | The premise **inverted** | `ALR-3` said browser push was deleted; it was revived four days later, and the brief had been wrong in *both* directions |
-   > | It was never a card | `#638` was a **merged PR**, sitting in a board column with no status |
-   > | It points at the wrong code | `ACT-6` named `search_ticker`; the artboard was the list filter, which D64 had already separated |
-   > | Alive, but for another reason | the volume-history card rests on the confluence semaphore, which D84 retired — `volume_spike` keeps it real |
-   > | Dead in part | `X7` — two of its three instances (the retired tally, a deleted branch) no longer exist |
-   > | **Alive though it looks dead** | `TD10` — `adaptive_backoff` had callers, so a shallow read called it stale. The callers *wrote*; the value had no reader. The inverse error is as easy to make |
-   >
-   > And the one that should settle any argument about whether this is worth a paragraph: **`D117`
-   > was written and corrected in the same session.** It claimed a canvas amendment was pending;
-   > `D97` had done it five days earlier. Its author had spent that same session naming this exact
-   > failure in other people's cards.
+   It does not make anyone re-measure; it makes the claim state its own age, so doubting it stops
+   depending on memory. A claim with no stamp is one nobody has checked since it was typed.
+   Where a card names the measurement that would settle it, run that first.
 
 ---
 
