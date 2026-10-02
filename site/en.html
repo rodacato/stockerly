@@ -163,7 +163,7 @@
     <p class="lede">Not money — it is MIT. Attention, and a short list of things that have to be
     true on your server.</p>
     <dl>
-      <div><dt>8</dt><dd>market-data providers, every one of them optional. It runs with none configured; you just get no live prices.</dd></div>
+      <div><dt>8</dt><dd>market-data providers, every one of them optional. It runs with none configured, on the keyless sources only.</dd></div>
       <div><dt>6</dt><dd>bounded contexts. Writes cross them as domain events, reads through a published API, and an ADR names every seam.</dd></div>
       <div><dt>4</dt><dd>PostgreSQL databases — primary, cache, queue, cable. No Redis to run, no Node to build.</dd></div>
       <div><dt>1</dt><dd>account on the instance, created by the Setup Wizard on first boot. There is no second one to make.</dd></div>
@@ -239,7 +239,7 @@
       <div class="r"><span class="k">License</span><span class="v">MIT — 100% free and open source, no tiers, no premium features.<small>Provided "as is", without warranty of any kind.</small></span></div>
       <div class="r"><span class="k">Version</span><span class="v"><code data-version>0.2.0</code><small>Run the tagged release, not <code>master</code>: a tag is what a security advisory names when it is time to upgrade. The <a href="https://github.com/rodacato/stockerly/releases">releases</a> say what each one brought.</small></span></div>
       <div class="r"><span class="k">Security</span><span class="v">Report privately through the repository's <b>Security</b> tab → <em>Report a vulnerability</em>.<small>Never open a public issue for a vulnerability. Response within 48 hours; see <code>SECURITY.md</code>.</small></span></div>
-      <div class="r"><span class="k">Interface</span><span class="v">Mexican Spanish (es-MX), single locale.<small>Code, routes, commits and documentation are English. A second locale is not a goal.</small></span></div>
+      <div class="r"><span class="k">Interface</span><span class="v">Mexican Spanish (es-MX), single locale.<small>Code, routes, commits and documentation are English. A second locale <em>in the app</em> is not a goal; this page is the one thing that exists in both languages.</small></span></div>
       <div class="r"><span class="k">Second factor</span><span class="v">TOTP with one-time recovery codes, inside the instance.<small>No external identity provider: login is delegated to nobody, which is the other half of holding no account anywhere. See <code>ADR-018</code>.</small></span></div>
       <div class="r"><span class="k">Legal pages</span><span class="v">None, deliberately.<small>It is software you host, not a service anyone provides to you, so it ships no privacy notice and no terms — the MIT license carries the terms.</small></span></div>
       <div class="r"><span class="k">Not advice</span><span class="v">Stockerly shows market information, not investment advice.<small>Prices, fundamentals and FX rates come from third parties and can be late or wrong. Check anything you act on against your broker.</small></span></div>
