@@ -215,6 +215,37 @@ RSpec.describe "Descubrir", type: :request do
       end
     end
 
+    describe "the age of the waves" do
+      def cache_aged(age)
+        memory.write(WarmDiscoverJob::CACHE_KEY,
+                     { waves: [ wave ], since: Date.current - 8, generated_at: age && (Time.current - age) })
+      end
+
+      it "stays silent at 5 h 59 min" do
+        cache_aged(5.hours + 59.minutes)
+
+        get discover_path
+
+        expect(response.body).not_to include("datos de hace")
+      end
+
+      it "states the age in hours at 6 h 1 min" do
+        cache_aged(6.hours + 1.minute)
+
+        get discover_path
+
+        expect(response.body).to include("datos de hace 6 horas")
+      end
+
+      it "stays silent when the cache carries no timestamp" do
+        cache_aged(nil)
+
+        get discover_path
+
+        expect(response.body).not_to include("datos de hace")
+      end
+    end
+
     describe "the window" do
       def cache_window(days)
         memory.write(WarmDiscoverJob::CACHE_KEY,
