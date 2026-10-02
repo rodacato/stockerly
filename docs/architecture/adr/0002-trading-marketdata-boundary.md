@@ -1,6 +1,6 @@
 # ADR-002 — Trading reads from MarketData via a formalized read API; cross-context writes flow through events
 
-- **Status:** Accepted
+- **Status:** Accepted · amended 2026-08-27, 08-29 and 09-04 (four, in-file) · the 09-04 Alerts → Trading clause is superseded by [ADR-025](./0025-alerts-reads-trading.md)
 - **Date:** 2026-05-15
 - **Author:** Adrian Castillo (with synthesis from the documented expert panel — C2 Hiroto, C6 Esther, C1 Lucía)
 - **Supersedes:** —

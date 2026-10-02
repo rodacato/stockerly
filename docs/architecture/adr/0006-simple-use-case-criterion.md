@@ -1,6 +1,6 @@
 # ADR-006 — SimpleUseCase: when NOT to use ApplicationUseCase
 
-- **Status:** Accepted
+- **Status:** Accepted · amended 2026-08-27 and 2026-09-04 (two, in-file)
 - **Date:** 2026-05-15
 - **Author:** Adrian Castillo (with synthesis from the documented expert panel — C2 Hiroto, C6 Esther)
 - **Supersedes:** —

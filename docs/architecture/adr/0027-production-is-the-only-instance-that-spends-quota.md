@@ -1,7 +1,8 @@
 # ADR-027 — Production is the only instance that spends quota
 
-**Status:** Accepted · 2026-09-04 · renumbered from a second 0024 on 2026-09-16
-**Context:** Market Data · Operations
+- **Status:** Accepted
+- **Date:** 2026-09-04 (renumbered from a second 0024 on 2026-09-16)
+- **Context:** Market Data · Operations
 
 ## The rule
 

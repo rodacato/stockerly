@@ -1,6 +1,6 @@
 # ADR-017 — A Python bridge for Yahoo Finance, run as a subprocess
 
-- **Status:** Accepted
+- **Status:** Accepted · amended 2026-08-29, 2026-09-06 (partly superseded by 2026-09-16) and 2026-09-16
 - **Date:** 2026-08-26
 - **Author:** Adrian Castillo
 - **Related:** [ADR-016](./0016-canonical-market-data-observations.md), [market-data-providers-2026-08.md](../../research/market-data-providers-2026-08.md)
