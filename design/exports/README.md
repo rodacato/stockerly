@@ -1,6 +1,6 @@
 # Exports — the review artifact
 
-PNGs of the artboards, committed on purpose: a `.pen` is encrypted JSON, so without these a
+PNGs of the artboards, committed on purpose: a `.pen` is a JSON scene graph nobody can review as a diff, so without these a
 design PR cannot be reviewed by anyone who does not open Pencil. They travel with the branch;
 `references/` (gitignored device captures with real data) is the opposite policy — never mix them.
 
@@ -15,24 +15,12 @@ Files land as `<nodeId>.png` and are renamed to `<flow>-<screen>[-<state>].png` 
 mean nothing to a reviewer. Re-export a flow whenever its artboards change materially; a stale PNG
 is worse than a missing one.
 
-**Re-counted 2026-08-28: 68 rows, 68 PNGs on disk.** The previous header claimed 62 and was already
-stale before the three `Importar CSV` rows (#401) were appended — the actual count was 65. Counted by
-listing the directory against the tables (`ls design/exports/*.png | wc -l` against a grep of the row
-prefix), not by reading them.
+**Index check.** Every PNG on disk has exactly one table row below and every row has a file, 93 of
+each on 2026-10-02. Verify with `ls design/exports/*.png | wc -l` against a grep of the row prefix,
+not by reading the tables.
 
-⚠ **One file on disk is not in this index: `ZHvbW.png`, untracked.** It is an un-renamed export
-still carrying its node id — `[Activos] / Rastreados / Sin fuente`, whose renamed twin
-`activos-tracked-sin-fuente.png` (renamed from `activos-rastreados-sin-fuente.png` by D48) is already committed and indexed below. It is left in place
-deliberately: **deleting an export is the owner's call**, and an untracked file cannot be indexed
-without first deciding whether it is a duplicate to remove or a re-shoot to keep. Whichever it is,
-it should not survive as `ZHvbW.png` — the rename step above exists precisely because a node id
-tells a reviewer nothing.
-
-> **Artboard names here are the `.pen` masters', pre-D48.** D48 (2026-08-27) renames the tier
-> ladder — **Poseo → Holdings · Sigo → Watchlist · Rastreado(s) → Tracked** — and makes *Señales*
-> the observation sense of *movimiento*. The rows below still read `Sigo` and `Rastreados` because
-> that is what the artboards are still called; they change when the `.pen` files are renamed and
-> re-exported, and this index follows rather than leads. Filenames will change with them.
+> **Names follow D48.** The tier ladder reads **Holdings · Watchlist · Tracked** and *Señales* is
+> the observation sense of *movimiento*; rows and filenames already use them.
 
 | File | Artboard |
 |---|---|
