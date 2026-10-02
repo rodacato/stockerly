@@ -48,7 +48,7 @@ bundle exec rspec spec/contexts/trading/use_cases/execute_trade_spec.rb:15   # O
 
 ```bash
 bin/rubocop           # Linting (auto-correct with -A)
-bin/ci                # setup + rubocop + bundler-audit + importmap audit + brakeman
+bin/ci                # local pipeline, steps in config/ci.rb
 ```
 
 **`bin/ci` does not run the tests.** `config/ci.rb` declares no RSpec step, so run

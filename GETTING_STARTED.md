@@ -6,13 +6,14 @@ Run Stockerly locally. For what it is, see [docs/vision/](docs/vision/); for how
 `bin/setup` is idempotent and does the whole local setup: install gems, prepare the databases,
 and start the server. It runs `bin/rails db:prepare`, which **seeds only when it creates the
 database** — on an existing database it migrates and leaves the data alone. Use
-`bin/setup --reset` to drop, recreate and reseed. No market-data API key is needed to run — the
-app is fully functional without one.
+`bin/setup --reset` to drop, recreate and reseed. No market-data API key is needed to run; without
+one the app starts and uses only the keyless sources (see "Optional configuration").
 
 ## Prerequisites
 
 - **Docker** (for the Dev Container path), or
 - **Ruby 4.0.6** + **PostgreSQL 16** (for the bare-metal path)
+- **Python 3** with the packages in `lib/python/requirements.txt` (`pip install -r`, ideally in a venv, then point `PYTHON_BIN` at its interpreter). Yahoo Finance, the only fundamentals source, runs through it. Only the production Docker image installs it for you; the Dev Container does not
 
 Node.js is **not** required — JS ships via import maps and CSS via the `tailwindcss-rails`
 standalone compiler.
@@ -119,8 +120,8 @@ recording — exceptions are written whether or not you can read them.
 ## Optional configuration
 
 **Market-data API keys** are all optional and are configured in the Setup Wizard or later under
-**Admin → Integrations**. Without them the app runs but shows no live market data. The
-registered sources are in `config/initializers/data_sources.rb`; several need no key at all.
+**Admin → Integrations**. Without them the app runs on the keyless sources only (Yahoo Finance, which needs the Python setup above, and Alternative.me). The
+registered sources are in `config/initializers/data_sources.rb`.
 
 ## First-run check
 
