@@ -5,7 +5,7 @@
 [![CI](https://github.com/rodacato/stockerly/actions/workflows/ci.yml/badge.svg)](https://github.com/rodacato/stockerly/actions/workflows/ci.yml)
 
 [![Ruby](https://img.shields.io/badge/Ruby-4.0.6-CC342D?logo=ruby&logoColor=white)](https://www.ruby-lang.org/)
-[![Rails](https://img.shields.io/badge/Rails-8.1.2-D30001?logo=rubyonrails&logoColor=white)](https://rubyonrails.org/)
+[![Rails](https://img.shields.io/badge/Rails-8.1-D30001?logo=rubyonrails&logoColor=white)](https://rubyonrails.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -50,7 +50,7 @@ from a multi-user beta to a single-user tracker.
   outside the instance's own catalogue, so it works before you hold anything.
 - **Two-factor** — TOTP with one-time recovery codes, self-contained, no external identity provider
   ([ADR-018](docs/architecture/adr/0018-totp-with-recovery-codes.md)).
-- **Multi-provider market data** — 8 gateways (Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo
+- **Multi-provider market data** — gateways (Alpaca, Finnhub, CoinGecko, DataBursatil, Yahoo
   Finance, Banxico, ExchangeRate, Alternative.me) behind gateway chains with
   circuit breakers and adaptive scheduling. All optional.
 - **Instance operations** — integration health with rate-limit bars, sync logs with CSV export, a
@@ -79,7 +79,7 @@ for the full architecture reference.
 
 | Layer | Technology |
 |-------|-----------|
-| Backend | Ruby 4.0.6, Rails 8.1.2 |
+| Backend | Ruby 4.0.6, Rails 8.1 |
 | Database | PostgreSQL 16 (multi-database: primary + Solid Cache + Solid Queue + Solid Cable) |
 | Frontend | Hotwire (Turbo + Stimulus), Tailwind CSS 4 |
 | Background Jobs | Solid Queue |
@@ -106,10 +106,9 @@ four-database setup, background jobs via `bin/jobs`, first-run check, and troubl
 
 ### API Keys
 
-Stockerly ships **8 market-data gateways** —
-[`app/contexts/market_data/gateways/`](app/contexts/market_data/gateways/) holds the 8
-concrete providers plus their shared base class, error class, retry policy and HTTP plumbing. API keys are configured
-during the Setup Wizard, later under Integrations, or via Rails credentials. The registrations in
+Stockerly ships a gateway per market-data provider in
+[`app/contexts/market_data/gateways/`](app/contexts/market_data/gateways/), next to their shared base class, retry policy and HTTP plumbing. API keys are entered
+during the Setup Wizard or later under Integrations, and stored encrypted on the provider's `Integration` record (not in Rails credentials). The registrations in
 [`config/initializers/data_sources.rb`](config/initializers/data_sources.rb) are the source of truth:
 
 | Provider | Data it serves |
@@ -123,8 +122,7 @@ during the Setup Wizard, later under Integrations, or via Rails credentials. The
 | [ExchangeRate](https://www.exchangerate-api.com/) | Current FX rates |
 | [Alternative.me](https://alternative.me/crypto/fear-and-greed-index/) | Crypto Fear & Greed sentiment |
 
-All providers are optional, and several need no key at all. The app works without any API keys
-configured — you just won't get live market data. Rate limits are per-provider settings stored on
+All providers are optional, and some need no key at all (Yahoo Finance, Alternative.me). Yahoo Finance runs through a Python 3 bridge: outside Docker you need Python 3 and `lib/python/requirements.txt` installed (see [GETTING_STARTED.md](GETTING_STARTED.md)). With no keys configured the app still starts, but data comes only from the keyless sources. Rate limits are per-provider settings stored on
 each `Integration` record, not hardcoded, so consult the provider's current terms rather than this
 table.
 
@@ -153,7 +151,7 @@ bin/brakeman
 # Dependency vulnerabilities
 bin/bundler-audit
 
-# CI pipeline (setup + rubocop + bundler-audit + importmap audit + brakeman)
+# CI pipeline — the steps are listed in config/ci.rb
 # Note: bin/ci has no test step — run `bundle exec rspec` separately.
 bin/ci
 ```
