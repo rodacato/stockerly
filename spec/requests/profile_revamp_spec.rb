@@ -61,6 +61,42 @@ RSpec.describe "Profile revamp (S09 #97)", type: :request do
     end
   end
 
+  # The test env runs :null_store, so `rate_limit` never counts. The store the
+  # macro captured gets a real counter instead of swapping the whole cache.
+  describe "attempt limits on account updates" do
+    before do
+      counts = Hash.new(0)
+      allow(ProfilesController.cache_store).to receive(:increment) { |key, *| counts[key] += 1 }
+    end
+
+    it "refuses the sixth password check within a minute and keeps the email" do
+      5.times do
+        patch profile_path, params: { profile: { full_name: user.full_name, email: "fresh@example.com", current_password: "nope" } }
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      patch profile_path, params: { profile: { full_name: user.full_name, email: "fresh@example.com", current_password: "password123" } }
+
+      expect(response).to have_http_status(:too_many_requests)
+      expect(user.reload.email).to eq("p97@example.com")
+    end
+
+    it "limits password changes the same way" do
+      attempt = { password_change: { current_password: "nope", password: "newpassword456", password_confirmation: "newpassword456" } }
+      5.times { patch change_password_path, params: attempt }
+
+      patch change_password_path, params: attempt
+
+      expect(response).to have_http_status(:too_many_requests)
+    end
+
+    it "does not count the currency pill or preferences" do
+      6.times { patch update_currency_path, params: { profile: { preferred_currency: "USD" } }, as: :json }
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "PATCH /profile changing the email" do
     it "changes it when the current password is given" do
       patch profile_path, params: { profile: { full_name: user.full_name, email: "fresh@example.com", current_password: "password123" } }
