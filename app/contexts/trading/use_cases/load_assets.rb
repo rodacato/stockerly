@@ -43,7 +43,8 @@ module Trading
         fx.figure { Trading::Domain::PortfolioSummary.prewarmed(portfolio, currency: currency, day_gain: false) }
       end
 
-      # Each row's share of the total the hero states, keyed by position id.
+      # Each row's share of the total the hero states and its unrealised gain,
+      # keyed by position id.
       # Numerator and denominator are both converted to the declared currency, so
       # a USD holding and a MXN one are compared in the same unit. A missing rate
       # leaves the hash empty: no share rather than a wrong one.
@@ -54,9 +55,15 @@ module Trading
         fx.figure({}) do
           positions.to_h do |position|
             breakdown = Domain::PositionBreakdown.new(position, currency: currency)
-            [ position.id, { share: (breakdown.market_value / total * 100).to_f } ]
+            [ position.id, { share: (breakdown.market_value / total * 100).to_f, gain: gain_percent(position, breakdown) } ]
           end
         end
+      end
+
+      # The percent the asset detail states, from the same PositionBreakdown. An
+      # unpriced position has no gain to report, not a 100% loss.
+      def gain_percent(position, breakdown)
+        breakdown.total.percent if position.asset.current_price
       end
 
       # Portfolio#convert fails loud on a missing rate — correct for a
