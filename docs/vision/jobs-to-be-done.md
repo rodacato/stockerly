@@ -4,8 +4,7 @@
 > 2026-08-20 pivot** ([ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)),
 > which changed the audience and not these six — JTBD #5 (fast capture) and #6 (readable
 > indicators) were promoted to central, since data-entry friction and indicator illiteracy are two
-> of the three failures that ended the closed beta. Statuses last verified against the code
-> **2026-08-27**.
+> of the three failures that ended the closed beta. Status lines are dated snapshots, not a tracker: re-derive them from the code before quoting.
 > Each JTBD here is the **expansion** of the lines that appear in [`audience.md`](./audience.md).
 > A new feature in the backlog must map to one of these (or propose a new JTBD via an edit to this file).
 > **JTBD #7 was added 2026-08-29** by the per-symbol news block (#427), which is the first feature since
@@ -123,14 +122,14 @@ threshold met sixty times over is not a threshold.
 
 **App surface:**
 - Dashboard "Upcoming events" — earnings on holdings with BMO/AMC + EPS estimate
-- Earnings page filtered by my holdings
+- Asset detail (`/market/:symbol`) — the Earnings tab for that ticker (the standalone `/earnings` page was deleted, D31)
 - Notification — 2d, 1d before (with details)
 
 **Triggers:** `NotifyEarningsJob` daily, 7am. Matches holdings vs upcoming earnings, deduplicated with `last_triggered_at` per event.
 
 **Usage metric:** Adrian opens the asset detail of the ticker with upcoming earnings before the event. Proxy: page view of the asset between alert and earnings.
 
-**Blocked by:** nothing. Implemented since Phase 14.4 (`Earnings::NotifyApproaching`).
+**Blocked by:** nothing. `Trading::UseCases::NotifyApproachingEarnings` runs it; the lookahead is its `LOOKAHEAD_DAYS`, which is the number to trust over the "2 days" in the statement.
 
 **Current status:** working. Notification copy goes through `Alerts::Domain::TriggerNotice` — fact in the title, provenance in the body.
 
@@ -163,7 +162,7 @@ threshold met sixty times over is not a threshold.
 
 **Blocked by:** nothing. The sheet auto-fills the Banxico FIX for the date entered, which made the correctness fix and the data-entry win the same field.
 
-**Current status:** delivered as a drawer at `/trades/new` (D11) — native `<dialog>`, sticky total and save, `visualViewport` handling. `executed_at` is now bounded at today, which this section always specified and nothing enforced. **"Guardar y registrar otro" is still not built.**
+**Current status:** delivered as a drawer at `/trades/new` (D11) — native `<dialog>`, sticky total and save, `visualViewport` handling. `executed_at` is now bounded at today, which this section always specified and nothing enforced. The sheet's "Guardar y registrar otro" keeps the drawer open for the next movement (`TradesController#create`, `and_another`).
 
 ---
 
@@ -172,14 +171,10 @@ threshold met sixty times over is not a threshold.
 **Statement:** *When one of my positions (or a watchlist asset) enters a notable technical zone (oversold/overbought per RSI, Bollinger Bands breakout, moving-average crossover), I want to see it described in context, so I can factor it into my weekly portfolio reflection.*
 
 **Required data:**
-- Historical daily prices ≥200 days — **it exists now, measured 2026-09-05.** Production holds
-  **42 assets at 200+ bars** (min 315, max 2952) against 5 below, and exactly **one open position**
-  short of 200. `BackfillPriceHistoryJob::DAYS` is 3650 and `BackfillMissingHistoriesJob`
-  re-fetches anything under 200, so the window converges rather than accumulating a row a day.
-  This line read *"does not exist"* from 2026-05-14 until today, and stayed wrong for the week
-  after X9 fixed it — the correction landed in `design/V2_REMAINING.md` and never reached here.
-  Re-derive it, do not read it: `SELECT count(*) FROM (SELECT asset_id, count(*) n FROM
-  asset_price_histories GROUP BY asset_id) t WHERE n >= 200`
+- Historical daily prices ≥200 days — **exists**. `BackfillPriceHistoryJob::DAYS` sets the depth and
+  `BackfillMissingHistoriesJob` re-fetches anything under 200 bars. This line was wrong twice, in
+  both directions, because it was copied from what someone last looked at: re-derive it, do not read
+  it: `SELECT count(*) FROM (SELECT asset_id, count(*) n FROM asset_price_histories GROUP BY asset_id) t WHERE n >= 200`
 - Per-asset computed indicators (RSI(14), MACD, BB, MA50, MA200, EMA9/21)
 - TrendScore 5-factor (already exists)
 - User holdings + watchlist
@@ -187,7 +182,7 @@ threshold met sixty times over is not a threshold.
 **App surface:**
 - Asset detail — "Technical analysis" section with current indicators + descriptive interpretation
 - Dashboard — "Notable observations" section when ≥1 relevant asset enters a zone
-- Market listings — hover/click reveals TrendScore breakdown (exists since Phase 21.1)
+- The TrendScore breakdown on the asset detail (the `/market` listing that once carried it was deleted, D31)
 
 **Triggers:**
 - Daily EOD job: recompute indicators, detect transitions (asset entered oversold today / crossed MA50 today)
@@ -201,18 +196,11 @@ threshold met sixty times over is not a threshold.
 
 **Usage metric:** Adrian opens ≥1 asset detail per week from a surfaced notable observation. If he ignores them, the JTBD isn't working or the observations are too noisy.
 
-**Blocked by:** nothing, as of 2026-09-05. The data precondition above is met, `TechnicalIndicators`
-computes `sma_50` and `sma_200` from the closes, and `IndicatorSignals` renders them — so MACD, MA50
-and MA200 do now run on real data. Dedup and copy were never the problem (`persist_if_fresh` and
-`MarketHelper::OBSERVATION_PHRASES`).
+**Blocked by:** nothing. The data precondition above is met, `TechnicalIndicators` computes `sma_50`
+and `sma_200` from the closes, and `IndicatorSignals` renders them. Dedup and copy were never the
+problem (`persist_if_fresh` and `MarketHelper::OBSERVATION_PHRASES`).
 
-**The failure mode this line keeps demonstrating is the reason to re-derive it rather than read it.**
-It said "nothing" from 2026-05-14 to 2026-08-29 while the gap was real, then said the gap was real
-from 2026-08-29 to 2026-09-05 after it had been closed. Both times the sentence was current with
-what someone had last looked at rather than with what the database held — and the second time it
-was quoted, in good faith, as the documented trigger for a feature ([#606](https://github.com/rodacato/stockerly/issues/606)).
-
-**Current status:** delivered on three surfaces — the Panorama's "Movimientos de interés", the asset detail's verdict card, and its "Observaciones recientes". The verdict card reads a state out loud under [ADR-014](../architecture/adr/0014-state-phrases-from-a-closed-catalogue.md); the observations block stays purely descriptive. Threshold tuning is still untouched.
+**Current status:** delivered on three surfaces — the Panorama's "Señales de interés", the asset detail's verdict card, and its "Observaciones recientes". The verdict card reads a state out loud under [ADR-014](../architecture/adr/0014-state-phrases-from-a-closed-catalogue.md); the observations block stays purely descriptive. Threshold tuning is still untouched.
 
 ---
 
@@ -259,7 +247,7 @@ over headline text — that would make it our sentence.
 
 1. Documented personal trigger: *"On [date] I encountered [specific situation], and [information/action] wasn't available in Stockerly"*.
 2. Statement in canonical format: *"When X, I want Y, so that Z"*.
-3. Data, surface, triggers, metric, blockers — fill in the 6 sections.
+3. Data, surface, triggers, metric, blockers — fill in the sections above.
 4. Edit `audience.md` and vision's `README.md` to reflect the new JTBD count.
 5. Commit with message *"docs(vision): add JTBD #N — [brief statement]"*.
 
@@ -269,4 +257,4 @@ If after 90 days of being implemented:
 - The usage metric isn't met (Adrian doesn't use it with expected frequency)
 - Or Adrian explicitly admits it doesn't serve him
 
-→ retro flags it for retirement. Backlog issue: *"Retire JTBD #N: reason"*. The associated features are evaluated case by case (some may stay as observable infra, others get de-implemented).
+→ it is flagged when the board is audited. Board item: *"Retire JTBD #N: reason"*. The associated features are evaluated case by case (some may stay as observable infra, others get de-implemented).

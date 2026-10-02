@@ -1,6 +1,6 @@
 # Stockerly — Vision
 
-> Last updated: **2026-08-20** (pivot to self-hosted single-user tracker — see [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md))
+> Direction set **2026-08-20** (pivot to self-hosted single-user tracker — see [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md))
 > This folder is the **single source of truth** for why Stockerly exists, who it's for, what it does, and what it doesn't do.
 
 ---
@@ -41,7 +41,7 @@ See [`audience.md`](./audience.md). In summary:
 
 - **Primary (and only real) user:** Adrian (dogfood) — MX investor with mixed MXN+USD patrimony plus crypto. **Reads it 2–3 times a day, trades on 1–2 days a week** — two cadences, not one; see [audience.md](audience.md).
 - **Packaging target (not a managed audience):** a technically capable self-hoster who can run a container. We build for Adrian; the third party is served by keeping setup and onboarding clean — never by building features for users who don't exist yet.
-- **Non-users:** multi-user / teams, day traders, advisors, gringo investors, accountants, aggregator-sync seekers.
+- **Non-users:** see [`non-goals.md`](./non-goals.md#non-users-audiences-we-do-not-serve), the one place the list is kept.
 
 ---
 
@@ -55,7 +55,7 @@ See [`jobs-to-be-done.md`](./jobs-to-be-done.md). The 6 JTBDs from 2026-05-14 la
 
 The beta abandonment gave us three concrete failures. They are the product work of the 2.0:
 
-1. **Empty first-run / no guidance** → seed a realistic MXN/USD+CETES demo so first-run is never a blank screen.
+1. **Empty first-run / no guidance** → a realistic MXN/USD+CETES demo so first-run is never a blank screen. *(Intent only: no first-run demo exists; `db/seeds.rb` users are development-only. Progress lives on the board.)*
 2. **Can't read the indicators** → inline `?`-tooltips explaining each indicator (RSI, MA200, F&G) in one sentence, plus one distilled signal metric.
 3. **Data entry is a chore** → holdings-snapshot entry with a *skip-history* default, smart CSV import, and manual entry made pleasant (ticker autocomplete, Banxico FX auto-filled at trade date, learned rules).
 
@@ -88,7 +88,7 @@ Stockerly speaks in **descriptive language, never prescriptively**. Interpreted 
 
 - Edits to `README.md`, `audience.md`, `non-goals.md`, `jobs-to-be-done.md` require a commit message with reason. `experts.md` is a working tool, not the north: its seats change without an ADR.
 - Structural changes (audience, scope, product language) require a **new ADR** referencing the change. This pivot is [ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md).
-- **Periodic audit:** a sprint retro question is *"Is the north still true, and does Adrian actually use it?"*. The 2026-05-14 audience failed that audit; this is the correction.
+- **Periodic audit:** when the board is audited, ask *"Is the north still true, and does Adrian actually use it?"*. The 2026-05-14 audience failed that audit; this is the correction.
 
 ---
 
