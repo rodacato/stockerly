@@ -1,4 +1,10 @@
 module ApplicationHelper
+  # Canonical geometry may be inline; executable SVG content may not.
+  def brand_svg_body(name)
+    sanitize(BrandAssets.svg_body(name), tags: %w[path],
+             attributes: %w[d fill stroke stroke-width stroke-linecap stroke-linejoin])
+  end
+
   # The one asset-type glossary (D48) — four surfaces name a kind, and the
   # copies of it used to disagree on two of its five values.
   def asset_type_label_es(asset_type)

@@ -5,6 +5,6 @@
 <svg viewBox="0 0 174 40" role="img"
      aria-label="<%= local_assigns.fetch(:alt_text, "Stockerly") %>"
      class="<%= local_assigns.fetch(:height_class, "h-9") %> w-auto">
-  <g transform="scale(.625)" color="var(--color-primary)"><%= raw BrandAssets.svg_body("glyph") %></g>
-  <%= raw BrandAssets.svg_body("lettering") %>
+  <g transform="scale(.625)" color="var(--color-primary)"><%= brand_svg_body("glyph") %></g>
+  <%= brand_svg_body("lettering") %>
 </svg>
