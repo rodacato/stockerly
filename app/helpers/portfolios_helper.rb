@@ -18,13 +18,13 @@ module PortfoliosHelper
   end
 
   # Two lines for the chart controller: what the patrimony was worth, and the
-  # capital put into it. lightweight-charts wants ISO dates as `time`.
+  # initial valuation plus net contributions. lightweight-charts wants ISO dates as `time`.
   def chart_series_json(series)
     [
       { data: series.map { |point| { time: point[:date].to_s, value: point[:value] } },
-        token: "--color-positive", width: 2 },
+        token: "--color-positive-fg", width: 2 },
       { data: series.map { |point| { time: point[:date].to_s, value: point[:contributed] } },
-        token: "--color-border-strong", width: 2 }
+        token: "--color-fg-subtle", width: 2 }
     ].to_json
   end
 

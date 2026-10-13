@@ -15,7 +15,8 @@ income (CETES), with correct MXN/USD multi-currency tracking — the FX rate is 
 trade's own date, not at import time. Built with Rails 8, PostgreSQL, Hotwire, and Tailwind CSS 4.
 The interface is **es-MX**; the code, routes and docs are English.
 
-100% free and open source — no pricing tiers, no premium features. See
+See the [product and brand page](https://rodacato.github.io/stockerly/) and
+[editable brand sources](design/brand/README.md). Open source under the MIT license. See
 [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) for why Stockerly pivoted
 from a multi-user beta to a single-user tracker.
 
@@ -24,9 +25,8 @@ from a multi-user beta to a single-user tracker.
 > The images in this README are **artboards from the design system**
 > ([`design/`](design/)), not captures of a running instance. A `.pen` file is encrypted JSON, so
 > the PNGs in [`design/exports/`](design/exports/) are what makes a design reviewable — and they
-> are the closest thing to a current picture of the app that lives in the repo. They are re-shot
-> whenever the artboards change; the previous screenshots were captures of the pre-2.0 app and
-> were deleted rather than kept as a stale likeness.
+> predate the Soft Candle branding and metric-clarity changes. Pencil synchronization is deferred;
+> these images illustrate the earlier layout and are not evidence of the current implementation.
 
 ## Features
 
@@ -38,9 +38,9 @@ from a multi-user beta to a single-user tracker.
   the peso did* ([ADR-009](docs/architecture/adr/0009-fx-history-strategy.md)). For a MXN investor
   holding USD assets those are two different stories.
 - **Consolidado** — portfolio value over `1M · 3M · 1A · YTD · MAX`, with a time-weighted return
-  measured against reinvested CETES: the benchmark a Mexican investor actually gives something up for.
+  measured over the available snapshot dates, with a reinvested CETES comparison in MXN.
 - **Asset detail** — 5-factor TrendScore (RSI, momentum, MACD, volume trend, EMA crossover),
-  fundamentals, earnings history and financial statements, each on its own tab.
+  fundamentals, earnings history and financial statements when their source data is available.
 - **Alerts** — price crossings, day-change %, RSI overbought/oversold, volume spikes, dividend
   ex-dates, BMV holidays and CETES auctions. Per-rule cooldowns.
 - **Trade capture built for the chore it is** — a sheet with ticker autocomplete and the Banxico
@@ -56,7 +56,8 @@ from a multi-user beta to a single-user tracker.
 - **Instance operations** — integration health with rate-limit bars, sync logs with CSV export, a
   background-job dashboard, an error tracker that runs *inside* the instance
   ([ADR-020](docs/architecture/adr/0020-internal-error-tracker.md)), and instance settings.
-- **PWA** — installable, with push notifications and offline support.
+- **PWA** — installable, with push notifications and a retry page offline. Portfolio HTML is never
+  cached; reading financial figures requires a connection.
 
 ## Architecture
 

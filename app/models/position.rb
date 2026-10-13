@@ -11,16 +11,17 @@ class Position < ApplicationRecord
   validates :avg_cost, presence: true, numericality: { greater_than: 0 }
 
   def market_value
-    shares * (asset.current_price || 0)
+    shares * asset.current_price if asset.current_price
   end
 
   def total_gain
-    shares * ((asset.current_price || 0) - avg_cost)
+    shares * (asset.current_price - avg_cost) if asset.current_price
   end
 
   def total_gain_percent
+    return nil unless asset.current_price
     return 0 if avg_cost.zero?
-    ((asset.current_price || 0) - avg_cost) / avg_cost * 100
+    (asset.current_price - avg_cost) / avg_cost * 100
   end
 
   # Weighted-average cost-per-share in the target currency, derived from

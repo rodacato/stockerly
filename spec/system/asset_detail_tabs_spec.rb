@@ -30,12 +30,13 @@ RSpec.describe "Asset detail tabs", type: :system, js: true do
 
   it "lights the tab whose panel is showing" do
     expect(tab(I18n.t("posicion.tab_analisis"))).to match_css(".bg-bg-surface[aria-selected='true']")
-    expect(tab(I18n.t("posicion.tab_posicion"))).to match_css(".text-fg-subtle[aria-selected='false']")
+    expect(tab(I18n.t("posicion.tab_posicion"))).to match_css("[aria-selected='false']")
 
     tab(I18n.t("posicion.tab_posicion")).click
 
     expect(page).to have_content(I18n.t("posicion.tu_posicion"))
     expect(tab(I18n.t("posicion.tab_posicion"))).to match_css(".bg-bg-surface.text-fg-default[aria-selected='true']")
-    expect(tab(I18n.t("posicion.tab_analisis"))).not_to match_css(".bg-bg-surface, .text-fg-default, .text-primary")
+    expect(tab(I18n.t("posicion.tab_analisis"))).to match_css("[aria-selected='false']")
+    expect(tab(I18n.t("posicion.tab_analisis"))).not_to match_css(".bg-bg-surface")
   end
 end

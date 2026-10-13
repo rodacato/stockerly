@@ -63,11 +63,11 @@ RSpec.describe Trading::Domain::HistoricalValuation do
       expect(valuation.market_value_on(5.days.ago.to_date)).to eq(5_000)
     end
 
-    it "values at zero when no close exists on or before the date" do
+    it "does not fabricate a zero when no close exists on or before the date" do
       buy(100, 50, on: 10.days.ago)
       close(50, on: Date.current)
 
-      expect(valuation.market_value_on(8.days.ago.to_date)).to eq(0)
+      expect { valuation.market_value_on(8.days.ago.to_date) }.to raise_error(Trading::Domain::MissingPrice)
     end
 
     # The reason AC4 exists. SplitAdjuster rewrites trades into post-split terms

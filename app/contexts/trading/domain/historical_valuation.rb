@@ -13,7 +13,11 @@ module Trading
       end
 
       def market_value_on(date)
-        shares_on(date).sum { |asset, shares| value_of(asset, shares, date) }
+        value_of_holdings_on(shares_on(date), date)
+      end
+
+      def value_of_holdings_on(holdings, date)
+        holdings.sum { |asset, shares| value_of(asset, shares, date) }
       end
 
       # Shares held at the end of `date`. SplitAdjuster rewrites past trades
@@ -42,9 +46,6 @@ module Trading
       def asset_value_on(asset, date)
         shares = shares_on(date)[asset]
         return nil if shares.nil? || shares.zero?
-        # value_of answers 0 for an unpriceable asset, which is right when it is
-        # one term of a portfolio sum and wrong as the whole answer: here it
-        # would read as "worth nothing" rather than "we cannot say".
         return nil if adjusted_close(asset, date).nil?
 
         value_of(asset, shares, date)
@@ -54,7 +55,7 @@ module Trading
 
       def value_of(asset, shares, date)
         close = adjusted_close(asset, date)
-        return 0 if close.nil?
+        raise MissingPrice, "#{asset.symbol} on #{date}" if close.nil?
 
         @portfolio.convert(shares * close, from: asset.currency, to: @currency, at_date: date)
       end

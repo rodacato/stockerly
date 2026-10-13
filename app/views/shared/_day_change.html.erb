@@ -1,0 +1,12 @@
+<% if day %>
+  <% tone = case day_change_direction(day.percent)
+     when :down then "bg-negative-bg text-negative-fg"
+     when :flat then "bg-bg-muted text-fg-subtle"
+     else "bg-positive-bg text-positive-fg"
+     end %>
+  <span class="rounded-full px-3 py-1.5 font-mono text-xs font-semibold <%= tone %>">
+    <%= t(".cambio", percent: signed_percent(day.percent)) %>
+  </span>
+<% else %>
+  <span class="text-xs text-fg-subtle"><%= t(".sin_base") %></span>
+<% end %>

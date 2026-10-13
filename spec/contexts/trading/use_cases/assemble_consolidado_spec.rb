@@ -83,6 +83,22 @@ RSpec.describe Trading::UseCases::AssembleConsolidado do
       snapshot(1, 1_100)
     end
 
+    it "uses the actual snapshot dates for both comparisons" do
+      allow(MarketData::Queries::CetesReinvestedReturn).to receive(:call).and_return(1.0)
+      result = data
+      expect(result.values_at(:from, :to)).to eq([ 60.days.ago.to_date, 1.day.ago.to_date ])
+      expect(MarketData::Queries::CetesReinvestedReturn).to have_received(:call).with(
+        term: "28", from: 60.days.ago.to_date, to: 1.day.ago.to_date)
+    end
+
+    it "does not compare a USD return with a nominal MXN benchmark" do
+      user.update!(preferred_currency: "USD")
+      FxRateHistory.record(base: "MXN", quote: "USD", date: 60.days.ago.to_date, rate: 0.05)
+      allow(MarketData::Queries::CetesReinvestedReturn).to receive(:call)
+      expect(data[:vs_cetes]).to be_nil
+      expect(MarketData::Queries::CetesReinvestedReturn).not_to have_received(:call)
+    end
+
     it "compares against CETES reinvested over the period" do
       CetesRateHistory.record(term: "28", date: 2.years.ago.to_date, rate: 10.0)
 
@@ -124,15 +140,17 @@ RSpec.describe Trading::UseCases::AssembleConsolidado do
 
   describe "vs sólo mantener" do
     # The position must predate the period, or there was nothing to hold.
-    it "values the positions held at the start of the period at today's prices" do
+    it "values the positions held at the start of the period at the last snapshot's prices" do
       buy(100, 10, days_ago: 400)
       close(10, days_ago: 400)
+      close(12, days_ago: 1)
+      asset.update!(current_price: 99)
       snapshot(60, 1_000)
       snapshot(1, 1_200)
 
       card = data[:vs_hold]
 
-      # 100 shares worth 1,000 at the period's open, 12 each today.
+      # 100 shares worth 1,000 at the period's open, 12 each at the last snapshot, not 99 today.
       expect(card[:hold_value]).to eq(1_200)
       expect(card[:hold_return]).to be_within(0.01).of(20.0)
     end

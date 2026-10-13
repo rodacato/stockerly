@@ -63,8 +63,8 @@ RSpec.describe "Activos", type: :request do
 
       get assets_path
 
-      expect(response.body).to match(%r{text-positive">\+50\.0%</span>})
-      expect(response.body).to match(%r{text-negative">−50\.0%</span>})
+      expect(response.body).to match(%r{text-positive-fg">\+50\.0%</span>})
+      expect(response.body).to match(%r{text-negative-fg">−50\.0%</span>})
     end
 
     it "gives a watchlist row no share line" do
@@ -184,7 +184,7 @@ RSpec.describe "Activos", type: :request do
       get assets_path
 
       expect(response.body).to match(%r{text-sm font-bold text-fg-default">\s*7,000\s*</p>})
-      expect(response.body).to match(%r{text-xs text-positive">\s*\+1\.5%\s*</p>})
+      expect(response.body).to match(%r{text-xs text-positive-fg">\s*\+1\.5%\s*</p>})
     end
 
     # ADR-021: one close is no day change. Rendering 0% would report the row

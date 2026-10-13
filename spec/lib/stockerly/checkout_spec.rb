@@ -63,7 +63,10 @@ RSpec.describe Stockerly::Checkout do
 
   describe ".database_prefix" do
     it "derives the prefix from the checkout this code was loaded from" do
+      original = ENV.delete("DATABASE_PREFIX")
       expect(described_class.database_prefix).to eq(described_class.prefix_for(Rails.root))
+    ensure
+      ENV["DATABASE_PREFIX"] = original
     end
 
     it "lets the environment override the derived name" do

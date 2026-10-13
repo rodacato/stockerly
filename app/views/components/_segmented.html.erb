@@ -2,28 +2,28 @@
     An option is [text, target, active]. A String target commits by navigating;
     a Hash of tag attributes commits through the Stimulus controller the caller
     wires, and that controller owns aria-selected from its first render.
-    The selected look is drawn off aria-selected, so what the control announces
+    The selected look follows aria-selected for buttons and aria-current for links, so what the control announces
     and what it draws cannot disagree.
     :track is D49's full-bleed-then-fit pill group, :chips the wrapping row. %>
 <%
   styles = {
     track: {
       list: "flex w-full gap-1 rounded-xl bg-bg-muted p-1 sm:w-fit",
-      option: "flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-normal text-fg-subtle transition-colors hover:text-fg-default aria-selected:bg-bg-surface aria-selected:font-semibold aria-selected:text-fg-default aria-selected:shadow-sm"
+      option: "inline-flex min-h-11 flex-1 items-center justify-center rounded-lg px-4 py-2.5 text-center text-sm font-normal text-fg-default transition-colors hover:text-fg-default selected:bg-bg-surface selected:font-semibold selected:text-fg-default selected:shadow-sm"
     },
     chips: {
       list: "flex flex-wrap gap-2",
-      option: "rounded-full border border-border-default px-4 py-2 text-sm text-fg-default transition-colors aria-selected:border-primary aria-selected:bg-primary-muted aria-selected:font-semibold aria-selected:text-primary-fg"
+      option: "inline-flex min-h-11 items-center justify-center rounded-full border border-border-default px-4 py-2 text-sm text-fg-default transition-colors selected:border-primary selected:bg-primary-muted selected:font-semibold selected:text-primary-fg"
     }
   }.fetch(local_assigns.fetch(:variant, :track))
 %>
-<div role="tablist" aria-label="<%= label %>" class="<%= styles[:list] %>">
+<div role="<%= options.all? { |_, target, _| !target.is_a?(Hash) } ? "group" : "tablist" %>" aria-label="<%= label %>" class="<%= styles[:list] %>">
   <% options.each do |text, target, active| %>
     <% if target.is_a?(Hash) %>
       <%= tag.button text, type: "button", role: "tab", "aria-selected": active.to_s,
                      class: styles[:option], **target %>
     <% else %>
-      <%= link_to text, target, role: "tab", "aria-selected": active.to_s, class: styles[:option] %>
+      <%= link_to text, target, "aria-current": ("page" if active), class: styles[:option] %>
     <% end %>
   <% end %>
 </div>

@@ -24,6 +24,7 @@ module Trading
           currency: currency,
           summary: summary,
           fx_unavailable: portfolio.present? && fx.degraded?,
+          prices_unavailable: fx.prices_unavailable?,
           sentiment_cards: sentiment_cards(user),
           signals: signals(positions, watched),
           signals_window_days: MarketData::Queries::NotableObservations::WINDOW_DAYS,

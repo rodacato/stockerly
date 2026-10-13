@@ -12,8 +12,8 @@ RSpec.describe "components/_segmented" do
     render_segmented(options: [ [ "1M", "/portfolio?p=1m", true ], [ "1A", "/portfolio?p=1y", false ] ])
 
     expect(rendered).to include('href="/portfolio?p=1m"')
-    expect(rendered).to include('aria-selected="true"')
-    expect(rendered).to include('aria-selected="false"')
+    expect(rendered).to include('aria-current="page"')
+    expect(rendered).not_to include('aria-selected=')
   end
 
   it "hands the click to its controller when the option carries attributes instead" do
@@ -26,18 +26,18 @@ RSpec.describe "components/_segmented" do
     expect(rendered).to include('aria-selected="true"')
   end
 
-  it "announces the group and every option in it, whichever mode it commits in" do
+  it "uses native navigation semantics for links" do
     render_segmented(options: [ [ "Todos", "/admin/logs", true ] ], variant: :chips)
 
-    expect(rendered).to include('role="tablist"')
+    expect(rendered).to include('role="group"')
     expect(rendered).to include('aria-label="Periodo"')
-    expect(rendered).to include('role="tab"')
+    expect(rendered).not_to include('role="tab"')
   end
 
   it "draws the selection off the state it announces, so the two cannot drift" do
     render_segmented(options: [ [ "1M", "/portfolio?p=1m", true ] ])
 
-    expect(rendered).to include("aria-selected:bg-bg-surface")
+    expect(rendered).to include("selected:bg-bg-surface")
   end
 
   it "wraps as chips rather than filling a track when asked" do

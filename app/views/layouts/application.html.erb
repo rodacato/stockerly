@@ -17,7 +17,7 @@
     <%# The chrome the app runs in, not the brand: this paints the status bar,
         so it tracks bg-surface and the theme the user picked. The manifest
         keeps #5B6CFF for the splash and the task switcher. %>
-    <meta name="theme-color" content="#FFFFFF" data-light="#FFFFFF" data-dark="#23242E">
+    <meta name="theme-color" content="<%= BrandAssets.color("bg-surface") %>" data-light="<%= BrandAssets.color("bg-surface") %>" data-dark="<%= BrandAssets.color("bg-surface", :dark) %>">
 
     <%# Open Graph / Social Sharing %>
     <meta property="og:type" content="website">
@@ -27,11 +27,14 @@
     <meta property="og:image" content="<%= request.base_url %>/og-image.png?v=<%= BrandAssets::VERSION %>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Stockerly">
+    <meta property="og:image:alt" content="<%= t("brand.social.alt") %>">
+    <meta property="og:locale" content="es_MX">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<%= page_title %>">
     <meta name="twitter:description" content="<%= page_description %>">
     <meta name="twitter:image" content="<%= request.base_url %>/og-image.png?v=<%= BrandAssets::VERSION %>">
+
+    <meta name="twitter:image:alt" content="<%= t("brand.social.alt") %>">
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>

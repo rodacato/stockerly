@@ -24,6 +24,7 @@ module Trading
           portfolio: portfolio,
           summary: summary,
           fx_unavailable: portfolio.present? && fx.degraded?,
+          prices_unavailable: fx.prices_unavailable?,
           positions: (tab == "cartera" ? rows : []),
           holdings: (tab == "cartera" ? holdings_for(fx, rows, summary, currency) : {}),
           watchlist_items: (tab == "watchlist" ? rows : []),
@@ -85,6 +86,8 @@ module Trading
       def by_market_value(positions, portfolio, currency)
         positions.sort_by do |position|
           asset = position.asset
+          raise Domain::MissingPrice, asset.symbol if position.market_value.nil?
+
           [ -portfolio.convert(position.market_value, from: asset.currency, to: currency), asset.symbol ]
         end
       end

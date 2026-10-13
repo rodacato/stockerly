@@ -19,20 +19,22 @@
         </div>
 
         <% if @series.any? %>
+          <p class="mt-2 text-xs text-fg-subtle"><%= t(".rango_real", from: l(@from, format: :long), to: l(@to, format: :long), currency: @currency) %></p>
           <div class="mt-4" data-controller="chart" data-chart-height-value="240"
                data-chart-series-value="<%= chart_series_json(@series) %>"></div>
 
           <div class="mt-3 flex flex-wrap gap-4 text-xs text-fg-subtle">
             <span class="inline-flex items-center gap-2">
-              <span class="size-2 rounded-full bg-positive"></span><%= t(".valor") %>
+              <span class="size-2 rounded-full bg-positive-fg"></span><%= t(".valor") %>
             </span>
             <span class="inline-flex items-center gap-2">
-              <span class="size-2 rounded-full bg-border-strong"></span><%= t(".aportado") %>
+              <span class="size-2 rounded-full bg-fg-subtle"></span><%= t(".aportado") %>
             </span>
           </div>
           <%# D142: five ranges of a curve that is not there all land on the
               same card, so the control waits for something to cut. %>
           <%= render "components/segmented",
+                     variant: :chips,
                      label: t(".como_ha_ido"),
                      options: Trading::UseCases::AssembleConsolidado::PERIODS.keys.map { |key|
                        [ t(".periodo.#{period_key(key)}"), portfolio_path(period: key), @period == key ]
@@ -77,14 +79,15 @@
                  label: t(".vs_cetes", term: Trading::UseCases::AssembleConsolidado::CETES_TERM),
                  card: @vs_cetes,
                  level_label: t(".igual_cetes"),
+                 empty_body: (@currency != "MXN" ? t(".cetes_solo_mxn") : nil),
                  body: (@vs_cetes && t(".vs_cetes_cuerpo",
                         mine: signed_percent(@vs_cetes[:mine]),
                         benchmark: signed_percent(@vs_cetes[:benchmark]),
                         term: @vs_cetes[:term],
-                        from: l(@from, format: :long))) %>
+                        from: l(@from, format: :long), to: l(@to, format: :long))) %>
 
       <% if @vs_hold %>
-        <% hold_args = { from: l(@from, format: :long),
+        <% hold_args = { from: l(@from, format: :long), to: l(@to, format: :long),
                          value: format_currency_mx(@vs_hold[:hold_value], currency: @currency, precision: 0),
                          points: number_with_precision(@vs_hold[:points].abs, precision: 1) } %>
         <% hold_body = case comparison_standing(@vs_hold[:points])

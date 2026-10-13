@@ -475,9 +475,29 @@ es-MX:
       inactividad: Cerramos tu sesión por inactividad.
     volver: Volver a iniciar sesión
   brand:
-    description: 'Tracker self-hosted de patrimonio invertido: acciones, cripto y
-      renta fija MX, con multi-divisa MXN/USD correcta.'
-    title: Stockerly — Tu patrimonio invertido, en una pantalla
+    description: Tracker self-hosted de patrimonio invertido para una persona. Acciones,
+      cripto y renta fija MX, con seguimiento en MXN y USD.
+    mail_footer: Stockerly · Tu patrimonio invertido en MXN y USD.
+    offline:
+      body: El patrimonio requiere conexión y no se guarda para consultarlo sin red.
+        Revisa tu conexión y vuelve a intentar.
+      heading: Patrimonio no disponible sin red
+      retry: Volver a intentar
+      title: Stockerly — Sin conexión
+    social:
+      alt: Stockerly. Tu patrimonio invertido en MXN y USD. Self-hosted para una persona.
+      detail: Acciones, cripto y renta fija MX · seguimiento multi-divisa
+      headline: Tu patrimonio invertido.
+      headline_second: En MXN y USD.
+      packaging: Self-hosted · una sola cuenta · código abierto
+    title: Stockerly — Tu patrimonio invertido
+  components:
+    asset_price:
+      actualizado: Cotización del %{date} · CDMX
+      desactualizado: Cotización desactualizada · más de 15 minutos sin actualizar.
+      error_proveedor: La última sincronización falló. La cotización mostrada, si
+        existe, corresponde a la última actualización disponible.
+      periodo: vs. cierre anterior disponible
   comun:
     abre_pestana: abre una pestaña nueva
     accion:
@@ -518,14 +538,14 @@ es-MX:
       destino: Cómo está repartido por tipo
       fear_greed_crypto: FEAR & GREED · CRIPTO
       patrimonio: PATRIMONIO · %{currency}
-      radar_subtitulo: De tu cartera y watchlist · con actividad hoy
+      radar_subtitulo: Cambios entre cierres y vencimientos próximos
       radar_titulo: Radar
-      radar_vacio: Ninguno de tus activos tuvo actividad hoy.
+      radar_vacio: No hay movimientos de precio calculables ni vencimientos próximos.
       senales_subtitulo:
-        one: Oportunidades de compra y venta del último día
-        other: Oportunidades de compra y venta de los últimos %{count} días
+        one: Observaciones del último día
+        other: Observaciones de los últimos %{count} días
       senales_titulo: Señales de interés
-      senales_vacio: Nada que destaque hoy. Tus reglas están tranquilas — vuelve mañana.
+      senales_vacio: No hay observaciones recientes para tus activos.
       senales_ver_mas: Ver todas
       sentimiento_watchlist: SENTIMIENTO · TU WATCHLIST
       titulo: Panorama
@@ -1099,6 +1119,9 @@ es-MX:
         por acción más reciente. La línea se mueve con el precio, no con los resultados
         de la empresa.
       titulo: Razón P/U histórica · últimos %{days} días
+    position_summary:
+      sin_precio: Falta la cotización del activo. El valor y el resultado no están
+        disponibles; los títulos y el costo promedio siguen registrados.
     precio:
       anclas:
         costo: TU COSTO
@@ -1132,6 +1155,7 @@ es-MX:
       alcance: Zonas técnicas que %{symbol} cruzó en los últimos %{dias} días
       seccion: Lo que pasó recientemente
     returns:
+      fecha: Al último cierre registrado del %{date} · %{currency}
       titulo: Rendimiento
       ventana:
         1a: 1 año
@@ -1169,6 +1193,10 @@ es-MX:
         neutral: Fuera de las zonas de sobrecompra y sobreventa
         overbought: En zona de sobrecompra (RSI(14) por encima de 70)
         oversold: En zona de sobreventa (RSI(14) por debajo de 30)
+    state_verdict:
+      sin_observacion_cuerpo: No hay una observación de RSI o bandas registrada para
+        describir el estado del activo.
+      sin_observacion_titulo: Sin observación disponible
     statement_table:
       concepto: Concepto
       margen: Margen %
@@ -1370,7 +1398,9 @@ es-MX:
       paso: Paso %{step} de %{total}
   portfolios:
     show:
-      aportado: Lo que has aportado
+      aportado: Base inicial + aportaciones netas
+      cetes_solo_mxn: La referencia CETES está expresada en MXN. Para compararla,
+        cambia la moneda del patrimonio a MXN.
       como_ha_ido: Cómo ha ido
       como_repartido: Cómo está repartido
       en_el_periodo: "%{percent} en el periodo"
@@ -1384,6 +1414,7 @@ es-MX:
         y1: 1A
         ytd: YTD
       por_tipo: por tipo · %{currency}
+      rango_real: Del %{from} al %{to} · %{currency} · rendimiento acumulado, no anualizado
       sin_comparacion: Aún no hay datos suficientes para comparar este periodo.
       sin_historial_cuerpo: El gráfico aparece cuando haya al menos dos días de historial.
       sin_historial_titulo: Todavía no hay curva que dibujar
@@ -1397,14 +1428,14 @@ es-MX:
       vas_arriba: vas arriba
       vs_cetes: VS CETES %{term}D
       vs_cetes_cuerpo: Tu %{mine} contra el %{benchmark} que habrían rendido los mismos
-        MXN en CETES a %{term} días, reinvertidos desde el %{from}.
+        MXN en CETES a %{term} días, reinvertidos del %{from} al %{to}.
       vs_hold: VS SÓLO MANTENER
-      vs_hold_cuerpo: Si no hubieras movido nada desde el %{from}, hoy tendrías %{value}.
-        Tus compras y ventas restaron %{points} puntos.
-      vs_hold_cuerpo_igual: Si no hubieras movido nada desde el %{from}, hoy tendrías
-        %{value}. Tus compras y ventas no cambiaron el resultado.
-      vs_hold_cuerpo_positivo: Si no hubieras movido nada desde el %{from}, hoy tendrías
-        %{value}. Tus compras y ventas sumaron %{points} puntos.
+      vs_hold_cuerpo: Si no hubieras movido nada desde el %{from}, al %{to} tendrías
+        %{value}. Tus compras y ventas restaron %{points} puntos.
+      vs_hold_cuerpo_igual: Si no hubieras movido nada desde el %{from}, al %{to}
+        tendrías %{value}. Tus compras y ventas no cambiaron el resultado.
+      vs_hold_cuerpo_positivo: Si no hubieras movido nada desde el %{from}, al %{to}
+        tendrías %{value}. Tus compras y ventas sumaron %{points} puntos.
   posicion:
     cerrar: Cerrar posición
     costo_prom: Costo prom.
@@ -1583,6 +1614,20 @@ es-MX:
       titulo: Crea tu cuenta
     ya_completado: Esta instancia ya está configurada.
   shared:
+    day_change:
+      cambio: "%{percent} · vs. registro de ayer"
+      sin_base: 'Cambio diario: sin registro previo comparable'
+    valuation_caption:
+      desactualizado: Hay cotizaciones desactualizadas · más de 15 minutos sin actualizar.
+      error_proveedor: Falló la última sincronización de uno o más activos. La valuación
+        usa las últimas cotizaciones disponibles.
+      fecha: 'Cotización más antigua: %{date} · CDMX'
+      fuentes: Fuentes y fechas por activo en su detalle
+      sin_fecha: Fecha de cotización sin registrar
+    valuation_notice:
+      cuerpo: Falta el precio de una o más posiciones. El patrimonio y el resultado
+        se mostrarán cuando haya cotizaciones; tus títulos y costos siguen registrados.
+      titulo: Valuación no disponible
     welcome_body:
       bug_enlace: Ábrelo en GitHub.
       bug_pregunta: "¿Encontraste un bug?"

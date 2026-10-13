@@ -4,9 +4,11 @@ class PortfoliosController < AuthenticatedController
 
     @period         = data[:period]
     @from           = data[:from]
+    @to             = data[:to]
     @currency       = data[:currency]
     @summary        = data[:summary]
     @fx_unavailable = data[:fx_unavailable]
+    @prices_unavailable = data[:prices_unavailable]
     @series         = data[:series]
     @twr            = data[:twr]
     @vs_cetes       = data[:vs_cetes]

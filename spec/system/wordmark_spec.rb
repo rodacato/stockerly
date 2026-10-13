@@ -20,8 +20,8 @@ RSpec.describe "The wordmark", type: :system, js: true do
   end
 
   it "takes the disc from the brand token and the word from the text colour" do
-    expect(partial).to include('fill="var(--color-primary)"')
-    expect(partial).to include('fill="currentColor"')
+    expect(partial).to include('color="var(--color-primary)"')
+    expect(BrandAssets.svg_body('lettering')).to include('fill="currentColor"')
   end
 
   it "carries its letters as paths, so no font has to be installed" do

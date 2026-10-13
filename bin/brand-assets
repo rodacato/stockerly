@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+# Generate derived artwork from the canonical geometry, locale and Lumen tokens.
+require "bundler/setup"
+require "ferrum"
+require "erb"
+require "yaml"
+require "base64"
+require "fileutils"
+require_relative "../app/shared/domain/brand_assets"
+require_relative "../app/shared/domain/ios_splash"
+
+Dir.chdir(BrandAssets::ROOT)
+FileUtils.mkdir_p("public/brand")
+locale = YAML.safe_load_file("config/locales/es-MX.yml").fetch("es-MX").fetch("brand")
+glyph = BrandAssets.svg_body("glyph")
+letters = BrandAssets.svg_body("lettering")
+svg = ->(width, height, body) { %(<svg xmlns="http://www.w3.org/2000/svg" width="#{width}" height="#{height}" viewBox="0 0 #{width} #{height}">#{body}</svg>\n) }
+wordmark_body = ->(mode) { %(<g transform="scale(.625)" color="#{BrandAssets.color('primary', mode)}">#{glyph}</g><g color="#{BrandAssets.color('fg-default', mode)}">#{letters}</g>) }
+
+browser = Ferrum::Browser.new(browser_path: ENV["CHROME_PATH"], browser_options: { "force-color-profile" => "srgb" })
+render = lambda do |path, width, height, body|
+  browser.resize(width: width, height: height)
+  browser.page.command("Emulation.setDefaultBackgroundColorOverride", color: { r: 0, g: 0, b: 0, a: 0 })
+  browser.go_to("data:image/svg+xml;base64,#{Base64.strict_encode64(body)}")
+  browser.evaluate_async(<<~JS, 10)
+    const done = arguments[0];
+    document.fonts.ready.then(() => requestAnimationFrame(() => requestAnimationFrame(() => done(true))));
+  JS
+  browser.screenshot(path: path)
+end
+
+begin
+  %i[light dark mono].each do |variant|
+    mode = variant == :dark ? :dark : :light
+    body = variant == :mono ? %(<g color="#{BrandAssets.color('fg-default')}"><g transform="scale(.625)">#{glyph}</g>#{letters}</g>) : wordmark_body.call(mode)
+    source = svg.call(174, 40, body)
+    File.write("public/brand/wordmark-#{variant}.svg", source)
+    render.call("public/brand/wordmark-#{variant}.png", 522, 120, svg.call(522, 120, %(<g transform="scale(3)">#{body}</g>)))
+  end
+  FileUtils.cp("public/brand/wordmark-light.svg", "design/brand/wordmark.svg")
+  FileUtils.cp("public/brand/wordmark-light.png", "design/brand/wordmark.png")
+  FileUtils.cp("public/brand/wordmark-light.svg", "app/assets/images/logo_light.svg")
+  FileUtils.cp("design/brand/glyph.svg", "public/brand/glyph.svg")
+
+  %w[favicon icon].each do |name|
+    body = %(<g color="#{BrandAssets.color('primary')}">#{glyph}</g>)
+    File.write("public/#{name}.svg", svg.call(64, 64, body))
+  end
+  [ 192, 512 ].each do |size|
+    render.call("public/icon-#{size}.png", size, size, svg.call(size, size, %(<g transform="scale(#{size / 64.0})" color="#{BrandAssets.color('primary')}">#{glyph}</g>)))
+    # All ink lies inside the central 80% diameter: safe under any mask shape.
+    body = %(<rect width="100%" height="100%" fill="#{BrandAssets.color('bg-canvas')}"/><g transform="translate(#{size * 0.2} #{size * 0.2}) scale(#{size * 0.6 / 64})" color="#{BrandAssets.color('primary-fg')}">#{glyph}</g>)
+    render.call("public/icon-maskable-#{size}.png", size, size, svg.call(size, size, body))
+  end
+  render.call("public/icon-monochrome-512.png", 512, 512, svg.call(512, 512, %(<g transform="scale(8)" color="black">#{glyph}</g>)))
+  body = %(<rect width="100%" height="100%" fill="#{BrandAssets.color('bg-canvas')}"/><g transform="translate(27 27) scale(1.96875)" color="#{BrandAssets.color('primary-fg')}">#{glyph}</g>)
+  render.call("public/apple-touch-icon.png", 180, 180, svg.call(180, 180, body))
+
+  IosSplash.each_image do |device, scheme, path|
+    width = device.css_width * device.ratio
+    height = device.css_height * device.ratio
+    body = %(<rect width="100%" height="100%" fill="#{BrandAssets.color('bg-canvas', scheme)}"/><g transform="translate(#{(width - 522) / 2} #{(height - 120) / 2}) scale(3)">#{wordmark_body.call(scheme)}</g>)
+    render.call("public#{path}", width, height, svg.call(width, height, body))
+  end
+
+  english = { "headline" => "Your investments.", "headline_second" => "In one clear view.",
+              "detail" => "Stocks, crypto and Mexican fixed income · MXN / USD",
+              "packaging" => "Self-hosted · single user · open source" }
+  [ [ "og-image", 1200, 630, locale.fetch("social") ],
+    [ "github-social-preview", 1280, 640, locale.fetch("social") ],
+    [ "og-image-en", 1200, 630, english ],
+    [ "github-social-preview-en", 1280, 640, english ] ].each do |name, width, height, copy|
+    wordmark = wordmark_body.call(:light)
+    artwork = ERB.new(File.read("design/brand/templates/social.svg.erb")).result(binding)
+    File.write("public/brand/#{name}.svg", artwork)
+    render.call("public/#{name}.png", width, height, artwork)
+  end
+  wordmark = %(<g transform="scale(.625)" color="var(--primary)">#{glyph}</g>#{letters})
+  copy = locale.fetch("offline")
+  File.write("public/offline.html", ERB.new(File.read("design/brand/templates/offline.html.erb")).result(binding))
+
+  rows = BrandAssets.palette.map { |role, light| "| `#{role}` | `#{light}` | `#{BrandAssets.palette(:dark).fetch(role, light)}` |" }
+  File.write("design/brand/tokens.md", "<!-- Generated by bin/brand-assets from application.css. -->\n| Role | Light | Dark |\n|---|---|---|\n#{rows.join("\n")}\n")
+  puts "Generated brand assets for BrandAssets::VERSION #{BrandAssets::VERSION}"
+ensure
+  browser.quit
+end

@@ -28,22 +28,27 @@ module Trading
         return empty(currency, period) unless portfolio
 
         from = starts_on(portfolio, period)
+        dates = portfolio.snapshots.where(date: from..Date.current).order(:date).pluck(:date)
+        from = dates.first || from
+        to = dates.last || Date.current
         fx = Domain::FxDegradation.new
 
         summary = fx.figure { Domain::PortfolioSummary.prewarmed(portfolio, currency: currency) }
-        twr = fx.figure { Domain::TimeWeightedReturn.new(portfolio, currency: currency).between(from: from) }
+        twr = fx.figure { Domain::TimeWeightedReturn.new(portfolio, currency: currency).between(from: from, to: to) }
 
         {
           period: period,
           from: from,
+          to: to,
           currency: currency,
           summary: summary,
           series: fx.figure([]) { series_for(portfolio, currency, from) },
           twr: twr,
-          vs_cetes: twr && vs_cetes(twr, from),
-          vs_hold: twr && fx.figure { vs_hold(portfolio, currency, from, twr) },
+          vs_cetes: twr && currency == "MXN" ? vs_cetes(twr, from, to) : nil,
+          vs_hold: twr && fx.figure { vs_hold(portfolio, currency, from, to, twr) },
           allocation: fx.figure({}) { allocation_for(portfolio, currency) },
-          fx_unavailable: fx.degraded?
+          fx_unavailable: fx.degraded?,
+          prices_unavailable: fx.prices_unavailable?
         }
       end
 
@@ -54,7 +59,7 @@ module Trading
       end
 
       def empty(currency, period)
-        { period: period, from: Date.current, currency: currency, summary: nil, fx_unavailable: false,
+        { period: period, from: Date.current, to: Date.current, currency: currency, summary: nil, fx_unavailable: false, prices_unavailable: false,
           series: [], twr: nil, vs_cetes: nil, vs_hold: nil, allocation: {} }
       end
 
@@ -87,8 +92,8 @@ module Trading
         portfolio.convert(snapshot.total_value, from: snapshot.currency, to: currency, at_date: snapshot.date)
       end
 
-      def vs_cetes(mine, from)
-        theirs = MarketData::Queries::CetesReinvestedReturn.call(term: CETES_TERM, from: from, to: Date.current)
+      def vs_cetes(mine, from, to)
+        theirs = MarketData::Queries::CetesReinvestedReturn.call(term: CETES_TERM, from: from, to: to)
         return nil if theirs.nil?
 
         # The card prints both returns at one decimal, so the gap is judged on those.
@@ -96,23 +101,17 @@ module Trading
       end
 
       # The counterfactual: the positions held at the start of the period,
-      # valued at today's prices. Nil when there were none — there is nothing
+      # valued at the last snapshot's date. Nil when there were none — there is nothing
       # to have held.
-      def vs_hold(portfolio, currency, from, mine)
+      def vs_hold(portfolio, currency, from, to, mine)
         valuation = Domain::HistoricalValuation.new(portfolio, currency: currency)
         opening = valuation.market_value_on(from)
         return nil unless opening.positive?
 
-        held_today = value_today(portfolio, currency, valuation.shares_on(from))
-        hold_return = ((held_today - opening) / opening * 100).to_f
+        held_value = valuation.value_of_holdings_on(valuation.shares_on(from), to)
+        hold_return = ((held_value - opening) / opening * 100).to_f
 
-        { points: mine - hold_return, mine: mine, hold_return: hold_return, hold_value: held_today.to_f }
-      end
-
-      def value_today(portfolio, currency, held)
-        held.sum do |asset, shares|
-          portfolio.convert(shares * (asset.current_price || 0), from: asset.currency, to: currency)
-        end
+        { points: mine - hold_return, mine: mine, hold_return: hold_return, hold_value: held_value.to_f }
       end
     end
   end

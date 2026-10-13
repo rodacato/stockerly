@@ -7,7 +7,7 @@
   <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("posicion.tu_posicion") %></p>
 
   <% if breakdown %>
-    <p class="mt-2 font-display text-3xl font-bold tracking-tight text-fg-default">
+    <p class="mt-2 break-words font-display text-3xl font-bold tracking-tight text-fg-default">
       <%= format_currency_mx(breakdown.market_value, currency: currency, precision: 0) %>
     </p>
     <p class="mt-1 font-mono text-sm font-semibold <%= gain_color(breakdown.total.amount) %>">
@@ -35,10 +35,16 @@
       </div>
     <% end %>
   <% else %>
-    <p class="mt-2 text-sm text-warning-fg"><%= t("posicion.sin_desglose") %></p>
+    <p class="mt-2 text-sm text-warning-fg">
+      <% if position.asset.current_price.nil? %>
+        <%= t(".sin_precio") %>
+      <% else %>
+        <%= t("posicion.sin_desglose") %>
+      <% end %>
+    </p>
   <% end %>
 
-  <div class="mt-4 grid grid-cols-3 gap-3 border-t border-border-default pt-4">
+  <div class="mt-4 grid grid-cols-1 gap-3 border-t border-border-default pt-4 sm:grid-cols-3">
     <div>
       <p class="text-[11px] text-fg-subtle"><%= t("posicion.titulos") %></p>
       <p class="font-mono text-sm font-semibold text-fg-default">
@@ -54,7 +60,7 @@
     <div>
       <p class="text-[11px] text-fg-subtle"><%= t("posicion.invertido") %></p>
       <p class="font-mono text-sm font-semibold text-fg-default">
-        <%= breakdown ? format_currency_mx(breakdown.cost_basis, currency: currency, precision: 0) : "—" %>
+        <%= format_currency_mx(position.shares * position.avg_cost, currency: position.asset.currency) %>
       </p>
     </div>
   </div>

@@ -40,6 +40,7 @@ RSpec.describe "Consolidado", type: :request do
                      price_per_share: 10, currency: "MXN", executed_at: 400.days.ago)
       create(:asset_price_history, asset: asset, date: 400.days.ago.to_date, close: 10)
       snapshot(400, 1_000)
+      create(:asset_price_history, asset: asset, date: 1.day.ago.to_date, close: 12)
       get portfolio_path
 
       expect(response.body).to include(I18n.t("portfolios.show.igual_hold"))
@@ -55,8 +56,8 @@ RSpec.describe "Consolidado", type: :request do
       get portfolio_path
 
       expect(response.body).to include('data-controller="chart"')
-      expect(response.body).to include("--color-positive")
-      expect(response.body).to include("--color-border-strong")
+      expect(response.body).to include("--color-positive-fg")
+      expect(response.body).to include("--color-fg-subtle")
     end
 
     # The hole used bg-white, and bg-bg-canvas in dark, inside a card on bg-bg-surface.
@@ -110,20 +111,20 @@ RSpec.describe "Consolidado", type: :request do
     it "draws a day that did not move as neutral, not as a gain" do
       render_with_yesterday(1_200)
 
-      expect(response.body).to match(%r{bg-bg-muted text-fg-subtle">\s*0\.0% hoy})
+      expect(response.body).to match(%r{bg-bg-muted text-fg-subtle">\s*0\.0% · vs. registro de ayer})
       expect(response.body).not_to include("+0.0%")
     end
 
     it "draws a day that fell as negative" do
       render_with_yesterday(2_400)
 
-      expect(response.body).to match(%r{bg-negative-bg text-negative-fg">\s*−50\.0% hoy})
+      expect(response.body).to match(%r{bg-negative-bg text-negative-fg">\s*−50\.0% · vs. registro de ayer})
     end
 
     it "draws a day that rose as positive" do
       render_with_yesterday(1_000)
 
-      expect(response.body).to match(%r{bg-positive-bg text-positive-fg">\s*\+20\.0% hoy})
+      expect(response.body).to match(%r{bg-positive-bg text-positive-fg">\s*\+20\.0% · vs. registro de ayer})
     end
   end
 

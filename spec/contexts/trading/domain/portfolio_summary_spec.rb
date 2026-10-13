@@ -31,10 +31,8 @@ RSpec.describe Trading::Domain::PortfolioSummary do
   end
 
   describe "#day_gain" do
-    it "returns zero GainLoss when no yesterday snapshot" do
-      result = subject.day_gain
-      expect(result.absolute).to eq(0.0)
-      expect(result.percent).to eq(0.0)
+    it "leaves the daily change absent without a comparable snapshot" do
+      expect(subject.day_gain).to be_nil
     end
 
     it "calculates day gain from yesterday snapshot" do

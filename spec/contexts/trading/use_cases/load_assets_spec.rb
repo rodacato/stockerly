@@ -202,9 +202,10 @@ RSpec.describe Trading::UseCases::LoadAssets do
       hold(mxn_asset(symbol: "BLANK", current_price: nil), shares: 1)
 
       data = described_class.call(user: user, tab: "cartera")
-      blank = data[:positions].find { |p| p.asset.symbol == "BLANK" }
 
-      expect(data[:holdings][blank.id][:gain]).to be_nil
+      expect(data[:summary]).to be_nil
+      expect(data[:prices_unavailable]).to be true
+      expect(data[:holdings]).to eq({})
     end
 
     it "is absent for every row when a rate is missing, rather than wrong" do

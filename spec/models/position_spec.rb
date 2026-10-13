@@ -93,10 +93,12 @@ RSpec.describe Position, type: :model do
       expect(position.market_value).to eq(2_000.0)
     end
 
-    it "handles nil current_price" do
+    it "leaves a missing price unvalued" do
       asset = create(:asset, current_price: nil)
       position = build(:position, asset: asset, shares: 10)
-      expect(position.market_value).to eq(0)
+      expect(position.market_value).to be_nil
+      expect(position.total_gain).to be_nil
+      expect(position.total_gain_percent).to be_nil
     end
   end
 

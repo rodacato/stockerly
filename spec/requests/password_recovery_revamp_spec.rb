@@ -61,8 +61,8 @@ RSpec.describe "Password recovery revamp (S11 #147)", type: :request do
       post forgot_password_path, params: { email: user.email }
       page = Capybara.string(response.body)
 
-      expect(page).to have_css("a.bg-primary", count: 1)
-      expect(page.find("a.bg-primary")[:href]).to eq(login_path)
+      expect(page).to have_css("a.bg-primary-fg", count: 1)
+      expect(page.find("a.bg-primary-fg")[:href]).to eq(login_path)
       expect(page).to have_css("a", text: I18n.t("auth.sent.reenviar"))
     end
   end

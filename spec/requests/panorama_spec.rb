@@ -22,14 +22,14 @@ RSpec.describe "Panorama", type: :request do
       expect(response.body).to include("WALMEX")
     end
 
-    it "declares MXN once on the strip and drops the symbol from the figure" do
+    it "keeps the consolidated figure explicitly in MXN" do
       asset = with_day_change(mxn_asset(symbol: "AMXL", current_price: 15), 1.0)
       create(:position, portfolio: portfolio, asset: asset, shares: 1_000, avg_cost: 12, status: :open)
 
       get dashboard_path
 
       expect(response.body).to include("PATRIMONIO · MXN")
-      expect(response.body).to match(/>\s*15,000\s*</)
+      expect(response.body).to match(/>\s*MXN 15,000\s*</)
     end
 
     it "carries an h1 for the screen at each breakpoint" do
@@ -98,7 +98,7 @@ RSpec.describe "Panorama", type: :request do
 
       get dashboard_path
 
-      expect(response.body).to include("Oportunidades de compra y venta de los últimos 3 días")
+      expect(response.body).to include("Observaciones de los últimos 3 días")
       expect(response.body).not_to include("Oportunidades de compra y venta hoy")
     end
 
@@ -187,7 +187,7 @@ RSpec.describe "Panorama", type: :request do
 
       get dashboard_path
 
-      expect(response.body).to match(%r{text-sm font-bold text-positive">\s*\+1\.5%\s*</p>})
+      expect(response.body).to match(%r{text-sm font-bold text-positive-fg">\s*\+1\.5%\s*</p>})
       expect(response.body).to match(%r{text-xs text-fg-subtle">\s*MXN 70\.00\s*</p>})
     end
 
@@ -249,7 +249,7 @@ RSpec.describe "Panorama", type: :request do
 
       get dashboard_path
 
-      expect(response.body).to match(%r{text-sm font-bold text-negative">\s*−2\.0%\s*</p>})
+      expect(response.body).to match(%r{text-sm font-bold text-negative-fg">\s*−2\.0%\s*</p>})
       expect(response.body).to match(%r{text-xs text-fg-subtle">\s*USD 182\.50\s*</p>})
     end
 
@@ -261,7 +261,7 @@ RSpec.describe "Panorama", type: :request do
       get assets_path(tab: "watchlist")
 
       expect(response.body).to match(%r{text-sm font-bold text-fg-default">\s*USD 182\.50\s*</p>})
-      expect(response.body).to match(%r{text-xs text-negative">\s*−2\.0%\s*</p>})
+      expect(response.body).to match(%r{text-xs text-negative-fg">\s*−2\.0%\s*</p>})
     end
 
     # ADR-021: computed from two closes, so it means the same thing whichever
@@ -273,7 +273,7 @@ RSpec.describe "Panorama", type: :request do
 
       get dashboard_path
 
-      expect(response.body).to match(%r{text-sm font-bold text-positive">\s*\+1\.5%\s*</p>})
+      expect(response.body).to match(%r{text-sm font-bold text-positive-fg">\s*\+1\.5%\s*</p>})
     end
 
     # Negative, and the one behaviour X13 actually changed: with the provider
@@ -402,25 +402,25 @@ RSpec.describe "Panorama", type: :request do
     it "draws a day that did not move as neutral, not as a gain" do
       render_with_yesterday(1_000)
 
-      expect(response.body).to match(%r{bg-bg-muted text-fg-subtle">\s*0\.0% hoy})
+      expect(response.body).to match(%r{bg-bg-muted text-fg-subtle">\s*0\.0% · vs. registro de ayer})
       expect(response.body).not_to include("+0.0%")
     end
 
     it "draws a day that fell as negative" do
       render_with_yesterday(2_000)
 
-      expect(response.body).to match(%r{bg-negative-bg text-negative-fg">\s*−50\.0% hoy})
+      expect(response.body).to match(%r{bg-negative-bg text-negative-fg">\s*−50\.0% · vs. registro de ayer})
     end
 
     it "draws a day that rose as positive" do
       render_with_yesterday(800)
 
-      expect(response.body).to match(%r{bg-positive-bg text-positive-fg">\s*\+25\.0% hoy})
+      expect(response.body).to match(%r{bg-positive-bg text-positive-fg">\s*\+25\.0% · vs. registro de ayer})
     end
   end
 
   describe "the patrimonio strip and late capture" do
-    # This screen rendered "+20.0% hoy" for a purchase recorded late.
+    # This screen rendered "+20.0% · vs. registro de ayer" for a purchase recorded late.
     it "does not report a backdated purchase as today's move" do
       held = mxn_asset(symbol: "HELD", current_price: 10)
       create(:position, portfolio: portfolio, asset: held, shares: 500, avg_cost: 10, status: :open)
@@ -435,8 +435,8 @@ RSpec.describe "Panorama", type: :request do
 
       get dashboard_path
 
-      expect(response.body).to match(%r{>\s*0\.0% hoy})
-      expect(response.body).not_to include("+20.0% hoy")
+      expect(response.body).to match(%r{>\s*0\.0% · vs. registro de ayer})
+      expect(response.body).not_to include("+20.0% · vs. registro de ayer")
     end
   end
 

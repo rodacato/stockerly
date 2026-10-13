@@ -5,8 +5,14 @@ on:
     branches: [master]
     paths:
       - "site/**"
-      - "design/exports/**"
       - "design/brand/**"
+      - "app/assets/tailwind/application.css"
+      - "app/shared/domain/brand_assets.rb"
+      - "bin/brand-preview"
+      - "public/brand/**"
+      - "public/*icon*"
+      - "public/*image*.png"
+      - "public/github-social-preview*.png"
       - "lib/stockerly/version.rb"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
@@ -26,28 +32,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Stamp the version the repo declares
-        run: |
-          set -euo pipefail
-          v="$(sed -nE 's/.*VERSION = "([^"]+)".*/\1/p' lib/stockerly/version.rb)"
-          [ -n "$v" ] || { echo "lib/stockerly/version.rb yielded no version" >&2; exit 1; }
-          for f in site/index.html site/en.html; do
-            sed -i "s|data-version>[^<]*|data-version>$v|g" "$f"
-            grep -qF "data-version>$v<" "$f" || { echo "$f did not take the stamp" >&2; exit 1; }
-          done
-          echo "stamped $v"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
-      - name: Stage the design assets the page references
+      - name: Build Pages from the shared presentation and application tokens
         run: |
-          set -euo pipefail
-          mkdir -p site/img site/brand
-          while read -r f; do
-            cp "design/exports/$f" "site/img/$f"
-          done <<< "$(grep -oE '(src|srcset)="img/[^"]+"' site/index.html \
-                      | sed -E 's/.*"img\///; s/"$//' | sort -u)"
-          cp design/brand/glyph.svg design/brand/wordmark.svg site/brand/
-          cp public/og-image.png site/og-image.png
-          du -sh site
+          bin/rails tailwindcss:build
+          bin/brand-preview --site
 
       - uses: actions/upload-pages-artifact@v5
         with:

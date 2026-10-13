@@ -8,7 +8,7 @@
           class: "flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary" do %>
       <%= icon_svg "search", class: "text-xl", "aria-hidden": "true" %>
     <% end %>
-    <%= link_to notifications_path, class: "relative flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary" do %>
+    <%= link_to notifications_path, "aria-label": t("nav.abrir_avisos"), class: "relative flex size-11 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary" do %>
       <%= icon_svg "notifications", class: "text-xl", "aria-hidden": "true" %>
       <%= render "components/notification_badge", unread_count: navbar_unread_count %>
     <% end %>

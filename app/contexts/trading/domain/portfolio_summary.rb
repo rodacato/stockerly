@@ -37,9 +37,10 @@ module Trading
       # while no price had moved.
       def day_gain
         yesterday = portfolio.yesterday_snapshot
-        return GainLoss.new(absolute: 0.0, percent: 0.0) unless yesterday
+        return nil unless yesterday
 
         yesterday_total = total_value_of(yesterday)
+        return nil unless yesterday_total.positive?
         diff = total_value - yesterday_total - external_flows_since(yesterday)
         percent = yesterday_total.positive? ? (diff / yesterday_total * 100) : 0.0
         GainLoss.new(absolute: diff.to_f, percent: percent.to_f)
@@ -60,6 +61,19 @@ module Trading
         end
       end
 
+      def prices_as_of
+        dates = quoted_assets.map(&:price_updated_at)
+        dates.min if dates.any? && dates.none?(&:nil?)
+      end
+
+      def stale_prices?
+        quoted_assets.any?(&:price_stale?)
+      end
+
+      def provider_errors?
+        quoted_assets.any? { |asset| !asset.last_sync_ok? }
+      end
+
       def to_h
         {
           total_value: total_value,
@@ -71,6 +85,10 @@ module Trading
       end
 
       private
+
+      def quoted_assets
+        @quoted_assets ||= portfolio.open_positions.includes(:asset).map(&:asset)
+      end
 
       def external_flows_since(snapshot)
         ExternalFlows.new(portfolio, currency: currency).since(snapshot.created_at)

@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+# Render a local presentation using the same geometry and compiled tokens as the app.
+require "erb"
+require "fileutils"
+require_relative "../app/shared/domain/brand_assets"
+require_relative "../lib/stockerly/version"
+
+Dir.chdir(BrandAssets::ROOT)
+preview = !ARGV.delete("--site")
+output = preview ? "tmp/brand-preview" : "site"
+FileUtils.mkdir_p("#{output}/assets/brand")
+FileUtils.cp("app/assets/builds/tailwind.css", "#{output}/assets/application.css")
+FileUtils.cp(Dir["public/brand/*"], "#{output}/assets/brand")
+FileUtils.cp(%w[public/icon-192.png public/icon-maskable-512.png public/icon-monochrome-512.png public/apple-touch-icon.png], "#{output}/assets")
+FileUtils.cp("public/og-image-en.png", "#{output}/og-image.png")
+FileUtils.cp("public/github-social-preview-en.png", "#{output}/github-social-preview.png")
+glyph = BrandAssets.svg_body("glyph")
+letters = BrandAssets.svg_body("lettering")
+mark = ->(size, color = "var(--color-primary)") { %(<svg width="#{size}" height="#{size}" viewBox="0 0 64 64" aria-hidden="true" style="color:#{color}">#{glyph}</svg>) }
+logo = %(<svg viewBox="0 0 174 40" role="img" aria-label="Stockerly" class="h-10 w-auto"><g transform="scale(.625)" color="var(--color-primary)">#{glyph}</g>#{letters}</svg>)
+swatches = %w[bg-canvas bg-surface primary primary-fg fg-default fg-subtle positive-fg negative-fg]
+File.write("#{output}/index.html", ERB.new(File.read("design/brand/templates/preview.html.erb")).result(binding).gsub(/[ \t]+$/, ""))
+FileUtils.cp("#{output}/index.html", "#{output}/en.html") unless preview
+puts "#{preview ? 'Preview' : 'Pages'}: #{File.expand_path(output)}/index.html"

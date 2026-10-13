@@ -1,0 +1,9 @@
+<p class="mt-2 text-xs leading-relaxed text-fg-subtle">
+  <%= summary.prices_as_of ? t(".fecha", date: absolute_stamp(summary.prices_as_of)) : t(".sin_fecha") %>
+  · <%= t(".fuentes") %>
+</p>
+<% if summary.provider_errors? %>
+  <p class="mt-1 text-xs text-warning-fg"><%= t(".error_proveedor") %></p>
+<% elsif summary.stale_prices? %>
+  <p class="mt-1 text-xs text-warning-fg"><%= t(".desactualizado") %></p>
+<% end %>
