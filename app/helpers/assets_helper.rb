@@ -4,6 +4,7 @@ module AssetsHelper
   # a bare figure across a mixed MXN+USD portfolio is the exact ambiguity the
   # multi-currency work exists to kill.
   def money_cell(amount, currency:, declared:, precision: 2)
+    return "—" if amount.nil?
     return format_currency_mx(amount, currency: currency, precision: precision) if currency.to_s != declared.to_s
 
     number_with_precision(amount || 0, precision: precision, delimiter: ",")
@@ -16,6 +17,7 @@ module AssetsHelper
   def position_amount(position, declared)
     native = position.market_value
     from = position.asset.currency
+    return [ nil, from ] if native.nil?
     return [ native, declared ] if from == declared
 
     [ position.portfolio.convert(native, from: from, to: declared), declared ]
@@ -29,6 +31,7 @@ module AssetsHelper
   # "necesita subir 1.4%") is a magnitude the copy gives a direction to, so
   # neither carries one.
   def signed_percent(percent)
+    return "—" if percent.nil?
     value = percent.to_f
     return unsigned_percent(value) if value.zero?
 
@@ -36,6 +39,7 @@ module AssetsHelper
   end
 
   def unsigned_percent(percent)
+    return "—" if percent.nil?
     "#{number_with_precision(percent.to_f.abs, precision: 1)}%"
   end
 
@@ -71,7 +75,7 @@ module AssetsHelper
     amount = value.to_f
     return "text-fg-subtle" if amount.zero?
 
-    amount.negative? ? "text-negative" : "text-positive"
+    amount.negative? ? "text-negative-fg" : "text-positive-fg"
   end
 
   # watchlist_items.entry_price is captured on add and nothing has ever

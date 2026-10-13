@@ -36,8 +36,18 @@ export default class ChartController extends Controller {
                     bars: Array }
 
   connect() {
+    this.buildChart()
+    this.themeObserver = new MutationObserver(() => this.refreshTheme())
+    this.themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] })
+  }
+
+  buildChart() {
     this.priceLines = []
+    this.anchorLines = []
+    this.seriesSpecs = new Map()
+    this.paneDecorations = new Map()
     this.chart = createChart(this.container, {
+      width: this.container.clientWidth,
       height: this.heightValue,
       layout: {
         attributionLogo: false,
@@ -73,6 +83,11 @@ export default class ChartController extends Controller {
   }
 
   disconnect() {
+    this.themeObserver?.disconnect()
+    this.removeChart()
+  }
+
+  removeChart() {
     this.resizeObserver?.disconnect()
     this.chart?.remove()
     this.chart = null
@@ -80,6 +95,34 @@ export default class ChartController extends Controller {
     this.priceLines = []
     this.layerSeries = {}
     this.barIndex = null
+    this.shownBar = null
+  }
+
+  refreshTheme() {
+    this.chart.applyOptions({
+      layout: {
+        textColor: this.token("--color-fg-subtle"),
+        panes: {
+          separatorColor: this.token("--color-border-strong"),
+          separatorHoverColor: this.token("--color-border-default")
+        }
+      },
+      grid: { horzLines: { color: this.token("--color-border-default") } },
+      rightPriceScale: { borderColor: this.token("--color-border-default") },
+      timeScale: { borderColor: this.token("--color-border-default") }
+    })
+    this.seriesSpecs.forEach((spec, series) =>
+      series.applyOptions({ color: this.token(spec.token || "--color-chart-1") })
+    )
+    this.paneDecorations.forEach(({ guides, watermark, title }) => {
+      guides.forEach((line) => line.applyOptions({ color: this.token("--color-border-strong") }))
+      watermark?.applyOptions({ lines: this.watermarkLines(title) })
+    })
+    this.anchorLines.forEach((line) => line.applyOptions({ color: this.token("--color-fg-default") + ANCHOR_ALPHA }))
+    this.priceLines.forEach((line, index) => {
+      const style = LEVEL_STYLE[this.levelsValue[index].kind] || LEVEL_STYLE.entry
+      line.applyOptions({ color: this.token(style.token) + style.alpha })
+    })
   }
 
   // D112: the strip reads the bar under the crosshair and falls back to the
@@ -124,6 +167,7 @@ export default class ChartController extends Controller {
       },
       spec.pane || 0
     )
+    this.seriesSpecs.set(series, spec)
     series.setData(spec.data)
     if (spec.pane) this.decoratePane(series, spec)
     if (!spec.layer) this.mainSeries ||= series
@@ -139,7 +183,7 @@ export default class ChartController extends Controller {
     this.chart.panes()[spec.pane]?.setHeight(RSI_PANE_HEIGHT)
     series.priceScale().applyOptions({ scaleMargins: PANE_MARGINS.indicator })
 
-    ;(spec.guides || []).forEach((value) =>
+    const guides = (spec.guides || []).map((value) =>
       series.createPriceLine({
         price: value,
         color: this.token("--color-border-strong"),
@@ -150,14 +194,17 @@ export default class ChartController extends Controller {
       })
     )
 
-    if (spec.title) {
-      createTextWatermark(this.chart.panes()[spec.pane], {
+    const watermark = spec.title && createTextWatermark(this.chart.panes()[spec.pane], {
         horzAlign: "left",
         vertAlign: "top",
-        lines: [ { text: spec.title, color: this.token("--color-fg-subtle"), fontSize: 11,
-                   fontFamily: this.token("--font-mono") } ]
+        lines: this.watermarkLines(spec.title)
       })
-    }
+    this.paneDecorations.set(series, { guides, watermark, title: spec.title })
+  }
+
+  watermarkLines(title) {
+    return [ { text: title, color: this.token("--color-fg-subtle"), fontSize: 11,
+               fontFamily: this.token("--font-mono") } ]
   }
 
   // A layer is added and removed rather than hidden: an RSI series left
@@ -171,7 +218,12 @@ export default class ChartController extends Controller {
   }
 
   hideLayer(name) {
-    ;(this.layerSeries[name] || []).forEach((series) => this.chart.removeSeries(series))
+    ;(this.layerSeries[name] || []).forEach((series) => {
+      this.paneDecorations.get(series)?.watermark?.detach()
+      this.paneDecorations.delete(series)
+      this.seriesSpecs.delete(series)
+      this.chart.removeSeries(series)
+    })
     delete this.layerSeries[name]
   }
 
@@ -221,7 +273,7 @@ export default class ChartController extends Controller {
   drawAnchors() {
     if (!this.mainSeries) return
 
-    this.anchorsValue.forEach(({ price, label }) =>
+    this.anchorLines = this.anchorsValue.map(({ price, label }) =>
       this.mainSeries.createPriceLine({
         price,
         color: this.token("--color-fg-default") + ANCHOR_ALPHA,

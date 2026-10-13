@@ -71,6 +71,16 @@ RSpec.describe Trading::UseCases::RebuildSnapshots do
     expect(portfolio.snapshots.maximum(:date)).to eq(Date.current)
   end
 
+  it "does not write or overwrite a valuation when historical prices are missing" do
+    buy(100, 10, on: 4.days.ago)
+    portfolio.snapshots.create!(date: 3.days.ago.to_date, currency: "MXN", total_value: 1000)
+    close(12, on: 1.day.ago.to_date)
+
+    expect(described_class.call(portfolio: portfolio, from: 4.days.ago.to_date)).to eq(2)
+    expect(portfolio.snapshots.find_by(date: 4.days.ago.to_date)).to be_nil
+    expect(portfolio.snapshots.find_by(date: 3.days.ago.to_date).total_value).to eq(1000)
+  end
+
   it "does nothing when the range is empty" do
     expect(described_class.call(portfolio: portfolio, from: 5.days.from_now.to_date)).to eq(0)
     expect(portfolio.snapshots).to be_empty

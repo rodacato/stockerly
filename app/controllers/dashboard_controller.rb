@@ -5,6 +5,7 @@ class DashboardController < AuthenticatedController
     @currency        = data[:currency]
     @summary         = data[:summary]
     @fx_unavailable  = data[:fx_unavailable]
+    @prices_unavailable = data[:prices_unavailable]
     @sentiment_cards = data[:sentiment_cards]
     @signals         = data[:signals]
     @signals_window_days = data[:signals_window_days]

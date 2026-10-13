@@ -119,7 +119,9 @@ class Portfolio < ApplicationRecord
   end
 
   def position_market_value_in(position, target_currency)
-    raw = position.shares * (position.asset.current_price || 0)
+    raw = position.market_value
+    raise Trading::Domain::MissingPrice, position.asset.symbol if raw.nil?
+
     convert(raw, from: position.asset.currency, to: target_currency)
   end
 

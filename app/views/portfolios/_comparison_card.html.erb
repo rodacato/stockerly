@@ -1,4 +1,4 @@
-<%# Locals: label, card, body, level_label. `card` is nil when the comparison cannot be made. %>
+<%# Locals: label, card, body, level_label, optional empty_body. %>
 <article class="<%= card_classes("p-5") %>">
   <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= label %></p>
 
@@ -24,6 +24,6 @@
 
     <p class="mt-4 text-sm text-fg-subtle"><%= body %></p>
   <% else %>
-    <p class="mt-3 text-sm text-fg-subtle"><%= t("portfolios.show.sin_comparacion") %></p>
+    <p class="mt-3 text-sm text-fg-subtle"><%= local_assigns[:empty_body].presence || t("portfolios.show.sin_comparacion") %></p>
   <% end %>
 </article>

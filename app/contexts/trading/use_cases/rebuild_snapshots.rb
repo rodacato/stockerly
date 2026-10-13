@@ -12,7 +12,13 @@ module Trading
 
         valuation = Domain::HistoricalValuation.new(portfolio, currency: currency)
 
-        write(portfolio, currency, range.map { |date| [ date, valuation.market_value_on(date) ] })
+        values = range.filter_map do |date|
+          [ date, valuation.market_value_on(date) ]
+        rescue Domain::MissingPrice
+          # An incomplete history cannot overwrite a recorded valuation with zero.
+          nil
+        end
+        write(portfolio, currency, values)
       end
 
       private
@@ -32,6 +38,8 @@ module Trading
       # carries a unique index — a rebuild that raced the nightly job would
       # otherwise collide.
       def write(portfolio, currency, values)
+        return 0 if values.empty?
+
         now = Time.current
         rows = values.map do |date, market_value|
           { portfolio_id: portfolio.id, date: date, currency: currency, total_value: market_value,

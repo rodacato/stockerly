@@ -15,10 +15,10 @@
 
   <div class="min-w-0">
     <p class="font-display text-base font-semibold">
-      <%= t(MarketData::Domain::AssetState.label_key(state)) %>
+      <%= source ? t(MarketData::Domain::AssetState.label_key(state)) : t(".sin_observacion_titulo") %>
     </p>
     <p class="mt-1 text-sm">
-      <%= t(MarketData::Domain::AssetState.phrase_key(state, holding: holding)) %>
+      <%= source ? t(MarketData::Domain::AssetState.phrase_key(state, holding: holding)) : t(".sin_observacion_cuerpo") %>
     </p>
 
     <% if source %>

@@ -25,6 +25,12 @@ ignore_unused:
   # AssetState.phrase_key rather than written literally — the scanner cannot see
   # them by design. asset_state_spec asserts every state resolves in both
   # readings, which is a stronger guarantee than the scan it replaces.
+  # The offline and social assets resolve this catalogue in bin/brand-assets.
+  - brand.offline.*
+  - brand.social.headline
+  - brand.social.headline_second
+  - brand.social.detail
+  - brand.social.packaging
   - market.estado.*
   - onboarding.integrations.tipos.*
   # Same shape: CheckSyncHealthJob builds this key from the watch it is

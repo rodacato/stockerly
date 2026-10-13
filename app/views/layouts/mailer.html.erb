@@ -4,19 +4,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Stockerly</title>
   </head>
-  <body style="margin:0; padding:0; background:#f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color:#0f172a;">
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f8fafc;">
+  <body style="margin:0; padding:0; background:<%= BrandAssets.color("bg-canvas") %>; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color:<%= BrandAssets.color("fg-default") %>;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:<%= BrandAssets.color("bg-canvas") %>;">
       <tr>
         <td align="center" style="padding:32px 16px;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px; width:100%; background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px; width:100%; background:<%= BrandAssets.color("bg-surface") %>; border:1px solid <%= BrandAssets.color("border-default") %>; border-radius:12px; overflow:hidden;">
             <%# Logo header band. The one surface that still reads the wordmark
-                from a file: a mail client resolves neither an inline <svg> nor
-                a custom property, so the ink-on-light artwork is flat here and
+                from a file: a mail client reliably renders a PNG and absolute URL, so the ink-on-light artwork is flat here and
                 the URL absolute. %>
             <tr>
               <td style="padding:28px 32px 0;">
                 <a href="<%= root_url %>" style="display:inline-block; text-decoration:none;">
-                  <%= image_tag image_url("logo_light.svg"), alt: "Stockerly",
+                  <%= image_tag "#{root_url}brand/wordmark-light.png?v=#{BrandAssets::VERSION}", alt: "Stockerly",
                         height: "32", style: "display:block; height:32px; width:auto;" %>
                 </a>
               </td>
@@ -29,8 +28,8 @@
             </tr>
             <%# Footer band %>
             <tr>
-              <td style="padding:20px 32px; background:#f8fafc; border-top:1px solid #e2e8f0; font-size:11px; color:#94a3b8;">
-                Stockerly · Open Source Market Intelligence · Solo informativo, no es asesoría financiera.
+              <td style="padding:20px 32px; background:<%= BrandAssets.color("bg-canvas") %>; border-top:1px solid <%= BrandAssets.color("border-default") %>; font-size:11px; color:<%= BrandAssets.color("fg-subtle") %>;">
+                <%= t("brand.mail_footer") %>
               </td>
             </tr>
           </table>

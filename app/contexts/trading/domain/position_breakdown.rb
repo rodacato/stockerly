@@ -42,7 +42,9 @@ module Trading
 
       private
 
-      def price = @position.asset.current_price || 0
+      def price
+        @position.asset.current_price || raise(MissingPrice, @position.asset.symbol)
+      end
 
       def convert(native) = @portfolio.convert(native, from: @position.asset.currency, to: @currency)
 

@@ -13,7 +13,7 @@
 <% stale = context != :senales && observation.observed_at.to_date < Date.current %>
 <div class="relative" data-controller="metric-tooltip">
   <%= link_to market_asset_path(asset.symbol),
-              class: "flex items-start gap-3 rounded-2xl border border-border-default bg-bg-surface py-3.5 pl-4 transition-colors hover:border-border-strong #{action ? 'pr-11' : 'pr-4'}" do %>
+              class: "flex items-start gap-3 rounded-2xl border border-border-default bg-bg-surface py-3.5 pl-4 transition-colors hover:border-border-strong #{action ? 'pr-14' : 'pr-4'}" do %>
     <%= icon_svg((signal&.move == :up ? "north_east" : "south_east"),
                  class: "mt-0.5 shrink-0 text-lg #{action == :sell ? 'text-warning-fg' : 'text-positive-fg'}",
                  role: "img",
@@ -42,7 +42,7 @@
 
   <% if action %>
     <button type="button" data-action="click->metric-tooltip#toggle"
-            class="absolute right-3 top-3.5 cursor-help text-fg-subtle transition-colors hover:text-primary"
+            class="absolute right-1 top-1 flex size-11 items-center justify-center rounded-lg cursor-help text-fg-subtle transition-colors hover:text-primary"
             aria-label="<%= t(".explicar", symbol: asset.symbol) %>">
       <%= icon_svg "info", class: "text-sm", "aria-hidden": "true" %>
     </button>
@@ -52,7 +52,7 @@
       <div class="flex items-center justify-between gap-2 border-b border-border-default px-4 py-3">
         <h3 class="text-sm font-semibold text-fg-default"><%= t(".titulo") %></h3>
         <button type="button" data-action="click->metric-tooltip#close"
-                class="text-fg-subtle transition-colors hover:text-fg-default"
+                class="flex size-11 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default"
                 aria-label="<%= t(".cerrar") %>">
           <%= icon_svg "close", class: "text-lg", "aria-hidden": "true" %>
         </button>

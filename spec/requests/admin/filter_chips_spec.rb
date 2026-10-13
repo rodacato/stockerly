@@ -8,11 +8,11 @@ RSpec.describe "Admin filter chips", type: :request do
   before { login_as(admin) }
 
   def group(label)
-    response.parsed_body.at_css(%([role="tablist"][aria-label="#{label}"]))
+    response.parsed_body.at_css(%([role="group"][aria-label="#{label}"]))
   end
 
   def selected(label)
-    group(label).css(%([role="tab"][aria-selected="true"])).map { |tab| tab.text.strip }
+    group(label).css(%(a[aria-current="page"])).map { |link| link.text.strip }
   end
 
   it "reads the severity row as one group with one pick" do

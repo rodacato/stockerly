@@ -25,6 +25,9 @@
         <%= t("assets.index.no_realizada", amount: signed_currency_mx(gain.absolute, currency: @currency, precision: 0)) %>
       </span>
     </section>
+    <%= render "shared/valuation_caption", summary: @summary %>
+  <% elsif @prices_unavailable %>
+    <%= render "shared/valuation_notice" %>
   <% elsif @fx_unavailable %>
     <section class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
       <%= icon_svg "currency_exchange", class: "text-xl text-warning-fg", "aria-hidden": "true" %>

@@ -190,7 +190,8 @@ RSpec.describe "PWA", type: :request do
       # Static files come back ASCII-8BIT, so accented copy needs the tag fixed.
       body = response.body.dup.force_encoding(Encoding::UTF_8)
       expect(body).to include("Sin conexión")
-      expect(body).to include("stockerly")
+      expect(body).to include('aria-label="Stockerly"')
+      expect(body).to include("no se guarda para consultarlo sin red")
     end
   end
 

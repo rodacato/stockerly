@@ -8,7 +8,7 @@
 
 <div id="asset_price_<%= asset.id %>">
   <% if asset.current_price %>
-    <p class="font-display text-4xl font-bold tracking-tight text-fg-default">
+    <p class="flex flex-wrap items-baseline gap-x-2 break-words font-display text-3xl font-bold tracking-tight text-fg-default sm:text-4xl">
       <%= number_with_precision(asset.current_price, precision: asset.asset_type_fixed_income? ? 4 : 2, delimiter: ",") %>
       <span class="font-mono text-lg font-medium text-fg-subtle"><%= asset.currency %></span>
     </p>
@@ -18,12 +18,12 @@
         <span class="text-fg-subtle">≈ <%= approximate %></span>
       <% end %>
       <% if change %>
-        <span class="<%= gain_color(change) %>"><%= signed_percent(change) %> hoy</span>
+        <span class="<%= gain_color(change) %>"><%= signed_percent(change) %> · <%= t(".periodo") %></span>
       <% else %>
         <span class="text-fg-subtle"><%= t("market.header.sin_cambio_dia") %></span>
       <% end %>
       <% if asset.price_updated_at %>
-        <span class="text-fg-subtle">act. <%= relative_age(asset.price_updated_at) %></span>
+        <span class="text-fg-subtle"><%= t(".actualizado", date: absolute_stamp(asset.price_updated_at)) %></span>
       <% end %>
     </div>
 
@@ -32,5 +32,10 @@
     <p class="mt-2 text-[11px] text-fg-subtle"><%= asset_data_source_caption(asset) %></p>
   <% else %>
     <p class="text-sm text-fg-subtle"><%= t("market.header.sin_precio") %></p>
+  <% end %>
+  <% if !asset.last_sync_ok? %>
+    <p class="mt-2 text-xs text-warning-fg"><%= t(".error_proveedor") %></p>
+  <% elsif asset.current_price && asset.price_stale? %>
+    <p class="mt-2 text-xs text-warning-fg"><%= t(".desactualizado") %></p>
   <% end %>
 </div>

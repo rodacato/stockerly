@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant selected (&:is([aria-selected="true"], [aria-current="page"]));
 
 /* Stockerly tokens. Two independent axes per ADR-012: `data-theme` names the
    palette (`lumen`, the only one), the `dark` class carries the mode. Token
@@ -22,7 +23,7 @@
 
   /* --- Foreground ------------------------------------------------------ */
   --color-fg-default:        #0F172A;
-  --color-fg-subtle:         #64748B;
+  --color-fg-subtle:         #5E6E84;
   --color-fg-inverse:        #FFFFFF;
 
   /* --- Borders --------------------------------------------------------- */
@@ -177,4 +178,21 @@ dialog.trade-sheet::backdrop {
 @media print {
   .no-print { display: none !important; }
   .print-only { display: block !important; }
+}
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-primary-fg);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

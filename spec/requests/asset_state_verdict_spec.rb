@@ -51,10 +51,11 @@ RSpec.describe "The asset detail's verdict card", type: :request do
     expect(response.body).to include("hace 3 días")
   end
 
-  it "says there are no extremes rather than staying silent" do
+  it "distinguishes an absent observation from a neutral reading" do
     get market_asset_path(asset.symbol)
 
-    expect(response.body).to include(I18n.t("market.estado.neutral.watching"))
+    expect(response.body).to include(I18n.t("market.state_verdict.sin_observacion_titulo"))
+    expect(response.body).not_to include(I18n.t("market.estado.neutral.watching"))
   end
 
   it "returns to neutral once the extreme is left" do

@@ -28,7 +28,7 @@ RSpec.describe "Market chart range", type: :request do
       get market_asset_path(asset.symbol)
 
       expect(response.body).to include(market_asset_path(asset.symbol, range: "1A"))
-      expect(response.body).to include('aria-selected="true"')
+      expect(response.body).to include('aria-current="page"')
       expect(active_range).to eq("3M")
     end
 
@@ -145,7 +145,7 @@ RSpec.describe "Market chart range", type: :request do
   # string that styling is free to change.
   def active_range
     node = response.parsed_body
-              .css(%([aria-label="#{I18n.t('market.precio.rango_label')}"] [aria-selected="true"]))
+              .css(%([aria-label="#{I18n.t('market.precio.rango_label')}"] [aria-current="page"]))
               .first
     node && Rack::Utils.parse_query(URI(node["href"]).query)["range"]
   end

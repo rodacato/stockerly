@@ -4,28 +4,25 @@
     its comparison cards; both shipped. %>
 <% if summary %>
   <%= link_to portfolio_path,
-              class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-5 py-4 transition-colors hover:border-border-strong" do %>
-    <div class="min-w-0 flex-1">
+              class: "flex flex-wrap items-center gap-3 rounded-2xl border border-border-default bg-bg-surface px-5 py-4 transition-colors hover:border-border-strong" do %>
+    <div class="flex min-w-0 basis-full items-center gap-3 sm:basis-auto sm:flex-1">
+      <div class="min-w-0 flex-1">
       <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
         <%= t("dashboard.show.patrimonio", currency: currency) %>
       </p>
-      <p class="mt-1 font-display text-3xl font-bold tracking-tight text-fg-default">
-        <%= number_with_precision(summary.total_value, precision: 0, delimiter: ",") %>
+      <p class="mt-1 font-display text-2xl sm:text-3xl font-bold break-words tracking-tight text-fg-default">
+        <%= format_currency_mx(summary.total_value, currency: currency, precision: 0) %>
       </p>
       <p class="mt-1 text-xs text-fg-subtle"><%= t("dashboard.show.destino") %></p>
+      </div>
+      <%= icon_svg "chevron_right", class: "shrink-0 text-xl text-fg-subtle", "aria-hidden": "true" %>
     </div>
 
-    <% day = summary.day_gain %>
-    <% tone = case day_change_direction(day.percent)
-       when :down then "bg-negative-bg text-negative-fg"
-       when :flat then "bg-bg-muted text-fg-subtle"
-       else "bg-positive-bg text-positive-fg"
-       end %>
-    <span class="shrink-0 rounded-full px-3 py-1.5 font-mono text-xs font-semibold <%= tone %>">
-      <%= signed_percent(day.percent) %> hoy
-    </span>
-    <%= icon_svg "chevron_right", class: "shrink-0 text-xl text-fg-subtle", "aria-hidden": "true" %>
+    <%= render "shared/day_change", day: summary.day_gain %>
   <% end %>
+  <%= render "shared/valuation_caption", summary: summary %>
+<% elsif @prices_unavailable %>
+  <%= render "shared/valuation_notice" %>
 <% elsif fx_unavailable %>
   <section class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
     <%= icon_svg "currency_exchange", class: "text-xl text-warning-fg", "aria-hidden": "true" %>

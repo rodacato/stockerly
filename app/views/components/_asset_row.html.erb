@@ -30,7 +30,7 @@
 <% primary, secondary = context == :radar ? [ move_slot, value_slot.merge(color: "text-fg-subtle") ] : [ value_slot, move_slot ] %>
 <%= link_to market_asset_path(asset.symbol),
             class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
-  <div class="min-w-0 flex-1">
+  <div class="min-w-0 flex-1 break-words">
     <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
     <%# Wraps rather than truncates: the subtitle carries a state phrase, not a
         date, and a clipped explanation is worse than a taller row (D46). %>
@@ -47,7 +47,7 @@
     <% end %>
   </div>
 
-  <div class="w-20 shrink-0">
+  <div class="hidden w-16 shrink-0 min-[380px]:block sm:w-20">
     <%= render "components/sparkline", heights: sparkline_heights(local_assigns[:closes]) %>
   </div>
 

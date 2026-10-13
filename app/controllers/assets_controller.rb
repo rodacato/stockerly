@@ -16,6 +16,7 @@ class AssetsController < AuthenticatedController
     @sparkline_closes = data[:sparkline_closes]
     @day_changes     = data[:day_changes]
     @fx_unavailable  = data[:fx_unavailable]
+    @prices_unavailable = data[:prices_unavailable]
   end
 
   def tracked

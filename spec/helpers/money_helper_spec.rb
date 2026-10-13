@@ -14,8 +14,9 @@ RSpec.describe MoneyHelper do
       expect(helper.format_currency_mx(180_000, currency: "MXN", precision: 0)).to eq("MXN 180,000")
     end
 
-    it "handles nil amount as 0.00" do
-      expect(helper.format_currency_mx(nil, currency: "MXN")).to eq("MXN 0.00")
+    it "distinguishes an unknown amount from a real zero" do
+      expect(helper.format_currency_mx(nil, currency: "MXN")).to eq("—")
+      expect(helper.format_currency_mx(0, currency: "MXN")).to eq("MXN 0.00")
     end
 
     it "formats USD the same way" do

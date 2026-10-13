@@ -90,6 +90,21 @@ RSpec.describe Trading::Domain::PositionReturns do
     end
   end
 
+  describe "history that ends yesterday" do
+    before do
+      buy(10, 100, on: 60.days.ago)
+      close(1.week.ago.to_date, 100)
+      close(Date.yesterday, 110)
+    end
+
+    it "states the last close date and omits a one-day window with no later close" do
+      returns = described_class.new(portfolio, asset, currency: "USD")
+      expect(returns.as_of).to eq(Date.yesterday)
+      expect(windows_for).not_to have_key("1D")
+      expect(windows_for.fetch("1S").amount).to eq(100)
+    end
+  end
+
   describe "the windows offered" do
     it "does not include Total, which Tu posición already is" do
       expect(described_class::WINDOWS.keys).not_to include("Total")

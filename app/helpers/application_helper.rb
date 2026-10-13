@@ -30,9 +30,9 @@ module ApplicationHelper
   }.freeze
 
   # `text-fg-inverse` and not `text-white`: the token is #0F172A in dark, where
-  # white on the dark-mode primary measures 3.06:1 and fails AA.
+  # primary-fg carries labels above AA's 4.5:1 floor in both modes.
   BUTTON_VARIANTS = {
-    primary: "bg-primary text-fg-inverse hover:bg-primary-hover",
+    primary: "bg-primary-fg text-fg-inverse hover:bg-primary-hover",
     secondary: "border border-border-default bg-bg-surface text-fg-default hover:border-border-strong",
     danger: "border border-negative bg-bg-surface text-negative hover:bg-negative-bg"
   }.freeze
@@ -53,7 +53,7 @@ module ApplicationHelper
   }.freeze
 
   def field_classes(size = :md, extra = nil)
-    class_names("border border-border-default bg-bg-surface text-fg-default placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-focus",
+    class_names("border border-border-default bg-bg-surface text-fg-default placeholder:text-fg-subtle focus:ring-2 focus:ring-focus",
                 FIELD_SIZES.fetch(size), extra)
   end
 

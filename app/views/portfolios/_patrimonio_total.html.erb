@@ -7,20 +7,15 @@
       <%= t("portfolios.show.patrimonio_total", currency: currency) %>
     </p>
     <div class="mt-2 flex flex-wrap items-baseline justify-between gap-3">
-      <p class="font-display text-4xl font-bold tracking-tight text-fg-default">
+      <p class="min-w-0 break-words font-display text-3xl sm:text-4xl font-bold tracking-tight text-fg-default">
         <%= format_currency_mx(summary.total_value, currency: currency, precision: 0) %>
       </p>
-      <% day = summary.day_gain %>
-      <% tone = case day_change_direction(day.percent)
-         when :down then "bg-negative-bg text-negative-fg"
-         when :flat then "bg-bg-muted text-fg-subtle"
-         else "bg-positive-bg text-positive-fg"
-         end %>
-      <span class="shrink-0 rounded-full px-3 py-1.5 font-mono text-xs font-semibold <%= tone %>">
-        <%= signed_percent(day.percent) %> hoy
-      </span>
+      <%= render "shared/day_change", day: summary.day_gain %>
     </div>
+    <%= render "shared/valuation_caption", summary: summary %>
   </section>
+<% elsif @prices_unavailable %>
+  <%= render "shared/valuation_notice" %>
 <% elsif fx_unavailable %>
   <section class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
     <%= icon_svg "currency_exchange", class: "text-xl text-warning-fg", "aria-hidden": "true" %>

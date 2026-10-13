@@ -36,9 +36,13 @@ module Trading
 
       delegate :degraded?, to: :@degradation
 
+      def as_of
+        @as_of ||= MarketData::Queries::PriceSeries.for(@asset).all.where(date: ..Date.current).maximum(:date)
+      end
+
       def windows
         @windows ||= begin
-          current = value_on(Date.current)
+          current = value_on(as_of) if as_of
           current.nil? ? [] : WINDOWS.filter_map { |key, from| window(key, from.call, current) }
         end
       end
@@ -49,12 +53,13 @@ module Trading
       # having owned it yet is a different answer from not having moved, the
       # same distinction DayChange draws for a newly tracked asset.
       def window(key, from, current)
+        return nil if from >= as_of
         opened = value_on(from)
         return nil if opened.nil?
 
         # from + 1: a trade executed on the opening day is already inside the
         # value read for that day, so counting it again would remove it twice.
-        contributed = @degradation.figure { @flows.between(from + 1, Date.current) }
+        contributed = @degradation.figure { @flows.between(from + 1, as_of) }
         return nil if contributed.nil?
 
         amount = current - opened - contributed
