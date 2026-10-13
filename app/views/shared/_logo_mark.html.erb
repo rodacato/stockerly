@@ -2,5 +2,5 @@
     be tinted. Canonical geometry lives in design/brand/glyph.svg.
     Locals: size_class (default "w-7 h-7"). %>
 <svg viewBox="0 0 64 64" class="<%= local_assigns.fetch(:size_class, "w-7 h-7") %>" aria-hidden="true">
-  <%= raw BrandAssets.svg_body("glyph") %>
+  <%= brand_svg_body("glyph") %>
 </svg>

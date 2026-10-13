@@ -1,6 +1,18 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper, type: :helper do
+  describe "#brand_svg_body" do
+    it "keeps path geometry while removing executable SVG content" do
+      allow(BrandAssets).to receive(:svg_body).with("glyph").and_return(
+        '<path d="M0 0L1 1" stroke="currentColor" stroke-width="5" onload="alert(1)"></path><script>alert(1)</script><foreignObject><iframe src="https://example.test"></iframe></foreignObject>'
+      )
+
+      result = helper.brand_svg_body("glyph")
+      expect(result).to include('d="M0 0L1 1"', 'stroke="currentColor"', 'stroke-width="5"')
+      expect(result).not_to include("onload", "<script", "<foreignObject", "<iframe", "src=")
+    end
+  end
+
   describe "#duration_in_words_es" do
     it "renders whole hours" do
       expect(helper.duration_in_words_es(2.hours)).to eq("2 horas")
