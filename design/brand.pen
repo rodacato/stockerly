@@ -1,5 +1,5 @@
 {
-  "version": "2.17",
+  "version": "2.20",
   "children": [
     {
       "type": "frame",
@@ -57,7 +57,7 @@
               "fill": "$fg-subtle",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "The mark's mechanics: construction, optical sizing, clear space, correct and incorrect uses, and applications (favicon, app icon, PWA, chrome). NOT the identity — D1 fixed palette and type and this sheet moves neither. Outcome: the four-bracket focal frame is replaced by a counterform disc with two carved candles (D45); the kit ships it at 0.7.0.",
+              "content": "The mark's mechanics: construction, optical sizing, clear space, correct and incorrect uses, and applications (favicon, app icon, PWA, chrome). NOT the identity — D1 fixed palette and type and this sheet moves neither. Outcome: the four-bracket focal frame is replaced by a counterform disc with two carved candles (D45); the kit ships it at 0.7.0. Soft Candle (2026-10, #821) replaced the disc: the live mark is the first sheet, 'Actual / Soft Candle'; every sheet named 'Archivo' records the reasoning that led there and is not what ships.",
               "lineHeight": 1.55,
               "fontFamily": "$font-sans",
               "fontSize": 13,
@@ -307,6 +307,40 @@
                   "fontWeight": "normal"
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "IQSfh",
+              "name": "7 · El",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-1",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "MNeht",
+                  "name": "Label",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "7 · The disc gave way to a one-stroke candle — RESOLVED",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "An5hc",
+                  "name": "Body",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "G / Soft Candle (#821, 2026-10): the mark is one continuous rounded path, stroke 5 on a 64-unit canvas, no fill (design/brand/glyph.svg). It replaces the counterform disc with two carved candles. The app composes it inline with outlined lettering (shared/_logo, shared/_logo_mark); bin/brand-assets generates the wordmarks, icons, splash screens, social cards and the offline page from design/brand/ and the application tokens. The first sheet draws it light, dark and monochrome at 64, 32 and 16 px.",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
             }
           ]
         },
@@ -350,7 +384,7 @@
                   "fill": "$fg-default",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "0.9.0",
+                  "content": "1.2.0",
                   "fontFamily": "$font-sans",
                   "fontSize": 11,
                   "fontWeight": "600"
@@ -412,7 +446,7 @@
                   "fill": "$fg-default",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Symbol shipped. The three items this row listed as pending are all done: brand-escala-1x.png exists at scale 1, all seven flows carry the mark, and the code change landed as CODE_CHANGES §11 (logos, favicons, the maskable icon, the manifest and the service worker's cache bust).",
+                  "content": "Symbol shipped. The three items this row listed as pending are all done: brand-escala-1x.png exists at scale 1, all seven flows carry the mark, and the code change landed as CODE_CHANGES §11 (logos, favicons, the maskable icon, the manifest and the service worker's cache bust). 2026-10-14: Soft Candle shipped in #821 and the kit moved to 1.2.0 (Logo, LogoMark, TopBar, SidebarNav); the sheets for the disc are archived.",
                   "fontFamily": "$font-sans",
                   "fontSize": 11,
                   "fontWeight": "600"
@@ -428,7 +462,7 @@
       "id": "iIJAu",
       "x": 0,
       "y": -59,
-      "name": "Actual / Símbolo",
+      "name": "Archivo / Cuatro corchetes + punto",
       "width": 660,
       "fill": "$bg-surface",
       "cornerRadius": "$radius-card",
@@ -453,7 +487,7 @@
               "fill": "$fg-subtle",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "ACTUAL — LO QUE SE ENVÍA HOY",
+              "content": "ARCHIVO — LO QUE SE ENVIÓ ANTES DEL DISCO",
               "fontFamily": "$font-sans",
               "fontSize": 11,
               "fontWeight": "600",
@@ -1856,7 +1890,7 @@
       "id": "RoBaH",
       "x": 0,
       "y": 909,
-      "name": "C1 / Asimetría sin alargar",
+      "name": "Archivo / C1 · Asimetría sin alargar",
       "width": 1300,
       "fill": "$bg-surface",
       "cornerRadius": "$radius-card",
@@ -3188,7 +3222,7 @@
       "id": "DpmK0",
       "x": 0,
       "y": 1891,
-      "name": "F2 / Símbolo y color",
+      "name": "Archivo / F2 · Símbolo y color",
       "width": 1300,
       "fill": "$bg-surface",
       "cornerRadius": "$radius-card",
@@ -4145,7 +4179,7 @@
       "id": "EB3F1",
       "x": 0,
       "y": 2871,
-      "name": "F2 / Wordmark y lockup",
+      "name": "Archivo / F2 · Wordmark y lockup",
       "width": 1300,
       "fill": "$bg-surface",
       "cornerRadius": "$radius-card",
@@ -4680,7 +4714,7 @@
       "id": "RK1ek",
       "x": 0,
       "y": 3892,
-      "name": "F2 / PWA y aplicaciones",
+      "name": "Archivo / F2 · PWA y aplicaciones",
       "width": 1300,
       "fill": "$bg-surface",
       "cornerRadius": "$radius-card",
@@ -5404,7 +5438,7 @@
       "id": "H65VNV",
       "x": 0,
       "y": 4727,
-      "name": "F2 / Usos",
+      "name": "Archivo / F2 · Usos",
       "width": 1300,
       "fill": "$bg-surface",
       "cornerRadius": "$radius-card",
@@ -6541,6 +6575,1297 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "trh4q",
+      "x": 0,
+      "y": -1139,
+      "name": "Actual / Soft Candle",
+      "width": 1300,
+      "fill": "$bg-surface",
+      "cornerRadius": "$radius-card",
+      "stroke": "$border-default",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": "$space-5",
+      "padding": "$space-6",
+      "children": [
+        {
+          "type": "frame",
+          "id": "J9cGeH",
+          "name": "Head",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-2",
+          "children": [
+            {
+              "type": "text",
+              "id": "fEO2a",
+              "name": "Label",
+              "fill": "$fg-subtle",
+              "content": "ACTUAL — LO QUE SE ENVÍA HOY",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 1.5
+            },
+            {
+              "type": "text",
+              "id": "l2pwOH",
+              "name": "Title",
+              "fill": "$fg-default",
+              "content": "G / Soft Candle",
+              "fontFamily": "$font-display",
+              "fontSize": 28,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "CGPfI",
+              "name": "Intro",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Una vela redondeada dibujada con un solo trazo continuo: 5 unidades de grosor sobre un lienzo de 64, sin relleno (design/brand/glyph.svg). No promete una dirección, una operación ni un resultado. El lettering es geometría delineada (design/brand/lettering.svg) y no depende de una fuente instalada.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "W6XBgZ",
+          "name": "Símbolo — tamaños y modos",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-3",
+          "children": [
+            {
+              "type": "text",
+              "id": "HnKfY",
+              "name": "Label",
+              "fill": "$fg-subtle",
+              "content": "SÍMBOLO — TAMAÑOS Y MODOS",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 1.5
+            },
+            {
+              "type": "frame",
+              "id": "xB8AI",
+              "name": "Fila",
+              "width": "fill_container",
+              "gap": "$space-4",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "l7ERdb",
+                  "name": "Claro",
+                  "theme": {
+                    "mode": "light"
+                  },
+                  "width": "fill_container",
+                  "fill": "$bg-canvas",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": "$space-4",
+                  "padding": "$space-5",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "VtY4X",
+                      "name": "Tamaños",
+                      "gap": "$space-5",
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "fq41t",
+                          "name": "Col",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "VMxTT",
+                              "name": "Mark 64",
+                              "width": 64,
+                              "height": 64,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "fXkJR",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Glyph",
+                                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    64,
+                                    64
+                                  ],
+                                  "width": 64,
+                                  "height": 64,
+                                  "stroke": "$primary",
+                                  "strokeWidth": 5,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "fYTBB",
+                              "fill": "$fg-subtle",
+                              "content": "64 px",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "laLqv",
+                          "name": "Col",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "bCdF4",
+                              "name": "Mark 32",
+                              "width": 32,
+                              "height": 32,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "qv8Ed",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Glyph",
+                                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    64,
+                                    64
+                                  ],
+                                  "width": 32,
+                                  "height": 32,
+                                  "stroke": "$primary",
+                                  "strokeWidth": 2.5,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "PQtjU",
+                              "fill": "$fg-subtle",
+                              "content": "32 px",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tPgmI",
+                          "name": "Col",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "cGyZh",
+                              "name": "Mark 16",
+                              "width": 16,
+                              "height": 16,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "pqCi8",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Glyph",
+                                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    64,
+                                    64
+                                  ],
+                                  "width": 16,
+                                  "height": 16,
+                                  "stroke": "$primary",
+                                  "strokeWidth": 1.25,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "fG6Qn",
+                              "fill": "$fg-subtle",
+                              "content": "16 px",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "RuWoa",
+                      "fill": "$fg-subtle",
+                      "content": "Claro",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "XFlOK",
+                  "name": "Oscuro",
+                  "theme": {
+                    "mode": "dark"
+                  },
+                  "width": "fill_container",
+                  "fill": "$bg-canvas",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": "$space-4",
+                  "padding": "$space-5",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FUmA5",
+                      "name": "Tamaños",
+                      "gap": "$space-5",
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "SJi9B",
+                          "name": "Col",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "f03c4K",
+                              "name": "Mark 64",
+                              "width": 64,
+                              "height": 64,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "ANaH4",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Glyph",
+                                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    64,
+                                    64
+                                  ],
+                                  "width": 64,
+                                  "height": 64,
+                                  "stroke": "$primary",
+                                  "strokeWidth": 5,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "f1aEv",
+                              "fill": "$fg-subtle",
+                              "content": "64 px",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "XHKpl",
+                          "name": "Col",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "i5d6Y",
+                              "name": "Mark 32",
+                              "width": 32,
+                              "height": 32,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "S0BUM6",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Glyph",
+                                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    64,
+                                    64
+                                  ],
+                                  "width": 32,
+                                  "height": 32,
+                                  "stroke": "$primary",
+                                  "strokeWidth": 2.5,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "z151Jt",
+                              "fill": "$fg-subtle",
+                              "content": "32 px",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "nVnOl",
+                          "name": "Col",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "k9r1sp",
+                              "name": "Mark 16",
+                              "width": 16,
+                              "height": 16,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "u8NMN",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Glyph",
+                                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    64,
+                                    64
+                                  ],
+                                  "width": 16,
+                                  "height": 16,
+                                  "stroke": "$primary",
+                                  "strokeWidth": 1.25,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "J42RW",
+                              "fill": "$fg-subtle",
+                              "content": "16 px",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "iOIi2",
+                      "fill": "$fg-subtle",
+                      "content": "Oscuro",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "OkZ04",
+                  "name": "Monocromo",
+                  "theme": {
+                    "mode": "light"
+                  },
+                  "width": "fill_container",
+                  "fill": "$bg-canvas",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": "$space-4",
+                  "padding": "$space-5",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "y4xAG",
+                      "name": "Tamaños",
+                      "gap": "$space-5",
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ey8KB",
+                          "name": "Col",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "yw0bN",
+                              "name": "Mark 64",
+                              "width": 64,
+                              "height": 64,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "AgHGV",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Glyph",
+                                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    64,
+                                    64
+                                  ],
+                                  "width": 64,
+                                  "height": 64,
+                                  "stroke": "$fg-default",
+                                  "strokeWidth": 5,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "zZHPW",
+                              "fill": "$fg-subtle",
+                              "content": "64 px",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "RJFlG",
+                          "name": "Col",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "Rqlki",
+                              "name": "Mark 32",
+                              "width": 32,
+                              "height": 32,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "jPkZH",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Glyph",
+                                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    64,
+                                    64
+                                  ],
+                                  "width": 32,
+                                  "height": 32,
+                                  "stroke": "$fg-default",
+                                  "strokeWidth": 2.5,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "RVVGA",
+                              "fill": "$fg-subtle",
+                              "content": "32 px",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "OyNMh",
+                          "name": "Col",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "jLLkw",
+                              "name": "Mark 16",
+                              "width": 16,
+                              "height": 16,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "L022b",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Glyph",
+                                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    64,
+                                    64
+                                  ],
+                                  "width": 16,
+                                  "height": 16,
+                                  "stroke": "$fg-default",
+                                  "strokeWidth": 1.25,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "dqWBo",
+                              "fill": "$fg-subtle",
+                              "content": "16 px",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "knSVv",
+                      "fill": "$fg-subtle",
+                      "content": "Monocromo",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "q1tMu",
+              "name": "Nota",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "El margen interior del lienzo es parte del arte: se conservan el viewBox, el trazo y las proporciones. Los iconos normales usan primary, legible sobre fondo claro y oscuro.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "UHHQ6",
+          "name": "Rule",
+          "fill": "$border-default",
+          "width": "fill_container",
+          "height": 1
+        },
+        {
+          "type": "frame",
+          "id": "pYxic",
+          "name": "Wordmark — claro, oscuro y monocromo",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-3",
+          "children": [
+            {
+              "type": "text",
+              "id": "cM8lo",
+              "name": "Label",
+              "fill": "$fg-subtle",
+              "content": "WORDMARK — CLARO, OSCURO Y MONOCROMO",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 1.5
+            },
+            {
+              "type": "frame",
+              "id": "mTyFZ",
+              "name": "Fila",
+              "width": "fill_container",
+              "gap": "$space-4",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "r6QPT",
+                  "name": "Claro",
+                  "theme": {
+                    "mode": "light"
+                  },
+                  "width": "fill_container",
+                  "height": 140,
+                  "fill": "$bg-canvas",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": "$space-4",
+                  "padding": "$space-5",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "hWkvy",
+                      "name": "Logo",
+                      "width": 174,
+                      "height": 40,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "oIL3l",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Mark",
+                          "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                          "viewBox": [
+                            0,
+                            0,
+                            64,
+                            64
+                          ],
+                          "width": 40,
+                          "height": 40,
+                          "stroke": "$primary",
+                          "strokeWidth": 3.125,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        },
+                        {
+                          "type": "path",
+                          "id": "ntI4N",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Lettering",
+                          "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                          "viewBox": [
+                            0,
+                            0,
+                            174,
+                            40
+                          ],
+                          "fill": "$fg-default",
+                          "width": 174,
+                          "height": 40
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "ulHZj",
+                      "fill": "$fg-subtle",
+                      "content": "Claro",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ayicv",
+                  "name": "Oscuro",
+                  "theme": {
+                    "mode": "dark"
+                  },
+                  "width": "fill_container",
+                  "height": 140,
+                  "fill": "$bg-canvas",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": "$space-4",
+                  "padding": "$space-5",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "xT1Ab",
+                      "name": "Logo",
+                      "width": 174,
+                      "height": 40,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "uSoBB",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Mark",
+                          "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                          "viewBox": [
+                            0,
+                            0,
+                            64,
+                            64
+                          ],
+                          "width": 40,
+                          "height": 40,
+                          "stroke": "$primary",
+                          "strokeWidth": 3.125,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        },
+                        {
+                          "type": "path",
+                          "id": "mGcqq",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Lettering",
+                          "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                          "viewBox": [
+                            0,
+                            0,
+                            174,
+                            40
+                          ],
+                          "fill": "$fg-default",
+                          "width": 174,
+                          "height": 40
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "zzzvw",
+                      "fill": "$fg-subtle",
+                      "content": "Oscuro",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cZuyo",
+                  "name": "Monocromo",
+                  "theme": {
+                    "mode": "light"
+                  },
+                  "width": "fill_container",
+                  "height": 140,
+                  "fill": "$bg-canvas",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": "$space-4",
+                  "padding": "$space-5",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "fJ3Yn",
+                      "name": "Logo",
+                      "width": 174,
+                      "height": 40,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "R1cypU",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Mark",
+                          "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                          "viewBox": [
+                            0,
+                            0,
+                            64,
+                            64
+                          ],
+                          "width": 40,
+                          "height": 40,
+                          "stroke": "$fg-default",
+                          "strokeWidth": 3.125,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        },
+                        {
+                          "type": "path",
+                          "id": "eRsH1",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Lettering",
+                          "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                          "viewBox": [
+                            0,
+                            0,
+                            174,
+                            40
+                          ],
+                          "fill": "$fg-default",
+                          "width": 174,
+                          "height": 40
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "YTcRH",
+                      "fill": "$fg-subtle",
+                      "content": "Monocromo",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "tjeHo",
+              "name": "Nota",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Las letras no llevan el acento: se elige el wordmark claro u oscuro según la superficie. En 16 px usa solo el símbolo.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "vAX4J",
+          "name": "Rule",
+          "fill": "$border-default",
+          "width": "fill_container",
+          "height": 1
+        },
+        {
+          "type": "frame",
+          "id": "a4fCG",
+          "name": "Iconos y PWA",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-3",
+          "children": [
+            {
+              "type": "text",
+              "id": "Nr1JK",
+              "name": "Label",
+              "fill": "$fg-subtle",
+              "content": "ICONOS Y PWA — GENERADOS DESDE EL MISMO GLIFO",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 1.5
+            },
+            {
+              "type": "frame",
+              "id": "VB7rM",
+              "name": "Iconos",
+              "gap": "$space-5",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "TsMRU",
+                  "name": "Normal",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "C1b8u",
+                      "name": "Normal",
+                      "width": 112,
+                      "height": 112,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../public/icon-192.png",
+                        "mode": "contain"
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "T14Dy",
+                      "fill": "$fg-default",
+                      "content": "Normal",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "hsJ7K",
+                      "fill": "$fg-subtle",
+                      "content": "192 px · transparente, primary",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "bK9se",
+                  "name": "Maskable",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dGmX0",
+                      "name": "Maskable",
+                      "width": 112,
+                      "height": 112,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../public/icon-maskable-512.png",
+                        "mode": "contain"
+                      },
+                      "cornerRadius": 24
+                    },
+                    {
+                      "type": "text",
+                      "id": "jdjBt",
+                      "fill": "$fg-default",
+                      "content": "Maskable",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "oHFE9",
+                      "fill": "$fg-subtle",
+                      "content": "512 px · lienzo claro propio",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "i5XCN",
+                  "name": "Apple",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "N26k84",
+                      "name": "Apple",
+                      "width": 112,
+                      "height": 112,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../public/apple-touch-icon.png",
+                        "mode": "contain"
+                      },
+                      "cornerRadius": 24
+                    },
+                    {
+                      "type": "text",
+                      "id": "R5xlf",
+                      "fill": "$fg-default",
+                      "content": "Apple",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "QXBy0",
+                      "fill": "$fg-subtle",
+                      "content": "180 px · lienzo claro propio",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WvYOI",
+                  "name": "Monocromo",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x4WCXC",
+                      "name": "Monocromo",
+                      "width": 112,
+                      "height": 112,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../public/icon-monochrome-512.png",
+                        "mode": "contain"
+                      },
+                      "cornerRadius": 24
+                    },
+                    {
+                      "type": "text",
+                      "id": "O4PTR",
+                      "fill": "$fg-default",
+                      "content": "Monocromo",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "psDdc",
+                      "fill": "$fg-subtle",
+                      "content": "512 px · una sola tinta",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "w7fHah",
+          "name": "Rule",
+          "fill": "$border-default",
+          "width": "fill_container",
+          "height": 1
+        },
+        {
+          "type": "frame",
+          "id": "uKrco",
+          "name": "Compartir",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-3",
+          "children": [
+            {
+              "type": "text",
+              "id": "S1gYq",
+              "name": "Label",
+              "fill": "$fg-subtle",
+              "content": "COMPARTIR — TARJETAS SOCIALES (ES-MX EN LA APP, EN INGLÉS EN PAGES)",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 1.5
+            },
+            {
+              "type": "frame",
+              "id": "bhT9A",
+              "name": "Tarjetas",
+              "gap": "$space-4",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ZPYfC",
+                  "name": "og-image.png",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "sCWUw",
+                      "name": "og-image.png",
+                      "width": 400,
+                      "height": 210,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../public/og-image.png",
+                        "mode": "contain"
+                      },
+                      "cornerRadius": 12
+                    },
+                    {
+                      "type": "text",
+                      "id": "WsuAd",
+                      "fill": "$fg-subtle",
+                      "content": "og-image.png",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q1Ybj",
+                  "name": "og-image-en.png",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "K7lyIx",
+                      "name": "og-image-en.png",
+                      "width": 400,
+                      "height": 210,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../public/og-image-en.png",
+                        "mode": "contain"
+                      },
+                      "cornerRadius": 12
+                    },
+                    {
+                      "type": "text",
+                      "id": "J2JtDK",
+                      "fill": "$fg-subtle",
+                      "content": "og-image-en.png",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "OBRe4",
+                  "name": "github-social-preview.png",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "uFmsw",
+                      "name": "github-social-preview.png",
+                      "width": 400,
+                      "height": 200,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../public/github-social-preview.png",
+                        "mode": "contain"
+                      },
+                      "cornerRadius": 12
+                    },
+                    {
+                      "type": "text",
+                      "id": "upaz7",
+                      "fill": "$fg-subtle",
+                      "content": "github-social-preview.png",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "P04Ra",
+              "name": "Nota",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Generadas por bin/brand-assets desde design/brand/ y los tokens de la aplicación; las fuentes editables están en public/brand/. La tarjeta de 1280 × 640 de GitHub se sube a mano.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
@@ -6552,7 +7877,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.1.0"
+      "value": "1.2.0"
     },
     "font-display": {
       "type": "string",
@@ -6729,7 +8054,7 @@
       "type": "color",
       "value": [
         {
-          "value": "#64748B",
+          "value": "#5E6E84",
           "theme": {
             "mode": "light"
           }
