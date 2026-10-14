@@ -337,7 +337,7 @@ GEM
       racc (~> 1.4)
     openssl (4.0.2)
     ostruct (0.6.3)
-    pagy (43.6.3)
+    pagy (43.7.0)
       json
       uri
       yaml
@@ -640,7 +640,7 @@ DEPENDENCIES
   kamal
   lograge
   mission_control-jobs
-  pagy (~> 43.6)
+  pagy (~> 43.7)
   pg (~> 1.7)
   propshaft
   puma (~> 8.0, >= 8.0.2)
