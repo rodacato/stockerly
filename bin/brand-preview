@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # Render a local presentation using the same geometry and compiled tokens as the app.
 require "erb"
+require "yaml"
+require "json"
 require "fileutils"
 require_relative "../app/shared/domain/brand_assets"
 require_relative "../lib/stockerly/version"
@@ -19,6 +21,16 @@ letters = BrandAssets.svg_body("lettering")
 mark = ->(size, color = "var(--color-primary)") { %(<svg width="#{size}" height="#{size}" viewBox="0 0 64 64" aria-hidden="true" style="color:#{color}">#{glyph}</svg>) }
 logo = %(<svg viewBox="0 0 174 40" role="img" aria-label="Stockerly" class="h-10 w-auto"><g transform="scale(.625)" color="var(--color-primary)">#{glyph}</g>#{letters}</svg>)
 swatches = %w[bg-canvas bg-surface primary primary-fg fg-default fg-subtle positive-fg negative-fg]
-File.write("#{output}/index.html", ERB.new(File.read("design/brand/templates/preview.html.erb")).result(binding).gsub(/[ \t]+$/, ""))
-FileUtils.cp("#{output}/index.html", "#{output}/en.html") unless preview
+render = ->(template, **locals) { ERB.new(File.read("design/brand/templates/#{template}")).result_with_hash(locals.merge(mark:, logo:, swatches:)).gsub(/[ \t]+$/, "") }
+if preview
+  File.write("#{output}/index.html", render.("preview.html.erb"))
+else
+  FileUtils.cp("public/og-image.png", "#{output}/og-image-es.png")
+  FileUtils.mkdir_p("#{output}/assets/screens")
+  File.write("#{output}/brand.html", render.("preview.html.erb"))
+  YAML.safe_load_file("design/brand/templates/site.yml", symbolize_names: true).each_value do |copy|
+    File.write("#{output}/#{copy[:file]}", render.("site.html.erb", c: copy))
+    Dir["design/exports/*.png"].each { |png| FileUtils.cp(png, "#{output}/assets/screens") if File.read("#{output}/#{copy[:file]}").include?(File.basename(png)) }
+  end
+end
 puts "#{preview ? 'Preview' : 'Pages'}: #{File.expand_path(output)}/index.html"

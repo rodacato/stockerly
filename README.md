@@ -15,7 +15,7 @@ income (CETES), with correct MXN/USD multi-currency tracking — the FX rate is 
 trade's own date, not at import time. Built with Rails 8, PostgreSQL, Hotwire, and Tailwind CSS 4.
 The interface is **es-MX**; the code, routes and docs are English.
 
-See the [product and brand page](https://rodacato.github.io/stockerly/) and
+See the [project page](https://rodacato.github.io/stockerly/) and
 [editable brand sources](design/brand/README.md). Open source under the MIT license. See
 [ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md) for why Stockerly pivoted
 from a multi-user beta to a single-user tracker.

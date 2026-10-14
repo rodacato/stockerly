@@ -1,0 +1,383 @@
+es:
+  lang: es-MX
+  og_locale: es_MX
+  file: index.html
+  other_file: en.html
+  title: Stockerly — tracker self-hosted de patrimonio
+  description: >-
+    Tracker self-hosted, de una sola persona, para acciones, cripto y renta fija mexicana, con
+    multi-divisa MXN/USD que captura el tipo de cambio del día de cada movimiento. MIT.
+  og_alt: Stockerly. Tu patrimonio invertido, en una pantalla.
+  skip: Saltar al contenido
+  theme: [Modo oscuro, Modo claro]
+  lang_label: Idioma
+  nav: {what: Qué es, screens: Pantallas, run: Córrelo, notfor: Para quién no es, github: GitHub}
+  eyebrow: Self-hosted · un solo usuario · MIT
+  h1: Tu patrimonio invertido, en una pantalla.
+  lede: >-
+    Stockerly registra lo que tienes — acciones en EE. UU., cripto y CETES — y lo reporta todo en
+    pesos usando el tipo de cambio del día de cada movimiento, no el de hoy. Corre en tu propio
+    servidor. Hay una sola cuenta: la tuya.
+  cta_run: Cómo correrlo
+  cta_code: Lee el código
+  hero_cmd: Córrelo local
+  hero_cmd_tag: Ruby + Postgres
+  shot_alt: >-
+    Panorama: patrimonio en MXN, un radar de posiciones con sparklines, señales técnicas y
+    sentimiento de mercado.
+  shot_caption: >-
+    Una sola pantalla, se lee de arriba-izquierda hacia la derecha: el patrimonio total en pesos,
+    luego las posiciones con algo pasando hoy, luego qué dijeron los indicadores sobre ellas, y
+    luego cómo se siente el mercado. Todo el producto es un argumento de que esas cuatro cosas van
+    juntas.
+  disclaimer: >-
+    Cada imagen aquí es un <b>artboard</b> del design system que vive en <code>design/</code>, no
+    una captura de una instancia corriendo; las cifras son ficticias. La interfaz está en español
+    de México; el código, las rutas y la documentación, en inglés.
+  what:
+    h2: Un tracker hecho para una sola pregunta
+    sub: >-
+      ¿Voy ganando o perdiendo en la moneda que de verdad gasto? Todo lo demás en la pantalla
+      existe para explicar ese número o para mantenerlo honesto.
+    cards:
+      - h: Multi-divisa que dice la verdad
+        p: >-
+          El costo promedio va ponderado por tipo de cambio. La ganancia no realizada se parte en
+          lo que hizo el activo y lo que hizo el peso — para un inversionista mexicano con acciones
+          gringas esas son dos historias distintas, y casi todos los trackers sólo reportan la
+          primera.
+      - h: Tres niveles, no una lista
+        p: >-
+          <em>Holdings</em> es lo que tienes, <em>Watchlist</em> lo que sigues, y <em>Tracked</em>
+          el catálogo que leen los jobs de sync. Un símbolo puede estar en el catálogo sin fingir
+          que lo compraste.
+      - h: CETES como activo de primera
+        p: >-
+          La renta fija mexicana va junto a las acciones, con aviso antes del vencimiento, y la
+          cartera se compara contra CETES reinvertidos — el benchmark al que un inversionista
+          mexicano de verdad renuncia.
+      - h: Descriptivo, nunca prescriptivo
+        p: >-
+          Dice <em>«AAPL entró en zona de sobreventa según RSI(14)»</em>. No dice compra, ni vende,
+          ni es buen momento. Los indicadores y los scores compuestos entran; las predicciones y
+          las recomendaciones no, a propósito.
+      - h: PWA que se instala en el teléfono
+        p: >-
+          La instalas en la pantalla de inicio y te llegan notificaciones push cuando se dispara
+          una regla. Sin red muestra una página para reintentar: las cifras del portafolio nunca se
+          guardan en caché, así que leerlas requiere conexión.
+    stack: [Ruby 4.0.6, Rails 8.1, PostgreSQL 16, Hotwire, Tailwind CSS 4, Solid Queue, Kamal 2, sin Node.js]
+  screens:
+    h2: Cómo se ven las pantallas
+    sub: Dibujadas en el design system del proyecto, que espeja el código que shippea.
+    items:
+      - img: activos-holdings-desktop.png
+        alt: "Holdings: posiciones agrupadas por nivel, con costo promedio y ganancia en MXN."
+        b: Holdings
+        cap: la escalera de tres niveles, valores en MXN
+      - img: cockpit-consolidado-desktop.png
+        alt: "Consolidado: el valor de la cartera en el tiempo contra una comparación con CETES reinvertidos."
+        b: Consolidado
+        cap: valor en el tiempo contra CETES reinvertidos
+      - img: activos-registrar-movimiento-desktop.png
+        alt: Hoja de captura de movimientos con autocompletado de ticker y el tipo de cambio de Banxico ya puesto.
+        b: Registrar movimiento
+        cap: captura con el tipo de cambio ya puesto
+      - img: reglas-lista.png
+        phone: true
+        alt: Lista de reglas de aviso con tiempo de espera por regla.
+        b: Reglas
+        cap: en el teléfono — precio, RSI, volumen, fechas ex, subastas de CETES
+  band:
+    h2: Lo que te cuesta correrlo
+    lede: >-
+      Dinero no — es MIT. Atención, y una lista corta de cosas que tienen que ser ciertas en tu
+      servidor.
+    items:
+      - {n: "8", d: proveedores de datos de mercado, todos opcionales. Corre sin ninguno configurado, solo con las fuentes que no piden llave.}
+      - {n: "6", d: bounded contexts. Las escrituras los cruzan como eventos de dominio, las lecturas por una API publicada, y un ADR nombra cada costura.}
+      - {n: "4", d: bases PostgreSQL — primary, cache, queue, cable. Ni Redis que correr, ni Node que compilar.}
+      - {n: "1", d: cuenta en la instancia, creada por el Setup Wizard en el primer arranque. No hay una segunda que hacer.}
+      - {n: "0", d: cuentas con nadie más, incluido yo. Sin agregador, sin telemetría, sin servicio externo de errores.}
+  run:
+    h2: Un comando, en tu máquina
+    sub: >-
+      <code>bin/setup</code> es idempotente: instala las gemas, crea y migra las cuatro bases de
+      PostgreSQL, las siembra en la primera creación, y levanta el servidor. No necesitas ninguna
+      API key de mercado para correrlo.
+    cards:
+      - h: Dev container
+        p: >-
+          Abre la carpeta en VS Code o Codespaces y elige <em>Reopen in Container</em>. El setup
+          corre solo; luego <code>bin/dev</code>.
+      - h: Bare metal
+        p: >-
+          Ruby 4.0.6 y un PostgreSQL 16 en <code>localhost</code>. Node.js no hace falta — el
+          JavaScript viaja por import maps y el CSS por el compilador standalone de Tailwind.
+    cmd_label: Los dos caminos acaban aquí
+    cmd_tag: puerto 4100
+    c1: gemas, bases, seeds, servidor
+    c2: segunda terminal — alertas, syncs, avisos
+    note: >-
+      <b>Qué es en realidad la primera pantalla.</b> Los seeds de desarrollo crean cuatro usuarios
+      demo, así que <code>bin/setup</code> te deja en el login — entra con
+      <code>demo@stockerly.com</code> / <code>password123</code>. El Setup Wizard que crea la
+      única cuenta real sólo aparece con la base <em>vacía</em>, que es como se ve un primer
+      arranque de verdad. <code>GETTING_STARTED.md</code> trae el one-liner para llegar ahí.
+    deploy: >-
+      Para producción, Stockerly se deploya a cualquier servidor Linux con Kamal 2 y Docker. El
+      deploy de referencia usa un VPS detrás de un Cloudflare Tunnel, así que no se abre ningún
+      puerto de entrada — pero nada en la app depende de la infraestructura del maintainer. Ve
+      <code>docs/ops/deploy.md</code>.
+  notfor:
+    h2: Para quién no es
+    sub: >-
+      Self-hosted quiere decir que estás a punto de gastarte una tarde en esto. No son
+      limitaciones esperando arreglo — son decisiones, y cada una está registrada en el repo.
+    items:
+      - {t: Más de una persona, d: "Single-user por diseño. Una instancia, una cuenta, sin roles, sin compartir, sin multi-tenancy. Una casa con dos personas necesita dos instancias."}
+      - {t: Quien invierta fuera de México, d: "La matemática asume MXN y USD a través de un broker mexicano: CETES, el FIX de Banxico, la BMV. No es un tracker internacional genérico."}
+      - {t: Quien quiera sync con su broker, d: "Nada de Plaid, Yodlee ni SnapTrade, nunca a esta escala. Capturas los movimientos o importas un CSV. Las comisiones de los agregadores ayudaron a matar a un competidor del mismo stack."}
+      - {t: Day traders, d: "Cierre diario, no ticks. Sin resolución intradía, sin cotizaciones en streaming."}
+      - {t: Quien quiera declarar impuestos, d: "Sin reportes de ISR, sin SAT, sin lot tracking, sin retenciones. Registra patrimonio; no reemplaza a tu contador."}
+      - {t: Quien necesite soporte, d: "Sin SLA, sin garantía de soporte, sin aviso previo de cambios que rompen. Es el daily driver de una persona, que además se puede leer y correr."}
+  facts:
+    h2: Lo que te estás llevando
+    items:
+      - k: Licencia
+        v: MIT — open source, sin planes, sin funciones premium.
+        s: Se entrega «tal cual», sin garantía de ningún tipo.
+      - k: Versión
+        v: <code>v{version}</code>
+        s: >-
+          Corre el release etiquetado, no <code>master</code>: un tag es lo que un aviso de
+          seguridad nombra cuando toca actualizar. Los
+          <a href="https://github.com/rodacato/stockerly/releases">releases</a> dicen qué trajo
+          cada uno.
+      - k: Seguridad
+        v: Repórtala en privado desde la pestaña <b>Security</b> del repo → <em>Report a vulnerability</em>.
+        s: Nunca abras un issue público por una vulnerabilidad. Respuesta en 48 horas; ve <code>SECURITY.md</code>.
+      - k: Interfaz
+        v: Español de México (es-MX), un solo locale.
+        s: >-
+          El código, las rutas, los commits y la documentación están en inglés. Un segundo locale
+          <em>en la app</em> no es una meta — esta página es la que existe en los dos idiomas.
+      - k: Segundo factor
+        v: TOTP con códigos de recuperación de un solo uso, dentro de la instancia.
+        s: >-
+          Sin proveedor de identidad externo: el login no se delega en nadie, que es la otra mitad
+          de no tener cuenta con nadie. Ve <code>ADR-018</code>.
+      - k: Páginas legales
+        v: Ninguna, a propósito.
+        s: >-
+          Es software que tú hospedas, no un servicio que alguien te presta, así que no trae aviso
+          de privacidad ni términos — la licencia MIT carga los términos.
+      - k: No es asesoría
+        v: Stockerly muestra información de mercado, no asesoría de inversión.
+        s: >-
+          Los precios, los fundamentales y los tipos de cambio vienen de terceros y pueden llegar
+          tarde o mal. Verifica con tu broker cualquier cosa sobre la que actúes.
+      - k: Contribuir
+        v: Reportes de bugs, preguntas y pull requests son bienvenidos — abre un issue para empezar.
+        s: >-
+          Lee <code>CONTRIBUTING.md</code> primero. Es el daily driver de una persona, revisado en
+          tardes y fines de semana, así que espera ese ritmo y no el de un equipo.
+  footer:
+    made: MIT · hecho por <a href="https://github.com/rodacato">rodacato</a> en Colima, México
+    links:
+      - [Código, "https://github.com/rodacato/stockerly"]
+      - [Cómo empezar, "https://github.com/rodacato/stockerly/blob/master/GETTING_STARTED.md"]
+      - [Arquitectura, "https://github.com/rodacato/stockerly/tree/master/docs/architecture"]
+      - [Seguridad, "https://github.com/rodacato/stockerly/security/policy"]
+      - [Marca, "brand.html"]
+
+en:
+  lang: en
+  og_locale: en_US
+  file: en.html
+  other_file: index.html
+  title: Stockerly — self-hosted investment tracker
+  description: >-
+    A self-hosted, single-user tracker for stocks, crypto and Mexican fixed income, with MXN/USD
+    multi-currency that captures the exchange rate from the day of each trade. MIT.
+  og_alt: Stockerly. Your invested net worth, on one screen.
+  skip: Skip to content
+  theme: [Dark mode, Light mode]
+  lang_label: Language
+  nav: {what: What it is, screens: Screens, run: Run it, notfor: Who it isn't for, github: GitHub}
+  eyebrow: Self-hosted · single user · MIT
+  h1: Your invested net worth, on one screen.
+  lede: >-
+    Stockerly tracks what you own — US stocks, crypto and Mexican CETES — and reports all of it in
+    pesos using the exchange rate from the day of each trade, not today's. You run it on your own
+    server. There is one account: yours.
+  cta_run: How to run it
+  cta_code: Read the source
+  hero_cmd: Run it locally
+  hero_cmd_tag: Ruby + Postgres
+  shot_alt: >-
+    Panorama: net worth in MXN, a radar of positions with sparklines, technical signals, and
+    market sentiment.
+  shot_caption: >-
+    One screen, read top-left to right: total net worth in pesos, then the positions with
+    something happening today, then what the indicators said about them, then how the wider market
+    feels. The whole product is an argument that those four things belong together.
+  disclaimer: >-
+    Every image here is an <b>artboard</b> from the design system in <code>design/</code>, not a
+    capture of a running instance; the figures are fictional. The interface is in Mexican Spanish;
+    the code, routes and documentation are in English.
+  what:
+    h2: A tracker made for one question
+    sub: >-
+      Am I up or down, in the currency I actually spend? Everything else on the screen exists to
+      explain that number or to keep it honest.
+    cards:
+      - h: Multi-currency that tells the truth
+        p: >-
+          Cost basis is FX-weighted. The unrealised gain is split into what the asset did and what
+          the peso did — for a Mexican investor holding US stocks those are two different stories,
+          and most trackers report only the first.
+      - h: Three tiers, not one list
+        p: >-
+          <em>Holdings</em> is what you own, <em>Watchlist</em> is what you follow, and
+          <em>Tracked</em> is the catalogue the sync jobs read. A symbol can be in the catalogue
+          without pretending you bought it.
+      - h: CETES as a first-class asset
+        p: >-
+          Mexican fixed income sits beside the equities, with maturity lead time, and the portfolio
+          is compared against reinvested CETES — the benchmark a Mexican investor actually gives
+          something up for.
+      - h: Descriptive, never prescriptive
+        p: >-
+          It says <em>"AAPL entered oversold per RSI(14)"</em>. It does not say buy, sell, or now
+          is a good time. Indicators and composite scores are in; predictions and recommendations
+          are out, on purpose.
+      - h: A PWA you install on your phone
+        p: >-
+          Install it to the home screen and get push notifications when a rule fires. Offline it
+          shows a retry page: portfolio figures are never cached, so reading them needs a
+          connection.
+    stack: [Ruby 4.0.6, Rails 8.1, PostgreSQL 16, Hotwire, Tailwind CSS 4, Solid Queue, Kamal 2, no Node.js]
+  screens:
+    h2: What the screens look like
+    sub: Drawn in the project's own design system, which mirrors the shipped code.
+    items:
+      - img: activos-holdings-desktop.png
+        alt: "Holdings: positions grouped by tier, with cost basis and gain in MXN."
+        b: Holdings
+        cap: the three-tier ladder, values in MXN
+      - img: cockpit-consolidado-desktop.png
+        alt: "Consolidado: portfolio value over time against a reinvested CETES comparison."
+        b: Consolidado
+        cap: value over time vs. reinvested CETES
+      - img: activos-registrar-movimiento-desktop.png
+        alt: Trade capture sheet with ticker autocomplete and a pre-filled Banxico rate.
+        b: Registrar movimiento
+        cap: capture with the FX rate pre-filled
+      - img: reglas-lista.png
+        phone: true
+        alt: Alert rules list with per-rule cooldowns.
+        b: Reglas
+        cap: on a phone — price, RSI, volume, ex-dates, CETES auctions
+  band:
+    h2: What it costs you to run
+    lede: >-
+      Not money — it is MIT. Attention, and a short list of things that have to be true on your
+      server.
+    items:
+      - {n: "8", d: market-data providers, every one of them optional. It runs with none configured, on the keyless sources only.}
+      - {n: "6", d: bounded contexts. Writes cross them as domain events, reads through a published API, and an ADR names every seam.}
+      - {n: "4", d: PostgreSQL databases — primary, cache, queue, cable. No Redis to run, no Node to build.}
+      - {n: "1", d: account on the instance, created by the Setup Wizard on first boot. There is no second one to make.}
+      - {n: "0", d: accounts with anyone else, including me. No aggregator, no telemetry, no external error service.}
+  run:
+    h2: One command, on your machine
+    sub: >-
+      <code>bin/setup</code> is idempotent: it installs gems, creates and migrates the four
+      PostgreSQL databases, seeds them on first creation, and starts the server. No market-data API
+      key is needed to run.
+    cards:
+      - h: Dev container
+        p: >-
+          Open the folder in VS Code or Codespaces and choose <em>Reopen in Container</em>. Setup
+          runs itself; then <code>bin/dev</code>.
+      - h: Bare metal
+        p: >-
+          Ruby 4.0.6 and a PostgreSQL 16 on <code>localhost</code>. Node.js is not required —
+          JavaScript ships through import maps and CSS through the Tailwind standalone compiler.
+    cmd_label: Both paths end here
+    cmd_tag: port 4100
+    c1: gems, databases, seeds, server
+    c2: second terminal — alerts, syncs, notifications
+    note: >-
+      <b>What the first screen actually is.</b> The development seeds create four demo users, so
+      <code>bin/setup</code> lands you on the login — sign in with
+      <code>demo@stockerly.com</code> / <code>password123</code>. The Setup Wizard that creates the
+      single real account only appears on an <em>empty</em> database, which is what a genuine
+      first boot looks like. <code>GETTING_STARTED.md</code> has the one-liner to get there.
+    deploy: >-
+      For production, Stockerly deploys to any Linux server with Kamal 2 and Docker. The reference
+      deployment uses a VPS behind a Cloudflare Tunnel, so no inbound ports are opened — but
+      nothing in the app depends on the maintainer's infrastructure. See
+      <code>docs/ops/deploy.md</code>.
+  notfor:
+    h2: Who this isn't for
+    sub: >-
+      Self-hosted means you are about to spend an evening on this. These are not limitations
+      waiting to be fixed — they are decisions, each one recorded in the repo.
+    items:
+      - {t: More than one person, d: "Single-user by design. One instance, one account, no roles, no sharing, no multi-tenancy. A household needs two instances."}
+      - {t: Investors outside Mexico, d: "The math assumes MXN and USD through a Mexican broker: CETES, Banxico's FX fix, the BMV. It is not a generic international tracker."}
+      - {t: Anyone wanting broker sync, d: "No Plaid, no Yodlee, no SnapTrade, ever at this scale. You type trades or import a CSV. Aggregator fees helped kill a same-stack competitor."}
+      - {t: Day traders, d: "Daily close, not ticks. No sub-daily resolution, no streaming quotes."}
+      - {t: Tax preparation, d: "No ISR reports, no SAT integration, no lot tracking, no withholding math. It tracks patrimony; it does not replace your accountant."}
+      - {t: Anyone who needs support, d: "No SLA, no support guarantee, no advance notice of breaking changes. It is one person's daily driver that happens to be readable and runnable."}
+  facts:
+    h2: What you are getting
+    items:
+      - k: License
+        v: MIT — open source, no tiers, no premium features.
+        s: Provided "as is", without warranty of any kind.
+      - k: Version
+        v: <code>v{version}</code>
+        s: >-
+          Run the tagged release, not <code>master</code>: a tag is what a security advisory names
+          when it is time to upgrade. The
+          <a href="https://github.com/rodacato/stockerly/releases">releases</a> say what each one
+          brought.
+      - k: Security
+        v: Report privately through the repository's <b>Security</b> tab → <em>Report a vulnerability</em>.
+        s: Never open a public issue for a vulnerability. Response within 48 hours; see <code>SECURITY.md</code>.
+      - k: Interface
+        v: Mexican Spanish (es-MX), single locale.
+        s: >-
+          Code, routes, commits and documentation are English. A second locale <em>in the app</em>
+          is not a goal; this page is the one thing that exists in both languages.
+      - k: Second factor
+        v: TOTP with one-time recovery codes, inside the instance.
+        s: >-
+          No external identity provider: login is delegated to nobody, which is the other half of
+          holding no account anywhere. See <code>ADR-018</code>.
+      - k: Legal pages
+        v: None, deliberately.
+        s: >-
+          It is software you host, not a service anyone provides to you, so it ships no privacy
+          notice and no terms — the MIT license carries the terms.
+      - k: Not advice
+        v: Stockerly shows market information, not investment advice.
+        s: >-
+          Prices, fundamentals and FX rates come from third parties and can be late or wrong.
+          Check anything you act on against your broker.
+      - k: Contributing
+        v: Bug reports, questions and pull requests are all welcome — open an issue to start.
+        s: >-
+          Read <code>CONTRIBUTING.md</code> first. It is one person's daily driver reviewed on
+          evenings and weekends, so expect that pace rather than a team's.
+  footer:
+    made: MIT · built by <a href="https://github.com/rodacato">rodacato</a> in Colima, México
+    links:
+      - [Source, "https://github.com/rodacato/stockerly"]
+      - [Getting started, "https://github.com/rodacato/stockerly/blob/master/GETTING_STARTED.md"]
+      - [Architecture, "https://github.com/rodacato/stockerly/tree/master/docs/architecture"]
+      - [Security, "https://github.com/rodacato/stockerly/security/policy"]
+      - [Brand, "brand.html"]
